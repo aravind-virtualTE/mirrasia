@@ -47,7 +47,7 @@ jobs:
           rm -rf frontend-temp
           git clone --single-branch --branch main https://github.com/${{ github.repository }} frontend-temp
           cd frontend-temp/frontend
-          
+          ls -al
           # Install and build
           npm install
           npm run build
@@ -56,11 +56,11 @@ jobs:
           ls -al dist
           
           # Copy new build to nginx directory
-          sudo cp -r dist/* /var/www/html/
-          
-          # Cleanup
-          cd /tmp
-          rm -rf frontend-temp
+          sudo cp -r dist/* /var/www/html/          
           
           # Restart nginx
           sudo systemctl restart nginx
+
+          # Cleanup
+          cd /tmp
+          rm -rf frontend-temp
