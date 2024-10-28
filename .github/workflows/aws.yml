@@ -3,8 +3,6 @@ name: Frontend Deploy to EC2
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'frontend/**'  # Only trigger on frontend changes
 
 jobs:
   deploy-frontend:
