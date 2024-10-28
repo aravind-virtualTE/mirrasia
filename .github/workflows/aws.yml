@@ -34,7 +34,7 @@ jobs:
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           # Create frontend directory if it doesn't exist
           mkdir -p /var/www/html
