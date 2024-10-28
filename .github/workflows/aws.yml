@@ -1,0 +1,65 @@
+name: Frontend Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'  # Only trigger on frontend changes
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install and Build
+      working-directory: ./frontend
+      run: |
+        npm install
+        npm run build
+        
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+        
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          # Create frontend directory if it doesn't exist
+          mkdir -p /var/www/html
+          
+          # Remove old build
+          sudo rm -rf /var/www/html/*
+          
+          # Clone repository and build
+          cd /tmp
+          rm -rf frontend-temp
+          git clone --single-branch --branch main https://github.com/${{ github.repository }} frontend-temp
+          cd frontend-temp/frontend
+          
+          # Install and build
+          npm install
+          npm run build
+          
+          # Copy new build to nginx directory
+          sudo cp -r build/* /var/www/html/
+          
+          # Cleanup
+          cd /tmp
+          rm -rf frontend-temp
+          
+          # Restart nginx
+          sudo systemctl restart nginx
