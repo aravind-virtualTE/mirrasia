@@ -45,6 +45,7 @@ jobs:
           # Clone repository and build
           cd /tmp
           rm -rf frontend-temp
+          ls -al
           git clone --single-branch --branch main https://github.com/${{ github.repository }} frontend-temp
           cd frontend-temp/frontend
           ls -al
