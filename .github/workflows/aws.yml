@@ -40,11 +40,11 @@ jobs:
           mkdir -p /var/www/html
           
           # Remove old build
-          sudo rm -rf /var/www/html/*
+          # sudo rm -rf /var/www/html/*
           
           # Clone repository and build
           cd /tmp
-          rm -rf frontend-temp
+          # rm -rf frontend-temp
           ls -al
           # git clone --single-branch --branch main https://github.com/${{ github.repository }} frontend-temp
           git clone --single-branch --branch main https://x-access-token:${{ secrets.GHUB_TOKEN }}@github.com/aravind-virtualTE/mirrasia.git frontend-temp
