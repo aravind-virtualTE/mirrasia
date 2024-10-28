@@ -51,9 +51,12 @@ jobs:
           # Install and build
           npm install
           npm run build
+
+          # Check build output
+          ls -al dist
           
           # Copy new build to nginx directory
-          sudo cp -r build/* /var/www/html/
+          sudo cp -r dist/* /var/www/html/
           
           # Cleanup
           cd /tmp
