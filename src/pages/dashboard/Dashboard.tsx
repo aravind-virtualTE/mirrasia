@@ -53,14 +53,14 @@ const Dashboard = () => {
           </Card>
 
           <Card>
-            <CardContent className="p-6 flex flex-col items-center text-center">
+            <CardContent className="p-6 flex flex-col items-center text-center cursor-pointer">
               <Users className="w-12 h-12 mb-4" />
               <p className="font-medium">Transfer existing company secretary or accounting services to Mirr Asia</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6 flex flex-col items-center text-center">
+            <CardContent className="p-6 flex flex-col items-center text-center cursor-pointer">
               <FileSignature className="w-12 h-12 mb-4" />
               <p className="font-medium">Sign documents securely, anywhere in the world. For free!</p>
             </CardContent>
@@ -84,7 +84,7 @@ const Dashboard = () => {
           <ScrollArea className="w-full">
             <div className="flex space-x-6">
               {partnerCards.map((partner, index) => (
-                <Card key={index} className="min-w-[300px]">
+                <Card key={index} className="min-w-[300px] cursor-pointer">
                   <CardContent className="p-6">
                     <div className="h-12 mb-4">
                       <img 
@@ -128,7 +128,7 @@ const Dashboard = () => {
                   <p className="text-gray-600">
                     Call us at +65 6929 8272, or email us at{" "}
                     <Button variant="link" className="p-0">
-                      customer@Mirr Asia.sg
+                      customer@mirrasia.sg
                     </Button>
                   </p>
                   <Button variant="link" className="p-0 mt-2">

@@ -19,6 +19,8 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent } from './ui/card';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import Logo from '@/common/LogoComponent';
+import { useNavigate } from 'react-router-dom';
+
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
     className?: string;
@@ -34,13 +36,18 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         { icon: <Receipt className="w-4 h-4" />, label: "Billings & Subscriptions" },
         { icon: <HelpCircle className="w-4 h-4" />, label: "Support" },
     ];
-
+    const navigate = useNavigate();
+    const handleIconClick = () => {
+        navigate('/dashboard');
+      };
     return (
         <div className={cn("pb-12 h-full", className)}>
             <div className="space-y-4 py-4">
                 <div className="px-4 py-2">
+                    <span className="flex items-center space-x-2 font-medium cursor-pointer" onClick={handleIconClick}>
                     <Logo />
-
+                        Mirr Asia
+                    </span>
                     <div className="space-y-1">
                         <div className="flex items-center space-x-2 p-2 bg-blue-50 rounded-md mb-4">
                             <Rocket className="w-4 h-4" />
