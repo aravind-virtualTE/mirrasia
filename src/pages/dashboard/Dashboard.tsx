@@ -15,7 +15,7 @@ import {
 
 } from "lucide-react";
 import Layout from '@/components/Layout';
-
+import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const partnerCards = [
     { 
@@ -31,6 +31,11 @@ const Dashboard = () => {
       description: "The Greater Room"
     }
   ];
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate('/company-register');
+  };
 
   return (
     <Layout >
@@ -41,7 +46,7 @@ const Dashboard = () => {
         {/* Action Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <Card>
-            <CardContent className="p-6 flex flex-col items-center text-center">
+            <CardContent className="p-6 flex flex-col items-center text-center cursor-pointer" onClick={handleCardClick}>
               <Rocket className="w-12 h-12 mb-4" />
               <p className="font-medium">Register a new company & get a free business account</p>
             </CardContent>

@@ -27,7 +27,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     const sidebarItems = [
         { icon: <Mail className="w-4 h-4" />, label: "Mailroom" },
-        { icon: <FileSignature className="w-4 h-4" />, label: "SleekSign" },
+        { icon: <FileSignature className="w-4 h-4" />, label: "MirrAsia Sign" },
         { icon: <User2 className="w-4 h-4" />, label: "Company Secretary" },
         { icon: <Users className="w-4 h-4" />, label: "Requests" },
         { icon: <Gift className="w-4 h-4" />, label: "Perks" },
