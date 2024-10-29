@@ -9,6 +9,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import SignupPage from './pages/signup/SignupPage';
 import LoginComponent from './pages/login/loginSmpl';
 import CompanyRegistration from './pages/Company/CompanyForm';
+import CompanyRegistration2 from './pages/Company/cf';
 
 
 
@@ -40,6 +41,8 @@ function App() {
             }
           />
           <Route path="/company-register" element={<CompanyRegistration />} />
+          <Route path="/compReg" element={<CompanyRegistration2 />} />
+          
         </Routes>
       </ThemeProvider>
     </>
