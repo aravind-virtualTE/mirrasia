@@ -8,7 +8,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 // import LoginPage from './pages/login/LoginPage';
 import SignupPage from './pages/signup/SignupPage';
 import LoginComponent from './pages/login/loginSmpl';
-import CompanyRegistration from './pages/Company/cmpIndex';
+import CompanyRegistration from './pages/Company/CompanyForm';
 
 
 
