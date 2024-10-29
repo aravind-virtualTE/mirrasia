@@ -28,7 +28,7 @@ const CompanyRegistration2 = () => {
     const sidebarItems = [
         { icon: <Building2 className="w-5 h-5" />, label: 'Company Info' },
         { icon: <Mail className="w-5 h-5" />, label: 'Mailroom' },
-        { icon: <ScrollText className="w-5 h-5" />, label: 'SleekSign' },
+        { icon: <ScrollText className="w-5 h-5" />, label: 'Mirr Asia Sign' },
         { icon: <Users className="w-5 h-5" />, label: 'Company Secretary' },
         { icon: <BadgeDollarSign className="w-5 h-5" />, label: 'Accounting' },
         { icon: <FileText className="w-5 h-5" />, label: 'Requests' },
@@ -59,7 +59,7 @@ const CompanyRegistration2 = () => {
                     <div>
                         <h3 className="font-semibold mb-2">Good to know</h3>
                         <p className="text-sm text-gray-600">
-                            Enter different variations of your company name in order of preference. Sleek will help you obtain final confirmation prior to incorporation.
+                            Enter different variations of your company name in order of preference. Mirr Asia will help you obtain final confirmation prior to incorporation.
                         </p>
                     </div>
                 </CardContent>
@@ -136,7 +136,7 @@ const CompanyRegistration2 = () => {
                                 'Search Engine',
                                 'Social Media',
                                 'Referral from an existing client',
-                                'Referral from a friend/Sleek staff',
+                                'Referral from a friend/Mirr Asia staff',
                                 'Others, please specify'
                             ].map((option) => (
                                 <div key={option} className="flex items-center space-x-2">
@@ -338,7 +338,7 @@ const CompanyRegistration2 = () => {
 
                 <div className="p-4 m-4 bg-blue-50 rounded-lg">
                     <div className="text-sm">Need to sign a contract?</div>
-                    <button className="text-blue-600 text-sm font-medium mt-1">Use SleekSign →</button>
+                    <button className="text-blue-600 text-sm font-medium mt-1">Use MirrAsia Sign →</button>
                 </div>
             </div>
 
@@ -407,7 +407,7 @@ const CompanyRegistration2 = () => {
             {/* Fixed Header */}
             <div className="fixed top-0 right-0 left-64 bg-white border-b h-16 flex items-center justify-between px-8 z-10">
                 <div className="flex items-center space-x-2">
-                    <img src="/api/placeholder/32/32" alt="Sleek Logo" className="h-8" />
+                    <img src="/api/placeholder/32/32" alt="Mirr Asia Logo" className="h-8" />
                 </div>
                 <div className="flex items-center space-x-6">
                     <div className="flex items-center space-x-2">
