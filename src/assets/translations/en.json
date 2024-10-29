@@ -1,0 +1,10 @@
+{
+    "company": {
+      "name": "Company Name",
+      "industry": "Industry"
+    },
+    "buttons": {
+      "next": "Next",
+      "previous": "Previous"
+    }
+  }

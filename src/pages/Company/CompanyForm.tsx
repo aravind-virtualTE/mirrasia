@@ -12,7 +12,7 @@ import {
 import { LightbulbIcon, 
     // Mail, Building2, ScrollText, BadgeDollarSign, Users, FileText, Gift, CreditCard, HelpCircle 
 } from 'lucide-react';
-import Layout from '@/components/Layout';
+import Layout from '@/components/Layout/Layout';
 
 const CompanyRegistration = () => {
   const steps = [

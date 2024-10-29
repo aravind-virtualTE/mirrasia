@@ -14,7 +14,7 @@ import {
   Building,
 
 } from "lucide-react";
-import Layout from '@/components/Layout';
+import Layout from '@/components/Layout/Layout';
 import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const partnerCards = [

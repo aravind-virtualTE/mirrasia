@@ -1,0 +1,10 @@
+{
+    "company": {
+      "name": "회사 이름",
+      "industry": "산업"
+    },
+    "buttons": {
+      "next": "다음",
+      "previous": "이전"
+    }
+  }

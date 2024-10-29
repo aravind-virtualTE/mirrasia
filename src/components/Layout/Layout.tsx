@@ -16,10 +16,11 @@ import {
     Menu
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from './ui/card';
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Card, CardContent } from '../ui/card';
+import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import Logo from '@/common/LogoComponent';
 import { useNavigate } from 'react-router-dom';
+import Navbar from './Navbar';
 
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -46,7 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                 <div className="px-4 py-2">
                     <span className="flex items-center space-x-2 font-medium cursor-pointer" onClick={handleIconClick}>
                     <Logo />
-                        Mirr Asia
+                        MIRR ASIA
                     </span>
                     <div className="space-y-1">
                         <div className="flex items-center space-x-2 p-2 bg-blue-50 rounded-md mb-4">
@@ -80,7 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                         <div>
                             <p className="text-sm font-medium">Need to sign a contract?</p>
                             <Button variant="link" className="p-0">
-                                Use Mirr Asia Sign →
+                                Use MIRR ASIA Sign →
                             </Button>
                         </div>
                     </CardContent>
@@ -112,10 +113,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="hidden md:block">
                 <Sidebar className="w-64 border-r bg-white" />
             </div>
-
             {/* Main Content */}
-            <div className="flex-1 p-8">
-                {children}
+            <div className="flex-1 ">
+                {/* Navbar */}
+                <Navbar />
+                <div className="flex-1 p-8">
+                    {children}
+                </div>
             </div>
         </div>
     );
