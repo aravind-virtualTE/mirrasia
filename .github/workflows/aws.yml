@@ -28,41 +28,21 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
-        
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@master
+      
+    - name: Copy build to EC2 instance
+      uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          # Create frontend directory if it doesn't exist
-          mkdir -p /var/www/html
-          
-          # Remove old build
-          # sudo rm -rf /var/www/html/*
-          
-          # Clone repository and build
-          cd /tmp
-          # rm -rf frontend-temp
-          ls -al
-          # git clone --single-branch --branch main https://github.com/${{ github.repository }} frontend-temp
-          git clone --single-branch --branch main https://x-access-token:${{ secrets.GHUB_TOKEN }}@github.com/aravind-virtualTE/mirrasia.git frontend-temp
-          cd frontend-temp/
-          ls -al
-          # Install and build
-          npm install
-          npm run build
+        source: "build/"
+        target: "/var/www/html" 
 
-          # Check build output
-          ls -al dist
-          
-          # Copy new build to nginx directory
-          sudo cp -r dist/* /var/www/html/          
-          
-          # Restart nginx
-          sudo systemctl restart nginx
-
-          # Cleanup
-          cd /tmp
-          rm -rf frontend-temp
+    # - name: SSH into EC2 and restart server
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.BLUESTAR_OHIO_HOST }}
+    #     username: ${{ secrets.BLUESTAR_OHIO_PROD_USERNAME }}
+    #     key: ${{ secrets.BLUESTAR_OHIO_PROD_SSH }}
+    #     script: |
+    #       cd /var/www/frontend
