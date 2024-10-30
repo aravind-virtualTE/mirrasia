@@ -21,6 +21,7 @@ import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import Logo from '@/common/LogoComponent';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
+import { Separator } from '../ui/separator';
 
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -117,6 +118,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="flex-1 ">
                 {/* Navbar */}
                 <Navbar />
+                <Separator className="my-4" />
                 <div className="flex-1 p-8">
                     {children}
                 </div>

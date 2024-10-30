@@ -1,5 +1,5 @@
-import {  LogOut, User } from "lucide-react"
-
+import { LogOut, User } from "lucide-react"
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -12,9 +12,14 @@ import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 
 
 export default function Navbar() {
+    const navigate = useNavigate();
+    const logout = async () => {
+        localStorage.setItem('isAuthenticated', 'false');
+        navigate('/');
+    };
     return (
-        <nav className="flex items-center justify-end p-4 bg-background">
-            <div className="flex items-center space-x-4">                
+        <nav className="fixed top-0 right-0 left-64 bg-background border-b h-16 flex items-center justify-end px-8 z-10">
+            <div className="flex ">
                 <LanguageSwitcher />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -30,7 +35,7 @@ export default function Navbar() {
                             <User className="mr-2 h-4 w-4" />
                             <span>Profile</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={logout}>
                             <LogOut className="mr-2 h-4 w-4" />
                             <span>Logout</span>
                         </DropdownMenuItem>

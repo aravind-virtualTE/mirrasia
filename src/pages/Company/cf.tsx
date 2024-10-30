@@ -405,10 +405,10 @@ const CompanyRegistration2 = () => {
             </div>
 
             {/* Fixed Header */}
-            <div className="fixed top-0 right-0 left-64 bg-white border-b h-16 flex items-center justify-between px-8 z-10">
-                <div className="flex items-center space-x-2">
+            <div className="fixed top-0 right-0 left-64 bg-white border-b h-16 flex items-center justify-end px-8 z-10">
+                {/* <div className="flex items-center space-x-2">
                     <img src="/api/placeholder/32/32" alt="Mirr Asia Logo" className="h-8" />
-                </div>
+                </div> */}
                 <div className="flex items-center space-x-6">
                     <div className="flex items-center space-x-2">
                         <span className="text-blue-600">S$350</span>

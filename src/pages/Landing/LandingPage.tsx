@@ -2,8 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import Logo from '@/common/LogoComponent';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import {  BookOpen, Calculator, Users } from 'lucide-react';
-
+import { BookOpen, Calculator, Users } from 'lucide-react';
+import businessIllustration from '@/assets/images/Business Plan-amico.svg';
 // import { ModeToggle } from '@/components/mode-toggle';
 
 
@@ -23,8 +23,8 @@ const LandingPage = () => {
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="flex items-center">
-                  <Logo width = {30} height = {30} />
-                  <span className="ml-2 text-4xl font-bold">Mir Asia</span>
+                  <Logo width={30} height={30} />
+                  <span className="ml-2 text-4xl font-bold">MIRR ASIA</span>
                 </div>
                 {/* <ModeToggle /> */}
               </div>
@@ -51,8 +51,8 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+          <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
             <h1 className="text-4xl font-bold mb-4">Register a company and open a business account Fast & Simple!</h1>
             <p className="text-600 mb-6">
               Get the stress-free services and expert support you need to register and manage a company quickly and digitally!
@@ -62,13 +62,28 @@ const LandingPage = () => {
               <Button variant="outline" size="lg">Contact us</Button>
             </div>
           </div>
-          <div className="flex justify-center">
+          <div className="hidden md:flex justify-center">
             <img
-              src="/api/placeholder/500/400"
+              src={businessIllustration}
               alt="Business illustration"
               className="max-w-md rounded-lg"
             />
           </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+            <h1 className="text-4xl font-bold mb-4">Already have a company?</h1>
+            <h2 className="text-lg font-bold mb-4">
+              Focus on your business, while we manage your books and compliance
+            </h2>
+            <p className="text-600 mb-6">
+              From bookkeeping to payroll, and corporate secretary, bring peace of mind to your back office with our experts!
+            </p>
+
+            <div className="flex">
+              <Button >Transfer to Mirr Asia
+              </Button>
+            </div>
+          </div>
+
         </div>
       </div>
 

@@ -13,14 +13,14 @@ const SignupPage = () => {
         {/* Logo */}
         <div className="flex items-center space-x-2 mb-12">
           <Logo />
-          <span className="text-xl font-bold text-white">Mir Asia</span>
+          <span className="text-xl font-bold text-white">Mirr Asia</span>
         </div>
 
         <div className="w-full h-full flex items-center justify-center">
           <div className="w-4/5">
             <p className="text-white text-lg leading-relaxed">
               <span className="font-semibold text-xl block mb-6">
-                At Mir Asia, we provide specialized, systematic business services with integrity and years of global experience.
+                At Mirr Asia, we provide specialized, systematic business services with integrity and years of global experience.
               </span>
 
               <span className="block mb-4">
@@ -51,7 +51,7 @@ const SignupPage = () => {
           <div className="flex items-center justify-between mb-8">
             <div className="lg:hidden flex items-center space-x-2">
               <Logo />
-              <span className="text-xl font-bold">Mir Asia</span>
+              <span className="text-xl font-bold">Mirr Asia</span>
             </div>
             <Button
               variant="link"

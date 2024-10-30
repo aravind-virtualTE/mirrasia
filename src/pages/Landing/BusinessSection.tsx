@@ -44,7 +44,7 @@ const BusinessSectionWithIllustration = () => {
             </p>
             <div className="flex">
               <Button >
-                Transfer to Mir Asia
+                Transfer to Mirr Asia
               </Button>
             </div>
           </div>
