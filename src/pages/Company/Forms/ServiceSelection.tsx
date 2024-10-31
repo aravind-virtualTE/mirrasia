@@ -13,12 +13,14 @@ const ServiceSelection: React.FC = () => {
         {
           description: "Hong Kong Registrar of Companies registration (government) fee",
           originalPrice: "USD 221 (HKD 1,720)",
+          originalNormal : true,
           discountedPrice: "USD 221 (HKD 1,720)",
           isHighlight: false
         },
         {
           description: "Business Registration (government) fee for 2024/25",
           originalPrice: "USD 283 (HKD 2,200)",
+          originalNormal : true,
           discountedPrice: "USD 283 (HKD 2,200)",
           isHighlight: false
         },
@@ -51,12 +53,14 @@ const ServiceSelection: React.FC = () => {
         {
           description: "Company Kit Producing cost",
           originalPrice: "USD 70",
+          originalNormal : true,
           discountedPrice: "USD 70",
           isHighlight: false
         },
         {
           description: "Correspondence Address Annual Service fee per person (optional)",
           originalPrice: "USD 65",
+          originalNormal : true,
           discountedPrice: "USD 65",
           isOptional: true,
           isHighlight: false
@@ -67,7 +71,7 @@ const ServiceSelection: React.FC = () => {
       const totalDiscounted = "USD 960";
     
       return (
-        <Card className="w-full max-w-4xl">
+        <Card className="w-full max-w-4xl ">
           <CardHeader>
             <CardTitle className="text-xl text-cyan-400">
               Incorporation and First Year Annual Fees Details
@@ -86,12 +90,12 @@ const ServiceSelection: React.FC = () => {
                 {fees.map((fee, index) => (
                   <TableRow key={index} className={fee.isOptional ? "text-gray-500" : ""}>
                     <TableCell>{fee.description}</TableCell>
-                    <TableCell className="text-right line-through text-gray-500">
+                    <TableCell className={`{text-right ${fee.originalNormal ? "" : "line-through text-gray-500"}}`}>
                       {fee.originalPrice}
                     </TableCell>
                     <TableCell className={`text-right ${fee.discountedPrice === "FREE" ? "text-red-500 font-semibold" : ""}`}>
                       {fee.discountedPrice}
-                      {fee.note && <span className="text-sm text-gray-500 ml-1">{fee.note}</span>}
+                      {fee.note && <span className="text-sm text-red-500 ml-1">{fee.note}</span>}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -100,7 +104,7 @@ const ServiceSelection: React.FC = () => {
                   <TableCell className="text-right line-through text-gray-500">
                     {totalOriginal}
                   </TableCell>
-                  <TableCell className="text-right text-yellow-500">
+                  <TableCell className="text-right text-yellow-600">
                     {totalDiscounted} <span className="text-sm font-normal">(excl. optional fee)</span>
                   </TableCell>
                 </TableRow>

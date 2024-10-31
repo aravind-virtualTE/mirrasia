@@ -3,22 +3,23 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 // import { Separator } from "@/components/ui/separator";
 
-import { 
+import {
   // Building2,
   ChevronLeft,
   ChevronRight,
   Rocket,
-  Users, 
-  FileSignature, 
+  Users,
+  FileSignature,
   HelpCircle,
   Building,
 
 } from "lucide-react";
 import Layout from '@/components/Layout/Layout';
 import { useNavigate } from 'react-router-dom';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 const Dashboard = () => {
   const partnerCards = [
-    { 
+    {
       logo: "FlySpaces",
       description: "Office space"
     },
@@ -31,6 +32,25 @@ const Dashboard = () => {
       description: "The Greater Room"
     }
   ];
+
+  const companies = [
+    {
+      name: "Tech Solutions Pte Ltd",
+      status: "Active",
+      incorporationDate: "2024-01-15"
+    },
+    {
+      name: "Global Trade SG",
+      status: "Pending",
+      incorporationDate: ""
+    },
+    {
+      name: "Innovation Hub",
+      status: "Active",
+      incorporationDate: "2024-03-01"
+    }
+  ];
+
   const navigate = useNavigate();
 
   const handleCardClick = () => {
@@ -66,6 +86,36 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+        {/* Companies Table */}
+        <div className="mb-12">
+          <h2 className="text-xl font-semibold mb-4">Your Companies</h2>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[40%]">Company Name</TableHead>
+                  <TableHead className="w-[30%]">Status</TableHead>
+                  <TableHead className="w-[30%]">Incorporation Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {companies.map((company, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{company.name}</TableCell>
+                    <TableCell>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${company.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                        {company.status}
+                      </span>
+                    </TableCell>
+                    {/* new Date(company.incorporationDate).toLocaleDateString() */}
+                    <TableCell>{company.incorporationDate}</TableCell> 
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
 
         {/* Partners Section */}
         <div className="mb-12">
@@ -87,9 +137,9 @@ const Dashboard = () => {
                 <Card key={index} className="min-w-[300px] cursor-pointer">
                   <CardContent className="p-6">
                     <div className="h-12 mb-4">
-                      <img 
-                        src={`/api/placeholder/120/40`} 
-                        alt={partner.logo} 
+                      <img
+                        src={`/api/placeholder/120/40`}
+                        alt={partner.logo}
                         className="h-full object-contain"
                       />
                     </div>
