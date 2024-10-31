@@ -1,8 +1,16 @@
 import { atom } from 'jotai';
 
 
-export const legalAssessmentAtom = atom('no');
 export const legalAssessmentDialougeAtom = atom(false);
+
+export const businessInfoHkCompanyAtom = atom<Record<string, string | undefined>>({
+    sanctioned_countries: undefined,
+    sanctions_presence: undefined,
+    crimea_presence: undefined,
+    russian_business_presence: undefined,
+    legal_assessment: undefined,
+  });
+
 
 type FormDataType = {
     name: string;

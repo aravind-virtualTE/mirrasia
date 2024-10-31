@@ -14,7 +14,7 @@ import {
   Building,
 
 } from "lucide-react";
-import Layout from '@/components/Layout/Layout';
+
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 const Dashboard = () => {
@@ -58,7 +58,7 @@ const Dashboard = () => {
   };
 
   return (
-    <Layout >
+    < >
       {/* Main Content */}
       <div className="flex-1 p-8">
         <h1 className="text-2xl font-semibold mb-8">Welcome, User. Here's what you can do to get started.</h1>
@@ -190,7 +190,7 @@ const Dashboard = () => {
           </Card>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

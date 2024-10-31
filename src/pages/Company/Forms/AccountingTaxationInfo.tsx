@@ -1,3 +1,4 @@
+import { useTheme } from "@/components/theme-provider";
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -24,18 +25,23 @@ const AccountingTaxationInfo = () => {
     const handleAccSoftwareChange  = (anySoftwareInUse: string) => {
         setTaxAccountInfo((prev) => ({ ...prev, anySoftwareInUse }));
     }
+    const { theme } = useTheme();
+    
     return (
         <div className="flex w-full p-4">
-            <aside className="w-1/4 bg-blue-50 p-4 rounded-md shadow-sm">
+             <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
+                ? 'bg-blue-50 text-gray-800'
+                : 'bg-gray-800 text-gray-200'
+                }`}>
                 <h2 className="text-lg font-semibold mb-2">Accounting and taxation</h2>
-                <p className="text-sm text-gray-600">Please provide information on accounting and tax matters.</p>
+                <p className="text-sm text-gray-500">Please provide information on accounting and tax matters.</p>
             </aside>
             <div className="w-3/4 ml-4">
                 <Card>
                     <CardContent className="space-y-6">
                         <div>
                             <Label className="text-base font-semibold">The financial year-end date of the Hong Kong company <span className="text-red-500 font-bold ml-1">*</span></Label>
-                            <p className="text-sm text-gray-600">The first financial year can be set freely within 18 months from the date of incorporation. According to Article 51, Paragraph 2 of the Hong Kong Tax Law (Inland Revenue Ordinance), a profit tax return (taxable) must be filed within 4 months from the financial year-end date.</p>
+                            <p className="text-sm text-gray-500">The first financial year can be set freely within 18 months from the date of incorporation. According to Article 51, Paragraph 2 of the Hong Kong Tax Law (Inland Revenue Ordinance), a profit tax return (taxable) must be filed within 4 months from the financial year-end date.</p>
                             <RadioGroup className="mt-4 space-y-3"
                                 value={accTaxInfo.finYearEnd}
                                 onValueChange={handleFinYearChange}
@@ -68,7 +74,7 @@ const AccountingTaxationInfo = () => {
                         </div>
                         <div>
                             <Label className="text-base font-semibold">Would you like to implement online accounting software - Xero?<span className="text-red-500 font-bold ml-1">*</span></Label>
-                            <p className="text-sm text-gray-800">When Xero is implemented, data created by POS or other software can be imported in CSV format to make bookkeeping and financial statements, and cash flow statements are also supported. In addition, it is helpful in preparing consolidated financial statements between holding companies and subsidiaries, as well as other functions such as inventory management, cost management, and sales management.</p>
+                            <p className="text-sm text-gray-500">When Xero is implemented, data created by POS or other software can be imported in CSV format to make bookkeeping and financial statements, and cash flow statements are also supported. In addition, it is helpful in preparing consolidated financial statements between holding companies and subsidiaries, as well as other functions such as inventory management, cost management, and sales management.</p>
                             <RadioGroup className="mt-4 space-y-3"
                                 value={accTaxInfo.implementSoftware}
                                 onValueChange={handleAccSoftwareChange}

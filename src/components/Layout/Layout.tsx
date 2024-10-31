@@ -1,10 +1,8 @@
-import React from 'react';
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react'
 import {
-    //   Building2,
-    //   ChevronLeft,
-    //   ChevronRight,
-    Rocket,
+    // Globe,
+    Menu, Home, Settings, HelpCircle,
+    // Rocket,
     Users,
     PenSquare,
     Mail,
@@ -12,23 +10,41 @@ import {
     User2,
     Gift,
     Receipt,
-    HelpCircle,
-    Menu
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import { Outlet } from 'react-router-dom';
+import {
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from "@/components/ui/resizable"
 import { Card, CardContent } from '../ui/card';
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
-import Logo from '@/common/LogoComponent';
-import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
-import { Separator } from '../ui/separator';
+import { useTheme } from '../theme-provider';
 
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-    className?: string;
-}
+const Layout: React.FC = () => {
+    const [isCollapsed, setIsCollapsed] = useState(false)
+    // Handle responsive collapse based on screen size
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 1024) { // 1024px is Tailwind's 'lg' breakpoint
+                setIsCollapsed(true)
+            } else {
+                setIsCollapsed(false)
+            }
+        }
 
-const Sidebar: React.FC<SidebarProps> = ({ className }) => {
+        // Set initial state
+        handleResize()
+
+        // Add event listener
+        window.addEventListener('resize', handleResize)
+
+        // Cleanup
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
     const sidebarItems = [
         { icon: <Mail className="w-4 h-4" />, label: "Mailroom" },
         { icon: <FileSignature className="w-4 h-4" />, label: "MirrAsia Sign" },
@@ -38,93 +54,116 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         { icon: <Receipt className="w-4 h-4" />, label: "Billings & Subscriptions" },
         { icon: <HelpCircle className="w-4 h-4" />, label: "Support" },
     ];
-    const navigate = useNavigate();
-    const handleIconClick = () => {
-        navigate('/dashboard');
-      };
+
+    const { theme } = useTheme();
+
     return (
-        <div className={cn("pb-12 h-full", className)}>
-            <div className="space-y-4 py-4">
-                <div className="px-4 py-2">
-                    <span className="flex items-center space-x-2 font-medium cursor-pointer" onClick={handleIconClick}>
-                    <Logo />
-                        MIRR ASIA
-                    </span>
-                    <div className="space-y-1">
-                        <div className="flex items-center space-x-2 p-2 bg-blue-50 rounded-md mb-4">
-                            <Rocket className="w-4 h-4" />
-                            <span className="font-medium">DRAFT COMPANY</span>
-                        </div>
+        <div className="flex h-screen flex-col bg-background">
+            {/* Navbar */}
+            <Navbar />
 
-                        <nav className="space-y-1">
-                            {sidebarItems.map((item, index) => (
-                                <Button
-                                    key={index}
-                                    variant="ghost"
-                                    className="w-full justify-start text-gray-600 hover:text-blue-600"
-                                >
-                                    {item.icon}
-                                    <span className="ml-2">{item.label}</span>
-                                </Button>
-                            ))}
-                        </nav>
-                    </div>
-                </div>
-            </div>
+            {/* Sidebar */}
+            <ResizablePanelGroup direction="horizontal" className="flex-1">
+                <ResizablePanel
+                    defaultSize={18}
+                    collapsible={true}
+                    minSize={8}
+                    maxSize={18}
+                    collapsedSize={4}
+                    // collapsed={isCollapsed}
+                    onCollapse={() => setIsCollapsed(true)}
+                    onExpand={() => setIsCollapsed(false)}
+                    className="bg-background"
+                >
+                    <div className="flex h-full flex-col">
+                        <div className="flex-1 overflow-hidden p-4">
+                            <div className="space-y-2">
+                                <nav className="space-y-2">
+                                    <Button
+                                        variant="ghost"
+                                        className="w-full justify-start"
+                                    >
+                                        <Home className="h-5 w-5" />
+                                        <span className={`ml-2 ${isCollapsed ? 'hidden' : 'inline'}`}>
+                                            Home
+                                        </span>
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        className="w-full justify-start"
+                                    >
+                                        <Settings className="h-5 w-5" />
+                                        <span className={`ml-2 ${isCollapsed ? 'hidden' : 'inline'}`}>
+                                            Settings
+                                        </span>
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        className="w-full justify-start"
+                                    >
+                                        <HelpCircle className="h-5 w-5" />
+                                        <span className={`ml-2 ${isCollapsed ? 'hidden' : 'inline'}`}>
+                                            Help
+                                        </span>
+                                    </Button>
+                                    {sidebarItems.map((item, index) => (
+                                        <Button
+                                            key={index}
+                                            variant="ghost"
+                                            className="w-full justify-start "
+                                        >
+                                            {item.icon}
+                                            <span className={`ml-2 ${isCollapsed ? 'hidden' : 'inline'}`}>{item.label}</span>
+                                        </Button>
+                                    ))}
+                                    <Card className={`border-none ${theme === 'light'
+                                        ? 'bg-blue-50 text-gray-800'
+                                        : 'bg-gray-800 text-gray-200'
+                                        }`}>
+                                        <CardContent className="p-4 flex items-center space-x-2">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${theme === 'light' ? 'bg-white' : 'bg-gray-700'
+                                                }`}>
+                                                <PenSquare className="w-4 h-4" />
+                                            </div>
+                                            {!isCollapsed && <div>
+                                                <p className="text-sm font-medium">Need to sign a contract?</p>
+                                                <Button variant="link" className="p-0">
+                                                    Use MIRR ASIA Sign →
+                                                </Button>
+                                            </div>}
 
-            {/* Sign Contract CTA */}
-            <div className="px-4">
-                <Card className="bg-blue-50 border-none">
-                    <CardContent className="p-4 flex items-center space-x-2">
-                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-                            <PenSquare className="w-4 h-4" />
+                                        </CardContent>
+                                    </Card>
+                                </nav>
+                            </div>
                         </div>
-                        <div>
-                            <p className="text-sm font-medium">Need to sign a contract?</p>
-                            <Button variant="link" className="p-0">
-                                Use MIRR ASIA Sign →
+                        {/* Optional: Collapse button for desktop */}
+                        <div className="p-4 hidden lg:block">
+                            <Button
+                                variant="ghost"
+                                className="w-full justify-start"
+                                onClick={() => setIsCollapsed(!isCollapsed)}
+                            >
+                                <Menu className="h-5 w-5" />
+                                <span className={`ml-2 ${isCollapsed ? 'hidden' : 'inline'}`}>
+                                    Collapse
+                                </span>
                             </Button>
                         </div>
-                    </CardContent>
-                </Card>
-            </div>
-        </div>
-    );
-};
+                    </div>
+                </ResizablePanel>
 
-interface LayoutProps {
-    children: React.ReactNode;
+                <ResizableHandle withHandle />
+
+                {/* Main Content */}
+                <ResizablePanel defaultSize={80}>
+                    <main className="h-full overflow-y-auto p-4">
+                        <Outlet />
+                    </main>
+                </ResizablePanel>
+            </ResizablePanelGroup>
+        </div>
+    )
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
-    return (
-        <div className="flex min-h-screen bg-gray-50">
-            {/* Mobile Sidebar */}
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button variant="ghost" className="md:hidden">
-                        <Menu className="h-6 w-6" />
-                    </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-64 p-0">
-                    <Sidebar />
-                </SheetContent>
-            </Sheet>
-            {/* Desktop Sidebar */}
-            <div className="hidden md:block">
-                <Sidebar className="w-64 border-r bg-white" />
-            </div>
-            {/* Main Content */}
-            <div className="flex-1 ">
-                {/* Navbar */}
-                <Navbar />
-                <Separator className="my-4" />
-                <div className="flex-1 p-8">
-                    {children}
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default Layout;
+export default Layout

@@ -22,8 +22,8 @@ const LanguageSwitcher: React.FC = () => {
     i18n.changeLanguage(lng);
   };
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <DropdownMenu >
+      <DropdownMenuTrigger asChild >
         <Button variant="ghost" size="sm" className="flex items-center space-x-2">
           <Globe className="h-4 w-4" />
           <span>{i18n.language.toUpperCase()}</span>

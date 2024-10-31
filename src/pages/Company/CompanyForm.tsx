@@ -2,15 +2,19 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { LightbulbIcon } from 'lucide-react';
-import { useState,ReactNode } from 'react';
-import Layout from '@/components/Layout/Layout';
+import { useState, ReactNode } from 'react';
 import IncorporationForm from './Forms/IncorporationForm';
 import { useAtom } from 'jotai';
-import { legalAssessmentDialougeAtom } from '@/lib/atom';
+import { legalAssessmentDialougeAtom ,businessInfoHkCompanyAtom} from '@/lib/atom';
+import { useTheme } from '@/components/theme-provider';
+import { useToast } from "@/hooks/use-toast"
 
 const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
-    const [legalAssessment] = useAtom(legalAssessmentDialougeAtom);
+    const [legalAssessment, setLeagalAssessment] = useAtom(legalAssessmentDialougeAtom);
+    const [businessInfoHkCompany, ] = useAtom(businessInfoHkCompanyAtom);
+    
+
     const steps = [
         { number: 1, label: 'Applciant\ninformation', active: currentSection === 1 },
         { number: 2, label: 'AML\nCDD', active: currentSection === 2 },
@@ -22,11 +26,29 @@ const CompanyRegistration = () => {
         { number: 8, label: 'Invoice ', active: currentSection === 8 },
         { number: 9, label: 'Payment', active: currentSection === 9 },
     ];
-
+    const { toast } = useToast()
     const nextSection = () => {
-        if (currentSection < 9) {
+        if(currentSection === 2 && Object.values(businessInfoHkCompany).some(value => value === undefined)){
+            console.log('Fill all the required fields')
+            
+            toast({
+                title: "Fill Details",
+                description: "Fill all the required fields",
+              })
+        }
+        else if (
+            currentSection === 2 &&
+            Object.values(businessInfoHkCompany).every(value => value === 'no')
+        ) {
             setCurrentSection(currentSection + 1);
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        else if (currentSection < 9 && currentSection !== 2) {
+            setCurrentSection(currentSection + 1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        else{
+            setLeagalAssessment(true);
         }
     };
 
@@ -40,9 +62,10 @@ const CompanyRegistration = () => {
     function renderSection(): ReactNode | Iterable<ReactNode> {
         return <IncorporationForm currentSection={currentSection} />
     }
+    const { theme } = useTheme();
 
     return (
-        <Layout>
+        <>
             <div className="relative flex flex-row-reverse min-h-screen">
                 {/* Progress Steps - Vertical on right */}
                 <div className="w-36 flex-shrink-0 p-6 border-l">
@@ -72,18 +95,36 @@ const CompanyRegistration = () => {
                         <h1 className="text-xl md:text-2xl font-bold mb-6">Let's get started</h1>
 
                         {/* Good to know card */}
-                        {currentSection === 3 &&  <Card className="mb-6 bg-blue-50 border-0">
+                        {currentSection === 3 && <Card
+                            className={`mb-6 border-0 ${theme === 'light'
+                                    ? 'bg-blue-50 text-gray-800'
+                                    : 'bg-gray-800 text-gray-200'
+                                }`}
+                        >
                             <CardContent className="p-4 md:p-6 flex items-start space-x-4">
-                                <LightbulbIcon className="w-5 h-5 md:w-6 md:h-6 text-primary flex-shrink-0" />
+                                <LightbulbIcon
+                                    className={`w-5 h-5 md:w-6 md:h-6 flex-shrink-0 ${theme === 'light' ? 'text-primary' : 'text-blue-400'
+                                        }`}
+                                />
                                 <div>
-                                    <h3 className="font-semibold mb-1 md:mb-2">Good to know</h3>
-                                    <p className="text-sm text-gray-600">
-                                        Enter different variations of your company name in order of preference. Mirr Asia will help you obtain final confirmation prior to incorporation.
+                                    <h3
+                                        className={`font-semibold mb-1 md:mb-2 ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'
+                                            }`}
+                                    >
+                                        Good to know
+                                    </h3>
+                                    <p
+                                        className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'
+                                            }`}
+                                    >
+                                        Enter different variations of your company name in order of preference.
+                                        Mirr Asia will help you obtain final confirmation prior to
+                                        incorporation.
                                     </p>
                                 </div>
                             </CardContent>
                         </Card>}
-                        
+
                         <section >
                             {renderSection()}
                         </section>
@@ -111,7 +152,7 @@ const CompanyRegistration = () => {
                     </div>
                 </div>
             </div>
-        </Layout>
+        </>
     );
 };
 
