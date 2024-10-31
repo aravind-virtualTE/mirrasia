@@ -72,7 +72,7 @@ const CompanyRegistration = () => {
                         <h1 className="text-xl md:text-2xl font-bold mb-6">Let's get started</h1>
 
                         {/* Good to know card */}
-                        <Card className="mb-6 bg-blue-50 border-0">
+                        {currentSection === 3 &&  <Card className="mb-6 bg-blue-50 border-0">
                             <CardContent className="p-4 md:p-6 flex items-start space-x-4">
                                 <LightbulbIcon className="w-5 h-5 md:w-6 md:h-6 text-primary flex-shrink-0" />
                                 <div>
@@ -82,7 +82,8 @@ const CompanyRegistration = () => {
                                     </p>
                                 </div>
                             </CardContent>
-                        </Card>
+                        </Card>}
+                        
                         <section >
                             {renderSection()}
                         </section>
