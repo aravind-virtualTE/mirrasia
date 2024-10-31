@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-// import { Button } from "@/components/ui/button";
-import { useState } from 'react';
+import { applicantInfoFormAtom } from '@/lib/atom';
+import { useAtom } from 'jotai';
+
 
 type RelationshipType = {
   id: string;
@@ -35,11 +36,8 @@ const relationships: RelationshipType[] = [
 ];
 
 const ApplicantInfoForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    relationships: [] as string[],
-    contactInfo: ''
-  });
+
+  const [formData, setFormData] = useAtom(applicantInfoFormAtom);
 
   const handleRelationshipChange = (relationshipId: string, checked: boolean) => {
     setFormData(prev => ({
@@ -117,10 +115,6 @@ const ApplicantInfoForm = () => {
               className="w-full"
             />
           </div>
-
-          {/* <Button type="submit" className="w-full">
-            Submit
-          </Button> */}
         </form>
       </CardContent>
     </Card>

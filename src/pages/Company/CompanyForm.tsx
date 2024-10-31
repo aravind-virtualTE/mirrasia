@@ -2,12 +2,15 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { LightbulbIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useState,ReactNode } from 'react';
 import Layout from '@/components/Layout/Layout';
 import IncorporationForm from './Forms/IncorporationForm';
+import { useAtom } from 'jotai';
+import { legalAssessmentDialougeAtom } from '@/lib/atom';
 
 const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
+    const [legalAssessment] = useAtom(legalAssessmentDialougeAtom);
     const steps = [
         { number: 1, label: 'Applciant\ninformation', active: currentSection === 1 },
         { number: 2, label: 'AML\nCDD', active: currentSection === 2 },
@@ -33,6 +36,10 @@ const CompanyRegistration = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
+
+    function renderSection(): ReactNode | Iterable<ReactNode> {
+        return <IncorporationForm currentSection={currentSection} />
+    }
 
     return (
         <Layout>
@@ -76,8 +83,10 @@ const CompanyRegistration = () => {
                                 </div>
                             </CardContent>
                         </Card>
+                        <section >
+                            {renderSection()}
+                        </section>
 
-                        <IncorporationForm />
 
                         {/* Navigation buttons */}
                         <div className="flex justify-between pt-6 mt-8 border-t">
@@ -92,7 +101,7 @@ const CompanyRegistration = () => {
 
                             <Button
                                 onClick={nextSection}
-                                // disabled={currentSection === 5}
+                                disabled={legalAssessment === true}
                                 className="flex items-center space-x-2 bg-primary"
                             >
                                 <span>{currentSection === 9 ? 'SUBMIT' : 'SAVE & NEXT →'}</span>
