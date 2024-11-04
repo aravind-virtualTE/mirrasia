@@ -1,4 +1,4 @@
-import { LogOut, Menu, Moon, Sun, User } from "lucide-react"
+import { LogOut, Menu, User } from "lucide-react"
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
 import {
@@ -10,15 +10,15 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 import { useState } from "react";
-import { useTheme } from "../theme-provider";
 import Logo from '@/common/LogoComponent';
+import ToggleTheme from '@/hooks/ToggleTheme';
 
 export default function Navbar() {
     const [isCollapsed, setIsCollapsed] = useState(false)
-    const { theme, setTheme } = useTheme()
     const navigate = useNavigate();
     const logout = async () => {
         localStorage.setItem('isAuthenticated', 'false');
+        localStorage.removeItem("token");
         navigate('/');
     };
     return (
@@ -37,17 +37,8 @@ export default function Navbar() {
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Toggle sidebar</span>
                 </Button>
-            </div>
-            <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="mr-2"
-            >
-                <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span className="sr-only">Toggle theme</span>
-            </Button>
+            </div>          
+            <ToggleTheme />
             <LanguageSwitcher />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -59,7 +50,7 @@ export default function Navbar() {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/profile')}>
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                     </DropdownMenuItem>
