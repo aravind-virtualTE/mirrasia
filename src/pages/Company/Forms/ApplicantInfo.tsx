@@ -55,7 +55,7 @@ const ApplicantInfoForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card>
       <CardHeader>
         <CardTitle>Applicant Information</CardTitle>
         <p className="text-sm text-gray-500">

@@ -1,4 +1,5 @@
 import { atom, useAtom } from 'jotai';
+import axios from 'axios';
 // Define Jotai atoms for user and authentication state
 const userAtom = atom<User | null>(null);
 const isLoadingAtom = atom(true);
@@ -30,3 +31,122 @@ export const useAuth = () => {
     };
     return { user, isLoading, isAuthenticated, login, logout };
 };
+
+
+interface UserType {
+    id: string;
+    fullName: string;
+    email: string;
+    photoURL: string;
+    provider: 'email' | 'google';
+  }
+
+  interface AuthState {
+    user: UserType | null;
+    isAuthenticated: boolean;
+    loading: boolean;
+    error: string | null;
+  }
+
+  const initialAuthState: AuthState = {
+    user: null,
+    isAuthenticated: false,
+    loading: false,
+    error: null,
+  };
+
+  export const authAtom = atom<AuthState>(initialAuthState);
+
+// Loading atom
+export const loadingAtom = atom(
+    (get) => get(authAtom).loading,
+    (get, set, loading: boolean) => {
+      set(authAtom, { ...get(authAtom), loading, error: null });
+    }
+  );
+
+
+  // API functions
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+
+const api = axios.create({
+    baseURL: API_URL,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+export const signupWithEmail = async (
+  fullName: string,
+  email: string,
+  password: string
+) => {
+  try {
+    const response = await fetch(`${API_URL}/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fullName, email, password }),
+    });
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error('Signup failed');
+  }
+};
+
+export const signupWithGoogle = async (tokenId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/auth/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tokenId }),
+    });
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error('Google signup failed');
+  }
+};
+
+
+// Add token to requests if available
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+export const loginWithEmail = async (email: string, password: string) => {
+    const response = await api.post('/auth/login', { email, password });
+    localStorage.setItem('token', response.data.token);
+    return response.data;
+  };
+  
+  export const loginWithGoogle = async (tokenId: string) => {
+    const response = await api.post('/auth/google', { tokenId });
+    console.log("response-->",response)
+    localStorage.setItem('token', response.data.token);
+    return response.data;
+  };
+  
+  export const getUserProfile = async () => {
+    const response = await api.get('/user/profile');
+    return response.data;
+  };
+  
+  export const updateUserProfile = async (data: {
+    fullName?: string;
+    bio?: string;
+    location?: string;
+    avatar?: string;
+  }) => {
+    const response = await api.patch('/user/profile', data);
+    return response.data;
+  };
+  
+  export const logout = () => {
+    localStorage.removeItem('token');
+  };

@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css'
 import { ThemeProvider } from "@/components/theme-provider"
@@ -11,8 +12,12 @@ import CompanyRegistration from './pages/Company/CompanyForm';
 import CompanyRegistration2 from './pages/Company/cf';
 import Layout from './components/Layout/Layout';
 import { Toaster } from './components/ui/toaster';
+import Profile from './components/User/Profile';
+import MultiStepFormLayout from './components/Layout/MultiStepFormLayout';
+import DocsLayout from './components/Layout/DocsLayout';
+import { TooltipProvider } from './components/ui/tooltip';
 
-
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 function App() {
   // const [loading, setLoading] = useState<boolean>(true);
@@ -27,31 +32,40 @@ function App() {
 
   return (
     <>
-     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginComponent />} />
-          <Route path="/signup" element={<SignupPage />} />
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+          <TooltipProvider delayDuration={0}>
 
-          {/* Protected routes nested under layout */}
-          {/* admin routes below */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<Layout />}>
-              <Route path="/compReg" element={<CompanyRegistration2 />} />
-            </Route>
-          </Route>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginComponent />} />
+              <Route path="/signup" element={<SignupPage />} />
 
-          {/* user routes below */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<Layout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/company-register" element={<CompanyRegistration />} />            
-            </Route>
-          </Route>          
-        </Routes>
-        <Toaster />
-      </ThemeProvider>
+              <Route path="/docslayout" element={<DocsLayout />} />
+              <Route path="/mslayout" element={<MultiStepFormLayout />} />
+
+              {/* Protected routes nested under layout */}
+              {/* admin routes below */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<Layout />}>
+                  <Route path="/compReg" element={<CompanyRegistration2 />} />
+                </Route>
+              </Route>
+
+              {/* user routes below */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<Layout />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/company-register" element={<CompanyRegistration />} />
+                </Route>
+              </Route>
+            </Routes>
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
+      </GoogleOAuthProvider>
     </>
   )
 }

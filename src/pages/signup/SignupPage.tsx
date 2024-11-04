@@ -2,9 +2,80 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Logo from '@/common/LogoComponent';
 import { useNavigate } from 'react-router-dom';
+import { useAtom } from 'jotai';
+import { useState } from 'react';
+import { authAtom, signupWithEmail, signupWithGoogle } from '@/hooks/useAuth';
+import { useGoogleLogin } from '@react-oauth/google';
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const [auth, setAuth] = useAtom(authAtom);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleEmailSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      setAuth(prev => ({ ...prev, error: "Passwords don't match" }));
+      return;
+    }
+
+    try {
+      setAuth(prev => ({ ...prev, loading: true }));
+      const response = await signupWithEmail(
+        formData.fullName,
+        formData.email,
+        formData.password
+      );
+      const { token, user } = response;
+      console.log("response==>", token, user)
+      // Save the token to localStorage
+      localStorage.setItem("token", token);
+      
+      setAuth({ user, isAuthenticated: true, loading: false, error: null });
+      navigate('/login');
+    } catch (error) {
+      setAuth(prev => ({
+        ...prev,
+        loading: false,
+        error: 'Signup failed. Please try again.'
+      }));
+      console.log(error);
+
+    }
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setAuth(prev => ({ ...prev, loading: true }));
+        // console.log('tokenResponse-->', tokenResponse);        
+        const response = await signupWithGoogle(tokenResponse.access_token);
+        const { token, user } = response;
+        // console.log('Google signup response-->',response, '\n user--->', user);
+        // Save the token to localStorage
+        localStorage.setItem("token", token);
+
+        setAuth({ user, isAuthenticated: true, loading: false, error: null });
+        navigate('/login');
+      } catch (error) {
+        setAuth(prev => ({
+          ...prev,
+          loading: false,
+          error: 'Google signup failed. Please try again.'
+        }));
+        console.log(error);
+      }
+    },
+  });
 
   return (
     <div className="min-h-screen flex">
@@ -48,7 +119,7 @@ const SignupPage = () => {
       {/* Right Side - Sign Up Form */}
       <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm">
-          <div className="flex items-center justify-between mb-8">
+          {/* <div className="flex items-center justify-between mb-8">
             <div className="lg:hidden flex items-center space-x-2">
               <Logo />
               <span className="text-xl font-bold">Mirr Asia</span>
@@ -137,7 +208,71 @@ const SignupPage = () => {
               </a>
               .
             </p>
-          </div>
+          </div> */}
+          <form onSubmit={handleEmailSignup} className="space-y-6">
+            {/* Your existing JSX structure */}
+            <Input
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleInputChange}
+              placeholder="Full Name"
+              className="w-full"
+            />
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="name@example.com"
+              className="w-full"
+            />
+            <Input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="Password"
+              className="w-full"
+            />
+            <Input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              placeholder="Confirm Password"
+              className="w-full"
+            />
+
+            {auth.error && (
+              <div className="text-red-500 text-sm">{auth.error}</div>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full"
+              size="lg"
+              disabled={auth.loading}
+            >
+              {auth.loading ? 'Signing up...' : 'Sign Up'}
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              size="lg"
+              onClick={() => googleLogin()}
+              disabled={auth.loading}
+            >
+              <img
+                src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000"
+                alt="Google"
+                className="mr-2 h-4 w-4"
+              />
+              Continue with Google
+            </Button>
+          </form>
         </div>
       </div>
     </div>

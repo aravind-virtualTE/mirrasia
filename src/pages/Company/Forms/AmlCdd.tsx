@@ -74,7 +74,7 @@ const AmlCdd = () => {
     
     return (
         <>
-            <Card className="w-full max-w-2xl mx-auto">
+            <Card>
                 <CardContent>
                     <div className="flex w-full p-4">
                         <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
