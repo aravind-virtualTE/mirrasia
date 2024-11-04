@@ -86,12 +86,9 @@ export const signupWithEmail = async (
 
 export const signupWithGoogle = async (tokenId: string) => {
   try {
-    const response = await fetch(`${API_URL}/auth/google`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tokenId }),
-    });
-    return await response.json();
+    const response = await api.post('/auth/google', { tokenId });
+    console.log("response-->",response)    
+    return response.data;
   } catch (error) {
     console.log(error);
     throw new Error('Google signup failed');

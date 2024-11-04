@@ -65,7 +65,7 @@ const SignupPage = () => {
         localStorage.setItem("token", token);
 
         setAuth({ user, isAuthenticated: true, loading: false, error: null });
-        navigate('/login');
+        navigate('/dashboard');
       } catch (error) {
         setAuth(prev => ({
           ...prev,
