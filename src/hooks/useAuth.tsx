@@ -1,4 +1,4 @@
-import api, {API_URL} from '@/services/fetch';
+import api from '@/services/fetch';
 import { atom, useAtom } from 'jotai';
 // Define Jotai atoms for user and authentication state
 const userAtom = atom<User | null>(null);
@@ -72,12 +72,14 @@ export const signupWithEmail = async (
   password: string
 ) => {
   try {
-    const response = await fetch(`${API_URL}/auth/signup`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fullName, email, password }),
-    });
-    return await response.json();
+    // const response = await fetch(`${API_URL}/auth/signup`, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ fullName, email, password }),
+    // });
+    // return await response.json();
+    const response = await api.post('auth/signup', { fullName,email, password });
+    return response.data;
   } catch (error) {
     console.log(error);
     throw new Error('Signup failed');
@@ -86,7 +88,7 @@ export const signupWithEmail = async (
 
 export const signupWithGoogle = async (tokenId: string) => {
   try {
-    const response = await api.post('/auth/google', { tokenId });
+    const response = await api.post('auth/google', { tokenId });
     console.log("response-->",response)    
     return response.data;
   } catch (error) {
@@ -97,19 +99,19 @@ export const signupWithGoogle = async (tokenId: string) => {
 
 
 export const loginWithEmail = async (email: string, password: string) => {
-    const response = await api.post('/auth/login', { email, password });
+    const response = await api.post('auth/login', { email, password });
     localStorage.setItem('token', response.data.token);
     return response.data;
   };
   
   export const loginWithGoogle = async (tokenId: string) => {
-    const response = await api.post('/auth/google', { tokenId });
+    const response = await api.post('auth/google', { tokenId });
     console.log("response-->",response)    
     return response.data;
   };
   
   export const getUserProfile = async () => {
-    const response = await api.get('/user/profile');
+    const response = await api.get('user/profile');
     return response.data;
   };
   
@@ -119,7 +121,7 @@ export const loginWithEmail = async (email: string, password: string) => {
     location?: string;
     avatar?: string;
   }) => {
-    const response = await api.patch('/user/profile', data);
+    const response = await api.patch('user/profile', data);
     return response.data;
   };
   
