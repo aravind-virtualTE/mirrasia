@@ -1,5 +1,5 @@
+import api, {API_URL} from '@/services/fetch';
 import { atom, useAtom } from 'jotai';
-import axios from 'axios';
 // Define Jotai atoms for user and authentication state
 const userAtom = atom<User | null>(null);
 const isLoadingAtom = atom(true);
@@ -66,17 +66,6 @@ export const loadingAtom = atom(
   );
 
 
-  // API functions
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-
-
-const api = axios.create({
-    baseURL: API_URL,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
 export const signupWithEmail = async (
   fullName: string,
   email: string,
@@ -110,15 +99,6 @@ export const signupWithGoogle = async (tokenId: string) => {
 };
 
 
-// Add token to requests if available
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
-
 export const loginWithEmail = async (email: string, password: string) => {
     const response = await api.post('/auth/login', { email, password });
     localStorage.setItem('token', response.data.token);
@@ -127,8 +107,7 @@ export const loginWithEmail = async (email: string, password: string) => {
   
   export const loginWithGoogle = async (tokenId: string) => {
     const response = await api.post('/auth/google', { tokenId });
-    console.log("response-->",response)
-    localStorage.setItem('token', response.data.token);
+    console.log("response-->",response)    
     return response.data;
   };
   

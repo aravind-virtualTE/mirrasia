@@ -10,18 +10,19 @@ import { useTheme } from '@/components/theme-provider';
 import { useToast } from "@/hooks/use-toast"
 // import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
     const [legalAssessment, setLeagalAssessment] = useAtom(legalAssessmentDialougeAtom);
     const [businessInfoHkCompany,] = useAtom(businessInfoHkCompanyAtom);
-
+    const [selectedCountry, setSelectedCountry] = useState<string | undefined>();
 
     const steps = [
         { number: 1, label: 'Applciant\ninformation', active: currentSection === 1 },
         { number: 2, label: 'AML\nCDD', active: currentSection === 2 },
         { number: 3, label: 'Company\ninformation', active: currentSection === 3 },
-        { number: 4, label: 'Directors/shareholders and\nControllers information', active: currentSection === 4 },
+        { number: 4, label: 'Directors/shareholders\n & \nControllers information', active: currentSection === 4 },
         { number: 5, label: 'Accounting/Taxation ', active: currentSection === 5 },
         { number: 6, label: 'Services ', active: currentSection === 6 },
         { number: 7, label: 'Service Agreement ', active: currentSection === 7 },
@@ -60,102 +61,141 @@ const CompanyRegistration = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
+    const countries = [
+        { code: 'HK', name: 'Hong Kong' },
+        { code: 'SG', name: 'Singapore' },
+        { code: 'US', name: 'United States' },
+        { code: 'UK', name: 'United Kingdom' },
+        // Add more countries as needed
+    ];
+
 
     function renderSection(): ReactNode | Iterable<ReactNode> {
-        return <IncorporationForm currentSection={currentSection} />
+        if (!selectedCountry) return null;
+
+        switch (selectedCountry) {
+            case 'HK':
+                return <IncorporationForm currentSection={currentSection} />;
+            case 'SG':
+                return <div>Registration form for {selectedCountry} is not available yet.</div>;
+            // Add more country-specific forms as needed
+            default:
+                return <div>Registration form for {selectedCountry} is not available yet.</div>;;
+        }
     }
     const { theme } = useTheme();
 
     return (
         <div className="flex h-full">
-            {/* Main Content */}
-            <div className="flex-1 overflow-y-auto flex flex-col">
-
-                <Card className="rounded-none border-b border-t-0 border-l-0 border-r-0">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                        <CardTitle>Company Incorporation</CardTitle>
-                        <span className="text-sm text-muted-foreground">
-                            Step {currentSection} of {steps.length}
-                        </span>
-                    </CardHeader>
-                </Card>
-                <div className="flex-1 overflow-y-auto">
-                    {/* Good to know card */}
-                    {currentSection === 3 && <Card
-                        className={`mb-6 border-0 ${theme === 'light'
-                            ? 'bg-blue-50 text-gray-800'
-                            : 'bg-gray-800 text-gray-200'
-                            }`}
-                    >
-                        <CardContent className="p-4 md:p-6 flex items-start space-x-4">
-                            <LightbulbIcon
-                                className={`w-5 h-5 md:w-6 md:h-6 flex-shrink-0 ${theme === 'light' ? 'text-primary' : 'text-blue-400'
-                                    }`}
-                            />
-                            <div>
-                                <h3
-                                    className={`font-semibold mb-1 md:mb-2 ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'
-                                        }`}
-                                >
-                                    Good to know
-                                </h3>
-                                <p
-                                    className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'
-                                        }`}
-                                >
-                                    Enter different variations of your company name in order of preference.
-                                    Mirr Asia will help you obtain final confirmation prior to
-                                    incorporation.
-                                </p>
-                            </div>
-                        </CardContent>
-                    </Card>}
-                    <div className="max-w-3xl mx-auto p-6">
-                        {renderSection()}
-                    </div>
+            {/* Country Selection Content */}
+            {!selectedCountry ? (
+                <div className="space-y-4 justify-center items-center">
+                    <h2 className="text-2xl font-bold">Select Country for Registration</h2>
+                    <Select onValueChange={(value) => setSelectedCountry(value)}>
+                        <SelectTrigger className="w-[280px]">
+                            <SelectValue placeholder="Select a country" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {countries.map((country) => (
+                                <SelectItem key={country.code} value={country.code}>
+                                    {country.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
-                {/* Navigation buttons */}
-                <div className="flex justify-between border-t p-4 bg-background">
-                    <Button
-                        variant="outline"
-                        onClick={previousSection}
-                        disabled={currentSection === 1}
-                        className="flex items-center space-x-2"
-                    >
-                        <span>← BACK</span>
-                    </Button>
+            ) : (<>
+                {/* Main Content */}
+                <div className="flex-1 overflow-y-auto flex flex-col">
 
-                    <Button
-                        onClick={nextSection}
-                        disabled={legalAssessment === true}
-                        className="flex items-center space-x-2 bg-primary"
-                    >
-                        <span>{currentSection === 9 ? 'SUBMIT' : 'SAVE & NEXT →'}</span>
-                    </Button>
-                </div>
-            </div>
-            {/* progress indicator */}
-            <Card className="w-64 rounded-none border-l border-t-0 border-r-0 border-b-0 overflow-y-auto">
-                <div className="p-4">
-                    <div className="space-y-4">
-                        {steps.map((step, index) => (
-                            <div key={index} className="flex items-center">
-                                <div
-                                    className={cn(
-                                        "w-6 h-6 rounded-full flex items-center justify-center text-sm",
-                                        index + 1 < currentSection && "bg-primary/20 text-primary",
-                                        index + 1 === currentSection && "bg-primary text-primary-foreground",
-                                        index + 1 > currentSection && "bg-muted text-muted-foreground"
-                                    )}
-                                >
-                                    {index + 1}
+                    <Card className="rounded-none border-b border-t-0 border-l-0 border-r-0">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+                            <CardTitle>Company Incorporation</CardTitle>
+                            <span className="text-sm text-muted-foreground">
+                                Step {currentSection} of {steps.length}
+                            </span>
+                        </CardHeader>
+                    </Card>
+                    <div className="flex-1 overflow-y-auto">
+                        {/* Good to know card */}
+                        {currentSection === 3 && <Card
+                            className={`mb-6 border-0 ${theme === 'light'
+                                ? 'bg-blue-50 text-gray-800'
+                                : 'bg-gray-800 text-gray-200'
+                                }`}
+                        >
+                            <CardContent className="p-4 md:p-6 flex items-start space-x-4">
+                                <LightbulbIcon
+                                    className={`w-5 h-5 md:w-6 md:h-6 flex-shrink-0 ${theme === 'light' ? 'text-primary' : 'text-blue-400'
+                                        }`}
+                                />
+                                <div>
+                                    <h3
+                                        className={`font-semibold mb-1 md:mb-2 ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'
+                                            }`}
+                                    >
+                                        Good to know
+                                    </h3>
+                                    <p
+                                        className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'
+                                            }`}
+                                    >
+                                        Enter different variations of your company name in order of preference.
+                                        Mirr Asia will help you obtain final confirmation prior to
+                                        incorporation.
+                                    </p>
                                 </div>
-                                <span className="ml-3 text-sm">{step.label}</span>
-                            </div>
-                        ))}
+                            </CardContent>
+                        </Card>}
+                        <div className="max-w-3xl mx-auto p-6">
+                            {renderSection()}
+                        </div>
                     </div>
+                    {/* Navigation buttons */}
+                    {selectedCountry && (
+                        <div className="flex justify-between border-t p-4 bg-background">
+                            <Button
+                                variant="outline"
+                                onClick={previousSection}
+                                disabled={currentSection === 1}
+                                className="flex items-center space-x-2"
+                            >
+                                <span>← BACK</span>
+                            </Button>
+                            <Button
+                                onClick={nextSection}
+                                disabled={legalAssessment === true}
+                                className="flex items-center space-x-2 bg-primary"
+                            >
+                                <span>{currentSection === 9 ? 'SUBMIT' : 'SAVE & NEXT →'}</span>
+                            </Button>
+                        </div>
+                    )}
+
                 </div>
-            </Card>
+                {/* progress indicator */}
+                <Card className="w-64 rounded-none border-l border-t-0 border-r-0 border-b-0 overflow-y-auto">
+                    <div className="p-4">
+                        <div className="space-y-4">
+                            {steps.map((step, index) => (
+                                <div key={index} className="flex items-center">
+                                    <div
+                                        className={cn(
+                                            "w-6 h-6 rounded-full flex items-center justify-center text-sm",
+                                            index + 1 < currentSection && "bg-primary/20 text-primary",
+                                            index + 1 === currentSection && "bg-primary text-primary-foreground",
+                                            index + 1 > currentSection && "bg-muted text-muted-foreground"
+                                        )}
+                                    >
+                                        {index + 1}
+                                    </div>
+                                    <span className="ml-3 text-sm whitespace-pre-wrap">{step.label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </Card>
+            </>)}
         </div>
     );
 };

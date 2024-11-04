@@ -37,13 +37,13 @@ const LoginComponent: React.FC = () => {
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (credentialResponse) => {
       // Handle successful login, e.g., send credentialResponse to your backend
+      localStorage.setItem('token', credentialResponse.access_token);
       console.log('credentialResponse', credentialResponse);
       await loginWithGoogle(credentialResponse.access_token).then((response) => {
+        localStorage.setItem('isAuthenticated', 'true');
         console.log('response', response);
-
         navigate('/dashboard');
       });
-
     },
     onError: (error) => {
       // Handle errors, e.g., display an error message to the user

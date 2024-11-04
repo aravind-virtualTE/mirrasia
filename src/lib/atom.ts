@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-
+// company Incorporation
 export const legalAssessmentDialougeAtom = atom(false);
 
 export const businessInfoHkCompanyAtom = atom<Record<string, string | undefined>>({
@@ -16,31 +16,25 @@ type FormDataType = {
     name: string;
     relationships: string[];
     contactInfo: string;
+    snsAccountId : string;
+    email : string;
+    phoneNumber : string;
+    companyName : string;
 };
 
 // corporate incorporation applicant info
 export const applicantInfoFormAtom = atom<FormDataType>({
     name: '',
     relationships: [],
-    contactInfo: ''
+    contactInfo: '',
+    snsAccountId : '',
+    phoneNumber : '',
+    email : '',
+    companyName : ''
 });
 
-export const applicantInfoNameAtom = atom(
-    (get) => get(applicantInfoFormAtom).name,
-    (get, set, name: string) => set(applicantInfoFormAtom, { ...get(applicantInfoFormAtom), name })
-);
 
-export const applicantInfoRelationshipsAtom = atom(
-    (get) => get(applicantInfoFormAtom).relationships,
-    (get, set, relationships: string[]) => set(applicantInfoFormAtom, { ...get(applicantInfoFormAtom), relationships })
-);
-
-export const applicantInfoContactInfoAtom = atom(
-    (get) => get(applicantInfoFormAtom).contactInfo,
-    (get, set, contactInfo: string) => set(applicantInfoFormAtom, { ...get(applicantInfoFormAtom), contactInfo })
-);
-
-// company incorporation information
+// company incorporation BusinessInfo information
 interface RegBusinessInfo {
     business_industry: string | undefined;
     business_description: string;

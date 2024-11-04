@@ -8,10 +8,11 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { businessInfoHkCompanyAtom, legalAssessmentDialougeAtom} from '@/lib/atom';
+import { businessInfoHkCompanyAtom, legalAssessmentDialougeAtom } from '@/lib/atom';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme-provider';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 type QuestionnaireItem = {
     id: string;
@@ -42,7 +43,7 @@ const AmlCdd = () => {
 
     const navigate = useNavigate();
     const [businessInfoHkCompany, setBusinessInfoHkCompany] = useAtom(businessInfoHkCompanyAtom);
-
+    const [initialDialogOpen, setInitialDialogOpen] = useState(true);
     const [dialogOpen, setDialogOpen] = useAtom(legalAssessmentDialougeAtom);
 
     const options = [
@@ -71,7 +72,7 @@ const AmlCdd = () => {
     };
     const { theme } = useTheme();
     // console.log("answers", businessInfoHkCompany)
-    
+
     return (
         <>
             <Card>
@@ -110,8 +111,8 @@ const AmlCdd = () => {
                     <div className="flex w-full p-4">
 
                         <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
-                                ? 'bg-blue-50 text-gray-800'
-                                : 'bg-gray-800 text-gray-200'
+                            ? 'bg-blue-50 text-gray-800'
+                            : 'bg-gray-800 text-gray-200'
                             }`}>
                             <h2 className="text-lg font-semibold mb-2">Business Information of the Hong Kong company</h2>
                             <p className="text-sm text-gray-600">In this section please provide information of the Hong Kong Company and related business to be established</p>
@@ -149,7 +150,18 @@ const AmlCdd = () => {
                     </div>
                 </CardContent>
             </Card>
-
+            {/* Initial dialog for user confirmation */}
+            <Dialog open={initialDialogOpen} onOpenChange={setInitialDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Important Notice</DialogTitle>
+                    </DialogHeader>
+                    <p>
+                        All fields must be filled out carefully. Once completed, this form will not be editable.
+                    </p>
+                    <Button onClick={() => setInitialDialogOpen(false)}>Got it</Button>
+                </DialogContent>
+            </Dialog>
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">

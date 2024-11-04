@@ -42,7 +42,7 @@ const ApplicantInfoForm = () => {
   const handleRelationshipChange = (relationshipId: string, checked: boolean) => {
     setFormData(prev => ({
       ...prev,
-      relationships: checked 
+      relationships: checked
         ? [...prev.relationships, relationshipId]
         : prev.relationships.filter(id => id !== relationshipId)
     }));
@@ -59,7 +59,7 @@ const ApplicantInfoForm = () => {
       <CardHeader>
         <CardTitle>Applicant Information</CardTitle>
         <p className="text-sm text-gray-500">
-          This form must be filled out by the representative of the Hong Kong company. 
+          This form must be filled out by the representative of the Hong Kong company.
           The information will be kept as KYC and Client Due Diligence documents.
         </p>
       </CardHeader>
@@ -90,7 +90,7 @@ const ApplicantInfoForm = () => {
                   <Checkbox
                     id={relationship.id}
                     checked={formData.relationships.includes(relationship.id)}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       handleRelationshipChange(relationship.id, checked as boolean)
                     }
                   />
@@ -101,19 +101,65 @@ const ApplicantInfoForm = () => {
               ))}
             </div>
           </div>
+          <div className="space-y-2">
+            <Label className="text-base">
+              Name of the Company <span className="text-red-500">*</span>
+            </Label>    
+            <Input
+                id="companyName"
+                placeholder="Enter CompanyName"
+                value={formData.companyName}
+                onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
+                className="w-full"
+              />           
+          </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contact" className="text-base">
+            <Label className="text-base">
               Contact information of the above applicant <span className="text-red-500">*</span>
             </Label>
-            <Input
-              id="contact"
-              placeholder="Phone number, email, SNS account ID, etc."
-              value={formData.contactInfo}
-              onChange={(e) => setFormData(prev => ({ ...prev, contactInfo: e.target.value }))}
-              required
-              className="w-full"
-            />
+            
+            <div className="space-y-1">
+              <Label htmlFor="phone" className="text-sm">
+                Phone Number
+              </Label>
+              <Input
+                id="phone"
+                placeholder="Enter phone number"
+                value={formData.phoneNumber}
+                onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                required
+                className="w-full"
+              />
+            </div>
+            
+            <div className="space-y-1">
+              <Label htmlFor="email" className="text-sm">
+                Email
+              </Label>
+              <Input
+                id="email"
+                placeholder="Enter email address"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                required
+                className="w-full"
+              />
+            </div>
+           
+            <div className="space-y-1">
+              <Label htmlFor="sns" className="text-sm">
+                SNS Account ID
+              </Label>
+              <Input
+                id="sns"
+                placeholder="Enter SNS account ID"
+                value={formData.snsAccountId}
+                onChange={(e) => setFormData(prev => ({ ...prev, snsAccountId: e.target.value }))}
+                className="w-full"
+              />
+            </div>
           </div>
         </form>
       </CardContent>
