@@ -37,8 +37,10 @@ interface UserType {
     id: string;
     fullName: string;
     email: string;
-    photoURL: string;
+    picture: string;
     provider: 'email' | 'google';
+    role: string;
+    email_verified: boolean;
   }
 
   interface AuthState {
@@ -69,16 +71,11 @@ export const loadingAtom = atom(
 export const signupWithEmail = async (
   fullName: string,
   email: string,
-  password: string
+  password: string,
 ) => {
   try {
-    // const response = await fetch(`${API_URL}/auth/signup`, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ fullName, email, password }),
-    // });
-    // return await response.json();
     const response = await api.post('auth/signup', { fullName,email, password });
+    
     return response.data;
   } catch (error) {
     console.log(error);
@@ -100,7 +97,8 @@ export const signupWithGoogle = async (tokenId: string) => {
 
 export const loginWithEmail = async (email: string, password: string) => {
     const response = await api.post('auth/login', { email, password });
-    localStorage.setItem('token', response.data.token);
+    console.log('response->',response)
+    localStorage.setItem('token', response.data.token);    
     return response.data;
   };
   

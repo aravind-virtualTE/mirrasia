@@ -8,7 +8,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { businessInfoHkCompanyAtom, legalAssessmentDialougeAtom } from '@/lib/atom';
+import { businessInfoHkCompanyAtom, legalAssessmentDialougeAtom} from '@/lib/atom';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme-provider';
 import { useNavigate } from 'react-router-dom';
@@ -45,6 +45,7 @@ const AmlCdd = () => {
     const [businessInfoHkCompany, setBusinessInfoHkCompany] = useAtom(businessInfoHkCompanyAtom);
     const [initialDialogOpen, setInitialDialogOpen] = useState(true);
     const [dialogOpen, setDialogOpen] = useAtom(legalAssessmentDialougeAtom);
+    const [disabledQuestions, setDisabledQuestions] = useState<Record<string, boolean>>({});
 
     const options = [
         { value: "yes", label: "Yes" },
@@ -53,25 +54,29 @@ const AmlCdd = () => {
         { value: "legal-advice", label: "Consider legal advice" },
     ];
 
-    const handleAssessmentChange = (value: string) => {
-        setBusinessInfoHkCompany(prev => ({ ...prev, legal_assessment: value }))
+    // const handleAssessmentChange = (value: string) => {
+    //     setBusinessInfoHkCompany(prev => ({ ...prev, legal_assessment: value }))
+    // };
+    const handleQuestionChange = (questionId: string, value: string) => {
+        setBusinessInfoHkCompany(prev => ({ ...prev, [questionId]: value }));
+        setDisabledQuestions(prev => ({ ...prev, [questionId]: true }));
     };
-
     const handleSubmit = (e: React.FormEvent) => {
+        // console.log('Form submitted:', businessInfoHkCompany);
         e.preventDefault();
         navigate('/dashboard')
         setDialogOpen(false)
-        setBusinessInfoHkCompany({
-            sanctioned_countries: undefined,
-            sanctions_presence: undefined,
-            crimea_presence: undefined,
-            russian_business_presence: undefined,
-            legal_assessment: undefined,
-        });
+        // setBusinessInfoHkCompany({
+        //     sanctioned_countries: undefined,
+        //     sanctions_presence: undefined,
+        //     crimea_presence: undefined,
+        //     russian_business_presence: undefined,
+        //     legal_assessment: undefined,
+        // });
         // console.log('Form submitted:', businessInfoHkCompany);
     };
     const { theme } = useTheme();
-    // console.log("answers", businessInfoHkCompany)
+    console.log("answers", businessInfoHkCompany)
 
     return (
         <>
@@ -94,7 +99,9 @@ const AmlCdd = () => {
                             </p>
                             <RadioGroup
                                 value={businessInfoHkCompany.legal_assessment}
-                                onValueChange={handleAssessmentChange}
+                                // onValueChange={handleAssessmentChange}
+                                onValueChange={(value) => handleQuestionChange('legal_assessment', value)}
+                                disabled={!!disabledQuestions['legal_assessment']}
                             >
                                 {options.map((option) => (
                                     <div key={option.value} className="flex items-center space-x-2">
@@ -126,22 +133,20 @@ const AmlCdd = () => {
                                     ><span className="text-red-500">*</span> {q.question}</p>
                                     <RadioGroup
                                         value={businessInfoHkCompany[q.id]}
-                                        onValueChange={(value) =>
-                                            setBusinessInfoHkCompany(prev => ({ ...prev, [q.id]: value }))
-                                        }
-
+                                        onValueChange={(value) => handleQuestionChange(q.id, value)}
+                                        disabled={!!disabledQuestions[q.id]} // Cast to boolean
                                     >
                                         <div className="flex items-center space-x-2">
                                             <RadioGroupItem value="yes" id={`${q.id}-yes`} />
-                                            <Label className="text-sm">Yes</Label>
+                                            <Label htmlFor={`${q.id}-yes`} className="text-sm">Yes</Label>
                                         </div>
                                         <div className="flex items-center space-x-2">
                                             <RadioGroupItem value="no" id={`${q.id}-no`} />
-                                            <Label className="text-sm">No</Label>
+                                            <Label htmlFor={`${q.id}-no`} className="text-sm">No</Label>
                                         </div>
                                         <div className="flex items-center space-x-2">
                                             <RadioGroupItem value="unknown" id={`${q.id}-unknown`} />
-                                            <Label className="text-sm">I/We have no idea</Label>
+                                            <Label htmlFor={`${q.id}-unknown`} className="text-sm">I/We have no idea</Label>
                                         </div>
                                     </RadioGroup>
                                 </div>

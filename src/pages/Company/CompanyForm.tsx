@@ -5,7 +5,7 @@ import { LightbulbIcon } from 'lucide-react';
 import { useState, ReactNode } from 'react';
 import IncorporationForm from './Forms/IncorporationForm';
 import { useAtom } from 'jotai';
-import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom } from '@/lib/atom';
+import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom } from '@/lib/atom';
 import { useTheme } from '@/components/theme-provider';
 import { useToast } from "@/hooks/use-toast"
 // import { ScrollArea } from '@/components/ui/scroll-area';
@@ -16,7 +16,8 @@ const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
     const [legalAssessment, setLeagalAssessment] = useAtom(legalAssessmentDialougeAtom);
     const [businessInfoHkCompany,] = useAtom(businessInfoHkCompanyAtom);
-    const [selectedCountry, setSelectedCountry] = useState<string | undefined>();
+    // const [selectedCountry12, setSelectedCountry] = useState<string | undefined>();
+    const [countryState, setCountryState] = useAtom(countryAtom);
 
     const steps = [
         { number: 1, label: 'Applciant\ninformation', active: currentSection === 1 },
@@ -69,29 +70,42 @@ const CompanyRegistration = () => {
         // Add more countries as needed
     ];
 
+    // console.log("countryState-->", countryState)
+
 
     function renderSection(): ReactNode | Iterable<ReactNode> {
-        if (!selectedCountry) return null;
+        if (!countryState.name) return null;
 
-        switch (selectedCountry) {
+        switch (countryState.code) {
             case 'HK':
                 return <IncorporationForm currentSection={currentSection} />;
             case 'SG':
-                return <div>Registration form for {selectedCountry} is not available yet.</div>;
+                return <div>Registration form for {countryState.name} is not available yet.</div>;
             // Add more country-specific forms as needed
             default:
-                return <div>Registration form for {selectedCountry} is not available yet.</div>;;
+                return <div>Registration form for {countryState.name} is not available yet.</div>;;
         }
     }
     const { theme } = useTheme();
 
+    const updateCountry = (countryCode: string) => {
+        const selectedCountry = countries.find(country => country.code === countryCode);
+
+        if (selectedCountry) {
+            setCountryState({
+                code: selectedCountry.code,
+                name: selectedCountry.name
+            });
+        }
+    };
+
     return (
         <div className="flex h-full">
             {/* Country Selection Content */}
-            {!selectedCountry ? (
-                <div className="space-y-4 justify-center items-center">
+            {!countryState.name ? (
+                <div className="flex flex-col space-y-4 justify-center items-center w-full h-full">
                     <h2 className="text-2xl font-bold">Select Country for Registration</h2>
-                    <Select onValueChange={(value) => setSelectedCountry(value)}>
+                    <Select onValueChange={(value) => updateCountry(value)}>
                         <SelectTrigger className="w-[280px]">
                             <SelectValue placeholder="Select a country" />
                         </SelectTrigger>
@@ -110,7 +124,7 @@ const CompanyRegistration = () => {
 
                     <Card className="rounded-none border-b border-t-0 border-l-0 border-r-0">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                            <CardTitle>Company Incorporation</CardTitle>
+                            <CardTitle>Company Incorporation {countryState.name}</CardTitle>
                             <span className="text-sm text-muted-foreground">
                                 Step {currentSection} of {steps.length}
                             </span>
@@ -152,7 +166,7 @@ const CompanyRegistration = () => {
                         </div>
                     </div>
                     {/* Navigation buttons */}
-                    {selectedCountry && (
+                    {countryState.name && (
                         <div className="flex justify-between border-t p-4 bg-background">
                             <Button
                                 variant="outline"
@@ -167,7 +181,7 @@ const CompanyRegistration = () => {
                                 disabled={legalAssessment === true}
                                 className="flex items-center space-x-2 bg-primary"
                             >
-                                <span>{currentSection === 9 ? 'SUBMIT' : 'SAVE & NEXT →'}</span>
+                                <span>{currentSection === 9 ? 'SUBMIT' : 'NEXT →'}</span>
                             </Button>
                         </div>
                     )}

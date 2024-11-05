@@ -23,8 +23,10 @@ const LoginComponent: React.FC = () => {
     setIsLoading(true);
 
     try {
+      // localStorage.setItem('isAuthenticated', 'true');
+      const response = await loginWithEmail(email, password);    
       localStorage.setItem('isAuthenticated', 'true');
-      await loginWithEmail(email, password);      
+      localStorage.setItem("token", response.token);  
       navigate('/dashboard');
     } catch (err) {
       console.log("err.response?.data?.message", err)
@@ -41,6 +43,7 @@ const LoginComponent: React.FC = () => {
       console.log('credentialResponse', credentialResponse);
       await loginWithGoogle(credentialResponse.access_token).then((response) => {
         localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem("token", response.token);
         console.log('response', response);
         navigate('/dashboard');
       });

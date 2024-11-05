@@ -11,6 +11,13 @@ export const businessInfoHkCompanyAtom = atom<Record<string, string | undefined>
     legal_assessment: undefined,
   });
 
+  // country selecting
+  
+export const countryAtom = atom<Record<string, string | undefined>>({
+  code: undefined,
+  name: undefined,
+});
+
 
 type FormDataType = {
     name: string;
@@ -103,3 +110,5 @@ interface ShareHolderDirectorController {
     implementSoftware: undefined,
     anySoftwareInUse : ""
   });
+
+  // export const companyRegistration2Atom = atom(false);

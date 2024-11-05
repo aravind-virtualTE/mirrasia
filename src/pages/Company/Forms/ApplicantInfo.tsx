@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -48,11 +47,7 @@ const ApplicantInfoForm = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
-  };
+  // console.log('Form submitted:', formData);
 
   return (
     <Card>
@@ -64,7 +59,6 @@ const ApplicantInfoForm = () => {
         </p>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="name" className="text-base">
               Name of applicant <span className="text-red-500">*</span>
@@ -161,7 +155,6 @@ const ApplicantInfoForm = () => {
               />
             </div>
           </div>
-        </form>
       </CardContent>
     </Card>
   );

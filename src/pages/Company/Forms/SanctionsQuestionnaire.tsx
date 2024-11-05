@@ -30,7 +30,7 @@ const SanctionsQuestionnaire = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', answers);
+    // console.log('Form submitted:', answers);
   };
 
   return (
