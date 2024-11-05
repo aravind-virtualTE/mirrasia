@@ -17,6 +17,8 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { countryAtom } from "@/lib/atom";
+import { useAtom } from "jotai";
 const Dashboard = () => {
   const partnerCards = [
     {
@@ -32,6 +34,7 @@ const Dashboard = () => {
       description: "The Greater Room"
     }
   ];
+  const [, setCountryState] = useAtom(countryAtom);
 
   const companies = [
     {
@@ -54,6 +57,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
+    setCountryState({
+      code : undefined,
+      name : undefined
+    })
     navigate('/company-register');
   };
 
