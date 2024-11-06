@@ -1,7 +1,7 @@
 import api from '@/services/fetch';
 import { atom, useAtom } from 'jotai';
 // Define Jotai atoms for user and authentication state
-const userAtom = atom<User | null>(null);
+export const userAtom = atom<User | null>(null);
 const isLoadingAtom = atom(true);
 const isAuthenticatedAtom = atom((get) => get(userAtom) !== null);
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 interface User {
     uid: string;
     displayName: string;
-    photoURL: string;
+    picture: string;
 }
 // Implement the useAuth hook
 export const useAuth = () => {

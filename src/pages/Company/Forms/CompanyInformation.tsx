@@ -80,8 +80,8 @@ const CompanyInformation = () => {
         setBusinessInfo((prev) => ({ ...prev, business_industry }));
     };
 
-    const handleDescriptionChange = (business_description: string) => {
-        setBusinessInfo((prev) => ({ ...prev, business_description }));
+    const handleDescriptionChange = (business_product_description: string) => {
+        setBusinessInfo((prev) => ({ ...prev, business_product_description }));
     };
 
     const handlePurposeChange = (business_purpose: string) => {
@@ -159,7 +159,7 @@ const CompanyInformation = () => {
                                     id="description"
                                     className="h-32"
                                     placeholder="Enter description..."
-                                    value={businessInfo.business_description}
+                                    value={businessInfo.business_product_description}
                                     onChange={(e) => handleDescriptionChange(e.target.value)}
                                 />
                             </div>

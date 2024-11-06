@@ -5,7 +5,7 @@ import { LightbulbIcon } from 'lucide-react';
 import { useState, ReactNode } from 'react';
 import IncorporationForm from './Forms/IncorporationForm';
 import { useAtom } from 'jotai';
-import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom } from '@/lib/atom';
+import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom,legalAcknowledgementDialougeAtom } from '@/lib/atom';
 import { useTheme } from '@/components/theme-provider';
 import { useToast } from "@/hooks/use-toast"
 // import { ScrollArea } from '@/components/ui/scroll-area';
@@ -14,7 +14,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
-    const [legalAssessment, setLeagalAssessment] = useAtom(legalAssessmentDialougeAtom);
+    const [legalAssessment, ] = useAtom(legalAssessmentDialougeAtom);
+    const [, setAcknowledgementDialouge] = useAtom(legalAcknowledgementDialougeAtom);
+    
     const [businessInfoHkCompany,] = useAtom(businessInfoHkCompanyAtom);
     // const [selectedCountry12, setSelectedCountry] = useState<string | undefined>();
     const [countryState, setCountryState] = useAtom(countryAtom);
@@ -52,7 +54,7 @@ const CompanyRegistration = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         else {
-            setLeagalAssessment(true);
+            setAcknowledgementDialouge(true);
         }
     };
 

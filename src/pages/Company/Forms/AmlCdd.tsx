@@ -8,11 +8,12 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { businessInfoHkCompanyAtom, legalAssessmentDialougeAtom} from '@/lib/atom';
+import { businessInfoHkCompanyAtom, legalAcknowledgementDialougeAtom, legalAssessmentDialougeAtom } from '@/lib/atom';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme-provider';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 type QuestionnaireItem = {
     id: string;
@@ -40,12 +41,20 @@ const questions: QuestionnaireItem[] = [
 ];
 
 const AmlCdd = () => {
-
+    const { toast } = useToast()
     const navigate = useNavigate();
     const [businessInfoHkCompany, setBusinessInfoHkCompany] = useAtom(businessInfoHkCompanyAtom);
     const [initialDialogOpen, setInitialDialogOpen] = useState(true);
+    const [secondDialogOpen, setSecondDialogOpen] = useAtom(legalAcknowledgementDialougeAtom);
+    const [acknowledgement, setAcknowledgement] = useState(false);
     const [dialogOpen, setDialogOpen] = useAtom(legalAssessmentDialougeAtom);
-    const [disabledQuestions, setDisabledQuestions] = useState<Record<string, boolean>>({});
+    const [disabledQuestions, setDisabledQuestions] = useState<Record<string, boolean>>({
+        russian_business_presence: false,
+        sanctions_presence: false,
+        crimea_presence: false,
+        legal_assessment: false,
+        sanctioned_countries: false
+    });
 
     const options = [
         { value: "yes", label: "Yes" },
@@ -54,25 +63,33 @@ const AmlCdd = () => {
         { value: "legal-advice", label: "Consider legal advice" },
     ];
 
-    // const handleAssessmentChange = (value: string) => {
-    //     setBusinessInfoHkCompany(prev => ({ ...prev, legal_assessment: value }))
-    // };
+
     const handleQuestionChange = (questionId: string, value: string) => {
         setBusinessInfoHkCompany(prev => ({ ...prev, [questionId]: value }));
-        setDisabledQuestions(prev => ({ ...prev, [questionId]: true }));
     };
+
+    const handleSubmitSecondDialouge = (e: React.FormEvent) =>{
+        e.preventDefault();
+        if(acknowledgement){
+            setDisabledQuestions(() => {
+                const updatedState: Record<string, boolean> = {};
+                for (const key in questions) {
+                updatedState[key] = true;
+                }
+                updatedState['legal_assessment'] = true
+                return updatedState;
+            });
+            setDialogOpen(true)
+        }else{
+            toast({description: 'Please accept the legal acknowledgement before proceeding', variant: 'destructive'})
+        }
+    }
     const handleSubmit = (e: React.FormEvent) => {
         // console.log('Form submitted:', businessInfoHkCompany);
         e.preventDefault();
         navigate('/dashboard')
         setDialogOpen(false)
-        // setBusinessInfoHkCompany({
-        //     sanctioned_countries: undefined,
-        //     sanctions_presence: undefined,
-        //     crimea_presence: undefined,
-        //     russian_business_presence: undefined,
-        //     legal_assessment: undefined,
-        // });
+        
         // console.log('Form submitted:', businessInfoHkCompany);
     };
     const { theme } = useTheme();
@@ -101,7 +118,7 @@ const AmlCdd = () => {
                                 value={businessInfoHkCompany.legal_assessment}
                                 // onValueChange={handleAssessmentChange}
                                 onValueChange={(value) => handleQuestionChange('legal_assessment', value)}
-                                disabled={!!disabledQuestions['legal_assessment']}
+                                disabled={disabledQuestions['legal_assessment']}
                             >
                                 {options.map((option) => (
                                     <div key={option.value} className="flex items-center space-x-2">
@@ -134,7 +151,7 @@ const AmlCdd = () => {
                                     <RadioGroup
                                         value={businessInfoHkCompany[q.id]}
                                         onValueChange={(value) => handleQuestionChange(q.id, value)}
-                                        disabled={!!disabledQuestions[q.id]} // Cast to boolean
+                                        disabled={disabledQuestions[q.id]} // Cast to boolean
                                     >
                                         <div className="flex items-center space-x-2">
                                             <RadioGroupItem value="yes" id={`${q.id}-yes`} />
@@ -167,6 +184,33 @@ const AmlCdd = () => {
                     <Button onClick={() => setInitialDialogOpen(false)}>Got it</Button>
                 </DialogContent>
             </Dialog>
+
+            <Dialog open={secondDialogOpen} onOpenChange={setSecondDialogOpen}>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+                    <form onSubmit={handleSubmitSecondDialouge} className="space-y-6">
+                        <div className="flex flex-row items-start space-x-3 rounded-md border p-2 shadow">
+                            <input
+                                type="checkbox"
+                                checked={acknowledgement}
+                                onChange={(e) => setAcknowledgement(e.target.checked)}
+                                className="form-checkbox my-4 cursor-pointer"
+                            />
+                            <div className="space-y-1 leading-none">
+                                <label className="font-medium text-gray-700">
+                                    Is the data you entered correct? Please confirm.
+                                </label>
+                                <p className="text-sm text-gray-500">
+                                    I confirm that the data entered is correct.
+                                </p>
+                            </div>
+                        </div>
+                        <Button type="submit">
+                            Submit
+                        </Button>
+                    </form>
+                </DialogContent>
+            </Dialog>
+            
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">

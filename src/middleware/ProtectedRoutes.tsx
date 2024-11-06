@@ -1,3 +1,5 @@
+import { userAtom } from '@/hooks/useAuth';
+import { useAtom } from 'jotai';
 import { Navigate, Outlet } from 'react-router-dom';
 
 const checkAuth = () => {
@@ -5,9 +7,9 @@ const checkAuth = () => {
 };
 
 const ProtectedRoute: React.FC = () => {
-
+    const [user, ] = useAtom(userAtom);
     const isAuthenticated = checkAuth();
-
+    console.log("user--->",user)
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     }
