@@ -1,47 +1,52 @@
 import api from '@/services/fetch';
 import { atom, useAtom } from 'jotai';
 // Define Jotai atoms for user and authentication state
-export const userAtom = atom<User | null>(null);
 const isLoadingAtom = atom(true);
 const isAuthenticatedAtom = atom((get) => get(userAtom) !== null);
 import { useNavigate } from 'react-router-dom';
 
 // Define the User interface
-interface User {
-    uid: string;
-    displayName: string;
-    picture: string;
+
+interface UserType {
+  id: string;
+  fullName: string;
+  email: string;
+  picture: string;
+  provider: 'email' | 'google';
+  role: string;
+  email_verified: boolean;
 }
+
+export const userAtom = atom<UserType | null>(null);
+
 // Implement the useAuth hook
-export const useAuth = () => {
+export const useAuth = (): {
+    user: UserType | null;
+    isLoading: boolean;
+    isAuthenticated: boolean;
+    login: (userData: UserType) => Promise<void>;
+    logout: () => Promise<void>;
+} => {
     const navigate = useNavigate();
     const [user, setUser] = useAtom(userAtom);
     const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
     const [isAuthenticated] = useAtom(isAuthenticatedAtom);
-    const login = async (userData: User) => {
+
+    const login = async (userData: UserType): Promise<void> => {
         setIsLoading(true);
         setUser(userData);
         setIsLoading(false);
     };
-    const logout = async () => {
+
+    const logout = async (): Promise<void> => {
         setIsLoading(true);
         setUser(null);
         setIsLoading(false);
         navigate('/');
     };
+
     return { user, isLoading, isAuthenticated, login, logout };
 };
-
-
-interface UserType {
-    id: string;
-    fullName: string;
-    email: string;
-    picture: string;
-    provider: 'email' | 'google';
-    role: string;
-    email_verified: boolean;
-  }
 
   interface AuthState {
     user: UserType | null;
