@@ -12,18 +12,33 @@ import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 import { useState } from "react";
 import Logo from '@/common/LogoComponent';
 import ToggleTheme from '@/hooks/ToggleTheme';
+import { useAtom } from 'jotai';
+import { authAtom } from "@/hooks/useAuth";
+
+
 
 export default function Navbar() {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const navigate = useNavigate();
+    const [authUser, ] = useAtom(authAtom);
+    const { role } = authUser.user || {};
+    
+    const navigateRoute  = () =>{
+        if(role === 'admin') {
+            navigate('/admin-dashboard');
+          }else{
+            navigate('/dashboard');
+          }
+    }
     const logout = async () => {
         localStorage.setItem('isAuthenticated', 'false');
         localStorage.removeItem("token");
         navigate('/');
     };
+ 
     return (
         <header className="flex h-14 items-center gap-4 border-b bg-background px-6 sticky top-0 z-50">
-            <span className="flex items-center space-x-2 font-bold cursor-pointer" onClick={() => navigate('/dashboard')}>
+            <span className="flex items-center space-x-2 font-bold cursor-pointer" onClick={navigateRoute}>
                 <Logo />
                 MIRR ASIA
             </span>

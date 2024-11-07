@@ -8,7 +8,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { businessInfoHkCompanyAtom, legalAcknowledgementDialougeAtom, legalAssessmentDialougeAtom } from '@/lib/atom';
+import { businessInfoHkCompanyAtom, companyIncorporationAtom, legalAcknowledgementDialougeAtom, legalAssessmentDialougeAtom } from '@/lib/atom';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme-provider';
 import { useNavigate } from 'react-router-dom';
@@ -43,6 +43,8 @@ const questions: QuestionnaireItem[] = [
 const AmlCdd = () => {
     const { toast } = useToast()
     const navigate = useNavigate();
+    
+    const [finalForm,] = useAtom(companyIncorporationAtom);
     const [businessInfoHkCompany, setBusinessInfoHkCompany] = useAtom(businessInfoHkCompanyAtom);
     const [initialDialogOpen, setInitialDialogOpen] = useState(true);
     const [secondDialogOpen, setSecondDialogOpen] = useAtom(legalAcknowledgementDialougeAtom);
@@ -85,12 +87,11 @@ const AmlCdd = () => {
         }
     }
     const handleSubmit = (e: React.FormEvent) => {
-        // console.log('Form submitted:', businessInfoHkCompany);
+        console.log('Form submitted:', finalForm);
         e.preventDefault();
         navigate('/dashboard')
         setDialogOpen(false)
         
-        // console.log('Form submitted:', businessInfoHkCompany);
     };
     const { theme } = useTheme();
     console.log("answers", businessInfoHkCompany)

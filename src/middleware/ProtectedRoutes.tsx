@@ -1,4 +1,4 @@
-import { userAtom } from '@/hooks/useAuth';
+import { authAtom } from '@/hooks/useAuth';
 import { useAtom } from 'jotai';
 import { Navigate, Outlet } from 'react-router-dom';
 
@@ -6,13 +6,19 @@ const checkAuth = () => {
     return localStorage.getItem('isAuthenticated') === 'true';
 };
 
-const ProtectedRoute: React.FC = () => {
-    const [user, ] = useAtom(userAtom);
+const ProtectedRoute: React.FC<{ requiredRole?: string }> = ({ requiredRole }) => {
+    const [authUser, ] = useAtom(authAtom);
     const isAuthenticated = checkAuth();
-    console.log("user--->",user)
+    const { role } = authUser.user || {};
+    console.log(requiredRole,"userRole--->",role)
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     }
+
+    if (requiredRole && role !== requiredRole) {
+        return <Navigate to="/unauthorized" replace />;
+      }
+    
 
     return <Outlet />;
 };

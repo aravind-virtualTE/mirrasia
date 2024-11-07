@@ -1,68 +1,39 @@
 import api from '@/services/fetch';
-import { atom, useAtom } from 'jotai';
+import { atom } from 'jotai';
 // Define Jotai atoms for user and authentication state
-const isLoadingAtom = atom(true);
-const isAuthenticatedAtom = atom((get) => get(userAtom) !== null);
-import { useNavigate } from 'react-router-dom';
+// const isLoadingAtom = atom(true);
+// import { useNavigate } from 'react-router-dom';
 
 // Define the User interface
 
 interface UserType {
-  id: string;
-  fullName: string;
-  email: string;
-  picture: string;
+  id: string | '';
+  fullName: string | '';
+  email: string | '';
+  picture: string | '';
   provider: 'email' | 'google';
-  role: string;
-  email_verified: boolean;
+  role: string | '';
+  email_verified: boolean | false;
 }
 
 export const userAtom = atom<UserType | null>(null);
 
-// Implement the useAuth hook
-export const useAuth = (): {
-    user: UserType | null;
-    isLoading: boolean;
-    isAuthenticated: boolean;
-    login: (userData: UserType) => Promise<void>;
-    logout: () => Promise<void>;
-} => {
-    const navigate = useNavigate();
-    const [user, setUser] = useAtom(userAtom);
-    const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
-    const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+interface AuthState {
+  user: UserType | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
+}
 
-    const login = async (userData: UserType): Promise<void> => {
-        setIsLoading(true);
-        setUser(userData);
-        setIsLoading(false);
-    };
-
-    const logout = async (): Promise<void> => {
-        setIsLoading(true);
-        setUser(null);
-        setIsLoading(false);
-        navigate('/');
-    };
-
-    return { user, isLoading, isAuthenticated, login, logout };
+const initialAuthState: AuthState = {
+  user: null,
+  isAuthenticated: false,
+  loading: false,
+  error: null,
 };
 
-  interface AuthState {
-    user: UserType | null;
-    isAuthenticated: boolean;
-    loading: boolean;
-    error: string | null;
-  }
-
-  const initialAuthState: AuthState = {
-    user: null,
-    isAuthenticated: false,
-    loading: false,
-    error: null,
-  };
-
-  export const authAtom = atom<AuthState>(initialAuthState);
+export const authAtom = atom<AuthState>(initialAuthState);
+// Implement the useAuth hook
 
 // Loading atom
 export const loadingAtom = atom(
@@ -80,7 +51,6 @@ export const signupWithEmail = async (
 ) => {
   try {
     const response = await api.post('auth/signup', { fullName,email, password });
-    
     return response.data;
   } catch (error) {
     console.log(error);
@@ -88,10 +58,12 @@ export const signupWithEmail = async (
   }
 };
 
-export const signupWithGoogle = async (tokenId: string) => {
+export const signupWithGoogle = async (
+  tokenId: string,
+) => {
   try {
     const response = await api.post('auth/google', { tokenId });
-    console.log("response-->",response)    
+    console.log("response-->",response)
     return response.data;
   } catch (error) {
     console.log(error);
@@ -100,10 +72,9 @@ export const signupWithGoogle = async (tokenId: string) => {
 };
 
 
-export const loginWithEmail = async (email: string, password: string) => {
+export const loginWithEmail = async (email: string, password: string,) => {
     const response = await api.post('auth/login', { email, password });
     console.log('response->',response)
-    localStorage.setItem('token', response.data.token);    
     return response.data;
   };
   
@@ -122,7 +93,7 @@ export const loginWithEmail = async (email: string, password: string) => {
     fullName?: string;
     bio?: string;
     location?: string;
-    avatar?: string;
+    picture?: string;
   }) => {
     const response = await api.patch('user/profile', data);
     return response.data;

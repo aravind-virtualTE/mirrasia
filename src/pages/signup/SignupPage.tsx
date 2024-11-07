@@ -16,7 +16,6 @@ const SignupPage = () => {
     password: '',
     confirmPassword: '',
   });
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -33,7 +32,7 @@ const SignupPage = () => {
       const response = await signupWithEmail(
         formData.fullName,
         formData.email,
-        formData.password
+        formData.password,
       );
       const { token, user } = response;
       console.log("response==>", token, user)
@@ -41,7 +40,12 @@ const SignupPage = () => {
       localStorage.setItem("token", token);
       
       setAuth({ user, isAuthenticated: true, loading: false, error: null });
-      navigate('/dashboard');
+      localStorage.setItem('isAuthenticated', 'true');
+      if(user.role === 'admin') {
+        navigate('/admin-dashboard');
+      }else{
+        navigate('/dashboard');
+      }
     } catch (error) {
       setAuth(prev => ({
         ...prev,
@@ -63,9 +67,13 @@ const SignupPage = () => {
         // console.log('Google signup response-->',response, '\n user--->', user);
         // Save the token to localStorage
         localStorage.setItem("token", token);
-
+        localStorage.setItem('isAuthenticated', 'true');
         setAuth({ user, isAuthenticated: true, loading: false, error: null });
-        navigate('/dashboard');
+        if(user.role === 'admin') {
+          navigate('/admin-dashboard');
+        }else{
+          navigate('/dashboard');
+        }
       } catch (error) {
         setAuth(prev => ({
           ...prev,
