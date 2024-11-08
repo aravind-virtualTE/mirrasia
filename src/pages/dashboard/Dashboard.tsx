@@ -18,52 +18,55 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { countryAtom } from "@/lib/atom";
-import { useAtom } from "jotai";
+import { useAtom,useSetAtom } from "jotai";
+import { companyIncorporationList } from "@/services/state";
+import { cn } from "@/lib/utils";
+import { useEffect } from "react";
+import { authAtom } from "@/hooks/useAuth";
+import { getIncorporationListByUserId } from "@/services/dataFetch";
 const Dashboard = () => {
   const partnerCards = [
     {
       logo: "FlySpaces",
+      img : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-bfoV2Kjsa3bhRS1XZ0fYmGb_dOScnMiLGQ&s',
       description: "Office space"
     },
     {
       logo: "AWS",
+      img : 'https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/aws-icon.png',
       description: "Web hosting"
     },
     {
       logo: "GREATER",
+      img : 'https://play-lh.googleusercontent.com/PGUQTS5KUZw5bc_DsyBtijD-CfQR4SPk2i6UjU8K6RMli-eQIOg4aNsABjnoeNHoNsXA',
       description: "The Greater Room"
     }
   ];
   const [, setCountryState] = useAtom(countryAtom);
-
-  const companies = [
-    {
-      name: "Tech Solutions Pte Ltd",
-      status: "Active",
-      incorporationDate: "2024-01-15"
-    },
-    {
-      name: "Global Trade SG",
-      status: "Pending",
-      incorporationDate: ""
-    },
-    {
-      name: "Innovation Hub",
-      status: "Active",
-      incorporationDate: "2024-03-01"
-    }
-  ];
-
+  const [cList,] = useAtom(companyIncorporationList)
+  const setCompIncList = useSetAtom(companyIncorporationList);
+  const [authUser, ] = useAtom(authAtom);
   const navigate = useNavigate();
+  const { id } = authUser.user || {};
+  
+  useEffect(() => {
+    async function fetchData() {
+      const result = await getIncorporationListByUserId(`${id}`)
+      return result
+    }
+    fetchData().then((result) => {
+      setCompIncList(result);
+    })
+   
+  }, [cList, id, setCompIncList]);
 
   const handleCardClick = () => {
     setCountryState({
-      code : undefined,
-      name : undefined
+      code: undefined,
+      name: undefined
     })
     navigate('/company-register');
   };
-
   return (
     < >
       {/* Main Content */}
@@ -94,7 +97,7 @@ const Dashboard = () => {
           </Card>
         </div>
         {/* Companies Table */}
-        <div className="mb-12">
+        {cList.length > 0 && <div className="mb-12">
           <h2 className="text-xl font-semibold mb-4">Your Companies</h2>
           <div className="rounded-md border">
             <Table>
@@ -106,23 +109,39 @@ const Dashboard = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {companies.map((company, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{company.name}</TableCell>
-                    <TableCell>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${company.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                        }`}>
-                        {company.status}
-                      </span>
-                    </TableCell>
-                    {/* new Date(company.incorporationDate).toLocaleDateString() */}
-                    <TableCell>{company.incorporationDate}</TableCell> 
-                  </TableRow>
-                ))}
+              {cList.map((company, index) => {
+                  // Type cast each company
+                  const typedCompany = company as {
+                    applicantInfoForm: { companyName: string };
+                    status: string;
+                    incorporationDate: string;
+                  };
+
+                  return (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">
+                        {typedCompany.applicantInfoForm.companyName}
+                      </TableCell>
+                      <TableCell>
+                        <span
+                          className={cn(
+                            'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                            typedCompany.status === 'Active' ? 'bg-green-100 text-green-800' :
+                            typedCompany.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          )}
+                        >
+                          {typedCompany.status}
+                        </span>
+                      </TableCell>
+                      <TableCell>{typedCompany.incorporationDate}</TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>
-        </div>
+        </div>}
 
         {/* Partners Section */}
         <div className="mb-12">
@@ -145,7 +164,7 @@ const Dashboard = () => {
                   <CardContent className="p-6">
                     <div className="h-12 mb-4">
                       <img
-                        src={`/api/placeholder/120/40`}
+                        src={partner.img}
                         alt={partner.logo}
                         className="h-full object-contain"
                       />

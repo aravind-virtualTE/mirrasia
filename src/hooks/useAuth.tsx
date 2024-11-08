@@ -35,15 +35,6 @@ const initialAuthState: AuthState = {
 export const authAtom = atom<AuthState>(initialAuthState);
 // Implement the useAuth hook
 
-// Loading atom
-export const loadingAtom = atom(
-    (get) => get(authAtom).loading,
-    (get, set, loading: boolean) => {
-      set(authAtom, { ...get(authAtom), loading, error: null });
-    }
-  );
-
-
 export const signupWithEmail = async (
   fullName: string,
   email: string,

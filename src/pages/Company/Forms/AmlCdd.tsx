@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai';
+import { useAtom,useSetAtom  } from 'jotai';
 import {
     Dialog,
     DialogContent,
@@ -14,7 +14,9 @@ import { useTheme } from '@/components/theme-provider';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-
+import api from '@/services/fetch';
+import { authAtom } from '@/hooks/useAuth';
+import {companyIncorporationList} from '@/services/state'
 type QuestionnaireItem = {
     id: string;
     question: string;
@@ -43,7 +45,7 @@ const questions: QuestionnaireItem[] = [
 const AmlCdd = () => {
     const { toast } = useToast()
     const navigate = useNavigate();
-    
+    const [authUser, ] = useAtom(authAtom);
     const [finalForm,] = useAtom(companyIncorporationAtom);
     const [businessInfoHkCompany, setBusinessInfoHkCompany] = useAtom(businessInfoHkCompanyAtom);
     const [initialDialogOpen, setInitialDialogOpen] = useState(true);
@@ -57,6 +59,9 @@ const AmlCdd = () => {
         legal_assessment: false,
         sanctioned_countries: false
     });
+    
+    const [cList] = useAtom(companyIncorporationList);
+    const setCompIncList = useSetAtom(companyIncorporationList);
 
     const options = [
         { value: "yes", label: "Yes" },
@@ -86,11 +91,31 @@ const AmlCdd = () => {
             toast({description: 'Please accept the legal acknowledgement before proceeding', variant: 'destructive'})
         }
     }
-    const handleSubmit = (e: React.FormEvent) => {
-        console.log('Form submitted:', finalForm);
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        navigate('/dashboard')
-        setDialogOpen(false)
+        try{
+            const formdata = finalForm
+            const { id } = authUser.user || {};
+            console.log(id,'Form submitted:', formdata);
+            formdata.userId = `${id}`
+            const response = await api.post('/company/company-incorporation', formdata);
+            console.log('Response:', response);
+            if (response.status === 200) {
+                setCompIncList([...cList, response.data]);
+                toast({ description: 'Company incorporation request submitted successfully!' });
+                navigate('/dashboard')
+                setDialogOpen(false)
+              } else {
+                // Handle errors, e.g., display error message to the user
+                console.log('Error:', response);
+                toast({ description: 'An error occurred while submitting the request.'});
+              }
+            
+        }catch(err){
+            console.log('Error:',err)
+        }
+        
+        
         
     };
     const { theme } = useTheme();
@@ -189,7 +214,7 @@ const AmlCdd = () => {
             <Dialog open={secondDialogOpen} onOpenChange={setSecondDialogOpen}>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
                     <form onSubmit={handleSubmitSecondDialouge} className="space-y-6">
-                        <div className="flex flex-row items-start space-x-3 rounded-md border p-2 shadow">
+                        <Card className="flex flex-row items-start space-x-3 rounded-md border p-2 shadow">
                             <input
                                 type="checkbox"
                                 checked={acknowledgement}
@@ -197,14 +222,14 @@ const AmlCdd = () => {
                                 className="form-checkbox my-4 cursor-pointer"
                             />
                             <div className="space-y-1 leading-none">
-                                <label className="font-medium text-gray-700">
+                                <DialogTitle className="font-medium text-gray-700">
                                     Is the data you entered correct? Please confirm.
-                                </label>
+                                </DialogTitle>
                                 <p className="text-sm text-gray-500">
                                     I confirm that the data entered is correct.
                                 </p>
                             </div>
-                        </div>
+                        </Card>
                         <Button type="submit">
                             Submit
                         </Button>
@@ -219,10 +244,9 @@ const AmlCdd = () => {
                         <DialogTitle>Consultation required before proceeding</DialogTitle>
                     </DialogHeader>
                     <div className="flex-1 overflow-y-auto px-6">
-                        <p className="text-sm text-gray-500 mb-6">
+                        <p className="text-base text-gray-600 mb-6">
                             It seems that you will need to consult before proceeding. We will check the contents of your reply and our consultant will contact you shortly Thank you.
                         </p>
-
                     </div>
                     <div className="border-t px-6 py-4 mt-auto flex justify-center">
                         <Button

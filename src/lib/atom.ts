@@ -1,5 +1,4 @@
 import { atom } from 'jotai';
-
 // company Incorporation
 // below variable is used at aml/cdd page for legal assessment
 export const legalAssessmentDialougeAtom = atom(false);
@@ -120,6 +119,8 @@ interface RegCompanyInfo {
   });
 
   export const companyIncorporationAtom = atom((get) => ({
+    userId: '',
+    status: 'Pending',
     country: get(countryAtom),
     applicantInfoForm: get(applicantInfoFormAtom),
     businessInfoHkCompany: get(businessInfoHkCompanyAtom),
@@ -127,4 +128,5 @@ interface RegCompanyInfo {
     regCompanyInfo: get(regCompanyInfoAtom),
     shareHolderDirectorController: get(shareHolderDirectorControllerAtom),
     accountingTaxInfo: get(accountingTaxInfoAtom),
+    incorporationDate: null
   }));
