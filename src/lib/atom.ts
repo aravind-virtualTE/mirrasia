@@ -121,6 +121,7 @@ interface RegCompanyInfo {
   export const companyIncorporationAtom = atom((get) => ({
     userId: '',
     status: 'Pending',
+    is_draft: false,
     country: get(countryAtom),
     applicantInfoForm: get(applicantInfoFormAtom),
     businessInfoHkCompany: get(businessInfoHkCompanyAtom),

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { LightbulbIcon } from 'lucide-react';
 import { useState, ReactNode } from 'react';
+import { useParams } from "react-router-dom";
 import IncorporationForm from './Forms/IncorporationForm';
 import { useAtom } from 'jotai';
 import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom,legalAcknowledgementDialougeAtom } from '@/lib/atom';
@@ -11,12 +12,17 @@ import { useToast } from "@/hooks/use-toast"
 // import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { companyIncorporationList } from '@/services/state';
 
 const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
     const [legalAssessment, ] = useAtom(legalAssessmentDialougeAtom);
     const [, setAcknowledgementDialouge] = useAtom(legalAcknowledgementDialougeAtom);
-    
+    const { id } = useParams();
+    const [companies] = useAtom(companyIncorporationList);
+    const company = companies.find(c => c._id === id);
+    console.log(id,"companies", company);
+
     const [businessInfoHkCompany,] = useAtom(businessInfoHkCompanyAtom);
     // const [selectedCountry12, setSelectedCountry] = useState<string | undefined>();
     const [countryState, setCountryState] = useAtom(countryAtom);

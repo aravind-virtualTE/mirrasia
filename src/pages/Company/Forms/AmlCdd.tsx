@@ -8,7 +8,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { businessInfoHkCompanyAtom, companyIncorporationAtom, legalAcknowledgementDialougeAtom, legalAssessmentDialougeAtom } from '@/lib/atom';
+import { businessInfoHkCompanyAtom, companyIncorporationAtom, legalAcknowledgementDialougeAtom, legalAssessmentDialougeAtom ,applicantInfoFormAtom} from '@/lib/atom';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme-provider';
 import { useNavigate } from 'react-router-dom';
@@ -47,17 +47,18 @@ const AmlCdd = () => {
     const navigate = useNavigate();
     const [authUser, ] = useAtom(authAtom);
     const [finalForm,] = useAtom(companyIncorporationAtom);
-    const [businessInfoHkCompany, setBusinessInfoHkCompany] = useAtom(businessInfoHkCompanyAtom);
     const [initialDialogOpen, setInitialDialogOpen] = useState(true);
     const [secondDialogOpen, setSecondDialogOpen] = useAtom(legalAcknowledgementDialougeAtom);
     const [acknowledgement, setAcknowledgement] = useState(false);
     const [dialogOpen, setDialogOpen] = useAtom(legalAssessmentDialougeAtom);
+    const [businessInfoHkCompany, setBusinessInfoHkCompany] = useAtom(businessInfoHkCompanyAtom);
+    const [, setApplicantInfo] = useAtom(applicantInfoFormAtom);
     const [disabledQuestions, setDisabledQuestions] = useState<Record<string, boolean>>({
-        russian_business_presence: false,
+        legal_assessment: false,
+        sanctioned_countries: false,
         sanctions_presence: false,
         crimea_presence: false,
-        legal_assessment: false,
-        sanctioned_countries: false
+        russian_business_presence: false,
     });
     
     const [cList] = useAtom(companyIncorporationList);
@@ -91,6 +92,8 @@ const AmlCdd = () => {
             toast({description: 'Please accept the legal acknowledgement before proceeding', variant: 'destructive'})
         }
     }
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try{
@@ -104,7 +107,7 @@ const AmlCdd = () => {
                 setCompIncList([...cList, response.data]);
                 toast({ description: 'Company incorporation request submitted successfully!' });
                 navigate('/dashboard')
-                setDialogOpen(false)
+                resetState()
               } else {
                 // Handle errors, e.g., display error message to the user
                 console.log('Error:', response);
@@ -114,10 +117,27 @@ const AmlCdd = () => {
         }catch(err){
             console.log('Error:',err)
         }
-        
-        
-        
     };
+
+    const resetState = () =>{
+        setApplicantInfo({
+            name: '',
+            relationships: [],
+            contactInfo: '',
+            snsAccountId : '',
+            phoneNumber : '',
+            email : '',
+            companyName : ''
+        })
+        setBusinessInfoHkCompany({
+            sanctioned_countries: undefined,
+            sanctions_presence: undefined,
+            crimea_presence: undefined,
+            russian_business_presence: undefined,
+            legal_assessment: undefined,
+          });
+        setDialogOpen(false)
+    }
     const { theme } = useTheme();
     console.log("answers", businessInfoHkCompany)
 

@@ -18,6 +18,7 @@ import DocsLayout from './components/Layout/DocsLayout';
 import { TooltipProvider } from './components/ui/tooltip';
 import Unauthorized from './common/Unauthorized';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
+import CompanyDetail from './pages/Company/Details/CompanyDetail';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -53,6 +54,8 @@ const App: React.FC = () => {
                 <Route element={<Layout />}>
                   <Route path="/compReg" element={<CompanyRegistration2 />} /> 
                   <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                  <Route path="/company-details/:id" element={<CompanyDetail />} />
+                  
                   <Route path="/profile" element={<Profile />} />                
                   {/* Add more admin-specific routes here */}
                 </Route>
@@ -63,7 +66,8 @@ const App: React.FC = () => {
                 <Route element={<Layout />}>
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/profile" element={<Profile />} />
-                  <Route path="/company-register" element={<CompanyRegistration />} />
+                  <Route path="/company-register/" element={<CompanyRegistration />} />
+                  <Route path="/company-register/:id" element={<CompanyRegistration />} />
                   {/* Add more user-specific routes here */}
                 </Route>
               </Route>

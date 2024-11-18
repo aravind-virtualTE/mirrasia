@@ -58,7 +58,7 @@ const Dashboard = () => {
       setCompIncList(result);
     })
    
-  }, [cList, id, setCompIncList]);
+  }, [ id, setCompIncList]);
 
   const handleCardClick = () => {
     setCountryState({
@@ -66,6 +66,9 @@ const Dashboard = () => {
       name: undefined
     })
     navigate('/company-register');
+  };
+  const handleRowClick = (companyId: string) => {
+    navigate(`/company-register/${companyId}`);
   };
   return (
     < >
@@ -109,17 +112,18 @@ const Dashboard = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-              {cList.map((company, index) => {
+              {cList.map((company) => {
                   // Type cast each company
                   const typedCompany = company as {
                     applicantInfoForm: { companyName: string };
                     status: string;
                     incorporationDate: string;
+                    _id: string;
                   };
 
                   return (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">
+                    <TableRow key={typedCompany._id}>
+                      <TableCell className="font-medium cursor-pointer" onClick={() => handleRowClick(typedCompany._id)}>
                         {typedCompany.applicantInfoForm.companyName}
                       </TableCell>
                       <TableCell>
