@@ -114,10 +114,10 @@ const CompanyDetail = () => {
         }
     ];
 
-    
+
     const handleUpdate = async () => {
         // API call to update the record in the backend
-        console.log("testing")
+        console.log("testing", company._id)
         // const response = await fetch(`/api/company/${id}`, {
         //   method: "PATCH",
         //   headers: { "Content-Type": "application/json" },
@@ -126,7 +126,7 @@ const CompanyDetail = () => {
         // const data = await response.json();      
         // console.log(data);
         setIsDraft(!isDraft);
-      };
+    };
 
     return (
         <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
@@ -153,12 +153,17 @@ const CompanyDetail = () => {
                                 ))}
                             </TableBody>
                         </Table>
+                        {section.title === "Status Information" && (
+                            <div className="flex items-center gap-4 mt-4">
+                                <span className="text-sm font-medium text-gray-600">
+                                    Click here to give access to the user to edit their current record
+                                </span>
+                                <Button onClick={handleUpdate} className="px-4 py-2 text-sm">
+                                    Click
+                                </Button>
+                            </div>
+                        )}
                     </CardContent>
-                    {section.title === "Status Information" && (
-                        <Button onClick={handleUpdate}>
-                            {isDraft ? "Mark as Final" : "Edit Draft"}
-                        </Button>
-                    )}
                 </Card>
             ))}
         </div>

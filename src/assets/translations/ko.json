@@ -1,10 +1,20 @@
 {
-    "company": {
-      "name": "회사 이름",
-      "industry": "산업"
-    },
-    "buttons": {
-      "next": "다음",
-      "previous": "이전"
-    }
+  "company": {
+    "name": "회사 이름",
+    "industry": "산업"
+  },
+  "buttons": {
+    "next": "다음",
+    "previous": "이전"
+  },
+  "landingPage": {
+    "leftHeading": "빠르고 간편하게 회사 등록 및 비즈니스 계좌 개설!",
+    "rightHeading": "이미 회사가 있으신가요?",
+    "leftText": "스트레스 없는 서비스와 전문가 지원을 받아 회사를 빠르고 디지털하게 등록 및 관리하세요!",
+    "rightSubHeading": "귀하는 비즈니스에 집중하세요, 저희는 회계와 규정 준수를 관리합니다.",
+    "rightP": "장부 관리부터 급여, 법무까지, 전문가와 함께 백오피스에 마음의 평화를 가져오세요!",
+    "registerNow": "지금 등록하기",
+    "contactUs": "문의하기",
+    "TransferBtn": "Mirr Asia로 이전"
   }
+}

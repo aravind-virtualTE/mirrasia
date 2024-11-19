@@ -1,10 +1,24 @@
 {
-    "company": {
-      "name": "Company Name",
-      "industry": "Industry"
-    },
-    "buttons": {
-      "next": "Next",
-      "previous": "Previous"
-    }
-  }
+  "landingPage" :{
+    "leftHeading" : "Register a company and open a business account Fast & Simple!",
+    "rightHeading" : "Already have a company?",
+    "leftText" : "Get the stress-free services and expert support you need to register and manage a company quickly and digitally!",
+    "rightSubHeading" : "Focus on your business, while we manage your books and compliance",
+    "rightP": "From bookkeeping to payroll, and corporate secretary, bring peace of mind to your back office with our experts!",
+    "registerNow" : "Register now",
+    "contactUs" : "Contact us",
+    "TransferBtn" : "Transfer to Mirr Asia"
+  },
+  "company": {
+    "name": "Company Name",
+    "industry": "Industry"
+  },
+  "buttons": {
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "welcome": {
+    "text": "Welcome to our app!"    
+  },
+  "description": "This is a multi-lingual application that allows you to switch between different languages."
+}

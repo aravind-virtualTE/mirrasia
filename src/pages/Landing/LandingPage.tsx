@@ -1,14 +1,16 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Logo from '@/common/LogoComponent';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { BookOpen, Calculator, Users } from 'lucide-react';
 import businessIllustration from '@/assets/images/Business Plan-amico.svg';
+import LanguageSwitcher from '@/hooks/LanguageSwitcher';
 // import { ModeToggle } from '@/components/mode-toggle';
 
 
 const LandingPage = () => {
-
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const handleLoginClick = () => {
     navigate('/login');
@@ -43,6 +45,7 @@ const LandingPage = () => {
             {/* Auth Buttons */}
             <div className="flex items-center space-x-4">
               <Button variant="ghost" onClick={handleLoginClick}>Log in</Button>
+              <LanguageSwitcher />
               <Button>Get started</Button>
             </div>
           </div>
@@ -53,13 +56,13 @@ const LandingPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
           <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-            <h1 className="text-4xl font-bold mb-4">Register a company and open a business account Fast & Simple!</h1>
+            <h1 className="text-4xl font-bold mb-4">{t('landingPage.leftHeading')}</h1>
             <p className="text-600 mb-6">
-              Get the stress-free services and expert support you need to register and manage a company quickly and digitally!
+            {t('landingPage.leftText')}
             </p>
             <div className="space-x-4">
-              <Button size="lg">Register now</Button>
-              <Button variant="outline" size="lg">Contact us</Button>
+              <Button size="lg">{t('landingPage.registerNow')}</Button>
+              <Button variant="outline" size="lg">{t('landingPage.contactUs')}</Button>
             </div>
           </div>
           <div className="hidden md:flex justify-center">
@@ -70,16 +73,13 @@ const LandingPage = () => {
             />
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-            <h1 className="text-4xl font-bold mb-4">Already have a company?</h1>
+            <h1 className="text-4xl font-bold mb-4">{t('landingPage.rightHeading')}</h1>
             <h2 className="text-lg font-bold mb-4">
-              Focus on your business, while we manage your books and compliance
+            {t('landingPage.rightSubHeading')}
             </h2>
-            <p className="text-600 mb-6">
-              From bookkeeping to payroll, and corporate secretary, bring peace of mind to your back office with our experts!
-            </p>
-
+            <p className="text-600 mb-6">{t('landingPage.rightP')}</p>
             <div className="flex">
-              <Button >Transfer to Mirr Asia
+              <Button >{t('landingPage.TransferBtn')}
               </Button>
             </div>
           </div>

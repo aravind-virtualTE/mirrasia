@@ -16,7 +16,7 @@ const LanguageSwitcher: React.FC = () => {
     val: string
   }[] = [
       { name: "English", val: "en" },
-      { name: "Korean", val: "ko" }
+      { name: "한국어", val: "ko" }
     ]
   const handleLanguageChange = (lng: string) => {
     i18n.changeLanguage(lng);

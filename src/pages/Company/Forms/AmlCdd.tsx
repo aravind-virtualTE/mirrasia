@@ -127,7 +127,7 @@ const AmlCdd = () => {
             snsAccountId : '',
             phoneNumber : '',
             email : '',
-            companyName : ''
+            companyName : ["","",""]
         })
         setBusinessInfoHkCompany({
             sanctioned_countries: undefined,

@@ -11,14 +11,14 @@ export const countryAtom = atom<Record<string, string | undefined>>({
   name: undefined,
 });
 
-type FormDataType = {
+export type FormDataType = {
     name: string;
     relationships: string[];
     contactInfo: string;
     snsAccountId : string;
     email : string;
     phoneNumber : string;
-    companyName : string;
+    companyName : string[];
 };
 
 // corporate incorporation applicant info (section 1)
@@ -29,7 +29,7 @@ export const applicantInfoFormAtom = atom<FormDataType>({
     snsAccountId : '',
     phoneNumber : '',
     email : '',
-    companyName : ''
+    companyName : ["","",""]
 });
 
 // corporate incorporation aml/cdd legal ethical assessment (section 2)
