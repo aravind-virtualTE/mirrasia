@@ -17,8 +17,22 @@
     "next": "Next",
     "previous": "Previous"
   },
-  "welcome": {
-    "text": "Welcome to our app!"    
-  },
-  "description": "This is a multi-lingual application that allows you to switch between different languages."
+  "ApplicantInfoForm":{
+    "heading" : "Applicant Information",
+    "paragraph" : "This form must be filled out by the representative of the Hong Kong company. The information will be kept as KYC and Client Due Diligence documents.",
+    "nameHeading" : "Name of applicant",
+    "relationHeading"  :"Relationship between the above applicant and the Hong Kong company to be established",
+    "relationSelect" : "Please select all that apply.",
+    "relationList1" : "Director of the Hong Kong company",
+    "relationList2" : "Delegated by the director of the Hong Kong company",
+    "relationList3" : "Shareholder of the Hong Kong company holding majority of the shares",
+    "relationList4" :  "A professional(e.g. lawyer, accountant) who provides incorporation advice to the Hong Kong company",
+    "relationList5" : "Other...",
+    "applicantName" : "Name of the Applicant",
+    "compName" : "Name of the Company",
+    "contactInfo" : "Contact information of the above applicant",
+    "phoneNum" : "Phone Number",
+    "email" : "Email",
+    "snsId" : "SNS Account ID"
+  }
 }

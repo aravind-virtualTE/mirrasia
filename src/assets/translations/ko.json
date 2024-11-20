@@ -16,5 +16,23 @@
     "registerNow": "지금 등록하기",
     "contactUs": "문의하기",
     "TransferBtn": "Mirr Asia로 이전"
+  },
+  "ApplicantInfoForm": {
+    "heading": "신청인 정보",
+    "paragraph": "이 양식은 홍콩 회사의 대표자가 작성해야 합니다. 제공된 정보는 KYC 및 고객 실사 문서로 보관됩니다.",
+    "nameHeading": "신청인 이름",
+    "relationHeading": "상기 신청인과 설립 예정인 홍콩 회사의 관계",
+    "relationSelect": "해당되는 모든 항목을 선택하세요.",
+    "relationList1": "홍콩 회사의 이사",
+    "relationList2": "홍콩 회사 이사의 위임을 받은 자",
+    "relationList3": "홍콩 회사의 다수 지분을 보유한 주주",
+    "relationList4": "홍콩 회사에 설립 자문을 제공하는 전문가(변호사, 회계사 등)",
+    "relationList5": "기타...",
+    "applicantName" : "신청자 이름",
+    "compName": "회사명",
+    "contactInfo": "상기 신청인의 연락처",
+    "phoneNum": "전화번호",
+    "email": "이메일",
+    "snsId": "SNS 계정 ID"
   }
 }

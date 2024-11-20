@@ -8,6 +8,7 @@ import { useState, ChangeEvent } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 
 type RelationshipType = {
@@ -15,28 +16,7 @@ type RelationshipType = {
   label: string;
 };
 
-const relationships: RelationshipType[] = [
-  {
-    id: "director",
-    label: "Director of the Hong Kong company"
-  },
-  {
-    id: "delegated",
-    label: "Delegated by the director of the Hong Kong company"
-  },
-  {
-    id: "shareholder",
-    label: "Shareholder of the Hong Kong company holding majority of the shares"
-  },
-  {
-    id: "professional",
-    label: "A professional(e.g. lawyer, accountant) who provides incorporation advice to the Hong Kong company"
-  },
-  {
-    id: "other",
-    label: "Other..."
-  }
-];
+
 interface Errors {
   phoneNumber: string;
   email: string;
@@ -45,7 +25,7 @@ interface Errors {
 }
 
 const ApplicantInfoForm = () => {
-
+  const { t } = useTranslation();
   const [formData, setFormData] = useAtom(applicantInfoFormAtom);
   const [errors, setErrors] = useState<Errors>({
     phoneNumber: "",
@@ -53,7 +33,28 @@ const ApplicantInfoForm = () => {
     snsAccountId: "",
     companyNames: ["", "", ""],
   });
-
+  const relationships: RelationshipType[] = [
+    {
+      id: "director",
+      label: t('ApplicantInfoForm.relationList1')
+    },
+    {
+      id: "delegated",
+      label: t('ApplicantInfoForm.relationList2')
+    },
+    {
+      id: "shareholder",
+      label: t('ApplicantInfoForm.relationList3')
+    },
+    {
+      id: "professional",
+      label: t('ApplicantInfoForm.relationList4')
+    },
+    {
+      id: "other",
+      label: t('ApplicantInfoForm.relationList5')
+    }
+  ];
   const validateCompanyName = (name: string): string => {
     // Check if empty
     if (!name.trim()) {
@@ -199,16 +200,15 @@ const ApplicantInfoForm = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Applicant Information</CardTitle>
+        <CardTitle>{t('ApplicantInfoForm.heading')}</CardTitle>
         <p className="text-sm text-gray-500">
-          This form must be filled out by the representative of the Hong Kong company.
-          The information will be kept as KYC and Client Due Diligence documents.
+          {t('ApplicantInfoForm.paragraph')}
         </p>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
           <Label htmlFor="name" className="text-base">
-            Name of applicant <span className="text-red-500">*</span>
+            {t('ApplicantInfoForm.applicantName')} <span className="text-red-500">*</span>
           </Label>
           <Input
             id="name"
@@ -222,9 +222,10 @@ const ApplicantInfoForm = () => {
 
         <div className="space-y-3">
           <Label className="text-base">
-            Relationship between the above applicant and the Hong Kong company to be established <span className="text-red-500">*</span>
+          {t('ApplicantInfoForm.relationHeading')}
+           <span className="text-red-500">*</span>
           </Label>
-          <p className="text-sm text-gray-500">Please select all that apply.</p>
+          <p className="text-sm text-gray-500">{t('ApplicantInfoForm.relationSelect')}</p>
           <div className="space-y-2">
             {relationships.map((relationship) => (
               <div key={relationship.id} className="flex items-center space-x-2">
@@ -244,7 +245,7 @@ const ApplicantInfoForm = () => {
         </div>
         <div className="space-y-2">
           <Label className="text-base  flex items-center gap-2">
-            Name of the Company <span className="text-red-500 flex">(*) <Tooltip >
+          {t('ApplicantInfoForm.compName')} <span className="text-red-500 flex">(*) <Tooltip >
               <TooltipTrigger asChild>
                 <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
               </TooltipTrigger>
@@ -274,12 +275,12 @@ const ApplicantInfoForm = () => {
         </div>
         <div className="space-y-2">
           <Label className="text-base">
-            Contact information of the above applicant <span className="text-red-500">*</span>
+          {t('ApplicantInfoForm.contactInfo')} <span className="text-red-500">*</span>
           </Label>
 
           <div className="space-y-1">
             <Label htmlFor="phone" className="text-sm">
-              Phone Number
+            {t('ApplicantInfoForm.phoneNum')}
             </Label>
             <Input
               id="phone"
@@ -293,7 +294,7 @@ const ApplicantInfoForm = () => {
 
           <div className="space-y-1">
             <Label htmlFor="email" className="text-sm">
-              Email
+            {t('ApplicantInfoForm.email')}
             </Label>
             <Input
               id="email"
@@ -311,7 +312,7 @@ const ApplicantInfoForm = () => {
 
           <div className="space-y-1">
             <Label htmlFor="sns" className="text-sm">
-              SNS Account ID
+            {t('ApplicantInfoForm.snsId')}
             </Label>
             <Input
               id="sns"
