@@ -222,8 +222,8 @@ const ApplicantInfoForm = () => {
 
         <div className="space-y-3">
           <Label className="text-base">
-          {t('ApplicantInfoForm.relationHeading')}
-           <span className="text-red-500">*</span>
+            {t('ApplicantInfoForm.relationHeading')}
+            <span className="text-red-500">*</span>
           </Label>
           <p className="text-sm text-gray-500">{t('ApplicantInfoForm.relationSelect')}</p>
           <div className="space-y-2">
@@ -245,12 +245,12 @@ const ApplicantInfoForm = () => {
         </div>
         <div className="space-y-2">
           <Label className="text-base  flex items-center gap-2">
-          {t('ApplicantInfoForm.compName')} <span className="text-red-500 flex">(*) <Tooltip >
+            {t('ApplicantInfoForm.compName')} <span className="text-red-500 flex">(*) <Tooltip >
               <TooltipTrigger asChild>
                 <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
               </TooltipTrigger>
               <TooltipContent className="max-w-[500px] text-base">
-                The company name must be in English as a minimum requirement, and can also be in Chinese(traditional Chinese only; simplified Chinese is not allowed). However, a combination of English and Chinese (except for English abbreviations such as HK) is not allowed, and must be written as Limited in full at the end of the English name, and must be written as 有限公司 at the end of the Chinese name. The company name can be a combination of uppercase letters/lowercase letters/numbers/periods/commas/parentheses, and other special characters are not allowed. International can be abbreviated as Int'l. The company name cannot be registered if there is a company previously registered under the same or similar company name. Accordingly, if you enter the three different company names you wish to register in the order of 1st / 2nd / 3rd preference, we will check the names and register in the order of your preferences.
+                {t('ApplicantInfoForm.compNameInfo')}
               </TooltipContent>
             </Tooltip></span>
           </Label>
@@ -275,12 +275,12 @@ const ApplicantInfoForm = () => {
         </div>
         <div className="space-y-2">
           <Label className="text-base">
-          {t('ApplicantInfoForm.contactInfo')} <span className="text-red-500">*</span>
+            {t('ApplicantInfoForm.contactInfo')} <span className="text-red-500">*</span>
           </Label>
 
           <div className="space-y-1">
             <Label htmlFor="phone" className="text-sm">
-            {t('ApplicantInfoForm.phoneNum')}
+              {t('ApplicantInfoForm.phoneNum')}
             </Label>
             <Input
               id="phone"
@@ -294,7 +294,7 @@ const ApplicantInfoForm = () => {
 
           <div className="space-y-1">
             <Label htmlFor="email" className="text-sm">
-            {t('ApplicantInfoForm.email')}
+              {t('ApplicantInfoForm.email')}
             </Label>
             <Input
               id="email"
@@ -312,7 +312,7 @@ const ApplicantInfoForm = () => {
 
           <div className="space-y-1">
             <Label htmlFor="sns" className="text-sm">
-            {t('ApplicantInfoForm.snsId')}
+              {t('ApplicantInfoForm.snsId')}
             </Label>
             <Input
               id="sns"
