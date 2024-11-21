@@ -227,8 +227,8 @@ const ApplicantInfoForm = () => {
           </Label>
           <p className="text-sm text-gray-500">{t('ApplicantInfoForm.relationSelect')}</p>
           <div className="space-y-2">
-            {relationships.map((relationship) => (
-              <div key={relationship.id} className="flex items-center space-x-2">
+            {relationships.map((relationship, index) => (
+              <div key={`${relationship.id}${index}`} className="flex items-center space-x-2">
                 <Checkbox
                   id={relationship.id}
                   checked={formData.relationships.includes(relationship.id)}
@@ -256,7 +256,7 @@ const ApplicantInfoForm = () => {
           </Label>
           {
             formData.companyName.map((cName, index) => (
-              <>
+              <div key={`companyName-${index}`}>
                 <Input
                   id={`companyName-${index}`}
                   placeholder="Enter CompanyName"
@@ -269,7 +269,7 @@ const ApplicantInfoForm = () => {
                 {errors.companyNames[index] && (
                   <Alert variant="destructive"><AlertDescription>{errors.companyNames[index]}</AlertDescription></Alert>
                 )}
-              </>
+              </div>
             ))
           }
         </div>
