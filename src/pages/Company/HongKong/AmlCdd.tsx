@@ -18,6 +18,8 @@ import { useToast } from '@/hooks/use-toast';
 import api from '@/services/fetch';
 import { authAtom } from '@/hooks/useAuth';
 import {companyIncorporationList} from '@/services/state'
+import jwtDecode from 'jwt-decode';
+import { TokenData } from '@/middleware/ProtectedRoutes';
 type QuestionnaireItem = {
     id: string;
     question: string;
@@ -100,10 +102,12 @@ const AmlCdd:React.FC = () => {
         try{
             const formdata = finalForm
             const { id } = authUser.user || {};
+            const token = localStorage.getItem('token') as string;
+            const decodedToken = jwtDecode<TokenData>(token);
             console.log(id,'Form submitted:', formdata);
-            formdata.userId = `${id}`
+            formdata.userId = `${decodedToken.userId}`
             const response = await api.post('/company/company-incorporation', formdata);
-            console.log('Response:', response);
+            // console.log('Response:', response);
             if (response.status === 200) {
                 setCompIncList([...cList, response.data]);
                 toast({ description: 'Company incorporation request submitted successfully!' });
@@ -140,7 +144,7 @@ const AmlCdd:React.FC = () => {
         setDialogOpen(false)
     }
     const { theme } = useTheme();
-    console.log("answers", businessInfoHkCompany)
+    // console.log("answers", businessInfoHkCompany)
 
     return (
         <>
