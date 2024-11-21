@@ -16,8 +16,23 @@ const SignupPage = () => {
     password: '',
     confirmPassword: '',
   });
+
+  const [emailError, setEmailError] = useState('');
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      setEmailError('Invalid email address');
+    } else {
+      setEmailError('');
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name === 'email') {
+      validateEmail(e.target.value);
+    }
   };
 
   const handleEmailSignup = async (e: React.FormEvent) => {
@@ -235,6 +250,7 @@ const SignupPage = () => {
               placeholder="name@example.com"
               className="w-full"
             />
+             {emailError && <div className="text-red-500">{emailError}</div>}
             <Input
               type="password"
               name="password"

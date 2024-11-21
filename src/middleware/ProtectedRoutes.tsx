@@ -18,7 +18,7 @@ const ProtectedRoute: React.FC<{ requiredRole?: string }> = ({ requiredRole }) =
     // const [authUser,] = useAtom(authAtom);
     const isAuthenticated = checkAuth();
     // const { role } = authUser.user || {};
-    const token = localStorage.getItem('token') as string;;
+    const token = localStorage.getItem('token') as string;
     const decodedToken = jwtDecode<TokenData>(token);
     console.log("decodedToken",decodedToken);
 

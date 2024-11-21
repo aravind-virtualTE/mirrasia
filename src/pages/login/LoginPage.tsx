@@ -13,6 +13,7 @@ import { useAtom } from 'jotai';
 const LoginComponent: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -71,6 +72,21 @@ const LoginComponent: React.FC = () => {
     navigate('/signup');
   }
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      setEmailError('Invalid email address');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    validateEmail(e.target.value);
+  };
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <div className="w-full max-w-md space-y-4">
@@ -99,10 +115,12 @@ const LoginComponent: React.FC = () => {
                   type="email"
                   placeholder="Email address*"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  // onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
                   className="w-full px-3 py-2"
                   required
                 />
+                {emailError && <div className="text-red-500">{emailError}</div>}
               </div>
 
               <div className="space-y-2">
