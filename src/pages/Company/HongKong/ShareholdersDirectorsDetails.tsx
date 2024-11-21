@@ -4,13 +4,17 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useAtom } from "jotai";
-import { shareHolderDirectorControllerAtom } from "@/lib/atom";
+import { regCompanyInfoAtom, shareHolderDirectorControllerAtom } from "@/lib/atom";
 import { useTheme } from "@/components/theme-provider";
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
+import ShareholderDirectorForm from './ShareDirectorForm';
+import { typesOfShares } from './constants';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const ShareholdersDirectorsDetails: React.FC = () => {
     const [sdcInfo, setShareDirControllerInfo] = useAtom(shareHolderDirectorControllerAtom);
+    const [comapnyInfo, setCompanyInfo] = useAtom(regCompanyInfoAtom);
     // const shareholdersCount = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
     // const directorsCount = ['1', '2', '3', '4', '5']
@@ -21,6 +25,15 @@ const ShareholdersDirectorsDetails: React.FC = () => {
     //     setShareDirControllerInfo((prev) => ({ ...prev, numDirectorsAtom }));
     // };
     const { theme } = useTheme();
+
+    const handleSharesChange = (checked: boolean, purpose: string) => {
+        setCompanyInfo(prev => ({
+            ...prev,
+            registerShareTypeAtom: checked
+              ? [...prev.registerShareTypeAtom, purpose]
+              : prev.registerShareTypeAtom.filter(p => p !== purpose)
+          }));
+      };
     return (
         <div className="flex w-full p-4">
             <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
@@ -97,6 +110,39 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                                 onChange={(e) => setShareDirControllerInfo(prev => ({ ...prev, shareHolderDirectorNameSharesNumAtom: e.target.value }))}
                                 placeholder="E.g : 1.Jack: Shareholder/Director/Number of shares assigned: 1" />
                         </div> */}
+
+                        <ShareholderDirectorForm />
+
+                        <div>
+                            <Label className="text-base font-semibold flex items-center gap-2">
+                                Type of share(s) to be issued <span className="text-red-500 font-bold ml-1 flex">*
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-[500px] text-base">
+                                            In the case of issuing preference shares or corporate bonds, pre-advice may be required before proceeding, such as reviewing articles of associations and legal regulations.
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </span>
+                            </Label>
+                            {typesOfShares.map((purpose) => (
+                                <div key={purpose} className="flex items-start space-x-3">
+                                    <Checkbox
+                                        id={purpose}
+                                        checked={comapnyInfo.registerShareTypeAtom.includes(purpose)}
+                                        onCheckedChange={(checked) => handleSharesChange(checked as boolean, purpose)}
+                                    />
+                                    <Label
+                                        htmlFor={purpose}
+                                        className="font-normal text-sm leading-normal cursor-pointer"
+                                    >
+                                        {purpose}
+                                    </Label>
+                                </div>
+                            ))}
+                        </div>
+
                         <div>
                             <Label htmlFor="description" className="text-base flex items-center font-semibold gap-2">
                                 Significant Controller <span className="text-red-500 flex font-bold ml-1">*
