@@ -7,7 +7,7 @@ const checkAuth = () => {
     return localStorage.getItem('isAuthenticated') === 'true';
 };
 
-interface TokenData {
+export interface TokenData {
     userId: string;
     role: string;
     iat: number;
@@ -21,7 +21,6 @@ const ProtectedRoute: React.FC<{ requiredRole?: string }> = ({ requiredRole }) =
     const token = localStorage.getItem('token') as string;
     const decodedToken = jwtDecode<TokenData>(token);
     console.log("decodedToken",decodedToken);
-
 
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;

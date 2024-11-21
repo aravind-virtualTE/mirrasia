@@ -18,47 +18,53 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { countryAtom } from "@/lib/atom";
-import { useAtom,useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { companyIncorporationList } from "@/services/state";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
-import { authAtom } from "@/hooks/useAuth";
+// import { authAtom } from "@/hooks/useAuth";
 import { getIncorporationListByUserId } from "@/services/dataFetch";
+import { TokenData } from "@/middleware/ProtectedRoutes";
+import jwtDecode from "jwt-decode";
 const Dashboard = () => {
   const partnerCards = [
     {
       logo: "FlySpaces",
-      img : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-bfoV2Kjsa3bhRS1XZ0fYmGb_dOScnMiLGQ&s',
+      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-bfoV2Kjsa3bhRS1XZ0fYmGb_dOScnMiLGQ&s',
       description: "Office space"
     },
     {
       logo: "AWS",
-      img : 'https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/aws-icon.png',
+      img: 'https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/aws-icon.png',
       description: "Web hosting"
     },
     {
       logo: "GREATER",
-      img : 'https://play-lh.googleusercontent.com/PGUQTS5KUZw5bc_DsyBtijD-CfQR4SPk2i6UjU8K6RMli-eQIOg4aNsABjnoeNHoNsXA',
+      img: 'https://play-lh.googleusercontent.com/PGUQTS5KUZw5bc_DsyBtijD-CfQR4SPk2i6UjU8K6RMli-eQIOg4aNsABjnoeNHoNsXA',
       description: "The Greater Room"
     }
   ];
   const [, setCountryState] = useAtom(countryAtom);
   const [cList,] = useAtom(companyIncorporationList)
   const setCompIncList = useSetAtom(companyIncorporationList);
-  const [authUser, ] = useAtom(authAtom);
+  // const [authUser,] = useAtom(authAtom);
   const navigate = useNavigate();
-  const { id } = authUser.user || {};
-  
+  // const { id } = authUser.user || {};
+
+  const token = localStorage.getItem('token') as string;
+  const decodedToken = jwtDecode<TokenData>(token);
+  // console.log("decodedToken",decodedToken)
+  // console.log("userId", id)
   useEffect(() => {
     async function fetchData() {
-      const result = await getIncorporationListByUserId(`${id}`)
+      const result = await getIncorporationListByUserId(`${decodedToken.userId}`)
       return result
     }
     fetchData().then((result) => {
       setCompIncList(result);
     })
-   
-  }, [ id, setCompIncList]);
+
+  }, [decodedToken.userId, setCompIncList]);
 
   const handleCardClick = () => {
     setCountryState({
@@ -112,7 +118,7 @@ const Dashboard = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-              {cList.map((company) => {
+                {cList.map((company) => {
                   // Type cast each company
                   const typedCompany = company as {
                     applicantInfoForm: { companyName: string };
@@ -131,8 +137,8 @@ const Dashboard = () => {
                           className={cn(
                             'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
                             typedCompany.status === 'Active' ? 'bg-green-100 text-green-800' :
-                            typedCompany.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
+                              typedCompany.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-red-100 text-red-800'
                           )}
                         >
                           {typedCompany.status}
