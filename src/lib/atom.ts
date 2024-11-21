@@ -90,7 +90,13 @@ interface RegCompanyInfo {
     numDirectorsAtom?: string;
     shareHolderDirectorNameSharesNumAtom: string;
     significantControllerAtom: string
-    designatedContactPersonAtom: string
+    designatedContactPersonAtom: string,
+    shareHolders: {
+      name: string;
+      ownershipRate: number;
+      isDirector: boolean;
+      isLegalPerson: boolean;
+    }[]
   }
   
 // corporate incorporation Director Shareholder Information (section 4)  
@@ -100,7 +106,13 @@ interface RegCompanyInfo {
     numDirectorsAtom: undefined,
     shareHolderDirectorNameSharesNumAtom: '',
     significantControllerAtom : '',
-    designatedContactPersonAtom: ''
+    designatedContactPersonAtom: '',
+    shareHolders: [{
+      "name": "",
+      "ownershipRate": 0,
+      "isDirector": false,
+      "isLegalPerson": false,
+    }]
   });
 
   interface AccountingTaxInfo {
@@ -130,5 +142,6 @@ interface RegCompanyInfo {
     regCompanyInfo: get(regCompanyInfoAtom),
     shareHolderDirectorController: get(shareHolderDirectorControllerAtom),
     accountingTaxInfo: get(accountingTaxInfoAtom),
-    incorporationDate: null
+    incorporationDate: null,
+    serviceAgreementConsent: false
   }));

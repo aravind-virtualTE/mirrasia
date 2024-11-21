@@ -20,8 +20,11 @@ const CompanyRegistration = () => {
     const [finalForm,] = useAtom(companyIncorporationAtom);
     const { id } = useParams();
     const [companies] = useAtom(companyIncorporationList);
-    const company = companies.find(c => c._id === id);
-    console.log(id,"companies", company);
+    let company
+    if(id){
+        company = companies.find(c => c._id === id);
+        console.log(id,"companies", company);
+    }
 
     const [businessInfoHkCompany,] = useAtom(businessInfoHkCompanyAtom);
     // const [selectedCountry12, setSelectedCountry] = useState<string | undefined>();
@@ -41,6 +44,7 @@ const CompanyRegistration = () => {
     ];
     const { toast } = useToast()
     const nextSection = () => {
+        console.log("companyIncorporationAtom",finalForm)
         if (currentSection === 2 && Object.values(businessInfoHkCompany).some(value => value === undefined)) {
             console.log('Fill all the required fields')
 

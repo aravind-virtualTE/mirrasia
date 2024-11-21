@@ -5,6 +5,8 @@ import { Trash2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useAtom } from 'jotai';
+import { shareHolderDirectorControllerAtom } from '@/lib/atom';
 
 interface ShareholderDirectorProps {
   name: string;
@@ -86,6 +88,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
 };
 
 const ShareholderDirectorForm: React.FC = () => {
+  const [, setShareDirControllerInfo] = useAtom(shareHolderDirectorControllerAtom);
   const [shareholders, setShareholders] = useState<ShareholderDirectorProps[]>([
     {
       name: '',
@@ -99,6 +102,16 @@ const ShareholderDirectorForm: React.FC = () => {
   ]);
   const [totalOwnership, setTotalOwnership] = useState(0);
 
+  useEffect(() => {
+    const filteredArray = shareholders.map(obj => ({
+      name: obj.name,
+      ownershipRate: obj.ownershipRate,
+      isDirector: obj.isDirector,
+      isLegalPerson: obj.isLegalPerson
+    }));
+    setShareDirControllerInfo((prev) => ({ ...prev, shareHolders: filteredArray }));
+  }, [shareholders, setShareDirControllerInfo]);
+  
   // Calculate total ownership whenever shareholders change
   useEffect(() => {
     const total = shareholders.reduce((sum, shareholder) => sum + shareholder.ownershipRate, 0);
@@ -133,7 +146,6 @@ const ShareholderDirectorForm: React.FC = () => {
     newShareholders[index] = { ...newShareholders[index], ...updates };
     setShareholders(newShareholders);
   };
-  console.log("shareholders-->",shareholders)
   return (
     <div className="flex flex-col">
       {totalOwnership > 100 && (

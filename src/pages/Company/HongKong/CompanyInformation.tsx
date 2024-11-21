@@ -93,19 +93,7 @@ const CompanyInformation: React.FC = () => {
                                 <Label className="text-base font-semibold">
                                     Purpose of the establishment of the Hong Kong company and expected effects <span className="text-red-500 font-bold ml-1">*</span>
                                 </Label>
-                                {/* <RadioGroup className="mt-4 space-y-3"
-                                    value={businessInfo.business_purpose}
-                                    onValueChange={handlePurposeChange}
-                                >
-                                    {purposeOptions.map((purpose) => (
-                                        <div key={purpose} className="flex items-center space-x-3">
-                                            <RadioGroupItem value={purpose} id={purpose} />
-                                            <Label htmlFor={purpose} className="font-normal">
-                                                {purpose}
-                                            </Label>
-                                        </div>
-                                    ))}
-                                </RadioGroup> */}
+                               
                                 {purposeOptions.map((purpose) => (
                                     <div key={purpose} className="flex items-start space-x-3">
                                         <Checkbox
