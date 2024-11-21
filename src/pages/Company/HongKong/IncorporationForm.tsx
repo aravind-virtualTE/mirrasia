@@ -1,14 +1,14 @@
-
-import AccountingTaxationInfo from './AccountingTaxationInfo';
 import AmlCdd from './AmlCdd';
 import ApplicantInfoForm from './ApplicantInfo'
 import CompanyInformation from './CompanyInformation';
-import IncorporateCompanyInvoice from './IncorporateCompanyInvoice';
-import IncorporateCompanyPayment from './IncorporateCompanyPayment';
+import InformationIncorporation from './InformationIncorporation';
+import SignIncorporationDocs from './SignIncorporationDocs';
 import ServiceAgreement from './ServiceAgreement';
 import ServiceSelection from './ServiceSelection';
-import ShareholdersDirectorsDetails from './ShareholdersDirectorsDetails';
 import { motion, AnimatePresence } from 'framer-motion';
+import IncorporateCompany from './IncorporateCompany';
+import Invoice from './Invoice';
+import Payment from './Payment';
 interface IncorporationFormProps {
     currentSection: number;
 }
@@ -50,12 +50,13 @@ const IncorporationForm = ({ currentSection }: IncorporationFormProps) => {
                     {currentSection === 1 && <ApplicantInfoForm />}
                     {currentSection === 2 && <AmlCdd />}
                     {currentSection === 3 && <CompanyInformation />}
-                    {currentSection === 4 && <ShareholdersDirectorsDetails />}
-                    {currentSection === 5 && <AccountingTaxationInfo />}
-                    {currentSection === 6 && <ServiceSelection />}
-                    {currentSection === 7 && <ServiceAgreement />}
-                    {currentSection === 8 && <IncorporateCompanyInvoice />}
-                    {currentSection === 9 && <IncorporateCompanyPayment />}
+                    {currentSection === 4 && <ServiceSelection />}
+                    {currentSection === 5 && <ServiceAgreement />}
+                    {currentSection === 6 && <Invoice />}
+                    {currentSection === 7 && <Payment />}
+                    {currentSection === 8 && <InformationIncorporation />}
+                    {currentSection === 9 && <SignIncorporationDocs />}
+                    {currentSection === 10 && <IncorporateCompany />}
                 </motion.div>
             </AnimatePresence>
         </>

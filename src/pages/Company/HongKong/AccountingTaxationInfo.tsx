@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTheme } from "@/components/theme-provider";
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -7,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {accountingTaxInfoAtom} from "@/lib/atom";
 import { useAtom } from "jotai";
 
-const AccountingTaxationInfo = () => {
+const AccountingTaxationInfo:React.FC = () => {
     const [accTaxInfo, setTaxAccountInfo] = useAtom(accountingTaxInfoAtom);
 
     const finYearEndDates = ['December 31', "March 31 (Hong Kong's fiscal year-end date)", 'Other']

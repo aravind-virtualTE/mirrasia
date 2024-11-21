@@ -25,7 +25,7 @@ const questions: QuestionnaireItem[] = [
   }
 ];
 
-const SanctionsQuestionnaire = () => {
+const SanctionsQuestionnaire:React.FC = () => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
   const handleSubmit = (e: React.FormEvent) => {

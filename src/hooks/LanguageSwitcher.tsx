@@ -16,8 +16,13 @@ const LanguageSwitcher: React.FC = () => {
     val: string
   }[] = [
       { name: "English", val: "en" },
-      { name: "한국어", val: "ko" }
+      { name: "한국어", val: "ko" },
+      { name: "繁體中文", val: "zhTW" }
     ]
+    // zh-CN - Chinese (Simplified)
+    // zh-TW - Chinese (Traditional)
+    // zh-HK - Chinese (Hong Kong)
+    // zh - Chinese
   const handleLanguageChange = (lng: string) => {
     i18n.changeLanguage(lng);
   };

@@ -4,12 +4,11 @@ import { Button } from '@/components/ui/button';
 import { LightbulbIcon } from 'lucide-react';
 import { useState, ReactNode } from 'react';
 import { useParams } from "react-router-dom";
-import IncorporationForm from './Forms/IncorporationForm';
+import IncorporationForm from './HongKong/IncorporationForm';
 import { useAtom } from 'jotai';
-import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom,legalAcknowledgementDialougeAtom } from '@/lib/atom';
+import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom,legalAcknowledgementDialougeAtom, companyIncorporationAtom } from '@/lib/atom';
 import { useTheme } from '@/components/theme-provider';
 import { useToast } from "@/hooks/use-toast"
-// import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { companyIncorporationList } from '@/services/state';
@@ -18,6 +17,7 @@ const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
     const [legalAssessment, ] = useAtom(legalAssessmentDialougeAtom);
     const [, setAcknowledgementDialouge] = useAtom(legalAcknowledgementDialougeAtom);
+    const [finalForm,] = useAtom(companyIncorporationAtom);
     const { id } = useParams();
     const [companies] = useAtom(companyIncorporationList);
     const company = companies.find(c => c._id === id);
@@ -31,12 +31,13 @@ const CompanyRegistration = () => {
         { number: 1, label: 'Applciant\ninformation', active: currentSection === 1 },
         { number: 2, label: 'AML\nCDD', active: currentSection === 2 },
         { number: 3, label: 'Company\ninformation', active: currentSection === 3 },
-        { number: 4, label: 'Directors/shareholders\n & \nControllers information', active: currentSection === 4 },
-        { number: 5, label: 'Accounting/Taxation ', active: currentSection === 5 },
-        { number: 6, label: 'Services ', active: currentSection === 6 },
-        { number: 7, label: 'Service Agreement ', active: currentSection === 7 },
-        { number: 8, label: 'Invoice ', active: currentSection === 8 },
-        { number: 9, label: 'Payment', active: currentSection === 9 },
+        { number: 4, label: 'Services to Select', active: currentSection === 4 },
+        { number: 5, label: 'Service Agreement', active: currentSection === 5 },
+        { number: 6, label: 'Invoice ', active: currentSection === 6 },
+        { number: 7, label: 'Payment', active: currentSection === 7 },
+        { number: 8, label: 'Information For Incorporation', active: currentSection === 8 },
+        { number: 9, label: 'Signing Incorporation Documents', active: currentSection === 9 },
+        { number: 10, label: 'Incorporation', active: currentSection === 10 },
     ];
     const { toast } = useToast()
     const nextSection = () => {
@@ -55,9 +56,12 @@ const CompanyRegistration = () => {
             setCurrentSection(currentSection + 1);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        else if (currentSection < 9 && currentSection !== 2) {
+        else if (currentSection < 10 && currentSection !== 2) {
             setCurrentSection(currentSection + 1);
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        else if(currentSection === 10){
+            console.log("form Needs submission",finalForm)
         }
         else {
             setAcknowledgementDialouge(true);
@@ -89,7 +93,6 @@ const CompanyRegistration = () => {
                 return <IncorporationForm currentSection={currentSection} />;
             case 'SG':
                 return <div>Registration form for {countryState.name} is not available yet.</div>;
-            // Add more country-specific forms as needed
             default:
                 return <div>Registration form for {countryState.name} is not available yet.</div>;;
         }
@@ -169,7 +172,7 @@ const CompanyRegistration = () => {
                                 </div>
                             </CardContent>
                         </Card>}
-                        <div className="max-w-3xl mx-auto p-6">
+                        <div className=" mx-auto p-6">
                             {renderSection()}
                         </div>
                     </div>
@@ -189,7 +192,7 @@ const CompanyRegistration = () => {
                                 disabled={legalAssessment === true}
                                 className="flex items-center space-x-2 bg-primary"
                             >
-                                <span>{currentSection === 9 ? 'SUBMIT' : 'NEXT →'}</span>
+                                <span>{currentSection === 10 ? 'SUBMIT' : 'NEXT →'}</span>
                             </Button>
                         </div>
                     )}
@@ -223,25 +226,3 @@ const CompanyRegistration = () => {
 };
 
 export default CompanyRegistration;
-
-{/* Progress Steps - Vertical on right */ }
-{/* <div className="w-36 flex-shrink-0 p-6 border-l">
-<div className="sticky top-6">
-    {steps.map((step, index) => (
-        <div key={index} className="flex flex-col items-center mb-8">
-            <div className="flex flex-col items-center">
-                <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center ${step.active ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
-                            }`}
-                    >
-                        {step.number}
-                    </div>
-                    <div className="text-xs text-center mt-2">{step.label}</div>
-                </div>
-                {index < steps.length - 1 && (
-                    <div className="h-12 w-px bg-gray-200 my-2" />
-                )}
-            </div>
-        ))}
-    </div>
-</div> */}

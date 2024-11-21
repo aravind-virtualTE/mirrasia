@@ -133,7 +133,7 @@ const MultiStepFormLayout:React.FC = () => {
 };
 
 // Placeholder form components using shadcn/ui
-const CompanyDetailsForm = () => (
+const CompanyDetailsForm:React.FC = () => (
   <Card>
     <CardHeader>
       <CardTitle>Company Details</CardTitle>
@@ -160,7 +160,7 @@ const CompanyDetailsForm = () => (
   </Card>
 );
 
-const DirectorForm = () => (
+const DirectorForm:React.FC = () => (
   <Card>
     <CardHeader>
       <CardTitle>Director Information</CardTitle>
@@ -178,7 +178,7 @@ const DirectorForm = () => (
   </Card>
 );
 
-const BusinessForm = () => (
+const BusinessForm:React.FC = () => (
   <Card>
     <CardHeader>
       <CardTitle>Business Activity</CardTitle>
@@ -209,7 +209,7 @@ const BusinessForm = () => (
   </Card>
 );
 
-const AddressForm = () => (
+const AddressForm:React.FC = () => (
   <Card>
     <CardHeader>
       <CardTitle>Address Details</CardTitle>

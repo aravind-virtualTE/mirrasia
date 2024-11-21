@@ -46,20 +46,20 @@ export const businessInfoHkCompanyAtom = atom<Record<string, string | undefined>
 interface RegBusinessInfo {
     business_industry: string | undefined;
     business_product_description: string;
-    business_purpose: string | undefined;
+    business_purpose: string [];
 }
 
 // corporate incorporation Company Information (section 3.1)
 export const companyBusinessInfoAtom = atom<RegBusinessInfo>({
     business_industry: undefined,
     business_product_description: "",
-    business_purpose: undefined,
+    business_purpose: [],
 });
 
 //   registration Details for hong kong company incorporation
 interface RegCompanyInfo {
     registerCompanyNameAtom: string;
-    registerShareTypeAtom?: string;
+    registerShareTypeAtom: string[];
     registerPaymentShare?: string;
     registerCurrencyAtom?: string;
     registerAmountAtom?: string;
@@ -73,7 +73,8 @@ interface RegCompanyInfo {
 // corporate incorporation Company Information (section 3.2)  
   export const regCompanyInfoAtom = atom<RegCompanyInfo>({
     registerCompanyNameAtom: '',
-    registerShareTypeAtom: undefined,
+    // registerShareTypeAtom: undefined,
+    registerShareTypeAtom: [],
     registerPaymentShare: undefined,
     registerCurrencyAtom: undefined,
     registerAmountAtom: undefined,

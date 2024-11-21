@@ -1,3 +1,4 @@
+import React from 'react';
 import { useAtom,useSetAtom  } from 'jotai';
 import {
     Dialog,
@@ -42,7 +43,7 @@ const questions: QuestionnaireItem[] = [
 
 ];
 
-const AmlCdd = () => {
+const AmlCdd:React.FC = () => {
     const { toast } = useToast()
     const navigate = useNavigate();
     const [authUser, ] = useAtom(authAtom);

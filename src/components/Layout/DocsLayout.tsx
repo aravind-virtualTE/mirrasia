@@ -13,7 +13,7 @@ const DocsLayout = () => {
           {/* Left section */}
           <div className="flex items-center gap-6">
             <a href="#" className="font-semibold flex items-center gap-2">
-              <div className="font-bold">shadcn/ui</div>
+              <div className="font-bold">Sample UI</div>
             </a>
             <nav className="hidden md:flex items-center gap-6">
               <a href="#" className="text-sm font-medium">Docs</a>

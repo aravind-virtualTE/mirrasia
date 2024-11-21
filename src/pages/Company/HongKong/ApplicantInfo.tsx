@@ -258,7 +258,7 @@ const ApplicantInfoForm = () => {
             formData.companyName.map((cName, index) => (
               <>
                 <Input
-                  id="companyName"
+                  id={`companyName-${index}`}
                   placeholder="Enter CompanyName"
                   value={cName}
                   // onChange={handleInputChange}
@@ -283,7 +283,7 @@ const ApplicantInfoForm = () => {
               {t('ApplicantInfoForm.phoneNum')}
             </Label>
             <Input
-              id="phone"
+              id="phoneNum"
               placeholder="Enter phone number"
               value={formData.phoneNumber}
               onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}

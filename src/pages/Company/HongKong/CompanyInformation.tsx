@@ -3,33 +3,42 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { companyBusinessInfoAtom, regCompanyInfoAtom } from "@/lib/atom";
 import { useAtom } from "jotai";
 import { HelpCircle } from "lucide-react";
+// import { useTranslation } from "react-i18next";
+import { businessNatureList } from "./constants";
+import { Checkbox } from "@/components/ui/checkbox";
+import ShareholderDirectorForm from "./smpl";
+import ShareholdersDirectorsDetails from "./ShareholdersDirectorsDetails";
+import AccountingTaxationInfo from "./AccountingTaxationInfo";
+// import { useState } from "react";
 
 
 const CompanyInformation = () => {
-
+    // const { t } = useTranslation();
     const [businessInfo, setBusinessInfo] = useAtom(companyBusinessInfoAtom);
     const [comapnyInfo, setCompanyInfo] = useAtom(regCompanyInfoAtom);
+    // const [selectedPurposes, setSelectedPurposes] = useState<string[]>([]);
 
-    const industries = [
-        "Trade",
-        "Wholesale/retail distribution business",
-        "Consulting",
-        "Manufacturing",
-        "Investment and advisory business",
-        "E-commerce",
-        "Online direct purchase/shipment/purchase agency",
-        "IT and software development",
-        "Cryptocurrency related business(ICO exchange, wallet service etc.)",
-        "Real Estate Investment/Development",
-        "Government related business",
-        "Development/transaction/trade of energy/natural resource/commodity",
-        "TPA"
-    ];
+    // const industries = [
+    //     "Trade",
+    //     "Wholesale/retail distribution business",
+    //     "Consulting",
+    //     "Manufacturing",
+    //     "Investment and advisory business",
+    //     "E-commerce",
+    //     "Online direct purchase/shipment/purchase agency",
+    //     "IT and software development",
+    //     "Cryptocurrency related business(ICO exchange, wallet service etc.)",
+    //     "Real Estate Investment/Development",
+    //     "Government related business",
+    //     "Development/transaction/trade of energy/natural resource/commodity",
+    //     "TPA"
+    // ];
 
     const purposeOptions = [
         "Entering business in Hong Kong and Greater China",
@@ -76,21 +85,23 @@ const CompanyInformation = () => {
 
     const addressOptions = ["Use of Mirr Asia's address service", "I/We have a commercial address to register in Hong Kong (Mirr Asia's address service is not needed)", "Other"]
 
-    const handleIndustryChange = (business_industry: string) => {
-        setBusinessInfo((prev) => ({ ...prev, business_industry }));
-    };
+    // const handleIndustryChange = (business_industry: string) => {
+    //     console.log('business_industry',business_industry)
+    //     setBusinessInfo((prev) => ({ ...prev, business_industry }));
+    // };
 
     const handleDescriptionChange = (business_product_description: string) => {
         setBusinessInfo((prev) => ({ ...prev, business_product_description }));
     };
 
-    const handlePurposeChange = (business_purpose: string) => {
-        setBusinessInfo((prev) => ({ ...prev, business_purpose }));
-    };
+    // const handlePurposeChange = (business_purpose: string) => {
+    //     console.log("business_purpose-->",business_purpose)
+    //     setBusinessInfo((prev) => ({ ...prev, business_purpose }));
+    // };
 
-    const handleShareTypeChange = (registerShareTypeAtom: string) => {
-        setCompanyInfo((prev) => ({ ...prev, registerShareTypeAtom }));
-    };
+    // const handleShareTypeChange = (registerShareTypeAtom: string) => {
+    //     setCompanyInfo((prev) => ({ ...prev, registerShareTypeAtom }));
+    // };
 
 
     const handlePaymentOptionChange = (registerPaymentShare: string) => {
@@ -121,6 +132,31 @@ const CompanyInformation = () => {
         setCompanyInfo((prev) => ({ ...prev, registerAddressAtom }));
     };
     const { theme } = useTheme();
+    const handleBusinessChange = (value: string) => {
+        // console.log('Selected business category:', value);
+        const categoryName = businessNatureList.find((category) => category.val === value)?.name;
+        setBusinessInfo((prev) => ({ ...prev, business_industry: categoryName }));
+        // Handle the selected value here
+    };
+
+    const handlePurposeChange = (checked: boolean, purpose: string) => {
+        setBusinessInfo(prev => ({
+            ...prev,
+            business_purpose: checked
+              ? [...prev.business_purpose, purpose]
+              : prev.business_purpose.filter(p => p !== purpose)
+          }));
+      };
+
+      const handleSharesChange = (checked: boolean, purpose: string) => {
+        setCompanyInfo(prev => ({
+            ...prev,
+            registerShareTypeAtom: checked
+              ? [...prev.registerShareTypeAtom, purpose]
+              : prev.registerShareTypeAtom.filter(p => p !== purpose)
+          }));
+      };
+      
     return (
         <>
             <div className="flex w-full p-4">
@@ -134,8 +170,8 @@ const CompanyInformation = () => {
                 <div className="w-3/4 ml-4">
                     <Card>
                         <CardContent className="space-y-6">
-                            <div>
-                                <Label className="text-base font-semibold">Select Industry <span className="text-red-500 font-bold ml-1">*</span></Label>
+                            {/* <div>
+                                <Label className="text-base font-semibold">Select Business Industry <span className="text-red-500 font-bold ml-1">*</span></Label>
                                 <RadioGroup className="mt-4 space-y-3"
                                     value={businessInfo.business_industry}
                                     onValueChange={handleIndustryChange}
@@ -149,6 +185,29 @@ const CompanyInformation = () => {
                                         </div>
                                     ))}
                                 </RadioGroup>
+                            </div> */}
+
+                            <div className="space-y-2">
+                                <Label htmlFor="business-category">Select Business Industry</Label>
+                                <Select
+                                    defaultValue={businessNatureList[0].val}
+                                    onValueChange={handleBusinessChange}
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select a business Industry" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {businessNatureList.map((category) => (
+                                            <SelectItem
+                                                key={category.val}
+                                                value={category.val}
+                                                className="cursor-pointer"
+                                            >
+                                                {category.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
 
                             <div className="space-y-2">
@@ -168,7 +227,7 @@ const CompanyInformation = () => {
                                 <Label className="text-base font-semibold">
                                     Purpose of the establishment of the Hong Kong company and expected effects <span className="text-red-500 font-bold ml-1">*</span>
                                 </Label>
-                                <RadioGroup className="mt-4 space-y-3"
+                                {/* <RadioGroup className="mt-4 space-y-3"
                                     value={businessInfo.business_purpose}
                                     onValueChange={handlePurposeChange}
                                 >
@@ -180,7 +239,22 @@ const CompanyInformation = () => {
                                             </Label>
                                         </div>
                                     ))}
-                                </RadioGroup>
+                                </RadioGroup> */}
+                                {purposeOptions.map((purpose) => (
+                                    <div key={purpose} className="flex items-start space-x-3">
+                                        <Checkbox
+                                            id={purpose}
+                                            checked={businessInfo.business_purpose.includes(purpose)}
+                                            onCheckedChange={(checked) => handlePurposeChange(checked as boolean, purpose)}
+                                        />
+                                        <Label
+                                            htmlFor={purpose}
+                                            className="font-normal text-sm leading-normal cursor-pointer"
+                                        >
+                                            {purpose}
+                                        </Label>
+                                    </div>
+                                ))}
                             </div>
                         </CardContent>
                     </Card>
@@ -199,27 +273,6 @@ const CompanyInformation = () => {
                     <Card>
                         <CardContent className="space-y-6">
                             <div>
-                                <Label className="text-base flex items-center">Name of the Hong Kong company you wish to register <span className="text-red-500 ml-1 flex">* <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                                    </TooltipTrigger>
-                                    <TooltipContent className="max-w-[500px] text-base">
-                                        The company name must be in English as a minimum requirement, and can also be in Chinese(traditional Chinese only; simplified Chinese is not allowed). However, a combination of English and Chinese (except for English abbreviations such as HK) is not allowed, and must be written as Limited in full at the end of the English name, and must be written as 有限公司 at the end of the Chinese name. The company name can be a combination of uppercase letters/lowercase letters/numbers/periods/commas/parentheses, and other special characters are not allowed. International can be abbreviated as Int'l. The company name cannot be registered if there is a company previously registered under the same or similar company name. Accordingly, if you enter the three different company names you wish to register in the order of 1st / 2nd / 3rd preference, we will check the names and register in the order of your preferences.
-                                    </TooltipContent>
-                                </Tooltip>
-                                </span>
-                                </Label>
-                                {/* <p className="text-sm text-gray-500">The company name must be in English as a minimum requirement, and can also be in Chinese(traditional Chinese only; simplified Chinese is not allowed). However, a combination of English and Chinese (except for English abbreviations such as HK) is not allowed, and must be written as Limited in full at the end of the English name, and must be written as 有限公司 at the end of the Chinese name. The company name can be a combination of uppercase letters/lowercase letters/numbers/periods/commas/parentheses, and other special characters are not allowed. International can be abbreviated as Int'l. The company name cannot be registered if there is a company previously registered under the same or similar company name. Accordingly, if you enter the three different company names you wish to register in the order of 1st / 2nd / 3rd preference, we will check the names and register in the order of your preferences.</p> */}
-                                <Input
-                                    id="comapany-reg-name"
-                                    required
-                                    className="w-full"
-                                    value={comapnyInfo.registerCompanyNameAtom}
-                                    onChange={(e) => setCompanyInfo(prev => ({ ...prev, registerCompanyNameAtom: e.target.value }))}
-                                    placeholder="Enter company name..." />
-                            </div>
-
-                            <div>
                                 <Label className="text-base font-semibold flex items-center gap-2">
                                     Type of share(s) to be issued <span className="text-red-500 font-bold ml-1 flex">*
                                         <Tooltip>
@@ -232,8 +285,7 @@ const CompanyInformation = () => {
                                         </Tooltip>
                                     </span>
                                 </Label>
-                                {/* <p className="text-sm text-gray-500">In the case of issuing preference shares or corporate bonds, pre-advice may be required before proceeding, such as reviewing articles of associations and legal regulations.</p> */}
-                                <RadioGroup className="mt-4 space-y-3"
+                                {/* <RadioGroup className="mt-4 space-y-3"
                                     value={comapnyInfo.registerShareTypeAtom}
                                     onValueChange={handleShareTypeChange}
                                 >
@@ -245,8 +297,26 @@ const CompanyInformation = () => {
                                             </Label>
                                         </div>
                                     ))}
-                                </RadioGroup>
+                                </RadioGroup> */}
+                                {typesOfShares.map((purpose) => (
+                                    <div key={purpose} className="flex items-start space-x-3">
+                                        <Checkbox
+                                            id={purpose}
+                                            checked={comapnyInfo.registerShareTypeAtom.includes(purpose)}
+                                            onCheckedChange={(checked) => handleSharesChange(checked as boolean, purpose)}
+                                        />
+                                        <Label
+                                            htmlFor={purpose}
+                                            className="font-normal text-sm leading-normal cursor-pointer"
+                                        >
+                                            {purpose}
+                                        </Label>
+                                    </div>
+                                ))}
                             </div>
+                            <>
+                            <ShareholderDirectorForm />
+                            </>
                             <div>
                                 <Label className="text-base font-semibold flex items-center gap-2">
                                     Payment of the share capital <span className="text-red-500 font-bold ml-1 flex">*
@@ -260,7 +330,6 @@ const CompanyInformation = () => {
                                         </Tooltip>
                                     </span>
                                 </Label>
-                                {/* <p className="text-sm text-gray-500">Hong Kong is subject to the New Companies Ordinance (Cap. 622) revised as of March 3, 2014, so all share capitals are payable in full. As Hong Kong does not have a separate capital account like other countries, you can deposit the share capital amount after opening a corporate account. If the opening of a corporate account is delayed or there is no corporate account, the director(or a person in charge of your company's cash) can keep the capital amount and use it for the company's expenditures (as a petty cash account), and submit supporting documents of the expenditures such as expense receipts and etc. However, this is the capital payment method based on Hong Kong, and procedures and reporting obligations under the Foreign Direct Investment and Foreign Exchange Transaction Act in other countries must be separately checked and processed. In some countries, you may report the foreign direct investment through your foreign exchange bank or through the relevant government department.</p> */}
                                 <RadioGroup className="mt-4 space-y-3"
                                     value={comapnyInfo.registerPaymentShare}
                                     onValueChange={handlePaymentOptionChange}
@@ -289,7 +358,6 @@ const CompanyInformation = () => {
                                         </Tooltip>
                                     </span>
                                 </Label>
-                                {/* <p className="text-sm text-gray-500">It is recommended that the currency of the share capital be the same as the functional currency to be used for accounting purposes. For example, if you trade both purchases and sales in USD, setting the share capital in USD is convenient for accounting. If this is not the case, all currencies of translations must be converted to the base currency for accounting. Please note that the currency of the share capital cannot be changed to another currency after the incorporation.  (Example: Share Capital issued in HKD cannot be changed to USD)</p> */}
                                 <RadioGroup className="mt-4 space-y-3"
                                     value={comapnyInfo.registerCurrencyAtom}
                                     onValueChange={handleCurrencyOptionChange}
@@ -315,7 +383,6 @@ const CompanyInformation = () => {
                                         </TooltipContent>
                                     </Tooltip></span>
                                 </Label>
-                                {/* <p className="text-sm text-gray-500">This is the amount according to the above base currency. Example) USD 1,000</p> */}
                                 <RadioGroup className="mt-4 space-y-3"
                                     value={comapnyInfo.registerAmountAtom}
                                     onValueChange={handleShareCapitalOptionChange}
@@ -333,17 +400,16 @@ const CompanyInformation = () => {
                             <div>
                                 <Label className="text-base font-semibold flex items-center gap-2">
                                     Total number of shares to be issued (at least 1 share) <span className="text-red-500 font-bold ml-1 flex">*
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                                        </TooltipTrigger>
-                                        <TooltipContent className="max-w-[500px] text-base">
-                                        After establishment, capital increases such as the issuance of new shares and transfer of shares incur additional expenses, so please carefully determine the number of shares and amount of capital. If you plan to transfer shares in the future, it is recommended that the number of shares is efficient enough in order to divide the shares according to the desired ratio. For example, issuing 10 shares at the time of incorporation, but if you want to transfer 33.33% of the total shares to another partner, the process will become complicated as it required to issue additional shares to match the proportion you wish to divide. In addition, if you wish to have a difference (eg HKD5) on the par value per share to the future investor after issuing the par value per share as HKD1 at the time of incorporation, it is recommended to consider this before you decide to issue the shares.
-                                        </TooltipContent>
-                                    </Tooltip>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                            </TooltipTrigger>
+                                            <TooltipContent className="max-w-[500px] text-base">
+                                                After establishment, capital increases such as the issuance of new shares and transfer of shares incur additional expenses, so please carefully determine the number of shares and amount of capital. If you plan to transfer shares in the future, it is recommended that the number of shares is efficient enough in order to divide the shares according to the desired ratio. For example, issuing 10 shares at the time of incorporation, but if you want to transfer 33.33% of the total shares to another partner, the process will become complicated as it required to issue additional shares to match the proportion you wish to divide. In addition, if you wish to have a difference (eg HKD5) on the par value per share to the future investor after issuing the par value per share as HKD1 at the time of incorporation, it is recommended to consider this before you decide to issue the shares.
+                                            </TooltipContent>
+                                        </Tooltip>
                                     </span>
                                 </Label>
-                                {/* <p className="text-sm text-gray-500">After establishment, capital increases such as the issuance of new shares and transfer of shares incur additional expenses, so please carefully determine the number of shares and amount of capital. If you plan to transfer shares in the future, it is recommended that the number of shares is efficient enough in order to divide the shares according to the desired ratio. For example, issuing 10 shares at the time of incorporation, but if you want to transfer 33.33% of the total shares to another partner, the process will become complicated as it required to issue additional shares to match the proportion you wish to divide. In addition, if you wish to have a difference (eg HKD5) on the par value per share to the future investor after issuing the par value per share as HKD1 at the time of incorporation, it is recommended to consider this before you decide to issue the shares.</p> */}
                                 <RadioGroup className="mt-4 space-y-3"
                                     value={comapnyInfo.registerNumSharesAtom}
                                     onValueChange={handleNumShareIssueOptionChange}
@@ -397,11 +463,10 @@ const CompanyInformation = () => {
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                        In the Hong Kong company, other companies can also be registered as directors, and when the board of directors makes a decision, a representative delegated by the company can participate in decision making. In this case, you must provide the documents of the board resolution and power of attorney prepared by the company. (it is not recommended for small companies or companies that do not have an expert to handle these procedures due to the complicated documentary process). Under Cap.622 Companies Ordinance, a Hong Kong company must have at least one natural person as a director.
+                                            In the Hong Kong company, other companies can also be registered as directors, and when the board of directors makes a decision, a representative delegated by the company can participate in decision making. In this case, you must provide the documents of the board resolution and power of attorney prepared by the company. (it is not recommended for small companies or companies that do not have an expert to handle these procedures due to the complicated documentary process). Under Cap.622 Companies Ordinance, a Hong Kong company must have at least one natural person as a director.
                                         </TooltipContent>
                                     </Tooltip></span>
                                 </Label>
-                                {/* <p className="text-sm text-gray-500">In the Hong Kong company, other companies can also be registered as directors, and when the board of directors makes a decision, a representative delegated by the company can participate in decision making. In this case, you must provide the documents of the board resolution and power of attorney prepared by the company. (it is not recommended for small companies or companies that do not have an expert to handle these procedures due to the complicated documentary process). Under Cap.622 Companies Ordinance, a Hong Kong company must have at least one natural person as a director.</p> */}
                                 <RadioGroup className="mt-4 space-y-3"
                                     value={comapnyInfo.registerDirectorAtom}
                                     onValueChange={handleNumDirectorOptionChange}
@@ -424,11 +489,10 @@ const CompanyInformation = () => {
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                        A Hong Kong company must have the commercial address in Hong Kong. We provide the address service for registration, and this service includes registered address and mail handling service. (The address of a residence or accommodation cannot be registered as a company address.)
+                                            A Hong Kong company must have the commercial address in Hong Kong. We provide the address service for registration, and this service includes registered address and mail handling service. (The address of a residence or accommodation cannot be registered as a company address.)
                                         </TooltipContent>
                                     </Tooltip></span>
                                 </Label>
-                                {/* <p className="text-sm text-gray-500">A Hong Kong company must have the commercial address in Hong Kong. We provide the address service for registration, and this service includes registered address and mail handling service. (The address of a residence or accommodation cannot be registered as a company address.)</p> */}
                                 <RadioGroup className="mt-4 space-y-3"
                                     value={comapnyInfo.registerAddressAtom}
                                     onValueChange={handleAddressCompanyOptionChange}
@@ -447,7 +511,8 @@ const CompanyInformation = () => {
                     </Card>
                 </div>
             </div>
-
+            <ShareholdersDirectorsDetails />
+            <AccountingTaxationInfo />
         </>
     );
 };

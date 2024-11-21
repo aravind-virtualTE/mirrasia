@@ -92,4 +92,6 @@ export const loginWithEmail = async (email: string, password: string,) => {
   
   export const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userData');
+    localStorage.removeItem('isAuthenticated');
   };

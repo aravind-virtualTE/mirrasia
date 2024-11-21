@@ -1,22 +1,23 @@
+import React from 'react';
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useAtom } from "jotai";
 import { shareHolderDirectorControllerAtom } from "@/lib/atom";
 import { useTheme } from "@/components/theme-provider";
 
-const ShareholdersDirectorsDetails = () => {
+const ShareholdersDirectorsDetails:React.FC = () => {
     const [sdcInfo, setShareDirControllerInfo] = useAtom(shareHolderDirectorControllerAtom);
-    const shareholdersCount = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+    // const shareholdersCount = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
-    const directorsCount = ['1', '2', '3', '4', '5']
-    const handleNumShareholderChange = (numShareHoldersAtom: string) => {
-        setShareDirControllerInfo((prev) => ({ ...prev, numShareHoldersAtom }));
-    };
-    const handleNumDirectorChange = (numDirectorsAtom: string) => {
-        setShareDirControllerInfo((prev) => ({ ...prev, numDirectorsAtom }));
-    };
+    // const directorsCount = ['1', '2', '3', '4', '5']
+    // const handleNumShareholderChange = (numShareHoldersAtom: string) => {
+    //     setShareDirControllerInfo((prev) => ({ ...prev, numShareHoldersAtom }));
+    // };
+    // const handleNumDirectorChange = (numDirectorsAtom: string) => {
+    //     setShareDirControllerInfo((prev) => ({ ...prev, numDirectorsAtom }));
+    // };
     const { theme } = useTheme();
     return (
         <div className="flex w-full p-4">
@@ -30,7 +31,7 @@ const ShareholdersDirectorsDetails = () => {
             <div className="w-3/4 ml-4">
                 <Card>
                     <CardContent className="space-y-6">
-                        <div>
+                        {/* <div>
                             <Label
                                 className={`text-base font-semibold ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'
                                     }`}
@@ -93,7 +94,7 @@ const ShareholdersDirectorsDetails = () => {
                                 value={sdcInfo.shareHolderDirectorNameSharesNumAtom}
                                 onChange={(e) => setShareDirControllerInfo(prev => ({ ...prev, shareHolderDirectorNameSharesNumAtom: e.target.value }))}
                                 placeholder="E.g : 1.Jack: Shareholder/Director/Number of shares assigned: 1" />
-                        </div>
+                        </div> */}
                         <div>
                             <Label htmlFor="description" className="text-base font-semibold">
                                 Significant Controller <span className="text-red-500 font-bold ml-1">*</span>
