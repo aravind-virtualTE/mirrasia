@@ -5,10 +5,12 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea";
 
-import {accountingTaxInfoAtom} from "@/lib/atom";
+import { accountingTaxInfoAtom } from "@/lib/atom";
 import { useAtom } from "jotai";
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { HelpCircle } from 'lucide-react';
 
-const AccountingTaxationInfo:React.FC = () => {
+const AccountingTaxationInfo: React.FC = () => {
     const [accTaxInfo, setTaxAccountInfo] = useAtom(accountingTaxInfoAtom);
 
     const finYearEndDates = ['December 31', "March 31 (Hong Kong's fiscal year-end date)", 'Other']
@@ -23,14 +25,14 @@ const AccountingTaxationInfo:React.FC = () => {
     const handleBookCycleChange = (bookKeepCycle: string) => {
         setTaxAccountInfo((prev) => ({ ...prev, bookKeepCycle }));
     }
-    const handleAccSoftwareChange  = (anySoftwareInUse: string) => {
+    const handleAccSoftwareChange = (anySoftwareInUse: string) => {
         setTaxAccountInfo((prev) => ({ ...prev, anySoftwareInUse }));
     }
     const { theme } = useTheme();
-    
+
     return (
         <div className="flex w-full p-4">
-             <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
+            <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
                 ? 'bg-blue-50 text-gray-800'
                 : 'bg-gray-800 text-gray-200'
                 }`}>
@@ -41,8 +43,16 @@ const AccountingTaxationInfo:React.FC = () => {
                 <Card>
                     <CardContent className="space-y-6">
                         <div>
-                            <Label className="text-base font-semibold">The financial year-end date of the Hong Kong company <span className="text-red-500 font-bold ml-1">*</span></Label>
-                            <p className="text-sm text-gray-500">The first financial year can be set freely within 18 months from the date of incorporation. According to Article 51, Paragraph 2 of the Hong Kong Tax Law (Inland Revenue Ordinance), a profit tax return (taxable) must be filed within 4 months from the financial year-end date.</p>
+                            <Label className="text-base font-semibold flex items-center">The financial year-end date of the Hong Kong company <span className="text-red-500 font-bold ml-1 flex">*
+                                <Tooltip >
+                                    <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-[500px] text-base">
+                                        The first financial year can be set freely within 18 months from the date of incorporation. According to Article 51, Paragraph 2 of the Hong Kong Tax Law (Inland Revenue Ordinance), a profit tax return (taxable) must be filed within 4 months from the financial year-end date.
+                                    </TooltipContent>
+                                </Tooltip>
+                            </span></Label>
                             <RadioGroup className="mt-4 space-y-3"
                                 value={accTaxInfo.finYearEnd}
                                 onValueChange={handleFinYearChange}
@@ -74,8 +84,16 @@ const AccountingTaxationInfo:React.FC = () => {
                             </RadioGroup>
                         </div>
                         <div>
-                            <Label className="text-base font-semibold">Would you like to implement online accounting software - Xero?<span className="text-red-500 font-bold ml-1">*</span></Label>
-                            <p className="text-sm text-gray-500">When Xero is implemented, data created by POS or other software can be imported in CSV format to make bookkeeping and financial statements, and cash flow statements are also supported. In addition, it is helpful in preparing consolidated financial statements between holding companies and subsidiaries, as well as other functions such as inventory management, cost management, and sales management.</p>
+                            <Label className="text-base font-semibold flex items-center">Would you like to implement online accounting software - Xero?<span className="text-red-500 font-bold ml-1 flex">*
+                                <Tooltip >
+                                    <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-[500px] text-base">
+                                        When Xero is implemented, data created by POS or other software can be imported in CSV format to make bookkeeping and financial statements, and cash flow statements are also supported. In addition, it is helpful in preparing consolidated financial statements between holding companies and subsidiaries, as well as other functions such as inventory management, cost management, and sales management.
+                                    </TooltipContent>
+                                </Tooltip>
+                            </span></Label>
                             <RadioGroup className="mt-4 space-y-3"
                                 value={accTaxInfo.implementSoftware}
                                 onValueChange={handleAccSoftwareChange}

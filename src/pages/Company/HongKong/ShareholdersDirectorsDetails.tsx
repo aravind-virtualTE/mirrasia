@@ -6,8 +6,10 @@ import { Label } from "@/components/ui/label"
 import { useAtom } from "jotai";
 import { shareHolderDirectorControllerAtom } from "@/lib/atom";
 import { useTheme } from "@/components/theme-provider";
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { HelpCircle } from 'lucide-react';
 
-const ShareholdersDirectorsDetails:React.FC = () => {
+const ShareholdersDirectorsDetails: React.FC = () => {
     const [sdcInfo, setShareDirControllerInfo] = useAtom(shareHolderDirectorControllerAtom);
     // const shareholdersCount = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
@@ -96,10 +98,19 @@ const ShareholdersDirectorsDetails:React.FC = () => {
                                 placeholder="E.g : 1.Jack: Shareholder/Director/Number of shares assigned: 1" />
                         </div> */}
                         <div>
-                            <Label htmlFor="description" className="text-base font-semibold">
-                                Significant Controller <span className="text-red-500 font-bold ml-1">*</span>
+                            <Label htmlFor="description" className="text-base flex items-center font-semibold gap-2">
+                                Significant Controller <span className="text-red-500 flex font-bold ml-1">*
+                                    <Tooltip >
+                                        <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-[500px] text-base">
+                                            Conditions for significant control over the Company; A person has significant control over a company if one or more of the following 5 conditions are met  – 1.The person holds, directly or indirectly, more than 25% of the issued shares in the Company or, if the Company does not have a share capital, the person holds, directly or indirectly, a right to share in more than 25% of the capital or profits of the Company ;  2.The person holds, directly or indirectly, more than 25% of the voting rights of the Company ;  3.The person holds, directly or indirectly, the right to appoint or remove a majority of the board of directors of the Company ;  4.The person has the right to exercise, or actually exercises, significant influence or control over the Company ;  5.The person has the right to exercise, or actually exercises, significant influence or control over the activities of a trust or a firm that is not a legal person, but whose trustees or members satisfy any of the first four conditions (in their capacity as such) in relation to the Company.
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </span>
                             </Label>
-                            <p className="text-sm text-gray-500">Conditions for significant control over the Company; A person has significant control over a company if one or more of the following 5 conditions are met  – 1.The person holds, directly or indirectly, more than 25% of the issued shares in the Company or, if the Company does not have a share capital, the person holds, directly or indirectly, a right to share in more than 25% of the capital or profits of the Company ;  2.The person holds, directly or indirectly, more than 25% of the voting rights of the Company ;  3.The person holds, directly or indirectly, the right to appoint or remove a majority of the board of directors of the Company ;  4.The person has the right to exercise, or actually exercises, significant influence or control over the Company ;  5.The person has the right to exercise, or actually exercises, significant influence or control over the activities of a trust or a firm that is not a legal person, but whose trustees or members satisfy any of the first four conditions (in their capacity as such) in relation to the Company.</p>
+
                             <Input
                                 id="significant-Controller"
                                 required
@@ -109,10 +120,18 @@ const ShareholdersDirectorsDetails:React.FC = () => {
                                 placeholder="E.g : 1.Jack: Shareholder/Director/Number of shares assigned: 1" />
                         </div>
                         <div>
-                            <Label htmlFor="description" className="text-base font-semibold">
-                                Designated Contact Person <span className="text-red-500 font-bold ml-1">*</span>
+                            <Label htmlFor="description" className="text-base font-semibold flex items-center">
+                                Designated Contact Person <span className="text-red-500 flex font-bold ml-1">*
+                                    <Tooltip >
+                                        <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-[500px] text-base">
+                                            You need to delegate a person("designated contact person") who will be in charge of contacting in relation to your company's business, incorporation and renewal of your company, registration of documents, confirmations of the required information, and communications for various matters in respect of our services. Appointment of the designated contact person is free for up to 1 person, and if you would like to delegate 2 or more designated contact persons, an annual fee of HKD2,000 per person will be charged. The designated contact person will be delegated by your company and should be registered separately with us to protect your company's information, reduce business confusion, and prevent identity fraud. (The designated contact person must go through the same procedures as the shareholders/directors by submitting the passport copy, address proof, and personal verification.)
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </span>
                             </Label>
-                            <p className="text-sm text-gray-500">You need to delegate a person("designated contact person") who will be in charge of contacting in relation to your company's business, incorporation and renewal of your company, registration of documents, confirmations of the required information, and communications for various matters in respect of our services. Appointment of the designated contact person is free for up to 1 person, and if you would like to delegate 2 or more designated contact persons, an annual fee of HKD2,000 per person will be charged. The designated contact person will be delegated by your company and should be registered separately with us to protect your company's information, reduce business confusion, and prevent identity fraud. (The designated contact person must go through the same procedures as the shareholders/directors by submitting the passport copy, address proof, and personal verification.)</p>
                             <Input
                                 id="designated-Contact-Person"
                                 required
