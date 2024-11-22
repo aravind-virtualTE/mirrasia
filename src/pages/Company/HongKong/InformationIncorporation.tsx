@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -7,7 +7,7 @@ import { HelpCircle } from "lucide-react"
 import { useTheme } from "@/components/theme-provider";
 import { regCompanyInfoAtom } from "@/lib/atom"
 import { useAtom } from "jotai"
-import { addressOptions, amountOptions, currencyOptions, directorOptions, noOfSharesOptions, paymentOptions, sharePercentageList } from "./constants"
+import {  amountOptions, currencyOptions, noOfSharesOptions, paymentOptions } from "./constants"
 
 const InformationIncorporation = () => {
   const { theme } = useTheme();
@@ -29,16 +29,16 @@ const InformationIncorporation = () => {
   const handleNumShareIssueOptionChange = (registerNumSharesAtom: string) => {
     setCompanyInfo((prev) => ({ ...prev, registerNumSharesAtom }));
   };
-  const handleNumShareHolderOptionChange = (registerShareholdersAtom: string) => {
-    setCompanyInfo((prev) => ({ ...prev, registerShareholdersAtom }));
-  };
-  const handleNumDirectorOptionChange = (registerDirectorAtom: string) => {
-    setCompanyInfo((prev) => ({ ...prev, registerDirectorAtom }));
-  };
+  // const handleNumShareHolderOptionChange = (registerShareholdersAtom: string) => {
+  //   setCompanyInfo((prev) => ({ ...prev, registerShareholdersAtom }));
+  // };
+  // const handleNumDirectorOptionChange = (registerDirectorAtom: string) => {
+  //   setCompanyInfo((prev) => ({ ...prev, registerDirectorAtom }));
+  // };
 
-  const handleAddressCompanyOptionChange = (registerAddressAtom: string) => {
-    setCompanyInfo((prev) => ({ ...prev, registerAddressAtom }));
-  };
+  // const handleAddressCompanyOptionChange = (registerAddressAtom: string) => {
+  //   setCompanyInfo((prev) => ({ ...prev, registerAddressAtom }));
+  // };
 
   return (
     <div className="flex w-full p-4">
@@ -160,7 +160,7 @@ const InformationIncorporation = () => {
               </RadioGroup>
             </div>
 
-            <div>
+            {/* <div>
               <Label className="text-base font-semibold">
                 Shareholders of the Hong Kong company <span className="text-red-500 font-bold ml-1">*</span>
               </Label>
@@ -178,9 +178,9 @@ const InformationIncorporation = () => {
                   </div>
                 ))}
               </RadioGroup>
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <Label className="text-base font-semibold">Please enter the shareholder's name and the number of shares to be assigned. <span className="text-red-500 font-bold ml-1">*</span></Label>
               <Input
                 id="shareholder's name"
@@ -189,9 +189,9 @@ const InformationIncorporation = () => {
                 value={comapnyInfo.registerShareholderNameAtom}
                 onChange={(e) => setCompanyInfo(prev => ({ ...prev, registerShareholderNameAtom: e.target.value }))}
                 placeholder="Enter shareholder name & number..." />
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <Label className="text-base font-semibold flex items-center gap-2">
                 Directors of the Hong Kong company <span className="text-red-500 font-bold ml-1 flex">* <Tooltip>
                   <TooltipTrigger asChild>
@@ -215,9 +215,9 @@ const InformationIncorporation = () => {
                   </div>
                 ))}
               </RadioGroup>
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <Label className="text-base font-semibold flex items-center gap-2">
                 Address of the Hong Kong company to be registered <span className="text-red-500 font-bold ml-1 flex">*<Tooltip>
                   <TooltipTrigger asChild>
@@ -241,7 +241,7 @@ const InformationIncorporation = () => {
                   </div>
                 ))}
               </RadioGroup>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>

@@ -16,6 +16,7 @@ export type FormDataType = {
     relationships: string[];
     contactInfo: string;
     snsAccountId : string;
+    snsPlatform : string;
     email : string;
     phoneNumber : string;
     companyName : string[];
@@ -27,6 +28,7 @@ export const applicantInfoFormAtom = atom<FormDataType>({
     relationships: [],
     contactInfo: '',
     snsAccountId : '',
+    snsPlatform : '',
     phoneNumber : '',
     email : '',
     companyName : ["","",""]
@@ -64,10 +66,10 @@ interface RegCompanyInfo {
     registerCurrencyAtom?: string;
     registerAmountAtom?: string;
     registerNumSharesAtom?: string;
-    registerShareholdersAtom?: string;
-    registerShareholderNameAtom: string;
-    registerDirectorAtom?: string;
-    registerAddressAtom?: string;
+    // registerShareholdersAtom?: string;
+    // registerShareholderNameAtom: string;
+    // registerDirectorAtom?: string;
+    // registerAddressAtom?: string;
   }
 
 // corporate incorporation Company Information (section 3.2)  
@@ -79,10 +81,10 @@ interface RegCompanyInfo {
     registerCurrencyAtom: undefined,
     registerAmountAtom: undefined,
     registerNumSharesAtom: undefined,
-    registerShareholdersAtom: undefined,
-    registerShareholderNameAtom: "",
-    registerDirectorAtom: undefined,
-    registerAddressAtom: undefined,
+    // registerShareholdersAtom: undefined,
+    // registerShareholderNameAtom: "",
+    // registerDirectorAtom: undefined,
+    // registerAddressAtom: undefined,
   });
 
   interface ShareHolderDirectorController {
@@ -93,6 +95,8 @@ interface RegCompanyInfo {
     designatedContactPersonAtom: string,
     shareHolders: {
       name: string;
+      email: string;
+      phone: string;
       ownershipRate: number;
       isDirector: boolean;
       isLegalPerson: boolean;
@@ -112,6 +116,8 @@ interface RegCompanyInfo {
       "ownershipRate": 0,
       "isDirector": false,
       "isLegalPerson": false,
+      "email" : '',
+      "phone": '',
     }]
   });
 

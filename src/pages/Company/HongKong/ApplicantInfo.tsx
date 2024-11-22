@@ -9,6 +9,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { snsPlatforms } from "./constants";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
 type RelationshipType = {
@@ -21,6 +23,7 @@ interface Errors {
   phoneNumber: string;
   email: string;
   snsAccountId: string;
+  snsPlatform: string;
   companyNames: string[];
 }
 
@@ -31,6 +34,7 @@ const ApplicantInfoForm = () => {
     phoneNumber: "",
     email: "",
     snsAccountId: "",
+    snsPlatform: "",
     companyNames: ["", "", ""],
   });
   const relationships: RelationshipType[] = [
@@ -195,6 +199,16 @@ const ApplicantInfoForm = () => {
         }
       };
 
+  const handleSelectChange = (value: string) => {
+    // Create a synthetic event object that matches ChangeEvent<HTMLInputElement>
+    const syntheticEvent = {
+      target: {
+        value: value
+      }
+    } as ChangeEvent<HTMLInputElement>;
+
+    handleChange('snsPlatform')(syntheticEvent);
+  };
   // console.log('Form submitted:', formData);
 
   return (
@@ -259,7 +273,13 @@ const ApplicantInfoForm = () => {
               <div key={`companyName-${index}`}>
                 <Input
                   id={`companyName-${index}`}
-                  placeholder="Enter CompanyName"
+                  placeholder={
+                    index === 0
+                      ? "Company Name you wish to establish as the first priority"
+                      : index === 1
+                        ? "Company Name you wish to establish as second priority"
+                        : "Company Name you wish to establish as third priority"
+                  }
                   value={cName}
                   // onChange={handleInputChange}
                   onChange={handleChange("companyName", index)}
@@ -310,20 +330,66 @@ const ApplicantInfoForm = () => {
             )}
           </div>
 
-          <div className="space-y-1">
+          {/* <div className="space-y-1">
             <Label htmlFor="sns" className="text-sm">
               {t('ApplicantInfoForm.snsId')}
             </Label>
-            <Input
-              id="sns"
-              placeholder="Enter SNS account ID"
-              value={formData.snsAccountId}
-              onChange={handleChange("snsAccountId")}
-              className="w-full"
-            />
+            <div className="flex gap-2">
+              <Input
+                id="sns"
+                placeholder="Enter SNS account ID"
+                value={formData.snsAccountId}
+                onChange={handleChange("snsAccountId")}
+                className="w-full"
+              />
+            </div>
             {errors.snsAccountId && (
               <Alert variant="destructive"><AlertDescription>{errors.snsAccountId}</AlertDescription></Alert>
             )}
+          </div> */}
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-4 space-y-2">
+              <Label htmlFor="snsPlatform" className="text-sm">
+                {t('ApplicantInfoForm.snsPlatform')}
+              </Label>
+              <Select
+                value={formData.snsPlatform}
+                onValueChange={handleSelectChange}
+              >
+                <SelectTrigger id="snsPlatform" className="w-full">
+                  <SelectValue placeholder="Select SNS Platform" />
+                </SelectTrigger>
+                <SelectContent>
+                  {snsPlatforms.map((platform) => (
+                    <SelectItem key={platform.id} value={platform.id}>
+                      {platform.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.snsPlatform && (
+                <Alert variant="destructive">
+                  <AlertDescription>{errors.snsPlatform}</AlertDescription>
+                </Alert>
+              )}
+            </div>
+            <div className="col-span-8 space-y-2">
+              <Label htmlFor="snsAccountId" className="text-sm">
+                {t('ApplicantInfoForm.snsId')}
+              </Label>
+              <Input
+                id="snsAccountId"
+                placeholder={`Enter your ${formData.snsPlatform ? snsPlatforms.find(p => p.id === formData.snsPlatform)?.name : 'SNS'} ID`}
+                value={formData.snsAccountId}
+                onChange={handleChange('snsAccountId')}
+                className="w-full"
+              />
+              {errors.snsAccountId && (
+                <Alert variant="destructive">
+                  <AlertDescription>{errors.snsAccountId}</AlertDescription>
+                </Alert>
+              )}
+            </div>
           </div>
         </div>
       </CardContent>

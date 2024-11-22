@@ -130,6 +130,7 @@ const AmlCdd:React.FC = () => {
             relationships: [],
             contactInfo: '',
             snsAccountId : '',
+            snsPlatform : '',
             phoneNumber : '',
             email : '',
             companyName : ["","",""]

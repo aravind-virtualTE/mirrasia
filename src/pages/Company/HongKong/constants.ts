@@ -387,9 +387,9 @@ export const noOfSharesOptions = [
   'Others'
 ]
 
-export const sharePercentageList = [
-  '100% owned by a holding company', '100% owned by one individual', '100% owned by two or more individuals', '100% owned by companies and individuals', 'Other'
-]
+// export const sharePercentageList = [
+//   '100% owned by a holding company', '100% owned by one individual', '100% owned by two or more individuals', '100% owned by companies and individuals', 'Other'
+// ]
 
 export const directorOptions = ['1 natural person', '2 or more natural persons', 'Company(s) (a nominee can participate in the decision-making of the Hong Kong company) and natural person(s)', 'Other']
 
@@ -400,6 +400,14 @@ export const paymentOptions = [
   "Payment amount of the share capital will be made in cash, and it will be held as petty cash in the company and used for expenses when incurred",
   'Other'
 ];
+
+export const snsPlatforms = [
+  { id: 'wechat', name: 'WeChat' },
+  { id: 'telegram', name: 'Telegram' },
+  { id: 'kakao', name: 'Kakao Talk' },
+  { id: 'whatsapp', name: 'WhatsApp' }
+];
+
 
  // const industries = [
     //     "Trade",

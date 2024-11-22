@@ -145,7 +145,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
 
                         <div>
                             <Label htmlFor="description" className="text-base flex items-center font-semibold gap-2">
-                                Significant Controller <span className="text-red-500 flex font-bold ml-1">*
+                                Significant Controller other than above Shareholder(s)/Director(s) <span className="text-red-500 flex font-bold ml-1">*
                                     <Tooltip >
                                         <TooltipTrigger asChild>
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
