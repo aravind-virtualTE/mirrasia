@@ -4,10 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
+import { useAtom } from 'jotai';
+import { shareHolderDirectorControllerAtom } from '@/lib/atom';
 
 const ServiceSelection: React.FC = () => {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
   const [correspondenceCount, setCorrespondenceCount] = useState(1);
+
 
   const fees = useMemo(() => [
     {
@@ -82,16 +86,66 @@ const ServiceSelection: React.FC = () => {
       discountedPrice: "400",
       isOptional: true,
       isHighlight: false,
-    },   
-    {
-      description: "KYC/Due Dillgence fee:Each 2 additional natural persons:USD 65, Each corporate: USD130 (optional)",
-      originalPrice: "195",
-      discountedPrice: "195",
-      isOptional: true,
-      isHighlight: false,
-    }
+    },
+    
   ], []);
 
+
+  const legalPersonFees = shareHolderAtom.shareHolders.filter((shareholder) => shareholder.isLegalPerson).length
+  const individualFees = shareHolderAtom.shareHolders.filter((shareholder) => !shareholder.isLegalPerson).length;
+
+
+  for (let i = 0; i < legalPersonFees; i++) {
+    fees.push({
+      description: "KYC/Due Dillgence fee",
+      originalPrice: "165",
+      discountedPrice: "165",
+      isOptional: false,
+      isHighlight: false,
+    });
+  }
+  console.log("individualFees",individualFees)
+
+  if (individualFees > 2) {
+    const peopleNeedingKyc = individualFees - 2; // Remove first 2 free people
+    const kycSlots = Math.ceil(peopleNeedingKyc / 2); // Each slot covers up to 2 people
+    console.log("kycSlots",kycSlots)
+    // Add a KYC fee for each slot
+    for (let i = 0; i < kycSlots; i++) {
+      fees.push({
+        description: "KYC/Due Diligence fee",
+        originalPrice: "65",
+        discountedPrice: "65",
+        isOptional: true,
+        isHighlight: false
+      });
+    }
+  }
+  // const individualFeesCount = Math.floor((individualFees - 2) / 2);
+  // for (let i = 0; i < individualFeesCount; i++) {
+  //   fees.push({
+  //     description: "KYC/Due Dillgence fee",
+  //     originalPrice: "65",
+  //     discountedPrice: "65",
+  //     isOptional: true,
+  //     isHighlight: false,
+  //   });
+  // }
+
+  // // Add KYC/Due Diligence fee for remaining individuals (if any)
+  // const remainingIndividuals = individualFees - (2 + individualFeesCount * 2);
+  // if (remainingIndividuals > 0) {
+  //   fees.push({
+  //     description: "KYC/Due Dillgence fee",
+  //     originalPrice: "65",
+  //     discountedPrice: "65",
+  //     isOptional: true,
+  //     isHighlight: false,
+  //   });
+  // }
+
+
+  console.log(fees, 'feeshareHolderAtom', shareHolderAtom.shareHolders);
   const handleCheckboxChange = (description: string) => {
     setSelectedServices((prev) =>
       prev.includes(description)
@@ -186,11 +240,10 @@ const ServiceSelection: React.FC = () => {
                     : fee.originalPrice}
                 </TableCell>
                 <TableCell className={`text-right ${fee.discountedPrice === "0" ? "text-red-500 font-semibold" : ""}`}>
-                  {fee.discountedPrice === "0" ? "FREE" : `USD ${
-                    fee.hasCounter && selectedServices.includes(fee.description)
+                  {fee.discountedPrice === "0" ? "FREE" : `USD ${fee.hasCounter && selectedServices.includes(fee.description)
                       ? (parseFloat(fee.discountedPrice) * correspondenceCount).toFixed(2)
                       : fee.discountedPrice
-                  }`}
+                    }`}
                   {fee.note && <span className="text-sm text-red-500 ml-1">{fee.note}</span>}
                 </TableCell>
               </TableRow>

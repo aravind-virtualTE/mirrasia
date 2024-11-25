@@ -6,7 +6,7 @@ import { useState, ReactNode } from 'react';
 import { useParams } from "react-router-dom";
 import IncorporationForm from './HongKong/IncorporationForm';
 import { useAtom } from 'jotai';
-import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom,legalAcknowledgementDialougeAtom, companyIncorporationAtom } from '@/lib/atom';
+import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom,legalAcknowledgementDialougeAtom, companyIncorporationAtom, shareHolderDirectorControllerAtom } from '@/lib/atom';
 import { useTheme } from '@/components/theme-provider';
 import { useToast } from "@/hooks/use-toast"
 import { cn } from '@/lib/utils';
@@ -17,6 +17,7 @@ const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
     const [legalAssessment, ] = useAtom(legalAssessmentDialougeAtom);
     const [, setAcknowledgementDialouge] = useAtom(legalAcknowledgementDialougeAtom);
+    const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
     const [finalForm,] = useAtom(companyIncorporationAtom);
     const { id } = useParams();
     const [companies] = useAtom(companyIncorporationList);
@@ -45,6 +46,7 @@ const CompanyRegistration = () => {
     const { toast } = useToast()
     const nextSection = () => {
         console.log("companyIncorporationAtom",finalForm)
+       
         if (currentSection === 2 && Object.values(businessInfoHkCompany).some(value => value === undefined)) {
             console.log('Fill all the required fields')
 
@@ -52,6 +54,18 @@ const CompanyRegistration = () => {
                 title: "Fill Details",
                 description: "Fill all the required fields",
             })
+        }
+        else if(currentSection === 3){
+            const emptyNameShareholders = shareHolderAtom.shareHolders.filter((shareholder) => !shareholder.name.trim())
+            if(emptyNameShareholders.length > 0){
+                toast({
+                    title: "Fill Details (Shareholder(s) / Director(s))",
+                    description: "Fill the required fields Shareholder(s) / Director(s)",
+                })                
+            }else{
+                setCurrentSection(currentSection + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
         else if (
             currentSection === 2 &&
