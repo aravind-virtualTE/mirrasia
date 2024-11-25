@@ -10,6 +10,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useAtom } from 'jotai';
+import Loader from '@/common/Loader';
 const LoginComponent: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -45,24 +46,36 @@ const LoginComponent: React.FC = () => {
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (credentialResponse) => {
+      setIsLoading(true); // Show loader
       // Handle successful login, e.g., send credentialResponse to your backend
       console.log('credentialResponse', credentialResponse);
-      await loginWithGoogle(credentialResponse.access_token).then((response) => {
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem("token", response.token);
-        console.log('response', response);
-        setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
-        if(response.user.role === 'admin') {
-          navigate('/admin-dashboard');
-        }else{
-          navigate('/dashboard');
-        }
-      });
+      await loginWithGoogle(credentialResponse.access_token)
+        .then((response) => {
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('token', response.token);
+          console.log('response', response);
+  
+          setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
+  
+          if (response.user.role === 'admin') {
+            navigate('/admin-dashboard');
+          } else {
+            navigate('/dashboard');
+          }
+        })
+        .catch((error) => {
+          console.error('Google login failed:', error);
+          setError('Google sign in failed. Please try again.');
+        })
+        .finally(() => {
+          setIsLoading(false); // Hide loader in all cases
+        });
     },
     onError: (error) => {
       // Handle errors, e.g., display an error message to the user
       console.log("err", error)
       setError('Google sign in failed. Please try again.');
+      setIsLoading(false); // Hide loader for error case
     },
   });
 
@@ -85,6 +98,10 @@ const LoginComponent: React.FC = () => {
     setEmail(e.target.value);
     validateEmail(e.target.value);
   };
+  if (isLoading) {
+    // Show full-page loader
+    return <Loader />;
+  }
 
 
   return (
