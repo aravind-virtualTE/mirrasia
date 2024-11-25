@@ -50,8 +50,8 @@ const IncorporationForm = ({ currentSection }: IncorporationFormProps) => {
                     {currentSection === 1 && <ApplicantInfoForm />}
                     {currentSection === 2 && <AmlCdd />}
                     {currentSection === 3 && <CompanyInformation />}
-                    {currentSection === 4 && <ServiceSelection />}
-                    {currentSection === 5 && <ServiceAgreement />}
+                    {currentSection === 4 && <ServiceAgreement />}
+                    {currentSection === 5 && <ServiceSelection />}
                     {currentSection === 6 && <Invoice />}
                     {currentSection === 7 && <Payment />}
                     {currentSection === 8 && <InformationIncorporation />}
