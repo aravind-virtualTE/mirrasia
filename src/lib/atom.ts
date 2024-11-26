@@ -137,6 +137,8 @@ interface RegCompanyInfo {
     anySoftwareInUse : ""
   });
 
+  export const companyServiceAgreementConsentAtom = atom(false);
+
   export const companyIncorporationAtom = atom((get) => ({
     userId: '',
     status: 'Pending',
@@ -149,5 +151,5 @@ interface RegCompanyInfo {
     shareHolderDirectorController: get(shareHolderDirectorControllerAtom),
     accountingTaxInfo: get(accountingTaxInfoAtom),
     incorporationDate: null,
-    serviceAgreementConsent: false
+    serviceAgreementConsent: get(companyServiceAgreementConsentAtom)
   }));
