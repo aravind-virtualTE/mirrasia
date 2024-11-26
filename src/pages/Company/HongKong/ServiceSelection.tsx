@@ -6,12 +6,22 @@ import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
 import { useAtom } from 'jotai';
 import { shareHolderDirectorControllerAtom } from '@/lib/atom';
+// import api from '@/services/fetch';
+
+interface InvoiceItem {
+  description: string;
+  originalPrice: string;
+  discountedPrice: string;
+  quantity: number;
+  totalOriginal: string;
+  totalDiscounted: string;
+  note: string | null;
+}
 
 const ServiceSelection: React.FC = () => {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
   const [correspondenceCount, setCorrespondenceCount] = useState(1);
-
 
   const fees = useMemo(() => [
     {
@@ -90,62 +100,42 @@ const ServiceSelection: React.FC = () => {
     
   ], []);
 
-
-  const legalPersonFees = shareHolderAtom.shareHolders.filter((shareholder) => shareholder.isLegalPerson).length
+  const legalPersonFees = shareHolderAtom.shareHolders.filter((shareholder) => shareholder.isLegalPerson).length;
   const individualFees = shareHolderAtom.shareHolders.filter((shareholder) => !shareholder.isLegalPerson).length;
 
-
-  for (let i = 0; i < legalPersonFees; i++) {
-    fees.push({
-      description: "KYC/Due Dillgence fee",
-      originalPrice: "165",
-      discountedPrice: "165",
-      isOptional: false,
-      isHighlight: false,
-    });
-  }
-  console.log("individualFees",individualFees)
-
-  if (individualFees > 2) {
-    const peopleNeedingKyc = individualFees - 2; // Remove first 2 free people
-    const kycSlots = Math.ceil(peopleNeedingKyc / 2); // Each slot covers up to 2 people
-    console.log("kycSlots",kycSlots)
-    // Add a KYC fee for each slot
-    for (let i = 0; i < kycSlots; i++) {
-      fees.push({
+  const allFees = useMemo(() => {
+    const allFeesArray = [...fees];
+    
+    // Add Legal Person KYC fees
+    for (let i = 0; i < legalPersonFees; i++) {
+      allFeesArray.push({
         description: "KYC/Due Diligence fee",
-        originalPrice: "65",
-        discountedPrice: "65",
-        isOptional: true,
-        isHighlight: false
+        originalPrice: "165",
+        discountedPrice: "165",
+        isOptional: false,
+        isHighlight: false,
       });
     }
-  }
-  // const individualFeesCount = Math.floor((individualFees - 2) / 2);
-  // for (let i = 0; i < individualFeesCount; i++) {
-  //   fees.push({
-  //     description: "KYC/Due Dillgence fee",
-  //     originalPrice: "65",
-  //     discountedPrice: "65",
-  //     isOptional: true,
-  //     isHighlight: false,
-  //   });
-  // }
 
-  // // Add KYC/Due Diligence fee for remaining individuals (if any)
-  // const remainingIndividuals = individualFees - (2 + individualFeesCount * 2);
-  // if (remainingIndividuals > 0) {
-  //   fees.push({
-  //     description: "KYC/Due Dillgence fee",
-  //     originalPrice: "65",
-  //     discountedPrice: "65",
-  //     isOptional: true,
-  //     isHighlight: false,
-  //   });
-  // }
+    // Add Individual KYC fees
+    if (individualFees > 2) {
+      const peopleNeedingKyc = individualFees - 2;
+      const kycSlots = Math.ceil(peopleNeedingKyc / 2);
+      
+      for (let i = 0; i < kycSlots; i++) {
+        allFeesArray.push({
+          description: "KYC/Due Diligence fee",
+          originalPrice: "65",
+          discountedPrice: "65",
+          isOptional: true,
+          isHighlight: false
+        });
+      }
+    }
 
+    return allFeesArray;
+  }, [fees, legalPersonFees, individualFees]);
 
-  console.log(fees, 'feeshareHolderAtom', shareHolderAtom.shareHolders);
   const handleCheckboxChange = (description: string) => {
     setSelectedServices((prev) =>
       prev.includes(description)
@@ -161,34 +151,91 @@ const ServiceSelection: React.FC = () => {
     });
   };
 
-  const { totalOriginal, totalDiscounted } = useMemo(() => {
+
+  const { totalOriginal, totalDiscounted, selectedItems } = useMemo(() => {
     let originalSum = 0;
     let discountedSum = 0;
+    const items: InvoiceItem[] = [];
 
-    fees.forEach((fee) => {
+    allFees.forEach((fee) => {
       if (!fee.isOptional || selectedServices.includes(fee.description)) {
-        if (fee.hasCounter && fee.description.includes("Correspondence Address")) {
-          originalSum += parseFloat(fee.originalPrice) * correspondenceCount;
-          discountedSum += parseFloat(fee.discountedPrice) * correspondenceCount;
-        } else {
-          originalSum += parseFloat(fee.originalPrice);
-          discountedSum += parseFloat(fee.discountedPrice);
-        }
+        const quantity = fee.hasCounter && fee.description.includes("Correspondence Address")
+          ? correspondenceCount
+          : 1;
+
+        const originalPrice = parseFloat(fee.originalPrice) * quantity;
+        const discountedPrice = parseFloat(fee.discountedPrice) * quantity;
+
+        originalSum += originalPrice;
+        discountedSum += discountedPrice;
+
+        items.push({
+          description: fee.description,
+          originalPrice: fee.originalPrice,
+          discountedPrice: fee.discountedPrice,
+          quantity,
+          totalOriginal: originalPrice.toFixed(2),
+          totalDiscounted: discountedPrice.toFixed(2),
+          note: fee.note || null
+        });
       }
     });
 
     return {
       totalOriginal: `USD ${originalSum.toFixed(2)}`,
       totalDiscounted: `USD ${discountedSum.toFixed(2)}`,
+      selectedItems: items,
     };
-  }, [fees, selectedServices, correspondenceCount]);
+  }, [allFees, selectedServices, correspondenceCount]);
+
+  const generateInvoiceData = async () => {
+    const invoiceData = {
+      items: selectedItems,
+      totals: {
+        original: totalOriginal,
+        discounted: totalDiscounted
+      },
+      customer: {
+        shareholderCount: {
+          legalPerson: legalPersonFees,
+          individual: individualFees
+        }
+      },
+      metadata: {
+        generatedAt: new Date().toISOString(),
+        correspondenceCount
+      }
+    };
+
+    // For demonstration, we'll log it to console
+    console.log('Invoice Data:', invoiceData);
+    // const response = await api.post('/xero/create-invoice', invoiceData);
+    // console.log('response Data:', response);
+    
+    // download it as a JSON file
+    // const blob = new Blob([JSON.stringify(invoiceData, null, 2)], { type: 'application/json' });
+    // const url = URL.createObjectURL(blob);
+    // const a = document.createElement('a');
+    // a.href = url;
+    // a.download = `invoice-data-${new Date().toISOString()}.json`;
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
+    // URL.revokeObjectURL(url);
+  };
 
   return (
     <Card className="w-full max-w-4xl">
-      <CardHeader>
+      <CardHeader className="flex flex-row justify-between items-center">
         <CardTitle className="text-xl text-cyan-400">
           Incorporation and First Year Annual Fees Details
         </CardTitle>
+        <Button 
+          onClick={generateInvoiceData}
+          className="bg-green-600 hover:bg-green-700 text-white"
+        >
+          Generate Invoice
+        </Button>
       </CardHeader>
       <CardContent>
         <Table>
@@ -200,7 +247,7 @@ const ServiceSelection: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {fees.map((fee, index) => (
+            {allFees.map((fee, index) => (
               <TableRow key={index} className={fee.isOptional ? "text-gray-600" : ""}>
                 <TableCell>
                   <div className="flex items-center gap-2">
@@ -265,3 +312,4 @@ const ServiceSelection: React.FC = () => {
 }
 
 export default ServiceSelection;
+
