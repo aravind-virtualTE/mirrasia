@@ -74,8 +74,8 @@ interface RegCompanyInfo {
 
 // corporate incorporation Company Information (section 3.2)  
   export const regCompanyInfoAtom = atom<RegCompanyInfo>({
-    registerCompanyNameAtom: '',
     // registerShareTypeAtom: undefined,
+    registerCompanyNameAtom: '',
     registerShareTypeAtom: [],
     registerPaymentShare: undefined,
     registerCurrencyAtom: undefined,

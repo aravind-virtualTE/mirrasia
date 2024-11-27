@@ -2,11 +2,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { LightbulbIcon } from 'lucide-react';
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import IncorporationForm from './HongKong/IncorporationForm';
 import { useAtom } from 'jotai';
-import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom,legalAcknowledgementDialougeAtom, companyIncorporationAtom, shareHolderDirectorControllerAtom } from '@/lib/atom';
+import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom, legalAcknowledgementDialougeAtom, companyIncorporationAtom, shareHolderDirectorControllerAtom } from '@/lib/atom';
 import { useTheme } from '@/components/theme-provider';
 import { useToast } from "@/hooks/use-toast"
 import { cn } from '@/lib/utils';
@@ -15,21 +15,26 @@ import { companyIncorporationList } from '@/services/state';
 
 const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
-    const [legalAssessment, ] = useAtom(legalAssessmentDialougeAtom);
+    const [legalAssessment,] = useAtom(legalAssessmentDialougeAtom);
     const [, setAcknowledgementDialouge] = useAtom(legalAcknowledgementDialougeAtom);
     const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
     const [finalForm,] = useAtom(companyIncorporationAtom);
     const { id } = useParams();
     const [companies] = useAtom(companyIncorporationList);
-    let company
-    if(id){
-        company = companies.find(c => c._id === id);
-        console.log(id,"companies", company);
-    }
+
+
+
 
     const [businessInfoHkCompany,] = useAtom(businessInfoHkCompanyAtom);
-    // const [selectedCountry12, setSelectedCountry] = useState<string | undefined>();
     const [countryState, setCountryState] = useAtom(countryAtom);
+    useEffect(() => {
+        if (id) {
+            const company = companies.find(c => c._id === id);
+            const cntry = company?.country as Record<string, string | undefined>;
+            if (company) setCountryState(cntry)
+            console.log(id, "companies", company);
+        }
+    }, []);
 
     const steps = [
         { number: 1, label: 'Applciant\ninformation', active: currentSection === 1 },
@@ -45,8 +50,8 @@ const CompanyRegistration = () => {
     ];
     const { toast } = useToast()
     const nextSection = () => {
-        console.log("companyIncorporationAtom",finalForm)
-       
+        console.log("companyIncorporationAtom", finalForm)
+
         if (currentSection === 2 && Object.values(businessInfoHkCompany).some(value => value === undefined)) {
             console.log('Fill all the required fields')
 
@@ -55,14 +60,14 @@ const CompanyRegistration = () => {
                 description: "Fill all the required fields",
             })
         }
-        else if(currentSection === 3){
+        else if (currentSection === 3) {
             const emptyNameShareholders = shareHolderAtom.shareHolders.filter((shareholder) => !shareholder.name.trim())
-            if(emptyNameShareholders.length > 0){
+            if (emptyNameShareholders.length > 0) {
                 toast({
                     title: "Fill Details (Shareholder(s) / Director(s))",
                     description: "Fill the required fields Shareholder(s) / Director(s)",
-                })                
-            }else{
+                })
+            } else {
                 setCurrentSection(currentSection + 1);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -78,8 +83,8 @@ const CompanyRegistration = () => {
             setCurrentSection(currentSection + 1);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        else if(currentSection === 10){
-            console.log("form Needs submission",finalForm)
+        else if (currentSection === 10) {
+            console.log("form Needs submission", finalForm)
         }
         else {
             setAcknowledgementDialouge(true);

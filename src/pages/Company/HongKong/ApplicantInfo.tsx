@@ -4,13 +4,15 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { applicantInfoFormAtom, FormDataType } from '@/lib/atom';
 import { useAtom } from 'jotai';
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { snsPlatforms } from "./constants";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { companyIncorporationList } from "@/services/state";
+import { useParams } from "react-router-dom";
 
 
 type RelationshipType = {
@@ -37,6 +39,17 @@ const ApplicantInfoForm = () => {
     snsPlatform: "",
     companyNames: ["", "", ""],
   });
+  const [companies] = useAtom(companyIncorporationList);
+  const { id } = useParams();
+  useEffect(() => {
+    if(id){
+      const company = companies.find(c => c._id === id) ;
+      // const cntry = company?.country as Record<string, string | undefined>;
+      // console.log('company',company, '\n formData', formData);
+      setFormData(company?.applicantInfoForm as FormDataType)
+    }    
+  }, []);
+  
   const relationships: RelationshipType[] = [
     {
       id: "director",

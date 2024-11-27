@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
 import { useAtom } from 'jotai';
 import { shareHolderDirectorControllerAtom } from '@/lib/atom';
-// import api from '@/services/fetch';
-
+import { companyIncorporateInvoiceAtom, selectedServicesAtom } from '@/services/state';
 interface InvoiceItem {
   description: string;
   originalPrice: string;
@@ -19,9 +18,10 @@ interface InvoiceItem {
 }
 
 const ServiceSelection: React.FC = () => {
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [selectedServices, setSelectedServices] = useAtom(selectedServicesAtom);
   const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
   const [correspondenceCount, setCorrespondenceCount] = useState(1);
+  const [,setCorpoInvoiceAtom] = useAtom(companyIncorporateInvoiceAtom);
 
   const fees = useMemo(() => [
     {
@@ -127,7 +127,7 @@ const ServiceSelection: React.FC = () => {
           description: "KYC/Due Diligence fee",
           originalPrice: "65",
           discountedPrice: "65",
-          isOptional: true,
+          isOptional: false,
           isHighlight: false
         });
       }
@@ -152,7 +152,9 @@ const ServiceSelection: React.FC = () => {
   };
 
 
-  const { totalOriginal, totalDiscounted, selectedItems } = useMemo(() => {
+  const { totalOriginal, totalDiscounted, 
+    // selectedItems 
+  } = useMemo(() => {
     let originalSum = 0;
     let discountedSum = 0;
     const items: InvoiceItem[] = [];
@@ -181,19 +183,11 @@ const ServiceSelection: React.FC = () => {
       }
     });
 
-    return {
-      totalOriginal: `USD ${originalSum.toFixed(2)}`,
-      totalDiscounted: `USD ${discountedSum.toFixed(2)}`,
-      selectedItems: items,
-    };
-  }, [allFees, selectedServices, correspondenceCount]);
-
-  const generateInvoiceData = async () => {
     const invoiceData = {
-      items: selectedItems,
+      items,
       totals: {
-        original: totalOriginal,
-        discounted: totalDiscounted
+        original: `USD ${originalSum.toFixed(2)}`,
+        discounted: `USD ${discountedSum.toFixed(2)}`
       },
       customer: {
         shareholderCount: {
@@ -203,26 +197,16 @@ const ServiceSelection: React.FC = () => {
       },
       metadata: {
         generatedAt: new Date().toISOString(),
-        correspondenceCount
       }
     };
-
-    // For demonstration, we'll log it to console
-    console.log('Invoice Data:', invoiceData);
-    // const response = await api.post('/xero/create-invoice', invoiceData);
-    // console.log('response Data:', response);
-    
-    // download it as a JSON file
-    // const blob = new Blob([JSON.stringify(invoiceData, null, 2)], { type: 'application/json' });
-    // const url = URL.createObjectURL(blob);
-    // const a = document.createElement('a');
-    // a.href = url;
-    // a.download = `invoice-data-${new Date().toISOString()}.json`;
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
-    // URL.revokeObjectURL(url);
-  };
+    setCorpoInvoiceAtom([invoiceData])
+    return {
+      totalOriginal: `USD ${originalSum.toFixed(2)}`,
+      totalDiscounted: `USD ${discountedSum.toFixed(2)}`,
+      selectedItems: items,
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allFees, selectedServices, correspondenceCount]);
 
   return (
     <Card className="w-full max-w-4xl">
@@ -230,12 +214,7 @@ const ServiceSelection: React.FC = () => {
         <CardTitle className="text-xl text-cyan-400">
           Incorporation and First Year Annual Fees Details
         </CardTitle>
-        <Button 
-          onClick={generateInvoiceData}
-          className="bg-green-600 hover:bg-green-700 text-white"
-        >
-          Generate Invoice
-        </Button>
+       
       </CardHeader>
       <CardContent>
         <Table>

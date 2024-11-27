@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect ,useState} from 'react';
 import { useAtom,useSetAtom  } from 'jotai';
 import {
     Dialog,
@@ -12,8 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { businessInfoHkCompanyAtom, companyIncorporationAtom, legalAcknowledgementDialougeAtom, legalAssessmentDialougeAtom ,applicantInfoFormAtom} from '@/lib/atom';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme-provider';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import api from '@/services/fetch';
 import { authAtom } from '@/hooks/useAuth';
@@ -65,6 +64,15 @@ const AmlCdd:React.FC = () => {
     });
     
     const [cList] = useAtom(companyIncorporationList);
+    const { id } = useParams();
+    useEffect(() => {
+        if(id){
+          const company = cList.find(c => c._id === id) ;
+        //   console.log('company',company, '\n formData', businessInfoHkCompany);
+          setBusinessInfoHkCompany(company?.businessInfoHkCompany as Record<string, string | undefined>)
+        }    
+      }, []);
+
     const setCompIncList = useSetAtom(companyIncorporationList);
 
     const options = [
