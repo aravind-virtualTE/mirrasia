@@ -8,7 +8,7 @@ import ServiceSelection from './ServiceSelection';
 import { motion, AnimatePresence } from 'framer-motion';
 import IncorporateCompany from './IncorporateCompany';
 import Invoice from './Invoice';
-import Payment from './Payment';
+import PaymentMethod from './Payment';
 interface IncorporationFormProps {
     currentSection: number;
 }
@@ -53,7 +53,7 @@ const IncorporationForm = ({ currentSection }: IncorporationFormProps) => {
                     {currentSection === 4 && <ServiceAgreement />}
                     {currentSection === 5 && <ServiceSelection />}
                     {currentSection === 6 && <Invoice />}
-                    {currentSection === 7 && <Payment />}
+                    {currentSection === 7 && <PaymentMethod />}
                     {currentSection === 8 && <InformationIncorporation />}
                     {currentSection === 9 && <SignIncorporationDocs />}
                     {currentSection === 10 && <IncorporateCompany />}
