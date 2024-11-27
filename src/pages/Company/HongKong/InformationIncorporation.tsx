@@ -7,11 +7,13 @@ import { HelpCircle } from "lucide-react"
 import { useTheme } from "@/components/theme-provider";
 import { regCompanyInfoAtom } from "@/lib/atom"
 import { useAtom } from "jotai"
-import {  amountOptions, currencyOptions, noOfSharesOptions, paymentOptions } from "./constants"
+import { amountOptions, currencyOptions, noOfSharesOptions, paymentOptions } from "./constants"
+import { useTranslation } from "react-i18next";
 
 const InformationIncorporation = () => {
+  const { t } = useTranslation(); // Added useTranslation hook for translation
   const { theme } = useTheme();
-  const [comapnyInfo, setCompanyInfo] = useAtom(regCompanyInfoAtom);
+  const [companyInfo, setCompanyInfo] = useAtom(regCompanyInfoAtom);
 
   const handlePaymentOptionChange = (registerPaymentShare: string) => {
     setCompanyInfo((prev) => ({ ...prev, registerPaymentShare }));
@@ -21,7 +23,6 @@ const InformationIncorporation = () => {
     setCompanyInfo((prev) => ({ ...prev, registerCurrencyAtom }));
   };
 
-
   const handleShareCapitalOptionChange = (registerAmountAtom: string) => {
     setCompanyInfo((prev) => ({ ...prev, registerAmountAtom }));
   };
@@ -29,16 +30,6 @@ const InformationIncorporation = () => {
   const handleNumShareIssueOptionChange = (registerNumSharesAtom: string) => {
     setCompanyInfo((prev) => ({ ...prev, registerNumSharesAtom }));
   };
-  // const handleNumShareHolderOptionChange = (registerShareholdersAtom: string) => {
-  //   setCompanyInfo((prev) => ({ ...prev, registerShareholdersAtom }));
-  // };
-  // const handleNumDirectorOptionChange = (registerDirectorAtom: string) => {
-  //   setCompanyInfo((prev) => ({ ...prev, registerDirectorAtom }));
-  // };
-
-  // const handleAddressCompanyOptionChange = (registerAddressAtom: string) => {
-  //   setCompanyInfo((prev) => ({ ...prev, registerAddressAtom }));
-  // };
 
   return (
     <div className="flex w-full p-4">
@@ -46,114 +37,118 @@ const InformationIncorporation = () => {
         ? 'bg-blue-50 text-gray-800'
         : 'bg-gray-800 text-gray-200'
         }`}>
-        <h2 className="text-lg font-semibold mb-2">Registration details of the Hong Kong company</h2>
-        <p className="text-sm text-gray-500">In this section, please provide information on the shares, shareholders, and directors to be filed in the Hong Kong company.</p>
+        <h2 className="text-lg font-semibold mb-2">{t('InformationIncorporation.registrationDetails')}</h2>
+        <p className="text-sm text-gray-500">{t('InformationIncorporation.registrationDescription')}</p>
       </aside>
       <div className="w-3/4 ml-4">
         <Card>
           <CardContent className="space-y-6">
+            {/* Payment Option */}
             <div>
               <Label className="text-base font-semibold flex items-center gap-2">
-                Payment of the share capital <span className="text-red-500 font-bold ml-1 flex">*
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-[500px] text-base">
-                      Hong Kong is subject to the New Companies Ordinance (Cap. 622) revised as of March 3, 2014, so all share capitals are payable in full. As Hong Kong does not have a separate capital account like other countries, you can deposit the share capital amount after opening a corporate account. If the opening of a corporate account is delayed or there is no corporate account, the director(or a person in charge of your company's cash) can keep the capital amount and use it for the company's expenditures (as a petty cash account), and submit supporting documents of the expenditures such as expense receipts and etc. However, this is the capital payment method based on Hong Kong, and procedures and reporting obligations under the Foreign Direct Investment and Foreign Exchange Transaction Act in other countries must be separately checked and processed. In some countries, you may report the foreign direct investment through your foreign exchange bank or through the relevant government department.
-                    </TooltipContent>
-                  </Tooltip>
-                </span>
+                {t('InformationIncorporation.paymentOfShareCapital')} <span className="text-red-500 font-bold ml-1 flex">*</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[500px] text-base">
+                    {t('InformationIncorporation.paymentTooltip')}
+                  </TooltipContent>
+                </Tooltip>
               </Label>
               <RadioGroup className="mt-4 space-y-3"
-                value={comapnyInfo.registerPaymentShare}
+                value={companyInfo.registerPaymentShare}
                 onValueChange={handlePaymentOptionChange}
               >
-                {paymentOptions.map((purpose) => (
-                  <div key={purpose} className="flex items-center space-x-3">
-                    <RadioGroupItem value={purpose} id={purpose} />
-                    <Label htmlFor={purpose} className="font-normal">
-                      {purpose}
+                {paymentOptions.map((option) => (
+                  <div key={option} className="flex items-center space-x-3">
+                    <RadioGroupItem value={option} id={option} />
+                    <Label htmlFor={option} className="font-normal">
+                      {t(`InformationIncorporation.${option}`)} {/* Use translated string here */}
                     </Label>
                   </div>
                 ))}
               </RadioGroup>
             </div>
 
+            {/* Currency Option */}
             <div>
               <Label className="text-base font-semibold flex items-center gap-2">
-                The base currency of the share capital <span className="text-red-500 font-bold ml-1 flex">*
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-[500px] text-base">
-                      It is recommended that the currency of the share capital be the same as the functional currency to be used for accounting purposes. For example, if you trade both purchases and sales in USD, setting the share capital in USD is convenient for accounting. If this is not the case, all currencies of translations must be converted to the base currency for accounting. Please note that the currency of the share capital cannot be changed to another currency after the incorporation.  (Example: Share Capital issued in HKD cannot be changed to USD)
-                    </TooltipContent>
-                  </Tooltip>
-                </span>
-              </Label>
-              <RadioGroup className="mt-4 space-y-3"
-                value={comapnyInfo.registerCurrencyAtom}
-                onValueChange={handleCurrencyOptionChange}
-              >
-                {currencyOptions.map((purpose) => (
-                  <div key={purpose} className="flex items-center space-x-3">
-                    <RadioGroupItem value={purpose} id={purpose} />
-                    <Label htmlFor={purpose} className="font-normal">
-                      {purpose}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-            <div>
-              <Label className="text-base font-semibold flex items-center gap-2">
-                The total amount of the share capital to be paid <span className="text-red-500 font-bold ml-1 flex">*<Tooltip>
+                {t('InformationIncorporation.baseCurrency')} <span className="text-red-500 font-bold ml-1 flex">*</span>
+                <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-[500px] text-base">
-                    This is the amount according to the above base currency. Example) USD 1,000
+                    {t('InformationIncorporation.currencyTooltip')}
                   </TooltipContent>
-                </Tooltip></span>
+                </Tooltip>
               </Label>
               <RadioGroup className="mt-4 space-y-3"
-                value={comapnyInfo.registerAmountAtom}
-                onValueChange={handleShareCapitalOptionChange}
+                value={companyInfo.registerCurrencyAtom}
+                onValueChange={handleCurrencyOptionChange}
               >
-                {amountOptions.map((purpose) => (
-                  <div key={purpose} className="flex items-center space-x-3">
-                    <RadioGroupItem value={purpose} id={purpose} />
-                    <Label htmlFor={purpose} className="font-normal">
-                      {purpose}
+                {currencyOptions.map((option) => (
+                  <div key={option} className="flex items-center space-x-3">
+                    <RadioGroupItem value={option} id={option} />
+                    <Label htmlFor={option} className="font-normal">
+                      {t(`InformationIncorporation.currencyOption_${option}`)} {/* Use translated string here */}
                     </Label>
                   </div>
                 ))}
               </RadioGroup>
             </div>
+
+            {/* Share Capital Options */}
             <div>
               <Label className="text-base font-semibold flex items-center gap-2">
-                Total number of shares to be issued (at least 1 share) <span className="text-red-500 font-bold ml-1 flex">*
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-[500px] text-base">
-                      After establishment, capital increases such as the issuance of new shares and transfer of shares incur additional expenses, so please carefully determine the number of shares and amount of capital. If you plan to transfer shares in the future, it is recommended that the number of shares is efficient enough in order to divide the shares according to the desired ratio. For example, issuing 10 shares at the time of incorporation, but if you want to transfer 33.33% of the total shares to another partner, the process will become complicated as it required to issue additional shares to match the proportion you wish to divide. In addition, if you wish to have a difference (eg HKD5) on the par value per share to the future investor after issuing the par value per share as HKD1 at the time of incorporation, it is recommended to consider this before you decide to issue the shares.
-                    </TooltipContent>
-                  </Tooltip>
-                </span>
+                {t('InformationIncorporation.shareCapitalAmount')} <span className="text-red-500 font-bold ml-1 flex">*</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[500px] text-base">
+                    {t('InformationIncorporation.amountTooltip')}
+                  </TooltipContent>
+                </Tooltip>
               </Label>
               <RadioGroup className="mt-4 space-y-3"
-                value={comapnyInfo.registerNumSharesAtom}
+                value={companyInfo.registerAmountAtom}
+                onValueChange={handleShareCapitalOptionChange}
+              >
+                {amountOptions.map((option) => (
+                  <div key={option} className="flex items-center space-x-3">
+                    <RadioGroupItem value={option} id={option} />
+                    <Label htmlFor={option} className="font-normal">
+                      {t(`InformationIncorporation.amountOption_${option}`)} {/* Use translated string here */}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+
+            {/* Number of Shares Options */}
+            <div>
+              <Label className="text-base font-semibold flex items-center gap-2">
+                {t('InformationIncorporation.numShares')} <span className="text-red-500 font-bold ml-1 flex">*</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[500px] text-base">
+                    {t('InformationIncorporation.numSharesTooltip')}
+                  </TooltipContent>
+                </Tooltip>
+              </Label>
+              <RadioGroup className="mt-4 space-y-3"
+                value={companyInfo.registerNumSharesAtom}
                 onValueChange={handleNumShareIssueOptionChange}
               >
-                {noOfSharesOptions.map((purpose) => (
-                  <div key={purpose} className="flex items-center space-x-3">
-                    <RadioGroupItem value={purpose} id={purpose} />
-                    <Label htmlFor={purpose} className="font-normal">
-                      {purpose}
+                {noOfSharesOptions.map((option) => (
+                  <div key={option} className="flex items-center space-x-3">
+                    <RadioGroupItem value={option} id={option} />
+                    <Label htmlFor={option} className="font-normal">
+                      {t(`InformationIncorporation.sharesOption_${option}`)} {/* Use translated string here */}
                     </Label>
                   </div>
                 ))}
@@ -187,7 +182,7 @@ const InformationIncorporation = () => {
                 required
                 className="w-full"
                 value={comapnyInfo.registerShareholderNameAtom}
-                onChange={(e) => setCompanyInfo(prev => ({ ...prev, registerShareholderNameAtom: e.target.value }))}
+                onChange={(e) => setCompanyInfo(prev => ({ ...prev, registerShareholderNameAtom: e.target.value }))} 
                 placeholder="Enter shareholder name & number..." />
             </div> */}
 
@@ -249,4 +244,5 @@ const InformationIncorporation = () => {
   )
 }
 
-export default InformationIncorporation
+export default InformationIncorporation;
+
