@@ -341,25 +341,7 @@ const ApplicantInfoForm = () => {
             {errors.email && (
               <Alert variant="destructive"><AlertDescription>{errors.email}</AlertDescription></Alert>
             )}
-          </div>
-
-          {/* <div className="space-y-1">
-            <Label htmlFor="sns" className="text-sm">
-              {t('ApplicantInfoForm.snsId')}
-            </Label>
-            <div className="flex gap-2">
-              <Input
-                id="sns"
-                placeholder="Enter SNS account ID"
-                value={formData.snsAccountId}
-                onChange={handleChange("snsAccountId")}
-                className="w-full"
-              />
-            </div>
-            {errors.snsAccountId && (
-              <Alert variant="destructive"><AlertDescription>{errors.snsAccountId}</AlertDescription></Alert>
-            )}
-          </div> */}
+          </div>         
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-4 space-y-2">
               <Label htmlFor="snsPlatform" className="text-sm">
@@ -409,8 +391,5 @@ const ApplicantInfoForm = () => {
     </Card>
   );
 };
-
-
-
 
 export default ApplicantInfoForm;
