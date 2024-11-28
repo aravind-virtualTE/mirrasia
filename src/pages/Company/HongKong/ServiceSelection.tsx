@@ -7,6 +7,7 @@ import { Minus, Plus } from 'lucide-react';
 import { useAtom } from 'jotai';
 import { shareHolderDirectorControllerAtom } from '@/lib/atom';
 import { companyIncorporateInvoiceAtom, selectedServicesAtom } from '@/services/state';
+import { useTranslation } from 'react-i18next';
 interface InvoiceItem {
   description: string;
   originalPrice: string;
@@ -22,68 +23,69 @@ const ServiceSelection: React.FC = () => {
   const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
   const [correspondenceCount, setCorrespondenceCount] = useState(1);
   const [,setCorpoInvoiceAtom] = useAtom(companyIncorporateInvoiceAtom);
+  const { t } = useTranslation();
 
   const fees = useMemo(() => [
     {
-      description: "Hong Kong Company Incorporation",
+      description: t("ServiceSelection.HongKongCompanyIncorporation"),
       originalPrice: "219",
       discountedPrice: "0",
       isHighlight: true,
       isOptional: false,
     },
     {
-      description: "Hong Kong Registrar of Companies registration (government) fee",
+      description: t("ServiceSelection.HongKongRegistrarOfCompaniesFee"),
       originalPrice: "221",
       discountedPrice: "221",
       isHighlight: false,
       isOptional: false,
     },
     {
-      description: "Business Registration (government) fee for 2024/25",
+      description: t("ServiceSelection.BusinessRegistrationFee"),
       originalPrice: "283",
       discountedPrice: "283",
       isHighlight: false,
       isOptional: false,
     },
     {
-      description: "Company Secretary Annual Service Charge",
+      description: t("ServiceSelection.CompanySecretaryAnnualServiceCharge"),
       originalPrice: "450",
       discountedPrice: "225",
-      note: "(50% off for 1st year)",
+      note: t("ServiceSelection.FiftyPercentOffFirstYear"),
       isHighlight: false,
       isOptional: false,
     },
     {
-      description: "Annual service fee for registered office address",
+      description: t("ServiceSelection.RegisteredOfficeAddressAnnualFee"),
       originalPrice: "322",
       discountedPrice: "161",
-      note: "(50% off for 1st year)",
+      note: t("ServiceSelection.FiftyPercentOffFirstYear"),
       isHighlight: false,
       isOptional: true,
     },
     {
-      description: "KYC / Due Diligence fee",
+      description: t("ServiceSelection.KYCFee"),
       originalPrice: "65",
       discountedPrice: "0",
       isHighlight: true,
       isOptional: false,
     },
     {
-      description: "Bank Account Opening Arrangement Fee",
+      description: t("ServiceSelection.BankAccountOpeningFee"),
       originalPrice: "400",
       discountedPrice: "0",
       isHighlight: true,
       isOptional: true,
     },
     {
-      description: "Company Kit Producing cost",
+      description: t("ServiceSelection.CompanyKitProducingCost"),
       originalPrice: "70",
       discountedPrice: "70",
       isOptional: true,
       isHighlight: false,
     },
     {
-      description: "Correspondence Address Annual Service fee per person (optional)",
+      description: t("ServiceSelection.CorrespondenceAddressFee"),
       originalPrice: "65",
       discountedPrice: "65",
       isOptional: true,
@@ -91,14 +93,13 @@ const ServiceSelection: React.FC = () => {
       hasCounter: true,
     },
     {
-      description: "Bank/EMI Account opening arrangement (optional)",
+      description: t("ServiceSelection.BankEMIAccountOpeningFee"),
       originalPrice: "400",
       discountedPrice: "400",
       isOptional: true,
       isHighlight: false,
     },
-    
-  ], []);
+  ], [t]);
 
   const legalPersonFees = shareHolderAtom.shareHolders.filter((shareholder) => shareholder.isLegalPerson).length;
   const individualFees = shareHolderAtom.shareHolders.filter((shareholder) => !shareholder.isLegalPerson).length;
@@ -109,7 +110,7 @@ const ServiceSelection: React.FC = () => {
     // Add Legal Person KYC fees
     for (let i = 0; i < legalPersonFees; i++) {
       allFeesArray.push({
-        description: "KYC/Due Diligence fee",
+        description: t("ServiceSelection.KYCFee"),
         originalPrice: "165",
         discountedPrice: "165",
         isOptional: false,
@@ -124,7 +125,7 @@ const ServiceSelection: React.FC = () => {
       
       for (let i = 0; i < kycSlots; i++) {
         allFeesArray.push({
-          description: "KYC/Due Diligence fee",
+          description: t("ServiceSelection.KYCFee"),
           originalPrice: "65",
           discountedPrice: "65",
           isOptional: false,
@@ -134,7 +135,7 @@ const ServiceSelection: React.FC = () => {
     }
 
     return allFeesArray;
-  }, [fees, legalPersonFees, individualFees]);
+  }, [t,fees, legalPersonFees, individualFees]);
 
   const handleCheckboxChange = (description: string) => {
     setSelectedServices((prev) =>
@@ -212,7 +213,7 @@ const ServiceSelection: React.FC = () => {
     <Card className="w-full max-w-4xl">
       <CardHeader className="flex flex-row justify-between items-center">
         <CardTitle className="text-xl text-cyan-400">
-          Incorporation and First Year Annual Fees Details
+        {t("ServiceSelection.IncorporationAndFees")}
         </CardTitle>
        
       </CardHeader>
@@ -220,9 +221,9 @@ const ServiceSelection: React.FC = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-1/2">Service Description</TableHead>
-              <TableHead className="text-right">Original Price</TableHead>
-              <TableHead className="text-right">Discounted Price</TableHead>
+            <TableHead className="w-1/2">{t("ServiceSelection.ServiceDescription")}</TableHead>
+              <TableHead className="text-right">{t("ServiceSelection.OriginalPrice")}</TableHead>
+              <TableHead className="text-right">{t("ServiceSelection.DiscountedPrice")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -275,7 +276,7 @@ const ServiceSelection: React.FC = () => {
               </TableRow>
             ))}
             <TableRow className="font-bold bg-gray-100">
-              <TableCell>Total Cost</TableCell>
+              <TableCell>{t("ServiceSelection.TotalCost")}</TableCell>
               <TableCell className="text-right line-through text-gray-500">
                 {totalOriginal}
               </TableCell>
