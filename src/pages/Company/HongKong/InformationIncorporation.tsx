@@ -11,7 +11,7 @@ import { amountOptions, currencyOptions, noOfSharesOptions, paymentOptions } fro
 import { useTranslation } from "react-i18next";
 
 const InformationIncorporation = () => {
-  const { t } = useTranslation(); // Added useTranslation hook for translation
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const [companyInfo, setCompanyInfo] = useAtom(regCompanyInfoAtom);
 
@@ -33,10 +33,7 @@ const InformationIncorporation = () => {
 
   return (
     <div className="flex w-full p-4">
-      <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
-        ? 'bg-blue-50 text-gray-800'
-        : 'bg-gray-800 text-gray-200'
-        }`}>
+      <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light' ? 'bg-blue-50 text-gray-800' : 'bg-gray-800 text-gray-200'}`}>
         <h2 className="text-lg font-semibold mb-2">{t('InformationIncorporation.registrationDetails')}</h2>
         <p className="text-sm text-gray-500">{t('InformationIncorporation.registrationDescription')}</p>
       </aside>
@@ -64,7 +61,7 @@ const InformationIncorporation = () => {
                   <div key={option} className="flex items-center space-x-3">
                     <RadioGroupItem value={option} id={option} />
                     <Label htmlFor={option} className="font-normal">
-                      {t(`InformationIncorporation.${option}`)} {/* Use translated string here */}
+                      {t(`InformationIncorporation.${option}`)} {/* Dynamically fetch translation */}
                     </Label>
                   </div>
                 ))}
@@ -92,7 +89,7 @@ const InformationIncorporation = () => {
                   <div key={option} className="flex items-center space-x-3">
                     <RadioGroupItem value={option} id={option} />
                     <Label htmlFor={option} className="font-normal">
-                      {t(`InformationIncorporation.currencyOption_${option}`)} {/* Use translated string here */}
+                      {t(`InformationIncorporation.currencyOption_${option}`)} {/* Dynamically translate currency options */}
                     </Label>
                   </div>
                 ))}
@@ -116,14 +113,15 @@ const InformationIncorporation = () => {
                 value={companyInfo.registerAmountAtom}
                 onValueChange={handleShareCapitalOptionChange}
               >
-                {amountOptions.map((option) => (
-                  <div key={option} className="flex items-center space-x-3">
-                    <RadioGroupItem value={option} id={option} />
-                    <Label htmlFor={option} className="font-normal">
-                      {t(`InformationIncorporation.amountOption_${option}`)} {/* Use translated string here */}
-                    </Label>
-                  </div>
-                ))}
+                                    {amountOptions.map((option) => (
+                              <div key={option} className="flex items-center space-x-3">
+                          <RadioGroupItem value={option} id={option} />
+                          <Label htmlFor={option} className="font-normal">
+                            {t(`InformationIncorporation.amountOption_${option.replace(/,/g, '')}`)} {/* Remove commas for translation */}
+                          </Label>
+                        </div>
+                      ))}
+
               </RadioGroup>
             </div>
 
@@ -144,18 +142,33 @@ const InformationIncorporation = () => {
                 value={companyInfo.registerNumSharesAtom}
                 onValueChange={handleNumShareIssueOptionChange}
               >
-                {noOfSharesOptions.map((option) => (
-                  <div key={option} className="flex items-center space-x-3">
-                    <RadioGroupItem value={option} id={option} />
-                    <Label htmlFor={option} className="font-normal">
-                      {t(`InformationIncorporation.sharesOption_${option}`)} {/* Use translated string here */}
-                    </Label>
-                  </div>
-                ))}
+                  {noOfSharesOptions.map((option) => {
+                    let sanitizedKey = option
+                    .replace(/\$/g, '_dollar_')            // Replace $ with '_dollar_'
+                    .replace(/=/g, '_equal_')              // Replace = with '_equal_'
+                    .replace(/[()]/g, '')                  // Remove parentheses
+                    .replace(/;/g, '')                     // Remove semicolon
+                    .replace(/,/g, '')                     // Remove comma
+                    .replace(/\s+/g, '_')                  // Replace all spaces with '_'
+                    .replace(/_{2,}/g, '_')                // Replace any instance of multiple underscores with one
+                    .replace(/^_|_$/g, ''); 
+                    if (option === "Others") {
+                      sanitizedKey = "others";
+                    }
+
+                    return (
+                      <div key={option} className="flex items-center space-x-3">
+                        <RadioGroupItem value={option} id={option} />
+                        <Label htmlFor={option} className="font-normal">
+                          {t(`InformationIncorporation.sharesOption_${sanitizedKey}`)} {/* Dynamically generate keys */}
+                        </Label>
+                      </div>
+                    );
+                  })}
+
               </RadioGroup>
             </div>
-
-            {/* <div>
+              {/* <div>
               <Label className="text-base font-semibold">
                 Shareholders of the Hong Kong company <span className="text-red-500 font-bold ml-1">*</span>
               </Label>
@@ -182,7 +195,7 @@ const InformationIncorporation = () => {
                 required
                 className="w-full"
                 value={comapnyInfo.registerShareholderNameAtom}
-                onChange={(e) => setCompanyInfo(prev => ({ ...prev, registerShareholderNameAtom: e.target.value }))} 
+                onChange={(e) => setCompanyInfo(prev => ({ ...prev, registerShareholderNameAtom: e.target.value }))}
                 placeholder="Enter shareholder name & number..." />
             </div> */}
 
@@ -241,8 +254,8 @@ const InformationIncorporation = () => {
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default InformationIncorporation;
 

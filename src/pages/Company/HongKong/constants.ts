@@ -395,10 +395,15 @@ export const directorOptions = ['1 natural person', '2 or more natural persons',
 
 export const addressOptions = ["Use of Mirr Asia's address service", "I/We have a commercial address to register in Hong Kong (Mirr Asia's address service is not needed)", "Other"]
 
+// export const paymentOptions = [
+//   "Payment amount of the share capital will be deposited to the bank account after opening the corporate account",
+//   "Payment amount of the share capital will be made in cash, and it will be held as petty cash in the company and used for expenses when incurred",
+//   'Other'
+// ];
 export const paymentOptions = [
-  "Payment amount of the share capital will be deposited to the bank account after opening the corporate account",
-  "Payment amount of the share capital will be made in cash, and it will be held as petty cash in the company and used for expenses when incurred",
-  'Other'
+  "paymentOption_deposit",    // Referencing the key in the translation file
+  "paymentOption_pettyCash",  // Referencing the key in the translation file
+  "paymentOption_other"       // Referencing the key in the translation file
 ];
 
 export const snsPlatforms = [

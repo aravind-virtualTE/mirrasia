@@ -493,6 +493,7 @@
         "FREE": "FREE"
         
       },
+      
         "InformationIncorporation": {
           "registrationDetails": "Registration details of the Hong Kong company",
           "registrationDescription": "In this section, please provide information on the shares, shareholders, and directors to be filed in the Hong Kong company.",
@@ -515,16 +516,18 @@
           "amountOption_100": "100",
           "amountOption_1000": "1,000",
           "amountOption_10000": "10,000",
-          "sharesOption_total_capital_divided_by_1_par_value_per_share_1_general_convention_to_issue_the_share_in_hk": "Total capital divided by $1 (par value per share = $1; general convention to issue the share in HK)",
-          "sharesOption_1_share_at_least_1_share_to_be_issued_1_share_price_total_capital": "1 share (at least 1 share to be issued) (1 share price = total capital)",
+          "sharesOption_Total_capital_divided_by_dollar_1_par_value_per_share_equal_dollar_1_general_convention_to_issue_the_share_in_HK": "Total capital divided by $1 (par value per share = $1; general convention to issue the share in HK)",
+          "sharesOption_1_share_as_least_1_share_to_be_issued_1_share_price_equal_total_capital": "1 share (at least 1 share to be issued) (1 share price = total capital)",
           "sharesOption_100_shares": "100 shares",
           "sharesOption_1000_shares": "1,000 shares",
           "sharesOption_10000_shares": "10,000 shares",
           "sharesOption_others": "Others"
         }
-      
-      
       }
+      
+      
+      
+      
       
       
       
