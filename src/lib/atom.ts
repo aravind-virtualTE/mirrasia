@@ -176,7 +176,7 @@ interface RegCompanyInfo {
   export const updateCompanyIncorporationAtom = atom(
     null,
     (
-      get,
+      _get,
       set,
       updates: Partial<{
         country: Record<string, string | undefined>;
