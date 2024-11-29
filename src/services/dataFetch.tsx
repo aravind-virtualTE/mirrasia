@@ -9,7 +9,20 @@ export const getIncorporationListByUserId = async (
       return response.data;
     } catch (error) {
         console.error("Error fetching company incorporation list by userId:", error);
-      throw new Error('Fetching Failed For Company Incorporation List');
+      // throw new Error('Fetching Failed For Company Incorporation List');
+    }
+  };
+
+  export const getIncorporationListByCompId = async (
+    id: string,
+  ) => {
+    try {
+      const response = await api.get(`company/company-incorporation/company/${id}`);
+      console.log("response-->",response)
+      return response.data;
+    } catch (error) {
+        console.error("Error fetching company incorporation data by compId.", error);
+      // throw new Error('Fetching Failed For Company Incorporation List');
     }
   };
 

@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+import { atomWithReset,useResetAtom } from 'jotai/utils';
 // company Incorporation
 // below variable is used at aml/cdd page for legal assessment
 export const legalAssessmentDialougeAtom = atom(false);
@@ -6,7 +7,7 @@ export const legalAssessmentDialougeAtom = atom(false);
 export const legalAcknowledgementDialougeAtom = atom(false);
 
 //country selecting (section 0)
-export const countryAtom = atom<Record<string, string | undefined>>({
+export const countryAtom = atomWithReset<Record<string, string | undefined>>({
   code: undefined,
   name: undefined,
 });
@@ -23,7 +24,7 @@ export type FormDataType = {
 };
 
 // corporate incorporation applicant info (section 1)
-export const applicantInfoFormAtom = atom<FormDataType>({
+export const applicantInfoFormAtom = atomWithReset<FormDataType>({
     name: '',
     relationships: [],
     contactInfo: '',
@@ -35,7 +36,7 @@ export const applicantInfoFormAtom = atom<FormDataType>({
 });
 
 // corporate incorporation aml/cdd legal ethical assessment (section 2)
-export const businessInfoHkCompanyAtom = atom<Record<string, string | undefined>>({
+export const businessInfoHkCompanyAtom = atomWithReset<Record<string, string | undefined>>({
   sanctioned_countries: undefined,
   sanctions_presence: undefined,
   crimea_presence: undefined,
@@ -52,7 +53,7 @@ interface RegBusinessInfo {
 }
 
 // corporate incorporation Company Information (section 3.1)
-export const companyBusinessInfoAtom = atom<RegBusinessInfo>({
+export const companyBusinessInfoAtom = atomWithReset<RegBusinessInfo>({
     business_industry: undefined,
     business_product_description: "",
     business_purpose: [],
@@ -66,25 +67,16 @@ interface RegCompanyInfo {
     registerCurrencyAtom?: string;
     registerAmountAtom?: string;
     registerNumSharesAtom?: string;
-    // registerShareholdersAtom?: string;
-    // registerShareholderNameAtom: string;
-    // registerDirectorAtom?: string;
-    // registerAddressAtom?: string;
   }
 
 // corporate incorporation Company Information (section 3.2)  
-  export const regCompanyInfoAtom = atom<RegCompanyInfo>({
-    // registerShareTypeAtom: undefined,
+  export const regCompanyInfoAtom = atomWithReset<RegCompanyInfo>({
     registerCompanyNameAtom: '',
     registerShareTypeAtom: [],
     registerPaymentShare: undefined,
     registerCurrencyAtom: undefined,
     registerAmountAtom: undefined,
     registerNumSharesAtom: undefined,
-    // registerShareholdersAtom: undefined,
-    // registerShareholderNameAtom: "",
-    // registerDirectorAtom: undefined,
-    // registerAddressAtom: undefined,
   });
 
   interface ShareHolderDirectorController {
@@ -105,7 +97,7 @@ interface RegCompanyInfo {
   
 // corporate incorporation Director Shareholder Information (section 4)  
 
-  export const shareHolderDirectorControllerAtom = atom<ShareHolderDirectorController>({
+  export const shareHolderDirectorControllerAtom = atomWithReset<ShareHolderDirectorController>({
     numShareHoldersAtom: undefined,
     numDirectorsAtom: undefined,
     shareHolderDirectorNameSharesNumAtom: '',
@@ -130,14 +122,14 @@ interface RegCompanyInfo {
   
 // corporate incorporation Accounting Tax Information (section 5)  
 
-  export const accountingTaxInfoAtom = atom<AccountingTaxInfo>({
+  export const accountingTaxInfoAtom = atomWithReset<AccountingTaxInfo>({
     finYearEnd: undefined,
     bookKeepCycle: undefined,
     implementSoftware: undefined,
     anySoftwareInUse : ""
   });
 
-  export const companyServiceAgreementConsentAtom = atom(false);
+  export const companyServiceAgreementConsentAtom = atomWithReset(false);
 
   export const companyIncorporationAtom = atom((get) => ({
     userId: '',
@@ -153,3 +145,73 @@ interface RegCompanyInfo {
     incorporationDate: null,
     serviceAgreementConsent: get(companyServiceAgreementConsentAtom)
   }));
+  
+
+  export const useResetAllForms = () => {
+    const resetApplicantInfo = useResetAtom(applicantInfoFormAtom);
+    const resetBusinessInfo = useResetAtom(businessInfoHkCompanyAtom);
+    const resetCompanyBusinessInfo = useResetAtom(companyBusinessInfoAtom);
+    const resetRegCompanyInfo = useResetAtom(regCompanyInfoAtom);
+    const resetShareHolderDirectorController = useResetAtom(shareHolderDirectorControllerAtom);
+    const resetAccountingTaxInfo = useResetAtom(accountingTaxInfoAtom);
+    const resetConsent = useResetAtom(companyServiceAgreementConsentAtom);
+    const resetCountry = useResetAtom(countryAtom);
+    
+  
+    const resetAll = () => {
+      resetApplicantInfo();
+      resetBusinessInfo();
+      resetCompanyBusinessInfo();
+      resetRegCompanyInfo();
+      resetShareHolderDirectorController();
+      resetAccountingTaxInfo();
+      resetConsent();
+      resetCountry();
+    };
+  
+    return resetAll;
+  };
+ 
+
+  export const updateCompanyIncorporationAtom = atom(
+    null,
+    (
+      get,
+      set,
+      updates: Partial<{
+        country: Record<string, string | undefined>;
+        applicantInfoForm: typeof applicantInfoFormAtom['init'];
+        businessInfoHkCompany: typeof businessInfoHkCompanyAtom['init'];
+        companyBusinessInfo: typeof companyBusinessInfoAtom['init'];
+        regCompanyInfo: typeof regCompanyInfoAtom['init'];
+        shareHolderDirectorController: typeof shareHolderDirectorControllerAtom['init'];
+        accountingTaxInfo: typeof accountingTaxInfoAtom['init'];
+        serviceAgreementConsent: boolean;
+      }>
+    ) => {
+      if (updates.country) {
+        set(countryAtom, updates.country);
+      }
+      if (updates.applicantInfoForm) {
+        set(applicantInfoFormAtom, updates.applicantInfoForm);
+      }
+      if (updates.businessInfoHkCompany) {
+        set(businessInfoHkCompanyAtom, updates.businessInfoHkCompany);
+      }
+      if (updates.companyBusinessInfo) {
+        set(companyBusinessInfoAtom, updates.companyBusinessInfo);
+      }
+      if (updates.regCompanyInfo) {
+        set(regCompanyInfoAtom, updates.regCompanyInfo);
+      }
+      if (updates.shareHolderDirectorController) {
+        set(shareHolderDirectorControllerAtom, updates.shareHolderDirectorController);
+      }
+      if (updates.accountingTaxInfo) {
+        set(accountingTaxInfoAtom, updates.accountingTaxInfo);
+      }
+      if (updates.serviceAgreementConsent !== undefined) {
+        set(companyServiceAgreementConsentAtom, updates.serviceAgreementConsent);
+      }
+    }
+  );

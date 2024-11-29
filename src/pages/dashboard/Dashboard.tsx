@@ -17,7 +17,7 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { countryAtom } from "@/lib/atom";
+import {   useResetAllForms} from "@/lib/atom";
 import { useAtom, useSetAtom } from "jotai";
 import { companyIncorporationList } from "@/services/state";
 import { cn } from "@/lib/utils";
@@ -26,6 +26,8 @@ import { useEffect } from "react";
 import { getIncorporationListByUserId } from "@/services/dataFetch";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
+// import {  useResetAtom } from 'jotai/utils';
+
 const Dashboard = () => {
   const partnerCards = [
     {
@@ -44,7 +46,7 @@ const Dashboard = () => {
       description: "The Greater Room"
     }
   ];
-  const [, setCountryState] = useAtom(countryAtom);
+   
   const [cList,] = useAtom(companyIncorporationList)
   const setCompIncList = useSetAtom(companyIncorporationList);
   // const [authUser,] = useAtom(authAtom);
@@ -55,27 +57,31 @@ const Dashboard = () => {
   const decodedToken = jwtDecode<TokenData>(token);
   // console.log("decodedToken",decodedToken)
   // console.log("userId", id)
+
+  const resetAllForms = useResetAllForms();  
+
   useEffect(() => {
+    resetAllForms()
     async function fetchData() {
       const result = await getIncorporationListByUserId(`${decodedToken.userId}`)
       return result
     }
     fetchData().then((result) => {
       setCompIncList(result);
-    })
+    })    
 
   }, [decodedToken.userId, setCompIncList]);
 
   const handleCardClick = () => {
-    setCountryState({
-      code: undefined,
-      name: undefined
-    })
+    resetAllForms()
     navigate('/company-register');
   };
   const handleRowClick = (companyId: string) => {
+    localStorage.setItem('companyRecordId', companyId);
     navigate(`/company-register/${companyId}`);
   };
+
+  console.log("cList",cList)
   return (
     < >
       {/* Main Content */}

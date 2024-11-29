@@ -19,6 +19,7 @@ const ProtectedRoute: React.FC<{ requiredRole?: string }> = ({ requiredRole }) =
     const isAuthenticated = checkAuth();
     // const { role } = authUser.user || {};
     const token = localStorage.getItem('token') as string;
+    if(!token) return <Navigate to="/" replace />
     const decodedToken = jwtDecode<TokenData>(token);
     console.log("decodedToken",decodedToken);
 

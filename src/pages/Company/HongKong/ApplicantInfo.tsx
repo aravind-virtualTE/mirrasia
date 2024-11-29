@@ -13,14 +13,10 @@ import { snsPlatforms } from "./constants";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { companyIncorporationList } from "@/services/state";
 import { useParams } from "react-router-dom";
-
-
 type RelationshipType = {
   id: string;
   label: string;
 };
-
-
 interface Errors {
   phoneNumber: string;
   email: string;
@@ -44,8 +40,7 @@ const ApplicantInfoForm = () => {
   useEffect(() => {
     if(id){
       const company = companies.find(c => c._id === id) ;
-      // const cntry = company?.country as Record<string, string | undefined>;
-      // console.log('company',company, '\n formData', formData);
+      console.log(id,'company',companies);
       setFormData(company?.applicantInfoForm as FormDataType)
     }    
   }, []);
@@ -124,13 +119,6 @@ const ApplicantInfoForm = () => {
     return '';
   };
 
-  // const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const newName = e.target.value;
-  //   setFormData(prev => ({ ...prev, companyName: newName }));
-  //   const validationError = validateCompanyName(newName);
-  //   setError(validationError);
-  // };
-
   const handleRelationshipChange = (relationshipId: string, checked: boolean) => {
     setFormData(prev => ({
       ...prev,
@@ -151,7 +139,7 @@ const ApplicantInfoForm = () => {
       case "phoneNumber":
         {
           const phoneRegex = /^\+?[1-9]\d{0,2}[-\s]?\d{7,15}$/;
-          if (!phoneRegex.test(value)) error = "Invalid phone number. Include country code.";
+          if (!phoneRegex.test(value)) error = "Invalid phone number";
           break;
         }
 
@@ -222,7 +210,7 @@ const ApplicantInfoForm = () => {
 
     handleChange('snsPlatform')(syntheticEvent);
   };
-  // console.log('Form submitted:', formData);
+  console.log('Form submitted:', formData);
 
   return (
     <Card>
@@ -294,7 +282,6 @@ const ApplicantInfoForm = () => {
                         : "Company Name you wish to establish as third priority"
                   }
                   value={cName}
-                  // onChange={handleInputChange}
                   onChange={handleChange("companyName", index)}
                   required
                   className={`w-full ${errors.companyNames[index] ? 'border-red-500' : ''}`}
@@ -319,10 +306,14 @@ const ApplicantInfoForm = () => {
               id="phoneNum"
               placeholder="Enter phone number"
               value={formData.phoneNumber}
-              onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+              // onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+              onChange={handleChange("phoneNumber")}
               required
               className="w-full"
             />
+             {errors.phoneNumber && (
+              <Alert variant="destructive"><AlertDescription>{errors.phoneNumber}</AlertDescription></Alert>
+            )}
           </div>
 
           <div className="space-y-1">

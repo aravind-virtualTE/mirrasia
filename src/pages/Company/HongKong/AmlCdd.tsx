@@ -9,7 +9,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { businessInfoHkCompanyAtom, companyIncorporationAtom, legalAcknowledgementDialougeAtom, legalAssessmentDialougeAtom, applicantInfoFormAtom } from '@/lib/atom';
+import { businessInfoHkCompanyAtom, companyIncorporationAtom, legalAcknowledgementDialougeAtom, legalAssessmentDialougeAtom, useResetAllForms } from '@/lib/atom';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme-provider';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -35,7 +35,6 @@ const AmlCdd: React.FC = () => {
   const [acknowledgement, setAcknowledgement] = useState(false);
   const [dialogOpen, setDialogOpen] = useAtom(legalAssessmentDialougeAtom);
   const [businessInfoHkCompany, setBusinessInfoHkCompany] = useAtom(businessInfoHkCompanyAtom);
-  const [, setApplicantInfo] = useAtom(applicantInfoFormAtom);
   const [disabledQuestions, setDisabledQuestions] = useState<Record<string, boolean>>({
     legal_assessment: false,
     sanctioned_countries: false,
@@ -104,7 +103,7 @@ const AmlCdd: React.FC = () => {
     }
   }
 
-
+  const resetAllForms = useResetAllForms();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -114,13 +113,22 @@ const AmlCdd: React.FC = () => {
       const decodedToken = jwtDecode<TokenData>(token);
       console.log(id, 'Form submitted:', formdata);
       formdata.userId = `${decodedToken.userId}`
-      const response = await api.post('/company/company-incorporation', formdata);
+      const docId = localStorage.getItem('companyRecordId');
+      const payload = { _id: docId, ...formdata };
+      const response = await api.post('/company/company-incorporation', payload);
       // console.log('Response:', response);
       if (response.status === 200) {
-        setCompIncList([...cList, response.data]);
+        resetAllForms()
+        const existingCompanyIndex = cList.findIndex(c => c._id === docId);
+        if (existingCompanyIndex !== -1) {
+          const updatedList = [...cList];
+          updatedList[existingCompanyIndex] = response.data.data;
+          setCompIncList(updatedList);
+        } else {
+          setCompIncList([...cList, response.data.data]);
+        }
         toast({ description: t('AmlCdd.success_message') });
         navigate('/dashboard')
-        resetState()
       } else {
         // Handle errors, e.g., display error message to the user
         console.log('Error:', response);
@@ -132,26 +140,7 @@ const AmlCdd: React.FC = () => {
     }
   };
 
-  const resetState = () => {
-    setApplicantInfo({
-      name: '',
-      relationships: [],
-      contactInfo: '',
-      snsAccountId: '',
-      snsPlatform: '',
-      phoneNumber: '',
-      email: '',
-      companyName: ["", "", ""]
-    })
-    setBusinessInfoHkCompany({
-      sanctioned_countries: undefined,
-      sanctions_presence: undefined,
-      crimea_presence: undefined,
-      russian_business_presence: undefined,
-      legal_assessment: undefined,
-    });
-    setDialogOpen(false)
-  }
+
   const { theme } = useTheme();
   // console.log("answers", businessInfoHkCompany)
 

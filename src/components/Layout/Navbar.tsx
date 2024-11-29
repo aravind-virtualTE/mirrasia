@@ -27,12 +27,14 @@ export default function Navbar() {
         if(role === 'admin') {
             navigate('/admin-dashboard');
           }else{
+            localStorage.removeItem('companyRecordId');
             navigate('/dashboard');
           }
     }
     const logout = async () => {
         localStorage.setItem('isAuthenticated', 'false');
         localStorage.removeItem("token");
+        localStorage.removeItem('companyRecordId');
         navigate('/');
     };
  

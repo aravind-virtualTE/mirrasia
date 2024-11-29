@@ -5,13 +5,17 @@ import { LightbulbIcon } from 'lucide-react';
 import { useState, ReactNode, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import IncorporationForm from './HongKong/IncorporationForm';
-import { useAtom } from 'jotai';
-import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom, legalAcknowledgementDialougeAtom, companyIncorporationAtom, shareHolderDirectorControllerAtom } from '@/lib/atom';
+import { useAtom, useSetAtom } from 'jotai';
+import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom, legalAcknowledgementDialougeAtom, companyIncorporationAtom, shareHolderDirectorControllerAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
 import { useTheme } from '@/components/theme-provider';
 import { useToast } from "@/hooks/use-toast"
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { companyIncorporationList } from '@/services/state';
+import api from '@/services/fetch';
+import jwtDecode from 'jwt-decode';
+import { TokenData } from '@/middleware/ProtectedRoutes';
+import { getIncorporationListByCompId, getIncorporationListByUserId } from '@/services/dataFetch';
 
 const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
@@ -20,19 +24,38 @@ const CompanyRegistration = () => {
     const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
     const [finalForm,] = useAtom(companyIncorporationAtom);
     const { id } = useParams();
-    const [companies] = useAtom(companyIncorporationList);
-
-
-
+    const [companies, setCompaniesList] = useAtom(companyIncorporationList);
+    const { theme } = useTheme();
 
     const [businessInfoHkCompany,] = useAtom(businessInfoHkCompanyAtom);
     const [countryState, setCountryState] = useAtom(countryAtom);
+    const token = localStorage.getItem('token') as string;
+    const decodedToken = jwtDecode<TokenData>(token);
     useEffect(() => {
         if (id) {
-            const company = companies.find(c => c._id === id);
-            const cntry = company?.country as Record<string, string | undefined>;
-            if (company) setCountryState(cntry)
-            console.log(id, "companies", company);
+            async function fetchData() {
+                const result = await getIncorporationListByUserId(`${decodedToken.userId}`)
+                return result
+              }
+              fetchData().then((result) => {
+                setCompaniesList(result);
+                const company = companies.find(c => c._id === id);
+                const cntry = company?.country as Record<string, string | undefined>;
+                if (company) setCountryState(cntry)
+                console.log(id, "companies", company);
+              })  
+        }
+        const compId = localStorage.getItem('companyRecordId');
+        console.log('compId ',compId)
+        if(compId){
+            async function fetchData() {
+                const result = await getIncorporationListByCompId(`${compId}`)
+                return result
+              }
+              fetchData().then((result) => {
+                console.log("result-->",result)
+                updateCompanyData(result[0])
+              })   
         }
     }, []);
 
@@ -48,13 +71,38 @@ const CompanyRegistration = () => {
         { number: 9, label: 'Signing Incorporation Documents', active: currentSection === 9 },
         { number: 10, label: 'Incorporation', active: currentSection === 10 },
     ];
+
     const { toast } = useToast()
-    const nextSection = () => {
-        console.log("companyIncorporationAtom", finalForm)
+    const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
+    const updateDoc = async () => {
+        try {
+            const docId = localStorage.getItem('companyRecordId');
+            // console.log("docId-->",docId)
+            finalForm.userId = `${decodedToken.userId}`
+            const payload = { _id:docId, ...finalForm }
+            if(finalForm.applicantInfoForm.name !== ''){
+                
+                const response = await api.post('/company/company-incorporation', payload);
+                // console.log("responseincorporation-->",response)
+                if (response.status === 200) {
+                    if (response.data && response.data.data._id) 
+                        localStorage.setItem('companyRecordId', response.data.data._id);
+                        updateCompanyData(response.data.data)
+                } else {
+                   console.log("error-->", response);
+                }
+            }              
+            
+        } catch (error) {
+            console.error('Error updating document:', error);           
+        }
+    }
+
+    const nextSection = async () => {
+        // console.log("companyIncorporationAtom", finalForm)
 
         if (currentSection === 2 && Object.values(businessInfoHkCompany).some(value => value === undefined)) {
-            console.log('Fill all the required fields')
-
+            // console.log('Fill all the required fields')
             toast({
                 title: "Fill Details",
                 description: "Fill all the required fields",
@@ -68,6 +116,7 @@ const CompanyRegistration = () => {
                     description: "Fill the required fields Shareholder(s) / Director(s)",
                 })
             } else {
+                await updateDoc()
                 setCurrentSection(currentSection + 1);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -76,10 +125,12 @@ const CompanyRegistration = () => {
             currentSection === 2 &&
             Object.values(businessInfoHkCompany).every(value => value === 'no')
         ) {
+            await updateDoc()
             setCurrentSection(currentSection + 1);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         else if (currentSection < 10 && currentSection !== 2) {
+            await updateDoc()
             setCurrentSection(currentSection + 1);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -120,11 +171,10 @@ const CompanyRegistration = () => {
                 return <div>Registration form for {countryState.name} is not available yet.</div>;;
         }
     }
-    const { theme } = useTheme();
+
 
     const updateCountry = (countryCode: string) => {
         const selectedCountry = countries.find(country => country.code === countryCode);
-
         if (selectedCountry) {
             setCountryState({
                 code: selectedCountry.code,
