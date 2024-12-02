@@ -3,12 +3,12 @@ import { useTheme } from "@/components/theme-provider";
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea";
 
 import { accountingTaxInfoAtom } from "@/lib/atom";
 import { useAtom } from "jotai";
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 const AccountingTaxationInfo: React.FC = () => {
     const [accTaxInfo, setTaxAccountInfo] = useAtom(accountingTaxInfoAtom);
@@ -25,8 +25,8 @@ const AccountingTaxationInfo: React.FC = () => {
     const handleBookCycleChange = (bookKeepCycle: string) => {
         setTaxAccountInfo((prev) => ({ ...prev, bookKeepCycle }));
     }
-    const handleAccSoftwareChange = (anySoftwareInUse: string) => {
-        setTaxAccountInfo((prev) => ({ ...prev, anySoftwareInUse }));
+    const handleAccSoftwareChange = (implementSoftware: string) => {
+        setTaxAccountInfo((prev) => ({ ...prev, implementSoftware }));
     }
     const { theme } = useTheme();
 
@@ -112,16 +112,13 @@ const AccountingTaxationInfo: React.FC = () => {
                             <Label htmlFor="description" className="text-base font-semibold">
                                 Do you currently use or have a separate accounting software you would like to use? (if any) <span className="text-red-500 font-bold ml-1">*</span>
                             </Label>
-
-                            <Textarea
+                            <Input
+                                id="description"
                                 required
+                                className="w-full"
                                 value={accTaxInfo.anySoftwareInUse}
                                 onChange={(e) => setTaxAccountInfo(prev => ({ ...prev, anySoftwareInUse: e.target.value }))}
-                                placeholder="E.g : 1.Jack: Shareholder/Director/Number of shares assigned: 1"
-                                id="description"
-                                className="h-32"
-
-                            />
+                                placeholder="Enter data if any..." />                           
                         </div>
                     </CardContent>
                 </Card>

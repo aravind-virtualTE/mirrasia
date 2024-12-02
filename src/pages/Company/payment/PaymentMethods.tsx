@@ -1,7 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { CreditCard, CircleDollarSign, Smartphone, LucideIcon } from 'lucide-react';
+import { CreditCard, 
+  // CircleDollarSign, 
+  Smartphone, LucideIcon } from 'lucide-react';
 import { CardPaymentForm } from './CardPaymentForm';
-import { PayPalForm } from './PayPalForm';
+// import { PayPalForm } from './PayPalForm';
 import { FPSForm } from './FPSForm';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -35,7 +37,7 @@ const PaymentMethodCard = ({
         <DialogTitle>{title}</DialogTitle>
       </DialogHeader>
       {method === 'card' && <CardPaymentForm />}
-      {method === 'paypal' && <PayPalForm />}
+      {/* {method === 'paypal' && <PayPalForm />} */}
       {method === 'fps' && <FPSForm />}
     </DialogContent>
   </Dialog>
@@ -53,12 +55,12 @@ export function PaymentMethods() {
           method="card"
         />
         
-        <PaymentMethodCard
+        {/* <PaymentMethodCard
           icon={CircleDollarSign}
           title="PayPal"
           description="4.5% Processing Fee"
           method="paypal"
-        />
+        /> */}
 
         <PaymentMethodCard
           icon={Smartphone}

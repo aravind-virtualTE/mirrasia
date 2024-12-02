@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,7 @@ import AccountingTaxationInfo from "./AccountingTaxationInfo";
 const CompanyInformation: React.FC = () => {
     // const { t } = useTranslation();
     const [businessInfo, setBusinessInfo] = useAtom(companyBusinessInfoAtom);
+    const [selectedValue, setSelectedValue] = useState("");
 
     const handleDescriptionChange = (business_product_description: string) => {
         setBusinessInfo((prev) => ({ ...prev, business_product_description }));
@@ -23,9 +24,26 @@ const CompanyInformation: React.FC = () => {
 
 
     const { theme } = useTheme();
+
+    useEffect(() => {
+        // Set the initial value based on the atom
+        if (businessInfo.business_industry) {
+          const matchedCategory = businessNatureList.find(
+            (category) => category.name === businessInfo.business_industry
+          );
+          if (matchedCategory) {
+            setSelectedValue(matchedCategory.val);
+          }
+        } else {
+          // Default to the first item in the list
+          setSelectedValue(businessNatureList[0].val);
+        }
+      }, [businessInfo]);
+      
     const handleBusinessChange = (value: string) => {
         // console.log('Selected business category:', value);
         const categoryName = businessNatureList.find((category) => category.val === value)?.name;
+        setSelectedValue(value);
         setBusinessInfo((prev) => ({ ...prev, business_industry: categoryName }));
         // Handle the selected value here
     };
@@ -57,6 +75,7 @@ const CompanyInformation: React.FC = () => {
                                 <Label htmlFor="business-category">Select Business Industry</Label>
                                 <Select
                                     defaultValue={businessNatureList[0].val}
+                                    value={selectedValue}                 
                                     onValueChange={handleBusinessChange}
                                 >
                                     <SelectTrigger className="w-full">
