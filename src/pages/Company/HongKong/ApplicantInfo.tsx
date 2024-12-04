@@ -220,7 +220,7 @@ const ApplicantInfoForm = () => {
           {t('ApplicantInfoForm.paragraph')}
         </p>
       </CardHeader>
-      <CardContent>
+      {formData && <CardContent>
         <div className="space-y-2">
           <Label htmlFor="name" className="text-base">
             {t('ApplicantInfoForm.applicantName')} <span className="text-red-500">*</span>
@@ -378,7 +378,7 @@ const ApplicantInfoForm = () => {
             </div>
           </div>
         </div>
-      </CardContent>
+      </CardContent>}
     </Card>
   );
 };

@@ -131,6 +131,9 @@ interface RegCompanyInfo {
 
   export const companyServiceAgreementConsentAtom = atomWithReset(false);
 
+  export const PaymentSessionId = atomWithReset("");
+  export const paymentId = atomWithReset("");
+
   export const companyIncorporationAtom = atom((get) => ({
     userId: '',
     status: 'Pending',
@@ -143,7 +146,9 @@ interface RegCompanyInfo {
     shareHolderDirectorController: get(shareHolderDirectorControllerAtom),
     accountingTaxInfo: get(accountingTaxInfoAtom),
     incorporationDate: null,
-    serviceAgreementConsent: get(companyServiceAgreementConsentAtom)
+    serviceAgreementConsent: get(companyServiceAgreementConsentAtom),
+    sessionId: get(PaymentSessionId),
+    paymentId: get(paymentId)
   }));
   
 
@@ -156,6 +161,8 @@ interface RegCompanyInfo {
     const resetAccountingTaxInfo = useResetAtom(accountingTaxInfoAtom);
     const resetConsent = useResetAtom(companyServiceAgreementConsentAtom);
     const resetCountry = useResetAtom(countryAtom);
+    const resetSessionPayment = useResetAtom(PaymentSessionId);
+    const resetPaymentID = useResetAtom(paymentId);
     
   
     const resetAll = () => {
@@ -167,6 +174,8 @@ interface RegCompanyInfo {
       resetAccountingTaxInfo();
       resetConsent();
       resetCountry();
+      resetSessionPayment()
+      resetPaymentID()
     };
   
     return resetAll;
@@ -187,11 +196,20 @@ interface RegCompanyInfo {
         shareHolderDirectorController: typeof shareHolderDirectorControllerAtom['init'];
         accountingTaxInfo: typeof accountingTaxInfoAtom['init'];
         serviceAgreementConsent: boolean;
+        sessionId: string;
+        paymentId: string;
+
       }>
     ) => {
       if (updates.country) {
         set(countryAtom, updates.country);
       }
+      if (updates.sessionId) {
+        set(PaymentSessionId, updates.sessionId);
+      }
+      if (updates.paymentId) {
+        set(paymentId, updates.paymentId);
+      }      
       if (updates.applicantInfoForm) {
         set(applicantInfoFormAtom, updates.applicantInfoForm);
       }

@@ -49,7 +49,44 @@ interface AccountingTaxInfo {
     anySoftwareInUse: string;
 }
 
+interface PaymentDetails {
+    paymentData: {
+        id: string;
+        object: string;
+        allowed_source_types: string[];
+        amount: number;
+        amount_details: {
+            tip?: Record<string, unknown>;
+        };
+        automatic_payment_methods: null | Record<string, unknown>;
+        canceled_at: number | null;
+        cancellation_reason: string | null;
+        capture_method: string;
+        client_secret: string;
+        confirmation_method: string;
+        created: number;
+        currency: string;
+        description: string | null;
+        last_payment_error: null | Record<string, unknown>;
+        livemode: boolean;
+        next_action: null | Record<string, unknown>;
+        next_source_action: null | Record<string, unknown>;
+        payment_method: string;
+        payment_method_configuration_details: null | Record<string, unknown>;
+        payment_method_types: string[];
+        processing: null | Record<string, unknown>;
+        receipt_email: string | null;
+        setup_future_usage: null | string;
+        shipping: null | Record<string, unknown>;
+        source: null | Record<string, unknown>;
+        status: string;
+    }
+
+}
+
 interface Company {
+    incorporationDate: string;
+    is_draft: boolean;
     _id: string;  // Changed to string for frontend
     userId: string;  // Changed to string for frontend
     country: Country;
@@ -60,6 +97,7 @@ interface Company {
     shareHolderDirectorController: ShareHolderDirectorController;
     accountingTaxInfo: AccountingTaxInfo;
     status: string;
+    paymentDetails?: PaymentDetails;
     __v: number;
 }
 
@@ -67,57 +105,93 @@ interface Company {
 const CompanyDetail = () => {
     const { id } = useParams();
     const [companies] = useAtom(companyIncorporationList);
-    const company = companies.find(c => c._id === id);
-    const [isDraft, setIsDraft] = useState(company?.is_draft);
+    const companyDetail = companies.find(c => c._id === id) as unknown as Company;
+    const [isDraft, setIsDraft] = useState(companyDetail?.is_draft);
 
-    if (!company) {
+    if (!companyDetail) {
         return <div>Company not found</div>;
     }
-    console.log("company", company);
-    const sections = [
-        {
-            title: "Applicant Information",
-            data: {
-                "Company Name": (company.applicantInfoForm as Company['applicantInfoForm']).companyName,
-                "Applicant Name": (company.applicantInfoForm as Company['applicantInfoForm']).name,
-                "Email": (company.applicantInfoForm as Company['applicantInfoForm']).email,
-                "Phone": (company.applicantInfoForm as Company['applicantInfoForm']).phoneNumber,
-                "Relationships": (company.applicantInfoForm as Company['applicantInfoForm']).relationships.join(", "),
-                "SNS Account ID": (company.applicantInfoForm as Company['applicantInfoForm']).snsAccountId,
-            },
-        },
-        {
-            title: "Country Information",
-            data: {
-                "Country": (company.country as Company['country']).name,
-                "Country Code": (company.country as Company['country']).code
-            }
-        },
-        {
-            title: "Business Information",
-            data: {
-                "Sanctioned Countries": (company.businessInfoHkCompany as Company['businessInfoHkCompany']).sanctioned_countries,
-                "Sanctions Presence": (company.businessInfoHkCompany as Company['businessInfoHkCompany']).sanctions_presence,
-                "Crimea Presence": (company.businessInfoHkCompany as Company['businessInfoHkCompany']).crimea_presence,
-                "Russian Business Presence": (company.businessInfoHkCompany as Company['businessInfoHkCompany']).russian_business_presence,
-                "Legal Assessment": (company.businessInfoHkCompany as Company['businessInfoHkCompany']).legal_assessment,
-                "Business Description": (company.companyBusinessInfo as Company['companyBusinessInfo']).business_product_description || "N/A"
-            }
-        },
-        {
+    console.log("company", companyDetail);
+    const generateSections = (company: Company) => {
+        const sections = [];
+
+        // Applicant Information Section
+        if (company.applicantInfoForm) {
+            sections.push({
+                title: "Applicant Information",
+                data: {
+                    "Company Name": company.applicantInfoForm.companyName,
+                    "Applicant Name": company.applicantInfoForm.name,
+                    "Email": company.applicantInfoForm.email,
+                    "Phone": company.applicantInfoForm.phoneNumber,
+                    "Relationships": company.applicantInfoForm.relationships?.join(", ") || "N/A",
+                    "SNS Account ID": company.applicantInfoForm.snsAccountId,
+                },
+            });
+        }
+
+        // Country Information Section
+        if (company.country) {
+            sections.push({
+                title: "Country Information",
+                data: {
+                    "Country": company.country.name,
+                    "Country Code": company.country.code
+                }
+            });
+        }
+
+        // Business Information Section
+        if (company.businessInfoHkCompany || company.companyBusinessInfo) {
+            sections.push({
+                title: "Business Information",
+                data: {
+                    ...(company.businessInfoHkCompany ? {
+                        "Sanctioned Countries": company.businessInfoHkCompany.sanctioned_countries,
+                        "Sanctions Presence": company.businessInfoHkCompany.sanctions_presence,
+                        "Crimea Presence": company.businessInfoHkCompany.crimea_presence,
+                        "Russian Business Presence": company.businessInfoHkCompany.russian_business_presence,
+                        "Legal Assessment": company.businessInfoHkCompany.legal_assessment,
+                    } : {}),
+                    "Business Description": company.companyBusinessInfo?.business_product_description || "N/A"
+                }
+            });
+        }
+
+        // Payment Information Section
+        console.log(company.paymentDetails)
+        if (company.paymentDetails?.paymentData) {
+            sections.push({
+                title: "Payment Information",
+                data: {
+                    "Payment ID": company.paymentDetails.paymentData.id,
+                    "Amount": `${(company.paymentDetails.paymentData.amount / 100).toFixed(2)} ${company.paymentDetails.paymentData.currency.toUpperCase()}`,
+                    "Status": company.paymentDetails.paymentData.status,
+                    "Payment Date": new Date(company.paymentDetails.paymentData.created * 1000).toLocaleString(),
+                    "Payment Methods": company.paymentDetails.paymentData.payment_method_types.join(", ")
+                }
+            });
+        }
+
+        // Status Information Section
+        sections.push({
             title: "Status Information",
             data: {
                 "Status": company.status,
                 "Incorporation Date": company.incorporationDate || "N/A",
                 "Can Edit": company.is_draft ? "Yes" : "No"
             }
-        }
-    ];
+        });
+
+        return sections;
+    };
+
+    const sections = generateSections(companyDetail);
 
 
     const handleUpdate = async () => {
         // API call to update the record in the backend
-        console.log("testing", company._id)
+        console.log("testing", companyDetail._id)
         // const response = await fetch(`/api/company/${id}`, {
         //   method: "PATCH",
         //   headers: { "Content-Type": "application/json" },

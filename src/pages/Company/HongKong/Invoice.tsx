@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Info } from "lucide-react";
 import { useAtom } from "jotai";
 import { companyIncorporateInvoiceAtom } from "@/services/state";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 // Define types for the invoice data structure
 interface InvoiceItem {
@@ -33,7 +32,7 @@ interface InvoiceMetadata {
   correspondenceCount: number;
 }
 
-interface InvoiceData {
+export interface InvoiceData {
   items: InvoiceItem[];
   totals: InvoiceTotals;
   customer: {
@@ -121,11 +120,8 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({ invoiceData }) => {
           </div>
         </div>
         {/* Payment Terms and Conditions */}
-        <Accordion type="single" collapsible className="mt-8">
-          <AccordionItem value="payment-terms">
-            <AccordionTrigger>Payment Terms and Conditions</AccordionTrigger>
-            <AccordionContent>
-              <div className="space-y-4">
+        <h1 className="text-lg font-semibold mt-4">Payment Terms and Conditions</h1>
+        <div className="space-y-4">
                 <div>
                   <h4 className="font-semibold">1. Payment Condition</h4>
                   <p>100% in advance</p>
@@ -174,9 +170,6 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({ invoiceData }) => {
                   <p>The remitter bears all charges of payment, which includes the remittance amount, beneficiary bank's charges, as well as all the other banks' fees (intermediary bank, etc).</p>
                 </div>
               </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
       </CardContent>
     </Card>
   );
