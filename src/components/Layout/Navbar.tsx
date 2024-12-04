@@ -1,5 +1,5 @@
 import { LogOut, Menu, User } from "lucide-react"
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -12,19 +12,21 @@ import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 import { useState } from "react";
 import Logo from '@/common/LogoComponent';
 import ToggleTheme from '@/hooks/ToggleTheme';
-import { useAtom } from 'jotai';
-import { authAtom } from "@/hooks/useAuth";
-
-
+// import { useAtom } from 'jotai';
+// import { authAtom } from "@/hooks/useAuth";
+import { TokenData } from "@/middleware/ProtectedRoutes";
+import jwtDecode from "jwt-decode";
 
 export default function Navbar() {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const navigate = useNavigate();
-    const [authUser, ] = useAtom(authAtom);
-    const { role } = authUser.user || {};
+
+    const token = localStorage.getItem('token') as string;
+    if(!token) return <Navigate to="/" replace />
+    const decodedToken = jwtDecode<TokenData>(token);
     
     const navigateRoute  = () =>{
-        if(role === 'admin') {
+        if(decodedToken.role === 'admin') {
             navigate('/admin-dashboard');
           }else{
             localStorage.removeItem('companyRecordId');

@@ -12,7 +12,7 @@ import {
     Receipt,
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import {
     ResizableHandle,
     ResizablePanel,
@@ -21,6 +21,8 @@ import {
 import { Card, CardContent } from '../ui/card';
 import Navbar from './Navbar';
 import { useTheme } from '../theme-provider';
+import jwtDecode from 'jwt-decode';
+import { TokenData } from '@/middleware/ProtectedRoutes';
 
 
 const Layout: React.FC = () => {
@@ -36,7 +38,6 @@ const Layout: React.FC = () => {
         }
         // Set initial state
         handleResize()
-
         // Add event listener
         window.addEventListener('resize', handleResize)
 
@@ -56,6 +57,23 @@ const Layout: React.FC = () => {
         { icon: <Receipt className="w-4 h-4" />, label: "Billings & Subscriptions" },
         { icon: <HelpCircle className="w-4 h-4" />, label: "Support" },
     ];
+    const token = localStorage.getItem('token') as string;
+    if(!token) return <Navigate to="/" replace />
+    const decodedToken = jwtDecode<TokenData>(token);
+    const navigate = useNavigate();
+    const handleNavigation = (label: string) => {
+        switch(label) {
+            case 'Home':
+                if(decodedToken.role === 'admin') {
+                    navigate('/admin-dashboard');
+                } else {
+                    localStorage.removeItem('companyRecordId');
+                    navigate('/dashboard');
+                }
+                break;
+            // Add other navigation cases as needed
+        }
+    };
 
     const { theme } = useTheme();
 
@@ -85,6 +103,7 @@ const Layout: React.FC = () => {
                                         key={index}
                                         variant="ghost"
                                         className="w-full justify-start "
+                                        onClick={() => handleNavigation(item.label)}
                                     >
                                         {item.icon}
                                         <span className={`ml-2 ${isCollapsed ? 'hidden' : 'inline'}`}>{item.label}</span>
