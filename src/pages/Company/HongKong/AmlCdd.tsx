@@ -49,7 +49,10 @@ const AmlCdd: React.FC = () => {
     if (id) {
       const company = cList.find(c => c._id === id);
       //   console.log('company',company, '\n formData', businessInfoHkCompany);
-      setBusinessInfoHkCompany(company?.businessInfoHkCompany as Record<string, string | undefined>)
+      if(company?.businessInfoHkCompany) {
+        console.log('company',company, '\n formData', businessInfoHkCompany);
+        setBusinessInfoHkCompany(company?.businessInfoHkCompany as Record<string, string | undefined>)
+      }
     }
   }, []);
 
@@ -142,7 +145,7 @@ const AmlCdd: React.FC = () => {
 
 
   const { theme } = useTheme();
-  // console.log("answers", businessInfoHkCompany)
+  console.log("answers", businessInfoHkCompany)
 
   return (
     <>
