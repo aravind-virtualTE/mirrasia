@@ -49,7 +49,7 @@ interface AccountingTaxInfo {
     anySoftwareInUse: string;
 }
 
-interface PaymentDetails {
+export interface PaymentDetails {
     paymentData: {
         id: string;
         object: string;

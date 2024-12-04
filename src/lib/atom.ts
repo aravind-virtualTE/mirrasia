@@ -133,6 +133,9 @@ interface RegCompanyInfo {
 
   export const PaymentSessionId = atomWithReset("");
   export const paymentId = atomWithReset("");
+  type AnyObject = Record<string, unknown>;
+
+  export const compServiceSelection = atomWithReset<AnyObject[]>([]);
 
   export const companyIncorporationAtom = atom((get) => ({
     userId: '',
@@ -148,7 +151,9 @@ interface RegCompanyInfo {
     incorporationDate: null,
     serviceAgreementConsent: get(companyServiceAgreementConsentAtom),
     sessionId: get(PaymentSessionId),
-    paymentId: get(paymentId)
+    paymentId: get(paymentId),
+    serviceSelection : get(compServiceSelection)
+
   }));
   
 
@@ -163,6 +168,7 @@ interface RegCompanyInfo {
     const resetCountry = useResetAtom(countryAtom);
     const resetSessionPayment = useResetAtom(PaymentSessionId);
     const resetPaymentID = useResetAtom(paymentId);
+    const resetcompPaymentDetails = useResetAtom(compServiceSelection);
     
   
     const resetAll = () => {
@@ -176,6 +182,7 @@ interface RegCompanyInfo {
       resetCountry();
       resetSessionPayment()
       resetPaymentID()
+      resetcompPaymentDetails()
     };
   
     return resetAll;
@@ -198,11 +205,15 @@ interface RegCompanyInfo {
         serviceAgreementConsent: boolean;
         sessionId: string;
         paymentId: string;
+        serviceSelection: typeof compServiceSelection['init'];
 
       }>
     ) => {
       if (updates.country) {
         set(countryAtom, updates.country);
+      }
+      if (updates.serviceSelection) {
+        set(compServiceSelection, updates.serviceSelection);
       }
       if (updates.sessionId) {
         set(PaymentSessionId, updates.sessionId);

@@ -191,8 +191,8 @@ export function StripePaymentForm({ sessionId, clientSecret }: CardPaymentFormPr
     clientSecret,
 
   };
-  console.log(sessionId && clientSecret)
-  console.log(sessionId, clientSecret)
+  // console.log(sessionId && clientSecret)
+  // console.log(sessionId, clientSecret)
   return (<>
     {sessionId && clientSecret && (<Elements stripe={stripePromise} options={options}>
       <CardPaymentForm sessionId={sessionId} clientSecret={clientSecret} />

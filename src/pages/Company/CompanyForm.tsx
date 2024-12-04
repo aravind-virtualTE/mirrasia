@@ -31,6 +31,8 @@ const CompanyRegistration = () => {
     const [countryState, setCountryState] = useAtom(countryAtom);
     const token = localStorage.getItem('token') as string;
     const decodedToken = jwtDecode<TokenData>(token);
+    const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
+    
     useEffect(() => {
         if (id) {
             async function fetchData() {
@@ -73,7 +75,7 @@ const CompanyRegistration = () => {
     ];
 
     const { toast } = useToast()
-    const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
+    
     const updateDoc = async () => {
         try {
             const docId = localStorage.getItem('companyRecordId');
