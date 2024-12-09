@@ -18,13 +18,14 @@ import { AlertCircle, CheckCircle } from 'lucide-react';
 interface CardPaymentFormProps {
   sessionId: string;
   clientSecret: string
+  amount: number
 }
 
 const formSchema = z.object({
   cardHolder: z.string().min(2),
 });
 
-export function CardPaymentForm({ sessionId, clientSecret }: CardPaymentFormProps) {
+export function CardPaymentForm({ sessionId, clientSecret , amount}: CardPaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
@@ -114,6 +115,7 @@ export function CardPaymentForm({ sessionId, clientSecret }: CardPaymentFormProp
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4 pt-4">
+
           {paymentStatus.type === 'success' && (
               <Alert variant="default" className="bg-green-50">
                 <CheckCircle className="h-4 w-4 stroke-green-600" />
@@ -133,7 +135,13 @@ export function CardPaymentForm({ sessionId, clientSecret }: CardPaymentFormProp
                 </AlertDescription>
               </Alert>
             )}
-            
+            <Alert variant="default" className="bg-green-50">
+                <CheckCircle className="h-4 w-4 stroke-green-600" />
+                <AlertTitle className="text-green-800">Amount: {Math.ceil(amount * 1.035)}</AlertTitle>
+                {/* <AlertDescription className="text-green-700">
+                  {paymentStatus.message}
+                </AlertDescription> */}
+              </Alert>
             <FormField
               control={form.control}
               name="cardHolder"
@@ -186,7 +194,7 @@ export function CardPaymentForm({ sessionId, clientSecret }: CardPaymentFormProp
 const STRIPE_CLIENT_ID = import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
 const stripePromise = loadStripe(STRIPE_CLIENT_ID);
 
-export function StripePaymentForm({ sessionId, clientSecret }: CardPaymentFormProps) {
+export function StripePaymentForm({ sessionId, clientSecret , amount}: CardPaymentFormProps) {
   const options = {
     clientSecret,
 
@@ -195,7 +203,7 @@ export function StripePaymentForm({ sessionId, clientSecret }: CardPaymentFormPr
   // console.log(sessionId, clientSecret)
   return (<>
     {sessionId && clientSecret && (<Elements stripe={stripePromise} options={options}>
-      <CardPaymentForm sessionId={sessionId} clientSecret={clientSecret} />
+      <CardPaymentForm sessionId={sessionId} clientSecret={clientSecret} amount={amount} />
     </Elements>)}
   </>
   );

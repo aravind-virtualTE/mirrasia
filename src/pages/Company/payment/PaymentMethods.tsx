@@ -26,6 +26,7 @@ interface PaymentMethodCardProps {
   method: 'card' | 'paypal' | 'fps' | 'bank' | 'other';
   sessionId: string;
   clientSecret: string;
+  amount: number
 }
 const PaymentMethodCard = ({
   icon: Icon,
@@ -33,7 +34,8 @@ const PaymentMethodCard = ({
   description,
   method,
   sessionId,
-  clientSecret
+  clientSecret,
+  amount
 }: PaymentMethodCardProps) => {
 
   return (
@@ -53,7 +55,7 @@ const PaymentMethodCard = ({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>        
-        {method === 'card' && <StripePaymentForm sessionId={sessionId} clientSecret={clientSecret}  />}
+        {method === 'card' && <StripePaymentForm sessionId={sessionId} clientSecret={clientSecret} amount={amount}  />}
         {method === 'bank' && <BankTransferMethod sessionId={sessionId} />}
         {method === 'fps' && <FPSForm />}
         {method === 'other' && <ReceiptUpload sessionId={sessionId} />}
@@ -75,7 +77,7 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
       try {
         const response = await paymentApi.createPaymentIntent(Math.ceil(amount *1.035), "USD", sessionId,
           localStorage.getItem('companyRecordId')!)
-        console.log("responsecompanyRecordId", response)
+        // console.log("responsecompanyRecordId", response)
         setClientSecret(response.clientSecret)
         hasFetchedRef.current = true
       } catch (error) {
@@ -92,10 +94,11 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
           <PaymentMethodCard
             icon={CreditCard}
             title="Card Payment"
-            description="Stripe Payments (3.5% Processing Fee)"
+            description={`Stripe Payments (3.5% Processing Fee) ${amount *1.035}`}
             method="card"
             sessionId={sessionId}
             clientSecret={clientSecret}
+            amount={amount}
           />        
         <PaymentMethodCard
           icon={Building2}
@@ -104,7 +107,7 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
           method="bank"
           sessionId={sessionId}
           clientSecret={clientSecret}
-
+          amount={amount}
         />
         <PaymentMethodCard
           icon={Smartphone}
@@ -113,7 +116,7 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
           method="fps"
           sessionId={sessionId}
           clientSecret={clientSecret}
-
+          amount={amount}
         />
         <PaymentMethodCard
           icon={CircleDollarSign}
@@ -122,7 +125,7 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
           method="other"
           sessionId={sessionId}
           clientSecret={clientSecret}
-
+          amount={amount}
         />
       </div>
     </div>

@@ -274,7 +274,7 @@ const ShareholderDirectorForm: React.FC = () => {
         <Button 
           className="btn btn-primary w-fit" 
           onClick={addShareholder}
-          disabled={totalOwnership >= 100}
+          // disabled={totalOwnership >= 100}
         >
           Add Shareholder/director
         </Button>

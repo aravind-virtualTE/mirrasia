@@ -218,7 +218,7 @@ const CompanyRegistration = () => {
                     </Card>
                     <div className="flex-1 overflow-y-auto">
                         {/* Good to know card */}
-                        {currentSection === 3 && <Card
+                        {currentSection === 1 && <Card
                             className={`mb-6 border-0 ${theme === 'light'
                                 ? 'bg-blue-50 text-gray-800'
                                 : 'bg-gray-800 text-gray-200'

@@ -30,6 +30,7 @@ export function PaymentInformation() {
       try {
         setIsLoading(true);
         const docId = localStorage.getItem('companyRecordId');
+        // creating the payment session in the backend
         const sessionData = await paymentApi.createSession(amount, 'USD', docId!); // Amount and currency as needed
         const session = sessionData.session._id;
         setSessionId(session);
