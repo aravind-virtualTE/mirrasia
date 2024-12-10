@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
 import { useAtom } from 'jotai';
-import { shareHolderDirectorControllerAtom } from '@/lib/atom';
-import { companyIncorporateInvoiceAtom, selectedServicesAtom } from '@/services/state';
+import { shareHolderDirectorControllerAtom ,serviceSelectionStateAtom} from '@/lib/atom';
+import { companyIncorporateInvoiceAtom} from '@/services/state';
 import { useTranslation } from 'react-i18next';
 interface InvoiceItem {
   description: string;
@@ -18,12 +18,32 @@ interface InvoiceItem {
   note: string | null;
 }
 
-const ServiceSelection: React.FC = () => {
-  const [selectedServices, setSelectedServices] = useAtom(selectedServicesAtom);
+
+const ServiceSelection: React.FC = () => { 
   const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
-  const [correspondenceCount, setCorrespondenceCount] = useState(1);
-  const [,setCorpoInvoiceAtom] = useAtom(companyIncorporateInvoiceAtom);
+  const [, setCorpoInvoiceAtom] = useAtom(companyIncorporateInvoiceAtom);
+  const [serviceSelectionState, setServiceSelectionState] = useAtom(serviceSelectionStateAtom);
   const { t } = useTranslation();
+
+  // Memoized initial state to prevent unnecessary re-renders
+  const initialState = useMemo(() => ({
+    selectedServices: serviceSelectionState?.selectedServices || [],
+    correspondenceCount: serviceSelectionState?.correspondenceCount || 1
+  }), [serviceSelectionState]);
+
+  // Use state with memoized initial values
+  const [selectedServices, setSelectedServices] = useState(initialState.selectedServices);
+  const [correspondenceCount, setCorrespondenceCount] = useState(initialState.correspondenceCount);
+
+  useEffect(() => {
+    // Use a microtask to batch updates and reduce unnecessary renders
+    queueMicrotask(() => {
+      setServiceSelectionState({
+        selectedServices, 
+        correspondenceCount
+      });
+    });
+  }, [selectedServices, correspondenceCount, setServiceSelectionState]);  
 
   const fees = useMemo(() => [
     {
@@ -101,12 +121,12 @@ const ServiceSelection: React.FC = () => {
     },
   ], [t]);
 
+  console.log("serviceSelectionState",serviceSelectionState)
   const legalPersonFees = shareHolderAtom.shareHolders.filter((shareholder) => shareholder.isLegalPerson).length;
   const individualFees = shareHolderAtom.shareHolders.filter((shareholder) => !shareholder.isLegalPerson).length;
 
   const allFees = useMemo(() => {
-    const allFeesArray = [...fees];
-    
+    const allFeesArray = [...fees];    
     // Add Legal Person KYC fees
     for (let i = 0; i < legalPersonFees; i++) {
       allFeesArray.push({
@@ -117,12 +137,10 @@ const ServiceSelection: React.FC = () => {
         isHighlight: false,
       });
     }
-
     // Add Individual KYC fees
     if (individualFees > 2) {
       const peopleNeedingKyc = individualFees - 2;
-      const kycSlots = Math.ceil(peopleNeedingKyc / 2);
-      
+      const kycSlots = Math.ceil(peopleNeedingKyc / 2);      
       for (let i = 0; i < kycSlots; i++) {
         allFeesArray.push({
           description: t("ServiceSelection.KYCFee"),
@@ -149,7 +167,7 @@ const ServiceSelection: React.FC = () => {
     setCorrespondenceCount(prev => {
       const newCount = increment ? prev + 1 : Math.max(1, prev - 1);
       return newCount;
-    });
+    });    
   };
 
 
@@ -171,7 +189,6 @@ const ServiceSelection: React.FC = () => {
 
         originalSum += originalPrice;
         discountedSum += discountedPrice;
-
         items.push({
           description: fee.description,
           originalPrice: fee.originalPrice,
@@ -200,6 +217,7 @@ const ServiceSelection: React.FC = () => {
         generatedAt: new Date().toISOString(),
       }
     };
+    // console.log("invoiceData",invoiceData)
     setCorpoInvoiceAtom([invoiceData])
     return {
       totalOriginal: `USD ${originalSum.toFixed(2)}`,
@@ -208,7 +226,7 @@ const ServiceSelection: React.FC = () => {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allFees, selectedServices, correspondenceCount]);
-
+  // console.log("allFees",allFees,'/n',selectedServices)
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader className="flex flex-row justify-between items-center">
