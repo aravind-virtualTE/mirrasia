@@ -22,6 +22,7 @@ import Unauthorized from './common/Unauthorized';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import CompanyDetail from './pages/Company/Details/CompanyDetail';
 import HkMultiStepForm from './components/company/hongkong/HkMultiStepForm';
+import RegistrationFormIntro from './components/form/shrhldrForm_1';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -86,6 +87,8 @@ const App: React.FC = () => {
                     <Route path="/hkCompanyRegister/" element={<HkMultiStepForm />} />
                     <Route path="/hkCompanyRegister/:id" element={<HkMultiStepForm />} />
                     {/* Add more user-specific routes here */}
+                    <Route path='/form' element={<RegistrationFormIntro/>}/>
+
                   </Route>
                 </Route>
               </Routes>
