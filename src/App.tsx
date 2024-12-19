@@ -23,6 +23,8 @@ import AdminDashboard from './pages/dashboard/AdminDashboard';
 import CompanyDetail from './pages/Company/Details/CompanyDetail';
 import HkMultiStepForm from './components/company/hongkong/HkMultiStepForm';
 import RegistrationFormIntro from './components/form/shrhldrForm_1';
+import PdfSignature from './components/pdfPage/pdfSignature';
+import PdfTest from './components/pdfPage/pdfTest';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -65,6 +67,8 @@ const App: React.FC = () => {
 
                 <Route path="/docslayout" element={<DocsLayout />} />
                 <Route path="/mslayout" element={<MultiStepFormLayout />} />
+                <Route path="/pdf" element={<PdfTest />} />
+                <Route path="/pdf1" element={<PdfSignature />} />
 
                 {/* Protected routes for Admin */}
                 <Route element={<ProtectedRoute requiredRole="admin" />}>

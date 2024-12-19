@@ -39,3 +39,13 @@ export const getIncorporationListByUserId = async (
       throw new Error('Fetching Failed For Company Incorporation List');
     }
   };
+
+  export const getPdfDoc = async () =>{
+    try {
+      const response = await api.get('pdf/generate-pdf');
+      console.log("generateResponse-->",response)
+      return response.data;
+    } catch (error) {
+        console.error("Error fetching PDF:", error);
+    } 
+  }
