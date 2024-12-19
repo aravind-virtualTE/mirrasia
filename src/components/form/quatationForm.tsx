@@ -92,7 +92,7 @@ const QuotationForm = () => {
 
         {/* Company Name */}
         <div className="mt-6">
-          <Label>Company Name <span className="text-red-500"><span className="text-red-500">*</span></span></Label>
+          <Label>Company Name  <span className="text-red-500">*</span></Label>
           <Input
             placeholder="Enter company name"
             value={formState.companyName}

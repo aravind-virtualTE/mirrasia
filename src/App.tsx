@@ -24,6 +24,9 @@ import CompanyDetail from './pages/Company/Details/CompanyDetail';
 import HkMultiStepForm from './components/company/hongkong/HkMultiStepForm';
 import RegistrationFormIntro from './components/form/shrhldrForm_1';
 import QuatationForm from './components/form/quatationForm';
+import RenewalRequestForm from './components/form/renewalReqForm';
+import TransferManagementInfo from './components/form/TransferManagementInfo';
+import AccountingTaxForm from './components/form/accountingTaxWork';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -90,6 +93,11 @@ const App: React.FC = () => {
                     {/* Add more user-specific routes here */}
                     <Route path='/form' element={<RegistrationFormIntro/>}/>
                     <Route path='/QuatationForm' element ={<QuatationForm/>}/>
+                    <Route path='/RenewalReqForm' element={<RenewalRequestForm/>}/>
+                    <Route path='/TransferManagementInfo' element={<TransferManagementInfo/>}/>
+                    <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm/>}/>
+
+
 
                   </Route>
                 </Route>
