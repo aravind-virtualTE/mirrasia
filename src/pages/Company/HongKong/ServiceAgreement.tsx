@@ -12,7 +12,8 @@ import { useAtom } from "jotai";
 import { companyServiceAgreementConsentAtom, companyIncorporationAtom } from "@/lib/atom";
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from "react-i18next";
-// import { getPdfDoc } from '@/services/dataFetch';
+// import { API_URL } from '@/services/fetch';
+import { getPdfDoc } from '@/services/dataFetch';
 // import LetterOfConsent from './LetterOfConsent';
 // import AppointmentLetter from './AppointmentCompSecretary';
 // import AuthorizationDetails from './LetterOfAuthurisation';
@@ -130,33 +131,28 @@ const ServiceAgreementDocument: React.FC = () => {
       });
     }
   };
-   useEffect(() => {
-          const fetchPdf = async () => {
-              try {
-                // const res = await getPdfDoc()
-                // console.log("res-->",res)
-                  const response = await fetch('http://localhost:5000/api/pdf/generate-pdf');
-                  if (!response.ok) {
-                      throw new Error(`HTTP error! status: ${response.status}`);
-                  }
-                  
-                  // const blob = new Blob([res], { type: 'application/pdf' });
-                  // const url = URL.createObjectURL(blob);
-                  // console.log("url-->",url)
-                  // setTimeout(() => {
-                  //   setPdfBlobUrl(url);
-                  // }, 50);
-                  const data = await response.arrayBuffer();
-                  const blob = new Blob([data], { type: 'application/pdf' });
-                  const url = URL.createObjectURL(blob);
-                  console.log("blob", url)
-                  setPdfBlobUrl(url);
-              } catch (error) {
-                  console.error("Error fetching PDF:", error);
-              }
-          };  
-          fetchPdf();
-      }, []);
+
+
+  const handleGeneratePdf = async () => {
+    try {
+      const docId = localStorage.getItem('companyRecordId')!;
+      const res = await getPdfDoc(docId)
+      console.log("res-->",res)
+      setPdfBlobUrl(res.pdfUrl);      
+
+      // const response = await fetch(`${API_URL}pdf/generate-pdf?docId=${docId}`);
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! status: ${response.status}`);
+      // }
+      // const data = await response.arrayBuffer();
+      // const blob = new Blob([data], { type: 'application/pdf' });
+      // const url = URL.createObjectURL(blob);
+      // console.log("blob", url)
+      
+    } catch (e) {
+      console.log("error", e)
+    }
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
@@ -207,14 +203,17 @@ const ServiceAgreementDocument: React.FC = () => {
         </Accordion>
       </ScrollArea>
       <div className="App">
-            {pdfBlobUrl && (
-                <div>
-                    <iframe src={pdfBlobUrl} title="PDF Viewer" width="100%" height="600px" 
-                     /> 
-                </div>
-            )}
-            {!pdfBlobUrl && <p>Loading PDF...</p>}
-        </div>
+        <Button onClick={handleGeneratePdf} className="mt-4">
+          Generate Pdf
+        </Button>
+        {pdfBlobUrl && (
+          <div>
+            <iframe src={pdfBlobUrl} title="PDF Viewer" width="100%" height="600px"
+            />
+          </div>
+        )}
+        {!pdfBlobUrl && <p>Loading PDF...</p>}
+      </div>
       {/* <AppointmentLetter />
       <LetterOfConsent />
       <AuthorizationDetails />

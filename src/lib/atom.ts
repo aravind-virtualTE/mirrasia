@@ -133,6 +133,7 @@ export const companyServiceAgreementConsentAtom = atomWithReset(false);
 
 export const PaymentSessionId = atomWithReset("");
 export const paymentId = atomWithReset("");
+export const icorporationDoc = atomWithReset("");
 // type AnyObject = Record<string, unknown>;
 
 
@@ -156,6 +157,7 @@ export const companyIncorporationAtom = atom((get) => ({
   serviceAgreementConsent: get(companyServiceAgreementConsentAtom),
   sessionId: get(PaymentSessionId),
   paymentId: get(paymentId),
+  icorporationDoc: get(icorporationDoc),
   serviceSelectionState: get(serviceSelectionStateAtom)
 
 }));
@@ -173,6 +175,7 @@ export const useResetAllForms = () => {
   const resetSessionPayment = useResetAtom(PaymentSessionId);
   const resetPaymentID = useResetAtom(paymentId);
   const resetcompPaymentDetails = useResetAtom(serviceSelectionStateAtom);
+  const reseticorporationDoc = useResetAtom(icorporationDoc)
 
 
   const resetAll = () => {
@@ -187,6 +190,7 @@ export const useResetAllForms = () => {
     resetSessionPayment()
     resetPaymentID()
     resetcompPaymentDetails()
+    reseticorporationDoc()
   };
 
   return resetAll;
@@ -210,11 +214,15 @@ export const updateCompanyIncorporationAtom = atom(
       sessionId: string;
       paymentId: string;
       serviceSelectionState: typeof serviceSelectionStateAtom['init'];
+      icorporationDoc: typeof icorporationDoc['init']
 
     }>
   ) => {
     if (updates.country) {
       set(countryAtom, updates.country);
+    }
+    if (updates.icorporationDoc) {
+      set(icorporationDoc, updates.icorporationDoc);
     }
     if (updates.serviceSelectionState) {
       set(serviceSelectionStateAtom, updates.serviceSelectionState);

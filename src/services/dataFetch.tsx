@@ -40,9 +40,9 @@ export const getIncorporationListByUserId = async (
     }
   };
 
-  export const getPdfDoc = async () =>{
+  export const getPdfDoc = async ( id: string) =>{
     try {
-      const response = await api.get('pdf/generate-pdf');
+      const response = await api.get(`pdf/generate-pdf?docId=${id}`);
       console.log("generateResponse-->",response)
       return response.data;
     } catch (error) {
