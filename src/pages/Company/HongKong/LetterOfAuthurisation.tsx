@@ -15,17 +15,19 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import InlineSignatureCreator from '../SignatureComponent'
 
 export default function AuthorizationDetails() {
 
   const [isEditing, setIsEditing] = useState(false)
+  const [docSigned, ] = useState('2024-12-12')
   const [personDetails, setPersonDetails] = useState({
     companyName: "TestCompany",
     name: "Test Name",
     email: "Test@gmail.com",
     tel: "+971522768157",
     kakaoWechat: "NIL",
-    directorName:"TestUser"
+    directorName: "TestUser"
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +38,14 @@ export default function AuthorizationDetails() {
   const toggleEdit = () => {
     setIsEditing(prev => !prev)
   }
+
+  const [signature, setSignature] = useState<string | null>(null);
+
+  const handleSignature = (signature: string) => {
+    // console.log("Received signature:", signature);
+    setSignature(signature)
+  };
+
 
   return (
     <Card className="max-w-4xl mx-auto p-8">
@@ -62,7 +72,7 @@ export default function AuthorizationDetails() {
             LIMITED may also disclose information of the company to following authorised and designated person(s).
           </p>
         </div>
-        
+
         <Table>
           <TableHeader>
             <TableRow>
@@ -78,7 +88,7 @@ export default function AuthorizationDetails() {
               <TableCell>1</TableCell>
               <TableCell>
                 {isEditing ? (
-                  <Input 
+                  <Input
                     name="name"
                     value={personDetails.name}
                     onChange={handleInputChange}
@@ -89,7 +99,7 @@ export default function AuthorizationDetails() {
               </TableCell>
               <TableCell>
                 {isEditing ? (
-                  <Input 
+                  <Input
                     name="email"
                     value={personDetails.email}
                     onChange={handleInputChange}
@@ -100,7 +110,7 @@ export default function AuthorizationDetails() {
               </TableCell>
               <TableCell>
                 {isEditing ? (
-                  <Input 
+                  <Input
                     name="tel"
                     value={personDetails.tel}
                     onChange={handleInputChange}
@@ -111,7 +121,7 @@ export default function AuthorizationDetails() {
               </TableCell>
               <TableCell>
                 {isEditing ? (
-                  <Input 
+                  <Input
                     name="kakaoWechat"
                     value={personDetails.kakaoWechat}
                     onChange={handleInputChange}
@@ -131,8 +141,31 @@ export default function AuthorizationDetails() {
         </div>
 
         <div className="pt-6 space-y-4">
-          <p>Dated:</p>
-          <div className="border-t border-black w-48 pt-2">
+          <p>Dated: {docSigned}</p>
+          {!signature ? (
+            <InlineSignatureCreator
+              onSignatureCreate={handleSignature}
+              maxWidth={256} // Match parent width of w-64
+              maxHeight={100}
+            />
+          ) : (
+            <div className="mb-4">
+              <img
+                src={signature}
+                alt="Director's signature"
+                className="max-h-16 object-contain"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSignature(null)}
+                className="text-xs text-gray-500 mt-1"
+              >
+                Change signature
+              </Button>
+            </div>
+          )}
+          <div className="border-t border-black w-48">
             <p className="font-medium">{personDetails.directorName}</p>
             <p className="text-sm italic">Director</p>
           </div>

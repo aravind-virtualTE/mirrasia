@@ -3,21 +3,29 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { Button } from '@/components/ui/button'
+import InlineSignatureCreator from '../SignatureComponent'
 
 export default function LetterOfConsent() {
   const [formData, setFormData] = useState({
-    ubiNo: '',
-    date: '',
-    companyName: '',
-    email: '',
-    startDate: '',
-    endDate: '',
-    directorName: '',
-    signDate: ''
+    ubiNo: 'TestUbiNo',
+    date: '2024-12-12',
+    companyName: 'Test Company',
+    email: 'testEmail@gmail.com',
+    startDate: '2024-12-12',
+    endDate: '2025-12-12',
+    directorName: 'Test Director',
+    signDate: '2024-12-12'
   })
+  const [signature, setSignature] = useState<string | null>(null);
 
+  const handleSignature = (signature: string) => {
+    // console.log("Received signature:", signature);
+    setSignature(signature)
+  };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
+    console.log("name", name, "value", value)
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -128,7 +136,29 @@ export default function LetterOfConsent() {
           <p className="text-sm">For and on behalf of</p>
           <p className="font-semibold">{formData.companyName}</p>
           
-          <div className="border h-20 rounded-md mb-2"></div>
+          {!signature ? (
+                <InlineSignatureCreator
+                  onSignatureCreate={handleSignature}
+                  maxWidth={256} // Match parent width of w-64
+                  maxHeight={100}
+                />
+              ) : (
+                <div className="mb-4">
+                  <img
+                    src={signature}
+                    alt="Director's signature"
+                    className="max-h-16 object-contain"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSignature(null)}
+                    className="text-xs text-gray-500 mt-1"
+                  >
+                    Change signature
+                  </Button>
+                </div>
+              )}
           
           <Input
             name="directorName"

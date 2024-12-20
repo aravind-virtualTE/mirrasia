@@ -14,10 +14,26 @@ import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from "react-i18next";
 // import { API_URL } from '@/services/fetch';
 import { getPdfDoc } from '@/services/dataFetch';
-// import LetterOfConsent from './LetterOfConsent';
-// import AppointmentLetter from './AppointmentCompSecretary';
-// import AuthorizationDetails from './LetterOfAuthurisation';
-// import SignificantControllerForm from './SignificantController';
+import LetterOfConsent from './LetterOfConsent';
+import AppointmentLetter from './AppointmentCompSecretary';
+import AuthorizationDetails from './LetterOfAuthurisation';
+import SignificantControllerForm from './SignificantController';
+import AppointmentOfDirectors from './AppointMentOfFirstDierctor';
+import ShareholdersList from './ShareHoldersList';
+import RegisterOfCharges from './RegisterOfCharges';
+import RegisterOfCompanySecretaries from './RegOfCompanySecretary';
+import RegisterOfDirectors from './RegOfDirectors';
+import RegisterOfMembers from './RegOfMembers';
+import DeclarationOfInterest from './DeclarationOfInterest';
+import SignificantControllersRegister from './SignificantControllerReg';
+import ArticlesOfAssociation from './ArticlesOfAssociation';
+import { ShareCapitalForm } from './ShareCapDetails';
+import CompanyResolution from './CompanyResolution';
+import { resolutionData } from '@/data/resolutionData';
+import CompanyResolutiontwo from './CompanyResolution2';
+import CustomerDueDiligence from './CustomerDueDiligence';
+import PEPDeclarationForm from './PEPDeclarationForm';
+import PenDetail from './PepDetail';
 
 const ServiceAgreementDocument: React.FC = () => {
   const [, setServiceAgreement] = useAtom(companyServiceAgreementConsentAtom);
@@ -138,14 +154,20 @@ const ServiceAgreementDocument: React.FC = () => {
       });
     }
   };
-
-
   const handleGeneratePdf = async () => {
     try {
       const docId = localStorage.getItem('companyRecordId')!;
-      const res = await getPdfDoc(docId)
-      console.log("res-->",res)
-      setPdfBlobUrl(res.pdfUrl);      
+      if(finalForm.applicantInfoForm.companyName[0] !== ''  && docId !== null ){
+        const res = await getPdfDoc(docId)
+        // console.log("res-->",res)
+        setPdfBlobUrl(res.pdfUrl);
+      }else{
+        toast({
+          title: "Warning",
+          description: "No company name provided. Please enter a company name to proceed.",
+          variant: "destructive",
+        });
+      }
 
       // const response = await fetch(`${API_URL}pdf/generate-pdf?docId=${docId}`);
       // if (!response.ok) {
@@ -209,6 +231,29 @@ const ServiceAgreementDocument: React.FC = () => {
           ))}
         </Accordion>
       </ScrollArea>
+      
+      <AppointmentLetter />
+      <LetterOfConsent />
+      <AuthorizationDetails />
+      <AppointmentOfDirectors  companyName = "TestCompany" directorName = "" />
+      <ShareholdersList  />
+      <RegisterOfCharges />
+      <RegisterOfCompanySecretaries />
+      <RegisterOfDirectors />
+      <RegisterOfMembers />
+      <SignificantControllerForm />
+      <DeclarationOfInterest />
+      <SignificantControllersRegister />
+      <ArticlesOfAssociation />
+      <ShareCapitalForm />
+      <CompanyResolution data={resolutionData} />
+      <CompanyResolutiontwo />
+      <CustomerDueDiligence />
+      <PEPDeclarationForm />
+      <PenDetail />
+
+
+
       <div className="App">
         <Button onClick={handleGeneratePdf} className="mt-4">
           Generate Pdf
@@ -222,11 +267,6 @@ const ServiceAgreementDocument: React.FC = () => {
         )}
         {!pdfBlobUrl && <p>Loading PDF...</p>}
       </div>
-      {/* <AppointmentLetter />
-      <LetterOfConsent />
-      <AuthorizationDetails />
-      <SignificantControllerForm /> */}
-
       <div className="flex items-center mt-6">
         <Checkbox
           id="consent"
