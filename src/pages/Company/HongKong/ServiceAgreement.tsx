@@ -108,11 +108,18 @@ const ServiceAgreementDocument: React.FC = () => {
     }
   ];
 
+  console.log("finalForm",finalForm)
+  
   useEffect(() => {
     if (finalForm.serviceAgreementConsent) {
       setConsent(true)
     }
-  }, [finalForm.serviceAgreementConsent])
+    if (finalForm && finalForm.icorporationDoc && finalForm.icorporationDoc !== "") {
+      setPdfBlobUrl(finalForm.icorporationDoc);
+    } else {
+      setPdfBlobUrl(null);
+    }
+  }, [])
 
   const handleConsentSubmit = () => {
     if (consent) {
@@ -208,7 +215,8 @@ const ServiceAgreementDocument: React.FC = () => {
         </Button>
         {pdfBlobUrl && (
           <div>
-            <iframe src={pdfBlobUrl} title="PDF Viewer" width="100%" height="600px"
+            <iframe src={pdfBlobUrl} title="PDF Viewer" width="100%" height="100%"
+            style={{ minHeight: '500px' }}
             />
           </div>
         )}
