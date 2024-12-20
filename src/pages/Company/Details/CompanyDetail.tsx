@@ -98,6 +98,7 @@ interface Company {
     accountingTaxInfo: AccountingTaxInfo;
     status: string;
     paymentDetails?: PaymentDetails;
+    icorporationDoc: string
     __v: number;
 }
 
@@ -107,6 +108,27 @@ const CompanyDetail = () => {
     const [companies] = useAtom(companyIncorporationList);
     const companyDetail = companies.find(c => c._id === id) as unknown as Company;
     const [isDraft, setIsDraft] = useState(companyDetail?.is_draft);
+    const [activePdf, setActivePdf] = useState("");
+
+    const handlePdfClick = (url: string) => {
+        setActivePdf(url);
+      };    
+    
+      const renderPdfViewer = () => {
+        if (activePdf !== "") {
+          return (
+            <>
+              <iframe src={activePdf} title="PDF Viewer" width="100%" height="100%" style={{ minHeight: '500px' }} />
+              <div className="pdf-controls">                
+                <Button variant="secondary" size="sm" onClick={() => setActivePdf("")}>
+                  Close
+                </Button>
+              </div>
+            </>
+          );
+        }
+        return null;
+      };
 
     if (!companyDetail) {
         return <div>Company not found</div>;
@@ -173,6 +195,14 @@ const CompanyDetail = () => {
             });
         }
 
+        // pdfSection 
+        sections.push({
+            title: "Incorporation Document Information",
+            data: {
+                "PDF Doc": company?.icorporationDoc
+            }
+        });
+
         // Status Information Section
         sections.push({
             title: "Status Information",
@@ -222,7 +252,13 @@ const CompanyDetail = () => {
                                 {Object.entries(section.data).map(([key, value]) => (
                                     <TableRow key={key}>
                                         <TableCell className="font-medium">{key}</TableCell>
-                                        <TableCell>{value as string}</TableCell>
+                                        <TableCell>{key === 'PDF Doc' && value ? (
+                                            <Button variant="link" onClick={() => handlePdfClick(value)}>
+                                                View PDF
+                                            </Button>
+                                        ) : (
+                                            value as string
+                                        )}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -240,6 +276,7 @@ const CompanyDetail = () => {
                     </CardContent>
                 </Card>
             ))}
+            {renderPdfViewer()}
         </div>
     );
 };
