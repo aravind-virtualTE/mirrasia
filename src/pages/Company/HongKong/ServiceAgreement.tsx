@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect,  useState } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -13,27 +13,8 @@ import { companyServiceAgreementConsentAtom, companyIncorporationAtom } from "@/
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from "react-i18next";
 // import { API_URL } from '@/services/fetch';
-import { getPdfDoc } from '@/services/dataFetch';
-import LetterOfConsent from './LetterOfConsent';
-import AppointmentLetter from './AppointmentCompSecretary';
-import AuthorizationDetails from './LetterOfAuthurisation';
-import SignificantControllerForm from './SignificantController';
-import AppointmentOfDirectors from './AppointMentOfFirstDierctor';
-import ShareholdersList from './ShareHoldersList';
-import RegisterOfCharges from './RegisterOfCharges';
-import RegisterOfCompanySecretaries from './RegOfCompanySecretary';
-import RegisterOfDirectors from './RegOfDirectors';
-import RegisterOfMembers from './RegOfMembers';
-import DeclarationOfInterest from './DeclarationOfInterest';
-import SignificantControllersRegister from './SignificantControllerReg';
-import ArticlesOfAssociation from './ArticlesOfAssociation';
-import { ShareCapitalForm } from './ShareCapDetails';
-import CompanyResolution from './CompanyResolution';
-import { resolutionData } from '@/data/resolutionData';
-import CompanyResolutiontwo from './CompanyResolution2';
-import CustomerDueDiligence from './CustomerDueDiligence';
-import PEPDeclarationForm from './PEPDeclarationForm';
-import PenDetail from './PepDetail';
+// import { getPdfDoc } from '@/services/dataFetch';
+import SAgrementPdf from './ServiceAgreement/SAgrementPdf';
 
 const ServiceAgreementDocument: React.FC = () => {
   const [, setServiceAgreement] = useAtom(companyServiceAgreementConsentAtom);
@@ -41,7 +22,8 @@ const ServiceAgreementDocument: React.FC = () => {
   const [consent, setConsent] = useState(false);
   const { toast } = useToast();
   const { t } = useTranslation();
-  const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
+  // const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const fullAgreementSections = [
     {
@@ -124,17 +106,17 @@ const ServiceAgreementDocument: React.FC = () => {
     }
   ];
 
-  console.log("finalForm",finalForm)
-  
+  console.log("finalForm", finalForm)
+
   useEffect(() => {
     if (finalForm.serviceAgreementConsent) {
       setConsent(true)
     }
-    if (finalForm && finalForm.icorporationDoc && finalForm.icorporationDoc !== "") {
-      setPdfBlobUrl(finalForm.icorporationDoc);
-    } else {
-      setPdfBlobUrl(null);
-    }
+    // if (finalForm && finalForm.icorporationDoc && finalForm.icorporationDoc !== "") {
+    //   setPdfBlobUrl(finalForm.icorporationDoc);
+    // } else {
+    //   setPdfBlobUrl(null);
+    // }
   }, [])
 
   const handleConsentSubmit = () => {
@@ -154,37 +136,37 @@ const ServiceAgreementDocument: React.FC = () => {
       });
     }
   };
-  const handleGeneratePdf = async () => {
-    try {
-      const docId = localStorage.getItem('companyRecordId')!;
-      if(finalForm.applicantInfoForm.companyName[0] !== ''  && docId !== null ){
-        const res = await getPdfDoc(docId)
-        // console.log("res-->",res)
-        setPdfBlobUrl(res.pdfUrl);
-      }else{
-        toast({
-          title: "Warning",
-          description: "No company name provided. Please enter a company name to proceed.",
-          variant: "destructive",
-        });
-      }
+  // const handleGeneratePdf = async () => {
+  //   try {
+  //     const docId = localStorage.getItem('companyRecordId')!;
+  //     if (finalForm.applicantInfoForm.companyName[0] !== '' && docId !== null) {
+  //       const res = await getPdfDoc(docId)
+  //       // console.log("res-->",res)
+  //       setPdfBlobUrl(res.pdfUrl);
+  //     } else {
+  //       toast({
+  //         title: "Warning",
+  //         description: "No company name provided. Please enter a company name to proceed.",
+  //         variant: "destructive",
+  //       });
+  //     }
 
-      // const response = await fetch(`${API_URL}pdf/generate-pdf?docId=${docId}`);
-      // if (!response.ok) {
-      //   throw new Error(`HTTP error! status: ${response.status}`);
-      // }
-      // const data = await response.arrayBuffer();
-      // const blob = new Blob([data], { type: 'application/pdf' });
-      // const url = URL.createObjectURL(blob);
-      // console.log("blob", url)
-      
-    } catch (e) {
-      console.log("error", e)
-    }
-  }
+  //     // const response = await fetch(`${API_URL}pdf/generate-pdf?docId=${docId}`);
+  //     // if (!response.ok) {
+  //     //   throw new Error(`HTTP error! status: ${response.status}`);
+  //     // }
+  //     // const data = await response.arrayBuffer();
+  //     // const blob = new Blob([data], { type: 'application/pdf' });
+  //     // const url = URL.createObjectURL(blob);
+  //     // console.log("blob", url)
+
+  //   } catch (e) {
+  //     console.log("error", e)
+  //   }
+  // }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="mx-auto p-1 space-y-6">
       <h1 className="text-3xl font-bold text-center mb-6">
         {t("ServiceAgreementDocument.title")}
       </h1>
@@ -231,42 +213,22 @@ const ServiceAgreementDocument: React.FC = () => {
           ))}
         </Accordion>
       </ScrollArea>
-      
-      <AppointmentLetter />
-      <LetterOfConsent />
-      <AuthorizationDetails />
-      <AppointmentOfDirectors  companyName = "TestCompany" directorName = "" />
-      <ShareholdersList  />
-      <RegisterOfCharges />
-      <RegisterOfCompanySecretaries />
-      <RegisterOfDirectors />
-      <RegisterOfMembers />
-      <SignificantControllerForm />
-      <DeclarationOfInterest />
-      <SignificantControllersRegister />
-      <ArticlesOfAssociation />
-      <ShareCapitalForm />
-      <CompanyResolution data={resolutionData} />
-      <CompanyResolutiontwo />
-      <CustomerDueDiligence />
-      <PEPDeclarationForm />
-      <PenDetail />
 
+      <SAgrementPdf />
 
-
-      <div className="App">
+      {/* <div className="App">
         <Button onClick={handleGeneratePdf} className="mt-4">
           Generate Pdf
         </Button>
         {pdfBlobUrl && (
           <div>
             <iframe src={pdfBlobUrl} title="PDF Viewer" width="100%" height="100%"
-            style={{ minHeight: '500px' }}
+              style={{ minHeight: '500px' }}
             />
           </div>
         )}
         {!pdfBlobUrl && <p>Loading PDF...</p>}
-      </div>
+      </div> */}
       <div className="flex items-center mt-6">
         <Checkbox
           id="consent"

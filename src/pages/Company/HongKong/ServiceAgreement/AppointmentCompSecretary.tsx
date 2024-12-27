@@ -4,8 +4,8 @@ import {
   CardHeader,
 } from "@/components/ui/card"
 import { useState } from "react"
-import InlineSignatureCreator from "../SignatureComponent"
-import { Button } from "@/components/ui/button";
+import InlineSignatureCreator from "../../SignatureComponent"
+// import { Button } from "@/components/ui/button";
 
 export default function AppointmentLetter() {
 
@@ -18,14 +18,27 @@ export default function AppointmentLetter() {
     companyAddress: '',
   })
   const [signature, setSignature] = useState<string | null>(null);
-
+  const [isEditing, setIsEditing] = useState(false);
   const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
+    setIsEditing(false);
     setSignature(signature)
   };
 
+
+  const handleClear = () => {
+    setSignature(null);
+  };
+
+  const handleBoxClick = () => {
+    if (signature) {
+      handleClear();
+    } else {
+      setIsEditing(true);
+    }
+  };
+
   return (
-    <Card className="max-w-4xl mx-auto p-8">
+    <Card className="max-w-4xl mx-auto p-8 rounded-none">
       <CardHeader className="space-y-6 p-0">
         <div className="flex justify-between">
           <div className="space-y-1">
@@ -33,6 +46,8 @@ export default function AppointmentLetter() {
           </div>
           <div className="space-x-4">
             <span className="font-semibold">UBI NO.:</span>
+          </div>
+          <div className="space-x-4">
             <span className="text-sm">(Registered in Hong Kong)</span>
           </div>
         </div>
@@ -87,31 +102,30 @@ export default function AppointmentLetter() {
           </div>
 
           <div className="space-y-4">
-            <div className="border-t border-black w-64 pt-2">
-              {!signature ? (
+            <div className=" w-64 pt-2">
+              {isEditing ? (
                 <InlineSignatureCreator
                   onSignatureCreate={handleSignature}
-                  maxWidth={256} // Match parent width of w-64
+                  maxWidth={256}
                   maxHeight={100}
                 />
               ) : (
-                <div className="mb-4">
-                  <img
-                    src={signature}
-                    alt="Director's signature"
-                    className="max-h-16 object-contain"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSignature(null)}
-                    className="text-xs text-gray-500 mt-1"
-                  >
-                    Change signature
-                  </Button>
+                <div
+                  onClick={handleBoxClick}
+                  className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+                >
+                  {signature ? (
+                    <img
+                      src={signature}
+                      alt="Director's signature"
+                      className="max-h-20 max-w-full object-contain"
+                    />
+                  ) : (
+                    <p className="text-gray-400">Click to sign</p>
+                  )}
                 </div>
               )}
-              <p className="font-bold">{details.directorName}</p>
+              <p className="font-bold border-t border-black">{details.directorName}</p>
               <p className="italic">Director</p>
             </div>
           </div>

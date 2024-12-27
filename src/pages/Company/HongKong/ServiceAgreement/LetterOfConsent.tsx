@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+// import { jsPDF } from "jspdf";
+// import html2canvas from "html2canvas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Button } from '@/components/ui/button'
-import InlineSignatureCreator from '../SignatureComponent'
+// import { Button } from '@/components/ui/button'
+import InlineSignatureCreator from '../../SignatureComponent'
 
 export default function LetterOfConsent() {
   const [formData, setFormData] = useState({
@@ -18,9 +20,10 @@ export default function LetterOfConsent() {
     signDate: '2024-12-12'
   })
   const [signature, setSignature] = useState<string | null>(null);
-
+  const [isEditing, setIsEditing] = useState(false);
   const handleSignature = (signature: string) => {
     // console.log("Received signature:", signature);
+    setIsEditing(false);
     setSignature(signature)
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,8 +35,19 @@ export default function LetterOfConsent() {
     }))
   }
 
+  const handleClear = () => {
+    setSignature(null);
+  };
+
+  const handleBoxClick = () => {
+    if (signature) {
+      handleClear();
+    } else {
+      setIsEditing(true);
+    }
+  };
   return (
-    <Card className="max-w-4xl mx-auto p-8">
+    <Card className="max-w-4xl mx-auto p-8 rounded-none">
       <CardHeader className="text-center py-4">
         <CardTitle className="text-xl font-bold">LETTER OF CONSENT</CardTitle>
       </CardHeader>
@@ -95,7 +109,7 @@ export default function LetterOfConsent() {
         </p>
 
         <div className="space-y-1">
-          <Label htmlFor="email" className="text-xs">Scanned mails will be sent to:</Label>
+          <Label htmlFor="email" className="text-xs italic">Scanned mails will be sent to:</Label>
           <Input
             id="email"
             type="email"
@@ -132,34 +146,33 @@ export default function LetterOfConsent() {
 
         <Separator />
 
-        <div className="space-y-2">
-          <p className="text-sm">For and on behalf of</p>
+        <div className="space-y-2 w-64 pt-2">
+          <p className="text-sm italic">For and on behalf of</p>
           <p className="font-semibold">{formData.companyName}</p>
-          
-          {!signature ? (
-                <InlineSignatureCreator
-                  onSignatureCreate={handleSignature}
-                  maxWidth={256} // Match parent width of w-64
-                  maxHeight={100}
+
+          {isEditing ? (
+            <InlineSignatureCreator
+              onSignatureCreate={handleSignature}
+              maxWidth={256}
+              maxHeight={100}
+            />
+          ) : (
+            <div
+              onClick={handleBoxClick}
+              className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+            >
+              {signature ? (
+                <img
+                  src={signature}
+                  alt="Director's signature"
+                  className="max-h-20 max-w-full object-contain"
                 />
               ) : (
-                <div className="mb-4">
-                  <img
-                    src={signature}
-                    alt="Director's signature"
-                    className="max-h-16 object-contain"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSignature(null)}
-                    className="text-xs text-gray-500 mt-1"
-                  >
-                    Change signature
-                  </Button>
-                </div>
+                <p className="text-gray-400">Click to sign</p>
               )}
-          
+            </div>
+          )}
+
           <Input
             name="directorName"
             value={formData.directorName}

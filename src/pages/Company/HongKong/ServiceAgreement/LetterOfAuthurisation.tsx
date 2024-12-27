@@ -15,12 +15,12 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import InlineSignatureCreator from '../SignatureComponent'
+import InlineSignatureCreator from '../../SignatureComponent'
 
 export default function AuthorizationDetails() {
 
   const [isEditing, setIsEditing] = useState(false)
-  const [docSigned, ] = useState('2024-12-12')
+  const [docSigned,] = useState('2024-12-12')
   const [personDetails, setPersonDetails] = useState({
     companyName: "TestCompany",
     name: "Test Name",
@@ -29,6 +29,9 @@ export default function AuthorizationDetails() {
     kakaoWechat: "NIL",
     directorName: "TestUser"
   })
+  const [signature, setSignature] = useState<string | null>(null);
+  const [signEdit, setSignEdit] = useState(false)
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -39,16 +42,26 @@ export default function AuthorizationDetails() {
     setIsEditing(prev => !prev)
   }
 
-  const [signature, setSignature] = useState<string | null>(null);
 
   const handleSignature = (signature: string) => {
     // console.log("Received signature:", signature);
+    setSignEdit(false);
     setSignature(signature)
   };
+  const handleClear = () => {
+    setSignature(null);
+  };
 
+  const handleBoxClick = () => {
+    if (signature) {
+      handleClear();
+    } else {
+      setSignEdit(true);
+    }
+  };
 
   return (
-    <Card className="max-w-4xl mx-auto p-8">
+    <Card className="max-w-4xl mx-auto p-8 rounded-none">
       <CardHeader className="space-y-4">
         <div className="flex justify-between text-sm text-muted-foreground">
           <span>UBI NO.: </span>
@@ -140,29 +153,28 @@ export default function AuthorizationDetails() {
           </Button>
         </div>
 
-        <div className="pt-6 space-y-4">
+        <div className="pt-6 space-y-4 w-64">
           <p>Dated: {docSigned}</p>
-          {!signature ? (
+          {signEdit ? (
             <InlineSignatureCreator
               onSignatureCreate={handleSignature}
-              maxWidth={256} // Match parent width of w-64
+              maxWidth={256}
               maxHeight={100}
             />
           ) : (
-            <div className="mb-4">
-              <img
-                src={signature}
-                alt="Director's signature"
-                className="max-h-16 object-contain"
-              />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSignature(null)}
-                className="text-xs text-gray-500 mt-1"
-              >
-                Change signature
-              </Button>
+            <div
+              onClick={handleBoxClick}
+              className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+            >
+              {signature ? (
+                <img
+                  src={signature}
+                  alt="Director's signature"
+                  className="max-h-20 max-w-full object-contain"
+                />
+              ) : (
+                <p className="text-gray-400">Click to sign</p>
+              )}
             </div>
           )}
           <div className="border-t border-black w-48">

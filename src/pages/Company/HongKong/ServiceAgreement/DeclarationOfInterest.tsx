@@ -1,4 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { useState } from "react";
+import InlineSignatureCreator from "../../SignatureComponent";
 
 export default function DeclarationOfInterest() {
   const companyDetails = {
@@ -6,9 +8,32 @@ export default function DeclarationOfInterest() {
     ubiNo: "",
     director: "AHMED, SHAHAD",
   }
+  const [docSigned,] = useState('2024-12-12')
+
+
+  const [signature, setSignature] = useState<string | null>(null);
+  const [signEdit, setSignEdit] = useState(false)
+
+  const handleSignature = (signature: string) => {
+    // console.log("Received signature:", signature);
+    setSignEdit(false);
+    setSignature(signature)
+  };
+  const handleClear = () => {
+    setSignature(null);
+  };
+
+  const handleBoxClick = () => {
+    if (signature) {
+      handleClear();
+    } else {
+      setSignEdit(true);
+    }
+  };
+
 
   return (
-    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0">
+    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none font-serif">
       <CardHeader className="space-y-6 pb-6">
         <div className="space-y-2">
           <div className="flex gap-2">
@@ -19,10 +44,10 @@ export default function DeclarationOfInterest() {
             <p className=" px-1 inline-block font-bold">
               {companyDetails.name}
             </p>
-            <p className="text-sm">(the "Company")</p>
+            <p className="text-sm font-bold">(the "Company")</p>
           </div>
         </div>
-        <div className="text-center font-bold border-t border-b py-4">
+        <div className="text-center border-t border-b py-4">
           WRITTEN RESOLUTIONS OF DIRECTOR(S) OF THE COMPANY PASSED PURSUANT TO THE
           COMPANY'S ARTICLES OF ASSOCIATION
         </div>
@@ -55,17 +80,33 @@ export default function DeclarationOfInterest() {
           </p>
         </div>
 
-        <div className="mt-20 space-y-4">
-          <div className="border-2 border-red-500 w-48 h-24" />
-          <div>
-            <p className=" px-1 inline-block">
-              {companyDetails.director}
-            </p>
-            <p className="italic">Director</p>
-          </div>
-          <div className="flex gap-2">
-            <span>Date:</span>
-            <span></span>
+        <div className="pt-6 space-y-4 w-64">
+          {signEdit ? (
+            <InlineSignatureCreator
+              onSignatureCreate={handleSignature}
+              maxWidth={256}
+              maxHeight={100}
+            />
+          ) : (
+            <div
+              onClick={handleBoxClick}
+              className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+            >
+              {signature ? (
+                <img
+                  src={signature}
+                  alt="Member's signature"
+                  className="max-h-20 max-w-full object-contain"
+                />
+              ) : (
+                <p className="text-gray-400">Click to sign</p>
+              )}
+            </div>
+          )}
+          <div className="border-t border-black w-48">
+            <p className="font-medium">Test Director</p>
+            <p className="text-sm italic">Director</p>
+            <p>Date: {docSigned}</p>
           </div>
         </div>
       </CardContent>

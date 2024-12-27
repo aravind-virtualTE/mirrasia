@@ -81,8 +81,8 @@ const PenDetail = () => {
     ];
 
     return (
-        <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0">
-            <h1 className="text-2xl font-bold mb-6">Appendix 부록</h1>
+        <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none">
+            <h1 className="text-xl font-bold mb-6">Appendix 부록</h1>
 
             <section className="mb-8">
                 <h2 className="text-xl font-semibold mb-4">

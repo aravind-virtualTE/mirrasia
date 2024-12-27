@@ -6,7 +6,7 @@ interface CompanyResolutionProps {
 
 export default function CompanyResolution({ data }: CompanyResolutionProps) {
   return (
-    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0">
+    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none">
       <CardContent className="p-8">
         <ResolutionHeader company={data.company} />
         

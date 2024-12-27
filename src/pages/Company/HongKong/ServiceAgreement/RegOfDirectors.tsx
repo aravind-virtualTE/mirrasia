@@ -7,6 +7,8 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { useState } from "react"
+import InlineSignatureCreator from "../../SignatureComponent"
 
 interface Director {
     dateOfAppointment: string
@@ -24,6 +26,24 @@ export default function RegisterOfDirectors() {
         name: "TRUSTPAY AI SYSTEMS LIMITED",
         ubiNumber: "",
     }
+
+    const [signature, setSignature] = useState<string | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const handleSignature = (signature: string) => {
+        // console.log("Received signature:", signature);
+        setIsEditing(false);
+        setSignature(signature)
+    };
+    const handleClear = () => {
+        setSignature(null);
+    };
+    const handleBoxClick = () => {
+        if (signature) {
+            handleClear();
+        } else {
+            setIsEditing(true);
+        }
+    };
 
     const directors: Director[] = [
         {
@@ -52,7 +72,7 @@ export default function RegisterOfDirectors() {
     ]
 
     return (
-        <Card className="w-full max-w-[1200px] mx-auto p-6 print:p-0">
+        <Card className="w-full max-w-[1200px] mx-auto print:p-0 rounded-none">
             <CardHeader className="space-y-4 pb-6">
                 <div className="flex justify-between items-start">
                     <div className="space-y-2">
@@ -65,50 +85,50 @@ export default function RegisterOfDirectors() {
                             <span>{companyDetails.ubiNumber}</span>
                         </div>
                     </div>
-                    <h1 className="text-xl font-bold">REGISTER OF DIRECTORS</h1>
+                    <h1 className="text-xl ">REGISTER OF DIRECTORS</h1>
                 </div>
             </CardHeader>
 
             <CardContent>
-                <Table className="border">
+                <Table className="border-collapse [&_*]:border-black">
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="border font-bold text-black text-center whitespace-nowrap">
+                            <TableHead className="border  text-black text-center whitespace-nowrap">
                                 Date of
                                 <br />
                                 Appointment
                             </TableHead>
-                            <TableHead className="border font-bold text-black text-center">
+                            <TableHead className="border  text-black text-center">
                                 Full Name
                                 <br />
                                 <span className="font-normal text-xs">
                                     (Any Former Names or Alias)
                                 </span>
                             </TableHead>
-                            <TableHead className="border font-bold text-black text-center">
+                            <TableHead className="border  text-black text-center">
                                 Nationality and ID/PPT No.
                             </TableHead>
-                            <TableHead className="border font-bold text-black text-center">
+                            <TableHead className="border  text-black text-center">
                                 Correspondence Address
                             </TableHead>
-                            <TableHead className="border font-bold text-black text-center">
+                            <TableHead className="border  text-black text-center">
                                 Residential Address
                                 <br />
                                 <span className="font-normal text-xs">
                                     (or Registered Office Address)
                                 </span>
                             </TableHead>
-                            <TableHead className="border font-bold text-black text-center">
+                            <TableHead className="border  text-black text-center">
                                 Business Occupation or
                                 <br />
                                 Other Directorship
                             </TableHead>
-                            <TableHead className="border font-bold text-black text-center whitespace-nowrap">
+                            <TableHead className="border  text-black text-center whitespace-nowrap">
                                 Date of Ceasing
                                 <br />
                                 to Act
                             </TableHead>
-                            <TableHead className="border font-bold text-black text-center">
+                            <TableHead className="border  text-black text-center">
                                 Entry Made By
                             </TableHead>
                         </TableRow>
@@ -176,13 +196,36 @@ export default function RegisterOfDirectors() {
                     </p>
                     <span>Page No. 1</span>
                 </div>
-                <div className="text-right space-y-4">
+                <div className="flex justify-end">
+                    <div className="text-right space-y-4">
                     <p className="italic">For and on behalf of</p>
-                    <p className=" px-1 inline-block">
-                        {companyDetails.name}
-                    </p>
-                    <div className="border-2 border-red-500 w-48 h-24 mt-4 ml-auto" />
-                    <p className="text-sm text-center">Authorised Signature(s)</p>
+                    <p className="px-1 inline-block">Sample Company</p>
+                    {isEditing ? (
+                        <InlineSignatureCreator
+                        onSignatureCreate={handleSignature}
+                        maxWidth={256}
+                        maxHeight={100}
+                        />
+                    ) : (
+                        <div
+                        onClick={handleBoxClick}
+                        className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+                        >
+                        {signature ? (
+                            <img
+                            src={signature}
+                            alt="Director's signature"
+                            className="max-h-20 max-w-full object-contain"
+                            />
+                        ) : (
+                            <p className="text-gray-400">Click to sign</p>
+                        )}
+                        </div>
+                    )}
+                    <div className="border-t border-black w-48 mt-12">
+                        <p className="text-sm text-center mt-1">Authorised Signature(s)</p>
+                    </div>
+                    </div>
                 </div>
             </CardFooter>
         </Card>

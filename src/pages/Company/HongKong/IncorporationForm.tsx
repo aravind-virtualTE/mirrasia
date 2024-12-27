@@ -1,5 +1,4 @@
 import AmlCdd from './AmlCdd';
-import ApplicantInfoForm from './ApplicantInfo'
 import CompanyInformation from './CompanyInformation';
 import InformationIncorporation from './InformationIncorporation';
 import SignIncorporationDocs from './SignIncorporationDocs';
@@ -10,6 +9,7 @@ import IncorporateCompany from './IncorporateCompany';
 import Invoice from './Invoice';
 // import PaymentMethod from './Payment';
 import { PaymentInformation } from '../payment/PaymentInformation';
+import ApplicantInfoForm from './ApplicantInfo';
 interface IncorporationFormProps {
     currentSection: number;
 }

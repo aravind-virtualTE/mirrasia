@@ -115,3 +115,6 @@ export const currentHkStepAtom = atom(
         });
     }
 );
+
+
+export const serviceAgrement = atom()

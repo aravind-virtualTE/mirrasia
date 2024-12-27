@@ -10,7 +10,7 @@ export default function ArticlesOfAssociation() {
   }
 
   return (
-    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0">
+    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none ">
       <CardHeader className="space-y-8 text-center">
         <div className="space-y-4">
           <h1 className="text-xl font-bold">
