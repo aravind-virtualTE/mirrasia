@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
+// import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import InlineSignatureCreator from '../../SignatureComponent'
 
@@ -97,7 +97,7 @@ export default function AuthorizationDetails() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
+            <TableRow onClick={toggleEdit}>
               <TableCell>1</TableCell>
               <TableCell>
                 {isEditing ? (
@@ -147,11 +147,11 @@ export default function AuthorizationDetails() {
           </TableBody>
         </Table>
 
-        <div className="flex justify-end">
+        {/* <div className="flex justify-end">
           <Button onClick={toggleEdit}>
             {isEditing ? 'Save' : 'Edit'}
           </Button>
-        </div>
+        </div> */}
 
         <div className="pt-6 space-y-4 w-64">
           <p>Dated: {docSigned}</p>

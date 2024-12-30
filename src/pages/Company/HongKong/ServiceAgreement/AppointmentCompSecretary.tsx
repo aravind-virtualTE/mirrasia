@@ -12,10 +12,11 @@ export default function AppointmentLetter() {
   const [details,
     // setDetails
   ] = useState({
+    appointmentDate: "",
     ubiNo: '',
-    companyName: '',
+    companyName: 'TestLimited',
     directorName: '',
-    companyAddress: '',
+    companyAddress: ' WORKSHOP UNIT B50, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI ROAD, KWAI CHUNG, N.T., HONG KONG',
   })
   const [signature, setSignature] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -42,18 +43,18 @@ export default function AppointmentLetter() {
       <CardHeader className="space-y-6 p-0">
         <div className="flex justify-between">
           <div className="space-y-1">
-            <span className="font-semibold">Date:</span>
+            <span className="font-semibold">Date:{details.appointmentDate}</span>
           </div>
           <div className="space-x-4">
-            <span className="font-semibold">UBI NO.:</span>
+            <span className="font-semibold">UBI NO.: {details.ubiNo}</span>
           </div>
           <div className="space-x-4">
             <span className="text-sm">(Registered in Hong Kong)</span>
           </div>
         </div>
 
-        <div className="space-y-1">
-          <h1 className="font-bold text-lg uppercase">
+        <div className="font-bold text-sm font-serif space-y-1">
+          <h1 className=" uppercase">
             MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED
           </h1>
           <div className="space-y-0.5">
@@ -78,15 +79,13 @@ export default function AppointmentLetter() {
             comply with the requirements of the Companies Ordinance.
           </p>
 
-          <div className="border-t border-b py-4">
-            <div className="flex justify-between">
-              <span className="uppercase font-bold">{details.companyName}</span>
-              <span>(Company&quot;)</span>
-            </div>
+          <div className="w-full flex flex-col items-center">
+            <p className="text-lg font-serif mb-2">{details.companyName} <span>(Company&quot;)</span></p>
+            <div className="w-full border-b-2 border-black"></div>
             <p className="mt-2">
-              {details.companyAddress}
-            </p>
-          </div>
+              located in <span className="font-bold text-sm font-serif">{details.companyAddress}</span>
+            </p>  
+        </div>
 
           <p className="text-justify">
             We shall indemnify you and/or any of your directors and officers from and against all actions, claims and demands
@@ -97,8 +96,10 @@ export default function AppointmentLetter() {
 
           <div className="space-y-2">
             <p>Yours faithfully,</p>
-            <p className="italic">For and on behalf of</p>
-            <p className="font-bold">{details.companyName}</p>
+            <br />
+            <br />
+            <p className="italic font-serif">For and on behalf of</p>
+            <p className="font-serif">{details.companyName}</p>
           </div>
 
           <div className="space-y-4">

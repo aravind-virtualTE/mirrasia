@@ -69,10 +69,10 @@ export default function LetterOfConsent() {
         <Separator />
 
         <div className="space-y-2">
-          <p className="font-semibold text-sm">Authorisation to:</p>
-          <div className="bg-muted p-2 rounded-md text-sm">
+          <p className="font-serif text-sm">Authorisation to:-</p>
+          <div className=" p-2 rounded-md text-sm font-serif">
             <p>MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED</p>
-            <p className="text-xs text-muted-foreground">WORKSHOP UNIT B50 & B58, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, N.T., HK</p>
+            <p className="text-xs">WORKSHOP UNIT B50 & B58, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, N.T., HK</p>
           </div>
         </div>
 
@@ -86,14 +86,15 @@ export default function LetterOfConsent() {
             className="w-40"
           />
           <span>I/we,</span>
-        </div>
-
-        <Input
+          <Input
           name="companyName"
           value={formData.companyName}
           onChange={handleChange}
-          className="font-semibold"
+          className="font-serif"
         />
+        </div>
+
+        
 
         <p className="text-xs">
           ("the company"), as the Sole Director/Board of Directors of this company do(es) hereby give(s) permission to the said authorised
