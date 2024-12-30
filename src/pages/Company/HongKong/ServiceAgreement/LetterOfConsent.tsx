@@ -70,9 +70,9 @@ export default function LetterOfConsent() {
 
         <div className="space-y-2">
           <p className="font-serif text-sm">Authorisation to:-</p>
-          <div className=" p-2 rounded-md text-sm font-serif">
+          <div className="rounded-md text-sm font-serif">
             <p>MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED</p>
-            <p className="text-xs">WORKSHOP UNIT B50 & B58, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, N.T., HK</p>
+            <p className="text-sm mb-8">WORKSHOP UNIT B50 & B58, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, N.T., HK</p>
           </div>
         </div>
 
@@ -96,21 +96,21 @@ export default function LetterOfConsent() {
 
         
 
-        <p className="text-xs">
+        <p className="text-sm">
           ("the company"), as the Sole Director/Board of Directors of this company do(es) hereby give(s) permission to the said authorised
-          company, MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED ("the secretary"), to open incoming
+          company, <span className='underline'>MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED </span>("the secretary"), to open incoming
           mail(s) delivered to "the company" as the recipient with the mailing address of WORKSHOP UNIT B50, 2/F, KWAI SHING IND.
           BLDG., PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, N.T., HONG KONG on behalf of "the company" for the purpose of
           efficient responds and actions.
         </p>
 
-        <p className="text-xs">
+        <p className="text-sm">
           I/we accept and acknowledge that "the secretary" will notify me/us through the following e-mail address(es) in digitalized methods
           such as scanning and imaging.
         </p>
 
         <div className="space-y-1">
-          <Label htmlFor="email" className="text-xs italic">Scanned mails will be sent to:</Label>
+          <Label htmlFor="email" className="text-sm font-serif italic">*Scanned mails will be sent to:-</Label>
           <Input
             id="email"
             type="email"
@@ -118,31 +118,34 @@ export default function LetterOfConsent() {
             value={formData.email}
             onChange={handleChange}
           />
+          <div className="w-full border-b-2 border-black"></div>
         </div>
 
-        <p className="text-xs">
+        <p className="text-sm">
           As "the secretary" is only a messenger of our incoming mails, I/we understand and confirm that I/we have the full legal rights and
           responsibilities upon any matter brought from our mails.
         </p>
 
         <div className="space-y-2">
-          <p className="text-sm">For the period of this consent is from</p>
           <div className="flex items-center gap-2">
+            <span className="text-sm">For the period of this consent is from</span>
             <Input
               type="date"
               name="startDate"
               value={formData.startDate}
               onChange={handleChange}
+              className='w-40'
             />
-            <span>to</span>
+            <span className="text-sm">(the date of incorporation) to</span>
             <Input
               type="date"
               name="endDate"
               value={formData.endDate}
               onChange={handleChange}
+              className='w-40'
             />
           </div>
-          <p className="text-xs text-muted-foreground">(the 365th day from the date of starting this consent) or until that any of the parties gives a written notification to terminate this consent.</p>
+          <p className="text-sm">(the 365th day from the date of starting this consent) or until that any of the parties gives a written notification to terminate this consent.</p>
         </div>
 
         <Separator />

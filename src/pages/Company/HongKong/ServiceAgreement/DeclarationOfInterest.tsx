@@ -5,7 +5,7 @@ import InlineSignatureCreator from "../../SignatureComponent";
 export default function DeclarationOfInterest() {
   const companyDetails = {
     name: "TRUSTPAY AI SYSTEMS LIMITED",
-    ubiNo: "",
+    ubiNo: "TestNum",
     director: "AHMED, SHAHAD",
   }
   const [docSigned,] = useState('2024-12-12')
@@ -37,17 +37,16 @@ export default function DeclarationOfInterest() {
       <CardHeader className="space-y-6 pb-6">
         <div className="space-y-2">
           <div className="flex gap-2">
-            <span className="font-medium">UBI No.:</span>
-            <span>{companyDetails.ubiNo}</span>
+          <p className="font-serif text-sm">UBI Number: <span className=" px-1  underline ">{companyDetails.ubiNo}</span></p>
           </div>
           <div className="text-center space-y-1">
-            <p className=" px-1 inline-block font-bold">
+            <p className=" px-1 inline-block font-serif font-semibold">
               {companyDetails.name}
             </p>
             <p className="text-sm font-bold">(the "Company")</p>
           </div>
         </div>
-        <div className="text-center border-t border-b py-4">
+        <div className="text-center font-serif border-t border-b py-4">
           WRITTEN RESOLUTIONS OF DIRECTOR(S) OF THE COMPANY PASSED PURSUANT TO THE
           COMPANY'S ARTICLES OF ASSOCIATION
         </div>
@@ -104,7 +103,7 @@ export default function DeclarationOfInterest() {
             </div>
           )}
           <div className="border-t border-black w-48">
-            <p className="font-medium">Test Director</p>
+            <p className="font-medium">{companyDetails.director }</p>
             <p className="text-sm italic">Director</p>
             <p>Date: {docSigned}</p>
           </div>

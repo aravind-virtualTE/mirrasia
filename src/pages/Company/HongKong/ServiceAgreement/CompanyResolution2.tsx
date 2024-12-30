@@ -55,6 +55,7 @@ export default function CompanyResolutiontwo() {
             Written Resolutions of the Sole Director of the Company made pursuant to the Company's Articles of
             Association and Section 548 of The Companies Ordinance
           </p>
+          <div className="w-full border-b-2 border-black"></div>
         </div>
 
         {/* Resolution Sections */}

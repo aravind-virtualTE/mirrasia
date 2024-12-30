@@ -78,11 +78,11 @@ function PEPDeclarationForm() {
 
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Checkbox id="not-pep" />
+              <Checkbox className="rounded-none h-4 w-4" id="not-pep" />
               <label htmlFor="not-pep">I am NOT a Politically Exposed Person (PEP)</label>
             </div>
             <div className="flex items-center gap-2">
-              <Checkbox id="is-pep" />
+              <Checkbox className="rounded-none h-4 w-4" id="is-pep" />
               <label htmlFor="is-pep">I am a Politically Exposed Person (PEP)</label>
             </div>
           </div>

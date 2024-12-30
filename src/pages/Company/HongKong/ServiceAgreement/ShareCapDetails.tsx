@@ -1,7 +1,26 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
+import { useEffect, useState } from "react"
 
 export default function ShareCapitalForm() {
+  const [shareCapDetails, setShareCapDetails] = useState({
+    founderMember:[{name : "", noOfShares: "", totalShares: ""}],
+    shareClass: "",
+    totalShares: "",
+    shareCapital: "",
+    paidUp: "",
+    unpaid: "",})
+
+    useEffect(() => {
+      setShareCapDetails({
+        founderMember:[{name : "Ahmed Shahad", noOfShares: "", totalShares: "USD 100"}],
+        shareClass: "Ordinary",
+        totalShares: "100",
+        shareCapital: "USD 100",
+        paidUp: "USD 100",
+        unpaid: "USD 0",
+      })
+    }, [])
   return (
     <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none">
       {/* Share Class Details */}
@@ -62,11 +81,11 @@ export default function ShareCapitalForm() {
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableCell className="border align-top p-4">AHMED, SHAHAD</TableCell>
+              <TableCell className="border align-top p-4">{shareCapDetails.founderMember[0].name}</TableCell>
               <TableCell className="border text-center space-y-2 p-4">
-                <div>100</div>
+                <div>{shareCapDetails.founderMember[0].noOfShares}</div>
                 <div>Ordinary shares</div>
-                <div>USD 100</div>
+                <div>{shareCapDetails.founderMember[0].totalShares}</div>
               </TableCell>
             </TableRow>
             <TableRow>

@@ -56,7 +56,7 @@ export default function SignificantControllersRegister() {
 
   const companyDetails = {
     name: "TRUSTPAY AI SYSTEMS LIMITED",
-    ubiNo: "",
+    ubiNo: "testNum",
   }
 
   const controllers: SignificantController[] = [
@@ -94,13 +94,13 @@ export default function SignificantControllersRegister() {
   return (
     <Card className="w-full max-w-[900px] mx-auto p-6 print:p-0 rounded-none font-serif">
       <CardHeader className="space-y-4 pb-6">
-        <h1 className="text-2xl font-bold text-center">
+        <h1 className="text-l font-bold text-center">
           Significant Controllers Register
         </h1>
-        <div className="space-y-2">
-          <div className="flex gap-2">
+        <div className="space-y-2 text-sm">
+          <div className="flex gap-2 ">
             <span className="font-medium">Company Name:</span>
-            <span className=" px-1">{companyDetails.name}</span>
+            <span className=" px-1  underline">{companyDetails.name}</span>
           </div>
           <div className="flex gap-2">
             <span className="font-medium">UBI No.:</span>
@@ -111,7 +111,7 @@ export default function SignificantControllersRegister() {
 
       <CardContent className="space-y-8">
         <div>
-          <h2 className="font-bold mb-4">Significant Controllers</h2>
+          <h2 className="font-serif font-bold mb-4">Significant Controllers</h2>
           <Table className="border-collapse [&_*]:border-black">
             <TableHeader>
               <TableRow>
@@ -235,7 +235,7 @@ export default function SignificantControllersRegister() {
 
       <CardFooter className="flex flex-col items-end mt-6 space-y-6">
         <div className="text-right space-y-2">
-          <p className="italic">For and on behalf of</p>
+        <p className="italic font-serif text-xs">For and on behalf of</p>
           <p className=" inline-block">
             {companyDetails.name}
           </p>

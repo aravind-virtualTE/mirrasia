@@ -22,7 +22,7 @@ interface Shareholder {
 export default function ShareholdersList() {
   const companyDetails = {
     name: "TRUSTPAY AI SYSTEMS LIMITED",
-    ubiNo: "",
+    ubiNo: "Test NO",
   };
   const [signature, setSignature] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -177,8 +177,8 @@ export default function ShareholdersList() {
 
       <CardFooter className="flex flex-col items-end mt-6 space-y-6">
         <div className=" space-y-4">
-          <p className="italic">For and on behalf of</p>
-          <p className="font-bold  px-1 inline-block">
+        <p className="italic font-serif text-xs">For and on behalf of</p>
+          <p className="font-serif px-1 inline-block">
             {companyDetails.name}
           </p>
           <div className=" w-48 h-24" />

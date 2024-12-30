@@ -12,11 +12,11 @@ export default function AppointmentLetter() {
   const [details,
     // setDetails
   ] = useState({
-    appointmentDate: "",
+    appointmentDate: '',
     ubiNo: '',
     companyName: 'TestLimited',
     directorName: '',
-    companyAddress: ' WORKSHOP UNIT B50, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI ROAD, KWAI CHUNG, N.T., HONG KONG',
+    companyAddress: 'WORKSHOP UNIT B50, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI ROAD, KWAI CHUNG, N.T., HONG KONG',
   })
   const [signature, setSignature] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);

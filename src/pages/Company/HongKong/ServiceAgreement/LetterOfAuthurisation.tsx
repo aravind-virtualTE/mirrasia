@@ -22,6 +22,7 @@ export default function AuthorizationDetails() {
   const [isEditing, setIsEditing] = useState(false)
   const [docSigned,] = useState('2024-12-12')
   const [personDetails, setPersonDetails] = useState({
+    ubiNo: "TestUbiNo",
     companyName: "TestCompany",
     name: "Test Name",
     email: "Test@gmail.com",
@@ -64,20 +65,21 @@ export default function AuthorizationDetails() {
     <Card className="max-w-4xl mx-auto p-8 rounded-none">
       <CardHeader className="space-y-4">
         <div className="flex justify-between text-sm text-muted-foreground">
-          <span>UBI NO.: </span>
+          <span>UBI NO.: {personDetails.ubiNo}</span>
           <span>(Registered in Hong Kong)</span>
         </div>
-        <CardTitle className="text-center">{personDetails.companyName}</CardTitle>
+        <CardTitle className="text-center font-bold">{personDetails.companyName}</CardTitle>
         <p className="text-center text-sm">("the company")</p>
         <div className="space-y-2 pt-4">
           <p>To MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED</p>
-          <p className="font-medium">Letter of Authorisation</p>
+          <p className="font-medium underline">Letter of Authorisation</p>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
           <h3 className="font-medium mb-4 text-center">
             Re : Authorised and Designated person(s) for communications on behalf of the company
+            <div className="w-full border-b-2 border-black"></div>
           </h3>
           <p className="text-sm">
             This is to authorise following person(s) to contact and communicate in respect of all matters regarding the company with immediate
@@ -86,20 +88,20 @@ export default function AuthorizationDetails() {
           </p>
         </div>
 
-        <Table>
+        <Table className="border border-gray-300">
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[50px]">No.</TableHead>
-              <TableHead>Name of authorised and designated person(s)</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Tel</TableHead>
-              <TableHead>Kakao / Wechat</TableHead>
+              <TableHead className="w-[50px] border border-gray-300">No.</TableHead>
+              <TableHead className="border border-gray-300">Name of authorised and designated person(s)</TableHead>
+              <TableHead className="border border-gray-300">Email</TableHead>
+              <TableHead className="border border-gray-300">Tel</TableHead>
+              <TableHead className="border border-gray-300">Kakao / Wechat</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow onClick={toggleEdit}>
-              <TableCell>1</TableCell>
-              <TableCell>
+            <TableRow onClick={toggleEdit} className="border border-gray-300">
+              <TableCell className="border border-gray-300">1</TableCell>
+              <TableCell className="border border-gray-300">
                 {isEditing ? (
                   <Input
                     name="name"
@@ -110,7 +112,7 @@ export default function AuthorizationDetails() {
                   personDetails.name
                 )}
               </TableCell>
-              <TableCell>
+              <TableCell className="border border-gray-300">
                 {isEditing ? (
                   <Input
                     name="email"
@@ -121,7 +123,7 @@ export default function AuthorizationDetails() {
                   personDetails.email
                 )}
               </TableCell>
-              <TableCell>
+              <TableCell className="border border-gray-300">
                 {isEditing ? (
                   <Input
                     name="tel"
@@ -132,7 +134,7 @@ export default function AuthorizationDetails() {
                   personDetails.tel
                 )}
               </TableCell>
-              <TableCell>
+              <TableCell className="border border-gray-300">
                 {isEditing ? (
                   <Input
                     name="kakaoWechat"

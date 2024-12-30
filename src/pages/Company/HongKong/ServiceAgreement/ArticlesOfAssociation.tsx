@@ -39,7 +39,7 @@ export default function ArticlesOfAssociation() {
             </div>
             <div className="text-center">
               <span className=" px-1">
-                "TRUSTPAY AI SYSTEMS LIMITED"
+                {companyName}
               </span>
             </div>
           </div>

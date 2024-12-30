@@ -55,7 +55,7 @@ export default function RegisterOfMembers() {
   };
   const companyDetails = {
     name: "TRUSTPAY AI SYSTEMS LIMITED",
-    ubiNumber: "",
+    ubiNumber: "TestNum",
   }
 
   const shareDetails = {
@@ -87,6 +87,7 @@ export default function RegisterOfMembers() {
       remarks: "",
       entryMadeBy: "Ayla",
     },
+
   ]
 
   return (
@@ -95,15 +96,13 @@ export default function RegisterOfMembers() {
         <div className="flex justify-between items-start">
           <div className="space-y-1">
             <div className="flex gap-1">
-              <span>Name of Company:</span>
-              <span className="">{companyDetails.name}</span>
+              <p className="font-serif text-sm">Name of Company: <span className=" px-1  underline ">{companyDetails.name}</span></p>
             </div>
             <div className="flex gap-1">
-              <span>UBI Number:</span>
-              <span>{companyDetails.ubiNumber}</span>
+              <p className="font-serif text-sm">UBI Number: <span className=" px-1  underline ">{companyDetails.ubiNumber}</span></p>
             </div>
           </div>
-          <h1 className="text-xl font-serif">REGISTER OF MEMBERS</h1>
+          <h1 className="text-l font-serif font-semibold">REGISTER OF MEMBERS</h1>
         </div>
       </CardHeader>
 
@@ -314,17 +313,14 @@ export default function RegisterOfMembers() {
 
       <CardFooter className="flex flex-col items-stretch mt-6 space-y-6 px-0">
         <div className="flex justify-between items-end">
-          <p className="text-xs">
-            PLEASE NOTE: THE ORIGINAL OR COPY MUST BE KEPT AT THE REGISTERED
-            OFFICE.
+          <p className="text-xs uppercase">
+            PLEASE NOTE: THE ORIGINAL OR COPY MUST BE KEPT AT THE REGISTERED OFFICE.
           </p>
-          <p>Page No. <span >1</span></p>
+          <p className="text-xs">Page No. 1</p>
         </div>
         <div className="text-right space-y-2">
-          <p className="italic">For and on behalf of</p>
-          <p className=" inline-block">
-            {companyDetails.name}
-          </p>
+          <p className="italic font-serif text-xs">For and on behalf of</p>
+          <p className="px-1 inline-block font-serif">{companyDetails.name}</p>
           <div className="flex justify-end">
             <div >
               {isEditing ? (
@@ -350,7 +346,7 @@ export default function RegisterOfMembers() {
                 </div>
               )}
               <div className="border-t border-black" />
-              <p className="text-sm text-center mt-1">Authorised Signature(s)</p>
+              <p className="text-sm text-center font-serif mt-1">Authorised Signature(s)</p>
             </div>
           </div>
         </div>

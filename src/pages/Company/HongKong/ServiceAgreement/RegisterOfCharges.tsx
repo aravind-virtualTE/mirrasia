@@ -28,7 +28,7 @@ interface Charge {
 export default function RegisterOfCharges() {
   const companyDetails: CompanyDetails = {
     name: "Sample Company",
-    ubiNumber: "",
+    ubiNumber: "TestNo",
     jurisdiction: "Hong Kong",
   }
     const [signature, setSignature] = useState<string | null>(null);
@@ -79,7 +79,7 @@ export default function RegisterOfCharges() {
               <span className=" px-1">{companyDetails.name}</span>
             </div>
             <div className="flex gap-2">
-              <span className="font-medium">UBI Number:</span>
+              <span className="font-medium">UBI Number:{ companyDetails.ubiNumber}</span>
               <span>{companyDetails.ubiNumber}</span>
             </div>
             <div className="flex gap-2">
@@ -87,7 +87,7 @@ export default function RegisterOfCharges() {
               <span className="underline">{companyDetails.jurisdiction}</span>
             </div>
           </div>
-          <h1 className="text-xl font-bold">REGISTER OF CHARGES</h1>
+          <h1 className="text-l font-serif font-semibold">REGISTER OF CHARGES</h1>
         </div>
       </CardHeader>
       {/* className="border-collapse [&_*]:border-black" */}
@@ -143,15 +143,15 @@ export default function RegisterOfCharges() {
 
       <CardFooter className="flex flex-col items-stretch mt-6 space-y-6">
         <div className="flex justify-between" >
-          <p className="text-sm uppercase">
+          <p className="text-xs uppercase">
             PLEASE NOTE: THE ORIGINAL OR COPY MUST BE KEPT AT THE REGISTERED OFFICE.
           </p>
-          <p>Page No. 1</p>
+          <p className="text-xs">Page No. 1</p>
         </div>
         <div className="flex justify-end">
           <div className="text-right space-y-4">
-            <p className="italic">For and on behalf of</p>
-            <p className="px-1 inline-block">Sample Company</p>
+            <p className="italic font-serif text-xs">For and on behalf of</p>
+            <p className="px-1 inline-block">{companyDetails.name}</p>
             {isEditing ? (
                         <InlineSignatureCreator
                           onSignatureCreate={handleSignature}

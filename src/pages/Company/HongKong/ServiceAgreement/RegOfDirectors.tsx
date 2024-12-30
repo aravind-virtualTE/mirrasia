@@ -24,7 +24,7 @@ interface Director {
 export default function RegisterOfDirectors() {
     const companyDetails = {
         name: "TRUSTPAY AI SYSTEMS LIMITED",
-        ubiNumber: "",
+        ubiNumber: "TestNum",
     }
 
     const [signature, setSignature] = useState<string | null>(null);
@@ -77,15 +77,13 @@ export default function RegisterOfDirectors() {
                 <div className="flex justify-between items-start">
                     <div className="space-y-2">
                         <div className="flex gap-2">
-                            <span className="font-medium">Name of Company:</span>
-                            <span className=" px-1">{companyDetails.name}</span>
+                        <p className="font-serif text-sm">Name of Company: <span className=" px-1  underline ">{companyDetails.name}</span></p>
                         </div>
-                        <div className="flex gap-2">
-                            <span className="font-medium">UBI Number:</span>
-                            <span>{companyDetails.ubiNumber}</span>
+                        <div className="flex gap-2 font-serif">
+                        <p className="font-serif text-sm">UBI Number: <span className=" px-1  underline ">{companyDetails.ubiNumber}</span></p>
                         </div>
                     </div>
-                    <h1 className="text-xl ">REGISTER OF DIRECTORS</h1>
+                    <h1 className="text-l font-serif font-semibold">REGISTER OF DIRECTORS</h1>
                 </div>
             </CardHeader>
 
@@ -190,16 +188,15 @@ export default function RegisterOfDirectors() {
 
             <CardFooter className="flex flex-col items-stretch mt-6 space-y-6">
                 <div className="flex justify-between items-end">
-                    <p className="text-sm uppercase">
-                        PLEASE NOTE: THE ORIGINAL OR COPY MUST BE KEPT AT THE REGISTERED
-                        OFFICE.
-                    </p>
-                    <span>Page No. 1</span>
+                <p className="text-xs uppercase">
+            PLEASE NOTE: THE ORIGINAL OR COPY MUST BE KEPT AT THE REGISTERED OFFICE.
+          </p>
+          <p className="text-xs">Page No. 1</p>
                 </div>
                 <div className="flex justify-end">
                     <div className="text-right space-y-4">
                     <p className="italic">For and on behalf of</p>
-                    <p className="px-1 inline-block">Sample Company</p>
+                    <p className="px-1 inline-block font-serif">{companyDetails.name}</p>
                     {isEditing ? (
                         <InlineSignatureCreator
                         onSignatureCreate={handleSignature}
