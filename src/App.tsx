@@ -30,6 +30,7 @@ import RenewalRequestForm from './components/form/renewalReqForm';
 import TransferManagementInfo from './components/form/TransferManagementInfo';
 import AccountingTaxForm from './components/form/accountingTaxWork';
 import SignSmpl from './components/pdfPage/signSmpl';
+import AppLetter from './pages/shrholder/appletter';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -75,6 +76,7 @@ const App: React.FC = () => {
                 <Route path="/pdf" element={<PdfTest />} />
                 <Route path="/pdf1" element={<PdfSignature />} />
                 <Route path="/sign" element={<SignSmpl />} />
+               
 
                 {/* Protected routes for Admin */}
                 <Route element={<ProtectedRoute requiredRole="admin" />}>
@@ -93,6 +95,14 @@ const App: React.FC = () => {
                     <Route path='/RenewalReqForm' element={<RenewalRequestForm/>}/>
                     <Route path='/TransferManagementInfo' element={<TransferManagementInfo/>}/>
                     <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm/>}/>
+                    
+                </Route>
+                 {/* shrholder appointletter routes */}
+                <Route>
+                  <Route element={<Layout/>}>
+                  <Route path="/appoint-ltr" element={<AppLetter/>} />
+                  
+                  </Route>
                 </Route>
 
                 {/* Protected routes for User */}
