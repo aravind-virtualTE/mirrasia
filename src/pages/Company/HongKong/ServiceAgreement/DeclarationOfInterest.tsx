@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { useState } from "react";
-import InlineSignatureCreator from "../../SignatureComponent";
+// import InlineSignatureCreator from "../../SignatureComponent";
+import SignatureModal from "@/components/pdfPage/SignatureModal";
 
 export default function DeclarationOfInterest() {
   const companyDetails = {
@@ -12,24 +13,33 @@ export default function DeclarationOfInterest() {
 
 
   const [signature, setSignature] = useState<string | null>(null);
-  const [signEdit, setSignEdit] = useState(false)
-
-  const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
-    setSignEdit(false);
-    setSignature(signature)
-  };
-  const handleClear = () => {
-    setSignature(null);
-  };
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setSignEdit(true);
-    }
+    setIsModalOpen(true);
   };
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
+  };
+  // const [signEdit, setSignEdit] = useState(false)
+
+  // const handleSignature = (signature: string) => {
+  //   // console.log("Received signature:", signature);
+  //   setSignEdit(false);
+  //   setSignature(signature)
+  // };
+  // const handleClear = () => {
+  //   setSignature(null);
+  // };
+
+  // const handleBoxClick = () => {
+  //   if (signature) {
+  //     handleClear();
+  //   } else {
+  //     setSignEdit(true);
+  //   }
+  // };
 
 
   return (
@@ -37,7 +47,7 @@ export default function DeclarationOfInterest() {
       <CardHeader className="space-y-6 pb-6">
         <div className="space-y-2">
           <div className="flex gap-2">
-          <p className="font-serif text-sm">UBI Number: <span className=" px-1  underline ">{companyDetails.ubiNo}</span></p>
+            <p className="font-serif text-sm">UBI Number: <span className=" px-1  underline ">{companyDetails.ubiNo}</span></p>
           </div>
           <div className="text-center space-y-1">
             <p className=" px-1 inline-block font-serif font-semibold">
@@ -80,13 +90,7 @@ export default function DeclarationOfInterest() {
         </div>
 
         <div className="pt-6 space-y-4 w-64">
-          {signEdit ? (
-            <InlineSignatureCreator
-              onSignatureCreate={handleSignature}
-              maxWidth={256}
-              maxHeight={100}
-            />
-          ) : (
+          <div className="w-64 pt-2">
             <div
               onClick={handleBoxClick}
               className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -94,16 +98,22 @@ export default function DeclarationOfInterest() {
               {signature ? (
                 <img
                   src={signature}
-                  alt="Member's signature"
+                  alt="Selected signature"
                   className="max-h-20 max-w-full object-contain"
                 />
               ) : (
                 <p className="text-gray-400">Click to sign</p>
               )}
             </div>
-          )}
+            {isModalOpen && (
+              <SignatureModal
+                onSelectSignature={handleSelectSignature}
+                onClose={() => setIsModalOpen(false)}
+              />
+            )}
+          </div>
           <div className="border-t border-black w-48">
-            <p className="font-medium">{companyDetails.director }</p>
+            <p className="font-medium">{companyDetails.director}</p>
             <p className="text-sm italic">Director</p>
             <p>Date: {docSigned}</p>
           </div>

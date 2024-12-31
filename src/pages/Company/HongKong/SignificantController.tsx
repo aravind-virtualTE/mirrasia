@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import InlineSignatureCreator from "../SignatureComponent"
+// import InlineSignatureCreator from "../SignatureComponent"
+import SignatureModal from "@/components/pdfPage/SignatureModal"
 
 export default function SignificantControllerForm() {
   const [docSigned,] = useState('2024-12-12')
@@ -8,7 +9,7 @@ export default function SignificantControllerForm() {
     name: "TRUSTPAY AI SYSTEMS LIMITED",
     ubiNumber: "Test Num",
   }
-  const [userDetails, setUserDetails ] = useState({
+  const [userDetails, setUserDetails] = useState({
     name: "",
     residentialAddress: "",
     nationalityAndId: "",
@@ -28,27 +29,36 @@ export default function SignificantControllerForm() {
       dateOfCeasingARegistrablePerson: "",
       natureOfControl: "Holds 100% of the issued shares of the company directly.",
     })
-  })
+  }, [])
 
   const [signature, setSignature] = useState<string | null>(null);
-  const [signEdit, setSignEdit] = useState(false)
-
-  const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
-    setSignEdit(false);
-    setSignature(signature)
-  };
-  const handleClear = () => {
-    setSignature(null);
-  };
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setSignEdit(true);
-    }
-  };  
+    setIsModalOpen(true);
+  };
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
+  };
+  // const [signEdit, setSignEdit] = useState(false)
+
+  // const handleSignature = (signature: string) => {
+  //   // console.log("Received signature:", signature);
+  //   setSignEdit(false);
+  //   setSignature(signature)
+  // };
+  // const handleClear = () => {
+  //   setSignature(null);
+  // };
+
+  // const handleBoxClick = () => {
+  //   if (signature) {
+  //     handleClear();
+  //   } else {
+  //     setSignEdit(true);
+  //   }
+  // };  
 
 
   return (
@@ -98,7 +108,7 @@ export default function SignificantControllerForm() {
               <span>3</span>
               <span>Residential Address :</span>
               <span className="">
-               {userDetails.residentialAddress}
+                {userDetails.residentialAddress}
               </span>
             </div>
             <div className="flex gap-x-2">
@@ -120,15 +130,9 @@ export default function SignificantControllerForm() {
               <span className="">{userDetails.natureOfControl}</span>
             </div>
           </div>
-        </div>       
-        <div className="pt-6 space-y-4 w-64">         
-          {signEdit ? (
-            <InlineSignatureCreator
-              onSignatureCreate={handleSignature}
-              maxWidth={256}
-              maxHeight={100}
-            />
-          ) : (
+        </div>
+        <div className="pt-6 space-y-4 w-64">
+          <div className="w-64 pt-2">
             <div
               onClick={handleBoxClick}
               className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -136,14 +140,20 @@ export default function SignificantControllerForm() {
               {signature ? (
                 <img
                   src={signature}
-                  alt="Member's signature"
+                  alt="Selected signature"
                   className="max-h-20 max-w-full object-contain"
                 />
               ) : (
                 <p className="text-gray-400">Click to sign</p>
               )}
             </div>
-          )}
+            {isModalOpen && (
+              <SignatureModal
+                onSelectSignature={handleSelectSignature}
+                onClose={() => setIsModalOpen(false)}
+              />
+            )}
+          </div>
           <div className="border-t border-black w-48">
             <p className="font-medium">TestMember</p>
             <p className="text-sm italic">Member</p>

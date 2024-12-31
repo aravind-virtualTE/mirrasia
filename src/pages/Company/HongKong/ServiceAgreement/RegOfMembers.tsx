@@ -8,7 +8,8 @@ import {
 } from "@/components/ui/table"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { useState } from "react"
-import InlineSignatureCreator from "../../SignatureComponent"
+// import InlineSignatureCreator from "../../SignatureComponent"
+import SignatureModal from "@/components/pdfPage/SignatureModal"
 
 interface ShareTransaction {
   date: string
@@ -37,22 +38,31 @@ interface Member {
 export default function RegisterOfMembers() {
 
   const [signature, setSignature] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
-    setIsEditing(false);
-    setSignature(signature)
-  };
-  const handleClear = () => {
-    setSignature(null);
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setIsEditing(true);
-    }
+    setIsModalOpen(true);
   };
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
+  };
+  // const [isEditing, setIsEditing] = useState(false);
+  // const handleSignature = (signature: string) => {
+  //   // console.log("Received signature:", signature);
+  //   setIsEditing(false);
+  //   setSignature(signature)
+  // };
+  // const handleClear = () => {
+  //   setSignature(null);
+  // };
+  // const handleBoxClick = () => {
+  //   if (signature) {
+  //     handleClear();
+  //   } else {
+  //     setIsEditing(true);
+  //   }
+  // };
   const companyDetails = {
     name: "TRUSTPAY AI SYSTEMS LIMITED",
     ubiNumber: "TestNum",
@@ -323,13 +333,7 @@ export default function RegisterOfMembers() {
           <p className="px-1 inline-block font-serif">{companyDetails.name}</p>
           <div className="flex justify-end">
             <div >
-              {isEditing ? (
-                <InlineSignatureCreator
-                  onSignatureCreate={handleSignature}
-                  maxWidth={256}
-                  maxHeight={100}
-                />
-              ) : (
+              <div className="w-64 pt-2">
                 <div
                   onClick={handleBoxClick}
                   className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -337,14 +341,20 @@ export default function RegisterOfMembers() {
                   {signature ? (
                     <img
                       src={signature}
-                      alt="Director's signature"
+                      alt="Selected signature"
                       className="max-h-20 max-w-full object-contain"
                     />
                   ) : (
                     <p className="text-gray-400">Click to sign</p>
                   )}
                 </div>
-              )}
+                {isModalOpen && (
+                  <SignatureModal
+                    onSelectSignature={handleSelectSignature}
+                    onClose={() => setIsModalOpen(false)}
+                  />
+                )}
+              </div>
               <div className="border-t border-black" />
               <p className="text-sm text-center font-serif mt-1">Authorised Signature(s)</p>
             </div>

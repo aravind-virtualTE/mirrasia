@@ -29,7 +29,8 @@ import QuatationForm from './components/form/quatationForm';
 import RenewalRequestForm from './components/form/renewalReqForm';
 import TransferManagementInfo from './components/form/TransferManagementInfo';
 import AccountingTaxForm from './components/form/accountingTaxWork';
-import SignSmpl from './components/pdfPage/signSmpl';
+// import SignatureModal from './components/pdfPage/signSmpl';
+import ParentComponent from './components/pdfPage/parent';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -74,7 +75,7 @@ const App: React.FC = () => {
                 <Route path="/mslayout" element={<MultiStepFormLayout />} />
                 <Route path="/pdf" element={<PdfTest />} />
                 <Route path="/pdf1" element={<PdfSignature />} />
-                <Route path="/sign" element={<SignSmpl />} />
+                <Route path="/sign" element={<ParentComponent />} />
 
                 {/* Protected routes for Admin */}
                 <Route element={<ProtectedRoute requiredRole="admin" />}>
@@ -87,13 +88,13 @@ const App: React.FC = () => {
                   </Route>
                 </Route>
 
-                <Route element={<ProtectedRoute requiredRole="sh_dir" />}>
+                {/* <Route element={<ProtectedRoute requiredRole="sh_dir" />}>
                     <Route path='/form' element={<RegistrationFormIntro/>}/>
                     <Route path='/QuatationForm' element ={<QuatationForm/>}/>
                     <Route path='/RenewalReqForm' element={<RenewalRequestForm/>}/>
                     <Route path='/TransferManagementInfo' element={<TransferManagementInfo/>}/>
                     <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm/>}/>
-                </Route>
+                </Route> */}
 
                 {/* Protected routes for User */}
                 <Route element={<ProtectedRoute requiredRole="user" />}>
@@ -105,11 +106,11 @@ const App: React.FC = () => {
                     <Route path="/hkCompanyRegister/" element={<HkMultiStepForm />} />
                     <Route path="/hkCompanyRegister/:id" element={<HkMultiStepForm />} />
                     {/* Add more user-specific routes here */}
-                    {/* <Route path='/form' element={<RegistrationFormIntro/>}/>
+                    <Route path='/form' element={<RegistrationFormIntro/>}/>
                     <Route path='/QuatationForm' element ={<QuatationForm/>}/>
                     <Route path='/RenewalReqForm' element={<RenewalRequestForm/>}/>
                     <Route path='/TransferManagementInfo' element={<TransferManagementInfo/>}/>
-                    <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm/>}/> */}
+                    <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm/>}/>
 
 
 

@@ -7,8 +7,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import InlineSignatureCreator from "../../SignatureComponent"
+// import InlineSignatureCreator from "../../SignatureComponent"
 import { useState } from "react"
+import SignatureModal from "@/components/pdfPage/SignatureModal"
 
 interface CompanyDetails {
   name: string
@@ -31,23 +32,34 @@ export default function RegisterOfCharges() {
     ubiNumber: "TestNo",
     jurisdiction: "Hong Kong",
   }
-    const [signature, setSignature] = useState<string | null>(null);
-    const [isEditing, setIsEditing] = useState(false);
-    const handleSignature = (signature: string) => {
-      // console.log("Received signature:", signature);
-      setIsEditing(false);
-      setSignature(signature)
-    };
-    const handleClear = () => {
-      setSignature(null);
-    };
-    const handleBoxClick = () => {
-      if (signature) {
-        handleClear();
-      } else {
-        setIsEditing(true);
-      }
-    };
+  const [signature, setSignature] = useState<string | null>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleBoxClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
+  };
+  // const [isEditing, setIsEditing] = useState(false);
+  // const handleSignature = (signature: string) => {
+  //   // console.log("Received signature:", signature);
+  //   setIsEditing(false);
+  //   setSignature(signature)
+  // };
+  // const handleClear = () => {
+  //   setSignature(null);
+  // };
+  // const handleBoxClick = () => {
+  //   if (signature) {
+  //     handleClear();
+  //   } else {
+  //     setIsEditing(true);
+  //   }
+  // };
+
 
   const charges: Charge[] = [
     {
@@ -79,7 +91,7 @@ export default function RegisterOfCharges() {
               <span className=" px-1">{companyDetails.name}</span>
             </div>
             <div className="flex gap-2">
-              <span className="font-medium">UBI Number:{ companyDetails.ubiNumber}</span>
+              <span className="font-medium">UBI Number:{companyDetails.ubiNumber}</span>
               <span>{companyDetails.ubiNumber}</span>
             </div>
             <div className="flex gap-2">
@@ -152,28 +164,28 @@ export default function RegisterOfCharges() {
           <div className="text-right space-y-4">
             <p className="italic font-serif text-xs">For and on behalf of</p>
             <p className="px-1 inline-block">{companyDetails.name}</p>
-            {isEditing ? (
-                        <InlineSignatureCreator
-                          onSignatureCreate={handleSignature}
-                          maxWidth={256}
-                          maxHeight={100}
-                        />
-                      ) : (
-                        <div
-                          onClick={handleBoxClick}
-                          className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
-                        >
-                          {signature ? (
-                            <img
-                              src={signature}
-                              alt="Director's signature"
-                              className="max-h-20 max-w-full object-contain"
-                            />
-                          ) : (
-                            <p className="text-gray-400">Click to sign</p>
-                          )}
-                        </div>
-                      )}
+            <div className="w-64 pt-2">
+              <div
+                onClick={handleBoxClick}
+                className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+              >
+                {signature ? (
+                  <img
+                    src={signature}
+                    alt="Selected signature"
+                    className="max-h-20 max-w-full object-contain"
+                  />
+                ) : (
+                  <p className="text-gray-400">Click to sign</p>
+                )}
+              </div>
+              {isModalOpen && (
+                <SignatureModal
+                  onSelectSignature={handleSelectSignature}
+                  onClose={() => setIsModalOpen(false)}
+                />
+              )}
+            </div>
             <div className="border-t border-black w-48 mt-12">
               <p className="text-sm text-center mt-1">Authorised Signature(s)</p>
             </div>

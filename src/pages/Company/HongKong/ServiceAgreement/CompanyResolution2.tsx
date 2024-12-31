@@ -1,30 +1,40 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
-import InlineSignatureCreator from "../../SignatureComponent";
+// import InlineSignatureCreator from "../../SignatureComponent";
+import SignatureModal from "@/components/pdfPage/SignatureModal";
 
 export default function CompanyResolutiontwo() {
 
   const [docSigned,] = useState('2024-12-12')
 
   const [signature, setSignature] = useState<string | null>(null);
-  const [signEdit, setSignEdit] = useState(false)
-
-  const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
-    setSignEdit(false);
-    setSignature(signature)
-  };
-  const handleClear = () => {
-    setSignature(null);
-  };
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setSignEdit(true);
-    }
+    setIsModalOpen(true);
   };
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
+  };
+  // const [signEdit, setSignEdit] = useState(false)
+
+  // const handleSignature = (signature: string) => {
+  //   // console.log("Received signature:", signature);
+  //   setSignEdit(false);
+  //   setSignature(signature)
+  // };
+  // const handleClear = () => {
+  //   setSignature(null);
+  // };
+
+  // const handleBoxClick = () => {
+  //   if (signature) {
+  //     handleClear();
+  //   } else {
+  //     setSignEdit(true);
+  //   }
+  // };
   const resolutionData = {
     company: {
       name: "TRUSTPAY AI SYSTEMS LIMITED",
@@ -154,13 +164,7 @@ export default function CompanyResolutiontwo() {
           {/* Signature Section */}
           <div className="pt-6 space-y-4 w-64">
             <p >Date: <span className="underline">{docSigned}</span></p>
-            {signEdit ? (
-              <InlineSignatureCreator
-                onSignatureCreate={handleSignature}
-                maxWidth={256}
-                maxHeight={100}
-              />
-            ) : (
+            <div className="w-64 pt-2">
               <div
                 onClick={handleBoxClick}
                 className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -168,14 +172,20 @@ export default function CompanyResolutiontwo() {
                 {signature ? (
                   <img
                     src={signature}
-                    alt="Member's signature"
+                    alt="Selected signature"
                     className="max-h-20 max-w-full object-contain"
                   />
                 ) : (
                   <p className="text-gray-400">Click to sign</p>
                 )}
               </div>
-            )}
+              {isModalOpen && (
+                <SignatureModal
+                  onSelectSignature={handleSelectSignature}
+                  onClose={() => setIsModalOpen(false)}
+                />
+              )}
+            </div>
             <div className="border-t border-black w-48">
               <p className="font-medium">TestChairman</p>
               <p className=" italic">Chairman</p>

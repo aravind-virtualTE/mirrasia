@@ -1,13 +1,14 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
-import InlineSignatureCreator from "../../SignatureComponent";
+// import InlineSignatureCreator from "../../SignatureComponent";
 import { Input } from "@/components/ui/input";
+import SignatureModal from "@/components/pdfPage/SignatureModal";
 
 export default function CustomerDueDiligence() {
   const [docSigned] = useState('2024-12-12');
   const [signature, setSignature] = useState<string | null>(null);
-  const [signEdit, setSignEdit] = useState(false);
+  // const [signEdit, setSignEdit] = useState(false);
 
   const [formData, setFormData] = useState({
     personalInfo: {
@@ -45,22 +46,31 @@ export default function CustomerDueDiligence() {
     }
   });
 
-  const handleSignature = (signature: string) => {
-    setSignEdit(false);
-    setSignature(signature);
-  };
-
-  const handleClear = () => {
-    setSignature(null);
-  };
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setSignEdit(true);
-    }
+    setIsModalOpen(true);
   };
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
+  };
+  // const handleSignature = (signature: string) => {
+  //   setSignEdit(false);
+  //   setSignature(signature);
+  // };
+
+  // const handleClear = () => {
+  //   setSignature(null);
+  // };
+
+  // const handleBoxClick = () => {
+  //   if (signature) {
+  //     handleClear();
+  //   } else {
+  //     setSignEdit(true);
+  //   }
+  // };
 
   const handleChange = (field: string, value: string | boolean) => {
     setFormData(prevState => ({
@@ -81,7 +91,7 @@ export default function CustomerDueDiligence() {
     }));
   };
 
-  const handlePreferredContactChange = (method: string, checked:string | boolean) => {
+  const handlePreferredContactChange = (method: string, checked: string | boolean) => {
     setFormData(prevState => ({
       ...prevState,
       preferredContactMethods: {
@@ -91,7 +101,7 @@ export default function CustomerDueDiligence() {
     }));
   };
 
-  return(
+  return (
     <Card className="max-w-4xl mx-auto p-6 text-sm rounded-none">
       <CardContent>
         <h1 className="text-center font-bold mb-4">CUSTOMER DUE DILIGENCE (INDIVIDUALS)</h1>
@@ -269,9 +279,9 @@ export default function CustomerDueDiligence() {
               <div className="flex gap-2">
                 <div className="w-40">Post Code:</div>
                 <Input className="border flex-1 px-1"
-                value={formData.address.postCode}
-                onChange={(e) => handleNestedChange('address', 'postCode', e.target.value)}
-                 />
+                  value={formData.address.postCode}
+                  onChange={(e) => handleNestedChange('address', 'postCode', e.target.value)}
+                />
               </div>
               <div className="flex gap-2">
                 <div className="w-40">Country:</div>
@@ -387,13 +397,7 @@ export default function CustomerDueDiligence() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <div>Signature</div>
-                {signEdit ? (
-                  <InlineSignatureCreator
-                    onSignatureCreate={handleSignature}
-                    maxWidth={256}
-                    maxHeight={100}
-                  />
-                ) : (
+                <div className="w-64 pt-2">
                   <div
                     onClick={handleBoxClick}
                     className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -401,14 +405,20 @@ export default function CustomerDueDiligence() {
                     {signature ? (
                       <img
                         src={signature}
-                        alt="Member's signature"
+                        alt="Selected signature"
                         className="max-h-20 max-w-full object-contain"
                       />
                     ) : (
                       <p className="text-gray-400">Click to sign</p>
                     )}
                   </div>
-                )}
+                  {isModalOpen && (
+                    <SignatureModal
+                      onSelectSignature={handleSelectSignature}
+                      onClose={() => setIsModalOpen(false)}
+                    />
+                  )}
+                </div>
                 <div className="text-xs">(서명)</div>
               </div>
               <div className="space-y-1">

@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { FormData, HkFormData } from '@/types/hongkongForm';
+import { FormData, HkFormData, ServiceAgreementData } from '@/types/hongkongForm';
 
 export const initialFormState: Partial<FormData> = {
     personalInfo: {
@@ -117,4 +117,233 @@ export const currentHkStepAtom = atom(
 );
 
 
-export const serviceAgrement = atom()
+export const initialServiceAgrementState:  Partial<ServiceAgreementData> = {
+    appointmentDate: '',
+    ubiNo: '',
+    companyName: '',
+    directorName: '',
+    companyAddress: '',
+    date: '',
+    email: '',
+    startDate: '',
+    endDate: '',
+    signDate: '',
+    name: '',
+    tel: '',
+    kakaoWechat: '',
+    directors: [
+      {
+        dateOfAppointment: '',
+        fullName: '',
+        nationalityAndId: '',
+        correspondenceAddress: '',
+        residentialAddress: '',
+        businessOccupation: '',
+        dateCeasingToAct: '',
+        entryMadeBy: '',
+      },
+      ...Array(3).fill({
+        dateOfAppointment: '',
+        fullName: '',
+        nationalityAndId: '',
+        correspondenceAddress: '',
+        residentialAddress: '',
+        businessOccupation: '',
+        dateCeasingToAct: '',
+        entryMadeBy: '',
+      }),
+    ],
+    founderMember: { name: '', signature: '' },
+    shareholders: [
+      {
+        name: '',
+        correspondenceAddress: '',
+        residentialAddress: '',
+        currentHolding: 100,
+        percentage: '100%',
+        remarks: 'Shareholder',
+      },
+      ...Array(3).fill({
+        name: '',
+        correspondenceAddress: '',
+        residentialAddress: '',
+        currentHolding: 0,
+        percentage: '',
+        remarks: '',
+      }),
+    ],
+    charges: [
+      {
+        dateOfCharges: '',
+        description: 'No Charges',
+        amountSecured: '',
+        entitledPerson: '',
+        dateOfRegistration: '',
+        dateOfDischarges: '',
+      },
+      ...Array(3).fill({
+        dateOfCharges: '',
+        description: '',
+        amountSecured: '',
+        entitledPerson: '',
+        dateOfRegistration: '',
+        dateOfDischarges: '',
+      }),
+    ],
+    secretaries: [
+      {
+        dateOfAppointment: '',
+        fullName: 'MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED',
+        idNumber: '50673946',
+        idNumberNote: '(Registered in Hong Kong)',
+        correspondenceAddress: '',
+        type: '',
+        dateCeasingToAct: '',
+        entryMadeBy: '',
+      },
+      ...Array(3).fill({
+        dateOfAppointment: '',
+        fullName: '',
+        idNumber: '',
+        correspondenceAddress: '',
+        type: '',
+        dateCeasingToAct: '',
+        entryMadeBy: '',
+      }),
+    ],
+    shareDetails: {
+      classOfShare: 'ORDINARY',
+      parValuePerShare: 'USD 100.00',
+    },
+    members: [
+      {
+        fullName: '',
+        occupation: '',
+        correspondenceAddress: '',
+        dateCeasing: '',
+        residentialAddress: '',
+        sharesAcquired: [
+          {
+            date: '',
+            certificateNumber: '1',
+            distinctiveNoFrom: '1',
+            distinctiveNoTo: '',
+            numberOfShares: '',
+            considerationPaid: 'USD 00.00',
+          },
+        ],
+        sharesTransferred: [],
+        totalSharesHeld: '100',
+        remarks: '',
+        entryMadeBy: '',
+      },
+    ],
+    docSigned: '',
+    userDetails: {
+      name: '',
+      residentialAddress: '',
+      nationalityAndId: '',
+      correspondenceAddress: '',
+      dateOfBecoming: '',
+      dateOfCeasingARegistrablePerson: '',
+      natureOfControl: '',
+    },
+    companyDetails: {
+      name: '',
+      ubiNo: '',
+      director: '',
+    },
+    controllers: [
+      {
+        entryNo: '',
+        dateOfEntry: '',
+        name: '',
+        correspondenceAddress: '',
+        residentialAddress: '',
+        passportInfo: '',
+        dateBecoming: '',
+        dateCeasing: '',
+        natureOfControl: {
+          name: '',
+          details: '',
+        },
+      },
+    ],
+    representatives: [
+      {
+        entryNo: '',
+        dateOfEntry: '',
+        nameAndCapacity: '',
+        address: '',
+        tel: '',
+        fax: '',
+      },
+    ],
+    shareCapDetails: {
+      founderMember: [{ name: '', noOfShares: '', totalShares: '' }],
+      shareClass: '',
+      totalShares: '',
+      shareCapital: '',
+      paidUp: '',
+      unpaid: '',
+    },
+    resolutionData: {
+      company: {
+        name: '',
+        jurisdiction: '',
+      },
+      director: {
+        name: '',
+      },
+      secretary: {
+        name: 'MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED',
+      },
+      address: {
+        full: 'WORKSHOP UNIT B50, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, N.T., HONG KONG',
+      },
+    },
+    resolutionDetails: {
+      inCorporatedDate: '',
+      regNumber: '',
+    },
+    formData: {
+      personalInfo: {
+        title: '',
+        firstName: '',
+        familyName: '',
+        formerName: '',
+        occupation: '',
+        cityOfBirth: '',
+        dateOfBirth: '',
+        countryOfBirth: '',
+        nationality: '',
+        maritalStatus: '',
+      },
+      isUsPerson: false,
+      isPublicAuthority: false,
+      address: {
+        residential: '',
+        country: '',
+        postCode: '',
+      },
+      contact: {
+        tel: '',
+        mobile: '',
+        email: '',
+        fax: '',
+      },
+      preferredContactMethods: {
+        telephone: false,
+        mobile: false,
+        email: false,
+        fax: false,
+        registeredPost: false,
+        courier: false,
+      },
+    },
+
+};
+
+export const serviceAgrement = atom<Partial<ServiceAgreementData>>(initialServiceAgrementState)
+export const signaturesAtom = atom<string[]>([]);
+

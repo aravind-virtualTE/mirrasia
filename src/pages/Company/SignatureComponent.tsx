@@ -101,13 +101,6 @@ export default function InlineSignatureCreator({
     }
   };
 
-//   const clearDrawing = () => {
-//     if (signaturePadRef.current) {
-//       signaturePadRef.current.clear();
-//       setPreviewSignature(null);
-//       setIsDrawing(false);
-//     }
-//   };
 
   const handleDrawStart = () => {
     setIsDrawing(true);

@@ -4,7 +4,7 @@ import {
   CardHeader,
 } from "@/components/ui/card"
 import { useState } from "react"
-import InlineSignatureCreator from "../../SignatureComponent"
+import SignatureModal from "@/components/pdfPage/SignatureModal";
 // import { Button } from "@/components/ui/button";
 
 export default function AppointmentLetter() {
@@ -19,23 +19,14 @@ export default function AppointmentLetter() {
     companyAddress: 'WORKSHOP UNIT B50, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI ROAD, KWAI CHUNG, N.T., HONG KONG',
   })
   const [signature, setSignature] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const handleSignature = (signature: string) => {
-    setIsEditing(false);
-    setSignature(signature)
-  };
-
-
-  const handleClear = () => {
-    setSignature(null);
-  };
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setIsEditing(true);
-    }
+    setIsModalOpen(true);
+  };
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
   };
 
   return (
@@ -84,8 +75,8 @@ export default function AppointmentLetter() {
             <div className="w-full border-b-2 border-black"></div>
             <p className="mt-2">
               located in <span className="font-bold text-sm font-serif">{details.companyAddress}</span>
-            </p>  
-        </div>
+            </p>
+          </div>
 
           <p className="text-justify">
             We shall indemnify you and/or any of your directors and officers from and against all actions, claims and demands
@@ -104,13 +95,7 @@ export default function AppointmentLetter() {
 
           <div className="space-y-4">
             <div className=" w-64 pt-2">
-              {isEditing ? (
-                <InlineSignatureCreator
-                  onSignatureCreate={handleSignature}
-                  maxWidth={256}
-                  maxHeight={100}
-                />
-              ) : (
+              <div className="w-64 pt-2">
                 <div
                   onClick={handleBoxClick}
                   className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -118,14 +103,20 @@ export default function AppointmentLetter() {
                   {signature ? (
                     <img
                       src={signature}
-                      alt="Director's signature"
+                      alt="Selected signature"
                       className="max-h-20 max-w-full object-contain"
                     />
                   ) : (
                     <p className="text-gray-400">Click to sign</p>
                   )}
                 </div>
-              )}
+                {isModalOpen && (
+                  <SignatureModal
+                    onSelectSignature={handleSelectSignature}
+                    onClose={() => setIsModalOpen(false)}
+                  />
+                )}
+              </div>
               <p className="font-bold border-t border-black">{details.directorName}</p>
               <p className="italic">Director</p>
             </div>

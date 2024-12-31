@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAtom } from 'jotai';
 import { shareHolderDirectorControllerAtom } from '@/lib/atom';
+import { isValidEmail } from '@/middleware';
+import { sendInviteToShDir } from '@/services/dataFetch';
 
 interface ShareholderDirectorProps {
   name: string;
@@ -253,6 +255,29 @@ const ShareholderDirectorForm: React.FC = () => {
     setShareholders(newShareholders);
   };
 
+  const sendMailFunction = async () =>{
+    try{
+      
+      const extractedData = shareholders.map(item => {
+        const { name, email } = item;
+        
+        if (!isValidEmail(email)) {
+            alert(`Invalid email format for ${name}: ${email}`);
+        }
+        
+        return { name, email };
+    });
+    const docId = localStorage.getItem('companyRecordId');
+    const payload = { _id: docId, inviteData: extractedData };
+    console.log("send mail function",payload)
+    const response = await sendInviteToShDir(payload);
+    console.log("send mail response",response)
+
+    }catch(e){
+      console.log(e)
+    }
+  }
+
   return (
     <div className="flex flex-col">
       {totalOwnership > 100 && (
@@ -270,7 +295,14 @@ const ShareholderDirectorForm: React.FC = () => {
           />
         ))}
       </div>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-around mt-4">
+      <Button 
+          className="btn btn-primary w-fit" 
+          onClick={sendMailFunction}
+          // disabled={totalOwnership >= 100}
+        >
+          Send Invitation Mail to Shareholder/Director
+        </Button>
         <Button 
           className="btn btn-primary w-fit" 
           onClick={addShareholder}

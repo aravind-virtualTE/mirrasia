@@ -49,3 +49,21 @@ export const getIncorporationListByUserId = async (
         console.error("Error fetching PDF:", error);
     } 
   }
+
+  interface InviteData {
+    name: string;
+    email: string;
+}
+  interface SendInviteData {
+    _id: string | null;
+    inviteData: InviteData[];
+}
+
+  export const sendInviteToShDir = async (data : SendInviteData) => {
+    try {
+      const response = await api.post('user/send-invite', data);
+      return response.data;
+    } catch (error) {
+        console.error("Error sending invite to significant director:", error);
+    }
+  };

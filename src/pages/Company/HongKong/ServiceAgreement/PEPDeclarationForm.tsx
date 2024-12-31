@@ -1,29 +1,21 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import InlineSignatureCreator from "../../SignatureComponent";
+// import InlineSignatureCreator from "../../SignatureComponent";
 import { useState } from "react";
+import SignatureModal from "@/components/pdfPage/SignatureModal";
 
 function PEPDeclarationForm() {
   const [docSigned,] = useState('2024-12-12')
 
   const [signature, setSignature] = useState<string | null>(null);
-  const [signEdit, setSignEdit] = useState(false)
-
-  const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
-    setSignEdit(false);
-    setSignature(signature)
-  };
-  const handleClear = () => {
-    setSignature(null);
-  };
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setSignEdit(true);
-    }
+    setIsModalOpen(true);
+  };
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
   };
 
   const formData = {
@@ -94,14 +86,8 @@ function PEPDeclarationForm() {
         </p>
 
         <div className="pt-6 space-y-4 w-64">
-        <p>Name:<span className="pl-4">{formData.name}</span></p>
-          {signEdit ? (
-            <InlineSignatureCreator
-              onSignatureCreate={handleSignature}
-              maxWidth={256}
-              maxHeight={100}
-            />
-          ) : (
+          <p>Name:<span className="pl-4">{formData.name}</span></p>
+          <div className="w-64 pt-2">
             <div
               onClick={handleBoxClick}
               className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -109,17 +95,23 @@ function PEPDeclarationForm() {
               {signature ? (
                 <img
                   src={signature}
-                  alt="Member's signature"
+                  alt="Selected signature"
                   className="max-h-20 max-w-full object-contain"
                 />
               ) : (
                 <p className="text-gray-400">Click to sign</p>
               )}
             </div>
-          )}
+            {isModalOpen && (
+              <SignatureModal
+                onSelectSignature={handleSelectSignature}
+                onClose={() => setIsModalOpen(false)}
+              />
+            )}
+          </div>
           <div className="border-t border-black w-48">
-           
-           
+
+
             <p>Date: <span className="underline">{docSigned}</span></p>
           </div>
         </div>

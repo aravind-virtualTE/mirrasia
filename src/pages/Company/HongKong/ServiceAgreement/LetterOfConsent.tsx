@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 // import { Button } from '@/components/ui/button'
-import InlineSignatureCreator from '../../SignatureComponent'
+// import InlineSignatureCreator from '../../SignatureComponent'
+import SignatureModal from '@/components/pdfPage/SignatureModal'
 
 export default function LetterOfConsent() {
   const [formData, setFormData] = useState({
@@ -20,11 +21,14 @@ export default function LetterOfConsent() {
     signDate: '2024-12-12'
   })
   const [signature, setSignature] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
-    setIsEditing(false);
-    setSignature(signature)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleBoxClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -35,17 +39,17 @@ export default function LetterOfConsent() {
     }))
   }
 
-  const handleClear = () => {
-    setSignature(null);
-  };
+  // const handleClear = () => {
+  //   setSignature(null);
+  // };
 
-  const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setIsEditing(true);
-    }
-  };
+  // const handleBoxClick = () => {
+  //   if (signature) {
+  //     handleClear();
+  //   } else {
+  //     setIsEditing(true);
+  //   }
+  // };
   return (
     <Card className="max-w-4xl mx-auto p-8 rounded-none">
       <CardHeader className="text-center py-4">
@@ -87,14 +91,14 @@ export default function LetterOfConsent() {
           />
           <span>I/we,</span>
           <Input
-          name="companyName"
-          value={formData.companyName}
-          onChange={handleChange}
-          className="font-serif"
-        />
+            name="companyName"
+            value={formData.companyName}
+            onChange={handleChange}
+            className="font-serif"
+          />
         </div>
 
-        
+
 
         <p className="text-sm">
           ("the company"), as the Sole Director/Board of Directors of this company do(es) hereby give(s) permission to the said authorised
@@ -154,13 +158,7 @@ export default function LetterOfConsent() {
           <p className="text-sm italic">For and on behalf of</p>
           <p className="font-semibold">{formData.companyName}</p>
 
-          {isEditing ? (
-            <InlineSignatureCreator
-              onSignatureCreate={handleSignature}
-              maxWidth={256}
-              maxHeight={100}
-            />
-          ) : (
+          <div className="w-64 pt-2">
             <div
               onClick={handleBoxClick}
               className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -168,14 +166,20 @@ export default function LetterOfConsent() {
               {signature ? (
                 <img
                   src={signature}
-                  alt="Director's signature"
+                  alt="Selected signature"
                   className="max-h-20 max-w-full object-contain"
                 />
               ) : (
                 <p className="text-gray-400">Click to sign</p>
               )}
             </div>
-          )}
+            {isModalOpen && (
+              <SignatureModal
+                onSelectSignature={handleSelectSignature}
+                onClose={() => setIsModalOpen(false)}
+              />
+            )}
+          </div>
 
           <Input
             name="directorName"

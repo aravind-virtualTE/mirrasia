@@ -7,8 +7,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import InlineSignatureCreator from "../../SignatureComponent";
+// import InlineSignatureCreator from "../../SignatureComponent";
 import { useState } from "react";
+import SignatureModal from "@/components/pdfPage/SignatureModal";
 
 interface Shareholder {
   name: string;
@@ -25,23 +26,36 @@ export default function ShareholdersList() {
     ubiNo: "Test NO",
   };
   const [signature, setSignature] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
-    setIsEditing(false);
-    setSignature(signature)
-  };
-  const handleClear = () => {
-    setSignature(null);
+  // const [isEditing, setIsEditing] = useState(false);
+
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleBoxClick = () => {
+    setIsModalOpen(true);
   };
 
-  const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setIsEditing(true);
-    }
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
   };
+
+
+  // const handleSignature = (signature: string) => {
+  //   // console.log("Received signature:", signature);
+  //   setIsEditing(false);
+  //   setSignature(signature)
+  // };
+  // const handleClear = () => {
+  //   setSignature(null);
+  // };
+
+  // const handleBoxClick = () => {
+  //   if (signature) {
+  //     handleClear();
+  //   } else {
+  //     setIsEditing(true);
+  //   }
+  // };
 
   const shareholders: Shareholder[] = [
     {
@@ -177,18 +191,12 @@ export default function ShareholdersList() {
 
       <CardFooter className="flex flex-col items-end mt-6 space-y-6">
         <div className=" space-y-4">
-        <p className="italic font-serif text-xs">For and on behalf of</p>
+          <p className="italic font-serif text-xs">For and on behalf of</p>
           <p className="font-serif px-1 inline-block">
             {companyDetails.name}
           </p>
           <div className=" w-48 h-24" />
-          {isEditing ? (
-            <InlineSignatureCreator
-              onSignatureCreate={handleSignature}
-              maxWidth={256}
-              maxHeight={100}
-            />
-          ) : (
+          <div className="w-64 pt-2">
             <div
               onClick={handleBoxClick}
               className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -196,14 +204,20 @@ export default function ShareholdersList() {
               {signature ? (
                 <img
                   src={signature}
-                  alt="Director's signature"
+                  alt="Selected signature"
                   className="max-h-20 max-w-full object-contain"
                 />
               ) : (
                 <p className="text-gray-400">Click to sign</p>
               )}
             </div>
-          )}
+            {isModalOpen && (
+              <SignatureModal
+                onSelectSignature={handleSelectSignature}
+                onClose={() => setIsModalOpen(false)}
+              />
+            )}
+          </div>
           <p className="text-sm text-center">Authorised Signature(s)</p>
         </div>
       </CardFooter>

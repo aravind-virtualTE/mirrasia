@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/table"
 // import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import InlineSignatureCreator from '../../SignatureComponent'
+// import InlineSignatureCreator from '../../SignatureComponent'
+import SignatureModal from '@/components/pdfPage/SignatureModal'
 
 export default function AuthorizationDetails() {
 
@@ -31,7 +32,16 @@ export default function AuthorizationDetails() {
     directorName: "TestUser"
   })
   const [signature, setSignature] = useState<string | null>(null);
-  const [signEdit, setSignEdit] = useState(false)
+  // const [signEdit, setSignEdit] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleBoxClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
+  };
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,22 +54,22 @@ export default function AuthorizationDetails() {
   }
 
 
-  const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
-    setSignEdit(false);
-    setSignature(signature)
-  };
-  const handleClear = () => {
-    setSignature(null);
-  };
+  // const handleSignature = (signature: string) => {
+  //   // console.log("Received signature:", signature);
+  //   setSignEdit(false);
+  //   setSignature(signature)
+  // };
+  // const handleClear = () => {
+  //   setSignature(null);
+  // };
 
-  const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setSignEdit(true);
-    }
-  };
+  // const handleBoxClick = () => {
+  //   if (signature) {
+  //     handleClear();
+  //   } else {
+  //     setSignEdit(true);
+  //   }
+  // };
 
   return (
     <Card className="max-w-4xl mx-auto p-8 rounded-none">
@@ -157,13 +167,7 @@ export default function AuthorizationDetails() {
 
         <div className="pt-6 space-y-4 w-64">
           <p>Dated: {docSigned}</p>
-          {signEdit ? (
-            <InlineSignatureCreator
-              onSignatureCreate={handleSignature}
-              maxWidth={256}
-              maxHeight={100}
-            />
-          ) : (
+          <div className="w-64 pt-2">
             <div
               onClick={handleBoxClick}
               className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -171,14 +175,20 @@ export default function AuthorizationDetails() {
               {signature ? (
                 <img
                   src={signature}
-                  alt="Director's signature"
+                  alt="Selected signature"
                   className="max-h-20 max-w-full object-contain"
                 />
               ) : (
                 <p className="text-gray-400">Click to sign</p>
               )}
             </div>
-          )}
+            {isModalOpen && (
+              <SignatureModal
+                onSelectSignature={handleSelectSignature}
+                onClose={() => setIsModalOpen(false)}
+              />
+            )}
+          </div>
           <div className="border-t border-black w-48">
             <p className="font-medium">{personDetails.directorName}</p>
             <p className="text-sm italic">Director</p>
