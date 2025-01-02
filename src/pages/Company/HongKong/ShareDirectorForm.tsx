@@ -9,6 +9,7 @@ import { useAtom } from 'jotai';
 import { shareHolderDirectorControllerAtom } from '@/lib/atom';
 import { isValidEmail } from '@/middleware';
 import { sendInviteToShDir } from '@/services/dataFetch';
+import CustomLoader from '@/components/ui/customLoader';
 
 interface ShareholderDirectorProps {
   name: string;
@@ -131,7 +132,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             value={isDirector.toString()}
             onValueChange={(value) => {
               const newIsDirector = value === 'true';
-              onUpdate({ 
+              onUpdate({
                 isDirector: newIsDirector,
                 // If setting as director, automatically set legal person to false
                 ...(newIsDirector ? { isLegalPerson: false } : {})
@@ -186,25 +187,25 @@ const ShareholderDirectorForm: React.FC = () => {
       ownershipRate: 0,
       isDirector: false,
       isLegalPerson: false,
-      onDelete: () => {},
-      onUpdate: () => {},
+      onDelete: () => { },
+      onUpdate: () => { },
       isRemovable: false,
     },
   ]);
   const [totalOwnership, setTotalOwnership] = useState(0);
-
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (atomShareHolderState.shareHolders && atomShareHolderState.shareHolders.length > 0) {
       const hydratedShareholders = atomShareHolderState.shareHolders.map((shareholder, index) => ({
         ...shareholder,
-        onDelete: () => {},
-        onUpdate: () => {},
+        onDelete: () => { },
+        onUpdate: () => { },
         isRemovable: index !== 0, // First shareholder is not removable
       }));
       setShareholders(hydratedShareholders);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -218,7 +219,7 @@ const ShareholderDirectorForm: React.FC = () => {
     }));
     setShareDirControllerInfo((prev) => ({ ...prev, shareHolders: filteredArray }));
   }, [shareholders, setShareDirControllerInfo]);
-  
+
   useEffect(() => {
     const total = shareholders.reduce((sum, shareholder) => sum + shareholder.ownershipRate, 0);
     setTotalOwnership(total);
@@ -234,8 +235,8 @@ const ShareholderDirectorForm: React.FC = () => {
         ownershipRate: 0,
         isDirector: false,
         isLegalPerson: false,
-        onDelete: () => {},
-        onUpdate: () => {},
+        onDelete: () => { },
+        onUpdate: () => { },
         isRemovable: true,
       },
     ]);
@@ -255,25 +256,26 @@ const ShareholderDirectorForm: React.FC = () => {
     setShareholders(newShareholders);
   };
 
-  const sendMailFunction = async () =>{
-    try{
-      
+  const sendMailFunction = async () => {
+    try {
+      setIsLoading(true);
       const extractedData = shareholders.map(item => {
         const { name, email } = item;
-        
-        if (!isValidEmail(email)) {
-            alert(`Invalid email format for ${name}: ${email}`);
-        }
-        
-        return { name, email };
-    });
-    const docId = localStorage.getItem('companyRecordId');
-    const payload = { _id: docId, inviteData: extractedData };
-    console.log("send mail function",payload)
-    const response = await sendInviteToShDir(payload);
-    console.log("send mail response",response)
 
-    }catch(e){
+        if (!isValidEmail(email)) {
+          alert(`Invalid email format for ${name}: ${email}`);
+        }
+
+        return { name, email };
+      });
+      const docId = localStorage.getItem('companyRecordId');
+      const payload = { _id: docId, inviteData: extractedData };
+      console.log("send mail function", payload)
+      const response = await sendInviteToShDir(payload);
+      console.log("send mail response", response)
+      setIsLoading(false);
+
+    } catch (e) {
       console.log(e)
     }
   }
@@ -296,17 +298,24 @@ const ShareholderDirectorForm: React.FC = () => {
         ))}
       </div>
       <div className="flex justify-around mt-4">
-      <Button 
-          className="btn btn-primary w-fit" 
-          onClick={sendMailFunction}
-          // disabled={totalOwnership >= 100}
-        >
-          Send Invitation Mail to Shareholder/Director
-        </Button>
-        <Button 
-          className="btn btn-primary w-fit" 
+
+        <Button onClick={sendMailFunction}
+          disabled={isLoading}
+          className="flex items-center"
+          aria-busy={isLoading}
+          aria-live="polite"
+        >{isLoading ? (
+          <>
+            <CustomLoader />
+            <span className="ml-2">Processing...</span>
+          </>
+        ) : (
+          "Send Invitation Mail to Shareholder/Director"
+        )}</Button>
+        <Button
+          className="btn btn-primary w-fit"
           onClick={addShareholder}
-          // disabled={totalOwnership >= 100}
+        // disabled={totalOwnership >= 100}
         >
           Add Shareholder/director
         </Button>

@@ -22,16 +22,20 @@ export default function Navbar() {
     const navigate = useNavigate();
 
     const token = localStorage.getItem('token') as string;
-    if(!token) return <Navigate to="/" replace />
+    if (!token) return <Navigate to="/" replace />
     const decodedToken = jwtDecode<TokenData>(token);
-    
-    const navigateRoute  = () =>{
-        if(decodedToken.role === 'admin') {
+
+    const navigateRoute = () => {
+        if (decodedToken.role === 'admin') {
             navigate('/admin-dashboard');
-          }else{
+        }
+        else if (decodedToken.role === 'sh_dir') {
+            navigate('/viewboard');
+        }
+        else {
             localStorage.removeItem('companyRecordId');
             navigate('/dashboard');
-          }
+        }
     }
     const logout = async () => {
         localStorage.setItem('isAuthenticated', 'false');
@@ -39,7 +43,7 @@ export default function Navbar() {
         localStorage.removeItem('companyRecordId');
         navigate('/');
     };
- 
+
     return (
         <header className="flex h-14 items-center gap-4 border-b bg-background px-6 sticky top-0 z-50">
             <span className="flex items-center space-x-2 font-bold cursor-pointer" onClick={navigateRoute}>
@@ -56,7 +60,7 @@ export default function Navbar() {
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Toggle sidebar</span>
                 </Button>
-            </div>          
+            </div>
             <ToggleTheme />
             <LanguageSwitcher />
             <DropdownMenu>

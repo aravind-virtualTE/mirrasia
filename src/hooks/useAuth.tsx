@@ -51,9 +51,10 @@ export const signupWithEmail = async (
 
 export const signupWithGoogle = async (
   tokenId: string,
+  idToken?: string,
 ) => {
   try {
-    const response = await api.post('auth/google', { tokenId });
+    const response = await api.post('auth/google', { tokenId , 'inviteToken': idToken});
     console.log("response-->",response)
     return response.data;
   } catch (error) {
@@ -95,3 +96,14 @@ export const loginWithEmail = async (email: string, password: string,) => {
     localStorage.removeItem('userData');
     localStorage.removeItem('isAuthenticated');
   };
+
+
+  export const validateToken = async (data:{token? :string}) => {
+    try {
+      const response = await api.post('user/validate-token', data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Token validation failed');
+    }
+  }

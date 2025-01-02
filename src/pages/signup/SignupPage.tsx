@@ -1,14 +1,18 @@
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAtom } from 'jotai';
+import { useGoogleLogin } from '@react-oauth/google';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Logo from '@/common/LogoComponent';
-import { useNavigate } from 'react-router-dom';
-import { useAtom } from 'jotai';
-import { useState } from 'react';
-import { authAtom, signupWithEmail, signupWithGoogle } from '@/hooks/useAuth';
-import { useGoogleLogin } from '@react-oauth/google';
+import { authAtom, signupWithEmail, signupWithGoogle, validateToken } from '@/hooks/useAuth';
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const idToken = searchParams.get("token");
+  const [isValidToken, setIsValidToken] = useState(false);
+
   const [auth, setAuth] = useAtom(authAtom);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -18,6 +22,27 @@ const SignupPage = () => {
   });
 
   const [emailError, setEmailError] = useState('');
+
+  useEffect(() => {
+    if (idToken) {
+      const tokenValidate = async () => {
+        try {
+          const response = await validateToken({ token: idToken });
+          console.log("response", response);
+          // Uncomment the following line if the response contains a valid token flag.
+          // setIsValidToken(response.data.isValid);
+          setIsValidToken(false); 
+        } catch (error) {
+          console.error("Invalid or expired token:", error);
+          setIsValidToken(true);
+        }
+      };
+
+      tokenValidate();
+    } else {
+      setIsValidToken(false); // If no token is present, consider it invalid
+    }
+  }, [idToken]);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -53,12 +78,16 @@ const SignupPage = () => {
       console.log("response==>", token, user)
       // Save the token to localStorage
       localStorage.setItem("token", token);
-      
+
       setAuth({ user, isAuthenticated: true, loading: false, error: null });
       localStorage.setItem('isAuthenticated', 'true');
-      if(user.role === 'admin') {
+      if (user.role === 'admin') {
         navigate('/admin-dashboard');
-      }else{
+      }
+       else if (user.role === 'sh_dir') {
+        navigate('/viewboard');
+      }
+       else {
         navigate('/dashboard');
       }
     } catch (error) {
@@ -76,17 +105,20 @@ const SignupPage = () => {
     onSuccess: async (tokenResponse) => {
       try {
         setAuth(prev => ({ ...prev, loading: true }));
-        // console.log('tokenResponse-->', tokenResponse);        
-        const response = await signupWithGoogle(tokenResponse.access_token);
+        const response = await signupWithGoogle(tokenResponse.access_token, idToken!);
         const { token, user } = response;
         // console.log('Google signup response-->',response, '\n user--->', user);
         // Save the token to localStorage
         localStorage.setItem("token", token);
         localStorage.setItem('isAuthenticated', 'true');
         setAuth({ user, isAuthenticated: true, loading: false, error: null });
-        if(user.role === 'admin') {
+        if (user.role === 'admin') {
           navigate('/admin-dashboard');
-        }else{
+        }
+        else if (user.role === 'sh_dir') {
+          navigate('/viewboard');
+        }
+        else {
           navigate('/dashboard');
         }
       } catch (error) {
@@ -99,6 +131,20 @@ const SignupPage = () => {
       }
     },
   });
+
+  if (searchParams.size !== 0) {
+    console.log("searchParams-->", searchParams.size);
+    if (isValidToken) {
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-red-500">Invalid token link</h1>
+            <p className="text-lg text-gray-500">Please use same email you received the link to complete sign up.</p>
+          </div>
+        </div>
+      );
+    }
+  }
 
   return (
     <div className="min-h-screen flex">
@@ -142,98 +188,7 @@ const SignupPage = () => {
       {/* Right Side - Sign Up Form */}
       <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm">
-          {/* <div className="flex items-center justify-between mb-8">
-            <div className="lg:hidden flex items-center space-x-2">
-              <Logo />
-              <span className="text-xl font-bold">Mirr Asia</span>
-            </div>
-            <Button
-              variant="link"
-              onClick={() => navigate('/login')}
-              className="text-sm font-medium underline ml-auto p-0 h-auto"
-            >
-              Login
-            </Button>
-          </div>
-
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Create an account
-              </h1>
-              <p className="text-sm text-gray-500">
-                Enter your email below to create your account
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Input
-                  type="text"
-                  placeholder="Full Name"
-                  className="w-full"
-                />
-              </div>
-              <div className="space-y-2">
-                <Input
-                  type="email"
-                  placeholder="name@example.com"
-                  className="w-full"
-                />
-              </div>
-              <div className="space-y-2">
-                <Input
-                  type="password"
-                  placeholder="Password"
-                  className="w-full"
-                />
-              </div>
-              <div className="space-y-2">
-                <Input
-                  type="password"
-                  placeholder="Confirm Password"
-                  className="w-full"
-                />
-              </div>
-              <Button className="w-full" size="lg">
-                Sign Up
-              </Button>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-gray-500">
-                    Or continue with
-                  </span>
-                </div>
-              </div>
-
-              <Button variant="outline" className="w-full" size="lg">
-                <img
-                  src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000"
-                  alt="Google"
-                  className="mr-2 h-4 w-4"
-                />
-                Google
-              </Button>
-            </div>
-
-            <p className="text-sm text-gray-500 text-center">
-              By clicking continue, you agree to our{' '}
-              <a href="#" className="underline">
-                Terms of Service
-              </a>{' '}
-              and{' '}
-              <a href="#" className="underline">
-                Privacy Policy
-              </a>
-              .
-            </p>
-          </div> */}
           <form onSubmit={handleEmailSignup} className="space-y-6">
-            {/* Your existing JSX structure */}
             <Input
               type="text"
               name="fullName"
@@ -250,7 +205,7 @@ const SignupPage = () => {
               placeholder="name@example.com"
               className="w-full"
             />
-             {emailError && <div className="text-red-500">{emailError}</div>}
+            {emailError && <div className="text-red-500">{emailError}</div>}
             <Input
               type="password"
               name="password"

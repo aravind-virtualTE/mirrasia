@@ -28,6 +28,8 @@ import { TokenData } from '@/middleware/ProtectedRoutes';
 const Layout: React.FC = () => {
     const [isCollapsed, setIsCollapsed] = useState(false)
     // Handle responsive collapse based on screen size
+    const navigate = useNavigate();
+    const { theme } = useTheme();
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 1024) { // 1024px is Tailwind's 'lg' breakpoint
@@ -60,13 +62,17 @@ const Layout: React.FC = () => {
     const token = localStorage.getItem('token') as string;
     if(!token) return <Navigate to="/" replace />
     const decodedToken = jwtDecode<TokenData>(token);
-    const navigate = useNavigate();
+    
     const handleNavigation = (label: string) => {
         switch(label) {
             case 'Home':
                 if(decodedToken.role === 'admin') {
                     navigate('/admin-dashboard');
-                } else {
+                } 
+                else if(decodedToken.role === 'sh_dir') {
+                    navigate('/viewboard');
+                } 
+                else {
                     localStorage.removeItem('companyRecordId');
                     navigate('/dashboard');
                 }
@@ -75,7 +81,7 @@ const Layout: React.FC = () => {
         }
     };
 
-    const { theme } = useTheme();
+    
 
     return (
         <div className="flex flex-col h-screen bg-background">

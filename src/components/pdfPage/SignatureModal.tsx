@@ -2,9 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import InlineSignatureCreator from './InlineSignatureCreator';
 import { signaturesAtom } from '@/store/hongkong';
+// import { Button } from '../ui/button';
+// import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
+// import { ScrollArea } from '../ui/scroll-area';
 
 interface SignatureModalProps {
-  onSelectSignature: (signature: string | null) => void;
+  onSelectSignature: (signature: string | "") => void;
   onClose: () => void;
 }
 
@@ -86,6 +89,55 @@ const SignatureModal = ({ onSelectSignature, onClose }: SignatureModalProps) => 
         </button>
       </div>
     </div>
+  //   <Dialog open={isOpen} onOpenChange={setIsOpen}>
+  //   <DialogTrigger asChild>
+  //     <Button variant="outline">Open Signatures</Button>
+  //   </DialogTrigger>
+  //   <DialogContent className="sm:max-w-md">
+  //     <DialogHeader>
+  //       <DialogTitle>Signatures</DialogTitle>
+  //     </DialogHeader>
+  //     {isEditing ? (
+  //       <InlineSignatureCreator
+  //         onSignatureCreate={handleSignature}
+  //         maxWidth={256}
+  //         maxHeight={100}
+  //       />
+  //     ) : (
+  //       <div className="space-y-4">
+  //         <Button
+  //           onClick={() => setIsEditing(true)}
+  //           variant="outline"
+  //           className="w-full"
+  //         >
+  //           Create New Signature
+  //         </Button>
+  //         <ScrollArea className="h-[200px] w-full rounded-md border p-4">
+  //           {signatures.map((signature, index) => (
+  //             <div key={index} className="flex items-center justify-between py-2 border-b">
+  //               <img
+  //                 src={signature}
+  //                 alt={`Saved signature ${index + 1}`}
+  //                 className="max-h-12 object-contain cursor-pointer"
+  //                 onClick={() => onSelectSignature(signature)}
+  //               />
+  //               <Button
+  //                 onClick={() => handleDeleteSignature(signature)}
+  //                 variant="destructive"
+  //                 size="sm"
+  //               >
+  //                 Delete
+  //               </Button>
+  //             </div>
+  //           ))}
+  //         </ScrollArea>
+  //       </div>
+  //     )}
+  //     <Button onClick={() => setIsOpen(false)} className="mt-4 w-full">
+  //       Close
+  //     </Button>
+  //   </DialogContent>
+  // </Dialog>
   );
 };
 
