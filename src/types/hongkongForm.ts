@@ -117,202 +117,133 @@ export interface HkFormData {
 }
 
 
-
-
-
-
-type Director = {
-  dateOfAppointment: string;
-  fullName: string;
-  nationalityAndId: string;
-  correspondenceAddress: string;
-  residentialAddress: string;
-  businessOccupation: string;
-  dateCeasingToAct: string;
-  entryMadeBy: string;
-};
-
-type FounderMember = {
-  name: string;
-  signature: string;
-};
-
-type Shareholder = {
-  name: string;
-  correspondenceAddress: string;
-  residentialAddress: string;
-  currentHolding: number;
-  percentage: string;
-  remarks: string;
-};
-
-type Charge = {
-  dateOfCharges: string;
-  description: string;
-  amountSecured: string;
-  entitledPerson: string;
-  dateOfRegistration: string;
-  dateOfDischarges: string;
-};
-
-type Secretary = {
-  dateOfAppointment: string;
-  fullName: string;
-  idNumber: string;
-  idNumberNote: string;
-  correspondenceAddress: string;
-  type: string;
-  dateCeasingToAct: string;
-  entryMadeBy: string;
-};
-
-type Member = {
-  fullName: string;
-  occupation: string;
-  correspondenceAddress: string;
-  dateCeasing: string;
-  residentialAddress: string;
-  sharesAcquired: {
-    date: string;
-    certificateNumber: string;
-    distinctiveNoFrom: string;
-    distinctiveNoTo: string;
-    numberOfShares: string;
-    considerationPaid: string;
-  }[];
-  sharesTransferred: any[];
-  totalSharesHeld: string;
-  remarks: string;
-  entryMadeBy: string;
-};
-
-type SignificantController = {
-  entryNo: string;
-  dateOfEntry: string;
-  name: string;
-  correspondenceAddress: string;
-  residentialAddress: string;
-  passportInfo: string;
-  dateBecoming: string;
-  dateCeasing: string;
-  natureOfControl: {
-    name: string;
-    details: string;
-  };
-};
-
-type DesignatedRepresentative = {
-  entryNo: string;
-  dateOfEntry: string;
-  nameAndCapacity: string;
-  address: string;
-  tel: string;
-  fax: string;
-};
-
-type ShareCapDetails = {
-  founderMember: {
-    name: string;
-    noOfShares: string;
-    totalShares: string;
-  }[];
-  shareClass: string;
-  totalShares: string;
-  shareCapital: string;
-  paidUp: string;
-  unpaid: string;
-};
-
-type ResolutionData = {
-  company: {
-    name: string;
-    jurisdiction: string;
-  };
-  director: {
-    name: string;
-  };
-  secretary: {
-    name: string;
-  };
-  address: {
-    full: string;
-  };
-};
-
-export interface ServiceAgreementData {
-  appointmentDate: string;
+export interface serviceAggrementTypes {
+  companyId: string;
   ubiNo: string;
+  id: string;
+  // director: { name: string; signature: string }[];
+  appointmentDate: string;
   companyName: string;
-  directorName: string;
   companyAddress: string;
-  date: string;
-  email: string;
-  startDate: string;
-  endDate: string;
-  signDate: string;
-  name: string;
-  tel: string;
-  kakaoWechat: string;
-  directors: Director[];
-  founderMember: FounderMember;
-  shareholders: Shareholder[];
-  charges: Charge[];
-  secretaries: Secretary[];
-  shareDetails: {
-    classOfShare: string;
-    parValuePerShare: string;
-  };
-  members: Member[];
-  docSigned: string;
-  userDetails: {
+  consentDate: string;
+  consentStateDate: string;
+  consentEndDate: string;
+  contactEmail: string;
+  consentSignDate: string;
+  authorizedDetails: { name: string; email: string; tel: string; kakaoWechat: string }[];
+  authorizedDesignated: { name: string; signature: string }[];
+  founderMember: { name: string; signature: string }[];
+  directorList:{
     name: string;
-    residentialAddress: string;
-    nationalityAndId: string;
+    signature: string;
+  }[]
+  shareholderList: {
+    name: string;
     correspondenceAddress: string;
-    dateOfBecoming: string;
-    dateOfCeasingARegistrablePerson: string;
-    natureOfControl: string;
-  };
-  companyDetails: {
+    residentialAddress: string;
+    currentHolding: string;
+    percentage: string;
+    remarks: string;
+  }[];
+  shareHolderSignatures: { name: string; signature: string }[];
+  registerChargesList: {
+    dateOfCharges: string;
+    description: string;
+    amountSecured: string;
+    entitledPerson: string;
+    dateOfRegistration: string;
+    dateOfDischarges: string;
+  }[];
+  registerChargeSignature: string;
+  registerSecretariesList: {
+    dateOfAppointment: string;
+    fullName: string;
+    idNumber: string;
+    idNumberNote: string;
+    correspondenceAddress: string;
+    type: string;
+    dateCeasingToAct: string;
+    entryMadeBy: string;
+  }[];
+  chargesSignature: string;
+  registerDirector: {
+    dateOfAppointment: string;
     name: string;
-    ubiNo: string;
-    director: string;
-  };
-  controllers: SignificantController[];
-  representatives: DesignatedRepresentative[];
-  shareCapDetails: ShareCapDetails;
-  resolutionData: ResolutionData;
-  resolutionDetails: {
-    inCorporatedDate: string;
-    regNumber: string;
-  };
-  formData: {
-    personalInfo: {
+    nationality: string;
+    correspondenceAddress: string;
+    residentialAddress: string;
+    directorShip: string;
+    ceasingAct: string;
+    entryMadeBy: string;
+  }[];
+  registerDirectorSignature: string;
+  sharesDate: string;
+  registeredMembers: {
+    name: string;
+    occupation: string;
+    correspondenceAddress: string;
+    dateCeasing: string;
+    residentialAddress: string;
+    sharesAcquired: {
+      certificateNumber: string;
+      distinctiveNumber: string;
+      numberOfShares: string;
+      considerationPaid: string;
+    }[];
+    sharesTransferred: {
+      certificateNumber: string;
+      distinctiveNumber: string;
+      numberOfShares: string;
+      considerationPaid: string;
+    }[];
+    totalSharesHeld: string;
+    remarks: string;
+    entryMadeBy: string;
+    classOfShare: string;
+    pervalueshare: string;
+  }[];
+  registeredMembersSignature: { name: string; signature: string }[];
+  significantController: {
+    name: string;
+    correspondenceAddress: string;
+    residentialAddress: string;
+    passportNo: string;
+    dateOfRegistrablePerson: string;
+    dateOfCeasingRegistrablePerson: string;
+    natureOfControlOverCompany: string;
+  }[];
+  chairman: { name: string; signature: string }[];
+  customerDueDiligence: {
+    personalInformation: {
       title: string;
-      firstName: string;
       familyName: string;
+      name: string;
       formerName: string;
       occupation: string;
-      cityOfBirth: string;
-      dateOfBirth: string;
-      countryOfBirth: string;
-      nationality: string;
       maritalStatus: string;
+      cityBirthTown: string;
+      birthCountry: string;
+      dateOfBirth: string;
+      nationality: string;
     };
-    isUsPerson: boolean;
-    isPublicAuthority: boolean;
-    address: {
-      residential: string;
-      country: string;
+    taxFacta: {
+      factaReportingPuropose: boolean;
+      isPublicAuthority: boolean;
+      countryOfTaxResidence: string;
+      taxIdNumber: string;
+    };
+    permanetResidence: {
+      address: string;
       postCode: string;
+      country: string;
     };
-    contact: {
+    otherContactDetails: {
       tel: string;
       mobile: string;
       email: string;
       fax: string;
     };
-    preferredContactMethods: {
+    preferredMethodOfContact: {
       telephone: boolean;
       mobile: boolean;
       email: boolean;
@@ -320,5 +251,222 @@ export interface ServiceAgreementData {
       registeredPost: boolean;
       courier: boolean;
     };
-  };
-};
+    declaration: {
+      signature: string;
+      date: string;
+    };
+    politicallyExposed: boolean;
+    politicallyNotExposed: boolean;
+    politicallyExposedDeclaration: {
+      signature: string;
+      date: string;
+    };
+  }[];
+}
+
+
+
+
+// type Director = {
+//   dateOfAppointment: string;
+//   fullName: string;
+//   nationalityAndId: string;
+//   correspondenceAddress: string;
+//   residentialAddress: string;
+//   businessOccupation: string;
+//   dateCeasingToAct: string;
+//   entryMadeBy: string;
+// };
+
+// type FounderMember = {
+//   name: string;
+//   signature: string;
+// };
+
+// type Shareholder = {
+//   name: string;
+//   correspondenceAddress: string;
+//   residentialAddress: string;
+//   currentHolding: number;
+//   percentage: string;
+//   remarks: string;
+// };
+
+// type Charge = {
+//   dateOfCharges: string;
+//   description: string;
+//   amountSecured: string;
+//   entitledPerson: string;
+//   dateOfRegistration: string;
+//   dateOfDischarges: string;
+// };
+
+// type Secretary = {
+//   dateOfAppointment: string;
+//   fullName: string;
+//   idNumber: string;
+//   idNumberNote: string;
+//   correspondenceAddress: string;
+//   type: string;
+//   dateCeasingToAct: string;
+//   entryMadeBy: string;
+// };
+
+// type Member = {
+//   fullName: string;
+//   occupation: string;
+//   correspondenceAddress: string;
+//   dateCeasing: string;
+//   residentialAddress: string;
+//   sharesAcquired: {
+//     date: string;
+//     certificateNumber: string;
+//     distinctiveNoFrom: string;
+//     distinctiveNoTo: string;
+//     numberOfShares: string;
+//     considerationPaid: string;
+//   }[];
+//   sharesTransferred: AnyObject[];
+//   totalSharesHeld: string;
+//   remarks: string;
+//   entryMadeBy: string;
+// };
+
+
+
+// type SignificantController = {
+//   entryNo: string;
+//   dateOfEntry: string;
+//   name: string;
+//   correspondenceAddress: string;
+//   residentialAddress: string;
+//   passportInfo: string;
+//   dateBecoming: string;
+//   dateCeasing: string;
+//   natureOfControl: {
+//     name: string;
+//     details: string;
+//   };
+// };
+
+// type DesignatedRepresentative = {
+//   entryNo: string;
+//   dateOfEntry: string;
+//   nameAndCapacity: string;
+//   address: string;
+//   tel: string;
+//   fax: string;
+// };
+
+// type ShareCapDetails = {
+//   founderMember: {
+//     name: string;
+//     noOfShares: string;
+//     totalShares: string;
+//   }[];
+//   shareClass: string;
+//   totalShares: string;
+//   shareCapital: string;
+//   paidUp: string;
+//   unpaid: string;
+// };
+
+// type ResolutionData = {
+//   company: {
+//     name: string;
+//     jurisdiction: string;
+//   };
+//   director: {
+//     name: string;
+//   };
+//   secretary: {
+//     name: string;
+//   };
+//   address: {
+//     full: string;
+//   };
+// };
+
+// export interface ServiceAgreementData {
+//   appointmentDate: string;
+//   ubiNo: string;
+//   companyName: string;
+//   directorName: string;
+//   companyAddress: string;
+//   date: string;
+//   email: string;
+//   startDate: string;
+//   endDate: string;
+//   signDate: string;
+//   name: string;
+//   tel: string;
+//   kakaoWechat: string;
+//   directors: Director[];
+//   founderMember: FounderMember;
+//   shareholders: Shareholder[];
+//   charges: Charge[];
+//   secretaries: Secretary[];
+//   shareDetails: {
+//     classOfShare: string;
+//     parValuePerShare: string;
+//   };
+//   members: Member[];
+//   docSigned: string;
+//   userDetails: {
+//     name: string;
+//     residentialAddress: string;
+//     nationalityAndId: string;
+//     correspondenceAddress: string;
+//     dateOfBecoming: string;
+//     dateOfCeasingARegistrablePerson: string;
+//     natureOfControl: string;
+//   };
+//   companyDetails: {
+//     name: string;
+//     // ubiNo: string;
+//     director: string;
+//   };
+//   controllers: SignificantController[];
+//   representatives: DesignatedRepresentative[];
+//   shareCapDetails: ShareCapDetails;
+//   resolutionData: ResolutionData;
+//   resolutionDetails: {
+//     inCorporatedDate: string;
+//     regNumber: string;
+//   };
+//   formData: {
+//     personalInfo: {
+//       title: string;
+//       firstName: string;
+//       familyName: string;
+//       formerName: string;
+//       occupation: string;
+//       cityOfBirth: string;
+//       dateOfBirth: string;
+//       countryOfBirth: string;
+//       nationality: string;
+//       maritalStatus: string;
+//     };
+//     isUsPerson: boolean;
+//     isPublicAuthority: boolean;
+//     address: {
+//       residential: string;
+//       country: string;
+//       postCode: string;
+//     };
+//     contact: {
+//       tel: string;
+//       mobile: string;
+//       email: string;
+//       fax: string;
+//     };
+//     preferredContactMethods: {
+//       telephone: boolean;
+//       mobile: boolean;
+//       email: boolean;
+//       fax: boolean;
+//       registeredPost: boolean;
+//       courier: boolean;
+//     };
+//   };
+// };

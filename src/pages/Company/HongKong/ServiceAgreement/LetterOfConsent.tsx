@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 // import { jsPDF } from "jspdf";
@@ -8,32 +8,46 @@ import { Separator } from "@/components/ui/separator"
 // import { Button } from '@/components/ui/button'
 // import InlineSignatureCreator from '../../SignatureComponent'
 import SignatureModal from '@/components/pdfPage/SignatureModal'
+import { useAtom } from 'jotai'
+import { serviceAgrement } from '@/store/hongkong'
 
 export default function LetterOfConsent() {
   const [formData, setFormData] = useState({
-    ubiNo: 'TestUbiNo',
-    date: '2024-12-12',
-    companyName: 'Test Company',
-    email: 'testEmail@gmail.com',
-    startDate: '2024-12-12',
-    endDate: '2025-12-12',
-    directorName: 'Test Director',
-    signDate: '2024-12-12'
+    ubiNo: '',
+    consentDate: '',
+    companyName: '',
+    contactEmail: '',
+    startDate: '',
+    endDate: '',
+    directorName: '',
+    signDate: ''
   })
+  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgrement);
   const [signature, setSignature] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const handleBoxClick = () => {
-    setIsModalOpen(true);
+    if(signature == "" || signature == null)   setIsModalOpen(true);
   };
+
+  useEffect(() => {
+    if(serviceAgrementDetails.directorList){
+      setSignature(serviceAgrementDetails.directorList[0].signature)
+      setFormData({...formData, directorName: serviceAgrementDetails.directorList[0].name})
+    }
+  }, [serviceAgrementDetails])
 
   const handleSelectSignature = (selectedSignature: string | null) => {
     setSignature(selectedSignature);
-    setIsModalOpen(false);
+    setIsModalOpen(false);    
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    console.log("name", name, "value", value)
     setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+    setServiceAgrement(prev => ({
       ...prev,
       [name]: value
     }))
@@ -58,14 +72,14 @@ export default function LetterOfConsent() {
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 flex-1">
-            <Label htmlFor="ubiNo" className="whitespace-nowrap">UBI NO.:</Label>
-            <Input
+            <Label htmlFor="ubiNo" className="whitespace-nowrap">UBI NO.: {serviceAgrementDetails.ubiNo}</Label>
+            {/* <Input
               id="ubiNo"
               name="ubiNo"
               value={formData.ubiNo}
               onChange={handleChange}
               className="max-w-[200px]"
-            />
+            /> */}
           </div>
           <p className="text-sm text-muted-foreground">(Registered in Hong Kong)</p>
         </div>
@@ -80,22 +94,23 @@ export default function LetterOfConsent() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex flex-row items-center gap-2 text-sm">
           <span>WHEREAS on</span>
           <Input
             type="date"
-            name="date"
-            value={formData.date}
+            name="consentDate"
+            value={serviceAgrementDetails.consentDate}
             onChange={handleChange}
             className="w-40"
           />
           <span>I/we,</span>
-          <Input
+          <span className='w-80 text-center font-bold font-serif border-b'>{serviceAgrementDetails.companyName}</span>
+          {/* <Input
             name="companyName"
             value={formData.companyName}
             onChange={handleChange}
             className="font-serif"
-          />
+          /> */}
         </div>
 
 
@@ -114,12 +129,12 @@ export default function LetterOfConsent() {
         </p>
 
         <div className="space-y-1">
-          <Label htmlFor="email" className="text-sm font-serif italic">*Scanned mails will be sent to:-</Label>
+          <Label htmlFor="contactEmail" className="text-sm font-serif italic">*Scanned mails will be sent to:-</Label>
           <Input
-            id="email"
+            id="contactEmail"
             type="email"
-            name="email"
-            value={formData.email}
+            name="contactEmail"
+            value={serviceAgrementDetails.contactEmail}
             onChange={handleChange}
           />
           <div className="w-full border-b-2 border-black"></div>
@@ -135,16 +150,16 @@ export default function LetterOfConsent() {
             <span className="text-sm">For the period of this consent is from</span>
             <Input
               type="date"
-              name="startDate"
-              value={formData.startDate}
+              name="consentStateDate"
+              value={serviceAgrementDetails.consentStateDate}
               onChange={handleChange}
               className='w-40'
             />
             <span className="text-sm">(the date of incorporation) to</span>
             <Input
               type="date"
-              name="endDate"
-              value={formData.endDate}
+              name="consentEndDate"
+              value={serviceAgrementDetails.consentEndDate}
               onChange={handleChange}
               className='w-40'
             />
@@ -156,7 +171,7 @@ export default function LetterOfConsent() {
 
         <div className="space-y-2 w-64 pt-2">
           <p className="text-sm italic">For and on behalf of</p>
-          <p className="font-semibold">{formData.companyName}</p>
+          <p className="font-semibold">{serviceAgrementDetails.companyName}</p>
 
           <div className="w-64 pt-2">
             <div
@@ -181,21 +196,22 @@ export default function LetterOfConsent() {
             )}
           </div>
 
-          <Input
+          {/* <Input
             name="directorName"
             value={formData.directorName}
             onChange={handleChange}
             className="font-semibold"
-          />
+          /> */}
+          <p>{formData.directorName}</p>
           <p className="text-sm">Director</p>
 
           <div className="flex items-center gap-2">
-            <Label htmlFor="signDate" className="text-sm">Date:</Label>
+            <Label htmlFor="consentSignDate" className="text-sm">Date:</Label>
             <Input
               type="date"
-              id="signDate"
-              name="signDate"
-              value={formData.signDate}
+              id="consentSignDate"
+              name="consentSignDate"
+              value={serviceAgrementDetails.consentSignDate}
               onChange={handleChange}
               className="w-40"
             />

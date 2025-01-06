@@ -5,6 +5,8 @@ import { companyIncorporationList } from "@/services/state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SAgrementPdf from "../HongKong/ServiceAgreement/SAgrementPdf";
 
 
 interface Country {
@@ -112,23 +114,23 @@ const CompanyDetail = () => {
 
     const handlePdfClick = (url: string) => {
         setActivePdf(url);
-      };    
-    
-      const renderPdfViewer = () => {
-        if (activePdf !== "") {
-          return (
-            <>
-              <iframe src={activePdf} title="PDF Viewer" width="100%" height="100%" style={{ minHeight: '500px' }} />
-              <div className="pdf-controls">                
-                <Button variant="secondary" size="sm" onClick={() => setActivePdf("")}>
-                  Close
-                </Button>
-              </div>
-            </>
-          );
-        }
-        return null;
-      };
+    };
+
+    //   const renderPdfViewer = () => {
+    //     if (activePdf !== "") {
+    //       return (
+    //         <>
+    //           <iframe src={activePdf} title="PDF Viewer" width="100%" height="100%" style={{ minHeight: '500px' }} />
+    //           <div className="pdf-controls">                
+    //             <Button variant="secondary" size="sm" onClick={() => setActivePdf("")}>
+    //               Close
+    //             </Button>
+    //           </div>
+    //         </>
+    //       );
+    //     }
+    //     return null;
+    //   };
 
     if (!companyDetail) {
         return <div>Company not found</div>;
@@ -196,12 +198,12 @@ const CompanyDetail = () => {
         }
 
         // pdfSection 
-        sections.push({
-            title: "Incorporation Document Information",
-            data: {
-                "PDF Doc": company?.icorporationDoc
-            }
-        });
+        // sections.push({
+        //     title: "Incorporation Document Information",
+        //     data: {
+        //         "PDF Doc": company?.icorporationDoc
+        //     }
+        // });
 
         // Status Information Section
         sections.push({
@@ -233,51 +235,70 @@ const CompanyDetail = () => {
     };
 
     return (
-        <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
-            <h1 className="text-2xl font-bold mb-6">Company Details</h1>
-            {sections.map((section) => (
-                <Card key={section.title} className="mb-6">
-                    <CardHeader>
-                        <CardTitle>{section.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-1/3">Field</TableHead>
-                                    <TableHead>Value</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {Object.entries(section.data).map(([key, value]) => (
-                                    <TableRow key={key}>
-                                        <TableCell className="font-medium">{key}</TableCell>
-                                        <TableCell>{key === 'PDF Doc' && value ? (
-                                            <Button variant="link" onClick={() => handlePdfClick(value)}>
-                                                View PDF
-                                            </Button>
-                                        ) : (
-                                            value as string
-                                        )}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                        {section.title === "Status Information" && (
-                            <div className="flex items-center gap-4 mt-4">
-                                <span className="text-sm font-medium text-gray-600">
-                                    Click here to give access to the user to edit their current record
-                                </span>
-                                <Button onClick={handleUpdate} className="px-4 py-2 text-sm">
-                                    Click
-                                </Button>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
-            ))}
-            {renderPdfViewer()}
-        </div>
+        <Tabs defaultValue="details" className="flex flex-col">
+            <TabsList className="flex space-x-4 mb-4">
+                <TabsTrigger value="details" className="px-4 py-2">Details</TabsTrigger>
+                <TabsTrigger value="service-agreement" className="px-4 py-2">Service Agreement Details</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="details">
+                <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
+                    <h1 className="text-2xl font-bold mb-6">Company Details</h1>
+                    {sections.map((section) => (
+                        <Card key={section.title} className="mb-6">
+                            <CardHeader>
+                                <CardTitle>{section.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="w-1/3">Field</TableHead>
+                                            <TableHead>Value</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {Object.entries(section.data).map(([key, value]) => (
+                                            <TableRow key={key}>
+                                                <TableCell className="font-medium">{key}</TableCell>
+                                                <TableCell>
+                                                    {key === "PDF Doc" && value ? (
+                                                        <Button variant="link" onClick={() => handlePdfClick(value)}>
+                                                            View PDF
+                                                        </Button>
+                                                    ) : (
+                                                        value as string
+                                                    )}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                                {section.title === "Status Information" && (
+                                    <div className="flex items-center gap-4 mt-4">
+                                        <span className="text-sm font-medium text-gray-600">
+                                            Click here to give access to the user to edit their current record
+                                        </span>
+                                        <Button onClick={handleUpdate} className="px-4 py-2 text-sm">
+                                            Click
+                                        </Button>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            </TabsContent>
+
+            <TabsContent value="service-agreement">
+                <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
+                    <h1 className="text-2xl font-bold mb-6">Service Agreement Details</h1>
+                    {/* Add content for Service Agreement Details here */}
+                    {/* <p>Service Agreement details will be displayed here.</p> */}
+                    <SAgrementPdf />
+                </div>
+            </TabsContent>
+        </Tabs>
     );
 };
 

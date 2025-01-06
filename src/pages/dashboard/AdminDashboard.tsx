@@ -38,6 +38,7 @@ const AdminDashboard = () => {
     }, { pending: 0, active: 0, rejected: 0 });
     const handleRowClick = (companyId: string) => {
         navigate(`/company-details/${companyId}`);
+        localStorage.setItem('companyRecordId', companyId);
       };
 
     return (

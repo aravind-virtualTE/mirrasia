@@ -4,10 +4,12 @@ import { Separator } from "@/components/ui/separator";
 // import InlineSignatureCreator from '../../SignatureComponent'
 // import Draggable from 'react-draggable';
 import SignatureModal from '@/components/pdfPage/SignatureModal';
+import { useAtom } from 'jotai';
+import { serviceAgrement } from '@/store/hongkong';
 
 interface Director {
-  name: string;
-  signature: string;
+  name: string ;
+  signature: string ;
 }
 
 interface FounderMember {
@@ -19,22 +21,30 @@ const AppointmentOfDirectors: React.FC = () => {
   const [compDetails, setCompanyName] = useState({ companyName: "", ubiNo: "" });
   const [directors, setDirectors] = useState<Director[]>([
     { name: "Director 1", signature: "" },
-    { name: "Director 2", signature: "" },
   ]);
   const [founderMember, setFounderMember] = useState<FounderMember>({ name: "Founder Member", signature: "" });
+  const [serviceAgrementDetails, setServiceAgrement  ] = useAtom(serviceAgrement);
 
   const handleDirectorSignature = (index: number, signature: string | "") => {
     const updatedDirectors = [...directors];
     updatedDirectors[index].signature = signature;
     setDirectors(updatedDirectors);
+    setServiceAgrement({ ...serviceAgrementDetails, directorList: updatedDirectors });
   };
 
-  const handleFounderMemberSignature = (signature: string) => {
+  const handleFounderMemberSignature = (signature: string | "") => {
     setFounderMember({ ...founderMember, signature });
+    setServiceAgrement({ ...serviceAgrementDetails, founderMember: [{ name: founderMember.name, signature }] });
   };
+
   useEffect(() => {
     setCompanyName({ companyName: "TestCompany", ubiNo: "TestUbiNo" })
-  }, [])
+    // setDirectors()
+    setDirectors(serviceAgrementDetails.directorList ?? []);
+    setFounderMember(serviceAgrementDetails.founderMember ? serviceAgrementDetails.founderMember[0] : { name: "", signature: "" });
+
+  }, [serviceAgrementDetails])
+  
   return (
     <Card className="max-w-4xl mx-auto p-6 rounded-none">
       <CardHeader>
@@ -81,8 +91,7 @@ const AppointmentOfDirectors: React.FC = () => {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center underline font-bold">Name of founder member</div>
-          <div className="text-center underline font-bold">Signature</div>
-
+          <div className="text-center underline font-bold">Signature</div>          
           <div className="font-bold p-2 text-center mt-2">
             {founderMember.name}
           </div>

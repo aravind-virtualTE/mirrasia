@@ -14,7 +14,6 @@ import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from "react-i18next";
 // import { API_URL } from '@/services/fetch';
 // import { getPdfDoc } from '@/services/dataFetch';
-import SAgrementPdf from './ServiceAgreement/SAgrementPdf';
 
 const ServiceAgreementDocument: React.FC = () => {
   const [, setServiceAgreement] = useAtom(companyServiceAgreementConsentAtom);
@@ -212,9 +211,7 @@ const ServiceAgreementDocument: React.FC = () => {
             </AccordionItem>
           ))}
         </Accordion>
-      </ScrollArea>
-
-      <SAgrementPdf />
+      </ScrollArea>    
 
       {/* <div className="App">
         <Button onClick={handleGeneratePdf} className="mt-4">

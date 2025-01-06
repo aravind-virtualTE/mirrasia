@@ -6,7 +6,9 @@ import { useState, ReactNode, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import IncorporationForm from './HongKong/IncorporationForm';
 import { useAtom, useSetAtom } from 'jotai';
-import { legalAssessmentDialougeAtom, businessInfoHkCompanyAtom, countryAtom, legalAcknowledgementDialougeAtom, companyIncorporationAtom, shareHolderDirectorControllerAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
+import {  businessInfoHkCompanyAtom, countryAtom, legalAcknowledgementDialougeAtom, companyIncorporationAtom, shareHolderDirectorControllerAtom, updateCompanyIncorporationAtom 
+    //legalAssessmentDialougeAtom 
+} from '@/lib/atom';
 import { useTheme } from '@/components/theme-provider';
 import { useToast } from "@/hooks/use-toast"
 import { cn } from '@/lib/utils';
@@ -19,7 +21,7 @@ import { getIncorporationListByCompId, getIncorporationListByUserId } from '@/se
 
 const CompanyRegistration = () => {
     const [currentSection, setCurrentSection] = useState(1);
-    const [legalAssessment,] = useAtom(legalAssessmentDialougeAtom);
+    // const [legalAssessment,] = useAtom(legalAssessmentDialougeAtom);
     const [, setAcknowledgementDialouge] = useAtom(legalAcknowledgementDialougeAtom);
     const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
     const [finalForm,] = useAtom(companyIncorporationAtom);
@@ -264,7 +266,7 @@ const CompanyRegistration = () => {
                             </Button>
                             <Button
                                 onClick={nextSection}
-                                disabled={legalAssessment === true}
+                                // disabled={legalAssessment === true}
                                 className="flex items-center space-x-2 bg-primary"
                             >
                                 <span>{currentSection === 10 ? 'SUBMIT' : 'NEXT →'}</span>

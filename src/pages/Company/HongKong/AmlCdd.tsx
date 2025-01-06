@@ -101,6 +101,7 @@ const AmlCdd: React.FC = () => {
         return updatedState;
       });
       setDialogOpen(true)
+      setSecondDialogOpen(false)
     } else {
       toast({ description: t('AmlCdd.acknowledgement_error'), variant: 'destructive' })
     }
@@ -132,6 +133,7 @@ const AmlCdd: React.FC = () => {
         }
         toast({ description: t('AmlCdd.success_message') });
         navigate('/dashboard')
+        setDialogOpen(false)
       } else {
         // Handle errors, e.g., display error message to the user
         console.log('Error:', response);

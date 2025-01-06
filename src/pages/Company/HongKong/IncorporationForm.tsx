@@ -1,7 +1,7 @@
 import AmlCdd from './AmlCdd';
 import CompanyInformation from './CompanyInformation';
 import InformationIncorporation from './InformationIncorporation';
-import SignIncorporationDocs from './SignIncorporationDocs';
+// import SignIncorporationDocs from './SignIncorporationDocs';
 import ServiceAgreement from './ServiceAgreement';
 import ServiceSelection from './ServiceSelection';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,6 +10,7 @@ import Invoice from './Invoice';
 // import PaymentMethod from './Payment';
 import { PaymentInformation } from '../payment/PaymentInformation';
 import ApplicantInfoForm from './ApplicantInfo';
+import SAgrementPdf from './ServiceAgreement/SAgrementPdf';
 interface IncorporationFormProps {
     currentSection: number;
 }
@@ -56,7 +57,7 @@ const IncorporationForm = ({ currentSection }: IncorporationFormProps) => {
                     {currentSection === 6 && <Invoice />}
                     {currentSection === 7 && <PaymentInformation />}
                     {currentSection === 8 && <InformationIncorporation />}
-                    {currentSection === 9 && <SignIncorporationDocs />}
+                    {currentSection === 9 && <SAgrementPdf />}
                     {currentSection === 10 && <IncorporateCompany />}
                 </motion.div>
             </AnimatePresence>

@@ -67,3 +67,45 @@ export const getIncorporationListByUserId = async (
         console.error("Error sending invite to significant director:", error);
     }
   };
+
+  export const getSavedServiceAggrmtData = async (id: string) => {
+    try {
+      const response = await api.get(`company/service-agreement/${id}`);
+      console.log("response -->", response);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching service Agreement Data:", error);
+      throw new Error('Fetching Failed For service Agreement Data');
+    }
+  };
+
+  export const fetchSavedServiceAggrmtData = async (id: string) => {
+    try {
+      const response = await api.get(`company/serviceAgreement/${id}`, {
+        params: { 'test': 'test' },
+      });
+      console.log("response -->", response);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching service Agreement Data:", error);
+      throw new Error('Fetching Failed For service Agreement Data');
+    }
+  };
+
+  export const saveServiceAgreementData = async (data: string) => {
+    try {
+      const response = await api.post('company/service-agreement', data);
+      return response.data;
+    } catch (error) {
+      console.error("Error saving service Agreement Data:", error);
+    }
+  }
+
+  export const updateServiceAgreementData = async (data: string) => {
+    try {
+      const response = await api.post('company/update-service-agreement', data);
+      return response.data;
+    } catch (error) {
+      console.error("Error saving service Agreement Data:", error);
+    }
+  }

@@ -94,7 +94,7 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
           <PaymentMethodCard
             icon={CreditCard}
             title="Card Payment"
-            description={`Stripe Payments (3.5% Processing Fee) ${amount *1.035}`}
+            description={`Stripe Payments (3.5% Processing Fee) ${Math.ceil(amount *1.035)}`}
             method="card"
             sessionId={sessionId}
             clientSecret={clientSecret}
