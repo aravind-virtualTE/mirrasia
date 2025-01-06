@@ -58,7 +58,7 @@ export default function AppointmentLetter() {
     setDetails(e.target.value);
     setServiceAgrement({
       ...serviceAgrementDetails,
-      director: [{ name: e.target.value, signature: signature }],
+      directorList: [{ name: e.target.value, signature: signature }],
     });
   };
   return (

@@ -110,10 +110,11 @@ const CompanyDetail = () => {
     const [companies] = useAtom(companyIncorporationList);
     const companyDetail = companies.find(c => c._id === id) as unknown as Company;
     const [isDraft, setIsDraft] = useState(companyDetail?.is_draft);
-    const [activePdf, setActivePdf] = useState("");
+    // const [activePdf, setActivePdf] = useState("");
 
     const handlePdfClick = (url: string) => {
-        setActivePdf(url);
+        console.log("pdf url", url);
+        // setActivePdf(url);
     };
 
     //   const renderPdfViewer = () => {
