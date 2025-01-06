@@ -216,7 +216,7 @@ const SAgrementPdf: React.FC = () => {
         pdf.save("AllDocuments.pdf");
         setIsLoading(false);
     };
-
+console.log("serviceId",serviceId)
     const handleSave = async () => {
         setIsSaveLoading(true);
         console.log("saveData to backend", serviceAgrementDetails);
@@ -247,7 +247,6 @@ const SAgrementPdf: React.FC = () => {
             console.error("Error saving data:", error);
         }
     };
-
     return (
         <React.Fragment>
             {isFetching ? (

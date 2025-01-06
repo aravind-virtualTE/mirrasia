@@ -27,9 +27,9 @@ export default function AppointmentLetter() {
 
     return () => clearTimeout(timer);
   }, []);
-
+  console.log("serviceAgrementDetails.directorList[0].signature", serviceAgrementDetails)
   useEffect(() => {
-    if(serviceAgrementDetails.directorList){
+    if (serviceAgrementDetails.directorList) {
       setSignature(serviceAgrementDetails.directorList[0].signature);
       setDetails(serviceAgrementDetails.directorList[0].name)
     }
@@ -46,10 +46,10 @@ export default function AppointmentLetter() {
       ...serviceAgrementDetails,
       directorList: serviceAgrementDetails.directorList
         ? [
-            { ...serviceAgrementDetails.directorList[0], signature: selectedSignature },
-            ...serviceAgrementDetails.directorList.slice(1),
-          ]
-        : [{name : "", signature : ""}], 
+          { ...serviceAgrementDetails.directorList[0], signature: selectedSignature },
+          ...serviceAgrementDetails.directorList.slice(1),
+        ]
+        : [{ name: "", signature: "" }],
     });
 
     setIsModalOpen(false);
