@@ -173,13 +173,10 @@ const ApplicantInfoForm = () => {
   const handleChange =
     (field: keyof FormDataType, index?: number) =>
       (e: ChangeEvent<HTMLInputElement>): void => {
-        let value = e.target.value;
+        const value = e.target.value;
 
         if (field === "companyName" && index !== undefined) {
-          if (!value.trim().toLowerCase().endsWith("limited")) {
-            value = value.trim() + " Limited";
-          }
-          const updatedCompanyNames = [...formData.companyName];
+          const updatedCompanyNames = [...formData.companyName];       
           updatedCompanyNames[index] = value;
 
           setFormData((prev) => ({
