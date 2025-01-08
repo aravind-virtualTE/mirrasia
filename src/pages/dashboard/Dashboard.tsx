@@ -81,7 +81,7 @@ const Dashboard = () => {
     navigate(`/company-register/${companyId}`);
   };
 
-  console.log("cList",cList)
+  // console.log("cList",cList)
   return (
     < >
       {/* Main Content */}

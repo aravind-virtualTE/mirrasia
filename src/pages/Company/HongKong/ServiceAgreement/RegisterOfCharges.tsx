@@ -1,3 +1,4 @@
+// import InlineSignatureCreator from "../../SignatureComponent"
 import {
   Table,
   TableBody,
@@ -7,15 +8,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-// import InlineSignatureCreator from "../../SignatureComponent"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import SignatureModal from "@/components/pdfPage/SignatureModal"
-
-interface CompanyDetails {
-  name: string
-  ubiNumber: string
-  jurisdiction: string
-}
+import { useAtom } from "jotai"
+import { serviceAgrement } from "@/store/hongkong"
+import { Input } from "@/components/ui/input"
 
 interface Charge {
   dateOfCharges: string
@@ -27,59 +24,57 @@ interface Charge {
 }
 
 export default function RegisterOfCharges() {
-  const companyDetails: CompanyDetails = {
-    name: "Sample Company",
-    ubiNumber: "TestNo",
-    jurisdiction: "Hong Kong",
+  const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgrement)
+  const [localCharges, setLocalCharges] = useState<Charge[]>([])
+  const [signature, setSignature] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  useEffect(() => {
+    console.log("serviceAgrementDetails.registerChargesList",serviceAgrementDetails.registerChargesList)
+    const initialCharges: Charge[] = [
+      {
+        dateOfCharges: "",
+        description: "No Charges",
+        amountSecured: "",
+        entitledPerson: "",
+        dateOfRegistration: "",
+        dateOfDischarges: "",
+      },
+      ...Array(3).fill({
+        dateOfCharges: "",
+        description: "",
+        amountSecured: "",
+        entitledPerson: "",
+        dateOfRegistration: "",
+        dateOfDischarges: "",
+      }),
+    ]
+    if ((serviceAgrementDetails.registerChargesList ?? []).length === 0) {
+     
+      setServiceAgrementDetails(prev => ({ ...prev, registerChargesList: initialCharges }))
+      setLocalCharges(initialCharges)
+    } else {
+      setLocalCharges(serviceAgrementDetails.registerChargesList ?? initialCharges)
+    }
+  }, [serviceAgrementDetails.registerChargesList, setServiceAgrementDetails])
+
+  const handleInputChange = (index: number, field: keyof Charge, value: string) => {
+    const updatedCharges = localCharges.map((charge, i) =>
+      i === index ? { ...charge, [field]: value } : charge
+    )
+    setLocalCharges(updatedCharges)
+    setServiceAgrementDetails(prev => ({ ...prev, registerChargesList: updatedCharges }))
   }
-  const [signature, setSignature] = useState<string | null>(null);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    setIsModalOpen(true);
-  };
+    setIsModalOpen(true)
+  }
 
-  const handleSelectSignature = (selectedSignature: string | null) => {
-    setSignature(selectedSignature);
-    setIsModalOpen(false);
-  };
-  // const [isEditing, setIsEditing] = useState(false);
-  // const handleSignature = (signature: string) => {
-  //   // console.log("Received signature:", signature);
-  //   setIsEditing(false);
-  //   setSignature(signature)
-  // };
-  // const handleClear = () => {
-  //   setSignature(null);
-  // };
-  // const handleBoxClick = () => {
-  //   if (signature) {
-  //     handleClear();
-  //   } else {
-  //     setIsEditing(true);
-  //   }
-  // };
-
-
-  const charges: Charge[] = [
-    {
-      dateOfCharges: "",
-      description: "No Charges",
-      amountSecured: "",
-      entitledPerson: "",
-      dateOfRegistration: "",
-      dateOfDischarges: "",
-    },
-    // Empty rows for demonstration
-    ...Array(3).fill({
-      dateOfCharges: "",
-      description: "",
-      amountSecured: "",
-      entitledPerson: "",
-      dateOfRegistration: "",
-      dateOfDischarges: "",
-    }),
-  ]
+  const handleSelectSignature = (selectedSignature: string ) => {
+    setSignature(selectedSignature)
+    setServiceAgrementDetails(prev => ({ ...prev, registerChargeSignature: selectedSignature }))
+    setIsModalOpen(false)
+  }
 
   return (
     <Card className="w-full mx-auto p-6 print:p-0 rounded-none">
@@ -88,23 +83,25 @@ export default function RegisterOfCharges() {
           <div className="space-y-2">
             <div className="flex gap-2">
               <span className="font-medium">Name of Company:</span>
-              <span className=" px-1">{companyDetails.name}</span>
+              <span className="px-1">{serviceAgrementDetails.companyName}</span>
             </div>
             <div className="flex gap-2">
-              <span className="font-medium">UBI Number:{companyDetails.ubiNumber}</span>
-              <span>{companyDetails.ubiNumber}</span>
+              <span className="font-medium">UBI Number: {serviceAgrementDetails.ubiNo}</span>
             </div>
             <div className="flex gap-2">
               <span className="font-medium">Jurisdiction:</span>
-              <span className="underline">{companyDetails.jurisdiction}</span>
+              <Input
+                value={serviceAgrementDetails.jurisdiction}
+                onChange={(e) => setServiceAgrementDetails(prev => ({ ...prev, jurisdiction: e.target.value }))}
+                className="border-none p-0 h-auto"
+              />
             </div>
           </div>
           <h1 className="text-l font-serif font-semibold">REGISTER OF CHARGES</h1>
         </div>
       </CardHeader>
-      {/* className="border-collapse [&_*]:border-black" */}
       <CardContent>
-        <Table >
+        <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="border border-black font-bold text-center text-black">
@@ -131,22 +128,59 @@ export default function RegisterOfCharges() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {charges.map((charge, index) => (
+            {localCharges.map((charge, index) => (
               <TableRow key={index}>
-                <TableCell className="border border-black text-center">{charge.dateOfCharges}</TableCell>
-                <TableCell className="border border-black text-center">
-                  {charge.description === "No Charges" ? (
-                    <span className=" px-1">{charge.description}</span>
+                <TableCell className="border border-black text-center p-0">
+                  <Input
+                    value={charge.dateOfCharges}
+                    onChange={(e) => handleInputChange(index, 'dateOfCharges', e.target.value)}
+                    className="border-none text-center h-full"
+                  />
+                </TableCell>
+                <TableCell className="border border-black text-center p-0">
+                  {/* {index === 0 ? (
+                    <span className="px-1">{charge.description}</span>
                   ) : (
-                    charge.description
-                  )}
+                    <Input
+                      value={charge.description}
+                      onChange={(e) => handleInputChange(index, 'description', e.target.value)}
+                      className="border-none text-center h-full"
+                    />
+                  )} */}
+                  <Input
+                      value={charge.description}
+                      onChange={(e) => handleInputChange(index, 'description', e.target.value)}
+                      className="border-none text-center h-full"
+                    />
                 </TableCell>
-                <TableCell className="border border-black text-center">{charge.amountSecured}</TableCell>
-                <TableCell className="border border-black text-center">{charge.entitledPerson}</TableCell>
-                <TableCell className="border border-black text-center">
-                  {charge.dateOfRegistration}
+                <TableCell className="border border-black text-center p-0">
+                  <Input
+                    value={charge.amountSecured}
+                    onChange={(e) => handleInputChange(index, 'amountSecured', e.target.value)}
+                    className="border-none text-center h-full"
+                  />
                 </TableCell>
-                <TableCell className="border border-black text-center">{charge.dateOfDischarges}</TableCell>
+                <TableCell className="border border-black text-center p-0">
+                  <Input
+                    value={charge.entitledPerson}
+                    onChange={(e) => handleInputChange(index, 'entitledPerson', e.target.value)}
+                    className="border-none text-center h-full"
+                  />
+                </TableCell>
+                <TableCell className="border border-black text-center p-0">
+                  <Input
+                    value={charge.dateOfRegistration}
+                    onChange={(e) => handleInputChange(index, 'dateOfRegistration', e.target.value)}
+                    className="border-none text-center h-full"
+                  />
+                </TableCell>
+                <TableCell className="border border-black text-center p-0">
+                  <Input
+                    value={charge.dateOfDischarges}
+                    onChange={(e) => handleInputChange(index, 'dateOfDischarges', e.target.value)}
+                    className="border-none text-center h-full"
+                  />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -154,7 +188,7 @@ export default function RegisterOfCharges() {
       </CardContent>
 
       <CardFooter className="flex flex-col items-stretch mt-6 space-y-6">
-        <div className="flex justify-between" >
+        <div className="flex justify-between">
           <p className="text-xs uppercase">
             PLEASE NOTE: THE ORIGINAL OR COPY MUST BE KEPT AT THE REGISTERED OFFICE.
           </p>
@@ -163,7 +197,7 @@ export default function RegisterOfCharges() {
         <div className="flex justify-end">
           <div className="text-right space-y-4">
             <p className="italic font-serif text-xs">For and on behalf of</p>
-            <p className="px-1 inline-block">{companyDetails.name}</p>
+            <p className="px-1 inline-block">{serviceAgrementDetails.companyName}</p>
             <div className="w-64 pt-2">
               <div
                 onClick={handleBoxClick}

@@ -146,7 +146,7 @@ export interface serviceAggrementTypes {
     remarks: string;
     signature : string | null;
   }[];
-  shareHolderSignatures: { name: string; signature: string }[];
+  jurisdiction: string;
   registerChargesList: {
     dateOfCharges: string;
     description: string;
