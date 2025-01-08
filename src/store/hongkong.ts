@@ -380,7 +380,6 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
       signature: null
     },
   ],
-  shareHolderSignatures: [{ name: "", signature: "" }],
   registerChargesList: [
     {
       dateOfCharges: "",
