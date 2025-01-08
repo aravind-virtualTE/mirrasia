@@ -29,7 +29,6 @@ export default function ShareholdersList() {
 
   const [signature, setSignature] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-
   useEffect(() => {
     if (!serviceAgrementDetails.shareholderList) {
       setServiceAgrementDetails(prev => ({
@@ -88,7 +87,7 @@ export default function ShareholdersList() {
     0
   ) || 0
 
-  console.log("serviceAgrementDetails",serviceAgrementDetails)
+  
   return (
     <Card className="w-full mx-auto p-6 print:p-0 rounded-none">
       <CardHeader className="space-y-4 pb-6">

@@ -37,7 +37,7 @@ const SAgrementPdf: React.FC = () => {
     const [companyData] = useAtom(companyIncorporationAtom);
     const [isFetching, setIsFetching] = useState(true);
     const [serviceId, setId] = useState("")
-    console.log("testing", companyData);
+    // console.log("testing", companyData);
     // useEffect(() => {
     //     const docId = localStorage.getItem('companyRecordId');
 
@@ -82,7 +82,16 @@ const SAgrementPdf: React.FC = () => {
         const firstMatchingRecord = shareHolderDir.find(
             (record) => record.isDirector === false && record.isLegalPerson === true
         );
-        console.log("shareHolderDir",shareHolderDir)
+        const shareholderArr = shareHolderDir.filter(record => record.isDirector === false ).map(record => ({
+            name: record.name,           
+            correspondenceAddress: "",
+            residentialAddress: "",
+            currentHolding: record.ownershipRate,
+            percentage: record.ownershipRate.toString() + "%",
+            remarks: "",
+            signature: null,
+          }));
+        // console.log("shareHolderDir",shareholderArr)
         
         return {
             companyName: companyData.applicantInfoForm.companyName[0],
@@ -105,7 +114,7 @@ const SAgrementPdf: React.FC = () => {
                     signature: "",
                 },
             ],
-
+            shareholderList : shareholderArr
         };
     };
     const fetchSavedData = async () => {
@@ -129,10 +138,9 @@ const SAgrementPdf: React.FC = () => {
         if (!savedData) {
             return companyData;
         }
-
         return {
-            ...companyData,
             ...savedData,
+            ...companyData,
             // Preserve certain fields from company data even if saved data exists
             companyName: companyData.companyName,
             companyId: companyData.companyId,
@@ -153,6 +161,7 @@ const SAgrementPdf: React.FC = () => {
             const preparedCompanyData = prepareCompanyData();
             const savedData = await fetchSavedData();
             const mergedData = mergeData(preparedCompanyData, savedData);
+            console.log("mergedData",mergedData)
             setServiceAgrement(mergedData);
             setIsFetching(false);
         };
