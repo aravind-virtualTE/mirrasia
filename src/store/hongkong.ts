@@ -374,9 +374,10 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
       name: "",
       correspondenceAddress: "",
       residentialAddress: "",
-      currentHolding: "",
+      currentHolding: 0,
       percentage: "",
       remarks: "",
+      signature: null
     },
   ],
   shareHolderSignatures: [{ name: "", signature: "" }],

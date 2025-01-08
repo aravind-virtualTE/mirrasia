@@ -45,9 +45,7 @@ export function PaymentInformation() {
     const updateSession = async () => {
       try {
         setIsLoading(true);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const sessionData = await paymentApi.updateSession(finalForm.sessionId, amount, 'USD');
-        // console.log("sessionData", sessionData)
+        await paymentApi.updateSession(finalForm.sessionId, amount, 'USD');
       } catch (err) {
         console.error('Payment session update failed:', err);
         setError('Failed to update payment session');
