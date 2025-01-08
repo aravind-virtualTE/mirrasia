@@ -28,7 +28,7 @@ export const paymentApi = {
       amount,
       currency,
     });
-    console.log('Updated session response:', response);
+    // console.log('Updated session response:', response);
     return response.data;
   },
 

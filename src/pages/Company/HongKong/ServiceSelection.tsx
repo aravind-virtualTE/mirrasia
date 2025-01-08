@@ -121,7 +121,7 @@ const ServiceSelection: React.FC = () => {
     },
   ], [t]);
 
-  console.log("serviceSelectionState",serviceSelectionState)
+  // console.log("serviceSelectionState",serviceSelectionState)
   const legalPersonFees = shareHolderAtom.shareHolders.filter((shareholder) => shareholder.isLegalPerson).length;
   const individualFees = shareHolderAtom.shareHolders.filter((shareholder) => !shareholder.isLegalPerson).length;
 

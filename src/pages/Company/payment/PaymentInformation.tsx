@@ -45,8 +45,9 @@ export function PaymentInformation() {
     const updateSession = async () => {
       try {
         setIsLoading(true);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const sessionData = await paymentApi.updateSession(finalForm.sessionId, amount, 'USD');
-        console.log("sessionData", sessionData)
+        // console.log("sessionData", sessionData)
       } catch (err) {
         console.error('Payment session update failed:', err);
         setError('Failed to update payment session');
@@ -59,7 +60,7 @@ export function PaymentInformation() {
       // hasFetchedData.current = true;
     }
     else {
-      console.log("finalForm.sessionId", finalForm.sessionId)
+      // console.log("finalForm.sessionId", finalForm.sessionId)
       if (finalForm.sessionId) {
         setSessionId(finalForm.sessionId)
         updateSession()
@@ -67,7 +68,7 @@ export function PaymentInformation() {
     }
     setIsLoading(false);
   }, []);
-  console.log("invoiceData", finalForm)
+  // console.log("invoiceData", finalForm)
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto p-6">
@@ -81,7 +82,7 @@ export function PaymentInformation() {
       </div>
     );
   }
-  console.log(sessionId, "error", error)
+  // console.log(sessionId, "error", error)
 
   if (error || !sessionId) {
     return (

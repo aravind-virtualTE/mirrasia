@@ -105,7 +105,7 @@ const ServiceAgreementDocument: React.FC = () => {
     }
   ];
 
-  console.log("finalForm", finalForm)
+  // console.log("finalForm", finalForm)
 
   useEffect(() => {
     if (finalForm.serviceAgreementConsent) {

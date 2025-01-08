@@ -24,7 +24,7 @@ export function PaymentTimer({ sessionId  }: PaymentTimerProps) {
   };
 
   const time = formatTime(timeLeft);
-  console.log("status",status)
+  // console.log("status",status)
   if (status === 'expired') {
     return (
       <Card className="bg-destructive/10">

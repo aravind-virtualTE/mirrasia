@@ -27,7 +27,7 @@ export default function AppointmentLetter() {
 
     return () => clearTimeout(timer);
   }, []);
-  console.log("serviceAgrementDetails.directorList[0].signature", serviceAgrementDetails)
+  // console.log("serviceAgrementDetails.directorList[0].signature", serviceAgrementDetails)
   useEffect(() => {
     if (serviceAgrementDetails.directorList) {
       setSignature(serviceAgrementDetails.directorList[0].signature);

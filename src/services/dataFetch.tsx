@@ -5,7 +5,7 @@ export const getIncorporationListByUserId = async (
   ) => {
     try {
       const response = await api.get(`company/company-incorporation/user/${userId}`);
-      console.log("response-->",response)
+      // console.log("response-->",response)
       return response.data;
     } catch (error) {
         console.error("Error fetching company incorporation list by userId:", error);
@@ -18,7 +18,7 @@ export const getIncorporationListByUserId = async (
   ) => {
     try {
       const response = await api.get(`company/company-incorporation/company/${id}`);
-      console.log("response-->",response)
+      // console.log("response-->",response)
       return response.data;
     } catch (error) {
         console.error("Error fetching company incorporation data by compId.", error);
@@ -71,7 +71,7 @@ export const getIncorporationListByUserId = async (
   export const getSavedServiceAggrmtData = async (id: string) => {
     try {
       const response = await api.get(`company/service-agreement/${id}`);
-      console.log("response -->", response);
+      // console.log("response -->", response);
       return response.data;
     } catch (error) {
       console.error("Error fetching service Agreement Data:", error);

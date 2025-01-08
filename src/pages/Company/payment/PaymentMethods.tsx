@@ -66,7 +66,7 @@ const PaymentMethodCard = ({
 
 export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) { 
    const [clientSecret, setClientSecret] = useState("")
-  console.log("cleientSecret", clientSecret)
+  // console.log("cleientSecret", clientSecret)
   // const [corpoInvoiceAtom] = useAtom(companyIncorporateInvoiceAtom);
   // const invoiceData = corpoInvoiceAtom[0] as unknown as InvoiceData;
   // const amount = parseFloat(invoiceData.totals.discounted.replace(/[^0-9.]/g, ''));

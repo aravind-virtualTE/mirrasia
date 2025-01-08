@@ -117,11 +117,11 @@ export interface HkFormData {
 }
 
 
+// director: { name: string; signature: string }[];
 export interface serviceAggrementTypes {
   companyId: string;
   ubiNo: string;
   id: string;
-  // director: { name: string; signature: string }[];
   appointmentDate: string;
   companyName: string;
   companyAddress: string;
@@ -141,9 +141,10 @@ export interface serviceAggrementTypes {
     name: string;
     correspondenceAddress: string;
     residentialAddress: string;
-    currentHolding: string;
+    currentHolding: number;
     percentage: string;
     remarks: string;
+    signature : string | null;
   }[];
   shareHolderSignatures: { name: string; signature: string }[];
   registerChargesList: {

@@ -82,7 +82,8 @@ const SAgrementPdf: React.FC = () => {
         const firstMatchingRecord = shareHolderDir.find(
             (record) => record.isDirector === false && record.isLegalPerson === true
         );
-
+        console.log("shareHolderDir",shareHolderDir)
+        
         return {
             companyName: companyData.applicantInfoForm.companyName[0],
             companyId: localStorage.getItem("companyRecordId") ?? "",
@@ -104,9 +105,9 @@ const SAgrementPdf: React.FC = () => {
                     signature: "",
                 },
             ],
+
         };
     };
-
     const fetchSavedData = async () => {
         try {
             const companyId = localStorage.getItem("companyRecordId");
@@ -216,7 +217,7 @@ const SAgrementPdf: React.FC = () => {
         pdf.save("AllDocuments.pdf");
         setIsLoading(false);
     };
-console.log("serviceId",serviceId)
+    // console.log("serviceId",serviceId)
     const handleSave = async () => {
         setIsSaveLoading(true);
         console.log("saveData to backend", serviceAgrementDetails);
