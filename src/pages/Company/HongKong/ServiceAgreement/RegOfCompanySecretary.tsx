@@ -25,10 +25,7 @@ interface Secretary {
 }
 
 export default function RegisterOfCompanySecretaries() {
-  const companyDetails = {
-    name: "TRUSTPAY AI SYSTEMS LIMITED",
-    ubiNumber: "Test Num",
-  }
+  
   
   const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgreement )
   
@@ -183,7 +180,7 @@ export default function RegisterOfCompanySecretaries() {
         <div className="flex justify-end">
           <div className="text-right space-y-4">
             <p className="italic font-serif text-xs">For and on behalf of</p>
-            <p className="px-1 inline-block font-serif">{companyDetails.name}</p>
+            <p className="px-1 inline-block font-serif">{serviceAgrementDetails.companyName}</p>
             <div className="w-64 pt-2">
               <div
                 onClick={handleBoxClick}
