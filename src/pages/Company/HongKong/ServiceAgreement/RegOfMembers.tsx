@@ -8,8 +8,10 @@ import {
 } from "@/components/ui/table"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { useState } from "react"
-// import InlineSignatureCreator from "../../SignatureComponent"
 import SignatureModal from "@/components/pdfPage/SignatureModal"
+import { serviceAgreement  } from "@/store/hongkong"
+import { useAtom } from "jotai"
+
 
 interface ShareTransaction {
   date: string
@@ -36,6 +38,7 @@ interface Member {
 }
 
 export default function RegisterOfMembers() {
+  const [serviceAgrementDetails,] = useAtom(serviceAgreement )
 
   const [signature, setSignature] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,30 +46,11 @@ export default function RegisterOfMembers() {
     setIsModalOpen(true);
   };
 
+  // console.log("serviceAgrementDetails",serviceAgrementDetails)
   const handleSelectSignature = (selectedSignature: string | null) => {
     setSignature(selectedSignature);
     setIsModalOpen(false);
   };
-  // const [isEditing, setIsEditing] = useState(false);
-  // const handleSignature = (signature: string) => {
-  //   // console.log("Received signature:", signature);
-  //   setIsEditing(false);
-  //   setSignature(signature)
-  // };
-  // const handleClear = () => {
-  //   setSignature(null);
-  // };
-  // const handleBoxClick = () => {
-  //   if (signature) {
-  //     handleClear();
-  //   } else {
-  //     setIsEditing(true);
-  //   }
-  // };
-  const companyDetails = {
-    name: "TRUSTPAY AI SYSTEMS LIMITED",
-    ubiNumber: "TestNum",
-  }
 
   const shareDetails = {
     classOfShare: "ORDINARY",
@@ -75,27 +59,27 @@ export default function RegisterOfMembers() {
 
   const members: Member[] = [
     {
-      fullName: "AHMED, SHAHAD",
-      occupation: "MERCHANT",
+      fullName: "",
+      occupation: "",
       correspondenceAddress:
-        "WORKSHOP UNIT B50, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, NEW TERRITORIES , HONG KONG",
+        "",
       dateCeasing: "",
       residentialAddress:
-        "FLAT-AP-424, 381-NAKHLAT JUMEIRAH, 1, DUBAI, UNITED ARAB EMIRATES",
+        "",
       sharesAcquired: [
         {
           date: "",
-          certificateNumber: "1",
-          distinctiveNoFrom: "1",
-          distinctiveNoTo: "100",
-          numberOfShares: "100",
-          considerationPaid: "USD 100.00",
+          certificateNumber: "",
+          distinctiveNoFrom: "",
+          distinctiveNoTo: "",
+          numberOfShares: "",
+          considerationPaid: "USD ",
         },
       ],
       sharesTransferred: [],
-      totalSharesHeld: "100",
+      totalSharesHeld: "",
       remarks: "",
-      entryMadeBy: "Ayla",
+      entryMadeBy: "",
     },
 
   ]
@@ -106,10 +90,10 @@ export default function RegisterOfMembers() {
         <div className="flex justify-between items-start">
           <div className="space-y-1">
             <div className="flex gap-1">
-              <p className="font-serif text-sm">Name of Company: <span className=" px-1  underline ">{companyDetails.name}</span></p>
+              <p className="font-serif text-sm">Name of Company: <span className=" px-1  underline ">{serviceAgrementDetails.companyName}</span></p>
             </div>
             <div className="flex gap-1">
-              <p className="font-serif text-sm">BRN Number: <span className=" px-1  underline ">{companyDetails.ubiNumber}</span></p>
+              <p className="font-serif text-sm">BRN Number: <span className=" px-1  underline ">{serviceAgrementDetails.brnNo}</span></p>
             </div>
           </div>
           <h1 className="text-l font-serif font-semibold">REGISTER OF MEMBERS</h1>
@@ -302,7 +286,6 @@ export default function RegisterOfMembers() {
             </Table>
           </div>
         ))}
-
         <Table className="border-collapse [&_*]:border-black">
           <TableBody>
             <TableRow>
@@ -320,7 +303,6 @@ export default function RegisterOfMembers() {
           </TableBody>
         </Table>
       </CardContent>
-
       <CardFooter className="flex flex-col items-stretch mt-6 space-y-6 px-0">
         <div className="flex justify-between items-end">
           <p className="text-xs uppercase">
@@ -330,7 +312,7 @@ export default function RegisterOfMembers() {
         </div>
         <div className="text-right space-y-2">
           <p className="italic font-serif text-xs">For and on behalf of</p>
-          <p className="px-1 inline-block font-serif">{companyDetails.name}</p>
+          <p className="px-1 inline-block font-serif">{serviceAgrementDetails.companyName}</p>
           <div className="flex justify-end">
             <div >
               <div className="w-64 pt-2">

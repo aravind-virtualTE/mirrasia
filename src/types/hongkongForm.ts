@@ -177,7 +177,7 @@ export interface serviceAggrementTypes {
     ceasingAct: string;
     entryMadeBy: string;
   }[];
-  registerDirectorSignature: string;
+  registerDirectorSignature: string | null;
   sharesDate: string;
   registeredMembers: {
     name: string;
