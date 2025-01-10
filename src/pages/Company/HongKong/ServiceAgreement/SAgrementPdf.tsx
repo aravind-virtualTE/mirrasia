@@ -265,61 +265,61 @@ const SAgrementPdf: React.FC = () => {
                 </div>
             ) : (
                 <>
-                    <div id="appointmentLetter">
+                    <div id="appointmentLetter" className="mb-4">
                         <AppointmentLetter />
                     </div>
-                    <div id="letterOfConsent">
+                    <div id="letterOfConsent" className="mb-4">
                         <LetterOfConsent />
                     </div>
-                    <div id="authorizationDetails">
+                    <div id="authorizationDetails" className="mb-4">
                         <AuthorizationDetails />
                     </div>
-                    <div id="appointmentOfDirectors">
+                    <div id="appointmentOfDirectors" className="mb-4">
                         <AppointmentOfDirectors />
                     </div>
-                    <div id="shareholdersList">
+                    <div id="shareholdersList" className="mb-4">
                         <ShareholdersList />
                     </div>
-                    <div id="registerOfCharges">
+                    <div id="registerOfCharges" className="mb-4">
                         <RegisterOfCharges />
                     </div>
-                    <div id="registerOfCompanySecretaries">
+                    <div id="registerOfCompanySecretaries" className="mb-4">
                         <RegisterOfCompanySecretaries />
                     </div>
-                    <div id="registerOfDirectors">
+                    <div id="registerOfDirectors" className="mb-4">
                         <RegisterOfDirectors />
                     </div>
-                    <div id="registerOfMembers">
+                    <div id="registerOfMembers" className="mb-4">
                         <RegisterOfMembers />
                     </div>
-                    <div id="significantController">
+                    <div id="significantController" className="mb-4">
                         <SignificantControllerForm />
                     </div>
-                    <div id="declarationOfInterest">
+                    <div id="declarationOfInterest" className="mb-4">
                         <DeclarationOfInterest />
                     </div>
-                    <div id="significantControllersRegister">
+                    <div id="significantControllersRegister" className="mb-4">
                         <SignificantControllersRegister />
                     </div>
-                    <div id="articlesOfAssociation">
+                    <div id="articlesOfAssociation" className="mb-4">
                         <ArticlesOfAssociation />
                     </div>
-                    <div id="shareCapitalForm">
+                    <div id="shareCapitalForm" className="mb-4">
                         <ShareCapitalForm />
                     </div>
-                    <div id="companyResolution">
+                    <div id="companyResolution" className="mb-4">
                         <CompanyResolution data={resolutionData} />
                     </div>
-                    <div id="companyResolutiontwo">
+                    <div id="companyResolutiontwo" className="mb-4">
                         <CompanyResolutiontwo />
                     </div>
-                    <div id="customerDueDiligence">
+                    <div id="customerDueDiligence" className="mb-4">
                         <CustomerDueDiligence />
                     </div>
-                    <div id="pepDeclaration">
+                    <div id="pepDeclaration" className="mb-4">
                         <PEPDeclarationForm />
                     </div>
-                    <div id="penDetail">
+                    <div id="penDetail" className="mb-4">
                         <PenDetail />
                     </div>
                     <div className="flex justify-around mt-6">
