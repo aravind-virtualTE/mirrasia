@@ -403,7 +403,7 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
       entryMadeBy: "",
     },
   ],
-  chargesSignature: "",
+  companySecretarySignature: "",
   registerDirector: [
     {
       dateOfAppointment: "",
@@ -509,6 +509,6 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
     }
   }]
 };
-export const serviceAgrement = atom<Partial<serviceAggrementTypes>>(initialPartialState);
+export const serviceAgreement  = atom<Partial<serviceAggrementTypes>>(initialPartialState);
 
 export const signaturesAtom = atom<string[]>([]);

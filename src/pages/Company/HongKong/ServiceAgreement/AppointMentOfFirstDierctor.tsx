@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 // import Draggable from 'react-draggable';
 import SignatureModal from '@/components/pdfPage/SignatureModal';
 import { useAtom } from 'jotai';
-import { serviceAgrement } from '@/store/hongkong';
+import { serviceAgreement } from '@/store/hongkong';
 
 interface Director {
   name: string ;
@@ -23,7 +23,7 @@ const AppointmentOfDirectors: React.FC = () => {
     { name: "Director 1", signature: "" },
   ]);
   const [founderMember, setFounderMember] = useState<FounderMember>({ name: "Founder Member", signature: "" });
-  const [serviceAgrementDetails, setServiceAgrement  ] = useAtom(serviceAgrement);
+  const [serviceAgrementDetails, setServiceAgrement  ] = useAtom(serviceAgreement);
 
   const handleDirectorSignature = (index: number, signature: string | "") => {
     const updatedDirectors = [...directors];

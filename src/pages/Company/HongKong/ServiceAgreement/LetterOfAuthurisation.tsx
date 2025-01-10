@@ -18,13 +18,13 @@ import { Input } from "@/components/ui/input"
 // import InlineSignatureCreator from '../../SignatureComponent'
 import SignatureModal from '@/components/pdfPage/SignatureModal'
 import { useAtom } from 'jotai'
-import { serviceAgrement } from '@/store/hongkong'
+import { serviceAgreement } from '@/store/hongkong'
 
 export default function AuthorizationDetails() {
 
   const [isEditing, setIsEditing] = useState(false)
   const [docSigned,] = useState('2024-12-12')
-  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgrement);
+  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
   const [signature, setSignature] = useState<string | null>(null);
 
   const [personDetails, setPersonDetails] = useState({

@@ -166,7 +166,7 @@ export interface serviceAggrementTypes {
     dateCeasingToAct: string;
     entryMadeBy: string;
   }[];
-  chargesSignature: string;
+  companySecretarySignature: string | null;
   registerDirector: {
     dateOfAppointment: string;
     name: string;

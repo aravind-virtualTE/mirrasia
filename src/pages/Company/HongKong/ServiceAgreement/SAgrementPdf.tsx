@@ -23,7 +23,7 @@ import ShareholdersList from "./ShareHoldersList";
 import SignificantControllersRegister from "./SignificantControllerReg";
 import { Button } from "@/components/ui/button";
 import { useAtom } from "jotai";
-import { serviceAgrement } from "@/store/hongkong";
+import { serviceAgreement  } from "@/store/hongkong";
 import { companyIncorporationAtom } from "@/lib/atom";
 import { serviceAggrementTypes } from "@/types/hongkongForm";
 import { getSavedServiceAggrmtData, saveServiceAgreementData, updateServiceAgreementData } from "@/services/dataFetch";
@@ -33,7 +33,7 @@ import CustomLoader from "@/components/ui/customLoader";
 const SAgrementPdf: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSaveLoading, setIsSaveLoading] = useState(false);
-    const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgrement);
+    const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement );
     const [companyData] = useAtom(companyIncorporationAtom);
     const [isFetching, setIsFetching] = useState(true);
     const [serviceId, setId] = useState("")

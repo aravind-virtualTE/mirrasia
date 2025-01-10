@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import SignatureModal from "@/components/pdfPage/SignatureModal";
 // import { Button } from "@/components/ui/button";
 import { useAtom } from "jotai";
-import { serviceAgrement } from "@/store/hongkong";
+import { serviceAgreement } from "@/store/hongkong";
 import {
   Tooltip,
   TooltipContent,
@@ -14,7 +14,7 @@ export default function AppointmentLetter() {
   const [directorName, setDetails] = useState("");
   const [signature, setSignature] = useState<string | "">("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgrement);
+  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
   const [showInstructions, setShowInstructions] = useState(true);
   const handleBoxClick = () => {
     setIsModalOpen(true);

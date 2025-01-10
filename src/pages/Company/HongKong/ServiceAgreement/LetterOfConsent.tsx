@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator"
 // import InlineSignatureCreator from '../../SignatureComponent'
 import SignatureModal from '@/components/pdfPage/SignatureModal'
 import { useAtom } from 'jotai'
-import { serviceAgrement } from '@/store/hongkong'
+import { serviceAgreement } from '@/store/hongkong'
 
 export default function LetterOfConsent() {
   const [formData, setFormData] = useState({
@@ -22,7 +22,7 @@ export default function LetterOfConsent() {
     directorName: '',
     signDate: ''
   })
-  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgrement);
+  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
   const [signature, setSignature] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   

@@ -64,7 +64,7 @@ const CompanyRegistration = () => {
     }, []);
 
     const steps = [
-        { number: 1, label: 'Applciant\ninformation', active: currentSection === 1 },
+        { number: 1, label: 'Applicant\ninformation', active: currentSection === 1 },
         { number: 2, label: 'AML\nCDD', active: currentSection === 2 },
         { number: 3, label: 'Company\ninformation', active: currentSection === 3 },
         { number: 4, label: 'Service Agreement', active: currentSection === 4 },

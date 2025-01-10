@@ -10,6 +10,8 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { useState } from "react"
 // import InlineSignatureCreator from "../../SignatureComponent"
 import SignatureModal from "@/components/pdfPage/SignatureModal"
+import { serviceAgreement  } from "@/store/hongkong"
+import { useAtom } from "jotai"
 
 interface Secretary {
   dateOfAppointment: string
@@ -27,14 +29,18 @@ export default function RegisterOfCompanySecretaries() {
     name: "TRUSTPAY AI SYSTEMS LIMITED",
     ubiNumber: "Test Num",
   }
-  const [signature, setSignature] = useState<string | null>(null);
+  
+  const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgreement )
+  
+  const [signature, setSignature] = useState<string | null>(serviceAgrementDetails.companySecretarySignature ?? null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
     setIsModalOpen(true);
-  };
+  }; 
 
   const handleSelectSignature = (selectedSignature: string | null) => {
     setSignature(selectedSignature);
+    setServiceAgrementDetails({...serviceAgrementDetails,companySecretarySignature: selectedSignature })
     setIsModalOpen(false);
   };
 
@@ -84,11 +90,11 @@ export default function RegisterOfCompanySecretaries() {
         <div className="flex justify-between items-start">
           <div className="space-y-2">
             <div className="flex gap-2">
-              <p className="font-serif text-sm">Name of Company: <span className=" px-1  underline ">{companyDetails.name}</span></p>
+              <p className="font-serif text-sm">Name of Company: <span className=" px-1  underline ">{serviceAgrementDetails.companyName}</span></p>
 
             </div>
             <div className="flex gap-2 font-serif">
-              <p className="font-serif text-sm">BRN Number: <span className=" px-1  underline ">{companyDetails.ubiNumber}</span></p>
+              <p className="font-serif text-sm">BRN Number: <span className=" px-1  underline ">{serviceAgrementDetails.brnNo}</span></p>
             </div>
           </div>
           <h1 className="text-l font-serif font-semibold">REGISTER OF COMPANY SECRETARIES</h1>

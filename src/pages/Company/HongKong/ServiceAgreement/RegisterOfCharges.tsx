@@ -11,7 +11,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { useEffect, useState } from "react"
 import SignatureModal from "@/components/pdfPage/SignatureModal"
 import { useAtom } from "jotai"
-import { serviceAgrement } from "@/store/hongkong"
+import { serviceAgreement  } from "@/store/hongkong"
 import { Input } from "@/components/ui/input"
 
 interface Charge {
@@ -24,7 +24,7 @@ interface Charge {
 }
 
 export default function RegisterOfCharges() {
-  const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgrement)
+  const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgreement )
   const [localCharges, setLocalCharges] = useState<Charge[]>([])
   const [signature, setSignature] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
