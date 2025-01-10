@@ -120,7 +120,7 @@ export interface HkFormData {
 // director: { name: string; signature: string }[];
 export interface serviceAggrementTypes {
   companyId: string;
-  ubiNo: string;
+  brnNo: string;
   id: string;
   appointmentDate: string;
   companyName: string;
@@ -390,7 +390,7 @@ export interface serviceAggrementTypes {
 
 // export interface ServiceAgreementData {
 //   appointmentDate: string;
-//   ubiNo: string;
+//   brnNo: string;
 //   companyName: string;
 //   directorName: string;
 //   companyAddress: string;
@@ -424,7 +424,7 @@ export interface serviceAggrementTypes {
 //   };
 //   companyDetails: {
 //     name: string;
-//     // ubiNo: string;
+//     // brnNo: string;
 //     director: string;
 //   };
 //   controllers: SignificantController[];

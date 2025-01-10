@@ -6,7 +6,7 @@ import SignatureModal from "@/components/pdfPage/SignatureModal";
 export default function DeclarationOfInterest() {
   const companyDetails = {
     name: "TRUSTPAY AI SYSTEMS LIMITED",
-    ubiNo: "TestNum",
+    brnNo: "TestNum",
     director: "AHMED, SHAHAD",
   }
   const [docSigned,] = useState('2024-12-12')
@@ -47,7 +47,7 @@ export default function DeclarationOfInterest() {
       <CardHeader className="space-y-6 pb-6">
         <div className="space-y-2">
           <div className="flex gap-2">
-            <p className="font-serif text-sm">UBI Number: <span className=" px-1  underline ">{companyDetails.ubiNo}</span></p>
+            <p className="font-serif text-sm">BRN Number: <span className=" px-1  underline ">{companyDetails.brnNo}</span></p>
           </div>
           <div className="text-center space-y-1">
             <p className=" px-1 inline-block font-serif font-semibold">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React  from 'react';
 import { useTheme } from "@/components/theme-provider";
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -9,18 +9,19 @@ import { useAtom } from "jotai";
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import DropdownSelect from '@/components/DropdownSelect';
 
 const AccountingTaxationInfo: React.FC = () => {
     const [accTaxInfo, setTaxAccountInfo] = useAtom(accountingTaxInfoAtom);
 
-    const finYearEndDates = ['December 31', "March 31 (Hong Kong's fiscal year-end date)", 'Other']
+    const finYearEndDates = ['December 31', "March 31 (Hong Kong's fiscal year-end date)"]
     const boobkCycleCount = ['Monthly', 'Quarterly', 'Half-annually (every 6 months)', 'Annually (every 12 months)  *the lowest cost', 'Other']
 
     const accoutingSoftware = ['Yes (Software cost: estimated as HKD400 per month)', 'No', 'Recommendation required', 'Other']
 
-    const handleFinYearChange = (finYearEnd: string) => {
-        setTaxAccountInfo((prev) => ({ ...prev, finYearEnd }));
-    };
+    // const handleFinYearChange = (finYearEnd: string) => {
+    //     setTaxAccountInfo((prev) => ({ ...prev, finYearEnd }));
+    // };
 
     const handleBookCycleChange = (bookKeepCycle: string) => {
         setTaxAccountInfo((prev) => ({ ...prev, bookKeepCycle }));
@@ -29,6 +30,12 @@ const AccountingTaxationInfo: React.FC = () => {
         setTaxAccountInfo((prev) => ({ ...prev, implementSoftware }));
     }
     const { theme } = useTheme();
+    
+
+    const handleItemSelect = (finYearEnd: string | number) => {
+        // console.log('Selected Price:', registerAmountAtom);
+        setTaxAccountInfo((prev) => ({ ...prev, finYearEnd }));
+      };
 
     return (
         <div className="flex w-full p-4">
@@ -53,7 +60,13 @@ const AccountingTaxationInfo: React.FC = () => {
                                     </TooltipContent>
                                 </Tooltip>
                             </span></Label>
-                            <RadioGroup className="mt-4 space-y-3"
+                            <DropdownSelect
+                                options={finYearEndDates}
+                                placeholder="Enter custom price"
+                                onSelect={handleItemSelect}
+                                selectedValue={accTaxInfo.finYearEnd}
+                            />
+                            {/* <RadioGroup className="mt-4 space-y-3"
                                 value={accTaxInfo.finYearEnd}
                                 onValueChange={handleFinYearChange}
                             >
@@ -65,7 +78,7 @@ const AccountingTaxationInfo: React.FC = () => {
                                         </Label>
                                     </div>
                                 ))}
-                            </RadioGroup>
+                            </RadioGroup> */}
                         </div>
                         <div>
                             <Label className="text-base font-semibold">Bookkeeping cycle <span className="text-red-500 font-bold ml-1">*</span></Label>
@@ -118,7 +131,7 @@ const AccountingTaxationInfo: React.FC = () => {
                                 className="w-full"
                                 value={accTaxInfo.anySoftwareInUse}
                                 onChange={(e) => setTaxAccountInfo(prev => ({ ...prev, anySoftwareInUse: e.target.value }))}
-                                placeholder="Enter data if any..." />                           
+                                placeholder="Enter data if any..." />
                         </div>
                     </CardContent>
                 </Card>

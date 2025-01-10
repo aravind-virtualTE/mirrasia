@@ -1,361 +1,361 @@
-export const businessNatureList = [
-  {
-    "name": '',
-    "val": "000"
-  },
-  {
-    "name": "Crop and animal production, hunting and related service activities",
-    "val": "001"
-  },
-  {
-    "name": "Forestry activities",
-    "val": "002"
-  },
-  {
-    "name": "Fishing and aquaculture",
-    "val": "003"
-  },
-  {
-    "name": "Mining of coal and lignite",
-    "val": "005"
-  },
-  {
-    "name": "Extraction of crude petroleum and natural gas",
-    "val": "006"
-  },
-  {
-    "name": "Mining of metal ores",
-    "val": "007"
-  },
-  {
-    "name": "Quarrying and other mining of non-metal ores",
-    "val": "008"
-  },
-  {
-    "name": "Mining support service activities",
-    "val": "009"
-  },
-  {
-    "name": "Manufacture of food products",
-    "val": "010"
-  },
-  {
-    "name": "Manufacture of beverages",
-    "val": "011"
-  },
-  {
-    "name": "Manufacture of tobacco products",
-    "val": "012"
-  },
-  {
-    "name": "Manufacture of textiles",
-    "val": "013"
-  },
-  {
-    "name": "Manufacture of wearing apparel",
-    "val": "014"
-  },
-  {
-    "name": "Manufacture of leather and related products",
-    "val": "015"
-  },
-  {
-    "name": "Manufacture of wood and of products of wood and cork, articles of straw and plaiting materials (except furniture and toys)",
-    "val": "016"
-  },
-  {
-    "name": "Manufacture of paper and paper products",
-    "val": "017"
-  },
-  {
-    "name": "Printing and reproduction of recorded media",
-    "val": "018"
-  },
-  {
-    "name": "Manufacture of coke and refined petroleum products",
-    "val": "019"
-  },
-  {
-    "name": "Manufacture of chemicals and chemical products",
-    "val": "020"
-  },
-  {
-    "name": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
-    "val": "021"
-  },
-  {
-    "name": "Manufacture of rubber and plastics products (except furniture, toys, sports goods and stationery)",
-    "val": "022"
-  },
-  {
-    "name": "Manufacture of other non-metallic mineral products",
-    "val": "023"
-  },
-  {
-    "name": "Manufacture of basic metals",
-    "val": "024"
-  },
-  {
-    "name": "Manufacture of fabricated metal products (except machinery and equipment)",
-    "val": "025"
-  },
-  {
-    "name": "Manufacture of computer, electronic and optical products",
-    "val": "026"
-  },
-  {
-    "name": "Manufacture of electrical equipment",
-    "val": "027"
-  },
-  {
-    "name": "Manufacture of machinery and equipment n.e.c.",
-    "val": "028"
-  },
-  {
-    "name": "Body assembly of motor vehicles",
-    "val": "029"
-  },
-  {
-    "name": "Manufacture of other transport equipment",
-    "val": "030"
-  },
-  {
-    "name": "Manufacture of furniture",
-    "val": "031"
-  },
-  {
-    "name": "Other manufacturing",
-    "val": "032"
-  },
-  {
-    "name": "Repair and installation of machinery and equipment",
-    "val": "033"
-  },
-  {
-    "name": "Electricity and gas supply",
-    "val": "035"
-  },
-  {
-    "name": "Water collection, treatment and supply",
-    "val": "036"
-  },
-  {
-    "name": "Sewerage",
-    "val": "037"
-  },
-  {
-    "name": "Waste collection, treatment and disposal activities; materials recovery",
-    "val": "038"
-  },
-  {
-    "name": "Remediation activities and other waste management services",
-    "val": "039"
-  },
-  {
-    "name": "Construction of buildings",
-    "val": "041"
-  },
-  {
-    "name": "Civil engineering",
-    "val": "042"
-  },
-  {
-    "name": "Specialised construction activities",
-    "val": "043"
-  },
-  {
-    "name": "Import and export trade",
-    "val": "045"
-  },
-  {
-    "name": "Wholesale",
-    "val": "046"
-  },
-  {
-    "name": "Retail trade",
-    "val": "047"
-  },
-  {
-    "name": "Land transport",
-    "val": "049"
-  },
-  {
-    "name": "Water transport",
-    "val": "050"
-  },
-  {
-    "name": "Air transport",
-    "val": "051"
-  },
-  {
-    "name": "Warehousing and support activities for transportation",
-    "val": "052"
-  },
-  {
-    "name": "Postal and courier activities",
-    "val": "053"
-  },
-  {
-    "name": "Short term accommodation activities",
-    "val": "055"
-  },
-  {
-    "name": "Food and beverage service activities",
-    "val": "056"
-  },
-  {
-    "name": "Publishing activities",
-    "val": "058"
-  },
-  {
-    "name": "Motion picture, video and television programme production, sound recording and music publishing activities",
-    "val": "059"
-  },
-  {
-    "name": "Programming and broadcasting activities",
-    "val": "060"
-  },
-  {
-    "name": "Telecommunications",
-    "val": "061"
-  },
-  {
-    "name": "Information technology service activities",
-    "val": "062"
-  },
-  {
-    "name": "Information service activities",
-    "val": "063"
-  },
-  {
-    "name": "Financial service activities, including investment and holding companies, and the activities of trusts, funds and similar financial entities.",
-    "val": "064"
-  },
-  {
-    "name": "Insurance (including pension funding)",
-    "val": "065"
-  },
-  {
-    "name": "Activities auxiliary to financial service and insurance activities",
-    "val": "066"
-  },
-  {
-    "name": "Real estate activities",
-    "val": "068"
-  },
-  {
-    "name": "Legal and accounting activities",
-    "val": "069"
-  },
-  {
-    "name": "Activities of head offices; management and management consultancy activities",
-    "val": "070"
-  },
-  {
-    "name": "Architecture and engineering activities, technical testing and analysis",
-    "val": "071"
-  },
-  {
-    "name": "Scientific research and development",
-    "val": "072"
-  },
-  {
-    "name": "Veterinary activities",
-    "val": "073"
-  },
-  {
-    "name": "Advertising and market research",
-    "val": "074"
-  },
-  {
-    "name": "Other professional, scientific and technical activities",
-    "val": "075"
-  },
-  {
-    "name": "Rental and leasing activities",
-    "val": "077"
-  },
-  {
-    "name": "Employment activities",
-    "val": "078"
-  },
-  {
-    "name": "Travel agency, reservation service and related activities",
-    "val": "079"
-  },
-  {
-    "name": "Security and investigation activities",
-    "val": "080"
-  },
-  {
-    "name": "Services to buildings and landscape care activities",
-    "val": "081"
-  },
-  {
-    "name": "Office administrative, office support and other business support activities",
-    "val": "082"
-  },
-  {
-    "name": "Public administration",
-    "val": "084"
-  },
-  {
-    "name": "Education",
-    "val": "085"
-  },
-  {
-    "name": "Human health activities",
-    "val": "086"
-  },
-  {
-    "name": "Residential care activities",
-    "val": "087"
-  },
-  {
-    "name": "Social work activities without accommodation",
-    "val": "088"
-  },
-  {
-    "name": "Creative and performing arts activities",
-    "val": "090"
-  },
-  {
-    "name": "Libraries, archives, museums and other cultural activities",
-    "val": "091"
-  },
-  {
-    "name": "Activities of amusement parks and theme parks",
-    "val": "092"
-  },
-  {
-    "name": "Sports and other entertainment activities",
-    "val": "093"
-  },
-  {
-    "name": "Activities of membership organisations",
-    "val": "094"
-  },
-  {
-    "name": "Repair of motor vehicles, motorcycles, computers, personal and household goods",
-    "val": "095"
-  },
-  {
-    "name": "Other personal service activities",
-    "val": "096"
-  },
-  {
-    "name": "Activities of households as employers of domestic personnel",
-    "val": "097"
-  },
-  {
-    "name": "Goods- and services-producing activities of private households for own use",
-    "val": "098"
-  },
-  {
-    "name": "Activities of extraterritorial organisations and bodies",
-    "val": "099"
-  }
-]
+export const businessNatureList =[
+    {
+      "label": '',
+      "code": "000"
+    },
+    {
+      "label": "Crop and animal production, hunting and related service activities",
+      "code": "001"
+    },
+    {
+      "label": "Forestry activities",
+      "code": "002"
+    },
+    {
+      "label": "Fishing and aquaculture",
+      "code": "003"
+    },
+    {
+      "label": "Mining of coal and lignite",
+      "code": "005"
+    },
+    {
+      "label": "Extraction of crude petroleum and natural gas",
+      "code": "006"
+    },
+    {
+      "label": "Mining of metal ores",
+      "code": "007"
+    },
+    {
+      "label": "Quarrying and other mining of non-metal ores",
+      "code": "008"
+    },
+    {
+      "label": "Mining support service activities",
+      "code": "009"
+    },
+    {
+      "label": "Manufacture of food products",
+      "code": "010"
+    },
+    {
+      "label": "Manufacture of beverages",
+      "code": "011"
+    },
+    {
+      "label": "Manufacture of tobacco products",
+      "code": "012"
+    },
+    {
+      "label": "Manufacture of textiles",
+      "code": "013"
+    },
+    {
+      "label": "Manufacture of wearing apparel",
+      "code": "014"
+    },
+    {
+      "label": "Manufacture of leather and related products",
+      "code": "015"
+    },
+    {
+      "label": "Manufacture of wood and of products of wood and cork, articles of straw and plaiting materials (except furniture and toys)",
+      "code": "016"
+    },
+    {
+      "label": "Manufacture of paper and paper products",
+      "code": "017"
+    },
+    {
+      "label": "Printing and reproduction of recorded media",
+      "code": "018"
+    },
+    {
+      "label": "Manufacture of coke and refined petroleum products",
+      "code": "019"
+    },
+    {
+      "label": "Manufacture of chemicals and chemical products",
+      "code": "020"
+    },
+    {
+      "label": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
+      "code": "021"
+    },
+    {
+      "label": "Manufacture of rubber and plastics products (except furniture, toys, sports goods and stationery)",
+      "code": "022"
+    },
+    {
+      "label": "Manufacture of other non-metallic mineral products",
+      "code": "023"
+    },
+    {
+      "label": "Manufacture of basic metals",
+      "code": "024"
+    },
+    {
+      "label": "Manufacture of fabricated metal products (except machinery and equipment)",
+      "code": "025"
+    },
+    {
+      "label": "Manufacture of computer, electronic and optical products",
+      "code": "026"
+    },
+    {
+      "label": "Manufacture of electrical equipment",
+      "code": "027"
+    },
+    {
+      "label": "Manufacture of machinery and equipment n.e.c.",
+      "code": "028"
+    },
+    {
+      "label": "Body assembly of motor vehicles",
+      "code": "029"
+    },
+    {
+      "label": "Manufacture of other transport equipment",
+      "code": "030"
+    },
+    {
+      "label": "Manufacture of furniture",
+      "code": "031"
+    },
+    {
+      "label": "Other manufacturing",
+      "code": "032"
+    },
+    {
+      "label": "Repair and installation of machinery and equipment",
+      "code": "033"
+    },
+    {
+      "label": "Electricity and gas supply",
+      "code": "035"
+    },
+    {
+      "label": "Water collection, treatment and supply",
+      "code": "036"
+    },
+    {
+      "label": "Sewerage",
+      "code": "037"
+    },
+    {
+      "label": "Waste collection, treatment and disposal activities; materials recovery",
+      "code": "038"
+    },
+    {
+      "label": "Remediation activities and other waste management services",
+      "code": "039"
+    },
+    {
+      "label": "Construction of buildings",
+      "code": "041"
+    },
+    {
+      "label": "Civil engineering",
+      "code": "042"
+    },
+    {
+      "label": "Specialised construction activities",
+      "code": "043"
+    },
+    {
+      "label": "Import and export trade",
+      "code": "045"
+    },
+    {
+      "label": "Wholesale",
+      "code": "046"
+    },
+    {
+      "label": "Retail trade",
+      "code": "047"
+    },
+    {
+      "label": "Land transport",
+      "code": "049"
+    },
+    {
+      "label": "Water transport",
+      "code": "050"
+    },
+    {
+      "label": "Air transport",
+      "code": "051"
+    },
+    {
+      "label": "Warehousing and support activities for transportation",
+      "code": "052"
+    },
+    {
+      "label": "Postal and courier activities",
+      "code": "053"
+    },
+    {
+      "label": "Short term accommodation activities",
+      "code": "055"
+    },
+    {
+      "label": "Food and beverage service activities",
+      "code": "056"
+    },
+    {
+      "label": "Publishing activities",
+      "code": "058"
+    },
+    {
+      "label": "Motion picture, video and television programme production, sound recording and music publishing activities",
+      "code": "059"
+    },
+    {
+      "label": "Programming and broadcasting activities",
+      "code": "060"
+    },
+    {
+      "label": "Telecommunications",
+      "code": "061"
+    },
+    {
+      "label": "Information technology service activities",
+      "code": "062"
+    },
+    {
+      "label": "Information service activities",
+      "code": "063"
+    },
+    {
+      "label": "Financial service activities, including investment and holding companies, and the activities of trusts, funds and similar financial entities.",
+      "code": "064"
+    },
+    {
+      "label": "Insurance (including pension funding)",
+      "code": "065"
+    },
+    {
+      "label": "Activities auxiliary to financial service and insurance activities",
+      "code": "066"
+    },
+    {
+      "label": "Real estate activities",
+      "code": "068"
+    },
+    {
+      "label": "Legal and accounting activities",
+      "code": "069"
+    },
+    {
+      "label": "Activities of head offices; management and management consultancy activities",
+      "code": "070"
+    },
+    {
+      "label": "Architecture and engineering activities, technical testing and analysis",
+      "code": "071"
+    },
+    {
+      "label": "Scientific research and development",
+      "code": "072"
+    },
+    {
+      "label": "Veterinary activities",
+      "code": "073"
+    },
+    {
+      "label": "Advertising and market research",
+      "code": "074"
+    },
+    {
+      "label": "Other professional, scientific and technical activities",
+      "code": "075"
+    },
+    {
+      "label": "Rental and leasing activities",
+      "code": "077"
+    },
+    {
+      "label": "Employment activities",
+      "code": "078"
+    },
+    {
+      "label": "Travel agency, reservation service and related activities",
+      "code": "079"
+    },
+    {
+      "label": "Security and investigation activities",
+      "code": "080"
+    },
+    {
+      "label": "Services to buildings and landscape care activities",
+      "code": "081"
+    },
+    {
+      "label": "Office administrative, office support and other business support activities",
+      "code": "082"
+    },
+    {
+      "label": "Public administration",
+      "code": "084"
+    },
+    {
+      "label": "Education",
+      "code": "085"
+    },
+    {
+      "label": "Human health activities",
+      "code": "086"
+    },
+    {
+      "label": "Residential care activities",
+      "code": "087"
+    },
+    {
+      "label": "Social work activities without accommodation",
+      "code": "088"
+    },
+    {
+      "label": "Creative and performing arts activities",
+      "code": "090"
+    },
+    {
+      "label": "Libraries, archives, museums and other cultural activities",
+      "code": "091"
+    },
+    {
+      "label": "Activities of amusement parks and theme parks",
+      "code": "092"
+    },
+    {
+      "label": "Sports and other entertainment activities",
+      "code": "093"
+    },
+    {
+      "label": "Activities of membership organisations",
+      "code": "094"
+    },
+    {
+      "label": "Repair of motor vehicles, motorcycles, computers, personal and household goods",
+      "code": "095"
+    },
+    {
+      "label": "Other personal service activities",
+      "code": "096"
+    },
+    {
+      "label": "Activities of households as employers of domestic personnel",
+      "code": "097"
+    },
+    {
+      "label": "Goods- and services-producing activities of private households for own use",
+      "code": "098"
+    },
+    {
+      "label": "Activities of extraterritorial organisations and bodies",
+      "code": "099"
+    }
+  ]
 
 export const typesOfShares = [
   "Oridnary shares",
@@ -408,6 +408,66 @@ export const snsPlatforms = [
   { id: 'whatsapp', name: 'WhatsApp' }
 ];
 
+interface Currency {
+  code: string
+  label: string
+}
+
+export const currencies: Currency[] = [
+    { code: "AED", label: "United Arab Emirates Dirham" },
+    { code: "AUD", label: "Australian Dollars" },
+    { code: "BHD", label: "Bahraina Dinar" },
+    { code: "BMD", label: "Bermudian Dollar" },
+    { code: "BND", label: "Brunei Dollars" },
+    { code: "BRL", label: "Brazilian Real" },
+    { code: "BSD", label: "Bahamas Dollars" },
+    { code: "CAD", label: "Canadian Dollars" },
+    { code: "CHF", label: "Swiss Francs" },
+    { code: "CLP", label: "Chilean Peso" },
+    { code: "CYP", label: "Cyprus Pound" },
+    { code: "CZK", label: "Czech Koruna" },
+    { code: "DKK", label: "Danish Kroners" },
+    { code: "ETB", label: "Ethiopian Birr" },
+    { code: "EUR", label: "Euro" },
+    { code: "FJD", label: "Fiji Dollar" },
+    { code: "GBP", label: "Sterling" },
+    { code: "HKD", label: "Hong Kong Dollar" },
+    { code: "HUF", label: "Hungarian Forint" },
+    { code: "IDR", label: "Indonesian Rupiah" },
+    { code: "INR", label: "Indian Rupees" },
+    { code: "JPY", label: "Japanese Yen" },
+    { code: "KHR", label: "Cambodian Riel" },
+    { code: "LKR", label: "Sri Lankan Rupee" },
+    { code: "MNT", label: "Mongolian Tugrik" },
+    { code: "MOP", label: "Macau Pataka" },
+    { code: "MUR", label: "Mauritian Rupee" },
+    { code: "MXN", label: "Mexican Peso" },
+    { code: "MYR", label: "Malaysian Ringgit" },
+    { code: "NIS", label: "New Israeli Shekel" },
+    { code: "NOK", label: "Norwegian Kroners" },
+    { code: "NPR", label: "Nepalese Rupee" },
+    { code: "NZD", label: "New Zealand Dollars" },
+    { code: "PHP", label: "Philippine Pesos" },
+    { code: "PKR", label: "Pakistan Rupees" },
+    { code: "PLN", label: "Polish Zloty" },
+    { code: "QAR", label: "Qatari Rial" },
+    { code: "RMB", label: "Ren Min Bi" },
+    { code: "RUB", label: "Russian Ruble" },
+    { code: "SAR", label: "Saudi Arabian Riyal" },
+    { code: "SEK", label: "Swedish Kroners" },
+    { code: "SGD", label: "Singapore Dollars" },
+    { code: "THB", label: "Thai Bahts" },
+    { code: "TK", label: "Currency of Bangladesh" },
+    { code: "TRY", label: "New Turkish Lira" },
+    { code: "USD", label: "United States Dollar" },
+    { code: "UYU", label: "Peso Uruguayo" },
+    { code: "VND", label: "Vietnam Dong" },
+    { code: "WON", label: "Korean Won" },
+    { code: "XCD", label: "East Caribbean Dollar" },
+    { code: "XOF", label: "West African CFA" },
+    { code: "XPF", label: "CFP Franc" },
+    { code: "ZAR", label: "C. South African Rand" }
+]
 
  // const industries = [
     //     "Trade",

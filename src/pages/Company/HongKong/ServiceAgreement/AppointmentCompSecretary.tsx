@@ -83,15 +83,15 @@ export default function AppointmentLetter() {
           </div>
           <div className="space-x-4">
             <span className="font-semibold">
-              UBI NO.:{" "}
+              BRN NO.:{" "}
               <input
                 className="border-b "
-                placeholder="Enter UBI NO"
-                value={serviceAgrementDetails.ubiNo}
+                placeholder="Enter BRN NO"
+                value={serviceAgrementDetails.brnNo}
                 onChange={(e) =>
                   setServiceAgrement({
                     ...serviceAgrementDetails,
-                    ubiNo: e.target.value,
+                    brnNo: e.target.value,
                   })
                 }
               />

@@ -7,7 +7,14 @@ import { HelpCircle } from "lucide-react"
 import { useTheme } from "@/components/theme-provider";
 import { regCompanyInfoAtom } from "@/lib/atom"
 import { useAtom } from "jotai"
-import {  amountOptions, currencyOptions, noOfSharesOptions, paymentOptions } from "./constants"
+import {
+  amountOptions,
+  currencies,
+  // currencyOptions, 
+  noOfSharesOptions, paymentOptions
+} from "./constants"
+import SearchSelect from "@/components/SearchSelect"
+import DropdownSelect from "@/components/DropdownSelect"
 
 const InformationIncorporation = () => {
   const { theme } = useTheme();
@@ -17,14 +24,14 @@ const InformationIncorporation = () => {
     setCompanyInfo((prev) => ({ ...prev, registerPaymentShare }));
   };
 
-  const handleCurrencyOptionChange = (registerCurrencyAtom: string) => {
-    setCompanyInfo((prev) => ({ ...prev, registerCurrencyAtom }));
-  };
+  // const handleCurrencyOptionChange = (registerCurrencyAtom: string) => {
+  //   setCompanyInfo((prev) => ({ ...prev, registerCurrencyAtom }));
+  // };
 
 
-  const handleShareCapitalOptionChange = (registerAmountAtom: string) => {
-    setCompanyInfo((prev) => ({ ...prev, registerAmountAtom }));
-  };
+  // const handleShareCapitalOptionChange = (registerAmountAtom: string) => {
+  //   setCompanyInfo((prev) => ({ ...prev, registerAmountAtom }));
+  // };
 
   const handleNumShareIssueOptionChange = (registerNumSharesAtom: string) => {
     setCompanyInfo((prev) => ({ ...prev, registerNumSharesAtom }));
@@ -40,6 +47,16 @@ const InformationIncorporation = () => {
   //   setCompanyInfo((prev) => ({ ...prev, registerAddressAtom }));
   // };
 
+  const handlePriceSelect = (registerAmountAtom: string | number) => {
+    // console.log('Selected Price:', registerAmountAtom);
+    setCompanyInfo((prev) => ({ ...prev, registerAmountAtom }));
+  };
+
+  const handleCurrencySelect = (currency: { code: string; label: string }) => {
+    // console.log("Selected currency:", currency);
+    setCompanyInfo((prev) => ({ ...prev, registerCurrencyAtom: currency.code }));
+  };
+
   return (
     <div className="flex w-full p-4">
       <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
@@ -51,7 +68,7 @@ const InformationIncorporation = () => {
       </aside>
       <div className="w-3/4 ml-4">
         <Card>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6">           
             <div>
               <Label className="text-base font-semibold flex items-center gap-2">
                 Payment of the share capital <span className="text-red-500 font-bold ml-1 flex">*
@@ -93,7 +110,8 @@ const InformationIncorporation = () => {
                   </Tooltip>
                 </span>
               </Label>
-              <RadioGroup className="mt-4 space-y-3"
+              {/* onValueChange={handleCurrencyOptionChange} */}
+              {/* <RadioGroup className="mt-4 space-y-3"
                 value={comapnyInfo.registerCurrencyAtom}
                 onValueChange={handleCurrencyOptionChange}
               >
@@ -105,7 +123,12 @@ const InformationIncorporation = () => {
                     </Label>
                   </div>
                 ))}
-              </RadioGroup>
+              </RadioGroup> */}
+             <SearchSelect
+                items={currencies}
+                placeholder="Select currency..."
+                onSelect={handleCurrencySelect}
+              />
             </div>
             <div>
               <Label className="text-base font-semibold flex items-center gap-2">
@@ -118,10 +141,16 @@ const InformationIncorporation = () => {
                   </TooltipContent>
                 </Tooltip></span>
               </Label>
-              <RadioGroup className="mt-4 space-y-3"
+              <DropdownSelect
+                  options={amountOptions}
+                  placeholder="Enter custom price"
+                  onSelect={handlePriceSelect}
+                />
+              {/* <RadioGroup className="mt-4 space-y-3"
                 value={comapnyInfo.registerAmountAtom}
                 onValueChange={handleShareCapitalOptionChange}
               >
+                
                 {amountOptions.map((purpose) => (
                   <div key={purpose} className="flex items-center space-x-3">
                     <RadioGroupItem value={purpose} id={purpose} />
@@ -130,7 +159,7 @@ const InformationIncorporation = () => {
                     </Label>
                   </div>
                 ))}
-              </RadioGroup>
+              </RadioGroup> */}
             </div>
             <div>
               <Label className="text-base font-semibold flex items-center gap-2">

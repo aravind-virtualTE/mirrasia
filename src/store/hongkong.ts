@@ -124,7 +124,7 @@ export const currentHkStepAtom = atom(
 
 // export const initialServiceAgrementState: Partial<ServiceAgreementData> = {
 //   appointmentDate: "",
-//   ubiNo: "",
+//   brnNo: "",
 //   companyName: "",
 //   directorName: "",
 //   companyAddress: "",
@@ -255,7 +255,7 @@ export const currentHkStepAtom = atom(
 //   },
 //   companyDetails: {
 //     name: "",
-//     // ubiNo: '',
+//     // brnNo: '',
 //     director: "",
 //   },
 //   controllers: [
@@ -356,7 +356,7 @@ export const currentHkStepAtom = atom(
 
 const initialPartialState: Partial<serviceAggrementTypes> = {
   companyId:"",
-  ubiNo: "",
+  brnNo: "",
   directorList: [{ name: "", signature: "" }],
   appointmentDate: "",
   companyName: "",

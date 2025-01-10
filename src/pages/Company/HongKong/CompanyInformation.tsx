@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { companyBusinessInfoAtom } from "@/lib/atom";
 import { useAtom } from "jotai";
@@ -11,12 +11,13 @@ import { businessNatureList, purposeOptions } from "./constants";
 import { Checkbox } from "@/components/ui/checkbox";
 import ShareholdersDirectorsDetails from "./ShareholdersDirectorsDetails";
 import AccountingTaxationInfo from "./AccountingTaxationInfo";
+import SearchSelect from "@/components/SearchSelect";
 
 
 const CompanyInformation: React.FC = () => {
     // const { t } = useTranslation();
     const [businessInfo, setBusinessInfo] = useAtom(companyBusinessInfoAtom);
-    const [selectedValue, setSelectedValue] = useState("");
+    const [selectedValue, setSelectedValue] = useState({code : "", label : ""});
 
     const handleDescriptionChange = (business_product_description: string) => {
         setBusinessInfo((prev) => ({ ...prev, business_product_description }));
@@ -28,25 +29,18 @@ const CompanyInformation: React.FC = () => {
     useEffect(() => {
         // Set the initial value based on the atom
         if (businessInfo.business_industry) {
-          const matchedCategory = businessNatureList.find(
-            (category) => category.name === businessInfo.business_industry
-          );
-          if (matchedCategory) {
-            setSelectedValue(matchedCategory.val);
-          }
+            const matchedCategory = businessNatureList.find(
+                (category) => category.label == businessInfo.business_industry
+            );
+            
+            if (matchedCategory) {
+                setSelectedValue(matchedCategory);
+            }
         } else {
-          // Default to the first item in the list
-          setSelectedValue(businessNatureList[0].val);
+            // Default to the first item in the list
+            setSelectedValue(businessNatureList[0]);
         }
-      }, [businessInfo]);
-      
-    const handleBusinessChange = (value: string) => {
-        // console.log('Selected business category:', value);
-        const categoryName = businessNatureList.find((category) => category.val === value)?.name;
-        setSelectedValue(value);
-        setBusinessInfo((prev) => ({ ...prev, business_industry: categoryName }));
-        // Handle the selected value here
-    };
+    }, [businessInfo]);   
 
     const handlePurposeChange = (checked: boolean, purpose: string) => {
         setBusinessInfo(prev => ({
@@ -57,6 +51,12 @@ const CompanyInformation: React.FC = () => {
         }));
     };
 
+
+    const handleCurrencySelect = (item: { code: string; label: string }) => {
+        console.log("Selected currency:", item);
+        setSelectedValue(item);
+        setBusinessInfo((prev) => ({ ...prev, business_industry: item.label }));
+    };
 
     return (
         <>
@@ -73,26 +73,12 @@ const CompanyInformation: React.FC = () => {
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
                                 <Label htmlFor="business-category">Select Business Industry</Label>
-                                <Select
-                                    defaultValue={businessNatureList[0].val}
-                                    value={selectedValue}                 
-                                    onValueChange={handleBusinessChange}
-                                >
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Select a business Industry" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {businessNatureList.map((category) => (
-                                            <SelectItem
-                                                key={category.val}
-                                                value={category.val}
-                                                className="cursor-pointer"
-                                            >
-                                                {category.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <SearchSelect
+                                    items={businessNatureList}
+                                    placeholder="Select a business Industry"
+                                    onSelect={handleCurrencySelect}
+                                    selectedItem={selectedValue}
+                                />
                             </div>
 
                             <div className="space-y-2">
@@ -112,7 +98,7 @@ const CompanyInformation: React.FC = () => {
                                 <Label className="text-base font-semibold">
                                     Purpose of the establishment of the Hong Kong company and expected effects <span className="text-red-500 font-bold ml-1">*</span>
                                 </Label>
-                               
+
                                 {purposeOptions.map((purpose) => (
                                     <div key={purpose} className="flex items-start space-x-3">
                                         <Checkbox

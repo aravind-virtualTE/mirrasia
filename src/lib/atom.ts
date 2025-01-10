@@ -21,6 +21,7 @@ export type FormDataType = {
   email: string;
   phoneNumber: string;
   companyName: string[];
+  chinaCompanyName : string[]
 };
 
 // corporate incorporation applicant info (section 1)
@@ -32,7 +33,8 @@ export const applicantInfoFormAtom = atomWithReset<FormDataType>({
   snsPlatform: '',
   phoneNumber: '',
   email: '',
-  companyName: ["", "", ""]
+  companyName: ["", "", ""],
+  chinaCompanyName: ["", "", ""],
 });
 
 // corporate incorporation aml/cdd legal ethical assessment (section 2)
@@ -65,7 +67,7 @@ interface RegCompanyInfo {
   registerShareTypeAtom: string[];
   registerPaymentShare?: string;
   registerCurrencyAtom?: string;
-  registerAmountAtom?: string;
+  registerAmountAtom?: string | number;
   registerNumSharesAtom?: string;
 }
 
@@ -114,7 +116,7 @@ export const shareHolderDirectorControllerAtom = atomWithReset<ShareHolderDirect
 });
 
 interface AccountingTaxInfo {
-  finYearEnd?: string;
+  finYearEnd?: string | number;
   bookKeepCycle?: string;
   implementSoftware?: string;
   anySoftwareInUse: string;
@@ -123,7 +125,7 @@ interface AccountingTaxInfo {
 // corporate incorporation Accounting Tax Information (section 5)  
 
 export const accountingTaxInfoAtom = atomWithReset<AccountingTaxInfo>({
-  finYearEnd: undefined,
+  finYearEnd: "",
   bookKeepCycle: undefined,
   implementSoftware: undefined,
   anySoftwareInUse: ""

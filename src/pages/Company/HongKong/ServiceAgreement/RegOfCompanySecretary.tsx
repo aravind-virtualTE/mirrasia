@@ -88,7 +88,7 @@ export default function RegisterOfCompanySecretaries() {
 
             </div>
             <div className="flex gap-2 font-serif">
-              <p className="font-serif text-sm">UBI Number: <span className=" px-1  underline ">{companyDetails.ubiNumber}</span></p>
+              <p className="font-serif text-sm">BRN Number: <span className=" px-1  underline ">{companyDetails.ubiNumber}</span></p>
             </div>
           </div>
           <h1 className="text-l font-serif font-semibold">REGISTER OF COMPANY SECRETARIES</h1>
@@ -112,7 +112,7 @@ export default function RegisterOfCompanySecretaries() {
                 </span>
               </TableHead>
               <TableHead className="border text-black ">
-                HKID NO. OR UBI NO.
+                HKID NO. OR BRN NO.
               </TableHead>
               <TableHead className="border text-black ">
                 Correspondence Address

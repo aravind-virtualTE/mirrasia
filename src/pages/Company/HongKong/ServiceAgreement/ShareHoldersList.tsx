@@ -102,8 +102,8 @@ export default function ShareholdersList() {
             </span>
           </div>
           <div className="flex gap-2">
-            <span className="font-medium">UBI No.:</span>
-            <span>{serviceAgrementDetails.ubiNo}</span>
+            <span className="font-medium">BRN No.:</span>
+            <span>{serviceAgrementDetails.brnNo}</span>
           </div>
         </div>
       </CardHeader>

@@ -66,7 +66,7 @@ export default function SignificantControllersRegister() {
 
   const companyDetails = {
     name: "TRUSTPAY AI SYSTEMS LIMITED",
-    ubiNo: "testNum",
+    brnNo: "testNum",
   }
 
   const controllers: SignificantController[] = [
@@ -113,8 +113,8 @@ export default function SignificantControllersRegister() {
             <span className=" px-1  underline">{companyDetails.name}</span>
           </div>
           <div className="flex gap-2">
-            <span className="font-medium">UBI No.:</span>
-            <span>{companyDetails.ubiNo}</span>
+            <span className="font-medium">BRN No.:</span>
+            <span>{companyDetails.brnNo}</span>
           </div>
         </div>
       </CardHeader>

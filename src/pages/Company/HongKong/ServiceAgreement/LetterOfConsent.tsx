@@ -13,7 +13,7 @@ import { serviceAgrement } from '@/store/hongkong'
 
 export default function LetterOfConsent() {
   const [formData, setFormData] = useState({
-    ubiNo: '',
+    brnNo: '',
     consentDate: '',
     companyName: '',
     contactEmail: '',
@@ -72,11 +72,11 @@ export default function LetterOfConsent() {
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 flex-1">
-            <Label htmlFor="ubiNo" className="whitespace-nowrap">UBI NO.: {serviceAgrementDetails.ubiNo}</Label>
+            <Label htmlFor="brnNo" className="whitespace-nowrap">BRN NO.: {serviceAgrementDetails.brnNo}</Label>
             {/* <Input
-              id="ubiNo"
-              name="ubiNo"
-              value={formData.ubiNo}
+              id="brnNo"
+              name="brnNo"
+              value={formData.brnNo}
               onChange={handleChange}
               className="max-w-[200px]"
             /> */}

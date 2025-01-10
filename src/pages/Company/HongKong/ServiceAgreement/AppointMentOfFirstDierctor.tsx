@@ -18,7 +18,7 @@ interface FounderMember {
 }
 
 const AppointmentOfDirectors: React.FC = () => {
-  const [compDetails, setCompanyName] = useState({ companyName: "", ubiNo: "" });
+  const [compDetails, setCompanyName] = useState({ companyName: "", brnNo: "" });
   const [directors, setDirectors] = useState<Director[]>([
     { name: "Director 1", signature: "" },
   ]);
@@ -38,7 +38,7 @@ const AppointmentOfDirectors: React.FC = () => {
   };
 
   useEffect(() => {
-    setCompanyName({ companyName: "TestCompany", ubiNo: "TestUbiNo" })
+    setCompanyName({ companyName: "TestCompany", brnNo: "TestbrnNo" })
     // setDirectors()
     setDirectors(serviceAgrementDetails.directorList ?? []);
     setFounderMember(serviceAgrementDetails.founderMember ? serviceAgrementDetails.founderMember[0] : { name: "", signature: "" });
@@ -55,7 +55,7 @@ const AppointmentOfDirectors: React.FC = () => {
 
       <CardContent>
         <div className="space-y-4 mb-6">
-          <p><strong>UBI NO :{compDetails.ubiNo}</strong></p>
+          <p><strong>BRN NO :{compDetails.brnNo}</strong></p>
           <p><strong>NAME OF COMPANY : {compDetails.companyName}</strong></p>
           {/* <div className="font-bold py-2 px-4 inline-block">
             {companyName}

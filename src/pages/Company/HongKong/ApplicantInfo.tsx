@@ -23,6 +23,7 @@ interface Errors {
   snsAccountId: string;
   snsPlatform: string;
   companyNames: string[];
+  chinaCompanyName: string[];
 }
 
 const ApplicantInfoForm = () => {
@@ -34,17 +35,18 @@ const ApplicantInfoForm = () => {
     snsAccountId: "",
     snsPlatform: "",
     companyNames: ["", "", ""],
+    chinaCompanyName: ["", "", ""],
   });
   const [companies] = useAtom(companyIncorporationList);
   const { id } = useParams();
   useEffect(() => {
-    if(id){
-      const company = companies.find(c => c._id === id) ;
-      console.log(id,'company',companies);
+    if (id) {
+      const company = companies.find(c => c._id === id);
+      // console.log(id, 'company', companies);
       setFormData(company?.applicantInfoForm as FormDataType)
-    }    
+    }
   }, []);
-  
+
   const relationships: RelationshipType[] = [
     {
       id: "director",
@@ -176,7 +178,7 @@ const ApplicantInfoForm = () => {
         const value = e.target.value;
 
         if (field === "companyName" && index !== undefined) {
-          const updatedCompanyNames = [...formData.companyName];       
+          const updatedCompanyNames = [...formData.companyName];
           updatedCompanyNames[index] = value;
 
           setFormData((prev) => ({
@@ -210,7 +212,7 @@ const ApplicantInfoForm = () => {
 
     handleChange('snsPlatform')(syntheticEvent);
   };
-  // console.log('Form submitted:', formData);
+  console.log('Form submitted:', formData);
 
   return (
     <Card>
@@ -220,6 +222,7 @@ const ApplicantInfoForm = () => {
           {t('ApplicantInfoForm.paragraph')}
         </p>
       </CardHeader>
+      
       {formData && <CardContent>
         <div className="space-y-2">
           <Label htmlFor="name" className="text-base">
@@ -276,10 +279,10 @@ const ApplicantInfoForm = () => {
                   id={`companyName-${index}`}
                   placeholder={
                     index === 0
-                      ? "Company Name you wish to establish as the first priority"
+                      ? "English Company Name you wish to establish as the first priority"
                       : index === 1
-                        ? "Company Name you wish to establish as second priority"
-                        : "Company Name you wish to establish as third priority"
+                        ? "English Company Name you wish to establish as second priority"
+                        : "English Company Name you wish to establish as third priority"
                   }
                   value={cName}
                   onChange={handleChange("companyName", index)}
@@ -288,6 +291,29 @@ const ApplicantInfoForm = () => {
                 />
                 {errors.companyNames[index] && (
                   <Alert variant="destructive"><AlertDescription>{errors.companyNames[index]}</AlertDescription></Alert>
+                )}
+              </div>
+            ))
+          }
+          {
+            formData.chinaCompanyName.map((cName, index) => (
+              <div key={`chinaCompanyName-${index}`}>
+                <Input
+                  id={`chinaCompanyName-${index}`}
+                  placeholder={
+                    index === 0
+                      ? "China Company Name you wish to establish as the first priority"
+                      : index === 1
+                        ? "China Company Name you wish to establish as second priority"
+                        : "China Company Name you wish to establish as third priority"
+                  }
+                  value={cName}
+                  onChange={handleChange("chinaCompanyName", index)}
+                  required
+                  className={`w-full ${errors.chinaCompanyName[index] ? 'border-red-500' : ''}`}
+                />
+                {errors.chinaCompanyName[index] && (
+                  <Alert variant="destructive"><AlertDescription>{errors.chinaCompanyName[index]}</AlertDescription></Alert>
                 )}
               </div>
             ))
@@ -311,7 +337,7 @@ const ApplicantInfoForm = () => {
               required
               className="w-full"
             />
-             {errors.phoneNumber && (
+            {errors.phoneNumber && (
               <Alert variant="destructive"><AlertDescription>{errors.phoneNumber}</AlertDescription></Alert>
             )}
           </div>
@@ -332,7 +358,7 @@ const ApplicantInfoForm = () => {
             {errors.email && (
               <Alert variant="destructive"><AlertDescription>{errors.email}</AlertDescription></Alert>
             )}
-          </div>         
+          </div>
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-4 space-y-2">
               <Label htmlFor="snsPlatform" className="text-sm">
