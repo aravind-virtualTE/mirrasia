@@ -1,12 +1,13 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAtom } from "jotai";
+import { useToast } from "@/hooks/use-toast";
 import { companyIncorporationList } from "@/services/state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SAgrementPdf from "../HongKong/ServiceAgreement/SAgrementPdf";
+import { enableEditing } from "@/services/dataFetch";
 
 
 interface Country {
@@ -109,8 +110,8 @@ const CompanyDetail = () => {
     const { id } = useParams();
     const [companies] = useAtom(companyIncorporationList);
     const companyDetail = companies.find(c => c._id === id) as unknown as Company;
-    const [isDraft, setIsDraft] = useState(companyDetail?.is_draft);
     // const [activePdf, setActivePdf] = useState("");
+    const { toast } = useToast();
 
     const handlePdfClick = (url: string) => {
         console.log("pdf url", url);
@@ -224,15 +225,11 @@ const CompanyDetail = () => {
 
     const handleUpdate = async () => {
         // API call to update the record in the backend
-        console.log("testing", companyDetail._id)
-        // const response = await fetch(`/api/company/${id}`, {
-        //   method: "PATCH",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify({ is_draft: !isDraft }),
-        // });
-        // const data = await response.json();      
-        // console.log(data);
-        setIsDraft(!isDraft);
+        // console.log("testing", !companyDetail.is_draft)
+        const response = await enableEditing({id: companyDetail._id, value: false});
+        
+        toast({ description: "Record updated successfully", });
+        console.log('isEditingResponse',response);
     };
 
     return (

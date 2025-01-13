@@ -135,6 +135,7 @@ export const companyServiceAgreementConsentAtom = atomWithReset(false);
 
 export const PaymentSessionId = atomWithReset("");
 export const paymentId = atomWithReset("");
+export const isDisabled = atomWithReset(false);
 export const icorporationDoc = atomWithReset("");
 // type AnyObject = Record<string, unknown>;
 
@@ -148,6 +149,7 @@ export const companyIncorporationAtom = atom((get) => ({
   userId: '',
   status: 'Pending',
   is_draft: false,
+  isDisabled : get(isDisabled),
   country: get(countryAtom),
   applicantInfoForm: get(applicantInfoFormAtom),
   businessInfoHkCompany: get(businessInfoHkCompanyAtom),
@@ -176,6 +178,7 @@ export const useResetAllForms = () => {
   const resetCountry = useResetAtom(countryAtom);
   const resetSessionPayment = useResetAtom(PaymentSessionId);
   const resetPaymentID = useResetAtom(paymentId);
+  const resetisDisabled= useResetAtom(isDisabled);
   const resetcompPaymentDetails = useResetAtom(serviceSelectionStateAtom);
   const reseticorporationDoc = useResetAtom(icorporationDoc)
 
@@ -193,6 +196,7 @@ export const useResetAllForms = () => {
     resetPaymentID()
     resetcompPaymentDetails()
     reseticorporationDoc()
+    resetisDisabled()
   };
 
   return resetAll;
@@ -215,6 +219,7 @@ export const updateCompanyIncorporationAtom = atom(
       serviceAgreementConsent: boolean;
       sessionId: string;
       paymentId: string;
+      isDisabled : boolean;
       serviceSelectionState: typeof serviceSelectionStateAtom['init'];
       icorporationDoc: typeof icorporationDoc['init']
 
@@ -234,6 +239,9 @@ export const updateCompanyIncorporationAtom = atom(
     }
     if (updates.paymentId) {
       set(paymentId, updates.paymentId);
+    }
+    if (updates.isDisabled) {
+      set(isDisabled, updates.isDisabled);
     }
     if (updates.applicantInfoForm) {
       set(applicantInfoFormAtom, updates.applicantInfoForm);

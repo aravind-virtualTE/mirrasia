@@ -85,7 +85,7 @@ const CompanyRegistration = () => {
             finalForm.userId = `${decodedToken.userId}`
             const payload = { _id:docId, ...finalForm }
             if(finalForm.applicantInfoForm.name !== ''){
-                
+                // console.log("payload-->",payload)
                 const response = await api.post('/company/company-incorporation', payload);
                 // console.log("responseincorporation-->",response)
                 if (response.status === 200) {

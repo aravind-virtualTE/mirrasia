@@ -109,3 +109,12 @@ export const getIncorporationListByUserId = async (
       console.error("Error saving service Agreement Data:", error);
     }
   }
+
+  export const enableEditing = async (data : {id: string, value: boolean}) => {
+    try {
+      const response = await api.post('company/enable-editing', data);
+      return response.data;
+    } catch (error) {
+      console.error("Error saving service Agreement Data:", error);
+    }
+  }
