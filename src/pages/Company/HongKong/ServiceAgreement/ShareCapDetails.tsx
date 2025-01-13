@@ -1,11 +1,11 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
 import { useEffect, useState } from "react"
-import { serviceAgreement } from "@/store/hongkong"
-import { useAtom } from "jotai"
+// import { serviceAgreement } from "@/store/hongkong"
+// import { useAtom } from "jotai"
 
 export default function ShareCapitalForm() {
-  const [serviceAgrementDetails,] = useAtom(serviceAgreement)
+  // const [serviceAgrementDetails,] = useAtom(serviceAgreement)
 
   const [shareCapDetails, setShareCapDetails] = useState({
     founderMember:[{name : "", noOfShares: "", totalShares: ""}],
