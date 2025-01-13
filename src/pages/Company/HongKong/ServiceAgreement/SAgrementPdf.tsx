@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import { resolutionData } from "@/data/resolutionData";
 import SignificantControllerForm from "../SignificantController";
 import AppointmentLetter from "./AppointmentCompSecretary";
 import AppointmentOfDirectors from "./AppointMentOfFirstDierctor";
@@ -80,7 +79,7 @@ const SAgrementPdf: React.FC = () => {
             (record) => record.isDirector === true
         );
         const firstMatchingRecord = shareHolderDir.find(
-            (record) => record.isDirector === false && record.isLegalPerson === true
+            (record) => record.isDirector === false && record.isLegalPerson === false
         );
         const shareholderArr = shareHolderDir.filter(record => record.isDirector === false ).map(record => ({
             name: record.name,           
@@ -229,7 +228,7 @@ const SAgrementPdf: React.FC = () => {
     // console.log("serviceId",serviceId)
     const handleSave = async () => {
         setIsSaveLoading(true);
-        console.log("saveData to backend", serviceAgrementDetails);
+        // console.log("saveData to backend", serviceAgrementDetails);
         try {
             
             if(serviceId === ""){
@@ -257,6 +256,7 @@ const SAgrementPdf: React.FC = () => {
             console.error("Error saving data:", error);
         }
     };
+
     return (
         <React.Fragment>
             {isFetching ? (
@@ -308,7 +308,7 @@ const SAgrementPdf: React.FC = () => {
                         <ShareCapitalForm />
                     </div>
                     <div id="companyResolution" className="mb-4">
-                        <CompanyResolution data={resolutionData} />
+                        <CompanyResolution  />
                     </div>
                     <div id="companyResolutiontwo" className="mb-4">
                         <CompanyResolutiontwo />

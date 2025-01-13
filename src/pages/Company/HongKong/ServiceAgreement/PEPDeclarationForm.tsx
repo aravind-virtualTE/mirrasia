@@ -1,27 +1,54 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-// import InlineSignatureCreator from "../../SignatureComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SignatureModal from "@/components/pdfPage/SignatureModal";
+import { serviceAgreement } from "@/store/hongkong";
+import { useAtom } from "jotai";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function PEPDeclarationForm() {
-  const [docSigned,] = useState('2024-12-12')
+  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
 
   const [signature, setSignature] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    setIsModalOpen(true);
+    if(signature == "" || signature == null)   setIsModalOpen(true);
   };
 
   const handleSelectSignature = (selectedSignature: string | null) => {
     setSignature(selectedSignature);
     setIsModalOpen(false);
+    setServiceAgrement({...serviceAgrementDetails, 
+      pedSignature: selectedSignature
+    });
+  };
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+      if(serviceAgrementDetails.directorList){
+        setSignature(serviceAgrementDetails.directorList[0].signature)
+        setName(serviceAgrementDetails.directorList[0].name)
+      }
+    }, [serviceAgrementDetails])
+
+  const handleNotPEPChange = (checked: boolean) => {
+    setServiceAgrement({
+      ...serviceAgrementDetails,politicallyNotExposed: checked,})
+  };
+  
+  const handleIsPEPChange = (checked: boolean) => {
+    setServiceAgrement({
+      ...serviceAgrementDetails,politicallyExposed: checked,})
   };
 
-  const formData = {
-    name: "AHMED, SHAHAD"
-  };
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setServiceAgrement(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
   return (
     <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none">
       <CardHeader>
@@ -70,11 +97,17 @@ function PEPDeclarationForm() {
 
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Checkbox className="rounded-none h-4 w-4" id="not-pep" />
+              <Checkbox className="rounded-none h-4 w-4" id="not-pep"
+                checked={serviceAgrementDetails.politicallyNotExposed}
+                onCheckedChange={handleNotPEPChange}
+                 />
               <label htmlFor="not-pep">I am NOT a Politically Exposed Person (PEP)</label>
             </div>
             <div className="flex items-center gap-2">
-              <Checkbox className="rounded-none h-4 w-4" id="is-pep" />
+              <Checkbox className="rounded-none h-4 w-4" id="is-pep"
+                checked={serviceAgrementDetails.politicallyExposed}
+                onCheckedChange={handleIsPEPChange}
+                />
               <label htmlFor="is-pep">I am a Politically Exposed Person (PEP)</label>
             </div>
           </div>
@@ -86,7 +119,7 @@ function PEPDeclarationForm() {
         </p>
 
         <div className="pt-6 space-y-4 w-64">
-          <p>Name:<span className="pl-4">{formData.name}</span></p>
+          <p>Name:<span className="pl-4">{name}</span></p>
           <div className="w-64 pt-2">
             <div
               onClick={handleBoxClick}
@@ -109,10 +142,16 @@ function PEPDeclarationForm() {
               />
             )}
           </div>
-          <div className="border-t border-black w-48">
-
-
-            <p>Date: <span className="underline">{docSigned}</span></p>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="consentSignDate" className="text-sm">Date:</Label>
+            <Input
+              type="date"
+              id="consentSignDate"
+              name="consentSignDate"
+              value={serviceAgrementDetails.pedDate}
+              onChange={handleChange}
+              className="w-40"
+            />
           </div>
         </div>
       </CardContent>

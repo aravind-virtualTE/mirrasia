@@ -1,13 +1,16 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { serviceAgreement } from "@/store/hongkong"
+import { useAtom } from "jotai"
+
 
 export default function ArticlesOfAssociation() {
-  const companyName = "TRUSTPAY AI SYSTEMS LIMITED"
   const shareCapital = {
     totalShares: "100",
     totalAmount: "USD 100",
     paidUp: "USD 100",
     unpaid: "USD 0",
   }
+  const [serviceAgrementDetails,] = useAtom(serviceAgreement)
 
   return (
     <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none ">
@@ -24,7 +27,7 @@ export default function ArticlesOfAssociation() {
             <h2 className="text-lg font-bold">OF</h2>
           </div>
           <h2 className="text-xl font-bold">
-            <span className=" px-1">{companyName}</span>
+            <span className=" px-1">{serviceAgrementDetails.companyName}</span>
           </h2>
         </div>
       </CardHeader>
@@ -39,7 +42,7 @@ export default function ArticlesOfAssociation() {
             </div>
             <div className="text-center">
               <span className=" px-1">
-                {companyName}
+                {serviceAgrementDetails.companyName}
               </span>
             </div>
           </div>

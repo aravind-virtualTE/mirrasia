@@ -10,6 +10,25 @@ import { shareHolderDirectorControllerAtom } from '@/lib/atom';
 import { isValidEmail } from '@/middleware';
 import { sendInviteToShDir } from '@/services/dataFetch';
 import CustomLoader from '@/components/ui/customLoader';
+import { useToast } from "@/hooks/use-toast"
+
+// interface InvitationResults {
+//   successful: Array<{
+//     email: string;
+//     name: string;
+//     status: string;
+//   }>;
+//   alreadyExists: Array<{
+//     email: string;
+//     name: string;
+//     status: string;
+//   }>;
+//   failed: Array<{
+//     email: string;
+//     name: string;
+//     status: string;
+//   }>;
+// }
 
 interface ShareholderDirectorProps {
   name: string;
@@ -67,6 +86,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
     setPhoneError('');
     return true;
   };
+
 
   return (
     <Card className="mb-4 pt-4">
@@ -194,7 +214,7 @@ const ShareholderDirectorForm: React.FC = () => {
   ]);
   const [totalOwnership, setTotalOwnership] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
+  const { toast } = useToast()
   useEffect(() => {
     if (atomShareHolderState.shareHolders && atomShareHolderState.shareHolders.length > 0) {
       const hydratedShareholders = atomShareHolderState.shareHolders.map((shareholder, index) => ({
@@ -270,8 +290,26 @@ const ShareholderDirectorForm: React.FC = () => {
       });
       const docId = localStorage.getItem('companyRecordId');
       const payload = { _id: docId, inviteData: extractedData };
-      console.log("send mail function", payload)
+      // console.log("send mail function", payload)
       const response = await sendInviteToShDir(payload);
+      if (response.summary.successful > 0){
+        toast({
+          title: 'Success',
+          description: `Successfully sent invitation mail to ${response.successful.length} people`,
+        })
+      }
+      if (response.summary.alreadyExists > 0){
+        toast({
+          title: 'Success',
+          description: `Some Users Already Exist`,
+        })
+      }
+      if (response.summary.failed > 0){
+        toast({
+          title: 'Failed',
+          description: `Some Invitations Failed`,
+        })
+      }
       console.log("send mail response", response)
       setIsLoading(false);
 

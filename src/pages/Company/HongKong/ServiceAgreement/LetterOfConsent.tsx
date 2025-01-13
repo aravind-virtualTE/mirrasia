@@ -101,7 +101,7 @@ export default function LetterOfConsent() {
             name="consentDate"
             value={serviceAgrementDetails.consentDate}
             onChange={handleChange}
-            className="w-40"
+            className="w-40 [&::-webkit-calendar-picker-indicator]:opacity-1 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
           />
           <span>I/we,</span>
           <span className='w-80 text-center font-bold font-serif border-b'>{serviceAgrementDetails.companyName}</span>

@@ -459,7 +459,7 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
     natureOfControlOverCompany : "",
   }],
   chairman : [{name : "", signature : ""}],
-  customerDueDiligence : [{
+  customerDueDiligence : {
     personalInformation : {
       title : "",
       familyName : "",
@@ -497,17 +497,14 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
       registeredPost: false,
       courier: false
     },
-    declaration : {
-      signature : "",
-      date : ""
-    },
-    politicallyExposed : false,
-    politicallyNotExposed : false,
-    politicallyExposedDeclaration : {
-      signature : "",
-      date : ""
-    }
-  }]
+    cddDate : "",
+  },
+  cddSignature : "",
+  politicallyExposed : false,
+  politicallyNotExposed : false,
+  pedSignature : "",
+  pedDate : "",
+  
 };
 export const serviceAgreement  = atom<Partial<serviceAggrementTypes>>(initialPartialState);
 

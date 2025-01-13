@@ -1,57 +1,34 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { useState } from "react";
-// import InlineSignatureCreator from "../../SignatureComponent";
 import SignatureModal from "@/components/pdfPage/SignatureModal";
+import { serviceAgreement } from "@/store/hongkong"
+import { useAtom } from "jotai"
 
-export default function DeclarationOfInterest() {
-  const companyDetails = {
-    name: "TRUSTPAY AI SYSTEMS LIMITED",
-    brnNo: "TestNum",
-    director: "AHMED, SHAHAD",
-  }
-  const [docSigned,] = useState('2024-12-12')
+export default function DeclarationOfInterest() {  
+  const [serviceAgrementDetails,] = useAtom(serviceAgreement)
 
 
-  const [signature, setSignature] = useState<string | null>(null);
+  const [signature, setSignature] = useState<string | null>(serviceAgrementDetails.directorList?.[0].signature || null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    setIsModalOpen(true);
+    if(signature == "" || signature == null)   setIsModalOpen(true);
   };
 
   const handleSelectSignature = (selectedSignature: string | null) => {
     setSignature(selectedSignature);
     setIsModalOpen(false);
   };
-  // const [signEdit, setSignEdit] = useState(false)
-
-  // const handleSignature = (signature: string) => {
-  //   // console.log("Received signature:", signature);
-  //   setSignEdit(false);
-  //   setSignature(signature)
-  // };
-  // const handleClear = () => {
-  //   setSignature(null);
-  // };
-
-  // const handleBoxClick = () => {
-  //   if (signature) {
-  //     handleClear();
-  //   } else {
-  //     setSignEdit(true);
-  //   }
-  // };
-
 
   return (
     <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none font-serif">
       <CardHeader className="space-y-6 pb-6">
         <div className="space-y-2">
           <div className="flex gap-2">
-            <p className="font-serif text-sm">BRN Number: <span className=" px-1  underline ">{companyDetails.brnNo}</span></p>
+            <p className="font-serif text-sm">BRN Number: <span className=" px-1  underline ">{serviceAgrementDetails.brnNo}</span></p>
           </div>
           <div className="text-center space-y-1">
             <p className=" px-1 inline-block font-serif font-semibold">
-              {companyDetails.name}
+              {serviceAgrementDetails.companyName}
             </p>
             <p className="text-sm font-bold">(the "Company")</p>
           </div>
@@ -113,9 +90,9 @@ export default function DeclarationOfInterest() {
             )}
           </div>
           <div className="border-t border-black w-48">
-            <p className="font-medium">{companyDetails.director}</p>
+            <p className="font-medium">{serviceAgrementDetails.directorList?.[0]?.name || 'N/A'}</p>
             <p className="text-sm italic">Director</p>
-            <p>Date: {docSigned}</p>
+            <p>Date: {serviceAgrementDetails.consentDate}</p>
           </div>
         </div>
       </CardContent>

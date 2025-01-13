@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-// import InlineSignatureCreator from "../SignatureComponent"
 import SignatureModal from "@/components/pdfPage/SignatureModal"
+import { serviceAgreement } from "@/store/hongkong"
+import { useAtom } from "jotai"
+import { Input } from "@/components/ui/input"
 
 export default function SignificantControllerForm() {
-  const [docSigned,] = useState('2024-12-12')
-  const companyDetails = {
-    name: "TRUSTPAY AI SYSTEMS LIMITED",
-    ubiNumber: "Test Num",
-  }
+  const [serviceAgrementDetails,] = useAtom(serviceAgreement)
+
   const [userDetails, setUserDetails] = useState({
     name: "",
     residentialAddress: "",
@@ -21,13 +20,13 @@ export default function SignificantControllerForm() {
 
   useEffect(() => {
     setUserDetails({
-      name: "AHMED, SHAHAD",
-      residentialAddress: "FLAT-AP-424, 381-NAKHILAT JUMEIRAH, 1, DUBAI, UNITED ARAB EMIRATES",
-      nationalityAndId: "144706613\n(UNITED KINGDOM)",
-      correspondenceAddress: "WORKSHOP UNIT B50 & B58, 2/F, KWAI SHING IND. BLDG, PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, NEW TERRITORIES, HONG KONG",
+      name: "",
+      residentialAddress: "",
+      nationalityAndId: "",
+      correspondenceAddress: "",
       dateOfBecoming: "",
       dateOfCeasingARegistrablePerson: "",
-      natureOfControl: "Holds 100% of the issued shares of the company directly.",
+      natureOfControl: "",
     })
   }, [])
 
@@ -41,43 +40,36 @@ export default function SignificantControllerForm() {
     setSignature(selectedSignature);
     setIsModalOpen(false);
   };
-  // const [signEdit, setSignEdit] = useState(false)
-
-  // const handleSignature = (signature: string) => {
-  //   // console.log("Received signature:", signature);
-  //   setSignEdit(false);
-  //   setSignature(signature)
-  // };
-  // const handleClear = () => {
-  //   setSignature(null);
-  // };
-
-  // const handleBoxClick = () => {
-  //   if (signature) {
-  //     handleClear();
-  //   } else {
-  //     setSignEdit(true);
-  //   }
-  // };  
-
 
   return (
     <Card className="max-w-4xl mx-auto p-8 rounded-none shadow-none font-serif">
       <CardHeader className="space-y-4 p-0">
         <div className="space-y-2 text-sm">
-          <div>BRN No. :{companyDetails.ubiNumber}</div>
+          <div>BRN No. : {serviceAgrementDetails.brnNo}</div>
           <div className="space-y-4  text-base">
             <div className="flex gap-2 font-serif">
               <span className="min-w-[4rem]">To :</span>
               <span>Board of Directors</span>
             </div>
             <div className="ml-[4rem]">
-              TRUSTPAY AI SYSTEMS LIMITED
+              {serviceAgrementDetails.companyName}
             </div>
-            <div className="ml-[4rem] space-y-0.5">
-              <div>WORKSHOP UNIT B50, 2/F, KWAI SHING IND. BLDG., PHASE 1,</div>
-              <div>36-40 TAI LIN PAI RD, KWAI CHUNG, N.T.,</div>
-              <div>HONG KONG</div>
+            <div className="ml-[4rem] space-y-4 ">
+              <Input
+                id="AddressLine1"
+                placeholder="AddressLine1"
+                className="w-full max-w-md border-none focus:ring-0"
+              />
+              <Input
+                id="AddressLine2"
+                placeholder="AddressLine2"
+                className="w-full max-w-md border-none focus:ring-0"
+              />
+              <Input
+                id="country"
+                placeholder="Country"
+                className="w-full max-w-md border-none focus:ring-0"
+              />
             </div>
           </div>
         </div>
@@ -157,7 +149,7 @@ export default function SignificantControllerForm() {
           <div className="border-t border-black w-48">
             <p className="font-medium">TestMember</p>
             <p className="text-sm italic">Member</p>
-            <p>Date: {docSigned}</p>
+            <p>Date: {serviceAgrementDetails.consentDate}</p>
           </div>
         </div>
 
@@ -187,3 +179,21 @@ export default function SignificantControllerForm() {
   )
 }
 
+// const [signEdit, setSignEdit] = useState(false)
+
+// const handleSignature = (signature: string) => {
+//   // console.log("Received signature:", signature);
+//   setSignEdit(false);
+//   setSignature(signature)
+// };
+// const handleClear = () => {
+//   setSignature(null);
+// };
+
+// const handleBoxClick = () => {
+//   if (signature) {
+//     handleClear();
+//   } else {
+//     setSignEdit(true);
+//   }
+// };  

@@ -139,6 +139,7 @@ export default function AppointmentLetter() {
               <span className="font-bold text-sm font-serif">
                 <input
                   className="font-bold underline border-b w-3/4"
+                  placeholder="Enter Company Address"
                   value={serviceAgrementDetails.companyAddress}
                   onChange={(e) =>
                     setServiceAgrement({

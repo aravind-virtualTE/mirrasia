@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/table"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { useState } from "react"
-// import InlineSignatureCreator from "../../SignatureComponent"
 import SignatureModal from "@/components/pdfPage/SignatureModal"
+import { serviceAgreement  } from "@/store/hongkong"
+import { useAtom } from "jotai"
 
 interface SignificantController {
   entryNo: string
@@ -35,7 +36,40 @@ interface DesignatedRepresentative {
   fax: string
 }
 
-export default function SignificantControllersRegister() {
+const representatives: DesignatedRepresentative[] = [
+  {
+    entryNo: "1",
+    dateOfEntry: "",
+    nameAndCapacity:
+      "MIRR ASIA BUSINESS ADVISORY & SECRETARIAL CO., LIMITED\n(secretary of the company)",
+    address:
+      "WORKSHOP UNIT B50 & B58, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, NEW TERRITORIES, HONG KONG",
+    tel: "852) 2187 2428",
+    fax: "852) 3747 1369",
+  },
+]
+
+const controllers: SignificantController[] = [
+  {
+    entryNo: "1",
+    dateOfEntry: "",
+    name: "",
+    correspondenceAddress:
+      "",
+    residentialAddress:
+      "",
+    passportInfo: "",
+    dateBecoming: "",
+    dateCeasing: "",
+    natureOfControl: {
+      name: "",
+      details: "",
+    },
+  },
+]
+export default function SignificantControllersRegister() {  
+
+  const [serviceAgrementDetails,] = useAtom(serviceAgreement )
 
   const [signature, setSignature] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,60 +81,7 @@ export default function SignificantControllersRegister() {
     setSignature(selectedSignature);
     setIsModalOpen(false);
   };
-  // const [isEditing, setIsEditing] = useState(false);
-  // const handleSignature = (signature: string) => {
-  //   // console.log("Received signature:", signature);
-  //   setIsEditing(false);
-  //   setSignature(signature)
-  // };
-  // const handleClear = () => {
-  //   setSignature(null);
-  // };
-  // const handleBoxClick = () => {
-  //   if (signature) {
-  //     handleClear();
-  //   } else {
-  //     setIsEditing(true);
-  //   }
-  // };
-
-  const companyDetails = {
-    name: "TRUSTPAY AI SYSTEMS LIMITED",
-    brnNo: "testNum",
-  }
-
-  const controllers: SignificantController[] = [
-    {
-      entryNo: "1",
-      dateOfEntry: "",
-      name: "AHMED, SHAHAD",
-      correspondenceAddress:
-        "WORKSHOP UNIT B50, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, NEW TERRITORIES , HONG KONG",
-      residentialAddress:
-        "FLAT-AP-424, 381-NAKHLAT JUMEIRAH, 1, DUBAI, UNITED ARAB EMIRATES",
-      passportInfo: "144706613 (UNITED KINGDOM)",
-      dateBecoming: "",
-      dateCeasing: "",
-      natureOfControl: {
-        name: "AHMED, SHAHAD",
-        details: "holds 100% of the issued shares of the company directly",
-      },
-    },
-  ]
-
-  const representatives: DesignatedRepresentative[] = [
-    {
-      entryNo: "1",
-      dateOfEntry: "",
-      nameAndCapacity:
-        "MIRR ASIA BUSINESS ADVISORY & SECRETARIAL CO., LIMITED\n(secretary of the company)",
-      address:
-        "WORKSHOP UNIT B50 & B58, 2/F, KWAI SHING IND. BLDG., PHASE 1, 36-40 TAI LIN PAI RD, KWAI CHUNG, NEW TERRITORIES, HONG KONG",
-      tel: "852) 2187 2428",
-      fax: "852) 3747 1369",
-    },
-  ]
-
+  
   return (
     <Card className="w-full max-w-[900px] mx-auto p-6 print:p-0 rounded-none font-serif">
       <CardHeader className="space-y-4 pb-6">
@@ -110,11 +91,11 @@ export default function SignificantControllersRegister() {
         <div className="space-y-2 text-sm">
           <div className="flex gap-2 ">
             <span className="font-medium">Company Name:</span>
-            <span className=" px-1  underline">{companyDetails.name}</span>
+            <span className=" px-1  underline">{serviceAgrementDetails.companyName}</span>
           </div>
           <div className="flex gap-2">
             <span className="font-medium">BRN No.:</span>
-            <span>{companyDetails.brnNo}</span>
+            <span>{serviceAgrementDetails.brnNo}</span>
           </div>
         </div>
       </CardHeader>
@@ -247,7 +228,7 @@ export default function SignificantControllersRegister() {
         <div className="text-right space-y-2">
           <p className="italic font-serif text-xs">For and on behalf of</p>
           <p className=" inline-block">
-            {companyDetails.name}
+            {serviceAgrementDetails.companyName}
           </p>
           <div className="flex justify-end">
             <div >

@@ -194,7 +194,27 @@ const ApplicantInfoForm = () => {
             ...prev,
             companyNames: updatedErrors,
           }));
-        } else {
+        }
+        else if (field === 'chinaCompanyName' && index !== undefined) {
+          // const regex = /^[\u4e00-\u9fa5]+$/;
+            const updatedCompanyNames = [...formData.chinaCompanyName];
+            updatedCompanyNames[index] = value;
+
+            setFormData((prev) => ({
+              ...prev,
+              chinaCompanyName: updatedCompanyNames,
+            }));
+
+            const error = validateField(field, value, index);
+            const updatedErrors = [...errors.chinaCompanyName];
+            updatedErrors[index] = error;
+
+            setErrors((prev) => ({
+              ...prev,
+              chinaCompanyName: updatedErrors,
+            }));
+        }
+        else {
           setFormData((prev) => ({ ...prev, [field]: value }));
 
           const error = validateField(field, value);
@@ -222,7 +242,7 @@ const ApplicantInfoForm = () => {
           {t('ApplicantInfoForm.paragraph')}
         </p>
       </CardHeader>
-      
+
       {formData && <CardContent>
         <div className="space-y-2">
           <Label htmlFor="name" className="text-base">

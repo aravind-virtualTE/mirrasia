@@ -1,5 +1,5 @@
 export interface CompanyDetails {
-    name: string;
+    name: string | undefined;
     jurisdiction: string;
   }
   

@@ -252,17 +252,13 @@ export interface serviceAggrementTypes {
       registeredPost: boolean;
       courier: boolean;
     };
-    declaration: {
-      signature: string;
-      date: string;
-    };
-    politicallyExposed: boolean;
-    politicallyNotExposed: boolean;
-    politicallyExposedDeclaration: {
-      signature: string;
-      date: string;
-    };
-  }[];
+    cddDate: string | number;
+  };
+  cddSignature: string | null;  
+  politicallyExposed: boolean;
+  politicallyNotExposed: boolean;
+  pedSignature :string | null;
+  pedDate :string;  
 }
 
 

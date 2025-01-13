@@ -1,11 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
-// import InlineSignatureCreator from "../../SignatureComponent";
 import SignatureModal from "@/components/pdfPage/SignatureModal";
+import { serviceAgreement } from "@/store/hongkong";
+import { useAtom } from "jotai";
 
 export default function CompanyResolutiontwo() {
+  const [serviceAgrementDetails, ] = useAtom(serviceAgreement);
 
-  const [docSigned,] = useState('2024-12-12')
+  const [docSigned,setDocSigned] = useState("")
 
   const [signature, setSignature] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,29 +19,8 @@ export default function CompanyResolutiontwo() {
     setSignature(selectedSignature);
     setIsModalOpen(false);
   };
-  // const [signEdit, setSignEdit] = useState(false)
 
-  // const handleSignature = (signature: string) => {
-  //   // console.log("Received signature:", signature);
-  //   setSignEdit(false);
-  //   setSignature(signature)
-  // };
-  // const handleClear = () => {
-  //   setSignature(null);
-  // };
-
-  // const handleBoxClick = () => {
-  //   if (signature) {
-  //     handleClear();
-  //   } else {
-  //     setSignEdit(true);
-  //   }
-  // };
-  const resolutionData = {
-    company: {
-      name: "TRUSTPAY AI SYSTEMS LIMITED",
-      jurisdiction: "Hong Kong SAR"
-    },
+  const resolutionData = {    
     representative: {
       name: "MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED"
     },
@@ -48,8 +29,8 @@ export default function CompanyResolutiontwo() {
       firstAccounts: "31 December 2025"
     },
     founder: {
-      name: "AHMED, SHAHAD",
-      shares: 100
+      name: "",
+      shares: 0
     }
   };
 
@@ -59,8 +40,8 @@ export default function CompanyResolutiontwo() {
       <CardContent className="p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-xl font-bold mb-2">{resolutionData.company.name}</h1>
-          <p className="text-sm text-gray-600">(incorporated in {resolutionData.company.jurisdiction})</p>
+          <h1 className="text-xl font-bold mb-2">{serviceAgrementDetails.companyName}</h1>
+          <p className="text-sm text-gray-600">(incorporated in Hong Kong SAR)</p>
           <p className="mt-4 text-sm">
             Written Resolutions of the Sole Director of the Company made pursuant to the Company's Articles of
             Association and Section 548 of The Companies Ordinance
@@ -163,7 +144,14 @@ export default function CompanyResolutiontwo() {
 
           {/* Signature Section */}
           <div className="pt-6 space-y-4 w-64">
-            <p >Date: <span className="underline">{docSigned}</span></p>
+            <p >Date: <span className="underline">
+              <input
+                type="text" 
+                value={docSigned}
+                placeholder="dd/mm/yyyy"
+                onChange={(e) => setDocSigned(e.target.value)}  
+              />  
+              </span></p>
             <div className="w-64 pt-2">
               <div
                 onClick={handleBoxClick}

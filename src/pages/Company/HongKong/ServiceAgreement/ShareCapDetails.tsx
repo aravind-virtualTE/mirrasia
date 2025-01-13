@@ -1,8 +1,12 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
 import { useEffect, useState } from "react"
+import { serviceAgreement } from "@/store/hongkong"
+import { useAtom } from "jotai"
 
 export default function ShareCapitalForm() {
+  const [serviceAgrementDetails,] = useAtom(serviceAgreement)
+
   const [shareCapDetails, setShareCapDetails] = useState({
     founderMember:[{name : "", noOfShares: "", totalShares: ""}],
     shareClass: "",
@@ -13,11 +17,11 @@ export default function ShareCapitalForm() {
 
     useEffect(() => {
       setShareCapDetails({
-        founderMember:[{name : "Ahmed Shahad", noOfShares: "", totalShares: "USD 100"}],
+        founderMember:[{name : "", noOfShares: "", totalShares: "USD 0"}],
         shareClass: "Ordinary",
-        totalShares: "100",
-        shareCapital: "USD 100",
-        paidUp: "USD 100",
+        totalShares: "0",
+        shareCapital: "USD 0",
+        paidUp: "USD 0",
         unpaid: "USD 0",
       })
     }, [])
@@ -95,9 +99,9 @@ export default function ShareCapitalForm() {
             <TableRow>
               <TableCell className="border text-right pr-4 font-medium">Total:</TableCell>
               <TableCell className="border text-center space-y-2 p-4">
-                <div>100</div>
+                <div>0</div>
                 <div>Ordinary shares</div>
-                <div>USD 100</div>
+                <div>USD 0</div>
               </TableCell>
             </TableRow>
           </TableBody>

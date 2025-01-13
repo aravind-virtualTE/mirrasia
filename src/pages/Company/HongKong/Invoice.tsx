@@ -120,7 +120,7 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({ invoiceData }) => {
           </div>
         </div>
         {/* Payment Terms and Conditions */}
-        <h1 className="text-lg font-semibold mt-4">Payment Terms and Conditions</h1>
+        {/* <h1 className="text-lg font-semibold mt-4">Payment Terms and Conditions</h1>
         <div className="space-y-4">
                 <div>
                   <h4 className="font-semibold">1. Payment Condition</h4>
@@ -169,7 +169,7 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({ invoiceData }) => {
                   <h4 className="font-semibold">4. Payment Charges</h4>
                   <p>The remitter bears all charges of payment, which includes the remittance amount, beneficiary bank's charges, as well as all the other banks' fees (intermediary bank, etc).</p>
                 </div>
-              </div>
+              </div> */}
       </CardContent>
     </Card>
   );
