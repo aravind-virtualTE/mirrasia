@@ -23,8 +23,8 @@ export function usePaymentSession(sessionId: string) {
         setTimeLeft(remaining);
         timeLeftRef.current = remaining;
         setStatus(session.status);
-
-        if (remaining > 0) {
+        // console.log("remaining", remaining);
+        if (remaining >= 0) {
           interval = setInterval(() => {
             timeLeftRef.current -= 1000;
             if (timeLeftRef.current <= 0) {

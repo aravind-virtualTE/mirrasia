@@ -2,6 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Timer, AlertTriangle } from 'lucide-react';
 import { usePaymentSession } from '@/hooks/usePaymentSession';
+import { Button } from "@/components/ui/button";
 
 interface PaymentTimerProps {
   sessionId: string;
@@ -23,21 +24,29 @@ export function PaymentTimer({ sessionId  }: PaymentTimerProps) {
     };
   };
 
+  const sendRequest = () =>{
+    console.log("req sent")
+  }
   const time = formatTime(timeLeft);
   // console.log("status",status)
   if (status === 'expired') {
     return (
       <Card className="bg-destructive/10">
-        <CardContent className="p-4 flex items-center space-x-4">
-          <AlertTriangle className="h-6 w-6 text-destructive" />
-          <div>
-            <p className="font-medium text-destructive">Payment Session Expired</p>
-            <p className="text-sm text-destructive/80">
-              Please contact support to create a new payment session
-            </p>
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <AlertTriangle className="h-6 w-6 text-destructive" />
+            <div>
+              <p className="font-medium text-destructive">Payment Session Expired</p>
+              <p className="text-sm text-destructive/80">
+                Please contact support to create a new payment session
+              </p>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+          <Button variant="destructive" onClick={() => sendRequest()}>Contact Support</Button>
+        </div>
+      </CardContent>
+    </Card>
     );
   }
 

@@ -121,11 +121,3 @@ export function PaymentInformation() {
     </div>
   );
 }
-
-
-{/* <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="ml-2">
-              All payments are NON-REFUNDABLE. The remitter bears all charges of payment, which includes the remittance amount, beneficiary bank's charges, as well as all the other banks' fees (intermediary bank, etc).
-            </AlertDescription>
-          </Alert> */}
