@@ -83,6 +83,7 @@ const CompanyRegistration = () => {
             const docId = localStorage.getItem('companyRecordId');
             // console.log("docId-->",docId)
             finalForm.userId = `${decodedToken.userId}`
+            if(currentSection === 2) finalForm.isDisabled = true
             const payload = { _id:docId, ...finalForm }
             if(finalForm.applicantInfoForm.name !== ''){
                 // console.log("payload-->",payload)
