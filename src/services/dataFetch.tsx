@@ -110,9 +110,9 @@ export const getIncorporationListByUserId = async (
     }
   }
 
-  export const enableEditing = async (data : {id: string, value: boolean}) => {
+  export const updateEditValues = async (data : string) => {
     try {
-      const response = await api.post('company/enable-editing', data);
+      const response = await api.post('company/updateCompanySession', data);
       return response.data;
     } catch (error) {
       console.error("Error saving service Agreement Data:", error);

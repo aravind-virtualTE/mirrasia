@@ -3,12 +3,54 @@ import { useAtom } from "jotai";
 import { useToast } from "@/hooks/use-toast";
 import { companyIncorporationList } from "@/services/state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SAgrementPdf from "../HongKong/ServiceAgreement/SAgrementPdf";
-import { enableEditing } from "@/services/dataFetch";
+import { updateEditValues, getIncorporationListByCompId } from "@/services/dataFetch";
+import React, { useEffect, useMemo, useState } from "react";
+import { paymentApi } from "@/lib/api/payment";
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
+interface SessionData {
+    _id: string;
+    amount: number;
+    currency: string;
+    expiresAt: string;
+    status: string;
+    paymentId: string;
+}
 
 interface Country {
     code: string;
@@ -83,15 +125,14 @@ export interface PaymentDetails {
         shipping: null | Record<string, unknown>;
         source: null | Record<string, unknown>;
         status: string;
-    }
-
+    };
 }
 
 interface Company {
     incorporationDate: string;
     is_draft: boolean;
-    _id: string;  // Changed to string for frontend
-    userId: string;  // Changed to string for frontend
+    _id: string; // Changed to string for frontend
+    userId: string; // Changed to string for frontend
     country: Country;
     applicantInfoForm: ApplicantInfoForm;
     businessInfoHkCompany: BusinessInfoHkCompany;
@@ -101,44 +142,40 @@ interface Company {
     accountingTaxInfo: AccountingTaxInfo;
     status: string;
     paymentDetails?: PaymentDetails;
-    icorporationDoc: string
+    icorporationDoc: string;
+    sessionId: string;
+    isDisabled: boolean;
+    receiptUrl: string;
     __v: number;
 }
 
+// interface Section {
+//     title: string;
+//     data: Record<string, string | number | boolean | undefined>;
+// }
 
 const CompanyDetail = () => {
+    const { toast } = useToast();
     const { id } = useParams();
     const [companies] = useAtom(companyIncorporationList);
-    const companyDetail = companies.find(c => c._id === id) as unknown as Company;
-    // const [activePdf, setActivePdf] = useState("");
-    const { toast } = useToast();
+    const companyDetail = companies.find(
+        (c) => c._id === id
+    ) as unknown as Company;
+    const [company, setCompany] = useState(companyDetail);
+    const [session, setSession] = useState<SessionData>({
+        _id: "",
+        amount: 0,
+        currency: "",
+        expiresAt: "",
+        status: "",
+        paymentId: "",
+    });
+    const [isSheetOpen, setIsSheetOpen] = useState(false)
 
-    const handlePdfClick = (url: string) => {
-        console.log("pdf url", url);
-        // setActivePdf(url);
-    };
 
-    //   const renderPdfViewer = () => {
-    //     if (activePdf !== "") {
-    //       return (
-    //         <>
-    //           <iframe src={activePdf} title="PDF Viewer" width="100%" height="100%" style={{ minHeight: '500px' }} />
-    //           <div className="pdf-controls">                
-    //             <Button variant="secondary" size="sm" onClick={() => setActivePdf("")}>
-    //               Close
-    //             </Button>
-    //           </div>
-    //         </>
-    //       );
-    //     }
-    //     return null;
-    //   };
+    // const [sections, setSections] = useState<Section[]>([]);
 
-    if (!companyDetail) {
-        return <div>Company not found</div>;
-    }
-    console.log("company", companyDetail);
-    const generateSections = (company: Company) => {
+    const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
 
         // Applicant Information Section
@@ -148,9 +185,10 @@ const CompanyDetail = () => {
                 data: {
                     "Company Name": company.applicantInfoForm.companyName,
                     "Applicant Name": company.applicantInfoForm.name,
-                    "Email": company.applicantInfoForm.email,
-                    "Phone": company.applicantInfoForm.phoneNumber,
-                    "Relationships": company.applicantInfoForm.relationships?.join(", ") || "N/A",
+                    Email: company.applicantInfoForm.email,
+                    Phone: company.applicantInfoForm.phoneNumber,
+                    Relationships:
+                        company.applicantInfoForm.relationships?.join(", ") || "N/A",
                     "SNS Account ID": company.applicantInfoForm.snsAccountId,
                 },
             });
@@ -161,9 +199,9 @@ const CompanyDetail = () => {
             sections.push({
                 title: "Country Information",
                 data: {
-                    "Country": company.country.name,
-                    "Country Code": company.country.code
-                }
+                    Country: company.country.name,
+                    "Country Code": company.country.code,
+                },
             });
         }
 
@@ -172,71 +210,320 @@ const CompanyDetail = () => {
             sections.push({
                 title: "Business Information",
                 data: {
-                    ...(company.businessInfoHkCompany ? {
-                        "Sanctioned Countries": company.businessInfoHkCompany.sanctioned_countries,
-                        "Sanctions Presence": company.businessInfoHkCompany.sanctions_presence,
-                        "Crimea Presence": company.businessInfoHkCompany.crimea_presence,
-                        "Russian Business Presence": company.businessInfoHkCompany.russian_business_presence,
-                        "Legal Assessment": company.businessInfoHkCompany.legal_assessment,
-                    } : {}),
-                    "Business Description": company.companyBusinessInfo?.business_product_description || "N/A"
-                }
+                    ...(company.businessInfoHkCompany
+                        ? {
+                            "Sanctioned Countries":
+                                company.businessInfoHkCompany.sanctioned_countries,
+                            "Sanctions Presence":
+                                company.businessInfoHkCompany.sanctions_presence,
+                            "Crimea Presence":
+                                company.businessInfoHkCompany.crimea_presence,
+                            "Russian Business Presence":
+                                company.businessInfoHkCompany.russian_business_presence,
+                            "Legal Assessment":
+                                company.businessInfoHkCompany.legal_assessment,
+                        }
+                        : {}),
+                    "Business Description":
+                        company.companyBusinessInfo?.business_product_description || "N/A",
+                },
             });
         }
 
         // Payment Information Section
-        console.log(company.paymentDetails)
-        if (company.paymentDetails?.paymentData) {
+        if (company.sessionId && session) {
             sections.push({
                 title: "Payment Information",
                 data: {
-                    "Payment ID": company.paymentDetails.paymentData.id,
-                    "Amount": `${(company.paymentDetails.paymentData.amount / 100).toFixed(2)} ${company.paymentDetails.paymentData.currency.toUpperCase()}`,
-                    "Status": company.paymentDetails.paymentData.status,
-                    "Payment Date": new Date(company.paymentDetails.paymentData.created * 1000).toLocaleString(),
-                    "Payment Methods": company.paymentDetails.paymentData.payment_method_types.join(", ")
-                }
+                    // "Payment ID": session.paymentId,
+                    Amount: session.amount,
+                    "Payment Status": session.status,
+                    "Payment Expire Date": new Date(session.expiresAt).toLocaleString(),
+                    Receipt: company.receiptUrl ?? "N/A",
+                    // "Payment Methods": company.paymentDetails.paymentData.payment_method_types.join(", ")
+                },
             });
         }
-
-        // pdfSection 
-        // sections.push({
-        //     title: "Incorporation Document Information",
-        //     data: {
-        //         "PDF Doc": company?.icorporationDoc
-        //     }
-        // });
 
         // Status Information Section
         sections.push({
             title: "Status Information",
             data: {
-                "Status": company.status,
+                "Incorporation Status": company.status,
                 "Incorporation Date": company.incorporationDate || "N/A",
-                "Can Edit": company.is_draft ? "Yes" : "No"
-            }
+                "AML/CDD Edit": company.isDisabled ? "No" : "Yes",
+            },
         });
 
         return sections;
     };
 
-    const sections = generateSections(companyDetail);
+    const sections = useMemo(() => {
+        if (!company) return [];
+        return generateSections(company, session);
+    }, [company, session]);
 
 
-    const handleUpdate = async () => {
-        // API call to update the record in the backend
-        // console.log("testing", !companyDetail.is_draft)
-        const response = await enableEditing({id: companyDetail._id, value: false});
-        
-        toast({ description: "Record updated successfully", });
-        console.log('isEditingResponse',response);
+    useEffect(() => {
+        const fetchSession = async () => {
+            try {
+                let companyData
+                if (id) {
+                    companyData = await getIncorporationListByCompId(id);
+                    console.log("companyData", companyData);
+                    setCompany(companyData[0])
+                }
+                const session = await paymentApi.getSession(companyData[0].sessionId);
+                // console.log("session", session);
+                const transformedSession: SessionData = {
+                    _id: session._id,
+                    amount: session.amount,
+                    currency: session.currency,
+                    expiresAt: session.expiresAt,
+                    status: session.status,
+                    paymentId: session.paymentId,
+                };
+
+                setSession(transformedSession);
+            } catch (error) {
+                console.error("Failed to fetch session:", error);
+            }
+        };
+        fetchSession();
+    }, []);
+    //   };
+    if (!company) {
+        return <div>Company not found</div>;
+    }
+    // console.log("company", companyDetail);
+
+
+
+
+    const handleSessionDataChange = (key: keyof SessionData, value: string) => {
+        setSession({ ...session, [key]: value });
     };
 
+    const handleCompanyDataChange = (
+        key: keyof Company,
+        value: string | boolean
+    ) => {
+        setCompany({ ...company, [key]: value });
+    };
+
+    // const handleSave = () => {
+    //     // Here you would typically send the updated data to your backend
+    //     console.log("Updated Session Data:", session);
+    //     console.log("Updated Company Data:", company);
+    //     setIsSheetOpen(false)
+    // };
+
+
+    const IncorporationDateFrag = () => {
+        return (
+            <React.Fragment>
+                <TableCell className="font-medium">Incorporation Date</TableCell>
+                <TableCell>{company.incorporationDate || "Not set"}</TableCell>
+                <TableCell>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline">Edit</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Edit Incorporation Date</DialogTitle>
+                                <DialogDescription>
+                                    Set the incorporation date for the company. This is the date when the company was officially registered.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="incorporationDate" className="text-right">
+                                        Date
+                                    </Label>
+                                    <Input
+                                        id="incorporationDate"
+                                        type="date"
+                                        value={company.incorporationDate || ""}
+                                        onChange={(e) =>
+                                            handleCompanyDataChange(
+                                                "incorporationDate",
+                                                e.target.value
+                                            )
+                                        }
+                                        className="col-span-3"
+                                    />
+                                </div>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </TableCell>
+            </React.Fragment>
+        );
+    };
+
+    const ExtendPaymentTimer = () => {
+        return (
+            <React.Fragment>
+                <TableCell className="font-medium">Payment Expire Date</TableCell>
+                <TableCell>{new Date(session.expiresAt).toLocaleString() || "Not set"}</TableCell>
+                <TableCell>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline">Edit</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Edit Payment Expire Date</DialogTitle>
+                                <DialogDescription>
+                                    Extend the Payment Expire for the company Payment.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="expiresAt" className="text-right">
+                                        Date
+                                    </Label>
+                                    <Input
+                                        id="expiresAt"
+                                        type="date"
+                                        value={session.expiresAt || ""}
+                                        onChange={(e) =>
+                                            handleSessionDataChange(
+                                                "expiresAt",
+                                                e.target.value
+                                            )
+                                        }
+                                        className="col-span-3"
+                                    />
+                                </div>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </TableCell>
+            </React.Fragment>
+        );
+    }
+
+    const PaymentStatus = () => {
+        return (
+            <React.Fragment>
+                <TableCell className="font-medium">Payment Status</TableCell>
+                <TableCell>{session.status}</TableCell>
+                <TableCell>
+                    <Select
+                        value={session.status}
+                        onValueChange={(value) => handleSessionDataChange("status", value)}
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                            <SelectItem value="expired">Expired</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </TableCell>
+            </React.Fragment>
+        );
+    }
+
+    const CompanyIncorpoStatus = () => {
+        return (
+            <React.Fragment>
+                <TableCell className="font-medium">InCorporation Status</TableCell>
+                <TableCell>{company.status}</TableCell>
+                <TableCell>
+                    <Select
+                        value={company.status}
+                        onValueChange={(value) => handleCompanyDataChange("status", value)}
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Pending">Pending</SelectItem>
+                            <SelectItem value="Approved">Approved</SelectItem>
+                            <SelectItem value="Rejected">Rejected</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </TableCell>
+            </React.Fragment>
+        );
+    };
+
+    const ReceietPaymentFrag = () => {
+        return (
+            <React.Fragment>
+                <TableCell className="font-medium">Receipt</TableCell>
+                <TableCell>
+                    {company.receiptUrl ? "Available" : "Not available"}
+                </TableCell>
+                <TableCell>
+                    {company.receiptUrl && (
+                        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                            <SheetTrigger asChild>
+                                <Button variant="outline">View Receipt</Button>
+                            </SheetTrigger>
+                            <SheetContent
+                                side="right"
+                                className="w-full max-w-[40vw]"
+                                style={{ width: "40vw", maxWidth: "40vw" }}
+                            >
+                                <SheetHeader>
+                                    <SheetTitle>Receipt</SheetTitle>
+                                </SheetHeader>
+                                <div className="mt-4 space-y-4">
+                                    <iframe
+                                        src={company.receiptUrl}
+                                        className="w-full h-[calc(100vh-200px)]"
+                                        title="Receipt"
+                                    />
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    )}
+                </TableCell>
+            </React.Fragment>
+        );
+    };
+    const AMLCDDEdit = () => (
+        <React.Fragment>
+            <TableCell className="font-medium">AML/CDD Edit</TableCell>
+            <TableCell>{company.isDisabled ? "No" : "Yes"}</TableCell>
+            <TableCell>
+                <Switch
+                    checked={!company.isDisabled}
+                    onCheckedChange={(checked) => handleCompanyDataChange('isDisabled', !checked)}
+                />
+            </TableCell>
+        </React.Fragment>
+    )
+
+    const handleUpdate = async () => {
+
+        const payload = JSON.stringify({
+            company: {id: company._id, status: company.status, isDisabled: company.isDisabled, inCorporationDate : company.incorporationDate},
+            session : {id: session._id, expiresAt : (session.expiresAt), status : session.status}
+        })
+        // {
+        //     id: companyDetail._id,
+        //     value: false,
+        // }
+        const response = await updateEditValues(payload);
+        toast({ description: "Record updated successfully" });
+        console.log("isEditingResponse", response);
+    };
     return (
         <Tabs defaultValue="details" className="flex flex-col">
             <TabsList className="flex space-x-4 mb-4">
-                <TabsTrigger value="details" className="px-4 py-2">Details</TabsTrigger>
-                <TabsTrigger value="service-agreement" className="px-4 py-2">Service Agreement Details</TabsTrigger>
+                <TabsTrigger value="details" className="px-4 py-2">
+                    Details
+                </TabsTrigger>
+                <TabsTrigger value="service-agreement" className="px-4 py-2">
+                    Service Agreement Details
+                </TabsTrigger>
             </TabsList>
 
             <TabsContent value="details">
@@ -252,32 +539,40 @@ const CompanyDetail = () => {
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead className="w-1/3">Field</TableHead>
-                                            <TableHead>Value</TableHead>
+                                            <TableHead className="w-1/3">Value</TableHead>
+                                            <TableHead className="w-1/5">Action</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {Object.entries(section.data).map(([key, value]) => (
-                                            <TableRow key={key}>
-                                                <TableCell className="font-medium">{key}</TableCell>
-                                                <TableCell>
-                                                    {key === "PDF Doc" && value ? (
-                                                        <Button variant="link" onClick={() => handlePdfClick(value)}>
-                                                            View PDF
-                                                        </Button>
-                                                    ) : (
-                                                        value as string
-                                                    )}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
+                                        {Object.entries(section.data).map(([key, value]) => {
+                                            if (key == "Incorporation Date")
+                                                return <TableRow key={key}>
+                                                    <IncorporationDateFrag />;
+                                                </TableRow>
+                                            if (key == "Incorporation Status")
+                                                return <TableRow key={key}><CompanyIncorpoStatus />;</TableRow>
+                                            if (key == "Receipt") return <TableRow key={key}><ReceietPaymentFrag /></TableRow>;
+                                            if (key == 'AML/CDD Edit') return <TableRow key={key}><AMLCDDEdit /></TableRow>
+                                            if (key == 'Payment Status') return <TableRow key={key}><PaymentStatus /></TableRow>
+                                            if (key == 'Payment Expire Date') return <TableRow key={key}><ExtendPaymentTimer /></TableRow>
+                                            return (
+                                                <TableRow key={key}>
+                                                    <TableCell className="font-medium">{key}</TableCell>
+                                                    <TableCell>{value as string}</TableCell>
+                                                </TableRow>
+                                            );
+                                        })}
                                     </TableBody>
                                 </Table>
                                 {section.title === "Status Information" && (
                                     <div className="flex items-center gap-4 mt-4">
                                         <span className="text-sm font-medium text-gray-600">
-                                            Click here to give access to the user to edit their current record
+                                            Click here to Save the Data
                                         </span>
-                                        <Button onClick={handleUpdate} className="px-4 py-2 text-sm">
+                                        <Button
+                                            onClick={handleUpdate}
+                                            className="px-4 py-2 text-sm"
+                                        >
                                             Click
                                         </Button>
                                     </div>
@@ -291,8 +586,6 @@ const CompanyDetail = () => {
             <TabsContent value="service-agreement">
                 <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
                     <h1 className="text-2xl font-bold mb-6">Service Agreement Details</h1>
-                    {/* Add content for Service Agreement Details here */}
-                    {/* <p>Service Agreement details will be displayed here.</p> */}
                     <SAgrementPdf />
                 </div>
             </TabsContent>

@@ -21,9 +21,11 @@ export function ReceiptUpload({ sessionId }: ReceiptUploadProps) {
   const handleUpload = async () => {
     if (!file) return;
 
+    const docId = localStorage.getItem('companyRecordId');
+
     setUploadStatus('uploading');
     // Simulate upload - replace with actual upload logic
-    await paymentApi.uploadReceipt(sessionId, file);
+    await paymentApi.uploadReceipt(sessionId,docId, file);
     setTimeout(() => {
       setUploadStatus('success');
     }, 2000);

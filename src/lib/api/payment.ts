@@ -4,6 +4,8 @@ import { PaymentIntent } from '@stripe/stripe-js';
 // import { updateCompanyIncorporationAtom } from '../atom';
 
 export interface PaymentSession {
+  _id: string;
+  paymentId: string;
   id: string;
   expiresAt: string;
   status: 'pending' | 'completed' | 'expired';
@@ -37,10 +39,15 @@ export const paymentApi = {
     return response.data;
   },
 
-  async uploadReceipt(sessionId: string, file: File): Promise<void> {
+  async uploadReceipt(sessionId: string, docId: string, file: File): Promise<void> {
     const formData = new FormData();
+    formData.append('id', docId)
     formData.append('receipt', file);
-    await api.post(`/payment/payment-sessions/${sessionId}/receipt`, formData);
+    await api.post(`/payment/payment-sessions/${sessionId}/receipt`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 
   async createPaymentIntent(amount: number, currency: string = 'USD', sessionId: string, docId: string) {
