@@ -22,7 +22,10 @@ export function ReceiptUpload({ sessionId }: ReceiptUploadProps) {
     if (!file) return;
 
     const docId = localStorage.getItem('companyRecordId');
-
+    if (!docId) {
+      console.error('Company record ID is not set');
+      return;
+    }
     setUploadStatus('uploading');
     // Simulate upload - replace with actual upload logic
     await paymentApi.uploadReceipt(sessionId,docId, file);
