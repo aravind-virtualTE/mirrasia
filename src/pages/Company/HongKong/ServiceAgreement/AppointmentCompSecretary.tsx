@@ -30,8 +30,8 @@ export default function AppointmentLetter() {
   // console.log("serviceAgrementDetails.directorList[0].signature", serviceAgrementDetails)
   useEffect(() => {
     if (serviceAgrementDetails.directorList) {
-      setSignature(serviceAgrementDetails.directorList[0].signature);
-      setDetails(serviceAgrementDetails.directorList[0].name)
+      setSignature(serviceAgrementDetails.directorList?.[0]?.signature || "");
+      setDetails(serviceAgrementDetails.directorList?.[0]?.name || "")
     }
   }, [serviceAgrementDetails]);
 

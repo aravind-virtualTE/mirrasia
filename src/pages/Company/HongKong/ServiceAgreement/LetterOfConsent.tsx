@@ -23,7 +23,7 @@ export default function LetterOfConsent() {
     signDate: ''
   })
   const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
-  const [signature, setSignature] = useState<string | null>(null);
+  const [signature, setSignature] = useState<string | "">("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   const handleBoxClick = () => {
@@ -32,12 +32,12 @@ export default function LetterOfConsent() {
 
   useEffect(() => {
     if(serviceAgrementDetails.directorList){
-      setSignature(serviceAgrementDetails.directorList[0].signature)
-      setFormData({...formData, directorName: serviceAgrementDetails.directorList[0].name})
+      setSignature(serviceAgrementDetails.directorList?.[0]?.signature || "")
+      setFormData({...formData, directorName: serviceAgrementDetails.directorList?.[0]?.name || ""})
     }
   }, [serviceAgrementDetails])
 
-  const handleSelectSignature = (selectedSignature: string | null) => {
+  const handleSelectSignature = (selectedSignature: string | "") => {
     setSignature(selectedSignature);
     setIsModalOpen(false);    
   };

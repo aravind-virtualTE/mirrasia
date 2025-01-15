@@ -25,7 +25,7 @@ export default function AuthorizationDetails() {
   const [isEditing, setIsEditing] = useState(false)
   const [docSigned,] = useState('2024-12-12')
   const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
-  const [signature, setSignature] = useState<string | null>(null);
+  const [signature, setSignature] = useState<string | "">("");
 
   const [personDetails, setPersonDetails] = useState({
     name: "",
@@ -44,9 +44,9 @@ export default function AuthorizationDetails() {
         email: serviceAgrementDetails.authorizedDetails[0].email,
         tel: serviceAgrementDetails.authorizedDetails[0].tel,
         kakaoWechat: serviceAgrementDetails.authorizedDetails[0].kakaoWechat,
-        directorName: serviceAgrementDetails!.directorList?.[0].name ?? ""
+        directorName: serviceAgrementDetails.directorList?.[0]?.name || ""
       })
-      setSignature(serviceAgrementDetails.directorList![0].signature)
+      setSignature(serviceAgrementDetails.directorList?.[0]?.signature || "")
   }, [serviceAgrementDetails])
 
   // const [signEdit, setSignEdit] = useState(false)
@@ -55,7 +55,7 @@ export default function AuthorizationDetails() {
     if(signature == "" || signature == null)   setIsModalOpen(true);
   };
 
-  const handleSelectSignature = (selectedSignature: string | null) => {
+  const handleSelectSignature = (selectedSignature: string | "") => {
     setSignature(selectedSignature);
     setIsModalOpen(false);
   };

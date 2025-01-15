@@ -8,13 +8,16 @@ export default function DeclarationOfInterest() {
   const [serviceAgrementDetails,] = useAtom(serviceAgreement)
 
 
-  const [signature, setSignature] = useState<string | null>(serviceAgrementDetails.directorList?.[0].signature || null);
+  const [signature, setSignature] = useState<string | "">(
+    serviceAgrementDetails.directorList?.[0]?.signature || ""
+  );
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
     if(signature == "" || signature == null)   setIsModalOpen(true);
   };
 
-  const handleSelectSignature = (selectedSignature: string | null) => {
+  const handleSelectSignature = (selectedSignature: string | "") => {
     setSignature(selectedSignature);
     setIsModalOpen(false);
   };
