@@ -12,24 +12,6 @@ import { sendInviteToShDir } from '@/services/dataFetch';
 import CustomLoader from '@/components/ui/customLoader';
 import { useToast } from "@/hooks/use-toast"
 
-// interface InvitationResults {
-//   successful: Array<{
-//     email: string;
-//     name: string;
-//     status: string;
-//   }>;
-//   alreadyExists: Array<{
-//     email: string;
-//     name: string;
-//     status: string;
-//   }>;
-//   failed: Array<{
-//     email: string;
-//     name: string;
-//     status: string;
-//   }>;
-// }
-
 interface ShareholderDirectorProps {
   name: string;
   email: string;
@@ -86,7 +68,6 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
     setPhoneError('');
     return true;
   };
-
 
   return (
     <Card className="mb-4 pt-4">
@@ -336,7 +317,6 @@ const ShareholderDirectorForm: React.FC = () => {
         ))}
       </div>
       <div className="flex justify-around mt-4">
-
         <Button onClick={sendMailFunction}
           disabled={isLoading}
           className="flex items-center"

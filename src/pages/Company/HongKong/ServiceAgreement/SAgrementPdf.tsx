@@ -35,46 +35,12 @@ const SAgrementPdf: React.FC = () => {
     const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement );
     const [companyData] = useAtom(companyIncorporationAtom);
     const [isFetching, setIsFetching] = useState(true);
-    const [serviceId, setId] = useState("")
-    // console.log("testing", companyData);
-    // useEffect(() => {
-    //     const docId = localStorage.getItem('companyRecordId');
-
-    //     const shareHolderDir = companyData.shareHolderDirectorController.shareHolders
-
-    //     const directors = shareHolderDir.filter((record) => record.isDirector === true)
-
-    //     const firstMatchingRecord = shareHolderDir.find(
-    //         (record) => record.isDirector === false && record.isLegalPerson === true
-    //     );
-
-    //     const authorisedDetails = [{
-    //         name: firstMatchingRecord?.name ?? "",
-    //         email: "",
-    //         tel: "",
-    //         kakaoWechat: ""
-    //     }]
-
-    //     const founderMember = [{
-    //         name: firstMatchingRecord?.name ?? "",
-    //         signature: ""
-    //     }]
-
-    //     const directorsList = directors.map((director) => ({ name: director.name, signature: "" }));
-
-    //     setServiceAgrement({
-    //         ...serviceAgrementDetails,
-    //         'companyName': companyData.applicantInfoForm.companyName[0],
-    //         'companyId': docId!,
-    //         'authorizedDetails': authorisedDetails,
-    //         'directorList': directorsList,
-    //         'founderMember': founderMember
-    //     })
-    // }, [companyData])
+    const [serviceId, setId] = useState("")   
 
     const prepareCompanyData = () => {
         const shareHolderDir =
             companyData.shareHolderDirectorController.shareHolders;
+            console.log("shareHolderDir", shareHolderDir)
         const directors = shareHolderDir.filter(
             (record) => record.isDirector === true
         );
@@ -89,9 +55,7 @@ const SAgrementPdf: React.FC = () => {
             percentage: record.ownershipRate.toString() + "%",
             remarks: "",
             signature: null,
-          }));
-        // console.log("shareHolderDir",shareholderArr)
-        
+          }));        
         return {
             companyName: companyData.applicantInfoForm.companyName[0],
             companyId: localStorage.getItem("companyRecordId") ?? "",
@@ -128,7 +92,6 @@ const SAgrementPdf: React.FC = () => {
             return null;
         }
     };
-
     // Function to merge company data with saved data
     const mergeData = (
         companyData: Partial<serviceAggrementTypes>,
@@ -153,7 +116,6 @@ const SAgrementPdf: React.FC = () => {
                 })) ?? [],
         };
     };
-
     useEffect(() => {
         const initializeData = async () => {
             setIsFetching(true);
@@ -225,17 +187,13 @@ const SAgrementPdf: React.FC = () => {
         pdf.save("AllDocuments.pdf");
         setIsLoading(false);
     };
-    // console.log("serviceId",serviceId)
     const handleSave = async () => {
         setIsSaveLoading(true);
-        // console.log("saveData to backend", serviceAgrementDetails);
-        try {
-            
+        try {            
             if(serviceId === ""){
                 const payload = JSON.stringify(serviceAgrementDetails);
                 const responseData = await saveServiceAgreementData(payload)
                 if(responseData.success){
-                    console.log("Data saved successfully");
                     setId(responseData.serviceAgreement._id)
                     alert("Data saved successfully");
                 }
@@ -244,19 +202,15 @@ const SAgrementPdf: React.FC = () => {
                 const payload = JSON.stringify(serviceAgrementDetails);
                 const responseData = await updateServiceAgreementData(payload)
                 if(responseData.success){
-                    console.log("Data updated successfully");
                     setId(responseData.serviceAgreement._id)
                     alert("Data updated successfully");
                 }
-            }
-            
-            console.log("Data saved successfully");
+            }            
             setIsSaveLoading(false);
         } catch (error) {
             console.error("Error saving data:", error);
         }
     };
-
     return (
         <React.Fragment>
             {isFetching ? (
@@ -353,23 +307,7 @@ const SAgrementPdf: React.FC = () => {
                                 "Download as PDF"
                             )}
                         </Button>
-                    </div>
-                    {/* <div className="flex justify-around mt-6">
-                        <Button
-                            disabled={isLoading}
-                            className="flex items-center"
-                            onClick={handleSave}
-                        >
-                            {isLoading ? (
-                                <>
-                                    <CustomLoader />
-                                    <span className="ml-2">Saving...</span>
-                                </>
-                            ) : (
-                                "Save Details"
-                            )}
-                        </Button>
-                    </div> */}
+                    </div>                 
                 </>
             )}
         </React.Fragment>
@@ -377,6 +315,44 @@ const SAgrementPdf: React.FC = () => {
 };
 
 export default SAgrementPdf;
+
+// console.log("testing", companyData);
+    // useEffect(() => {
+    //     const docId = localStorage.getItem('companyRecordId');
+
+    //     const shareHolderDir = companyData.shareHolderDirectorController.shareHolders
+
+    //     const directors = shareHolderDir.filter((record) => record.isDirector === true)
+
+    //     const firstMatchingRecord = shareHolderDir.find(
+    //         (record) => record.isDirector === false && record.isLegalPerson === true
+    //     );
+
+    //     const authorisedDetails = [{
+    //         name: firstMatchingRecord?.name ?? "",
+    //         email: "",
+    //         tel: "",
+    //         kakaoWechat: ""
+    //     }]
+
+    //     const founderMember = [{
+    //         name: firstMatchingRecord?.name ?? "",
+    //         signature: ""
+    //     }]
+
+    //     const directorsList = directors.map((director) => ({ name: director.name, signature: "" }));
+
+    //     setServiceAgrement({
+    //         ...serviceAgrementDetails,
+    //         'companyName': companyData.applicantInfoForm.companyName[0],
+    //         'companyId': docId!,
+    //         'authorizedDetails': authorisedDetails,
+    //         'directorList': directorsList,
+    //         'founderMember': founderMember
+    //     })
+    // }, [companyData])
+
+
 
 // import { PDFDocument } from 'pdf-lib';
 

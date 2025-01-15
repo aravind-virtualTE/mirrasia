@@ -85,8 +85,8 @@ interface ShareHolderDirectorController {
   numShareHoldersAtom?: string;
   numDirectorsAtom?: string;
   shareHolderDirectorNameSharesNumAtom: string;
-  significantControllerAtom: string
-  designatedContactPersonAtom: string,
+  significantControllerAtom: string | number
+  designatedContactPersonAtom: string | number,
   shareHolders: {
     name: string;
     email: string;

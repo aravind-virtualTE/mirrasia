@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useAtom } from "jotai";
@@ -11,19 +11,23 @@ import { HelpCircle } from 'lucide-react';
 import ShareholderDirectorForm from './ShareDirectorForm';
 import { typesOfShares } from './constants';
 import { Checkbox } from '@/components/ui/checkbox';
+import DropdownSelect from '@/components/DropdownSelect';
 
 const ShareholdersDirectorsDetails: React.FC = () => {
     const [sdcInfo, setShareDirControllerInfo] = useAtom(shareHolderDirectorControllerAtom);
-    const [comapnyInfo, setCompanyInfo] = useAtom(regCompanyInfoAtom);
-    // const shareholdersCount = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+    const [shrDirList,setShrDirList] = useState(sdcInfo.shareHolders.map((item) => {
+        if (item.name == "") return "Enter Value Above and Select Value"
+        return item.name
+    }))
 
-    // const directorsCount = ['1', '2', '3', '4', '5']
-    // const handleNumShareholderChange = (numShareHoldersAtom: string) => {
-    //     setShareDirControllerInfo((prev) => ({ ...prev, numShareHoldersAtom }));
-    // };
-    // const handleNumDirectorChange = (numDirectorsAtom: string) => {
-    //     setShareDirControllerInfo((prev) => ({ ...prev, numDirectorsAtom }));
-    // };
+    useEffect(() =>{
+        setShrDirList(sdcInfo.shareHolders.map((item) => {
+            if (item.name == "") return "Enter Value Above and Select Value"
+            return item.name
+        }))
+    }, [sdcInfo])
+    
+    const [comapnyInfo, setCompanyInfo] = useAtom(regCompanyInfoAtom);
     const { theme } = useTheme();
 
     const handleSharesChange = (checked: boolean, purpose: string) => {
@@ -34,6 +38,16 @@ const ShareholdersDirectorsDetails: React.FC = () => {
               : prev.registerShareTypeAtom.filter(p => p !== purpose)
           }));
       };
+
+    const handleItemSelect = (value: string | number) => {
+        // console.log('Selected Value:', value);
+        setShareDirControllerInfo(prev => ({ ...prev, significantControllerAtom: value }))
+    };
+
+    const handleSelect = (value: string | number) => {
+        // console.log('Selected Value:', value);
+        setShareDirControllerInfo(prev => ({ ...prev, designatedContactPersonAtom: value }))
+    };
     return (
         <div className="flex w-full p-4">
             <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
@@ -46,71 +60,6 @@ const ShareholdersDirectorsDetails: React.FC = () => {
             <div className="w-3/4 ml-4">
                 <Card>
                     <CardContent className="space-y-6">
-                        {/* <div>
-                            <Label
-                                className={`text-base font-semibold ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'
-                                    }`}
-                            >
-                                Total number of shareholders{' '}
-                                <span className="text-red-500 font-bold ml-1">*</span>
-                            </Label>
-                            <RadioGroup
-                                value={sdcInfo.numShareHoldersAtom}
-                                onValueChange={handleNumShareholderChange}
-                                className={`mt-4 flex items-center space-x-4 ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'
-                                    }`}
-                            >
-                                {shareholdersCount.map((share) => (
-                                    <div
-                                        key={share}
-                                        className="flex items-center space-x-1"
-                                    >
-                                        <RadioGroupItem
-                                            value={share}
-                                            id={share}
-                                           
-                                        />
-                                        <Label
-                                            htmlFor={share}
-                                            className={`font-normal ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'
-                                                }`}
-                                        >
-                                            {share}
-                                        </Label>
-                                    </div>
-                                ))}
-                            </RadioGroup>
-                        </div>
-                        <div>
-                            <Label className={`text-base font-semibold ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'
-                                    }`}>Total number of directors <span className="text-red-500 font-bold ml-1">*</span></Label>
-                            <RadioGroup  className={`mt-4 flex items-center space-x-4 ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'
-                                    }`}
-                                value={sdcInfo.numDirectorsAtom}
-                                onValueChange={handleNumDirectorChange}
-                            >
-                                {directorsCount.map((noOfDirector) => (
-                                    <div key={noOfDirector}  className="flex items-center space-x-1">
-                                        <RadioGroupItem value={noOfDirector} id={noOfDirector} />
-                                        <Label htmlFor={noOfDirector} className="font-normal">
-                                            {noOfDirector}
-                                        </Label>
-                                    </div>
-                                ))}
-                            </RadioGroup>
-                        </div>
-                        <div>
-                            <Label className="text-base font-semibold">Enter the name of each shareholder/director and the number of shares to be assigned <span className="text-red-500 font-bold ml-1">*</span></Label>
-                            <p className="text-sm text-gray-500">Example) 1. Jack: Shareholder/Director/Number of shares assigned: 1,000,  2. John: Not Shareholder/Directors,  3. William: Shareholder/Not Director/Number of shares assigned: 800</p>
-                            <Input
-                                id="shareholder-director-count"
-                                required
-                                className="w-full"
-                                value={sdcInfo.shareHolderDirectorNameSharesNumAtom}
-                                onChange={(e) => setShareDirControllerInfo(prev => ({ ...prev, shareHolderDirectorNameSharesNumAtom: e.target.value }))}
-                                placeholder="E.g : 1.Jack: Shareholder/Director/Number of shares assigned: 1" />
-                        </div> */}
-
                         <ShareholderDirectorForm />
 
                         <div>
@@ -156,13 +105,20 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                                     </Tooltip>
                                 </span>
                             </Label>
-                            <Input
+                            {shrDirList.length > 0 ? ( <DropdownSelect
+                                options={shrDirList}
+                                placeholder="Select significant Controller"
+                                onSelect={handleItemSelect}
+                                selectedValue={sdcInfo.significantControllerAtom}
+                            />): "Please Fill Shareholder/Director"}
+                           
+                            {/* <Input
                                 id="significant-Controller"
                                 required
                                 className="w-full"
                                 value={sdcInfo.significantControllerAtom}
                                 onChange={(e) => setShareDirControllerInfo(prev => ({ ...prev, significantControllerAtom: e.target.value }))}
-                                placeholder="E.g : 1.Jack: Shareholder/Director/Number of shares assigned: 1" />
+                                placeholder="E.g : 1.Jack: Shareholder/Director/Number of shares assigned: 1" /> */}
                         </div>
                         <div>
                             <Label htmlFor="description" className="text-base font-semibold flex items-center">
@@ -177,13 +133,21 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                                     </Tooltip>
                                 </span>
                             </Label>
-                            <Input
+
+                            {shrDirList.length > 0 ? ( <DropdownSelect
+                                options={shrDirList}
+                                placeholder="Select significant Controller"
+                                onSelect={handleSelect}
+                                selectedValue={sdcInfo.designatedContactPersonAtom}
+                            />): "Please Fill Shareholder/Director"}
+
+                            {/* <Input
                                 id="designated-Contact-Person"
                                 required
                                 className="w-full"
                                 value={sdcInfo.designatedContactPersonAtom}
                                 onChange={(e) => setShareDirControllerInfo(prev => ({ ...prev, designatedContactPersonAtom: e.target.value }))}
-                                placeholder="Enter Designated Contact..." />
+                                placeholder="Enter Designated Contact..." /> */}
                         </div>
 
                     </CardContent>

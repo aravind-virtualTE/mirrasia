@@ -23,11 +23,10 @@ export default function AppointmentLetter() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowInstructions(false);
-    }, 5000); // Hide instructions after 5 seconds
+    }, 5000); 
 
     return () => clearTimeout(timer);
   }, []);
-  // console.log("serviceAgrementDetails.directorList[0].signature", serviceAgrementDetails)
   useEffect(() => {
     if (serviceAgrementDetails.directorList) {
       setSignature(serviceAgrementDetails.directorList?.[0]?.signature || "");
@@ -38,10 +37,6 @@ export default function AppointmentLetter() {
 
   const handleSelectSignature = (selectedSignature: string | "") => {
     setSignature(selectedSignature);
-    // setServiceAgrement({
-    //   ...serviceAgrementDetails,
-    //   directorList: [{ name: "", signature: selectedSignature }],
-    // });
     setServiceAgrement({
       ...serviceAgrementDetails,
       directorList: serviceAgrementDetails.directorList

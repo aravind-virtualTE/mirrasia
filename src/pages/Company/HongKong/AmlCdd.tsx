@@ -45,7 +45,7 @@ const AmlCdd: React.FC = () => {
   const [businessInfoHkCompany, setBusinessInfoHkCompany] = useAtom(
     businessInfoHkCompanyAtom
   );
-  console.log("finalForm",finalForm)
+  // console.log("finalForm",finalForm)
   const [isDiabled] = useState(finalForm.isDisabled);
   const { t } = useTranslation();
   const [cList] = useAtom(companyIncorporationList);
