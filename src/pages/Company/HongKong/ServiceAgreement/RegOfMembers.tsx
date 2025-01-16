@@ -93,7 +93,7 @@ export default function RegisterOfMembers() {
               <p className="font-serif text-sm">Name of Company: <span className=" px-1  underline ">{serviceAgrementDetails.companyName}</span></p>
             </div>
             <div className="flex gap-1">
-              <p className="font-serif text-sm">BRN Number: <span className=" px-1  underline ">{serviceAgrementDetails.brnNo}</span></p>
+              <p className="font-serif text-sm">BRN : <span className=" px-1  underline ">{serviceAgrementDetails.brnNo}</span></p>
             </div>
           </div>
           <h1 className="text-l font-serif font-semibold">REGISTER OF MEMBERS</h1>

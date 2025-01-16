@@ -86,7 +86,7 @@ export default function RegisterOfCharges() {
               <span className="px-1">{serviceAgrementDetails.companyName}</span>
             </div>
             <div className="flex gap-2">
-              <span className="font-medium">BRN Number: {serviceAgrementDetails.brnNo}</span>
+              <span className="font-medium">BRN : {serviceAgrementDetails.brnNo}</span>
             </div>
             <div className="flex gap-2">
               <span className="font-medium">Jurisdiction:</span>

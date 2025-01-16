@@ -78,10 +78,10 @@ export default function AppointmentLetter() {
           </div>
           <div className="space-x-4">
             <span className="font-semibold">
-              BRN NO.:{" "}
+              BRN .:{" "}
               <input
                 className="border-b "
-                placeholder="Enter BRN NO"
+                placeholder="Enter BRN"
                 value={serviceAgrementDetails.brnNo}
                 onChange={(e) =>
                   setServiceAgrement({

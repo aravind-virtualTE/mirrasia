@@ -15,7 +15,7 @@ const AccountingTaxationInfo: React.FC = () => {
     const [accTaxInfo, setTaxAccountInfo] = useAtom(accountingTaxInfoAtom);
 
     const finYearEndDates = ['December 31', "March 31 (Hong Kong's fiscal year-end date)"]
-    const boobkCycleCount = ['Monthly', 'Quarterly', 'Half-annually (every 6 months)', 'Annually (every 12 months)  *the lowest cost', 'Other']
+    const boobkCycleCount = ['Monthly', 'Quarterly', 'Half-annually (every 6 months)', 'Annually (every 12 months)  *the lowest cost']
 
     const accoutingSoftware = ['Yes (Software cost: estimated as HKD400 per month)', 'No', 'Recommendation required', 'Other']
 
@@ -62,7 +62,7 @@ const AccountingTaxationInfo: React.FC = () => {
                             </span></Label>
                             <DropdownSelect
                                 options={finYearEndDates}
-                                placeholder="Enter custom price"
+                                placeholder="Please enter the preferred financial year end date"
                                 onSelect={handleItemSelect}
                                 selectedValue={accTaxInfo.finYearEnd}
                             />

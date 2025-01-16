@@ -94,7 +94,7 @@ export default function SignificantControllersRegister() {
             <span className=" px-1  underline">{serviceAgrementDetails.companyName}</span>
           </div>
           <div className="flex gap-2">
-            <span className="font-medium">BRN No.:</span>
+            <span className="font-medium">BRN .:</span>
             <span>{serviceAgrementDetails.brnNo}</span>
           </div>
         </div>

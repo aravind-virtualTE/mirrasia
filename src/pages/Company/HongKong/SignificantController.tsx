@@ -45,7 +45,7 @@ export default function SignificantControllerForm() {
     <Card className="max-w-4xl mx-auto p-8 rounded-none shadow-none font-serif">
       <CardHeader className="space-y-4 p-0">
         <div className="space-y-2 text-sm">
-          <div>BRN No. : {serviceAgrementDetails.brnNo}</div>
+          <div>BRN .: {serviceAgrementDetails.brnNo}</div>
           <div className="space-y-4  text-base">
             <div className="flex gap-2 font-serif">
               <span className="min-w-[4rem]">To :</span>

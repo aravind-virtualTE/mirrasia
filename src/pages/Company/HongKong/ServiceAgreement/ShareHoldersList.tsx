@@ -102,7 +102,7 @@ export default function ShareholdersList() {
             </span>
           </div>
           <div className="flex gap-2">
-            <span className="font-medium">BRN No.:</span>
+            <span className="font-medium">BRN .:</span>
             <span>{serviceAgrementDetails.brnNo}</span>
           </div>
         </div>

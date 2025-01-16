@@ -96,7 +96,7 @@ export default function AuthorizationDetails() {
     <Card className="max-w-4xl mx-auto p-8 rounded-none">
       <CardHeader className="space-y-4">
         <div className="flex justify-between text-sm ">
-          <span>BRN NO.: {serviceAgrementDetails.brnNo}</span>
+          <span>BRN .: {serviceAgrementDetails.brnNo}</span>
           <span>(Registered in Hong Kong)</span>
         </div>
         <CardTitle className="text-center font-bold">{serviceAgrementDetails.companyName}</CardTitle>

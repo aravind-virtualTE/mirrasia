@@ -72,7 +72,7 @@ export default function LetterOfConsent() {
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 flex-1">
-            <Label htmlFor="brnNo" className="whitespace-nowrap">BRN NO.: {serviceAgrementDetails.brnNo}</Label>
+            <Label htmlFor="brnNo" className="whitespace-nowrap">BRN .: {serviceAgrementDetails.brnNo}</Label>
             {/* <Input
               id="brnNo"
               name="brnNo"

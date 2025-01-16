@@ -27,7 +27,7 @@ export default function DeclarationOfInterest() {
       <CardHeader className="space-y-6 pb-6">
         <div className="space-y-2">
           <div className="flex gap-2">
-            <p className="font-serif text-sm">BRN Number: <span className=" px-1  underline ">{serviceAgrementDetails.brnNo}</span></p>
+            <p className="font-serif text-sm">BRN : <span className=" px-1  underline ">{serviceAgrementDetails.brnNo}</span></p>
           </div>
           <div className="text-center space-y-1">
             <p className=" px-1 inline-block font-serif font-semibold">

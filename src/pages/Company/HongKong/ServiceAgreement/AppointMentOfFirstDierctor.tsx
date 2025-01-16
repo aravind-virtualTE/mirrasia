@@ -55,7 +55,7 @@ const AppointmentOfDirectors: React.FC = () => {
 
       <CardContent>
         <div className="space-y-4 mb-6">
-          <p><strong>BRN NO :{compDetails.brnNo}</strong></p>
+          <p><strong>BRN :{compDetails.brnNo}</strong></p>
           <p><strong>NAME OF COMPANY : {compDetails.companyName}</strong></p>
           {/* <div className="font-bold py-2 px-4 inline-block">
             {companyName}
