@@ -30,7 +30,7 @@ export function usePaymentSession(sessionId: string) {
             if (timeLeftRef.current <= 0) {
               clearInterval(interval);
               setTimeLeft(0);
-              setStatus("expired");
+              if(session.status !== "completed") setStatus("expired");
             } else {
               setTimeLeft(timeLeftRef.current);
             }
