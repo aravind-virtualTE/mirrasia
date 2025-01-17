@@ -40,14 +40,15 @@ const SAgrementPdf: React.FC = () => {
     const prepareCompanyData = () => {
         const shareHolderDir =
             companyData.shareHolderDirectorController.shareHolders;
-            console.log("shareHolderDir", shareHolderDir)
+            // console.log("shareHolderDir===>", shareHolderDir)
         const directors = shareHolderDir.filter(
             (record) => record.isDirector === true
         );
         const firstMatchingRecord = shareHolderDir.find(
             (record) => record.isDirector === false && record.isLegalPerson === false
         );
-        const shareholderArr = shareHolderDir.filter(record => record.isDirector === false ).map(record => ({
+        // .filter(record => record.isDirector === false )
+        const shareholderArr = shareHolderDir.map(record => ({
             name: record.name,           
             correspondenceAddress: "",
             residentialAddress: "",
@@ -85,7 +86,7 @@ const SAgrementPdf: React.FC = () => {
             const companyId = localStorage.getItem("companyRecordId");
             const response = await getSavedServiceAggrmtData(companyId!);
             setId(response.id)
-            console.log("response-->", response);
+            // console.log("response-->", response);
             return response;
         } catch (error) {
             console.error("Error fetching saved data:", error);

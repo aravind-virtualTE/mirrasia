@@ -9,6 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function AppointmentLetter() {
   const [directorName, setDetails] = useState("");
@@ -27,6 +28,9 @@ export default function AppointmentLetter() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  console.log("serviceAgrementDetails",serviceAgrementDetails)
+
   useEffect(() => {
     if (serviceAgrementDetails.directorList) {
       setSignature(serviceAgrementDetails.directorList?.[0]?.signature || "");
@@ -49,13 +53,30 @@ export default function AppointmentLetter() {
 
     setIsModalOpen(false);
   };
-  const setDirectorName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDetails(e.target.value);
+  // const setDirectorName = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDetails(e.target.value);
+  //   setServiceAgrement({
+  //     ...serviceAgrementDetails,
+  //     directorList: [{ name: e.target.value, signature: signature }],
+  //   });
+  // };
+
+  const dirShrList = serviceAgrementDetails.directorList?.map( item => {
+    return ({
+      key : item.name,
+      value :item.name
+    })
+  })
+  console.log("dirShrList",dirShrList)
+
+  const handleSelectChange = (value : string) =>{
+    console.log("value", value, 'key')
+    setDetails(value);
     setServiceAgrement({
       ...serviceAgrementDetails,
-      directorList: [{ name: e.target.value, signature: signature }],
+      directorList: [{ name: value, signature: signature }],
     });
-  };
+  }
   return (
     <Card className="max-w-4xl mx-auto p-8 rounded-none">
       <CardHeader className="space-y-6 p-0">
@@ -167,7 +188,7 @@ export default function AppointmentLetter() {
 
           <div className="space-y-4">
             <div className=" w-64 pt-2">
-              <div className="w-64 pt-2">
+              <div className="w-64 pt-2 pb-3">
                 <div
                   onClick={handleBoxClick}
                   className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -190,19 +211,35 @@ export default function AppointmentLetter() {
                 )}
               </div>
 
-              <input
+              <Select
+                value={directorName}
+                onValueChange={handleSelectChange}                
+              >
+                <SelectTrigger id="dirShrList" className="w-full ">
+                  <SelectValue placeholder="Select Director" />
+                </SelectTrigger>
+                <SelectContent>
+                  {dirShrList && dirShrList.map((platform) => (
+                    <SelectItem key={platform.key} value={platform.key}>
+                      {platform.value}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* <input
                 type="text"
                 value={directorName}
                 className="border-b"
                 placeholder="Enter Director Name"
                 onChange={setDirectorName}
-              />
+              /> */}
               <Tooltip open={showInstructions}>
                 <TooltipTrigger asChild>
                   <p className="italic">Director</p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Enter director name here</p>
+                  <p>Select director name here</p>
                 </TooltipContent>
               </Tooltip>
             </div>
