@@ -16,11 +16,12 @@ import ToggleTheme from '@/hooks/ToggleTheme';
 // import { authAtom } from "@/hooks/useAuth";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
+import { useTheme } from "@/components/theme-provider";
 
 export default function Navbar() {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const navigate = useNavigate();
-
+    const { theme } = useTheme();
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
     const decodedToken = jwtDecode<TokenData>(token);
@@ -59,13 +60,13 @@ export default function Navbar() {
                     MIRR ASIA
                 </span> */}
                 <img
-                    src="https://static.wixstatic.com/media/853688_31ac94e9d52a4ae8b253f6dae49dca0d~mv2.png/v1/fill/w_219,h_31,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo%20(420%20%C3%97%2060px).png"
+                    src= {theme === 'light'? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png" : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"}
                     alt="logo (420 × 60px)"
                     width={175}
                     height={25}
-                    srcSet="https://static.wixstatic.com/media/853688_31ac94e9d52a4ae8b253f6dae49dca0d~mv2.png/v1/fill/w_219,h_31,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo%20(420%20%C3%97%2060px).png"
+                    srcSet={theme === 'light'? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png" : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"}
                     fetchPriority="high"
-                    style={{ width: '175px', height: '25px', objectFit: 'cover', backgroundColor:'#0C3C60' }}
+                    style={{ width: '175px', height: '25px', objectFit: 'cover',  }}
                 />
             </span>
             <div className="flex-1">

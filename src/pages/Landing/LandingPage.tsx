@@ -1,19 +1,25 @@
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 // import Logo from '@/common/LogoComponent';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { BookOpen, Calculator, Users } from 'lucide-react';
-import businessIllustration from '@/assets/images/Business Plan-amico.svg';
-import LanguageSwitcher from '@/hooks/LanguageSwitcher';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { BookOpen, Calculator, Users } from "lucide-react";
+import businessIllustration from "@/assets/images/Business Plan-amico.svg";
+import LanguageSwitcher from "@/hooks/LanguageSwitcher";
+import { useTheme } from "@/components/theme-provider";
 // import { ModeToggle } from '@/components/mode-toggle';
 
-
 const LandingPage = () => {
+  const { theme } = useTheme();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const handleLoginClick = () => {
-    navigate('/login');
+    navigate("/login");
   };
   return (
     <div className="min-h-screen">
@@ -28,32 +34,77 @@ const LandingPage = () => {
                   <Logo width={30} height={30} />
                   <span className="ml-2 text-4xl font-bold">MIRR ASIA</span>
                 </div> */}
-                 <img
-                    src="https://static.wixstatic.com/media/853688_31ac94e9d52a4ae8b253f6dae49dca0d~mv2.png/v1/fill/w_219,h_31,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo%20(420%20%C3%97%2060px).png"
-                    alt="logo (420 × 60px)"
-                    width={175}
-                    height={25}
-                    srcSet="https://static.wixstatic.com/media/853688_31ac94e9d52a4ae8b253f6dae49dca0d~mv2.png/v1/fill/w_219,h_31,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo%20(420%20%C3%97%2060px).png"
-                    fetchPriority="high"
-                    style={{ width: '175px', height: '25px', objectFit: 'cover', backgroundColor:'#0C3C60' }}
+                <img
+                  src={
+                    theme === "light"
+                      ? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
+                      : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"
+                  }
+                  alt="logo (420 × 60px)"
+                  width={175}
+                  height={25}
+                  srcSet={
+                    theme === "light"
+                      ? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
+                      : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"
+                  }
+                  fetchPriority="high"
+                  style={{
+                    width: "175px",
+                    height: "25px",
+                    objectFit: "cover",
+                    backgroundColor: "#0C3C60",
+                  }}
                 />
                 {/* <ModeToggle /> */}
               </div>
               <div className="hidden md:block ml-10">
                 <div className="flex items-center space-x-4">
-                  <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2">Incorporation</a>
-                  <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2">Corporate Secretary</a>
-                  <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2">Accounting</a>
-                  <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2">Visas</a>
-                  <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2">Resources</a>
-                  <a href="#" className="text-gray-700 hover:text-gray-900 px-3 py-2">Pricing</a>
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2"
+                  >
+                    Incorporation
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2"
+                  >
+                    Corporate Secretary
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2"
+                  >
+                    Accounting
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2"
+                  >
+                    Visas
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2"
+                  >
+                    Resources
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2"
+                  >
+                    Pricing
+                  </a>
                 </div>
               </div>
             </div>
 
             {/* Auth Buttons */}
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" onClick={handleLoginClick}>Log in</Button>
+              <Button variant="ghost" onClick={handleLoginClick}>
+                Log in
+              </Button>
               <LanguageSwitcher />
               <Button>Get started</Button>
             </div>
@@ -65,13 +116,15 @@ const LandingPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
           <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-            <h1 className="text-4xl font-bold mb-4">{t('landingPage.leftHeading')}</h1>
-            <p className="text-600 mb-6">
-            {t('landingPage.leftText')}
-            </p>
+            <h1 className="text-4xl font-bold mb-4">
+              {t("landingPage.leftHeading")}
+            </h1>
+            <p className="text-600 mb-6">{t("landingPage.leftText")}</p>
             <div className="space-x-4">
-              <Button size="lg">{t('landingPage.registerNow')}</Button>
-              <Button variant="outline" size="lg">{t('landingPage.contactUs')}</Button>
+              <Button size="lg">{t("landingPage.registerNow")}</Button>
+              <Button variant="outline" size="lg">
+                {t("landingPage.contactUs")}
+              </Button>
             </div>
           </div>
           <div className="hidden md:flex justify-center">
@@ -82,17 +135,17 @@ const LandingPage = () => {
             />
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-            <h1 className="text-4xl font-bold mb-4">{t('landingPage.rightHeading')}</h1>
+            <h1 className="text-4xl font-bold mb-4">
+              {t("landingPage.rightHeading")}
+            </h1>
             <h2 className="text-lg font-bold mb-4">
-            {t('landingPage.rightSubHeading')}
+              {t("landingPage.rightSubHeading")}
             </h2>
-            <p className="text-600 mb-6">{t('landingPage.rightP')}</p>
+            <p className="text-600 mb-6">{t("landingPage.rightP")}</p>
             <div className="flex">
-              <Button >{t('landingPage.TransferBtn')}
-              </Button>
+              <Button>{t("landingPage.TransferBtn")}</Button>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -105,7 +158,8 @@ const LandingPage = () => {
                 <BookOpen className="h-8 w-8 text-blue-500 mb-2" />
                 <CardTitle>Easy Registration</CardTitle>
                 <CardDescription>
-                  Register your company in minutes with our streamlined digital process
+                  Register your company in minutes with our streamlined digital
+                  process
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -115,7 +169,8 @@ const LandingPage = () => {
                 <Calculator className="h-8 w-8 text-blue-500 mb-2" />
                 <CardTitle>Accounting & Tax</CardTitle>
                 <CardDescription>
-                  Professional bookkeeping and tax filing services for your business
+                  Professional bookkeeping and tax filing services for your
+                  business
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -135,7 +190,9 @@ const LandingPage = () => {
 
       {/* Trust Banner */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
-        <h2 className="text-2xl font-bold mb-8">Trusted by over 450,000 businesses globally</h2>
+        <h2 className="text-2xl font-bold mb-8">
+          Trusted by over 450,000 businesses globally
+        </h2>
         <div className="flex justify-center items-center space-x-8">
           {/* Placeholder for partner logos */}
           <div className="w-32 h-12 bg-gray-200 rounded flex items-center justify-center">
@@ -150,7 +207,7 @@ const LandingPage = () => {
         </div>
       </div>
     </div>
-  )
+  );
 };
 
-export default LandingPage
+export default LandingPage;
