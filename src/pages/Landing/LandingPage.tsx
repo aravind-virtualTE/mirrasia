@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Logo from '@/common/LogoComponent';
+// import Logo from '@/common/LogoComponent';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { BookOpen, Calculator, Users } from 'lucide-react';
@@ -24,10 +24,19 @@ const LandingPage = () => {
             {/* Logo and Nav Items */}
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <Logo width={30} height={30} />
                   <span className="ml-2 text-4xl font-bold">MIRR ASIA</span>
-                </div>
+                </div> */}
+                 <img
+                    src="https://static.wixstatic.com/media/853688_31ac94e9d52a4ae8b253f6dae49dca0d~mv2.png/v1/fill/w_219,h_31,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo%20(420%20%C3%97%2060px).png"
+                    alt="logo (420 × 60px)"
+                    width={175}
+                    height={25}
+                    srcSet="https://static.wixstatic.com/media/853688_31ac94e9d52a4ae8b253f6dae49dca0d~mv2.png/v1/fill/w_219,h_31,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo%20(420%20%C3%97%2060px).png"
+                    fetchPriority="high"
+                    style={{ width: '175px', height: '25px', objectFit: 'cover', backgroundColor:'#0C3C60' }}
+                />
                 {/* <ModeToggle /> */}
               </div>
               <div className="hidden md:block ml-10">
