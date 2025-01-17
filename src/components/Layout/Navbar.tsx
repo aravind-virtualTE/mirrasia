@@ -10,7 +10,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 import { useState } from "react";
-import Logo from '@/common/LogoComponent';
+// import Logo from '@/common/LogoComponent';
 import ToggleTheme from '@/hooks/ToggleTheme';
 // import { useAtom } from 'jotai';
 // import { authAtom } from "@/hooks/useAuth";
@@ -47,8 +47,26 @@ export default function Navbar() {
     return (
         <header className="flex h-14 items-center gap-4 border-b bg-background px-6 sticky top-0 z-50">
             <span className="flex items-center space-x-2 font-bold cursor-pointer" onClick={navigateRoute}>
-                <Logo />
-                MIRR ASIA
+                {/* <Logo />
+                <span
+                    className="text-black font-extrabold tracking-wide"
+                    style={{
+                        fontSize: '24px',
+                        fontFamily: 'Arial, sans-serif',
+                        letterSpacing: '0.1em',
+                    }}
+                >
+                    MIRR ASIA
+                </span> */}
+                <img
+                    src="https://static.wixstatic.com/media/853688_31ac94e9d52a4ae8b253f6dae49dca0d~mv2.png/v1/fill/w_219,h_31,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo%20(420%20%C3%97%2060px).png"
+                    alt="logo (420 × 60px)"
+                    width={175}
+                    height={25}
+                    srcSet="https://static.wixstatic.com/media/853688_31ac94e9d52a4ae8b253f6dae49dca0d~mv2.png/v1/fill/w_219,h_31,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo%20(420%20%C3%97%2060px).png"
+                    fetchPriority="high"
+                    style={{ width: '175px', height: '25px', objectFit: 'cover', backgroundColor:'#0C3C60' }}
+                />
             </span>
             <div className="flex-1">
                 <Button
