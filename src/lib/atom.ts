@@ -1,3 +1,4 @@
+import { Option } from '@/components/MultiSelectInput';
 import { atom } from 'jotai';
 import { atomWithReset, useResetAtom } from 'jotai/utils';
 // company Incorporation
@@ -85,7 +86,7 @@ interface ShareHolderDirectorController {
   numShareHoldersAtom?: string;
   numDirectorsAtom?: string;
   shareHolderDirectorNameSharesNumAtom: string;
-  significantControllerAtom: string | number
+  significantControllerAtom: Option[];
   designatedContactPersonAtom: string | number,
   shareHolders: {
     name: string;
@@ -103,7 +104,7 @@ export const shareHolderDirectorControllerAtom = atomWithReset<ShareHolderDirect
   numShareHoldersAtom: undefined,
   numDirectorsAtom: undefined,
   shareHolderDirectorNameSharesNumAtom: '',
-  significantControllerAtom: '',
+  significantControllerAtom: [{value : "", label : ""}],
   designatedContactPersonAtom: '',
   shareHolders: [{
     "name": "",

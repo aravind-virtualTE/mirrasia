@@ -43,7 +43,7 @@ export default function CompanyResolution() {
         (incorporated in Hong Kong SAR)
       </p>
       <p className="mt-4 text-sm">
-        Written Resolutions of the Sole Director of the Company made pursuant to
+        Written Resolutions to all Directors of the Company made pursuant to
         the Company's Articles of Association and Section 548 of The Companies
         Ordinance
       </p>
