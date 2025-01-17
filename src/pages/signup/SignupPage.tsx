@@ -1,11 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAtom } from 'jotai';
-import { useGoogleLogin } from '@react-oauth/google';
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAtom } from "jotai";
+import { useGoogleLogin } from "@react-oauth/google";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Logo from '@/common/LogoComponent';
-import { authAtom, signupWithEmail, signupWithGoogle, validateToken } from '@/hooks/useAuth';
+// import Logo from "@/common/LogoComponent";
+import {
+  authAtom,
+  signupWithEmail,
+  signupWithGoogle,
+  validateToken,
+} from "@/hooks/useAuth";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -15,13 +20,13 @@ const SignupPage = () => {
 
   const [auth, setAuth] = useAtom(authAtom);
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
-  const [emailError, setEmailError] = useState('');
+  const [emailError, setEmailError] = useState("");
 
   useEffect(() => {
     if (idToken) {
@@ -31,7 +36,7 @@ const SignupPage = () => {
           console.log("response", response);
           // Uncomment the following line if the response contains a valid token flag.
           // setIsValidToken(response.data.isValid);
-          setIsValidToken(false); 
+          setIsValidToken(false);
         } catch (error) {
           console.error("Invalid or expired token:", error);
           setIsValidToken(true);
@@ -47,15 +52,15 @@ const SignupPage = () => {
   const validateEmail = (email: string) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
-      setEmailError('Invalid email address');
+      setEmailError("Invalid email address");
     } else {
-      setEmailError('');
+      setEmailError("");
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (e.target.name === 'email') {
+    if (e.target.name === "email") {
       validateEmail(e.target.value);
     }
   };
@@ -63,69 +68,67 @@ const SignupPage = () => {
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      setAuth(prev => ({ ...prev, error: "Passwords don't match" }));
+      setAuth((prev) => ({ ...prev, error: "Passwords don't match" }));
       return;
     }
 
     try {
-      setAuth(prev => ({ ...prev, loading: true }));
+      setAuth((prev) => ({ ...prev, loading: true }));
       const response = await signupWithEmail(
         formData.fullName,
         formData.email,
-        formData.password,
+        formData.password
       );
       const { token, user } = response;
-      console.log("response==>", token, user)
+      console.log("response==>", token, user);
       // Save the token to localStorage
       localStorage.setItem("token", token);
 
       setAuth({ user, isAuthenticated: true, loading: false, error: null });
-      localStorage.setItem('isAuthenticated', 'true');
-      if (user.role === 'admin') {
-        navigate('/admin-dashboard');
-      }
-       else if (user.role === 'sh_dir') {
-        navigate('/viewboard');
-      }
-       else {
-        navigate('/dashboard');
+      localStorage.setItem("isAuthenticated", "true");
+      if (user.role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (user.role === "sh_dir") {
+        navigate("/viewboard");
+      } else {
+        navigate("/dashboard");
       }
     } catch (error) {
-      setAuth(prev => ({
+      setAuth((prev) => ({
         ...prev,
         loading: false,
-        error: 'Signup failed. Please try again.'
+        error: "Signup failed. Please try again.",
       }));
       console.log(error);
-
     }
   };
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        setAuth(prev => ({ ...prev, loading: true }));
-        const response = await signupWithGoogle(tokenResponse.access_token, idToken!);
+        setAuth((prev) => ({ ...prev, loading: true }));
+        const response = await signupWithGoogle(
+          tokenResponse.access_token,
+          idToken!
+        );
         const { token, user } = response;
         // console.log('Google signup response-->',response, '\n user--->', user);
         // Save the token to localStorage
         localStorage.setItem("token", token);
-        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem("isAuthenticated", "true");
         setAuth({ user, isAuthenticated: true, loading: false, error: null });
-        if (user.role === 'admin') {
-          navigate('/admin-dashboard');
-        }
-        else if (user.role === 'sh_dir') {
-          navigate('/viewboard');
-        }
-        else {
-          navigate('/dashboard');
+        if (user.role === "admin") {
+          navigate("/admin-dashboard");
+        } else if (user.role === "sh_dir") {
+          navigate("/viewboard");
+        } else {
+          navigate("/dashboard");
         }
       } catch (error) {
-        setAuth(prev => ({
+        setAuth((prev) => ({
           ...prev,
           loading: false,
-          error: 'Google signup failed. Please try again.'
+          error: "Google signup failed. Please try again.",
         }));
         console.log(error);
       }
@@ -138,8 +141,12 @@ const SignupPage = () => {
       return (
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-red-500">Invalid token link</h1>
-            <p className="text-lg text-gray-500">Please use same email you received the link to complete sign up.</p>
+            <h1 className="text-3xl font-bold text-red-500">
+              Invalid token link
+            </h1>
+            <p className="text-lg text-gray-500">
+              Please use same email you received the link to complete sign up.
+            </p>
           </div>
         </div>
       );
@@ -152,33 +159,55 @@ const SignupPage = () => {
       <div className="hidden lg:flex lg:w-1/2 bg-black p-12 relative flex-col">
         {/* Logo */}
         <div className="flex items-center space-x-2 mb-12">
-          <Logo />
-          <span className="text-xl font-bold text-white">Mirr Asia</span>
+          {/* <Logo />
+          <span className="text-xl font-bold text-white">Mirr Asia</span> */}
+          <img
+            src="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"
+            alt="MIRR ASIA"
+            width={175}
+            height={25}
+            srcSet="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"
+            fetchPriority="high"
+            style={{ width: "175px", height: "25px", objectFit: "cover" }}
+          />
         </div>
 
         <div className="w-full h-full flex items-center justify-center">
           <div className="w-4/5">
             <p className="text-white text-lg leading-relaxed">
               <span className="font-semibold text-xl block mb-6">
-                At Mirr Asia, we provide specialized, systematic business services with integrity and years of global experience.
+                At Mirr Asia, we provide specialized, systematic business
+                services with integrity and years of global experience.
               </span>
 
               <span className="block mb-4">
                 Our expertise spans corporate setup across jurisdictions,
-                <span className="font-medium text-blue-200"> financial and cryptocurrency licensing</span>,
-                <span className="font-medium text-blue-200"> compliance, AML, KYC</span>, and
-                <span className="font-medium text-blue-200"> tax management</span>,
-                with a commitment to honest and cost-effective solutions.
+                <span className="font-medium text-blue-200">
+                  {" "}
+                  financial and cryptocurrency licensing
+                </span>
+                ,
+                <span className="font-medium text-blue-200">
+                  {" "}
+                  compliance, AML, KYC
+                </span>
+                , and
+                <span className="font-medium text-blue-200">
+                  {" "}
+                  tax management
+                </span>
+                , with a commitment to honest and cost-effective solutions.
               </span>
 
               <span className="block mb-4">
-                We uphold ethical standards, avoiding support for illegal activities,
-                and diligently adapt to regulatory changes to advise our clients responsibly.
+                We uphold ethical standards, avoiding support for illegal
+                activities, and diligently adapt to regulatory changes to advise
+                our clients responsibly.
               </span>
 
               <span className="block font-medium text-blue-100">
-                Guided by trust and transparency, we strive to deliver the best results
-                for our clients and contribute positively to society.
+                Guided by trust and transparency, we strive to deliver the best
+                results for our clients and contribute positively to society.
               </span>
             </p>
           </div>
@@ -233,7 +262,7 @@ const SignupPage = () => {
               size="lg"
               disabled={auth.loading}
             >
-              {auth.loading ? 'Signing up...' : 'Sign Up'}
+              {auth.loading ? "Signing up..." : "Sign Up"}
             </Button>
 
             <Button

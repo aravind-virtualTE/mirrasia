@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import Logo from '@/common/LogoComponent';
+// import Logo from '@/common/LogoComponent';
 import { useNavigate } from 'react-router-dom';
 import { authAtom, loginWithEmail, loginWithGoogle } from '@/hooks/useAuth';
 import { Eye, EyeOff } from 'lucide-react';
@@ -110,10 +110,19 @@ const LoginComponent: React.FC = () => {
         <Card className="bg-white shadow-lg">
           <CardHeader className="space-y-2 text-center">
             <div className="flex justify-center mb-4">
-              <Logo width={30} height={30} />
+              {/* <Logo width={30} height={30} />
               <h1 className="text-2xl font-bold">
                 MirAsia
-              </h1>
+              </h1> */}
+               <img
+                    src= "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
+                    alt="MIRR ASIA"
+                    width={175}
+                    height={25}
+                    srcSet="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
+                    fetchPriority="high"
+                    style={{ width: '175px', height: '25px', objectFit: 'cover',  }}
+                />
             </div>
             <h2 className="text-2xl font-semibold">Welcome</h2>
           </CardHeader>

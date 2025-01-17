@@ -53,7 +53,6 @@ const LandingPage = () => {
                     width: "175px",
                     height: "25px",
                     objectFit: "cover",
-                    backgroundColor: "#0C3C60",
                   }}
                 />
                 {/* <ModeToggle /> */}
