@@ -76,13 +76,13 @@ export default function MultiSelect({
     return (
         <div className="relative w-full" ref={dropdownRef}>
             <div
-                className="min-h-[40px] p-2 border rounded-md bg-white cursor-text flex flex-wrap gap-2 items-center"
+                className="min-h-[40px] p-2 border rounded-md bg-background cursor-text flex flex-wrap gap-2 items-center"
                 onClick={() => setIsOpen(true)}
             >
                 {selectedItems.map((item) => (
                     <span
                         key={item.value}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm"
+                        className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-md text-sm"
                     >
                         {item.label}
                         <button
@@ -91,7 +91,7 @@ export default function MultiSelect({
                                 e.stopPropagation()
                                 handleRemove(item)
                             }}
-                            className="text-blue-600 hover:text-blue-800"
+                            className="text-primary/50 hover:text-primary"
                         >
                             <X className="h-3 w-3" />
                         </button>
@@ -99,7 +99,7 @@ export default function MultiSelect({
                 ))}
                 <input
                     type="text"
-                    className="flex-1 outline-none min-w-[120px] bg-transparent"
+                    className="flex-1 outline-none min-w-[120px] bg-transparent placeholder:text-muted-foreground"
                     placeholder={selectedItems.length === 0 ? placeholder : ""}
                     value={searchTerm}
                     onChange={(e) => {
@@ -111,12 +111,12 @@ export default function MultiSelect({
             </div>
 
             {isOpen && (searchTerm || filteredOptions.length > 0) && (
-                <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+                <div className="absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-lg max-h-60 overflow-auto">
                     {filteredOptions.map((option) => (
                         <button
                             key={option.value}
                             onClick={() => handleSelect(option)}
-                            className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                            className="w-full px-4 py-2 text-left hover:bg-accent hover:text-accent-foreground focus:outline-none focus:bg-accent focus:text-accent-foreground"
                         >
                             {option.label}
                         </button>
@@ -124,7 +124,7 @@ export default function MultiSelect({
                     {searchTerm && !filteredOptions.some(opt => opt.label.toLowerCase() === searchTerm.toLowerCase()) && (
                         <button
                             onClick={() => addCustomOption()}
-                            className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:outline-none focus:bg-gray-100 text-blue-600"
+                            className="w-full px-4 py-2 text-left hover:bg-accent hover:text-accent-foreground focus:outline-none focus:bg-accent focus:text-accent-foreground text-primary"
                         >
                             Add "{searchTerm}"
                         </button>
