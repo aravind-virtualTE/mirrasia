@@ -75,7 +75,7 @@ export default function ShareholdersList() {
   }
 
   const totalShares = serviceAgrementDetails.shareholderList?.reduce(
-    (sum, shareholder) => sum + (shareholder.currentHolding || 0),
+    (sum, shareholder) => sum + Number(shareholder.currentHolding || 0),
     0
   ) || 0
 

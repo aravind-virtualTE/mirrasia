@@ -102,8 +102,8 @@ const SAgrementPdf: React.FC = () => {
             return companyData;
         }
         return {
-            ...savedData,
             ...companyData,
+            ...savedData,
             // Preserve certain fields from company data even if saved data exists
             companyName: companyData.companyName,
             companyId: companyData.companyId,

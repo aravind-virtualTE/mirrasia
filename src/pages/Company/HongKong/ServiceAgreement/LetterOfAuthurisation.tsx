@@ -15,29 +15,58 @@ import {
 } from "@/components/ui/table"
 // import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-// import InlineSignatureCreator from '../../SignatureComponent'
 import SignatureModal from '@/components/pdfPage/SignatureModal'
 import { useAtom } from 'jotai'
 import { serviceAgreement } from '@/store/hongkong'
+import DropdownSelect from '@/components/DropdownSelect'
+import { shareHolderDirectorControllerAtom } from '@/lib/atom'
+
+type PersonDetails = {
+  name: string | number;
+  email: string 
+  tel: string 
+  kakaoWechat: string 
+  directorName: string 
+};
 
 export default function AuthorizationDetails() {
+const [sdcInfo, ] = useAtom(
+    shareHolderDirectorControllerAtom
+  );
+
+  const [shrDirList, setShrDirList] = useState(
+      sdcInfo.shareHolders.map((item) => {
+        if (item.name == "") return "Select Value";
+        return item.name;
+      })
+    );
+
+    useEffect(() => {
+        setShrDirList(
+          sdcInfo.shareHolders.map((item) => {
+            if (item.name == "") return "Enter Value Above and Select Value";
+            return item.name;
+          })
+        );
+      }, [sdcInfo]);
 
   const [isEditing, setIsEditing] = useState(false)
   const [docSigned,] = useState('2024-12-12')
   const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
   const [signature, setSignature] = useState<string | "">("");
 
-  const [personDetails, setPersonDetails] = useState({
+  const [personDetails, setPersonDetails] = useState<PersonDetails>({
     name: "",
     email: "",
     tel: "",
     kakaoWechat: "NIL",
     directorName: ""
   })
-  // console.log("Director Name",serviceAgrementDetails.director )
+  // console.log("serviceAgrementDetails",serviceAgrementDetails.shareholderList )
 
 
   useEffect(() => {
+    console.log("serviceAgrementDetails.authorizedDetails",serviceAgrementDetails.authorizedDetails)
     if (serviceAgrementDetails.authorizedDetails )
       setPersonDetails({
         name: serviceAgrementDetails.authorizedDetails[0].name,
@@ -90,6 +119,12 @@ export default function AuthorizationDetails() {
   //     setSignEdit(true);
   //   }
   // };
+  const handleSelect = (value: string | number) => {
+      // console.log('Selected Value:', value);
+      setPersonDetails(prev => ({ ...prev, 'name': value }))
+      setServiceAgrement({...serviceAgrementDetails, authorizedDetails: [{...personDetails, 'name': value}]})
+      
+    };
 
   // console.log("personDetails.directorName",personDetails.directorName)
   return (
@@ -135,12 +170,25 @@ export default function AuthorizationDetails() {
               <TableCell className="border border-gray-300">1</TableCell>
               <TableCell className="border border-gray-300">
                 {isEditing ? (
-                  <Input
+                  <>
+                  {/* <Input
                     name="name"
                     value={personDetails.name}
                     onChange={handleInputChange}
                     onClick={handleInputClick}
-                  />
+                  /> */}
+                  
+                   {shrDirList.length > 0 ? (
+                    <DropdownSelect
+                      options={shrDirList}
+                      placeholder="Select significant Controller"
+                      onSelect={handleSelect}
+                      selectedValue={personDetails.name}
+                    />
+                  ) : (
+                    personDetails.name
+                  )}
+                  </>
                 ) : (
                   personDetails.name
                 )}
