@@ -277,7 +277,7 @@ const CompanyRegistration = () => {
 
                 </div>
                 {/* progress indicator */}
-                <Card className="w-48 rounded-none border-l border-t-0 border-r-0 border-b-0 overflow-y-auto">
+                <Card className="w-48 rounded-none border-l border-t-0 border-r-0 border-b-0 overflow-y-auto hidden md:flex">
                     <div className="p-4">
                         <div className="space-y-4">
                             {steps.map((step, index) => (

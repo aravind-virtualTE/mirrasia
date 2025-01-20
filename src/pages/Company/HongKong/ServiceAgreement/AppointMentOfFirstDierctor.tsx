@@ -6,6 +6,9 @@ import { Separator } from "@/components/ui/separator";
 import SignatureModal from '@/components/pdfPage/SignatureModal';
 import { useAtom } from 'jotai';
 import { serviceAgreement } from '@/store/hongkong';
+import DropdownSelect from '@/components/DropdownSelect';
+import { Label } from '@/components/ui/label';
+import { shareHolderDirectorControllerAtom } from '@/lib/atom';
 
 interface Director {
   name: string ;
@@ -13,17 +16,31 @@ interface Director {
 }
 
 interface FounderMember {
-  name: string;
+  name: string | number;
   signature: string;
 }
 
 const AppointmentOfDirectors: React.FC = () => {
+  const [sdcInfo, ] = useAtom(shareHolderDirectorControllerAtom);
+  const [serviceAgrementDetails, setServiceAgrement  ] = useAtom(serviceAgreement);
+
+  const [shrDirList, setShrDirList] = useState(
+    sdcInfo.shareHolders.map((item) => (item.name === "" ? "Select Value" : item.name))
+  );
+
   const [compDetails, setCompanyName] = useState({ companyName: "", brnNo: "" });
   const [directors, setDirectors] = useState<Director[]>([
     { name: "Director 1", signature: "" },
   ]);
-  const [founderMember, setFounderMember] = useState<FounderMember>({ name: "Founder Member", signature: "" });
-  const [serviceAgrementDetails, setServiceAgrement  ] = useAtom(serviceAgreement);
+  const [founderMember, setFounderMember] = useState<FounderMember[]>([{ name: "Founder Member", signature: "" }]);
+
+  useEffect(() => {
+    setShrDirList(
+      sdcInfo.shareHolders.map((item) =>
+        item.name === "" ? "Enter Value Above and Select Value" : item.name
+      )
+    );
+  }, [sdcInfo]);
 
   const handleDirectorSignature = (index: number, signature: string | "") => {
     const updatedDirectors = [...directors];
@@ -31,23 +48,38 @@ const AppointmentOfDirectors: React.FC = () => {
     setDirectors(updatedDirectors);
     setServiceAgrement({ ...serviceAgrementDetails, directorList: updatedDirectors });
   };
+ // Handle founder member signature updates
+ const handleFounderMemberSignature = ( signature: string | "") => {
+  const updatedFounderMembers = [...founderMember];
+  updatedFounderMembers[0].signature = signature;
+  setFounderMember(updatedFounderMembers);
+  setServiceAgrement({ ...serviceAgrementDetails, founderMember: updatedFounderMembers });
+};
 
-  const handleFounderMemberSignature = (signature: string | "") => {
-    setFounderMember({ ...founderMember, signature });
-    setServiceAgrement({ ...serviceAgrementDetails, founderMember: [{ name: founderMember.name, signature }] });
-  };
+useEffect(() => {
+  setCompanyName({ companyName: "TestCompany", brnNo: "TestbrnNo" });
+  setDirectors(serviceAgrementDetails.directorList ?? []);
+  setFounderMember(serviceAgrementDetails.founderMember ?? [{ name: "Founder Member", signature: "" }]);
+}, [serviceAgrementDetails]);
 
-  useEffect(() => {
-    setCompanyName({ companyName: "TestCompany", brnNo: "TestbrnNo" })
-    // setDirectors()
-    setDirectors(serviceAgrementDetails.directorList ?? []);
-    setFounderMember(serviceAgrementDetails.founderMember ? serviceAgrementDetails.founderMember[0] : { name: "", signature: "" });
-
-  }, [serviceAgrementDetails])
+const handleSelect = (selectedValue: string | number) => {
+  const updatedFounderMembers = [...founderMember];
+  updatedFounderMembers[0].name = selectedValue.toString();
+  setFounderMember(updatedFounderMembers);
+  setServiceAgrement({ ...serviceAgrementDetails, founderMember: updatedFounderMembers });
+};
   
   return (
     <div >
-      <h1>Directors Appointment</h1>
+      <div className="flex items-center gap-3 mb-3 pl-8">
+        <Label>Select Founder Member</Label>
+        <DropdownSelect
+            options={shrDirList}
+            placeholder="Select significant Controller"
+            onSelect={handleSelect}
+            selectedValue={founderMember[0].name}
+          />
+      </div>
       <div id="appointmentOfDirectors">
         <Card className="max-w-4xl mx-auto p-6 rounded-none">
           <CardHeader>
@@ -96,11 +128,11 @@ const AppointmentOfDirectors: React.FC = () => {
               <div className="text-center underline font-bold">Name of founder member</div>
               <div className="text-center underline font-bold">Signature</div>          
               <div className="font-bold p-2 text-center mt-2">
-                {founderMember.name}
+                {founderMember[0].name}
               </div>
               <div className="relative w-full h-24 mx-auto mt-2">
                 <SignatureBox
-                  signature={founderMember.signature}
+                  signature={founderMember[0].signature}
                   onSignatureCreate={handleFounderMemberSignature}
                 />
               </div>

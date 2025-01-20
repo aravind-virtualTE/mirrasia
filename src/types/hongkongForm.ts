@@ -132,7 +132,7 @@ export interface serviceAggrementTypes {
   consentSignDate: string;
   authorizedDetails: { name: string | number; email: string; tel: string; kakaoWechat: string }[];
   authorizedDesignated: { name: string; signature: string }[];
-  founderMember: { name: string; signature: string }[];
+  founderMember: { name: string | number; signature: string }[];
   directorList:{
     name: string;
     signature: string;

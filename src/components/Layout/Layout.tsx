@@ -4,7 +4,7 @@ import {
     Menu, Home, Settings, HelpCircle,
     // Rocket,
     Users,
-    PenSquare,
+    // PenSquare,
     Mail,
     FileSignature,
     User2,
@@ -18,9 +18,9 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import { Card, CardContent } from '../ui/card';
+// import { Card, CardContent } from '../ui/card';
 import Navbar from './Navbar';
-import { useTheme } from '../theme-provider';
+// import { useTheme } from '../theme-provider';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 
@@ -29,7 +29,7 @@ const Layout: React.FC = () => {
     const [isCollapsed, setIsCollapsed] = useState(false)
     // Handle responsive collapse based on screen size
     const navigate = useNavigate();
-    const { theme } = useTheme();
+    // const { theme } = useTheme();
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 1024) { // 1024px is Tailwind's 'lg' breakpoint
@@ -126,7 +126,7 @@ const Layout: React.FC = () => {
                                     </Button>
                                 ))}
                             </nav>
-                            <Card className={`border-none ${theme === 'light'
+                            {/* <Card className={`border-none ${theme === 'light'
                                 ? 'bg-blue-50 text-gray-800'
                                 : 'bg-gray-800 text-gray-200'
                                 }`}>
@@ -142,7 +142,7 @@ const Layout: React.FC = () => {
                                         </Button>
                                     </div>}
                                 </CardContent>
-                            </Card>
+                            </Card> */}
                         </div>
                         {/* Optional: Collapse button for desktop */}
                         <div className="p-4 hidden lg:block">

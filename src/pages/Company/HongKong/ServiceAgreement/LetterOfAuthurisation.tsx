@@ -51,7 +51,6 @@ const [sdcInfo, ] = useAtom(
       }, [sdcInfo]);
 
   const [isEditing, setIsEditing] = useState(false)
-  const [docSigned,] = useState('2024-12-12')
   const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
   const [signature, setSignature] = useState<string | "">("");
 
@@ -241,7 +240,7 @@ const [sdcInfo, ] = useAtom(
         </div> */}
 
         <div className="pt-6 space-y-4 w-64">
-          <p>Dated: {docSigned}</p>
+          <p>Dated: {serviceAgrementDetails.consentSignDate}</p>
           <div className="w-64 pt-2">
             <div
               onClick={handleBoxClick}
