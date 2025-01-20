@@ -504,7 +504,8 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
   politicallyNotExposed : false,
   pedSignature : "",
   pedDate : "",
-  
+  currency : "",
+  registerAmount : ""
 };
 export const serviceAgreement  = atom<Partial<serviceAggrementTypes>>(initialPartialState);
 

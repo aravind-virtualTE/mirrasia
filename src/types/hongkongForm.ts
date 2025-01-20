@@ -259,6 +259,8 @@ export interface serviceAggrementTypes {
   politicallyNotExposed: boolean;
   pedSignature :string | null;
   pedDate :string;  
+  currency: string | null
+  registerAmount: string | number
 }
 
 export type ShrHolderDirector = {

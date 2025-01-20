@@ -38,8 +38,10 @@ const SAgrementPdf: React.FC = () => {
     const [isFetching, setIsFetching] = useState(true);
     const [serviceId, setId] = useState("")   
     const { toast } = useToast()
+    console.log("companyData-->",companyData)
+    const currency = companyData.regCompanyInfo.registerCurrencyAtom
+    const registerAmount    = companyData.regCompanyInfo.registerAmountAtom
     const prepareCompanyData = () => {
-        // console.log("companyData-->",companyData)
         const shareHolderDir =
             companyData.shareHolderDirectorController.shareHolders;
             // console.log("shareHolderDir===>", shareHolderDir)
@@ -128,10 +130,11 @@ const SAgrementPdf: React.FC = () => {
         ) ?? [];
     
         const finalDirectorList = [...mergedDirectorList, ...additionalDirectors];
-    
         return {
             ...companyData,
             ...savedData,
+            currency : currency ?? "",
+            registerAmount : registerAmount ?? "",
             // Preserve certain fields from company data even if saved data exists
             companyName: companyData.companyName,
             companyId: companyData.companyId,

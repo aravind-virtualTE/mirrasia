@@ -46,7 +46,7 @@ export default function RegisterOfMembers() {
     setIsModalOpen(true);
   };
 
-  // console.log("serviceAgrementDetails",serviceAgrementDetails)
+  console.log("REgOfMembers",serviceAgrementDetails)
   const handleSelectSignature = (selectedSignature: string | null) => {
     setSignature(selectedSignature);
     setIsModalOpen(false);
@@ -54,7 +54,7 @@ export default function RegisterOfMembers() {
 
   const shareDetails = {
     classOfShare: "ORDINARY",
-    parValuePerShare: "USD 100.00",
+    parValuePerShare: `${serviceAgrementDetails.currency} ${serviceAgrementDetails.registerAmount} `,
   }
 
   const members: Member[] = [
@@ -73,7 +73,7 @@ export default function RegisterOfMembers() {
           distinctiveNoFrom: "",
           distinctiveNoTo: "",
           numberOfShares: "",
-          considerationPaid: "USD ",
+          considerationPaid: `${serviceAgrementDetails.currency} ${serviceAgrementDetails.registerAmount} `,
         },
       ],
       sharesTransferred: [],
