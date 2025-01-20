@@ -256,7 +256,7 @@ const CompanyRegistration = () => {
                     </div>
                     {/* Navigation buttons */}
                     {countryState.name && (
-                        <div className="flex justify-between border-t p-4 bg-background">
+                        <div className="flex justify-between border-t p-1 bg-background">
                             <Button
                                 variant="outline"
                                 onClick={previousSection}

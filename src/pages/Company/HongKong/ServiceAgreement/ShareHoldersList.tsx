@@ -86,7 +86,6 @@ export default function ShareholdersList() {
     },
     0
   ) || 0
-
   
   return (
     <Card className="w-full mx-auto p-6 print:p-0 rounded-none">
@@ -141,7 +140,7 @@ export default function ShareholdersList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {serviceAgrementDetails.shareholderList?.map((shareholder, index) => (
+            {serviceAgrementDetails.shareholderList?.filter(item => Number(item.currentHolding) !== 0).map((shareholder, index) => (
               <TableRow key={index}>
                 <TableCell className="border border-black text-center p-0">
                   <Input

@@ -7,7 +7,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import SignatureModal from "@/components/pdfPage/SignatureModal"
 import { serviceAgreement  } from "@/store/hongkong"
 import { useAtom } from "jotai"
@@ -38,22 +38,34 @@ export default function RegisterOfDirectors() {
         setServiceAgrementDetails({...serviceAgrementDetails, registerDirectorSignature: selectedSignature })
         setIsModalOpen(false);
     };
-    
-    const directors: Director[] = [
-        {
+    const [directors, setDirectors] = useState<Director[]>([]);
+    useEffect(() => {
+
+        let initialDirectors = [{
             dateOfAppointment: "",
-            fullName: "",
+            fullName: "", // Use the name from directorList
             nationalityAndId: "",
-            correspondenceAddress:
-                "",
-            residentialAddress:
-                "",
+            correspondenceAddress: "",
+            residentialAddress: "",
             businessOccupation: "",
             dateCeasingToAct: "",
             entryMadeBy: "",
-        },
-        // Empty rows for demonstration
-        ...Array(3).fill({
+          }]
+          if(serviceAgrementDetails.directorList){
+            initialDirectors = serviceAgrementDetails.directorList?.map((director) => ({
+                dateOfAppointment: "",
+                fullName: director.name, // Use the name from directorList
+                nationalityAndId: "",
+                correspondenceAddress: "",
+                residentialAddress: "",
+                businessOccupation: "",
+                dateCeasingToAct: "",
+                entryMadeBy: "",
+              }));   
+            
+          }
+         // Add empty rows for demonstration
+         const emptyRows: Director[] = Array(3).fill({
             dateOfAppointment: "",
             fullName: "",
             nationalityAndId: "",
@@ -62,9 +74,41 @@ export default function RegisterOfDirectors() {
             businessOccupation: "",
             dateCeasingToAct: "",
             entryMadeBy: "",
-        }),
-    ]
+          });
+    
+        // Combine initial directors and empty rows
+        setDirectors([...initialDirectors,...emptyRows]);
+      }, [serviceAgrementDetails.directorList]);
+      
 
+    // const directors: Director[] = [
+    //     {
+    //         dateOfAppointment: "",
+    //         fullName: "",
+    //         nationalityAndId: "",
+    //         correspondenceAddress:
+    //             "",
+    //         residentialAddress:
+    //             "",
+    //         businessOccupation: "",
+    //         dateCeasingToAct: "",
+    //         entryMadeBy: "",
+    //     },
+    //     // Empty rows for demonstration
+    //     ...Array(3).fill({
+    //         dateOfAppointment: "",
+    //         fullName: "",
+    //         nationalityAndId: "",
+    //         correspondenceAddress: "",
+    //         residentialAddress: "",
+    //         businessOccupation: "",
+    //         dateCeasingToAct: "",
+    //         entryMadeBy: "",
+    //     }),
+    // ]
+
+    console.log('serviceAgrementDetails',serviceAgrementDetails.directorList
+    )
     return (
         <Card className="w-full max-w-[1200px] mx-auto print:p-0 rounded-none">
             <CardHeader className="space-y-4 pb-6">
