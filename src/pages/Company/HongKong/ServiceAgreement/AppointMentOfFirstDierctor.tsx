@@ -46,64 +46,69 @@ const AppointmentOfDirectors: React.FC = () => {
   }, [serviceAgrementDetails])
   
   return (
-    <Card className="max-w-4xl mx-auto p-6 rounded-none">
-      <CardHeader>
-        <CardTitle className="text-center text-lg font-bold underline">
-          APPOINTMENT OF FIRST DIRECTORS BY FOUNDER MEMBERS
-        </CardTitle>
-      </CardHeader>
+    <div >
+      <h1>Directors Appointment</h1>
+      <div id="appointmentOfDirectors">
+        <Card className="max-w-4xl mx-auto p-6 rounded-none">
+          <CardHeader>
+            <CardTitle className="text-center text-lg font-bold underline">
+              APPOINTMENT OF FIRST DIRECTORS BY FOUNDER MEMBERS
+            </CardTitle>
+          </CardHeader>
 
-      <CardContent>
-        <div className="space-y-4 mb-6">
-          <p><strong>BRN :{compDetails.brnNo}</strong></p>
-          <p><strong>NAME OF COMPANY : {compDetails.companyName}</strong></p>
-          {/* <div className="font-bold py-2 px-4 inline-block">
-            {companyName}
-          </div> */}
-        </div>
+          <CardContent>
+            <div className="space-y-4 mb-6">
+              <p><strong>BRN :{compDetails.brnNo}</strong></p>
+              <p><strong>NAME OF COMPANY : {compDetails.companyName}</strong></p>
+              {/* <div className="font-bold py-2 px-4 inline-block">
+                {companyName}
+              </div> */}
+            </div>
 
-        <div className="text-justify mb-6">
-          I/We, the undersigned, being all the founder member(s) to the Articles of Association of the abovenamed Company do hereby appoint as the first director(s) thereof person(s) who has/have attained the age of 18 years and consented to act as such by signing below.
-        </div>
+            <div className="text-justify mb-6">
+              I/We, the undersigned, being all the founder member(s) to the Articles of Association of the abovenamed Company do hereby appoint as the first director(s) thereof person(s) who has/have attained the age of 18 years and consented to act as such by signing below.
+            </div>
 
-        <div className="font-bold mb-4">Dated</div>
+            <div className="font-bold mb-4">Dated</div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="text-center underline font-bold">Name of director(s)</div>
-          <div className="text-center underline font-bold">Signature(s)</div>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="text-center underline font-bold">Name of director(s)</div>
+              <div className="text-center underline font-bold">Signature(s)</div>
 
-          {directors.map((director, index) => (
-            <React.Fragment key={index}>
+              {directors.map((director, index) => (
+                <React.Fragment key={index}>
+                  <div className="font-bold p-2 text-center mt-2">
+                    {director.name}
+                  </div>
+                  <div className="relative w-full h-24 mx-auto mt-2">
+                    <SignatureBox
+                      signature={director.signature}
+                      onSignatureCreate={(signature) => handleDirectorSignature(index, signature)}
+                    />
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+
+            <Separator className="my-6" />
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center underline font-bold">Name of founder member</div>
+              <div className="text-center underline font-bold">Signature</div>          
               <div className="font-bold p-2 text-center mt-2">
-                {director.name}
+                {founderMember.name}
               </div>
               <div className="relative w-full h-24 mx-auto mt-2">
                 <SignatureBox
-                  signature={director.signature}
-                  onSignatureCreate={(signature) => handleDirectorSignature(index, signature)}
+                  signature={founderMember.signature}
+                  onSignatureCreate={handleFounderMemberSignature}
                 />
               </div>
-            </React.Fragment>
-          ))}
-        </div>
-
-        <Separator className="my-6" />
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center underline font-bold">Name of founder member</div>
-          <div className="text-center underline font-bold">Signature</div>          
-          <div className="font-bold p-2 text-center mt-2">
-            {founderMember.name}
-          </div>
-          <div className="relative w-full h-24 mx-auto mt-2">
-            <SignatureBox
-              signature={founderMember.signature}
-              onSignatureCreate={handleFounderMemberSignature}
-            />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 };
 

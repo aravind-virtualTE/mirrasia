@@ -38,6 +38,7 @@ const SAgrementPdf: React.FC = () => {
     const [serviceId, setId] = useState("")   
 
     const prepareCompanyData = () => {
+        // console.log("companyData-->",companyData)
         const shareHolderDir =
             companyData.shareHolderDirectorController.shareHolders;
             // console.log("shareHolderDir===>", shareHolderDir)
@@ -86,7 +87,7 @@ const SAgrementPdf: React.FC = () => {
             const companyId = localStorage.getItem("companyRecordId");
             const response = await getSavedServiceAggrmtData(companyId!);
             setId(response.id)
-            // console.log("response-->", response);
+            console.log("response-=======->", response);
             return response;
         } catch (error) {
             console.error("Error fetching saved data:", error);
@@ -98,9 +99,35 @@ const SAgrementPdf: React.FC = () => {
         companyData: Partial<serviceAggrementTypes>,
         savedData: Partial<serviceAggrementTypes> | null
     ) => {
-        if (!savedData) {
-            return companyData;
+        if (!savedData){ 
+            return {
+                ...companyData,
+                // Preserve certain fields from company data even if saved data exists
+                companyName: companyData.companyName,
+                companyId: companyData.companyId,
+                // Merge arrays while preserving company data structure
+                directorList: companyData.directorList?.map((director) => ({
+                    ...director,
+                    signature:"",
+                })) ?? [],
+            };
         }
+        // Merge directorList
+        const mergedDirectorList = companyData.directorList?.map((director) => {
+            const savedDirector = savedData.directorList?.find((d) => d.name === director.name);
+            return {
+                ...director,
+                signature: savedDirector?.signature ?? director.signature,
+            };
+        }) ?? [];
+    
+        // Add any additional directors from savedData that are not in companyData
+        const additionalDirectors = savedData.directorList?.filter((savedDirector) => 
+            !companyData.directorList?.some((companyDirector) => companyDirector.name === savedDirector.name)
+        ) ?? [];
+    
+        const finalDirectorList = [...mergedDirectorList, ...additionalDirectors];
+    
         return {
             ...companyData,
             ...savedData,
@@ -108,20 +135,15 @@ const SAgrementPdf: React.FC = () => {
             companyName: companyData.companyName,
             companyId: companyData.companyId,
             // Merge arrays while preserving company data structure
-            directorList:
-                companyData.directorList?.map((director) => ({
-                    ...director,
-                    signature:
-                        savedData.directorList?.find((d) => d.name === director.name)
-                            ?.signature ?? "",
-                })) ?? [],
+            directorList: finalDirectorList,
         };
     };
+
     useEffect(() => {
         const initializeData = async () => {
             setIsFetching(true);
             const preparedCompanyData = prepareCompanyData();
-            const savedData = await fetchSavedData();
+            const savedData = await fetchSavedData()
             const mergedData = mergeData(preparedCompanyData, savedData);
             console.log("mergedData",mergedData)
             setServiceAgrement(mergedData);
@@ -229,7 +251,7 @@ const SAgrementPdf: React.FC = () => {
                     <div id="authorizationDetails" className="mb-4">
                         <AuthorizationDetails />
                     </div>
-                    <div id="appointmentOfDirectors" className="mb-4">
+                    <div className="mb-4">
                         <AppointmentOfDirectors />
                     </div>
                     <div id="shareholdersList" className="mb-4">
