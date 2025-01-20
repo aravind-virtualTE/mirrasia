@@ -57,6 +57,8 @@ const InformationIncorporation = () => {
     setCompanyInfo((prev) => ({ ...prev, registerCurrencyAtom: currency.code }));
   };
 
+  const currenc = currencies.find((item) => comapnyInfo.registerCurrencyAtom === item.code)
+
   return (
     <div className="flex w-full p-4">
       <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
@@ -127,6 +129,7 @@ const InformationIncorporation = () => {
              <SearchSelect
                 items={currencies}
                 placeholder="Select currency..."
+                selectedItem={currenc}
                 onSelect={handleCurrencySelect}
               />
             </div>
@@ -144,6 +147,7 @@ const InformationIncorporation = () => {
               <DropdownSelect
                   options={amountOptions}
                   placeholder="Enter custom price"
+                  selectedValue={comapnyInfo.registerAmountAtom}
                   onSelect={handlePriceSelect}
                 />
               {/* <RadioGroup className="mt-4 space-y-3"
