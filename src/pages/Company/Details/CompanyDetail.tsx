@@ -88,6 +88,7 @@ interface ShareHolderDirectorController {
     shareHolderDirectorNameSharesNumAtom: string;
     significantControllerAtom: string;
     designatedContactPersonAtom: string;
+    shareHolders : Record<string, string | number | boolean | undefined>;
 }
 
 interface AccountingTaxInfo {
@@ -172,12 +173,9 @@ const CompanyDetail = () => {
     });
     const [isSheetOpen, setIsSheetOpen] = useState(false)
 
-
-    // const [sections, setSections] = useState<Section[]>([]);
-
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
-
+        console.log("company",company)
         // Applicant Information Section
         if (company.applicantInfoForm) {
             sections.push({
@@ -230,6 +228,49 @@ const CompanyDetail = () => {
             });
         }
 
+        // Shareholder and Director Information Section
+    if (company.shareHolderDirectorController) {
+        const shareholderData = company.shareHolderDirectorController;
+
+        sections.push({
+            title: "Shareholder and Director Information",
+            data: {
+                "Designated Contact Person": shareholderData.designatedContactPersonAtom,
+                "Significant Controllers": Array.isArray(shareholderData.significantControllerAtom)
+                    ? shareholderData.significantControllerAtom
+                        .map((controller: { label: string }) => controller.label)
+                        .join(", ")
+                    : "N/A",
+
+                "Shareholders and Directors": (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Email</TableHead>
+                                <TableHead>Phone</TableHead>
+                                <TableHead>Ownership Rate</TableHead>
+                                <TableHead>Is Director</TableHead>
+                                <TableHead>Is Legal Person</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {Array.isArray(shareholderData.shareHolders) && shareholderData.shareHolders.map((shareholder, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{shareholder.name}</TableCell>
+                                    <TableCell>{shareholder.email}</TableCell>
+                                    <TableCell>{shareholder.phone || "N/A"}</TableCell>
+                                    <TableCell>{shareholder.ownershipRate}%</TableCell>
+                                    <TableCell>{shareholder.isDirector ? "Yes" : "No"}</TableCell>
+                                    <TableCell>{shareholder.isLegalPerson ? "Yes" : "No"}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                ),
+            },
+        });
+    }
         // Payment Information Section
         if (company.sessionId && session) {
             sections.push({
@@ -291,14 +332,10 @@ const CompanyDetail = () => {
         };
         fetchSession();
     }, []);
-    //   };
+
     if (!company) {
         return <div>Company not found</div>;
     }
-    // console.log("company", companyDetail);
-
-
-
 
     const handleSessionDataChange = (key: keyof SessionData, value: string) => {
         setSession({ ...session, [key]: value });
@@ -310,14 +347,6 @@ const CompanyDetail = () => {
     ) => {
         setCompany({ ...company, [key]: value });
     };
-
-    // const handleSave = () => {
-    //     // Here you would typically send the updated data to your backend
-    //     console.log("Updated Session Data:", session);
-    //     console.log("Updated Company Data:", company);
-    //     setIsSheetOpen(false)
-    // };
-
 
     const IncorporationDateFrag = () => {
         return (
@@ -511,9 +540,8 @@ const CompanyDetail = () => {
         //     id: companyDetail._id,
         //     value: false,
         // }
-        const response = await updateEditValues(payload);
+        await updateEditValues(payload);
         toast({ description: "Record updated successfully" });
-        console.log("isEditingResponse", response);
     };
     return (
         <Tabs defaultValue="details" className="flex flex-col">
