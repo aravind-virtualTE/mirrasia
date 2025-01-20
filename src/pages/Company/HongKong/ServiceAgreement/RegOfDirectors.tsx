@@ -107,8 +107,7 @@ export default function RegisterOfDirectors() {
     //     }),
     // ]
 
-    console.log('serviceAgrementDetails',serviceAgrementDetails.directorList
-    )
+    // console.log('serviceAgrementDetails',serviceAgrementDetails.directorList)
     return (
         <Card className="w-full max-w-[1200px] mx-auto print:p-0 rounded-none">
             <CardHeader className="space-y-4 pb-6">

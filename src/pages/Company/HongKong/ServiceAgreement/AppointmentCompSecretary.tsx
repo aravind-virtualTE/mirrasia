@@ -29,7 +29,7 @@ export default function AppointmentLetter() {
     return () => clearTimeout(timer);
   }, []);
 
-  console.log("serviceAgrementDetails",serviceAgrementDetails)
+  // console.log("serviceAgrementDetails",serviceAgrementDetails)
 
   useEffect(() => {
     if (serviceAgrementDetails.directorList) {
@@ -67,10 +67,10 @@ export default function AppointmentLetter() {
       value :item.name
     })
   })
-  console.log("dirShrList",dirShrList)
+  // console.log("dirShrList",dirShrList)
 
   const handleSelectChange = (value : string) =>{
-    console.log("value", value, 'key')
+    // console.log("value", value, 'key')
     setDetails(value);
     setServiceAgrement({
       ...serviceAgrementDetails,

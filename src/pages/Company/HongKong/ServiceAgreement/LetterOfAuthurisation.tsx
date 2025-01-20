@@ -65,7 +65,7 @@ const [sdcInfo, ] = useAtom(
 
 
   useEffect(() => {
-    console.log("serviceAgrementDetails.authorizedDetails",serviceAgrementDetails.authorizedDetails)
+    // console.log("serviceAgrementDetails.authorizedDetails",serviceAgrementDetails.authorizedDetails)
     if (serviceAgrementDetails.authorizedDetails )
       setPersonDetails({
         name: serviceAgrementDetails.authorizedDetails[0].name,

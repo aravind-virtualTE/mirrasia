@@ -28,6 +28,7 @@ import { serviceAggrementTypes } from "@/types/hongkongForm";
 import { getSavedServiceAggrmtData, saveServiceAgreementData, updateServiceAgreementData } from "@/services/dataFetch";
 import Loader from "@/common/Loader";
 import CustomLoader from "@/components/ui/customLoader";
+import { useToast } from "@/hooks/use-toast";
 
 const SAgrementPdf: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +37,7 @@ const SAgrementPdf: React.FC = () => {
     const [companyData] = useAtom(companyIncorporationAtom);
     const [isFetching, setIsFetching] = useState(true);
     const [serviceId, setId] = useState("")   
-
+    const { toast } = useToast()
     const prepareCompanyData = () => {
         // console.log("companyData-->",companyData)
         const shareHolderDir =
@@ -87,7 +88,7 @@ const SAgrementPdf: React.FC = () => {
             const companyId = localStorage.getItem("companyRecordId");
             const response = await getSavedServiceAggrmtData(companyId!);
             setId(response.id)
-            console.log("response-=======->", response);
+            // console.log("response-=======->", response);
             return response;
         } catch (error) {
             console.error("Error fetching saved data:", error);
@@ -145,7 +146,7 @@ const SAgrementPdf: React.FC = () => {
             const preparedCompanyData = prepareCompanyData();
             const savedData = await fetchSavedData()
             const mergedData = mergeData(preparedCompanyData, savedData);
-            console.log("mergedData",mergedData)
+            // console.log("mergedData",mergedData)
             setServiceAgrement(mergedData);
             setIsFetching(false);
         };
@@ -218,7 +219,10 @@ const SAgrementPdf: React.FC = () => {
                 const responseData = await saveServiceAgreementData(payload)
                 if(responseData.success){
                     setId(responseData.serviceAgreement._id)
-                    alert("Data saved successfully");
+                    toast({
+                        title: "Success",
+                        description: "Data saved successfully",
+                    })
                 }
             }else{
                 serviceAgrementDetails.id = serviceId
@@ -226,7 +230,10 @@ const SAgrementPdf: React.FC = () => {
                 const responseData = await updateServiceAgreementData(payload)
                 if(responseData.success){
                     setId(responseData.serviceAgreement._id)
-                    alert("Data updated successfully");
+                    toast({
+                        title: "Success",
+                        description: "Data updated successfully",
+                    })
                 }
             }            
             setIsSaveLoading(false);

@@ -30,7 +30,7 @@ export default function RegisterOfCharges() {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
-    console.log("serviceAgrementDetails.registerChargesList",serviceAgrementDetails.registerChargesList)
+    // console.log("serviceAgrementDetails.registerChargesList",serviceAgrementDetails.registerChargesList)
     const initialCharges: Charge[] = [
       {
         dateOfCharges: "",
