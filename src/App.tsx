@@ -53,18 +53,12 @@ const App: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-
-  // useEffect(() => {
-  //   setTimeout(() => setLoading(false), 1000);
-  // }, []);
-
   return (
     <>
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
           <TooltipProvider delayDuration={0}>
             <QueryClientProvider client={queryClient}>
-
               <Routes>
                 {/* Public routes */}
                 <Route path="/" element={<LandingPage />} />
@@ -78,18 +72,25 @@ const App: React.FC = () => {
                 <Route path="/pdf1" element={<PdfSignature />} />
                 <Route path="/sign" element={<ParentComponent />} />
 
+                <Route element={<ProtectedRoute allowedRoles={["admin", "user"]} />}>
+                <Route element={<Layout />}>
+                  <Route path="/company-register/" element={<CompanyRegistration />} />
+                  <Route path="/company-register/:id" element={<CompanyRegistration />} />
+                  <Route path="/profile" element={<Profile />} />
+                </Route>
+              </Route>
+
                 {/* Protected routes for Admin */}
-                <Route element={<ProtectedRoute requiredRole="admin" />}>
+                <Route element={<ProtectedRoute  allowedRoles={["admin"]} />}>
                   <Route element={<Layout />}>
                     <Route path="/compReg" element={<CompanyRegistration2 />} />
                     <Route path="/admin-dashboard" element={<AdminDashboard />} />
                     <Route path="/company-details/:id" element={<CompanyDetail />} />
-                    <Route path="/profile" element={<Profile />} />
                     {/* Add more admin-specific routes here */}
                   </Route>
                 </Route>
 
-                <Route element={<ProtectedRoute requiredRole="sh_dir" />}>
+                <Route element={<ProtectedRoute  allowedRoles={["sh_dir"]} />}>
                   <Route element={<Layout />}>
                     <Route path="/viewboard" element={<ViewBoard />} />
                     <Route path='/registrationForm' element={<RegistrationFormIntro />} />
@@ -97,12 +98,9 @@ const App: React.FC = () => {
                 </Route>
 
                 {/* Protected routes for User */}
-                <Route element={<ProtectedRoute requiredRole="user" />}>
+                <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
                   <Route element={<Layout />}>
                     <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/company-register/" element={<CompanyRegistration />} />
-                    <Route path="/company-register/:id" element={<CompanyRegistration />} />
                     <Route path="/hkCompanyRegister/" element={<HkMultiStepForm />} />
                     <Route path="/hkCompanyRegister/:id" element={<HkMultiStepForm />} />
                     {/* Add more user-specific routes here */}

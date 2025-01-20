@@ -17,6 +17,7 @@ import ToggleTheme from '@/hooks/ToggleTheme';
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
 import { useTheme } from "@/components/theme-provider";
+import { useResetAllForms } from "@/lib/atom";
 
 export default function Navbar() {
     const [isCollapsed, setIsCollapsed] = useState(false)
@@ -25,6 +26,7 @@ export default function Navbar() {
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
     const decodedToken = jwtDecode<TokenData>(token);
+    const resetAllForms = useResetAllForms();
 
     const navigateRoute = () => {
         if (decodedToken.role === 'admin') {
@@ -42,6 +44,7 @@ export default function Navbar() {
         localStorage.setItem('isAuthenticated', 'false');
         localStorage.removeItem("token");
         localStorage.removeItem('companyRecordId');
+        resetAllForms()
         navigate('/');
     };
 

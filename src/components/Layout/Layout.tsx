@@ -52,7 +52,7 @@ const Layout: React.FC = () => {
         { icon: <Settings className="h-5 w-5" />, label: "Settings" },
         { icon: <HelpCircle className="h-5 w-5" />, label: "Help" },
         { icon: <Mail className="w-4 h-4" />, label: "Mailroom" },
-        { icon: <FileSignature className="w-4 h-4" />, label: "MirrAsia Sign" },
+        { icon: <FileSignature className="w-4 h-4" />, label: "Register Company" },
         { icon: <User2 className="w-4 h-4" />, label: "Company Secretary" },
         { icon: <Users className="w-4 h-4" />, label: "Requests" },
         { icon: <Gift className="w-4 h-4" />, label: "Perks" },
@@ -77,6 +77,16 @@ const Layout: React.FC = () => {
                     navigate('/dashboard');
                 }
                 break;
+            case 'Register Company':
+                if(decodedToken.role === 'admin') {
+                    navigate('/company-register');
+                }
+                else if(decodedToken.role === 'sh_dir') {
+                    navigate('/viewboard');
+                } 
+                else {
+                    navigate('/company-register');
+                }
             // Add other navigation cases as needed
         }
     };
