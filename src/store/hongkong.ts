@@ -457,6 +457,10 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
     dateOfRegistrablePerson : "",
     dateOfCeasingRegistrablePerson : "",
     natureOfControlOverCompany : "",
+    addressLine1 : "",
+    addressLine2: "",
+    country : "",
+    signature : "",
   }],
   chairman : [{name : "", signature : ""}],
   customerDueDiligence : {

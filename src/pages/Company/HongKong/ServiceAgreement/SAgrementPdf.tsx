@@ -48,6 +48,10 @@ const SAgrementPdf: React.FC = () => {
         dateOfRegistrablePerson: "",
         dateOfCeasingRegistrablePerson: "",
         natureOfControlOverCompany: "",
+        addressLine1: "",
+        addressLine2: "",
+        country : "",
+        signature : ""
     })))
     console.log("companyData-->", companyData)
     const currency = companyData.regCompanyInfo.registerCurrencyAtom
@@ -270,7 +274,7 @@ const SAgrementPdf: React.FC = () => {
     const handleControllerChange = (index: number, field: string, value: string) => {
         const updatedControllers = [...significantController];
         updatedControllers[index][field as keyof typeof updatedControllers[0]] = value;
-        console.log("values cHCekcng", index, field, value)
+        // console.log("values cHCekcng", index, field, value)
 
         setSignificantController(updatedControllers);
         setServiceAgrement({

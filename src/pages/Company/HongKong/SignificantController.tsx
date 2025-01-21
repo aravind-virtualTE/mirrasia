@@ -195,6 +195,10 @@ interface Controller {
   dateOfRegistrablePerson: string;
   dateOfCeasingRegistrablePerson: string;
   natureOfControlOverCompany: string;
+  addressLine1: string;
+  addressLine2: string;
+  country : string
+  signature : string
 }
 
 interface SignificantControllerFormProps {
@@ -205,7 +209,7 @@ interface SignificantControllerFormProps {
 
 export default function SignificantControllerForm({ index, controller, onChange }: SignificantControllerFormProps) {
   const [userDetails, setUserDetails] = useState(controller);
-  const [signature, setSignature] = useState<string | null>(null);
+  const [signature, setSignature] = useState<string | null>(controller.signature);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [serviceAgrementDetails,] = useAtom(serviceAgreement)
   useEffect(() => {
@@ -222,8 +226,9 @@ export default function SignificantControllerForm({ index, controller, onChange 
     setIsModalOpen(true);
   };
 
-  const handleSelectSignature = (selectedSignature: string | null) => {
+  const handleSelectSignature = (selectedSignature: string ) => {
     setSignature(selectedSignature);
+    handleInputChange('signature', selectedSignature)
     setIsModalOpen(false);
   };
 
@@ -244,16 +249,22 @@ export default function SignificantControllerForm({ index, controller, onChange 
               <Input
                 id="AddressLine1"
                 placeholder="AddressLine1"
+                value={userDetails.addressLine1}
+                onChange={(e) => handleInputChange('addressLine1', e.target.value)}
                 className="w-full max-w-md border-none focus:ring-0"
               />
               <Input
                 id="AddressLine2"
                 placeholder="AddressLine2"
+                value={userDetails.addressLine2}
+                onChange={(e) => handleInputChange('addressLine2', e.target.value)}
                 className="w-full max-w-md border-none focus:ring-0"
               />
               <Input
                 id="country"
                 placeholder="Country"
+                value={userDetails.country}
+                onChange={(e) => handleInputChange('country', e.target.value)}
                 className="w-full max-w-md border-none focus:ring-0"
               />
             </div>
@@ -352,7 +363,7 @@ export default function SignificantControllerForm({ index, controller, onChange 
             )}
           </div>
           <div className="border-t border-black w-48">
-            <p className="font-medium">TestMember</p>
+            <p className="font-medium">{userDetails.name}</p>
             <p className="text-sm italic">Member</p>
             <p>Date: {serviceAgrementDetails.consentDate}</p>
           </div>

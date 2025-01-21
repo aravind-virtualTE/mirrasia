@@ -212,6 +212,10 @@ export interface serviceAggrementTypes {
     dateOfRegistrablePerson: string;
     dateOfCeasingRegistrablePerson: string;
     natureOfControlOverCompany: string;
+    addressLine1: string;
+    addressLine2: string;
+    country : string
+    signature : string
   }[];
   chairman: { name: string; signature: string }[];
   customerDueDiligence: {
