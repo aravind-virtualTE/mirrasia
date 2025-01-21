@@ -91,8 +91,6 @@ const Layout: React.FC = () => {
         }
     };
 
-    
-
     return (
         <div className="flex flex-col h-screen bg-background">
             {/* Navbar */}

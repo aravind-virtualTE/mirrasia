@@ -22,7 +22,7 @@ import ShareholdersList from "./ShareHoldersList";
 import SignificantControllersRegister from "./SignificantControllerReg";
 import { Button } from "@/components/ui/button";
 import { useAtom } from "jotai";
-import { serviceAgreement  } from "@/store/hongkong";
+import { serviceAgreement } from "@/store/hongkong";
 import { companyIncorporationAtom } from "@/lib/atom";
 import { serviceAggrementTypes } from "@/types/hongkongForm";
 import { getSavedServiceAggrmtData, saveServiceAgreementData, updateServiceAgreementData } from "@/services/dataFetch";
@@ -33,34 +33,45 @@ import { useToast } from "@/hooks/use-toast";
 const SAgrementPdf: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSaveLoading, setIsSaveLoading] = useState(false);
-    const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement );
+    const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
     const [companyData] = useAtom(companyIncorporationAtom);
     const [isFetching, setIsFetching] = useState(true);
-    const [serviceId, setId] = useState("")   
+    const [serviceId, setId] = useState("")
     const { toast } = useToast()
-    console.log("companyData-->",companyData)
+    const [significantController, setSignificantController] = useState(companyData.shareHolderDirectorController.shareHolders.filter(
+        (record) => record.isDirector === true || record.ownershipRate >= 25
+    ).map((record) => ({
+        name: record.name,
+        correspondenceAddress: "",
+        residentialAddress: "",
+        passportNo: "",
+        dateOfRegistrablePerson: "",
+        dateOfCeasingRegistrablePerson: "",
+        natureOfControlOverCompany: "",
+    })))
+    console.log("companyData-->", companyData)
     const currency = companyData.regCompanyInfo.registerCurrencyAtom
-    const registerAmount    = companyData.regCompanyInfo.registerAmountAtom
+    const registerAmount = companyData.regCompanyInfo.registerAmountAtom
     const prepareCompanyData = () => {
         const shareHolderDir =
             companyData.shareHolderDirectorController.shareHolders;
-            // console.log("shareHolderDir===>", shareHolderDir)
+        // console.log("shareHolderDir===>", shareHolderDir)       
         const directors = shareHolderDir.filter(
             (record) => record.isDirector === true
-        );
+        )
         const firstMatchingRecord = shareHolderDir.find(
             (record) => record.isDirector === false && record.isLegalPerson === false
         );
         // .filter(record => record.isDirector === false )
         const shareholderArr = shareHolderDir.map(record => ({
-            name: record.name,           
+            name: record.name,
             correspondenceAddress: "",
             residentialAddress: "",
             currentHolding: record.ownershipRate,
             percentage: record.ownershipRate.toString() + "%",
             remarks: "",
             signature: null,
-          }));        
+        }));
         return {
             companyName: companyData.applicantInfoForm.companyName[0],
             companyId: localStorage.getItem("companyRecordId") ?? "",
@@ -82,7 +93,7 @@ const SAgrementPdf: React.FC = () => {
                     signature: "",
                 },
             ],
-            shareholderList : shareholderArr
+            shareholderList: shareholderArr
         };
     };
     const fetchSavedData = async () => {
@@ -102,7 +113,7 @@ const SAgrementPdf: React.FC = () => {
         companyData: Partial<serviceAggrementTypes>,
         savedData: Partial<serviceAggrementTypes> | null
     ) => {
-        if (!savedData){ 
+        if (!savedData) {
             return {
                 ...companyData,
                 // Preserve certain fields from company data even if saved data exists
@@ -111,7 +122,7 @@ const SAgrementPdf: React.FC = () => {
                 // Merge arrays while preserving company data structure
                 directorList: companyData.directorList?.map((director) => ({
                     ...director,
-                    signature:"",
+                    signature: "",
                 })) ?? [],
             };
         }
@@ -123,18 +134,27 @@ const SAgrementPdf: React.FC = () => {
                 signature: savedDirector?.signature ?? director.signature,
             };
         }) ?? [];
-    
+
         // Add any additional directors from savedData that are not in companyData
-        const additionalDirectors = savedData.directorList?.filter((savedDirector) => 
+        const additionalDirectors = savedData.directorList?.filter((savedDirector) =>
             !companyData.directorList?.some((companyDirector) => companyDirector.name === savedDirector.name)
         ) ?? [];
-    
+
         const finalDirectorList = [...mergedDirectorList, ...additionalDirectors];
+        let significantList = significantController
+        if(savedData.significantController){
+            if(savedData.significantController.length > 0){
+                setSignificantController(savedData.significantController)
+                significantList = savedData.significantController
+            }
+        }
+
         return {
             ...companyData,
             ...savedData,
-            currency : currency ?? "",
-            registerAmount : registerAmount ?? "",
+            currency: currency ?? "",
+            registerAmount: registerAmount ?? "",
+            significantController: significantList,
             // Preserve certain fields from company data even if saved data exists
             companyName: companyData.companyName,
             companyId: companyData.companyId,
@@ -216,34 +236,49 @@ const SAgrementPdf: React.FC = () => {
     };
     const handleSave = async () => {
         setIsSaveLoading(true);
-        try {            
-            if(serviceId === ""){
+        try {
+            if (serviceId === "") {
                 const payload = JSON.stringify(serviceAgrementDetails);
                 const responseData = await saveServiceAgreementData(payload)
-                if(responseData.success){
+                if (responseData.success) {
                     setId(responseData.serviceAgreement._id)
                     toast({
                         title: "Success",
                         description: "Data saved successfully",
                     })
                 }
-            }else{
+            } else {
                 serviceAgrementDetails.id = serviceId
                 const payload = JSON.stringify(serviceAgrementDetails);
                 const responseData = await updateServiceAgreementData(payload)
-                if(responseData.success){
+                if (responseData.success) {
                     setId(responseData.serviceAgreement._id)
                     toast({
                         title: "Success",
                         description: "Data updated successfully",
                     })
                 }
-            }            
+            }
             setIsSaveLoading(false);
         } catch (error) {
             console.error("Error saving data:", error);
         }
     };
+
+    console.log("significantCntrl", significantController)
+
+    const handleControllerChange = (index: number, field: string, value: string) => {
+        const updatedControllers = [...significantController];
+        updatedControllers[index][field as keyof typeof updatedControllers[0]] = value;
+        console.log("values cHCekcng", index, field, value)
+
+        setSignificantController(updatedControllers);
+        setServiceAgrement({
+            ...serviceAgrementDetails,
+            significantController: updatedControllers
+        });
+    };
+
     return (
         <React.Fragment>
             {isFetching ? (
@@ -279,8 +314,18 @@ const SAgrementPdf: React.FC = () => {
                     <div id="registerOfMembers" className="mb-4">
                         <RegisterOfMembers />
                     </div>
-                    <div id="significantController" className="mb-4">
+                    {/* <div id="significantController" className="mb-4">
                         <SignificantControllerForm />
+                    </div> */}
+                    <div id="significantController" className="mb-4">
+                        {significantController.map((controller, index) => (
+                            <SignificantControllerForm
+                                key={index}
+                                index={index}
+                                controller={controller}
+                                onChange={handleControllerChange}
+                            />
+                        ))}
                     </div>
                     <div id="declarationOfInterest" className="mb-4">
                         <DeclarationOfInterest />
@@ -295,7 +340,7 @@ const SAgrementPdf: React.FC = () => {
                         <ShareCapitalForm />
                     </div>
                     <div id="companyResolution" className="mb-4">
-                        <CompanyResolution  />
+                        <CompanyResolution />
                     </div>
                     <div id="companyResolutiontwo" className="mb-4">
                         <CompanyResolutiontwo />
@@ -310,7 +355,7 @@ const SAgrementPdf: React.FC = () => {
                         <PenDetail />
                     </div>
                     <div className="flex justify-around mt-6">
-                    <Button
+                        <Button
                             disabled={isSaveLoading}
                             className="flex items-center"
                             onClick={handleSave}
@@ -340,7 +385,7 @@ const SAgrementPdf: React.FC = () => {
                                 "Download as PDF"
                             )}
                         </Button>
-                    </div>                 
+                    </div>
                 </>
             )}
         </React.Fragment>
@@ -350,40 +395,40 @@ const SAgrementPdf: React.FC = () => {
 export default SAgrementPdf;
 
 // console.log("testing", companyData);
-    // useEffect(() => {
-    //     const docId = localStorage.getItem('companyRecordId');
+// useEffect(() => {
+//     const docId = localStorage.getItem('companyRecordId');
 
-    //     const shareHolderDir = companyData.shareHolderDirectorController.shareHolders
+//     const shareHolderDir = companyData.shareHolderDirectorController.shareHolders
 
-    //     const directors = shareHolderDir.filter((record) => record.isDirector === true)
+//     const directors = shareHolderDir.filter((record) => record.isDirector === true)
 
-    //     const firstMatchingRecord = shareHolderDir.find(
-    //         (record) => record.isDirector === false && record.isLegalPerson === true
-    //     );
+//     const firstMatchingRecord = shareHolderDir.find(
+//         (record) => record.isDirector === false && record.isLegalPerson === true
+//     );
 
-    //     const authorisedDetails = [{
-    //         name: firstMatchingRecord?.name ?? "",
-    //         email: "",
-    //         tel: "",
-    //         kakaoWechat: ""
-    //     }]
+//     const authorisedDetails = [{
+//         name: firstMatchingRecord?.name ?? "",
+//         email: "",
+//         tel: "",
+//         kakaoWechat: ""
+//     }]
 
-    //     const founderMember = [{
-    //         name: firstMatchingRecord?.name ?? "",
-    //         signature: ""
-    //     }]
+//     const founderMember = [{
+//         name: firstMatchingRecord?.name ?? "",
+//         signature: ""
+//     }]
 
-    //     const directorsList = directors.map((director) => ({ name: director.name, signature: "" }));
+//     const directorsList = directors.map((director) => ({ name: director.name, signature: "" }));
 
-    //     setServiceAgrement({
-    //         ...serviceAgrementDetails,
-    //         'companyName': companyData.applicantInfoForm.companyName[0],
-    //         'companyId': docId!,
-    //         'authorizedDetails': authorisedDetails,
-    //         'directorList': directorsList,
-    //         'founderMember': founderMember
-    //     })
-    // }, [companyData])
+//     setServiceAgrement({
+//         ...serviceAgrementDetails,
+//         'companyName': companyData.applicantInfoForm.companyName[0],
+//         'companyId': docId!,
+//         'authorizedDetails': authorisedDetails,
+//         'directorList': directorsList,
+//         'founderMember': founderMember
+//     })
+// }, [companyData])
 
 
 
