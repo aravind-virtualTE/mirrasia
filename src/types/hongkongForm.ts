@@ -160,7 +160,6 @@ export interface serviceAggrementTypes {
     dateOfAppointment: string;
     fullName: string;
     idNumber: string;
-    idNumberNote: string;
     correspondenceAddress: string;
     type: string;
     dateCeasingToAct: string;

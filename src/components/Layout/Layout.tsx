@@ -95,14 +95,13 @@ const Layout: React.FC = () => {
         <div className="flex flex-col h-screen bg-background">
             {/* Navbar */}
             <Navbar />
-
             {/* Sidebar */}
             <ResizablePanelGroup direction="horizontal" className="flex-1 overflow-hidden">
                 <ResizablePanel
-                    defaultSize={18}
+                    defaultSize={14}
                     collapsible={true}
                     minSize={8}
-                    maxSize={18}
+                    maxSize={14}
                     collapsedSize={4}
                     // collapsed={isCollapsed}
                     onCollapse={() => setIsCollapsed(true)}

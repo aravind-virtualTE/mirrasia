@@ -396,7 +396,6 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
       dateOfAppointment: "",
       fullName: "",
       idNumber: "",
-      idNumberNote: "",
       correspondenceAddress: "",
       type: "",
       dateCeasingToAct: "",
