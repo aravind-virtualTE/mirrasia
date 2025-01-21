@@ -64,7 +64,7 @@ export default function Navbar() {
                 </span> */}
                 <img
                     src= {theme === 'light'? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png" : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"}
-                    alt="logo (420 × 60px)"
+                    alt="MIRRASIA"
                     width={175}
                     height={25}
                     srcSet={theme === 'light'? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png" : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"}

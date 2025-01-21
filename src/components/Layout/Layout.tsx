@@ -23,7 +23,7 @@ import Navbar from './Navbar';
 // import { useTheme } from '../theme-provider';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
-
+// import HelpDesk from '../HelpDesk';
 
 const Layout: React.FC = () => {
     const [isCollapsed, setIsCollapsed] = useState(false)
@@ -169,6 +169,7 @@ const Layout: React.FC = () => {
                     </main>
                 </ResizablePanel>
             </ResizablePanelGroup>
+            {/* <HelpDesk /> */}
         </div>
     )
 }

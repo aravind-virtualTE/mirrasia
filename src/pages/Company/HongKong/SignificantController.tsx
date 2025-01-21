@@ -41,6 +41,7 @@ export default function SignificantControllerForm() {
     setIsModalOpen(false);
   };
 
+  console.log("serviceAgrementDetails",serviceAgrementDetails)
   return (
     <Card className="max-w-4xl mx-auto p-8 rounded-none shadow-none font-serif">
       <CardHeader className="space-y-4 p-0">
