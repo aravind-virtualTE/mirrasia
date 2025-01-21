@@ -48,12 +48,12 @@ const LoginComponent: React.FC = () => {
     onSuccess: async (credentialResponse) => {
       setIsLoading(true); // Show loader
       // Handle successful login, e.g., send credentialResponse to your backend
-      console.log('credentialResponse', credentialResponse);
+      // console.log('credentialResponse', credentialResponse);
       await loginWithGoogle(credentialResponse.access_token)
         .then((response) => {
           localStorage.setItem('isAuthenticated', 'true');
           localStorage.setItem('token', response.token);
-          console.log('response', response);
+          // console.log('response', response);
   
           setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
   

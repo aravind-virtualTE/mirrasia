@@ -21,7 +21,7 @@ interface Shareholder {
   currentHolding: number
   percentage: string
   remarks: string
-  signature?: string
+  signature?: string | null
 }
 
 export default function ShareholdersList() {
@@ -33,7 +33,7 @@ export default function ShareholdersList() {
     if (!serviceAgrementDetails.shareholderList) {
       setServiceAgrementDetails(prev => ({
         ...prev,
-        shareholdersList: Array(4).fill({
+        shareholderList: Array(4).fill({
           name: "",
           correspondenceAddress: "",
           residentialAddress: "",
@@ -53,10 +53,9 @@ export default function ShareholdersList() {
         ...newShareholdersList[index],
         [field]: value
       }
-      return { ...prev, shareholdersList: newShareholdersList }
+      return { ...prev, shareholderList: newShareholdersList }
     })
   }
-
   const handleBoxClick = () => {
     setIsModalOpen(true)
   }
@@ -66,8 +65,8 @@ export default function ShareholdersList() {
     if (serviceAgrementDetails.shareholderList && serviceAgrementDetails.shareholderList.length > 0) {
       setServiceAgrementDetails(prev => ({
         ...prev,
-        shareholdersList: prev.shareholderList?.map((shareholder, index) => 
-          index === 0 ? { ...shareholder, signature: selectedSignature || undefined } : shareholder
+        shareholderList: prev.shareholderList?.map((shareholder, index) => 
+          index === 0 ? { ...shareholder, signature: selectedSignature || null } : shareholder
         )
       }))
     }
@@ -140,7 +139,7 @@ export default function ShareholdersList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {serviceAgrementDetails.shareholderList?.filter(item => Number(item.currentHolding) !== 0).map((shareholder, index) => (
+            {serviceAgrementDetails.shareholderList?.map((shareholder, index) => (
               <TableRow key={index}>
                 <TableCell className="border border-black text-center p-0">
                   <Input

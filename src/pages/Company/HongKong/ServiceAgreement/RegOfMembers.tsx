@@ -46,7 +46,7 @@ export default function RegisterOfMembers() {
     setIsModalOpen(true);
   };
 
-  console.log("REgOfMembers",serviceAgrementDetails)
+  // console.log("REgOfMembers",serviceAgrementDetails)
   const handleSelectSignature = (selectedSignature: string | null) => {
     setSignature(selectedSignature);
     setIsModalOpen(false);

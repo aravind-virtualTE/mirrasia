@@ -62,7 +62,7 @@ const SAgrementPdf: React.FC = () => {
                 signature: "",
             }))
     );
-    console.log("companyData-->", companyData);
+    // console.log("companyData-->", companyData);
     const currency = companyData.regCompanyInfo.registerCurrencyAtom;
     const registerAmount = companyData.regCompanyInfo.registerAmountAtom;
     const prepareCompanyData = () => {
@@ -76,7 +76,8 @@ const SAgrementPdf: React.FC = () => {
             (record) => record.isDirector === false && record.isLegalPerson === false
         );
         // .filter(record => record.isDirector === false )
-        const shareholderArr = shareHolderDir.map((record) => ({
+       
+        const shareholderArr = shareHolderDir.filter(item => Number(item.ownershipRate) !== 0).map((record) => ({
             name: record.name,
             correspondenceAddress: "",
             residentialAddress: "",
@@ -218,7 +219,7 @@ const SAgrementPdf: React.FC = () => {
         "customerDueDiligence",
         "pepDeclaration",
     ]);
-    console.log("componentRefs",componentRefs)
+    // console.log("componentRefs",componentRefs)
     const downloadPDF = async () => {
         setIsLoading(true);
         const pdf = new jsPDF("p", "mm", "a4");
@@ -418,109 +419,3 @@ const SAgrementPdf: React.FC = () => {
 };
 
 export default SAgrementPdf;
-
-{
-    /* <div id="significantController" className="mb-4">
-                          <SignificantControllerForm />
-                      </div> */
-}
-
-// console.log("testing", companyData);
-// useEffect(() => {
-//     const docId = localStorage.getItem('companyRecordId');
-
-//     const shareHolderDir = companyData.shareHolderDirectorController.shareHolders
-
-//     const directors = shareHolderDir.filter((record) => record.isDirector === true)
-
-//     const firstMatchingRecord = shareHolderDir.find(
-//         (record) => record.isDirector === false && record.isLegalPerson === true
-//     );
-
-//     const authorisedDetails = [{
-//         name: firstMatchingRecord?.name ?? "",
-//         email: "",
-//         tel: "",
-//         kakaoWechat: ""
-//     }]
-
-//     const founderMember = [{
-//         name: firstMatchingRecord?.name ?? "",
-//         signature: ""
-//     }]
-
-//     const directorsList = directors.map((director) => ({ name: director.name, signature: "" }));
-
-//     setServiceAgrement({
-//         ...serviceAgrementDetails,
-//         'companyName': companyData.applicantInfoForm.companyName[0],
-//         'companyId': docId!,
-//         'authorizedDetails': authorisedDetails,
-//         'directorList': directorsList,
-//         'founderMember': founderMember
-//     })
-// }, [companyData])
-
-// import { PDFDocument } from 'pdf-lib';
-
-// const downloadPDF = async () => {
-//     setIsLoading(true);
-
-//     // Create an array to store individual PDFs
-//     const pdfs = [];
-
-//     for (let i = 0; i < componentRefs.current.length; i++) {
-//         const id = componentRefs.current[i];
-//         const element = document.getElementById(id);
-
-//         if (!element) continue;
-
-//         const canvas = await html2canvas(element, { scale: 4, useCORS: true });
-//         const imgData = canvas.toDataURL("image/jpeg", 0.75);
-
-//         // Create a new PDF for the current component
-//         let pdf;
-//         if (id === 'registerOfMembers') {
-//             // Use a custom width for 'registerOfMembers'
-//             pdf = new jsPDF("l", "mm", [297, 310]); // Landscape with custom width (310mm)
-//             const pdfWidth = 310; // Custom width
-//             const pdfHeight = 297; // Landscape height
-//             const imgWidth = pdfWidth;
-//             const imgHeight = (canvas.height * imgWidth) / canvas.width;
-//             const yOffset = imgHeight < pdfHeight ? (pdfHeight - imgHeight) / 2 : 0;
-//             pdf.addImage(imgData, "JPEG", 0, yOffset, imgWidth, imgHeight, undefined,"SLOW");
-//         } else {
-//             // Default A4 portrait for other components
-//             pdf = new jsPDF("p", "mm", "a4");
-//             const pdfWidth = 210; // A4 width
-//             const pdfHeight = 297; // A4 height
-//             const imgWidth = pdfWidth;
-//             const imgHeight = (canvas.height * imgWidth) / canvas.width;
-//             const yOffset = imgHeight < pdfHeight ? (pdfHeight - imgHeight) / 2 : 0;
-//             pdf.addImage(imgData, "JPEG", 0, yOffset, imgWidth, imgHeight, undefined,"SLOW");
-//         }
-
-//         // Convert the PDF to a Uint8Array
-//         const pdfBytes = pdf.output('arraybuffer');
-//         pdfs.push(pdfBytes);
-//     }
-
-//     // Merge all PDFs into a single PDF using pdf-lib
-//     const mergedPdf = await PDFDocument.create();
-
-//     for (const pdfBytes of pdfs) {
-//         const pdfDoc = await PDFDocument.load(pdfBytes);
-//         const copiedPages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
-//         copiedPages.forEach((page) => mergedPdf.addPage(page));
-//     }
-
-//     // Save the final PDF
-//     const mergedPdfBytes = await mergedPdf.save();
-//     const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
-//     const link = document.createElement('a');
-//     link.href = URL.createObjectURL(blob);
-//     link.download = 'AllDocuments.pdf';
-//     link.click();
-
-//     setIsLoading(false);
-// };

@@ -72,7 +72,7 @@ export const loginWithEmail = async (email: string, password: string,) => {
   
   export const loginWithGoogle = async (tokenId: string) => {
     const response = await api.post('auth/google', { tokenId });
-    console.log("response-->",response)    
+    // console.log("response-->",response)    
     return response.data;
   };
   
