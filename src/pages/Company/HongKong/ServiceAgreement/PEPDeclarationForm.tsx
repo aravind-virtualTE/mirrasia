@@ -143,11 +143,11 @@ function PEPDeclarationForm() {
             )}
           </div>
           <div className="flex items-center gap-2">
-            <Label htmlFor="consentSignDate" className="text-sm">Date:</Label>
+            <Label htmlFor="pedDate" className="text-sm">Date:</Label>
             <Input
               type="date"
-              id="consentSignDate"
-              name="consentSignDate"
+              id="pedDate"
+              name="pedDate"
               value={serviceAgrementDetails.pedDate}
               onChange={handleChange}
               className="w-40"
