@@ -14,21 +14,22 @@ import { useAtom } from "jotai"
 
 interface Director {
     dateOfAppointment: string
-    fullName: string
-    nationalityAndId: string
+    name: string
+    nationality: string
     correspondenceAddress: string
     residentialAddress: string
-    businessOccupation: string
-    dateCeasingToAct: string
+    directorShip: string
+    ceasingAct: string
     entryMadeBy: string
 }
 
 export default function RegisterOfDirectors() {
     
-    const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgreement )
-
+    const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgreement)
     const [signature, setSignature] = useState<string | null>(serviceAgrementDetails.registerDirectorSignature ?? null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [directors, setDirectors] = useState<Director[]>([]);
+
     const handleBoxClick = () => {
         setIsModalOpen(true);
     };
@@ -38,76 +39,51 @@ export default function RegisterOfDirectors() {
         setServiceAgrementDetails({...serviceAgrementDetails, registerDirectorSignature: selectedSignature })
         setIsModalOpen(false);
     };
-    const [directors, setDirectors] = useState<Director[]>([]);
-    useEffect(() => {
 
+    const handleInputChange = (index: number, field: keyof Director, value: string) => {
+        const updatedDirectors = [...directors];
+        updatedDirectors[index] = {
+            ...updatedDirectors[index],
+            [field]: value
+        };
+        setDirectors(updatedDirectors);
+        setServiceAgrementDetails({
+            ...serviceAgrementDetails,
+            registerDirector: updatedDirectors
+        });
+    };
+
+    useEffect(() => {
+        console.log("serviceAgrementDetails.directorList", serviceAgrementDetails.registerDirector)
         let initialDirectors = [{
             dateOfAppointment: "",
-            fullName: "", // Use the name from directorList
-            nationalityAndId: "",
+            name: "",
+            nationality: "",
             correspondenceAddress: "",
             residentialAddress: "",
-            businessOccupation: "",
-            dateCeasingToAct: "",
+            directorShip: "",
+            ceasingAct: "",
             entryMadeBy: "",
-          }]
-          if(serviceAgrementDetails.directorList){
-            initialDirectors = serviceAgrementDetails.directorList?.map((director) => ({
-                dateOfAppointment: "",
-                fullName: director.name, // Use the name from directorList
-                nationalityAndId: "",
-                correspondenceAddress: "",
-                residentialAddress: "",
-                businessOccupation: "",
-                dateCeasingToAct: "",
-                entryMadeBy: "",
-              }));   
-            
-          }
-         // Add empty rows for demonstration
-         const emptyRows: Director[] = Array(3).fill({
+        }];
+
+        if(serviceAgrementDetails.registerDirector){
+            initialDirectors = serviceAgrementDetails.registerDirector
+        }
+
+        const emptyRows: Director[] = Array(1).fill({
             dateOfAppointment: "",
-            fullName: "",
-            nationalityAndId: "",
+            name: "",
+            nationality: "",
             correspondenceAddress: "",
             residentialAddress: "",
-            businessOccupation: "",
-            dateCeasingToAct: "",
+            directorShip: "",
+            ceasingAct: "",
             entryMadeBy: "",
-          });
-    
-        // Combine initial directors and empty rows
-        setDirectors([...initialDirectors,...emptyRows]);
-      }, [serviceAgrementDetails.directorList]);
-      
+        });
 
-    // const directors: Director[] = [
-    //     {
-    //         dateOfAppointment: "",
-    //         fullName: "",
-    //         nationalityAndId: "",
-    //         correspondenceAddress:
-    //             "",
-    //         residentialAddress:
-    //             "",
-    //         businessOccupation: "",
-    //         dateCeasingToAct: "",
-    //         entryMadeBy: "",
-    //     },
-    //     // Empty rows for demonstration
-    //     ...Array(3).fill({
-    //         dateOfAppointment: "",
-    //         fullName: "",
-    //         nationalityAndId: "",
-    //         correspondenceAddress: "",
-    //         residentialAddress: "",
-    //         businessOccupation: "",
-    //         dateCeasingToAct: "",
-    //         entryMadeBy: "",
-    //     }),
-    // ]
+        setDirectors([...initialDirectors, ...emptyRows]);
+    }, [serviceAgrementDetails.registerDirector]);
 
-    // console.log('serviceAgrementDetails',serviceAgrementDetails.directorList)
     return (
         <Card className="w-full max-w-[1200px] mx-auto print:p-0 rounded-none">
             <CardHeader className="space-y-4 pb-6">
@@ -169,54 +145,27 @@ export default function RegisterOfDirectors() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {directors.map((director, index) => (
+                          {directors.map((director, index) => (
                             <TableRow key={index}>
-                                <TableCell className="border">
-                                    {director.dateOfAppointment}
-                                </TableCell>
-                                <TableCell className="border">
-                                    {director.fullName && (
-                                        <span className=" px-1">{director.fullName}</span>
-                                    )}
-                                </TableCell>
-                                <TableCell className="border whitespace-pre-line">
-                                    {director.nationalityAndId && (
-                                        <span className=" px-1">
-                                            {director.nationalityAndId}
-                                        </span>
-                                    )}
-                                </TableCell>
-                                <TableCell className="border">
-                                    {director.correspondenceAddress && (
-                                        <span className=" px-1">
-                                            {director.correspondenceAddress}
-                                        </span>
-                                    )}
-                                </TableCell>
-                                <TableCell className="border">
-                                    {director.residentialAddress && (
-                                        <span className=" px-1">
-                                            {director.residentialAddress}
-                                        </span>
-                                    )}
-                                </TableCell>
-                                <TableCell className="border">
-                                    {director.businessOccupation && (
-                                        <span className=" px-1">
-                                            {director.businessOccupation}
-                                        </span>
-                                    )}
-                                </TableCell>
-                                <TableCell className="border">
-                                    {director.dateCeasingToAct}
-                                </TableCell>
-                                <TableCell className="border text-center">
-                                    {director.entryMadeBy && (
-                                        <span className=" px-1">
-                                            {director.entryMadeBy}
-                                        </span>
-                                    )}
-                                </TableCell>
+                                {[
+                                    { field: 'dateOfAppointment', value: director.dateOfAppointment },
+                                    { field: 'name', value: director.name },
+                                    { field: 'nationality', value: director.nationality },
+                                    { field: 'correspondenceAddress', value: director.correspondenceAddress },
+                                    { field: 'residentialAddress', value: director.residentialAddress },
+                                    { field: 'directorShip', value: director.directorShip },
+                                    { field: 'ceasingAct', value: director.ceasingAct },
+                                    { field: 'entryMadeBy', value: director.entryMadeBy }
+                                ].map(({ field, value }) => (
+                                    <TableCell key={field} className="border p-2 h-24 align-top">
+                                        <textarea
+                                            value={value}
+                                            onChange={(e) => handleInputChange(index, field as keyof Director, e.target.value)}
+                                            className="w-full h-full bg-transparent focus:outline-none resize-none text-sm leading-tight"
+                                            style={{ minHeight: "3rem" }}
+                                        />
+                                    </TableCell>
+                                ))}
                             </TableRow>
                         ))}
                     </TableBody>

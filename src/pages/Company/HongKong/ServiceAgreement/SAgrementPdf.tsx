@@ -171,6 +171,33 @@ const SAgrementPdf: React.FC = () => {
             }
         }
 
+        const mergedRegDirectorList =
+        companyData.directorList?.map((director) => {
+            const savedDirector = savedData.registerDirector?.find(
+                (d) => d.name === director.name
+            );
+            return {
+                name: savedDirector?.name ?? director.name,
+                dateOfAppointment: savedDirector?.dateOfAppointment ??"",
+                nationality: savedDirector?.nationality ??"",
+                correspondenceAddress: savedDirector?.correspondenceAddress ??"",
+                residentialAddress: savedDirector?.residentialAddress ??"",
+                directorShip: savedDirector?.directorShip ??"",
+                ceasingAct: savedDirector?.ceasingAct ??"",
+                entryMadeBy: savedDirector?.entryMadeBy ??""
+            };
+        }) ?? [];
+
+        const additionalRegDirectors =
+        savedData.registerDirector?.filter(
+            (savedDirector) =>
+                !companyData.directorList?.some(
+                    (companyDirector) => companyDirector.name === savedDirector.name
+                )
+        ) ?? [];
+   
+        const regDirList = [...mergedRegDirectorList, ...additionalRegDirectors];
+
         return {
             ...companyData,
             ...savedData,
@@ -182,6 +209,7 @@ const SAgrementPdf: React.FC = () => {
             companyId: companyData.companyId,
             // Merge arrays while preserving company data structure
             directorList: finalDirectorList,
+            registerDirector : regDirList
         };
     };
 
