@@ -127,7 +127,7 @@ const Dashboard = () => {
                 {cList.map((company) => {
                   // Type cast each company
                   const typedCompany = company as {
-                    applicantInfoForm: { companyName: string };
+                    applicantInfoForm: { companyName: string[] };
                     status: string;
                     incorporationDate: string;
                     _id: string;
@@ -136,7 +136,7 @@ const Dashboard = () => {
                   return (
                     <TableRow key={typedCompany._id}>
                       <TableCell className="font-medium cursor-pointer" onClick={() => handleRowClick(typedCompany._id)}>
-                        {typedCompany.applicantInfoForm.companyName}
+                        {typedCompany.applicantInfoForm.companyName.join(",")}                     
                       </TableCell>
                       <TableCell>
                         <span

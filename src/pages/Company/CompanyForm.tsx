@@ -77,13 +77,22 @@ const CompanyRegistration = () => {
     ];
 
     const { toast } = useToast()
-    
+    function addLimitedSuffixConcise(items : string[]) {
+        const limitedRegex = /limited$/i;
+        return items.map((item: string) => !limitedRegex.test(item) ? item + " Limited" : item);
+    }
+  
     const updateDoc = async () => {
         try {
             const docId = localStorage.getItem('companyRecordId');
             // console.log("docId-->",docId)
             finalForm.userId = `${decodedToken.userId}`
             if(currentSection === 2) finalForm.isDisabled = true
+            if(currentSection === 1) {
+               let compNames = finalForm.applicantInfoForm.companyName
+               compNames = addLimitedSuffixConcise(compNames)
+               finalForm.applicantInfoForm.companyName = compNames
+            }
             const payload = { _id:docId, ...finalForm }
             if(finalForm.applicantInfoForm.name !== ''){
                 // console.log("payload-->",payload)
