@@ -54,7 +54,7 @@ export default function RegisterOfDirectors() {
     };
 
     useEffect(() => {
-        console.log("serviceAgrementDetails.directorList", serviceAgrementDetails.registerDirector)
+        // console.log("serviceAgrementDetails.directorList", serviceAgrementDetails.registerDirector)
         let initialDirectors = [{
             dateOfAppointment: "",
             name: "",

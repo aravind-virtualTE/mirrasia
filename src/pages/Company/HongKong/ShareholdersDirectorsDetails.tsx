@@ -146,8 +146,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                 htmlFor="description"
                 className="text-base flex items-center font-semibold gap-2"
               >
-                Significant Controller other than above
-                Shareholder(s)/Director(s){" "}
+                Significant Controller(s){" "}
                 <span className="text-red-500 flex font-bold ml-1">
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -190,9 +189,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
 
               {shrDirList.length > 0 ? (
                 <>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Preferred Language(s) for communication
-                  </label>
+                
                   <MultiSelect
                     options={shrDirArr}
                     placeholder="Select Significant Controller..."
