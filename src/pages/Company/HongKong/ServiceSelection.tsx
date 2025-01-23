@@ -83,13 +83,13 @@ const ServiceSelection: React.FC = () => {
       isHighlight: false,
       isOptional: true,
     },
-    {
-      description: t("ServiceSelection.KYCFee"),
-      originalPrice: "65",
-      discountedPrice: "0",
-      isHighlight: true,
-      isOptional: false,
-    },
+    // {
+    //   description: t("ServiceSelection.KYCFee"),
+    //   originalPrice: "65",
+    //   discountedPrice: "0",
+    //   isHighlight: true,
+    //   isOptional: false,
+    // },
     {
       description: t("ServiceSelection.BankAccountOpeningFee"),
       originalPrice: "400",
@@ -130,7 +130,7 @@ const ServiceSelection: React.FC = () => {
     // Add Legal Person KYC fees
     for (let i = 0; i < legalPersonFees; i++) {
       allFeesArray.push({
-        description: t("ServiceSelection.KYCFee"),
+        description: t("ServiceSelection.KYCFeeLegalPerson"),
         originalPrice: "165",
         discountedPrice: "165",
         isOptional: false,
