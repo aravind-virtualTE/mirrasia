@@ -384,7 +384,6 @@ export const noOfSharesOptions = [
   '100 shares',
   '1,000 shares',
   '10,000 shares',
-  'Others'
 ]
 
 // export const sharePercentageList = [

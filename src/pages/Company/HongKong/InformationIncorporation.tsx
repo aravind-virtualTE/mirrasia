@@ -15,37 +15,31 @@ import {
 } from "./constants"
 import SearchSelect from "@/components/SearchSelect"
 import DropdownSelect from "@/components/DropdownSelect"
+import { useEffect, useState } from "react"
 
 const InformationIncorporation = () => {
   const { theme } = useTheme();
   const [comapnyInfo, setCompanyInfo] = useAtom(regCompanyInfoAtom);
-
+  const [customShares, setCustomShares] = useState("");
+  const [customRadioShares, setCustomRadioShares] = useState("");
   const handlePaymentOptionChange = (registerPaymentShare: string) => {
     setCompanyInfo((prev) => ({ ...prev, registerPaymentShare }));
   };
 
-  // const handleCurrencyOptionChange = (registerCurrencyAtom: string) => {
-  //   setCompanyInfo((prev) => ({ ...prev, registerCurrencyAtom }));
-  // };
 
 
-  // const handleShareCapitalOptionChange = (registerAmountAtom: string) => {
-  //   setCompanyInfo((prev) => ({ ...prev, registerAmountAtom }));
-  // };
-
-  const handleNumShareIssueOptionChange = (registerNumSharesAtom: string) => {
-    setCompanyInfo((prev) => ({ ...prev, registerNumSharesAtom }));
+  const handleNumShareIssueOptionChange = (registerNumSharesAtom: string | number) => {
+    setCompanyInfo((prev) => ({ ...prev, registerNumSharesAtom }));  
   };
-  // const handleNumShareHolderOptionChange = (registerShareholdersAtom: string) => {
-  //   setCompanyInfo((prev) => ({ ...prev, registerShareholdersAtom }));
-  // };
-  // const handleNumDirectorOptionChange = (registerDirectorAtom: string) => {
-  //   setCompanyInfo((prev) => ({ ...prev, registerDirectorAtom }));
-  // };
 
-  // const handleAddressCompanyOptionChange = (registerAddressAtom: string) => {
-  //   setCompanyInfo((prev) => ({ ...prev, registerAddressAtom }));
-  // };
+  useEffect(() => {
+    if (comapnyInfo.registerNumSharesAtom === "Others") { 
+      setCustomShares(comapnyInfo.registerNumSharesAtom);
+      setCustomRadioShares('Others');
+    } else {
+      setCustomShares("");  
+    } 
+  }, [comapnyInfo.registerNumSharesAtom]);
 
   const handlePriceSelect = (registerAmountAtom: string | number) => {
     // console.log('Selected Price:', registerAmountAtom);
@@ -59,6 +53,15 @@ const InformationIncorporation = () => {
 
   const currenc = currencies.find((item) => comapnyInfo.registerCurrencyAtom === item.code)
 
+  const handleCustomSharesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCustomShares(value); // Update local state
+    if (comapnyInfo.registerNumSharesAtom === "Others") {
+      // If "Others" is selected, update the atom with the custom value
+      setCompanyInfo((prev) => ({ ...prev, registerNumSharesAtom: value }));
+    }
+  };
+  console.log("comapnyInfo",comapnyInfo)
   return (
     <div className="flex w-full p-4">
       <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
@@ -112,20 +115,6 @@ const InformationIncorporation = () => {
                   </Tooltip>
                 </span>
               </Label>
-              {/* onValueChange={handleCurrencyOptionChange} */}
-              {/* <RadioGroup className="mt-4 space-y-3"
-                value={comapnyInfo.registerCurrencyAtom}
-                onValueChange={handleCurrencyOptionChange}
-              >
-                {currencyOptions.map((purpose) => (
-                  <div key={purpose} className="flex items-center space-x-3">
-                    <RadioGroupItem value={purpose} id={purpose} />
-                    <Label htmlFor={purpose} className="font-normal">
-                      {purpose}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup> */}
              <SearchSelect
                 items={currencies}
                 placeholder="Select currency..."
@@ -149,21 +138,7 @@ const InformationIncorporation = () => {
                   placeholder="Enter custom price"
                   selectedValue={comapnyInfo.registerAmountAtom}
                   onSelect={handlePriceSelect}
-                />
-              {/* <RadioGroup className="mt-4 space-y-3"
-                value={comapnyInfo.registerAmountAtom}
-                onValueChange={handleShareCapitalOptionChange}
-              >
-                
-                {amountOptions.map((purpose) => (
-                  <div key={purpose} className="flex items-center space-x-3">
-                    <RadioGroupItem value={purpose} id={purpose} />
-                    <Label htmlFor={purpose} className="font-normal">
-                      {purpose}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup> */}
+                />        
             </div>
             <div>
               <Label className="text-base font-semibold flex items-center gap-2">
@@ -178,7 +153,13 @@ const InformationIncorporation = () => {
                   </Tooltip>
                 </span>
               </Label>
-              <RadioGroup className="mt-4 space-y-3"
+              <DropdownSelect
+                  options={noOfSharesOptions}
+                  placeholder="Select Issued Share price"
+                  selectedValue={comapnyInfo.registerNumSharesAtom}
+                  onSelect={handleNumShareIssueOptionChange}
+                />   
+              {/* <RadioGroup className="mt-4 space-y-3"
                 value={comapnyInfo.registerNumSharesAtom}
                 onValueChange={handleNumShareIssueOptionChange}
               >
@@ -190,91 +171,18 @@ const InformationIncorporation = () => {
                     </Label>
                   </div>
                 ))}
-              </RadioGroup>
-            </div>
-
-            {/* <div>
-              <Label className="text-base font-semibold">
-                Shareholders of the Hong Kong company <span className="text-red-500 font-bold ml-1">*</span>
-              </Label>
-
-              <RadioGroup className="mt-4 space-y-3"
-                value={comapnyInfo.registerShareholdersAtom}
-                onValueChange={handleNumShareHolderOptionChange}
-              >
-                {sharePercentageList.map((purpose) => (
-                  <div key={purpose} className="flex items-center space-x-3">
-                    <RadioGroupItem value={purpose} id={purpose} />
-                    <Label htmlFor={purpose} className="font-normal">
-                      {purpose}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div> */}
-
-            {/* <div>
-              <Label className="text-base font-semibold">Please enter the shareholder's name and the number of shares to be assigned. <span className="text-red-500 font-bold ml-1">*</span></Label>
-              <Input
-                id="shareholder's name"
-                required
-                className="w-full"
-                value={comapnyInfo.registerShareholderNameAtom}
-                onChange={(e) => setCompanyInfo(prev => ({ ...prev, registerShareholderNameAtom: e.target.value }))}
-                placeholder="Enter shareholder name & number..." />
-            </div> */}
-
-            {/* <div>
-              <Label className="text-base font-semibold flex items-center gap-2">
-                Directors of the Hong Kong company <span className="text-red-500 font-bold ml-1 flex">* <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-[500px] text-base">
-                    In the Hong Kong company, other companies can also be registered as directors, and when the board of directors makes a decision, a representative delegated by the company can participate in decision making. In this case, you must provide the documents of the board resolution and power of attorney prepared by the company. (it is not recommended for small companies or companies that do not have an expert to handle these procedures due to the complicated documentary process). Under Cap.622 Companies Ordinance, a Hong Kong company must have at least one natural person as a director.
-                  </TooltipContent>
-                </Tooltip></span>
-              </Label>
-              <RadioGroup className="mt-4 space-y-3"
-                value={comapnyInfo.registerDirectorAtom}
-                onValueChange={handleNumDirectorOptionChange}
-              >
-                {directorOptions.map((purpose) => (
-                  <div key={purpose} className="flex items-center space-x-3">
-                    <RadioGroupItem value={purpose} id={purpose} />
-                    <Label htmlFor={purpose} className="font-normal">
-                      {purpose}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div> */}
-
-            {/* <div>
-              <Label className="text-base font-semibold flex items-center gap-2">
-                Address of the Hong Kong company to be registered <span className="text-red-500 font-bold ml-1 flex">*<Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-[500px] text-base">
-                    A Hong Kong company must have the commercial address in Hong Kong. We provide the address service for registration, and this service includes registered address and mail handling service. (The address of a residence or accommodation cannot be registered as a company address.)
-                  </TooltipContent>
-                </Tooltip></span>
-              </Label>
-              <RadioGroup className="mt-4 space-y-3"
-                value={comapnyInfo.registerAddressAtom}
-                onValueChange={handleAddressCompanyOptionChange}
-              >
-                {addressOptions.map((purpose) => (
-                  <div key={purpose} className="flex items-center space-x-3">
-                    <RadioGroupItem value={purpose} id={purpose} />
-                    <Label htmlFor={purpose} className="font-normal">
-                      {purpose}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div> */}
+              </RadioGroup> */}
+              {/* {customRadioShares === "Others" && (
+                <div className="mt-4">
+                  <Input
+                    type="text"
+                    placeholder="Enter custom number of shares"
+                    value={customShares}
+                    onChange={handleCustomSharesChange}
+                  />
+                </div>
+              )} */}
+            </div>            
           </CardContent>
         </Card>
       </div>

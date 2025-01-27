@@ -69,7 +69,7 @@ interface RegCompanyInfo {
   registerPaymentShare?: string;
   registerCurrencyAtom?: string;
   registerAmountAtom?: string | number;
-  registerNumSharesAtom?: string;
+  registerNumSharesAtom?: string | number;
 }
 
 // corporate incorporation Company Information (section 3.2)  

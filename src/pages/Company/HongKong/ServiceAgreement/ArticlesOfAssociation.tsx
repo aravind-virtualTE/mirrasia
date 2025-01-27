@@ -27,7 +27,7 @@ export default function ArticlesOfAssociation() {
             <h2 className="text-lg font-bold">OF</h2>
           </div>
           <h2 className="text-xl font-bold">
-            <span className=" px-1">{serviceAgrementDetails.companyName}</span>
+            <span className="underline px-1">{serviceAgrementDetails.companyName}</span>
           </h2>
         </div>
       </CardHeader>
@@ -41,7 +41,7 @@ export default function ArticlesOfAssociation() {
               <span>The name of the company is</span>
             </div>
             <div className="text-center">
-              <span className=" px-1">
+              <span className="underline px-1">
                 {serviceAgrementDetails.companyName}
               </span>
             </div>
