@@ -83,3 +83,46 @@ export interface Country {
     serviceSelection: AnyObject[]; 
     serviceSelectionState: ServiceSelectionState;
   }
+
+
+  export interface ShareEntry {
+    date?: string ;
+    acquired: {
+      certificateNumber: string ;
+      distinctiveNumber: {
+        from: string | number;
+        to: string | number;
+      };
+      numberOfShares:string | number ;
+      considerationPaid: string |number ;
+    };
+    transferred: {
+      certificateNumber: string ;
+      considerationPaid: string | number;
+      numberOfTransfer: string ;
+      distinctiveNumber: {
+        from: string | number;
+        to: string | number;
+      };
+      numberOfShares:string | number ;
+    };
+    totalSharesHeld:string | number ;
+    remarks: string ;
+    entryMadeBy: string ;
+  }
+  
+  export interface ShareClass {
+    type: string ;
+    valuePerShare:string | number ;
+  }
+
+  export interface RegisterMembers {
+    name: string ;
+    occupation: string ;
+    correspondenceAddress: string ;
+    residentialAddress: string ;
+    dateEntered: string ;
+    dateCeasing: string ;
+    entries : ShareEntry[];
+    shareClass: ShareClass;
+  }

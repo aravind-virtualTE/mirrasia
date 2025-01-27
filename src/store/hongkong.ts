@@ -352,10 +352,8 @@ export const currentHkStepAtom = atom(
 //   initialServiceAgrementState
 // );
 
-
-
 const initialPartialState: Partial<serviceAggrementTypes> = {
-  companyId:"",
+  companyId: "",
   brnNo: "",
   directorList: [{ name: "", signature: "" }],
   appointmentDate: "",
@@ -377,7 +375,7 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
       currentHolding: 0,
       percentage: "",
       remarks: "",
-      signature: null
+      signature: null,
     },
   ],
   registerChargesList: [
@@ -422,94 +420,106 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
       name: "",
       occupation: "",
       correspondenceAddress: "",
-      dateCeasing: "",
       residentialAddress: "",
-      sharesAcquired: [
-        {
+      dateEntered: "",
+      dateCeasing: "",
+      entries: [{
+        date : "",
+        acquired: {
           certificateNumber: "",
-          distinctiveNumber: "",
-          numberOfShares: "",
           considerationPaid: "",
+          distinctiveNumber: {
+            from: "",
+            to: "",
+          },
+          numberOfShares: "",
         },
-      ],
-      sharesTransferred: [
-        {
+        transferred: {
           certificateNumber: "",
-          distinctiveNumber: "",
-          numberOfShares: "",
-          considerationPaid: "",
+          considerationPaid: 0,
+          numberOfTransfer: "",
+          distinctiveNumber: {
+            from: "",
+            to: "",
+          },
+          numberOfShares: 0,
         },
-      ],
-      totalSharesHeld: "",
-      remarks: "",
-      entryMadeBy: "",
-      classOfShare : "",
-      pervalueshare : "",
+        totalSharesHeld: 0,
+        remarks:"",
+        entryMadeBy : ""        
+      }],
+      shareClass: {
+        type: "",
+        valuePerShare: 0,
+      },
     },
   ],
-  registeredMembersSignature: [{name: "", signature: ""}],
-  significantController : [{
-    name : "",
-    correspondenceAddress : "",
-    residentialAddress : "",
-    passportNo : "",
-    dateOfRegistrablePerson : "",
-    dateOfCeasingRegistrablePerson : "",
-    natureOfControlOverCompany : "",
-    addressLine1 : "",
-    addressLine2: "",
-    country : "",
-    signature : "",
-  }],
-  chairman : [{name : "", signature : ""}],
-  customerDueDiligence : {
-    personalInformation : {
-      title : "",
-      familyName : "",
-      name : "",
-      formerName : "",
-      occupation : "",
-      maritalStatus : "",
-      cityBirthTown : "",
+  registeredMembersSignature: [{ name: "", signature: "" }],
+  significantController: [
+    {
+      name: "",
+      correspondenceAddress: "",
+      residentialAddress: "",
+      passportNo: "",
+      dateOfRegistrablePerson: "",
+      dateOfCeasingRegistrablePerson: "",
+      natureOfControlOverCompany: "",
+      addressLine1: "",
+      addressLine2: "",
+      country: "",
+      signature: "",
+    },
+  ],
+  chairman: [{ name: "", signature: "" }],
+  customerDueDiligence: {
+    personalInformation: {
+      title: "",
+      familyName: "",
+      name: "",
+      formerName: "",
+      occupation: "",
+      maritalStatus: "",
+      cityBirthTown: "",
       birthCountry: "",
-      dateOfBirth : "",
-      nationality : "",
+      dateOfBirth: "",
+      nationality: "",
     },
-    taxFacta : {
-      factaReportingPuropose : false,
-      isPublicAuthority : false,
-      countryOfTaxResidence : "",
-      taxIdNumber : ""
+    taxFacta: {
+      factaReportingPuropose: false,
+      isPublicAuthority: false,
+      countryOfTaxResidence: "",
+      taxIdNumber: "",
     },
-    permanetResidence : {
-      address : "",
-      postCode : "",
-      country : ""
+    permanetResidence: {
+      address: "",
+      postCode: "",
+      country: "",
     },
-    otherContactDetails : {
-      tel : "",
-      mobile : "",
-      email : "",
-      fax :""
+    otherContactDetails: {
+      tel: "",
+      mobile: "",
+      email: "",
+      fax: "",
     },
-    preferredMethodOfContact : {
+    preferredMethodOfContact: {
       telephone: false,
       mobile: false,
       email: false,
       fax: false,
       registeredPost: false,
-      courier: false
+      courier: false,
     },
-    cddDate : "",
+    cddDate: "",
   },
-  cddSignature : "",
-  politicallyExposed : false,
-  politicallyNotExposed : false,
-  pedSignature : "",
-  pedDate : "",
-  currency : "",
-  registerAmount : ""
+  cddSignature: "",
+  politicallyExposed: false,
+  politicallyNotExposed: false,
+  pedSignature: "",
+  pedDate: "",
+  currency: "",
+  registerAmount: "",
 };
-export const serviceAgreement  = atom<Partial<serviceAggrementTypes>>(initialPartialState);
+export const serviceAgreement =
+  atom<Partial<serviceAggrementTypes>>(initialPartialState);
 
 export const signaturesAtom = atom<string[]>([]);

@@ -1,3 +1,5 @@
+import { RegisterMembers } from "./hkForm";
+
 export interface PersonalInfo {
     firstName: string;
     lastName: string;
@@ -178,30 +180,7 @@ export interface serviceAggrementTypes {
   }[];
   registerDirectorSignature: string | null;
   sharesDate: string;
-  registeredMembers: {
-    name: string;
-    occupation: string;
-    correspondenceAddress: string;
-    dateCeasing: string;
-    residentialAddress: string;
-    sharesAcquired: {
-      certificateNumber: string;
-      distinctiveNumber: string;
-      numberOfShares: string;
-      considerationPaid: string;
-    }[];
-    sharesTransferred: {
-      certificateNumber: string;
-      distinctiveNumber: string;
-      numberOfShares: string;
-      considerationPaid: string;
-    }[];
-    totalSharesHeld: string;
-    remarks: string;
-    entryMadeBy: string;
-    classOfShare: string;
-    pervalueshare: string;
-  }[];
+  registeredMembers: RegisterMembers[];
   registeredMembersSignature: { name: string; signature: string }[];
   significantController: {
     name: string;

@@ -33,12 +33,12 @@ import {
 import Loader from "@/common/Loader";
 import CustomLoader from "@/components/ui/customLoader";
 import { useToast } from "@/hooks/use-toast";
+import { RegisterMembers } from "@/types/hkForm";
 
 const SAgrementPdf: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSaveLoading, setIsSaveLoading] = useState(false);
-    const [serviceAgrementDetails, setServiceAgrement] =
-        useAtom(serviceAgreement);
+    const [serviceAgrementDetails, setServiceAgrement] =  useAtom(serviceAgreement);
     const [companyData] = useAtom(companyIncorporationAtom);
     const [isFetching, setIsFetching] = useState(true);
     const [serviceId, setId] = useState("");
@@ -62,6 +62,45 @@ const SAgrementPdf: React.FC = () => {
                 signature: "",
             }))
     );
+    const [registeredMembers,] = useState<RegisterMembers[]>(
+        companyData.shareHolderDirectorController.shareHolders
+            .filter((record) => record.isDirector === false)
+            .map((record) => ({
+                name: record.name,
+                occupation: "",
+                correspondenceAddress: "",
+                residentialAddress: "",
+                dateCeasing: "",
+                dateEntered: "",
+                entries: [{
+                    date: "",
+                    acquired: {
+                        certificateNumber: "",
+                        considerationPaid: "",
+                        distinctiveNumber: {
+                            from: "",
+                            to: ""
+                        },
+                        numberOfShares: ""
+                    },
+                    transferred: {
+                        certificateNumber: "",
+                        considerationPaid: 0,
+                        numberOfTransfer: "",
+                        distinctiveNumber: { from: '', to: '' },
+                        numberOfShares: 0,
+                    },
+                    totalSharesHeld: "",
+                    remarks: "",
+                    entryMadeBy: ""
+                }],
+                shareClass: {
+                    type: "",
+                    valuePerShare: ""
+                }
+            }))
+    );
+
     // console.log("companyData-->", companyData);
     const currency = companyData.regCompanyInfo.registerCurrencyAtom;
     const registerAmount = companyData.regCompanyInfo.registerAmountAtom;
@@ -76,16 +115,18 @@ const SAgrementPdf: React.FC = () => {
             (record) => record.isDirector === false && record.isLegalPerson === false
         );
         // .filter(record => record.isDirector === false )
-       
-        const shareholderArr = shareHolderDir.filter(item => Number(item.ownershipRate) !== 0).map((record) => ({
-            name: record.name,
-            correspondenceAddress: "",
-            residentialAddress: "",
-            currentHolding: record.ownershipRate,
-            percentage: record.ownershipRate.toString() + "%",
-            remarks: "",
-            signature: null,
-        }));
+
+        const shareholderArr = shareHolderDir
+            .filter((item) => Number(item.ownershipRate) !== 0)
+            .map((record) => ({
+                name: record.name,
+                correspondenceAddress: "",
+                residentialAddress: "",
+                currentHolding: record.ownershipRate,
+                percentage: record.ownershipRate.toString() + "%",
+                remarks: "",
+                signature: null,
+            }));
         return {
             companyName: companyData.applicantInfoForm.companyName[0],
             companyId: localStorage.getItem("companyRecordId") ?? "",
@@ -171,32 +212,67 @@ const SAgrementPdf: React.FC = () => {
             }
         }
 
+
         const mergedRegDirectorList =
-        companyData.directorList?.map((director) => {
-            const savedDirector = savedData.registerDirector?.find(
-                (d) => d.name === director.name
-            );
-            return {
-                name: savedDirector?.name ?? director.name,
-                dateOfAppointment: savedDirector?.dateOfAppointment ??"",
-                nationality: savedDirector?.nationality ??"",
-                correspondenceAddress: savedDirector?.correspondenceAddress ??"",
-                residentialAddress: savedDirector?.residentialAddress ??"",
-                directorShip: savedDirector?.directorShip ??"",
-                ceasingAct: savedDirector?.ceasingAct ??"",
-                entryMadeBy: savedDirector?.entryMadeBy ??""
-            };
-        }) ?? [];
+            companyData.directorList?.map((director) => {
+                const savedDirector = savedData.registerDirector?.find(
+                    (d) => d.name === director.name
+                );
+                return {
+                    name: savedDirector?.name ?? director.name,
+                    dateOfAppointment: savedDirector?.dateOfAppointment ?? "",
+                    nationality: savedDirector?.nationality ?? "",
+                    correspondenceAddress: savedDirector?.correspondenceAddress ?? "",
+                    residentialAddress: savedDirector?.residentialAddress ?? "",
+                    directorShip: savedDirector?.directorShip ?? "",
+                    ceasingAct: savedDirector?.ceasingAct ?? "",
+                    entryMadeBy: savedDirector?.entryMadeBy ?? "",
+                };
+            }) ?? [];
 
         const additionalRegDirectors =
-        savedData.registerDirector?.filter(
-            (savedDirector) =>
-                !companyData.directorList?.some(
-                    (companyDirector) => companyDirector.name === savedDirector.name
-                )
-        ) ?? [];
-   
+            savedData.registerDirector?.filter(
+                (savedDirector) =>
+                    !companyData.directorList?.some(
+                        (companyDirector) => companyDirector.name === savedDirector.name
+                    )
+            ) ?? [];
+
         const regDirList = [...mergedRegDirectorList, ...additionalRegDirectors];
+
+        const updatedRegisteredMembers = registeredMembers.map(member => {
+            // Find the corresponding saved member
+            const savedMember = savedData.registeredMembers?.find(saved => saved.name === member.name);
+
+            // If a saved member is found, merge the data
+            if (savedMember) {
+                return {
+                    ...member,
+                    ...savedMember,
+                    // Ensure entries is always an array
+                    entries: (member.entries || []).map((entry, index) => ({
+                        ...entry,
+                        // Ensure savedMember.entries[index] exists before spreading
+                        ...((savedMember.entries && savedMember.entries[index]) || {}),
+                        acquired: {
+                            ...entry.acquired,
+                            // Ensure savedMember.entries[index]?.acquired exists before spreading
+                            ...((savedMember.entries && savedMember.entries[index]?.acquired) || {})
+                        },
+                        transferred: {
+                            ...entry.transferred,
+                            // Ensure savedMember.entries[index]?.transferred exists before spreading
+                            ...((savedMember.entries && savedMember.entries[index]?.transferred) || {})
+                        }
+                    })),
+                    shareClass: {
+                        ...member.shareClass,
+                        ...savedMember.shareClass
+                    }
+                };
+            }
+            return member;
+        });
 
         return {
             ...companyData,
@@ -209,9 +285,11 @@ const SAgrementPdf: React.FC = () => {
             companyId: companyData.companyId,
             // Merge arrays while preserving company data structure
             directorList: finalDirectorList,
-            registerDirector : regDirList
+            registerDirector: regDirList,
+            registeredMembers: updatedRegisteredMembers,
         };
     };
+
 
     useEffect(() => {
         const initializeData = async () => {
@@ -219,7 +297,7 @@ const SAgrementPdf: React.FC = () => {
             const preparedCompanyData = prepareCompanyData();
             const savedData = await fetchSavedData();
             const mergedData = mergeData(preparedCompanyData, savedData);
-            // console.log("mergedData",mergedData)
+            // console.log("mergedData======>",mergedData)
             setServiceAgrement(mergedData);
             setIsFetching(false);
         };
@@ -315,7 +393,7 @@ const SAgrementPdf: React.FC = () => {
         }
     };
 
-    // console.log("significantCntrl", significantController)
+    // console.log(registeredMembers,"significantCntrl", significantController)
 
     const handleControllerChange = (
         index: number,
@@ -334,6 +412,50 @@ const SAgrementPdf: React.FC = () => {
         });
     };
 
+    // const handleMemberChange = (index: number, field: string, value: string | number) => {
+    //     const updatedMembers = [...(serviceAgrementDetails.registeredMembers || [])];
+    //     updatedMembers[index] = { ...updatedMembers[index], [field]: value };
+    //     setServiceAgrement({ ...serviceAgrementDetails, registeredMembers: updatedMembers });
+    // };
+    const handleMemberChange = (index: number, field: string, value: string | number) => {
+        const updatedMembers = [...(serviceAgrementDetails.registeredMembers || [])];
+        const memberToUpdate = { ...updatedMembers[index] };
+    
+        // Handle nested fields using dot notation
+        let fieldParts
+
+        if(field === 'entries'){
+            fieldParts = JSON.parse(field).split(/[[\].]/).filter(Boolean);
+        }else{
+            fieldParts = field.split(/[[\].]/).filter(Boolean);
+        }
+        
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let current: any = memberToUpdate;
+    
+        for (let i = 0; i < fieldParts.length - 1; i++) {
+          const part = fieldParts[i];
+          if (!current[part]) {
+            current[part] = {};
+          }
+          current = current[part];
+        }
+    
+        const lastPart = fieldParts[fieldParts.length - 1];
+        current[lastPart] = value;
+    
+        updatedMembers[index] = memberToUpdate;
+        console.log("updatedMembers====>", updatedMembers)
+        setServiceAgrement({ ...serviceAgrementDetails, registeredMembers: updatedMembers });
+      };
+
+    // const deleteMember = (index: number) => {
+    //     console.log("index", index)
+    //     // const updatedMembers = serviceAgrementDetails.registeredMembers.filter((_, i) => i !== index);
+    //     // setServiceAgrement({ ...serviceAgrementDetails, registeredMembers: updatedMembers });
+    //   };
+
+    console.log("registeredMembers", serviceAgrementDetails)
     return (
         <React.Fragment>
             {isFetching ? (
@@ -367,7 +489,16 @@ const SAgrementPdf: React.FC = () => {
                         <RegisterOfDirectors />
                     </div>
                     <div id="registerOfMembers" className="mb-4">
-                        <RegisterOfMembers />
+                        {/* <RegisterOfMembers /> */}
+                        {serviceAgrementDetails.registeredMembers?.map((member, index) => (
+                            <RegisterOfMembers
+                                key={index}
+                                index={index}
+                                member={member}
+                                onMemberChange={handleMemberChange}
+                                // onDeleteMember={deleteMember}
+                            />
+                        ))}
                     </div>
 
                     {significantController.map((controller, index) => (
