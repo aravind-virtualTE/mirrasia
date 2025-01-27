@@ -15,13 +15,12 @@ import {
 } from "./constants"
 import SearchSelect from "@/components/SearchSelect"
 import DropdownSelect from "@/components/DropdownSelect"
-import { useEffect, useState } from "react"
 
 const InformationIncorporation = () => {
   const { theme } = useTheme();
   const [comapnyInfo, setCompanyInfo] = useAtom(regCompanyInfoAtom);
-  const [customShares, setCustomShares] = useState("");
-  const [customRadioShares, setCustomRadioShares] = useState("");
+  // const [customShares, setCustomShares] = useState("");
+  // const [customRadioShares, setCustomRadioShares] = useState("");
   const handlePaymentOptionChange = (registerPaymentShare: string) => {
     setCompanyInfo((prev) => ({ ...prev, registerPaymentShare }));
   };
@@ -32,14 +31,6 @@ const InformationIncorporation = () => {
     setCompanyInfo((prev) => ({ ...prev, registerNumSharesAtom }));  
   };
 
-  useEffect(() => {
-    if (comapnyInfo.registerNumSharesAtom === "Others") { 
-      setCustomShares(comapnyInfo.registerNumSharesAtom);
-      setCustomRadioShares('Others');
-    } else {
-      setCustomShares("");  
-    } 
-  }, [comapnyInfo.registerNumSharesAtom]);
 
   const handlePriceSelect = (registerAmountAtom: string | number) => {
     // console.log('Selected Price:', registerAmountAtom);
@@ -53,14 +44,6 @@ const InformationIncorporation = () => {
 
   const currenc = currencies.find((item) => comapnyInfo.registerCurrencyAtom === item.code)
 
-  const handleCustomSharesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setCustomShares(value); // Update local state
-    if (comapnyInfo.registerNumSharesAtom === "Others") {
-      // If "Others" is selected, update the atom with the custom value
-      setCompanyInfo((prev) => ({ ...prev, registerNumSharesAtom: value }));
-    }
-  };
   console.log("comapnyInfo",comapnyInfo)
   return (
     <div className="flex w-full p-4">
@@ -159,29 +142,6 @@ const InformationIncorporation = () => {
                   selectedValue={comapnyInfo.registerNumSharesAtom}
                   onSelect={handleNumShareIssueOptionChange}
                 />   
-              {/* <RadioGroup className="mt-4 space-y-3"
-                value={comapnyInfo.registerNumSharesAtom}
-                onValueChange={handleNumShareIssueOptionChange}
-              >
-                {noOfSharesOptions.map((purpose) => (
-                  <div key={purpose} className="flex items-center space-x-3">
-                    <RadioGroupItem value={purpose} id={purpose} />
-                    <Label htmlFor={purpose} className="font-normal">
-                      {purpose}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup> */}
-              {/* {customRadioShares === "Others" && (
-                <div className="mt-4">
-                  <Input
-                    type="text"
-                    placeholder="Enter custom number of shares"
-                    value={customShares}
-                    onChange={handleCustomSharesChange}
-                  />
-                </div>
-              )} */}
             </div>            
           </CardContent>
         </Card>
