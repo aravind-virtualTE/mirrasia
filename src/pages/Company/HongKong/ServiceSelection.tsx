@@ -83,13 +83,13 @@ const ServiceSelection: React.FC = () => {
       isHighlight: false,
       isOptional: true,
     },
-    // {
-    //   description: t("ServiceSelection.KYCFee"),
-    //   originalPrice: "65",
-    //   discountedPrice: "0",
-    //   isHighlight: true,
-    //   isOptional: false,
-    // },
+    {
+      description: t("ServiceSelection.KYCFee"),
+      originalPrice: "65",
+      discountedPrice: "0",
+      isHighlight: true,
+      isOptional: false,
+    },
     {
       description: t("ServiceSelection.BankAccountOpeningFee"),
       originalPrice: "400",
