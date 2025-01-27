@@ -439,7 +439,8 @@ export default function RegisterOfMembers({
   };
 
   return (
-    <Card className="w-full max-w mx-auto p-6 print:p-0 rounded-none">
+    // w-full max-w mx-auto
+    <Card className=" p-6 print:p-0 rounded-none">
       <CardHeader className="space-y-4 pb-6 px-0">
         <div className="flex justify-between items-start">
           <div className="space-y-1">

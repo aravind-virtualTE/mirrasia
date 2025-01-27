@@ -26,7 +26,8 @@ export default function ShareCapitalForm() {
       })
     }, [])
   return (
-    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none">
+    // w-full max-w-[800px] mx-auto
+    <Card className=" p-6 print:p-0 rounded-none">
       {/* Share Class Details */}
       <CardContent>
         <div className="space-y-4">

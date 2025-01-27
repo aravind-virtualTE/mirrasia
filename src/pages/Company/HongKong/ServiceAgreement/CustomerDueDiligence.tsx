@@ -127,7 +127,8 @@ export default function CustomerDueDiligence() {
   // console.log("serviceAgrementDetails", serviceAgrementDetails);
 
   return (
-    <Card className="max-w-4xl mx-auto p-6 text-sm rounded-none">
+    // max-w-4xl mx-auto
+    <Card className=" p-6 text-sm rounded-none">
       <CardContent>
         <h1 className="text-center font-bold mb-4">
           CUSTOMER DUE DILIGENCE (INDIVIDUALS)

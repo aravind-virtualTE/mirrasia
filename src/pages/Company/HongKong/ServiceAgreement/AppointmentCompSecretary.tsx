@@ -78,7 +78,7 @@ export default function AppointmentLetter() {
     });
   }
   return (
-    <Card className="max-w-4xl mx-auto p-8 rounded-none">
+    <Card className="p-8 rounded-none">
       <CardHeader className="space-y-6 p-0">
         <div className="flex justify-between">
           <div className="space-y-1">

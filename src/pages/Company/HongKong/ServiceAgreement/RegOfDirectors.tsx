@@ -85,7 +85,8 @@ export default function RegisterOfDirectors() {
     }, [serviceAgrementDetails.registerDirector]);
 
     return (
-        <Card className="w-full max-w-[1200px] mx-auto print:p-0 rounded-none">
+        // max-w-[1200px]
+        <Card className="print:p-0 rounded-none">
             <CardHeader className="space-y-4 pb-6">
                 <div className="flex justify-between items-start">
                     <div className="space-y-2">

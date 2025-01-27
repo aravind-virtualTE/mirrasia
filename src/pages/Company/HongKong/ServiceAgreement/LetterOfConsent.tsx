@@ -65,7 +65,7 @@ export default function LetterOfConsent() {
   //   }
   // };
   return (
-    <Card className="max-w-4xl mx-auto p-8 rounded-none">
+    <Card className="p-8 rounded-none">
       <CardHeader className="text-center py-4">
         <CardTitle className="text-xl font-bold">LETTER OF CONSENT</CardTitle>
       </CardHeader>

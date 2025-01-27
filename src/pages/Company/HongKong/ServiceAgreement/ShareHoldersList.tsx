@@ -87,7 +87,7 @@ export default function ShareholdersList() {
   ) || 0
   
   return (
-    <Card className="w-full mx-auto p-6 print:p-0 rounded-none">
+    <Card className="p-6 print:p-0 rounded-none">
       <CardHeader className="space-y-4 pb-6">
         <h1 className="text-xl font-bold text-center underline">
           Shareholders List

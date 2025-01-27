@@ -35,7 +35,8 @@ export default function CompanyResolution() {
     });
   }, []);
   return (
-    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none">
+    // w-full max-w-[800px] mx-auto 
+    <Card className="p-6 print:p-0 rounded-none">
       <CardContent className="p-8">
       <div className="text-center mb-8">
       <h1 className="text-xl font-bold mb-2">{serviceAgrementDetails.companyName}</h1>

@@ -233,7 +233,7 @@ export default function SignificantControllerForm({ index, controller, onChange 
   };
 
   return (    
-      <Card className="max-w-4xl mx-auto p-8 mb-4 rounded-none shadow-none font-serif">
+      <Card className="p-8 mb-4 rounded-none shadow-none font-serif">
         <CardHeader className="space-y-4 p-0">
           <div className="space-y-2 text-sm">
             <div>BRN .: {serviceAgrementDetails.brnNo}</div>

@@ -50,7 +50,8 @@ function PEPDeclarationForm() {
     }))
   }
   return (
-    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none">
+    // w-full max-w-[800px] mx-auto
+    <Card className=" p-6 print:p-0 rounded-none">
       <CardHeader>
         <CardTitle className="text-xl text-center font-bold underline">
           Politically Exposed Person Self-Declaration Form

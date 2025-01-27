@@ -77,7 +77,7 @@ export default function RegisterOfCharges() {
   }
 
   return (
-    <Card className="w-full mx-auto p-6 print:p-0 rounded-none">
+    <Card className="p-6 print:p-0 rounded-none">
       <CardHeader className="space-y-4 pb-6">
         <div className="flex justify-between items-start">
           <div className="space-y-2">

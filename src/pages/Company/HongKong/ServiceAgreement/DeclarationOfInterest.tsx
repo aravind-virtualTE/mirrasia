@@ -23,7 +23,8 @@ export default function DeclarationOfInterest() {
   };
 
   return (
-    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none font-serif">
+    // w-full max-w-[800px] mx-auto 
+    <Card className="p-6 print:p-0 rounded-none font-serif">
       <CardHeader className="space-y-6 pb-6">
         <div className="space-y-2">
           <div className="flex gap-2">

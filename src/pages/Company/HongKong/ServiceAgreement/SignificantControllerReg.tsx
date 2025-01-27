@@ -83,7 +83,8 @@ export default function SignificantControllersRegister() {
   };
   
   return (
-    <Card className="w-full max-w-[900px] mx-auto p-6 print:p-0 rounded-none font-serif">
+    // w-full max-w-[900px] mx-auto 
+    <Card className="p-6 print:p-0 rounded-none font-serif">
       <CardHeader className="space-y-4 pb-6">
         <h1 className="text-l font-bold text-center">
           Significant Controllers Register

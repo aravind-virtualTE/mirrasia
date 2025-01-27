@@ -81,7 +81,7 @@ const handleSelect = (selectedValue: string | number) => {
           />
       </div>
       <div id="appointmentOfDirectors">
-        <Card className="max-w-4xl mx-auto p-6 rounded-none">
+        <Card className="p-6 rounded-none">
           <CardHeader>
             <CardTitle className="text-center text-lg font-bold underline">
               APPOINTMENT OF FIRST DIRECTORS BY FOUNDER MEMBERS

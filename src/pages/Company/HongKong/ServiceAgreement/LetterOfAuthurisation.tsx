@@ -127,7 +127,7 @@ const [sdcInfo, ] = useAtom(
 
   // console.log("personDetails.directorName",personDetails.directorName)
   return (
-    <Card className="max-w-4xl mx-auto p-8 rounded-none">
+    <Card className=" p-8 rounded-none">
       <CardHeader className="space-y-4">
         <div className="flex justify-between text-sm ">
           <span>BRN .: {serviceAgrementDetails.brnNo}</span>

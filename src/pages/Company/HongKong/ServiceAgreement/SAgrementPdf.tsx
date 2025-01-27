@@ -457,12 +457,13 @@ const SAgrementPdf: React.FC = () => {
 
     console.log("registeredMembers", serviceAgrementDetails)
     return (
-        <React.Fragment>
+        <div className="max-w-4xl mx-auto">
             {isFetching ? (
-                <div className="flex justify-center items-center min-h-screen">
+                <div className="flex justify-center items-center">
                     <Loader />
                 </div>
             ) : (
+                // max-w-4xl mx-auto
                 <>
                     <div id="appointmentLetter" className="mb-4">
                         <AppointmentLetter />
@@ -573,7 +574,7 @@ const SAgrementPdf: React.FC = () => {
                     </div>
                 </>
             )}
-        </React.Fragment>
+        </div>
     );
 };
 

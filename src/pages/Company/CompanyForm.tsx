@@ -399,8 +399,8 @@ const CompanyRegistration = () => {
             ) : (
                 <>
                     {/* Main Content */}
-                    <div className="flex-1 overflow-y-auto flex flex-col">                        
-                        <div className="flex-1 overflow-y-auto">
+                    <div className="flex-1 flex flex-col">                        
+                        <div className="flex-1">
                             <div className="mx-auto">
                                 {renderSection()}
                             </div>

@@ -1,28 +1,32 @@
+import { useState } from "react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { serviceAgreement } from "@/store/hongkong"
 import { useAtom } from "jotai"
 
-
 export default function ArticlesOfAssociation() {
-  const shareCapital = {
+  const [shareCapital, setShareCapital] = useState({
     totalShares: "100",
     totalAmount: "USD 100",
     paidUp: "USD 100",
     unpaid: "USD 0",
+  })
+  const [serviceAgrementDetails] = useAtom(serviceAgreement)
+
+  const handleShareCapitalChange = (field: keyof typeof shareCapital, value: string) => {
+    setShareCapital((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
   }
-  const [serviceAgrementDetails,] = useAtom(serviceAgreement)
 
   return (
-    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none ">
+    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none">
       <CardHeader className="space-y-8 text-center">
         <div className="space-y-4">
-          <h1 className="text-xl font-bold">
-            THE COMPANIES ORDINANCE (CHAPTER 622)
-          </h1>
+          <h1 className="text-xl font-bold">THE COMPANIES ORDINANCE (CHAPTER 622)</h1>
           <div className="space-y-2">
-            <h2 className="text-lg font-bold">
-              Private Company Limited by Shares
-            </h2>
+            <h2 className="text-lg font-bold">Private Company Limited by Shares</h2>
             <h2 className="text-lg font-bold">ARTICLES OF ASSOCIATION</h2>
             <h2 className="text-lg font-bold">OF</h2>
           </div>
@@ -41,9 +45,7 @@ export default function ArticlesOfAssociation() {
               <span>The name of the company is</span>
             </div>
             <div className="text-center">
-              <span className="underline px-1">
-                {serviceAgrementDetails.companyName}
-              </span>
+              <span className="underline px-1">{serviceAgrementDetails.companyName}</span>
             </div>
           </div>
         </div>
@@ -57,61 +59,48 @@ export default function ArticlesOfAssociation() {
 
         <div className="space-y-2">
           <div>
-            <span className="font-bold">
-              3. Liabilities or Contributions of Members
-            </span>
-            <p>
-              The liability of the members is limited to any amount unpaid on the
-              shares held by the members.
-            </p>
+            <span className="font-bold">3. Liabilities or Contributions of Members</span>
+            <p>The liability of the members is limited to any amount unpaid on the shares held by the members.</p>
           </div>
         </div>
 
         <div className="space-y-4">
-          <h3 className="font-bold">
-            4. Share Capital and Initial Shareholdings (on the company's formation)
-          </h3>
+          <h3 className="font-bold">4. Share Capital and Initial Shareholdings (on the company's formation)</h3>
           <div className="grid grid-cols-[1fr,auto] gap-4">
-            <div>
-              The total number of shares that the company proposes to issue
-            </div>
+            <div>The total number of shares that the company proposes to issue</div>
             <div className="w-[300px] border">
-              <div className="p-2 text-center">
-                <span className=" px-1">
-                  {shareCapital.totalShares}
-                </span>
-              </div>
+              <Input
+                value={shareCapital.totalShares}
+                onChange={(e) => handleShareCapitalChange("totalShares", e.target.value)}
+                className="border-none text-center h-auto py-2"
+              />
             </div>
 
-            <div>
-              The total amount of share capital to be subscribed by the company's
-              founder members
-            </div>
+            <div>The total amount of share capital to be subscribed by the company's founder members</div>
             <div className="w-[300px] border">
-              <div className="p-2 text-center">
-                <span className=" px-1">
-                  {shareCapital.totalAmount}
-                </span>
-              </div>
+              <Input
+                value={shareCapital.totalAmount}
+                onChange={(e) => handleShareCapitalChange("totalAmount", e.target.value)}
+                className="border-none text-center h-auto py-2"
+              />
             </div>
 
-            <div className="pl-8">
-              (i) The amount to be paid up or to be regarded as paid up
-            </div>
+            <div className="pl-8">(i) The amount to be paid up or to be regarded as paid up</div>
             <div className="w-[300px] border">
-              <div className="p-2 text-center">
-                <span className=" px-1">{shareCapital.paidUp}</span>
-              </div>
+              <Input
+                value={shareCapital.paidUp}
+                onChange={(e) => handleShareCapitalChange("paidUp", e.target.value)}
+                className="border-none text-center h-auto py-2"
+              />
             </div>
 
-            <div className="pl-8">
-              (ii) The amount to remain unpaid or to be regarded as remaining
-              unpaid
-            </div>
+            <div className="pl-8">(ii) The amount to remain unpaid or to be regarded as remaining unpaid</div>
             <div className="w-[300px] border">
-              <div className="p-2 text-center">
-                <span className=" px-1">{shareCapital.unpaid}</span>
-              </div>
+              <Input
+                value={shareCapital.unpaid}
+                onChange={(e) => handleShareCapitalChange("unpaid", e.target.value)}
+                className="border-none text-center h-auto py-2"
+              />
             </div>
           </div>
         </div>
