@@ -229,7 +229,7 @@ const IncorporationForm = () => {
             <div className="flex-1 flex flex-col h-full">
                 {/* Fixed Header */}
                 <Card className="rounded-none border-b border-t-0 border-l-0 border-r-0">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 p-1">
                         <CardTitle className="text-base md:text-lg">
                             Company Incorporation {countryState.name}
                         </CardTitle>
@@ -310,7 +310,7 @@ const IncorporationForm = () => {
                 </div>
 
                 {/* Fixed Navigation buttons */}
-                <div className="flex justify-between border-t p-4 bg-background">
+                <div className="flex justify-between border-t p-1 bg-background">
                     <Button
                         variant="outline"
                         onClick={previousSection}
