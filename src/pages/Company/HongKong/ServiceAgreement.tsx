@@ -24,6 +24,7 @@ const ServiceAgreementDocument: React.FC = () => {
   // const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   // const [isLoading, setIsLoading] = useState(false);
 
+  const serviceKeys = Object.values(t("ServiceAgreementDocument.section4Services", { returnObjects: true }));
   const fullAgreementSections = [
     {
       title: t("ServiceAgreementDocument.section1Title"),
@@ -31,6 +32,7 @@ const ServiceAgreementDocument: React.FC = () => {
     },
     {
       title: t("ServiceAgreementDocument.section2Title"),
+      content: t("ServiceAgreementDocument.section2Content"),
       subsections: [
         {
           subtitle: t("ServiceAgreementDocument.section2_1"),
@@ -44,6 +46,7 @@ const ServiceAgreementDocument: React.FC = () => {
     },
     {
       title: t("ServiceAgreementDocument.section3Title"),
+      content: t("ServiceAgreementDocument.section3Content"),
       subsections: [
         {
           subtitle: t("ServiceAgreementDocument.section3_1"),
@@ -69,6 +72,8 @@ const ServiceAgreementDocument: React.FC = () => {
     },
     {
       title: t("ServiceAgreementDocument.section4Title"),
+      content: t("ServiceAgreementDocument.section4Content"),
+      services : serviceKeys,
       subsections: [
         {
           subtitle: t("ServiceAgreementDocument.section4_1"),
@@ -92,14 +97,12 @@ const ServiceAgreementDocument: React.FC = () => {
     { title: t("ServiceAgreementDocument.section11Title"), content: t("ServiceAgreementDocument.section11Content") },
     { title: t("ServiceAgreementDocument.section12Title"), content: t("ServiceAgreementDocument.section12Content") },
     {
-      title: t("ServiceAgreementDocument.section13Title"), subsections: [
+      title: t("ServiceAgreementDocument.section13Title"), 
+      content: t("ServiceAgreementDocument.section13Content"),
+      subsections: [
         {
           subtitle: t("ServiceAgreementDocument.section13_1"),
           content: t("ServiceAgreementDocument.section13_1Content")
-        },
-        {
-          subtitle: t("ServiceAgreementDocument.section13_2"),
-          content: t("ServiceAgreementDocument.section13_2Content")
         }
       ]
     }
@@ -164,6 +167,7 @@ const ServiceAgreementDocument: React.FC = () => {
   //   }
   // }
 
+  console.log("fullAgreementSections",fullAgreementSections, '\n additionalSections',additionalSections)
   return (
     <div className="mx-auto p-1 space-y-6">
       <h1 className="text-3xl font-bold text-center mb-6">
@@ -178,6 +182,15 @@ const ServiceAgreementDocument: React.FC = () => {
                 {section.title}
               </AccordionTrigger>
               <AccordionContent className="p-4 bg-gray-50 rounded-md">
+                {section.services && (
+                  <ul className="list-disc list-inside space-y-2">
+                  {section.services.map((service, index) => (
+                    <li key={index} className="text-sm text-gray-700">
+                      {service}
+                    </li>
+                  ))}
+                </ul>
+                )}
                 {section.content && (
                   <p className="text-gray-700 whitespace-pre-wrap">{section.content}</p>
                 )}
@@ -207,6 +220,19 @@ const ServiceAgreementDocument: React.FC = () => {
                 {section.content && (
                   <p className="text-gray-700 whitespace-pre-wrap">{section.content}</p>
                 )}
+                {section.subsections &&
+                  section.subsections.map((subsection, subIndex) => (
+                    <div key={subIndex} className="mt-4">
+                      {subsection.subtitle && (
+                        <h4 className="font-semibold text-gray-800 mb-2">
+                          {subsection.subtitle}
+                        </h4>
+                      )}
+                      <p className="text-gray-700 whitespace-pre-wrap">
+                        {subsection.content}
+                      </p>
+                    </div>
+                  ))}
               </AccordionContent>
             </AccordionItem>
           ))}

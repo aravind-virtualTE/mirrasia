@@ -516,6 +516,16 @@ const SAgrementPdf: React.FC = () => {
                     <div id="declarationOfInterest" className="mb-4">
                         <DeclarationOfInterest />
                     </div>
+                    {/* {significantController.map((controller, index) => (
+                        <div id={`significantController${index}`} className="mb-4">
+                            <SignificantControllersRegister
+                                key={index}
+                                index={index}
+                                controller={controller}
+                                onChange={handleControllerChange}
+                            />
+                        </div>
+                    ))} */}
                     <div id="significantControllersRegister" className="mb-4">
                         <SignificantControllersRegister />
                     </div>
