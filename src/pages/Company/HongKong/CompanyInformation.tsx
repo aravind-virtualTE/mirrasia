@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { companyBusinessInfoAtom } from "@/lib/atom";
 import { useAtom } from "jotai";
-// import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { businessNatureList, purposeOptions } from "./constants";
 import { Checkbox } from "@/components/ui/checkbox";
 import ShareholdersDirectorsDetails from "./ShareholdersDirectorsDetails";
@@ -15,7 +15,7 @@ import SearchSelect from "@/components/SearchSelect";
 
 
 const CompanyInformation: React.FC = () => {
-    // const { t } = useTranslation();
+    const { t } = useTranslation();
     const [businessInfo, setBusinessInfo] = useAtom(companyBusinessInfoAtom);
     const [selectedValue, setSelectedValue] = useState({code : "", label : ""});
 
@@ -65,14 +65,14 @@ const CompanyInformation: React.FC = () => {
                     ? 'bg-blue-50 text-gray-800'
                     : 'bg-gray-800 text-gray-200'
                     }`}>
-                    <h2 className="text-lg font-semibold mb-2">Business Information of the Hong Kong company</h2>
-                    <p className="text-sm text-gray-500">In this section please provide information of the Hong Kong Company and related business to be established</p>
+                    <h2 className="text-lg font-semibold mb-2">{t('CompanyInformation.businessInfoHead')}</h2>
+                    <p className="text-sm text-gray-500">{t('CompanyInformation.businessInfoSubHeading')}</p>
                 </aside>
                 <div className="w-3/4 ml-4">
                     <Card>
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
-                                <Label htmlFor="business-category">Select Business Industry</Label>
+                                <Label htmlFor="business-category">{t('CompanyInformation.selectBusinessIndustry')}</Label>
                                 <SearchSelect
                                     items={businessNatureList}
                                     placeholder="Select a business Industry"
@@ -83,7 +83,7 @@ const CompanyInformation: React.FC = () => {
 
                             <div className="space-y-2">
                                 <Label htmlFor="description" className="text-base font-semibold">
-                                    Description of the product name, product type, service content, service type, etc. to be transacted after incorporation <span className="text-red-500 font-bold ml-1">*</span>
+                                {t('CompanyInformation.descriptionOfProduct')} <span className="text-red-500 font-bold ml-1">*</span>
                                 </Label>
                                 <Textarea
                                     id="description"
@@ -100,17 +100,17 @@ const CompanyInformation: React.FC = () => {
                                 </Label>
 
                                 {purposeOptions.map((purpose) => (
-                                    <div key={purpose} className="flex items-start space-x-3">
+                                    <div key={t(purpose)} className="flex items-start space-x-3">
                                         <Checkbox
-                                            id={purpose}
-                                            checked={businessInfo.business_purpose.includes(purpose)}
-                                            onCheckedChange={(checked) => handlePurposeChange(checked as boolean, purpose)}
+                                            id={t(purpose)}
+                                            checked={businessInfo.business_purpose.includes(t(purpose))}
+                                            onCheckedChange={(checked) => handlePurposeChange(checked as boolean, t(purpose))}
                                         />
                                         <Label
-                                            htmlFor={purpose}
+                                            htmlFor={t(purpose)}
                                             className="font-normal text-sm leading-normal cursor-pointer"
                                         >
-                                            {purpose}
+                                            {t(purpose)}
                                         </Label>
                                     </div>
                                 ))}

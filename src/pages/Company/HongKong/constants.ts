@@ -1,3 +1,4 @@
+
 export const businessNatureList =[
     {
       "label": '',
@@ -363,15 +364,15 @@ export const typesOfShares = [
 ];
 
 export const purposeOptions = [
-  "Entering business in Hong Kong and Greater China",
-  "Asset management by investing in real estate or financial assets",
-  "Managing through investing in a subsidiary or affiliated company as a holding company",
-  "Investor or business counterparty proposed you to establish a Singapore company",
-  "Geographical benefits for international transactions",
-  "Pursuing diversification of business due to relaxed regulations",
-  "Pursuit of Competitive Advantage through relaxed financial regulations",
-  "Increase transactional volume due to low tax rate and non-transactional tax (Non-VAT)",
-  "Pursuit of investment profit due to No Capital Gain Tax",
+  "CompanyInformation.purposeOptions.enteringBusiness",
+  "CompanyInformation.purposeOptions.assetManagement",
+  "CompanyInformation.purposeOptions.managingThroughInvesting",
+  "CompanyInformation.purposeOptions.investorProposed",
+  "CompanyInformation.purposeOptions.geographicalBenefits",
+  "CompanyInformation.purposeOptions.diversificationDueToRegulations",
+  "CompanyInformation.purposeOptions.competitiveAdvantage",
+  "CompanyInformation.purposeOptions.increaseTransactionalVolume",
+  "CompanyInformation.purposeOptions.investmentProfit",
   // "기타"
 ];
 export const amountOptions = ["1", "100", "1,000", "10,000"]

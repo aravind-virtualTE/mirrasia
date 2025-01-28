@@ -37,6 +37,378 @@
     "snsPlatform": "SNS 플랫폼",
     "compNameInfo": "회사명은 반드시 영어로 작성해야 하며, 중국어도 가능합니다(번체자만 가능, 간체자 불가). 단, 영어와 중국어의 조합(HK 등 영문 약어 제외)은 허용되지 않으며, 반드시 영문명 끝에 Limited로 표기하고, 한문 끝에 有限公主로 표기해야 한다. 이름. 회사명은 대문자/소문자/숫자/마침표/쉼표/괄호를 조합하여 사용할 수 있으며, 기타 특수문자는 허용되지 않습니다. International은 Int'l로 약칭할 수 있습니다. 동일 또는 유사한 회사명으로 이미 등록된 회사가 있는 경우에는 회사명을 등록할 수 없습니다. 따라서 등록을 원하시는 회사명 3개를 1순위 / 2순위 / 3순위 순으로 입력해주시면 당사에서 이름을 확인하여 선호하는 순서대로 등록해 드립니다."
   },
+  "CompanyInformation": {
+    "businessNatureList": [
+      {
+        "name": "Crop and animal production, hunting and related service activities",
+        "val": "001"
+      },
+      {
+        "name": "Forestry activities",
+        "val": "002"
+      },
+      {
+        "name": "Fishing and aquaculture",
+        "val": "003"
+      },
+      {
+        "name": "Mining of coal and lignite",
+        "val": "005"
+      },
+      {
+        "name": "Extraction of crude petroleum and natural gas",
+        "val": "006"
+      },
+      {
+        "name": "Mining of metal ores",
+        "val": "007"
+      },
+      {
+        "name": "Quarrying and other mining of non-metal ores",
+        "val": "008"
+      },
+      {
+        "name": "Mining support service activities",
+        "val": "009"
+      },
+      {
+        "name": "Manufacture of food products",
+        "val": "010"
+      },
+      {
+        "name": "Manufacture of beverages",
+        "val": "011"
+      },
+      {
+        "name": "Manufacture of tobacco products",
+        "val": "012"
+      },
+      {
+        "name": "Manufacture of textiles",
+        "val": "013"
+      },
+      {
+        "name": "Manufacture of wearing apparel",
+        "val": "014"
+      },
+      {
+        "name": "Manufacture of leather and related products",
+        "val": "015"
+      },
+      {
+        "name": "Manufacture of wood and of products of wood and cork, articles of straw and plaiting materials (except furniture and toys)",
+        "val": "016"
+      },
+      {
+        "name": "Manufacture of paper and paper products",
+        "val": "017"
+      },
+      {
+        "name": "Printing and reproduction of recorded media",
+        "val": "018"
+      },
+      {
+        "name": "Manufacture of coke and refined petroleum products",
+        "val": "019"
+      },
+      {
+        "name": "Manufacture of chemicals and chemical products",
+        "val": "020"
+      },
+      {
+        "name": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
+        "val": "021"
+      },
+      {
+        "name": "Manufacture of rubber and plastics products (except furniture, toys, sports goods and stationery)",
+        "val": "022"
+      },
+      {
+        "name": "Manufacture of other non-metallic mineral products",
+        "val": "023"
+      },
+      {
+        "name": "Manufacture of basic metals",
+        "val": "024"
+      },
+      {
+        "name": "Manufacture of fabricated metal products (except machinery and equipment)",
+        "val": "025"
+      },
+      {
+        "name": "Manufacture of computer, electronic and optical products",
+        "val": "026"
+      },
+      {
+        "name": "Manufacture of electrical equipment",
+        "val": "027"
+      },
+      {
+        "name": "Manufacture of machinery and equipment n.e.c.",
+        "val": "028"
+      },
+      {
+        "name": "Body assembly of motor vehicles",
+        "val": "029"
+      },
+      {
+        "name": "Manufacture of other transport equipment",
+        "val": "030"
+      },
+      {
+        "name": "Manufacture of furniture",
+        "val": "031"
+      },
+      {
+        "name": "Other manufacturing",
+        "val": "032"
+      },
+      {
+        "name": "Repair and installation of machinery and equipment",
+        "val": "033"
+      },
+      {
+        "name": "Electricity and gas supply",
+        "val": "035"
+      },
+      {
+        "name": "Water collection, treatment and supply",
+        "val": "036"
+      },
+      {
+        "name": "Sewerage",
+        "val": "037"
+      },
+      {
+        "name": "Waste collection, treatment and disposal activities; materials recovery",
+        "val": "038"
+      },
+      {
+        "name": "Remediation activities and other waste management services",
+        "val": "039"
+      },
+      {
+        "name": "Construction of buildings",
+        "val": "041"
+      },
+      {
+        "name": "Civil engineering",
+        "val": "042"
+      },
+      {
+        "name": "Specialised construction activities",
+        "val": "043"
+      },
+      {
+        "name": "Import and export trade",
+        "val": "045"
+      },
+      {
+        "name": "Wholesale",
+        "val": "046"
+      },
+      {
+        "name": "Retail trade",
+        "val": "047"
+      },
+      {
+        "name": "Land transport",
+        "val": "049"
+      },
+      {
+        "name": "Water transport",
+        "val": "050"
+      },
+      {
+        "name": "Air transport",
+        "val": "051"
+      },
+      {
+        "name": "Warehousing and support activities for transportation",
+        "val": "052"
+      },
+      {
+        "name": "Postal and courier activities",
+        "val": "053"
+      },
+      {
+        "name": "Short term accommodation activities",
+        "val": "055"
+      },
+      {
+        "name": "Food and beverage service activities",
+        "val": "056"
+      },
+      {
+        "name": "Publishing activities",
+        "val": "058"
+      },
+      {
+        "name": "Motion picture, video and television programme production, sound recording and music publishing activities",
+        "val": "059"
+      },
+      {
+        "name": "Programming and broadcasting activities",
+        "val": "060"
+      },
+      {
+        "name": "Telecommunications",
+        "val": "061"
+      },
+      {
+        "name": "Information technology service activities",
+        "val": "062"
+      },
+      {
+        "name": "Information service activities",
+        "val": "063"
+      },
+      {
+        "name": "Financial service activities, including investment and holding companies, and the activities of trusts, funds and similar financial entities.",
+        "val": "064"
+      },
+      {
+        "name": "Insurance (including pension funding)",
+        "val": "065"
+      },
+      {
+        "name": "Activities auxiliary to financial service and insurance activities",
+        "val": "066"
+      },
+      {
+        "name": "Real estate activities",
+        "val": "068"
+      },
+      {
+        "name": "Legal and accounting activities",
+        "val": "069"
+      },
+      {
+        "name": "Activities of head offices; management and management consultancy activities",
+        "val": "070"
+      },
+      {
+        "name": "Architecture and engineering activities, technical testing and analysis",
+        "val": "071"
+      },
+      {
+        "name": "Scientific research and development",
+        "val": "072"
+      },
+      {
+        "name": "Veterinary activities",
+        "val": "073"
+      },
+      {
+        "name": "Advertising and market research",
+        "val": "074"
+      },
+      {
+        "name": "Other professional, scientific and technical activities",
+        "val": "075"
+      },
+      {
+        "name": "Rental and leasing activities",
+        "val": "077"
+      },
+      {
+        "name": "Employment activities",
+        "val": "078"
+      },
+      {
+        "name": "Travel agency, reservation service and related activities",
+        "val": "079"
+      },
+      {
+        "name": "Security and investigation activities",
+        "val": "080"
+      },
+      {
+        "name": "Services to buildings and landscape care activities",
+        "val": "081"
+      },
+      {
+        "name": "Office administrative, office support and other business support activities",
+        "val": "082"
+      },
+      {
+        "name": "Public administration",
+        "val": "084"
+      },
+      {
+        "name": "Education",
+        "val": "085"
+      },
+      {
+        "name": "Human health activities",
+        "val": "086"
+      },
+      {
+        "name": "Residential care activities",
+        "val": "087"
+      },
+      {
+        "name": "Social work activities without accommodation",
+        "val": "088"
+      },
+      {
+        "name": "Creative and performing arts activities",
+        "val": "090"
+      },
+      {
+        "name": "Libraries, archives, museums and other cultural activities",
+        "val": "091"
+      },
+      {
+        "name": "Activities of amusement parks and theme parks",
+        "val": "092"
+      },
+      {
+        "name": "Sports and other entertainment activities",
+        "val": "093"
+      },
+      {
+        "name": "Activities of membership organisations",
+        "val": "094"
+      },
+      {
+        "name": "Repair of motor vehicles, motorcycles, computers, personal and household goods",
+        "val": "095"
+      },
+      {
+        "name": "Other personal service activities",
+        "val": "096"
+      },
+      {
+        "name": "Activities of households as employers of domestic personnel",
+        "val": "097"
+      },
+      {
+        "name": "Goods- and services-producing activities of private households for own use",
+        "val": "098"
+      },
+      {
+        "name": "Activities of extraterritorial organisations and bodies",
+        "val": "099"
+      }
+    ],
+    "businessInfoHead":"홍콩 회사의 사업 정보",
+    "businessInfoSubHeading":"이 섹션에서는 설립될 홍콩 회사 및 관련 사업에 대한 정보를 제공하십시오.",
+    "selectBusinessIndustry": "업종 선택",
+    "descriptionOfProduct": "법인설립 후 거래되는 상품명, 상품종류, 서비스 내용, 서비스 종류 등에 대한 설명",
+    "purposeOfEstablishment": "홍콩법인 설립목적 및 기대효과",
+    "purposeOptions": {
+     "enteringBusiness": "홍콩 및 대중국 비즈니스 진출",
+    "assetManagement": "부동산 또는 금융 자산 투자를 통한 자산 관리",
+    "managingThroughInvesting": "지주회사로서 자회사 또는 계열사에 투자하여 관리",
+    "investorProposed": "투자자 또는 비즈니스 상대방이 싱가포르 회사 설립을 제안함",
+    "geographicalBenefits": "국제 거래를 위한 지리적 이점",
+    "diversificationDueToRegulations": "완화된 규제로 인한 비즈니스 다각화 추구",
+    "competitiveAdvantage": "완화된 금융 규제를 통한 경쟁 우위 추구",
+    "increaseTransactionalVolume": "낮은 세율 및 비거래세(Non-VAT)로 인한 거래량 증가",
+    "investmentProfit": "자본 이득세 없음으로 인한 투자 수익 추구"
+    }
+  },
   "AmlCdd": {
     "legal_assessment_title": "법적 및 윤리적 평가",
     "legal_assessment_description": "돈세탁, 도박, 세금 회피, 자산 은닉, 불법 비즈니스 회피, 사기 등과 같은 법적 또는 윤리적 문제가 홍콩 회사 또는 그와 관련된 다른 당사자에게 있는지 확인해주세요?",

@@ -391,7 +391,23 @@
         "name": "Activities of extraterritorial organisations and bodies",
         "val": "099"
       }
-    ]
+    ],
+    "businessInfoHead":"Business Information of the Hong Kong company",
+    "businessInfoSubHeading":"In this section please provide information of the Hong Kong Company and related business to be established",
+    "selectBusinessIndustry": "Select Business Industry",
+    "descriptionOfProduct": "Description of the product name, product type, service content, service type, etc. to be transacted after incorporation",
+    "purposeOfEstablishment": "Purpose of the establishment of the Hong Kong company and expected effects",
+    "purposeOptions": {
+      "enteringBusiness": "Entering business in Hong Kong and Greater China",
+      "assetManagement": "Asset management by investing in real estate or financial assets",
+      "managingThroughInvesting": "Managing through investing in a subsidiary or affiliated company as a holding company",
+      "investorProposed": "Investor or business counterparty proposed you to establish a Singapore company",
+      "geographicalBenefits": "Geographical benefits for international transactions",
+      "diversificationDueToRegulations": "Pursuing diversification of business due to relaxed regulations",
+      "competitiveAdvantage": "Pursuit of Competitive Advantage through relaxed financial regulations",
+      "increaseTransactionalVolume": "Increase transactional volume due to low tax rate and non-transactional tax (Non-VAT)",
+      "investmentProfit": "Pursuit of investment profit due to No Capital Gain Tax"
+    }
   },
   "AmlCdd": {
     "legal_assessment_title": "Legal and Ethical Assessment",
