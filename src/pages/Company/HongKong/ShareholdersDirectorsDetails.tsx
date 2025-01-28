@@ -20,10 +20,14 @@ import { typesOfShares } from "./constants";
 import { Checkbox } from "@/components/ui/checkbox";
 import DropdownSelect from "@/components/DropdownSelect";
 import MultiSelect, { Option } from "@/components/MultiSelectInput";
+import { useTranslation } from "react-i18next";
+
 const ShareholdersDirectorsDetails: React.FC = () => {
   const [sdcInfo, setShareDirControllerInfo] = useAtom(
     shareHolderDirectorControllerAtom
   );
+  const { t } = useTranslation();
+  
   const [shrDirList, setShrDirList] = useState(
     sdcInfo.shareHolders.map((item) => {
       if (item.name == "") return "Enter Value Above and Select Value";
@@ -88,13 +92,12 @@ const ShareholdersDirectorsDetails: React.FC = () => {
         }`}
       >
         <h2 className="text-lg font-semibold mb-2">
-          (Shareholders/
+          ({t('CompanyInformation.shareholders')}/
           <br />
-          directors) of the Hong Kong company
+          {t('CompanyInformation.directors')}) {t('CompanyInformation.ofHKCompany')}
         </h2>
         <p className="text-sm text-gray-500">
-          Please provide information on the shareholders, directors, significant
-          controllers, and designated contact persons of the Hong Kong company.
+          {t('CompanyInformation.shHlderSubHeading')}
         </p>
       </aside>
       <div className="w-3/4 ml-4">
@@ -104,7 +107,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
 
             <div>
               <Label className="text-base font-semibold flex items-center gap-2">
-                Type of share(s) to be issued{" "}
+                {t('CompanyInformation.typeOfShares')}{" "}
                 <span className="text-red-500 font-bold ml-1 flex">
                   *
                   <Tooltip>
@@ -112,30 +115,27 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                       <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-[500px] text-base">
-                      In the case of issuing preference shares or corporate
-                      bonds, pre-advice may be required before proceeding, such
-                      as reviewing articles of associations and legal
-                      regulations.
+                      {t('CompanyInformation.typeShareInfo')}
                     </TooltipContent>
                   </Tooltip>
                 </span>
               </Label>
               {typesOfShares.map((purpose) => (
-                <div key={purpose} className="flex items-start space-x-3">
+                <div key={t(purpose)} className="flex items-start space-x-3">
                   <Checkbox
-                    id={purpose}
+                    id={t(purpose)}
                     checked={comapnyInfo.registerShareTypeAtom.includes(
-                      purpose
+                      t(purpose)
                     )}
                     onCheckedChange={(checked) =>
-                      handleSharesChange(checked as boolean, purpose)
+                      handleSharesChange(checked as boolean, t(purpose))
                     }
                   />
                   <Label
-                    htmlFor={purpose}
+                    htmlFor={t(purpose)}
                     className="font-normal text-sm leading-normal cursor-pointer"
                   >
-                    {purpose}
+                    {t(purpose)}
                   </Label>
                 </div>
               ))}
@@ -146,7 +146,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                 htmlFor="description"
                 className="text-base flex items-center font-semibold gap-2"
               >
-                Significant Controller(s){" "}
+                {t('CompanyInformation.significantController')}{" "}
                 <span className="text-red-500 flex font-bold ml-1">
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -206,7 +206,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                 htmlFor="description"
                 className="text-base font-semibold flex items-center"
               >
-                Designated Contact Person{" "}
+                {t('CompanyInformation.designatedContactPerson')}{" "}
                 <span className="text-red-500 flex font-bold ml-1">
                   *
                   <Tooltip>
@@ -214,22 +214,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                       <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-[500px] text-base">
-                      You need to delegate a person("designated contact person")
-                      who will be in charge of contacting in relation to your
-                      company's business, incorporation and renewal of your
-                      company, registration of documents, confirmations of the
-                      required information, and communications for various
-                      matters in respect of our services. Appointment of the
-                      designated contact person is free for up to 1 person, and
-                      if you would like to delegate 2 or more designated contact
-                      persons, an annual fee of HKD2,000 per person will be
-                      charged. The designated contact person will be delegated
-                      by your company and should be registered separately with
-                      us to protect your company's information, reduce business
-                      confusion, and prevent identity fraud. (The designated
-                      contact person must go through the same procedures as the
-                      shareholders/directors by submitting the passport copy,
-                      address proof, and personal verification.)
+                    {t('CompanyInformation.designateToolTipInfo')}
                     </TooltipContent>
                   </Tooltip>
                 </span>

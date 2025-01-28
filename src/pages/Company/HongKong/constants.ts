@@ -359,8 +359,8 @@ export const businessNatureList =[
   ]
 
 export const typesOfShares = [
-  "Oridnary shares",
-  "Preference Share (pre-advice may be required)",
+  "CompanyInformation.typeOfShare.ordinaryShares",
+  "CompanyInformation.typeOfShare.preferenceShares",
 ];
 
 export const purposeOptions = [

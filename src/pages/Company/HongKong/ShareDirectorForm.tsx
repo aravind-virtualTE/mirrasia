@@ -11,6 +11,7 @@ import { isValidEmail } from '@/middleware';
 import { sendInviteToShDir } from '@/services/dataFetch';
 import CustomLoader from '@/components/ui/customLoader';
 import { useToast } from "@/hooks/use-toast"
+import { useTranslation  } from "react-i18next";
 
 interface ShareholderDirectorProps {
   name: string;
@@ -38,7 +39,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
   // Validation states
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
-
+  const { t } = useTranslation();
   // Email validation
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -73,7 +74,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
     <Card className="mb-4 pt-4">
       <CardContent className="grid grid-cols-3 gap-4">
         <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">Shareholder(s) / Director(s) Name:</Label>
+          <Label className="font-medium">{t('CompanyInformation.shareDirName')}:</Label>
           <Input
             type="text"
             className="input col-span-2"
@@ -81,7 +82,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             value={name}
             onChange={(e) => onUpdate({ name: e.target.value })}
           />
-          <Label className="font-medium">Ownership Rate</Label>
+          <Label className="font-medium">{t('CompanyInformation.ownerShpRte')}</Label>
           <Input
             type="number"
             className="input"
@@ -94,7 +95,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
         </div>
 
         <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">Email:</Label>
+          <Label className="font-medium">{t('ApplicantInfoForm.email')}:</Label>
           <div className="col-span-2">
             <Input
               type="email"
@@ -110,7 +111,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             {emailError && <span className="text-red-500 text-sm">{emailError}</span>}
           </div>
 
-          <Label className="font-medium">Phone:</Label>
+          <Label className="font-medium">{t('ApplicantInfoForm.phoneNum')}:</Label>
           <div>
             <Input
               type="tel"
@@ -128,7 +129,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
         </div>
 
         <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">Act as a director?</Label>
+          <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
           <Select
             value={isDirector.toString()}
             onValueChange={(value) => {
@@ -149,7 +150,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             </SelectContent>
           </Select>
 
-          <Label className="font-medium">Legal Person?</Label>
+          <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
           <Select
             value={isLegalPerson.toString()}
             onValueChange={(value) => onUpdate({ isLegalPerson: value === 'true' })}
@@ -196,6 +197,8 @@ const ShareholderDirectorForm: React.FC = () => {
   const [totalOwnership, setTotalOwnership] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast()
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (atomShareHolderState.shareHolders && atomShareHolderState.shareHolders.length > 0) {
       const hydratedShareholders = atomShareHolderState.shareHolders.map((shareholder, index) => ({
@@ -303,7 +306,7 @@ const ShareholderDirectorForm: React.FC = () => {
     <div className="flex flex-col">
       {totalOwnership > 100 && (
         <div className="text-red-500 mb-4 text-center">
-          Total ownership cannot exceed 100%. Current total: {totalOwnership.toFixed(2)}%
+          {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%
         </div>
       )}
       <div>
@@ -327,15 +330,13 @@ const ShareholderDirectorForm: React.FC = () => {
             <CustomLoader />
             <span className="ml-2">Processing...</span>
           </>
-        ) : (
-          "Send Invitation Mail to Shareholder/Director"
-        )}</Button>
+        ) : (<span>{t("CompanyInformation.sendInvitation")}</span>)}</Button>
         <Button
           className="btn btn-primary w-fit"
           onClick={addShareholder}
         // disabled={totalOwnership >= 100}
         >
-          Add Shareholder/director
+          {t('CompanyInformation.addShldrDir')}
         </Button>
       </div>
     </div>

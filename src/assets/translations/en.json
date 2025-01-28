@@ -407,7 +407,27 @@
       "competitiveAdvantage": "Pursuit of Competitive Advantage through relaxed financial regulations",
       "increaseTransactionalVolume": "Increase transactional volume due to low tax rate and non-transactional tax (Non-VAT)",
       "investmentProfit": "Pursuit of investment profit due to No Capital Gain Tax"
-    }
+    },
+    "shareholders" : "Shareholders",
+    "directors" : "directors",
+    "ofHKCompany" : "of the Hong Kong company",
+    "shHlderSubHeading" : "Please provide information on the shareholders, directors, significant controllers, and designated contact persons of the Hong Kong company.",
+    "typeOfShares" : " Type of share(s) to be issued",
+    "typeShareInfo" : "In the case of issuing preference shares or corporate bonds, pre-advice may be required before proceeding, such as reviewing articles of associations and legal regulations.",
+    "significantController" : "Significant Controller(s)",
+    "typeOfShare" : {
+      "ordinaryShares" : "Ordinary Shares",
+      "preferenceShares" : "Preference Shares"
+    },
+    "designatedContactPerson" : "Designated Contact Person",
+    "designateToolTipInfo": "You need to delegate a person('designated contact person')                      who will be incharge of contacting in relation to your company's business, incorporation and renewal of your company, registration of documents, confirmations of the required information, and communications for various matters in respect of our services. Appointment of the designated contact person is free for up to 1 person, and if you would like to delegate 2 or more designated contact persons, an annual fee of HKD2,000 per person will be charged. The designated contact person will be delegated by your company and should be registered separately with us to protect your company's information, reduce business confusion, and prevent identity fraud. (The designated contact person must go through the same procedures as the shareholders/directors by submitting the passport copy, address proof, and personal verification.",
+    "totalShrldrName" : "Total ownership cannot exceed 100%. Current total",
+    "addShldrDir" : "Add Shareholder/director",
+    "sendInvitation":"Send Invitation Mail to Shareholder/Director",
+    "shareDirName" : "Shareholder(s) / Director(s) Name",
+    "ownerShpRte" : "Ownership Rate",
+    "actDirector" : "Act as a director?",
+    "isLegal" : "Legal Person?"
   },
   "AmlCdd": {
     "legal_assessment_title": "Legal and Ethical Assessment",
