@@ -44,12 +44,8 @@ const SAgrementPdf: React.FC = () => {
     const [serviceId, setId] = useState("");
     const { toast } = useToast();
     const [significantController, setSignificantController] = useState(
-        companyData.shareHolderDirectorController.shareHolders
-            .filter(
-                (record) => record.isDirector === true || record.ownershipRate >= 25
-            )
-            .map((record) => ({
-                name: record.name,
+        companyData.shareHolderDirectorController.significantControllerAtom.map((record) => ({
+                name: record.value,
                 correspondenceAddress: "",
                 residentialAddress: "",
                 passportNo: "",
@@ -101,7 +97,7 @@ const SAgrementPdf: React.FC = () => {
             }))
     );
 
-    // console.log("companyData-->", companyData);
+    console.log("companyData-->", companyData);
     const currency = companyData.regCompanyInfo.registerCurrencyAtom;
     const registerAmount = companyData.regCompanyInfo.registerAmountAtom;
     const prepareCompanyData = () => {
