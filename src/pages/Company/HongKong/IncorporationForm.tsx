@@ -223,7 +223,7 @@ const IncorporationForm = () => {
         }
     };
 
-    console.log("currentSection--->", currentSection)
+    // console.log("currentSection--->", currentSection)
     return (
         <div className="flex flex-col md:flex-row h-screen">
             {/* Main Content */}

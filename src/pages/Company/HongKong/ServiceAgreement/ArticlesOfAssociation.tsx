@@ -6,10 +6,10 @@ import { useAtom } from "jotai"
 
 export default function ArticlesOfAssociation() {
   const [shareCapital, setShareCapital] = useState({
-    totalShares: "100",
-    totalAmount: "USD 100",
-    paidUp: "USD 100",
-    unpaid: "USD 0",
+    totalShares: "0",
+    totalAmount: "0",
+    paidUp: "0",
+    unpaid: "0",
   })
   const [serviceAgrementDetails] = useAtom(serviceAgreement)
 
