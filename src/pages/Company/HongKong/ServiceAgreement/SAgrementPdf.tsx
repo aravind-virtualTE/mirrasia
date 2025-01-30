@@ -389,7 +389,7 @@ const SAgrementPdf: React.FC = () => {
         }
     };
 
-    // console.log(registeredMembers,"significantCntrl", significantController)
+    // console.log("significantCntrl", significantController)
 
     const handleControllerChange = (
         index: number,
@@ -513,17 +513,16 @@ const SAgrementPdf: React.FC = () => {
                         <DeclarationOfInterest />
                     </div>
                     {/* {significantController.map((controller, index) => (
-                        <div id={`significantController${index}`} className="mb-4">
+                        <div id={`regControllerSigni${index}`} className="mb-4">
                             <SignificantControllersRegister
                                 key={index}
                                 index={index}
                                 controller={controller}
-                                onChange={handleControllerChange}
                             />
                         </div>
                     ))} */}
                     <div id="significantControllersRegister" className="mb-4">
-                        <SignificantControllersRegister />
+                        <SignificantControllersRegister controllerList={significantController} />
                     </div>
                     <div id="articlesOfAssociation" className="mb-4">
                         <ArticlesOfAssociation />

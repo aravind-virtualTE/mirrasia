@@ -118,6 +118,25 @@ export interface HkFormData {
     incorporationDate: string | null
 }
 
+export interface SigController {  
+  name: string;
+  correspondenceAddress: string;
+  residentialAddress: string;
+  passportNo: string;
+  dateOfRegistrablePerson: string;
+  dateOfCeasingRegistrablePerson: string;
+  natureOfControlOverCompany: string;
+  addressLine1: string;
+  addressLine2: string;
+  country : string
+  signature : string
+}
+
+export interface signiControlReg {
+  entryNo : number;
+  dateOfEntry : string
+  remarks : string
+}
 
 // director: { name: string; signature: string }[];
 export interface serviceAggrementTypes {
@@ -182,19 +201,12 @@ export interface serviceAggrementTypes {
   sharesDate: string;
   registeredMembers: RegisterMembers[];
   registeredMembersSignature: { name: string; signature: string }[];
-  significantController: {
-    name: string;
-    correspondenceAddress: string;
-    residentialAddress: string;
-    passportNo: string;
-    dateOfRegistrablePerson: string;
-    dateOfCeasingRegistrablePerson: string;
-    natureOfControlOverCompany: string;
-    addressLine1: string;
-    addressLine2: string;
-    country : string
-    signature : string
-  }[];
+  significantController: SigController[];
+  signiControDetail : {
+    entryNo : number;
+    dateOfEntry : string;
+    remarks : string;
+  }[]
   chairman: { name: string; signature: string }[];
   customerDueDiligence: {
     personalInformation: {

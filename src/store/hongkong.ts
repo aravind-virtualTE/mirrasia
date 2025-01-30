@@ -469,7 +469,12 @@ const initialPartialState: Partial<serviceAggrementTypes> = {
       country: "",
       signature: "",
     },
-  ],
+  ],signiControDetail :[{
+    entryNo : 0,
+    dateOfEntry : "",
+    remarks : ""
+  }],
+
   chairman: [{ name: "", signature: "" }],
   customerDueDiligence: {
     personalInformation: {
