@@ -311,6 +311,7 @@ import IncorporationForm from './HongKong/IncorporationForm';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 import { getIncorporationListByCompId, getIncorporationListByUserId } from '@/services/dataFetch';
+import IncorporateUSACompany from './USA/IncorporateCompany';
 
 const CompanyRegistration = () => {
     const [countryState, setCountryState] = useAtom(countryAtom);
@@ -370,6 +371,8 @@ const CompanyRegistration = () => {
         switch (countryState.code) {
             case 'HK':
                 return <IncorporationForm  />;
+            case 'US':
+            return <IncorporateUSACompany  />;
             case 'SG':
                 return <div>Registration form for {countryState.name} is not available yet.</div>;
             default:
