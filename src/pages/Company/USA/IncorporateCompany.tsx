@@ -1,20 +1,25 @@
-import  React from "react"
+import React from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import CompanyInfoForm from "./Components/CompanyInfoForm"
-import MemberRegistrationForm from "./Components/MemberRegistrationForm"
-import TaxResidencyForm from "./Components/TaxResidencyForm"
-import PoliticalFigureForm from "./Components/PoliticalFigureForm"
-import DeclarationForm from "./Components/DeclarationForm"
-import ConsentDeclaration from "./Components/ConsentDeclaration"
+import Section2 from "./Components/Section2"
+import Section3 from "./Components/Section3"
+import Section4 from "./Components/Section4"
+import Section5 from "./Components/Section5"
+import Section6 from "./Components/Section6"
+import Section7 from "./Components/Section7"
+import Section8 from "./Components/Section8"
+import Section9 from "./Components/Section9"
+import Section10 from "./Components/Section10"
+import Section11 from "./Components/Section11"
+import Section12 from "./Components/Section12"
 
 const IncorporateUSACompany = () => {
     return (
         <React.Fragment>
             <Card className="max-w-5xl mx-auto">
-                <CardHeader>
+                <CardHeader className="bg-sky-100 dark:bg-sky-900">
                     <CardTitle>
                         Application for incorporation of a US company (LLC-Limited Liability Company/Corp-Corporation)
                     </CardTitle>
@@ -34,7 +39,7 @@ const IncorporateUSACompany = () => {
                             </p>
 
                             <p>
-                                This application form and the application form documents to be signed later will be kept by our company as legal procedures for performing KYC (Know Your Customer) and Client's Due Diligence (due diligence and verification of customers) in accordance with the TCSP license and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act) and as future legal records (Statutory Documents). Therefore, please be careful to avoid any distortion or errors in the content you write.
+                                This application form is written in the form of a questionnaire about the information necessary to proceed with the establishment of a U.S. company (LLC-Limited Liability Company/Corp-Corporation), and the questions may be difficult for some customers or it may take some time to answer. Therefore, we ask that you respond step by step while you have the time to do so, and that you also prepare and submit the relevant documents.If you have any difficulties or do not understand any part of the form, please contact us using the contact information below.
                             </p>
 
                             <p>Thank you.</p>
@@ -68,22 +73,20 @@ const IncorporateUSACompany = () => {
                             </Label>
                             <Input id="email" type="email" placeholder="Valid email" className="w-full" required />
                         </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="name" className="text-base">
-                                Full Name <span className="text-destructive">*</span>
-                            </Label>
-                            <Input id="name" placeholder="Please provide your full official name" className="w-full" required />
-                        </div>
                     </div>
                 </CardContent>
             </Card>
-            <MemberRegistrationForm />
-            <CompanyInfoForm />
-            <TaxResidencyForm />
-            <PoliticalFigureForm />
-            <DeclarationForm />
-            <ConsentDeclaration />
+            <Section2 />
+            <Section3 />
+            <Section4 />
+            <Section5 />
+            <Section6 />
+            <Section7 />
+            <Section8 />
+            <Section9 />
+            <Section10 />
+            <Section11 />
+            <Section12 />
         </React.Fragment>
     )
 }
