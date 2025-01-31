@@ -7,9 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 const list = [
-    '미국 회사 설립 + 갱신일까지 회사유지 관리 (표준 서비스)', 'EMI(Electronic Money Institution) 리스트 제공 (당사 서비스 이용 고객분께 무료 제공)', 'EMI(Electronic Money Institution) 계좌개설 신청대행 및 자문 (업무확인 후 별도견적)', '은행계좌 개설 신청대행 및 자문 (업무확인 후 별도견적)', '미국 현지의 Legal Opinion (백서 확인 후 견적)','국내 거래소 상장을 위한 Legal Opinion (백서 확인 후 견적)','기타 국가의 Legal Opinion (백서 확인 후 견적)','사업에 대한 규제확인, 타당성 검토, 서류준비, 운영자문등 컨설팅 서비스 (별도견적)', 'Other'
+    'US company establishment + company maintenance until renewal date (standard service)', 'EMI (Electronic Money Institution) list provided (free to customers who use our service)', 'EMI (Electronic Money Institution) account opening application agency and advice (separate quote after business confirmation)', 'Bank account opening application agency and advice (separate quote after business confirmation)', 'Legal Opinion in the US (estimate after checking white paper)','Legal Opinion for listing on domestic exchanges (quotation after checking white paper)','Legal Opinion in other countries (estimate after checking white paper)','Consulting services such as business regulatory confirmation, feasibility review, document preparation, and operation advisory (separate quote)', 'Other'
 ]
-
 
 const Section6 = () => {
 

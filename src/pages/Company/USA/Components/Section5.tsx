@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { HelpCircle } from "lucide-react"
 
 const list = [
-    '(설립하실) 미국 회사의 임원', '(설립하실) 미국 회사의 임원으로부터 위임된 분', '(설립하실) 미국 회사의 대주주', '(설립하실) 미국 회사의 임원을 대리하여 설립자문을 제공하는 전문가 (변호사, 회계사, 행정사, 세무사 등)', 'Other'
+    'Executives of the U.S. company (to be established)', 'A person delegated by an executive of the U.S. company (to be established)', 'Major shareholder of the U.S. company (to be established)', 'Experts (lawyers, accountants) who provide establishment advice on behalf of executives of U.S. companies (to be established), Administrator, tax accountant, etc.)', 'Other'
 ]
 
 const Section5 = () => {

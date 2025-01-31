@@ -8,11 +8,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { HelpCircle } from "lucide-react"
 
 const list = [
-   '예','아니오','모름','법률자문 고려', 'Other'
+   'yes','no',"Don't know",'Consideration of legal advice', 'Other'
 ]
 
 const list2 = [
-    '예','아니오','설립 후 사내에서 자체적으로 해결 가능','설립 후 매년 고정비용이 발생한다면 설립할 의향이 없음','진행 전 자문필요', 'Other'
+    'yes','no','After establishment, it can be resolved internally within the company.','If fixed costs are incurred every year after establishment, there is no intention to establish the establishment.','Consultation required before proceeding', 'Other'
  ]
 const Section7 = () => {
 

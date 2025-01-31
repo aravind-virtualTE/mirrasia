@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { HelpCircle } from 'lucide-react'
 
 const list = [
-    '총자본금을 $1로 나눈 숫자 (1주 가격 = $1 ; 보편적 방법)', '1주(최소)  (1주가격 = 총자본금)', '100주', '1,000주', '10,000주', 'Other'
+    'Total capital divided by $1 (1 share price = $1; universal method)', '1 share (minimum) (1 share price = total capital)', '100주', '1,000주', '10,000주', 'Other'
 ]
 
 
