@@ -14,6 +14,10 @@ import Section9 from "./Components/Section9"
 import Section10 from "./Components/Section10"
 import Section11 from "./Components/Section11"
 import Section12 from "./Components/Section12"
+import Section13 from "./Components/Section13"
+import Section14 from "./Components/Section14"
+import Section15 from "./Components/Section15"
+import FormSections from "./Components/Section16"
 
 const IncorporateUSACompany = () => {
     return (
@@ -87,6 +91,10 @@ const IncorporateUSACompany = () => {
             <Section10 />
             <Section11 />
             <Section12 />
+            <Section13 />
+            <Section14 />
+            <Section15 />
+            <FormSections />
         </React.Fragment>
     )
 }

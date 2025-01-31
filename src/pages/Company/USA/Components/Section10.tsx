@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
 
-const list = ['1', '100', '1000', '10000', 'Other']
+const list = ['1', '100', '1000', '10000', 'other']
 
 const list2 = [
     '1 person','2 or more individuals','Corporation (agent participates in the decision-making of the U.S. company) + individual','other'
