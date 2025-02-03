@@ -28,7 +28,7 @@ const LoginComponent: React.FC = () => {
     try {
       // localStorage.setItem('isAuthenticated', 'true');
       const response = await loginWithEmail(email, password);    
-      console.log("response", response)
+      // console.log("response", response)
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem("token", response.token);
       setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 
 
 const list = [
-    '델라웨어 (Delaware)','와이오밍 (Wyoming)','캘리포니아 (California)','뉴욕 (New York)','워싱턴 (Washington)','워싱턴 D.C. (Washington D.C.)','텍사스(State of Texas)','네바다 (Nevada)','플로리다 (Florida)','조지아 (Georgia)' ,'Other'
+    'Delaware','Wyoming','California','New York','Washington','Washington D.C.','State of Texas','Nevada','Florida','Georgia' ,'Other'
 ]
 export default function Section2() {
 

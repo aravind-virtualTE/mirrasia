@@ -12,7 +12,6 @@ import { HelpCircle } from "lucide-react";
 
 const RegistrationFormIntro = () => {
   const { t } = useTranslation();
-
   // State Management
   const [formState, setFormState] = useState({
     email: "",
@@ -81,8 +80,6 @@ const RegistrationFormIntro = () => {
 
   });
 
-
-
   const roleOptions = [
     "Major shareholder (holding the largest stake)",
     "General shareholder",
@@ -145,9 +142,6 @@ const RegistrationFormIntro = () => {
       pastParticipation: "",
       additionalInfo: "",
       agreementDeclaration: "",
-
-
-
     };
 
     // Validation for new fields
@@ -213,21 +207,11 @@ const RegistrationFormIntro = () => {
     if (!formState.agreementDeclaration.trim()) {
       newErrors.agreementDeclaration = "You must agree or disagree with the declaration.";
     }
-
-
-
-
-
-
     setErrors(newErrors);
-
     if (Object.values(newErrors).every((error) => error === "")) {
       console.log("Form submitted successfully:", formState);
     }
   };
-
-
-
 
   return (
     <Card>
@@ -238,8 +222,8 @@ const RegistrationFormIntro = () => {
       </CardHeader>
       <CardContent>
         <p className="text-sm text-gray-500">
-          [If an individual is registered as a shareholder/director of a Hong
-          Kong company, please fill out this application form.]
+          If an individual is registered as a shareholder/director of a Hong
+          Kong company, please fill out this application form.
         </p>
         <p className="text-sm text-gray-500 mt-2">
           This application was written in the form of a questionnaire about the
@@ -283,45 +267,46 @@ const RegistrationFormIntro = () => {
             </a>
           </p>
         </div>
-
         {/* Email Section */}
         <div className="mt-6">
-          <Label htmlFor="email" className="text-sm font-bold">
-            Email <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="email"
-            placeholder="Your email"
-            value={formState.email}
-            onChange={(e) => handleChange("email", e.target.value)}
-            className={`w-full ${errors.email ? "border-red-500" : ""}`}
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="email" className="text-sm font-bold flex-shrink-0">
+              Email <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="email"
+              placeholder="Your email"
+              value={formState.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              className={`flex-grow ${errors.email ? "border-red-500" : ""}`}
+            />
+          </div>
           {errors.email && (
             <Alert variant="destructive" className="mt-2">
               <AlertDescription>{errors.email}</AlertDescription>
             </Alert>
           )}
         </div>
-
         {/* Company Name Section */}
         <div className="mt-6">
-          <Label htmlFor="companyName" className="text-sm font-bold">
-            Company Name to be registered/appointed <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="companyName"
-            placeholder="Enter company name"
-            value={formState.companyName}
-            onChange={(e) => handleChange("companyName", e.target.value)}
-            className={`w-full ${errors.companyName ? "border-red-500" : ""}`}
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="companyName" className="text-sm font-bold whitespace-nowrap">
+              Company Name to be registered/appointed <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="companyName"
+              placeholder="Enter company name"
+              value={formState.companyName}
+              onChange={(e) => handleChange("companyName", e.target.value)}
+              className={`flex-1 ${errors.companyName ? "border-red-500" : ""}`}
+            />
+          </div>
           {errors.companyName && (
             <Alert variant="destructive" className="mt-2">
               <AlertDescription>{errors.companyName}</AlertDescription>
             </Alert>
           )}
         </div>
-
         {/* Roles Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold flex items-center gap-2">
@@ -360,7 +345,6 @@ const RegistrationFormIntro = () => {
             </Alert>
           )}
         </div>
-
         {/* Significant Controller Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold flex items-center gap-2">
@@ -395,189 +379,189 @@ const RegistrationFormIntro = () => {
             </Alert>
           )}
         </div>
-
-
         {/* Full Name */}
         <div className="mt-6">
-          <Label htmlFor="fullName" className="text-sm font-bold">
-            Full Name <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="fullName"
-            placeholder="Your full name"
-            value={formState.fullName}
-            onChange={(e) => handleChange("fullName", e.target.value)}
-            className={`w-full ${errors.fullName ? "border-red-500" : ""}`}
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="fullName" className="text-sm font-bold whitespace-nowrap">
+              Full Name <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="fullName"
+              placeholder="Your full name"
+              value={formState.fullName}
+              onChange={(e) => handleChange("fullName", e.target.value)}
+              className={`w-full ${errors.fullName ? "border-red-500" : ""}`}
+            />
+          </div>
           {errors.fullName && (
             <Alert variant="destructive" className="mt-2">
               <AlertDescription>{errors.fullName}</AlertDescription>
             </Alert>
           )}
         </div>
-
         {/* Mobile Number */}
         <div className="mt-6">
-          <Label htmlFor="mobileNumber" className="text-sm font-bold">
-            Mobile Phone Number <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="mobileNumber"
-            placeholder="Your mobile phone number"
-            value={formState.mobileNumber}
-            onChange={(e) => handleChange("mobileNumber", e.target.value)}
-            className={`w-full ${errors.mobileNumber ? "border-red-500" : ""}`}
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="mobileNumber" className="text-sm font-bold whitespace-nowrap">
+              Mobile Phone Number <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="mobileNumber"
+              placeholder="Your mobile phone number"
+              value={formState.mobileNumber}
+              onChange={(e) => handleChange("mobileNumber", e.target.value)}
+              className={`w-full ${errors.mobileNumber ? "border-red-500" : ""}`}
+            />
+          </div>
           {errors.mobileNumber && (
             <Alert variant="destructive" className="mt-2">
               <AlertDescription>{errors.mobileNumber}</AlertDescription>
             </Alert>
           )}
         </div>
-
         {/* KakaoTalk ID */}
         <div className="mt-6">
-          <Label htmlFor="kakaoTalkId" className="text-sm font-bold">
-            KakaoTalk ID
-          </Label>
-          <Input
-            id="kakaoTalkId"
-            placeholder="Your KakaoTalk ID"
-            value={formState.kakaoTalkId}
-            onChange={(e) => handleChange("kakaoTalkId", e.target.value)}
-            className="w-full"
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="kakaoTalkId" className="text-sm font-bold whitespace-nowrap">
+              KakaoTalk ID
+            </Label>
+            <Input
+              id="kakaoTalkId"
+              placeholder="Your KakaoTalk ID"
+              value={formState.kakaoTalkId}
+              onChange={(e) => handleChange("kakaoTalkId", e.target.value)}
+              className="w-full"
+            />
+          </div>
         </div>
-
         {/* WeChat ID */}
         <div className="mt-6">
-          <Label htmlFor="weChatId" className="text-sm font-bold">
-            WeChat ID
-          </Label>
-          <Input
-            id="weChatId"
-            placeholder="Your WeChat ID"
-            value={formState.weChatId}
-            onChange={(e) => handleChange("weChatId", e.target.value)}
-            className="w-full"
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="weChatId" className="text-sm font-bold whitespace-nowrap">
+              WeChat ID
+            </Label>
+            <Input
+              id="weChatId"
+              placeholder="Your WeChat ID"
+              value={formState.weChatId}
+              onChange={(e) => handleChange("weChatId", e.target.value)}
+              className="w-full"
+            />
+          </div>
         </div>
         {/* Upload Passport Copy Section */}
         <div className="mt-6">
-          <Label htmlFor="passportCopy" className="text-sm font-bold">
-            Upload passport copy <span className="text-red-500">*</span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md text-sm">
-                Upload 1 supported file: PDF, drawing, or image. Max 10 MB.
-              </TooltipContent>
-            </Tooltip>
-          </Label>
-
-          <Input
-            id="passportCopy"
-            type="file"
-            accept=".pdf,.jpg,.png,.jpeg"
-            onChange={(e) => handleChange("passportCopy", e.target.files?.[0] || null)}
-            className="w-full"
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="passportCopy" className="text-sm font-bold whitespace-nowrap">
+              Upload passport copy <span className="text-red-500">*</span>
+              <Tooltip>
+                <TooltipContent className="max-w-md text-sm">
+                  Upload 1 supported file: PDF, drawing, or image. Max 10 MB.
+                </TooltipContent>
+              </Tooltip>
+            </Label>
+            <Input
+              id="passportCopy"
+              type="file"
+              accept=".pdf,.jpg,.png,.jpeg"
+              onChange={(e) => handleChange("passportCopy", e.target.files?.[0] || null)}
+              className="w-full"
+            />
+          </div>
           {errors.passportCopy && (
             <Alert variant="destructive" className="mt-2">
               <AlertDescription>{errors.passportCopy}</AlertDescription>
             </Alert>
           )}
         </div>
-
         {/* Upload Personal Certificate Section */}
         <div className="mt-6">
-          <Label htmlFor="personalCertificate" className="text-sm font-bold flex items-center gap-2">
-            Upload personal certificate (within 3 months from issuance date){" "}
-            <span className="text-red-500">*</span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md text-sm">
-                Choose one of the following documents:
-                <ol className="list-decimal list-inside">
-                  <li>Take a photo with your passport and upload it.</li>
-                  <li>Get a Certificate of Passport Copy from the ward office and upload it.</li>
-                  <li>Go to the notary office and notarize your passport and upload it.</li>
-                  <li>Visit Mirr Asia Seoul office (near Nonhyeon Station) and authenticate a copy of your passport.</li>
-                </ol>
-                <p>Upload up to 5 supported files: PDF, drawing, or image. Max 10 MB per file.</p>
-              </TooltipContent>
-            </Tooltip>
-          </Label>
-
-          <Input
-            id="personalCertificate"
-            type="file"
-            accept=".pdf,.jpg,.png,.jpeg"
-            multiple
-            onChange={(e) => handleChange("personalCertificate", e.target.files?.[0] || null)}
-            className="w-full"
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="personalCertificate" className="text-sm font-bold flex items-center whitespace-nowrap gap-2">
+              Upload personal certificate (within 3 months from issuance date){" "}
+              <span className="text-red-500">*</span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-md text-sm">
+                  Choose one of the following documents:
+                  <ol className="list-decimal list-inside">
+                    <li>Take a photo with your passport and upload it.</li>
+                    <li>Get a Certificate of Passport Copy from the ward office and upload it.</li>
+                    <li>Go to the notary office and notarize your passport and upload it.</li>
+                    <li>Visit Mirr Asia Seoul office (near Nonhyeon Station) and authenticate a copy of your passport.</li>
+                  </ol>
+                  <p>Upload up to 5 supported files: PDF, drawing, or image. Max 10 MB per file.</p>
+                </TooltipContent>
+              </Tooltip>
+            </Label>
+            <Input
+              id="personalCertificate"
+              type="file"
+              accept=".pdf,.jpg,.png,.jpeg"
+              multiple
+              onChange={(e) => handleChange("personalCertificate", e.target.files?.[0] || null)}
+              className="w-full"
+            />
+          </div>
           {errors.personalCertificate && (
             <Alert variant="destructive" className="mt-2">
               <AlertDescription>{errors.personalCertificate}</AlertDescription>
             </Alert>
           )}
         </div>
-
-
-
         {/* Upload Proof of Address Section */}
         <div className="mt-6">
-          <Label htmlFor="proofOfAddress" className="text-sm font-bold flex items-center gap-2">
-            Upload proof of address (within 3 months from issuance date){" "}
-            <span className="text-red-500">*</span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md text-sm">
-                Choose one of the following documents:
-                <ol className="list-decimal list-inside">
-                  <li>English translation for overseas residents</li>
-                  <li>Driver's license translated into English and notarized</li>
-                  <li>Utility Bill or Bank Statement for overseas residents</li>
-                  <li>Other officially certifying address English documents or English translation notarized</li>
-                </ol>
-                <p>Upload up to 5 supported files: PDF, drawing, or image. Max 10 MB per file.</p>
-              </TooltipContent>
-            </Tooltip>
-          </Label>
-          <Input
-            id="proofOfAddress"
-            type="file"
-            accept=".pdf,.jpg,.png,.jpeg"
-            multiple
-            onChange={(e) => handleChange("proofOfAddress", e.target.files?.[0] || null)}
-            className="w-full"
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="proofOfAddress" className="text-sm font-bold flex items-center whitespace-nowrap gap-2">
+              Upload proof of address (within 3 months from issuance date){" "}
+              <span className="text-red-500">*</span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-md text-sm">
+                  Choose one of the following documents:
+                  <ol className="list-decimal list-inside">
+                    <li>English translation for overseas residents</li>
+                    <li>Driver's license translated into English and notarized</li>
+                    <li>Utility Bill or Bank Statement for overseas residents</li>
+                    <li>Other officially certifying address English documents or English translation notarized</li>
+                  </ol>
+                  <p>Upload up to 5 supported files: PDF, drawing, or image. Max 10 MB per file.</p>
+                </TooltipContent>
+              </Tooltip>
+            </Label>
+            <Input
+              id="proofOfAddress"
+              type="file"
+              accept=".pdf,.jpg,.png,.jpeg"
+              multiple
+              onChange={(e) => handleChange("proofOfAddress", e.target.files?.[0] || null)}
+              className="w-full"
+            />
+          </div>
           {errors.proofOfAddress && (
             <Alert variant="destructive" className="mt-2">
               <AlertDescription>{errors.proofOfAddress}</AlertDescription>
             </Alert>
           )}
         </div>
-
-
         {/* Additional Fields After Upload Proof Section */}
         <div className="mt-6">
-          <Label htmlFor="passportDigits" className="text-sm font-bold">
-            First 4 digits of passport number <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="passportDigits"
-            placeholder="Enter the first 4 digits"
-            value={formState.passportDigits || ""}
-            onChange={(e) => handleChange("passportDigits", e.target.value)}
-            className={`w-full ${errors.passportDigits ? "border-red-500" : ""}`}
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="passportDigits" className="text-sm font-bold whitespace-nowrap">
+              First 4 digits of passport number <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="passportDigits"
+              placeholder="Enter the first 4 digits"
+              value={formState.passportDigits || ""}
+              onChange={(e) => handleChange("passportDigits", e.target.value)}
+              className={`w-full ${errors.passportDigits ? "border-red-500" : ""}`}
+            />
+          </div>
           {errors.passportDigits && (
             <Alert variant="destructive" className="mt-2">
               <AlertDescription>{errors.passportDigits}</AlertDescription>
@@ -586,16 +570,18 @@ const RegistrationFormIntro = () => {
         </div>
         {/* country to birth field */}
         <div className="mt-6">
-          <Label htmlFor="birthCountry" className="text-sm font-bold">
-            Country of birth <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="birthCountry"
-            placeholder="Enter your country of birth"
-            value={formState.birthCountry || ""}
-            onChange={(e) => handleChange("birthCountry", e.target.value)}
-            className={`w-full ${errors.birthCountry ? "border-red-500" : ""}`}
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="birthCountry" className="text-sm font-bold whitespace-nowrap">
+              Country of birth <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="birthCountry"
+              placeholder="Enter your country of birth"
+              value={formState.birthCountry || ""}
+              onChange={(e) => handleChange("birthCountry", e.target.value)}
+              className={`w-full ${errors.birthCountry ? "border-red-500" : ""}`}
+            />
+          </div>
           {errors.birthCountry && (
             <Alert variant="destructive" className="mt-2">
               <AlertDescription>{errors.birthCountry}</AlertDescription>
@@ -604,23 +590,24 @@ const RegistrationFormIntro = () => {
         </div>
         {/* country residence field */}
         <div className="mt-6">
-          <Label htmlFor="currentResidence" className="text-sm font-bold">
-            Current country of residence <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="currentResidence"
-            placeholder="Enter your current country of residence"
-            value={formState.currentResidence || ""}
-            onChange={(e) => handleChange("currentResidence", e.target.value)}
-            className={`w-full ${errors.currentResidence ? "border-red-500" : ""}`}
-          />
+          <div className="flex items-center gap-4">
+            <Label htmlFor="currentResidence" className="text-sm font-bold whitespace-nowrap">
+              Current country of residence <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="currentResidence"
+              placeholder="Enter your current country of residence"
+              value={formState.currentResidence || ""}
+              onChange={(e) => handleChange("currentResidence", e.target.value)}
+              className={`w-full ${errors.currentResidence ? "border-red-500" : ""}`}
+            />
+          </div>
           {errors.currentResidence && (
             <Alert variant="destructive" className="mt-2">
               <AlertDescription>{errors.currentResidence}</AlertDescription>
             </Alert>
           )}
         </div>
-
         <div className="mt-6">
           <Label className="text-sm font-bold">
             Are you planning to participate as the nominee or trustee on behalf of or on behalf of the actual owner or representative of the Hong Kong company you wish to establish? <span className="text-red-500">*</span>
@@ -666,7 +653,6 @@ const RegistrationFormIntro = () => {
           <Label className="text-sm font-bold flex items-center gap-2">
             What address do you want to register as a Correspondence Address that is open to the public?{" "}
             <span className="text-red-500">*</span>
-
             <Tooltip>
               <TooltipTrigger asChild>
                 <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
@@ -676,7 +662,6 @@ const RegistrationFormIntro = () => {
               </TooltipContent>
             </Tooltip>
           </Label>
-
           <RadioGroup
             className="mt-4 space-y-2"
             value={formState.correspondenceAddress}
@@ -711,17 +696,12 @@ const RegistrationFormIntro = () => {
             </Alert>
           )}
         </div>
-
-
         {/* Overseas Resident Status Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
             Are you an overseas resident other than Hong Kong and are you subject to reporting of
             overseas corporation establishment or foreign direct investment?{" "}
             <span className="text-red-500">*</span>
-            {/* </Label> */}
-            {/* <p className="text-sm text-gray-500">*See the guide slide below</p> */}
-
             <Tooltip>
               <TooltipTrigger asChild>
                 <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
@@ -807,7 +787,6 @@ const RegistrationFormIntro = () => {
             </Alert>
           )}
         </div>
-
         {/* In accordance with the laws section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
@@ -915,7 +894,6 @@ const RegistrationFormIntro = () => {
             </Alert>
           )}
         </div>
-
         {/* Political Details Section */}
         <div className="mt-6">
           <Label htmlFor="politicalDetails" className="text-sm font-bold">
@@ -968,7 +946,6 @@ const RegistrationFormIntro = () => {
             </Alert>
           )}
         </div>
-
         {/* U.S. Citizenship or Residency Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
@@ -999,7 +976,6 @@ const RegistrationFormIntro = () => {
             </Alert>
           )}
         </div>
-
         {/* U.S. Residency Details Section */}
         <div className="mt-6">
           <Label htmlFor="usResidencyDetails" className="text-sm font-bold">
@@ -1094,7 +1070,6 @@ const RegistrationFormIntro = () => {
             </Alert>
           )}
         </div>
-
         {/* Country of Fund Origin Section */}
         <div className="mt-6">
           <Label htmlFor="countryOfFundOrigin" className="text-sm font-bold">
@@ -1116,7 +1091,7 @@ const RegistrationFormIntro = () => {
         </div>
         {/* Uncharged Bankruptcy Section */}
         <div className="mt-6">
-          <Label className="text-sm font-bold">
+          <Label className="text-sm font-bold flex">
             Are you currently undischarged bankrupt?{" "}
             <span className="text-red-500">*</span>
             <Tooltip>
@@ -1135,9 +1110,8 @@ const RegistrationFormIntro = () => {
               </TooltipContent>
             </Tooltip>
           </Label>
-
           <RadioGroup
-            className="mt-4 space-y-2"
+            className="mt-4 space-y-2 "
             value={formState.undischargedBankruptcy}
             onValueChange={(value) => handleChange("undischargedBankruptcy", value)}
           >
@@ -1160,7 +1134,6 @@ const RegistrationFormIntro = () => {
             </Alert>
           )}
         </div>
-
         {/* Past Participation or Violations Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">

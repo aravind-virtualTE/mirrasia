@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 
 
 const list = [
-    'LLC 유한책임회사','Corporation 법인','자문필요'
+    'LLC (limited liability company)','Corporation','Need advice'
 ]
 export default function Section2() {
 

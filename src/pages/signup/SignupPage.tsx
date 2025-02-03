@@ -80,7 +80,7 @@ const SignupPage = () => {
         formData.password
       );
       const { token, user } = response;
-      console.log("response==>", token, user);
+      // console.log("response==>", token, user);
       // Save the token to localStorage
       localStorage.setItem("token", token);
 
