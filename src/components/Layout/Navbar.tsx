@@ -23,10 +23,10 @@ export default function Navbar() {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const navigate = useNavigate();
     const { theme } = useTheme();
+    const resetAllForms = useResetAllForms();
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
     const decodedToken = jwtDecode<TokenData>(token);
-    const resetAllForms = useResetAllForms();
 
     const navigateRoute = () => {
         if (decodedToken.role === 'admin') {
