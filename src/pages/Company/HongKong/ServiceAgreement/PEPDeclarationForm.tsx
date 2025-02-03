@@ -7,7 +7,7 @@ import { useAtom } from "jotai";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-function PEPDeclarationForm() {
+function PEPDeclarationForm({editable}: {editable: boolean}) {
   const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
 
   const [signature, setSignature] = useState<string | "">("");
@@ -152,6 +152,7 @@ function PEPDeclarationForm() {
               value={serviceAgrementDetails.pedDate}
               onChange={handleChange}
               className="w-40"
+              disabled={editable}
             />
           </div>
         </div>

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { serviceAgreement } from "@/store/hongkong"
 import { useAtom } from "jotai"
 
-export default function ArticlesOfAssociation() {
+export default function ArticlesOfAssociation({editable}: {editable: boolean}) {
   const [shareCapital, setShareCapital] = useState({
     totalShares: "0",
     totalAmount: "0",
@@ -73,6 +73,7 @@ export default function ArticlesOfAssociation() {
                 value={shareCapital.totalShares}
                 onChange={(e) => handleShareCapitalChange("totalShares", e.target.value)}
                 className="border-none text-center h-auto py-2"
+                disabled={editable}
               />
             </div>
 

@@ -24,7 +24,7 @@ interface Shareholder {
   signature?: string | null
 }
 
-export default function ShareholdersList() {
+export default function ShareholdersList({editable}: {editable: boolean}) {
   const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgreement)
 
   const [signature, setSignature] = useState<string | null>(null)
@@ -146,6 +146,7 @@ export default function ShareholdersList() {
                     value={shareholder.name}
                     onChange={(e) => handleInputChange(index, 'name', e.target.value)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
                 <TableCell className="border border-black text-center p-0">
@@ -153,6 +154,7 @@ export default function ShareholdersList() {
                     value={shareholder.correspondenceAddress}
                     onChange={(e) => handleInputChange(index, 'correspondenceAddress', e.target.value)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
                 <TableCell className="border border-black text-center p-0">
@@ -160,6 +162,7 @@ export default function ShareholdersList() {
                     value={shareholder.residentialAddress}
                     onChange={(e) => handleInputChange(index, 'residentialAddress', e.target.value)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
                 <TableCell className="border border-black text-center p-0">
@@ -168,6 +171,7 @@ export default function ShareholdersList() {
                     value={shareholder.currentHolding}
                     onChange={(e) => handleInputChange(index, 'currentHolding', parseInt(e.target.value) || 0)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
                 <TableCell className="border border-black text-center p-0">
@@ -175,6 +179,7 @@ export default function ShareholdersList() {
                     value={shareholder.percentage}
                     onChange={(e) => handleInputChange(index, 'percentage', e.target.value)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
                 <TableCell className="border border-black text-center p-0">
@@ -182,6 +187,7 @@ export default function ShareholdersList() {
                     value={shareholder.remarks}
                     onChange={(e) => handleInputChange(index, 'remarks', e.target.value)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
               </TableRow>

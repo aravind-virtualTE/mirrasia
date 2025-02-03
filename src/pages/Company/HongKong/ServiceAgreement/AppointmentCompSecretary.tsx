@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function AppointmentLetter() {
+export default function AppointmentLetter({editable}: {editable: boolean}) {
   const [directorName, setDetails] = useState("");
   const [signature, setSignature] = useState<string | "">("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,6 +85,7 @@ export default function AppointmentLetter() {
             <span className="font-semibold">
               Date:
               <input
+                disabled={editable}
                 className="border-b"
                 placeholder="Enter Date"
                 value={serviceAgrementDetails.appointmentDate}
@@ -154,6 +155,7 @@ export default function AppointmentLetter() {
               located in{" "}
               <span className="font-bold text-sm font-serif">
                 <input
+                  disabled={editable}
                   className="font-bold underline border-b w-3/4"
                   placeholder="Enter Company Address"
                   value={serviceAgrementDetails.companyAddress}

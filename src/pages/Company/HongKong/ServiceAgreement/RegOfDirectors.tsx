@@ -23,7 +23,7 @@ interface Director {
     entryMadeBy: string
 }
 
-export default function RegisterOfDirectors() {
+export default function RegisterOfDirectors({editable}: {editable: boolean}) {
     
     const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgreement)
     const [signature, setSignature] = useState<string | null>(serviceAgrementDetails.registerDirectorSignature ?? null);
@@ -164,6 +164,7 @@ export default function RegisterOfDirectors() {
                                             onChange={(e) => handleInputChange(index, field as keyof Director, e.target.value)}
                                             className="w-full h-full bg-transparent focus:outline-none resize-none text-sm leading-tight"
                                             style={{ minHeight: "3rem" }}
+                                            disabled={editable}
                                         />
                                     </TableCell>
                                 ))}

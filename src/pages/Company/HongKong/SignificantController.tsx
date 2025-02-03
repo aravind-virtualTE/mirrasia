@@ -205,9 +205,10 @@ interface SignificantControllerFormProps {
   index: number;
   controller: Controller;
   onChange: (index: number, field: string, value: string) => void;
+  editable: boolean;
 }
 
-export default function SignificantControllerForm({ index, controller, onChange }: SignificantControllerFormProps) {
+export default function SignificantControllerForm({ index, controller, onChange, editable }: SignificantControllerFormProps) {
   const [userDetails, setUserDetails] = useState(controller);
   const [signature, setSignature] = useState<string | null>(controller.signature);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -287,6 +288,7 @@ export default function SignificantControllerForm({ index, controller, onChange 
                 <Input
                   value={userDetails.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
+                  disabled={editable}
                 />
               </div>
               <div className="flex gap-x-2">

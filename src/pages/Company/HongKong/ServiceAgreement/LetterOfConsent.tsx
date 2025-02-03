@@ -11,7 +11,7 @@ import SignatureModal from '@/components/pdfPage/SignatureModal'
 import { useAtom } from 'jotai'
 import { serviceAgreement } from '@/store/hongkong'
 
-export default function LetterOfConsent() {
+export default function LetterOfConsent({editable}: {editable: boolean}) {
   const [formData, setFormData] = useState({
     brnNo: '',
     consentDate: '',
@@ -97,6 +97,7 @@ export default function LetterOfConsent() {
         <div className="flex flex-row items-center gap-2 text-sm">
           <span>WHEREAS on</span>
           <Input
+            disabled={editable}
             type="date"
             name="consentDate"
             value={serviceAgrementDetails.consentDate}

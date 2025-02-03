@@ -29,7 +29,7 @@ type PersonDetails = {
   directorName: string 
 };
 
-export default function AuthorizationDetails() {
+export default function AuthorizationDetails({editable}: {editable: boolean}) {
 const [sdcInfo, ] = useAtom(
     shareHolderDirectorControllerAtom
   );
@@ -195,6 +195,7 @@ const [sdcInfo, ] = useAtom(
               <TableCell className="border border-gray-300">
                 {isEditing ? (
                   <Input
+                    disabled={editable}
                     name="email"
                     value={personDetails.email}
                     onChange={handleInputChange}

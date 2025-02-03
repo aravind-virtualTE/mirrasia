@@ -200,7 +200,7 @@ import SignatureModal from "@/components/pdfPage/SignatureModal";
 import { serviceAgreement } from "@/store/hongkong";
 import { useAtom } from "jotai";
 
-export default function RegisterOfCompanySecretaries() {
+export default function RegisterOfCompanySecretaries({editable}: {editable: boolean}) {
   const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgreement);
   const [signature, setSignature] = useState<string | null>(serviceAgrementDetails.companySecretarySignature ?? null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -294,6 +294,7 @@ export default function RegisterOfCompanySecretaries() {
                       onChange={(e) => handleInputChange(index, field, e.target.value)}
                       className="w-full h-full bg-transparent focus:outline-none resize-none text-sm leading-tight"
                       style={{ minHeight: "10rem" }}
+                      disabled={editable}
                     />
                   </TableCell>
                 ))}

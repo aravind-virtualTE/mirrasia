@@ -4,7 +4,7 @@ import SignatureModal from "@/components/pdfPage/SignatureModal";
 import { serviceAgreement } from "@/store/hongkong";
 import { useAtom } from "jotai";
 
-export default function CompanyResolutiontwo() {
+export default function CompanyResolutiontwo({editable}: {editable: boolean}) {
   const [serviceAgrementDetails, ] = useAtom(serviceAgreement);
 
   const [docSigned,setDocSigned] = useState("")
@@ -150,6 +150,7 @@ export default function CompanyResolutiontwo() {
                 value={docSigned}
                 placeholder="dd/mm/yyyy"
                 onChange={(e) => setDocSigned(e.target.value)}  
+                disabled={editable}
               />  
               </span></p>
             <div className="w-64 pt-2">

@@ -66,8 +66,9 @@ interface Controller {
 
 interface SignificantControllerFormProps {
   controllerList: Controller[];
+  editable: boolean;
 }
-export default function SignificantControllersRegister({controllerList }: SignificantControllerFormProps) {
+export default function SignificantControllersRegister({controllerList, editable }: SignificantControllerFormProps) {
   const [serviceAgrementDetails] = useAtom(serviceAgreement);
   const [signature, setSignature] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -158,7 +159,7 @@ export default function SignificantControllersRegister({controllerList }: Signif
             </TableHeader>
             <TableBody>
               {controllers.map((controller, index) => (
-                <TableRow key={controller.entryNo}>
+                <TableRow key={`cg-${index}`}>
                   <TableCell className="border">{controller.entryNo}</TableCell>
                   <TableCell className="border w-20">
                     <input
@@ -168,6 +169,7 @@ export default function SignificantControllersRegister({controllerList }: Signif
                         handleControllerChange(index, "dateOfEntry", e.target.value)
                       }
                       className="w-full"
+                      disabled={editable}
                     />
                   </TableCell>
                   <TableCell className="border">

@@ -23,7 +23,7 @@ interface Charge {
   dateOfDischarges: string
 }
 
-export default function RegisterOfCharges() {
+export default function RegisterOfCharges({editable}: {editable: boolean}) {
   const [serviceAgrementDetails, setServiceAgrementDetails] = useAtom(serviceAgreement )
   const [localCharges, setLocalCharges] = useState<Charge[]>([])
   const [signature, setSignature] = useState<string | null>(null)
@@ -135,6 +135,7 @@ export default function RegisterOfCharges() {
                     value={charge.dateOfCharges}
                     onChange={(e) => handleInputChange(index, 'dateOfCharges', e.target.value)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
                 <TableCell className="border border-black text-center p-0">
@@ -151,6 +152,7 @@ export default function RegisterOfCharges() {
                       value={charge.description}
                       onChange={(e) => handleInputChange(index, 'description', e.target.value)}
                       className="border-none text-center h-full"
+                      disabled={editable}
                     />
                 </TableCell>
                 <TableCell className="border border-black text-center p-0">
@@ -158,6 +160,7 @@ export default function RegisterOfCharges() {
                     value={charge.amountSecured}
                     onChange={(e) => handleInputChange(index, 'amountSecured', e.target.value)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
                 <TableCell className="border border-black text-center p-0">
@@ -165,6 +168,7 @@ export default function RegisterOfCharges() {
                     value={charge.entitledPerson}
                     onChange={(e) => handleInputChange(index, 'entitledPerson', e.target.value)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
                 <TableCell className="border border-black text-center p-0">
@@ -172,6 +176,7 @@ export default function RegisterOfCharges() {
                     value={charge.dateOfRegistration}
                     onChange={(e) => handleInputChange(index, 'dateOfRegistration', e.target.value)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
                 <TableCell className="border border-black text-center p-0">
@@ -179,6 +184,7 @@ export default function RegisterOfCharges() {
                     value={charge.dateOfDischarges}
                     onChange={(e) => handleInputChange(index, 'dateOfDischarges', e.target.value)}
                     className="border-none text-center h-full"
+                    disabled={editable}
                   />
                 </TableCell>
               </TableRow>

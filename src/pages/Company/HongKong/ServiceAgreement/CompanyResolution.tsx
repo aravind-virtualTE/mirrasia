@@ -20,7 +20,7 @@ const resolutionData: ResolutionData = {
   },
 };
 
-export default function CompanyResolution() {
+export default function CompanyResolution({editable}: {editable: boolean}) {
   const [data, ] = useState(resolutionData);
   const [serviceAgrementDetails, ] = useAtom(serviceAgreement);
 
@@ -84,6 +84,7 @@ export default function CompanyResolution() {
                       regNumber: e.target.value,
                     })
                   }
+                  disabled={editable}
                 />
               </span>
               ;

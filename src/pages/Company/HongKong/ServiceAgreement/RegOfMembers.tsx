@@ -369,6 +369,7 @@ interface RegisterOfMembersProps {
   index: number;
   member: RegisterMembers;
   onMemberChange: (index: number, field: string, value: string | number) => void;  
+  editable: boolean;
   // onDeleteMember: (index: number) => void;
 }
 
@@ -376,6 +377,7 @@ export default function RegisterOfMembers({
   index,
   member,
   onMemberChange,
+  editable
   // onDeleteMember,
 }: RegisterOfMembersProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -472,6 +474,7 @@ export default function RegisterOfMembers({
                     value={member.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
                     className="w-full border-none focus:ring-0 p-1 text-sm"
+                    disabled={editable}
                   />
                 </TableCell>
                 <TableCell className="p-3 border-r font-normal">Occupation</TableCell>

@@ -117,7 +117,7 @@ import { Input } from "@/components/ui/input"
 import { Trash2 } from "lucide-react"
 import {  useState } from "react"
 
-export default function ShareCapitalForm() {
+export default function ShareCapitalForm({editable}: {editable: boolean}) {
   const [shareCapDetails, setShareCapDetails] = useState({
     founderMembers: [{
       name: "",
@@ -202,6 +202,7 @@ export default function ShareCapitalForm() {
                     className="text-center"
                     type="number"
                     min="0"
+                    disabled={editable}
                   />
                 </TableCell>
               </TableRow>

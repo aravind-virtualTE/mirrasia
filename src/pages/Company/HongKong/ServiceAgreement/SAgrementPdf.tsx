@@ -34,6 +34,8 @@ import Loader from "@/common/Loader";
 import CustomLoader from "@/components/ui/customLoader";
 import { useToast } from "@/hooks/use-toast";
 import { RegisterMembers } from "@/types/hkForm";
+import jwtDecode from "jwt-decode";
+import { TokenData } from "@/middleware/ProtectedRoutes";
 
 const SAgrementPdf: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +45,10 @@ const SAgrementPdf: React.FC = () => {
     const [isFetching, setIsFetching] = useState(true);
     const [serviceId, setId] = useState("");
     const { toast } = useToast();
+    const token = localStorage.getItem('token') as string;
+    const decodedToken = jwtDecode<TokenData>(token);
+    const isAdmin = decodedToken.role !== 'admin';
+    console.log("isAdmin", isAdmin)
     const [significantController, setSignificantController] = useState(
         companyData.shareHolderDirectorController.significantControllerAtom.map((record) => ({
                 name: record.value,
@@ -97,7 +103,7 @@ const SAgrementPdf: React.FC = () => {
             }))
     );
 
-    console.log("companyData-->", companyData);
+    // console.log("companyData-->", companyData);
     const currency = companyData.regCompanyInfo.registerCurrencyAtom;
     const registerAmount = companyData.regCompanyInfo.registerAmountAtom;
     const prepareCompanyData = () => {
@@ -462,28 +468,28 @@ const SAgrementPdf: React.FC = () => {
                 // max-w-4xl mx-auto
                 <>
                     <div id="appointmentLetter" className="mb-4">
-                        <AppointmentLetter />
+                        <AppointmentLetter editable={isAdmin} />
                     </div>
                     <div id="letterOfConsent" className="mb-4">
-                        <LetterOfConsent />
+                        <LetterOfConsent editable={isAdmin} />
                     </div>
                     <div id="authorizationDetails" className="mb-4">
-                        <AuthorizationDetails />
+                        <AuthorizationDetails editable={isAdmin} />
                     </div>
                     <div className="mb-4">
                         <AppointmentOfDirectors />
                     </div>
                     <div id="shareholdersList" className="mb-4">
-                        <ShareholdersList />
+                        <ShareholdersList editable={isAdmin} />
                     </div>
                     <div id="registerOfCharges" className="mb-4">
-                        <RegisterOfCharges />
+                        <RegisterOfCharges editable={isAdmin} />
                     </div>
                     <div id="registerOfCompanySecretaries" className="mb-4">
-                        <RegisterOfCompanySecretaries />
+                        <RegisterOfCompanySecretaries editable={isAdmin} />
                     </div>
                     <div id="registerOfDirectors" className="mb-4">
-                        <RegisterOfDirectors />
+                        <RegisterOfDirectors editable={isAdmin} />
                     </div>
                     <div id="registerOfMembers" className="mb-4">
                         {/* <RegisterOfMembers /> */}
@@ -493,6 +499,7 @@ const SAgrementPdf: React.FC = () => {
                                 index={index}
                                 member={member}
                                 onMemberChange={handleMemberChange}
+                                editable={isAdmin}
                                 // onDeleteMember={deleteMember}
                             />
                         ))}
@@ -505,12 +512,13 @@ const SAgrementPdf: React.FC = () => {
                                 index={index}
                                 controller={controller}
                                 onChange={handleControllerChange}
+                                editable={isAdmin}
                             />
                         </div>
                     ))}
 
                     <div id="declarationOfInterest" className="mb-4">
-                        <DeclarationOfInterest />
+                        <DeclarationOfInterest  />
                     </div>
                     {/* {significantController.map((controller, index) => (
                         <div id={`regControllerSigni${index}`} className="mb-4">
@@ -522,28 +530,28 @@ const SAgrementPdf: React.FC = () => {
                         </div>
                     ))} */}
                     <div id="significantControllersRegister" className="mb-4">
-                        <SignificantControllersRegister controllerList={significantController} />
+                        <SignificantControllersRegister controllerList={significantController} editable={isAdmin} />
                     </div>
                     <div id="articlesOfAssociation" className="mb-4">
-                        <ArticlesOfAssociation />
+                        <ArticlesOfAssociation editable={isAdmin} />
                     </div>
                     <div id="shareCapitalForm" className="mb-4">
-                        <ShareCapitalForm />
+                        <ShareCapitalForm editable={isAdmin} />
                     </div>
                     <div id="companyResolution" className="mb-4">
-                        <CompanyResolution />
+                        <CompanyResolution editable={isAdmin} />
                     </div>
                     <div id="companyResolutiontwo" className="mb-4">
-                        <CompanyResolutiontwo />
+                        <CompanyResolutiontwo editable={isAdmin} />
                     </div>
                     <div id="customerDueDiligence" className="mb-4">
                         <CustomerDueDiligence />
                     </div>
                     <div id="pepDeclaration" className="mb-4">
-                        <PEPDeclarationForm />
+                        <PEPDeclarationForm editable={isAdmin} />
                     </div>
                     <div id="penDetail" className="mb-4">
-                        <PenDetail />
+                        <PenDetail  />
                     </div>
                     <div className="flex justify-around mt-6">
                         <Button
