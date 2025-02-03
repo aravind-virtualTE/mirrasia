@@ -66,7 +66,7 @@ export const signupWithGoogle = async (
 
 export const loginWithEmail = async (email: string, password: string,) => {
     const response = await api.post('auth/login', { email, password });
-    console.log('response->',response)
+    // console.log('response->',response)
     return response.data;
   };
   

@@ -1253,21 +1253,6 @@ const RegistrationFormIntro = () => {
             Thank you! We will check the contents of your reply and our consultant will contact you shortly.
           </p>
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         {/* Submit Button */}
         <div className="flex justify-end mt-6">
           <Button onClick={handleSubmit}>Submit</Button>

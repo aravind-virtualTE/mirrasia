@@ -28,12 +28,17 @@ const LoginComponent: React.FC = () => {
     try {
       // localStorage.setItem('isAuthenticated', 'true');
       const response = await loginWithEmail(email, password);    
+      console.log("response", response)
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem("token", response.token);
       setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
       if(response.user.role === 'admin') {
         navigate('/admin-dashboard');
-      }else{
+      }
+      else if(response.user.role === 'sh_dir'){
+        navigate('/viewboard');
+      }
+      else{
         navigate('/dashboard');
       }
     } catch (err) {
