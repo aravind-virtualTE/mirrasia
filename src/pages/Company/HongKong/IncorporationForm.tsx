@@ -141,7 +141,7 @@ const IncorporationForm = () => {
     const addLimitedSuffixConcise = (items: string[]) => {
         const limitedRegex = /limited$/i;
         return items.map((item: string) =>
-            !limitedRegex.test(item) ? item + " Limited" : item
+            item === "" ? item : !limitedRegex.test(item) ? item + " Limited" : item
         );
     };
 
