@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useAtom } from "jotai";
+import { useAtom ,useSetAtom} from "jotai";
 import { useToast } from "@/hooks/use-toast";
 import { companyIncorporationList } from "@/services/state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,6 +42,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { updateCompanyIncorporationAtom } from "@/lib/atom";
+import { ShareHolderDirectorController } from "@/types/hongkongForm";
 // import { companyIncorporationAtom } from "@/lib/atom";
 
 interface SessionData {
@@ -54,8 +56,9 @@ interface SessionData {
 }
 
 interface Country {
-    code: string;
-    name: string;
+    [key: string]: string | undefined;
+    code: string | undefined;
+    name: string | undefined;
 }
 
 interface ApplicantInfoForm {
@@ -65,32 +68,36 @@ interface ApplicantInfoForm {
     snsAccountId: string;
     phoneNumber: string;
     email: string;
-    companyName: string;
+    companyName: string[];
+    snsPlatform: string;
+    chinaCompanyName: string[];
 }
 
 interface BusinessInfoHkCompany {
-    sanctioned_countries: string;
-    sanctions_presence: string;
-    crimea_presence: string;
-    russian_business_presence: string;
-    legal_assessment: string;
+    [key: string]: string | undefined;
+    sanctioned_countries?: string;
+    sanctions_presence?: string;
+    crimea_presence?: string;
+    russian_business_presence?: string;
+    legal_assessment?: string;
 }
 
 interface CompanyBusinessInfo {
     business_product_description: string;
+    business_industry: string;
+    business_purpose: string[];
 }
 
 interface RegCompanyInfo {
     registerCompanyNameAtom: string;
-    registerShareholderNameAtom: string;
+    registerShareTypeAtom: string[];
+    registerPaymentShare?: string;
+    registerCurrencyAtom?: string;
+    registerAmountAtom?: string;
+    registerNumSharesAtom?: string;
 }
 
-interface ShareHolderDirectorController {
-    shareHolderDirectorNameSharesNumAtom: string;
-    significantControllerAtom: string;
-    designatedContactPersonAtom: string;
-    shareHolders: Record<string, string | number | boolean | undefined>;
-}
+
 
 interface AccountingTaxInfo {
     anySoftwareInUse: string;
@@ -135,7 +142,7 @@ interface Company {
     is_draft: boolean;
     _id: string; // Changed to string for frontend
     userId: string; // Changed to string for frontend
-    country: Country;
+    country: Country;   //Record<string, string | undefined>;
     applicantInfoForm: ApplicantInfoForm;
     businessInfoHkCompany: BusinessInfoHkCompany;
     companyBusinessInfo: CompanyBusinessInfo;
@@ -160,6 +167,7 @@ const CompanyDetail = () => {
     const { toast } = useToast();
     const { id } = useParams();
     const [companies] = useAtom(companyIncorporationList);
+    const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     // const [companyData, setCompData] = useAtom(companyIncorporationAtom);
     const companyDetail = companies.find(
         (c) => c._id === id
@@ -177,6 +185,7 @@ const CompanyDetail = () => {
 
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
+        updateCompanyData(company);
         console.log("company", company)
         // Applicant Information Section
         if (company.applicantInfoForm) {

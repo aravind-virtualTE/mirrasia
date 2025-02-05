@@ -27,7 +27,10 @@ export const initialFormState: Partial<hkFormItem> = {
   },
   shareHolderDirectorController: {
     shareHolderDirectorNameSharesNumAtom: '',
-    significantControllerAtom: '',
+    significantControllerAtom: [{
+        value: "",
+        label: ""
+    }],
     designatedContactPersonAtom: '',
     shareHolders: [],
   },

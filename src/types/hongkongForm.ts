@@ -64,19 +64,22 @@ export interface RegCompanyInfo {
 }
 
 export interface ShareHolderDirectorController {
-    numShareHoldersAtom?: string | undefined;
-    numDirectorsAtom?: string | undefined; 
-    shareHolderDirectorNameSharesNumAtom: string;
-    significantControllerAtom: string
-    designatedContactPersonAtom: string,
-    shareHolders: {
+     numShareHoldersAtom?: string;
+      numDirectorsAtom?: string;
+      shareHolderDirectorNameSharesNumAtom: string;
+      significantControllerAtom:  {
+        value: string
+        label: string
+    }[];
+      designatedContactPersonAtom: string | number,
+      shareHolders: {
         name: string;
         email: string;
         phone: string;
         ownershipRate: number;
         isDirector: boolean;
         isLegalPerson: boolean;
-    }[]
+      }[]
 }
 
 export interface AccountingTaxInfo {

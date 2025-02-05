@@ -35,10 +35,15 @@ export interface Country {
   }
   
   export interface ShareHolderDirectorController {
-    shareHolderDirectorNameSharesNumAtom: string;
-    significantControllerAtom: string;
-    designatedContactPersonAtom: string;
     shareHolders: ShareHolder[];
+    numShareHoldersAtom?: string;
+      numDirectorsAtom?: string;
+      shareHolderDirectorNameSharesNumAtom: string;
+      significantControllerAtom:  {
+        value: string
+        label: string
+    }[];
+      designatedContactPersonAtom: string | number,
   }
   
   export interface AccountingTaxInfo {

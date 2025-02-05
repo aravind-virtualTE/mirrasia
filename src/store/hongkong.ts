@@ -71,7 +71,7 @@ export const initialHkFormState: Partial<HkFormData> = {
     numShareHoldersAtom: undefined,
     numDirectorsAtom: undefined,
     shareHolderDirectorNameSharesNumAtom: "",
-    significantControllerAtom: "",
+    significantControllerAtom: [{value: "", label: ""}],
     designatedContactPersonAtom: "",
     shareHolders: [
       {

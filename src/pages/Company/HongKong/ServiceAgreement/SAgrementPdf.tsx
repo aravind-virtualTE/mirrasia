@@ -102,7 +102,7 @@ const SAgrementPdf: React.FC = () => {
             }))
     );
 
-    // console.log("companyData-->", companyData);
+    console.log("companyData-->", companyData);
     const currency = companyData.regCompanyInfo.registerCurrencyAtom;
     const registerAmount = companyData.regCompanyInfo.registerAmountAtom;
     const prepareCompanyData = () => {
