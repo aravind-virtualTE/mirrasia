@@ -115,37 +115,55 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Trash2 } from "lucide-react"
-import {  useState } from "react"
+import { useEffect, useState } from "react"
+import { useAtom } from "jotai"
+import { serviceAgreement } from "@/store/hongkong"
 
-export default function ShareCapitalForm({editable}: {editable: boolean}) {
+export default function ShareCapitalForm({ editable }: { editable: boolean }) {
+  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
+
   const [shareCapDetails, setShareCapDetails] = useState({
     founderMembers: [{
       name: "",
       noOfShares: "0",
-      shareClass: "Ordinary",
       totalShares: "0"
     }],
     shareClass: "Ordinary",
-    proposedShares: "0",
     shareCapital: "0",
     paidUp: "0",
     unpaid: "0",
   })
 
+  useEffect(() => {
+    if (serviceAgrementDetails.articleAssociation) {
+      setShareCapDetails({
+        founderMembers: serviceAgrementDetails.articleAssociation.founderMembers,
+        shareClass: serviceAgrementDetails.articleAssociation.shareClass,
+        shareCapital: serviceAgrementDetails.articleAssociation.shareCapital,
+        paidUp: serviceAgrementDetails.articleAssociation.paidUp,
+        unpaid: serviceAgrementDetails.articleAssociation.unpaid,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    setServiceAgrement(prev => ({ ...prev, articleAssociation: shareCapDetails }))
+  }, [shareCapDetails])
+
   const handleCurrencyInput = (value: string) => {
-    // Remove any existing "USD " prefix and non-numeric characters
+    // Remove any existing "currency " prefix and non-numeric characters
     const numericValue = value.replace(/[^0-9.]/g, '')
-    return `USD ${numericValue}`
+    return `${serviceAgrementDetails.currency} ${numericValue}`
   }
 
   // Handle founder member updates
-  const updateFounderMember = (index : number, field : string, value : string | number) => {
+  const updateFounderMember = (index: number, field: string, value: string | number) => {
     setShareCapDetails(prev => {
       const updatedMembers = [...prev.founderMembers]
       updatedMembers[index] = {
         ...updatedMembers[index],
         [field]: value,
-        totalShares: field === 'noOfShares' ? `USD ${value || 0}` : updatedMembers[index].totalShares
+        totalShares: field === 'noOfShares' ? `${serviceAgrementDetails.currency} ${value || 0}` : updatedMembers[index].totalShares
       }
       return { ...prev, founderMembers: updatedMembers }
     })
@@ -157,7 +175,7 @@ export default function ShareCapitalForm({editable}: {editable: boolean}) {
       ...prev,
       founderMembers: [
         ...prev.founderMembers,
-        { name: "", noOfShares: "0", shareClass: "Ordinary", totalShares: "USD 0" }
+        { name: "", noOfShares: "0", shareClass: "Ordinary", totalShares: "0" }
       ]
     }))
   }
@@ -171,7 +189,8 @@ export default function ShareCapitalForm({editable}: {editable: boolean}) {
       }))
     }
   }
-
+  // console.log("registerAmount", serviceAgrementDetails)
+  const totalShares = shareCapDetails.founderMembers.reduce((acc, member) => acc + Number(member.noOfShares), 0)
   return (
     <Card className="p-6 print:p-0 rounded-none">
       <CardContent>
@@ -181,10 +200,11 @@ export default function ShareCapitalForm({editable}: {editable: boolean}) {
               <TableRow>
                 <TableCell className="font-medium border w-2/3">Class of Shares</TableCell>
                 <TableCell className="border">
-                  <Input 
+                  <Input
                     value={shareCapDetails.shareClass}
                     onChange={(e) => setShareCapDetails(prev => ({ ...prev, shareClass: e.target.value }))}
                     className="text-center"
+                    disabled={editable}
                   />
                 </TableCell>
               </TableRow>
@@ -193,17 +213,7 @@ export default function ShareCapitalForm({editable}: {editable: boolean}) {
                   The total number of shares in this class that the company proposes to issue
                 </TableCell>
                 <TableCell className="border">
-                  <Input 
-                    value={shareCapDetails.proposedShares}
-                    onChange={(e) => setShareCapDetails(prev => ({ 
-                      ...prev, 
-                      proposedShares: e.target.value 
-                    }))}
-                    className="text-center"
-                    type="number"
-                    min="0"
-                    disabled={editable}
-                  />
+                  <p className="text-center">{serviceAgrementDetails.registerAmount}</p>
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -211,10 +221,10 @@ export default function ShareCapitalForm({editable}: {editable: boolean}) {
                   The total amount of share capital in this class to be subscribed by the company's founder members
                 </TableCell>
                 <TableCell className="border">
-                  <Input 
-                    value={shareCapDetails.shareCapital}
-                    onChange={(e) => setShareCapDetails(prev => ({ 
-                      ...prev, 
+                  <Input
+                    value={`${serviceAgrementDetails.currency} ${shareCapDetails.shareCapital}`}
+                    onChange={(e) => setShareCapDetails(prev => ({
+                      ...prev,
                       shareCapital: handleCurrencyInput(e.target.value)
                     }))}
                     className="text-center"
@@ -226,10 +236,10 @@ export default function ShareCapitalForm({editable}: {editable: boolean}) {
                   (i) The amount to be paid up or to be regarded as paid up
                 </TableCell>
                 <TableCell className="border">
-                  <Input 
+                  <Input
                     value={shareCapDetails.paidUp}
-                    onChange={(e) => setShareCapDetails(prev => ({ 
-                      ...prev, 
+                    onChange={(e) => setShareCapDetails(prev => ({
+                      ...prev,
                       paidUp: handleCurrencyInput(e.target.value)
                     }))}
                     className="text-center"
@@ -241,10 +251,10 @@ export default function ShareCapitalForm({editable}: {editable: boolean}) {
                   (ii) The amount to remain unpaid or to be regarded as remaining unpaid
                 </TableCell>
                 <TableCell className="border">
-                  <Input 
+                  <Input
                     value={shareCapDetails.unpaid}
-                    onChange={(e) => setShareCapDetails(prev => ({ 
-                      ...prev, 
+                    onChange={(e) => setShareCapDetails(prev => ({
+                      ...prev,
                       unpaid: handleCurrencyInput(e.target.value)
                     }))}
                     className="text-center"
@@ -317,9 +327,9 @@ export default function ShareCapitalForm({editable}: {editable: boolean}) {
             <TableRow>
               <TableCell className="border text-right pr-4 font-medium">Total:</TableCell>
               <TableCell className="border text-center space-y-2 p-4">
-                <div>{shareCapDetails.proposedShares}</div>
+                <div>{serviceAgrementDetails.registerAmount}</div>
                 <div>{shareCapDetails.shareClass} shares</div>
-                <div>{shareCapDetails.shareCapital}</div>
+                <div>{totalShares}</div>
               </TableCell>
             </TableRow>
           </TableBody>

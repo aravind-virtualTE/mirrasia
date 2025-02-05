@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function AppointmentLetter({editable}: {editable: boolean}) {
+export default function AppointmentLetter({ editable }: { editable: boolean }) {
   const [directorName, setDetails] = useState("");
   const [signature, setSignature] = useState<string | "">("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +24,7 @@ export default function AppointmentLetter({editable}: {editable: boolean}) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowInstructions(false);
-    }, 5000); 
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -61,15 +61,15 @@ export default function AppointmentLetter({editable}: {editable: boolean}) {
   //   });
   // };
 
-  const dirShrList = serviceAgrementDetails.directorList?.map( item => {
+  const dirShrList = serviceAgrementDetails.directorList?.map(item => {
     return ({
-      key : item.name,
-      value :item.name
+      key: item.name,
+      value: item.name
     })
   })
   // console.log("dirShrList",dirShrList)
 
-  const handleSelectChange = (value : string) =>{
+  const handleSelectChange = (value: string) => {
     // console.log("value", value, 'key')
     setDetails(value);
     setServiceAgrement({
@@ -102,6 +102,7 @@ export default function AppointmentLetter({editable}: {editable: boolean}) {
             <span className="font-semibold">
               BRN .:{" "}
               <input
+                disabled={editable}
                 className="border-b "
                 placeholder="Enter BRN"
                 value={serviceAgrementDetails.brnNo}
@@ -215,7 +216,7 @@ export default function AppointmentLetter({editable}: {editable: boolean}) {
 
               <Select
                 value={directorName}
-                onValueChange={handleSelectChange}                
+                onValueChange={handleSelectChange}
               >
                 <SelectTrigger id="dirShrList" className="w-full ">
                   <SelectValue placeholder="Select Director" />

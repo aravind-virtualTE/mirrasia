@@ -138,6 +138,14 @@ export interface signiControlReg {
   remarks : string
 }
 
+export interface articlesAssociation{
+  shareClass : string;
+  shareCapital : string;
+  paidUp : string;
+  unpaid : string;
+  founderMembers : { name: string; noOfShares: string, totalShares : string }[];
+}
+
 // director: { name: string; signature: string }[];
 export interface serviceAggrementTypes {
   companyId: string;
@@ -255,6 +263,7 @@ export interface serviceAggrementTypes {
   pedDate :string;  
   currency: string | null
   registerAmount: string | number
+  articleAssociation: articlesAssociation
 }
 
 export type ShrHolderDirector = {

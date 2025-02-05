@@ -42,6 +42,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+// import { companyIncorporationAtom } from "@/lib/atom";
 
 interface SessionData {
     _id: string;
@@ -88,7 +89,7 @@ interface ShareHolderDirectorController {
     shareHolderDirectorNameSharesNumAtom: string;
     significantControllerAtom: string;
     designatedContactPersonAtom: string;
-    shareHolders : Record<string, string | number | boolean | undefined>;
+    shareHolders: Record<string, string | number | boolean | undefined>;
 }
 
 interface AccountingTaxInfo {
@@ -159,6 +160,7 @@ const CompanyDetail = () => {
     const { toast } = useToast();
     const { id } = useParams();
     const [companies] = useAtom(companyIncorporationList);
+    // const [companyData, setCompData] = useAtom(companyIncorporationAtom);
     const companyDetail = companies.find(
         (c) => c._id === id
     ) as unknown as Company;
@@ -175,7 +177,7 @@ const CompanyDetail = () => {
 
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
-        console.log("company",company)
+        console.log("company", company)
         // Applicant Information Section
         if (company.applicantInfoForm) {
             sections.push({
@@ -229,48 +231,48 @@ const CompanyDetail = () => {
         }
 
         // Shareholder and Director Information Section
-    if (company.shareHolderDirectorController) {
-        const shareholderData = company.shareHolderDirectorController;
+        if (company.shareHolderDirectorController) {
+            const shareholderData = company.shareHolderDirectorController;
 
-        sections.push({
-            title: "Shareholder and Director Information",
-            data: {
-                "Designated Contact Person": shareholderData.designatedContactPersonAtom,
-                "Significant Controllers": Array.isArray(shareholderData.significantControllerAtom)
-                    ? shareholderData.significantControllerAtom
-                        .map((controller: { label: string }) => controller.label)
-                        .join(", ")
-                    : "N/A",
+            sections.push({
+                title: "Shareholder and Director Information",
+                data: {
+                    "Designated Contact Person": shareholderData.designatedContactPersonAtom,
+                    "Significant Controllers": Array.isArray(shareholderData.significantControllerAtom)
+                        ? shareholderData.significantControllerAtom
+                            .map((controller: { label: string }) => controller.label)
+                            .join(", ")
+                        : "N/A",
 
-                "Shareholders and Directors": (
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Name</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Phone</TableHead>
-                                <TableHead>Ownership Rate</TableHead>
-                                <TableHead>Is Director</TableHead>
-                                <TableHead>Is Legal Person</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {Array.isArray(shareholderData.shareHolders) && shareholderData.shareHolders.map((shareholder, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{shareholder.name}</TableCell>
-                                    <TableCell>{shareholder.email}</TableCell>
-                                    <TableCell>{shareholder.phone || "N/A"}</TableCell>
-                                    <TableCell>{shareholder.ownershipRate}%</TableCell>
-                                    <TableCell>{shareholder.isDirector ? "Yes" : "No"}</TableCell>
-                                    <TableCell>{shareholder.isLegalPerson ? "Yes" : "No"}</TableCell>
+                    "Shareholders and Directors": (
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead>Phone</TableHead>
+                                    <TableHead>Ownership Rate</TableHead>
+                                    <TableHead>Is Director</TableHead>
+                                    <TableHead>Is Legal Person</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                ),
-            },
-        });
-    }
+                            </TableHeader>
+                            <TableBody>
+                                {Array.isArray(shareholderData.shareHolders) && shareholderData.shareHolders.map((shareholder, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{shareholder.name}</TableCell>
+                                        <TableCell>{shareholder.email}</TableCell>
+                                        <TableCell>{shareholder.phone || "N/A"}</TableCell>
+                                        <TableCell>{shareholder.ownershipRate}%</TableCell>
+                                        <TableCell>{shareholder.isDirector ? "Yes" : "No"}</TableCell>
+                                        <TableCell>{shareholder.isLegalPerson ? "Yes" : "No"}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    ),
+                },
+            });
+        }
         // Payment Information Section
         if (company.sessionId && session) {
             sections.push({
@@ -533,8 +535,8 @@ const CompanyDetail = () => {
     const handleUpdate = async () => {
 
         const payload = JSON.stringify({
-            company: {id: company._id, status: company.status, isDisabled: company.isDisabled, inCorporationDate : company.incorporationDate},
-            session : {id: session._id, expiresAt : (session.expiresAt), status : session.status}
+            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, inCorporationDate: company.incorporationDate },
+            session: { id: session._id, expiresAt: (session.expiresAt), status: session.status }
         })
         // {
         //     id: companyDetail._id,

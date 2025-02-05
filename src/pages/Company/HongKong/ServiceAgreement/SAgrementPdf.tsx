@@ -48,7 +48,6 @@ const SAgrementPdf: React.FC = () => {
     const token = localStorage.getItem('token') as string;
     const decodedToken = jwtDecode<TokenData>(token);
     const isAdmin = decodedToken.role !== 'admin';
-    console.log("isAdmin", isAdmin)
     const [significantController, setSignificantController] = useState(
         companyData.shareHolderDirectorController.significantControllerAtom.map((record) => ({
                 name: record.value,
@@ -109,15 +108,15 @@ const SAgrementPdf: React.FC = () => {
     const prepareCompanyData = () => {
         const shareHolderDir =
             companyData.shareHolderDirectorController.shareHolders;
-        // console.log("shareHolderDir===>", shareHolderDir)
-        const directors = shareHolderDir.filter(
-            (record) => record.isDirector === true
-        );
-        const firstMatchingRecord = shareHolderDir.find(
-            (record) => record.isDirector === false && record.isLegalPerson === false
+            const directors = shareHolderDir.filter(
+                (record) => record.isDirector === true
+            );
+            const firstMatchingRecord = shareHolderDir.find(
+                (record) => record.isDirector === false && record.isLegalPerson === false
         );
         // .filter(record => record.isDirector === false )
 
+        console.log("companyData===>", companyData)
         const shareholderArr = shareHolderDir
             .filter((item) => Number(item.ownershipRate) !== 0)
             .map((record) => ({
@@ -275,7 +274,8 @@ const SAgrementPdf: React.FC = () => {
             }
             return member;
         });
-
+        console.log("companyData---->",companyData)
+        console.log("savedData",savedData)
         return {
             ...companyData,
             ...savedData,
