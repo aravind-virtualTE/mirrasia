@@ -1,6 +1,6 @@
 import { ResolutionData } from "@/types/resolution";
 import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { serviceAgreement } from "@/store/hongkong";
 import { useAtom } from "jotai";
 
@@ -8,10 +8,7 @@ const resolutionData: ResolutionData = {
   company: {
     name: "",
     jurisdiction: "",
-  },
-  director: {
-    name: "",
-  },
+  },  
   secretary: {
     name: "MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED",
   },
@@ -22,18 +19,13 @@ const resolutionData: ResolutionData = {
 
 export default function CompanyResolution({editable}: {editable: boolean}) {
   const [data, ] = useState(resolutionData);
-  const [serviceAgrementDetails, ] = useAtom(serviceAgreement);
+  const [name, setName] = useState("");
+  const [serviceAgrementDetails, setServiceAgreementDetails] = useAtom(serviceAgreement);
 
-  const [resolutionDetails, setResolutionDetails] = useState({
-    inCorporatedDate: "",
-    regNumber: "",
-  });
   useEffect(() => {
-    setResolutionDetails({
-      inCorporatedDate: "",
-      regNumber: "",
-    });
-  }, []);
+    setName(serviceAgrementDetails.directorList?.[0]?.name || "");
+  }, [serviceAgrementDetails]);
+
   return (
     // w-full max-w-[800px] mx-auto 
     <Card className="p-6 print:p-0 rounded-none">
@@ -58,12 +50,12 @@ export default function CompanyResolution({editable}: {editable: boolean}) {
               <span>
                 <input
                   className="underline"
-                  type="text"
+                  type="date"
                   placeholder="dd/mm/yyyy"
-                  value={resolutionDetails.inCorporatedDate}
+                  value={serviceAgrementDetails.inCorporatedDate}
                   onChange={(e) =>
-                    setResolutionDetails({
-                      ...resolutionDetails,
+                    setServiceAgreementDetails({
+                      ...serviceAgrementDetails,
                       inCorporatedDate: e.target.value,
                     })
                   }
@@ -77,11 +69,11 @@ export default function CompanyResolution({editable}: {editable: boolean}) {
                   className="underline"
                   type="text"
                    placeholder="registration number"
-                  value={resolutionDetails.regNumber}
+                  value={serviceAgrementDetails.registrationNumber}
                   onChange={(e) =>
-                    setResolutionDetails({
-                      ...resolutionDetails,
-                      regNumber: e.target.value,
+                    setServiceAgreementDetails({
+                      ...serviceAgrementDetails,
+                      registrationNumber: e.target.value,
                     })
                   }
                   disabled={editable}
@@ -111,7 +103,7 @@ export default function CompanyResolution({editable}: {editable: boolean}) {
             appointed with effect from the date of incorporation of the
             Company:-
           </p>
-          <div className=" p-2 my-2">{data.director.name}</div>
+          <div className=" p-2 my-2">{name}</div>
         </ResolutionSection>
 
         <ResolutionSection number="3" title="First Secretary">

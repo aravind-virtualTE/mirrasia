@@ -168,6 +168,7 @@ export interface serviceAggrementTypes {
   directorList:{
     name: string;
     signature: string;
+    // isSelected : boolean;
   }[]
   shareholderList: {
     name: string;
@@ -267,6 +268,8 @@ export interface serviceAggrementTypes {
   currency: string | null
   registerAmount: string | number
   articleAssociation: articlesAssociation
+  inCorporatedDate : string;
+  registrationNumber : string;
 }
 
 export type ShrHolderDirector = {

@@ -45,7 +45,7 @@ export default function AppointmentLetter({ editable }: { editable: boolean }) {
       ...serviceAgrementDetails,
       directorList: serviceAgrementDetails.directorList
         ? [
-          { ...serviceAgrementDetails.directorList[0], signature: selectedSignature },
+          { ...serviceAgrementDetails.directorList[0], signature: selectedSignature, },
           ...serviceAgrementDetails.directorList.slice(1),
         ]
         : [{ name: "", signature: "" }],

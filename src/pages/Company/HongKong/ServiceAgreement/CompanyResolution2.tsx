@@ -15,6 +15,8 @@ export default function CompanyResolutiontwo({editable}: {editable: boolean}) {
     setIsModalOpen(true);
   };
 
+  // console.log('serviceAgrementDetails',serviceAgrementDetails.shareholderList)
+
   const handleSelectSignature = (selectedSignature: string | null) => {
     setSignature(selectedSignature);
     setIsModalOpen(false);
@@ -146,7 +148,7 @@ export default function CompanyResolutiontwo({editable}: {editable: boolean}) {
           <div className="pt-6 space-y-4 w-64">
             <p >Date: <span className="underline">
               <input
-                type="text" 
+                type="date" 
                 value={docSigned}
                 placeholder="dd/mm/yyyy"
                 onChange={(e) => setDocSigned(e.target.value)}  

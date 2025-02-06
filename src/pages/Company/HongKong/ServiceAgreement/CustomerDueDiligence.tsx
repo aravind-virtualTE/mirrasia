@@ -49,8 +49,8 @@ export default function CustomerDueDiligence() {
     },
     cddDate: "",
     cddSignature: "",
-    pedSignature : "",
-    pedDate : "",    
+    pedSignature: "",
+    pedDate: "",
     politicallyExposed: false,
     politicallyNotExposed: false,
   };
@@ -58,8 +58,8 @@ export default function CustomerDueDiligence() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() =>{
-    setServiceAgrement((prev) => ({...prev, customerDueDiligence: cddForm}))
+  useEffect(() => {
+    setServiceAgrement((prev) => ({ ...prev, customerDueDiligence: cddForm }))
   }, [cddForm])
   const handleBoxClick = () => {
     setIsModalOpen(true);
@@ -67,7 +67,8 @@ export default function CustomerDueDiligence() {
 
   const handleSelectSignature = (selectedSignature: string | null) => {
     setSignature(selectedSignature);
-    setServiceAgrement({...serviceAgrementDetails, 
+    setServiceAgrement({
+      ...serviceAgrementDetails,
       cddSignature: selectedSignature
     });
     setIsModalOpen(false);
@@ -109,7 +110,7 @@ export default function CustomerDueDiligence() {
     checked: string | boolean
   ) => {
     setFormData((prevState) => ({
-      ...prevState,      
+      ...prevState,
       ['preferredMethodOfContact']: {
         ...prevState.preferredMethodOfContact,
         [method]: checked,
@@ -117,9 +118,9 @@ export default function CustomerDueDiligence() {
     }));
   };
 
-  const handleDateChange = (    value: string  ) => {
+  const handleDateChange = (value: string) => {
     setFormData((prevState) => ({
-      ...prevState,      
+      ...prevState,
       ['cddDate']: value,
     }));
   };
@@ -358,7 +359,7 @@ export default function CustomerDueDiligence() {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex gap-2">
                 <div className="w-40">Country of Tax Residence:</div>
-                <Input 
+                <Input
                   className="border flex-1 px-1"
                   value={cddForm.taxFacta.countryOfTaxResidence}
                   onChange={(e) =>
@@ -368,7 +369,7 @@ export default function CustomerDueDiligence() {
                       e.target.value
                     )
                   }
-                   />
+                />
               </div>
               <div className="flex gap-2">
                 <div className="w-40">Tax ID Number:</div>
@@ -381,7 +382,7 @@ export default function CustomerDueDiligence() {
                       e.target.value
                     )
                   }
-                  />
+                />
               </div>
             </div>
             <p>
@@ -630,10 +631,11 @@ export default function CustomerDueDiligence() {
               </div>
               <div className="space-y-1">
                 <div>Date</div>
-                <Input className="border w-full px-1" 
+                <Input className="border w-full px-1"
+                  type="date"
                   value={cddForm.cddDate}
-                  onChange={(e) =>handleDateChange(e.target.value)}
-                 />
+                  onChange={(e) => handleDateChange(e.target.value)}
+                />
                 <div className="text-xs">(날짜)</div>
               </div>
             </div>

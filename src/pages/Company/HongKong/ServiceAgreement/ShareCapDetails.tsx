@@ -222,7 +222,7 @@ export default function ShareCapitalForm({ editable }: { editable: boolean }) {
                 </TableCell>
                 <TableCell className="border">
                   <Input
-                    value={`${serviceAgrementDetails.currency} ${shareCapDetails.shareCapital}`}
+                    value={`${shareCapDetails.shareCapital}`}
                     onChange={(e) => setShareCapDetails(prev => ({
                       ...prev,
                       shareCapital: handleCurrencyInput(e.target.value)
