@@ -20,6 +20,7 @@ import { useAtom } from 'jotai'
 import { serviceAgreement } from '@/store/hongkong'
 import DropdownSelect from '@/components/DropdownSelect'
 import { shareHolderDirectorControllerAtom } from '@/lib/atom'
+import { formatDateIfMatches } from '@/middleware'
 
 type PersonDetails = {
   name: string | number;
@@ -241,7 +242,7 @@ const [sdcInfo, ] = useAtom(
         </div> */}
 
         <div className="pt-6 space-y-4 w-64">
-          <p>Dated: {serviceAgrementDetails.consentSignDate}</p>
+          <p>Dated: {formatDateIfMatches(serviceAgrementDetails.consentSignDate || "")}</p>
           <div className="w-64 pt-2">
             <div
               onClick={handleBoxClick}

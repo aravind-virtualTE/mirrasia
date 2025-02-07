@@ -7,7 +7,6 @@ import { serviceAgreement } from "@/store/hongkong";
 import { useAtom } from "jotai";
 
 export default function CustomerDueDiligence() {
-  const [signature, setSignature] = useState<string | null>(null);
   const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
   const initialSet = {
     personalInformation: {
@@ -54,6 +53,9 @@ export default function CustomerDueDiligence() {
     politicallyExposed: false,
     politicallyNotExposed: false,
   };
+
+  const [signature, setSignature] = useState<string | null>(serviceAgrementDetails.cddSignature ?? null);
+
   const [cddForm, setFormData] = useState(serviceAgrementDetails.customerDueDiligence || initialSet);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -125,7 +127,7 @@ export default function CustomerDueDiligence() {
     }));
   };
 
-  // console.log("serviceAgrementDetails", serviceAgrementDetails);
+  console.log("cddForm", serviceAgrementDetails.customerDueDiligence);
 
   return (
     // max-w-4xl mx-auto

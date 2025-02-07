@@ -1,43 +1,52 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SignatureModal from "@/components/pdfPage/SignatureModal";
 import { serviceAgreement } from "@/store/hongkong";
 import { useAtom } from "jotai";
+import { formatDateIfMatches } from "@/middleware";
 
-export default function CompanyResolutiontwo({editable}: {editable: boolean}) {
-  const [serviceAgrementDetails, ] = useAtom(serviceAgreement);
+export default function CompanyResolutiontwo() {
 
-  const [docSigned,setDocSigned] = useState("")
+  const [serviceAgrementDetails,] = useAtom(serviceAgreement);
+  // const [docSigned, setDocSigned] = useState("")
+  const [directorName, setDetails] = useState("");
 
   const [signature, setSignature] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+      if (serviceAgrementDetails.directorList) {
+        setSignature(serviceAgrementDetails.directorList?.[0]?.signature || "");
+        setDetails(serviceAgrementDetails.directorList?.[0]?.name || "")
+      }
+    }, [serviceAgrementDetails]);
+    
   const handleBoxClick = () => {
     setIsModalOpen(true);
   };
 
-  // console.log('serviceAgrementDetails',serviceAgrementDetails.shareholderList)
+  const founderName = serviceAgrementDetails.articleAssociation?.founderMembers[0].name || "";
+  const founderShare = serviceAgrementDetails.articleAssociation?.founderMembers[0].noOfShares || "";
+
+  // console.log('serviceAgrementDetails', serviceAgrementDetails)
 
   const handleSelectSignature = (selectedSignature: string | null) => {
     setSignature(selectedSignature);
     setIsModalOpen(false);
   };
 
-  const resolutionData = {    
+  const resolutionData = {
     representative: {
       name: "MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED"
     },
     financialYear: {
       end: "31 December",
       firstAccounts: "31 December 2025"
-    },
-    founder: {
-      name: "",
-      shares: 0
-    }
+    },   
   };
 
   return (
-// w-full max-w-[800px] mx-auto
+    // w-full max-w-[800px] mx-auto
     <Card className=" p-6 print:p-0 rounded-none">
       <CardContent className="p-8">
         {/* Header */}
@@ -111,8 +120,8 @@ export default function CompanyResolutiontwo({editable}: {editable: boolean}) {
                 the Articles of Association of the Company had taken up the following shares: -
               </p>
               <p className="mb-4">
-                <span className=" px-2">{resolutionData.founder.name}</span> had taken up{" "}
-                <span className=" px-2">{resolutionData.founder.shares}</span> shares.
+                <span className=" px-2">{founderName}</span> had taken up{" "}
+                <span className=" px-2">{founderShare}</span> shares.
               </p>
               <p className="mb-2 font-medium">Resolved</p>
               <p className="mb-4">
@@ -147,14 +156,15 @@ export default function CompanyResolutiontwo({editable}: {editable: boolean}) {
           {/* Signature Section */}
           <div className="pt-6 space-y-4 w-64">
             <p >Date: <span className="underline">
-              <input
-                type="date" 
+              {formatDateIfMatches(serviceAgrementDetails.consentSignDate || "")}
+              {/* <input
+                type="date"
                 value={docSigned}
                 placeholder="dd/mm/yyyy"
-                onChange={(e) => setDocSigned(e.target.value)}  
+                onChange={(e) => setDocSigned(e.target.value)}
                 disabled={editable}
-              />  
-              </span></p>
+              /> */}
+            </span></p>
             <div className="w-64 pt-2">
               <div
                 onClick={handleBoxClick}
@@ -178,7 +188,7 @@ export default function CompanyResolutiontwo({editable}: {editable: boolean}) {
               )}
             </div>
             <div className="border-t border-black w-48">
-              <p className="font-medium">TestChairman</p>
+              <p className="font-medium">{directorName}</p>
               <p className=" italic">Chairman</p>
             </div>
           </div>
