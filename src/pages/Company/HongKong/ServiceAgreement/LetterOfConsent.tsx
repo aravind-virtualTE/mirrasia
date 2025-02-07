@@ -10,17 +10,15 @@ import { Separator } from "@/components/ui/separator"
 import SignatureModal from '@/components/pdfPage/SignatureModal'
 import { useAtom } from 'jotai'
 import { serviceAgreement } from '@/store/hongkong'
-
 export default function LetterOfConsent({editable}: {editable: boolean}) {
   const [formData, setFormData] = useState({
     brnNo: '',
-    consentDate: '',
+    consentSignDate: '',
     companyName: '',
     contactEmail: '',
-    startDate: '',
-    endDate: '',
+    consentStateDate: '',
+    consentEndDate: '',
     directorName: '',
-    signDate: ''
   })
   const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
   const [signature, setSignature] = useState<string | "">("");

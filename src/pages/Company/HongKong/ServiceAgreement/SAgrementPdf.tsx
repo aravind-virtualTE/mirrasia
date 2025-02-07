@@ -102,7 +102,7 @@ const SAgrementPdf: React.FC = () => {
             }))
     );
 
-    console.log("companyData-->", companyData);
+    // console.log("companyData-->", companyData);
     const currency = companyData.regCompanyInfo.registerCurrencyAtom;
     const registerAmount = companyData.regCompanyInfo.registerAmountAtom;
     const prepareCompanyData = () => {
@@ -457,7 +457,7 @@ const SAgrementPdf: React.FC = () => {
     //     // setServiceAgrement({ ...serviceAgrementDetails, registeredMembers: updatedMembers });
     //   };
 
-    console.log("registeredMembers", serviceAgrementDetails)
+    // console.log("registeredMembers", serviceAgrementDetails)
     return (
         <div className="max-w-4xl mx-auto">
             {isFetching ? (
@@ -542,7 +542,7 @@ const SAgrementPdf: React.FC = () => {
                         <CompanyResolution editable={isAdmin} />
                     </div>
                     <div id="companyResolutiontwo" className="mb-4">
-                        <CompanyResolutiontwo editable={isAdmin} />
+                        <CompanyResolutiontwo  />
                     </div>
                     <div id="customerDueDiligence" className="mb-4">
                         <CustomerDueDiligence />
