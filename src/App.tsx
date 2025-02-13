@@ -22,7 +22,7 @@ import Unauthorized from './common/Unauthorized';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import CompanyDetail from './pages/Company/Details/CompanyDetail';
 import HkMultiStepForm from './components/company/hongkong/HkMultiStepForm';
-import RegistrationFormIntro from './components/form/shrhldrForm_1';
+import ShareHolderRegForm from './components/form/ShareHolderRegForm';
 import PdfSignature from './components/pdfPage/pdfSignature';
 import PdfTest from './components/pdfPage/pdfTest';
 import QuatationForm from './components/form/quatationForm';
@@ -93,7 +93,8 @@ const App: React.FC = () => {
                 <Route element={<ProtectedRoute  allowedRoles={["sh_dir"]} />}>
                   <Route element={<Layout />}>
                     <Route path="/viewboard" element={<ViewBoard />} />
-                    <Route path='/registrationForm' element={<RegistrationFormIntro />} />
+                    <Route path='/registrationForm' element={<ShareHolderRegForm />} />
+                    <Route path="/registrationForm/:id" element={<ShareHolderRegForm />} />
                   </Route>
                 </Route>
 
@@ -104,7 +105,6 @@ const App: React.FC = () => {
                     <Route path="/hkCompanyRegister/" element={<HkMultiStepForm />} />
                     <Route path="/hkCompanyRegister/:id" element={<HkMultiStepForm />} />
                     {/* Add more user-specific routes here */}
-                    <Route path='/form' element={<RegistrationFormIntro />} />
                     <Route path='/QuatationForm' element={<QuatationForm />} />
                     <Route path='/RenewalReqForm' element={<RenewalRequestForm />} />
                     <Route path='/TransferManagementInfo' element={<TransferManagementInfo />} />
