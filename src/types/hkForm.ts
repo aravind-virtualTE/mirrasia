@@ -134,6 +134,7 @@ export interface Country {
 
 
   export interface ShareHolderRegistrationForm {
+    _id: string;
     email: string;
     companyName: string;
     roles: string[];
@@ -165,4 +166,5 @@ export interface Country {
     pastParticipation: string;
     additionalInfo: string;
     agreementDeclaration: string;
+    regId : string;
   }

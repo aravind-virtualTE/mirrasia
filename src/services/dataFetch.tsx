@@ -140,9 +140,18 @@ export const saveShrDirRegData = async (data: ShareHolderRegistrationForm, id?: 
 export const getShrDirRegData = async ( id?: string) => {
   try {
     const url = id ? `company/registerShrDir/${id}` : 'company/registerShrDir';
-    const response = await api.post(url);
+    const response = await api.get(url);
     return response.data;
   } catch (error) {
     console.error("Error saving service Agreement Data:", error);
+  }
+}
+
+export const getShrDirSavedData = async (id?: string) =>{
+  try {
+    const response = await api.get(`company/getshrdirdata/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
   }
 }

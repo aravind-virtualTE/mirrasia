@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import { ShareHolderRegistrationForm } from "@/types/hkForm";
 import { useParams } from "react-router-dom";
-import { saveShrDirRegData } from "@/services/dataFetch";
+import { getShrDirRegData, saveShrDirRegData } from "@/services/dataFetch";
 import { useToast } from "@/hooks/use-toast";
 
 const ShareHolderRegForm = () => {
@@ -21,6 +21,7 @@ const ShareHolderRegForm = () => {
   const { t } = useTranslation();
   // State Management
   const [formState, setFormState] = useState<ShareHolderRegistrationForm>({
+    _id : "",
     email: "",
     companyName: "",
     roles: [] as string[],
@@ -52,9 +53,11 @@ const ShareHolderRegForm = () => {
     pastParticipation: "",
     additionalInfo: "",
     agreementDeclaration: "",
+    regId : ""
   });
 
   const [errors, setErrors] = useState({
+    _id : "",
     email: "",
     companyName: "",
     roles: "",
@@ -90,11 +93,12 @@ const ShareHolderRegForm = () => {
   useEffect(() => {
     if (id) {
       console.log('id--->', id)
-      async function getIncorporationListByCompId(id: string) {
-        const data = await getIncorporationListByCompId(id);
+      async function fetchData(id: string) {
+        const data = await getShrDirRegData(id);
         console.log("data", data)
+        setFormState(data);
       }
-      getIncorporationListByCompId(id)
+      fetchData(id)
     }
   })
 
@@ -131,6 +135,7 @@ const ShareHolderRegForm = () => {
 
   const handleSubmit = async () => {
     const newErrors = {
+      _id : "",
       email: "",
       companyName: "",
       roles: "",
