@@ -9,12 +9,12 @@ import jwtDecode from 'jwt-decode';
 import { ShareHolderRegistrationForm } from '@/types/hkForm';
 
 
-const companies = [
-  { name: "", type: "", status: "", incorporationDate: "" },
-  // // { name: "Acme Corp", type: "LLC", status: "Active", incorporationDate: "2022-01-15" },
-  // { name: "TechStart Inc", type: "C-Corp", status: "Pending", incorporationDate: "2023-03-22" },
-  // { name: "Green Energy Co", type: "B-Corp", status: "Active", incorporationDate: "2021-11-30" },
-]
+// const companies = [
+//   { name: "", type: "", status: "", incorporationDate: "" },
+//   // // { name: "Acme Corp", type: "LLC", status: "Active", incorporationDate: "2022-01-15" },
+//   // { name: "TechStart Inc", type: "C-Corp", status: "Pending", incorporationDate: "2023-03-22" },
+//   // { name: "Green Energy Co", type: "B-Corp", status: "Active", incorporationDate: "2021-11-30" },
+// ]
 
 export default function ViewBoard() {
   const navigate = useNavigate();
