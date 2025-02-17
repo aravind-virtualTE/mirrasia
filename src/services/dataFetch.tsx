@@ -174,9 +174,9 @@ export const addUser = async (data: string) =>{
   }
 }
 
-export const updateUsers = async () =>{
+export const updateUserRole = async (userId: string, newRole: string) =>{
   try {
-    const response = await api.get(`user/updateUsers`);
+    const response = await api.post(`user/updateUserRole`, { data: { userId, newRole } });
     return response.data;
   } catch (error) {
     console.error("Error fetching saved data:", error);

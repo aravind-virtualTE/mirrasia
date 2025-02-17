@@ -1,6 +1,4 @@
-// import React from 'react'
-
-import { addUser, fetchUsers } from "@/services/dataFetch"
+import { addUser, fetchUsers, updateUserRole } from "@/services/dataFetch"
 import { useEffect, useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -12,13 +10,14 @@ import { toast } from "@/hooks/use-toast"
 import { Pencil } from "lucide-react"
 
 interface User {
-    id?: string;
+    _id?: string;
     fullName: string;
     email: string;
     role: string;
 }
+
 const UsersList = () => {
-    const [users, setUsers] = useState<User[]>([{ id: "", fullName: "", email: "", role: "" }])
+    const [users, setUsers] = useState<User[]>([{ _id: "", fullName: "", email: "", role: "" }])
     const [newUser, setNewUser] = useState({ fullName: "", email: "", role: "user" })
     const [isAddUserOpen, setIsAddUserOpen] = useState(false)
     const [isEditRoleOpen, setIsEditRoleOpen] = useState(false)
@@ -37,8 +36,10 @@ const UsersList = () => {
     const handleRoleChange = async (userId: string, newRole: string) => {
         try {
             // Here you would typically call an API to update the user's role
-            // await updateUserRole(userId, newRole);
-            setUsers((prevUsers) => prevUsers.map((user) => (user.id === userId ? { ...user, role: newRole } : user)))
+            await updateUserRole(userId, newRole);
+            // console.log("changs", userId, '\n role', newRole)
+            setUsers((prevUsers) => prevUsers.map((user) => (user._id === userId ? { ...user, role: newRole } : user)))
+            setSelectedUser((prevUser) => (prevUser ? { ...prevUser, role: newRole } : null)) 
             toast({
                 title: "Role updated",
                 description: `Updated user ${userId} role to ${newRole}`,
@@ -78,9 +79,8 @@ const UsersList = () => {
     const openEditRoleDialog = (user: User) => {
         setSelectedUser(user)
         setIsEditRoleOpen(true)
-      }
+    }
 
-    console.log("users", users)
     return (
         <div className="space-y-4">
             <div className="flex justify-end">
@@ -146,8 +146,8 @@ const UsersList = () => {
                     </TableHeader>
                     <TableBody>
                         {users.map((user) => (
-                            <TableRow key={user.id} className="hover:bg-muted/50">
-                                <TableCell className="p-2 text-sm" >{user.fullName}</TableCell>
+                            <TableRow key={user._id} className="hover:bg-muted/50">
+                                <TableCell className="p-2 text-sm">{user.fullName}</TableCell>
                                 <TableCell className="p-2 text-sm">{user.email}</TableCell>
                                 <TableCell className="p-2 text-sm">{user.role}</TableCell>
                                 <TableCell className="p-2">
@@ -183,7 +183,7 @@ const UsersList = () => {
                                 <Label>Role</Label>
                                 <Select
                                     value={selectedUser.role}
-                                    onValueChange={(value) => handleRoleChange(selectedUser?.id || "", value )}
+                                    onValueChange={(value) => handleRoleChange(selectedUser._id || "", value)}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a role" />
