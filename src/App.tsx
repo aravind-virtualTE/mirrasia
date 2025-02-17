@@ -32,6 +32,7 @@ import AccountingTaxForm from './components/form/accountingTaxWork';
 // import SignatureModal from './components/pdfPage/signSmpl';
 import ParentComponent from './components/pdfPage/parent';
 import ViewBoard from './components/shareholderDirector/ViewBoard';
+import UsersList from './components/userList/UsersList';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -72,16 +73,22 @@ const App: React.FC = () => {
                 <Route path="/pdf1" element={<PdfSignature />} />
                 <Route path="/sign" element={<ParentComponent />} />
 
-                <Route element={<ProtectedRoute allowedRoles={["admin", "user"]} />}>
-                <Route element={<Layout />}>
-                  <Route path="/company-register/" element={<CompanyRegistration />} />
-                  <Route path="/company-register/:id" element={<CompanyRegistration />} />
-                  <Route path="/profile" element={<Profile />} />
+                <Route element={<ProtectedRoute allowedRoles={["master"]} />}>
+                  <Route element={<Layout />}>
+                    <Route path="/userslist" element={<UsersList />} />
+                  </Route>
                 </Route>
-              </Route>
+
+                <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master"]} />}>
+                  <Route element={<Layout />}>
+                    <Route path="/company-register/" element={<CompanyRegistration />} />
+                    <Route path="/company-register/:id" element={<CompanyRegistration />} />
+                    <Route path="/profile" element={<Profile />} />
+                  </Route>
+                </Route>
 
                 {/* Protected routes for Admin */}
-                <Route element={<ProtectedRoute  allowedRoles={["admin"]} />}>
+                <Route element={<ProtectedRoute allowedRoles={["admin" , 'master']} />}>
                   <Route element={<Layout />}>
                     <Route path="/compReg" element={<CompanyRegistration2 />} />
                     <Route path="/admin-dashboard" element={<AdminDashboard />} />
@@ -90,7 +97,7 @@ const App: React.FC = () => {
                   </Route>
                 </Route>
 
-                <Route element={<ProtectedRoute  allowedRoles={["sh_dir"]} />}>
+                <Route element={<ProtectedRoute allowedRoles={["sh_dir"]} />}>
                   <Route element={<Layout />}>
                     <Route path="/viewboard" element={<ViewBoard />} />
                     <Route path='/registrationForm' element={<ShareHolderRegForm />} />
@@ -109,9 +116,6 @@ const App: React.FC = () => {
                     <Route path='/RenewalReqForm' element={<RenewalRequestForm />} />
                     <Route path='/TransferManagementInfo' element={<TransferManagementInfo />} />
                     <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm />} />
-
-
-
                   </Route>
                 </Route>
               </Routes>

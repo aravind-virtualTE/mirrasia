@@ -155,3 +155,30 @@ export const getShrDirSavedData = async (id?: string) =>{
     console.error("Error fetching saved data:", error);
   }
 }
+
+export const fetchUsers = async () =>{
+  try {
+    const response = await api.get(`user/getUsers`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}
+
+export const addUser = async (data: string) =>{
+  try {
+    const response = await api.post(`user/addUser`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}
+
+export const updateUsers = async () =>{
+  try {
+    const response = await api.get(`user/updateUsers`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}

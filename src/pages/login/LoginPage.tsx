@@ -32,7 +32,7 @@ const LoginComponent: React.FC = () => {
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem("token", response.token);
       setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
-      if(response.user.role === 'admin') {
+      if(response.user.role === 'admin' || response.user.role === 'master') {
         navigate('/admin-dashboard');
       }
       else if(response.user.role === 'sh_dir'){
@@ -125,7 +125,7 @@ const LoginComponent: React.FC = () => {
                     width={175}
                     height={25}
                     srcSet="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
-                    fetchPriority="high"
+                    // fetchPriority="high"
                     style={{ width: '175px', height: '25px', objectFit: 'cover',  }}
                 />
             </div>

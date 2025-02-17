@@ -29,7 +29,7 @@ export default function Navbar() {
     const decodedToken = jwtDecode<TokenData>(token);
 
     const navigateRoute = () => {
-        if (decodedToken.role === 'admin') {
+        if (['admin', 'master'].includes(decodedToken.role)) {
             navigate('/admin-dashboard');
         }
         else if (decodedToken.role === 'sh_dir') {
@@ -63,13 +63,13 @@ export default function Navbar() {
                     MIRR ASIA
                 </span> */}
                 <img
-                    src= {theme === 'light'? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png" : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"}
+                    src={theme === 'light' ? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png" : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"}
                     alt="MIRRASIA"
                     width={175}
                     height={25}
-                    srcSet={theme === 'light'? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png" : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"}
-                    fetchPriority="high"
-                    style={{ width: '175px', height: '25px', objectFit: 'cover',  }}
+                    srcSet={theme === 'light' ? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png" : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"}
+                    // fetchpriority="high"
+                    style={{ width: '175px', height: '25px', objectFit: 'cover', }}
                 />
             </span>
             <div className="flex-1">
@@ -99,6 +99,10 @@ export default function Navbar() {
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                     </DropdownMenuItem>
+                    {decodedToken.role === 'master' ? (<DropdownMenuItem onClick={() => navigate('/userslist')}>
+                        <User className="mr-2 h-4 w-4" />
+                        <span>users</span>
+                    </DropdownMenuItem>) : ""}
                     <DropdownMenuItem onClick={logout}>
                         <LogOut className="mr-2 h-4 w-4" />
                         <span>Logout</span>

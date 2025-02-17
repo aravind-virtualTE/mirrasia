@@ -146,14 +146,16 @@ export default function ViewBoard() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead> </TableHead>
                   <TableHead>Company Name</TableHead>
                   <TableHead>fullName</TableHead>
                   <TableHead>significantController</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {formState.map((company) => (
+                {formState.map((company, index) => (
                   <TableRow key={company.companyName} onClick={() => navigate(`/registrationForm/${company._id}`)} className='cursor-pointer'>
+                    <TableCell className="font-medium">{index + 1}</TableCell>
                     <TableCell className="font-medium">{company.companyName}</TableCell>
                     <TableCell>{company.fullName}</TableCell>
                     <TableCell>{company.significantController}</TableCell>

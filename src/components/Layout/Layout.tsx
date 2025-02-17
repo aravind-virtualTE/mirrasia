@@ -67,7 +67,7 @@ const Layout: React.FC = () => {
     const handleNavigation = (label: string) => {
         switch(label) {
             case 'Home':
-                if(decodedToken.role === 'admin') {
+                if (['admin', 'master'].includes(decodedToken.role)) {
                     navigate('/admin-dashboard');
                 } 
                 else if(decodedToken.role === 'sh_dir') {
@@ -79,7 +79,7 @@ const Layout: React.FC = () => {
                 }
                 break;
             case 'Register Company':
-                if(decodedToken.role === 'admin') {
+                if(['admin', 'master'].includes(decodedToken.role)) {
                     navigate('/company-register');
                 }
                 else if(decodedToken.role === 'sh_dir') {
