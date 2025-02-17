@@ -131,3 +131,40 @@ export interface Country {
     entries : ShareEntry[];
     shareClass: ShareClass;
   }
+
+
+  export interface ShareHolderRegistrationForm {
+    _id: string;
+    email: string;
+    companyName: string;
+    roles: string[];
+    significantController: string;
+    fullName: string;
+    mobileNumber: string;
+    kakaoTalkId: string;
+    weChatId: string;
+    passportCopy: string| Blob;
+    personalCertificate: string| Blob;
+    proofOfAddress: string| Blob;
+    passportDigits: string;
+    birthCountry: string;
+    currentResidence: string;
+    nomineeParticipation: string;
+    correspondenceAddress: string;
+    overseasResidentStatus: string;
+    foreignInvestmentReport: string;
+    foreignInvestmentAgreement: string;
+    politicallyExposedStatus: string;
+    politicalDetails: string;
+    legalIssuesStatus: string;
+    usResidencyStatus: string;
+    usResidencyDetails: string;
+    natureOfFunds: string[];
+    sourceOfFunds: string[];
+    countryOfFundOrigin: string;
+    undischargedBankruptcy: string;
+    pastParticipation: string;
+    additionalInfo: string;
+    agreementDeclaration: string;
+    regId : string;
+  }

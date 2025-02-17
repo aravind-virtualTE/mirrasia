@@ -5,15 +5,23 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { HelpCircle } from "lucide-react";
+import { ShareHolderRegistrationForm } from "@/types/hkForm";
+import { useParams } from "react-router-dom";
+import { getShrDirRegData, saveShrDirRegData } from "@/services/dataFetch";
+import { useToast } from "@/hooks/use-toast";
 
-const RegistrationFormIntro = () => {
+const ShareHolderRegForm = () => {
+  const { id } = useParams();
+  const { toast } = useToast();
+
   const { t } = useTranslation();
   // State Management
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<ShareHolderRegistrationForm>({
+    _id : "",
     email: "",
     companyName: "",
     roles: [] as string[],
@@ -22,9 +30,9 @@ const RegistrationFormIntro = () => {
     mobileNumber: "",
     kakaoTalkId: "",
     weChatId: "",
-    passportCopy: null as File | null,
-    personalCertificate: null as File | null,
-    proofOfAddress: null as File | null,
+    passportCopy: null as unknown as string | Blob,
+    personalCertificate: null as unknown as string | Blob,
+    proofOfAddress: null as unknown as string | Blob,
     passportDigits: "",
     birthCountry: "",
     currentResidence: "",
@@ -45,9 +53,11 @@ const RegistrationFormIntro = () => {
     pastParticipation: "",
     additionalInfo: "",
     agreementDeclaration: "",
+    regId : ""
   });
 
   const [errors, setErrors] = useState({
+    _id : "",
     email: "",
     companyName: "",
     roles: "",
@@ -80,6 +90,18 @@ const RegistrationFormIntro = () => {
 
   });
 
+  useEffect(() => {
+    if (id) {
+      console.log('id--->', id)
+      async function fetchData(id: string) {
+        const data = await getShrDirRegData(id);
+        console.log("data", data)
+        setFormState(data);
+      }
+      fetchData(id)
+    }
+  })
+
   const roleOptions = [
     "Major shareholder (holding the largest stake)",
     "General shareholder",
@@ -111,8 +133,9 @@ const RegistrationFormIntro = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newErrors = {
+      _id : "",
       email: "",
       companyName: "",
       roles: "",
@@ -209,6 +232,20 @@ const RegistrationFormIntro = () => {
     }
     setErrors(newErrors);
     if (Object.values(newErrors).every((error) => error === "")) {
+      const formData = new FormData();
+      formData.append("userData", JSON.stringify(formState));
+
+      // Append files (assuming you have file inputs in your frontend)
+      formData.append("passportCopy", formState.passportCopy);
+      formData.append("personalCertificate", formState.personalCertificate);
+      formData.append("proofOfAddress", formState.proofOfAddress);
+      const result = await saveShrDirRegData(formState, id);
+      if (result.success == true) {
+        toast({
+          title: "Details submitted",
+          description: "Saved successfully"
+        });
+      }
       console.log("Form submitted successfully:", formState);
     }
   };
@@ -464,7 +501,7 @@ const RegistrationFormIntro = () => {
               id="passportCopy"
               type="file"
               accept=".pdf,.jpg,.png,.jpeg"
-              onChange={(e) => handleChange("passportCopy", e.target.files?.[0] || null)}
+              onChange={(e) => handleChange("passportCopy", e.target.files?.[0] || "")}
               className="w-full"
             />
           </div>
@@ -501,7 +538,7 @@ const RegistrationFormIntro = () => {
               type="file"
               accept=".pdf,.jpg,.png,.jpeg"
               multiple
-              onChange={(e) => handleChange("personalCertificate", e.target.files?.[0] || null)}
+              onChange={(e) => handleChange("personalCertificate", e.target.files?.[0] || '')}
               className="w-full"
             />
           </div>
@@ -538,7 +575,7 @@ const RegistrationFormIntro = () => {
               type="file"
               accept=".pdf,.jpg,.png,.jpeg"
               multiple
-              onChange={(e) => handleChange("proofOfAddress", e.target.files?.[0] || null)}
+              onChange={(e) => handleChange("proofOfAddress", e.target.files?.[0] || '')}
               className="w-full"
             />
           </div>
@@ -1235,4 +1272,4 @@ const RegistrationFormIntro = () => {
   );
 };
 
-export default RegistrationFormIntro;
+export default ShareHolderRegForm;

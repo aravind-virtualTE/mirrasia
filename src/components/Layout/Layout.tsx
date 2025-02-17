@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import {
     // Globe,
-    Menu, Home, Settings, HelpCircle,
+    Menu, Home, 
+    // Settings, HelpCircle,
     // Rocket,
     Users,
     // PenSquare,
-    Mail,
+    // Mail,
     FileSignature,
-    User2,
-    Gift,
-    Receipt,
+    // User2,
+    // Gift,
+    // Receipt,
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Navigate, Outlet, useNavigate } from 'react-router-dom';
@@ -49,24 +50,27 @@ const Layout: React.FC = () => {
 
     const sidebarItems = [
         { icon: <Home className="h-5 w-5" />, label: "Home" },
-        { icon: <Settings className="h-5 w-5" />, label: "Settings" },
-        { icon: <HelpCircle className="h-5 w-5" />, label: "Help" },
-        { icon: <Mail className="w-4 h-4" />, label: "Mailroom" },
         { icon: <FileSignature className="w-4 h-4" />, label: "Register Company" },
-        { icon: <User2 className="w-4 h-4" />, label: "Company Secretary" },
-        { icon: <Users className="w-4 h-4" />, label: "Requests" },
-        { icon: <Gift className="w-4 h-4" />, label: "Perks" },
-        { icon: <Receipt className="w-4 h-4" />, label: "Billings & Subscriptions" },
-        { icon: <HelpCircle className="w-4 h-4" />, label: "Support" },
+        // { icon: <Settings className="h-5 w-5" />, label: "Settings" },
+        // { icon: <HelpCircle className="h-5 w-5" />, label: "Help" },
+        // { icon: <Mail className="w-4 h-4" />, label: "Mailroom" },
+        // { icon: <User2 className="w-4 h-4" />, label: "Company Secretary" },
+        // { icon: <Users className="w-4 h-4" />, label: "Requests" },
+        // { icon: <Gift className="w-4 h-4" />, label: "Perks" },
+        // { icon: <Receipt className="w-4 h-4" />, label: "Billings & Subscriptions" },
+        // { icon: <HelpCircle className="w-4 h-4" />, label: "Support" },
     ];
     const token = localStorage.getItem('token') as string;
     if(!token) return <Navigate to="/" replace />
     const decodedToken = jwtDecode<TokenData>(token);
     
+    if(decodedToken.role === 'master') {
+        sidebarItems.push({ icon: <Users className="w-4 h-4" />, label: "Users List" });
+    }
     const handleNavigation = (label: string) => {
         switch(label) {
             case 'Home':
-                if(decodedToken.role === 'admin') {
+                if (['admin', 'master'].includes(decodedToken.role)) {
                     navigate('/admin-dashboard');
                 } 
                 else if(decodedToken.role === 'sh_dir') {
@@ -77,8 +81,13 @@ const Layout: React.FC = () => {
                     navigate('/dashboard');
                 }
                 break;
+            case 'Users List':
+                if (['master'].includes(decodedToken.role)) {
+                    navigate('/userslist');
+                }               
+                break;
             case 'Register Company':
-                if(decodedToken.role === 'admin') {
+                if(['admin', 'master'].includes(decodedToken.role)) {
                     navigate('/company-register');
                 }
                 else if(decodedToken.role === 'sh_dir') {
