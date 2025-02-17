@@ -4,7 +4,7 @@ import {
     Menu, Home, 
     // Settings, HelpCircle,
     // Rocket,
-    // Users,
+    Users,
     // PenSquare,
     // Mail,
     FileSignature,
@@ -64,6 +64,9 @@ const Layout: React.FC = () => {
     if(!token) return <Navigate to="/" replace />
     const decodedToken = jwtDecode<TokenData>(token);
     
+    if(decodedToken.role === 'master') {
+        sidebarItems.push({ icon: <Users className="w-4 h-4" />, label: "Users List" });
+    }
     const handleNavigation = (label: string) => {
         switch(label) {
             case 'Home':
@@ -77,6 +80,11 @@ const Layout: React.FC = () => {
                     localStorage.removeItem('companyRecordId');
                     navigate('/dashboard');
                 }
+                break;
+            case 'Users List':
+                if (['master'].includes(decodedToken.role)) {
+                    navigate('/userslist');
+                }               
                 break;
             case 'Register Company':
                 if(['admin', 'master'].includes(decodedToken.role)) {
