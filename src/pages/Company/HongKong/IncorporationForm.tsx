@@ -76,6 +76,7 @@ import {
     shareHolderDirectorControllerAtom,
     updateCompanyIncorporationAtom,
     countryAtom,
+    applicantInfoFormAtom,
 } from "@/lib/atom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LightbulbIcon } from "lucide-react";
@@ -104,6 +105,7 @@ const IncorporationForm = () => {
     const [, setAcknowledgementDialouge] = useAtom(
         legalAcknowledgementDialougeAtom
     );
+    const [formData] = useAtom(applicantInfoFormAtom);
     const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
     const [finalForm] = useAtom(companyIncorporationAtom);
     const [businessInfoHkCompany] = useAtom(businessInfoHkCompanyAtom);
@@ -175,6 +177,7 @@ const IncorporationForm = () => {
         }
     };
 
+
     const nextSection = async () => {
         if (
             currentSection === 2 &&
@@ -184,7 +187,40 @@ const IncorporationForm = () => {
                 title: "Fill Details",
                 description: "Fill all the required fields",
             });
-        } else if (currentSection === 3) {
+        }
+        else if (currentSection === 1) {
+            // formData
+            const errors = [];
+            if (!formData.name || formData.name.trim() === "") {
+                errors.push("Name cannot be empty.");
+            }
+            if (!Array.isArray(formData.relationships) || formData.relationships.length === 0 || formData.relationships.some(rel => rel.trim() === "")) {
+                errors.push("Relationships cannot be empty.");
+            }
+            if (!Array.isArray(formData.companyName) || formData.companyName.length === 0 || formData.companyName.some(name => name.trim() === "")) {
+                errors.push("Company Name cannot be empty.");
+            }
+            if (!formData.phoneNumber || formData.phoneNumber.trim() === "") {
+                errors.push("Phone number cannot be empty.");
+            }
+            if (!formData.email || formData.email.trim() === "" || !/^\S+@\S+\.\S+$/.test(formData.email)) {
+                errors.push("Invalid email format or empty email.");
+            }
+            if (!formData.snsPlatform || formData.snsPlatform.trim() === "") {
+                errors.push("SNS Platform cannot be empty.");
+            }
+            if (errors.length > 0) {
+                toast({
+                    title: "Fill Details",
+                    description: errors.join("\n"),
+                })
+            } else {
+                await updateDoc();
+                setCurrentSection(currentSection + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        }
+        else if (currentSection === 3) {
             const emptyNameShareholders = shareHolderAtom.shareHolders.filter(
                 (shareholder) => !shareholder.name.trim()
             );
@@ -228,108 +264,108 @@ const IncorporationForm = () => {
         <div className="flex flex-col md:flex-row h-screen">
             {/* Main Content */}
             <div className="flex-1 flex flex-col h-full">
-    {/* Fixed Header */}
-    <Card className="rounded-none border-b border-t-0 border-l-0 border-r-0">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 p-1">
-            <CardTitle className="text-base md:text-lg">
-                Company Incorporation {countryState.name}
-            </CardTitle>
-            <span className="text-xs text-muted-foreground">
-                Step {currentSection} of {10}
-            </span>
-        </CardHeader>
-    </Card>
+                {/* Fixed Header */}
+                <Card className="rounded-none border-b border-t-0 border-l-0 border-r-0">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 p-1">
+                        <CardTitle className="text-base md:text-lg">
+                            Company Incorporation {countryState.name}
+                        </CardTitle>
+                        <span className="text-xs text-muted-foreground">
+                            Step {currentSection} of {10}
+                        </span>
+                    </CardHeader>
+                </Card>
 
-    {/* Good to know card - Fixed */}
-    {currentSection === 1 && (
-        <Card
-            className={`border-0 ${theme === "light"
-                    ? "bg-blue-50 text-gray-800"
-                    : "bg-gray-800 text-gray-200"
-                }`}
-        >
-            <CardContent className="p-3 md:p-4 flex flex-col md:flex-row items-start space-x-0 md:space-x-3 space-y-3 md:space-y-0">
-                <LightbulbIcon
-                    className={`w-4 h-4 md:w-5 md:h-5 flex-shrink-0 ${theme === "light" ? "text-primary" : "text-blue-400"
-                        }`}
-                />
-                <div>
-                    <h3
-                        className={`font-semibold mb-1 text-sm md:text-base ${theme === "light" ? "text-gray-800" : "text-gray-200"
+                {/* Good to know card - Fixed */}
+                {currentSection === 1 && (
+                    <Card
+                        className={`border-0 ${theme === "light"
+                            ? "bg-blue-50 text-gray-800"
+                            : "bg-gray-800 text-gray-200"
                             }`}
                     >
-                        Good to know
-                    </h3>
-                    <p
-                        className={`text-xs ${theme === "light" ? "text-gray-600" : "text-gray-400"
-                            }`}
-                    >
-                        Enter different variations of your company name in order of
-                        preference. Mirr Asia will help you obtain final confirmation
-                        prior to incorporation.
-                    </p>
+                        <CardContent className="p-3 md:p-4 flex flex-col md:flex-row items-start space-x-0 md:space-x-3 space-y-3 md:space-y-0">
+                            <LightbulbIcon
+                                className={`w-4 h-4 md:w-5 md:h-5 flex-shrink-0 ${theme === "light" ? "text-primary" : "text-blue-400"
+                                    }`}
+                            />
+                            <div>
+                                <h3
+                                    className={`font-semibold mb-1 text-sm md:text-base ${theme === "light" ? "text-gray-800" : "text-gray-200"
+                                        }`}
+                                >
+                                    Good to know
+                                </h3>
+                                <p
+                                    className={`text-xs ${theme === "light" ? "text-gray-600" : "text-gray-400"
+                                        }`}
+                                >
+                                    Enter different variations of your company name in order of
+                                    preference. Mirr Asia will help you obtain final confirmation
+                                    prior to incorporation.
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {/* Scrollable Form Container */}
+                <div className="flex-1 overflow-y-auto min-h-0">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={currentSection}
+                            initial="initial"
+                            animate="in"
+                            exit="out"
+                            variants={{
+                                initial: { opacity: 0, x: "-10%" },
+                                in: {
+                                    opacity: 1,
+                                    x: 0,
+                                    transition: { duration: 0.4, ease: "easeInOut" },
+                                },
+                                out: {
+                                    opacity: 0,
+                                    x: "10%",
+                                    transition: { duration: 0.4, ease: "easeInOut" },
+                                },
+                            }}
+                            className="h-full w-auto"
+                        >
+                            {currentSection === 1 && <ApplicantInfoForm />}
+                            {currentSection === 2 && <AmlCdd />}
+                            {currentSection === 3 && <CompanyInformation />}
+                            {currentSection === 4 && <ServiceAgreement />}
+                            {currentSection === 5 && <ServiceSelection />}
+                            {currentSection === 6 && <Invoice />}
+                            {currentSection === 7 && <PaymentInformation />}
+                            {currentSection === 8 && <InformationIncorporation />}
+                            {currentSection === 9 && <SAgrementPdf />}
+                            {currentSection === 10 && <IncorporateCompany />}
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
-            </CardContent>
-        </Card>
-    )}
 
-    {/* Scrollable Form Container */}
-    <div className="flex-1 overflow-y-auto min-h-0">
-        <AnimatePresence mode="wait">
-            <motion.div
-                key={currentSection}
-                initial="initial"
-                animate="in"
-                exit="out"
-                variants={{
-                    initial: { opacity: 0, x: "-10%" },
-                    in: {
-                        opacity: 1,
-                        x: 0,
-                        transition: { duration: 0.4, ease: "easeInOut" },
-                    },
-                    out: {
-                        opacity: 0,
-                        x: "10%",
-                        transition: { duration: 0.4, ease: "easeInOut" },
-                    },
-                }}
-                className="h-full w-auto"
-            >
-                {currentSection === 1 && <ApplicantInfoForm />}
-                {currentSection === 2 && <AmlCdd />}
-                {currentSection === 3 && <CompanyInformation />}
-                {currentSection === 4 && <ServiceAgreement />}
-                {currentSection === 5 && <ServiceSelection />}
-                {currentSection === 6 && <Invoice />}
-                {currentSection === 7 && <PaymentInformation />}
-                {currentSection === 8 && <InformationIncorporation />}
-                {currentSection === 9 && <SAgrementPdf />}
-                {currentSection === 10 && <IncorporateCompany />}
-            </motion.div>
-        </AnimatePresence>
-    </div>
-
-    {/* Navigation buttons - Sticky positioning */}
-    <div className="sticky bottom-0 bg-background border-t p-1 mt-auto"> {/* Sticky positioning */}
-        <div className="flex justify-between">
-            <Button
-                variant="outline"
-                onClick={previousSection}
-                disabled={currentSection === 1}
-                className="flex items-center space-x-2"
-            >
-                <span>← BACK</span>
-            </Button>
-            <Button
-                onClick={nextSection}
-                className="flex items-center space-x-2 bg-primary"
-            >
-                <span>{currentSection === 10 ? "SUBMIT" : "NEXT →"}</span>
-            </Button>
-        </div>
-    </div>
-</div>
+                {/* Navigation buttons - Sticky positioning */}
+                <div className="sticky bottom-0 bg-background border-t p-1 mt-auto"> {/* Sticky positioning */}
+                    <div className="flex justify-between">
+                        <Button
+                            variant="outline"
+                            onClick={previousSection}
+                            disabled={currentSection === 1}
+                            className="flex items-center space-x-2"
+                        >
+                            <span>← BACK</span>
+                        </Button>
+                        <Button
+                            onClick={nextSection}
+                            className="flex items-center space-x-2 bg-primary"
+                        >
+                            <span>{currentSection === 10 ? "SUBMIT" : "NEXT →"}</span>
+                        </Button>
+                    </div>
+                </div>
+            </div>
 
             {/* Progress indicator - Fixed (hidden on mobile, visible on md and larger screens) */}
             <Card className="w-full md:w-48 rounded-none border-l border-t-0 border-r-0 border-b-0 overflow-y-auto hidden md:flex">
