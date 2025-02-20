@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 // import Logo from '@/common/LogoComponent';
 import { Button } from "@/components/ui/button";
@@ -187,13 +187,46 @@ const LandingPage = () => {
         </div>
       </div>
 
+      <footer className="bg-gray-800 text-white py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div>
+              <h3 className="text-lg font-bold mb-4">HONG KONG OFFICE</h3>
+              <p className="text-sm">
+                WORKSHOP UNIT B50 & B58, KWAI SHING IND. BLDG (PHASE 1),<br />
+                36-40 TAI LIN PAI RD, KWAI CHUNG, HK<br />
+                Tel: 852-2187-2428
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-bold mb-4">KOREA OFFICE</h3>
+              <p className="text-sm">
+                UNIT 937, 9/F, GOLDEN IT TOWER,<br />
+                229 YANGJI-RO, BUCHEON-SI, GYEONGGI-DO,<br />
+                REPUBLIC OF KOREA<br />
+                Tel: 02-543-6187 / Fax: 02-6455-6187
+              </p>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center">
+            <p className="text-sm">
+              © Copyright 2024 Mirr Asia™ All rights reserved.<br />
+              All rights to this website belong to MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED and may not be used without permission.
+            </p>
+            <p className="text-sm mt-4">
+              <Link to="/privacy-policy" className="hover:underline">Privacy Policy</Link>
+            </p>
+          </div>
+        </div>
+      </footer>
       {/* Trust Banner */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+      {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
         <h2 className="text-2xl font-bold mb-8">
           Trusted by over 450,000 businesses globally
         </h2>
         <div className="flex justify-center items-center space-x-8">
-          {/* Placeholder for partner logos */}
           <div className="w-32 h-12 bg-gray-200 rounded flex items-center justify-center">
             Logo 1
           </div>
@@ -204,7 +237,7 @@ const LandingPage = () => {
             Logo 3
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

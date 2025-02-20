@@ -87,7 +87,7 @@ const Layout: React.FC = () => {
                 }               
                 break;
             case 'Register Company':
-                if(['admin', 'master'].includes(decodedToken.role)) {
+                if(['admin', 'master', 'user'].includes(decodedToken.role)) {
                     navigate('/company-register');
                 }
                 else if(decodedToken.role === 'sh_dir') {

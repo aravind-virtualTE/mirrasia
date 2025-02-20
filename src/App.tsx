@@ -33,6 +33,7 @@ import AccountingTaxForm from './components/form/accountingTaxWork';
 import ParentComponent from './components/pdfPage/parent';
 import ViewBoard from './components/shareholderDirector/ViewBoard';
 import UsersList from './components/userList/UsersList';
+import PrivacyPolicy from './components/PrivacyPolicy';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -66,6 +67,7 @@ const App: React.FC = () => {
                 <Route path="/login" element={<LoginComponent />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
                 <Route path="/docslayout" element={<DocsLayout />} />
                 <Route path="/mslayout" element={<MultiStepFormLayout />} />
