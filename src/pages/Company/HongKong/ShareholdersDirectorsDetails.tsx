@@ -153,25 +153,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                       <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-[500px] text-base">
-                      Conditions for significant control over the Company; A
-                      person has significant control over a company if one or
-                      more of the following 5 conditions are met – 1.The person
-                      holds, directly or indirectly, more than 25% of the issued
-                      shares in the Company or, if the Company does not have a
-                      share capital, the person holds, directly or indirectly, a
-                      right to share in more than 25% of the capital or profits
-                      of the Company ; 2.The person holds, directly or
-                      indirectly, more than 25% of the voting rights of the
-                      Company ; 3.The person holds, directly or indirectly, the
-                      right to appoint or remove a majority of the board of
-                      directors of the Company ; 4.The person has the right to
-                      exercise, or actually exercises, significant influence or
-                      control over the Company ; 5.The person has the right to
-                      exercise, or actually exercises, significant influence or
-                      control over the activities of a trust or a firm that is
-                      not a legal person, but whose trustees or members satisfy
-                      any of the first four conditions (in their capacity as
-                      such) in relation to the Company.
+                     {t('CompanyInformation.conditionSignificantControl')}
                     </TooltipContent>
                   </Tooltip>
                 </span>
