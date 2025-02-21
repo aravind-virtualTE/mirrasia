@@ -96,7 +96,7 @@ const CompanyInformation: React.FC = () => {
 
                             <div>
                                 <Label className="text-base font-semibold">
-                                    Purpose of the establishment of the Hong Kong company and expected effects <span className="text-red-500 font-bold ml-1">*</span>
+                                    {t('CompanyInformation.purposeOfEstablishment')} <span className="text-red-500 font-bold ml-1">*</span>                                    
                                 </Label>
 
                                 {purposeOptions.map((purpose) => (

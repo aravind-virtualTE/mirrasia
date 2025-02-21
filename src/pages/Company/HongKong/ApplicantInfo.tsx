@@ -315,7 +315,9 @@ const ApplicantInfoForm = () => {
               </div>
             ))
           }
-          <p className="text-base">You Can Enter Optional Chinese names for your company below</p>
+          <Label className="text-base  flex items-center gap-2">
+            {t('ApplicantInfoForm.compChinaName')}
+          </Label>
           {
             formData.chinaCompanyName.map((cName, index) => (
               <div key={`chinaCompanyName-${index}`}>
