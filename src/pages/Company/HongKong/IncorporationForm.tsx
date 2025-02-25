@@ -97,7 +97,7 @@ import SAgrementPdf from "./ServiceAgreement/SAgrementPdf";
 import api from "@/services/fetch";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
-
+import { paymentApi } from '@/lib/api/payment';
 const IncorporationForm = () => {
     const { theme } = useTheme();
     const { toast } = useToast();
@@ -176,7 +176,7 @@ const IncorporationForm = () => {
             console.error("Error updating document:", error);
         }
     };
-
+    console.log("finalForm",finalForm)
 
     const nextSection = async () => {
         if (
@@ -241,7 +241,23 @@ const IncorporationForm = () => {
             await updateDoc();
             setCurrentSection(currentSection + 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
-        } else if (currentSection < 10 && currentSection !== 2) {
+        }
+        else if (currentSection === 7){
+            // console.log("form submission", finalForm);
+            const session = await paymentApi.getSession(finalForm.sessionId)
+            // console.log("session--->", session)
+            if(session.status === 'completed'){
+                await updateDoc();
+                setCurrentSection(currentSection + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }else{
+                toast({
+                    title: "Payment Pending",
+                    description: "Please complete the payment to proceed",
+                });
+            }
+        }
+        else if (currentSection < 10 && currentSection !== 2) {
             await updateDoc();
             setCurrentSection(currentSection + 1);
             window.scrollTo({ top: 0, behavior: "smooth" });

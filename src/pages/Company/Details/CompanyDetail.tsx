@@ -322,7 +322,7 @@ const CompanyDetail = () => {
                 let companyData
                 if (id) {
                     companyData = await getIncorporationListByCompId(id);
-                    console.log("companyData", companyData);
+                    // console.log("companyData", companyData);
                     setCompany(companyData[0])
                 }
                 const session = await paymentApi.getSession(companyData[0].sessionId);
