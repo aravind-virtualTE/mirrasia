@@ -276,11 +276,11 @@ const ShareholderDirectorForm: React.FC = () => {
       const payload = { _id: docId, inviteData: extractedData };
       // console.log("send mail function", payload)
       const response = await sendInviteToShDir(payload);
-      console.log("send mail response", response)
+      // console.log("send mail response", response)
       if (response.summary.successful > 0){
         toast({
           title: 'Success',
-          description: `Successfully sent invitation mail to ${response.successful.length} people`,
+          description: `Successfully sent invitation mail to ${response.summary.successful} people`,
         })
       }
       if (response.summary.alreadyExists > 0){
