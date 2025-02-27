@@ -33,10 +33,10 @@ const SignupPage = () => {
       const tokenValidate = async () => {
         try {
           const response = await validateToken({ token: idToken });
-          console.log("response", response);
+          // console.log("response", response);
           // Uncomment the following line if the response contains a valid token flag.
-          // setIsValidToken(response.data.isValid);
-          setIsValidToken(false);
+          setIsValidToken(response.isNotValid);
+          // setIsValidToken(false);
         } catch (error) {
           console.error("Invalid or expired token:", error);
           setIsValidToken(true);
@@ -136,7 +136,7 @@ const SignupPage = () => {
   });
 
   if (searchParams.size !== 0) {
-    console.log("searchParams-->", searchParams.size);
+    // console.log("searchParams-->", searchParams.size);
     if (isValidToken) {
       return (
         <div className="min-h-screen flex items-center justify-center">
