@@ -34,6 +34,7 @@ import ParentComponent from './components/pdfPage/parent';
 import ViewBoard from './components/shareholderDirector/ViewBoard';
 import UsersList from './components/userList/UsersList';
 import PrivacyPolicy from './components/PrivacyPolicy';
+import CompanyDocumentManager from './components/companyDocumentManager/CompanyDocumentManager';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -85,6 +86,7 @@ const App: React.FC = () => {
                   <Route element={<Layout />}>
                     <Route path="/company-register/" element={<CompanyRegistration />} />
                     <Route path="/company-register/:id" element={<CompanyRegistration />} />
+                    <Route path="/company-documents" element={<CompanyDocumentManager />} />
                     <Route path="/profile" element={<Profile />} />
                   </Route>
                 </Route>

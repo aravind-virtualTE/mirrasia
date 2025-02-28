@@ -8,6 +8,7 @@ import {
     // PenSquare,
     // Mail,
     FileSignature,
+    Files,
     // User2,
     // Gift,
     // Receipt,
@@ -51,6 +52,8 @@ const Layout: React.FC = () => {
     const sidebarItems = [
         { icon: <Home className="h-5 w-5" />, label: "Home" },
         { icon: <FileSignature className="w-4 h-4" />, label: "Register Company" },
+        { icon: <Files className="h-6 w-6" />, label: "Company Documents" },
+
         // { icon: <Settings className="h-5 w-5" />, label: "Settings" },
         // { icon: <HelpCircle className="h-5 w-5" />, label: "Help" },
         // { icon: <Mail className="w-4 h-4" />, label: "Mailroom" },
@@ -96,6 +99,10 @@ const Layout: React.FC = () => {
                 else {
                     navigate('/company-register');
                 }
+                break;
+            case 'Company Documents':
+                navigate('/company-documents');
+                break;            
             // Add other navigation cases as needed
         }
     };
