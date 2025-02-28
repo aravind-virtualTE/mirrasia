@@ -14,8 +14,9 @@ import { loadStripe } from '@stripe/stripe-js';
 import { paymentApi } from '@/lib/api/payment';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, CheckCircle } from 'lucide-react';
-import { useSetAtom } from 'jotai';
+import {  useSetAtom } from 'jotai';
 import { updateCompanyIncorporationAtom } from '@/lib/atom';
+import { statusHkAtom } from '@/store/hkForm';
 
 interface CardPaymentFormProps {
   sessionId: string;
@@ -31,6 +32,7 @@ export function CardPaymentForm({ sessionId, clientSecret , amount}: CardPayment
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
+  const setStatus = useSetAtom(statusHkAtom);
   const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
   const [paymentStatus, setPaymentStatus] = useState<{
     type: 'success' | 'error' | null;
@@ -91,6 +93,7 @@ export function CardPaymentForm({ sessionId, clientSecret , amount}: CardPayment
           // console.log("Payment Method:", paymentIntent);
           const paymentId = paymentIntent.id
           if (paymentIntent.status === 'succeeded') {
+            setStatus("completed");
             // console.log("paymentId", paymentId)
             const docId = localStorage.getItem('companyRecordId');
             // Send paymentMethod.id to the backend

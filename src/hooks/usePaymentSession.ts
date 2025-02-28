@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { paymentApi } from '@/lib/api/payment';
+import { useAtom } from 'jotai';
+import { statusHkAtom } from '@/store/hkForm';
 
 export function usePaymentSession(sessionId: string) {
   const [timeLeft, setTimeLeft] = useState<number>(0);
-  const [status, setStatus] = useState<'pending' | 'completed' | 'expired'>('pending');
+  const [status, setStatus] = useAtom(statusHkAtom);
   const timeLeftRef = useRef<number>(0);
   const initialized = useRef(false);
 
@@ -47,5 +49,6 @@ export function usePaymentSession(sessionId: string) {
       if (interval) clearInterval(interval);
     };
   }, [sessionId]);
+
   return { timeLeft, status };
 }

@@ -1,6 +1,4 @@
-import { useEffect, 
-  // useRef,
-   useState } from "react";
+import { useEffect,useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { PaymentMethods } from './PaymentMethods';
@@ -23,14 +21,12 @@ export function PaymentInformation() {
   const [finalForm,] = useAtom(companyIncorporationAtom);
   const updateCompanyData = useSetAtom(PaymentSessionId)
 
-  // const hasFetchedData = useRef(false);
   const amount = parseFloat(invoiceData.totals.discounted.replace(/[^0-9.]/g, ''));
   useEffect(() => {
     const initializePaymentSession = async () => {
       try {
         setIsLoading(true);
         const docId = localStorage.getItem('companyRecordId');
-        // creating the payment session in the backend
         const sessionData = await paymentApi.createSession(amount, 'USD', docId!); // Amount and currency as needed
         const session = sessionData.session._id;
         setSessionId(session);
@@ -55,10 +51,8 @@ export function PaymentInformation() {
     }
     if (finalForm.sessionId == "") {
       initializePaymentSession();
-      // hasFetchedData.current = true;
     }
     else {
-      // console.log("finalForm.sessionId", finalForm.sessionId)
       if (finalForm.sessionId) {
         setSessionId(finalForm.sessionId)
         updateSession()
@@ -66,7 +60,6 @@ export function PaymentInformation() {
     }
     setIsLoading(false);
   }, []);
-  // console.log("invoiceData", finalForm)
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto p-6">
@@ -80,7 +73,6 @@ export function PaymentInformation() {
       </div>
     );
   }
-  // console.log(sessionId, "error", error)
 
   if (error || !sessionId) {
     return (
@@ -93,10 +85,6 @@ export function PaymentInformation() {
     );
   }
 
-  // const handlePaymentCompleted = () => {
-  //   setPaymentStatus("completed");
-  // };
-
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">      
@@ -106,12 +94,10 @@ export function PaymentInformation() {
         </CardHeader>
         <CardContent className="space-y-6">
           <PaymentTimer sessionId={sessionId}
-          // status={paymentStatus} 
           />
           <Separator />
           <PaymentMethods sessionId={sessionId}
             amount={amount}
-          // onPaymentCompleted={handlePaymentCompleted} 
           />
           <Separator />
           <PaymentConditions />
