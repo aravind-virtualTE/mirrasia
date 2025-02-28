@@ -71,18 +71,7 @@ export function CardPaymentForm({ sessionId, clientSecret , amount}: CardPayment
         if (stripeError) {
           // Showing error to customer (e.g., insufficient funds)
           console.error(stripeError);
-          let errorMessage = 'Payment failed. ';
-          switch (stripeError.code) {
-            case 'insufficient_funds':
-              errorMessage += 'Insufficient funds in your account.';
-              break;
-            case 'card_declined':
-              errorMessage += 'Card was declined.';
-              break;
-            default:
-              errorMessage += stripeError.message || 'An unexpected error occurred.';
-          }
-
+          const errorMessage = stripeError.message || 'Payment Failed.';
           setPaymentStatus({
             type: 'error',
             message: errorMessage

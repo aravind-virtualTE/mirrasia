@@ -169,6 +169,8 @@ const SignupPage = () => {
             srcSet="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"
             // fetchPriority="high"
             style={{ width: "175px", height: "25px", objectFit: "cover" }}
+            className="cursor-pointer"
+            onClick={() => navigate('/')}
           />
         </div>
 

@@ -197,7 +197,7 @@ const IncorporationForm = () => {
             if (!Array.isArray(formData.relationships) || formData.relationships.length === 0 || formData.relationships.some(rel => rel.trim() === "")) {
                 errors.push("Relationships cannot be empty.");
             }
-            if (!Array.isArray(formData.companyName) || formData.companyName.length === 0 || formData.companyName.some(name => name.trim() === "")) {
+            if (!Array.isArray(formData.companyName) || formData.companyName.length === 0 || formData.companyName[0].trim() === "") {
                 errors.push("Company Name cannot be empty.");
             }
             if (!formData.phoneNumber || formData.phoneNumber.trim() === "") {
@@ -206,9 +206,9 @@ const IncorporationForm = () => {
             if (!formData.email || formData.email.trim() === "" || !/^\S+@\S+\.\S+$/.test(formData.email)) {
                 errors.push("Invalid email format or empty email.");
             }
-            if (!formData.snsPlatform || formData.snsPlatform.trim() === "") {
-                errors.push("SNS Platform cannot be empty.");
-            }
+            // if (!formData.snsPlatform || formData.snsPlatform.trim() === "") {
+            //     errors.push("SNS Platform cannot be empty.");
+            // }
             if (errors.length > 0) {
                 toast({
                     title: "Fill Details",

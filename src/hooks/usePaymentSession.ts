@@ -48,7 +48,7 @@ export function usePaymentSession(sessionId: string) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [sessionId]);
+  }, [sessionId,status]);
 
   return { timeLeft, status };
 }
