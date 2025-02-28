@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 
 interface PaymentTimerProps {
   sessionId: string;
-  // status: "pending" | "completed" | "expired";
 }
 
 export function PaymentTimer({ sessionId  }: PaymentTimerProps) {

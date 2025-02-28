@@ -79,3 +79,5 @@ export const resetFormDataAtom = atom(
     set(formDataAtom, initialFormState); // Reset the form data atom to its initial state
   }
 );
+
+export const statusHkAtom = atom<'pending' | 'completed' | 'expired'>('pending');
