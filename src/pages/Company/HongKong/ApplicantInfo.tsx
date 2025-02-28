@@ -188,7 +188,7 @@ const ApplicantInfoForm = () => {
 
           const error = validateField(field, value, index);
           const updatedErrors = [...errors.companyNames];
-          updatedErrors[index] = error;
+          if(index == 0) updatedErrors[index] = error;
 
           setErrors((prev) => ({
             ...prev,
