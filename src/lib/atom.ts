@@ -145,7 +145,16 @@ export interface ServiceSelectionState {
   selectedServices: string[];
   correspondenceCount: number;
 }
+
+export interface CompanyDocManager {
+  docName: string;
+  docUrl: string;
+  id: string;
+}
+
+export const companyDocManager = atomWithReset<CompanyDocManager[]>([]);
 export const serviceSelectionStateAtom = atomWithReset<ServiceSelectionState | null>(null);
+// hong kong company incorporation Atom for state management
 export const companyIncorporationAtom = atom((get) => ({
   userId: '',
   status: 'Pending',
@@ -163,7 +172,8 @@ export const companyIncorporationAtom = atom((get) => ({
   sessionId: get(PaymentSessionId),
   paymentId: get(paymentId),
   icorporationDoc: get(icorporationDoc),
-  serviceSelectionState: get(serviceSelectionStateAtom)
+  serviceSelectionState: get(serviceSelectionStateAtom),
+  companyDocs: get(companyDocManager)
 
 }));
 
@@ -182,6 +192,7 @@ export const useResetAllForms = () => {
   const resetisDisabled= useResetAtom(isDisabled);
   const resetcompPaymentDetails = useResetAtom(serviceSelectionStateAtom);
   const reseticorporationDoc = useResetAtom(icorporationDoc)
+  const resetCompanyDocManager = useResetAtom(companyDocManager)
 
 
   const resetAll = () => {
@@ -198,6 +209,7 @@ export const useResetAllForms = () => {
     resetcompPaymentDetails()
     reseticorporationDoc()
     resetisDisabled()
+    resetCompanyDocManager()
   };
 
   return resetAll;
@@ -223,6 +235,7 @@ export const updateCompanyIncorporationAtom = atom(
       isDisabled : boolean;
       serviceSelectionState: typeof serviceSelectionStateAtom['init'];
       icorporationDoc: typeof icorporationDoc['init']
+      companyDocs: typeof companyDocManager['init']
 
     }>
   ) => {
@@ -231,6 +244,9 @@ export const updateCompanyIncorporationAtom = atom(
     }
     if (updates.icorporationDoc) {
       set(icorporationDoc, updates.icorporationDoc);
+    }
+    if (updates.companyDocs) {
+      set(companyDocManager, updates.companyDocs);
     }
     if (updates.serviceSelectionState) {
       set(serviceSelectionStateAtom, updates.serviceSelectionState);

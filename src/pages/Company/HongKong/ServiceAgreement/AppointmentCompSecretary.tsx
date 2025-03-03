@@ -149,7 +149,7 @@ export default function AppointmentLetter({ editable }: { editable: boolean }) {
 
           <div className="w-full flex flex-col">
             <p className="text-lg font-serif mb-2 text-center">
-              {serviceAgrementDetails.companyName} <span>(Company&quot;)</span>
+              {serviceAgrementDetails.companyName} <span>(Company)</span>
             </p>
             <div className="w-full border-b-2 border-black"></div>
             <p className="mt-2">

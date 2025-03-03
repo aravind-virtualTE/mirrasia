@@ -1,67 +1,50 @@
-import React, { useState } from 'react';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from '@/components/ui/select';
-import { 
-  Card, 
-  CardContent 
+import {
+  Card,
+  CardContent
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  PlusCircle, 
-  Upload, 
-  FileText, 
-  X, 
-  Maximize2, 
-  Minimize2, 
-  RefreshCw 
+import {
+  PlusCircle,
+  Upload,
+  FileText,
+  X,
+  Maximize2,
+  Minimize2,
+  RefreshCw,
+  Save
 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
+import { getCompDocs, uploadCompanyDocs } from '@/services/dataFetch';
+import jwtDecode from 'jwt-decode';
+import { TokenData } from '@/middleware/ProtectedRoutes';
+
 
 // Define types
 interface Document {
-  id: number;
+  id: string;
   name: string;
-  thumbnail: string;
+  url: string;
+  file?: File;
 }
 
-interface Company {
-  id: number;
-  name: string;
-  documents: Document[];
+export interface Company {
+  id: string;
+  companyName: string;
+  companyDocs: Document[];
 }
 
 const CompanyDocumentManager: React.FC = () => {
-  // Sample data - in a real app this would come from an API
-  const [companies, setCompanies] = useState<Company[]>([
-    { 
-      id: 1, 
-      name: 'Acme Corporation', 
-      documents: [
-        { id: 1, name: 'Financial Report 2024.pdf', thumbnail: '/api/placeholder/200/250' },
-        { id: 2, name: 'Business Plan.docx', thumbnail: '/api/placeholder/200/250' },
-      ] 
-    },
-    { 
-      id: 2, 
-      name: 'Wayne Enterprises', 
-      documents: [
-        { id: 3, name: 'R&D Budget.xlsx', thumbnail: '/api/placeholder/200/250' },
-        { id: 4, name: 'Quarterly Report.pdf', thumbnail: '/api/placeholder/200/250' },
-        { id: 5, name: 'Patent Applications.pdf', thumbnail: '/api/placeholder/200/250' },
-      ] 
-    },
-    { 
-      id: 3, 
-      name: 'Stark Industries', 
-      documents: [
-        { id: 6, name: 'Project Roadmap.pptx', thumbnail: '/api/placeholder/200/250' },
-      ] 
-    }
-  ]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [companies, setCompanies] = useState<Company[]>([]);
 
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -69,10 +52,31 @@ const CompanyDocumentManager: React.FC = () => {
   const [dragActive, setDragActive] = useState<boolean>(false);
   const [expandedDoc, setExpandedDoc] = useState<Document | null>(null);
   const [showUploadSection, setShowUploadSection] = useState<boolean>(false);
+  const token = localStorage.getItem("token") as string;
+  useEffect(() => {
+    const fetchComp = async () => {
+      try {
+        const decodedToken = jwtDecode<TokenData>(token);
+        const response = await getCompDocs(`${decodedToken.userId}`);
+        const data = await response
+        setCompanies(data)
+        if (data.length > 0) {
+          setSelectedCompany(data[0]);
+          setUploadedFiles([]);
+          setDocumentToReplace(null);
+          setExpandedDoc(null);
+          setShowUploadSection(false);
+        }
+      } catch (error) {
+        console.error('Error fetching companies:', error)
+      }
+    }
+    fetchComp()
+  }, [])
 
   // Handle company selection
   const handleCompanySelect = (companyId: string): void => {
-    const company = companies.find(c => c.id.toString() === companyId);
+    const company = companies.find(c => c.id === companyId);
     if (company) {
       setSelectedCompany(company);
       setUploadedFiles([]);
@@ -87,10 +91,14 @@ const CompanyDocumentManager: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const filesArray = Array.from(e.dataTransfer.files);
       setUploadedFiles(filesArray);
+      toast({
+        title: "Files ready for upload",
+        description: `${filesArray.length} file(s) added successfully.`,
+      });
     }
   };
 
@@ -98,7 +106,7 @@ const CompanyDocumentManager: React.FC = () => {
   const handleDrag = (e: React.DragEvent<HTMLDivElement>): void => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
     } else if (e.type === 'dragleave') {
@@ -111,6 +119,17 @@ const CompanyDocumentManager: React.FC = () => {
     if (e.target.files && e.target.files.length > 0) {
       const filesArray = Array.from(e.target.files);
       setUploadedFiles(filesArray);
+      toast({
+        title: "Files selected",
+        description: `${filesArray.length} file(s) selected successfully.`,
+      });
+    }
+  };
+
+  // Open file browser
+  const openFileBrowser = (): void => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
@@ -133,44 +152,49 @@ const CompanyDocumentManager: React.FC = () => {
   // Save uploaded documents
   const saveDocuments = (): void => {
     if (!selectedCompany) return;
-    
+  
     const updatedCompanies = [...companies];
     const companyIndex = updatedCompanies.findIndex(c => c.id === selectedCompany.id);
-    
     if (companyIndex === -1) return;
-    
+  
     if (documentToReplace) {
-      // Replace existing document
-      const docIndex = updatedCompanies[companyIndex].documents.findIndex(
+      // Replace existing document by storing the new file
+      const docIndex = updatedCompanies[companyIndex].companyDocs.findIndex(
         doc => doc.id === documentToReplace.id
       );
-      
       if (docIndex !== -1 && uploadedFiles.length > 0) {
-        updatedCompanies[companyIndex].documents[docIndex] = {
-          id: documentToReplace.id,
+        updatedCompanies[companyIndex].companyDocs[docIndex] = {
+          ...documentToReplace,
           name: uploadedFiles[0].name,
-          thumbnail: '/api/placeholder/200/250'
+          file: uploadedFiles[0], 
+          url: ''
         };
       }
     } else {
-      // Add new documents
+      // Add new documents, storing the file itself
       const newDocuments: Document[] = uploadedFiles.map((file, index) => ({
-        id: Date.now() + index,
+        id: `${Date.now()}-${index}`,
         name: file.name,
-        thumbnail: '/api/placeholder/200/250'
+        file: file, 
+        url: ''
       }));
-      
-      updatedCompanies[companyIndex].documents = [
-        ...updatedCompanies[companyIndex].documents,
+  
+      updatedCompanies[companyIndex].companyDocs = [
+        ...updatedCompanies[companyIndex].companyDocs,
         ...newDocuments
       ];
     }
-    
+  
     setCompanies(updatedCompanies);
     setSelectedCompany(updatedCompanies[companyIndex]);
     setUploadedFiles([]);
     setDocumentToReplace(null);
     setShowUploadSection(false);
+  
+    toast({
+      title: documentToReplace ? "Document replaced" : "Documents added",
+      description: `Successfully ${documentToReplace ? 'replaced document' : 'added new documents'} to ${selectedCompany.companyName}.`,
+    });
   };
 
   // Remove uploaded file
@@ -187,34 +211,65 @@ const CompanyDocumentManager: React.FC = () => {
     }
   };
 
+  const saveAllDataToBackend = async (): Promise<void> => {
+    try {
+      // Mock API call - in a real application, you would replace this with actual API call
+      // Example: await fetch('/api/companies', { method: 'POST', body: JSON.stringify(companies) })
+      console.log('companies', companies)
+      const data = await uploadCompanyDocs(companies)
+      console.log("data", data)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      toast({
+        title: "Data saved successfully",
+        description: "All company documents have been saved to the database.",
+      });
+    } catch (error) {
+      console.error('Error saving data:', error);
+      toast({
+        title: "Error saving data",
+        description: "There was a problem saving the data. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
       <div className="mb-8">
         <h1 className="text-2xl font-bold mb-4">Company Document Manager</h1>
-        
-        {/* Company dropdown selector */}
-        <Select onValueChange={handleCompanySelect}>
-          <SelectTrigger className="w-full md:w-80">
-            <SelectValue placeholder="Select a company" />
-          </SelectTrigger>
-          <SelectContent>
-            {companies.map(company => (
-              <SelectItem key={company.id} value={company.id.toString()}>
-                {company.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <Select onValueChange={handleCompanySelect} value={selectedCompany?.id}>
+            <SelectTrigger className="w-full md:w-80">
+              <SelectValue placeholder="Select a company" />
+            </SelectTrigger>
+            <SelectContent>
+              {companies.map(company => (
+                <SelectItem key={company.id} value={company.id.toString()}>
+                  {company.companyName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            onClick={saveAllDataToBackend}
+            className="flex items-center gap-2"
+          >
+            <Save className="h-4 w-4" />
+            Save to Database
+          </Button>
+
+        </div>
       </div>
 
       {selectedCompany && (
         <>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">
-              Documents for {selectedCompany.name}
+              Documents for {selectedCompany.companyName}
             </h2>
             {!expandedDoc && (
-              <Button 
+              <Button
                 onClick={handleAddNewDocument}
                 variant="outline"
                 className="flex items-center gap-2"
@@ -224,7 +279,7 @@ const CompanyDocumentManager: React.FC = () => {
               </Button>
             )}
           </div>
-          
+
           {/* Expanded view for a single document */}
           {expandedDoc ? (
             <div className="mb-8">
@@ -235,7 +290,7 @@ const CompanyDocumentManager: React.FC = () => {
                 </div>
                 <div className="flex gap-2">
                   <Button
-                    variant="outline" 
+                    variant="outline"
                     size="sm"
                     onClick={() => toggleExpandDocument(expandedDoc)}
                     className="flex items-center gap-1"
@@ -244,7 +299,7 @@ const CompanyDocumentManager: React.FC = () => {
                     Minimize
                   </Button>
                   <Button
-                    variant="outline" 
+                    variant="outline"
                     size="sm"
                     onClick={() => toggleReplaceDocument(expandedDoc)}
                     className="flex items-center gap-1"
@@ -255,33 +310,32 @@ const CompanyDocumentManager: React.FC = () => {
                 </div>
               </div>
               <div className="flex justify-center bg-gray-100 p-4 rounded-lg">
-                <img 
-                  src={expandedDoc.thumbnail} 
-                  alt={expandedDoc.name} 
-                  className="max-h-96 object-contain"
+                <iframe
+                  src={expandedDoc.url}
+                  title={expandedDoc.name}
+                  className="w-full h-96 border-none"
                 />
               </div>
             </div>
           ) : (
             /* Document thumbnails grid */
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-              {selectedCompany.documents.map(document => (
-                <Card 
-                  key={document.id} 
-                  className={`transition-all ${
-                    documentToReplace && documentToReplace.id === document.id 
-                      ? 'ring-2 ring-blue-500' 
-                      : ''
-                  }`}
+              {selectedCompany.companyDocs.map(document => (
+                <Card
+                  key={document.id}
+                  className={`transition-all ${documentToReplace && documentToReplace.id === document.id
+                    ? 'ring-2 ring-blue-500'
+                    : ''
+                    }`}
                 >
                   <CardContent className="p-4">
                     <div className="relative">
-                      <img 
-                        src={document.thumbnail} 
-                        alt={document.name} 
-                        className="w-full h-48 object-cover bg-gray-100 mb-2 cursor-pointer"
+                      <div
+                        className="w-full h-48 flex items-center justify-center bg-gray-100 mb-2 cursor-pointer"
                         onClick={() => toggleExpandDocument(document)}
-                      />
+                      >
+                        <FileText className="h-12 w-12 text-gray-400" />
+                      </div>
                       {documentToReplace && documentToReplace.id === document.id && (
                         <div className="absolute inset-0 bg-blue-500 bg-opacity-20 flex items-center justify-center">
                           <span className="text-sm font-medium text-white bg-blue-600 px-2 py-1 rounded">
@@ -290,17 +344,17 @@ const CompanyDocumentManager: React.FC = () => {
                         </div>
                       )}
                       <div className="absolute top-2 right-2 flex gap-1">
-                        <Button 
-                          variant="secondary" 
-                          size="sm" 
+                        <Button
+                          variant="secondary"
+                          size="sm"
                           className="h-6 w-6 p-0 rounded-full opacity-70 hover:opacity-100"
                           onClick={() => toggleExpandDocument(document)}
                         >
                           <Maximize2 className="h-3 w-3" />
                         </Button>
-                        <Button 
-                          variant="secondary" 
-                          size="sm" 
+                        <Button
+                          variant="secondary"
+                          size="sm"
                           className="h-6 w-6 p-0 rounded-full opacity-70 hover:opacity-100"
                           onClick={() => toggleReplaceDocument(document)}
                         >
@@ -317,9 +371,9 @@ const CompanyDocumentManager: React.FC = () => {
                   </CardContent>
                 </Card>
               ))}
-              
+
               {/* Add new document card */}
-              <Card 
+              <Card
                 className="cursor-pointer border-dashed border-2 hover:border-blue-500 hover:bg-blue-50 transition-colors"
                 onClick={handleAddNewDocument}
               >
@@ -334,10 +388,9 @@ const CompanyDocumentManager: React.FC = () => {
           {/* Upload section - conditionally rendered */}
           {showUploadSection && (
             <>
-              <div 
-                className={`border-2 border-dashed rounded-lg p-6 mb-4 text-center ${
-                  dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
-                }`}
+              <div
+                className={`border-2 border-dashed rounded-lg p-6 mb-4 text-center ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+                  }`}
                 onDragEnter={handleDrag}
                 onDragOver={handleDrag}
                 onDragLeave={handleDrag}
@@ -345,32 +398,34 @@ const CompanyDocumentManager: React.FC = () => {
               >
                 <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
                 <h3 className="text-lg font-medium mb-2">
-                  {documentToReplace 
-                    ? `Replace "${documentToReplace.name}"` 
+                  {documentToReplace
+                    ? `Replace "${documentToReplace.name}"`
                     : 'Upload New Documents'
                   }
                 </h3>
                 <p className="text-sm text-gray-500 mb-4">
                   Drag and drop files here or click to browse
                 </p>
+                {/* Hidden file input */}
                 <input
                   type="file"
-                  id="file-upload"
+                  ref={fileInputRef}
                   className="hidden"
                   multiple={!documentToReplace}
                   onChange={handleFileChange}
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv"
                 />
-                <label htmlFor="file-upload">
-                  <Button 
-                    variant="outline" 
-                    className="cursor-pointer" 
-                    type="button"
-                  >
-                    Browse Files
-                  </Button>
-                </label>
-              </div>
 
+                {/* Browse Files button that triggers the file input */}
+                <Button
+                  variant="outline"
+                  className="cursor-pointer"
+                  type="button"
+                  onClick={openFileBrowser}
+                >
+                  Browse Files
+                </Button>
+              </div>
               {/* Display uploaded files */}
               {uploadedFiles.length > 0 && (
                 <div className="mb-4">
@@ -382,9 +437,9 @@ const CompanyDocumentManager: React.FC = () => {
                           <FileText className="h-4 w-4 mr-2" />
                           <span className="text-sm">{file.name}</span>
                         </div>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => removeUploadedFile(index)}
                           type="button"
                         >
@@ -393,16 +448,16 @@ const CompanyDocumentManager: React.FC = () => {
                       </div>
                     ))}
                   </div>
-                  
+
                   {/* Save button */}
                   <div className="flex gap-2 mt-4">
-                    <Button 
+                    <Button
                       onClick={saveDocuments}
                       type="button"
                     >
                       {documentToReplace ? 'Replace Document' : 'Save New Documents'}
                     </Button>
-                    <Button 
+                    <Button
                       variant="outline"
                       onClick={() => {
                         setShowUploadSection(false);
