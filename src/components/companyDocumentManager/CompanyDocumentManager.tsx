@@ -18,20 +18,19 @@ import {
   X,
   Maximize2,
   Minimize2,
-  RefreshCw,
-  Save
+  // Save,
+  Trash
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { getCompDocs, uploadCompanyDocs } from '@/services/dataFetch';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 
-
 // Define types
 interface Document {
   id: string;
-  name: string;
-  url: string;
+  docName: string;
+  docUrl: string;
   file?: File;
 }
 
@@ -53,13 +52,14 @@ const CompanyDocumentManager: React.FC = () => {
   const [expandedDoc, setExpandedDoc] = useState<Document | null>(null);
   const [showUploadSection, setShowUploadSection] = useState<boolean>(false);
   const token = localStorage.getItem("token") as string;
+
   useEffect(() => {
     const fetchComp = async () => {
       try {
         const decodedToken = jwtDecode<TokenData>(token);
         const response = await getCompDocs(`${decodedToken.userId}`);
-        const data = await response
-        setCompanies(data)
+        const data = await response;
+        setCompanies(data);
         if (data.length > 0) {
           setSelectedCompany(data[0]);
           setUploadedFiles([]);
@@ -68,11 +68,11 @@ const CompanyDocumentManager: React.FC = () => {
           setShowUploadSection(false);
         }
       } catch (error) {
-        console.error('Error fetching companies:', error)
+        console.error('Error fetching companies:', error);
       }
-    }
-    fetchComp()
-  }, [])
+    };
+    fetchComp();
+  }, []);
 
   // Handle company selection
   const handleCompanySelect = (companyId: string): void => {
@@ -133,16 +133,6 @@ const CompanyDocumentManager: React.FC = () => {
     }
   };
 
-  // Toggle document replacement selection
-  const toggleReplaceDocument = (document: Document): void => {
-    if (documentToReplace && documentToReplace.id === document.id) {
-      setDocumentToReplace(null);
-    } else {
-      setDocumentToReplace(document);
-      setShowUploadSection(true);
-    }
-  };
-
   // Add new document handler
   const handleAddNewDocument = (): void => {
     setDocumentToReplace(null);
@@ -150,13 +140,13 @@ const CompanyDocumentManager: React.FC = () => {
   };
 
   // Save uploaded documents
-  const saveDocuments = (): void => {
+  const saveDocuments = async (): Promise<void> => {
     if (!selectedCompany) return;
-  
+
     const updatedCompanies = [...companies];
     const companyIndex = updatedCompanies.findIndex(c => c.id === selectedCompany.id);
     if (companyIndex === -1) return;
-  
+
     if (documentToReplace) {
       // Replace existing document by storing the new file
       const docIndex = updatedCompanies[companyIndex].companyDocs.findIndex(
@@ -165,36 +155,47 @@ const CompanyDocumentManager: React.FC = () => {
       if (docIndex !== -1 && uploadedFiles.length > 0) {
         updatedCompanies[companyIndex].companyDocs[docIndex] = {
           ...documentToReplace,
-          name: uploadedFiles[0].name,
-          file: uploadedFiles[0], 
-          url: ''
+          docName: uploadedFiles[0].name,
+          file: uploadedFiles[0],
+          docUrl: ''
         };
       }
     } else {
       // Add new documents, storing the file itself
       const newDocuments: Document[] = uploadedFiles.map((file, index) => ({
         id: `${Date.now()}-${index}`,
-        name: file.name,
-        file: file, 
-        url: ''
+        docName: file.name,
+        file: file,
+        docUrl: ''
       }));
-  
+
       updatedCompanies[companyIndex].companyDocs = [
         ...updatedCompanies[companyIndex].companyDocs,
         ...newDocuments
       ];
     }
-  
+
     setCompanies(updatedCompanies);
     setSelectedCompany(updatedCompanies[companyIndex]);
     setUploadedFiles([]);
     setDocumentToReplace(null);
     setShowUploadSection(false);
-  
-    toast({
-      title: documentToReplace ? "Document replaced" : "Documents added",
-      description: `Successfully ${documentToReplace ? 'replaced document' : 'added new documents'} to ${selectedCompany.companyName}.`,
-    });
+
+    // Send data to backend
+    try {
+      console.log('Updated companies:', updatedCompanies);
+      await uploadCompanyDocs(updatedCompanies);
+      toast({
+        title: documentToReplace ? "Document replaced" : "Documents added",
+        description: `Successfully ${documentToReplace ? 'replaced document' : 'added new documents'} to ${selectedCompany.companyName}.`,
+      });
+    } catch (error) {
+      console.error('Error uploading documents:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload documents. Please try again.",
+      });
+    }
   };
 
   // Remove uploaded file
@@ -211,26 +212,36 @@ const CompanyDocumentManager: React.FC = () => {
     }
   };
 
-  const saveAllDataToBackend = async (): Promise<void> => {
-    try {
-      // Mock API call - in a real application, you would replace this with actual API call
-      // Example: await fetch('/api/companies', { method: 'POST', body: JSON.stringify(companies) })
-      console.log('companies', companies)
-      const data = await uploadCompanyDocs(companies)
-      console.log("data", data)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+  // Delete document handler
+  const deleteDocument = async (document: Document): Promise<void> => {
+    if (!selectedCompany) return;
 
-      toast({
-        title: "Data saved successfully",
-        description: "All company documents have been saved to the database.",
-      });
-    } catch (error) {
-      console.error('Error saving data:', error);
-      toast({
-        title: "Error saving data",
-        description: "There was a problem saving the data. Please try again.",
-        variant: "destructive",
-      });
+    const updatedCompanies = [...companies];
+    const companyIndex = updatedCompanies.findIndex(c => c.id === selectedCompany.id);
+    if (companyIndex === -1) return;
+
+    const docIndex = updatedCompanies[companyIndex].companyDocs.findIndex(
+      doc => doc.id === document.id
+    );
+    if (docIndex !== -1) {
+      updatedCompanies[companyIndex].companyDocs.splice(docIndex, 1);
+      setCompanies(updatedCompanies);
+      setSelectedCompany(updatedCompanies[companyIndex]);
+
+      // Send data to backend to delete the document
+      try {
+        // await deleteCompanyDoc(document.id); // Assume this function is defined elsewhere
+        toast({
+          title: "Document deleted",
+          description: `Successfully deleted document from ${selectedCompany.companyName}.`,
+        });
+      } catch (error) {
+        console.error('Error deleting document:', error);
+        toast({
+          title: "Error",
+          description: "Failed to delete document. Please try again.",
+        });
+      }
     }
   };
 
@@ -251,14 +262,6 @@ const CompanyDocumentManager: React.FC = () => {
               ))}
             </SelectContent>
           </Select>
-          <Button
-            onClick={saveAllDataToBackend}
-            className="flex items-center gap-2"
-          >
-            <Save className="h-4 w-4" />
-            Save to Database
-          </Button>
-
         </div>
       </div>
 
@@ -286,7 +289,7 @@ const CompanyDocumentManager: React.FC = () => {
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
-                  <h3 className="text-lg font-medium">{expandedDoc.name}</h3>
+                  <h3 className="text-lg font-medium">{expandedDoc.docName}</h3>
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -298,21 +301,22 @@ const CompanyDocumentManager: React.FC = () => {
                     <Minimize2 className="h-4 w-4" />
                     Minimize
                   </Button>
+                  
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => toggleReplaceDocument(expandedDoc)}
+                    onClick={() => deleteDocument(expandedDoc)}
                     className="flex items-center gap-1"
                   >
-                    <RefreshCw className="h-4 w-4" />
-                    Replace
+                    <Trash className="h-4 w-4" />
+                    Delete
                   </Button>
                 </div>
               </div>
               <div className="flex justify-center bg-gray-100 p-4 rounded-lg">
                 <iframe
-                  src={expandedDoc.url}
-                  title={expandedDoc.name}
+                  src={expandedDoc.docUrl}
+                  title={expandedDoc.docName}
                   className="w-full h-96 border-none"
                 />
               </div>
@@ -351,21 +355,21 @@ const CompanyDocumentManager: React.FC = () => {
                           onClick={() => toggleExpandDocument(document)}
                         >
                           <Maximize2 className="h-3 w-3" />
-                        </Button>
+                        </Button>                        
                         <Button
                           variant="secondary"
                           size="sm"
                           className="h-6 w-6 p-0 rounded-full opacity-70 hover:opacity-100"
-                          onClick={() => toggleReplaceDocument(document)}
+                          onClick={() => deleteDocument(document)}
                         >
-                          <RefreshCw className="h-3 w-3" />
+                          <Trash className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
                     <div className="flex items-start">
                       <FileText className="h-4 w-4 mr-2 mt-1 flex-shrink-0" />
-                      <p className="text-sm truncate" title={document.name}>
-                        {document.name}
+                      <p className="text-sm truncate" title={document.docName}>
+                        {document.docName}
                       </p>
                     </div>
                   </CardContent>
@@ -399,7 +403,7 @@ const CompanyDocumentManager: React.FC = () => {
                 <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
                 <h3 className="text-lg font-medium mb-2">
                   {documentToReplace
-                    ? `Replace "${documentToReplace.name}"`
+                    ? `Replace "${documentToReplace.docName}"`
                     : 'Upload New Documents'
                   }
                 </h3>

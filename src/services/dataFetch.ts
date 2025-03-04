@@ -213,7 +213,7 @@ export const uploadCompanyDocs = async (companiesData : Company[]) => {
   companiesData.forEach(company => {
     company.companyDocs.forEach(doc => {
       if (doc.file) {
-        formData.append('files', doc.file, doc.name);
+        formData.append('files', doc.file, doc.docName);
       }
     });
   });
