@@ -30,7 +30,7 @@
 //     const token = localStorage.getItem('token') as string;
 //     const decodedToken = jwtDecode<TokenData>(token);
 //     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
-    
+
 //     useEffect(() => {
 //         if (id) {
 //             async function fetchData() {
@@ -76,7 +76,7 @@
 //         const limitedRegex = /limited$/i;
 //         return items.map((item: string) => !limitedRegex.test(item) ? item + " Limited" : item);
 //     }
-  
+
 //     const updateDoc = async () => {
 //         try {
 //             const docId = localStorage.getItem('companyRecordId');
@@ -244,9 +244,9 @@
 //                                 </div>
 //                             </CardContent>
 //                         </Card>}
-                        // <div className=" mx-auto p-6">
-                        //     {renderSection()}
-                        // </div>
+// <div className=" mx-auto p-6">
+//     {renderSection()}
+// </div>
 //                     </div>
 //                     {/* Navigation buttons */}
 //                     {countryState.name && (
@@ -300,10 +300,10 @@
 // export default CompanyRegistration;
 
 // CompanyRegistration.tsx
-import { useEffect,} from 'react';
+import { useEffect, } from 'react';
 import { useParams } from "react-router-dom";
 import { useAtom, useSetAtom } from 'jotai';
-import { countryAtom, updateCompanyIncorporationAtom} from '@/lib/atom';
+import { countryAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
 import { companyIncorporationList } from '@/services/state';
 // import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -312,6 +312,7 @@ import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 import { getIncorporationListByCompId, getIncorporationListByUserId } from '@/services/dataFetch';
 import IncorporateUSACompany from './USA/IncorporateCompany';
+import { Card, CardContent } from '@/components/ui/card';
 
 const CompanyRegistration = () => {
     const [countryState, setCountryState] = useAtom(countryAtom);
@@ -370,9 +371,9 @@ const CompanyRegistration = () => {
 
         switch (countryState.code) {
             case 'HK':
-                return <IncorporationForm  />;
+                return <IncorporationForm />;
             case 'US':
-            return <IncorporateUSACompany  />;
+                return <IncorporateUSACompany />;
             case 'SG':
                 return <div>Registration form for {countryState.name} is not available yet.</div>;
             default:
@@ -385,28 +386,44 @@ const CompanyRegistration = () => {
             {/* Country Selection Content */}
             {!countryState.name ? (
                 <div
-                className="flex flex-col space-y-4 justify-center items-center w-full h-full bg-cover bg-center"
-                style={{ backgroundImage: `url('https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/discussing-young-room-successful-meeting.jpg')` }}
-              >
-                <h2 className="text-2xl font-bold text-slate-950">Select Country for Registration</h2>
-                <Select onValueChange={(value) => updateCountry(value)}>
-                  <SelectTrigger className="w-[380px] bg-white text-black">
-                    <SelectValue placeholder="Select a country" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countries.map((country) => (
-                      <SelectItem key={country.code} value={country.code}>
-                        {country.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
+                    className="relative w-full h-full bg-cover bg-center flex items-center justify-center p-4"
+                    style={{
+                        backgroundImage: `url('https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/discussing-young-room-successful-meeting.webp')`,
+                    }}
+                >                 
+                    <div
+                        className="absolute inset-0 bg-[#103c64] opacity-70"
+                    />
+                    <Card className="relative z-10 w-[420px] bg-white/90 shadow-xl">
+                        <CardContent className="p-6 space-y-4">
+                            <h2 className="text-2xl font-bold text-slate-950 text-center">
+                                Select Country for Registration
+                            </h2>
+
+                            <Select onValueChange={(value) => updateCountry(value)}>
+                                <SelectTrigger className="w-full bg-slate-100 text-black">
+                                    <SelectValue placeholder="Select a country" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {countries.map((country) => (
+                                        <SelectItem
+                                            key={country.code}
+                                            value={country.code}
+                                            className="hover:bg-slate-100"
+                                        >
+                                            {country.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </CardContent>
+                    </Card>
+                </div>
+
             ) : (
                 <>
                     {/* Main Content */}
-                    <div className="flex-1 flex flex-col">                        
+                    <div className="flex-1 flex flex-col">
                         <div className="flex-1">
                             <div className="mx-auto">
                                 {renderSection()}
