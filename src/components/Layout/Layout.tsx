@@ -25,12 +25,14 @@ import Navbar from './Navbar';
 // import { useTheme } from '../theme-provider';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
+import { useResetAllForms } from '@/lib/atom';
 // import HelpDesk from '../HelpDesk';
 
 const Layout: React.FC = () => {
     const [isCollapsed, setIsCollapsed] = useState(false)
     // Handle responsive collapse based on screen size
     const navigate = useNavigate();
+    const resetAllForms = useResetAllForms();
     // const { theme } = useTheme();
     useEffect(() => {
         const handleResize = () => {
@@ -71,6 +73,7 @@ const Layout: React.FC = () => {
         sidebarItems.push({ icon: <Users className="w-4 h-4" />, label: "Users List" });
     }
     const handleNavigation = (label: string) => {
+        console.log("lable", label)
         switch(label) {
             case 'Home':
                 if (['admin', 'master'].includes(decodedToken.role)) {
@@ -91,13 +94,16 @@ const Layout: React.FC = () => {
                 break;
             case 'Register Company':
                 if(['admin', 'master', 'user'].includes(decodedToken.role)) {
-                    navigate('/company-register');
+                    resetAllForms()
+                    Promise.resolve(navigate('/company-register'))
+                    
                 }
                 else if(decodedToken.role === 'sh_dir') {
                     navigate('/viewboard');
                 } 
                 else {
-                    navigate('/company-register');
+                    resetAllForms()
+                    Promise.resolve(navigate('/company-register'))
                 }
                 break;
             case 'Company Documents':

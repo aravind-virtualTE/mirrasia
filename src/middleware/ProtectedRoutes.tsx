@@ -21,7 +21,7 @@ const ProtectedRoute: React.FC<{ allowedRoles?: string[] }> = ({ allowedRoles })
   }
 
   const decodedToken = jwtDecode<TokenData>(token);
-  console.log("decodedToken", decodedToken);
+  // console.log("decodedToken", decodedToken);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;

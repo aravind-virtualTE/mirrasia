@@ -15,7 +15,6 @@ import CompanyRegistration2 from './pages/Company/cf';
 import Layout from './components/Layout/Layout';
 import { Toaster } from './components/ui/toaster';
 import Profile from './components/User/Profile';
-import MultiStepFormLayout from './components/Layout/MultiStepFormLayout';
 import DocsLayout from './components/Layout/DocsLayout';
 import { TooltipProvider } from './components/ui/tooltip';
 import Unauthorized from './common/Unauthorized';
@@ -23,18 +22,17 @@ import AdminDashboard from './pages/dashboard/AdminDashboard';
 import CompanyDetail from './pages/Company/Details/CompanyDetail';
 import HkMultiStepForm from './components/company/hongkong/HkMultiStepForm';
 import ShareHolderRegForm from './components/form/ShareHolderRegForm';
-import PdfSignature from './components/pdfPage/pdfSignature';
-import PdfTest from './components/pdfPage/pdfTest';
 import QuatationForm from './components/form/quatationForm';
 import RenewalRequestForm from './components/form/renewalReqForm';
 import TransferManagementInfo from './components/form/TransferManagementInfo';
 import AccountingTaxForm from './components/form/accountingTaxWork';
 // import SignatureModal from './components/pdfPage/signSmpl';
-import ParentComponent from './components/pdfPage/parent';
 import ViewBoard from './components/shareholderDirector/ViewBoard';
 import UsersList from './components/userList/UsersList';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import CompanyDocumentManager from './components/companyDocumentManager/CompanyDocumentManager';
+import { useAuthSync } from './hooks/useAuthSync';
+import PublicRoute from './middleware/PublicRoute';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -42,9 +40,8 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.RE
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      // cacheTime: 1000 * 60 * 30, // 30 minutes
-      retry: 1, // Number of retry attempts for failed queries
+      staleTime: 1000 * 60 * 5,
+      retry: 1,
       refetchOnWindowFocus: true,
     },
   },
@@ -53,6 +50,7 @@ const queryClient = new QueryClient({
 const App: React.FC = () => {
   // const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
+  useAuthSync();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
@@ -64,18 +62,14 @@ const App: React.FC = () => {
             <QueryClientProvider client={queryClient}>
               <Routes>
                 {/* Public routes */}
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginComponent />} />
-                <Route path="/signup" element={<SignupPage />} />
+                <Route element={<PublicRoute />}>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/login" element={<LoginComponent />} />
+                  <Route path="/signup" element={<SignupPage />} />
+                </Route>
                 <Route path="/unauthorized" element={<Unauthorized />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-
-                <Route path="/docslayout" element={<DocsLayout />} />
-                <Route path="/mslayout" element={<MultiStepFormLayout />} />
-                <Route path="/pdf" element={<PdfTest />} />
-                <Route path="/pdf1" element={<PdfSignature />} />
-                <Route path="/sign" element={<ParentComponent />} />
-
+ 
                 <Route element={<ProtectedRoute allowedRoles={["master"]} />}>
                   <Route element={<Layout />}>
                     <Route path="/userslist" element={<UsersList />} />
@@ -121,6 +115,7 @@ const App: React.FC = () => {
                     <Route path='/TransferManagementInfo' element={<TransferManagementInfo />} />
                     <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm />} />
                   </Route>
+                  <Route path="/docslayout" element={<DocsLayout />} />
                 </Route>
               </Routes>
               {/* <ReactQueryDevtools initialIsOpen={false} /> */}

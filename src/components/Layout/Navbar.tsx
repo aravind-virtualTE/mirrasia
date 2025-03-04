@@ -44,6 +44,7 @@ export default function Navbar() {
         localStorage.setItem('isAuthenticated', 'false');
         localStorage.removeItem("token");
         localStorage.removeItem('companyRecordId');
+        window.dispatchEvent(new Event('storage'));
         resetAllForms()
         navigate('/');
     };
