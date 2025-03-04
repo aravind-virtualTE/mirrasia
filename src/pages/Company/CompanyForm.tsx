@@ -384,21 +384,25 @@ const CompanyRegistration = () => {
         <div className="flex h-full">
             {/* Country Selection Content */}
             {!countryState.name ? (
-                <div className="flex flex-col space-y-4 justify-center items-center w-full h-full">
-                    <h2 className="text-2xl font-bold">Select Country for Registration</h2>
-                    <Select onValueChange={(value) => updateCountry(value)}>
-                        <SelectTrigger className="w-[280px]">
-                            <SelectValue placeholder="Select a country" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {countries.map((country) => (
-                                <SelectItem key={country.code} value={country.code}>
-                                    {country.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
+                <div
+                className="flex flex-col space-y-4 justify-center items-center w-full h-full bg-cover bg-center"
+                style={{ backgroundImage: `url('https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/discussing-young-room-successful-meeting.jpg')` }}
+              >
+                <h2 className="text-2xl font-bold text-slate-950">Select Country for Registration</h2>
+                <Select onValueChange={(value) => updateCountry(value)}>
+                  <SelectTrigger className="w-[380px] bg-white text-black">
+                    <SelectValue placeholder="Select a country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countries.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
             ) : (
                 <>
                     {/* Main Content */}

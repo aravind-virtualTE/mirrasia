@@ -111,6 +111,7 @@ const ServiceAgreementDocument: React.FC = () => {
   // console.log("finalForm", finalForm)
 
   useEffect(() => {
+    console.log("finalForm.serviceAgreementConsent",finalForm.serviceAgreementConsent)
     if (finalForm.serviceAgreementConsent) {
       setConsent(true)
     }
@@ -256,16 +257,17 @@ const ServiceAgreementDocument: React.FC = () => {
           id="consent"
           checked={consent}
           onCheckedChange={(checked) => setConsent(checked === true)}
+          disabled={finalForm.serviceAgreementConsent === true}
           className="mr-2"
         />
         <label htmlFor="consent" className="text-gray-700">
           I accept the terms and conditions of the Service Agreement.
         </label>
       </div>
-
-      <Button onClick={handleConsentSubmit} className="mt-4">
+        {finalForm.serviceAgreementConsent !== true && <Button onClick={handleConsentSubmit} className="mt-4">
         Submit Consent
-      </Button>
+      </Button>}
+      
     </div>
   );
 };
