@@ -18,11 +18,10 @@ import {
   X,
   Maximize2,
   Minimize2,
-  // Save,
   Trash
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { getCompDocs, uploadCompanyDocs } from '@/services/dataFetch';
+import { deleteCompanyDoc, getCompDocs, uploadCompanyDocs } from '@/services/dataFetch';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 
@@ -44,13 +43,13 @@ const CompanyDocumentManager: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [companies, setCompanies] = useState<Company[]>([]);
-
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [documentToReplace, setDocumentToReplace] = useState<Document | null>(null);
   const [dragActive, setDragActive] = useState<boolean>(false);
   const [expandedDoc, setExpandedDoc] = useState<Document | null>(null);
   const [showUploadSection, setShowUploadSection] = useState<boolean>(false);
+  const [documentToDelete, setDocumentToDelete] = useState<Document | null>(null);
   const token = localStorage.getItem("token") as string;
 
   useEffect(() => {
@@ -212,25 +211,33 @@ const CompanyDocumentManager: React.FC = () => {
     }
   };
 
+  // Confirm delete document
+  const confirmDeleteDocument = (document: Document): void => {
+    setDocumentToDelete(document);
+  };
+
   // Delete document handler
-  const deleteDocument = async (document: Document): Promise<void> => {
-    if (!selectedCompany) return;
+  const deleteDocument = async (): Promise<void> => {
+    console.log("triggered")
+    if (!selectedCompany || !documentToDelete) return;
 
     const updatedCompanies = [...companies];
     const companyIndex = updatedCompanies.findIndex(c => c.id === selectedCompany.id);
     if (companyIndex === -1) return;
-
-    const docIndex = updatedCompanies[companyIndex].companyDocs.findIndex(
-      doc => doc.id === document.id
+    const company = updatedCompanies[companyIndex];
+    const docIndex = company.companyDocs.findIndex(
+      doc => doc.id === documentToDelete.id
     );
     if (docIndex !== -1) {
       updatedCompanies[companyIndex].companyDocs.splice(docIndex, 1);
       setCompanies(updatedCompanies);
       setSelectedCompany(updatedCompanies[companyIndex]);
+      setDocumentToDelete(null);
 
       // Send data to backend to delete the document
       try {
-        // await deleteCompanyDoc(document.id); // Assume this function is defined elsewhere
+        const payload = JSON.stringify({ docId: company.id, ...documentToDelete });
+        await deleteCompanyDoc(payload);
         toast({
           title: "Document deleted",
           description: `Successfully deleted document from ${selectedCompany.companyName}.`,
@@ -301,16 +308,6 @@ const CompanyDocumentManager: React.FC = () => {
                     <Minimize2 className="h-4 w-4" />
                     Minimize
                   </Button>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => deleteDocument(expandedDoc)}
-                    className="flex items-center gap-1"
-                  >
-                    <Trash className="h-4 w-4" />
-                    Delete
-                  </Button>
                 </div>
               </div>
               <div className="flex justify-center bg-gray-100 p-4 rounded-lg">
@@ -355,12 +352,12 @@ const CompanyDocumentManager: React.FC = () => {
                           onClick={() => toggleExpandDocument(document)}
                         >
                           <Maximize2 className="h-3 w-3" />
-                        </Button>                        
+                        </Button>
                         <Button
                           variant="secondary"
                           size="sm"
                           className="h-6 w-6 p-0 rounded-full opacity-70 hover:opacity-100"
-                          onClick={() => deleteDocument(document)}
+                          onClick={() => confirmDeleteDocument(document)}
                         >
                           <Trash className="h-3 w-3" />
                         </Button>
@@ -478,6 +475,28 @@ const CompanyDocumentManager: React.FC = () => {
             </>
           )}
         </>
+      )}
+
+      {/* Confirmation Dialog */}
+      {documentToDelete && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg">
+            <p className="mb-4">Are you sure you want to delete this document?</p>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setDocumentToDelete(null)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={deleteDocument}
+              >
+                Confirm
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
