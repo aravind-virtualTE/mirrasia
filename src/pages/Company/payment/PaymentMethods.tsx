@@ -51,7 +51,7 @@ const PaymentMethodCard = ({
           </CardContent>
         </Card>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>        
@@ -90,7 +90,7 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-lg">Payment Methods</h3>
-      <div className="grid gap-4 md:grid-cols-2">        
+      <div className="grid gap-4 md:grid-cols-2">
           <PaymentMethodCard
             icon={CreditCard}
             title="Card Payment"

@@ -39,15 +39,16 @@ export const paymentApi = {
     return response.data;
   },
 
-  async uploadReceipt(sessionId: string, docId: string, file: File): Promise<void> {
+  async uploadReceipt(sessionId: string, docId: string, file: File) {
     const formData = new FormData();
     formData.append('id', docId)
     formData.append('receipt', file);
-    await api.post(`/payment/payment-sessions/${sessionId}/receipt`, formData, {
+    const response = await api.post(`/payment/payment-sessions/${sessionId}/receipt`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
+    return response.data
   },
 
   async createPaymentIntent(amount: number, currency: string = 'USD', sessionId: string, docId: string) {
