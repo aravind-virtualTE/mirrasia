@@ -390,18 +390,22 @@ const CompanyRegistration = () => {
                     style={{
                         backgroundImage: `url('https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/discussing-young-room-successful-meeting.webp')`,
                     }}
-                >                 
+                >
                     <div
                         className="absolute inset-0 bg-[#103c64] opacity-70"
                     />
-                    <Card className="relative z-10 w-[420px] bg-white/90 shadow-xl">
+                    <Card className="relative z-10 w-[420px] bg-white/90 shadow-xl ">
                         <CardContent className="p-6 space-y-4">
                             <h2 className="text-2xl font-bold text-slate-950 text-center">
                                 Select Country for Registration
                             </h2>
 
                             <Select onValueChange={(value) => updateCountry(value)}>
-                                <SelectTrigger className="w-full bg-slate-100 text-black">
+                                <SelectTrigger
+                                    className="w-full bg-white border-[2px] border-orange-500 rounded-md 
+                         focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent 
+                         text-gray-700 hover:border-orange-600 transition-colors duration-200"
+                                >
                                     <SelectValue placeholder="Select a country" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -409,7 +413,7 @@ const CompanyRegistration = () => {
                                         <SelectItem
                                             key={country.code}
                                             value={country.code}
-                                            className="hover:bg-slate-100"
+                                            className="hover:bg-gray-100 border-[1px] cursor-pointer"
                                         >
                                             {country.name}
                                         </SelectItem>
