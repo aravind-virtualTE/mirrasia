@@ -1,5 +1,6 @@
 import { ShareHolderRegistrationForm } from "@/types/hkForm";
 import api from "./fetch";
+import { Company } from "@/components/companyDocumentManager/CompanyDocumentManager";
 
 export const getIncorporationListByUserId = async (
   userId: string,
@@ -180,5 +181,52 @@ export const updateUserRole = async (userId: string, newRole: string) =>{
     return response.data;
   } catch (error) {
     console.error("Error fetching saved data:", error);
+  }
+}
+
+export const getCompDocs = async (id?: string) => {
+  try {
+    const response = await api.get(`company/getCompanyDocs/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company documents:", error);
+  }  
+}
+
+
+export const uploadCompanyDocs = async (companiesData : Company[]) => {
+  const formData = new FormData();
+
+  const sanitizedCompanies = companiesData.map(company => {
+    return {
+      ...company,
+      companyDocs: company.companyDocs.map(doc => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { file, ...rest } = doc;
+        return rest;
+      })
+    };
+  });
+
+  formData.append('data', JSON.stringify(sanitizedCompanies));
+
+  companiesData.forEach(company => {
+    company.companyDocs.forEach(doc => {
+      if (doc.file) {
+        formData.append('files', doc.file, doc.docName);
+      }
+    });
+  });
+
+  try {
+    const response = await api.post('company/uploadCompanyDocs', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading companies data:', error);
+    throw error;
   }
 }

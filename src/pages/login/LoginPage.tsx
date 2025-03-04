@@ -62,7 +62,7 @@ const LoginComponent: React.FC = () => {
   
           setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
   
-          if (response.user.role === 'admin') {
+          if (response.user.role === 'admin' || response.user.role === 'master') {
             navigate('/admin-dashboard');
           } else {
             navigate('/dashboard');
