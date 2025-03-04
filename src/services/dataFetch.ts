@@ -230,3 +230,13 @@ export const uploadCompanyDocs = async (companiesData : Company[]) => {
     throw error;
   }
 }
+
+
+export const deleteCompanyDoc = async (data: string) =>{
+  try {
+    const response = await api.post(`company/deleteCompanyDoc`,data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}
