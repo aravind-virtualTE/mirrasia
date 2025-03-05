@@ -18,10 +18,10 @@ export function usePaymentSession(sessionId: string) {
     const fetchSession = async () => {
       try {
         const session = await paymentApi.getSession(sessionId);
-        const expiresAt = new Date(session.expiresAt).getTime();
-        const now = new Date().getTime();
-        const remaining = Math.max(0, expiresAt - now);
-
+        const endOfDay = new Date(session.expiresAt);
+        endOfDay.setUTCHours(23, 59, 59, 999);
+        const now = new Date();
+        const remaining = Math.max(0, endOfDay.getTime() - now.getTime());
         setTimeLeft(remaining);
         timeLeftRef.current = remaining;
         setStatus(session.status);
@@ -32,7 +32,7 @@ export function usePaymentSession(sessionId: string) {
             if (timeLeftRef.current <= 0) {
               clearInterval(interval);
               setTimeLeft(0);
-              if(session.status !== "completed") setStatus("expired");
+              if (session.status !== "completed") setStatus("expired");
             } else {
               setTimeLeft(timeLeftRef.current);
             }
@@ -48,7 +48,7 @@ export function usePaymentSession(sessionId: string) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [sessionId,status]);
+  }, [sessionId, status]);
 
   return { timeLeft, status };
 }
