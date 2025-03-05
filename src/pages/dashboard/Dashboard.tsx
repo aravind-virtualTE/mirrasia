@@ -37,7 +37,7 @@ const Dashboard = () => {
     },
     {
       logo: "AWS",
-      img: 'https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/aws-icon.png',
+      img: 'https://img.icons8.com/?size=100&id=33039&format=png&color=000000',
       description: "Web hosting"
     },
     {
@@ -132,7 +132,11 @@ const Dashboard = () => {
                     incorporationDate: string;
                     _id: string;
                   };
-
+                  let date = typedCompany.incorporationDate
+                  if(date !== null){
+                      const [year, month, day] = date.split("T")[0].split("-");
+                      date = `${day}-${month}-${year}`
+                  }
                   return (
                     <TableRow key={typedCompany._id}>
                       <TableCell className="font-medium cursor-pointer" onClick={() => handleRowClick(typedCompany._id)}>
@@ -150,7 +154,7 @@ const Dashboard = () => {
                           {typedCompany.status}
                         </span>
                       </TableCell>
-                      <TableCell>{typedCompany.incorporationDate}</TableCell>
+                      <TableCell>{date}</TableCell>
                     </TableRow>
                   );
                 })}

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useAtom ,useSetAtom} from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useToast } from "@/hooks/use-toast";
 import { companyIncorporationList } from "@/services/state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -360,10 +360,15 @@ const CompanyDetail = () => {
     };
 
     const IncorporationDateFrag = () => {
+        let date = company.incorporationDate
+        if (date !== null) {
+            const [year, month, day] = date.split("T")[0].split("-");
+            date = `${day}-${month}-${year}`
+        }
         return (
             <React.Fragment>
                 <TableCell className="font-medium">Incorporation Date</TableCell>
-                <TableCell>{company.incorporationDate || "Not set"}</TableCell>
+                <TableCell>{date || "Not set"}</TableCell>
                 <TableCell>
                     <Dialog>
                         <DialogTrigger asChild>
@@ -470,6 +475,17 @@ const CompanyDetail = () => {
     }
 
     const CompanyIncorpoStatus = () => {
+        const statusOptions = [
+            'Pending',
+            'KYC Verification',
+            'Waiting for Payment',
+            'Waiting for Documents',
+            'Waiting for Incorporation',
+            'Incorporation Completed',
+            'Good Standing',
+            'Renewal Processing',
+            'Renewal Completed',
+        ];
         return (
             <React.Fragment>
                 <TableCell className="font-medium">InCorporation Status</TableCell>
@@ -483,9 +499,11 @@ const CompanyDetail = () => {
                             <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="Pending">Pending</SelectItem>
-                            <SelectItem value="Approved">Approved</SelectItem>
-                            <SelectItem value="Rejected">Rejected</SelectItem>
+                            {statusOptions.map((status) => (
+                                <SelectItem key={status} value={status}>
+                                    {status}
+                                </SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                 </TableCell>
@@ -544,7 +562,7 @@ const CompanyDetail = () => {
     const handleUpdate = async () => {
 
         const payload = JSON.stringify({
-            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, inCorporationDate: company.incorporationDate },
+            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate },
             session: { id: session._id, expiresAt: (session.expiresAt), status: session.status }
         })
         // {
