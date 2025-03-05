@@ -14,9 +14,10 @@ import { loadStripe } from '@stripe/stripe-js';
 import { paymentApi } from '@/lib/api/payment';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, CheckCircle } from 'lucide-react';
-import {  useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { updateCompanyIncorporationAtom } from '@/lib/atom';
 import { statusHkAtom } from '@/store/hkForm';
+import { usePaymentSession } from '@/hooks/usePaymentSession';
 
 interface CardPaymentFormProps {
   sessionId: string;
@@ -28,7 +29,7 @@ const formSchema = z.object({
   cardHolder: z.string().min(2),
 });
 
-export function CardPaymentForm({ sessionId, clientSecret , amount}: CardPaymentFormProps) {
+export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
@@ -88,7 +89,7 @@ export function CardPaymentForm({ sessionId, clientSecret , amount}: CardPayment
             // Send paymentMethod.id to the backend
             const sessionData = await paymentApi.updateFinalPaymentStatus(sessionId, paymentId, docId!, paymentIntent)
             updateCompanyData(sessionData.updatedData)
-            console.log("sessionUpdatedData", sessionData) 
+            console.log("sessionUpdatedData", sessionData)
             setPaymentStatus({
               type: 'success',
               message: 'Payment successful! Thank you for your purchase.'
@@ -112,7 +113,7 @@ export function CardPaymentForm({ sessionId, clientSecret , amount}: CardPayment
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4 pt-4">
 
-          {paymentStatus.type === 'success' && (
+            {paymentStatus.type === 'success' && (
               <Alert variant="default" className="bg-green-50">
                 <CheckCircle className="h-4 w-4 stroke-green-600" />
                 <AlertTitle className="text-green-800">Payment Successful</AlertTitle>
@@ -132,12 +133,12 @@ export function CardPaymentForm({ sessionId, clientSecret , amount}: CardPayment
               </Alert>
             )}
             <Alert variant="default" className="bg-green-50">
-                <CheckCircle className="h-4 w-4 stroke-green-600" />
-                <AlertTitle className="text-green-800">Amount: {Math.ceil(amount * 1.035)}</AlertTitle>
-                {/* <AlertDescription className="text-green-700">
+              <CheckCircle className="h-4 w-4 stroke-green-600" />
+              <AlertTitle className="text-green-800">Amount: {Math.ceil(amount * 1.035)}</AlertTitle>
+              {/* <AlertDescription className="text-green-700">
                   {paymentStatus.message}
                 </AlertDescription> */}
-              </Alert>
+            </Alert>
             <FormField
               control={form.control}
               name="cardHolder"
@@ -190,7 +191,9 @@ export function CardPaymentForm({ sessionId, clientSecret , amount}: CardPayment
 const STRIPE_CLIENT_ID = import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
 const stripePromise = loadStripe(STRIPE_CLIENT_ID);
 
-export function StripePaymentForm({ sessionId, clientSecret , amount}: CardPaymentFormProps) {
+export function StripePaymentForm({ sessionId, clientSecret, amount }: CardPaymentFormProps) {
+
+  const { status } = usePaymentSession(sessionId);
   const options = {
     clientSecret,
 
@@ -198,7 +201,16 @@ export function StripePaymentForm({ sessionId, clientSecret , amount}: CardPayme
   // console.log(sessionId && clientSecret)
   // console.log(sessionId, clientSecret)
   return (<>
-    {sessionId && clientSecret && (<Elements stripe={stripePromise} options={options}>
+    {status === "completed" && (
+      <Alert variant="default" className="bg-green-50">
+        <CheckCircle className="h-4 w-4 stroke-green-600" />
+        <AlertTitle className="text-green-800">Payment Completed</AlertTitle>
+        <AlertDescription className="text-green-700">
+          Thank you for your payment!
+        </AlertDescription>
+      </Alert>
+    )}
+    {status !== "completed" && sessionId && clientSecret && (<Elements stripe={stripePromise} options={options}>
       <CardPaymentForm sessionId={sessionId} clientSecret={clientSecret} amount={amount} />
     </Elements>)}
   </>
