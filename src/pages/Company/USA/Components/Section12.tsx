@@ -1,11 +1,16 @@
 import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
+import { 
+    Select, 
+    SelectContent, 
+    SelectItem, 
+    SelectTrigger, 
+    SelectValue 
+  } from '@/components/ui/select';
 
 const list = ['1', '2', '3', '4', '5']
 const Section12 = () => {
@@ -36,7 +41,7 @@ const Section12 = () => {
                         Total number of members (shareholders) <span className="text-destructive">*
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
+                    {/* <RadioGroup defaultValue="no"
                         value={selectedOption}
                         onValueChange={handleOptionChange}
                         id="relationbtwauth"
@@ -49,7 +54,20 @@ const Section12 = () => {
                                 </Label>
                             </div>
                         ))}
-                    </RadioGroup>
+                    </RadioGroup> */}
+
+                    <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                        <SelectValue/>
+                        </SelectTrigger>
+                        <SelectContent>
+                            {list.map(state => (
+                                <SelectItem key={state} value={state}>
+                                    {state}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div className="space-y-2">
@@ -57,7 +75,7 @@ const Section12 = () => {
                         Total number of executives <span className="text-destructive">*
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
+                    {/* <RadioGroup defaultValue="no"
                         value={selectedOption}
                         onValueChange={handleOptionChange}
                         id="relationbtwauth"
@@ -70,7 +88,21 @@ const Section12 = () => {
                                 </Label>
                             </div>
                         ))}
-                    </RadioGroup>
+                    </RadioGroup> */}
+                    
+                      <Select onValueChange={handleOptionChange}>
+                         <SelectTrigger className="w-full md:w-80">
+                            <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {list.map(state => (
+                                    <SelectItem key={state} value={state}>
+                                         {state}
+                                          </SelectItem>
+                                         ))}
+                                         </SelectContent>
+                                          </Select>
+
                 </div>
 
                 <div className="space-y-2">

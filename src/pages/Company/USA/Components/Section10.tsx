@@ -1,11 +1,18 @@
 import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
+import { 
+    Select, 
+    SelectContent, 
+    SelectItem, 
+    SelectTrigger, 
+    SelectValue 
+  } from '@/components/ui/select';
 
 const list = ['1', '100', '1000', '10000', 'other']
 
@@ -22,7 +29,7 @@ const Section10 = () => {
 
     const handleOptionChange = (value: string) => {
         setSelectedOption(value);
-        if (value !== "other") {
+        if (value !== "Other") {
             setOtherText("");
         }
     };
@@ -74,7 +81,8 @@ const Section10 = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
+                    
+                    {/* <RadioGroup defaultValue="no"
                         value={selectedOption}
                         onValueChange={handleOptionChange}
                         id="relationbtwauth"
@@ -87,11 +95,25 @@ const Section10 = () => {
                                 </Label>
                             </div>
                         ))}
-                    </RadioGroup>
-                    {selectedOption === "other" && (
+                    </RadioGroup> */}
+
+                      <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                            <SelectValue/>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {list.map(state => (
+                                    <SelectItem key={state} value={state}>
+                                        {state}
+                                        </SelectItem>
+                                    ))}
+                                    </SelectContent>
+                                    </Select>
+
+                    {selectedOption === "Other" && (
                         <Input
                             type="text"
-                            placeholder="Please specify"
+                            placeholder="Your answer"
                             value={otherText}
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"
@@ -112,7 +134,7 @@ const Section10 = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
+                    {/* <RadioGroup defaultValue="no"
                         value={selectedOption}
                         onValueChange={handleOptionChange}
                         id="relationbtwauth"
@@ -134,7 +156,21 @@ const Section10 = () => {
                                 className="mt-2"
                             />
                         )}
-                    </RadioGroup>
+                    </RadioGroup> */}
+
+                    <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                            <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {list2.map(state => (
+                                    <SelectItem key={state} value={state}>
+                                        {state}
+                                        </SelectItem>
+                                    ))}
+                                    </SelectContent>
+                                     </Select>
+
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
@@ -149,7 +185,7 @@ const Section10 = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
+                    {/* <RadioGroup defaultValue="no"
                         value={selectedOption}
                         onValueChange={handleOptionChange}
                         id="relationbtwauth"
@@ -162,7 +198,20 @@ const Section10 = () => {
                                 </Label>
                             </div>
                         ))}                       
-                    </RadioGroup>
+                    </RadioGroup> */}
+                    
+                     <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                            <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {list3.map(state => (
+                                    <SelectItem key={state} value={state}>
+                                        {state}
+                                        </SelectItem>
+                                    ))}
+                                    </SelectContent>
+                                    </Select>
                 </div>
 
             </CardContent>

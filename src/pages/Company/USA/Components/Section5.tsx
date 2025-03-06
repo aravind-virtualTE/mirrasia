@@ -1,11 +1,18 @@
 import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
+import { 
+    Select, 
+    SelectContent, 
+    SelectItem, 
+    SelectTrigger, 
+    SelectValue 
+  } from '@/components/ui/select';
 
 const list = [
     'Executives of the U.S. company (to be established)', 'A person delegated by an executive of the U.S. company (to be established)', 'Major shareholder of the U.S. company (to be established)', 'Experts (lawyers, accountants) who provide establishment advice on behalf of executives of U.S. companies (to be established), Administrator, tax accountant, etc.)', 'Other'
@@ -17,7 +24,7 @@ const Section5 = () => {
 
     const handleOptionChange = (value: string) => {
         setSelectedOption(value);
-        if (value !== "other") {
+        if (value !== "Oter") {
             setOtherText("");
         }
     };
@@ -52,24 +59,25 @@ const Section5 = () => {
                     <Label htmlFor="relationbtwauth" className="inline-flex">
                     Relationship between the above author and the US company you are establishing (multiple selections possible) <span className="text-destructive">*</span>
                     </Label>
-                    <RadioGroup defaultValue="no"
-                        value={selectedOption}
-                        onValueChange={handleOptionChange}
-                        id="relationbtwauth"
-                    >
-                        {list.map((item) => (
-                            <div className="flex items-center space-x-2" key={item}>
-                                <RadioGroupItem value={item} id={item} />
-                                <Label htmlFor={item} className="font-normal">
-                                    {item}
-                                </Label>
-                            </div>
-                        ))}
-                    </RadioGroup>
-                    {selectedOption === "other" && (
+                    {/* 
+                     */}
+                    <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                        <SelectValue  />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {list.map(state => (
+                                <SelectItem key={state} value={state}>
+                                    {state}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    {selectedOption === "Oher" && (
                         <Input
                             type="text"
-                            placeholder="Please specify"
+                            placeholder="Your answer"
                             value={otherText}
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"

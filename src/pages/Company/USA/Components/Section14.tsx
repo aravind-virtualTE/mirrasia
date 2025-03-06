@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
 
 const Section14: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<string>("");
@@ -30,20 +37,20 @@ const Section14: React.FC = () => {
             are not obligated to provide assistance or advice.
           </Label>
           
-          {/* Radio Button Group */}
-          <RadioGroup value={selectedOption} onValueChange={handleOptionChange}>
-            <div className="flex gap-4">
-              <Label className="flex items-center space-x-2 cursor-pointer">
-                <RadioGroupItem value="yes" />
-                <span>Yes</span>
-              </Label>
-
-              <Label className="flex items-center space-x-2 cursor-pointer">
-                <RadioGroupItem value="no" />
-                <span>No</span>
-              </Label>
-            </div>
-          </RadioGroup>
+          <Select onValueChange={handleOptionChange}>
+            <SelectTrigger className="w-full md:w-80">
+            <SelectValue/>
+            </SelectTrigger>
+            <SelectContent>
+                    <SelectItem key={"yes"} value={"yes"}>
+                        Yes
+                    </SelectItem>
+                    <SelectItem key={"no"} value={"no"}>
+                        No
+                    </SelectItem>
+            </SelectContent>
+        </Select>
+            
         </div>
       </CardContent>
     </Card>
