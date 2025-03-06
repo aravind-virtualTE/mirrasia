@@ -82,7 +82,7 @@ const AdminDashboard = () => {
         return mapping[status] || "pending"
     }
 
-    const calculateStats = (cList: any[]): Stats => {
+    const calculateStats = (): Stats => {
         const initialStats: Stats = {
             pending: 0,
             kycVerification: 0,
@@ -97,14 +97,14 @@ const AdminDashboard = () => {
         }
 
         return cList.reduce((acc: Stats, company) => {
-            const key = statusToKey(company.status)
+            const key = statusToKey(company.status as string)
             if (key in acc) {
                 acc[key]++
             }
             return acc
         }, initialStats)
     }
-    console.log('calculateStats', calculateStats(cList))
+    console.log('calculateStats', calculateStats())
     const handleRowClick = (companyId: string) => {
         navigate(`/company-details/${companyId}`);
         localStorage.setItem('companyRecordId', companyId);
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
     return (
         <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
             {/* Stats Cards */}
-            <StatsCard stats={calculateStats(cList)} />;
+            <StatsCard stats={calculateStats()} />;
             {/* Companies Table */}
             <Card>
                 <CardHeader>
