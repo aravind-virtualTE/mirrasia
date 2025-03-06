@@ -131,8 +131,8 @@ const ServiceSelection: React.FC = () => {
     for (let i = 0; i < legalPersonFees; i++) {
       allFeesArray.push({
         description: t("ServiceSelection.KYCFeeLegalPerson"),
-        originalPrice: "165",
-        discountedPrice: "165",
+        originalPrice: "130",
+        discountedPrice: "130",
         isOptional: false,
         isHighlight: false,
       });
