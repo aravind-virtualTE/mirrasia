@@ -2,9 +2,16 @@ import React from 'react'
 import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { 
+    Select, 
+    SelectContent, 
+    SelectItem, 
+    SelectTrigger, 
+    SelectValue 
+  } from '@/components/ui/select';
 
 const list = [
     'US company establishment + company maintenance until renewal date (standard service)', 'EMI (Electronic Money Institution) list provided (free to customers who use our service)', 'EMI (Electronic Money Institution) account opening application agency and advice (separate quote after business confirmation)', 'Bank account opening application agency and advice (separate quote after business confirmation)', 'Legal Opinion in the US (estimate after checking white paper)','Legal Opinion for listing on domestic exchanges (quotation after checking white paper)','Legal Opinion in other countries (estimate after checking white paper)','Consulting services such as business regulatory confirmation, feasibility review, document preparation, and operation advisory (separate quote)', 'Other'
@@ -17,7 +24,7 @@ const Section6 = () => {
 
     const handleOptionChange = (value: string) => {
         setSelectedOption(value);
-        if (value !== "other") {
+        if (value !== "Oter") {
             setOtherText("");
         }
     };
@@ -37,7 +44,7 @@ const Section6 = () => {
                             *                            
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
+                    {/* <RadioGroup defaultValue="no"
                     id="serviceID"
                         value={selectedOption}
                         onValueChange={handleOptionChange}
@@ -50,11 +57,24 @@ const Section6 = () => {
                                 </Label>
                             </div>
                         ))}
-                    </RadioGroup>
-                    {selectedOption === "other" && (
+                    </RadioGroup> */}
+                    
+                    <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                        <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {list.map(state => (
+                                <SelectItem key={state} value={state}>
+                                    {state}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    {selectedOption === "Other"&& (
                         <Input
                             type="text"
-                            placeholder="Please specify"
+                            placeholder="Your answer"
                             value={otherText}
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"

@@ -1,22 +1,37 @@
 import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { 
+    Select, 
+    SelectContent, 
+    SelectItem, 
+    SelectTrigger, 
+    SelectValue 
+  } from '@/components/ui/select';
+import { useTranslation } from "react-i18next";
 
 
-const list = [
-    'Delaware','Wyoming','California','New York','Washington','Washington D.C.','State of Texas','Nevada','Florida','Georgia' ,'Other'
-]
 export default function Section2() {
-
+    const { t } = useTranslation();
+    const list = [
+        t('Section2StateOptions.Delaware'),
+        t('Section2StateOptions.Wyoming'),
+        t('Section2StateOptions.California'),
+        t('Section2StateOptions.New York'),
+        t('Section2StateOptions.Washington D.C.'),
+        t('Section2StateOptions.State of Texas'),
+        t('Section2StateOptions.Nevada'),
+        t('Section2StateOptions.Florida'),
+        t('Section2StateOptions.Georgia'),
+        t('Section2StateOptions.Other'),
+    ];
     const [selectedOption, setSelectedOption] = useState("");
     const [otherText, setOtherText] = useState("");
   
     const handleOptionChange = (value : string) => {
       setSelectedOption(value);
-      if (value !== "other") {
+      if (value !== "Other") {
         setOtherText("");
       }
     };
@@ -30,33 +45,32 @@ export default function Section2() {
                 {/* Name Field */}
                 <div className="space-y-2">
                     <Label htmlFor="name" className="inline-flex">
-                        Select the state in which you wish to establish your US company <span className="text-destructive">*</span>
+                    {t('Section2StateQuestion')} <span className="text-destructive">*</span>
                     </Label>
-                    <Input id="name" placeholder="Your answer" required />
                 </div>
 
                 {/* Name Change History */}
                 <div className="space-y-2">
-                    <RadioGroup defaultValue="no" 
-                        value={selectedOption}
-                        onValueChange={handleOptionChange}
-                        >
-                        {list.map((item) => (
-                            <div className="flex items-center space-x-2" key={item}>
-                                <RadioGroupItem value={item} id={item} />
-                                <Label htmlFor={item} className="font-normal">
-                                    {item}
-                                </Label>                                
-                            </div>
-                        ))}                        
-                    </RadioGroup>
-                    {selectedOption === "other" && (
+                    <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                        <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {list.map(state => (
+                                <SelectItem key={state} value={state}>
+                                    {state}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    {selectedOption === "Other" && (
                         <Input
                             type="text"
-                            placeholder="Please specify"
+                            placeholder="Your answer"
                             value={otherText}
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"
+                            required
                         />
                     )}
                 </div>
