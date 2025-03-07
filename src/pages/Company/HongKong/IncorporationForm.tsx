@@ -108,7 +108,7 @@ const IncorporationForm = () => {
             console.error("Error updating document:", error);
         }
     };
-    console.log("finalForm",finalForm)
+    // console.log("finalForm",finalForm)
 
     const nextSection = async () => {
         if (
