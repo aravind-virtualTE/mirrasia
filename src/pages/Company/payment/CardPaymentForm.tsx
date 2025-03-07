@@ -17,7 +17,6 @@ import { AlertCircle, CheckCircle } from 'lucide-react';
 import { useAtom, useSetAtom } from 'jotai';
 import { updateCompanyIncorporationAtom } from '@/lib/atom';
 import { statusHkAtom } from '@/store/hkForm';
-import { usePaymentSession } from '@/hooks/usePaymentSession';
 
 interface CardPaymentFormProps {
   sessionId: string;
