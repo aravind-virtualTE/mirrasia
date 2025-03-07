@@ -9,7 +9,7 @@ const Section13 = () => {
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
                 <CardTitle className="text-lg font-medium">Section 13</CardTitle>
-                <p className="inline-flex">Address for US business accounting and financial data filings <Tooltip>
+                <p className="inline-flex">The location where the accounting/financial data of the proposed US company will be kept <Tooltip>
                     <TooltipTrigger asChild>
                         <HelpCircle className="text-red-500 h-4 w-4 mt-1 ml-2 cursor-help" />
                     </TooltipTrigger>
@@ -24,7 +24,7 @@ const Section13 = () => {
                 {/* select Industry */}
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
-                        Please enter the address where your accounting and financial data is stored.
+                    Please enter the address where the accounting and financial data of the proposed US company will be kept.
                     </Label>
                     <Input id="descBusiness" placeholder="Your answer" required />
                 </div>

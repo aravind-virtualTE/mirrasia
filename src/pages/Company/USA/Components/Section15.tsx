@@ -1,24 +1,46 @@
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
+// import { 
+//     Select, 
+//     SelectContent, 
+//     SelectItem, 
+//     SelectTrigger, 
+//     SelectValue 
+//   } from '@/components/ui/select';
+import DropdownSelect from "@/components/DropdownSelect";
 
 const Section15: React.FC = () => {
-    const [selectedOption, setSelectedOption] = useState<string>("");
-    const [otherText, setOtherText] = useState("");
+    const [selectedOption, setSelectedOption] = useState<string | number>("");
+    // const [otherText, setOtherText] = useState("");
 
-    const handleOptionChange = (value: string) => {
+    const handleOptionChange = (value: string | number) => {
         setSelectedOption(value);
-        if (value !== "other") {
-            setOtherText("");
-        }
+        // if (value !== "Other") {
+        //     setOtherText("");
+        // }
     };
+    // const list = [
+    //     {
+    //         value:'creditCard',
+    //         label:'Card payment (Additional charge of 3.5% card processing fee)'
+    //     },
+    //     {
+    //         value:'telegraficTransfer',
+    //         label:'Telegraphic transfer'
+    //     },
+    //     {
+    //         value:'other',
+    //         label:'other'
+    //     },
+    // ]
 
+    const list = ['Card payment (Additional charge of 3.5% card processing fee)', 'Telegraphic transfer']
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <CardTitle className="text-lg font-medium">Section 14</CardTitle>
+                <CardTitle className="text-lg font-medium">Section 15</CardTitle>
                 <p className="inline-flex">
                     Select payment option
                 </p>
@@ -32,7 +54,7 @@ const Section15: React.FC = () => {
                     </Label>
 
                     {/* Radio Button Group */}
-                    <RadioGroup value={selectedOption} onValueChange={handleOptionChange}>
+                    {/* <RadioGroup value={selectedOption} onValueChange={handleOptionChange}>
                         <div className="flex gap-4">
                             <Label className="flex items-center space-x-2 cursor-pointer">
                                 <RadioGroupItem value="creditCard" />
@@ -51,16 +73,34 @@ const Section15: React.FC = () => {
                                 </span>
                             </Label>
                         </div>
-                    </RadioGroup>
+                    </RadioGroup> */}
+                    {/* <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                        <SelectValue  />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {list.map(item => (
+                                <SelectItem key={item.value} value={item.value}>
+                                    {item.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                     {selectedOption === "other" && (
                         <Input
                             type="text"
-                            placeholder="Please specify"
+                            placeholder="Your answer"
                             value={otherText}
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"
                         />
-                    )}
+                    )} */}
+                    <DropdownSelect
+                        options={list}
+                        placeholder="Select..."
+                        selectedValue={selectedOption}
+                        onSelect={handleOptionChange}
+                    />
                 </div>
             </CardContent>
         </Card>

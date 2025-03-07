@@ -1,37 +1,63 @@
 import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from '@/components/ui/select';
+import DropdownSelect from "@/components/DropdownSelect"
 
-const list = ['1', '100', '1000', '10000', 'other']
+const list = ['1', '100', '1000', '10000']
 
 const list2 = [
-    '1 person','2 or more individuals','Corporation (agent participates in the decision-making of the U.S. company) + individual','other'
+    '1 person', '2 or more individuals', 'Corporation (agent participates in the decision-making of the U.S. company) + individual'
 ]
 
 const list3 = [
-    'Use MirAsia’s U.S. company registration address service','There is a separate address to use as a business address in the United States (do not use Mir Asia’s registered address service)'
+    'Use MirAsia’s U.S. company registration address service', 'There is a separate address to use as a business address in the United States (do not use Mir Asia’s registered address service)'
 ]
 const Section10 = () => {
-    const [selectedOption, setSelectedOption] = useState("");
-    const [otherText, setOtherText] = useState("");
+    const [selectedOption, setSelectedOption] = useState<string | number>("");
+    const [minCapital, setOtherText] = useState<string | number>("");
+    const [companyName, setCompanyName] = useState(["", "", ""]);
+    const [compAddress, setCompAdress] = useState<string>("");
 
-    const handleOptionChange = (value: string) => {
+    const handleOptionChange = (value: string | number) => {
         setSelectedOption(value);
-        if (value !== "other") {
-            setOtherText("");
-        }
+        // if (value !== "Other") {
+        //     setOtherText("");
+        // }
     };
+
+    const handleAddressChange = (value: string) => {
+        setCompAdress(value);
+    }
+
+    const handleChange = (name: string, index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("name", name)
+        const values = [...companyName];
+        values[index] = e.target.value;
+        setCompanyName(values);
+    }
+
+   const  handlePriceSelect = (registerAmountAtom: string | number) => {
+        // console.log('Selected Price:', registerAmountAtom);
+        setOtherText(registerAmountAtom);
+      };
 
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
                 <CardTitle className="text-lg font-medium">Section 10</CardTitle>
-                <p className="inline-flex">Registration details for the US company you are establishing <Tooltip>
+                <p className="inline-flex">Registration details of the proposed US company <Tooltip>
                     <TooltipTrigger asChild>
                         <HelpCircle className="text-red-500 ld h-4 w-4 mt-1 ml-2 cursor-help" />
                     </TooltipTrigger>
@@ -45,7 +71,7 @@ const Section10 = () => {
                 {/* select Industry */}
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
-                        Company name of the US company you wish to work for <span className="text-red-500 font-bold ml-1 flex">*
+                        Proposed US company name (Please provide at least three proposed company names.) <span className="text-red-500 font-bold ml-1 flex">*
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
@@ -58,7 +84,17 @@ const Section10 = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    <Input id="descBusiness" placeholder="Your answer" required />
+                    {
+                        companyName.map((name, index) => (
+                            <Input
+                                key={index}
+                                id={`companyName${index}`}
+                                placeholder="Your answer"
+                                value={name}
+                                onChange={handleChange("companyName", index)}
+                                required />
+                        ))
+                    }
                 </div>
 
                 <div className="space-y-2">
@@ -74,7 +110,8 @@ const Section10 = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
+
+                    {/* <RadioGroup defaultValue="no"
                         value={selectedOption}
                         onValueChange={handleOptionChange}
                         id="relationbtwauth"
@@ -87,16 +124,37 @@ const Section10 = () => {
                                 </Label>
                             </div>
                         ))}
-                    </RadioGroup>
-                    {selectedOption === "other" && (
+                    </RadioGroup> */}
+
+                    {/* <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {list.map(state => (
+                                <SelectItem key={state} value={state}>
+                                    {state}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    {selectedOption === "Other" && (
                         <Input
                             type="text"
-                            placeholder="Please specify"
+                            placeholder="Your answer"
                             value={otherText}
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"
                         />
-                    )}
+                    )} */}
+
+                    <DropdownSelect
+                        options={list}
+                        placeholder="Enter custom price or select"
+                        selectedValue={minCapital}
+                        onSelect={handlePriceSelect}
+                    />
                 </div>
 
                 <div className="space-y-2">
@@ -112,7 +170,7 @@ const Section10 = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
+                    {/* <RadioGroup defaultValue="no"
                         value={selectedOption}
                         onValueChange={handleOptionChange}
                         id="relationbtwauth"
@@ -134,22 +192,43 @@ const Section10 = () => {
                                 className="mt-2"
                             />
                         )}
-                    </RadioGroup>
+                    </RadioGroup> */}
+
+                    {/* <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {list2.map(state => (
+                                <SelectItem key={state} value={state}>
+                                    {state}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select> */}
+
+                    <DropdownSelect
+                        options={list2}
+                        placeholder="Select..."
+                        selectedValue={selectedOption}
+                        onSelect={handleOptionChange}
+                    />
+
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
-                    U.S. local company registration address<span className="text-red-500 font-bold ml-1 flex">*
+                        U.S. local company registration address<span className="text-red-500 font-bold ml-1 flex">*
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-[500px] text-base">
-                                To establish and maintain a U.S. company, you must have a commercial address in the state you wish to establish. Our company provides address services for use in registration purposes, and this service includes registration address and mail processing services. (It may be difficult to register the address of a residential or lodging business as a company address.)
+                                    To establish and maintain a U.S. company, you must have a commercial address in the state you wish to establish. Our company provides address services for use in registration purposes, and this service includes registration address and mail processing services. (It may be difficult to register the address of a residential or lodging business as a company address.)
                                 </TooltipContent>
                             </Tooltip>
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
+                    {/* <RadioGroup defaultValue="no"
                         value={selectedOption}
                         onValueChange={handleOptionChange}
                         id="relationbtwauth"
@@ -162,7 +241,20 @@ const Section10 = () => {
                                 </Label>
                             </div>
                         ))}                       
-                    </RadioGroup>
+                    </RadioGroup> */}
+
+                    <Select onValueChange={handleAddressChange} value={compAddress}>
+                        <SelectTrigger className="w-full md:w-80">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {list3.map(state => (
+                                <SelectItem key={state} value={state}>
+                                    {state}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
 
             </CardContent>

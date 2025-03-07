@@ -1,22 +1,29 @@
 import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
+import { useTranslation } from "react-i18next";
 
 const list = [
-    'LLC (limited liability company)','Corporation','Need advice'
+    'LLC (limited liability company)','Corporation','Consultation required before proceeding'
 ]
 export default function Section2() {
-
+    const { t } = useTranslation();
     const [selectedOption, setSelectedOption] = useState("");
     const [otherText, setOtherText] = useState("");
   
     const handleOptionChange = (value : string) => {
       setSelectedOption(value);
-      if (value !== "other") {
+      if (value !== "Other") {
         setOtherText("");
       }
     };
@@ -31,30 +38,28 @@ export default function Section2() {
                 {/* Name Field */}
                 <div className="space-y-2">
                     <Label htmlFor="name">
-                    What type of US company structure would you like to establish? <span className="text-destructive">*</span>
-                    </Label>
-                    <Input id="name" placeholder="Your answer" required />
+                    {t('usa.usCompanyEntity')}  <span className="text-destructive">*</span>
+                    </Label>                    
                 </div>
-
                 {/* Name Change History */}
-                <div className="space-y-2">
-                    <RadioGroup defaultValue="no" 
-                        value={selectedOption}
-                        onValueChange={handleOptionChange}
-                        >
-                        {list.map((item) => (
-                            <div className="flex items-center space-x-2" key={item}>
-                                <RadioGroupItem value={item} id={item} />
-                                <Label htmlFor={item} className="font-normal">
-                                    {item}
-                                </Label>                                
-                            </div>
-                        ))}                        
-                    </RadioGroup>
-                    {selectedOption === "other" && (
+                <div className="space-y-2">                  
+                    <Select onValueChange={handleOptionChange}>
+                      <SelectTrigger className="w-full md:w-80">
+                      <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {list.map(state => (
+                          <SelectItem key={state} value={state}>
+                            {state}
+                          </SelectItem>
+                        
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {selectedOption === "Other" && (
                         <Input
                             type="text"
-                            placeholder="Please specify"
                             value={otherText}
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"

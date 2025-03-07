@@ -1,30 +1,52 @@
 import React from 'react'
 import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Input } from "@/components/ui/input"
+
+// import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
+// import { 
+//     Select, 
+//     SelectContent, 
+//     SelectItem, 
+//     SelectTrigger, 
+//     SelectValue 
+//   } from '@/components/ui/select';
+import MultiSelect, { Option } from '@/components/MultiSelectInput'
 
 const list = [
-   'yes','no',"Don't know",'Consideration of legal advice', 'Other'
+    'yes', 'no', "Don't know", 'Consultation required before proceeding', 'Other'
 ]
 
 const list2 = [
-    'yes','no','After establishment, it can be resolved internally within the company.','If fixed costs are incurred every year after establishment, there is no intention to establish the establishment.','Consultation required before proceeding', 'Other'
- ]
+    'yes', 'no', 'I/We can handle on our own after incorporation', " If a fixed cost would be incurred every year after incorporation, I don't intend to incorporate", 'Consultation required before proceeding', 'Other'
+]
 const Section7 = () => {
 
-    const [selectedOption, setSelectedOption] = useState("");
-    const [otherText, setOtherText] = useState("");
+    const [selectedOption, setSelectedOption] = useState<Option[]>([]);
+    const [selectedOption2, setSelectedOption2] = useState<Option[]>([]);
+    // const [otherText, setOtherText] = useState("");
 
-    const handleOptionChange = (value: string) => {
-        setSelectedOption(value);
-        if (value !== "other") {
-            setOtherText("");
-        }
+    // const handleOptionChange = (value: string) => {
+    //     setSelectedOption(value);
+    //     if (value !== "Other") {
+    //         setOtherText("");
+    //     }
+    // };
+
+    const handleSelectionChange = (selections: Option[]) => {
+        console.log("selections", selections)
+        setSelectedOption(selections)
+
     };
+    const handleSelectionChange2 = (selections: Option[]) => {
+        console.log("selections", selections)
+        setSelectedOption2(selections)
+
+    };
+    const relList = list.map((item) => ({ label: item, value: item }));
+    const relList2 = list2.map((item) => ({ label: item, value: item }));
 
     return (
         <React.Fragment> <Card className="max-w-5xl mx-auto mt-2">
@@ -43,64 +65,92 @@ const Section7 = () => {
             <CardContent className="space-y-6 pt-6">
                 {/* serviceID Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="serviceID" className="inline-flex">
-                    Does the purpose of establishing a US company raise legal or ethical issues such as money laundering, gambling, tax evasion, asset hiding, evasion of law for illegal business, fraud, etc.?<span className="text-red-500 font-bold ml-1 flex">
-                            *
+                    <Label htmlFor="serviceID" className="text-base flex items-center font-semibold gap-2">
+                        Are there any legal or ethical issues such as money laundering, gambling, tax evasion, concealment of assets, avoidance of illegal business, bribery, fraud, etc.?<span className="text-red-500 flex font-bold ml-1">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-[500px] text-base">
+                                    you can type in the empty space inside the select box to enter custom value
+                                </TooltipContent>
+                            </Tooltip>*
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
-                        id="serviceID"
-                        value={selectedOption}
-                        onValueChange={handleOptionChange}
-                    >
-                        {list.map((item) => (
-                            <div className="flex items-center space-x-2" key={item}>
-                                <RadioGroupItem value={item} id={item} />
-                                <Label htmlFor={item} className="font-normal">
-                                    {item}
-                                </Label>
-                            </div>
-                        ))}
-                    </RadioGroup>
-                    {selectedOption === "other" && (
+                    {/* <Select onValueChange={handleOptionChange}>
+                      <SelectTrigger className="w-full md:w-80">
+                         <SelectValue  />
+                          </SelectTrigger>
+                           <SelectContent>
+                            {list.map(state => (
+                                <SelectItem key={state} value={state}>
+                                     {state}
+                                      </SelectItem>
+                                     ))}
+                                     </SelectContent>
+                                      </Select>
+                    {selectedOption === "Other" && (
                         <Input
                             type="text"
-                            placeholder="Please specify"
+                            placeholder="Your answer"
                             value={otherText}
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"
                         />
-                    )}
+                    )} */}
+
+                    <>
+                        <MultiSelect
+                            options={relList}
+                            placeholder="Select Relationship."
+                            selectedItems={selectedOption}
+                            onSelectionChange={handleSelectionChange}
+                        />
+                    </>
+
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="serviceID" className="inline-flex">
-                    After the establishment of a U.S. company, annual renewal work occurs every year, and all of these work entails related costs and obligations to provide materials. Do you agree to this?<span className="text-red-500 font-bold ml-1 flex">
-                            *
+                    <Label htmlFor="serviceID" className="text-base flex items-center font-semibold gap-2">
+                        After the establishment of the US company, annual renewal(registered agent, registered address service) will occur every year, and all these tasks are accompanied by an obligation to provide related expenses and documentations. Do you agree with this?<span className="text-red-500 flex font-bold ml-1">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-[500px] text-base">
+                                    you can type in the empty space inside the select box to enter custom value
+                                </TooltipContent>
+                            </Tooltip>*
                         </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
-                        id="serviceID"
-                        value={selectedOption}
-                        onValueChange={handleOptionChange}
-                    >
-                        {list2.map((item) => (
-                            <div className="flex items-center space-x-2" key={item}>
-                                <RadioGroupItem value={item} id={item} />
-                                <Label htmlFor={item} className="font-normal">
-                                    {item}
-                                </Label>
-                            </div>
+                    {/* <Select onValueChange={handleOptionChange}>
+                        <SelectTrigger className="w-full md:w-80">
+                        <SelectValue  />
+                        </SelectTrigger>
+                        <SelectContent>
+                        {list2.map(state => (
+                            <SelectItem key={state} value={state}>
+                                {state}
+                            </SelectItem>
                         ))}
-                    </RadioGroup>
-                    {selectedOption === "other" && (
+                        </SelectContent>
+                    </Select>
+                    {selectedOption === "Other" && (
                         <Input
                             type="text"
-                            placeholder="Please specify"
+                            placeholder="Your answer"
                             value={otherText}
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"
                         />
-                    )}
+                    )} */}
+                    <>
+                        <MultiSelect
+                            options={relList2}
+                            placeholder="Select Relationship."
+                            selectedItems={selectedOption2}
+                            onSelectionChange={handleSelectionChange2}
+                        />
+                    </>
                 </div>
             </CardContent>
         </Card>

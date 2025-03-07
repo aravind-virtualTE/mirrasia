@@ -1,27 +1,25 @@
 import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
+import MultiSelect, { Option } from "@/components/MultiSelectInput";
 
 const list = [
-    'Executives of the U.S. company (to be established)', 'A person delegated by an executive of the U.S. company (to be established)', 'Major shareholder of the U.S. company (to be established)', 'Experts (lawyers, accountants) who provide establishment advice on behalf of executives of U.S. companies (to be established), Administrator, tax accountant, etc.)', 'Other'
+    'Director/Officer of the proposed US company', 'Delegated by the director of the proposed US company', 'Shareholder of the proposed US company holding majority of the shares', ' A professional(e.g. lawyer, accountant) who provides incorporation advice to the US company'
 ]
 
 const Section5 = () => {
-    const [selectedOption, setSelectedOption] = useState("");
-    const [otherText, setOtherText] = useState("");
+    const [selectedOption, setSelectedOption] = useState<Option[]>([]);
+    const handleSelectionChange = (selections: Option[]) => {
+        console.log("selections", selections)
+        setSelectedOption(selections)
 
-    const handleOptionChange = (value: string) => {
-        setSelectedOption(value);
-        if (value !== "other") {
-            setOtherText("");
-        }
     };
 
+    const relList = list.map((item) => ({ label: item, value: item }));
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
@@ -42,44 +40,42 @@ const Section5 = () => {
                 {/* Name Field */}
                 <div className="space-y-2">
                     <Label htmlFor="name" className="inline-flex">
-                    Please enter the name of the person filling out this form. <span className="text-destructive">*</span>
+                        Please enter the name of the person filling out this form. <span className="text-destructive">*</span>
                     </Label>
                     <Input id="name" placeholder="Your answer" required />
                 </div>
-
-                {/* Name Change History */}
-                <div className="space-y-2">
-                    <Label htmlFor="relationbtwauth" className="inline-flex">
-                    Relationship between the above author and the US company you are establishing (multiple selections possible) <span className="text-destructive">*</span>
+                <div>
+                    <Label className="text-base flex items-center font-semibold gap-2">
+                        Relationship between the above applicant and the US company to be established
+                        <span className="text-red-500 flex font-bold ml-1">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-[500px] text-base">
+                                    you can type in the empty space inside the select box to enter custom value
+                                </TooltipContent>
+                            </Tooltip>*
+                        </span>
                     </Label>
-                    <RadioGroup defaultValue="no"
-                        value={selectedOption}
-                        onValueChange={handleOptionChange}
-                        id="relationbtwauth"
-                    >
-                        {list.map((item) => (
-                            <div className="flex items-center space-x-2" key={item}>
-                                <RadioGroupItem value={item} id={item} />
-                                <Label htmlFor={item} className="font-normal">
-                                    {item}
-                                </Label>
-                            </div>
-                        ))}
-                    </RadioGroup>
-                    {selectedOption === "other" && (
-                        <Input
-                            type="text"
-                            placeholder="Please specify"
-                            value={otherText}
-                            onChange={(e) => setOtherText(e.target.value)}
-                            className="mt-2"
-                        />
+                    <p className="text-sm text-gray-500">Please select all that apply.</p>
+
+                    {relList.length > 0 ? (
+                        <>
+                            <MultiSelect
+                                options={relList}
+                                placeholder="Select Relationship."
+                                selectedItems={selectedOption}
+                                onSelectionChange={handleSelectionChange}
+                            />
+                        </>
+                    ) : (
+                        "Please Fill Shareholder/Director"
                     )}
                 </div>
-                
                 <div className="space-y-2">
                     <Label htmlFor="contact" className="inline-flex">
-                    Contact information of the above writer (phone number, email, SNS account ID, etc.) <span className="text-destructive">*</span>
+                        Contact information of the above applicant (phone number, email, SNS account ID, etc.) <span className="text-destructive">*</span>
                     </Label>
                     <Input id="contact" placeholder="Your answer" required />
                 </div>
