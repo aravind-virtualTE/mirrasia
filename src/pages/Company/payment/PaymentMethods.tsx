@@ -6,7 +6,6 @@ import {
   Smartphone, LucideIcon
 } from 'lucide-react';
 import { StripePaymentForm } from './CardPaymentForm';
-// import { PayPalForm } from './PayPalForm';
 import { FPSForm } from './FPSForm';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ReceiptUpload } from "./RecieptUpload";
@@ -66,10 +65,6 @@ const PaymentMethodCard = ({
 
 export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) { 
    const [clientSecret, setClientSecret] = useState("")
-  // console.log("cleientSecret", clientSecret)
-  // const [corpoInvoiceAtom] = useAtom(companyIncorporateInvoiceAtom);
-  // const invoiceData = corpoInvoiceAtom[0] as unknown as InvoiceData;
-  // const amount = parseFloat(invoiceData.totals.discounted.replace(/[^0-9.]/g, ''));
   const hasFetchedRef = useRef(false); 
   useEffect(() => {
     if (hasFetchedRef.current) return; 
@@ -77,7 +72,6 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
       try {
         const response = await paymentApi.createPaymentIntent(Math.ceil(amount *1.035), "USD", sessionId,
           localStorage.getItem('companyRecordId')!)
-        // console.log("responsecompanyRecordId", response)
         setClientSecret(response.clientSecret)
         hasFetchedRef.current = true
       } catch (error) {
@@ -85,7 +79,7 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
       }
     }
     fetchClientSecret()
-  }, [])
+  }, [clientSecret])
 
   return (
     <div className="space-y-4">

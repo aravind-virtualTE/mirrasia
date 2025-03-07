@@ -14,7 +14,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { paymentApi } from '@/lib/api/payment';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, CheckCircle } from 'lucide-react';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { updateCompanyIncorporationAtom } from '@/lib/atom';
 import { statusHkAtom } from '@/store/hkForm';
 import { usePaymentSession } from '@/hooks/usePaymentSession';
@@ -193,7 +193,7 @@ const stripePromise = loadStripe(STRIPE_CLIENT_ID);
 
 export function StripePaymentForm({ sessionId, clientSecret, amount }: CardPaymentFormProps) {
 
-  const { status } = usePaymentSession(sessionId);
+  const [status] = useAtom(statusHkAtom);
   const options = {
     clientSecret,
 
