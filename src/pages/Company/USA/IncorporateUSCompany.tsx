@@ -28,8 +28,7 @@ const IncorporateUSACompany = () => {
                         Application for incorporation of a US company (LLC-Limited Liability Company/Corp-Corporation)
                     </CardTitle>
                     <p className="text-sm text-muted-foreground mt-4">
-                        This is an application for establishment of a US company. Please check the information related to the
-                        establishment process and give a specific answer.
+                        This is an application form to form a company the USA. Please check the information related to the incorporation process and provide a specific answer.
                     </p>
                 </CardHeader>
 
@@ -39,13 +38,10 @@ const IncorporateUSACompany = () => {
 
                         <div className="space-y-2 text-foreground">
                             <p>
-                                This application form is written in the form of a questionnaire regarding the information absolutely necessary to proceed with the registration of members of a US company (LLC - limited liability company / Corp - joint stock company). All individuals who are members are requested to individually complete this application form.
-                            </p>
+                                This application is in the form of a questionnaire on the information required for the formation of a US company(LLC-Limited Liability Company/ Corp-Corporation) and some questions may be difficult for some clients or may take some time to answer. Accordingly, please kindly answer the questions and submit the relevant documents when you have sufficient time.
 
-                            <p>
-                                This application form is written in the form of a questionnaire about the information necessary to proceed with the establishment of a U.S. company (LLC-Limited Liability Company/Corp-Corporation), and the questions may be difficult for some customers or it may take some time to answer. Therefore, we ask that you respond step by step while you have the time to do so, and that you also prepare and submit the relevant documents.If you have any difficulties or do not understand any part of the form, please contact us using the contact information below.
+                                If you have any difficulty or difficulty understanding the written form, please contact us using the details below.
                             </p>
-
                             <p>Thank you.</p>
                         </div>
                         <div className="space-y-2">

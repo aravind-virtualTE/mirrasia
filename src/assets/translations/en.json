@@ -593,7 +593,7 @@
     "numSharestTip" : "After establishment, capital increases such as the issuance of new shares and transfer of shares incur additional expenses, so please carefully determine the number of shares and amount of capital. If you plan to transfer shares in the future, it is recommended that the number of shares is efficient enough in order to divide the shares according to the desired ratio. For example, issuing 10 shares at the time of incorporation, but if you want to transfer 33.33% of the total shares to another partner, the process will become complicated as it required to issue additional shares to match the proportion you wish to divide. In addition, if you wish to have a difference (eg HKD5) on the par value per share to the future investor after issuing the par value per share as HKD1 at the time of incorporation, it is recommended to consider this before you decide to issue the shares."
 
   },
-  "Section2StateQuestion":"Select the state in which you wish to establish your US company",
+  "Section2StateQuestion":"Select the state in which you would like to incorporate your US company",
   "Section2StateOptions": {
     "Delaware":"Delaware",
     "Wyoming":"Wyoming",
@@ -606,5 +606,8 @@
     "Florida":"Florida",
     "Georgia":"Georgia",
     "Other":"Other"
-  }  
+  },
+  "usa":{
+    "usCompanyEntity": "What type of entity would you like to establish as a US company?"
+  }
 }

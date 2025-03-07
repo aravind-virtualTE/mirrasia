@@ -18,7 +18,7 @@ export default function FormSections() {
         <Collapsible open={openSections.includes(16)} onOpenChange={() => toggleSection(16)}>
           <CollapsibleTrigger asChild>
             <div className="flex items-center justify-between p-4  cursor-pointer bg-sky-100 dark:bg-sky-900">
-              <span>Section 16 of 18</span>
+              <span>Section 16</span>
               <div className="flex items-center gap-2">
                 {openSections.includes(16) ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                 <Button variant="ghost" size="icon" className="">
@@ -29,7 +29,7 @@ export default function FormSections() {
           </CollapsibleTrigger>
           <CollapsibleContent className="p-4">
             <div className="space-y-4">
-              <p>We will review your response and have the person in charge contact you as soon as possible.</p>              
+              <p>Thank you! We will review the content of your response and our consultant will contact you shortly. </p>
               <p>Thank you.</p>
             </div>
           </CollapsibleContent>
@@ -40,7 +40,7 @@ export default function FormSections() {
         <Collapsible open={openSections.includes(17)} onOpenChange={() => toggleSection(17)}>
           <CollapsibleTrigger asChild>
             <div className="flex items-center justify-between p-4 cursor-pointer bg-sky-100 dark:bg-sky-900">
-              <span>Section 17 of 18</span>
+              <span>Section 17</span>
               <div className="flex items-center gap-2">
                 {openSections.includes(17) ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                 <Button variant="ghost" size="icon" className="">
@@ -51,12 +51,11 @@ export default function FormSections() {
           </CollapsibleTrigger>
           <CollapsibleContent className="p-4">
             <div className="space-y-4">
-              <h3 className="font-medium">Solution Description</h3>
+              <h3 className="font-medium">Please describe the solutions</h3>
               <div className="space-y-2">
                 <p className="text-sm text-red-600">*</p>
                 <p>
-                  Please describe the items among the services we provide that can be resolved internally by the client
-                  company after incorporation and the solutions to address them.
+                  Please describe the solutions that your company can handle on its own after incorporation.
                 </p>
                 <Textarea placeholder="Long answer text" className="min-h-[100px] mt-2" />
               </div>
@@ -69,7 +68,7 @@ export default function FormSections() {
         <Collapsible open={openSections.includes(18)} onOpenChange={() => toggleSection(18)}>
           <CollapsibleTrigger asChild>
             <div className="flex items-center justify-between p-4 bg-sky-100 dark:bg-sky-900 cursor-pointer">
-              <span>Section 18 of 18</span>
+              <span>Section 18</span>
               <div className="flex items-center gap-2">
                 {openSections.includes(18) ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                 <Button variant="ghost" size="icon">
@@ -80,11 +79,8 @@ export default function FormSections() {
           </CollapsibleTrigger>
           <CollapsibleContent className="p-4">
             <div className="space-y-4">
-              <h3 className="font-medium">Consultation required before proceeding with work</h3>
-              <p>I think I need some advice before proceeding with the work.</p>
-              <p>
-                I will check the information you provided and have the person in charge contact you as soon as possible.
-              </p>
+              <h3 className="font-medium">Consultation required before proceeding</h3>
+              <p> It appears that you need to consult before proceeding. We will review the content of your reply and our consultant will contact you shortly. Thank you very much.</p>
               <p>Thank you.</p>
             </div>
           </CollapsibleContent>

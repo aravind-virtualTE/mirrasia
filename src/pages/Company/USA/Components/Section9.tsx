@@ -6,67 +6,89 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
-import { 
-    Select, 
-    SelectContent, 
-    SelectItem, 
-    SelectTrigger, 
-    SelectValue 
-  } from '@/components/ui/select';
+// import {
+//     Select,
+//     SelectContent,
+//     SelectItem,
+//     SelectTrigger,
+//     SelectValue
+// } from '@/components/ui/select';
+import MultiSelect, { Option } from "@/components/MultiSelectInput"
 
 const list = [
-    'Cryptocurrency-related (cryptocurrency issuance, sale, donation, ICO, exchange, wallet service, etc.)', 'Development of IT, blockchain, software, etc.', 'Cryptocurrency-based investment-related business', 'Cryptocurrency-based games','foreign exchange trading','Finance, investment, advisory, loan business, etc.','trade industry','Wholesale/retail distribution industry','consulting','manufacturing','Online service industry (e-commerce)', 'Online direct purchase/delivery/purchase agency','Other'
+    'Cryptocurrency-related (cryptocurrency issuance, sale, donation, ICO, exchange, wallet service, etc.)', 'Development of IT, blockchain, software, etc.', 'Cryptocurrency-based investment-related business', 'Cryptocurrency-based games', 'foreign exchange trading', 'Finance, investment, advisory, loan business, etc.', 'trade industry', 'Wholesale/retail distribution industry', 'consulting', 'manufacturing', 'Online service industry (e-commerce)', 'Online direct purchase/delivery/purchase agency', 'Other'
 ]
 
-const  list2 = [
-    'Pursuing business diversification through relaxed regulations','A legal advisor, investor, or business partner proposes establishing a U.S. company.','Expanding business into various overseas countries (international business)','Asset management by investing in real estate or financial assets','As a holding company, the purpose is to invest in and manage subsidiaries or affiliated companies.','Pursuing competitive advantage through liberal financial policies','Increased transaction volume due to low tax rate and non-VAT','other'
+const list2 = [
+    'Business diversification through regulatory relief', 'A legal advisor, investor or business partner suggests forming a US company.', 'Expanding business into various overseas countries (international business)', 'Asset management by investing in real estate or financial assets', 'As a holding company, the purpose is to invest in and manage subsidiaries or affiliated companies.', 'Pursuing competitive advantage through liberal financial policies', 'Increased transaction volume due to low tax rate and non-VAT', 'other'
 ]
 
 const Section9 = () => {
-    const [selectedOption, setSelectedOption] = useState("");
-    const [otherText, setOtherText] = useState("");
+    // const [selectedOption, setSelectedOption] = useState("");
+    // const [otherText, setOtherText] = useState("");
+    const [selectedOption, setSelectedOption] = useState<Option[]>([]);
+    const [selectedOption2, setSelectedOption2] = useState<Option[]>([]);
 
-    const handleOptionChange = (value: string) => {
-        setSelectedOption(value);
-        if (value !== "Other") {
-            setOtherText("");
-        }
+    // const handleOptionChange = (value: string) => {
+    //     setSelectedOption(value);
+    //     if (value !== "Other") {
+    //         setOtherText("");
+    //     }
+    // };
+
+    const handleSelectionChange = (selections: Option[]) => {
+        console.log("selections", selections)
+        setSelectedOption(selections)
+    };
+    const handleSelectionChange2 = (selections: Option[]) => {
+        console.log("selections", selections)
+        setSelectedOption2(selections)
     };
 
+    const relList2 = list2.map((item) => ({ label: item, value: item }));
+    const relList = list.map((item) => ({ label: item, value: item }));
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
                 <CardTitle className="text-lg font-medium">Section 9</CardTitle>
-                <p className="inline-flex">Business information about the US company you are establishing. <Tooltip>
+                <p className="inline-flex">Business information of the proposed US company. <Tooltip>
                     <TooltipTrigger asChild>
                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-[500px] text-base">
-                    In this section, you can enter information about the U.S. company you wish to establish and related business.
+                        In this section, you can enter information about the U.S. company you wish to establish and related business.
                     </TooltipContent>
                 </Tooltip></p>
             </CardHeader>
 
             <CardContent className="space-y-6 pt-6">
-                  {/* select Industry */}
-                  <div className="space-y-2">
-                    <Label htmlFor="relationbtwauth" className="inline-flex">
-                    Select industry (check all relevant items) <span className="text-destructive">*</span>
+                {/* select Industry */}
+                <div className="space-y-2">
+                    <Label htmlFor="relationbtwauth" className="text-base flex items-center font-semibold gap-2">
+                        Select industry (check all relevant items) <span className="text-red-500 flex font-bold ml-1">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-[500px] text-base">
+                                    you can type in the empty space inside the select box to enter custom value
+                                </TooltipContent>
+                            </Tooltip>*
+                        </span>
                     </Label>
 
-                    <Select onValueChange={handleOptionChange}>
+                    {/* <Select onValueChange={handleOptionChange}>
                         <SelectTrigger className="w-full md:w-80">
-                        <SelectValue />
+                            <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                             {list.map(state => (
                                 <SelectItem key={state} value={state}>
                                     {state}
-                                    </SelectItem>
-                                ))}
+                                </SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
-
                     {selectedOption === "Other" && (
                         <Input
                             type="text"
@@ -75,39 +97,66 @@ const Section9 = () => {
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"
                         />
-                    )}
+                    )} */}
+
+                    <>
+                        <MultiSelect
+                            options={relList}
+                            placeholder="Select Relationship."
+                            selectedItems={selectedOption}
+                            onSelectionChange={handleSelectionChange}
+                        />
+                    </>
                 </div>
                 {/* prodDesc Field */}
                 <div className="space-y-2">
                     <Label htmlFor="prodDesc" className="inline-flex">
-                    Description of the product name, product type, service content, service type, etc. to be traded after establishment <span className="text-destructive">*</span>
+                        Description of the product name, product type, service content, service type, etc. to be transacted after incorporation<span className="text-destructive">*</span>
                     </Label>
                     <Input id="prodDesc" placeholder="Your answer" required />
                 </div>
 
-                {/* descBusiness Field */}                
+                {/* descBusiness Field */}
                 <div className="space-y-2">
                     <Label htmlFor="descBusiness" className="inline-flex">
-                    Description of the business of the company you are establishing (at least 50 characters) <span className="text-destructive">*</span>
+                        Description of the business activities of the proposed US company (at least 50 characters) <span className="text-destructive">*</span>
                     </Label>
                     <Input id="descBusiness" placeholder="Your answer" required />
                 </div>
 
-                 {/* website Field */}                
-                 <div className="space-y-2">
+                {/* website Field */}
+                <div className="space-y-2">
                     <Label htmlFor="website" className="inline-flex">
-                    Enter your website address (if available) 
+                        Enter your website address (if available)
                     </Label>
                     <Input id="website" placeholder="Your answer" required />
                 </div>
-                
+
                 <div className="space-y-2">
-                    <Label htmlFor="relationbtwauth" className="inline-flex">
-                    Purpose of establishing a US company and expected future effects <span className="text-destructive">*</span>
+                    <Label htmlFor="relationbtwauth" className="text-base flex items-center font-semibold gap-2">
+                        Purpose of establishing a US company and expected future effects <span className="text-red-500 flex font-bold ml-1">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-[500px] text-base">
+                                    you can type in the empty space inside the select box to enter custom value
+                                </TooltipContent>
+                            </Tooltip>*
+                        </span>
                     </Label>
- 
+
+                    <>
+                        <MultiSelect
+                            options={relList2}
+                            placeholder="Select Relationship."
+                            selectedItems={selectedOption2}
+                            onSelectionChange={handleSelectionChange2}
+                        />
+                    </>
+
                 </div>
-    
+
             </CardContent>
         </Card>
     )

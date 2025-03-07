@@ -14,7 +14,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 const list = [
-    'LLC (limited liability company)','Corporation','Need advice'
+    'LLC (limited liability company)','Corporation','Consultation required before proceeding'
 ]
 export default function Section2() {
     const { t } = useTranslation();
@@ -38,14 +38,11 @@ export default function Section2() {
                 {/* Name Field */}
                 <div className="space-y-2">
                     <Label htmlFor="name">
-                    {t('Section3StateQuestion')}  <span className="text-destructive">*</span>
-                    </Label>
-                    <Input id="name" placeholder="Your answer" required />
+                    {t('usa.usCompanyEntity')}  <span className="text-destructive">*</span>
+                    </Label>                    
                 </div>
-
                 {/* Name Change History */}
-                <div className="space-y-2">
-                  
+                <div className="space-y-2">                  
                     <Select onValueChange={handleOptionChange}>
                       <SelectTrigger className="w-full md:w-80">
                       <SelectValue />

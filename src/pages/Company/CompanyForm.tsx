@@ -311,7 +311,7 @@ import IncorporationForm from './HongKong/IncorporationForm';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 import { getIncorporationListByCompId, getIncorporationListByUserId } from '@/services/dataFetch';
-import IncorporateUSACompany from './USA/IncorporateCompany';
+import IncorporateUSACompany from './USA/IncorporateUSCompany';
 import { Card, CardContent } from '@/components/ui/card';
 
 const CompanyRegistration = () => {

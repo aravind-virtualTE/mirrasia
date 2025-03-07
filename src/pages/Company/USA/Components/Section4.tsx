@@ -16,7 +16,7 @@ import {
   } from '@/components/ui/select';
 
 const list = [
-    'Total capital divided by $1 (1 share price = $1; universal method)', '1 share (minimum) (1 share price = total capital)', '100주', '1,000주', '10,000주', 'Other'
+    'Total capital divided by $1 (1 share price = $1; universal method)', '1 share (minimum) (1 share price = total capital)', '100', '1,000', '10,000', 'Other'
 ]
 
 

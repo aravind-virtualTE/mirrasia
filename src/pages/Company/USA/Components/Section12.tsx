@@ -4,27 +4,32 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
-import { 
-    Select, 
-    SelectContent, 
-    SelectItem, 
-    SelectTrigger, 
-    SelectValue 
-  } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from '@/components/ui/select';
 
 const list = ['1', '2', '3', '4', '5']
 const Section12 = () => {
     const [selectedOption, setSelectedOption] = useState("");
+    const [selectedOfficer, setSelectedOfficer] = useState("");
 
     const handleOptionChange = (value: string) => {
         setSelectedOption(value);
+    };
+
+    const handleOfficerChange = (value: string) => {
+        setSelectedOfficer(value);
     };
 
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
                 <CardTitle className="text-lg font-medium">Section 12</CardTitle>
-                <p className="inline-flex">Members of the US company you are establishing<Tooltip>
+                <p className="inline-flex"> Shareholders/officers of the proposed US company<Tooltip>
                     <TooltipTrigger asChild>
                         <HelpCircle className="text-red-500 h-4 w-4 mt-1 ml-2 cursor-help" />
                     </TooltipTrigger>
@@ -35,10 +40,9 @@ const Section12 = () => {
             </CardHeader>
 
             <CardContent className="space-y-6 pt-6">
-
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
-                        Total number of members (shareholders) <span className="text-destructive">*
+                        Total number of shareholders/members <span className="text-destructive">*
                         </span>
                     </Label>
                     {/* <RadioGroup defaultValue="no"
@@ -56,9 +60,9 @@ const Section12 = () => {
                         ))}
                     </RadioGroup> */}
 
-                    <Select onValueChange={handleOptionChange}>
+                    <Select onValueChange={handleOptionChange} value={selectedOption}>
                         <SelectTrigger className="w-full md:w-80">
-                        <SelectValue/>
+                            <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                             {list.map(state => (
@@ -72,7 +76,7 @@ const Section12 = () => {
 
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
-                        Total number of executives <span className="text-destructive">*
+                        Total number of officers <span className="text-destructive">*
                         </span>
                     </Label>
                     {/* <RadioGroup defaultValue="no"
@@ -89,25 +93,25 @@ const Section12 = () => {
                             </div>
                         ))}
                     </RadioGroup> */}
-                    
-                      <Select onValueChange={handleOptionChange}>
-                         <SelectTrigger className="w-full md:w-80">
+
+                    <Select onValueChange={handleOfficerChange} value={selectedOfficer}>
+                        <SelectTrigger className="w-full md:w-80">
                             <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {list.map(state => (
-                                    <SelectItem key={state} value={state}>
-                                         {state}
-                                          </SelectItem>
-                                         ))}
-                                         </SelectContent>
-                                          </Select>
+                        </SelectTrigger>
+                        <SelectContent>
+                            {list.map(state => (
+                                <SelectItem key={state} value={state}>
+                                    {state}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
 
                 </div>
 
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
-                        Enter the name/shareholding ratio of each member and executive<span className="text-red-500 font-bold ml-1 flex">*
+                        Enter the name of each shareholder/officer and the number of shares/ownership interest to be assigned<span className="text-red-500 font-bold ml-1 flex">*
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
