@@ -12,10 +12,10 @@ const list = [
 ]
 
 const Section5 = () => {
-    const [selectedOption, setSelectedOption] = useState<Option[]>([]);
+    const [selectedRelation, setRelationOption] = useState<Option[]>([]);
     const handleSelectionChange = (selections: Option[]) => {
         console.log("selections", selections)
-        setSelectedOption(selections)
+        setRelationOption(selections)
 
     };
 
@@ -65,7 +65,7 @@ const Section5 = () => {
                             <MultiSelect
                                 options={relList}
                                 placeholder="Select Relationship."
-                                selectedItems={selectedOption}
+                                selectedItems={selectedRelation}
                                 onSelectionChange={handleSelectionChange}
                             />
                         </>

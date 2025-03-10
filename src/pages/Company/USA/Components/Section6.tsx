@@ -33,7 +33,7 @@ const Section6 = () => {
     //         setOtherText("");
     //     }
     // };
-    const relList = list.map((item) => ({ label: item, value: item }));
+    const serviceList = list.map((item) => ({ label: item, value: item }));
     const handleSelectionChange = (selections: Option[]) => {
         console.log("selections", selections)
         setSelectedOption(selections)
@@ -99,17 +99,17 @@ const Section6 = () => {
                         />
                     )} */}
 
-                    {relList.length > 0 ? (
+                    {serviceList.length > 0 ? (
                         <>
                             <MultiSelect
-                                options={relList}
-                                placeholder="Select Relationship."
+                                options={serviceList}
+                                placeholder="Select Service."
                                 selectedItems={selectedOption}
                                 onSelectionChange={handleSelectionChange}
                             />
                         </>
                     ) : (
-                        "Please Fill Shareholder/Director"
+                        "Please Select Services"
                     )}
                 </div>
             </CardContent>

@@ -3,33 +3,34 @@ import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from 'lucide-react'
-import { 
-    Select, 
-    SelectContent, 
-    SelectItem, 
-    SelectTrigger, 
-    SelectValue 
-  } from '@/components/ui/select';
+// import { 
+//     Select, 
+//     SelectContent, 
+//     SelectItem, 
+//     SelectTrigger, 
+//     SelectValue 
+//   } from '@/components/ui/select';
+import DropdownSelect from '@/components/DropdownSelect'
 
 const list = [
-    'Total capital divided by $1 (1 share price = $1; universal method)', '1 share (minimum) (1 share price = total capital)', '100', '1,000', '10,000', 'Other'
+    'Total capital divided by $1 (1 share price = $1; universal method)', '1 share (minimum) (1 share price = total capital)', '100', '1,000', '10,000'
 ]
 
 
 const Section4 = () => {
 
-    const [selectedOption, setSelectedOption] = useState("");
-    const [otherText, setOtherText] = useState("");
+    const [selectedOption, setSelectedOption] = useState<string | number>("");
+    // const [otherText, setOtherText] = useState("");
 
-    const handleOptionChange = (value: string) => {
+    const handleOptionChange = (value: string | number) => {
         setSelectedOption(value);
-        if (value !== "Other") {
-            setOtherText("");
-        }
+        // if (value !== "Other") {
+        //     setOtherText("");
+        // }
     };
 
     return (
@@ -68,7 +69,7 @@ const Section4 = () => {
                         ))}
                     </RadioGroup> */}
                     
-                    <Select onValueChange={handleOptionChange}>
+                    {/* <Select onValueChange={handleOptionChange}>
                         <SelectTrigger className="w-full md:w-80">
                         <SelectValue  />
                         </SelectTrigger>
@@ -88,7 +89,13 @@ const Section4 = () => {
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"
                         />
-                    )}
+                    )} */}
+                    <DropdownSelect
+                        options={list}
+                        placeholder="Select..."
+                        selectedValue={selectedOption}
+                        onSelect={handleOptionChange}
+                    />
                 </div>
             </CardContent>
         </Card>

@@ -25,7 +25,7 @@ const list2 = [
 const Section7 = () => {
 
     const [selectedOption, setSelectedOption] = useState<Option[]>([]);
-    const [selectedOption2, setSelectedOption2] = useState<Option[]>([]);
+    const [selectedRenewal, setSelectedOption2] = useState<Option[]>([]);
     // const [otherText, setOtherText] = useState("");
 
     // const handleOptionChange = (value: string) => {
@@ -35,18 +35,18 @@ const Section7 = () => {
     //     }
     // };
 
-    const handleSelectionChange = (selections: Option[]) => {
+    const handleEthicalChange = (selections: Option[]) => {
         console.log("selections", selections)
         setSelectedOption(selections)
 
     };
-    const handleSelectionChange2 = (selections: Option[]) => {
+    const handleRenewalChange = (selections: Option[]) => {
         console.log("selections", selections)
         setSelectedOption2(selections)
 
     };
-    const relList = list.map((item) => ({ label: item, value: item }));
-    const relList2 = list2.map((item) => ({ label: item, value: item }));
+    const ethicalList = list.map((item) => ({ label: item, value: item }));
+    const acknowledgeList = list2.map((item) => ({ label: item, value: item }));
 
     return (
         <React.Fragment> <Card className="max-w-5xl mx-auto mt-2">
@@ -101,10 +101,10 @@ const Section7 = () => {
 
                     <>
                         <MultiSelect
-                            options={relList}
-                            placeholder="Select Relationship."
+                            options={ethicalList}
+                            placeholder="Select Option."
                             selectedItems={selectedOption}
-                            onSelectionChange={handleSelectionChange}
+                            onSelectionChange={handleEthicalChange}
                         />
                     </>
 
@@ -145,10 +145,10 @@ const Section7 = () => {
                     )} */}
                     <>
                         <MultiSelect
-                            options={relList2}
-                            placeholder="Select Relationship."
-                            selectedItems={selectedOption2}
-                            onSelectionChange={handleSelectionChange2}
+                            options={acknowledgeList}
+                            placeholder="Select option."
+                            selectedItems={selectedRenewal}
+                            onSelectionChange={handleRenewalChange}
                         />
                     </>
                 </div>

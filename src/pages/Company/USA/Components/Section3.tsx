@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { 
   Select, 
@@ -18,14 +18,14 @@ const list = [
 ]
 export default function Section2() {
     const { t } = useTranslation();
-    const [selectedOption, setSelectedOption] = useState("");
-    const [otherText, setOtherText] = useState("");
+    const [selectedComptype, setSelectedOption] = useState("");
+    // const [otherText, setOtherText] = useState("");
   
     const handleOptionChange = (value : string) => {
       setSelectedOption(value);
-      if (value !== "Other") {
-        setOtherText("");
-      }
+      // if (value !== "Other") {
+      //   setOtherText("");
+      // }
     };
     return (
         <Card className="max-w-5xl mx-auto mt-2">
@@ -43,7 +43,7 @@ export default function Section2() {
                 </div>
                 {/* Name Change History */}
                 <div className="space-y-2">                  
-                    <Select onValueChange={handleOptionChange}>
+                    <Select onValueChange={handleOptionChange} value={selectedComptype}>
                       <SelectTrigger className="w-full md:w-80">
                       <SelectValue />
                       </SelectTrigger>
@@ -57,14 +57,14 @@ export default function Section2() {
                       </SelectContent>
                     </Select>
 
-                    {selectedOption === "Other" && (
+                    {/* {selectedOption === "Other" && (
                         <Input
                             type="text"
                             value={otherText}
                             onChange={(e) => setOtherText(e.target.value)}
                             className="mt-2"
                         />
-                    )}
+                    )} */}
                 </div>
 
             </CardContent>
