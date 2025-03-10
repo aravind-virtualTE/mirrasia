@@ -13,6 +13,7 @@ import {
     Award,
     RefreshCw,
     CalendarCheck,
+    Pencil,
 } from "lucide-react"
 import { getIncorporationList } from "@/services/dataFetch";
 import { useAtom, useSetAtom } from "jotai";
@@ -104,12 +105,18 @@ const AdminDashboard = () => {
             return acc
         }, initialStats)
     }
-    console.log('calculateStats', calculateStats())
+    // console.log('calculateStats', calculateStats())
     const handleRowClick = (companyId: string) => {
         navigate(`/company-details/${companyId}`);
         localStorage.setItem('companyRecordId', companyId);
     };
 
+    const handleEditClick = (companyId: string, countryCode: string) => {
+        localStorage.setItem("companyRecordId", companyId);
+        // Update URL without navigating
+        navigate(`/company-register/${countryCode}/${companyId}`);
+    };
+    // console.log("cList", cList)
     return (
         <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
             {/* Stats Cards */}
@@ -135,7 +142,7 @@ const AdminDashboard = () => {
                                 // Type cast each company
                                 const typedCompany = company as {
                                     applicantInfoForm: { companyName: string, name: string };
-                                    country: { name: string };
+                                    country: { name: string; code: string };
                                     status: string;
                                     incorporationDate: string;
                                     _id: string;
@@ -170,6 +177,14 @@ const AdminDashboard = () => {
                                             </span>
                                         </TableCell>
                                         <TableCell>{date}</TableCell>
+                                        <TableCell>
+                                            <button
+                                                className="text-blue-500 hover:text-blue-700 transition"
+                                                onClick={() => handleEditClick(typedCompany._id, typedCompany.country.code)}
+                                            >
+                                                <Pencil size={18} />
+                                            </button>
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}

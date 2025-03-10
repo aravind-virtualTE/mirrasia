@@ -30,6 +30,7 @@ import api from "@/services/fetch";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import { paymentApi } from '@/lib/api/payment';
+
 const IncorporationForm = () => {
     const { theme } = useTheme();
     const { toast } = useToast();
@@ -99,6 +100,11 @@ const IncorporationForm = () => {
                     if (response.data && response.data.data._id) {
                         localStorage.setItem("companyRecordId", response.data.data._id);
                         updateCompanyData(response.data.data);
+                        window.history.pushState(
+                            {}, 
+                            "", 
+                            `/company-register/${response.data.data.country.code}/${response.data.data._id}`
+                        );
                     }
                 } else {
                     console.log("error-->", response);

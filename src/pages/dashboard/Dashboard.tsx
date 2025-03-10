@@ -76,12 +76,12 @@ const Dashboard = () => {
     resetAllForms()
     navigate('/company-register');
   };
-  const handleRowClick = (companyId: string) => {
+  const handleRowClick = (companyId: string,countryCode: string) => {
     localStorage.setItem('companyRecordId', companyId);
-    navigate(`/company-register/${companyId}`);
+    navigate(`/company-register/${countryCode}/${companyId}`);
   };
 
-  // console.log("cList",cList)
+  console.log("cList",cList)
   return (
     < >
       {/* Main Content */}
@@ -128,6 +128,7 @@ const Dashboard = () => {
                   // Type cast each company
                   const typedCompany = company as {
                     applicantInfoForm: { companyName: string[] };
+                    country:{code : string};
                     status: string;
                     incorporationDate: string;
                     _id: string;
@@ -139,7 +140,7 @@ const Dashboard = () => {
                   }
                   return (
                     <TableRow key={typedCompany._id}>
-                      <TableCell className="font-medium cursor-pointer" onClick={() => handleRowClick(typedCompany._id)}>
+                      <TableCell className="font-medium cursor-pointer" onClick={() => handleRowClick(typedCompany._id,typedCompany.country.code)}>
                         {typedCompany.applicantInfoForm.companyName.join(",")}                     
                       </TableCell>
                       <TableCell>
