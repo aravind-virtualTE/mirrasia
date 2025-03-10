@@ -24,10 +24,10 @@ const list2 = [
 ]
 
 const Section9 = () => {
-    // const [selectedOption, setSelectedOption] = useState("");
+    // const [selectedIndustry, setSelectedOption] = useState("");
     // const [otherText, setOtherText] = useState("");
-    const [selectedOption, setSelectedOption] = useState<Option[]>([]);
-    const [selectedOption2, setSelectedOption2] = useState<Option[]>([]);
+    const [selectedIndustry, setSelectedOption] = useState<Option[]>([]);
+    const [selectedPurpose, setSelectedOption2] = useState<Option[]>([]);
 
     // const handleOptionChange = (value: string) => {
     //     setSelectedOption(value);
@@ -36,17 +36,17 @@ const Section9 = () => {
     //     }
     // };
 
-    const handleSelectionChange = (selections: Option[]) => {
+    const handleIndustryChange = (selections: Option[]) => {
         console.log("selections", selections)
         setSelectedOption(selections)
     };
-    const handleSelectionChange2 = (selections: Option[]) => {
+    const handlePurposeChange = (selections: Option[]) => {
         console.log("selections", selections)
         setSelectedOption2(selections)
     };
 
-    const relList2 = list2.map((item) => ({ label: item, value: item }));
-    const relList = list.map((item) => ({ label: item, value: item }));
+    const purposeList = list2.map((item) => ({ label: item, value: item }));
+    const industryList = list.map((item) => ({ label: item, value: item }));
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
@@ -89,7 +89,7 @@ const Section9 = () => {
                             ))}
                         </SelectContent>
                     </Select>
-                    {selectedOption === "Other" && (
+                    {selectedIndustry === "Other" && (
                         <Input
                             type="text"
                             placeholder="Your answer"
@@ -101,10 +101,10 @@ const Section9 = () => {
 
                     <>
                         <MultiSelect
-                            options={relList}
-                            placeholder="Select Relationship."
-                            selectedItems={selectedOption}
-                            onSelectionChange={handleSelectionChange}
+                            options={industryList}
+                            placeholder="Select Industry."
+                            selectedItems={selectedIndustry}
+                            onSelectionChange={handleIndustryChange}
                         />
                     </>
                 </div>
@@ -148,10 +148,10 @@ const Section9 = () => {
 
                     <>
                         <MultiSelect
-                            options={relList2}
-                            placeholder="Select Relationship."
-                            selectedItems={selectedOption2}
-                            onSelectionChange={handleSelectionChange2}
+                            options={purposeList}
+                            placeholder="Select Purpose."
+                            selectedItems={selectedPurpose}
+                            onSelectionChange={handlePurposeChange}
                         />
                     </>
 
