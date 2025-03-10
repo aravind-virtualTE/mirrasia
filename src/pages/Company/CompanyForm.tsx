@@ -317,12 +317,13 @@ import { Card, CardContent } from '@/components/ui/card';
 const CompanyRegistration = () => {
     const [countryState, setCountryState] = useAtom(countryAtom);
     const [companies, setCompaniesList] = useAtom(companyIncorporationList);
-    const { id } = useParams();
+    const { countryCode, id } = useParams();
     const token = localStorage.getItem('token') as string;
     const decodedToken = jwtDecode<TokenData>(token);
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
+
     useEffect(() => {
-        if (id) {
+        if (id && countryCode == "HK") {
             async function fetchData() {
                 const result = await getIncorporationListByUserId(`${decodedToken.userId}`);
                 return result;
@@ -332,20 +333,17 @@ const CompanyRegistration = () => {
                 const company = companies.find(c => c._id === id);
                 const cntry = company?.country as Record<string, string | undefined>;
                 if (company) setCountryState(cntry);
-                console.log(id, "companies", company);
             });
-        }
-        const compId = localStorage.getItem('companyRecordId');
-        if (compId) {
-            async function fetchData() {
-                const result = await getIncorporationListByCompId(`${compId}`);
+
+            async function fetchCompData() {
+                const result = await getIncorporationListByCompId(`${id}`);
                 return result;
             }
-            fetchData().then((result) => {
-                console.log("result-->", result);
+            fetchCompData().then((result) => {
+                // console.log("result-->", result);
                 updateCompanyData(result[0]);
             });
-        }
+        }     
     }, []);
 
     const countries = [

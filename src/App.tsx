@@ -79,6 +79,7 @@ const App: React.FC = () => {
                 <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master"]} />}>
                   <Route element={<Layout />}>
                     <Route path="/company-register/" element={<CompanyRegistration />} />
+                    <Route path="/company-register/:countryCode/:id" element={<CompanyRegistration />} />
                     <Route path="/company-register/:id" element={<CompanyRegistration />} />
                     <Route path="/company-documents" element={<CompanyDocumentManager />} />
                     <Route path="/profile" element={<Profile />} />
