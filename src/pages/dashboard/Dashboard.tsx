@@ -1,10 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-// import { Separator } from "@/components/ui/separator";
-
 import {
-  // Building2,
   ChevronLeft,
   ChevronRight,
   Rocket,
@@ -17,16 +14,14 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import {   useResetAllForms} from "@/lib/atom";
+import { useResetAllForms } from "@/lib/atom";
 import { useAtom, useSetAtom } from "jotai";
 import { companyIncorporationList } from "@/services/state";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
-// import { authAtom } from "@/hooks/useAuth";
 import { getIncorporationListByUserId } from "@/services/dataFetch";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
-// import {  useResetAtom } from 'jotai/utils';
 
 const Dashboard = () => {
   const partnerCards = [
@@ -46,19 +41,14 @@ const Dashboard = () => {
       description: "The Greater Room"
     }
   ];
-   
   const [cList,] = useAtom(companyIncorporationList)
   const setCompIncList = useSetAtom(companyIncorporationList);
-  // const [authUser,] = useAtom(authAtom);
   const navigate = useNavigate();
-  // const { id } = authUser.user || {};
 
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
-  // console.log("decodedToken",decodedToken)
-  // console.log("userId", id)
 
-  const resetAllForms = useResetAllForms();  
+  const resetAllForms = useResetAllForms();
 
   useEffect(() => {
     resetAllForms()
@@ -68,7 +58,7 @@ const Dashboard = () => {
     }
     fetchData().then((result) => {
       setCompIncList(result);
-    })    
+    })
 
   }, [decodedToken.userId, setCompIncList]);
 
@@ -76,12 +66,12 @@ const Dashboard = () => {
     resetAllForms()
     navigate('/company-register');
   };
-  const handleRowClick = (companyId: string,countryCode: string) => {
+  const handleRowClick = (companyId: string, countryCode: string) => {
     localStorage.setItem('companyRecordId', companyId);
     navigate(`/company-register/${countryCode}/${companyId}`);
   };
 
-  console.log("cList",cList)
+  // console.log("cList", cList)
   return (
     < >
       {/* Main Content */}
@@ -128,20 +118,20 @@ const Dashboard = () => {
                   // Type cast each company
                   const typedCompany = company as {
                     applicantInfoForm: { companyName: string[] };
-                    country:{code : string};
+                    country: { code: string };
                     status: string;
                     incorporationDate: string;
                     _id: string;
                   };
                   let date = typedCompany.incorporationDate
-                  if(date !== null){
-                      const [year, month, day] = date.split("T")[0].split("-");
-                      date = `${day}-${month}-${year}`
+                  if (date !== null) {
+                    const [year, month, day] = date.split("T")[0].split("-");
+                    date = `${day}-${month}-${year}`
                   }
                   return (
                     <TableRow key={typedCompany._id}>
-                      <TableCell className="font-medium cursor-pointer" onClick={() => handleRowClick(typedCompany._id,typedCompany.country.code)}>
-                        {typedCompany.applicantInfoForm.companyName.join(",")}                     
+                      <TableCell className="font-medium cursor-pointer" onClick={() => handleRowClick(typedCompany._id, typedCompany.country.code)}>
+                        {typedCompany.applicantInfoForm.companyName.join(",")}
                       </TableCell>
                       <TableCell>
                         <span
@@ -221,20 +211,35 @@ const Dashboard = () => {
               <div className="flex items-center space-x-4">
                 <HelpCircle className="w-8 h-8" />
                 <div>
-                  <h3 className="text-lg font-semibold">Have a question?</h3>
-                  <p className="text-gray-600">
-                    Call us at +65 6929 8272, or email us at{" "}
-                    <Button variant="link" className="p-0">
-                      customer@mirrasia.sg
-                    </Button>
+                  <h3 className="text-lg font-semibold">Need Help? Contact Our Support Team!</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Experiencing issues? Our support team is ready to assist you.
                   </p>
-                  <Button variant="link" className="p-0 mt-2">
-                    CONTACT SUPPORT →
-                  </Button>
                 </div>
+              </div>
+
+              {/* Support Details */}
+              <div className="mt-4 grid gap-2 text-sm">
+                <p><strong>Email:</strong> cs@mirrasia.com</p>
+                <p><strong>Phone:</strong> (HK) +852-2187-2428 | (KR) +82-2-543-6187</p>
+                <p><strong>Kakao Talk:</strong> mirrasia</p>
+                <p><strong>WeChat:</strong> mirrasia_hk</p>
+                <p>
+                  <strong>Kakao Channel:</strong>{" "}
+                  <a href="https://pf.kakao.com/_KxmnZT" className="text-primary underline" target="_blank" rel="noopener noreferrer">
+                    Click Here
+                  </a>
+                </p>
+                <p>
+                  <strong>Website:</strong>{" "}
+                  <a href="https://www.mirrasia.com" className="text-primary underline" target="_blank" rel="noopener noreferrer">
+                    www.mirrasia.com
+                  </a>
+                </p>
               </div>
             </CardContent>
           </Card>
+
         </div>
       </div>
     </>
