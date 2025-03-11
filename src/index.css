@@ -97,3 +97,25 @@
   }
 }
 
+
+@layer components {
+  .service-card {
+    @apply relative bg-card text-card-foreground rounded-lg border p-4 transition-all duration-300 overflow-hidden;
+  }
+  
+  .service-card:hover {
+    @apply shadow-lg transform translate-y-[-5px];
+  }
+  
+  .service-card:hover .service-icon {
+    @apply transform scale-110;
+  }
+  
+  .service-icon {
+    @apply p-2 rounded-full bg-primary/10 text-primary transition-all duration-300;
+  }
+  
+  .card-badge {
+    @apply inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-primary/10 text-primary mb-2;
+  }
+}

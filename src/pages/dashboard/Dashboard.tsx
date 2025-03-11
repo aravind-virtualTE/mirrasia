@@ -1,15 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Rocket,
-  Users,
-  FileSignature,
+  // Rocket,
+  // Users,
+  // FileSignature,
   HelpCircle,
   Building,
-
 } from "lucide-react";
 
 import { useNavigate } from 'react-router-dom';
@@ -22,25 +18,27 @@ import { useEffect } from "react";
 import { getIncorporationListByUserId } from "@/services/dataFetch";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
+import ServiceCarousel from "./ServiceCarousel";
+import MainFunctionalities from "./MainFunctionalities";
 
 const Dashboard = () => {
-  const partnerCards = [
-    {
-      logo: "FlySpaces",
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-bfoV2Kjsa3bhRS1XZ0fYmGb_dOScnMiLGQ&s',
-      description: "Office space"
-    },
-    {
-      logo: "AWS",
-      img: 'https://img.icons8.com/?size=100&id=33039&format=png&color=000000',
-      description: "Web hosting"
-    },
-    {
-      logo: "GREATER",
-      img: 'https://play-lh.googleusercontent.com/PGUQTS5KUZw5bc_DsyBtijD-CfQR4SPk2i6UjU8K6RMli-eQIOg4aNsABjnoeNHoNsXA',
-      description: "The Greater Room"
-    }
-  ];
+  // const partnerCards = [
+  //   {
+  //     logo: "FlySpaces",
+  //     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-bfoV2Kjsa3bhRS1XZ0fYmGb_dOScnMiLGQ&s',
+  //     description: "Office space"
+  //   },
+  //   {
+  //     logo: "AWS",
+  //     img: 'https://img.icons8.com/?size=100&id=33039&format=png&color=000000',
+  //     description: "Web hosting"
+  //   },
+  //   {
+  //     logo: "GREATER",
+  //     img: 'https://play-lh.googleusercontent.com/PGUQTS5KUZw5bc_DsyBtijD-CfQR4SPk2i6UjU8K6RMli-eQIOg4aNsABjnoeNHoNsXA',
+  //     description: "The Greater Room"
+  //   }
+  // ];
   const [cList,] = useAtom(companyIncorporationList)
   const setCompIncList = useSetAtom(companyIncorporationList);
   const navigate = useNavigate();
@@ -62,10 +60,7 @@ const Dashboard = () => {
 
   }, [decodedToken.userId, setCompIncList]);
 
-  const handleCardClick = () => {
-    resetAllForms()
-    navigate('/company-register');
-  };
+  
   const handleRowClick = (companyId: string, countryCode: string) => {
     localStorage.setItem('companyRecordId', companyId);
     navigate(`/company-register/${countryCode}/${companyId}`);
@@ -76,31 +71,8 @@ const Dashboard = () => {
     < >
       {/* Main Content */}
       <div className="flex-1 p-8">
-        <h1 className="text-2xl font-semibold mb-8">Welcome, User. Here's what you can do to get started.</h1>
-
-        {/* Action Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <Card>
-            <CardContent className="p-6 flex flex-col items-center text-center cursor-pointer" onClick={handleCardClick}>
-              <Rocket className="w-12 h-12 mb-4" />
-              <p className="font-medium">Register a new company & get a free business account</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6 flex flex-col items-center text-center cursor-pointer">
-              <Users className="w-12 h-12 mb-4" />
-              <p className="font-medium">Transfer existing company secretary or accounting services to Mirr Asia</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6 flex flex-col items-center text-center cursor-pointer">
-              <FileSignature className="w-12 h-12 mb-4" />
-              <p className="font-medium">Sign documents securely, anywhere in the world. For free!</p>
-            </CardContent>
-          </Card>
-        </div>
+        <h1 className="text-2xl font-semibold mb-8">Welcome, User Here's what you can do to get started.</h1>      
+          <MainFunctionalities />
         {/* Companies Table */}
         {cList.length > 0 && <div className="mb-12">
           <h2 className="text-xl font-semibold mb-4">Your Companies</h2>
@@ -157,36 +129,11 @@ const Dashboard = () => {
         {/* Partners Section */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold">Get exclusive offers with our partners</h2>
-            <div className="flex space-x-2">
-              <Button variant="outline" size="icon">
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="icon">
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
+            <h2 className="text-xl font-semibold">Featured Services:</h2>
           </div>
+          <ServiceCarousel />
 
-          <ScrollArea className="w-full">
-            <div className="flex space-x-6">
-              {partnerCards.map((partner, index) => (
-                <Card key={index} className="min-w-[300px] cursor-pointer">
-                  <CardContent className="p-6">
-                    <div className="h-12 mb-4">
-                      <img
-                        src={partner.img}
-                        alt={partner.logo}
-                        className="h-full object-contain"
-                      />
-                    </div>
-                    <p className="text-gray-600">{partner.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+
         </div>
 
         {/* Bottom Cards */}
