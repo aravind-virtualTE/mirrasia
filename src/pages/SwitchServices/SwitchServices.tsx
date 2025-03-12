@@ -1,47 +1,11 @@
-import { useEffect, } from 'react';
-import { useParams } from "react-router-dom";
-import { useAtom, useSetAtom } from 'jotai';
-import { countryAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
-import { companyIncorporationList } from '@/services/state';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import IncorporationForm from './HongKong/IncorporationForm';
-import jwtDecode from 'jwt-decode';
-import { TokenData } from '@/middleware/ProtectedRoutes';
-import { getIncorporationListByCompId, getIncorporationListByUserId } from '@/services/dataFetch';
-import IncorporateUSACompany from './USA/IncorporateUSCompany';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { CountryState } from "@/types";
+import { useState } from "react";
 
-const CompanyRegistration = () => {
-    const [countryState, setCountryState] = useAtom(countryAtom);
-    const [companies, setCompaniesList] = useAtom(companyIncorporationList);
-    const { countryCode, id } = useParams();
-    const token = localStorage.getItem('token') as string;
-    const decodedToken = jwtDecode<TokenData>(token);
-    const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
 
-    useEffect(() => {
-        if (id && countryCode == "HK") {
-            async function fetchData() {
-                const result = await getIncorporationListByUserId(`${decodedToken.userId}`);
-                return result;
-            }
-            fetchData().then((result) => {
-                setCompaniesList(result);
-                const company = companies.find(c => c._id === id);
-                const cntry = company?.country as Record<string, string | undefined>;
-                if (company) setCountryState(cntry);
-            });
-
-            async function fetchCompData() {
-                const result = await getIncorporationListByCompId(`${id}`);
-                return result;
-            }
-            fetchCompData().then((result) => {
-                // console.log("result-->", result);
-                updateCompanyData(result[0]);
-            });
-        }     
-    }, []);
+const SwitchServices = () => {
+    const [countryState, setCountryState] = useState<CountryState>({ code: undefined, name: undefined });
 
     const countries = [
         { code: 'HK', name: 'Hong Kong' },
@@ -62,23 +26,14 @@ const CompanyRegistration = () => {
     };
 
     const renderSection = () => {
-        if (!countryState.name) return null;
-
-        switch (countryState.code) {
-            case 'HK':
-                return <IncorporationForm />;
-            case 'US':
-                return <IncorporateUSACompany />;
-            case 'SG':
-                return <div>Registration form for {countryState.name} is not available yet.</div>;
-            default:
-                return <div>Registration form for {countryState.name} is not available yet.</div>;
-        }
-    };
-
+        return (
+            <div>
+                <h1>Switch Services</h1>
+            </div>
+        )
+    }
     return (
         <div className="flex h-full">
-            {/* Country Selection Content */}
             {!countryState.name ? (
                 <div
                     className="relative w-full h-full bg-cover bg-center flex items-center justify-center p-4"
@@ -92,14 +47,14 @@ const CompanyRegistration = () => {
                     <Card className="relative z-10 w-[420px] bg-white/90 shadow-xl ">
                         <CardContent className="p-6 space-y-4">
                             <h2 className="text-2xl font-bold text-slate-950 text-center">
-                                Select Country for Registration
+                                Select Country to Switch Services
                             </h2>
 
                             <Select onValueChange={(value) => updateCountry(value)}>
                                 <SelectTrigger
                                     className="w-full bg-white border-[2px] border-orange-500 rounded-md 
-                         focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent 
-                         text-gray-700 hover:border-orange-600 transition-colors duration-200"
+                 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent 
+                 text-gray-700 hover:border-orange-600 transition-colors duration-200"
                                 >
                                     <SelectValue placeholder="Select a country" />
                                 </SelectTrigger>
@@ -132,7 +87,7 @@ const CompanyRegistration = () => {
                 </>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default CompanyRegistration;
+export default SwitchServices

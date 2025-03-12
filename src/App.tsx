@@ -33,6 +33,9 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import CompanyDocumentManager from './components/companyDocumentManager/CompanyDocumentManager';
 import { useAuthSync } from './hooks/useAuthSync';
 import PublicRoute from './middleware/PublicRoute';
+import BankForms from './pages/BankForms/BankForms';
+import SwitchServices from './pages/SwitchServices/SwitchServices';
+import AccountingForms from './pages/AccountingForms/AccountingForms';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -82,6 +85,9 @@ const App: React.FC = () => {
                     <Route path="/company-register/:countryCode/:id" element={<CompanyRegistration />} />
                     <Route path="/company-register/:id" element={<CompanyRegistration />} />
                     <Route path="/company-documents" element={<CompanyDocumentManager />} />
+                    <Route path="/pba-forms" element={<BankForms />} />
+                    <Route path="/switch-services" element={<SwitchServices />} />
+                    <Route path="/accounting-services" element={<AccountingForms />} />
                     <Route path="/profile" element={<Profile />} />
                   </Route>
                 </Route>

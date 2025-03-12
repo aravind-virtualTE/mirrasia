@@ -8,9 +8,17 @@ const MainFunctionalities: React.FC = () => {
     const resetAllForms = useResetAllForms();
     const navigate = useNavigate();
 
-    const handleCardClick = () => {
+    const handleComapanyCard = () => {
         resetAllForms();
         navigate('/company-register');
+    };
+    const handleBankingCard = () => {
+        resetAllForms();
+        navigate('/pba-forms');
+    };
+    const handleServicesCard = () => {
+        resetAllForms();
+        navigate('/switch-services');
     };
 
     const mainFunctionalities = [
@@ -18,19 +26,19 @@ const MainFunctionalities: React.FC = () => {
             icon: Building2,
             title: "Start New Company",
             description: "Register your new business entity quickly and efficiently",
-            onClick: handleCardClick, 
+            onClick: handleComapanyCard, 
         },
         {
             icon: CreditCard,
             title: "Open HK Personal Bank Account",
             description: "Streamlined process for setting up personal banking in Hong Kong",
-            onClick: () => console.log('Bank account functionality coming soon'),
+            onClick: handleBankingCard,
         },
         {
             icon: RefreshCw,
             title: "Switch to Our Services",
             description: "Seamless transition to our comprehensive business solutions",
-            onClick: () => console.log('Switch services functionality coming soon'),
+            onClick:handleServicesCard,
         },
     ];
 
