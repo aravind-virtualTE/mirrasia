@@ -2,6 +2,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { CountryState } from "@/types";
 import { useState } from "react";
+import HkAccountForm from "./hk/HkAccountForm";
+
 
 const AccountingForms = () => {
 
@@ -26,17 +28,24 @@ const AccountingForms = () => {
     };
 
     const renderSection = () => {
-        return (
-            <div>
-                <h1>Switch Services</h1>
-            </div>
-        )
+        if (!countryState.name) return null;
+        switch (countryState.code) {
+            case 'HK':
+                return <HkAccountForm />;
+            case 'US':
+                return <div>Registration form for {countryState.name} is not available yet.</div>;
+            case 'SG':
+                return <div>Registration form for {countryState.name} is not available yet.</div>;
+            default:
+                return <div>Registration form for {countryState.name} is not available yet.</div>;
+        }
     }
+
     return (
         <div className="flex h-full">
             {!countryState.name ? (
                 <div
-                    className="relative w-full h-full bg-cover bg-center flex items-center justify-center p-4"
+                    className="relative w-full bg-cover bg-center flex items-center justify-center p-4"
                     style={{
                         backgroundImage: `url('https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/discussing-young-room-successful-meeting.webp')`,
                     }}
@@ -49,7 +58,6 @@ const AccountingForms = () => {
                             <h2 className="text-2xl font-bold text-slate-950 text-center">
                                 Select Country for Accounting form registration
                             </h2>
-
                             <Select onValueChange={(value) => updateCountry(value)}>
                                 <SelectTrigger
                                     className="w-full bg-white border-[2px] border-orange-500 rounded-md 
