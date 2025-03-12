@@ -55,19 +55,6 @@ const Section4 = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    {/* <RadioGroup defaultValue="no"
-                        value={selectedOption}
-                        onValueChange={handleOptionChange}
-                    >
-                        {list.map((item) => (
-                            <div className="flex items-center space-x-2" key={item}>
-                                <RadioGroupItem value={item} id={item} />
-                                <Label htmlFor={item} className="font-normal">
-                                    {item}
-                                </Label>
-                            </div>
-                        ))}
-                    </RadioGroup> */}
                     
                     {/* <Select onValueChange={handleOptionChange}>
                         <SelectTrigger className="w-full md:w-80">

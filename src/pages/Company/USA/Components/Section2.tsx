@@ -16,16 +16,16 @@ import DropdownSelect from "@/components/DropdownSelect";
 export default function Section2() {
     const { t } = useTranslation();
     const list = [
-        t('Section2StateOptions.Delaware'),
-        t('Section2StateOptions.Wyoming'),
-        t('Section2StateOptions.California'),
-        t('Section2StateOptions.New York'),
-        t('Section2StateOptions.Washington D.C.'),
-        t('Section2StateOptions.State of Texas'),
-        t('Section2StateOptions.Nevada'),
-        t('Section2StateOptions.Florida'),
-        t('Section2StateOptions.Georgia'),
-        // t('Section2StateOptions.Other'),
+        t('usa.Section2StateOptions.Delaware'),
+        t('usa.Section2StateOptions.Wyoming'),
+        t('usa.Section2StateOptions.California'),
+        t('usa.Section2StateOptions.New York'),
+        t('usa.Section2StateOptions.Washington D.C.'),
+        t('usa.Section2StateOptions.State of Texas'),
+        t('usa.Section2StateOptions.Nevada'),
+        t('usa.Section2StateOptions.Florida'),
+        t('usa.Section2StateOptions.Georgia'),
+        t('usa.Section2StateOptions.Other'),
     ];
     const [selectedOption, setSelectedOption] = useState<string |number>("");
     // const [otherText, setOtherText] = useState("");
@@ -52,7 +52,7 @@ export default function Section2() {
                 {/* Name Field */}
                 <div className="space-y-2">
                     <Label htmlFor="name" className="inline-flex">
-                        {t('Section2StateQuestion')} <span className="text-destructive">*</span>
+                    {t('usa.Section2StateQuestion')} <span className="text-destructive">*</span>
                     </Label>
                 </div>
 
