@@ -66,6 +66,12 @@ const Dashboard = () => {
     navigate(`/company-register/${countryCode}/${companyId}`);
   };
 
+  
+  const handleAccountingCard = () => {
+    resetAllForms();
+    navigate('/accounting-services');
+};
+
   // console.log("cList", cList)
   return (
     < >
@@ -145,7 +151,7 @@ const Dashboard = () => {
                 <div>
                   <h3 className="text-lg font-semibold">Accounting support</h3>
                   <p className="text-gray-600">View available accounting services anytime you need it.</p>
-                  <Button variant="link" className="p-0 mt-2">
+                  <Button variant="link" className="p-0 mt-2" onClick = {handleAccountingCard}>
                     GET A QUOTE →
                   </Button>
                 </div>
