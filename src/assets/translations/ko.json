@@ -585,18 +585,21 @@
     "numSharestTip":
       "설립 후 신주 발행 및 주식 양도와 같은 자본 증가에는 추가 비용이 발생하므로 주식 수와 자본금을 신중히 결정하시기 바랍니다. 향후 주식을 양도할 계획이 있는 경우 원하는 비율로 주식을 나눌 수 있도록 주식 수를 효율적으로 설정하는 것이 좋습니다. 예를 들어, 설립 시 10주를 발행한 경우, 전체 주식의 33.33%를 다른 파트너에게 양도하려면 비율에 맞게 추가 주식을 발행해야 하므로 과정이 복잡해질 수 있습니다. 또한 설립 시 주당 액면가를 HKD 1로 발행한 후 미래 투자자에게 HKD 5 차이를 두고 싶다면 이를 미리 고려하시기 바랍니다."
   },
-  "Section2StateQuestion":"미국 회사를 설립하고자 하는 주를 선택하세요",
-  "Section2StateOptions": {
-    "Delaware":"델라웨어",
-    "Wyoming":"와이오밍",
-    "California":"캘리포니아",
-    "New York":"뉴욕",
-    "Washington":"워싱턴",
-    "Washington D.C.":"워싱턴 D.C.",
-    "State of Texas":"텍사스주",
-    "Nevada":"네바다",
-    "Florida":"플로리다",
-    "Georgia":"조지아",
-    "Other":"기타"
+  "usa":{
+    "usCompanyEntity": "미국 회사로서 어떤 유형의 법인을 설립하고 싶으신가요?",
+    "Section2StateQuestion":"미국 회사를 설립하고자 하는 주를 선택하세요",
+    "Section2StateOptions": {
+      "Delaware":"델라웨어",
+      "Wyoming":"와이오밍",
+      "California":"캘리포니아",
+      "New York":"뉴욕",
+      "Washington":"워싱턴",
+      "Washington D.C.":"워싱턴 D.C.",
+      "State of Texas":"텍사스주",
+      "Nevada":"네바다",
+      "Florida":"플로리다",
+      "Georgia":"조지아",
+      "Other":"기타"
+    }
   }
 }

@@ -13,6 +13,8 @@ import { ShareHolderRegistrationForm } from "@/types/hkForm";
 import { useParams } from "react-router-dom";
 import { getShrDirRegData, saveShrDirRegData } from "@/services/dataFetch";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { FileDialog } from '../../components/ui/fileDialog'
 
 const ShareHolderRegForm = () => {
   const { id } = useParams();
@@ -90,6 +92,9 @@ const ShareHolderRegForm = () => {
 
   });
 
+  const [fileSource, setFileSource] = useState<any>('');
+  const [openFile, setOpenFile] = useState(false);
+
   useEffect(() => {
     if (id) {
       console.log('id--->', id)
@@ -100,7 +105,7 @@ const ShareHolderRegForm = () => {
       }
       fetchData(id)
     }
-  })
+  },[])
 
   const roleOptions = [
     "Major shareholder (holding the largest stake)",
@@ -250,6 +255,11 @@ const ShareHolderRegForm = () => {
     }
   };
 
+  const handleFileClick = (src:any) => {
+    setFileSource(src);
+    setOpenFile(true);
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -369,6 +379,7 @@ const ShareHolderRegForm = () => {
                       checked ? [...formState.roles, role] : formState.roles.filter((r) => r !== role)
                     )
                   }
+                  checked= { formState.roles?.includes(role)}
                 />
                 <Label htmlFor={role} className="text-sm">
                   {role}
@@ -497,6 +508,15 @@ const ShareHolderRegForm = () => {
                 </TooltipContent>
               </Tooltip>
             </Label>
+            {typeof formState.passportCopy === 'string' && formState.passportCopy?.split('/')[3] &&
+            <span
+              className={cn("flex h-9 w-1/4 pt-1 cursor-pointer")}
+              onClick={() => {
+                handleFileClick(formState.passportCopy);
+              }}
+              >
+                {formState.passportCopy.split('/')[3]}
+            </span>}
             <Input
               id="passportCopy"
               type="file"
@@ -533,6 +553,15 @@ const ShareHolderRegForm = () => {
                 </TooltipContent>
               </Tooltip>
             </Label>
+            {typeof formState.personalCertificate === 'string' && formState.personalCertificate?.split('/')[3] &&
+            <span
+              className={cn("flex h-9 w-1/2 pt-1 cursor-pointer")}
+              onClick={() => {
+                handleFileClick(formState.personalCertificate);
+              }}
+              >
+                {formState.personalCertificate.split('/')[3]}
+            </span>}
             <Input
               id="personalCertificate"
               type="file"
@@ -570,6 +599,14 @@ const ShareHolderRegForm = () => {
                 </TooltipContent>
               </Tooltip>
             </Label>
+            {typeof formState.proofOfAddress === 'string' && formState.proofOfAddress?.split('/')[3] &&
+            <span
+              className={cn("flex h-9 w-1/2 pt-1 cursor-pointer")}
+              onClick={() => {
+                handleFileClick(formState.proofOfAddress);
+              }}>
+                {formState.proofOfAddress.split('/')[3]}
+            </span>}
             <Input
               id="proofOfAddress"
               type="file"
@@ -1054,6 +1091,7 @@ const ShareHolderRegForm = () => {
                       checked ? [...formState.natureOfFunds, option] : formState.natureOfFunds.filter((fund) => fund !== option)
                     )
                   }
+                  checked= { formState.natureOfFunds?.includes(option)}
                 />
                 <Label htmlFor={option} className="text-sm">
                   {option}
@@ -1094,6 +1132,7 @@ const ShareHolderRegForm = () => {
                       checked ? [...formState.sourceOfFunds, option] : formState.sourceOfFunds.filter((fund) => fund !== option)
                     )
                   }
+                  checked= { formState.sourceOfFunds?.includes(option)}
                 />
                 <Label htmlFor={option} className="text-sm">
                   {option}
@@ -1267,6 +1306,16 @@ const ShareHolderRegForm = () => {
         <div className="flex justify-end mt-6">
           <Button onClick={handleSubmit}>Submit</Button>
         </div>
+        <FileDialog
+          open={openFile}
+          onOpenChange={setOpenFile}
+          >
+            <iframe
+                src={fileSource}
+                className="w-full h-full object-contain"
+                title="Receipt"
+            />
+        </FileDialog>
       </CardContent>
     </Card>
   );
