@@ -145,25 +145,8 @@ const Layout: React.FC = () => {
                                     </Button>
                                 ))}
                             </nav>
-                            {/* <Card className={`border-none ${theme === 'light'
-                                ? 'bg-blue-50 text-gray-800'
-                                : 'bg-gray-800 text-gray-200'
-                                }`}>
-                                <CardContent className="p-4 flex items-center space-x-2">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${theme === 'light' ? 'bg-white' : 'bg-gray-700'
-                                        }`}>
-                                        <PenSquare className="w-4 h-4" />
-                                    </div>
-                                    {!isCollapsed && <div>
-                                        <p className="text-sm font-medium">Need to sign a contract?</p>
-                                        <Button variant="link" className="p-0">
-                                            Use MIRR ASIA Sign →
-                                        </Button>
-                                    </div>}
-                                </CardContent>
-                            </Card> */}
+                           
                         </div>
-                        {/* Optional: Collapse button for desktop */}
                         <div className="p-4 hidden lg:block">
                             <Button
                                 variant="ghost"
@@ -182,7 +165,7 @@ const Layout: React.FC = () => {
                 <ResizableHandle withHandle={false} />
 
                 {/* Main Content */}
-                <ResizablePanel defaultSize={82} className="overflow-hidden flex flex-col">
+                <ResizablePanel defaultSize={82} className="flex flex-col">
                     <main className="flex-1 overflow-y-auto">
                         <Outlet />
                     </main>

@@ -116,7 +116,7 @@ const AdminDashboard = () => {
         // Update URL without navigating
         navigate(`/company-register/${countryCode}/${companyId}`);
     };
-    // console.log("cList", cList)
+    console.log("cList", cList)
     return (
         <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
             {/* Stats Cards */}

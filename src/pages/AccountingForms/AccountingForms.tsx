@@ -42,10 +42,10 @@ const AccountingForms = () => {
     }
 
     return (
-        <div className="flex h-full">
+        <>
             {!countryState.name ? (
                 <div
-                    className="relative w-full bg-cover bg-center flex items-center justify-center p-4"
+                    className="relative w-full bg-cover bg-center flex items-center justify-center p-4 h-full"
                     style={{
                         backgroundImage: `url('https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/discussing-young-room-successful-meeting.webp')`,
                     }}
@@ -83,18 +83,11 @@ const AccountingForms = () => {
                 </div>
 
             ) : (
-                <>
-                    {/* Main Content */}
-                    <div className="flex-1 flex flex-col">
-                        <div className="flex-1">
-                            <div className="mx-auto">
-                                {renderSection()}
-                            </div>
-                        </div>
-                    </div>
+                <>              
+                    {renderSection()}   
                 </>
             )}
-        </div>
+        </>
     )
 }
 

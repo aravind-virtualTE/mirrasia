@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { CountryState } from "@/types";
 import { useState } from "react";
+import BnkOpnForm from "./hk/BnkOpnForm";
 
 
 const BankForms = () => {
@@ -27,11 +28,17 @@ const BankForms = () => {
     };
 
     const renderSection = () => {
-        return (
-            <div>
-                <h1>Bank Form</h1>
-            </div>
-        )
+        if (!countryState.name) return null;
+        switch (countryState.code) {
+            case 'HK':
+                return <BnkOpnForm />;
+            case 'US':
+                return <div>Registration form for {countryState.name} is not available yet.</div>;
+            case 'SG':
+                return <div>Registration form for {countryState.name} is not available yet.</div>;
+            default:
+                return <div>Registration form for {countryState.name} is not available yet.</div>;
+        }
     }
 
     return (
