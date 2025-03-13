@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { CountryState } from "@/types";
 import { useState } from "react";
+import SwitchForm from './HongKong/switchForm';
 
 
 const SwitchServices = () => {
@@ -26,12 +27,20 @@ const SwitchServices = () => {
     };
 
     const renderSection = () => {
-        return (
-            <div>
-                <h1>Switch Services</h1>
-            </div>
-        )
-    }
+        if (!countryState.name) return null;
+
+        switch (countryState.code) {
+            case 'HK':
+                return <SwitchForm></SwitchForm>;
+            case 'US':
+                return <div>Switch Service form for {countryState.name} is not available yet.</div>;
+            case 'SG':
+                return <div>Switch Service form for {countryState.name} is not available yet.</div>;
+            default:
+                return <div>Switch Service form for {countryState.name} is not available yet.</div>;
+        }
+    };
+
     return (
         <div className="flex h-full">
             {!countryState.name ? (
