@@ -83,7 +83,7 @@ import { atom } from 'jotai';
   // Atom with reset functionality
   export const usaFormWithResetAtom = atom(
     (get) => get(usaFormAtom),
-    (get, set, update: UsaFormData | 'reset') => {
+    (_get, set, update: UsaFormData | 'reset') => {
       if (update === 'reset') {
         set(usaFormAtom, initialFormState);
       } else {
