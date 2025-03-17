@@ -25,8 +25,8 @@ export default function CompanyResolutiontwo() {
     setIsModalOpen(true);
   };
 
-  const founderName = serviceAgrementDetails.articleAssociation?.founderMembers[0].name || "";
-  const founderShare = serviceAgrementDetails.articleAssociation?.founderMembers[0].noOfShares || "";
+  const founderName = serviceAgrementDetails.articleAssociation?.founderMembers[0]?.name || "";
+  const founderShare = serviceAgrementDetails.articleAssociation?.founderMembers[0]?.noOfShares || "";
 
   // console.log('serviceAgrementDetails', serviceAgrementDetails)
 
