@@ -74,10 +74,16 @@ const Section5 = () => {
                     )}
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="contact" className="inline-flex">
-                        Contact information of the above applicant (phone number, email, SNS account ID, etc.) <span className="text-destructive">*</span>
+                    <Label htmlFor="phoneNum" className="inline-flex">
+                        Phone Number <span className="text-destructive">*</span>
                     </Label>
-                    <Input id="contact" placeholder="Your answer" required />
+                    <Input id="phoneNum" placeholder="Your answer" required />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="snsAccountId" className="inline-flex">
+                        SNS account ID <span className="text-destructive">*</span>
+                    </Label>
+                    <Input id="snsAccountId" placeholder="Your answer" required />
                 </div>
             </CardContent>
         </Card>
