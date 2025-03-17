@@ -576,7 +576,7 @@ const ShareHolderRegForm = () => {
               <AlertDescription>{errors.personalCertificate}</AlertDescription>
             </Alert>
           )}
-        </div>
+        </div>                        
         {/* Upload Proof of Address Section */}
         <div className="mt-6">
           <div className="flex items-center gap-4">
