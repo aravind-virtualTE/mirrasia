@@ -19,7 +19,7 @@ export function usePaymentSession(sessionId: string) {
       try {
         const session = await paymentApi.getSession(sessionId);
         const endOfDay = new Date(session.expiresAt);
-        endOfDay.setUTCHours(23, 59, 59, 999);
+        // endOfDay.setUTCHours(23, 59, 59, 999);
         const now = new Date();
         const remaining = Math.max(0, endOfDay.getTime() - now.getTime());
         setTimeLeft(remaining);
