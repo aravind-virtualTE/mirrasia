@@ -240,3 +240,13 @@ export const deleteCompanyDoc = async (data: string) =>{
     console.error("Error fetching saved data:", error);
   }
 }
+
+export const getUsIncorpoDataById = async (userId: string) => {
+  try {
+    const response = await api.get(`company/usa-form/${userId}`);
+    // console.log("response-->",response)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company incorporation list by userId:", error);
+  }
+};

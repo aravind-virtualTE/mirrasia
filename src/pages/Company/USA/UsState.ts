@@ -1,29 +1,30 @@
 import { atom } from 'jotai';
-
+import { Option } from "@/components/MultiSelectInput";
   interface UsaFormData {
     email: string;
-    selectedState: string;
+    userId: string;
+    selectedState: string |number;
     selectedEntity: string;
-    noOfSharesSelected: string;
+    noOfSharesSelected: string | number;
     name: string;
-    establishedRelationshipType: string;
+    establishedRelationshipType: Option[];
     phoneNum : string;
     snsAccountId: string;
-    serviceItemsSelected: string;
-    hasLegalEthicalIssues: string;
-    annualRenewalTermsAgreement: string;
+    serviceItemsSelected: Option[];
+    hasLegalEthicalIssues: Option[];
+    annualRenewalTermsAgreement: Option[];
     restrictedCountriesWithActivity : string;
     sanctionedTiesPresent: string;
     businessInCrimea: string;
     involvedInRussianEnergyDefense: string;
-    selectedIndustry: string;
+    selectedIndustry: Option[];
     descriptionOfProducts: string;
     descriptionOfBusiness: string;
     webAddress: string;
-    purposeOfEstablishmentCompany: string;
+    purposeOfEstablishmentCompany: Option[];
     companyName: string[];
-    totalCapital: string;
-    companyExecutives :  string;
+    totalCapital: string| number;
+    companyExecutives :  string| number;
     localCompanyRegistration : string;
     businessAddress: string;
     noOfShareholders : string;
@@ -38,30 +39,38 @@ import { atom } from 'jotai';
     isTermsAndConditionsAccepted: string;
     paymentOption : string;
     postIncorporationCapabilities: string;    
-
+    country : {
+      code?: string;
+      name?: string;
+    }
   }
 
   const initialFormState: UsaFormData = {
+    userId: '',
     email: '',
     selectedState: '',
     selectedEntity: '',
     noOfSharesSelected: '',
     name: '',
-    establishedRelationshipType: '',
+    establishedRelationshipType: [],
     phoneNum: '',
+    country : {
+      code: undefined,
+      name: undefined,
+    },
     snsAccountId: '',
-    serviceItemsSelected: '',
-    hasLegalEthicalIssues: '',
-    annualRenewalTermsAgreement: '',
+    serviceItemsSelected: [],
+    hasLegalEthicalIssues:[],
+    annualRenewalTermsAgreement:[],
     restrictedCountriesWithActivity: '',
     sanctionedTiesPresent: '',
     businessInCrimea: '',
     involvedInRussianEnergyDefense: '',
-    selectedIndustry: '',
+    selectedIndustry: [],
     descriptionOfProducts: '',
     descriptionOfBusiness: '',
     webAddress: '',
-    purposeOfEstablishmentCompany: '',
+    purposeOfEstablishmentCompany: [],
     companyName: ['', '', ''],
     totalCapital: '',
     companyExecutives: '',

@@ -21,31 +21,74 @@ import FormSections from "./Components/Section16"
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAtom } from "jotai"
+import { usaFormWithResetAtom } from "./UsState"
+import jwtDecode from "jwt-decode"
+import { TokenData } from "@/middleware/ProtectedRoutes"
+import api from "@/services/fetch"
 
 const IncorporateUSACompany = () => {
     const [currentSection, setCurrentSection] = useState(1);
-
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
+    const token = localStorage.getItem("token") as string;
+    const decodedToken = jwtDecode<TokenData>(token);
+    const [isSubmitting, setIsSubmitting] = useState(false); 
     const steps = [
-        { number: 1,  label: "Section1", active: currentSection === 1 },
-        { number: 2,  label: "Section2", active: currentSection === 2 },
-        { number: 3,  label: "Section3", active: currentSection === 3 },
-        { number: 4,  label: "Section4", active: currentSection === 4 },
-        { number: 5,  label: "Section5", active: currentSection === 5 },
-        { number: 6,  label: "Section6", active: currentSection === 6 },
-        { number: 7,  label: "Section7", active: currentSection === 7 },
-        { number: 8,  label: "Section8", active: currentSection === 8 },
-        { number: 9,  label: "Section9", active: currentSection === 9 },
-        { number: 10,  label: "Section10", active: currentSection === 10 },
-        { number: 11,  label: "Section11", active: currentSection === 11 },
-        { number: 12,  label: "Section12", active: currentSection === 12 },
-        { number: 13,  label: "Section13", active: currentSection === 13 },
-        { number: 14,  label: "Section14", active: currentSection === 14 },
-        { number: 15,  label: "Section15", active: currentSection === 15 },
-        { number: 16,  label: "Section16", active: currentSection === 16 },
+        { number: 1, label: "Section1", active: currentSection === 1 },
+        { number: 2, label: "Section2", active: currentSection === 2 },
+        { number: 3, label: "Section3", active: currentSection === 3 },
+        { number: 4, label: "Section4", active: currentSection === 4 },
+        { number: 5, label: "Section5", active: currentSection === 5 },
+        { number: 6, label: "Section6", active: currentSection === 6 },
+        { number: 7, label: "Section7", active: currentSection === 7 },
+        { number: 8, label: "Section8", active: currentSection === 8 },
+        { number: 9, label: "Section9", active: currentSection === 9 },
+        { number: 10, label: "Section10", active: currentSection === 10 },
+        { number: 11, label: "Section11", active: currentSection === 11 },
+        { number: 12, label: "Section12", active: currentSection === 12 },
+        { number: 13, label: "Section13", active: currentSection === 13 },
+        { number: 14, label: "Section14", active: currentSection === 14 },
+        { number: 15, label: "Section15", active: currentSection === 15 },
+        { number: 16, label: "Section16", active: currentSection === 16 },
     ];
 
+
+    const updateDoc = async () => {
+        if (isSubmitting) { 
+            return;
+        }
+        setIsSubmitting(true);
+        const docId = localStorage.getItem("companyRecordId");
+        formData.userId =  `${decodedToken.userId}`
+        const payload = { _id: docId, ...formData };
+        console.log("formdata", formData)
+        try {
+            const response = await api.post(
+                "/company/usa-form",
+                payload
+            );
+            if (response.status === 200) {
+                console.log("formdata", response.data);
+                window.history.pushState(
+                    {},
+                    "",
+                    `/company-register/US/${response.data.data._id}`
+                );
+            } else {
+                console.log("error-->", response);
+            }
+        } catch (error) {
+            console.error("Submission error:", error);
+        } finally {
+            setIsSubmitting(false); 
+        }   
+    }
     const nextSection = async () => {
-        currentSection != 16 && setCurrentSection(prev => prev + 1)
+        if (currentSection !== 16) {
+            await updateDoc();
+            setCurrentSection(prev => prev + 1);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
     };
 
     const previousSection = () => {
@@ -54,6 +97,7 @@ const IncorporateUSACompany = () => {
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
+
     return (
         <div className="flex flex-col md:flex-row h-screen">
             {/* Main Content */}
@@ -81,75 +125,75 @@ const IncorporateUSACompany = () => {
                             }}
                             className="h-full w-auto"
                         >
-                                                {currentSection === 1 && <Card className="max-w-5xl mx-auto">
-                        <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                            <CardTitle>
-                                Application for incorporation of a US company (LLC-Limited Liability Company/Corp-Corporation)
-                            </CardTitle>
-                            <p className="text-sm text-muted-foreground mt-4">
-                                This is an application form to form a company the USA. Please check the information related to the incorporation process and provide a specific answer.
-                            </p>
-                        </CardHeader>
-
-                        <CardContent className="space-y-6">
-                            {/* Company Information */}
-                            <div className="space-y-4 text-sm">
-
-                                <div className="space-y-2 text-foreground">
-                                    <p>
-                                        This application is in the form of a questionnaire on the information required for the formation of a US company(LLC-Limited Liability Company/ Corp-Corporation) and some questions may be difficult for some clients or may take some time to answer. Accordingly, please kindly answer the questions and submit the relevant documents when you have sufficient time.
-
-                                        If you have any difficulty or difficulty understanding the written form, please contact us using the details below.
+                            {currentSection === 1 && <Card className="max-w-5xl mx-auto">
+                                <CardHeader className="bg-sky-100 dark:bg-sky-900">
+                                    <CardTitle>
+                                        Application for incorporation of a US company (LLC-Limited Liability Company/Corp-Corporation)
+                                    </CardTitle>
+                                    <p className="text-sm text-muted-foreground mt-4">
+                                        This is an application form to form a company the USA. Please check the information related to the incorporation process and provide a specific answer.
                                     </p>
-                                    <p>Thank you.</p>
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="font-medium">Mirrasia</p>
-                                    <p>
-                                        website:{" "}
-                                        <a href="http://www.mirrasia.com" className="text-primary hover:underline">
-                                            www.mirrasia.com
-                                        </a>
-                                    </p>
-                                    <p>
-                                        Plus Friend:{" "}
-                                        <a href="https://pf.kakao.com/_KxmnZT" className="text-primary hover:underline">
-                                            https://pf.kakao.com/_KxmnZT
-                                        </a>
-                                    </p>
-                                    <p>Phone: (Korea) 02-543-6187 (Hong Kong) 2187-2428</p>
-                                    <p>SNS: (Kakao Talk) mirrasia (WeChat) mirrasia_hk</p>
-                                </div>
-                            </div>
+                                </CardHeader>
 
-                            <Separator />
+                                <CardContent className="space-y-6">
+                                    {/* Company Information */}
+                                    <div className="space-y-4 text-sm">
 
-                            {/* Form Fields */}
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="email" className="text-base">
-                                        Email <span className="text-destructive">*</span>
-                                    </Label>
-                                    <Input id="email" type="email" placeholder="Valid email" className="w-full" required />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>}
-                    {currentSection === 2 && <Section2 />}
-                    {currentSection === 3 && <Section3 />}
-                    {currentSection === 4 && <Section4 />}
-                    {currentSection === 5 && <Section5 />}
-                    {currentSection === 6 && <Section6 />}
-                    {currentSection === 7 && <Section7 />}
-                    {currentSection === 8 && <Section8 />}
-                    {currentSection === 9 && <Section9 />}
-                    {currentSection === 10 && <Section10 />}
-                    {currentSection === 11 && <Section11 />}
-                    {currentSection === 12 && <Section12 />}
-                    {currentSection === 13 && <Section13 />}
-                    {currentSection === 14 && <Section14 />}
-                    {currentSection === 15 && <Section15 />}
-                    {currentSection === 16 && <FormSections />}
+                                        <div className="space-y-2 text-foreground">
+                                            <p>
+                                                This application is in the form of a questionnaire on the information required for the formation of a US company(LLC-Limited Liability Company/ Corp-Corporation) and some questions may be difficult for some clients or may take some time to answer. Accordingly, please kindly answer the questions and submit the relevant documents when you have sufficient time.
+
+                                                If you have any difficulty or difficulty understanding the written form, please contact us using the details below.
+                                            </p>
+                                            <p>Thank you.</p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <p className="font-medium">Mirrasia</p>
+                                            <p>
+                                                website:{" "}
+                                                <a href="http://www.mirrasia.com" className="text-primary hover:underline">
+                                                    www.mirrasia.com
+                                                </a>
+                                            </p>
+                                            <p>
+                                                Plus Friend:{" "}
+                                                <a href="https://pf.kakao.com/_KxmnZT" className="text-primary hover:underline">
+                                                    https://pf.kakao.com/_KxmnZT
+                                                </a>
+                                            </p>
+                                            <p>Phone: (Korea) 02-543-6187 (Hong Kong) 2187-2428</p>
+                                            <p>SNS: (Kakao Talk) mirrasia (WeChat) mirrasia_hk</p>
+                                        </div>
+                                    </div>
+
+                                    <Separator />
+
+                                    {/* Form Fields */}
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="email" className="text-base">
+                                                Email <span className="text-destructive">*</span>
+                                            </Label>
+                                            <Input id="email" type="email" placeholder="Valid email" className="w-full" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>}
+                            {currentSection === 2 && <Section2 />}
+                            {currentSection === 3 && <Section3 />}
+                            {currentSection === 4 && <Section4 />}
+                            {currentSection === 5 && <Section5 />}
+                            {currentSection === 6 && <Section6 />}
+                            {currentSection === 7 && <Section7 />}
+                            {currentSection === 8 && <Section8 />}
+                            {currentSection === 9 && <Section9 />}
+                            {currentSection === 10 && <Section10 />}
+                            {currentSection === 11 && <Section11 />}
+                            {currentSection === 12 && <Section12 />}
+                            {currentSection === 13 && <Section13 />}
+                            {currentSection === 14 && <Section14 />}
+                            {currentSection === 15 && <Section15 />}
+                            {currentSection === 16 && <FormSections />}
                         </motion.div>
                     </AnimatePresence>
                 </div>

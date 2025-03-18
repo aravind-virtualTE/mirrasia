@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from "react"
+// import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
 // import { Input } from "@/components/ui/input"
@@ -14,18 +14,21 @@ import { HelpCircle } from "lucide-react"
 //     SelectValue 
 //   } from '@/components/ui/select';
 import MultiSelect, { Option } from '@/components/MultiSelectInput'
+import { useAtom } from "jotai"
+import { usaFormWithResetAtom } from "../UsState"
 
 const list = [
-    'yes', 'no', "Don't know", 'Consultation required before proceeding', 'Other'
+    'yes', 'no', "Don't know", 'Consultation required before proceeding'
 ]
 
 const list2 = [
     'yes', 'no', 'I/We can handle on our own after incorporation', " If a fixed cost would be incurred every year after incorporation, I don't intend to incorporate", 'Consultation required before proceeding', 'Other'
 ]
 const Section7 = () => {
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
 
-    const [selectedOption, setSelectedOption] = useState<Option[]>([]);
-    const [selectedRenewal, setSelectedOption2] = useState<Option[]>([]);
+    // const [selectedOption, setSelectedOption] = useState<Option[]>([]);
+    // const [selectedRenewal, setSelectedOption2] = useState<Option[]>([]);
     // const [otherText, setOtherText] = useState("");
 
     // const handleOptionChange = (value: string) => {
@@ -36,14 +39,15 @@ const Section7 = () => {
     // };
 
     const handleEthicalChange = (selections: Option[]) => {
-        console.log("selections", selections)
-        setSelectedOption(selections)
+        // console.log("selections", selections)
+        // setSelectedOption(selections)
+        setFormData({ ...formData, hasLegalEthicalIssues: selections })
 
     };
     const handleRenewalChange = (selections: Option[]) => {
-        console.log("selections", selections)
-        setSelectedOption2(selections)
-
+        // console.log("selections", selections)
+        // setSelectedOption2(selections)
+        setFormData({ ...formData, annualRenewalTermsAgreement: selections })
     };
     const ethicalList = list.map((item) => ({ label: item, value: item }));
     const acknowledgeList = list2.map((item) => ({ label: item, value: item }));
@@ -103,7 +107,7 @@ const Section7 = () => {
                         <MultiSelect
                             options={ethicalList}
                             placeholder="Select Option."
-                            selectedItems={selectedOption}
+                            selectedItems={formData.hasLegalEthicalIssues}
                             onSelectionChange={handleEthicalChange}
                         />
                     </>
@@ -147,7 +151,7 @@ const Section7 = () => {
                         <MultiSelect
                             options={acknowledgeList}
                             placeholder="Select option."
-                            selectedItems={selectedRenewal}
+                            selectedItems={formData.annualRenewalTermsAgreement}
                             onSelectionChange={handleRenewalChange}
                         />
                     </>

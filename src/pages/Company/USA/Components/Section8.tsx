@@ -1,25 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAtom } from 'jotai';
+import { usaFormWithResetAtom } from '../UsState';
 
 const list = ['Yes', 'No', 'I/We have no idea'];
 
 const Section8 = () => {
-    const [answers, setAnswers] = useState({
-        question1: "",
-        question2: "",
-        question3: "",
-        question4: "",
-    });
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
 
-    const handleOptionChange = (question: string) => (value: string) => {
-        setAnswers((prevAnswers) => ({
-            ...prevAnswers,
-            [question]: value,
-        }));
+    const handleOptionChange = (value: string) => {
+        setFormData({ ...formData, restrictedCountriesWithActivity: value });
     };
 
     return (
@@ -46,7 +40,7 @@ const Section8 = () => {
                             Does the proposed US company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)?
                             <span className="text-red-500 font-bold ml-1 flex">*</span>
                         </Label>
-                        <Select onValueChange={handleOptionChange('question1')} value={answers.question1}>
+                        <Select onValueChange={handleOptionChange} value={formData.restrictedCountriesWithActivity}>
                             <SelectTrigger className="w-full md:w-80">
                                 <SelectValue />
                             </SelectTrigger>
@@ -65,7 +59,7 @@ const Section8 = () => {
                             To the best of your knowledge, does the proposed US company or any of the company's connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by sanctions administered by the following bodies: UN, EU, UKHMT, HKMA, OFAC, or as part of local sanctions law?
                             <span className="text-red-500 font-bold ml-1 flex">*</span>
                         </Label>
-                        <Select onValueChange={handleOptionChange('question2')} value={answers.question2}>
+                        <Select onValueChange={(e) => setFormData({ ...formData, sanctionedTiesPresent: e })} value={formData.sanctionedTiesPresent}>
                             <SelectTrigger className="w-full md:w-80">
                                 <SelectValue />
                             </SelectTrigger>
@@ -84,7 +78,7 @@ const Section8 = () => {
                             To the best of your knowledge, does the proposed US company or any of its connected or other related parties have any current or planned business activities in Crimea/Sevastopol Regions?
                             <span className="text-red-500 font-bold ml-1 flex">*</span>
                         </Label>
-                        <Select onValueChange={handleOptionChange('question3')} value={answers.question3}>
+                        <Select onValueChange={(e) => setFormData({ ...formData, businessInCrimea: e })} value={formData.businessInCrimea}>
                             <SelectTrigger className="w-full md:w-80">
                                 <SelectValue />
                             </SelectTrigger>
@@ -103,7 +97,7 @@ const Section8 = () => {
                             To the best of your knowledge, does the proposed US company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?
                             <span className="text-red-500 font-bold ml-1 flex">*</span>
                         </Label>
-                        <Select onValueChange={handleOptionChange('question4')} value={answers.question4}>
+                        <Select onValueChange={(e) => setFormData({ ...formData, involvedInRussianEnergyDefense: e })} value={formData.involvedInRussianEnergyDefense}>
                             <SelectTrigger className="w-full md:w-80">
                                 <SelectValue />
                             </SelectTrigger>

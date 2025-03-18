@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,18 +10,20 @@ import {
     SelectTrigger,
     SelectValue
 } from '@/components/ui/select';
+import { useAtom } from 'jotai';
+import { usaFormWithResetAtom } from '../UsState';
+
 
 const list = ['1', '2', '3', '4', '5']
 const Section12 = () => {
-    const [selectedOption, setSelectedOption] = useState("");
-    const [selectedOfficer, setSelectedOfficer] = useState("");
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
 
     const handleOptionChange = (value: string) => {
-        setSelectedOption(value);
+        setFormData({...formData, noOfShareholders: value})
     };
 
     const handleOfficerChange = (value: string) => {
-        setSelectedOfficer(value);
+        setFormData({...formData, noOfOfficers: value})
     };
 
     return (
@@ -60,7 +61,7 @@ const Section12 = () => {
                         ))}
                     </RadioGroup> */}
 
-                    <Select onValueChange={handleOptionChange} value={selectedOption}>
+                    <Select onValueChange={handleOptionChange} value={formData.noOfShareholders}>
                         <SelectTrigger className="w-full md:w-80">
                             <SelectValue />
                         </SelectTrigger>
@@ -94,7 +95,7 @@ const Section12 = () => {
                         ))}
                     </RadioGroup> */}
 
-                    <Select onValueChange={handleOfficerChange} value={selectedOfficer}>
+                    <Select onValueChange={handleOfficerChange} value={formData.noOfOfficers}>
                         <SelectTrigger className="w-full md:w-80">
                             <SelectValue />
                         </SelectTrigger>
