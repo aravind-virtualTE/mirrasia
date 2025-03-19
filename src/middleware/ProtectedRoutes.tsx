@@ -21,9 +21,16 @@ const ProtectedRoute: React.FC<{ allowedRoles?: string[] }> = ({ allowedRoles })
   }
 
   const decodedToken = jwtDecode<TokenData>(token);
-  // console.log("decodedToken", decodedToken);
+  // console.log("decodedToken", decodedToken.exp * 1000,Date.now());
 
-  if (!isAuthenticated) {
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" replace />;
+  // }
+  const isTokenExpired = decodedToken.exp * 1000 < Date.now();
+
+  if (!isAuthenticated || isTokenExpired) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("isAuthenticated");
     return <Navigate to="/login" replace />;
   }
 

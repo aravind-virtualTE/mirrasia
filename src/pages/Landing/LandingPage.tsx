@@ -120,7 +120,7 @@ const LandingPage = () => {
             </h1>
             <p className="text-600 mb-6">{t("landingPage.leftText")}</p>
             <div className="space-x-4">
-              <Button size="lg">{t("landingPage.registerNow")}</Button>
+              <Button size="lg" onClick={() => navigate("/signup")}>{t("landingPage.registerNow")}</Button>
               <Button variant="outline" size="lg">
                 {t("landingPage.contactUs")}
               </Button>

@@ -55,30 +55,31 @@ const Dashboard = () => {
       return result
     }
     fetchData().then((result) => {
+      console.log("result",result)
       setCompIncList(result);
     })
 
   }, [decodedToken.userId, setCompIncList]);
 
-  
+
   const handleRowClick = (companyId: string, countryCode: string) => {
     localStorage.setItem('companyRecordId', companyId);
     navigate(`/company-register/${countryCode}/${companyId}`);
   };
 
-  
+
   const handleAccountingCard = () => {
     resetAllForms();
     navigate('/accounting-services');
-};
+  };
 
   // console.log("cList", cList)
   return (
     < >
       {/* Main Content */}
       <div className="flex-1 p-8">
-        <h1 className="text-2xl font-semibold mb-8">Welcome, User Here's what you can do to get started.</h1>      
-          <MainFunctionalities />
+        <h1 className="text-2xl font-semibold mb-8">Welcome, User Here's what you can do to get started.</h1>
+        <MainFunctionalities />
         {/* Companies Table */}
         {cList.length > 0 && <div className="mb-12">
           <h2 className="text-xl font-semibold mb-4">Your Companies</h2>
@@ -109,7 +110,9 @@ const Dashboard = () => {
                   return (
                     <TableRow key={typedCompany._id}>
                       <TableCell className="font-medium cursor-pointer" onClick={() => handleRowClick(typedCompany._id, typedCompany.country.code)}>
-                        {typedCompany.applicantInfoForm.companyName.join(",")}
+                        {typedCompany.applicantInfoForm.companyName.some(name => name.trim() !== "")
+                          ? typedCompany.applicantInfoForm.companyName.filter(name => name.trim() !== "").join(", ")
+                          : ""}
                       </TableCell>
                       <TableCell>
                         <span
@@ -151,7 +154,7 @@ const Dashboard = () => {
                 <div>
                   <h3 className="text-lg font-semibold">Accounting support</h3>
                   <p className="text-gray-600">View available accounting services anytime you need it.</p>
-                  <Button variant="link" className="p-0 mt-2" onClick = {handleAccountingCard}>
+                  <Button variant="link" className="p-0 mt-2" onClick={handleAccountingCard}>
                     GET A QUOTE →
                   </Button>
                 </div>
