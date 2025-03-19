@@ -21,7 +21,7 @@ const CompanyRegistration = () => {
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     const [ formData,setFormData] = useAtom(usaFormWithResetAtom);
     useEffect(() => {
-        console.log("id-->", id, "countryCode-->", countryCode);
+        // console.log("id-->", id, "countryCode-->", countryCode);
         if (id && countryCode == "HK") {
             async function fetchData() {
                 const result = await getIncorporationListByUserId(`${decodedToken.userId}`);

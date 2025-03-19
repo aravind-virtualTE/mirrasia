@@ -3,13 +3,20 @@ import { Building2, CreditCard, RefreshCw } from 'lucide-react';
 import MainFunctionalityCard from './MainFunctionalityCard';
 import { useResetAllForms } from "@/lib/atom";
 import { useNavigate } from 'react-router-dom';
+import { useAtom } from 'jotai';
+import { usaFormWithResetAtom } from '../Company/USA/UsState';
+import { allCompListAtom } from '@/services/state';
 
 const MainFunctionalities: React.FC = () => {
     const resetAllForms = useResetAllForms();
     const navigate = useNavigate();
-
+    const [, setAllList] = useAtom(allCompListAtom)
+    const [, setUSForm] = useAtom(usaFormWithResetAtom)
     const handleComapanyCard = () => {
+        setAllList('reset')
+        setUSForm('reset')
         resetAllForms();
+        localStorage.removeItem('companyRecordId')
         navigate('/company-register');
     };
     const handleBankingCard = () => {

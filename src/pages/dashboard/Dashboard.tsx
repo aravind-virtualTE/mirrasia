@@ -75,7 +75,7 @@ const Dashboard = () => {
     navigate('/accounting-services');
   };
 
-  console.log("allList", allList)
+  // console.log("allList", allList)
   return (
     < >
       {/* Main Content */}

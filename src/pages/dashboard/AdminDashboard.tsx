@@ -20,6 +20,8 @@ import { useAtom, useSetAtom } from "jotai";
 import { allCompListAtom, companyIncorporationList } from "@/services/state";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import io from 'socket.io-client';
+import { toast } from "@/hooks/use-toast";
 
 // interface Stats {
 //     pending: number;
@@ -40,12 +42,37 @@ interface Stats {
     rejected: number
 }
 
+const socket = io('http://localhost:5000', {
+    // auth: {
+    //   token: localStorage.getItem('adminToken') // Assuming token is stored in localStorage
+    // }
+  });
+
 const AdminDashboard = () => {
     // Sample data - replace with your actual data    
     const setCompIncList = useSetAtom(companyIncorporationList);
     // const [cList,] = useAtom(companyIncorporationList)
     const [allList, setAllList] = useAtom(allCompListAtom)
     const navigate = useNavigate();
+
+    useEffect(() =>{
+        console.log("testing")
+        socket.on('connect', () => {
+            console.log('Connected to server');
+          });
+          socket.on('new-record', (data) => {
+            console.log("new-record", data) 
+            toast({
+                    title: "New record created",
+                    description: `data added ${data.recordId}`,
+                  });
+          });
+      
+          // Cleanup on component unmount
+          return () => {
+            socket.disconnect();
+          };
+    }, [])
 
     useEffect(() => {
         async function fetchData() {
@@ -118,7 +145,7 @@ const AdminDashboard = () => {
         // Update URL without navigating
         navigate(`/company-register/${countryCode}/${companyId}`);
     };
-    console.log("allList", allList)
+    // console.log("allList", allList)
     return (
         <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
             {/* Stats Cards */}
