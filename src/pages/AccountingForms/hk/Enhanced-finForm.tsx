@@ -138,7 +138,7 @@ export default function EnhancedFinancialForm() {
             </div>
 
             <div className="grid w-full items-center gap-1.5">
-              <Label htmlFor="bank-accounts" className="sr-only">
+              <Label htmlFor="bank-accounts">
                 Your answer
               </Label>
               <Input
