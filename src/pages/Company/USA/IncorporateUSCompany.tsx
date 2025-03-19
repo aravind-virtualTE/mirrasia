@@ -85,7 +85,7 @@ const IncorporateUSACompany = () => {
     }
     const nextSection = async () => {
         switch (currentSection){
-            case '':
+            case 16:
                 break;
             default:
                 if (currentSection !== 16) {
