@@ -3,8 +3,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
+import { useAtom } from 'jotai';
+import { usaFormWithResetAtom } from '../UsState';
 
 const Section13 = () => {
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
+
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
@@ -26,7 +30,7 @@ const Section13 = () => {
                     <Label htmlFor="relationbtwauth" className="inline-flex">
                     Please enter the address where the accounting and financial data of the proposed US company will be kept.
                     </Label>
-                    <Input id="descBusiness" placeholder="Your answer" required />
+                    <Input id="descBusiness" placeholder="Your answer" required value={formData.accountingDataAddress} onChange={(e) => setFormData({ ...formData, accountingDataAddress: e.target.value })}/>
                 </div>
             </CardContent>
         </Card>

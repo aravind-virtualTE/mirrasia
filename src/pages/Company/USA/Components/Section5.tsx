@@ -1,22 +1,21 @@
-import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
 import MultiSelect, { Option } from "@/components/MultiSelectInput";
+import { useAtom } from "jotai"
+import { usaFormWithResetAtom } from "../UsState"
 
 const list = [
     'Director/Officer of the proposed US company', 'Delegated by the director of the proposed US company', 'Shareholder of the proposed US company holding majority of the shares', ' A professional(e.g. lawyer, accountant) who provides incorporation advice to the US company'
 ]
 
 const Section5 = () => {
-    const [selectedRelation, setRelationOption] = useState<Option[]>([]);
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const handleSelectionChange = (selections: Option[]) => {
-        console.log("selections", selections)
-        setRelationOption(selections)
-
+        // setRelationOption(selections)
+        setFormData({ ...formData, establishedRelationshipType: selections })
     };
 
     const relList = list.map((item) => ({ label: item, value: item }));
@@ -37,12 +36,11 @@ const Section5 = () => {
             </CardHeader>
 
             <CardContent className="space-y-6 pt-6">
-                {/* Name Field */}
                 <div className="space-y-2">
                     <Label htmlFor="name" className="inline-flex">
                         Please enter the name of the person filling out this form. <span className="text-destructive">*</span>
                     </Label>
-                    <Input id="name" placeholder="Your answer" required />
+                    <Input id="name" placeholder="Your answer" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
                 </div>
                 <div>
                     <Label className="text-base flex items-center font-semibold gap-2">
@@ -65,7 +63,7 @@ const Section5 = () => {
                             <MultiSelect
                                 options={relList}
                                 placeholder="Select Relationship."
-                                selectedItems={selectedRelation}
+                                selectedItems={formData.establishedRelationshipType}
                                 onSelectionChange={handleSelectionChange}
                             />
                         </>
@@ -74,10 +72,16 @@ const Section5 = () => {
                     )}
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="contact" className="inline-flex">
-                        Contact information of the above applicant (phone number, email, SNS account ID, etc.) <span className="text-destructive">*</span>
+                    <Label htmlFor="phoneNum" className="inline-flex">
+                        Phone Number <span className="text-destructive">*</span>
                     </Label>
-                    <Input id="contact" placeholder="Your answer" required />
+                    <Input id="phoneNum" placeholder="Your answer" required value={formData.phoneNum} onChange={(e) => setFormData({ ...formData, phoneNum: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="snsAccountId" className="inline-flex">
+                        SNS account ID <span className="text-destructive">*</span>
+                    </Label>
+                    <Input id="snsAccountId" placeholder="Your answer" value={formData.snsAccountId} onChange={(e) => setFormData({ ...formData, snsAccountId: e.target.value })} />
                 </div>
             </CardContent>
         </Card>

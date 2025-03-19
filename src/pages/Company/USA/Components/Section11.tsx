@@ -1,8 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useAtom } from 'jotai';
+import { usaFormWithResetAtom } from '../UsState';
 
 const Section11 = () => {
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
+
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
@@ -16,7 +20,7 @@ const Section11 = () => {
                     <Label htmlFor="relationbtwauth" className="inline-flex">
                     Please enter your business address within the United States. 
                     </Label>
-                    <Input id="descBusiness" placeholder="Your answer" required />
+                    <Input id="descBusiness" placeholder="Your answer" required value={formData.businessAddress} onChange={(e) => setFormData({ ...formData, businessAddress: e.target.value })} />
                 </div>
             </CardContent>
         </Card>

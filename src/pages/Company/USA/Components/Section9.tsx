@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -14,6 +13,8 @@ import { HelpCircle } from "lucide-react"
 //     SelectValue
 // } from '@/components/ui/select';
 import MultiSelect, { Option } from "@/components/MultiSelectInput"
+import { useAtom } from 'jotai';
+import { usaFormWithResetAtom } from '../UsState';
 
 const list = [
     'Cryptocurrency-related (cryptocurrency issuance, sale, donation, ICO, exchange, wallet service, etc.)', 'Development of IT, blockchain, software, etc.', 'Cryptocurrency-based investment-related business', 'Cryptocurrency-based games', 'foreign exchange trading', 'Finance, investment, advisory, loan business, etc.', 'trade industry', 'Wholesale/retail distribution industry', 'consulting', 'manufacturing', 'Online service industry (e-commerce)', 'Online direct purchase/delivery/purchase agency', 'Other'
@@ -26,8 +27,7 @@ const list2 = [
 const Section9 = () => {
     // const [selectedIndustry, setSelectedOption] = useState("");
     // const [otherText, setOtherText] = useState("");
-    const [selectedIndustry, setSelectedOption] = useState<Option[]>([]);
-    const [selectedPurpose, setSelectedOption2] = useState<Option[]>([]);
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
 
     // const handleOptionChange = (value: string) => {
     //     setSelectedOption(value);
@@ -38,11 +38,12 @@ const Section9 = () => {
 
     const handleIndustryChange = (selections: Option[]) => {
         console.log("selections", selections)
-        setSelectedOption(selections)
+        // setSelectedOption(selections)
+        setFormData({ ...formData, selectedIndustry: selections })
     };
     const handlePurposeChange = (selections: Option[]) => {
         console.log("selections", selections)
-        setSelectedOption2(selections)
+        setFormData({ ...formData, purposeOfEstablishmentCompany: selections })
     };
 
     const purposeList = list2.map((item) => ({ label: item, value: item }));
@@ -103,7 +104,7 @@ const Section9 = () => {
                         <MultiSelect
                             options={industryList}
                             placeholder="Select Industry."
-                            selectedItems={selectedIndustry}
+                            selectedItems={formData.selectedIndustry}
                             onSelectionChange={handleIndustryChange}
                         />
                     </>
@@ -113,7 +114,7 @@ const Section9 = () => {
                     <Label htmlFor="prodDesc" className="inline-flex">
                         Description of the product name, product type, service content, service type, etc. to be transacted after incorporation<span className="text-destructive">*</span>
                     </Label>
-                    <Input id="prodDesc" placeholder="Your answer" required />
+                    <Input id="prodDesc" placeholder="Your answer" required value={formData.descriptionOfProducts} onChange={(e) => setFormData({ ...formData, descriptionOfProducts: e.target.value })} />
                 </div>
 
                 {/* descBusiness Field */}
@@ -121,7 +122,7 @@ const Section9 = () => {
                     <Label htmlFor="descBusiness" className="inline-flex">
                         Description of the business activities of the proposed US company (at least 50 characters) <span className="text-destructive">*</span>
                     </Label>
-                    <Input id="descBusiness" placeholder="Your answer" required />
+                    <Input id="descBusiness" placeholder="Your answer" required  value={formData.descriptionOfBusiness} onChange={(e) => setFormData({ ...formData, descriptionOfBusiness: e.target.value })}/>
                 </div>
 
                 {/* website Field */}
@@ -129,7 +130,7 @@ const Section9 = () => {
                     <Label htmlFor="website" className="inline-flex">
                         Enter your website address (if available)
                     </Label>
-                    <Input id="website" placeholder="Your answer" required />
+                    <Input id="website" placeholder="Your answer" required value={formData.webAddress} onChange={(e) => setFormData({ ...formData, webAddress: e.target.value })}/>
                 </div>
 
                 <div className="space-y-2">
@@ -150,7 +151,7 @@ const Section9 = () => {
                         <MultiSelect
                             options={purposeList}
                             placeholder="Select Purpose."
-                            selectedItems={selectedPurpose}
+                            selectedItems={formData.purposeOfEstablishmentCompany}
                             onSelectionChange={handlePurposeChange}
                         />
                     </>

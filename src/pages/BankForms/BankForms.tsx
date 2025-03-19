@@ -7,7 +7,7 @@ import BnkOpnForm from "./hk/BnkOpnForm";
 
 const BankForms = () => {
 
-    const [countryState, setCountryState] = useState<CountryState>({ code: undefined, name: undefined });
+    const [countryState, setCountryState] = useState<CountryState>({ code: 'HK', name: 'Hong Kong' });
 
     const countries = [
         { code: 'HK', name: 'Hong Kong' },

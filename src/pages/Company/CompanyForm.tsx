@@ -7,9 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import IncorporationForm from './HongKong/IncorporationForm';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
-import { getIncorporationListByCompId, getIncorporationListByUserId } from '@/services/dataFetch';
+import { getIncorporationListByCompId, getIncorporationListByUserId, getUsIncorpoDataById } from '@/services/dataFetch';
 import IncorporateUSACompany from './USA/IncorporateUSCompany';
 import { Card, CardContent } from '@/components/ui/card';
+import { usaFormWithResetAtom } from './USA/UsState';
 
 const CompanyRegistration = () => {
     const [countryState, setCountryState] = useAtom(countryAtom);
@@ -18,8 +19,9 @@ const CompanyRegistration = () => {
     const token = localStorage.getItem('token') as string;
     const decodedToken = jwtDecode<TokenData>(token);
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
-
+    const [ formData,setFormData] = useAtom(usaFormWithResetAtom);
     useEffect(() => {
+        console.log("id-->", id, "countryCode-->", countryCode);
         if (id && countryCode == "HK") {
             async function fetchData() {
                 const result = await getIncorporationListByUserId(`${decodedToken.userId}`);
@@ -40,7 +42,20 @@ const CompanyRegistration = () => {
                 // console.log("result-->", result);
                 updateCompanyData(result[0]);
             });
-        }     
+        }
+        else if(id && countryCode == "US") {
+
+            async function getUsData(){
+                return await getUsIncorpoDataById(`${id}`)
+            }
+            getUsData().then((result) => {
+                // console.log("result-->", result);
+                setFormData(result)
+            })
+            setCountryState({
+                code: 'US', name: 'United States'
+             });
+        }
     }, []);
 
     const countries = [
@@ -58,6 +73,12 @@ const CompanyRegistration = () => {
                 code: selectedCountry.code,
                 name: selectedCountry.name
             });
+        }
+        else if (countryCode == "US") {
+            setCountryState({
+               code: 'US', name: 'United States'
+            });
+            setFormData({...formData, country : { code: 'US', name: 'United States' }});
         }
     };
 

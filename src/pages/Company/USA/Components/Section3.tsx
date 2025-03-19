@@ -1,8 +1,5 @@
-import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-// import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { 
   Select, 
@@ -12,20 +9,18 @@ import {
   SelectValue 
 } from '@/components/ui/select';
 import { useTranslation } from "react-i18next";
+import { useAtom } from "jotai";
+import { usaFormWithResetAtom } from "../UsState";
 
 const list = [
     'LLC (limited liability company)','Corporation','Consultation required before proceeding'
 ]
 export default function Section2() {
     const { t } = useTranslation();
-    const [selectedComptype, setSelectedOption] = useState("");
-    // const [otherText, setOtherText] = useState("");
-  
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const handleOptionChange = (value : string) => {
-      setSelectedOption(value);
-      // if (value !== "Other") {
-      //   setOtherText("");
-      // }
+      // console.log("value", value)
+      setFormData({ ...formData, selectedEntity: value });
     };
     return (
         <Card className="max-w-5xl mx-auto mt-2">
@@ -35,15 +30,13 @@ export default function Section2() {
             </CardHeader>
             <CorporationVsLLC />
             <CardContent className="space-y-6 pt-6">
-                {/* Name Field */}
                 <div className="space-y-2">
                     <Label htmlFor="name">
                     {t('usa.usCompanyEntity')}  <span className="text-destructive">*</span>
                     </Label>                    
                 </div>
-                {/* Name Change History */}
-                <div className="space-y-2">                  
-                    <Select onValueChange={handleOptionChange} value={selectedComptype}>
+                <div className="space-y-2">
+                    <Select onValueChange={handleOptionChange} value={formData.selectedEntity}>
                       <SelectTrigger className="w-full md:w-80">
                       <SelectValue />
                       </SelectTrigger>
@@ -52,21 +45,10 @@ export default function Section2() {
                           <SelectItem key={state} value={state}>
                             {state}
                           </SelectItem>
-                        
                         ))}
                       </SelectContent>
                     </Select>
-
-                    {/* {selectedOption === "Other" && (
-                        <Input
-                            type="text"
-                            value={otherText}
-                            onChange={(e) => setOtherText(e.target.value)}
-                            className="mt-2"
-                        />
-                    )} */}
                 </div>
-
             </CardContent>
         </Card>
     )

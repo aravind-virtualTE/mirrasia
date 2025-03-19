@@ -1,6 +1,4 @@
-import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,6 +12,8 @@ import {
     SelectValue
 } from '@/components/ui/select';
 import DropdownSelect from "@/components/DropdownSelect"
+import { useAtom } from 'jotai';
+import { usaFormWithResetAtom } from '../UsState';
 
 const list = ['1', '100', '1000', '10000']
 
@@ -25,32 +25,26 @@ const list3 = [
     'Use MirAsia’s U.S. company registration address service', 'There is a separate address to use as a business address in the United States (do not use Mir Asia’s registered address service)'
 ]
 const Section10 = () => {
-    const [selectedOption, setSelectedOption] = useState<string | number>("");
-    const [minCapital, setOtherText] = useState<string | number>("");
-    const [companyName, setCompanyName] = useState(["", "", ""]);
-    const [compAddress, setCompAdress] = useState<string>("");
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
 
     const handleOptionChange = (value: string | number) => {
-        setSelectedOption(value);
-        // if (value !== "Other") {
-        //     setOtherText("");
-        // }
+        setFormData({ ...formData, companyExecutives: value });
     };
 
     const handleAddressChange = (value: string) => {
-        setCompAdress(value);
+        setFormData({ ...formData, localCompanyRegistration: value });
     }
 
     const handleChange = (name: string, index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log("name", name)
-        const values = [...companyName];
+        const values = [...formData.companyName];
         values[index] = e.target.value;
-        setCompanyName(values);
+        setFormData({ ...formData, companyName: values });
     }
 
    const  handlePriceSelect = (registerAmountAtom: string | number) => {
         // console.log('Selected Price:', registerAmountAtom);
-        setOtherText(registerAmountAtom);
+        setFormData({ ...formData, totalCapital: registerAmountAtom });
       };
 
     return (
@@ -85,7 +79,7 @@ const Section10 = () => {
                         </span>
                     </Label>
                     {
-                        companyName.map((name, index) => (
+                        formData.companyName.map((name, index) => (
                             <Input
                                 key={index}
                                 id={`companyName${index}`}
@@ -152,7 +146,7 @@ const Section10 = () => {
                     <DropdownSelect
                         options={list}
                         placeholder="Enter custom price or select"
-                        selectedValue={minCapital}
+                        selectedValue={formData.totalCapital}
                         onSelect={handlePriceSelect}
                     />
                 </div>
@@ -210,7 +204,7 @@ const Section10 = () => {
                     <DropdownSelect
                         options={list2}
                         placeholder="Select..."
-                        selectedValue={selectedOption}
+                        selectedValue={formData.companyExecutives}
                         onSelect={handleOptionChange}
                     />
 
@@ -243,7 +237,7 @@ const Section10 = () => {
                         ))}                       
                     </RadioGroup> */}
 
-                    <Select onValueChange={handleAddressChange} value={compAddress}>
+                    <Select onValueChange={handleAddressChange} value={formData.localCompanyRegistration}>
                         <SelectTrigger className="w-full md:w-80">
                             <SelectValue />
                         </SelectTrigger>

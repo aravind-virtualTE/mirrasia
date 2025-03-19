@@ -1,17 +1,9 @@
-import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-// import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-// import {
-//     Select,
-//     SelectContent,
-//     SelectItem,
-//     SelectTrigger,
-//     SelectValue
-// } from '@/components/ui/select';
 import { useTranslation } from "react-i18next";
 import DropdownSelect from "@/components/DropdownSelect";
-
+import { usaFormWithResetAtom } from "../UsState";
+import { useAtom } from "jotai";
 
 export default function Section2() {
     const { t } = useTranslation();
@@ -27,20 +19,10 @@ export default function Section2() {
         t('usa.Section2StateOptions.Georgia'),
         t('usa.Section2StateOptions.Other'),
     ];
-    const [selectedOption, setSelectedOption] = useState<string |number>("");
-    // const [otherText, setOtherText] = useState("");
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
 
-    // const handleOptionChange = (value: string) => {
-    //     setSelectedOption(value);
-    //     if (value !== "Other") {
-    //         setOtherText("");
-    //     }
-    // };
     const handleOptionChange = (value: string | number) => {
-        setSelectedOption(value);
-        // if (value !== "Other") {
-        //     setOtherText("");
-        // }
+        setFormData({ ...formData, selectedState: value });
     };
     return (
         <Card className="max-w-5xl mx-auto mt-2">
@@ -49,42 +31,17 @@ export default function Section2() {
             </CardHeader>
 
             <CardContent className="space-y-6 pt-6">
-                {/* Name Field */}
                 <div className="space-y-2">
                     <Label htmlFor="name" className="inline-flex">
                     {t('usa.Section2StateQuestion')} <span className="text-destructive">*</span>
                     </Label>
                 </div>
 
-                {/* Name Change History */}
                 <div className="space-y-2">
-                    {/* <Select onValueChange={handleOptionChange}>
-                        <SelectTrigger className="w-full md:w-80">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {list.map(state => (
-                                <SelectItem key={state} value={state}>
-                                    {state}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    {selectedOption === "Other" && (
-                        <Input
-                            type="text"
-                            placeholder="Your answer"
-                            value={otherText}
-                            onChange={(e) => setOtherText(e.target.value)}
-                            className="mt-2"
-                            required
-                        />
-                    )} */}
-
                     <DropdownSelect
                         options={list}
                         placeholder="Select..."
-                        selectedValue={selectedOption}
+                        selectedValue={formData.selectedState}
                         onSelect={handleOptionChange}
                     />
                 </div>

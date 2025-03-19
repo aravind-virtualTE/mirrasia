@@ -4,9 +4,12 @@ import { Button } from "@/components/ui/button"
 import { MoreVertical, ChevronDown, ChevronUp } from "lucide-react"
 import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
+import { useAtom } from 'jotai';
+import { usaFormWithResetAtom } from '../UsState';
 
 export default function FormSections() {
   const [openSections, setOpenSections] = useState<number[]>([16, 17, 18])
+  const [formData, setFormData] = useAtom(usaFormWithResetAtom);
 
   const toggleSection = (section: number) => {
     setOpenSections((prev) => (prev.includes(section) ? prev.filter((s) => s !== section) : [...prev, section]))
@@ -57,7 +60,7 @@ export default function FormSections() {
                 <p>
                   Please describe the solutions that your company can handle on its own after incorporation.
                 </p>
-                <Textarea placeholder="Long answer text" className="min-h-[100px] mt-2" />
+                <Textarea placeholder="Long answer text" className="min-h-[100px] mt-2" value={formData.postIncorporationCapabilities} onChange={(e) => setFormData({ ...formData, postIncorporationCapabilities: e.target.value })} />
               </div>
             </div>
           </CollapsibleContent>
