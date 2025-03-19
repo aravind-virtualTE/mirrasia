@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useResetAllForms } from "@/lib/atom";
 import { useAtom, useSetAtom } from "jotai";
-import { companyIncorporationList } from "@/services/state";
+import { allCompListAtom, companyIncorporationList } from "@/services/state";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { getIncorporationListByUserId } from "@/services/dataFetch";
@@ -41,6 +41,7 @@ const Dashboard = () => {
   // ];
   const [cList,] = useAtom(companyIncorporationList)
   const setCompIncList = useSetAtom(companyIncorporationList);
+  const [allList, setAllList] = useAtom(allCompListAtom)
   const navigate = useNavigate();
 
   const token = localStorage.getItem('token') as string;
@@ -55,8 +56,9 @@ const Dashboard = () => {
       return result
     }
     fetchData().then((result) => {
-      console.log("result",result)
-      setCompIncList(result);
+      // console.log("result", result)
+      setCompIncList(result.companies);
+      setAllList(result.allCompanies)
     })
 
   }, [decodedToken.userId, setCompIncList]);
@@ -73,7 +75,7 @@ const Dashboard = () => {
     navigate('/accounting-services');
   };
 
-  // console.log("cList", cList)
+  console.log("allList", allList)
   return (
     < >
       {/* Main Content */}
@@ -93,40 +95,54 @@ const Dashboard = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {cList.map((company) => {
+                {allList.map((company) => {
                   // Type cast each company
                   const typedCompany = company as {
-                    applicantInfoForm: { companyName: string[] };
-                    country: { code: string };
+                    companyName: string[];
+                    applicantName: string;
+                    country: { code: string; name: string };
                     status: string;
-                    incorporationDate: string;
+                    incorporationDate: string | null;
                     _id: string;
                   };
-                  let date = typedCompany.incorporationDate
-                  if (date !== null) {
+
+                  // Format incorporation date
+                  let date = typedCompany.incorporationDate;
+                  if (date) {
                     const [year, month, day] = date.split("T")[0].split("-");
-                    date = `${day}-${month}-${year}`
+                    date = `${day}-${month}-${year}`;
                   }
+
+                  // Filter valid company names
+                  const validCompanyNames = typedCompany.companyName.filter((name) => name.trim() !== "");
+
                   return (
                     <TableRow key={typedCompany._id}>
-                      <TableCell className="font-medium cursor-pointer" onClick={() => handleRowClick(typedCompany._id, typedCompany.country.code)}>
-                        {typedCompany.applicantInfoForm.companyName.some(name => name.trim() !== "")
-                          ? typedCompany.applicantInfoForm.companyName.filter(name => name.trim() !== "").join(", ")
-                          : ""}
+                      <TableCell
+                        className="font-medium cursor-pointer"
+                        onClick={() => handleRowClick(typedCompany._id, typedCompany.country.code)}
+                      >
+                        {validCompanyNames.length > 0 ? validCompanyNames.join(", ") : ""}
                       </TableCell>
+
+                      {/* <TableCell>{typedCompany.applicantName || "N/A"}</TableCell> */}
+
                       <TableCell>
                         <span
                           className={cn(
-                            'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-                            typedCompany.status === 'Active' ? 'bg-green-100 text-green-800' :
-                              typedCompany.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                                'bg-red-100 text-red-800'
+                            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+                            typedCompany.status === "Active"
+                              ? "bg-green-100 text-green-800"
+                              : typedCompany.status === "Pending"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
                           )}
                         >
                           {typedCompany.status}
                         </span>
                       </TableCell>
-                      <TableCell>{date}</TableCell>
+
+                      <TableCell>{date || "N/A"}</TableCell>
                     </TableRow>
                   );
                 })}

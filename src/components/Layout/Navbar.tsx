@@ -18,17 +18,25 @@ import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
 import { useTheme } from "@/components/theme-provider";
 import { useResetAllForms } from "@/lib/atom";
+import { allCompListAtom } from "@/services/state";
+import { useAtom } from "jotai";
+import { usaFormWithResetAtom } from "@/pages/Company/USA/UsState";
 
 export default function Navbar() {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const navigate = useNavigate();
     const { theme } = useTheme();
+    const [, setAllList] = useAtom(allCompListAtom)
+    const [, setUSForm] = useAtom(usaFormWithResetAtom)
+    
     const resetAllForms = useResetAllForms();
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
     const decodedToken = jwtDecode<TokenData>(token);
-
     const navigateRoute = () => {
+        resetAllForms()
+        setAllList('reset')
+        setUSForm('reset')
         if (['admin', 'master'].includes(decodedToken.role)) {
             navigate('/admin-dashboard');
         }
@@ -46,6 +54,8 @@ export default function Navbar() {
         localStorage.removeItem('companyRecordId');
         window.dispatchEvent(new Event('storage'));
         resetAllForms()
+        setAllList('reset')
+        setUSForm('reset')
         navigate('/');
     };
 
@@ -78,7 +88,7 @@ export default function Navbar() {
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="lg:hidden" // Only show on mobile/tablet
+                    className="lg:hidden"
                 >
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Toggle sidebar</span>

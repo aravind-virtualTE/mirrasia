@@ -17,7 +17,7 @@ import {
 } from "lucide-react"
 import { getIncorporationList } from "@/services/dataFetch";
 import { useAtom, useSetAtom } from "jotai";
-import { companyIncorporationList } from "@/services/state";
+import { allCompListAtom, companyIncorporationList } from "@/services/state";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
@@ -43,7 +43,8 @@ interface Stats {
 const AdminDashboard = () => {
     // Sample data - replace with your actual data    
     const setCompIncList = useSetAtom(companyIncorporationList);
-    const [cList,] = useAtom(companyIncorporationList)
+    // const [cList,] = useAtom(companyIncorporationList)
+    const [allList, setAllList] = useAtom(allCompListAtom)
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -52,7 +53,8 @@ const AdminDashboard = () => {
             return result
         }
         fetchData().then((result) => {
-            setCompIncList(result);
+            setCompIncList(result.companies);
+            setAllList(result.allCompanies)
         })
 
     }, [setCompIncList]);
@@ -97,7 +99,7 @@ const AdminDashboard = () => {
             rejected: 0,
         }
 
-        return cList.reduce((acc: Stats, company) => {
+        return allList.reduce((acc: Stats, company) => {
             const key = statusToKey(company.status as string)
             if (key in acc) {
                 acc[key]++
@@ -116,7 +118,7 @@ const AdminDashboard = () => {
         // Update URL without navigating
         navigate(`/company-register/${countryCode}/${companyId}`);
     };
-    console.log("cList", cList)
+    console.log("allList", allList)
     return (
         <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
             {/* Stats Cards */}
@@ -138,13 +140,73 @@ const AdminDashboard = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
+                            {allList.map((company) => {
+                                const typedCompany = company as {
+                                    country: { name: string; code: string };
+                                    companyName: string[];
+                                    applicantName: string;
+                                    status: string;
+                                    incorporationDate: string | null;
+                                    _id: string;
+                                };
+
+                                let date = typedCompany.incorporationDate;
+                                if (date !== null) {
+                                    const [year, month, day] = date.split("T")[0].split("-");
+                                    date = `${day}-${month}-${year}`;
+                                }
+
+                                return (
+                                    <TableRow key={typedCompany._id}>
+                                        <TableCell
+                                            className="font-medium cursor-pointer"
+                                            onClick={() => handleRowClick(typedCompany._id)}
+                                        >
+                                            {typedCompany.companyName.filter(Boolean).join(", ") || "N/A"}
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            {typedCompany.applicantName}
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            {typedCompany.country.name}
+                                        </TableCell>
+                                        <TableCell>
+                                            <span
+                                                className={cn(
+                                                    "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+                                                    typedCompany.status === "Active"
+                                                        ? "bg-green-100 text-green-800"
+                                                        : typedCompany.status === "Pending"
+                                                            ? "bg-yellow-100 text-yellow-800"
+                                                            : "bg-red-100 text-red-800"
+                                                )}
+                                            >
+                                                {typedCompany.status}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>{date || "N/A"}</TableCell>
+                                        <TableCell>
+                                            <button
+                                                className="text-blue-500 hover:text-blue-700 transition"
+                                                onClick={() => handleEditClick(typedCompany._id, typedCompany.country.code)}
+                                            >
+                                                <Pencil size={18} />
+                                            </button>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+
+                        {/* <TableBody>
                             {cList.map((company) => {
                                 // Type cast each company
                                 const typedCompany = company as {
                                     applicantInfoForm: { companyName: string, name: string };
                                     country: { name: string; code: string };
+                                    applicantName: string;
                                     status: string;
-                                    incorporationDate: string;
+                                    incorporationDate: string | null;
                                     _id: string;
                                 };
                                 let date = typedCompany.incorporationDate
@@ -188,7 +250,7 @@ const AdminDashboard = () => {
                                     </TableRow>
                                 );
                             })}
-                        </TableBody>
+                        </TableBody> */}
                     </Table>
                 </CardContent>
             </Card>
