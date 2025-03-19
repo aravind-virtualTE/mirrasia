@@ -36,6 +36,7 @@ import PublicRoute from './middleware/PublicRoute';
 import BankForms from './pages/BankForms/BankForms';
 import SwitchServices from './pages/SwitchServices/SwitchServices';
 import AccountingForms from './pages/AccountingForms/AccountingForms';
+import Logout from './pages/login/logout';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -65,6 +66,7 @@ const App: React.FC = () => {
             <QueryClientProvider client={queryClient}>
               <Routes>
                 {/* Public routes */}
+                <Route path="/logout" element={<Logout />} />
                 <Route element={<PublicRoute />}>
                   <Route path="/" element={<LandingPage />} />
                   <Route path="/login" element={<LoginComponent />} />

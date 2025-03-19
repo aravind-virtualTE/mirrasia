@@ -73,7 +73,7 @@ const Layout: React.FC = () => {
         sidebarItems.push({ icon: <Users className="w-4 h-4" />, label: "Users List" });
     }
     const handleNavigation = (label: string) => {
-        console.log("lable", label)
+        // console.log("lable", label)
         switch(label) {
             case 'Home':
                 if (['admin', 'master'].includes(decodedToken.role)) {
