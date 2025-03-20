@@ -21,6 +21,7 @@ const CompanyRegistration = () => {
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     const [ formData,setFormData] = useAtom(usaFormWithResetAtom);
     useEffect(() => {
+        // console.log("companies",companies)
         // console.log("id-->", id, "countryCode-->", countryCode);
         if (id && countryCode == "HK") {
             async function fetchData() {
@@ -28,7 +29,8 @@ const CompanyRegistration = () => {
                 return result;
             }
             fetchData().then((result) => {
-                setCompaniesList(result);
+                // console.log("result--->",result)
+                setCompaniesList(result.companies);
                 const company = companies.find(c => c._id === id);
                 const cntry = company?.country as Record<string, string | undefined>;
                 if (company) setCountryState(cntry);
