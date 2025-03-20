@@ -52,6 +52,7 @@ const AmlCdd: React.FC = () => {
   const { id } = useParams();
   
   useEffect(() => {
+    console.log("cList",cList)
     if (id) {
       const company = cList.find((c) => c._id === id);
       //   console.log('company',company, '\n formData', businessInfoHkCompany);

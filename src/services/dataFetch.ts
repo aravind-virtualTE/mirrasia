@@ -34,7 +34,7 @@ export const getIncorporationList = async () => { // country, companyStatus
     const response = await api.get('company/company-incorporation', {
       // params: { country, companyStatus },
     });
-    console.log("response -->", response);
+    // console.log("response -->", response);
     return response.data;
   } catch (error) {
     console.error("Error fetching company incorporation list with filters:", error);

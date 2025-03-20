@@ -95,6 +95,7 @@ const Layout: React.FC = () => {
             case 'Register Company':
                 if(['admin', 'master', 'user'].includes(decodedToken.role)) {
                     resetAllForms()
+                    localStorage.removeItem('companyRecordId')
                     Promise.resolve(navigate('/company-register'))
                     
                 }

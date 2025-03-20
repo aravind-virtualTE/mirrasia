@@ -61,14 +61,14 @@ const IncorporateUSACompany = () => {
         const docId = localStorage.getItem("companyRecordId");
         formData.userId =  `${decodedToken.userId}`
         const payload = { _id: docId, ...formData };
-        console.log("formdata", formData)
+        // console.log("formdata", formData)
         try {
             const response = await api.post(
                 "/company/usa-form",
                 payload
             );
             if (response.status === 200) {
-                console.log("formdata", response.data);
+                // console.log("formdata", response.data);
                 window.history.pushState(
                     {},
                     "",
@@ -84,10 +84,15 @@ const IncorporateUSACompany = () => {
         }   
     }
     const nextSection = async () => {
-        if (currentSection !== 16) {
-            await updateDoc();
-            setCurrentSection(prev => prev + 1);
-            window.scrollTo({ top: 0, behavior: "smooth" });
+        switch (currentSection){
+            case 16:
+                break;
+            default:
+                if (currentSection !== 16) {
+                    await updateDoc();
+                    setCurrentSection(prev => prev + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }                
         }
     };
 
