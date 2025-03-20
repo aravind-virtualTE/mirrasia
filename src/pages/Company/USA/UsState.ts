@@ -32,9 +32,11 @@ import { Option } from "@/components/MultiSelectInput";
     shareHolders : {
       name: string;
       email: string;
-      noOfSharesOwned: number;
+      phone: string;
+      ownershipRate: number;
+      isDirector: boolean
     }[];
-    designatedContact: string;
+    designatedContact: string | number;
     accountingDataAddress : string;
     isTermsAndConditionsAccepted: string;
     paymentOption : string;
@@ -129,7 +131,7 @@ const updateEmail = (email: string) => {
 };
 
 // Example of updating shareholders
-const updateShareholders = (shareholders: { name: string; email: string; noOfSharesOwned: number }[]) => {
+const updateShareholders = (shareholders: { name: string; email: string; ownershipRate: number }[]) => {
   setFormData({
     ...formData,
     shareHolders: shareholders

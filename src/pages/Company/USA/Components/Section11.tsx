@@ -10,8 +10,7 @@ const Section11 = () => {
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <CardTitle className="text-lg font-medium">Section 11</CardTitle>
-                <p className="inline-flex">Enter your business address in the United States </p>
+                <CardTitle className="text-lg font-medium inline-flex">Enter your business address in the United States </CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-6 pt-6">

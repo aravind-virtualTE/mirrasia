@@ -11,7 +11,7 @@ const list = [
     'Director/Officer of the proposed US company', 'Delegated by the director of the proposed US company', 'Shareholder of the proposed US company holding majority of the shares', ' A professional(e.g. lawyer, accountant) who provides incorporation advice to the US company'
 ]
 
-const Section5 = () => {
+const ApplicantInformation = () => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const handleSelectionChange = (selections: Option[]) => {
         // setRelationOption(selections)
@@ -22,8 +22,7 @@ const Section5 = () => {
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <CardTitle className="text-lg font-medium">Section 5</CardTitle>
-                <p className="inline-flex">Applicant Information <Tooltip>
+                <CardTitle className="text-lg font-medium inline-flex">Applicant Information<Tooltip>
                     <TooltipTrigger asChild>
                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                     </TooltipTrigger>
@@ -32,7 +31,7 @@ const Section5 = () => {
 
                         This application form and the application form documents to be signed later will be kept by our company as legal procedures for performing KYC (Know Your Customer) and Client's Due Diligence (due diligence and verification of customers) in accordance with the TCSP license and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act) and will be kept as statutory documents in the future. Therefore, please be careful not to create any distortion or errors in the content you write.
                     </TooltipContent>
-                </Tooltip></p>
+                </Tooltip> </CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-6 pt-6">
@@ -88,4 +87,4 @@ const Section5 = () => {
     )
 }
 
-export default Section5
+export default ApplicantInformation

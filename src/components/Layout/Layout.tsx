@@ -9,6 +9,7 @@ import {
     // Mail,
     FileSignature,
     Files,
+    CreditCard, RefreshCw,Briefcase ,
     // User2,
     // Gift,
     // Receipt,
@@ -55,6 +56,9 @@ const Layout: React.FC = () => {
         { icon: <Home className="h-5 w-5" />, label: "Home" },
         { icon: <FileSignature className="w-4 h-4" />, label: "Register Company" },
         { icon: <Files className="h-6 w-6" />, label: "Company Documents" },
+        { icon: <CreditCard className="h-6 w-6" />, label: "HK Bank Account List" },
+        { icon: <RefreshCw className="h-6 w-6" />, label: "Switch Services List" },
+        { icon: <Briefcase  className="h-6 w-6" />, label: "Accounting List" },
 
         // { icon: <Settings className="h-5 w-5" />, label: "Settings" },
         // { icon: <HelpCircle className="h-5 w-5" />, label: "Help" },
@@ -109,7 +113,16 @@ const Layout: React.FC = () => {
                 break;
             case 'Company Documents':
                 navigate('/company-documents');
-                break;            
+                break;
+            case 'HK Bank Account List':
+                navigate('/hk-bank-account-list');
+                break;
+            case 'Switch Services List':
+                navigate('/switch-services-list');
+                break;
+            case 'Accounting List':
+                navigate('/accounting-support-list');
+                break;
             // Add other navigation cases as needed
         }
     };

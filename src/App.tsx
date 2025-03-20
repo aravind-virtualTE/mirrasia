@@ -37,6 +37,9 @@ import BankForms from './pages/BankForms/BankForms';
 import SwitchServices from './pages/SwitchServices/SwitchServices';
 import AccountingForms from './pages/AccountingForms/AccountingForms';
 import Logout from './pages/login/logout';
+import BkFrmList from './pages/BankForms/BkFrmList';
+import SwitchServicesList from './pages/SwitchServices/SwitchServicesList';
+import AccountingHkList from './pages/AccountingForms/AccountingHkList';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -91,6 +94,9 @@ const App: React.FC = () => {
                     <Route path="/switch-services" element={<SwitchServices />} />
                     <Route path="/accounting-services" element={<AccountingForms />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/hk-bank-account-list" element={<BkFrmList />} />
+                    <Route path="/switch-services-list" element={<SwitchServicesList />} />
+                    <Route path="/accounting-support-list" element={<AccountingHkList />} />
                   </Route>
                 </Route>
 
