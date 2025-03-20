@@ -1,18 +1,14 @@
 import { useState } from "react"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
+import { Card } from "@/components/ui/card"
+import Section1 from "./Components/Section1"
 import Section2 from "./Components/Section2"
 import Section3 from "./Components/Section3"
 import Section4 from "./Components/Section4"
-import Section5 from "./Components/Section5"
 import Section6 from "./Components/Section6"
 import Section7 from "./Components/Section7"
 import Section8 from "./Components/Section8"
 import Section9 from "./Components/Section9"
 import Section10 from "./Components/Section10"
-import Section11 from "./Components/Section11"
 import Section12 from "./Components/Section12"
 import Section13 from "./Components/Section13"
 import Section14 from "./Components/Section14"
@@ -25,11 +21,12 @@ import { useAtom } from "jotai"
 import { usaFormWithResetAtom } from "./UsState"
 import jwtDecode from "jwt-decode"
 import { TokenData } from "@/middleware/ProtectedRoutes"
-import api from "@/services/fetch"
+// import api from "@/services/fetch"
 
 const IncorporateUSACompany = () => {
     const [currentSection, setCurrentSection] = useState(1);
-    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
+    // const [formData, setFormData] = useAtom(usaFormWithResetAtom);
+    const [formData, ] = useAtom(usaFormWithResetAtom);
     const token = localStorage.getItem("token") as string;
     const decodedToken = jwtDecode<TokenData>(token);
     const [isSubmitting, setIsSubmitting] = useState(false); 
@@ -48,10 +45,9 @@ const IncorporateUSACompany = () => {
         { number: 12, label: "Section12", active: currentSection === 12 },
         { number: 13, label: "Section13", active: currentSection === 13 },
         { number: 14, label: "Section14", active: currentSection === 14 },
-        { number: 15, label: "Section15", active: currentSection === 15 },
-        { number: 16, label: "Section16", active: currentSection === 16 },
+        // { number: 15, label: "Section15", active: currentSection === 15 },
+        // { number: 16, label: "Section16", active: currentSection === 16 },
     ];
-
 
     const updateDoc = async () => {
         if (isSubmitting) { 
@@ -61,22 +57,22 @@ const IncorporateUSACompany = () => {
         const docId = localStorage.getItem("companyRecordId");
         formData.userId =  `${decodedToken.userId}`
         const payload = { _id: docId, ...formData };
-        // console.log("formdata", formData)
+        console.log("formdata", payload)
         try {
-            const response = await api.post(
-                "/company/usa-form",
-                payload
-            );
-            if (response.status === 200) {
-                // console.log("formdata", response.data);
-                window.history.pushState(
-                    {},
-                    "",
-                    `/company-register/US/${response.data.data._id}`
-                );
-            } else {
-                console.log("error-->", response);
-            }
+            // const response = await api.post(
+            //     "/company/usa-form",
+            //     payload
+            // );
+            // if (response.status === 200) {
+            //     console.log("formdata", response.data);
+            //     window.history.pushState(
+            //         {},
+            //         "",
+            //         `/company-register/US/${response.data.data._id}`
+            //     );
+            // } else {
+            //     console.log("error-->", response);
+            // }
         } catch (error) {
             console.error("Submission error:", error);
         } finally {
@@ -130,75 +126,20 @@ const IncorporateUSACompany = () => {
                             }}
                             className="h-full w-auto"
                         >
-                            {currentSection === 1 && <Card className="max-w-5xl mx-auto">
-                                <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                                    <CardTitle>
-                                        Application for incorporation of a US company (LLC-Limited Liability Company/Corp-Corporation)
-                                    </CardTitle>
-                                    <p className="text-sm text-muted-foreground mt-4">
-                                        This is an application form to form a company the USA. Please check the information related to the incorporation process and provide a specific answer.
-                                    </p>
-                                </CardHeader>
-
-                                <CardContent className="space-y-6">
-                                    {/* Company Information */}
-                                    <div className="space-y-4 text-sm">
-
-                                        <div className="space-y-2 text-foreground">
-                                            <p>
-                                                This application is in the form of a questionnaire on the information required for the formation of a US company(LLC-Limited Liability Company/ Corp-Corporation) and some questions may be difficult for some clients or may take some time to answer. Accordingly, please kindly answer the questions and submit the relevant documents when you have sufficient time.
-
-                                                If you have any difficulty or difficulty understanding the written form, please contact us using the details below.
-                                            </p>
-                                            <p>Thank you.</p>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <p className="font-medium">Mirrasia</p>
-                                            <p>
-                                                website:{" "}
-                                                <a href="http://www.mirrasia.com" className="text-primary hover:underline">
-                                                    www.mirrasia.com
-                                                </a>
-                                            </p>
-                                            <p>
-                                                Plus Friend:{" "}
-                                                <a href="https://pf.kakao.com/_KxmnZT" className="text-primary hover:underline">
-                                                    https://pf.kakao.com/_KxmnZT
-                                                </a>
-                                            </p>
-                                            <p>Phone: (Korea) 02-543-6187 (Hong Kong) 2187-2428</p>
-                                            <p>SNS: (Kakao Talk) mirrasia (WeChat) mirrasia_hk</p>
-                                        </div>
-                                    </div>
-
-                                    <Separator />
-
-                                    {/* Form Fields */}
-                                    <div className="space-y-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="email" className="text-base">
-                                                Email <span className="text-destructive">*</span>
-                                            </Label>
-                                            <Input id="email" type="email" placeholder="Valid email" className="w-full" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>}
+                            {currentSection === 1 && <Section1 />}
                             {currentSection === 2 && <Section2 />}
                             {currentSection === 3 && <Section3 />}
                             {currentSection === 4 && <Section4 />}
-                            {currentSection === 5 && <Section5 />}
-                            {currentSection === 6 && <Section6 />}
-                            {currentSection === 7 && <Section7 />}
-                            {currentSection === 8 && <Section8 />}
-                            {currentSection === 9 && <Section9 />}
-                            {currentSection === 10 && <Section10 />}
-                            {currentSection === 11 && <Section11 />}
-                            {currentSection === 12 && <Section12 />}
-                            {currentSection === 13 && <Section13 />}
-                            {currentSection === 14 && <Section14 />}
-                            {currentSection === 15 && <Section15 />}
-                            {currentSection === 16 && <FormSections />}
+                            {currentSection === 5 && <Section6 />}
+                            {currentSection === 6 && <Section7 />}
+                            {currentSection === 7 && <Section8 />}
+                            {currentSection === 8 && <Section9 />}
+                            {currentSection === 9 && <Section10 />}
+                            {currentSection === 10 && <Section12 />}
+                            {currentSection === 11 && <Section13 />}
+                            {currentSection === 12 && <Section14 />}
+                            {currentSection === 13 && <Section15 />}
+                            {currentSection === 14 && <FormSections />}
                         </motion.div>
                     </AnimatePresence>
                 </div>

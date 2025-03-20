@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/select';
 import { useAtom } from 'jotai';
 import { usaFormWithResetAtom } from '../UsState';
+import ShareholderDirectorForm from "./usaShareHldrDirector"
+import DropdownSelect from "@/components/DropdownSelect"
 
 
 const list = ['1', '2', '3', '4', '5']
@@ -19,17 +21,26 @@ const Section12 = () => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
 
     const handleOptionChange = (value: string) => {
-        setFormData({...formData, noOfShareholders: value})
+        setFormData({ ...formData, noOfShareholders: value })
     };
 
     const handleOfficerChange = (value: string) => {
-        setFormData({...formData, noOfOfficers: value})
+        setFormData({ ...formData, noOfOfficers: value })
     };
+    const shrDirArr = formData.shareHolders.map((item) => {
+        if (item.name == "") return "enter value above and select value";
+        return item.name;
+      })
+
+      const handleSelect = (value: string | number) => {
+        console.log('Selected Value:', value);
+       
+      };
 
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <CardTitle className="text-lg font-medium">Section 12</CardTitle>
+                <CardTitle className="text-lg font-medium">Section 10</CardTitle>
                 <p className="inline-flex"> Shareholders/officers of the proposed US company<Tooltip>
                     <TooltipTrigger asChild>
                         <HelpCircle className="text-red-500 h-4 w-4 mt-1 ml-2 cursor-help" />
@@ -109,23 +120,8 @@ const Section12 = () => {
                     </Select>
 
                 </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="relationbtwauth" className="inline-flex">
-                        Enter the name of each shareholder/officer and the number of shares/ownership interest to be assigned<span className="text-red-500 font-bold ml-1 flex">*
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-[500px] text-base">
-                                    Example) 1. Hong Gil-dong: Member (shareholder) and executive/liaison person/Capital investment ratio: 49.99% 2. Yeonsangun: Not a member/only registered as an executive 3. Jang Nok-su: Only a member/not an executive/Capital investment ratio: 50.01%
-                                </TooltipContent>
-                            </Tooltip>
-                        </span>
-                    </Label>
-                    <Input id="descBusiness" placeholder="Your answer" required />
-                </div>
-
+  
+                <ShareholderDirectorForm />
                 {/* select Industry */}
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
@@ -140,9 +136,18 @@ const Section12 = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    <Input id="descBusiness" placeholder="Your answer" required />
+                    {/* <Input id="descBusiness" placeholder="Your answer" required /> */}
                 </div>
-
+                {formData.shareHolders.length > 0 ? (
+                    <DropdownSelect
+                        options={shrDirArr}
+                        placeholder="Select significant Controller"
+                        onSelect={handleSelect}
+                        selectedValue={formData.designatedContact}
+                    />
+                ) : (
+                    "Please Fill Shareholder/Director"
+                )}
 
             </CardContent>
         </Card>
