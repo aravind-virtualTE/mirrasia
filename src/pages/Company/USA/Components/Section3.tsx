@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Label } from "@/components/ui/label"
 import { 
@@ -25,7 +25,6 @@ export default function Section2() {
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <CardTitle className="text-lg font-medium">Section 3</CardTitle>
                 <p>Understanding the Differences Between Corporations and LLCs</p>
             </CardHeader>
             <CorporationVsLLC />

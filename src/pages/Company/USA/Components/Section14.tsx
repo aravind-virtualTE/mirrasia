@@ -23,10 +23,8 @@ const Section14: React.FC = () => {
   return (
     <Card className="max-w-5xl mx-auto mt-2">
       <CardHeader className="bg-sky-100 dark:bg-sky-900">
-        <CardTitle className="text-lg font-medium">Section 14</CardTitle>
-        <p className="inline-flex">
-          Consent and Declaration of Application
-        </p>
+        <CardTitle className="text-lg font-medium">Consent and Declaration of Application</CardTitle>
+       
       </CardHeader>
 
       <CardContent className="space-y-6 pt-6">

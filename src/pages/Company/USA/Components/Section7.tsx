@@ -1,19 +1,19 @@
 import React from 'react'
 // import { useState } from "react"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Card, CardHeader, CardContent } from "@/components/ui/card"
 
 // import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
-// import { 
-//     Select, 
-//     SelectContent, 
-//     SelectItem, 
-//     SelectTrigger, 
-//     SelectValue 
-//   } from '@/components/ui/select';
-import MultiSelect, { Option } from '@/components/MultiSelectInput'
+import { 
+    Select, 
+    SelectContent, 
+    SelectItem, 
+    SelectTrigger, 
+    SelectValue 
+  } from '@/components/ui/select';
+// import MultiSelect, { Option } from '@/components/MultiSelectInput'
 import { useAtom } from "jotai"
 import { usaFormWithResetAtom } from "../UsState"
 
@@ -22,7 +22,7 @@ const list = [
 ]
 
 const list2 = [
-    'yes', 'no', 'I/We can handle on our own after incorporation', " If a fixed cost would be incurred every year after incorporation, I don't intend to incorporate", 'Consultation required before proceeding', 'Other'
+    'yes', 'no', 'I/We can handle on our own after incorporation', " If a fixed cost would be incurred every year after incorporation, I don't intend to incorporate", 'Consultation required before proceeding'
 ]
 const Section7 = () => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
@@ -31,31 +31,40 @@ const Section7 = () => {
     // const [selectedRenewal, setSelectedOption2] = useState<Option[]>([]);
     // const [otherText, setOtherText] = useState("");
 
-    // const handleOptionChange = (value: string) => {
-    //     setSelectedOption(value);
-    //     if (value !== "Other") {
-    //         setOtherText("");
-    //     }
+    const handleOptionChange = (value: string) => {
+        // console.log("value", value)
+        setFormData({ ...formData, hasLegalEthicalIssues: value })
+        // setSelectedOption(value);
+        // if (value !== "Other") {
+        //     setOtherText("");
+        // }
+    };
+    // console.log("formData.hasLegalEthicalIssues",formData.hasLegalEthicalIssues)
+    // const handleEthicalChange = (selections: Option[]) => {
+    //     // console.log("selections", selections)
+    //     // setSelectedOption(selections)
+    //     setFormData({ ...formData, hasLegalEthicalIssues: selections })
+
     // };
-
-    const handleEthicalChange = (selections: Option[]) => {
-        // console.log("selections", selections)
-        // setSelectedOption(selections)
-        setFormData({ ...formData, hasLegalEthicalIssues: selections })
-
+    // const handleRenewalChange = (selections: Option[]) => {
+    //     // console.log("selections", selections)
+    //     // setSelectedOption2(selections)
+    //     setFormData({ ...formData, annualRenewalTermsAgreement: selections })
+    // };
+    const handleRenewalChange = (value: string) => {
+        // console.log("value", value)
+        setFormData({ ...formData, annualRenewalTermsAgreement: value })
+        // setSelectedOption(value);
+        // if (value !== "Other") {
+        //     setOtherText("");
+        // }
     };
-    const handleRenewalChange = (selections: Option[]) => {
-        // console.log("selections", selections)
-        // setSelectedOption2(selections)
-        setFormData({ ...formData, annualRenewalTermsAgreement: selections })
-    };
-    const ethicalList = list.map((item) => ({ label: item, value: item }));
-    const acknowledgeList = list2.map((item) => ({ label: item, value: item }));
+    // const ethicalList = list.map((item) => ({ label: item, value: item }));
+    // const acknowledgeList = list2.map((item) => ({ label: item, value: item }));
 
     return (
         <React.Fragment> <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <CardTitle className="text-lg font-medium">Section 7</CardTitle>
                 <p className="inline-flex">Confirmation of customer's business intentions<Tooltip>
                     <TooltipTrigger asChild>
                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
@@ -81,36 +90,26 @@ const Section7 = () => {
                             </Tooltip>*
                         </span>
                     </Label>
-                    {/* <Select onValueChange={handleOptionChange}>
-                      <SelectTrigger className="w-full md:w-80">
-                         <SelectValue  />
-                          </SelectTrigger>
-                           <SelectContent>
+                    <Select onValueChange={handleOptionChange} value={formData.hasLegalEthicalIssues}>
+                        <SelectTrigger className="w-full md:w-80">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
                             {list.map(state => (
                                 <SelectItem key={state} value={state}>
-                                     {state}
-                                      </SelectItem>
-                                     ))}
-                                     </SelectContent>
-                                      </Select>
-                    {selectedOption === "Other" && (
-                        <Input
-                            type="text"
-                            placeholder="Your answer"
-                            value={otherText}
-                            onChange={(e) => setOtherText(e.target.value)}
-                            className="mt-2"
-                        />
-                    )} */}
-
-                    <>
+                                    {state}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    {/* <>
                         <MultiSelect
                             options={ethicalList}
                             placeholder="Select Option."
                             selectedItems={formData.hasLegalEthicalIssues}
                             onSelectionChange={handleEthicalChange}
                         />
-                    </>
+                    </> */}
 
                 </div>
                 <div className="space-y-2">
@@ -126,7 +125,7 @@ const Section7 = () => {
                             </Tooltip>*
                         </span>
                     </Label>
-                    {/* <Select onValueChange={handleOptionChange}>
+                    <Select onValueChange={handleRenewalChange} value={formData.annualRenewalTermsAgreement}>
                         <SelectTrigger className="w-full md:w-80">
                         <SelectValue  />
                         </SelectTrigger>
@@ -138,23 +137,15 @@ const Section7 = () => {
                         ))}
                         </SelectContent>
                     </Select>
-                    {selectedOption === "Other" && (
-                        <Input
-                            type="text"
-                            placeholder="Your answer"
-                            value={otherText}
-                            onChange={(e) => setOtherText(e.target.value)}
-                            className="mt-2"
-                        />
-                    )} */}
-                    <>
+                   
+                    {/* <>
                         <MultiSelect
                             options={acknowledgeList}
                             placeholder="Select option."
                             selectedItems={formData.annualRenewalTermsAgreement}
                             onSelectionChange={handleRenewalChange}
                         />
-                    </>
+                    </> */}
                 </div>
             </CardContent>
         </Card>

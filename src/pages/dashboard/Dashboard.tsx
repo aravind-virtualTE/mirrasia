@@ -90,8 +90,9 @@ const Dashboard = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[40%]">Company Name</TableHead>
-                  <TableHead className="w-[30%]">Status</TableHead>
-                  <TableHead className="w-[30%]">Incorporation Date</TableHead>
+                  <TableHead className="w-[20%]">Country</TableHead>
+                  <TableHead className="w-[20%]">Status</TableHead>
+                  <TableHead className="w-[20%]">Incorporation Date</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -125,12 +126,12 @@ const Dashboard = () => {
                         {validCompanyNames.length > 0 ? validCompanyNames.join(", ") : ""}
                       </TableCell>
 
-                      {/* <TableCell>{typedCompany.applicantName || "N/A"}</TableCell> */}
+                      <TableCell>{typedCompany.country.name || "N/A"}</TableCell>
 
                       <TableCell>
                         <span
                           className={cn(
-                            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+                            "inline-flex items-center rounded-full text-xs font-medium",
                             typedCompany.status === "Active"
                               ? "bg-green-100 text-green-800"
                               : typedCompany.status === "Pending"

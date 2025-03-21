@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader,  CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from "lucide-react";
@@ -20,7 +20,6 @@ const Section8 = () => {
         <React.Fragment>
             <Card className="max-w-5xl mx-auto mt-2">
                 <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                    <CardTitle className="text-lg font-medium">Section 8</CardTitle>
                     <p className="inline-flex">
                         Questions on the subject of transaction sanctions
                         <Tooltip>

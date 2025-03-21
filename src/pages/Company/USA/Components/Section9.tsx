@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Card, CardHeader, CardContent } from "@/components/ui/card"
 
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
@@ -50,8 +50,7 @@ const Section9 = () => {
     const industryList = list.map((item) => ({ label: item, value: item }));
     return (
         <Card className="max-w-5xl mx-auto mt-2">
-            <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <CardTitle className="text-lg font-medium">Section 9</CardTitle>
+            <CardHeader className="bg-sky-100 dark:bg-sky-900">                
                 <p className="inline-flex">Business information of the proposed US company. <Tooltip>
                     <TooltipTrigger asChild>
                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />

@@ -18,7 +18,7 @@ interface ShareholderDirectorProps {
   email: string;
   phone: string;
   ownershipRate: number;
-  isDirector: boolean;
+  isDirector: string;
 //   isLegalPerson: boolean;
   onDelete: () => void;
   onUpdate: (updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => void;
@@ -131,22 +131,22 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
         <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
           <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
           <Select
-            value={isDirector.toString()}
+            value={isDirector}
             onValueChange={(value) => {
-              const newIsDirector = value === 'true';
+              const newIsDirector = value == 'Yes';              
               onUpdate({
-                isDirector: newIsDirector,
+                isDirector: value,
                 // If setting as director, automatically set legal person to false
-                ...(newIsDirector ? { isLegalPerson: false } : {})
+                ...(newIsDirector ? { isLegalPerson: 'No' } : {})
               });
             }}
           >
             <SelectTrigger className="input">
-              <SelectValue>{isDirector ? 'Yes' : 'No'}</SelectValue>
+              <SelectValue>{isDirector == 'Yes' ? 'Yes' : 'No'}</SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="true">Yes</SelectItem>
-              <SelectItem value="false">No</SelectItem>
+              <SelectItem value="Yes">Yes</SelectItem>
+              <SelectItem value="No">No</SelectItem>
             </SelectContent>
           </Select>
 
@@ -187,7 +187,7 @@ const ShareholderDirectorForm: React.FC = () => {
       email: '',
       phone: '',
       ownershipRate: 0,
-      isDirector: false,
+      isDirector: 'No',
     //   isLegalPerson: false,
       onDelete: () => { },
       onUpdate: () => { },
@@ -238,7 +238,7 @@ const ShareholderDirectorForm: React.FC = () => {
         email: '',
         phone: '',
         ownershipRate: 0,
-        isDirector: false,
+        isDirector: 'No',
         // isLegalPerson: false,
         onDelete: () => { },
         onUpdate: () => { },

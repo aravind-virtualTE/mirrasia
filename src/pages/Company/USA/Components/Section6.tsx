@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { useAtom } from "jotai"
 import { usaFormWithResetAtom } from "../UsState"
@@ -27,7 +27,6 @@ const Section6 = () => {
     return (
         <React.Fragment> <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <CardTitle className="text-lg font-medium">Section 6</CardTitle>
                 <p>Select services provided by Mirasia</p>
             </CardHeader>
 

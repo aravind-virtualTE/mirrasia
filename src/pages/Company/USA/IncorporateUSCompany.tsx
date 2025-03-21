@@ -8,7 +8,6 @@ import Section6 from "./Components/Section6"
 import Section7 from "./Components/Section7"
 import Section8 from "./Components/Section8"
 import Section9 from "./Components/Section9"
-import Section10 from "./Components/Section10"
 import Section12 from "./Components/Section12"
 import Section13 from "./Components/Section13"
 import Section14 from "./Components/Section14"
@@ -21,74 +20,113 @@ import { useAtom } from "jotai"
 import { usaFormWithResetAtom } from "./UsState"
 import jwtDecode from "jwt-decode"
 import { TokenData } from "@/middleware/ProtectedRoutes"
-// import api from "@/services/fetch"
+import api from "@/services/fetch"
+import { toast } from '@/hooks/use-toast';
+import FinalSection from "./Components/finalSection"
 
 const IncorporateUSACompany = () => {
     const [currentSection, setCurrentSection] = useState(1);
-    // const [formData, setFormData] = useAtom(usaFormWithResetAtom);
-    const [formData, ] = useAtom(usaFormWithResetAtom);
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const token = localStorage.getItem("token") as string;
     const decodedToken = jwtDecode<TokenData>(token);
-    const [isSubmitting, setIsSubmitting] = useState(false); 
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const steps = [
-        { number: 1, label: "Section1", active: currentSection === 1 },
-        { number: 2, label: "Section2", active: currentSection === 2 },
-        { number: 3, label: "Section3", active: currentSection === 3 },
-        { number: 4, label: "Section4", active: currentSection === 4 },
-        { number: 5, label: "Section5", active: currentSection === 5 },
-        { number: 6, label: "Section6", active: currentSection === 6 },
-        { number: 7, label: "Section7", active: currentSection === 7 },
-        { number: 8, label: "Section8", active: currentSection === 8 },
-        { number: 9, label: "Section9", active: currentSection === 9 },
-        { number: 10, label: "Section10", active: currentSection === 10 },
-        { number: 11, label: "Section11", active: currentSection === 11 },
-        { number: 12, label: "Section12", active: currentSection === 12 },
-        { number: 13, label: "Section13", active: currentSection === 13 },
-        { number: 14, label: "Section14", active: currentSection === 14 },
-        // { number: 15, label: "Section15", active: currentSection === 15 },
-        // { number: 16, label: "Section16", active: currentSection === 16 },
+        { number: 1, label: "Applicant information", active: currentSection === 1 },
+        { number: 2, label: "State Selection", active: currentSection === 2 },
+        { number: 3, label: "Entity Type", active: currentSection === 3 },
+        { number: 4, label: "Registration Details", active: currentSection === 4 },
+        { number: 5, label: "Service Selection", active: currentSection === 5 },
+        { number: 6, label: "Business Intention", active: currentSection === 6 },
+        { number: 7, label: "Transaction Sanctions", active: currentSection === 7 },
+        { number: 8, label: "Company Info", active: currentSection === 8 },
+        { number: 9, label: "ShareHolder Info", active: currentSection === 9 },
+        { number: 10, label: "Accounting Data Address", active: currentSection === 10 },
+        { number: 11, label: "Consent", active: currentSection === 11 },
+        { number: 12, label: "Payment", active: currentSection === 12 },
+        { number: 13, label: "Company Solutions", active: currentSection === 13 },
+        { number: 14, label: "Incorporation", active: currentSection === 14 },
     ];
 
     const updateDoc = async () => {
-        if (isSubmitting) { 
+        if (isSubmitting) {
             return;
         }
         setIsSubmitting(true);
         const docId = localStorage.getItem("companyRecordId");
-        formData.userId =  `${decodedToken.userId}`
+        formData.userId = `${decodedToken.userId}`
         const payload = { _id: docId, ...formData };
-        console.log("formdata", payload)
+        // console.log("formdata", formData)
         try {
-            // const response = await api.post(
-            //     "/company/usa-form",
-            //     payload
-            // );
-            // if (response.status === 200) {
-            //     console.log("formdata", response.data);
-            //     window.history.pushState(
-            //         {},
-            //         "",
-            //         `/company-register/US/${response.data.data._id}`
-            //     );
-            // } else {
-            //     console.log("error-->", response);
-            // }
+            const response = await api.post(
+                "/company/usa-form",
+                payload
+            );
+            if (response.status === 200) {
+                console.log("formdata", response.data);
+                window.history.pushState(
+                    {},
+                    "",
+                    `/company-register/US/${response.data.data._id}`
+                );
+            } else {
+                console.log("error-->", response);
+            }
         } catch (error) {
             console.error("Submission error:", error);
         } finally {
-            setIsSubmitting(false); 
-        }   
+            setIsSubmitting(false);
+        }
     }
     const nextSection = async () => {
-        switch (currentSection){
-            case 16:
-                break;
+        switch (currentSection) {
+            case 7:
+                {
+                    const rcActivity = formData.restrictedCountriesWithActivity
+                    const rcSanctions = formData.sanctionedTiesPresent
+                    const bsnsCremia = formData.businessInCrimea
+                    const involved = formData.involvedInRussianEnergyDefense
+
+                    if (rcActivity == 'No' && rcSanctions == 'No' && bsnsCremia == 'No' && involved == 'No') {
+                        await updateDoc();
+                        setCurrentSection(prev => prev + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    } else {
+                        setFormData({ ...formData, confirmationBusinessIntention: true });
+                        toast({
+                            title: "Consultation required before proceeding",
+                            description: "It appears that you need to consult before proceeding. We will review the content of your reply and our consultant will contact you shortly. Thank you very much.",
+                        });
+                    }
+                    break;
+                }
+            case 6:
+                {
+                    const legalInfo = formData.hasLegalEthicalIssues
+                    const annualRenew = formData.annualRenewalTermsAgreement
+
+                    if (legalInfo == 'no' && annualRenew == 'no') {
+                        await updateDoc();
+                        setCurrentSection(prev => prev + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    } else {
+                        setFormData({ ...formData, confirmationBusinessIntention: true })
+                        toast({
+                            title: "Consultation required before proceeding",
+                            description: "It appears that you need to consult before proceeding. We will review the content of your reply and our consultant will contact you shortly. Thank you very much.",
+                        });
+                    }
+                    break;
+                }
+            // case 13:
+            //     break;
             default:
-                if (currentSection !== 16) {
+                if (currentSection! <= 14) {
                     await updateDoc();
                     setCurrentSection(prev => prev + 1);
                     window.scrollTo({ top: 0, behavior: "smooth" });
-                }                
+                } else {
+                    console.log("end of the form")
+                }
         }
     };
 
@@ -134,12 +172,12 @@ const IncorporateUSACompany = () => {
                             {currentSection === 6 && <Section7 />}
                             {currentSection === 7 && <Section8 />}
                             {currentSection === 8 && <Section9 />}
-                            {currentSection === 9 && <Section10 />}
-                            {currentSection === 10 && <Section12 />}
-                            {currentSection === 11 && <Section13 />}
-                            {currentSection === 12 && <Section14 />}
-                            {currentSection === 13 && <Section15 />}
-                            {currentSection === 14 && <FormSections />}
+                            {currentSection === 9 && <Section12 />}
+                            {currentSection === 10 && <Section13 />}
+                            {currentSection === 11 && <Section14 />}
+                            {currentSection === 12 && <Section15 />}
+                            {currentSection === 13 && <FormSections />}
+                            {currentSection === 14 && <FinalSection />}
                         </motion.div>
                     </AnimatePresence>
                 </div>
