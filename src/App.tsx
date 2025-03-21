@@ -40,6 +40,7 @@ import Logout from './pages/login/logout';
 import BkFrmList from './pages/BankForms/BkFrmList';
 import SwitchServicesList from './pages/SwitchServices/SwitchServicesList';
 import AccountingHkList from './pages/AccountingForms/AccountingHkList';
+import InviteUsaDirShir from './pages/InviteUsaDirShir/USA/InviteUsaDirShir';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -97,6 +98,7 @@ const App: React.FC = () => {
                     <Route path="/hk-bank-account-list" element={<BkFrmList />} />
                     <Route path="/switch-services-list" element={<SwitchServicesList />} />
                     <Route path="/accounting-support-list" element={<AccountingHkList />} />
+                    <Route path="/member-registration" element={<InviteUsaDirShir />} />
                   </Route>
                 </Route>
 
