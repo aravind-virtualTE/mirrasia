@@ -11,8 +11,8 @@ import { Option } from "@/components/MultiSelectInput";
     phoneNum : string;
     snsAccountId: string;
     serviceItemsSelected: Option[];
-    hasLegalEthicalIssues: Option[];
-    annualRenewalTermsAgreement: Option[];
+    hasLegalEthicalIssues: string |undefined;
+    annualRenewalTermsAgreement: string |undefined;
     restrictedCountriesWithActivity : string;
     sanctionedTiesPresent: string;
     businessInCrimea: string;
@@ -34,7 +34,7 @@ import { Option } from "@/components/MultiSelectInput";
       email: string;
       phone: string;
       ownershipRate: number;
-      isDirector: boolean
+      isDirector: string
     }[];
     designatedContact: string | number;
     accountingDataAddress : string;
@@ -45,6 +45,8 @@ import { Option } from "@/components/MultiSelectInput";
       code?: string;
       name?: string;
     }
+    confirmationBusinessIntention: boolean
+    transactionIntention: boolean
   }
 
   const initialFormState: UsaFormData = {
@@ -62,8 +64,8 @@ import { Option } from "@/components/MultiSelectInput";
     },
     snsAccountId: '',
     serviceItemsSelected: [],
-    hasLegalEthicalIssues:[],
-    annualRenewalTermsAgreement:[],
+    hasLegalEthicalIssues:"",
+    annualRenewalTermsAgreement:"",
     restrictedCountriesWithActivity: '',
     sanctionedTiesPresent: '',
     businessInCrimea: '',
@@ -85,7 +87,9 @@ import { Option } from "@/components/MultiSelectInput";
     accountingDataAddress: '',
     isTermsAndConditionsAccepted: '',
     paymentOption: '',
-    postIncorporationCapabilities: ''
+    postIncorporationCapabilities: '',
+    confirmationBusinessIntention: false,
+    transactionIntention: false
   };
   
   // Create the base atom

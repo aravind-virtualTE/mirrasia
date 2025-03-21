@@ -20,8 +20,8 @@ import { useAtom, useSetAtom } from "jotai";
 import { allCompListAtom, companyIncorporationList } from "@/services/state";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import io from 'socket.io-client';
-import { toast } from "@/hooks/use-toast";
+// import io from 'socket.io-client';
+// import { toast } from "@/hooks/use-toast";
 
 // interface Stats {
 //     pending: number;
@@ -42,11 +42,11 @@ interface Stats {
     rejected: number
 }
 
-const socket = io('http://localhost:5000', {
-    // auth: {
-    //   token: localStorage.getItem('adminToken') // Assuming token is stored in localStorage
-    // }
-  });
+// const socket = io('http://localhost:5000', {
+//     // auth: {
+//     //   token: localStorage.getItem('adminToken') // Assuming token is stored in localStorage
+//     // }
+//   });
 
 const AdminDashboard = () => {
     // Sample data - replace with your actual data    
@@ -55,24 +55,24 @@ const AdminDashboard = () => {
     const [allList, setAllList] = useAtom(allCompListAtom)
     const navigate = useNavigate();
 
-    useEffect(() =>{
-        console.log("testing")
-        socket.on('connect', () => {
-            console.log('Connected to server');
-          });
-          socket.on('new-record', (data) => {
-            console.log("new-record", data) 
-            toast({
-                    title: "New record created",
-                    description: `data added ${data.recordId}`,
-                  });
-          });
+    // useEffect(() =>{
+    //     console.log("testing")
+    //     socket.on('connect', () => {
+    //         console.log('Connected to server');
+    //       });
+    //       socket.on('new-record', (data) => {
+    //         console.log("new-record", data) 
+    //         toast({
+    //                 title: "New record created",
+    //                 description: `data added ${data.recordId}`,
+    //               });
+    //       });
       
-          // Cleanup on component unmount
-          return () => {
-            socket.disconnect();
-          };
-    }, [])
+    //       // Cleanup on component unmount
+    //       return () => {
+    //         socket.disconnect();
+    //       };
+    // }, [])
 
     useEffect(() => {
         async function fetchData() {

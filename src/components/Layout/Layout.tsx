@@ -9,7 +9,8 @@ import {
     // Mail,
     FileSignature,
     Files,
-    CreditCard, RefreshCw,Briefcase ,
+    // CreditCard, 
+    RefreshCw,Briefcase ,
     // User2,
     // Gift,
     // Receipt,
@@ -56,7 +57,7 @@ const Layout: React.FC = () => {
         { icon: <Home className="h-5 w-5" />, label: "Home" },
         { icon: <FileSignature className="w-4 h-4" />, label: "Register Company" },
         { icon: <Files className="h-6 w-6" />, label: "Company Documents" },
-        { icon: <CreditCard className="h-6 w-6" />, label: "HK Bank Account List" },
+        // { icon: <CreditCard className="h-6 w-6" />, label: "HK Bank Account List" },
         { icon: <RefreshCw className="h-6 w-6" />, label: "Switch Services List" },
         { icon: <Briefcase  className="h-6 w-6" />, label: "Accounting List" },
 

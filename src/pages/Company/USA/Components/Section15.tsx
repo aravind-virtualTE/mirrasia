@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader,  CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 // import { Input } from "@/components/ui/input";
 // import { 
@@ -40,10 +40,7 @@ const Section15: React.FC = () => {
     return (
         <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <CardTitle className="text-lg font-medium">Section 15</CardTitle>
-                <p className="inline-flex">
-                    Select payment option
-                </p>
+                <p className="inline-flex"> Select payment option </p>
             </CardHeader>
 
             <CardContent className="space-y-6 pt-6">
