@@ -1,11 +1,11 @@
 import { Card, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
-import { useAtom } from 'jotai';
-import { usaFormWithResetAtom } from '../inviteUsaDirShirState';
+// import { useAtom } from 'jotai';
+// import { usaFormWithResetAtom } from '../inviteUsaDirShirState';
 
 const Section10 = () => {
-    const [] = useAtom(usaFormWithResetAtom);
+    // const [] = useAtom(usaFormWithResetAtom);
 
     return (
         <>

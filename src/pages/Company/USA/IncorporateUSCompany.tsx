@@ -12,7 +12,7 @@ import Section12 from "./Components/Section12"
 import Section13 from "./Components/Section13"
 import Section14 from "./Components/Section14"
 import Section15 from "./Components/Section15"
-import FormSections from "./Components/Section16"
+// import FormSections from "./Components/Section16"
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -43,8 +43,8 @@ const IncorporateUSACompany = () => {
         { number: 10, label: "Accounting Data Address", active: currentSection === 10 },
         { number: 11, label: "Consent", active: currentSection === 11 },
         { number: 12, label: "Payment", active: currentSection === 12 },
-        { number: 13, label: "Company Solutions", active: currentSection === 13 },
-        { number: 14, label: "Incorporation", active: currentSection === 14 },
+        // { number: 13, label: "Company Solutions", active: currentSection === 13 },
+        { number: 13, label: "Incorporation", active: currentSection === 13 },
     ];
 
     const updateDoc = async () => {
@@ -176,8 +176,8 @@ const IncorporateUSACompany = () => {
                             {currentSection === 10 && <Section13 />}
                             {currentSection === 11 && <Section14 />}
                             {currentSection === 12 && <Section15 />}
-                            {currentSection === 13 && <FormSections />}
-                            {currentSection === 14 && <FinalSection />}
+                            {/* {currentSection === 13 && <FormSections />} */}
+                            {currentSection === 13 && <FinalSection />}
                         </motion.div>
                     </AnimatePresence>
                 </div>

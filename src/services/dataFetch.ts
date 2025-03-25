@@ -59,6 +59,7 @@ interface InviteData {
 interface SendInviteData {
   _id: string | null;
   inviteData: InviteData[];
+  country: string
 }
 
 export const sendInviteToShDir = async (data: SendInviteData) => {

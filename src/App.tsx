@@ -112,7 +112,7 @@ const App: React.FC = () => {
                   </Route>
                 </Route>
 
-                <Route element={<ProtectedRoute allowedRoles={["sh_dir"]} />}>
+                <Route element={<ProtectedRoute allowedRoles={["hk_shdr"]} />}>
                   <Route element={<Layout />}>
                     <Route path="/viewboard" element={<ViewBoard />} />
                     <Route path='/registrationForm' element={<ShareHolderRegForm />} />

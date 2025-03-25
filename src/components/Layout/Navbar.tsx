@@ -40,7 +40,7 @@ export default function Navbar() {
         if (['admin', 'master'].includes(decodedToken.role)) {
             navigate('/admin-dashboard');
         }
-        else if (decodedToken.role === 'sh_dir') {
+        else if (decodedToken.role === 'hk_shdr') {
             navigate('/viewboard');
         }
         else {
