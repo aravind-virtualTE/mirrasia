@@ -12,7 +12,7 @@ const FinalSection = () => {
     if (decodedToken.role === 'admin') {
         navigate('/admin-dashboard');
     }
-    else if (decodedToken.role === 'sh_dir') {
+    else if (decodedToken.role === 'hk_shdr') {
         navigate('/viewboard');
     }
     else {

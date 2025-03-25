@@ -7,9 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAtom } from 'jotai';
 import CustomLoader from '@/components/ui/customLoader';
-// import { sendInviteToShDir } from '@/services/dataFetch';
-// import { isValidEmail } from '@/middleware';
-// import { useToast } from "@/hooks/use-toast"
+import { sendInviteToShDir } from '@/services/dataFetch';
+import { isValidEmail } from '@/middleware';
+import { useToast } from "@/hooks/use-toast"
 import { useTranslation  } from "react-i18next";
 import { usaFormWithResetAtom } from '../UsState';
 
@@ -195,9 +195,9 @@ const ShareholderDirectorForm: React.FC = () => {
     },
   ]);
   const [totalOwnership, setTotalOwnership] = useState(0);
-  const [isLoading, ] = useState(false);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const { toast } = useToast()
+//   const [isLoading, ] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast()
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -262,46 +262,48 @@ const ShareholderDirectorForm: React.FC = () => {
   };
 
   const sendMailFunction = async () => {
-    // try {
-    //   setIsLoading(true);
-    //   const extractedData = shareholders.map(item => {
-    //     const { name, email } = item;
+   
+    try {
+      setIsLoading(true);
+      const extractedData = shareholders.map(item => {
+        const { name, email } = item;
 
-    //     if (!isValidEmail(email)) {
-    //       alert(`Invalid email format for ${name}: ${email}`);
-    //     }
+        if (!isValidEmail(email)) {
+          alert(`Invalid email format for ${name}: ${email}`);
+        }
 
-    //     return { name, email };
-    //   });
-    //   const docId = localStorage.getItem('companyRecordId');
-    //   const payload = { _id: docId, inviteData: extractedData };
+        return { name, email };
+      });
+      console.log("shareholders",extractedData)
+      const docId = localStorage.getItem('companyRecordId');
+      const payload = { _id: docId, inviteData: extractedData, country: 'US' };
     //   // console.log("send mail function", payload)
-    //   const response = await sendInviteToShDir(payload);
+      const response = await sendInviteToShDir(payload);
     //   // console.log("send mail response", response)
-    //   if (response.summary.successful > 0){
-    //     toast({
-    //       title: 'Success',
-    //       description: `Successfully sent invitation mail to ${response.summary.successful} people`,
-    //     })
-    //   }
-    //   if (response.summary.alreadyExists > 0){
-    //     toast({
-    //       title: 'Success',
-    //       description: `Some Users Already Exist`,
-    //     })
-    //   }
-    //   if (response.summary.failed > 0){
-    //     toast({
-    //       title: 'Failed',
-    //       description: `Some Invitations Failed`,
-    //     })
-    //   }
-    //   console.log("send mail response", response)
-    //   setIsLoading(false);
+      if (response.summary.successful > 0){
+        toast({
+          title: 'Success',
+          description: `Successfully sent invitation mail to ${response.summary.successful} people`,
+        })
+      }
+      if (response.summary.alreadyExists > 0){
+        toast({
+          title: 'Success',
+          description: `Some Users Already Exist`,
+        })
+      }
+      if (response.summary.failed > 0){
+        toast({
+          title: 'Failed',
+          description: `Some Invitations Failed`,
+        })
+      }
+      console.log("send mail response", response)
+      setIsLoading(false);
 
-    // } catch (e) {
-    //   console.log(e)
-    // }
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   return (

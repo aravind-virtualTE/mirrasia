@@ -124,7 +124,7 @@ const UsersList = () => {
                                     <SelectContent>
                                         <SelectItem value="user">User</SelectItem>
                                         <SelectItem value="admin">Admin</SelectItem>
-                                        <SelectItem value="sh_dir">SH Dir</SelectItem>
+                                        <SelectItem value="hk_shdr">SH Dir</SelectItem>
                                         <SelectItem value="master">Master</SelectItem>
                                     </SelectContent>
                                 </Select>
@@ -191,7 +191,7 @@ const UsersList = () => {
                                     <SelectContent>
                                         <SelectItem value="user">User</SelectItem>
                                         <SelectItem value="admin">Admin</SelectItem>
-                                        <SelectItem value="sh_dir">SH Dir</SelectItem>
+                                        <SelectItem value="hk_shdr">SH Dir</SelectItem>
                                         <SelectItem value="master">Master</SelectItem>
                                     </SelectContent>
                                 </Select>

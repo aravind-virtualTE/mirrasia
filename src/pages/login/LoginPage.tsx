@@ -35,7 +35,7 @@ const LoginComponent: React.FC = () => {
       if(response.user.role === 'admin' || response.user.role === 'master') {
         navigate('/admin-dashboard');
       }
-      else if(response.user.role === 'sh_dir'){
+      else if(response.user.role === 'hk_shdr'){
         navigate('/viewboard');
       }
       else{
