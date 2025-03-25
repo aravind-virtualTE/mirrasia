@@ -5,9 +5,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { HelpCircle } from 'lucide-react'
 import DropdownSelect from '@/components/DropdownSelect'
 import { useAtom } from "jotai";
-import { usaFormWithResetAtom } from "../UsState";
-const list = [
-    'Total capital divided by $1 (1 share price = $1; universal method)', '1 share (minimum) (1 share price = total capital)', '100', '1,000', '10,000'
+import { usaFormWithResetAtom } from "../inviteUsaDirShirState";
+import { Input } from "@/components/ui/input"
+
+const  statesList = [
+    'Yes',
+    'No',
+    'Other'
 ]
 
 const Section4 = () => {
@@ -21,31 +25,44 @@ const Section4 = () => {
         <React.Fragment> <Card className="max-w-5xl mx-auto mt-2">
             <CardHeader className="bg-sky-100 dark:bg-sky-900">
                 <CardTitle className="text-lg font-medium">Section 4</CardTitle>
+                <p>Determine whether you are a U.S. jurisdictional entity under tax law</p>Confirmation of major political figures by company officials
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
                 <div className="space-y-2">
                     <Label htmlFor="name" className="inline-flex">
-                        Total number of shares to be issued (minimum 1 share) <span className="text-red-500 font-bold ml-1 flex">
-                            *
+                <p>Is your company legally located in the United States or a permanent establishment under the tax law?</p>
+                <span className="text-red-500 font-bold ml-1 flex">
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-[500px] text-base">
-                                    Since additional costs will be incurred when issuing new stocks or acquiring shares after establishment, please carefully decide on the capital and number of shares.
                                 </TooltipContent>
                             </Tooltip>
                         </span>
                     </Label>
 
                     <DropdownSelect
-                        options={list}
+                        options={statesList}
                         placeholder="Select..."
                         selectedValue={formData.noOfSharesSelected}
                         onSelect={handleOptionChange}
                     />
                 </div>
             </CardContent>
+
+            <CardContent className="space-y-6 pt-6">
+                <div className="space-y-2">
+                    <Label htmlFor="name" className="inline-flex">
+                     <p>If you are a U.S. jurisdiction or a permanent establishment under tax law, list your IRS U.S. Tax Identification Defense (TIN).</p>    
+                    <span className="text-destructive">*</span>
+                    </Label>
+                    <Input id="name" placeholder="Your answer" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                </div>
+
+            </CardContent>
+
+
         </Card>
         </React.Fragment>
     )
