@@ -4,6 +4,7 @@ import Section1 from "./Components/Section1"
 import Section2 from "./Components/Section2"
 import Section3 from "./Components/Section3"
 import Section4 from "./Components/Section4"
+import Section5 from "./Components/Section5"
 import Section6 from "./Components/Section6"
 import Section7 from "./Components/Section7"
 import Section8 from "./Components/Section8"
@@ -13,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAtom } from "jotai"
-import { usaFormWithResetAtom } from "./UsState"
+import { usaFormWithResetAtom } from "./inviteUsaDirShirState"
 import jwtDecode from "jwt-decode"
 import { TokenData } from "@/middleware/ProtectedRoutes"
 // import api from "@/services/fetch"
@@ -35,6 +36,7 @@ const InviteUsaDirShir = () => {
         { number: 7, label: "Section7", active: currentSection === 7 },
         { number: 8, label: "Section8", active: currentSection === 8 },
         { number: 9, label: "Section9", active: currentSection === 9 },
+        { number: 10, label: "Section10", active: currentSection === 10 },
     ];
 
     const updateDoc = async () => {
@@ -69,10 +71,10 @@ const InviteUsaDirShir = () => {
     }
     const nextSection = async () => {
         switch (currentSection){
-            case 9:
+            case 10:
                 break;
             default:
-                if (currentSection !== 9) {
+                if (currentSection !== 10) {
                     await updateDoc();
                     setCurrentSection(prev => prev + 1);
                     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -118,11 +120,12 @@ const InviteUsaDirShir = () => {
                             {currentSection === 2 && <Section2 />}
                             {currentSection === 3 && <Section3 />}
                             {currentSection === 4 && <Section4 />}
-                            {currentSection === 5 && <Section6 />}
-                            {currentSection === 6 && <Section7 />}
-                            {currentSection === 7 && <Section8 />}
-                            {currentSection === 8 && <Section9 />}
-                            {currentSection === 9 && <Section10 />}
+                            {currentSection === 5 && <Section5 />}
+                            {currentSection === 6 && <Section6 />}
+                            {currentSection === 7 && <Section7 />}
+                            {currentSection === 8 && <Section8 />}
+                            {currentSection === 9 && <Section9 />}
+                            {currentSection === 10 && <Section10 />}
                         </motion.div>
                     </AnimatePresence>
                 </div>
@@ -142,7 +145,7 @@ const InviteUsaDirShir = () => {
                             onClick={nextSection}
                             className="flex items-center space-x-2 bg-primary"
                         >
-                            <span>{currentSection === 9 ? "SUBMIT" : "NEXT →"}</span>
+                            <span>{currentSection === 10 ? "SUBMIT" : "NEXT →"}</span>
                         </Button>
                     </div>
                 </div>

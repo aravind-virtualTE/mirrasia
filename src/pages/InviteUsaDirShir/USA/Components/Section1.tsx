@@ -1,12 +1,9 @@
 import React from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-
 import { Separator } from "@/components/ui/separator"
-import ApplicantInformation from './Section5';
 
 const Section1: React.FC = () => {
 
-    
     return (
         <>
             <Card className="max-w-5xl mx-auto">
@@ -14,18 +11,19 @@ const Section1: React.FC = () => {
                     <CardTitle>
                         Application for registration of U.S. company members (for legal)
                     </CardTitle>
-                    <p className="text-sm text-muted-foreground mt-4">
-                        This application is in the form of a questionnaire about the information required to proceed with the registration of a member of a U.S. company, and the representative of the corporation that is a member is requested to fill out this application.
-                    </p>
+
                 </CardHeader>
 
                 <CardContent className="space-y-6">
+                    <p className="text-sm text-muted-foreground mt-4">
+                        This application is in the form of a questionnaire about the information required to proceed with the registration of a member of a U.S. company, and the representative of the corporation that is a member is requested to fill out this application.
+                    </p>
                     {/* Company Information */}
                     <div className="space-y-4 text-sm">
 
                         <div className="space-y-2 text-foreground">
                             <p>
-                              This application and the application form to be signed in the future are required by the TCSP license and AMLO (Money Laundering and Counter-Terrorism Finance Act) to provide KYC (Know Your Customer; Know Your Customer) and Client's Due Diligence, and will be kept by us as Statutory Documents in the future. Therefore, please be careful not to distort or make errors in the written content. 
+                                This application and the application form to be signed in the future are required by the TCSP license and AMLO (Money Laundering and Counter-Terrorism Finance Act) to provide KYC (Know Your Customer; Know Your Customer) and Client's Due Diligence, and will be kept by us as Statutory Documents in the future. Therefore, please be careful not to distort or make errors in the written content.
                             </p>
                             <p>I appreciate it.</p>
                         </div>
@@ -51,7 +49,6 @@ const Section1: React.FC = () => {
                     <Separator />
                 </CardContent>
             </Card>
-            <ApplicantInformation />
         </>
     )
 }
