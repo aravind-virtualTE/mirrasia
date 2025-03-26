@@ -1,38 +1,35 @@
-import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { HelpCircle } from "lucide-react"
 import { useAtom } from 'jotai';
 import { usaFormWithResetAtom } from '../UsState';
+import { useTheme } from "@/components/theme-provider";
 
 const Section13 = () => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
-
+    const { theme } = useTheme();
     return (
-        <Card className="max-w-5xl mx-auto mt-2">
-            <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <p className="inline-flex">The location where the accounting/financial data of the proposed US company will be kept <Tooltip>
-                    <TooltipTrigger asChild>
-                        <HelpCircle className="text-red-500 h-4 w-4 mt-1 ml-2 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-[500px] text-base">
-                        If you store accounting statements, financial data, contracts, invoices, etc. in a country other than the United States, please enter your address below.
-
-                    </TooltipContent>
-                </Tooltip></p>
-            </CardHeader>
-
-            <CardContent className="space-y-6 pt-6">
-                {/* select Industry */}
+        <div className='flex flex-col md:flex-row w-full p-4'>
+            <aside
+                className={`w-full md:w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
+                    ? "bg-blue-50 text-gray-800"
+                    : "bg-gray-800 text-gray-200"
+                    }`}
+            >
+                <h2 className="text-m font-semibold mb-0">
+                    The location where the accounting/financial data of the proposed US company will be kept
+                </h2>
+                <p className="text-sm text-gray-600">  If you store accounting statements, financial data, contracts, invoices, etc. in a country other than the United States, please enter your address below.</p>
+            </aside>
+            <div className="w-3/4 ml-4">
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
-                    Please enter the address where the accounting and financial data of the proposed US company will be kept.
+                        Please enter the address where the accounting and financial data of the proposed US company will be kept.
                     </Label>
-                    <Input id="descBusiness" placeholder="Your answer" required value={formData.accountingDataAddress} onChange={(e) => setFormData({ ...formData, accountingDataAddress: e.target.value })}/>
+                    <Input id="descBusiness" placeholder="Your answer" required value={formData.accountingDataAddress} onChange={(e) => setFormData({ ...formData, accountingDataAddress: e.target.value })} />
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
+
     )
 }
 

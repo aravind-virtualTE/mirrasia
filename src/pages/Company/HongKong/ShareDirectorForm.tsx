@@ -273,7 +273,7 @@ const ShareholderDirectorForm: React.FC = () => {
         return { name, email };
       });
       const docId = localStorage.getItem('companyRecordId');
-      const payload = { _id: docId, inviteData: extractedData };
+      const payload = { _id: docId, inviteData: extractedData,country: 'HK'  };
       // console.log("send mail function", payload)
       const response = await sendInviteToShDir(payload);
       // console.log("send mail response", response)

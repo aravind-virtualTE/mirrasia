@@ -88,7 +88,7 @@ const SignupPage = () => {
       localStorage.setItem("isAuthenticated", "true");
       if (user.role === "admin") {
         navigate("/admin-dashboard");
-      } else if (user.role === "sh_dir") {
+      } else if (user.role === "hk_shdr") {
         navigate("/viewboard");
       } else {
         navigate("/dashboard");
@@ -119,7 +119,7 @@ const SignupPage = () => {
         setAuth({ user, isAuthenticated: true, loading: false, error: null });
         if (user.role === "admin") {
           navigate("/admin-dashboard");
-        } else if (user.role === "sh_dir") {
+        } else if (user.role === "hk_shdr") {
           navigate("/viewboard");
         } else {
           navigate("/dashboard");

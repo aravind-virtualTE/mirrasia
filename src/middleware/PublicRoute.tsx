@@ -14,7 +14,7 @@ const PublicRoute: React.FC = () => {
 
       if (['admin', 'master'].includes(decodedToken.role)) {
         return <Navigate to="/admin-dashboard" replace />;
-      } else if (decodedToken.role === 'sh_dir') {
+      } else if (decodedToken.role === 'hk_shdr') {
         return <Navigate to="/viewboard" replace />;
       } else {
         return <Navigate to="/dashboard" replace />;

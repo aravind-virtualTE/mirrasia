@@ -7,9 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAtom } from 'jotai';
 import CustomLoader from '@/components/ui/customLoader';
-// import { sendInviteToShDir } from '@/services/dataFetch';
-// import { isValidEmail } from '@/middleware';
-// import { useToast } from "@/hooks/use-toast"
+import { sendInviteToShDir } from '@/services/dataFetch';
+import { isValidEmail } from '@/middleware';
+import { useToast } from "@/hooks/use-toast"
 import { useTranslation  } from "react-i18next";
 import { usaFormWithResetAtom } from '../UsState';
 
@@ -19,7 +19,7 @@ interface ShareholderDirectorProps {
   phone: string;
   ownershipRate: number;
   isDirector: string;
-//   isLegalPerson: boolean;
+  isLegalPerson: string;
   onDelete: () => void;
   onUpdate: (updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => void;
   isRemovable: boolean;
@@ -31,7 +31,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
   phone,
   ownershipRate,
   isDirector,
-//   isLegalPerson,
+  isLegalPerson,
   onDelete,
   onUpdate,
   isRemovable,
@@ -74,7 +74,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
     <Card className="mb-4 pt-4">
       <CardContent className="grid grid-cols-3 gap-4">
         <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">{t('CompanyInformation.shareDirName')}:</Label>
+          <Label className="font-medium">Shareholder(s) / Officer(s) Name:</Label>
           <Input
             type="text"
             className="input col-span-2"
@@ -150,20 +150,27 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             </SelectContent>
           </Select>
 
-          {/*<Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
+          <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
            <Select
-            value={isLegalPerson.toString()}
-            onValueChange={(value) => onUpdate({ isLegalPerson: value === 'true' })}
-            disabled={isDirector}
+            value={isLegalPerson}
+            onValueChange={(value) => {
+              const newIsLegal = isDirector == 'Yes';
+              console.log("value",value)
+              onUpdate({
+                isLegalPerson: value,
+                // If setting as director, automatically set legal person to false
+                ...(newIsLegal ? { isLegalPerson: 'No' } : {})
+              });
+            }}
           >
-            <SelectTrigger className={`input ${isDirector ? 'opacity-50' : ''}`}>
-              <SelectValue>{isLegalPerson ? 'Yes' : 'No'}</SelectValue>
+            <SelectTrigger className="input">
+              <SelectValue>{isLegalPerson == 'Yes' ? 'Yes' : 'No'}</SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="true">Yes</SelectItem>
-              <SelectItem value="false">No</SelectItem>
+              <SelectItem value="Yes">Yes</SelectItem>
+              <SelectItem value="No">No</SelectItem>
             </SelectContent>
-          </Select> */}
+          </Select>
 
           {isRemovable && (
             <button
@@ -188,16 +195,16 @@ const ShareholderDirectorForm: React.FC = () => {
       phone: '',
       ownershipRate: 0,
       isDirector: 'No',
-    //   isLegalPerson: false,
+      isLegalPerson: 'No',
       onDelete: () => { },
       onUpdate: () => { },
       isRemovable: false,
     },
   ]);
   const [totalOwnership, setTotalOwnership] = useState(0);
-  const [isLoading, ] = useState(false);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const { toast } = useToast()
+//   const [isLoading, ] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast()
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -220,7 +227,7 @@ const ShareholderDirectorForm: React.FC = () => {
       phone: obj.phone,
       ownershipRate: obj.ownershipRate,
       isDirector: obj.isDirector,
-    //   isLegalPerson: obj.isLegalPerson
+      isLegalPerson: obj.isLegalPerson
     }));
     setFormData({...formData, shareHolders: filteredArray});
   }, [shareholders, setFormData]);
@@ -239,7 +246,7 @@ const ShareholderDirectorForm: React.FC = () => {
         phone: '',
         ownershipRate: 0,
         isDirector: 'No',
-        // isLegalPerson: false,
+        isLegalPerson: 'No',
         onDelete: () => { },
         onUpdate: () => { },
         isRemovable: true,
@@ -256,52 +263,55 @@ const ShareholderDirectorForm: React.FC = () => {
   };
 
   const updateShareholder = (index: number, updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => {
+    // console.log("updates",updates)
     const newShareholders = [...shareholders];
     newShareholders[index] = { ...newShareholders[index], ...updates };
     setShareholders(newShareholders);
   };
 
   const sendMailFunction = async () => {
-    // try {
-    //   setIsLoading(true);
-    //   const extractedData = shareholders.map(item => {
-    //     const { name, email } = item;
+   
+    try {
+      setIsLoading(true);
+      const extractedData = shareholders.map(item => {
+        const { name, email } = item;
 
-    //     if (!isValidEmail(email)) {
-    //       alert(`Invalid email format for ${name}: ${email}`);
-    //     }
+        if (!isValidEmail(email)) {
+          alert(`Invalid email format for ${name}: ${email}`);
+        }
 
-    //     return { name, email };
-    //   });
-    //   const docId = localStorage.getItem('companyRecordId');
-    //   const payload = { _id: docId, inviteData: extractedData };
+        return { name, email };
+      });
+      console.log("shareholders",extractedData)
+      const docId = localStorage.getItem('companyRecordId');
+      const payload = { _id: docId, inviteData: extractedData, country: 'US' };
     //   // console.log("send mail function", payload)
-    //   const response = await sendInviteToShDir(payload);
+      const response = await sendInviteToShDir(payload);
     //   // console.log("send mail response", response)
-    //   if (response.summary.successful > 0){
-    //     toast({
-    //       title: 'Success',
-    //       description: `Successfully sent invitation mail to ${response.summary.successful} people`,
-    //     })
-    //   }
-    //   if (response.summary.alreadyExists > 0){
-    //     toast({
-    //       title: 'Success',
-    //       description: `Some Users Already Exist`,
-    //     })
-    //   }
-    //   if (response.summary.failed > 0){
-    //     toast({
-    //       title: 'Failed',
-    //       description: `Some Invitations Failed`,
-    //     })
-    //   }
-    //   console.log("send mail response", response)
-    //   setIsLoading(false);
+      if (response.summary.successful > 0){
+        toast({
+          title: 'Success',
+          description: `Successfully sent invitation mail to ${response.summary.successful} people`,
+        })
+      }
+      if (response.summary.alreadyExists > 0){
+        toast({
+          title: 'Success',
+          description: `Some Users Already Exist`,
+        })
+      }
+      if (response.summary.failed > 0){
+        toast({
+          title: 'Failed',
+          description: `Some Invitations Failed`,
+        })
+      }
+      console.log("send mail response", response)
+      setIsLoading(false);
 
-    // } catch (e) {
-    //   console.log(e)
-    // }
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   return (
