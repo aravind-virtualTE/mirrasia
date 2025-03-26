@@ -1,15 +1,10 @@
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
-import Section1 from "./Components/Section1"
-import Section2 from "./Components/Section2"
-import Section3 from "./Components/Section3"
+import ApplicantInformation from "./Components/ApplicantInformation"
+import CompanyInformationUS from "./Components/CompanyInformationUS"
 import Section4 from "./Components/Section4"
 import Section6 from "./Components/Section6"
-import Section7 from "./Components/Section7"
-import Section8 from "./Components/Section8"
-import Section9 from "./Components/Section9"
-import Section12 from "./Components/Section12"
-import Section13 from "./Components/Section13"
+import AmlCddUS from "./Components/AmlCddUS"
 import Section14 from "./Components/Section14"
 import Section15 from "./Components/Section15"
 // import FormSections from "./Components/Section16"
@@ -32,19 +27,19 @@ const IncorporateUSACompany = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const steps = [
         { number: 1, label: "Applicant information", active: currentSection === 1 },
-        { number: 2, label: "State Selection", active: currentSection === 2 },
-        { number: 3, label: "Entity Type", active: currentSection === 3 },
+        { number: 2, label: "Aml Cdd", active: currentSection === 2 },
+        { number: 3, label: "Company Information", active: currentSection === 3 },
         { number: 4, label: "Registration Details", active: currentSection === 4 },
         { number: 5, label: "Service Selection", active: currentSection === 5 },
-        { number: 6, label: "Business Intention", active: currentSection === 6 },
-        { number: 7, label: "Transaction Sanctions", active: currentSection === 7 },
-        { number: 8, label: "Company Info", active: currentSection === 8 },
-        { number: 9, label: "ShareHolder Info", active: currentSection === 9 },
-        { number: 10, label: "Accounting Data Address", active: currentSection === 10 },
-        { number: 11, label: "Consent", active: currentSection === 11 },
-        { number: 12, label: "Payment", active: currentSection === 12 },
+        // { number: 6, label: "Business Intention", active: currentSection === 6 },
+        // { number: 7, label: "Transaction Sanctions", active: currentSection === 7 },
+        // { number: 6, label: "Company Info", active: currentSection === 6 },
+        // { number: 7, label: "ShareHolder Info", active: currentSection === 7 },
+        // { number: 6, label: "Accounting Data Address", active: currentSection === 6 },
+        { number: 6, label: "Consent", active: currentSection === 6 },
+        { number: 7, label: "Payment", active: currentSection === 7 },
         // { number: 13, label: "Company Solutions", active: currentSection === 13 },
-        { number: 13, label: "Incorporation", active: currentSection === 13 },
+        { number: 8, label: "Incorporation", active: currentSection === 8 },
     ];
 
     const updateDoc = async () => {
@@ -79,37 +74,20 @@ const IncorporateUSACompany = () => {
     }
     const nextSection = async () => {
         switch (currentSection) {
-            case 7:
+            case 2:
                 {
                     const rcActivity = formData.restrictedCountriesWithActivity
                     const rcSanctions = formData.sanctionedTiesPresent
                     const bsnsCremia = formData.businessInCrimea
                     const involved = formData.involvedInRussianEnergyDefense
-
-                    if (rcActivity == 'No' && rcSanctions == 'No' && bsnsCremia == 'No' && involved == 'No') {
+                    const legalInfo = formData.hasLegalEthicalIssues
+                    const annualRenew = formData.annualRenewalTermsAgreement
+                    if (rcActivity == 'no' && rcSanctions == 'no' && bsnsCremia == 'no' && involved == 'no' && legalInfo == 'no' && annualRenew == 'no') {
                         await updateDoc();
                         setCurrentSection(prev => prev + 1);
                         window.scrollTo({ top: 0, behavior: "smooth" });
                     } else {
                         setFormData({ ...formData, confirmationBusinessIntention: true });
-                        toast({
-                            title: "Consultation required before proceeding",
-                            description: "It appears that you need to consult before proceeding. We will review the content of your reply and our consultant will contact you shortly. Thank you very much.",
-                        });
-                    }
-                    break;
-                }
-            case 6:
-                {
-                    const legalInfo = formData.hasLegalEthicalIssues
-                    const annualRenew = formData.annualRenewalTermsAgreement
-
-                    if (legalInfo == 'no' && annualRenew == 'no') {
-                        await updateDoc();
-                        setCurrentSection(prev => prev + 1);
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                    } else {
-                        setFormData({ ...formData, confirmationBusinessIntention: true })
                         toast({
                             title: "Consultation required before proceeding",
                             description: "It appears that you need to consult before proceeding. We will review the content of your reply and our consultant will contact you shortly. Thank you very much.",
@@ -164,20 +142,14 @@ const IncorporateUSACompany = () => {
                             }}
                             className="h-full w-auto"
                         >
-                            {currentSection === 1 && <Section1 />}
-                            {currentSection === 2 && <Section2 />}
-                            {currentSection === 3 && <Section3 />}
+                            {currentSection === 1 && <ApplicantInformation />}
+                            {currentSection === 2 && <AmlCddUS />}
+                            {currentSection === 3 && <CompanyInformationUS />}
                             {currentSection === 4 && <Section4 />}
                             {currentSection === 5 && <Section6 />}
-                            {currentSection === 6 && <Section7 />}
-                            {currentSection === 7 && <Section8 />}
-                            {currentSection === 8 && <Section9 />}
-                            {currentSection === 9 && <Section12 />}
-                            {currentSection === 10 && <Section13 />}
-                            {currentSection === 11 && <Section14 />}
-                            {currentSection === 12 && <Section15 />}
-                            {/* {currentSection === 13 && <FormSections />} */}
-                            {currentSection === 13 && <FinalSection />}
+                            {currentSection === 6 && <Section14 />}
+                            {currentSection === 7 && <Section15 />}
+                            {currentSection === 8 && <FinalSection />}
                         </motion.div>
                     </AnimatePresence>
                 </div>

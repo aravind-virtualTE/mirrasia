@@ -1,125 +1,44 @@
-import { Card, CardHeader, CardContent } from "@/components/ui/card"
 // import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select';
 import { useAtom } from 'jotai';
 import { usaFormWithResetAtom } from '../UsState';
 import ShareholderDirectorForm from "./usaShareHldrDirector"
 import DropdownSelect from "@/components/DropdownSelect"
+import { useTheme } from "@/components/theme-provider";
 
 
-const list = ['1', '2', '3', '4', '5']
 const Section12 = () => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
-
-    const handleOptionChange = (value: string) => {
-        setFormData({ ...formData, noOfShareholders: value })
-    };
-
-    const handleOfficerChange = (value: string) => {
-        setFormData({ ...formData, noOfOfficers: value })
-    };
+    const { theme } = useTheme();
+    
     const shrDirArr = formData.shareHolders.map((item) => {
         if (item.name == "") return "enter value above and select value";
         return item.name;
-      })
+    })
 
-      const handleSelect = (value: string | number) => {
+    const handleSelect = (value: string | number) => {
         console.log('Selected Value:', value);
-       
-      };
+        setFormData({ ...formData, designatedContact: value });
+
+    };
 
     return (
-        <Card className="max-w-5xl mx-auto mt-2">
-            <CardHeader className="bg-sky-100 dark:bg-sky-900">          
-                <p className="inline-flex"> Shareholders/officers of the proposed US company<Tooltip>
-                    <TooltipTrigger asChild>
-                        <HelpCircle className="text-red-500 h-4 w-4 mt-1 ml-2 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-[500px] text-base">
-                        In this section, you must provide information about the members (shareholders), executives, and contact persons of the U.S. company you wish to establish.
-                    </TooltipContent>
-                </Tooltip></p>
-            </CardHeader>
+        <div className='flex flex-col md:flex-row w-full p-4'>
+            <aside
+                className={`w-full md:w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
+                    ? "bg-blue-50 text-gray-800"
+                    : "bg-gray-800 text-gray-200"
+                    }`}
+            >
+                <h2 className="text-m font-semibold mb-0">
+                    Shareholders/officers of the proposed US company
+                </h2>
+                <p className="text-sm text-gray-600"> In this section, you must provide information about the members (shareholders), executives, and contact persons of the U.S. company you wish to establish.</p>
+            </aside>
+            <div className="w-3/4 ml-4">                
 
-            <CardContent className="space-y-6 pt-6">
-                <div className="space-y-2">
-                    <Label htmlFor="relationbtwauth" className="inline-flex">
-                        Total number of shareholders/members <span className="text-destructive">*
-                        </span>
-                    </Label>
-                    {/* <RadioGroup defaultValue="no"
-                        value={selectedOption}
-                        onValueChange={handleOptionChange}
-                        id="relationbtwauth"
-                    >
-                        {list.map((item) => (
-                            <div className="flex items-center space-x-2" key={item}>
-                                <RadioGroupItem value={item} id={item} />
-                                <Label htmlFor={item} className="font-normal">
-                                    {item}
-                                </Label>
-                            </div>
-                        ))}
-                    </RadioGroup> */}
-
-                    <Select onValueChange={handleOptionChange} value={formData.noOfShareholders}>
-                        <SelectTrigger className="w-full md:w-80">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {list.map(state => (
-                                <SelectItem key={state} value={state}>
-                                    {state}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="relationbtwauth" className="inline-flex">
-                        Total number of officers <span className="text-destructive">*
-                        </span>
-                    </Label>
-                    {/* <RadioGroup defaultValue="no"
-                        value={selectedOption}
-                        onValueChange={handleOptionChange}
-                        id="relationbtwauth"
-                    >
-                        {list.map((item) => (
-                            <div className="flex items-center space-x-2" key={item}>
-                                <RadioGroupItem value={item} id={item} />
-                                <Label htmlFor={item} className="font-normal">
-                                    {item}
-                                </Label>
-                            </div>
-                        ))}
-                    </RadioGroup> */}
-
-                    <Select onValueChange={handleOfficerChange} value={formData.noOfOfficers}>
-                        <SelectTrigger className="w-full md:w-80">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {list.map(state => (
-                                <SelectItem key={state} value={state}>
-                                    {state}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                </div>
-  
                 <ShareholderDirectorForm />
                 {/* select Industry */}
                 <div className="space-y-2">
@@ -135,7 +54,6 @@ const Section12 = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    {/* <Input id="descBusiness" placeholder="Your answer" required /> */}
                 </div>
                 {formData.shareHolders.length > 0 ? (
                     <DropdownSelect
@@ -147,9 +65,8 @@ const Section12 = () => {
                 ) : (
                     "Please Fill Shareholder/Director"
                 )}
-
-            </CardContent>
-        </Card>
+            </div>           
+        </div>
     )
 }
 
