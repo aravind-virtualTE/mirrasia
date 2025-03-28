@@ -178,6 +178,6 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({ invoiceData }) => {
 export default function Invoice() {
   const [corpoInvoiceAtom] = useAtom(companyIncorporateInvoiceAtom);
   const invoiceData = corpoInvoiceAtom[0] as unknown as InvoiceData;
-
+  console.log("corpoInvoiceAtom",corpoInvoiceAtom)
   return <InvoiceComponent invoiceData={invoiceData} />;
 }

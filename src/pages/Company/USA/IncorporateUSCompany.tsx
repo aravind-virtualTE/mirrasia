@@ -18,6 +18,7 @@ import { TokenData } from "@/middleware/ProtectedRoutes"
 import api from "@/services/fetch"
 import { toast } from '@/hooks/use-toast';
 import FinalSection from "./Components/finalSection"
+import InvoiceUs from "./Components/InvoiceUs"
 
 const IncorporateUSACompany = () => {
     const [currentSection, setCurrentSection] = useState(1);
@@ -31,15 +32,15 @@ const IncorporateUSACompany = () => {
         { number: 3, label: "Company Information", active: currentSection === 3 },
         { number: 4, label: "Registration Details", active: currentSection === 4 },
         { number: 5, label: "Service Selection", active: currentSection === 5 },
-        // { number: 6, label: "Business Intention", active: currentSection === 6 },
+        { number: 6, label: "Invoice", active: currentSection === 6 },
         // { number: 7, label: "Transaction Sanctions", active: currentSection === 7 },
         // { number: 6, label: "Company Info", active: currentSection === 6 },
         // { number: 7, label: "ShareHolder Info", active: currentSection === 7 },
         // { number: 6, label: "Accounting Data Address", active: currentSection === 6 },
-        { number: 6, label: "Consent", active: currentSection === 6 },
-        { number: 7, label: "Payment", active: currentSection === 7 },
+        { number: 7, label: "Consent", active: currentSection === 7 },
+        { number: 8, label: "Payment", active: currentSection === 8 },
         // { number: 13, label: "Company Solutions", active: currentSection === 13 },
-        { number: 8, label: "Incorporation", active: currentSection === 8 },
+        { number: 9, label: "Incorporation", active: currentSection === 9 },
     ];
 
     const updateDoc = async () => {
@@ -147,9 +148,10 @@ const IncorporateUSACompany = () => {
                             {currentSection === 3 && <CompanyInformationUS />}
                             {currentSection === 4 && <Section4 />}
                             {currentSection === 5 && <Section6 />}
-                            {currentSection === 6 && <Section14 />}
-                            {currentSection === 7 && <Section15 />}
-                            {currentSection === 8 && <FinalSection />}
+                            {currentSection === 6 && <InvoiceUs />}
+                            {currentSection === 7 && <Section14 />}
+                            {currentSection === 8 && <Section15 />}
+                            {currentSection === 9 && <FinalSection />}
                         </motion.div>
                     </AnimatePresence>
                 </div>
