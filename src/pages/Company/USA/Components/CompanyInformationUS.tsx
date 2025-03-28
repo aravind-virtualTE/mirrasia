@@ -35,6 +35,7 @@ export default function CompanyInformationUS() {
     t('usa.Section2StateOptions.Wyoming'),
     t('usa.Section2StateOptions.California'),
     t('usa.Section2StateOptions.New York'),
+    t('usa.Section2StateOptions.Washington'),
     t('usa.Section2StateOptions.Washington D.C.'),
     t('usa.Section2StateOptions.State of Texas'),
     t('usa.Section2StateOptions.Nevada'),

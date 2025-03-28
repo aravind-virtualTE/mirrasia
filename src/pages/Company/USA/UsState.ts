@@ -13,7 +13,7 @@ interface UsaFormData {
     value: string
     id: string
   };
-  serviceItemsSelected: Option[];
+  serviceItemsSelected: string[];
   hasLegalEthicalIssues: string | undefined;
   annualRenewalTermsAgreement: string | undefined;
   restrictedCountriesWithActivity: string;

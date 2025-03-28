@@ -11,8 +11,8 @@ import { HelpCircle } from 'lucide-react';
 const Section1: React.FC = () => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
 
-    const handleChange = (name: string, index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("name", name)
+    const handleChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        // console.log("name", name)
         const values = [...formData.companyName];
         values[index] = e.target.value;
         setFormData({ ...formData, companyName: values });
@@ -69,7 +69,7 @@ const Section1: React.FC = () => {
                     <div className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="name" className="inline-flex">
-                            Name of the Applicant<span className="text-destructive">*</span>
+                                Name of the Applicant<span className="text-destructive">*</span>
                             </Label>
                             <Input id="name" placeholder="Your answer" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
                         </div>
@@ -103,7 +103,7 @@ const Section1: React.FC = () => {
                                     id={`companyName${index}`}
                                     placeholder="Your answer"
                                     value={name}
-                                    onChange={handleChange("companyName", index)}
+                                    onChange={handleChange(index)}
                                     required />
                             ))
                         }

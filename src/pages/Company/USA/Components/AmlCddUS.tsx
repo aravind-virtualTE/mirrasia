@@ -21,7 +21,24 @@ const list2 = [
 const AmlCddUS: React.FC = () => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const { theme } = useTheme();
-    const [initialDialogOpen, setInitialDialogOpen] = useState(true);
+    const hasLegalEthicalIssues = formData.hasLegalEthicalIssues
+    const annualRenewalTermsAgreement = formData.annualRenewalTermsAgreement
+    const restrictedCountriesWithActivity = formData.restrictedCountriesWithActivity
+    const sanctionedTiesPresent = formData.sanctionedTiesPresent
+    const businessInCrimea = formData.businessInCrimea
+    const involvedInRussianEnergyDefense = formData.involvedInRussianEnergyDefense
+
+    const hasIssues = [ 
+        hasLegalEthicalIssues,
+        annualRenewalTermsAgreement,
+        restrictedCountriesWithActivity,
+        sanctionedTiesPresent,
+        businessInCrimea,
+        involvedInRussianEnergyDefense
+    ].some(value => (value) !== "no");
+    
+      console.log("hasIssues",hasIssues)
+    const [initialDialogOpen, setInitialDialogOpen] = useState(hasIssues);
     const handleQuestionChange = (value: string) => {
         // console.log("value", value)
         setFormData({ ...formData, hasLegalEthicalIssues: value })
@@ -64,7 +81,7 @@ const AmlCddUS: React.FC = () => {
                                     Are there any legal or ethical issues such as money laundering, gambling, tax evasion, concealment of assets, avoidance of illegal business, bribery, fraud, etc.?<span className="text-red-500 flex font-bold ml-1">*</span>
                                 </Label>
                                 <RadioGroup
-                                    value={formData.hasLegalEthicalIssues}
+                                    value={hasLegalEthicalIssues}
                                     onValueChange={(value) => handleQuestionChange(value)}
                                     disabled={formData.isDisabled}
                                 >
@@ -87,7 +104,7 @@ const AmlCddUS: React.FC = () => {
                                     After the establishment of the US company, annual renewal(registered agent, registered address service) will occur every year, and all these tasks are accompanied by an obligation to provide related expenses and documentations. Do you agree with this?<span className="text-red-500 flex font-bold ml-1">*</span>
                                 </Label>
                                 <RadioGroup
-                                    value={formData.annualRenewalTermsAgreement}
+                                    value={annualRenewalTermsAgreement}
                                     onValueChange={(value) => handleQuestion2Change(value)}
                                     disabled={formData.isDisabled}
                                 >
@@ -141,7 +158,7 @@ const AmlCddUS: React.FC = () => {
                                     </SelectContent>
                                 </Select> */}
                                 <RadioGroup
-                                    value={formData.restrictedCountriesWithActivity}
+                                    value={restrictedCountriesWithActivity}
                                     onValueChange={(e) => setFormData({ ...formData, restrictedCountriesWithActivity: e })}
                                     disabled={formData.isDisabled}
                                 >
@@ -166,7 +183,7 @@ const AmlCddUS: React.FC = () => {
                                     <span className="text-red-500 font-bold ml-1 flex">*</span>
                                 </Label>                               
                                 <RadioGroup
-                                    value={formData.sanctionedTiesPresent}
+                                    value={sanctionedTiesPresent}
                                     onValueChange={(e) => setFormData({ ...formData, sanctionedTiesPresent: e })}
                                     disabled={formData.isDisabled}
                                 >
@@ -203,7 +220,7 @@ const AmlCddUS: React.FC = () => {
                                     </SelectContent>
                                 </Select> */}
                                 <RadioGroup
-                                    value={formData.businessInCrimea}
+                                    value={businessInCrimea}
                                     onValueChange={(e) => setFormData({ ...formData, businessInCrimea: e })}
                                     disabled={formData.isDisabled}
                                 >
@@ -240,7 +257,7 @@ const AmlCddUS: React.FC = () => {
                                     </SelectContent>
                                 </Select> */}
                                 <RadioGroup
-                                    value={formData.involvedInRussianEnergyDefense}
+                                    value={involvedInRussianEnergyDefense}
                                     onValueChange={(e) => setFormData({ ...formData, involvedInRussianEnergyDefense: e })}
                                     disabled={formData.isDisabled}
                                 >

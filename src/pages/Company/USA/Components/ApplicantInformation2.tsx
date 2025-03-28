@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
-// import MultiSelect, { Option } from "@/components/MultiSelectInput";
 import { useAtom } from "jotai"
 import { usaFormWithResetAtom } from "../UsState"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -19,14 +18,13 @@ const list = [
 const ApplicantInformation = () => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const handleRelationshipChange = (relationshipId: string, checked: boolean) => {
-        // console.log(relationshipId, checked)
         setFormData({ ...formData, establishedRelationshipType: checked ? [...formData.establishedRelationshipType, relationshipId] : formData.establishedRelationshipType.filter((id) => id !== relationshipId) });
     };
 
     const checkList = list.map((item) => ({ label: item, id: item }));
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>): void =>{
-        console.log("change",e)
+        // console.log("change",e)
         setFormData({ 
             ...formData, 
             snsAccountId: { 
@@ -37,13 +35,13 @@ const ApplicantInformation = () => {
     }
 
     const handleSelectChange = (value: string) => {
-        console.log("value", value)
+        // console.log("value", value)
         setFormData({ 
             ...formData, 
             snsAccountId: { 
                 ...formData.snsAccountId, 
-                id:value 
-            } 
+                id:value
+            }
         })
     }
     return (
@@ -86,7 +84,7 @@ const ApplicantInformation = () => {
                     <Label htmlFor="phoneNum" className="inline-flex">
                         Phone Number <span className="text-destructive">*</span>
                     </Label>
-                    <Input id="phoneNum" placeholder="Your answer" required value={formData.phoneNum} onChange={(e) => setFormData({ ...formData, phoneNum: e.target.value })} />
+                    <Input id="phoneNum" placeholder="Your answer" required value={formData.phoneNum || ''} onChange={(e) => setFormData({ ...formData, phoneNum: e.target.value })} />
                 </div>              
                 <div className="grid grid-cols-12 gap-4">
             <div className="col-span-4 space-y-2">
@@ -116,7 +114,7 @@ const ApplicantInformation = () => {
               <Input
                 id="snsAccountId"
                 // placeholder={`Enter your ${formData.snsPlatform ? snsPlatforms.find(p => p.id === formData.snsPlatform)?.name : 'SNS'} ID`}
-                value={formData.snsAccountId.value}
+                value={formData.snsAccountId.value || ''}
                 onChange={handleChange}
                 className="w-full"
               />            
