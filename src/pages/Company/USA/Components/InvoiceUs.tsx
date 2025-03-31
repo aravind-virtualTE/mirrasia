@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { getEntityBasicPrice, service_list } from '../constants'
 import { useAtom } from "jotai"
-import { usaFormWithResetAtom } from "../UsState"
+import { usaFormWithResetAtom ,usaPriceAtom} from "../UsState"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -10,11 +10,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 const InvoiceUs: React.FC = () => {
     const [formData,] = useAtom(usaFormWithResetAtom);
+    const [, setUsPrice] = useAtom(usaPriceAtom)
 
     const state = formData.selectedState
     const entity = formData.selectedEntity
     const price = getEntityBasicPrice(state, entity)
     // console.log("price-->", price)
+    useEffect(() => {
+        setUsPrice(price?.price || 0)
+    }, [])
     const fees = [
         {
             description: `${state} (${entity})`,

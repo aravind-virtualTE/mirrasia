@@ -1,107 +1,107 @@
-import { useState } from "react";
-import { Card, CardHeader,  CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-// import { Input } from "@/components/ui/input";
-// import { 
-//     Select, 
-//     SelectContent, 
-//     SelectItem, 
-//     SelectTrigger, 
-//     SelectValue 
-//   } from '@/components/ui/select';
-import DropdownSelect from "@/components/DropdownSelect";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { paymentApi, type PaymentSession } from "@/lib/api/payment";
+import { PaymentUSATimer } from "./payment/PaymentTimer";
+import { PaymentConditions } from "../../payment/PaymentConditions";
+import { PaymentMethods } from "./payment/UsPaymentMethods";
+import { useAtom } from "jotai";
+import { usaFormWithResetAtom, usaPriceAtom } from "../UsState";
 
-const Section15: React.FC = () => {
-    const [selectedOption, setSelectedOption] = useState<string | number>("");
-    // const [otherText, setOtherText] = useState("");
 
-    const handleOptionChange = (value: string | number) => {
-        setSelectedOption(value);
-        // if (value !== "Other") {
-        //     setOtherText("");
-        // }
-    };
-    // const list = [
-    //     {
-    //         value:'creditCard',
-    //         label:'Card payment (Additional charge of 3.5% card processing fee)'
-    //     },
-    //     {
-    //         value:'telegraficTransfer',
-    //         label:'Telegraphic transfer'
-    //     },
-    //     {
-    //         value:'other',
-    //         label:'other'
-    //     },
-    // ]
+// const list = ['Card payment (Additional charge of 3.5% card processing fee)', 'Telegraphic transfer']
 
-    const list = ['Card payment (Additional charge of 3.5% card processing fee)', 'Telegraphic transfer']
-    return (
-        <Card className="max-w-5xl mx-auto mt-2">
-            <CardHeader className="bg-sky-100 dark:bg-sky-900">
-                <p className="inline-flex"> Select payment option </p>
-            </CardHeader>
+const PaymentInformation: React.FC = () => {
+    const [sessionId, setSessionId] = useState<PaymentSession['id']>('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
+    const [usPrice,] = useAtom(usaPriceAtom)
 
-            <CardContent className="space-y-6 pt-6">
-                {/* Consent Statement */}
-                <div className="space-y-2">
-                    <Label htmlFor="relationbtwauth" className="inline-flex">
-                        Please select a payment method for your establishment costs.
-                    </Label>
+      useEffect(() => {
+        const initializePaymentSession = async () => {
+          try {
+            setIsLoading(true);
+            // console.log("formData",formData.id)
+            // const docId = localStorage.getItem('companyRecordId');
+            const sessionData = await paymentApi.createSession(usPrice, 'USD', `${formData._id}`, 'USA');
+            const session = sessionData.session._id;
+            setSessionId(session);
+            // console.log("sessionId-->", session)
+            setFormData({...formData, sessionId: session})
+          } catch (err) {
+            setError('Failed to initialize payment session');
+            console.error('Payment session initialization failed:', err);
+          } finally {
+            setIsLoading(false);
+          }
+        };
+        const updateSession = async () => {
+          try {
+            setIsLoading(true);
+            await paymentApi.updateSession(formData.sessionId, usPrice, 'USD');
+          } catch (err) {
+            console.error('Payment session update failed:', err);
+            setError('Failed to update payment session');
+          } finally {
+            setIsLoading(false);
+          }
+        }
+        if (formData.sessionId == "") {
+          initializePaymentSession();
+        }
+        else {
+          if (formData.sessionId) {
+            setSessionId(formData.sessionId)
+            updateSession()
+          }
+        }
+        setIsLoading(false);
+      }, []);
 
-                    {/* Radio Button Group */}
-                    {/* <RadioGroup value={selectedOption} onValueChange={handleOptionChange}>
-                        <div className="flex gap-4">
-                            <Label className="flex items-center space-x-2 cursor-pointer">
-                                <RadioGroupItem value="creditCard" />
-                                <span>Credit card payment (separate 3.5% fee)
-                                </span>
-                            </Label>
-
-                            <Label className="flex items-center space-x-2 cursor-pointer">
-                                <RadioGroupItem value="OverseasRemittance" />
-                                <span>Overseas remittance
-                                </span>
-                            </Label>
-                            <Label className="flex items-center space-x-2 cursor-pointer">
-                                <RadioGroupItem value="other" />
-                                <span>other
-                                </span>
-                            </Label>
+    if (isLoading) {
+        return (
+            <div className="max-w-4xl mx-auto p-6">
+                <Card>
+                    <CardContent className="p-6">
+                        <div className="flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                         </div>
-                    </RadioGroup> */}
-                    {/* <Select onValueChange={handleOptionChange}>
-                        <SelectTrigger className="w-full md:w-80">
-                        <SelectValue  />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {list.map(item => (
-                                <SelectItem key={item.value} value={item.value}>
-                                    {item.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    {selectedOption === "other" && (
-                        <Input
-                            type="text"
-                            placeholder="Your answer"
-                            value={otherText}
-                            onChange={(e) => setOtherText(e.target.value)}
-                            className="mt-2"
-                        />
-                    )} */}
-                    <DropdownSelect
-                        options={list}
-                        placeholder="Select..."
-                        selectedValue={selectedOption}
-                        onSelect={handleOptionChange}
-                    />
-                </div>
-            </CardContent>
-        </Card>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
+    if (error || !sessionId) {
+        return (
+            <div className="max-w-4xl mx-auto p-6">
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{error || 'Unable to initialize payment session'}</AlertDescription>
+                </Alert>
+            </div>
+        );
+    }
+    return (
+        <div className="max-w-4xl mx-auto p-6 space-y-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-2xl font-bold text-primary">Payment Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <PaymentUSATimer sessionId={sessionId} />
+                    <Separator />
+                    <PaymentMethods sessionId={sessionId} amount={usPrice} id={formData._id} />
+                    <Separator />
+                    <PaymentConditions />
+                    <Separator />
+                </CardContent>
+            </Card>
+        </div>
     );
 };
 
-export default Section15;
+export default PaymentInformation;

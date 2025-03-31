@@ -20,14 +20,13 @@ export function PaymentInformation() {
   const invoiceData = corpoInvoiceAtom[0] as unknown as InvoiceData;
   const [finalForm,] = useAtom(companyIncorporationAtom);
   const updateCompanyData = useSetAtom(PaymentSessionId)
-
   const amount = parseFloat(invoiceData.totals.discounted.replace(/[^0-9.]/g, ''));
   useEffect(() => {
     const initializePaymentSession = async () => {
       try {
         setIsLoading(true);
         const docId = localStorage.getItem('companyRecordId');
-        const sessionData = await paymentApi.createSession(amount, 'USD', docId!); // Amount and currency as needed
+        const sessionData = await paymentApi.createSession(amount, 'USD', docId!, 'HK'); // Amount and currency as needed
         const session = sessionData.session._id;
         setSessionId(session);
         updateCompanyData(session)

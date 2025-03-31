@@ -118,7 +118,7 @@ export function ReceiptUpload({ sessionId }: ReceiptUploadProps) {
     }
 
     setUploadStatus('uploading');
-    const output = await paymentApi.uploadReceipt(sessionId, docId, file);
+    const output = await paymentApi.uploadReceipt(sessionId, docId, file, 'hk');
     // console.log("data---->", output)
     if (output.message == "Receipt uploaded successfully") updateCompanyData(output.result)
     setTimeout(() => {
