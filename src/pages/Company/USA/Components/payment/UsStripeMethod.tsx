@@ -190,7 +190,7 @@ export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPayment
 const STRIPE_CLIENT_ID = import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
 const stripePromise = loadStripe(STRIPE_CLIENT_ID);
 
-export function StripePaymentForm({ sessionId, clientSecret, amount }: CardPaymentFormProps) {
+export function UsStripePaymentForm({ sessionId, clientSecret, amount }: CardPaymentFormProps) {
 
   const [status] = useAtom(statusHkAtom);
   const options = {

@@ -1,6 +1,7 @@
 import { atom } from 'jotai';
 import { Option } from "@/components/MultiSelectInput";
 interface UsaFormData {
+  _id: string;
   email: string;
   userId: string;
   selectedState: string | number;
@@ -52,9 +53,13 @@ interface UsaFormData {
   confirmationBusinessIntention: boolean
   transactionIntention: boolean
   isDisabled : boolean
+  receiptUrl: string
+  sessionId: string
+  paymentId: string
 }
 
 const initialFormState: UsaFormData = {
+  _id: '',
   userId: '',
   email: '',
   selectedState: '',
@@ -98,7 +103,10 @@ const initialFormState: UsaFormData = {
   postIncorporationCapabilities: '',
   confirmationBusinessIntention: false,
   transactionIntention: false,
-  isDisabled : false
+  isDisabled : false,
+  receiptUrl : "",
+  sessionId: '',
+  paymentId: ''
 };
 
 // Create the base atom
@@ -112,6 +120,18 @@ export const usaFormWithResetAtom = atom(
       set(usaFormAtom, initialFormState);
     } else {
       set(usaFormAtom, update);
+    }
+  }
+);
+
+const usPrice = atom(0)
+export const usaPriceAtom = atom(
+  (get) => get(usPrice),
+  (_get, set, update: number | 'reset') => {
+    if (update === 'reset') {
+      set(usPrice, 0);
+    }else{
+      set(usPrice, update);
     }
   }
 );

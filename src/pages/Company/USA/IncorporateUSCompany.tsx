@@ -6,7 +6,7 @@ import Section4 from "./Components/Section4"
 import Section6 from "./Components/Section6"
 import AmlCddUS from "./Components/AmlCddUS"
 import Section14 from "./Components/Section14"
-import Section15 from "./Components/Section15"
+import PaymentInformation from "./Components/Section15"
 // import FormSections from "./Components/Section16"
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -33,13 +33,8 @@ const IncorporateUSACompany = () => {
         { number: 4, label: "Registration Details", active: currentSection === 4 },
         { number: 5, label: "Service Selection", active: currentSection === 5 },
         { number: 6, label: "Invoice", active: currentSection === 6 },
-        // { number: 7, label: "Transaction Sanctions", active: currentSection === 7 },
-        // { number: 6, label: "Company Info", active: currentSection === 6 },
-        // { number: 7, label: "ShareHolder Info", active: currentSection === 7 },
-        // { number: 6, label: "Accounting Data Address", active: currentSection === 6 },
         { number: 7, label: "Consent", active: currentSection === 7 },
         { number: 8, label: "Payment", active: currentSection === 8 },
-        // { number: 13, label: "Company Solutions", active: currentSection === 13 },
         { number: 9, label: "Incorporation", active: currentSection === 9 },
     ];
 
@@ -48,17 +43,14 @@ const IncorporateUSACompany = () => {
             return;
         }
         setIsSubmitting(true);
-        const docId = localStorage.getItem("companyRecordId");
+        // const docId = localStorage.getItem("companyRecordId");
         formData.userId = `${decodedToken.userId}`
-        const payload = { _id: docId, ...formData };
+        const payload = {  ...formData };
         // console.log("formdata", formData)
         try {
-            const response = await api.post(
-                "/company/usa-form",
-                payload
-            );
+            const response = await api.post("/company/usa-form",payload);
             if (response.status === 200) {
-                console.log("formdata", response.data);
+                // console.log("formdata", response.data);
                 window.history.pushState(
                     {},
                     "",
@@ -75,6 +67,38 @@ const IncorporateUSACompany = () => {
     }
     const nextSection = async () => {
         switch (currentSection) {
+            case 1:{
+                const errors = [];
+                if (!formData.name || formData.name.trim() === "" ) {
+                    errors.push("Invalid name format or empty name.");
+                }
+                const email = formData.email
+                if (!email || email.trim() === "" || !/^\S+@\S+\.\S+$/.test(email)) {
+                    errors.push("Invalid email format or empty email.");
+                }
+                const phoneNumber = formData.phoneNum
+                if (!phoneNumber || phoneNumber.trim() === "") {
+                    errors.push("Phone number cannot be empty.");
+                }
+                if (!Array.isArray(formData.companyName) || formData.companyName.length === 0 || formData.companyName[0].trim() === "") {
+                    errors.push("Company Name cannot be empty.");
+                }
+                // establishedRelationshipType
+                if (!Array.isArray(formData.establishedRelationshipType) || formData.establishedRelationshipType.length === 0 || formData.establishedRelationshipType.some(rel => rel.trim() === "")) {
+                    errors.push("Relationships cannot be empty.");
+                }
+                if (errors.length > 0) {
+                    toast({
+                        title: "Fill Details",
+                        description: errors.join("\n"),
+                    })
+                } else {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+                break
+            }
             case 2:
                 {
                     const rcActivity = formData.restrictedCountriesWithActivity
@@ -150,7 +174,7 @@ const IncorporateUSACompany = () => {
                             {currentSection === 5 && <Section6 />}
                             {currentSection === 6 && <InvoiceUs />}
                             {currentSection === 7 && <Section14 />}
-                            {currentSection === 8 && <Section15 />}
+                            {currentSection === 8 && <PaymentInformation />}
                             {currentSection === 9 && <FinalSection />}
                         </motion.div>
                     </AnimatePresence>
