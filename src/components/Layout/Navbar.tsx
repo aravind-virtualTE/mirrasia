@@ -10,10 +10,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 import { useState } from "react";
-// import Logo from '@/common/LogoComponent';
 import ToggleTheme from '@/hooks/ToggleTheme';
-// import { useAtom } from 'jotai';
-// import { authAtom } from "@/hooks/useAuth";
+
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
 import { useTheme } from "@/components/theme-provider";
@@ -22,13 +20,15 @@ import { allCompListAtom } from "@/services/state";
 import { useAtom } from "jotai";
 import { usaFormWithResetAtom } from "@/pages/Company/USA/UsState";
 
+import AdminNotification from "./AdminNotification";
+
 export default function Navbar() {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const navigate = useNavigate();
     const { theme } = useTheme();
     const [, setAllList] = useAtom(allCompListAtom)
     const [, setUSForm] = useAtom(usaFormWithResetAtom)
-    
+
     const resetAllForms = useResetAllForms();
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
@@ -62,17 +62,6 @@ export default function Navbar() {
     return (
         <header className="flex h-14 items-center gap-4 border-b bg-background px-6 sticky top-0 z-50">
             <span className="flex items-center space-x-2 font-bold cursor-pointer" onClick={navigateRoute}>
-                {/* <Logo />
-                <span
-                    className="text-black font-extrabold tracking-wide"
-                    style={{
-                        fontSize: '24px',
-                        fontFamily: 'Arial, sans-serif',
-                        letterSpacing: '0.1em',
-                    }}
-                >
-                    MIRR ASIA
-                </span> */}
                 <img
                     src={theme === 'light' ? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png" : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"}
                     alt="MIRRASIA"
@@ -96,6 +85,7 @@ export default function Navbar() {
             </div>
             <ToggleTheme />
             <LanguageSwitcher />
+            {decodedToken.role === 'admin' || decodedToken.role === 'master' ? (<AdminNotification />) : ""}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
