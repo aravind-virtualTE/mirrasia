@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState , useEffect} from 'react'
 import { Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -7,8 +7,10 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { Badge } from "../ui/badge";
+import { getNotificList } from '@/lib/api/FetchData';
 
 const AdminNotification: React.FC = () => {
+
     const [notifications, setNotifications] = useState([
         {
             id: 1,
@@ -32,6 +34,16 @@ const AdminNotification: React.FC = () => {
             read: true,
         },
     ]);
+
+    useEffect(() => {
+        // console.log("Notifications:", notifications);
+        // Simulate fetching notifications from an API
+        const getData = async () =>{
+            const response = await getNotificList()
+            setNotifications(response)
+        }
+        getData()
+    }, []);
 
     const unreadCount = notifications.filter(notification => !notification.read).length;
 
