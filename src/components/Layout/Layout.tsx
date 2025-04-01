@@ -1,41 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import {
-    // Globe,
-    Menu, Home,
-    // Settings, HelpCircle,
-    // Rocket,
-    Users,
-    // PenSquare,
-    // Mail,
-    FileSignature,
-    Files,
-    // CreditCard, 
-    RefreshCw, Briefcase,
-    // User2,
-    // Gift,
-    // Receipt,
-} from 'lucide-react'
+import { Menu, Home,Users,FileSignature,Files,
+    RefreshCw, Briefcase} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import {
-    ResizableHandle,
-    ResizablePanel,
-    ResizablePanelGroup,
+    ResizableHandle,ResizablePanel,ResizablePanelGroup,
 } from "@/components/ui/resizable"
-// import { Card, CardContent } from '../ui/card';
 import Navbar from './Navbar';
-// import { useTheme } from '../theme-provider';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 import { useResetAllForms } from '@/lib/atom';
-// import HelpDesk from '../HelpDesk';
+import HelpDesk from '../HelpDesk';
 
 const Layout: React.FC = () => {
     const [isCollapsed, setIsCollapsed] = useState(false)
-    // Handle responsive collapse based on screen size
     const navigate = useNavigate();
     const resetAllForms = useResetAllForms();
-    // const { theme } = useTheme();
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 1024) { // 1024px is Tailwind's 'lg' breakpoint
@@ -161,7 +141,6 @@ const Layout: React.FC = () => {
                                         </Button>
                                     ))}
                             </nav>
-
                         </div>
                         <div className="p-4 hidden lg:block">
                             <Button
@@ -177,9 +156,7 @@ const Layout: React.FC = () => {
                         </div>
                     </div>
                 </ResizablePanel>
-
                 <ResizableHandle withHandle={false} />
-
                 {/* Main Content */}
                 <ResizablePanel defaultSize={82} className="flex flex-col">
                     <main className="flex-1 overflow-y-auto">
@@ -187,7 +164,7 @@ const Layout: React.FC = () => {
                     </main>
                 </ResizablePanel>
             </ResizablePanelGroup>
-            {/* <HelpDesk /> */}
+            <HelpDesk />
         </div>
     )
 }
