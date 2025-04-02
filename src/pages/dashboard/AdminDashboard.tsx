@@ -149,7 +149,7 @@ const AdminDashboard = () => {
     return (
         <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
             {/* Stats Cards */}
-            <StatsCard stats={calculateStats()} />;
+            <StatsCard stats={calculateStats()} />
             {/* Companies Table */}
             <Card>
                 <CardHeader>
@@ -221,7 +221,7 @@ const AdminDashboard = () => {
                                             </button>
                                         </TableCell>
                                     </TableRow>
-                                );
+                                )
                             })}
                         </TableBody>
 

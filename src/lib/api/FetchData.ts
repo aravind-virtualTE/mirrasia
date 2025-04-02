@@ -10,4 +10,13 @@ export const getNotificList = async () => {
       // throw new Error('Fetching Failed For Company Incorporation List');
     }
 };
-  
+
+
+export const getSignCompNames = async (id?: string) => {
+  try {
+    const response = await api.get(`company/getCompanySignData/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company documents:", error);
+  }  
+}

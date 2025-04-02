@@ -41,6 +41,7 @@ import BkFrmList from './pages/BankForms/BkFrmList';
 import SwitchServicesList from './pages/SwitchServices/SwitchServicesList';
 import AccountingHkList from './pages/AccountingForms/AccountingHkList';
 import InviteUsaDirShir from './pages/InviteUsaDirShir/USA/InviteUsaDirShir';
+import ServiceAgreementSignDocs from './components/ServiceAgreementSignDocs/ServiceAgreementSignDocs';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -99,6 +100,8 @@ const App: React.FC = () => {
                     <Route path="/switch-services-list" element={<SwitchServicesList />} />
                     <Route path="/accounting-support-list" element={<AccountingHkList />} />
                     <Route path="/member-registration" element={<InviteUsaDirShir />} />
+                    <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
+                    
                   </Route>
                 </Route>
 

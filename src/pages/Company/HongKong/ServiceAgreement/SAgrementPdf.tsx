@@ -37,7 +37,7 @@ import { RegisterMembers } from "@/types/hkForm";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 
-const SAgrementPdf: React.FC = () => {
+const SAgrementPdf: React.FC<{ id: string }> = ({ id }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSaveLoading, setIsSaveLoading] = useState(false);
     const [serviceAgrementDetails, setServiceAgrement] =  useAtom(serviceAgreement);
@@ -116,7 +116,7 @@ const SAgrementPdf: React.FC = () => {
         );
         // .filter(record => record.isDirector === false )
 
-        console.log("companyData===>", companyData)
+        // console.log("companyData===>", companyData)
         const shareholderArr = shareHolderDir
             .filter((item) => Number(item.ownershipRate) !== 0)
             .map((record) => ({
@@ -154,8 +154,10 @@ const SAgrementPdf: React.FC = () => {
     };
     const fetchSavedData = async () => {
         try {
-            const companyId = localStorage.getItem("companyRecordId");
-            const response = await getSavedServiceAggrmtData(companyId!);
+            // const companyId = localStorage.getItem("companyRecordId");
+            // const response = await getSavedServiceAggrmtData(companyId!);
+            // console.log("id",id)
+            const response = await getSavedServiceAggrmtData(id);
             setId(response.id);
             // console.log("response-=======->", response);
             return response;
@@ -274,8 +276,8 @@ const SAgrementPdf: React.FC = () => {
             }
             return member;
         });
-        console.log("companyData---->",companyData)
-        console.log("savedData",savedData)
+        // console.log("companyData---->",companyData)
+        // console.log("savedData",savedData)
         return {
             ...companyData,
             ...savedData,
@@ -299,13 +301,13 @@ const SAgrementPdf: React.FC = () => {
             const preparedCompanyData = prepareCompanyData();
             const savedData = await fetchSavedData();
             const mergedData = mergeData(preparedCompanyData, savedData);
-            // console.log("mergedData======>",mergedData)
+            console.log("mergedData======>",mergedData)
             setServiceAgrement(mergedData);
             setIsFetching(false);
         };
 
         initializeData();
-    }, [companyData]);
+    }, [id]);
 
     const componentRefs = useRef([
         "appointmentLetter",
@@ -414,16 +416,10 @@ const SAgrementPdf: React.FC = () => {
         });
     };
 
-    // const handleMemberChange = (index: number, field: string, value: string | number) => {
-    //     const updatedMembers = [...(serviceAgrementDetails.registeredMembers || [])];
-    //     updatedMembers[index] = { ...updatedMembers[index], [field]: value };
-    //     setServiceAgrement({ ...serviceAgrementDetails, registeredMembers: updatedMembers });
-    // };
     const handleMemberChange = (index: number, field: string, value: string | number) => {
         const updatedMembers = [...(serviceAgrementDetails.registeredMembers || [])];
         const memberToUpdate = { ...updatedMembers[index] };
     
-        // Handle nested fields using dot notation
         let fieldParts
 
         if(field === 'entries'){
