@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Menu, Home,Users,FileSignature,Files,
-    RefreshCw, Briefcase} from 'lucide-react'
+    RefreshCw, Briefcase, FileCheck } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import {
@@ -39,6 +39,7 @@ const Layout: React.FC = () => {
         { icon: <Files className="h-6 w-6" />, label: "Company Documents", roles: ['user', 'admin', 'master',] },
         { icon: <RefreshCw className="h-6 w-6" />, label: "Switch Services List", roles: ['user', 'admin', 'master',] },
         { icon: <Briefcase className="h-6 w-6" />, label: "Accounting List", roles: ['user', 'admin', 'master',] },
+        { icon: <FileCheck  className="w-4 h-4" />, label: "Sign Docs", roles: ['user', 'admin', 'master'] },
 
         // { icon: <CreditCard className="h-6 w-6" />, label: "HK Bank Account List" },
         // { icon: <Settings className="h-5 w-5" />, label: "Settings" },
@@ -47,7 +48,6 @@ const Layout: React.FC = () => {
         // { icon: <User2 className="w-4 h-4" />, label: "Company Secretary" },
         // { icon: <Users className="w-4 h-4" />, label: "Requests" },
         // { icon: <Gift className="w-4 h-4" />, label: "Perks" },
-        // { icon: <Receipt className="w-4 h-4" />, label: "Billings & Subscriptions" },
         // { icon: <HelpCircle className="w-4 h-4" />, label: "Support" },
     ];
     const token = localStorage.getItem('token') as string;
@@ -101,6 +101,9 @@ const Layout: React.FC = () => {
                 break;
             case 'Accounting List':
                 navigate('/accounting-support-list');
+                break;
+            case 'Sign Docs':
+                navigate('/service-agreement-sign-docs');
                 break;
             // Add other navigation cases as needed
         }

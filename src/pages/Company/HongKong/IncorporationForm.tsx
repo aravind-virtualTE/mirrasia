@@ -25,7 +25,7 @@ import IncorporateCompany from "./IncorporateCompany";
 import Invoice from "./Invoice";
 import { PaymentInformation } from "../payment/PaymentInformation";
 import ApplicantInfoForm from "./ApplicantInfo";
-import SAgrementPdf from "./ServiceAgreement/SAgrementPdf";
+// import SAgrementPdf from "./ServiceAgreement/SAgrementPdf";
 import api from "@/services/fetch";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
@@ -65,12 +65,12 @@ const IncorporationForm = () => {
             label: "Information For Incorporation",
             active: currentSection === 8,
         },
-        {
-            number: 9,
-            label: "Signing Incorporation Documents",
-            active: currentSection === 9,
-        },
-        { number: 10, label: "Incorporation", active: currentSection === 10 },
+        // {
+        //     number: 9,
+        //     label: "Signing Incorporation Documents",
+        //     active: currentSection === 9,
+        // },
+        { number: 9, label: "Incorporation", active: currentSection === 9 },
     ];
 
     const addLimitedSuffixConcise = (items: string[]) => {
@@ -307,8 +307,8 @@ const IncorporationForm = () => {
                             {currentSection === 6 && <Invoice />}
                             {currentSection === 7 && <PaymentInformation />}
                             {currentSection === 8 && <InformationIncorporation />}
-                            {currentSection === 9 && <SAgrementPdf />}
-                            {currentSection === 10 && <IncorporateCompany />}
+                            {/* {currentSection === 9 && <SAgrementPdf />} */}
+                            {currentSection === 9 && <IncorporateCompany />}
                         </motion.div>
                     </AnimatePresence>
                 </div>

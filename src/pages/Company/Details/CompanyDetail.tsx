@@ -186,7 +186,7 @@ const CompanyDetail = () => {
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
         updateCompanyData(company);
-        console.log("company", company)
+        // console.log("company", company)
         // Applicant Information Section
         if (company.applicantInfoForm) {
             sections.push({
@@ -643,7 +643,7 @@ const CompanyDetail = () => {
             <TabsContent value="service-agreement">
                 <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
                     <h1 className="text-2xl font-bold mb-6">Service Agreement Details</h1>
-                    <SAgrementPdf />
+                    {id && <SAgrementPdf id={id} />}
                 </div>
             </TabsContent>
         </Tabs>
