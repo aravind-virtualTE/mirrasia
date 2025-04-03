@@ -46,7 +46,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
             }
             return data;
         }
-        
+
         getUsData().then((result) => {
             // console.log("result-->", result);
             setFormData(result)
@@ -66,7 +66,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 Phone: formData.phoneNum,
                 Relationships:
                     formData.establishedRelationshipType?.join(", ") || "N/A",
-                "SNS Account ID": formData.snsAccountId,
+                "SNS Account ID": formData.snsAccountId.id,
+                "SNS Account Number": formData.snsAccountId.value,
             },
         });
 
@@ -174,7 +175,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         return generateSections(formData, session);
     }, [formData, session]);
 
-    console.log("formData--->", formData)
+    console.log("section--->", sections)
 
     const handleUpdate = async () => {
         console.log("Updating company data...");
@@ -220,6 +221,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                 // if (key == 'AML/CDD Edit') return <TableRow key={key}><AMLCDDEdit /></TableRow>
                                                 // if (key == 'Payment Status') return <TableRow key={key}><PaymentStatus /></TableRow>
                                                 // if (key == 'Payment Expire Date') return <TableRow key={key}><ExtendPaymentTimer /></TableRow>
+                                                console.log("key, value",key, value)
                                                 return (
                                                     <TableRow key={key}>
                                                         <TableCell className="font-medium">{key}</TableCell>
