@@ -135,8 +135,8 @@ const AdminDashboard = () => {
         }, initialStats)
     }
     // console.log('calculateStats', calculateStats())
-    const handleRowClick = (companyId: string) => {
-        navigate(`/company-details/${companyId}`);
+    const handleRowClick = (companyId: string, countryCode:string) => {
+        navigate(`/company-details/${countryCode}/${companyId}`);
         localStorage.setItem('companyRecordId', companyId);
     };
 
@@ -187,7 +187,7 @@ const AdminDashboard = () => {
                                     <TableRow key={typedCompany._id}>
                                         <TableCell
                                             className="font-medium cursor-pointer"
-                                            onClick={() => handleRowClick(typedCompany._id)}
+                                            onClick={() => handleRowClick(typedCompany._id,typedCompany.country.code)}
                                         >
                                             {typedCompany.companyName.filter(Boolean).join(", ") || "N/A"}
                                         </TableCell>
