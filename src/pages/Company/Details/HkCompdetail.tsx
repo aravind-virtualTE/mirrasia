@@ -233,7 +233,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         // Shareholder and Director Information Section
         if (company.shareHolderDirectorController) {
             const shareholderData = company.shareHolderDirectorController;
-
+            console.log("shareholderData",shareholderData)
             sections.push({
                 title: "Shareholder and Director Information",
                 data: {
@@ -551,7 +551,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const handleUpdate = async () => {
 
         const payload = JSON.stringify({
-            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate },
+            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK" },
             session: { id: session._id, expiresAt: (session.expiresAt), status: session.status }
         })
         // {

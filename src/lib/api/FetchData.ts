@@ -20,3 +20,12 @@ export const getSignCompNames = async (id?: string) => {
     console.error("Error fetching company documents:", error);
   }  
 }
+
+export const updateNotifications = async (ids: string[]): Promise<{ message: string; modifiedCount?: number } | void> => {
+    try {
+        const response = await api.post('company/updateNotificationStatus', { ids });
+        return response.data;
+    } catch (error) {
+        console.error("Error updating notifications:", error);
+    }
+}
