@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { Option } from "@/components/MultiSelectInput";
-interface UsaFormData {
+export interface UsaFormData {
   _id: string;
   email: string;
   userId: string;
@@ -56,6 +56,8 @@ interface UsaFormData {
   receiptUrl: string
   sessionId: string
   paymentId: string
+  status: string
+  incorporationDate: string
 }
 
 const initialFormState: UsaFormData = {
@@ -106,7 +108,9 @@ const initialFormState: UsaFormData = {
   isDisabled : false,
   receiptUrl : "",
   sessionId: '',
-  paymentId: ''
+  paymentId: '',
+  status: "pending",
+  incorporationDate:"",
 };
 
 // Create the base atom
