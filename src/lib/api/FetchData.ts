@@ -29,3 +29,14 @@ export const updateNotifications = async (ids: string[]): Promise<{ message: str
         console.error("Error updating notifications:", error);
     }
 }
+
+export const getSwitchServicesList = async (id?: string) => {
+  try {
+    const response = await api.get('/switch/switch_services', {
+      params: id ? { id } : {}
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching switch services:", error);
+  }
+};
