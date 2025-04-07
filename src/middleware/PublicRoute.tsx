@@ -24,6 +24,7 @@ const PublicRoute: React.FC = () => {
       // If token is invalid, clear authentication and allow access to public routes
       localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
     }
   }
 
