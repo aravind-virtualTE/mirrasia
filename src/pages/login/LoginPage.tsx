@@ -28,9 +28,10 @@ const LoginComponent: React.FC = () => {
     try {
       // localStorage.setItem('isAuthenticated', 'true');
       const response = await loginWithEmail(email, password);    
-      // console.log("response", response)
+      console.log("response", response)
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem("token", response.token);
+      localStorage.setItem("user", JSON.stringify(response.user))
       setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
       if(response.user.role === 'admin' || response.user.role === 'master') {
         navigate('/admin-dashboard');
@@ -58,8 +59,8 @@ const LoginComponent: React.FC = () => {
         .then((response) => {
           localStorage.setItem('isAuthenticated', 'true');
           localStorage.setItem('token', response.token);
-          // console.log('response', response);
-  
+          console.log('response', response);
+          localStorage.setItem("user", JSON.stringify(response.user))
           setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
   
           if (response.user.role === 'admin' || response.user.role === 'master') {

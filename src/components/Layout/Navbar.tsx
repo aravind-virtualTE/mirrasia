@@ -35,7 +35,7 @@ export default function Navbar() {
     const decodedToken = jwtDecode<TokenData>(token);
     const navigateRoute = () => {
         resetAllForms()
-        setAllList('reset')
+        // setAllList('reset')
         setUSForm('reset')
         if (['admin', 'master'].includes(decodedToken.role)) {
             navigate('/admin-dashboard');
@@ -51,6 +51,7 @@ export default function Navbar() {
     const logout = async () => {
         localStorage.setItem('isAuthenticated', 'false');
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         localStorage.removeItem('companyRecordId');
         window.dispatchEvent(new Event('storage'));
         resetAllForms()

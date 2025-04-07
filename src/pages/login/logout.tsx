@@ -8,6 +8,7 @@ const Logout = () => {
     const logout = async () => {
       localStorage.setItem("isAuthenticated", "false");
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       localStorage.removeItem("companyRecordId");
       window.dispatchEvent(new Event("storage"));
       resetAllForms();

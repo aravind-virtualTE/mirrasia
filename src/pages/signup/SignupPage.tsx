@@ -83,7 +83,7 @@ const SignupPage = () => {
       // console.log("response==>", token, user);
       // Save the token to localStorage
       localStorage.setItem("token", token);
-
+      localStorage.setItem("user", user)
       setAuth({ user, isAuthenticated: true, loading: false, error: null });
       localStorage.setItem("isAuthenticated", "true");
       if (user.role === "admin") {
@@ -116,6 +116,7 @@ const SignupPage = () => {
         // Save the token to localStorage
         localStorage.setItem("token", token);
         localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("user", user)
         setAuth({ user, isAuthenticated: true, loading: false, error: null });
         if (user.role === "admin") {
           navigate("/admin-dashboard");
