@@ -9,15 +9,16 @@ import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
 import { Pencil } from "lucide-react"
 
-interface User {
+export interface User {
     _id?: string;
     fullName: string;
     email: string;
     role: string;
+    picture: string;
 }
 
 const UsersList = () => {
-    const [users, setUsers] = useState<User[]>([{ _id: "", fullName: "", email: "", role: "" }])
+    const [users, setUsers] = useState<User[]>([{ _id: "", fullName: "", email: "", role: "", picture:"" }])
     const [newUser, setNewUser] = useState({ fullName: "", email: "", role: "user" })
     const [isAddUserOpen, setIsAddUserOpen] = useState(false)
     const [isEditRoleOpen, setIsEditRoleOpen] = useState(false)

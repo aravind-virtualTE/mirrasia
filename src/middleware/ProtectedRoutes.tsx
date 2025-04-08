@@ -30,6 +30,7 @@ const ProtectedRoute: React.FC<{ allowedRoles?: string[] }> = ({ allowedRoles })
 
   if (!isAuthenticated || isTokenExpired) {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     localStorage.removeItem("isAuthenticated");
     return <Navigate to="/login" replace />;
   }

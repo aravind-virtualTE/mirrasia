@@ -24,28 +24,6 @@ export type FormDataType = {
   companyName: string[];
   chinaCompanyName : string[]
 };
-
-export type SwitchFormDataType = {
-  name: string;
-  relationships: Option[];
-  contactInfo: string;
-  designatedContactPerson: string,
-  snsAccountId: '',
-  snsPlatform: '',
-  phoneNumber: '',
-  email: '',
-  companyName: ["", "", ""],
-  chinaCompanyName: ["", "", ""],
-};
-
-export type SwitchIntentionDataType = {
-  legalIssues: string,
-  maintenanceCost: string,
-  documentsSubmission: string,
-  taxExemption: string,
-  falsifyTax: string,
-};
-
 // corporate incorporation applicant info (section 1)
 export const applicantInfoFormAtom = atomWithReset<FormDataType>({
   name: '',
@@ -58,27 +36,7 @@ export const applicantInfoFormAtom = atomWithReset<FormDataType>({
   companyName: ["", "", ""],
   chinaCompanyName: ["", "", ""],
 });
-// switch applicant info (section 1)
-export const switchApplicantInfoFormAtom = atomWithReset<SwitchFormDataType>({
-  name: '',
-  relationships: [],
-  designatedContactPerson: '',
-  contactInfo: '',
-  snsAccountId: '',
-  snsPlatform: '',
-  phoneNumber: '',
-  email: '',
-  companyName: ["", "", ""],
-  chinaCompanyName: ["", "", ""],
-});
-// switch bussinees intentions (section 1)
-export const switchIntenstionsFormAtom = atomWithReset<SwitchIntentionDataType>({
-  legalIssues:"",
-  maintenanceCost:"",
-  documentsSubmission:"",
-  taxExemption:"",
-  falsifyTax:"",
-});
+
 
 // corporate incorporation aml/cdd legal ethical assessment (section 2)
 export const businessInfoHkCompanyAtom = atomWithReset<Record<string, string | undefined>>({

@@ -1,5 +1,3 @@
-import { Card, CardHeader, CardContent } from "@/components/ui/card"
-
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,6 +13,7 @@ import { HelpCircle } from "lucide-react"
 import MultiSelect, { Option } from "@/components/MultiSelectInput"
 import { useAtom } from 'jotai';
 import { usaFormWithResetAtom } from '../UsState';
+import { useTheme } from "@/components/theme-provider";
 
 const list = [
     'Cryptocurrency-related (cryptocurrency issuance, sale, donation, ICO, exchange, wallet service, etc.)', 'Development of IT, blockchain, software, etc.', 'Cryptocurrency-based investment-related business', 'Cryptocurrency-based games', 'foreign exchange trading', 'Finance, investment, advisory, loan business, etc.', 'trade industry', 'Wholesale/retail distribution industry', 'consulting', 'manufacturing', 'Online service industry (e-commerce)', 'Online direct purchase/delivery/purchase agency', 'Other'
@@ -28,7 +27,7 @@ const Section9 = () => {
     // const [selectedIndustry, setSelectedOption] = useState("");
     // const [otherText, setOtherText] = useState("");
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
-
+    const { theme } = useTheme();
     // const handleOptionChange = (value: string) => {
     //     setSelectedOption(value);
     //     if (value !== "Other") {
@@ -49,19 +48,19 @@ const Section9 = () => {
     const purposeList = list2.map((item) => ({ label: item, value: item }));
     const industryList = list.map((item) => ({ label: item, value: item }));
     return (
-        <Card className="max-w-5xl mx-auto mt-2">
-            <CardHeader className="bg-sky-100 dark:bg-sky-900">                
-                <p className="inline-flex">Business information of the proposed US company. <Tooltip>
-                    <TooltipTrigger asChild>
-                        <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-[500px] text-base">
-                        In this section, you can enter information about the U.S. company you wish to establish and related business.
-                    </TooltipContent>
-                </Tooltip></p>
-            </CardHeader>
-
-            <CardContent className="space-y-6 pt-6">
+        <div className='flex flex-col md:flex-row w-full p-4'>
+             <aside
+              className={`w-full md:w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
+                ? "bg-blue-50 text-gray-800"
+                : "bg-gray-800 text-gray-200"
+                }`}
+            >
+              <h2 className="text-m font-semibold mb-0">
+                Business information of the proposed US company.
+              </h2>
+              <p className="text-sm text-gray-600"> In this section, you can enter information about the U.S. company you wish to establish and related business.</p>
+            </aside>
+            <div className="w-3/4 ml-4">
                 {/* select Industry */}
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="text-base flex items-center font-semibold gap-2">
@@ -157,8 +156,8 @@ const Section9 = () => {
 
                 </div>
 
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     )
 }
 

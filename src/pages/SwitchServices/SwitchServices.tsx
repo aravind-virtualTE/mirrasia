@@ -1,12 +1,20 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { CountryState } from "@/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SwitchForm from './HongKong/switchForm';
-
+import { useParams } from "react-router-dom";
 
 const SwitchServices = () => {
     const [countryState, setCountryState] = useState<CountryState>({ code: undefined, name: undefined });
+    const { countryCode, id } = useParams();
+
+    useEffect(() => {
+        if (id) {
+            console.log("Testing..", countryCode)
+        }
+    }, [id])
+
 
     const countries = [
         { code: 'HK', name: 'Hong Kong' },
@@ -31,7 +39,7 @@ const SwitchServices = () => {
 
         switch (countryState.code) {
             case 'HK':
-                return <SwitchForm></SwitchForm>;
+                return <SwitchForm />;
             case 'US':
                 return <div>Switch Service form for {countryState.name} is not available yet.</div>;
             case 'SG':

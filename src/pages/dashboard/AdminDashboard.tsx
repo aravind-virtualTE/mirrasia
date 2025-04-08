@@ -135,8 +135,8 @@ const AdminDashboard = () => {
         }, initialStats)
     }
     // console.log('calculateStats', calculateStats())
-    const handleRowClick = (companyId: string) => {
-        navigate(`/company-details/${companyId}`);
+    const handleRowClick = (companyId: string, countryCode:string) => {
+        navigate(`/company-details/${countryCode}/${companyId}`);
         localStorage.setItem('companyRecordId', companyId);
     };
 
@@ -149,7 +149,7 @@ const AdminDashboard = () => {
     return (
         <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
             {/* Stats Cards */}
-            <StatsCard stats={calculateStats()} />;
+            <StatsCard stats={calculateStats()} />
             {/* Companies Table */}
             <Card>
                 <CardHeader>
@@ -187,7 +187,7 @@ const AdminDashboard = () => {
                                     <TableRow key={typedCompany._id}>
                                         <TableCell
                                             className="font-medium cursor-pointer"
-                                            onClick={() => handleRowClick(typedCompany._id)}
+                                            onClick={() => handleRowClick(typedCompany._id,typedCompany.country.code)}
                                         >
                                             {typedCompany.companyName.filter(Boolean).join(", ") || "N/A"}
                                         </TableCell>
@@ -221,7 +221,7 @@ const AdminDashboard = () => {
                                             </button>
                                         </TableCell>
                                     </TableRow>
-                                );
+                                )
                             })}
                         </TableBody>
 

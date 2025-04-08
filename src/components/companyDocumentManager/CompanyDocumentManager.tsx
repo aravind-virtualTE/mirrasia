@@ -182,7 +182,7 @@ const CompanyDocumentManager: React.FC = () => {
 
     // Send data to backend
     try {
-      console.log('Updated companies:', updatedCompanies);
+      // console.log('Updated companies:', updatedCompanies);
       await uploadCompanyDocs(updatedCompanies);
       toast({
         title: documentToReplace ? "Document replaced" : "Documents added",
@@ -218,7 +218,7 @@ const CompanyDocumentManager: React.FC = () => {
 
   // Delete document handler
   const deleteDocument = async (): Promise<void> => {
-    console.log("triggered")
+    // console.log("triggered")
     if (!selectedCompany || !documentToDelete) return;
 
     const updatedCompanies = [...companies];
@@ -254,7 +254,7 @@ const CompanyDocumentManager: React.FC = () => {
 
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
-      <div className="mb-8">
+      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h1 className="text-2xl font-bold mb-4">Company Document Manager</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <Select onValueChange={handleCompanySelect} value={selectedCompany?.id}>

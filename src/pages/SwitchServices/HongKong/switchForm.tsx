@@ -1,53 +1,28 @@
 import { useState } from "react";
-import { useAtom, useSetAtom } from "jotai";
-import { useToast } from "@/hooks/use-toast";
-import {
-    switchIntenstionsFormAtom,
-    legalAcknowledgementDialougeAtom,
-    companyIncorporationAtom,
-    shareHolderDirectorControllerAtom,
-    updateCompanyIncorporationAtom,
-    countryAtom,
-    switchApplicantInfoFormAtom,
-} from "@/lib/atom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LightbulbIcon } from "lucide-react";
+import { useAtom } from "jotai";
+// import { useToast } from "@/hooks/use-toast";
+import {countryAtom,} from "@/lib/atom";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/components/theme-provider";
-// import AmlCdd from "./AmlCdd";
-// import CompanyInformation from "./CompanyInformation";
-// import InformationIncorporation from "./InformationIncorporation";
-// import ServiceAgreement from "./ServiceAgreement";
-// import ServiceSelection from "./ServiceSelection";
 import { motion, AnimatePresence } from "framer-motion";
-// import IncorporateCompany from "./IncorporateCompany";
-// import Invoice from "./Invoice";
-// import { PaymentInformation } from "../payment/PaymentInformation";
 import ApplicantInfoForm from "./ApplicantInfo";
 import BusinessIntentions from "./BusinessIntentions";
-import Consultation from "./Consultation";
-// import SAgrementPdf from "./ServiceAgreement/SAgrementPdf";
 import api from "@/services/fetch";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
-import { paymentApi } from '@/lib/api/payment';
-
+import TradeSanctions from "./TradeSanctions";
+import BusinessInformation from "./BusinessInformation";
+import TransactionRelated from "./TransactionRelated";
+import AccountingTaxation from "./AccountingTaxation";
+import HongKongServicesForm from "./HKServicesForm";
+import { switchServicesFormAtom } from './ssState'; 
 const SwitchForm = () => {
-    const { theme } = useTheme();
-    const { toast } = useToast();
+    // const { toast } = useToast();
     const [currentSection, setCurrentSection] = useState(1);
-    const [, setAcknowledgementDialouge] = useAtom(
-        legalAcknowledgementDialougeAtom
-    );
-    const [formData] = useAtom(switchApplicantInfoFormAtom);
-    const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
-    const [finalForm] = useAtom(companyIncorporationAtom);
-    const [businessInfoHkCompany] = useAtom(switchIntenstionsFormAtom);
-    const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
-    const token = localStorage.getItem("token") as string;
     const [countryState] = useAtom(countryAtom);
-
+    const [state, ] = useAtom(switchServicesFormAtom);
+    const token = localStorage.getItem("token") as string;
     const decodedToken = jwtDecode<TokenData>(token);
 
     const steps = [
@@ -57,46 +32,32 @@ const SwitchForm = () => {
             active: currentSection === 1,
         },
         { number: 2, label: "Business Intentions", active: currentSection === 2 },
-        { number: 3, label: "Consultation", active: currentSection === 3 },
+        { number: 3, label: "Trade Sanctions", active: currentSection === 3 },
+        { number: 4, label: "Business Information", active: currentSection === 4 },
+        { number: 5, label: "Transaction Information", active: currentSection === 5 },
+        { number: 6, label: "Accounting Taxation", active: currentSection === 6 },
+        { number: 7, label: "Services Form", active: currentSection === 7 },
+        
+        
     ];
-
-    const addLimitedSuffixConcise = (items: string[]) => {
-        const limitedRegex = /limited$/i;
-        return items.map((item: string) =>
-            item === "" ? item : !limitedRegex.test(item) ? item + " Limited" : item
-        );
-    };
 
     const updateDoc = async () => {
         try {
-            const docId = localStorage.getItem("companyRecordId");
-            finalForm.userId = `${decodedToken.userId}`;
-            if (currentSection === 2) finalForm.isDisabled = true;
-            if (currentSection === 1) {
-                let compNames = finalForm.applicantInfoForm.companyName;
-                compNames = addLimitedSuffixConcise(compNames);
-                finalForm.applicantInfoForm.companyName = compNames;
-            }
-            const payload = { _id: docId, ...finalForm };
-            if (finalForm.applicantInfoForm.name !== "") {
-                const response = await api.post(
-                    "/company/company-incorporation",
-                    payload
+            state.userId = `${decodedToken.userId}`
+            const payload = {  ...state };
+            const response = await api.post("/switch/save-servicedata",payload);
+            // console.log("response--->", response);
+            if (response.status === 200 ||  response.status === 201) {
+                // console.log("formdata", response.data);
+                window.history.pushState(
+                    {},
+                    "",
+                    `/switch-services/${response.data._id}`
                 );
-                if (response.status === 200) {
-                    if (response.data && response.data.data._id) {
-                        localStorage.setItem("companyRecordId", response.data.data._id);
-                        updateCompanyData(response.data.data);
-                        window.history.pushState(
-                            {}, 
-                            "", 
-                            `/company-register/${response.data.data.country.code}/${response.data.data._id}`
-                        );
-                    }
-                } else {
-                    console.log("error-->", response);
-                }
+            } else {
+                console.log("error-->", response);
             }
+
         } catch (error) {
             console.error("Error updating document:", error);
         }
@@ -104,108 +65,9 @@ const SwitchForm = () => {
     // console.log("finalForm",finalForm)
 
     const nextSection = async () => {
-        if (
-            currentSection === 2 &&
-            Object.values(businessInfoHkCompany).some((value) => value === undefined)
-        ) {
-            toast({
-                title: "Fill Details",
-                description: "Fill all the required fields",
-            });
-        }
-        if (
-            currentSection === 2
-        ) {
-            setCurrentSection(currentSection + 1);
-        }
-        else if (currentSection === 1) {
-            // formData
-            const errors = [];
-            if (!formData.name || formData.name.trim() === "") {
-                errors.push("Name cannot be empty.");
-            }
-            // if (!Array.isArray(formData.relationships) || formData.relationships.length === 0 || formData.relationships.some(rel => rel.trim() === "")) {
-            //     errors.push("Relationships cannot be empty.");
-            // }
-            // if (!formData.phoneNumber || formData.phoneNumber.trim() === "") {
-            //     errors.push("Phone number cannot be empty.");
-            // }
-            // if (!formData.email || formData.email.trim() === "" || !/^\S+@\S+\.\S+$/.test(formData.email)) {
-            //     errors.push("Invalid email format or empty email.");
-            // }
-            // if (!formData.snsPlatform || formData.snsPlatform.trim() === "") {
-            //     errors.push("SNS Platform cannot be empty.");
-            // }
-            if (errors.length > 0) {
-                toast({
-                    title: "Fill Details",
-                    description: errors.join("\n"),
-                })
-            } else {
-                await updateDoc();
-                setCurrentSection(currentSection + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-        }
-        else if (currentSection === 3) {
-            const emptyNameShareholders = shareHolderAtom.shareHolders.filter(
-                (shareholder) => !shareholder.name.trim()
-            );
-            if (emptyNameShareholders.length > 0) {
-                toast({
-                    title: "Fill Details (Shareholder(s) / Director(s))",
-                    description: "Fill the required fields Shareholder(s) / Director(s)",
-                });
-            } else {
-                await updateDoc();
-                setCurrentSection(currentSection + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-        }
-        else if (currentSection === 4){
-            if(finalForm.serviceAgreementConsent == false || finalForm.serviceAgreementConsent == undefined){
-                toast({
-                    title: "Consent Details",
-                    description: "Please consent to the service agreement",
-                });
-            }else{
-                await updateDoc();
-                setCurrentSection(currentSection + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-        }
-         else if (
-            currentSection === 2 &&
-            Object.values(businessInfoHkCompany).every((value) => value === "no")
-        ) {
-            await updateDoc();
-            setCurrentSection(currentSection + 1);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-        else if (currentSection === 7){
-            // console.log("form submission", finalForm);
-            const session = await paymentApi.getSession(finalForm.sessionId)
-            // console.log("session--->", session)
-            if(session.status === 'completed'){
-                await updateDoc();
-                setCurrentSection(currentSection + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }else{
-                toast({
-                    title: "Payment Pending",
-                    description: "Please complete the payment to proceed",
-                });
-            }
-        }
-        else if (currentSection < 10 && currentSection !== 2) {
-            await updateDoc();
-            setCurrentSection(currentSection + 1);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        } else if (currentSection === 10) {
-            console.log("form Needs submission", finalForm);
-        } else {
-            setAcknowledgementDialouge(true);
-        }
+        await updateDoc()
+        setCurrentSection(currentSection + 1);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const previousSection = () => {
@@ -231,41 +93,6 @@ const SwitchForm = () => {
                         </span>
                     </CardHeader>
                 </Card>
-
-                {/* Good to know card - Fixed */}
-                {currentSection === 1 && (
-                    <Card
-                        className={`border-0 ${theme === "light"
-                            ? "bg-blue-50 text-gray-800"
-                            : "bg-gray-800 text-gray-200"
-                            }`}
-                    >
-                        <CardContent className="p-3 md:p-4 flex flex-col md:flex-row items-start space-x-0 md:space-x-3 space-y-3 md:space-y-0">
-                            <LightbulbIcon
-                                className={`w-4 h-4 md:w-5 md:h-5 flex-shrink-0 ${theme === "light" ? "text-primary" : "text-blue-400"
-                                    }`}
-                            />
-                            <div>
-                                <h3
-                                    className={`font-semibold mb-1 text-sm md:text-base ${theme === "light" ? "text-gray-800" : "text-gray-200"
-                                        }`}
-                                >
-                                    Good to know
-                                </h3>
-                                <p
-                                    className={`text-xs ${theme === "light" ? "text-gray-600" : "text-gray-400"
-                                        }`}
-                                >
-                                    Enter different variations of your company name in order of
-                                    preference. Mirr Asia will help you obtain final confirmation
-                                    prior to incorporation.
-                                </p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
-
-                {/* Scrollable Form Container */}
                 <div className="flex-1 overflow-y-auto min-h-0">
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -290,14 +117,11 @@ const SwitchForm = () => {
                         >
                             {currentSection === 1 && <ApplicantInfoForm />}
                             {currentSection === 2 && <BusinessIntentions />}
-                            {currentSection === 3 && <Consultation />}
-                            {/* {currentSection === 4 && <ServiceAgreement />}
-                            {currentSection === 5 && <ServiceSelection />}
-                            {currentSection === 6 && <Invoice />}
-                            {currentSection === 7 && <PaymentInformation />}
-                            {currentSection === 8 && <InformationIncorporation />}
-                            {currentSection === 9 && <SAgrementPdf />}
-                            {currentSection === 10 && <IncorporateCompany />} */}
+                            {currentSection === 3 && <TradeSanctions />}
+                            {currentSection === 4 && <BusinessInformation />}
+                            {currentSection === 5 && <TransactionRelated />}
+                            {currentSection === 6 && <AccountingTaxation />}
+                            {currentSection === 7 && <HongKongServicesForm />}                           
                         </motion.div>
                     </AnimatePresence>
                 </div>

@@ -15,11 +15,12 @@ export interface PaymentSession {
 
 export const paymentApi = {
 
-  async createSession(amount: number, currency: string = 'USD', id: string) {
+  async createSession(amount: number, currency: string = 'USD', id: string, country: string) {
     const response = await api.post('/payment/create-session', {
       amount,
       currency,
-      id
+      id,
+      country
     });
     console.log('response--->', response)
     return response.data;
@@ -39,10 +40,11 @@ export const paymentApi = {
     return response.data;
   },
 
-  async uploadReceipt(sessionId: string, docId: string, file: File) {
+  async uploadReceipt(sessionId: string, docId: string, file: File, country: string) {
     const formData = new FormData();
     formData.append('id', docId)
     formData.append('receipt', file);
+    formData.append('country', country);
     const response = await api.post(`/payment/payment-sessions/${sessionId}/receipt`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',

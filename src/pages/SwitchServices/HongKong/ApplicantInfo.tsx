@@ -1,133 +1,69 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { switchApplicantInfoFormAtom, SwitchFormDataType } from '@/lib/atom';
 import { useAtom } from 'jotai';
-import { useEffect } from "react";
-
 import { useTranslation } from "react-i18next";
-import { companyIncorporationList } from "@/services/state";
-import { useParams } from "react-router-dom";
-import DropdownSelect from "@/components/DropdownSelect";
-import MultiSelect, { Option }from "@/components/MultiSelectInput";
-
-// type RelationshipType = {
-//   id: string;
-//   label: string;
-// };
-// interface Errors {
-//   phoneNumber: string;
-//   email: string;
-//   snsAccountId: string;
-//   snsPlatform: string;
-//   companyNames: string[];
-//   chinaCompanyName: string[];
-// }
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox"
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { HelpCircle } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { t } from "i18next"
+import { snsPlatforms } from "@/pages/Company/HongKong/constants";
+import { switchServicesFormAtom } from "./ssState";
 
 const ApplicantInfoForm = () => {
   const { t } = useTranslation();
-  const [formData, setFormData] = useAtom(switchApplicantInfoFormAtom);
-  // const [errors, setErrors] = useState<Errors>({
-  //   phoneNumber: "",
-  //   email: "",
-  //   snsAccountId: "",
-  //   snsPlatform: "",
-  //   companyNames: ["", "", ""],
-  //   chinaCompanyName: ["", "", ""],
-  // });
-  const [companies] = useAtom(companyIncorporationList);
-  const { id } = useParams();
-  useEffect(() => {
-    if (id) {
-      const company = companies.find(c => c._id === id);
-      setFormData(company?.applicantInfoForm as SwitchFormDataType)
-    }
-  }, []);
+  const [formState, setFormState] = useAtom(switchServicesFormAtom);
 
-  const relationships: Option[] = [
+
+  const designatedContacts = [
     {
-      value: "director",
-      label: t('SwitchService.ApplicantInfoForm.relationList1')
+      value: "sole-director",
+      label: t('SwitchService.ApplicantInfoForm.designatedContact1'),
     },
     {
-      value: "delegated",
-      label: t('SwitchService.ApplicantInfoForm.relationList2')
-    },
-    {
-      value: "shareholder",
-      label: t('SwitchService.ApplicantInfoForm.relationList3')
-    },
-    {
-      value: "professional",
-      label: t('SwitchService.ApplicantInfoForm.relationList4')
+      value: "concurrent-director",
+      label: t('SwitchService.ApplicantInfoForm.designatedContact2'),
     },
     {
       value: "other",
-      label: t('SwitchService.ApplicantInfoForm.relationList5')
+      label: t('SwitchService.ApplicantInfoForm.relationList5'),
+      isOther: true
     }
   ];
 
-  const designatedContacts = [
-    t('SwitchService.ApplicantInfoForm.designatedContact1'),
-    t('SwitchService.ApplicantInfoForm.designatedContact2'),
-    t('SwitchService.ApplicantInfoForm.relationList5')
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormState({ ...formState, email: value });
+    console.log("value", value)
+  }
+
+
+  const checkList = [
+    {
+      id: "rep_director",
+      label: t('SwitchService.ApplicantInfoForm.relationList1'),
+    },
+    {
+      id: "authorised_director",
+      label: t('SwitchService.ApplicantInfoForm.relationList2')
+    },
+    {
+      id: "major_shareholder",
+      label: t('SwitchService.ApplicantInfoForm.relationList3')
+    },
+    {
+      id: "a_professional",
+      label: t('SwitchService.ApplicantInfoForm.relationList4')
+    },
+    {
+      id: "other",
+      label: t('SwitchService.ApplicantInfoForm.relationList5'),
+      isOther: true
+    },
   ];
-
-  const handleDesigationContactChange = (e:any) => {
-    setFormData(prev => ({
-      ...prev,
-      designatedContact: e.target.value
-    }));
-  };
-
-  const handleRelationshipChange = (selections: Option[]) => {
-    setFormData(prev => ({
-      ...prev,
-      relationships: selections 
-    }));
-  };
-
-  // const validateField = (
-  //   field: keyof SwitchFormDataType,
-  //   value: string,
-  //   index?: number
-  // ): string => {
-  //   let error = "";
-
-  //   switch (field) {
-  //     case "phoneNumber":
-  //       {
-  //         const phoneRegex = /^\+?[1-9]\d{0,2}[-\s]?\d{7,15}$/;
-  //         if (!phoneRegex.test(value)) error = "Invalid phone number";
-  //         break;
-  //       }
-
-  //     case "email":
-  //       {
-  //         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //         if (!emailRegex.test(value)) error = "Invalid email address.";
-  //         break;
-  //       }
-
-  //     case "snsAccountId":
-  //       {
-  //         const snsRegex = /^[a-zA-Z0-9_-]{3,30}$/;
-  //         if (!snsRegex.test(value)) error = "SNS account ID must be 3-30 alphanumeric characters.";
-  //         break;
-  //       }
-
-  //     case "companyName":
-  //       if (index !== undefined) {
-  //         error = validateCompanyName(value);
-  //       }
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-
-  //   return error;
-  // };
 
   return (
     <Card>
@@ -141,7 +77,7 @@ const ApplicantInfoForm = () => {
         </p>
       </CardHeader>
 
-      {formData && <CardContent>
+      {formState && <CardContent>
         <div className="space-y-2 pb-2">
           <Label htmlFor="name" className="text-base">
             {t('SwitchService.ApplicantInfoForm.applicantName')} <span className="text-red-500">*</span>
@@ -149,8 +85,8 @@ const ApplicantInfoForm = () => {
           <Input
             id="name"
             placeholder="Please enter the name of the person filling out this form"
-            value={formData.name}
-            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+            value={formState.name}
+            onChange={(e) => setFormState({ ...formState, name: e.target.value })}
             required
             className="w-full"
           />
@@ -162,43 +98,95 @@ const ApplicantInfoForm = () => {
             <span className="text-red-500">*</span>
           </Label>
           <p className="text-sm text-gray-500">{t('SwitchService.ApplicantInfoForm.relationSelect')}</p>
+
           <div className="space-y-2">
-            {/* {relationships.map((relationship, index) => (
-              <div key={`${relationship.id}${index}`} className="flex items-center space-x-2">
+            {checkList.map((option) => (
+              <div key={option.id} className="flex items-start space-x-2">
                 <Checkbox
-                  id={relationship.id}
-                  checked={formData.relationships.includes(relationship.id)}
-                  onCheckedChange={(checked) =>
-                    handleRelationshipChange(relationship.id, checked as boolean)
-                  }
+                  id={option.id}
+                  checked={formState.selectedRelation.includes(option.id)}
+                  onCheckedChange={(checked) => {
+                    const updated = checked
+                      ? [...formState.selectedRelation, option.id]
+                      : formState.selectedRelation.filter(id => id !== option.id);
+                    setFormState({ ...formState, selectedRelation: updated });
+                  }}
+                  className={option.isOther ? "mt-2" : ""}
                 />
-                <Label htmlFor={relationship.id} className="text-sm font-normal">
-                  {relationship.label}
-                </Label>
+                {option.isOther ? (
+                  <div className="space-y-1 w-full">
+                    <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
+                    <Input
+                      value={formState.otherRelationText}
+                      onChange={(e) => setFormState({ ...formState, otherRelationText: e.target.value })}
+                      className="w-full"
+                    />
+                  </div>
+                ) : (
+                  <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
+                )}
               </div>
-            ))} */}
-            <MultiSelect
-              options={relationships}
-              placeholder="Select Industry."
-              selectedItems={formData.relationships}
-              onSelectionChange={handleRelationshipChange}
-          />
+            ))}
           </div>
         </div>
-        
-        <div className="space-y-3">
-          <Label className="text-base">
-            {t('SwitchService.ApplicantInfoForm.designatedContact')}
-            <span className="text-red-500">*</span>
+        {/* email snsId */}
+        <div className="space-y-2 pb-2">
+          <Label htmlFor="email" className="text-base">
+            {t('SwitchService.ApplicantInfoForm.email')} <span className="text-red-500">*</span>
           </Label>
-          <p className="text-sm text-gray-500">{t('SwitchService.ApplicantInfoForm.designatedContactPara')}</p>
+          <Input
+            id="email"
+            placeholder="Please enter your email address"
+            value={formState.email}
+            onChange={handleEmailChange}
+            required
+            className="w-full"
+          />
+        </div>
+        <ApplicantInformation />
+        <div className="space-y-3">
+          <Label className="text-base flex items-center font-semibold gap-2">
+            {t('SwitchService.ApplicantInfoForm.designatedContact')}
+            <span className="text-red-500 flex font-bold ml-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[500px] text-base">
+                  {t('SwitchService.ApplicantInfoForm.designatedContactPara')}
+                </TooltipContent>
+              </Tooltip>*
+            </span>
+          </Label>
           <div className="space-y-2">
-            <DropdownSelect
-                options={designatedContacts}
-                placeholder="Select..."
-                selectedValue={formData.designatedContactPerson}
-                onSelect={handleDesigationContactChange}
-            />
+            <RadioGroup
+              value={formState.identityVerificationMethod}
+              onValueChange={(val) => setFormState({ ...formState, identityVerificationMethod: val })}
+              className="space-y-3"
+            >
+              {designatedContacts.map((option, index) => (
+                <div key={index} className="flex items-start space-x-2">
+                  <RadioGroupItem
+                    value={option.value}
+                    id={`verification-${option.value}`}
+                    className={option.isOther ? "mt-2" : ""}
+                  />
+                  {option.isOther ? (
+                    <div className="space-y-1 w-full">
+                      <Label htmlFor={`verification-${option.value}`} className="font-normal">{option.label}</Label>
+                      <Input
+                         value={formState.identityVerificationMethod === 'other' ? formState.otherVerificationText : ''}
+                         onChange={(e) => setFormState({ ...formState, otherVerificationText: e.target.value })}
+                         onClick={() => setFormState({ ...formState, identityVerificationMethod: 'other' })}
+                        className="w-full"
+                      />
+                    </div>
+                  ) : (
+                    <Label htmlFor={`verification-${option.value}`} className="font-normal">{option.label}</Label>
+                  )}
+                </div>
+              ))}
+            </RadioGroup>
           </div>
         </div>
       </CardContent>}
@@ -207,3 +195,65 @@ const ApplicantInfoForm = () => {
 };
 
 export default ApplicantInfoForm;
+
+
+
+const ApplicantInformation = () => {
+  const [formState, setFormState] = useAtom(switchServicesFormAtom);
+
+  return (
+    <div className="space-y-6 pt-6">
+      <div className="space-y-2">
+        <Label htmlFor="phoneNum" className="inline-flex">
+          Phone Number <span className="text-destructive">*</span>
+        </Label>
+        <Input id="phoneNum" placeholder="Your answer" required value={formState.phoneNum}
+          onChange={(e) => setFormState({ ...formState, phoneNum: e.target.value })} />
+      </div>
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-4 space-y-2">
+          <Label htmlFor="snsPlatform" className="text-sm">
+            {t('ApplicantInfoForm.snsPlatform')}
+          </Label>
+          <Select
+            value={formState.snsAccountId.id}
+            onValueChange={(value) =>
+              setFormState({
+                ...formState,
+                snsAccountId: { ...formState.snsAccountId, id: value },
+              })
+            }
+          >
+            <SelectTrigger id="snsPlatform" className="w-full">
+              <SelectValue placeholder="Select SNS Platform" />
+            </SelectTrigger>
+            <SelectContent>
+              {snsPlatforms.map((platform) => (
+                <SelectItem key={platform.id} value={platform.id}>
+                  {platform.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="col-span-8 space-y-2">
+          <Label htmlFor="snsAccountId" className="text-sm">
+            {t('ApplicantInfoForm.snsId')}
+          </Label>
+          <Input
+            id="snsAccountId"
+            value={formState.snsAccountId.value}
+            onChange={(e) =>
+              setFormState({
+                ...formState,
+                snsAccountId: { ...formState.snsAccountId, value: e.target.value },
+              })
+            }
+            className="w-full"
+          />
+        </div>
+      </div>
+    </div>
+
+  )
+}
