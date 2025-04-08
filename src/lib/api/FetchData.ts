@@ -40,3 +40,28 @@ export const getSwitchServicesList = async (id?: string) => {
     console.error("Error fetching switch services:", error);
   }
 };
+
+export const createMemo = async (memoData: {
+  text: string;
+  author: string;
+  timestamp: string;
+  companyId: string;
+}) => {
+  const res = await api.post('/memo', memoData);
+  return res.data;
+};
+
+export const getMemos = async (companyId: string) => {
+  const res = await api.get(`/memo?companyId=${companyId}`);
+  return res.data;
+};
+
+export const updateMemo = async (memoId: string, text: string) => {
+  const res = await api.put(`/memo/${memoId}`, { text });
+  return res.data;
+};
+
+export const shareMemo = async (memoId: string, personName: string) => {
+  const res = await api.put(`/memo/${memoId}/share`, { personName });
+  return res.data;
+};

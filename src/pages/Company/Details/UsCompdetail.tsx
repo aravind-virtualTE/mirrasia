@@ -22,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
+import MemoApp from './MemosHK';
 
 const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
@@ -407,64 +408,83 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     };
 
     return (
-        <Tabs defaultValue="details" className="flex flex-col">
-            <TabsList className="flex space-x-4 mb-4">
-                <TabsTrigger value="details" className="px-4 py-2">
-                    Details
+        <Tabs defaultValue="details" className="flex flex-col w-full max-w-5xl mx-auto">
+            <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
+                <TabsTrigger
+                    value="details"
+                    className="flex-1 py-3 text-sm font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                >
+                    Company Details
                 </TabsTrigger>
-                <TabsTrigger value="service-agreement" className="px-4 py-2">
+                <TabsTrigger
+                    value="service-agreement"
+                    className="flex-1 py-3 text-sm font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                >
                     Service Agreement Details
+                </TabsTrigger>
+                <TabsTrigger
+                    value="Memos"
+                    className="flex-1 py-3 text-sm font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                >
+                    Memos
                 </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="details">
-                <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
-                    <h1 className="text-2xl font-bold mb-6">Company Details</h1>
+            <TabsContent value="details" className="p-6">
+                <div className="space-y-8">
+                    <h1 className="text-2xl font-bold">Company Details</h1>
+
                     {sections.map((section) => (
-                        <Card key={section.title} className="mb-6">
-                            <CardHeader>
-                                <CardTitle>{section.title}</CardTitle>
+                        <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
+                            <CardHeader className="bg-muted/50 py-4">
+                                <CardTitle className="text-lg font-medium">{section.title}</CardTitle>
                             </CardHeader>
-                            <CardContent>
+
+                            <CardContent className="p-0">
                                 <Table>
                                     <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="w-1/3">Field</TableHead>
-                                            <TableHead className="w-1/3">Value</TableHead>
-                                            <TableHead className="w-1/5">Action</TableHead>
+                                        <TableRow className="border-b hover:bg-muted/30">
+                                            <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Field</TableHead>
+                                            <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Value</TableHead>
+                                            <TableHead className="w-1/5 py-3 px-4 text-sm font-medium">Action</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {Object.entries(section.data).map(([key, value]) => {
-                                            if (key == "Incorporation Date")
-                                                return <TableRow key={key}>
-                                                    <IncorporationDateFrag />;
-                                                </TableRow>
-                                            if (key == "Incorporation Status")
-                                                return <TableRow key={key}><CompanyIncorpoStatus />;</TableRow>
-                                            if (key == "Receipt") return <TableRow key={key}><ReceietPaymentFrag /></TableRow>;
-                                            if (key == 'AML/CDD Edit') return <TableRow key={key}><AMLCDDEdit /></TableRow>
-                                            if (key == 'Payment Status') return <TableRow key={key}><PaymentStatus /></TableRow>
-                                            if (key == 'Payment Expire Date') return <TableRow key={key}><ExtendPaymentTimer /></TableRow>
+                                            if (key === "Incorporation Date")
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><IncorporationDateFrag /></TableRow>;
+                                            if (key === "Incorporation Status")
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><CompanyIncorpoStatus /></TableRow>;
+                                            if (key === "Receipt")
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><ReceietPaymentFrag /></TableRow>;
+                                            if (key === 'AML/CDD Edit')
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><AMLCDDEdit /></TableRow>;
+                                            if (key === 'Payment Status')
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><PaymentStatus /></TableRow>;
+                                            if (key === 'Payment Expire Date')
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><ExtendPaymentTimer /></TableRow>;
+
                                             return (
-                                                <TableRow key={key}>
-                                                    <TableCell className="font-medium">{key}</TableCell>
-                                                    <TableCell>{value as string}</TableCell>
+                                                <TableRow key={key} className="border-b hover:bg-muted/30">
+                                                    <TableCell className="py-3 px-4 font-medium">{key}</TableCell>
+                                                    <TableCell className="py-3 px-4">{value as string}</TableCell>
+                                                    <TableCell></TableCell>
                                                 </TableRow>
                                             );
                                         })}
                                     </TableBody>
                                 </Table>
+
                                 {section.title === "Status Information" && (
-                                    <div className="flex items-center gap-4 mt-4">
-                                        <span className="text-sm font-medium text-gray-600">
+                                    <div className="flex items-center gap-4 p-4 bg-muted/50 border-t">
+                                        <span className="text-sm font-medium">
                                             Click here to Save the Data
                                         </span>
                                         <Button
                                             onClick={handleUpdate}
                                             className="px-4 py-2 text-sm"
                                         >
-                                            Click
+                                            Save
                                         </Button>
                                     </div>
                                 )}
@@ -474,12 +494,18 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 </div>
             </TabsContent>
 
-            <TabsContent value="service-agreement">
-                <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
-                    <h1 className="text-2xl font-bold mb-6">Service Agreement Details</h1>
+            <TabsContent value="service-agreement" className="p-6">
+                <div className="space-y-6">
+                    <h1 className="text-2xl font-bold">Service Agreement Details</h1>
+                </div>
+            </TabsContent>
+            <TabsContent value="Memos" className="p-6">
+                <div className="space-y-6">
+                    <MemoApp id={id} />
                 </div>
             </TabsContent>
         </Tabs>
+
     )
 
 };
