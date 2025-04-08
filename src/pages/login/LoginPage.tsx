@@ -59,7 +59,7 @@ const LoginComponent: React.FC = () => {
         .then((response) => {
           localStorage.setItem('isAuthenticated', 'true');
           localStorage.setItem('token', response.token);
-          console.log('response', response);
+          // console.log('response', response);
           localStorage.setItem("user", JSON.stringify(response.user))
           setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
   

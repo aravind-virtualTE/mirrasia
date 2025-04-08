@@ -105,20 +105,12 @@ const Layout: React.FC = () => {
         },
         {
             icon: <MessageSquare className="w-4 h-4" />,
-            label: "Messages",
+            label: "MirrAsia Chat",
             roles: ['admin', 'master', 'user'],
             onClick: (_, navigate) => {
                 navigate('/messages');
             },
-        },
-        // {
-        //     icon: <MessageCircle className="w-4 h-4" />,
-        //     label: "Messages2",
-        //     roles: ['user', 'admin', 'master'],
-        //     onClick: (_, navigate) => {
-        //         navigate('/messages2');
-        //     },
-        // },     
+        },     
     ];
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
