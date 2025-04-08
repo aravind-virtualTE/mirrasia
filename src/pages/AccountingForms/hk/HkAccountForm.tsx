@@ -18,7 +18,7 @@ const HkAccountForm: React.FC = () => {
     const costList = list2.map((item) => ({ label: item, value: item }));
 
     const handleIndustryChange = (selections: Option[]) => {
-        // console.log("selections", selections)
+        console.log("selections", selections)
         setSelectedOption(selections)
     };
 
@@ -62,7 +62,7 @@ const HkAccountForm: React.FC = () => {
                             <p>Phone: (Korea) 02-543-6187 (Hong Kong) +852-2187-2428</p>
                             <p>KakaoTalk: mirrasia WeChat: mirrasia_hk</p>
                         </div>
-                    </div>              
+                    </div>
                 </CardContent>
             </Card>
             <div className="max-w-5xl mx-auto space-y-6 py-6">
@@ -114,7 +114,7 @@ const HkAccountForm: React.FC = () => {
 
                 <Card>
                     <CardContent className="p-6 space-y-2">
-                        <Label htmlFor="dateOfIncorporation" className="text-sm">
+                        <Label htmlFor="selectedIndustry" className="text-sm">
                             Select Industry
                             <span className="text-destructive">*</span>
                         </Label>
@@ -145,12 +145,12 @@ const HkAccountForm: React.FC = () => {
 
                 <Card>
                     <CardContent className="p-6 space-y-2">
-                        <Label htmlFor="description" className="text-sm">
+                        <Label htmlFor="transactionDescription" className="text-sm">
                             Description of transaction items and transaction targets (company/individual/government/organization, etc.)
                             <span className="text-destructive">*</span>
                         </Label>
                         <Input
-                            id="description"
+                            id="transactionDescription"
                             type="string"
                             placeholder="description..."
                             className="w-full"
@@ -161,7 +161,7 @@ const HkAccountForm: React.FC = () => {
 
                 <Card>
                     <CardContent className="p-6 space-y-2">
-                        <Label htmlFor="dateOfIncorporation" className="text-sm">
+                        <Label htmlFor="costOfGoodsSold" className="text-sm">
                             Cost of goods sold
                             <span className="text-destructive">*</span>
                         </Label>

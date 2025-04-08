@@ -10,7 +10,7 @@ import Navbar from './Navbar';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 import { useResetAllForms } from '@/lib/atom';
-// import HelpDesk from '../HelpDesk';
+import SocialMediaWidget from '../SocialMedia';
 
 const Layout: React.FC = () => {
     const [isCollapsed, setIsCollapsed] = useState(false)
@@ -105,20 +105,12 @@ const Layout: React.FC = () => {
         },
         {
             icon: <MessageSquare className="w-4 h-4" />,
-            label: "Messages",
+            label: "MirrAsia Chat",
             roles: ['admin', 'master', 'user'],
             onClick: (_, navigate) => {
                 navigate('/messages');
             },
-        },
-        // {
-        //     icon: <MessageCircle className="w-4 h-4" />,
-        //     label: "Messages2",
-        //     roles: ['user', 'admin', 'master'],
-        //     onClick: (_, navigate) => {
-        //         navigate('/messages2');
-        //     },
-        // },     
+        },     
     ];
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
@@ -180,7 +172,7 @@ const Layout: React.FC = () => {
                     </main>
                 </ResizablePanel>
             </ResizablePanelGroup>
-            {/* <HelpDesk /> */}
+            <SocialMediaWidget />
         </div>
     )
 }

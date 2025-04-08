@@ -43,7 +43,7 @@ import AccountingHkList from './pages/AccountingForms/AccountingHkList';
 import InviteUsaDirShir from './pages/InviteUsaDirShir/USA/InviteUsaDirShir';
 import ServiceAgreementSignDocs from './components/ServiceAgreementSignDocs/ServiceAgreementSignDocs';
 import {SocketProvider } from '@/hooks/Socket';
-import MessagesPage from './components/chat/AdminChat';
+import ChatInterface from './components/chat/ChatInterface';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -105,7 +105,7 @@ const App: React.FC = () => {
                       <Route path="/accounting-support-list" element={<AccountingHkList />} />
                       <Route path="/member-registration" element={<InviteUsaDirShir />} />
                       <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
-                      <Route path="/messages" element={<MessagesPage />} />
+                      <Route path="/messages" element={<ChatInterface />} />
                     </Route>
                   </Route>
 
