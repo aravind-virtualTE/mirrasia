@@ -76,9 +76,7 @@ export default function ChatInterface() {
 
   // Online status
   const checkUsersOnline = () => {
-    // console.log("checkingUsersOnline")
     socket?.emit("check_users_online", (res: { _id: string; online: boolean }[]) => {
-      console.log("res", res)
       setUsers((prev) =>
         prev.map((u) => ({
           ...u,
