@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageSquareShare,} from "lucide-react";
 import { 
   Dialog, 
@@ -16,62 +16,95 @@ import {
   CommandList
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
+import { createMemo, getMemos, 
+    // shareMemo
+ } from "@/lib/api/FetchData";
+import { Input } from "@/components/ui/input";
 
-export default function MemoApp() {
+
+
+export default function MemoApp({ id }: {
+    id: string; // or the appropriate type for 'id'
+  }) {
+const [memos, setMemos] = useState<{ _id: string; text: string; author: string; timestamp: string }[]>([]);
   const [open, setOpen] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState("");
-  
-  // Sample memo data
-  const memos = [
-    { id: 1, text: "lorem ipsum", author: "Test User1", timestamp: "22-03-2025 4:30 PM" },
-    { id: 2, text: "lorem ipsum", author: "Test User2", timestamp: "22-03-2025 4:32 PM" },
-   
-  ];
-  
-  // Sample people for sharing
+  const [newText, setNewText] = useState("");
+
   const people = [
     { id: 1, name: "Test User1" },
     { id: 2, name: "Test User2" },
     { id: 3, name: "Test User3" },
   ];
-  
-  const handleSubmit = () => {
-    // Handle sharing logic here
-    console.log(`Shared with: ${selectedPerson}`);
-    setOpen(false);
-    setSelectedPerson("");
+
+  useEffect(() => {
+    fetchMemos();
+  }, []);
+
+  const fetchMemos = async () => {
+    try {
+        // console.log("id",id)
+      const data = await getMemos(id);
+      setMemos(data);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
   };
-  
-  const handleSelectPerson = (personName: string) => {
-    setSelectedPerson(personName);
+
+  const handleCreateMemo = async () => {
+    if (!newText.trim()) return;
+    try {
+      const timestamp = new Date().toLocaleString("en-GB");
+      await createMemo({ text: newText, author: "Admin", timestamp, 'companyId': id });
+      setNewText("");
+      fetchMemos();
+    } catch (err) {
+      console.error(err);
+    }
   };
-  
+
+  const handleShare = async (memoId: string) => {
+    try {
+    //   await shareMemo(memoId, selectedPerson);
+    //   setSelectedPerson("");
+    //   setOpen(false);
+    //   fetchMemos();
+    console.log("memoId",memoId)
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Memos</h1>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="gap-2">
-              <MessageSquareShare size={16} />
-              Share
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Sharing with the members</DialogTitle>
-            </DialogHeader>
-            <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold mb-4">Memos</h1>
+
+      {memos.map((memo) => (
+        <div key={memo._id} className="mb-4 border rounded p-3 bg-gray-100">
+          <div>{memo.text}</div>
+          <div className="text-sm text-gray-600">
+            {memo.author}, {memo.timestamp}
+          </div>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="outline" className="mt-2 flex gap-1 items-center">
+                <MessageSquareShare size={14} />
+                Share
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Share with a person</DialogTitle>
+              </DialogHeader>
               <Command className="rounded-lg border shadow-md">
-                <CommandInput placeholder="select User" />
+                <CommandInput placeholder="Select User" />
                 <CommandList>
                   <CommandEmpty>No person found.</CommandEmpty>
                   <CommandGroup>
                     {people.map((person) => (
-                      <CommandItem 
+                      <CommandItem
                         key={person.id}
-                        onSelect={() => handleSelectPerson(person.name)}
-                        className="cursor-pointer"
+                        onSelect={() => setSelectedPerson(person.name)}
                       >
                         {person.name}
                       </CommandItem>
@@ -79,41 +112,34 @@ export default function MemoApp() {
                   </CommandGroup>
                 </CommandList>
               </Command>
-              <div className="flex justify-end">
-                <Button 
+              <div className="flex justify-end mt-4">
+                <Button
                   className="bg-orange-500 hover:bg-orange-600 text-white"
-                  onClick={handleSubmit}
+                  onClick={() => handleShare(memo._id)}
+                  disabled={!selectedPerson}
                 >
                   Submit
                 </Button>
               </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-      
-      <div className="border rounded-lg p-4">
-        {memos.map((memo) => (
-          <div key={memo.id} className="mb-4">
-            <div className="bg-gray-100 p-3 rounded-lg mb-1">
-              {memo.text}
-            </div>
-            <div className="text-sm text-gray-600">
-              {memo.author}, {memo.timestamp}
-            </div>
-          </div>
-        ))}
-        
-        <div className="mt-6 flex">
-          <input 
-            type="text" 
-            placeholder="Type a message" 
-            className="flex-1 border rounded-lg p-2 mr-2"
-          />
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">
-            Submit
-          </Button>
+            </DialogContent>
+          </Dialog>
         </div>
+      ))}
+
+      <div className="mt-6 flex">
+        <Input
+          type="text"
+          value={newText}
+          onChange={(e) => setNewText(e.target.value)}
+          placeholder="Type a memo"
+        //   className="flex-1 border rounded-lg p-2 mr-2"
+        />
+        <Button
+          className="bg-orange-500 hover:bg-orange-600 text-white"
+          onClick={handleCreateMemo}
+        >
+          Submit
+        </Button>
       </div>
     </div>
   );

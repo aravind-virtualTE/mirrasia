@@ -661,7 +661,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             </TabsContent>
             <TabsContent value="Memos" className="p-6">
                 <div className="space-y-6">
-                    <MemoApp />                    
+                    <MemoApp id={id} />
                 </div>
             </TabsContent>
         </Tabs>

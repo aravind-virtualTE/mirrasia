@@ -42,37 +42,12 @@ interface Stats {
     rejected: number
 }
 
-// const socket = io('http://localhost:5000', {
-//     // auth: {
-//     //   token: localStorage.getItem('adminToken') // Assuming token is stored in localStorage
-//     // }
-//   });
-
 const AdminDashboard = () => {
     // Sample data - replace with your actual data    
     const setCompIncList = useSetAtom(companyIncorporationList);
     // const [cList,] = useAtom(companyIncorporationList)
     const [allList, setAllList] = useAtom(allCompListAtom)
     const navigate = useNavigate();
-
-    // useEffect(() =>{
-    //     console.log("testing")
-    //     socket.on('connect', () => {
-    //         console.log('Connected to server');
-    //       });
-    //       socket.on('new-record', (data) => {
-    //         console.log("new-record", data) 
-    //         toast({
-    //                 title: "New record created",
-    //                 description: `data added ${data.recordId}`,
-    //               });
-    //       });
-      
-    //       // Cleanup on component unmount
-    //       return () => {
-    //         socket.disconnect();
-    //       };
-    // }, [])
 
     useEffect(() => {
         async function fetchData() {
@@ -86,12 +61,6 @@ const AdminDashboard = () => {
 
     }, [setCompIncList]);
 
-    // const stats: Stats = cList.reduce((acc: Stats, company) => {
-    //     if (company.status === "Pending") (acc as { pending: number }).pending++;
-    //     if (company.status === "Active") (acc as { active: number }).active++;
-    //     if (company.status === "Rejected") (acc as { rejected: number }).rejected++;
-    //     return acc;
-    // }, { pending: 0, active: 0, rejected: 0 });
 
     const statusToKey = (status: string): keyof Stats => {
         const mapping: Record<string, keyof Stats> = {
@@ -142,7 +111,6 @@ const AdminDashboard = () => {
 
     const handleEditClick = (companyId: string, countryCode: string) => {
         localStorage.setItem("companyRecordId", companyId);
-        // Update URL without navigating
         navigate(`/company-register/${countryCode}/${companyId}`);
     };
     // console.log("allList", allList)
@@ -164,6 +132,9 @@ const AdminDashboard = () => {
                                 <TableHead>Country</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>IncorporationDate</TableHead>
+                                <TableHead>Edit</TableHead>
+                                <TableHead>Person In Charge</TableHead>
+                                <TableHead>User Last Status</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
