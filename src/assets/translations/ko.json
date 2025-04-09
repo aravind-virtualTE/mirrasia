@@ -7,6 +7,55 @@
     "next": "다음",
     "previous": "이전"
   },
+  "sideItems": {
+    "Home": "홈",
+    "userList": "사용자 목록",
+    "regComp": "회사 등록",
+    "compDocs": "회사 문서",
+    "switchServices": "서비스 전환 목록",
+    "accountList": "회계 목록",
+    "signDocs": "문서 서명",
+    "mirrChat": "MirrAsia 채팅"
+  },
+  "dashboard": {
+    "welcome": "환영합니다, ",
+    "welcome1": "시작하기 위해 할 수 있는 작업은 다음과 같습니다.",
+    "companiesH": "귀사의 회사들",
+    "tCompName": "회사명",
+    "tcountry": "국가",
+    "status": "상태",
+    "incorpoDate": "설립일",
+    "fservices": "주요 서비스",
+    "accountSupport": "회계 지원",
+    "accountText": "필요할 때 언제든지 이용 가능한 회계 서비스를 확인하세요.",
+    "getQuote": "견적 받기",
+    "needHelp": "도움이 필요하신가요? 지원팀에 문의하세요!",
+    "expIssue": "문제가 발생했나요? 지원팀이 도와드릴 준비가 되어 있습니다.",
+    "kakaoT": "카카오톡",
+    "wechat": "위챗",
+    "kakaChannel": "카카오 채널",
+    "clickHere": "여기를 클릭하세요",
+    "Website": "웹사이트",
+    "solutions":"우리의 주요 솔루션",
+    "startNew": "새 회사 시작",
+    "regComp": "신규 사업체를 빠르고 효율적으로 등록하세요",
+    "openComp": "홍콩 개인 은행 계좌 개설",
+    "streamlined": "간소화된 홍콩 개인 은행 계좌 개설 절차",
+    "switchServices": "저희 서비스로 전환",
+    "SserDesc": "저희의 포괄적인 비즈니스 솔루션으로 원활하게 전환"
+  },
+  "dashServices": {
+    "vaTtitle": "가상 자산 라이선스",
+    "vaDesc": "가상 자산 운영에 필요한 라이선스를 취득하세요.",
+    "game": "아이게이밍 라이선스",
+    "secureLis": "온라인 게임 플랫폼 운영 라이선스를 확보하세요.",
+    "importExprt": "수입/수출 라이선스",
+    "international": "수입/수출 라이선스로 국제 무역을 용이하게 하세요.",
+    "metaPack": "메타 패키지",
+    "metaDesc": "귀사의 비즈니스 요구에 맞춘 포괄적인 서비스 패키지입니다.",
+    "cayman": "케이맨 펀드",
+    "caymanDesc": "케이맨 제도에서 효율적으로 펀드를 설정하고 관리하세요."
+  },
   "countrySelection": {
     "title": "등록할 국가를 선택하세요",
     "hk": "홍콩",
@@ -24,7 +73,20 @@
     "contactUs": "문의하기",
     "TransferBtn": "Mirr Asia로 이전"
   },
+  "compFormation": {
+    "appInfo": "신청자\n정보",
+    "amlcd": "AML\nCDD",
+    "compInfo": "회사\n정보",
+    "serviceAgrmt": "서비스 계약",
+    "serviceSelect": "선택할 서비스",
+    "invoice": "청구서",
+    "payment": "결제",
+    "inforIncorpo": "회사 설립 정보",
+    "incorpo": "회사 설립"
+  },
   "ApplicantInfoForm": {
+    "goodToKnow": "알아두면 좋아요",
+    "goodDesc": "선호도 순으로 회사 이름의 여러 가지 변형을 입력하세요. Mirr Asia에서 회사 설립 전에 최종 확인을 도와드릴 것입니다.",
     "heading": "신청인 정보",
     "paragraph": "이 양식은 홍콩 회사의 대표자가 작성해야 합니다. 제공된 정보는 KYC 및 고객 실사 문서로 보관됩니다.",
     "nameHeading": "신청인 이름",
@@ -574,6 +636,16 @@
     "paymentOption_deposit": "주식 자본의 납입 금액은 법인 계좌를 개설한 후 은행 계좌로 입금될 예정입니다.",
     "paymentOption_pettyCash": "주식 자본의 납입 금액은 현금으로 지급되며, 회사 내에서 잡금으로 보관되고 필요 시 비용으로 사용될 예정입니다.",
     "paymentOption_other": "기타"
+  },
+  "invoice": {
+    "desc": "설명",
+    "originalPrice": "원가",
+    "discPrice": "할인가",
+    "notes": "참고 사항",
+    "total": "총액 (원가)",
+    "totalDisc": "총액 (할인가)",
+    "legalPersons": "법인",
+    "individuals":"개인"
   },
   "InfoIncorpo": {
     "regDetails": "홍콩 회사의 등록 세부 정보",

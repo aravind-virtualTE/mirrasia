@@ -20,29 +20,14 @@ import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
 import ServiceCarousel from "./ServiceCarousel";
 import MainFunctionalities from "./MainFunctionalities";
+import { useTranslation } from "react-i18next";
 
 const Dashboard = () => {
-  // const partnerCards = [
-  //   {
-  //     logo: "FlySpaces",
-  //     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-bfoV2Kjsa3bhRS1XZ0fYmGb_dOScnMiLGQ&s',
-  //     description: "Office space"
-  //   },
-  //   {
-  //     logo: "AWS",
-  //     img: 'https://img.icons8.com/?size=100&id=33039&format=png&color=000000',
-  //     description: "Web hosting"
-  //   },
-  //   {
-  //     logo: "GREATER",
-  //     img: 'https://play-lh.googleusercontent.com/PGUQTS5KUZw5bc_DsyBtijD-CfQR4SPk2i6UjU8K6RMli-eQIOg4aNsABjnoeNHoNsXA',
-  //     description: "The Greater Room"
-  //   }
-  // ];
   const [cList,] = useAtom(companyIncorporationList)
   const setCompIncList = useSetAtom(companyIncorporationList);
   const [allList, setAllList] = useAtom(allCompListAtom)
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
@@ -80,19 +65,19 @@ const Dashboard = () => {
     < >
       {/* Main Content */}
       <div className="flex-1 p-8">
-        <h1 className="text-2xl font-semibold mb-8">Welcome, User Here's what you can do to get started.</h1>
+        <h1 className="text-2xl font-semibold mb-8">{t('dashboard.welcome')}User {t('dashboard.welcome1')}</h1>
         <MainFunctionalities />
         {/* Companies Table */}
         {cList.length > 0 && <div className="mb-12">
-          <h2 className="text-xl font-semibold mb-4">Your Companies</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('dashboard.companiesH')}</h2>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[40%]">Company Name</TableHead>
-                  <TableHead className="w-[20%]">Country</TableHead>
-                  <TableHead className="w-[20%]">Status</TableHead>
-                  <TableHead className="w-[20%]">Incorporation Date</TableHead>
+                  <TableHead className="w-[40%]">{t('dashboard.tCompName')}</TableHead>
+                  <TableHead className="w-[20%]">{t('dashboard.tcountry')}</TableHead>
+                  <TableHead className="w-[20%]">{t('dashboard.status')}</TableHead>
+                  <TableHead className="w-[20%]">{t('dashboard.incorpoDate')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -155,11 +140,9 @@ const Dashboard = () => {
         {/* Partners Section */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold">Featured Services:</h2>
+            <h2 className="text-xl font-semibold">{t('dashboard.fservices')}:</h2>
           </div>
           <ServiceCarousel />
-
-
         </div>
 
         {/* Bottom Cards */}
@@ -169,10 +152,10 @@ const Dashboard = () => {
               <div className="flex items-center space-x-4">
                 <Building className="w-8 h-8" />
                 <div>
-                  <h3 className="text-lg font-semibold">Accounting support</h3>
-                  <p className="text-gray-600">View available accounting services anytime you need it.</p>
+                  <h3 className="text-lg font-semibold">{t('dashboard.accountSupport')}</h3>
+                  <p className="text-gray-600">{t('dashboard.accountText')}</p>
                   <Button variant="link" className="p-0 mt-2" onClick={handleAccountingCard}>
-                    GET A QUOTE →
+                  {t('dashboard.getQuote')} →
                   </Button>
                 </div>
               </div>
@@ -184,27 +167,27 @@ const Dashboard = () => {
               <div className="flex items-center space-x-4">
                 <HelpCircle className="w-8 h-8" />
                 <div>
-                  <h3 className="text-lg font-semibold">Need Help? Contact Our Support Team!</h3>
+                  <h3 className="text-lg font-semibold">{t('dashboard.needHelp')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Experiencing issues? Our support team is ready to assist you.
+                    {t('dashboard.expIssue')}
                   </p>
                 </div>
               </div>
 
               {/* Support Details */}
               <div className="mt-4 grid gap-2 text-sm">
-                <p><strong>Email:</strong> cs@mirrasia.com</p>
-                <p><strong>Phone:</strong> (HK) +852-2187-2428 | (KR) +82-2-543-6187</p>
-                <p><strong>Kakao Talk:</strong> mirrasia</p>
-                <p><strong>WeChat:</strong> mirrasia_hk</p>
+                <p><strong>{t('ApplicantInfoForm.email')}:</strong> cs@mirrasia.com</p>
+                <p><strong>{t('ApplicantInfoForm.phoneNum')}:</strong> (HK) +852-2187-2428 | (KR) +82-2-543-6187</p>
+                <p><strong>{t('dashboard.kakaoT')}:</strong> mirrasia</p>
+                <p><strong>{t('dashboard.wechat')}:</strong> mirrasia_hk</p>
                 <p>
-                  <strong>Kakao Channel:</strong>{" "}
+                  <strong>{t('dashboard.kakaChannel')}:</strong>{" "}
                   <a href="https://pf.kakao.com/_KxmnZT" className="text-primary underline" target="_blank" rel="noopener noreferrer">
-                    Click Here
+                  {t('dashboard.clickHere')}
                   </a>
                 </p>
                 <p>
-                  <strong>Website:</strong>{" "}
+                  <strong>{t('dashboard.Website')}:</strong>{" "}
                   <a href="https://www.mirrasia.com" className="text-primary underline" target="_blank" rel="noopener noreferrer">
                     www.mirrasia.com
                   </a>

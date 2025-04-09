@@ -6,12 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { usaFormWithResetAtom } from '../Company/USA/UsState';
 import { allCompListAtom } from '@/services/state';
+import { useTranslation } from "react-i18next";
 
 const MainFunctionalities: React.FC = () => {
     const resetAllForms = useResetAllForms();
     const navigate = useNavigate();
     const [, setAllList] = useAtom(allCompListAtom)
     const [, setUSForm] = useAtom(usaFormWithResetAtom)
+      const { t } = useTranslation();
+    
     const handleComapanyCard = () => {
         setAllList('reset')
         setUSForm('reset')
@@ -31,27 +34,27 @@ const MainFunctionalities: React.FC = () => {
     const mainFunctionalities = [
         {
             icon: Building2,
-            title: "Start New Company",
-            description: "Register your new business entity quickly and efficiently",
+            title: t('dashboard.startNew'),
+            description: t('dashboard.regComp'),
             onClick: handleComapanyCard, 
         },
         {
             icon: CreditCard,
-            title: "Open HK Personal Bank Account",
-            description: "Streamlined process for setting up personal banking in Hong Kong",
+            title: t('dashboard.openComp'),
+            description: t('dashboard.streamlined'),
             onClick: handleBankingCard,
         },
         {
             icon: RefreshCw,
-            title: "Switch to Our Services",
-            description: "Seamless transition to our comprehensive business solutions",
+            title: t('dashboard.switchServices'),
+            description:t('dashboard.SserDesc'),
             onClick:handleServicesCard,
         },
     ];
 
     return (
         <div className="mb-16 animate-fade-in">
-            <h2 className="text-2xl font-semibold mb-6">Our Main Solutions: </h2>
+            <h2 className="text-2xl font-semibold mb-6">{t('dashboard.solutions')}: </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {mainFunctionalities.map((functionality, index) => (
                     <MainFunctionalityCard

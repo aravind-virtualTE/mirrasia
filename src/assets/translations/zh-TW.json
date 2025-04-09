@@ -7,6 +7,55 @@
     "next": "下一步",
     "previous": "上一步"
   },
+  "sideItems": {
+    "Home": "首頁",
+    "userList": "用戶列表",
+    "regComp": "註冊公司",
+    "compDocs": "公司文件",
+    "switchServices": "服務切換列表",
+    "accountList": "會計列表",
+    "signDocs": "簽署文件",
+    "mirrChat": "MirrAsia 聊天室"
+  },
+  "dashboard": {
+    "welcome": "歡迎，",
+    "welcome1": "您可以從這裡開始。",
+    "companiesH": "您的公司",
+    "tCompName": "公司名稱",
+    "tcountry": "國家",
+    "status": "狀態",
+    "incorpoDate": "公司成立日期",
+    "fservices": "精選服務",
+    "accountSupport": "會計支援",
+    "accountText": "您可以隨時查看可用的會計服務。",
+    "getQuote": "取得報價",
+    "needHelp": "需要協助嗎？請聯繫我們的支援團隊！",
+    "expIssue": "遇到問題了嗎？我們的支援團隊已準備好為您提供協助。",
+    "kakaoT": "Kakao Talk",
+    "wechat": "微信",
+    "kakaChannel": "Kakao Channel",
+    "clickHere": "點擊這裡",
+    "Website": "網站",
+    "solutions":"我們的主要解決方案",
+    "startNew": "開設新公司",
+    "regComp": "快速且有效率地註冊您的新業務實體",
+    "openComp": "開設香港個人銀行帳戶",
+    "streamlined": "在香港設立個人銀行帳戶的簡化流程",
+    "switchServices": "切換至我們的服務",
+    "SserDesc": "無縫轉換至我們全面的商業解決方案"
+  },
+  "dashServices": {
+    "vaTtitle": "虛擬資產許可證",
+    "vaDesc": "取得虛擬資產營運所需的許可證。",
+    "game": "iGaming 許可證",
+    "secureLis": "取得營運線上博弈平台所需的許可證。",
+    "importExprt": "進出口許可證",
+    "international": "透過進出口許可證促進國際貿易。",
+    "metaPack": "Meta 套餐",
+    "metaDesc": "專為您的業務需求量身打造的綜合服務套餐。",
+    "cayman": "開曼基金",
+    "caymanDesc": "在開曼群島有效率地設立和管理基金。"
+  },
   "countrySelection": {
     "title": "選擇註冊國家",
     "hk": "香港",
@@ -24,7 +73,20 @@
     "contactUs": "聯絡我們",
     "TransferBtn": "轉移至Mirr Asia"
   },
+  "compFormation": {
+    "appInfo": "申請人\n資訊",
+    "amlcd": "AML\nCDD",
+    "compInfo": "公司\n資訊",
+    "serviceAgrmt": "服務協議",
+    "serviceSelect": "選擇服務",
+    "invoice": "發票",
+    "payment": "付款",
+    "inforIncorpo": "公司註冊資訊",
+    "incorpo": "公司註冊"
+  },
   "ApplicantInfoForm": {
+    "goodToKnow": "須知",
+    "goodDesc": "請按偏好順序輸入您公司名稱的不同變體。Mirr Asia 將協助您在註冊前取得最終確認。",
     "heading": "申請人資訊",
     "paragraph": "此表格由香港公司代表填寫。提供的信息將作為KYC和客戶盡職調查文件保存。",
     "nameHeading": "申請人姓名",
@@ -585,6 +647,16 @@
     "sharesOption_1000_shares": "1,000 shares",
     "sharesOption_10000_shares": "10,000 shares",
     "sharesOption_others": "其他的"
+  },
+  "invoice": {
+    "desc": "描述",
+    "originalPrice": "原價",
+    "discPrice": "折扣價",
+    "notes": "備註",
+    "total": "總計（原價）",
+    "totalDisc": "總計（折扣價）",
+    "legalPersons": "法人",
+    "individuals":"個人"
   },
   "InfoIncorpo": {
     "regDetails": "香港公司註冊資料",

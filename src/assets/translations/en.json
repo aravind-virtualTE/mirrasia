@@ -17,6 +17,55 @@
     "next": "Next",
     "previous": "Previous"
   },
+  "sideItems":{
+    "Home":"Home",
+    "userList": "Users List",
+    "regComp": "Register Company",
+    "compDocs":"Company Documents",
+    "switchServices":"Switch Services List",
+    "accountList":"Accounting List",
+    "signDocs":"Sign Docs",
+    "mirrChat":"MirrAsia Chat"
+  },
+  "dashboard":{
+    "welcome": "Welcome, ",
+    "welcome1": "Here's what you can do to get started.",
+    "companiesH": "Your Companies",
+    "tCompName":"Company Name",
+    "tcountry": "Country",
+    "status": "Status",
+    "incorpoDate": "Incorporation Date",
+    "fservices": "Featured Services",
+    "accountSupport": "Accounting support",
+    "accountText": "View available accounting services anytime you need it.",
+    "getQuote": "GET A QUOTE",
+    "needHelp":"Need Help? Contact Our Support Team!",
+    "expIssue": "Experiencing issues? Our support team is ready to assist you.",
+    "kakaoT": "Kakao Talk",
+    "wechat":"WeChat",
+    "kakaChannel":"Kakao Channel",
+    "clickHere": "Click Here",
+    "Website": "Website",
+    "solutions":"Our Main Solutions",
+    "startNew":"Start New Company",
+    "regComp":"Register your new business entity quickly and efficiently",
+    "openComp":"Open HK Personal Bank Account",
+    "streamlined":"Streamlined process for setting up personal banking in Hong Kong",
+    "switchServices":"Switch to Our Services",
+    "SserDesc":"Seamless transition to our comprehensive business solutions"
+  },
+  "dashServices":{
+    "vaTtitle": "Virtual Asset License",
+    "vaDesc":"Obtain the necessary licensing for virtual asset operations.",
+    "game":"iGaming License",
+    "secureLis":"Secure a license to operate online gaming platforms.",
+    "importExprt": "Import/Export License",
+    "international" : "Facilitate international trade with an import/export license.",
+    "metaPack":"Meta Package",
+    "metaDesc":"Comprehensive service package tailored for your business needs.",
+    "cayman" : "Cayman Fund",
+    "caymanDesc":"Set up and manage funds in the Cayman Islands efficiently."
+  },
   "countrySelection":{
     "title" : "Select Country for Registration",
     "hk": "Hong Kong",
@@ -24,7 +73,22 @@
     "sg": "Singapore",
     "uk": "United Kingdom"
   },
+  "compFormation":{
+    "appInfo":"Applicant\ninformation",
+    "amlcd":"AML\nCDD",
+    "compInfo":"Company\ninformation",
+    "serviceAgrmt":"Service Agreement",
+    "serviceSelect":"Services to Select",
+    "invoice":"Invoice",
+    "payment":"Payment",
+    "inforIncorpo":"Information For Incorporation",
+    "incorpo":"Incorporation",
+    "legalPersons":"Legal Persons",
+    "individuals":"Individuals"
+  },  
   "ApplicantInfoForm": {
+    "goodToKnow": "Good to know",
+    "goodDesc":"Enter different variations of your company name in order of preference. Mirr Asia will help you obtain final confirmation prior to incorporation.",
     "heading": "Applicant Information",
     "paragraph": "This form must be filled out by the representative of the Hong Kong company. The information will be kept as KYC and Client Due Diligence documents.",
     "nameHeading": "Name of applicant",
@@ -586,6 +650,15 @@
     "sharesOption_1000_shares": "1,000 shares",
     "sharesOption_10000_shares": "10,000 shares",
     "sharesOption_others": "Others"
+  },
+  "invoice":{
+    "desc":"Description",
+    "originalPrice": "Original Price",
+    "discPrice": "Discounted Price",
+    "notes": "Notes",
+    "total":"Total (Original)",
+    "totalDisc":"Total (Discounted)",
+    "legalPersons":"Legal Persons"
   },
   "InfoIncorpo" :{
     "regDetails": "Registration details of the Hong Kong company",

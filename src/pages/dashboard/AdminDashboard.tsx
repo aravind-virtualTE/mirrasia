@@ -133,8 +133,7 @@ const AdminDashboard = () => {
                                 <TableHead>Status</TableHead>
                                 <TableHead>IncorporationDate</TableHead>
                                 <TableHead>Edit</TableHead>
-                                <TableHead>Person In Charge</TableHead>
-                                <TableHead>User Last Status</TableHead>
+                                <TableHead>User latest login</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
