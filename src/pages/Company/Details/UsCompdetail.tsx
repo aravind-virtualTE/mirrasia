@@ -426,7 +426,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     value="Memos"
                     className="flex-1 py-3 text-sm font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
                 >
-                    Memos
+                    Memo
                 </TabsTrigger>
             </TabsList>
 
