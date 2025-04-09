@@ -77,8 +77,7 @@ const [memos, setMemos] = useState<{ _id: string; text: string; author: string; 
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Memos</h1>
-
+      <h1 className="text-2xl font-bold mb-4">Memo</h1>
       {memos.map((memo) => (
         <div key={memo._id} className="mb-4 border rounded p-3 bg-gray-100">
           <div>{memo.text}</div>

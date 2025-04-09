@@ -234,7 +234,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         // Shareholder and Director Information Section
         if (company.shareHolderDirectorController) {
             const shareholderData = company.shareHolderDirectorController;
-            console.log("shareholderData", shareholderData)
+            // console.log("shareholderData", shareholderData)
             sections.push({
                 title: "Shareholder and Director Information",
                 data: {
@@ -582,7 +582,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     value="Memos"
                     className="flex-1 py-3 text-sm font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
                 >
-                    Memos
+                    Memo
                 </TabsTrigger>
             </TabsList>
 
