@@ -114,6 +114,28 @@ const AdminDashboard = () => {
         navigate(`/company-register/${countryCode}/${companyId}`);
     };
     // console.log("allList", allList)
+    function formatDateTime(isoDateString:string) {
+        if (!isoDateString) {
+          return "";
+        }
+      
+        try {
+          const date = new Date(isoDateString);
+      
+          const day = date.getDate().toString().padStart(2, '0');
+          const month = (date.getMonth() + 1).toString().padStart(2, '0');
+          const year = date.getFullYear();
+        //   const hours = date.getHours().toString().padStart(2, '0');
+        //   const minutes = date.getMinutes().toString().padStart(2, '0');
+        //   const seconds = date.getSeconds().toString().padStart(2, '0');:${hours}:${minutes}:${seconds}
+
+          return `${day}-${month}-${year}`;
+        } catch (error) {
+          console.error("Error formatting date:", error);
+          return ""; // Return empty string in case of an invalid date
+        }
+      }
+
     return (
         <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
             {/* Stats Cards */}
@@ -144,6 +166,7 @@ const AdminDashboard = () => {
                                     applicantName: string;
                                     status: string;
                                     incorporationDate: string | null;
+                                    lastLogin: string | null;
                                     _id: string;
                                 };
 
@@ -190,6 +213,7 @@ const AdminDashboard = () => {
                                                 <Pencil size={18} />
                                             </button>
                                         </TableCell>
+                                        <TableCell>{typedCompany.lastLogin ? formatDateTime(typedCompany.lastLogin) : "N/A"}</TableCell>
                                     </TableRow>
                                 )
                             })}
