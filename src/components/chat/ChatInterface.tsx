@@ -97,7 +97,8 @@ export default function ChatInterface() {
   useEffect(() => {
     const init = async () => {
       const fetchedUsers = await fetchUsers();
-      setUsers(fetchedUsers);
+      const users = fetchedUsers.filter((e: { role: string; }) => e.role == 'admin' || e.role == 'master')
+      setUsers(users);
 
       if (socket && currentUser._id) {
         socket.emit("register", currentUser._id);
