@@ -30,8 +30,10 @@ import api from "@/services/fetch";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import { paymentApi } from '@/lib/api/payment';
+import { useTranslation } from "react-i18next";
 
 const IncorporationForm = () => {
+    const { t } = useTranslation();
     const { theme } = useTheme();
     const { toast } = useToast();
     const [currentSection, setCurrentSection] = useState(1);
@@ -51,18 +53,18 @@ const IncorporationForm = () => {
     const steps = [
         {
             number: 1,
-            label: "Applicant\ninformation",
+            label:t("compFormation.appInfo"),
             active: currentSection === 1,
         },
-        { number: 2, label: "AML\nCDD", active: currentSection === 2 },
-        { number: 3, label: "Company\ninformation", active: currentSection === 3 },
-        { number: 4, label: "Service Agreement", active: currentSection === 4 },
-        { number: 5, label: "Services to Select", active: currentSection === 5 },
-        { number: 6, label: "Invoice ", active: currentSection === 6 },
-        { number: 7, label: "Payment", active: currentSection === 7 },
+        { number: 2, label: t("compFormation.amlcd"), active: currentSection === 2 },
+        { number: 3, label: t("compFormation.compInfo"), active: currentSection === 3 },
+        { number: 4, label: t("compFormation.serviceAgrmt"), active: currentSection === 4 },
+        { number: 5, label: t("compFormation.serviceSelect"), active: currentSection === 5 },
+        { number: 6, label: t("compFormation.invoice"), active: currentSection === 6 },
+        { number: 7, label: t("compFormation.payment"), active: currentSection === 7 },
         {
             number: 8,
-            label: "Information For Incorporation",
+            label: t("compFormation.inforIncorpo"),
             active: currentSection === 8,
         },
         // {
@@ -70,7 +72,7 @@ const IncorporationForm = () => {
         //     label: "Signing Incorporation Documents",
         //     active: currentSection === 9,
         // },
-        { number: 9, label: "Incorporation", active: currentSection === 9 },
+        { number: 9, label: t("compFormation.incorpo"), active: currentSection === 9 },
     ];
 
     const addLimitedSuffixConcise = (items: string[]) => {
@@ -261,15 +263,13 @@ const IncorporationForm = () => {
                                     className={`font-semibold mb-1 text-sm md:text-base ${theme === "light" ? "text-gray-800" : "text-gray-200"
                                         }`}
                                 >
-                                    Good to know
+                                    {t("ApplicantInfoForm.goodToKnow")}
                                 </h3>
                                 <p
                                     className={`text-xs ${theme === "light" ? "text-gray-600" : "text-gray-400"
                                         }`}
                                 >
-                                    Enter different variations of your company name in order of
-                                    preference. Mirr Asia will help you obtain final confirmation
-                                    prior to incorporation.
+                                    {t("ApplicantInfoForm.goodDesc")}
                                 </p>
                             </div>
                         </CardContent>
