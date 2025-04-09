@@ -46,14 +46,14 @@ export const createOrUpdateMemo = async (memoData: {
   author: string;
   timestamp: string;
   companyId: string;
-  userId: string
+  // userId: string
 }) => {
   const res = await api.post('/memo', memoData); // server will handle create or push
   return res.data;
 };
 
-export const getMemos = async (companyId: string, userId:string) => {
-  const res = await api.get(`/memo?companyId=${companyId}?userId=${userId}`);
+export const getMemos = async (companyId: string) => {
+  const res = await api.get(`/memo?companyId=${companyId}`);
   return res.data;
 };
 
