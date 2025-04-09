@@ -11,8 +11,9 @@ import { getIncorporationListByCompId, getIncorporationListByUserId, getUsIncorp
 import IncorporateUSACompany from './USA/IncorporateUSCompany';
 import { Card, CardContent } from '@/components/ui/card';
 import { usaFormWithResetAtom } from './USA/UsState';
-
+import { useTranslation } from "react-i18next";
 const CompanyRegistration = () => {
+    const { t } = useTranslation();
     const [countryState, setCountryState] = useAtom(countryAtom);
     const [companies, setCompaniesList] = useAtom(companyIncorporationList);
     const { countryCode, id } = useParams();
@@ -61,10 +62,10 @@ const CompanyRegistration = () => {
     }, []);
 
     const countries = [
-        { code: 'HK', name: 'Hong Kong' },
-        { code: 'SG', name: 'Singapore' },
-        { code: 'US', name: 'United States' },
-        { code: 'UK', name: 'United Kingdom' },
+        { code: 'HK', name: t('countrySelection.hk')} ,
+        { code: 'SG', name: t('countrySelection.sg') },
+        { code: 'US', name: t('countrySelection.us') },
+        { code: 'UK', name: t('countrySelection.uk') },
         // Add more countries as needed
     ];
 
@@ -115,7 +116,7 @@ const CompanyRegistration = () => {
                     <Card className="relative z-10 w-[420px] bg-white/90 shadow-xl ">
                         <CardContent className="p-6 space-y-4">
                             <h2 className="text-2xl font-bold text-slate-950 text-center">
-                                Select Country for Registration
+                               {t('countrySelection.title')}
                             </h2>
 
                             <Select onValueChange={(value) => updateCountry(value)}>

@@ -1,613 +1,618 @@
 {
-    "company": {
-      "name": "公司名稱",
-      "industry": "產業"
-    },
-    "buttons": {
-      "next": "下一步",
-      "previous": "上一步"
-    },
-    "landingPage": {
-      "leftHeading": "快速簡單地註冊公司並開設商業帳戶！",
-      "rightHeading": "您已經有公司了嗎？",
-      "leftText": "享受無壓力服務和專業支援，快速數位化註冊和管理您的公司！",
-      "rightSubHeading": "您專注於業務，我們負責會計和合規。",
-      "rightP": "從帳簿管理到薪資、法律事務，與專業人士一起，讓您的後勤工作更輕鬆！",
-      "registerNow": "立即註冊",
-      "contactUs": "聯絡我們",
-      "TransferBtn": "轉移至Mirr Asia"
-    },
-    "ApplicantInfoForm": {
-      "heading": "申請人資訊",
-      "paragraph": "此表格由香港公司代表填寫。提供的信息將作為KYC和客戶盡職調查文件保存。",
-      "nameHeading": "申請人姓名",
-      "relationHeading": "申請人與擬成立的香港公司關係",
-      "relationSelect": "請選擇所有適用項目。",
-      "relationList1": "香港公司的董事",
-      "relationList2": "獲香港公司董事授權的人士",
-      "relationList3": "持有香港公司大多數股份的股東",
-      "relationList4": "為香港公司提供設立諮詢的專業人士（律師、會計師等）",
-      "relationList5": "其他...",
-      "applicantName" : "申請人姓名",
-      "compName": "您要註冊的香港公司名稱",
-      "contactInfo": "申請人的聯絡資訊",
-      "phoneNum": "電話號碼",
-      "email": "電子郵件",
-      "snsId": "社交媒體帳戶ID",
-      "snsPlatform": "社群網路平台",
-      "compChinaName": "您可以在下方輸入您公司的可選中文名稱",
-      "compNameInfo" : "公司名稱必須以英文書寫，並可加註中文（僅限繁體字，簡體字不可）。但英文和中文不得混合（除HK等英文縮寫外），且必須在英文名稱末尾標示Limited，在中文名稱末尾標示有限公司。名稱. 公司名稱可以使用大寫字母/小寫字母/數字/句號/逗號/括號，其他特殊字符不允許。International可縮寫為Int'l。如已有相同或相似的公司名稱註冊，則無法註冊。因此，請按順序輸入您想註冊的3個公司名稱（第一順位/第二順位/第三順位），我們將為您確認名稱並按您的偏好順序進行註冊。"
-    },
-    "CompanyInformation": {
-      "businessNatureList": [
-        {
-          "name": "Crop and animal production, hunting and related service activities",
-          "val": "001"
-        },
-        {
-          "name": "Forestry activities",
-          "val": "002"
-        },
-        {
-          "name": "Fishing and aquaculture",
-          "val": "003"
-        },
-        {
-          "name": "Mining of coal and lignite",
-          "val": "005"
-        },
-        {
-          "name": "Extraction of crude petroleum and natural gas",
-          "val": "006"
-        },
-        {
-          "name": "Mining of metal ores",
-          "val": "007"
-        },
-        {
-          "name": "Quarrying and other mining of non-metal ores",
-          "val": "008"
-        },
-        {
-          "name": "Mining support service activities",
-          "val": "009"
-        },
-        {
-          "name": "Manufacture of food products",
-          "val": "010"
-        },
-        {
-          "name": "Manufacture of beverages",
-          "val": "011"
-        },
-        {
-          "name": "Manufacture of tobacco products",
-          "val": "012"
-        },
-        {
-          "name": "Manufacture of textiles",
-          "val": "013"
-        },
-        {
-          "name": "Manufacture of wearing apparel",
-          "val": "014"
-        },
-        {
-          "name": "Manufacture of leather and related products",
-          "val": "015"
-        },
-        {
-          "name": "Manufacture of wood and of products of wood and cork, articles of straw and plaiting materials (except furniture and toys)",
-          "val": "016"
-        },
-        {
-          "name": "Manufacture of paper and paper products",
-          "val": "017"
-        },
-        {
-          "name": "Printing and reproduction of recorded media",
-          "val": "018"
-        },
-        {
-          "name": "Manufacture of coke and refined petroleum products",
-          "val": "019"
-        },
-        {
-          "name": "Manufacture of chemicals and chemical products",
-          "val": "020"
-        },
-        {
-          "name": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
-          "val": "021"
-        },
-        {
-          "name": "Manufacture of rubber and plastics products (except furniture, toys, sports goods and stationery)",
-          "val": "022"
-        },
-        {
-          "name": "Manufacture of other non-metallic mineral products",
-          "val": "023"
-        },
-        {
-          "name": "Manufacture of basic metals",
-          "val": "024"
-        },
-        {
-          "name": "Manufacture of fabricated metal products (except machinery and equipment)",
-          "val": "025"
-        },
-        {
-          "name": "Manufacture of computer, electronic and optical products",
-          "val": "026"
-        },
-        {
-          "name": "Manufacture of electrical equipment",
-          "val": "027"
-        },
-        {
-          "name": "Manufacture of machinery and equipment n.e.c.",
-          "val": "028"
-        },
-        {
-          "name": "Body assembly of motor vehicles",
-          "val": "029"
-        },
-        {
-          "name": "Manufacture of other transport equipment",
-          "val": "030"
-        },
-        {
-          "name": "Manufacture of furniture",
-          "val": "031"
-        },
-        {
-          "name": "Other manufacturing",
-          "val": "032"
-        },
-        {
-          "name": "Repair and installation of machinery and equipment",
-          "val": "033"
-        },
-        {
-          "name": "Electricity and gas supply",
-          "val": "035"
-        },
-        {
-          "name": "Water collection, treatment and supply",
-          "val": "036"
-        },
-        {
-          "name": "Sewerage",
-          "val": "037"
-        },
-        {
-          "name": "Waste collection, treatment and disposal activities; materials recovery",
-          "val": "038"
-        },
-        {
-          "name": "Remediation activities and other waste management services",
-          "val": "039"
-        },
-        {
-          "name": "Construction of buildings",
-          "val": "041"
-        },
-        {
-          "name": "Civil engineering",
-          "val": "042"
-        },
-        {
-          "name": "Specialised construction activities",
-          "val": "043"
-        },
-        {
-          "name": "Import and export trade",
-          "val": "045"
-        },
-        {
-          "name": "Wholesale",
-          "val": "046"
-        },
-        {
-          "name": "Retail trade",
-          "val": "047"
-        },
-        {
-          "name": "Land transport",
-          "val": "049"
-        },
-        {
-          "name": "Water transport",
-          "val": "050"
-        },
-        {
-          "name": "Air transport",
-          "val": "051"
-        },
-        {
-          "name": "Warehousing and support activities for transportation",
-          "val": "052"
-        },
-        {
-          "name": "Postal and courier activities",
-          "val": "053"
-        },
-        {
-          "name": "Short term accommodation activities",
-          "val": "055"
-        },
-        {
-          "name": "Food and beverage service activities",
-          "val": "056"
-        },
-        {
-          "name": "Publishing activities",
-          "val": "058"
-        },
-        {
-          "name": "Motion picture, video and television programme production, sound recording and music publishing activities",
-          "val": "059"
-        },
-        {
-          "name": "Programming and broadcasting activities",
-          "val": "060"
-        },
-        {
-          "name": "Telecommunications",
-          "val": "061"
-        },
-        {
-          "name": "Information technology service activities",
-          "val": "062"
-        },
-        {
-          "name": "Information service activities",
-          "val": "063"
-        },
-        {
-          "name": "Financial service activities, including investment and holding companies, and the activities of trusts, funds and similar financial entities.",
-          "val": "064"
-        },
-        {
-          "name": "Insurance (including pension funding)",
-          "val": "065"
-        },
-        {
-          "name": "Activities auxiliary to financial service and insurance activities",
-          "val": "066"
-        },
-        {
-          "name": "Real estate activities",
-          "val": "068"
-        },
-        {
-          "name": "Legal and accounting activities",
-          "val": "069"
-        },
-        {
-          "name": "Activities of head offices; management and management consultancy activities",
-          "val": "070"
-        },
-        {
-          "name": "Architecture and engineering activities, technical testing and analysis",
-          "val": "071"
-        },
-        {
-          "name": "Scientific research and development",
-          "val": "072"
-        },
-        {
-          "name": "Veterinary activities",
-          "val": "073"
-        },
-        {
-          "name": "Advertising and market research",
-          "val": "074"
-        },
-        {
-          "name": "Other professional, scientific and technical activities",
-          "val": "075"
-        },
-        {
-          "name": "Rental and leasing activities",
-          "val": "077"
-        },
-        {
-          "name": "Employment activities",
-          "val": "078"
-        },
-        {
-          "name": "Travel agency, reservation service and related activities",
-          "val": "079"
-        },
-        {
-          "name": "Security and investigation activities",
-          "val": "080"
-        },
-        {
-          "name": "Services to buildings and landscape care activities",
-          "val": "081"
-        },
-        {
-          "name": "Office administrative, office support and other business support activities",
-          "val": "082"
-        },
-        {
-          "name": "Public administration",
-          "val": "084"
-        },
-        {
-          "name": "Education",
-          "val": "085"
-        },
-        {
-          "name": "Human health activities",
-          "val": "086"
-        },
-        {
-          "name": "Residential care activities",
-          "val": "087"
-        },
-        {
-          "name": "Social work activities without accommodation",
-          "val": "088"
-        },
-        {
-          "name": "Creative and performing arts activities",
-          "val": "090"
-        },
-        {
-          "name": "Libraries, archives, museums and other cultural activities",
-          "val": "091"
-        },
-        {
-          "name": "Activities of amusement parks and theme parks",
-          "val": "092"
-        },
-        {
-          "name": "Sports and other entertainment activities",
-          "val": "093"
-        },
-        {
-          "name": "Activities of membership organisations",
-          "val": "094"
-        },
-        {
-          "name": "Repair of motor vehicles, motorcycles, computers, personal and household goods",
-          "val": "095"
-        },
-        {
-          "name": "Other personal service activities",
-          "val": "096"
-        },
-        {
-          "name": "Activities of households as employers of domestic personnel",
-          "val": "097"
-        },
-        {
-          "name": "Goods- and services-producing activities of private households for own use",
-          "val": "098"
-        },
-        {
-          "name": "Activities of extraterritorial organisations and bodies",
-          "val": "099"
-        }
-      ],
-      "businessInfoHead": "香港公司業務資料",
-      "businessInfoSubHeading": "請在此部分提供擬設立的香港公司及相關業務的信息",
-      "selectBusinessIndustry": "選擇商業行業",
-      "descriptionOfProduct": "設立後擬進行交易的產品名稱、產品類型、服務內容、服務類型等說明",
-      "purposeOfEstablishment": "設立香港公司的目的及預期效果",
-      "purposeOptions": {
-        "enteringBusiness": "進軍香港及大中華區業務",
-        "assetManagement": "透過投資房地產或金融資產進行資產管理",
-        "managingThroughInvesting": "透過投資子公司或關聯公司作為控股公司進行管理",
-        "investorProposed": "投資者或商業對手建議您設立一家新加坡公司",
-        "geographicalBenefits": "國際交易的地理優勢",
-        "diversificationDueToRegulations": "監管放鬆，追求業務多元化",
-        "competitiveAdvantage": "透過寬鬆的金融監理追求競爭優勢",
-        "increaseTransactionalVolume": "由於低稅率和非交易稅（非增值稅），交易量增加",
-        "investmentProfit": "因無資本利得稅而追求投資利潤"
+  "company": {
+    "name": "公司名稱",
+    "industry": "產業"
+  },
+  "buttons": {
+    "next": "下一步",
+    "previous": "上一步"
+  },
+  "countrySelection": {
+    "title": "選擇註冊國家",
+    "hk": "香港",
+    "us": "美國",
+    "sg": "新加坡",
+    "uk": "英國"
+  },
+  "landingPage": {
+    "leftHeading": "快速簡單地註冊公司並開設商業帳戶！",
+    "rightHeading": "您已經有公司了嗎？",
+    "leftText": "享受無壓力服務和專業支援，快速數位化註冊和管理您的公司！",
+    "rightSubHeading": "您專注於業務，我們負責會計和合規。",
+    "rightP": "從帳簿管理到薪資、法律事務，與專業人士一起，讓您的後勤工作更輕鬆！",
+    "registerNow": "立即註冊",
+    "contactUs": "聯絡我們",
+    "TransferBtn": "轉移至Mirr Asia"
+  },
+  "ApplicantInfoForm": {
+    "heading": "申請人資訊",
+    "paragraph": "此表格由香港公司代表填寫。提供的信息將作為KYC和客戶盡職調查文件保存。",
+    "nameHeading": "申請人姓名",
+    "relationHeading": "申請人與擬成立的香港公司關係",
+    "relationSelect": "請選擇所有適用項目。",
+    "relationList1": "香港公司的董事",
+    "relationList2": "獲香港公司董事授權的人士",
+    "relationList3": "持有香港公司大多數股份的股東",
+    "relationList4": "為香港公司提供設立諮詢的專業人士（律師、會計師等）",
+    "relationList5": "其他...",
+    "applicantName": "申請人姓名",
+    "compName": "您要註冊的香港公司名稱",
+    "contactInfo": "申請人的聯絡資訊",
+    "phoneNum": "電話號碼",
+    "email": "電子郵件",
+    "snsId": "社交媒體帳戶ID",
+    "snsPlatform": "社群網路平台",
+    "compChinaName": "您可以在下方輸入您公司的可選中文名稱",
+    "compNameInfo": "公司名稱必須以英文書寫，並可加註中文（僅限繁體字，簡體字不可）。但英文和中文不得混合（除HK等英文縮寫外），且必須在英文名稱末尾標示Limited，在中文名稱末尾標示有限公司。名稱. 公司名稱可以使用大寫字母/小寫字母/數字/句號/逗號/括號，其他特殊字符不允許。International可縮寫為Int'l。如已有相同或相似的公司名稱註冊，則無法註冊。因此，請按順序輸入您想註冊的3個公司名稱（第一順位/第二順位/第三順位），我們將為您確認名稱並按您的偏好順序進行註冊。"
+  },
+  "CompanyInformation": {
+    "businessNatureList": [
+      {
+        "name": "Crop and animal production, hunting and related service activities",
+        "val": "001"
       },
-      "shareholders": "股東",
-      "directors": "董事",
-      "ofHKCompany": "香港公司的",
-      "shHlderSubHeading": "請提供香港公司的股東、董事、重要控制人及指定聯絡人的資訊。",
-      "typeOfShares": "將發行的股份類型",
-      "typeShareInfo": "如果發行優先股或公司債券，在進行之前可能需要預先提供建議，例如審查公司章程和法律法規。",
-      "significantController": "重要控制人",
-      "typeOfShare": {
-        "ordinaryShares": "普通股",
-        "preferenceShares": "優先股"
+      {
+        "name": "Forestry activities",
+        "val": "002"
       },
-      "designatedContactPerson": "指定聯絡人",
-      "designateToolTipInfo": "您需要委託一名人員（「指定聯絡人」）負責貴公司業務的聯繫、公司的設立和更新、文件登記、所需資訊的確認以及與我們服務相關的各種事宜的溝通。指定聯絡人最多可免費指定1人，如需委託2名或以上指定聯絡人，則需繳付每人每年港幣2,000元的費用。指定聯絡人將由貴公司委派，並應單獨向我們登記，以保護貴公司訊息，減少業務混亂，防止身分詐欺。 （指定聯絡人必須辦理與股東/董事相同的手續，提交護照影本、地址證明和個人證明。",
-      "totalShrldrName": "總所有權不能超過100%。當前總計",
-      "addShldrDir": "新增股東/董事",
-      "sendInvitation": "向股東/董事發送邀請郵件",
-      "shareDirName": "股東/董事姓名",
-      "ownerShpRte": "擁有率",
-      "actDirector": "擔任導演？",
-      "isLegal": "法人？",
-      "conditionSignificantControl" : "對公司具有重大控制的條件；若符合以下5個條件中的一項或多項，則某人對公司具有重大控制權： 1.該人直接或間接持有公司已發行股份25％以上，或者如果公司沒有股本，則直接或間接持有公司25％以上資本或利潤的權利； 2、直接或間接持有公司25%以上表決權； 3、直接或間接擁有任免公司董事會過半數成員的權利； 4、有權對公司行使或實際行使重大影響或控制權； 5.該人有權對信託或非法人公司的活動行使或實際行使重大影響或控制，但其受託人或成員滿足與公司有關的前四個條件（以其身份）。",
-      "accountHeading":"會計和稅務",
-      "accountingPara":"請提供有關會計和稅務事宜的資訊。",
-      "finYearEnd":"香港公司的財務年度結束日期。",
-      "finYearEndTtip":"第一個財政年度可以在公司成立之日起18個月內自由設定。根據香港稅法（稅務條例）第51條第2款，利得稅報稅表（應課稅）必須在財政年度終結日起4個月內提交。",
-      "bookCycle":"簿記週期。",
-      "implementSoftware":"您想實施線上會計軟體 - Xero嗎？",
-      "implementSoftwaretTip":" 實施Xero時，可以將POS或其他軟體建立的資料以CSV格式匯入，以製作記帳和財務報表，也支援現金流量表。此外，還有助於編制控股公司和子公司之間的合併財務報表，以及庫存管理、成本管理、銷售管理等其他功能。",
-      "doYouUseSoftware" : "您目前使用或有想要使用的單獨會計軟體嗎？ （如果有的話）"
-  
-    },
-    "AmlCdd": {
-      "legal_assessment_title": "法律與道德評估",
-      "legal_assessment_description": "是否有洗錢、賭博、逃稅、隱匿資產、規避非法經營、詐欺等法律或道德問題？",
-      "business_information_title": "香港公司業務資料",
-      "business_information_description": "在此部分，請提供擬設立的香港公司及相關業務的資料",
-      "dialog_initial_title": "重要通知",
-      "dialog_initial_message": "所有欄位都必須仔細填寫。一旦完成，此表格將不可編輯。",
-      "dialog_button": "知道了",
-      "dialog_acknowledgement_title": "您輸入的資料正確嗎？請確認。",
-      "dialog_acknowledgement_message": "我確認輸入的資料正確。",
-      "dialog_consultation_title": "繼續之前需要諮詢",
-      "dialog_consultation_message": "看來您需要在繼續之前進行諮詢。我們將檢查您的回覆內容，我們的顧問將盡快與您聯繫。謝謝。",
-      "dialog_consultation_button": "好的",
-      "options": {
-        "yes": "是的",
-        "no": "不",
-        "unknown": "我/我們不知道",
-        "legal-advice": "考慮法律建議"
+      {
+        "name": "Fishing and aquaculture",
+        "val": "003"
       },
-      "questions": {
-        "sanctioned_countries": "據您所知，該香港公司目前或計劃在以下國家（伊朗、蘇丹、北韓、敘利亞、古巴、南蘇丹、白俄羅斯或辛巴威）是否有任何業務活動？",
-        "sanctions_presence": "據您所知，該香港公司或該公司的任何關聯方或其他關聯方是否在伊朗、蘇丹、朝鮮、敘利亞或古巴設有業務，和/或目前是否受到以下機構實施的製裁：聯合國、歐盟、UN/HMT、香港金管局、OFAC，或作為當地制裁法的一部分？",
-        "crimea_presence": "據您所知，該香港公司或其任何關聯方或其他關聯方目前或計劃在克里米亞/塞瓦斯托波爾地區是否有任何業務活動？",
-        "russian_business_presence": "據您所知，這家香港公司目前或計劃在能源/石油/天然氣領域、軍事或國防領域是否有任何涉足俄羅斯的業務？"
+      {
+        "name": "Mining of coal and lignite",
+        "val": "005"
       },
-      "acknowledgement_error": "請先接受法律確認，然後再繼續。",
-      "success_message": "公司註冊申請已成功提交！",
-      "error_message": "提交請求時發生錯誤。"
-    },
-    "ServiceAgreementDocument": {
-      "title": "公司秘書服務協議",
-      "section1Title": "1. 服務協議目的",
-      "section1Content": "本協議的目的是為了防止 MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED（「MIRR ASIA」）提供的服務範圍及其與您即將在香港特別行政區註冊成立的公司（「客戶」）相關的限制可能產生的任何誤解或爭議。",
-      "section2Title":"2. 香港公司秘書的角色及責任限制",
-      "section2Content" : "(僅適用於使用MIRR ASIA提供秘書服務的客戶)",
-      "section2_1": "2.1",
-      "section2_1Content": "MIRR ASIA 將根據香港公司條例（第 622 章）和客戶的公司章程在客戶的檔案中註冊為秘書。",
-      "section2_2": "2.2",
-      "section2_2Content": "MIRR ASIA 提供的秘書服務是香港公司條例（第 622 章）規定的基本註冊要求，可能與受聘秘書的一般意義不同。",
-      "section3Title": "3. 提供註冊地址及其責任限制",
-      "section3Content" : "（僅適用於使用MIRR ASIA提供的註冊地址服務的客戶）",
-      "section3_1": "3.1",
-      "section3_1Content": "客戶處註冊的地址應為MIRR ASIA 提供的香港註冊地址。如果客戶希望更改該註冊地址，客戶應以書面或電子郵件通知 MIRR ASIA。",
-      "section3_2": "3.2",
-      "section3_2Content": "MIRR ASIA 提供的註冊地址僅用於註冊目的，不包括客戶的商業或實體空間。",
-      "section3_3": "3.3",
-      "section3_3Content": "客戶不得將註冊地址用於濫用或非法目的，也不得將其虛假地表示為客戶的實際業務區域。",
-      "section3_4": "3.4",
-      "section3_4Content": "服務期間，客戶收到的郵件將由 MIRR ASIA 根據同意書進行開啟和掃描，並將掃描後的文件透過電子郵件發送給客戶。如果客戶希望終止服務，客戶應事先以書面或電子郵件通知 MIRR ASIA。如果客戶有兩名以上董事，則根據公司章程規定的法定人數，至少有兩名董事簽署所有相關文件。",
-      "section3_5": "3.5",
-      "section3_5Content": "未經事先同意，客戶不得將包裹和貨物發送或要求第三方發送至 MIRR ASIA 提供的註冊地址。未經同意的遞送將退回給寄件者。",
-      "section4Title": "四、服務範圍",
-      "section4Content": "MIRR ASIA 自成立之日起至客戶一周年之日期間應提供以下服務：",
-      "section4Services":  {
-        "1": "公司秘書登記（適用於使用秘書服務）",
-        "2": "保存公司的法定記錄，包括會議記錄和文件（適用於使用註冊地址服務）",
-        "3": "提供香港地址及郵寄服務，包括掃描及電子郵件（適用於使用註冊地址服務）",
-        "4": "為首2名僱員辦理雇主報稅表（需另加港幣300元郵資）（適用於使用秘書服務）",
-        "5": "辦理強制性公司資料調查（適用於使用秘書服務）",
-        "6": "準備週年申報表並在董事簽署並在客戶公司註冊處登記後保留續約表格副本（適用於續約後使用秘書服務）",
-        "7": "提交和保存重要控制人登記冊（適用於使用秘書和註冊地址服務）",
-        "8": "歸檔並保存會員/董事/秘書登記冊和組織結構圖（適用於使用秘書和註冊地址服務）",
-        "9": "歸檔並保存年度股東大會 (AGM) 會議記錄（適用於使用秘書和註冊地址服務）",
-        "10": "在註冊辦事處備存商業登記證（適用於使用註冊地址服務）",
-        "11": "簡短的業務和營運建議（適用於使用秘書服務）"
+      {
+        "name": "Extraction of crude petroleum and natural gas",
+        "val": "006"
       },
-      "section4_1": "4.1",
-      "section4_1Content": "客戶應與 MIRR ASIA 真誠合作，提供服務所需的所有必要資訊和文件。 MIRR ASIA 沒有義務就非法事項提供協助或建議。",
-      "section4_2": "4.2",
-      "section4_2Content": "MIRR ASIA 提供的簡短業務和營運建議服務是為了方便客戶；然而，MIRR ASIA 對此建議不承擔任何法律責任。",
-      "section5Title": "5. 服務費",
-      "section5Content": "客戶應在簽署本協議時支付付款部分指定的金額。服務費不包括會計、審計、稅務服務、銀行開戶建議或任何第三方費用，如銀行收費、政府費用、稅金和快遞費。",
-      "section6Title": "6. 轉讓和分包商",
-      "section6Content": "未經另一方事先書面同意，客戶或 MIRR ASIA 均不得轉讓其在本協議下的權利、職責和義務。",
-      "section7Title": "7. 保密性",
-      "section7Content": "雙方應對根據本協議獲得的所有業務或技術資訊保密。此義務不適用於公共領域的資訊或從他人合法取得的資訊。",
-      "section8Title": "8. 整合",
-      "section8Content": "本協議代表客戶與 MIRR ASIA 之間最終且完整的理解，取代先前有關該主題的所有通訊。本協議優先於雙方之間的任何採購訂單或其他通訊中的任何預印條款和條件。",
-      "section9Title": "9. 可分割性",
-      "section9Content": "本協議中任何無效或不可執行的條款應視為無效，而其餘條款應繼續有效並具有約束力。雙方應善意地嘗試以有效且表達原意的條款取代任何無效條款。",
-      "section10Title": "10. 無第三人受益人",
-      "section10Content": "除非得到 MIRR ASIA 的書面授權，本協議不會為第三方創造任何權利或利益。",
-      "section11Title": "11. 適用法律和補救措施",
-      "section11Content": "本協議受香港特別行政區法律管轄。任何爭議均應根據香港仲裁公會的規則提交具有約束力的仲裁。",
-      "section12Title": "12. 律師費",
-      "section12Content": "如果因本協議引起調解、仲裁或訴訟，勝訴方有權獲得合理的費用和律師費。客戶還同意支付 MIRR ASIA 因回應任何合法的資訊、證詞或文件要求而產生的所有費用。",
-      "section13Title": "13. 確認與聲明",
-      "section13Content": "客戶確認並聲明MIRR ASIA提供的服務不會被用於非法目的。客戶提供的資訊如有任何變更，必須立即通知 MIRR ASIA。客戶確認所提供的所有詳細資訊均真實且正確。",
-      "section13_1": "13.1",
-      "section13_1Content": "客戶同意提供開展服務所需的文件，並確認組織的目的合法。若懷疑有任何非法活動，MIRR ASIA 保留終止服務的權利，恕不另行通知。"
+      {
+        "name": "Mining of metal ores",
+        "val": "007"
+      },
+      {
+        "name": "Quarrying and other mining of non-metal ores",
+        "val": "008"
+      },
+      {
+        "name": "Mining support service activities",
+        "val": "009"
+      },
+      {
+        "name": "Manufacture of food products",
+        "val": "010"
+      },
+      {
+        "name": "Manufacture of beverages",
+        "val": "011"
+      },
+      {
+        "name": "Manufacture of tobacco products",
+        "val": "012"
+      },
+      {
+        "name": "Manufacture of textiles",
+        "val": "013"
+      },
+      {
+        "name": "Manufacture of wearing apparel",
+        "val": "014"
+      },
+      {
+        "name": "Manufacture of leather and related products",
+        "val": "015"
+      },
+      {
+        "name": "Manufacture of wood and of products of wood and cork, articles of straw and plaiting materials (except furniture and toys)",
+        "val": "016"
+      },
+      {
+        "name": "Manufacture of paper and paper products",
+        "val": "017"
+      },
+      {
+        "name": "Printing and reproduction of recorded media",
+        "val": "018"
+      },
+      {
+        "name": "Manufacture of coke and refined petroleum products",
+        "val": "019"
+      },
+      {
+        "name": "Manufacture of chemicals and chemical products",
+        "val": "020"
+      },
+      {
+        "name": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
+        "val": "021"
+      },
+      {
+        "name": "Manufacture of rubber and plastics products (except furniture, toys, sports goods and stationery)",
+        "val": "022"
+      },
+      {
+        "name": "Manufacture of other non-metallic mineral products",
+        "val": "023"
+      },
+      {
+        "name": "Manufacture of basic metals",
+        "val": "024"
+      },
+      {
+        "name": "Manufacture of fabricated metal products (except machinery and equipment)",
+        "val": "025"
+      },
+      {
+        "name": "Manufacture of computer, electronic and optical products",
+        "val": "026"
+      },
+      {
+        "name": "Manufacture of electrical equipment",
+        "val": "027"
+      },
+      {
+        "name": "Manufacture of machinery and equipment n.e.c.",
+        "val": "028"
+      },
+      {
+        "name": "Body assembly of motor vehicles",
+        "val": "029"
+      },
+      {
+        "name": "Manufacture of other transport equipment",
+        "val": "030"
+      },
+      {
+        "name": "Manufacture of furniture",
+        "val": "031"
+      },
+      {
+        "name": "Other manufacturing",
+        "val": "032"
+      },
+      {
+        "name": "Repair and installation of machinery and equipment",
+        "val": "033"
+      },
+      {
+        "name": "Electricity and gas supply",
+        "val": "035"
+      },
+      {
+        "name": "Water collection, treatment and supply",
+        "val": "036"
+      },
+      {
+        "name": "Sewerage",
+        "val": "037"
+      },
+      {
+        "name": "Waste collection, treatment and disposal activities; materials recovery",
+        "val": "038"
+      },
+      {
+        "name": "Remediation activities and other waste management services",
+        "val": "039"
+      },
+      {
+        "name": "Construction of buildings",
+        "val": "041"
+      },
+      {
+        "name": "Civil engineering",
+        "val": "042"
+      },
+      {
+        "name": "Specialised construction activities",
+        "val": "043"
+      },
+      {
+        "name": "Import and export trade",
+        "val": "045"
+      },
+      {
+        "name": "Wholesale",
+        "val": "046"
+      },
+      {
+        "name": "Retail trade",
+        "val": "047"
+      },
+      {
+        "name": "Land transport",
+        "val": "049"
+      },
+      {
+        "name": "Water transport",
+        "val": "050"
+      },
+      {
+        "name": "Air transport",
+        "val": "051"
+      },
+      {
+        "name": "Warehousing and support activities for transportation",
+        "val": "052"
+      },
+      {
+        "name": "Postal and courier activities",
+        "val": "053"
+      },
+      {
+        "name": "Short term accommodation activities",
+        "val": "055"
+      },
+      {
+        "name": "Food and beverage service activities",
+        "val": "056"
+      },
+      {
+        "name": "Publishing activities",
+        "val": "058"
+      },
+      {
+        "name": "Motion picture, video and television programme production, sound recording and music publishing activities",
+        "val": "059"
+      },
+      {
+        "name": "Programming and broadcasting activities",
+        "val": "060"
+      },
+      {
+        "name": "Telecommunications",
+        "val": "061"
+      },
+      {
+        "name": "Information technology service activities",
+        "val": "062"
+      },
+      {
+        "name": "Information service activities",
+        "val": "063"
+      },
+      {
+        "name": "Financial service activities, including investment and holding companies, and the activities of trusts, funds and similar financial entities.",
+        "val": "064"
+      },
+      {
+        "name": "Insurance (including pension funding)",
+        "val": "065"
+      },
+      {
+        "name": "Activities auxiliary to financial service and insurance activities",
+        "val": "066"
+      },
+      {
+        "name": "Real estate activities",
+        "val": "068"
+      },
+      {
+        "name": "Legal and accounting activities",
+        "val": "069"
+      },
+      {
+        "name": "Activities of head offices; management and management consultancy activities",
+        "val": "070"
+      },
+      {
+        "name": "Architecture and engineering activities, technical testing and analysis",
+        "val": "071"
+      },
+      {
+        "name": "Scientific research and development",
+        "val": "072"
+      },
+      {
+        "name": "Veterinary activities",
+        "val": "073"
+      },
+      {
+        "name": "Advertising and market research",
+        "val": "074"
+      },
+      {
+        "name": "Other professional, scientific and technical activities",
+        "val": "075"
+      },
+      {
+        "name": "Rental and leasing activities",
+        "val": "077"
+      },
+      {
+        "name": "Employment activities",
+        "val": "078"
+      },
+      {
+        "name": "Travel agency, reservation service and related activities",
+        "val": "079"
+      },
+      {
+        "name": "Security and investigation activities",
+        "val": "080"
+      },
+      {
+        "name": "Services to buildings and landscape care activities",
+        "val": "081"
+      },
+      {
+        "name": "Office administrative, office support and other business support activities",
+        "val": "082"
+      },
+      {
+        "name": "Public administration",
+        "val": "084"
+      },
+      {
+        "name": "Education",
+        "val": "085"
+      },
+      {
+        "name": "Human health activities",
+        "val": "086"
+      },
+      {
+        "name": "Residential care activities",
+        "val": "087"
+      },
+      {
+        "name": "Social work activities without accommodation",
+        "val": "088"
+      },
+      {
+        "name": "Creative and performing arts activities",
+        "val": "090"
+      },
+      {
+        "name": "Libraries, archives, museums and other cultural activities",
+        "val": "091"
+      },
+      {
+        "name": "Activities of amusement parks and theme parks",
+        "val": "092"
+      },
+      {
+        "name": "Sports and other entertainment activities",
+        "val": "093"
+      },
+      {
+        "name": "Activities of membership organisations",
+        "val": "094"
+      },
+      {
+        "name": "Repair of motor vehicles, motorcycles, computers, personal and household goods",
+        "val": "095"
+      },
+      {
+        "name": "Other personal service activities",
+        "val": "096"
+      },
+      {
+        "name": "Activities of households as employers of domestic personnel",
+        "val": "097"
+      },
+      {
+        "name": "Goods- and services-producing activities of private households for own use",
+        "val": "098"
+      },
+      {
+        "name": "Activities of extraterritorial organisations and bodies",
+        "val": "099"
+      }
+    ],
+    "businessInfoHead": "香港公司業務資料",
+    "businessInfoSubHeading": "請在此部分提供擬設立的香港公司及相關業務的信息",
+    "selectBusinessIndustry": "選擇商業行業",
+    "descriptionOfProduct": "設立後擬進行交易的產品名稱、產品類型、服務內容、服務類型等說明",
+    "purposeOfEstablishment": "設立香港公司的目的及預期效果",
+    "purposeOptions": {
+      "enteringBusiness": "進軍香港及大中華區業務",
+      "assetManagement": "透過投資房地產或金融資產進行資產管理",
+      "managingThroughInvesting": "透過投資子公司或關聯公司作為控股公司進行管理",
+      "investorProposed": "投資者或商業對手建議您設立一家新加坡公司",
+      "geographicalBenefits": "國際交易的地理優勢",
+      "diversificationDueToRegulations": "監管放鬆，追求業務多元化",
+      "competitiveAdvantage": "透過寬鬆的金融監理追求競爭優勢",
+      "increaseTransactionalVolume": "由於低稅率和非交易稅（非增值稅），交易量增加",
+      "investmentProfit": "因無資本利得稅而追求投資利潤"
     },
-    "ServiceSelection": {
-      "HongKongCompanyIncorporation": "註冊香港公司向公司註冊處繳納的政府費用",
-      "HongKongRegistrarOfCompaniesFee": "註冊香港公司向公司註冊處繳納的政府費用",
-      "BusinessRegistrationFee": "2024/25 年度商業登記（政府）費",
-      "CompanySecretaryAnnualServiceCharge": "公司秘書年度服務費",
-      "FiftyPercentOffFirstYear": "（第一年 50% 折扣）",
-      "RegisteredOfficeAddressAnnualFee": "註冊辦公室地址的年服務費",
-      "KYCFee": "KYC/盡職調查費",
-      "KYCFeeLegalPerson": "法人 KYC / 盡職調職費",
-      "BankAccountOpeningFee": "銀行開戶安排費",
-      "CompanyKitProducingCost": "公司套件生產成本",
-      "CorrespondenceAddressFee": "通訊地址 每人每年服務費（可選）",
-      "BankEMIAccountOpeningFee": "銀行/EMI 開戶安排（可選）",
-      "IncorporationAndFees": "公司成立及第一年年費詳情",
-      "ServiceDescription": "服務說明",
-      "OriginalPrice": "原價",
-      "DiscountedPrice": "折扣價",
-      "TotalCost": "總成本",
-      "FREE": "自由的"
+    "shareholders": "股東",
+    "directors": "董事",
+    "ofHKCompany": "香港公司的",
+    "shHlderSubHeading": "請提供香港公司的股東、董事、重要控制人及指定聯絡人的資訊。",
+    "typeOfShares": "將發行的股份類型",
+    "typeShareInfo": "如果發行優先股或公司債券，在進行之前可能需要預先提供建議，例如審查公司章程和法律法規。",
+    "significantController": "重要控制人",
+    "typeOfShare": {
+      "ordinaryShares": "普通股",
+      "preferenceShares": "優先股"
     },
-    "InformationIncorporation": {
-      "registrationDetails": "香港公司註冊資料",
-      "registrationDescription": "在本節中，請提供香港公司要備案的股份、股東和董事的資訊。",
-      "paymentOfShareCapital": "股本支付",
-      "paymentTooltip": "香港受自 2014 年 3 月 3 日起修訂的新公司條例（第 622 章）的約束...",
-      "paymentOption_deposit": "股本繳付金額將於開立公司帳戶後存入銀行帳戶",
-      "paymentOption_pettyCash": "股本繳付金額以現金支付，作為備用金存放在公司，用於發生時的費用",
-      "paymentOption_other": "其他的",
-      "baseCurrency": "股本的基礎貨幣",
-      "currencyTooltip": "建議股本的貨幣與功能貨幣相同...",
-      "currencyOption_HKD": "港幣",
-      "currencyOption_USD": "美元",
-      "currencyOption_CNY": "中國新年",
-      "currencyOption_Other": "其他的",
-      "shareCapitalAmount": "擬繳股本總額",
-      "amountTooltip": "這是根據上述基礎貨幣計算的金額。例）1,000 美元",
-      "numShares": "擬發行股份總數（至少1股）",
-      "numSharesTooltip": "成立後，增資如發行新股...",
-      "amountOption_1": "1",
-      "amountOption_100": "100",
-      "amountOption_1000": "1,000",
-      "amountOption_10000": "10,000",
-      "sharesOption_total_capital_divided_by_1_par_value_per_share_1_general_convention_to_issue_the_share_in_hk": "總資本除以 1 美元（每股面額 = 1 美元；在香港發行股份的一般慣例）",
-      "sharesOption_1_share_at_least_1_share_to_be_issued_1_share_price_total_capital": "1股（至少發行1股）（1股價格=總股本）",
-      "sharesOption_100_shares": "100 shares",
-      "sharesOption_1000_shares": "1,000 shares",
-      "sharesOption_10000_shares": "10,000 shares",
-      "sharesOption_others": "其他的"
+    "designatedContactPerson": "指定聯絡人",
+    "designateToolTipInfo": "您需要委託一名人員（「指定聯絡人」）負責貴公司業務的聯繫、公司的設立和更新、文件登記、所需資訊的確認以及與我們服務相關的各種事宜的溝通。指定聯絡人最多可免費指定1人，如需委託2名或以上指定聯絡人，則需繳付每人每年港幣2,000元的費用。指定聯絡人將由貴公司委派，並應單獨向我們登記，以保護貴公司訊息，減少業務混亂，防止身分詐欺。 （指定聯絡人必須辦理與股東/董事相同的手續，提交護照影本、地址證明和個人證明。",
+    "totalShrldrName": "總所有權不能超過100%。當前總計",
+    "addShldrDir": "新增股東/董事",
+    "sendInvitation": "向股東/董事發送邀請郵件",
+    "shareDirName": "股東/董事姓名",
+    "ownerShpRte": "擁有率",
+    "actDirector": "擔任導演？",
+    "isLegal": "法人？",
+    "conditionSignificantControl": "對公司具有重大控制的條件；若符合以下5個條件中的一項或多項，則某人對公司具有重大控制權： 1.該人直接或間接持有公司已發行股份25％以上，或者如果公司沒有股本，則直接或間接持有公司25％以上資本或利潤的權利； 2、直接或間接持有公司25%以上表決權； 3、直接或間接擁有任免公司董事會過半數成員的權利； 4、有權對公司行使或實際行使重大影響或控制權； 5.該人有權對信託或非法人公司的活動行使或實際行使重大影響或控制，但其受託人或成員滿足與公司有關的前四個條件（以其身份）。",
+    "accountHeading": "會計和稅務",
+    "accountingPara": "請提供有關會計和稅務事宜的資訊。",
+    "finYearEnd": "香港公司的財務年度結束日期。",
+    "finYearEndTtip": "第一個財政年度可以在公司成立之日起18個月內自由設定。根據香港稅法（稅務條例）第51條第2款，利得稅報稅表（應課稅）必須在財政年度終結日起4個月內提交。",
+    "bookCycle": "簿記週期。",
+    "implementSoftware": "您想實施線上會計軟體 - Xero嗎？",
+    "implementSoftwaretTip": " 實施Xero時，可以將POS或其他軟體建立的資料以CSV格式匯入，以製作記帳和財務報表，也支援現金流量表。此外，還有助於編制控股公司和子公司之間的合併財務報表，以及庫存管理、成本管理、銷售管理等其他功能。",
+    "doYouUseSoftware": "您目前使用或有想要使用的單獨會計軟體嗎？ （如果有的話）"
+  },
+  "AmlCdd": {
+    "legal_assessment_title": "法律與道德評估",
+    "legal_assessment_description": "是否有洗錢、賭博、逃稅、隱匿資產、規避非法經營、詐欺等法律或道德問題？",
+    "business_information_title": "香港公司業務資料",
+    "business_information_description": "在此部分，請提供擬設立的香港公司及相關業務的資料",
+    "dialog_initial_title": "重要通知",
+    "dialog_initial_message": "所有欄位都必須仔細填寫。一旦完成，此表格將不可編輯。",
+    "dialog_button": "知道了",
+    "dialog_acknowledgement_title": "您輸入的資料正確嗎？請確認。",
+    "dialog_acknowledgement_message": "我確認輸入的資料正確。",
+    "dialog_consultation_title": "繼續之前需要諮詢",
+    "dialog_consultation_message": "看來您需要在繼續之前進行諮詢。我們將檢查您的回覆內容，我們的顧問將盡快與您聯繫。謝謝。",
+    "dialog_consultation_button": "好的",
+    "options": {
+      "yes": "是的",
+      "no": "不",
+      "unknown": "我/我們不知道",
+      "legal-advice": "考慮法律建議"
     },
-    "InfoIncorpo" :{
-      "regDetails": "香港公司註冊資料",
-      "regDetailPara" : "在本節中，請提供香港公司要備案的股份、股東和董事的資訊。",
-      "paymentOfShCap": "股本支付",
-      "payshCapttip" : "香港受2014年3月3日修訂的新公司條例（第622章）約束，因此所有股本均須全額繳付。由於香港沒有像其他國家一樣設有獨立的資本帳戶，因此您可以在開立公司帳戶後存入股本金額。若公司帳戶開立延遲或無公司帳戶，董事（或貴公司現金負責人）可保留資金金額用於公司支出（作為小額現金帳戶），並提交費用收據等支出證明文件。在某些國家，您可以透過外匯銀行或相關政府部門報告外國直接投資。",
-      "baseCurrency":"股本的基礎貨幣",
-      "baseCurrencytTip":" 建議股本的貨幣與用於會計目的的功能貨幣相同。例如，如果您以美元進行採購和銷售，則以美元設定股本可以方便核算。如果不是這種情況，則所有換算貨幣都必須轉換為基礎貨幣進行會計處理。請注意，公司成立後，股本的貨幣不能改為其他貨幣。  （例如：以港幣發行的股本不能改為美元）",
-      "totalAmount" : "擬繳股本總額",
-      "totalAmtTip":"這是根據上述基礎貨幣計算的金額。例）1,000 美元",
-      "numShares" : "擬發行股份總數（至少1股）",
-      "numSharestTip" : "設立後，發行新股、轉讓股份等增資會產生額外費用，請謹慎確定股份數量及資本金額。如果您打算將來轉讓股份，建議股份數量足夠有效，以便按照所需的比例分配股份。例如，公司成立時發行10股，但如果您想將總股份的33.33%轉讓給另一位合夥人，則過程會變得複雜，因為需要發行額外股份以匹配您希望分割的比例。此外，如果您在註冊成立時發行每股面值為港幣1元後，希望向未來投資者提供每股面值的差額（例如港幣5元），建議您在決定發行股份之前考慮這一點。"
-  
+    "questions": {
+      "sanctioned_countries": "據您所知，該香港公司目前或計劃在以下國家（伊朗、蘇丹、北韓、敘利亞、古巴、南蘇丹、白俄羅斯或辛巴威）是否有任何業務活動？",
+      "sanctions_presence": "據您所知，該香港公司或該公司的任何關聯方或其他關聯方是否在伊朗、蘇丹、朝鮮、敘利亞或古巴設有業務，和/或目前是否受到以下機構實施的製裁：聯合國、歐盟、UN/HMT、香港金管局、OFAC，或作為當地制裁法的一部分？",
+      "crimea_presence": "據您所知，該香港公司或其任何關聯方或其他關聯方目前或計劃在克里米亞/塞瓦斯托波爾地區是否有任何業務活動？",
+      "russian_business_presence": "據您所知，這家香港公司目前或計劃在能源/石油/天然氣領域、軍事或國防領域是否有任何涉足俄羅斯的業務？"
     },
-    "usa":{
+    "acknowledgement_error": "請先接受法律確認，然後再繼續。",
+    "success_message": "公司註冊申請已成功提交！",
+    "error_message": "提交請求時發生錯誤。"
+  },
+  "ServiceAgreementDocument": {
+    "title": "公司秘書服務協議",
+    "section1Title": "1. 服務協議目的",
+    "section1Content": "本協議的目的是為了防止 MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED（「MIRR ASIA」）提供的服務範圍及其與您即將在香港特別行政區註冊成立的公司（「客戶」）相關的限制可能產生的任何誤解或爭議。",
+    "section2Title": "2. 香港公司秘書的角色及責任限制",
+    "section2Content": "(僅適用於使用MIRR ASIA提供秘書服務的客戶)",
+    "section2_1": "2.1",
+    "section2_1Content": "MIRR ASIA 將根據香港公司條例（第 622 章）和客戶的公司章程在客戶的檔案中註冊為秘書。",
+    "section2_2": "2.2",
+    "section2_2Content": "MIRR ASIA 提供的秘書服務是香港公司條例（第 622 章）規定的基本註冊要求，可能與受聘秘書的一般意義不同。",
+    "section3Title": "3. 提供註冊地址及其責任限制",
+    "section3Content": "（僅適用於使用MIRR ASIA提供的註冊地址服務的客戶）",
+    "section3_1": "3.1",
+    "section3_1Content": "客戶處註冊的地址應為MIRR ASIA 提供的香港註冊地址。如果客戶希望更改該註冊地址，客戶應以書面或電子郵件通知 MIRR ASIA。",
+    "section3_2": "3.2",
+    "section3_2Content": "MIRR ASIA 提供的註冊地址僅用於註冊目的，不包括客戶的商業或實體空間。",
+    "section3_3": "3.3",
+    "section3_3Content": "客戶不得將註冊地址用於濫用或非法目的，也不得將其虛假地表示為客戶的實際業務區域。",
+    "section3_4": "3.4",
+    "section3_4Content": "服務期間，客戶收到的郵件將由 MIRR ASIA 根據同意書進行開啟和掃描，並將掃描後的文件透過電子郵件發送給客戶。如果客戶希望終止服務，客戶應事先以書面或電子郵件通知 MIRR ASIA。如果客戶有兩名以上董事，則根據公司章程規定的法定人數，至少有兩名董事簽署所有相關文件。",
+    "section3_5": "3.5",
+    "section3_5Content": "未經事先同意，客戶不得將包裹和貨物發送或要求第三方發送至 MIRR ASIA 提供的註冊地址。未經同意的遞送將退回給寄件者。",
+    "section4Title": "四、服務範圍",
+    "section4Content": "MIRR ASIA 自成立之日起至客戶一周年之日期間應提供以下服務：",
+    "section4Services": {
+      "1": "公司秘書登記（適用於使用秘書服務）",
+      "2": "保存公司的法定記錄，包括會議記錄和文件（適用於使用註冊地址服務）",
+      "3": "提供香港地址及郵寄服務，包括掃描及電子郵件（適用於使用註冊地址服務）",
+      "4": "為首2名僱員辦理雇主報稅表（需另加港幣300元郵資）（適用於使用秘書服務）",
+      "5": "辦理強制性公司資料調查（適用於使用秘書服務）",
+      "6": "準備週年申報表並在董事簽署並在客戶公司註冊處登記後保留續約表格副本（適用於續約後使用秘書服務）",
+      "7": "提交和保存重要控制人登記冊（適用於使用秘書和註冊地址服務）",
+      "8": "歸檔並保存會員/董事/秘書登記冊和組織結構圖（適用於使用秘書和註冊地址服務）",
+      "9": "歸檔並保存年度股東大會 (AGM) 會議記錄（適用於使用秘書和註冊地址服務）",
+      "10": "在註冊辦事處備存商業登記證（適用於使用註冊地址服務）",
+      "11": "簡短的業務和營運建議（適用於使用秘書服務）"
+    },
+    "section4_1": "4.1",
+    "section4_1Content": "客戶應與 MIRR ASIA 真誠合作，提供服務所需的所有必要資訊和文件。 MIRR ASIA 沒有義務就非法事項提供協助或建議。",
+    "section4_2": "4.2",
+    "section4_2Content": "MIRR ASIA 提供的簡短業務和營運建議服務是為了方便客戶；然而，MIRR ASIA 對此建議不承擔任何法律責任。",
+    "section5Title": "5. 服務費",
+    "section5Content": "客戶應在簽署本協議時支付付款部分指定的金額。服務費不包括會計、審計、稅務服務、銀行開戶建議或任何第三方費用，如銀行收費、政府費用、稅金和快遞費。",
+    "section6Title": "6. 轉讓和分包商",
+    "section6Content": "未經另一方事先書面同意，客戶或 MIRR ASIA 均不得轉讓其在本協議下的權利、職責和義務。",
+    "section7Title": "7. 保密性",
+    "section7Content": "雙方應對根據本協議獲得的所有業務或技術資訊保密。此義務不適用於公共領域的資訊或從他人合法取得的資訊。",
+    "section8Title": "8. 整合",
+    "section8Content": "本協議代表客戶與 MIRR ASIA 之間最終且完整的理解，取代先前有關該主題的所有通訊。本協議優先於雙方之間的任何採購訂單或其他通訊中的任何預印條款和條件。",
+    "section9Title": "9. 可分割性",
+    "section9Content": "本協議中任何無效或不可執行的條款應視為無效，而其餘條款應繼續有效並具有約束力。雙方應善意地嘗試以有效且表達原意的條款取代任何無效條款。",
+    "section10Title": "10. 無第三人受益人",
+    "section10Content": "除非得到 MIRR ASIA 的書面授權，本協議不會為第三方創造任何權利或利益。",
+    "section11Title": "11. 適用法律和補救措施",
+    "section11Content": "本協議受香港特別行政區法律管轄。任何爭議均應根據香港仲裁公會的規則提交具有約束力的仲裁。",
+    "section12Title": "12. 律師費",
+    "section12Content": "如果因本協議引起調解、仲裁或訴訟，勝訴方有權獲得合理的費用和律師費。客戶還同意支付 MIRR ASIA 因回應任何合法的資訊、證詞或文件要求而產生的所有費用。",
+    "section13Title": "13. 確認與聲明",
+    "section13Content": "客戶確認並聲明MIRR ASIA提供的服務不會被用於非法目的。客戶提供的資訊如有任何變更，必須立即通知 MIRR ASIA。客戶確認所提供的所有詳細資訊均真實且正確。",
+    "section13_1": "13.1",
+    "section13_1Content": "客戶同意提供開展服務所需的文件，並確認組織的目的合法。若懷疑有任何非法活動，MIRR ASIA 保留終止服務的權利，恕不另行通知。"
+  },
+  "ServiceSelection": {
+    "HongKongCompanyIncorporation": "註冊香港公司向公司註冊處繳納的政府費用",
+    "HongKongRegistrarOfCompaniesFee": "註冊香港公司向公司註冊處繳納的政府費用",
+    "BusinessRegistrationFee": "2024/25 年度商業登記（政府）費",
+    "CompanySecretaryAnnualServiceCharge": "公司秘書年度服務費",
+    "FiftyPercentOffFirstYear": "（第一年 50% 折扣）",
+    "RegisteredOfficeAddressAnnualFee": "註冊辦公室地址的年服務費",
+    "KYCFee": "KYC/盡職調查費",
+    "KYCFeeLegalPerson": "法人 KYC / 盡職調職費",
+    "BankAccountOpeningFee": "銀行開戶安排費",
+    "CompanyKitProducingCost": "公司套件生產成本",
+    "CorrespondenceAddressFee": "通訊地址 每人每年服務費（可選）",
+    "BankEMIAccountOpeningFee": "銀行/EMI 開戶安排（可選）",
+    "IncorporationAndFees": "公司成立及第一年年費詳情",
+    "ServiceDescription": "服務說明",
+    "OriginalPrice": "原價",
+    "DiscountedPrice": "折扣價",
+    "TotalCost": "總成本",
+    "FREE": "自由的"
+  },
+  "InformationIncorporation": {
+    "registrationDetails": "香港公司註冊資料",
+    "registrationDescription": "在本節中，請提供香港公司要備案的股份、股東和董事的資訊。",
+    "paymentOfShareCapital": "股本支付",
+    "paymentTooltip": "香港受自 2014 年 3 月 3 日起修訂的新公司條例（第 622 章）的約束...",
+    "paymentOption_deposit": "股本繳付金額將於開立公司帳戶後存入銀行帳戶",
+    "paymentOption_pettyCash": "股本繳付金額以現金支付，作為備用金存放在公司，用於發生時的費用",
+    "paymentOption_other": "其他的",
+    "baseCurrency": "股本的基礎貨幣",
+    "currencyTooltip": "建議股本的貨幣與功能貨幣相同...",
+    "currencyOption_HKD": "港幣",
+    "currencyOption_USD": "美元",
+    "currencyOption_CNY": "中國新年",
+    "currencyOption_Other": "其他的",
+    "shareCapitalAmount": "擬繳股本總額",
+    "amountTooltip": "這是根據上述基礎貨幣計算的金額。例）1,000 美元",
+    "numShares": "擬發行股份總數（至少1股）",
+    "numSharesTooltip": "成立後，增資如發行新股...",
+    "amountOption_1": "1",
+    "amountOption_100": "100",
+    "amountOption_1000": "1,000",
+    "amountOption_10000": "10,000",
+    "sharesOption_total_capital_divided_by_1_par_value_per_share_1_general_convention_to_issue_the_share_in_hk": "總資本除以 1 美元（每股面額 = 1 美元；在香港發行股份的一般慣例）",
+    "sharesOption_1_share_at_least_1_share_to_be_issued_1_share_price_total_capital": "1股（至少發行1股）（1股價格=總股本）",
+    "sharesOption_100_shares": "100 shares",
+    "sharesOption_1000_shares": "1,000 shares",
+    "sharesOption_10000_shares": "10,000 shares",
+    "sharesOption_others": "其他的"
+  },
+  "InfoIncorpo": {
+    "regDetails": "香港公司註冊資料",
+    "regDetailPara": "在本節中，請提供香港公司要備案的股份、股東和董事的資訊。",
+    "paymentOfShCap": "股本支付",
+    "payshCapttip": "香港受2014年3月3日修訂的新公司條例（第622章）約束，因此所有股本均須全額繳付。由於香港沒有像其他國家一樣設有獨立的資本帳戶，因此您可以在開立公司帳戶後存入股本金額。若公司帳戶開立延遲或無公司帳戶，董事（或貴公司現金負責人）可保留資金金額用於公司支出（作為小額現金帳戶），並提交費用收據等支出證明文件。在某些國家，您可以透過外匯銀行或相關政府部門報告外國直接投資。",
+    "baseCurrency": "股本的基礎貨幣",
+    "baseCurrencytTip": " 建議股本的貨幣與用於會計目的的功能貨幣相同。例如，如果您以美元進行採購和銷售，則以美元設定股本可以方便核算。如果不是這種情況，則所有換算貨幣都必須轉換為基礎貨幣進行會計處理。請注意，公司成立後，股本的貨幣不能改為其他貨幣。  （例如：以港幣發行的股本不能改為美元）",
+    "totalAmount": "擬繳股本總額",
+    "totalAmtTip": "這是根據上述基礎貨幣計算的金額。例）1,000 美元",
+    "numShares": "擬發行股份總數（至少1股）",
+    "numSharestTip": "設立後，發行新股、轉讓股份等增資會產生額外費用，請謹慎確定股份數量及資本金額。如果您打算將來轉讓股份，建議股份數量足夠有效，以便按照所需的比例分配股份。例如，公司成立時發行10股，但如果您想將總股份的33.33%轉讓給另一位合夥人，則過程會變得複雜，因為需要發行額外股份以匹配您希望分割的比例。此外，如果您在註冊成立時發行每股面值為港幣1元後，希望向未來投資者提供每股面值的差額（例如港幣5元），建議您在決定發行股份之前考慮這一點。"
+  },
+  "usa": {
     "usCompanyEntity": "您想建立什麼類型的美國公司？",
-    "Section2StateQuestion":"選擇您希望建立美國公司的州",
+    "Section2StateQuestion": "選擇您希望建立美國公司的州",
     "Section2StateOptions": {
-      "Delaware":"特拉華州",
-      "Wyoming":"懷俄明州",
-      "California":"加州",
-      "New York":"紐約",
-      "Washington":"華盛頓",
-      "Washington D.C.":"華盛頓特區",
-      "State of Texas":"德州",
-      "Nevada":"內華達",
-      "Florida":"佛羅裡達",
-      "Georgia":"格魯吉亞",
-      "Other":"其他"
+      "Delaware": "特拉華州",
+      "Wyoming": "懷俄明州",
+      "California": "加州",
+      "New York": "紐約",
+      "Washington": "華盛頓",
+      "Washington D.C.": "華盛頓特區",
+      "State of Texas": "德州",
+      "Nevada": "內華達",
+      "Florida": "佛羅裡達",
+      "Georgia": "格魯吉亞",
+      "Other": "其他"
     }
   }
-  }
+}

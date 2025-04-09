@@ -17,6 +17,13 @@
     "next": "Next",
     "previous": "Previous"
   },
+  "countrySelection":{
+    "title" : "Select Country for Registration",
+    "hk": "Hong Kong",
+    "us": "United States",
+    "sg": "Singapore",
+    "uk": "United Kingdom"
+  },
   "ApplicantInfoForm": {
     "heading": "Applicant Information",
     "paragraph": "This form must be filled out by the representative of the Hong Kong company. The information will be kept as KYC and Client Due Diligence documents.",
