@@ -11,7 +11,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { companyIncorporateInvoiceAtom } from "@/services/state";
 import { InvoiceData } from "../HongKong/Invoice";
 import { companyIncorporationAtom, PaymentSessionId } from "@/lib/atom";
-
+import { useTranslation } from "react-i18next";
 export function PaymentInformation() {
   const [sessionId, setSessionId] = useState<PaymentSession['id']>('');
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +21,7 @@ export function PaymentInformation() {
   const [finalForm,] = useAtom(companyIncorporationAtom);
   const updateCompanyData = useSetAtom(PaymentSessionId)
   const amount = parseFloat(invoiceData.totals.discounted.replace(/[^0-9.]/g, ''));
+  const { t } = useTranslation();
   useEffect(() => {
     const initializePaymentSession = async () => {
       try {
@@ -89,7 +90,7 @@ export function PaymentInformation() {
     <div className="max-w-4xl mx-auto p-6 space-y-6">      
      <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary">Payment Information</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">{t('payment.pInfo')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <PaymentTimer sessionId={sessionId}

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 interface Item {
   code: string; // Unique identifier for the item
@@ -20,6 +21,7 @@ export default function SearchSelect({
 }: SearchSelectProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
+  const { t } = useTranslation();
   const [selectedItem, setSelectedItem] = React.useState<Item | null>(initialSelectedItem);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 
@@ -65,7 +67,7 @@ export default function SearchSelect({
       >
         {selectedItem ? (
           <span>
-            {selectedItem.code} - {selectedItem.label}
+            {selectedItem.code} - {t(selectedItem.label)}
           </span>
         ) : (
           <span className="text-gray-400">{placeholder}</span>
@@ -99,7 +101,7 @@ export default function SearchSelect({
                   className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
                 >
                   <span className="font-medium">{item.code}</span>
-                  <span className="ml-2 text-gray-500">- {item.label}</span>
+                  <span className="ml-2 text-gray-500">- {t(item.label)}</span>
                 </button>
               ))
             )}
