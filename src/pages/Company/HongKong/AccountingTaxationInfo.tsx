@@ -15,10 +15,10 @@ const AccountingTaxationInfo: React.FC = () => {
     const [accTaxInfo, setTaxAccountInfo] = useAtom(accountingTaxInfoAtom);
     const { t } = useTranslation();
 
-    const finYearEndDates = ['December 31', "March 31 (Hong Kong's fiscal year-end date)"]
-    const boobkCycleCount = ['Monthly', 'Quarterly', 'Half-annually (every 6 months)', 'Annually (every 12 months)  *the lowest cost']
+    const finYearEndDates = [t("InformationIncorporation.dec31"), t("InformationIncorporation.mar31")]
+    const boobkCycleCount = [t("InformationIncorporation.bookCycle1"),t("InformationIncorporation.bookCycle2"),t("InformationIncorporation.bookCycle3"),t("InformationIncorporation.bookCycle4")]
 
-    const accoutingSoftware = ['Yes (Software cost: estimated as HKD400 per month)', 'No', 'Recommendation required', 'Other']
+    const accoutingSoftware = [t("InformationIncorporation.accSoftwareCharge"), t("AmlCdd.options.no"), t("InformationIncorporation.recRequired"), t("InformationIncorporation.paymentOption_other")]
 
     // const handleFinYearChange = (finYearEnd: string) => {
     //     setTaxAccountInfo((prev) => ({ ...prev, finYearEnd }));

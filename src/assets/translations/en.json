@@ -649,7 +649,15 @@
     "sharesOption_100_shares": "100 shares",
     "sharesOption_1000_shares": "1,000 shares",
     "sharesOption_10000_shares": "10,000 shares",
-    "sharesOption_others": "Others"
+    "sharesOption_others": "Others",
+    "dec31": "December 31",
+    "mar31": "March 31 (Hong Kong's fiscal year-end date)",
+    "accSoftwareCharge" :"Yes (Software cost: estimated as HKD400 per month)",
+    "recRequired":"Recommendation required",
+    "bookCycle1":"Monthly",
+    "bookCycle2":"Quarterly",
+    "bookCycle3":"Half-annually (every 6 months)",
+    "bookCycle4":"Annually (every 12 months) *the lowest cost"
   },
   "invoice":{
     "desc":"Description",

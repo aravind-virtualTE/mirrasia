@@ -646,7 +646,15 @@
     "sharesOption_100_shares": "100 shares",
     "sharesOption_1000_shares": "1,000 shares",
     "sharesOption_10000_shares": "10,000 shares",
-    "sharesOption_others": "其他的"
+    "sharesOption_others": "其他的",
+    "dec31": "12 月 31 日",
+    "mar31": "3 月 31 日（香港財政年度結束日期）",
+    "accSoftwareCharge": "是（軟件成本：估計每月港幣 400 元）",
+    "recRequired": "需要推薦",
+    "bookCycle1": "每月",
+    "bookCycle2": "每季",
+    "bookCycle3": "每半年（每 6 個月）",
+    "bookCycle4": "每年（每 12 個月）*成本最低"
   },
   "invoice": {
     "desc": "描述",
