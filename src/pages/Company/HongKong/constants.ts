@@ -1,362 +1,362 @@
 
 export const businessNatureList =[
-    {
-      "label": '',
-      "code": "000"
-    },
-    {
-      "label": "Crop and animal production, hunting and related service activities",
-      "code": "001"
-    },
-    {
-      "label": "Forestry activities",
-      "code": "002"
-    },
-    {
-      "label": "Fishing and aquaculture",
-      "code": "003"
-    },
-    {
-      "label": "Mining of coal and lignite",
-      "code": "005"
-    },
-    {
-      "label": "Extraction of crude petroleum and natural gas",
-      "code": "006"
-    },
-    {
-      "label": "Mining of metal ores",
-      "code": "007"
-    },
-    {
-      "label": "Quarrying and other mining of non-metal ores",
-      "code": "008"
-    },
-    {
-      "label": "Mining support service activities",
-      "code": "009"
-    },
-    {
-      "label": "Manufacture of food products",
-      "code": "010"
-    },
-    {
-      "label": "Manufacture of beverages",
-      "code": "011"
-    },
-    {
-      "label": "Manufacture of tobacco products",
-      "code": "012"
-    },
-    {
-      "label": "Manufacture of textiles",
-      "code": "013"
-    },
-    {
-      "label": "Manufacture of wearing apparel",
-      "code": "014"
-    },
-    {
-      "label": "Manufacture of leather and related products",
-      "code": "015"
-    },
-    {
-      "label": "Manufacture of wood and of products of wood and cork, articles of straw and plaiting materials (except furniture and toys)",
-      "code": "016"
-    },
-    {
-      "label": "Manufacture of paper and paper products",
-      "code": "017"
-    },
-    {
-      "label": "Printing and reproduction of recorded media",
-      "code": "018"
-    },
-    {
-      "label": "Manufacture of coke and refined petroleum products",
-      "code": "019"
-    },
-    {
-      "label": "Manufacture of chemicals and chemical products",
-      "code": "020"
-    },
-    {
-      "label": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
-      "code": "021"
-    },
-    {
-      "label": "Manufacture of rubber and plastics products (except furniture, toys, sports goods and stationery)",
-      "code": "022"
-    },
-    {
-      "label": "Manufacture of other non-metallic mineral products",
-      "code": "023"
-    },
-    {
-      "label": "Manufacture of basic metals",
-      "code": "024"
-    },
-    {
-      "label": "Manufacture of fabricated metal products (except machinery and equipment)",
-      "code": "025"
-    },
-    {
-      "label": "Manufacture of computer, electronic and optical products",
-      "code": "026"
-    },
-    {
-      "label": "Manufacture of electrical equipment",
-      "code": "027"
-    },
-    {
-      "label": "Manufacture of machinery and equipment n.e.c.",
-      "code": "028"
-    },
-    {
-      "label": "Body assembly of motor vehicles",
-      "code": "029"
-    },
-    {
-      "label": "Manufacture of other transport equipment",
-      "code": "030"
-    },
-    {
-      "label": "Manufacture of furniture",
-      "code": "031"
-    },
-    {
-      "label": "Other manufacturing",
-      "code": "032"
-    },
-    {
-      "label": "Repair and installation of machinery and equipment",
-      "code": "033"
-    },
-    {
-      "label": "Electricity and gas supply",
-      "code": "035"
-    },
-    {
-      "label": "Water collection, treatment and supply",
-      "code": "036"
-    },
-    {
-      "label": "Sewerage",
-      "code": "037"
-    },
-    {
-      "label": "Waste collection, treatment and disposal activities; materials recovery",
-      "code": "038"
-    },
-    {
-      "label": "Remediation activities and other waste management services",
-      "code": "039"
-    },
-    {
-      "label": "Construction of buildings",
-      "code": "041"
-    },
-    {
-      "label": "Civil engineering",
-      "code": "042"
-    },
-    {
-      "label": "Specialised construction activities",
-      "code": "043"
-    },
-    {
-      "label": "Import and export trade",
-      "code": "045"
-    },
-    {
-      "label": "Wholesale",
-      "code": "046"
-    },
-    {
-      "label": "Retail trade",
-      "code": "047"
-    },
-    {
-      "label": "Land transport",
-      "code": "049"
-    },
-    {
-      "label": "Water transport",
-      "code": "050"
-    },
-    {
-      "label": "Air transport",
-      "code": "051"
-    },
-    {
-      "label": "Warehousing and support activities for transportation",
-      "code": "052"
-    },
-    {
-      "label": "Postal and courier activities",
-      "code": "053"
-    },
-    {
-      "label": "Short term accommodation activities",
-      "code": "055"
-    },
-    {
-      "label": "Food and beverage service activities",
-      "code": "056"
-    },
-    {
-      "label": "Publishing activities",
-      "code": "058"
-    },
-    {
-      "label": "Motion picture, video and television programme production, sound recording and music publishing activities",
-      "code": "059"
-    },
-    {
-      "label": "Programming and broadcasting activities",
-      "code": "060"
-    },
-    {
-      "label": "Telecommunications",
-      "code": "061"
-    },
-    {
-      "label": "Information technology service activities",
-      "code": "062"
-    },
-    {
-      "label": "Information service activities",
-      "code": "063"
-    },
-    {
-      "label": "Financial service activities, including investment and holding companies, and the activities of trusts, funds and similar financial entities.",
-      "code": "064"
-    },
-    {
-      "label": "Insurance (including pension funding)",
-      "code": "065"
-    },
-    {
-      "label": "Activities auxiliary to financial service and insurance activities",
-      "code": "066"
-    },
-    {
-      "label": "Real estate activities",
-      "code": "068"
-    },
-    {
-      "label": "Legal and accounting activities",
-      "code": "069"
-    },
-    {
-      "label": "Activities of head offices; management and management consultancy activities",
-      "code": "070"
-    },
-    {
-      "label": "Architecture and engineering activities, technical testing and analysis",
-      "code": "071"
-    },
-    {
-      "label": "Scientific research and development",
-      "code": "072"
-    },
-    {
-      "label": "Veterinary activities",
-      "code": "073"
-    },
-    {
-      "label": "Advertising and market research",
-      "code": "074"
-    },
-    {
-      "label": "Other professional, scientific and technical activities",
-      "code": "075"
-    },
-    {
-      "label": "Rental and leasing activities",
-      "code": "077"
-    },
-    {
-      "label": "Employment activities",
-      "code": "078"
-    },
-    {
-      "label": "Travel agency, reservation service and related activities",
-      "code": "079"
-    },
-    {
-      "label": "Security and investigation activities",
-      "code": "080"
-    },
-    {
-      "label": "Services to buildings and landscape care activities",
-      "code": "081"
-    },
-    {
-      "label": "Office administrative, office support and other business support activities",
-      "code": "082"
-    },
-    {
-      "label": "Public administration",
-      "code": "084"
-    },
-    {
-      "label": "Education",
-      "code": "085"
-    },
-    {
-      "label": "Human health activities",
-      "code": "086"
-    },
-    {
-      "label": "Residential care activities",
-      "code": "087"
-    },
-    {
-      "label": "Social work activities without accommodation",
-      "code": "088"
-    },
-    {
-      "label": "Creative and performing arts activities",
-      "code": "090"
-    },
-    {
-      "label": "Libraries, archives, museums and other cultural activities",
-      "code": "091"
-    },
-    {
-      "label": "Activities of amusement parks and theme parks",
-      "code": "092"
-    },
-    {
-      "label": "Sports and other entertainment activities",
-      "code": "093"
-    },
-    {
-      "label": "Activities of membership organisations",
-      "code": "094"
-    },
-    {
-      "label": "Repair of motor vehicles, motorcycles, computers, personal and household goods",
-      "code": "095"
-    },
-    {
-      "label": "Other personal service activities",
-      "code": "096"
-    },
-    {
-      "label": "Activities of households as employers of domestic personnel",
-      "code": "097"
-    },
-    {
-      "label": "Goods- and services-producing activities of private households for own use",
-      "code": "098"
-    },
-    {
-      "label": "Activities of extraterritorial organisations and bodies",
-      "code": "099"
-    }
-  ]
+  {
+    "label": "businessIndustry.empty",
+    "code": "000"
+  },
+  {
+    "label": "businessIndustry.cropAnimalProduction",
+    "code": "001"
+  },
+  {
+    "label": "businessIndustry.forestryActivities",
+    "code": "002"
+  },
+  {
+    "label": "businessIndustry.fishingAndAquaculture",
+    "code": "003"
+  },
+  {
+    "label": "businessIndustry.miningCoalLignite",
+    "code": "005"
+  },
+  {
+    "label": "businessIndustry.extractionCrudePetroleumNaturalGas",
+    "code": "006"
+  },
+  {
+    "label": "businessIndustry.miningMetalOres",
+    "code": "007"
+  },
+  {
+    "label": "businessIndustry.quarryingNonMetalOres",
+    "code": "008"
+  },
+  {
+    "label": "businessIndustry.miningSupportServices",
+    "code": "009"
+  },
+  {
+    "label": "businessIndustry.manufactureFoodProducts",
+    "code": "010"
+  },
+  {
+    "label": "businessIndustry.manufactureBeverages",
+    "code": "011"
+  },
+  {
+    "label": "businessIndustry.manufactureTobaccoProducts",
+    "code": "012"
+  },
+  {
+    "label": "businessIndustry.manufactureTextiles",
+    "code": "013"
+  },
+  {
+    "label": "businessIndustry.manufactureWearingApparel",
+    "code": "014"
+  },
+  {
+    "label": "businessIndustry.manufactureLeatherProducts",
+    "code": "015"
+  },
+  {
+    "label": "businessIndustry.manufactureWoodCorkStraw",
+    "code": "016"
+  },
+  {
+    "label": "businessIndustry.manufacturePaperProducts",
+    "code": "017"
+  },
+  {
+    "label": "businessIndustry.printingMedia",
+    "code": "018"
+  },
+  {
+    "label": "businessIndustry.manufactureCokePetroleum",
+    "code": "019"
+  },
+  {
+    "label": "businessIndustry.manufactureChemicals",
+    "code": "020"
+  },
+  {
+    "label": "businessIndustry.manufacturePharmaceuticals",
+    "code": "021"
+  },
+  {
+    "label": "businessIndustry.manufactureRubberPlastics",
+    "code": "022"
+  },
+  {
+    "label": "businessIndustry.manufactureNonMetallicMinerals",
+    "code": "023"
+  },
+  {
+    "label": "businessIndustry.manufactureBasicMetals",
+    "code": "024"
+  },
+  {
+    "label": "businessIndustry.manufactureFabricatedMetals",
+    "code": "025"
+  },
+  {
+    "label": "businessIndustry.manufactureElectronics",
+    "code": "026"
+  },
+  {
+    "label": "businessIndustry.manufactureElectricalEquipment",
+    "code": "027"
+  },
+  {
+    "label": "businessIndustry.manufactureMachinery",
+    "code": "028"
+  },
+  {
+    "label": "businessIndustry.motorVehicleAssembly",
+    "code": "029"
+  },
+  {
+    "label": "businessIndustry.manufactureOtherTransport",
+    "code": "030"
+  },
+  {
+    "label": "businessIndustry.manufactureFurniture",
+    "code": "031"
+  },
+  {
+    "label": "businessIndustry.otherManufacturing",
+    "code": "032"
+  },
+  {
+    "label": "businessIndustry.repairMachinery",
+    "code": "033"
+  },
+  {
+    "label": "businessIndustry.electricityGasSupply",
+    "code": "035"
+  },
+  {
+    "label": "businessIndustry.waterSupply",
+    "code": "036"
+  },
+  {
+    "label": "businessIndustry.sewerage",
+    "code": "037"
+  },
+  {
+    "label": "businessIndustry.wasteManagement",
+    "code": "038"
+  },
+  {
+    "label": "businessIndustry.remediationServices",
+    "code": "039"
+  },
+  {
+    "label": "businessIndustry.constructionBuildings",
+    "code": "041"
+  },
+  {
+    "label": "businessIndustry.civilEngineering",
+    "code": "042"
+  },
+  {
+    "label": "businessIndustry.specialisedConstruction",
+    "code": "043"
+  },
+  {
+    "label": "businessIndustry.importExportTrade",
+    "code": "045"
+  },
+  {
+    "label": "businessIndustry.wholesale",
+    "code": "046"
+  },
+  {
+    "label": "businessIndustry.retailTrade",
+    "code": "047"
+  },
+  {
+    "label": "businessIndustry.landTransport",
+    "code": "049"
+  },
+  {
+    "label": "businessIndustry.waterTransport",
+    "code": "050"
+  },
+  {
+    "label": "businessIndustry.airTransport",
+    "code": "051"
+  },
+  {
+    "label": "businessIndustry.warehousingTransportSupport",
+    "code": "052"
+  },
+  {
+    "label": "businessIndustry.postalCourier",
+    "code": "053"
+  },
+  {
+    "label": "businessIndustry.shortTermAccommodation",
+    "code": "055"
+  },
+  {
+    "label": "businessIndustry.foodBeverageServices",
+    "code": "056"
+  },
+  {
+    "label": "businessIndustry.publishingActivities",
+    "code": "058"
+  },
+  {
+    "label": "businessIndustry.motionPictureAndMusic",
+    "code": "059"
+  },
+  {
+    "label": "businessIndustry.broadcastingActivities",
+    "code": "060"
+  },
+  {
+    "label": "businessIndustry.telecommunications",
+    "code": "061"
+  },
+  {
+    "label": "businessIndustry.itServices",
+    "code": "062"
+  },
+  {
+    "label": "businessIndustry.informationServices",
+    "code": "063"
+  },
+  {
+    "label": "businessIndustry.financialServices",
+    "code": "064"
+  },
+  {
+    "label": "businessIndustry.insurance",
+    "code": "065"
+  },
+  {
+    "label": "businessIndustry.financialAuxiliaryActivities",
+    "code": "066"
+  },
+  {
+    "label": "businessIndustry.realEstate",
+    "code": "068"
+  },
+  {
+    "label": "businessIndustry.legalAccounting",
+    "code": "069"
+  },
+  {
+    "label": "businessIndustry.managementConsultancy",
+    "code": "070"
+  },
+  {
+    "label": "businessIndustry.architectureEngineering",
+    "code": "071"
+  },
+  {
+    "label": "businessIndustry.scientificResearch",
+    "code": "072"
+  },
+  {
+    "label": "businessIndustry.veterinaryActivities",
+    "code": "073"
+  },
+  {
+    "label": "businessIndustry.advertisingMarketResearch",
+    "code": "074"
+  },
+  {
+    "label": "businessIndustry.otherProfessionalTechnical",
+    "code": "075"
+  },
+  {
+    "label": "businessIndustry.rentalLeasing",
+    "code": "077"
+  },
+  {
+    "label": "businessIndustry.employmentActivities",
+    "code": "078"
+  },
+  {
+    "label": "businessIndustry.travelAgency",
+    "code": "079"
+  },
+  {
+    "label": "businessIndustry.securityInvestigation",
+    "code": "080"
+  },
+  {
+    "label": "businessIndustry.buildingLandscapeServices",
+    "code": "081"
+  },
+  {
+    "label": "businessIndustry.officeAdminSupport",
+    "code": "082"
+  },
+  {
+    "label": "businessIndustry.publicAdministration",
+    "code": "084"
+  },
+  {
+    "label": "businessIndustry.education",
+    "code": "085"
+  },
+  {
+    "label": "businessIndustry.healthActivities",
+    "code": "086"
+  },
+  {
+    "label": "businessIndustry.residentialCare",
+    "code": "087"
+  },
+  {
+    "label": "businessIndustry.socialWork",
+    "code": "088"
+  },
+  {
+    "label": "businessIndustry.creativeArts",
+    "code": "090"
+  },
+  {
+    "label": "businessIndustry.culturalActivities",
+    "code": "091"
+  },
+  {
+    "label": "businessIndustry.themeParks",
+    "code": "092"
+  },
+  {
+    "label": "businessIndustry.sportsEntertainment",
+    "code": "093"
+  },
+  {
+    "label": "businessIndustry.membershipOrganisations",
+    "code": "094"
+  },
+  {
+    "label": "businessIndustry.repairServices",
+    "code": "095"
+  },
+  {
+    "label": "businessIndustry.personalServices",
+    "code": "096"
+  },
+  {
+    "label": "businessIndustry.householdEmployment",
+    "code": "097"
+  },
+  {
+    "label": "businessIndustry.householdProduction",
+    "code": "098"
+  },
+  {
+    "label": "businessIndustry.extraterritorialActivities",
+    "code": "099"
+  }
+]
 
 export const typesOfShares = [
   "CompanyInformation.typeOfShare.ordinaryShares",
@@ -417,59 +417,218 @@ interface Currency {
 }
 
 export const currencies: Currency[] = [
-    { code: "AED", label: "United Arab Emirates Dirham" },
-    { code: "AUD", label: "Australian Dollars" },
-    { code: "BHD", label: "Bahraina Dinar" },
-    { code: "BMD", label: "Bermudian Dollar" },
-    { code: "BND", label: "Brunei Dollars" },
-    { code: "BRL", label: "Brazilian Real" },
-    { code: "BSD", label: "Bahamas Dollars" },
-    { code: "CAD", label: "Canadian Dollars" },
-    { code: "CHF", label: "Swiss Francs" },
-    { code: "CLP", label: "Chilean Peso" },
-    { code: "CYP", label: "Cyprus Pound" },
-    { code: "CZK", label: "Czech Koruna" },
-    { code: "DKK", label: "Danish Kroners" },
-    { code: "ETB", label: "Ethiopian Birr" },
-    { code: "EUR", label: "Euro" },
-    { code: "FJD", label: "Fiji Dollar" },
-    { code: "GBP", label: "Sterling" },
-    { code: "HKD", label: "Hong Kong Dollar" },
-    { code: "HUF", label: "Hungarian Forint" },
-    { code: "IDR", label: "Indonesian Rupiah" },
-    { code: "INR", label: "Indian Rupees" },
-    { code: "JPY", label: "Japanese Yen" },
-    { code: "KHR", label: "Cambodian Riel" },
-    { code: "LKR", label: "Sri Lankan Rupee" },
-    { code: "MNT", label: "Mongolian Tugrik" },
-    { code: "MOP", label: "Macau Pataka" },
-    { code: "MUR", label: "Mauritian Rupee" },
-    { code: "MXN", label: "Mexican Peso" },
-    { code: "MYR", label: "Malaysian Ringgit" },
-    { code: "NIS", label: "New Israeli Shekel" },
-    { code: "NOK", label: "Norwegian Kroners" },
-    { code: "NPR", label: "Nepalese Rupee" },
-    { code: "NZD", label: "New Zealand Dollars" },
-    { code: "PHP", label: "Philippine Pesos" },
-    { code: "PKR", label: "Pakistan Rupees" },
-    { code: "PLN", label: "Polish Zloty" },
-    { code: "QAR", label: "Qatari Rial" },
-    { code: "RMB", label: "Ren Min Bi" },
-    { code: "RUB", label: "Russian Ruble" },
-    { code: "SAR", label: "Saudi Arabian Riyal" },
-    { code: "SEK", label: "Swedish Kroners" },
-    { code: "SGD", label: "Singapore Dollars" },
-    { code: "THB", label: "Thai Bahts" },
-    { code: "TK", label: "Currency of Bangladesh" },
-    { code: "TRY", label: "New Turkish Lira" },
-    { code: "USD", label: "United States Dollar" },
-    { code: "UYU", label: "Peso Uruguayo" },
-    { code: "VND", label: "Vietnam Dong" },
-    { code: "WON", label: "Korean Won" },
-    { code: "XCD", label: "East Caribbean Dollar" },
-    { code: "XOF", label: "West African CFA" },
-    { code: "XPF", label: "CFP Franc" },
-    { code: "ZAR", label: "C. South African Rand" }
+  {
+    "code": "AED",
+    "label": "currencies.AED"
+  },
+  {
+    "code": "AUD",
+    "label": "currencies.AUD"
+  },
+  {
+    "code": "BHD",
+    "label": "currencies.BHD"
+  },
+  {
+    "code": "BMD",
+    "label": "currencies.BMD"
+  },
+  {
+    "code": "BND",
+    "label": "currencies.BND"
+  },
+  {
+    "code": "BRL",
+    "label": "currencies.BRL"
+  },
+  {
+    "code": "BSD",
+    "label": "currencies.BSD"
+  },
+  {
+    "code": "CAD",
+    "label": "currencies.CAD"
+  },
+  {
+    "code": "CHF",
+    "label": "currencies.CHF"
+  },
+  {
+    "code": "CLP",
+    "label": "currencies.CLP"
+  },
+  {
+    "code": "CYP",
+    "label": "currencies.CYP"
+  },
+  {
+    "code": "CZK",
+    "label": "currencies.CZK"
+  },
+  {
+    "code": "DKK",
+    "label": "currencies.DKK"
+  },
+  {
+    "code": "ETB",
+    "label": "currencies.ETB"
+  },
+  {
+    "code": "EUR",
+    "label": "currencies.EUR"
+  },
+  {
+    "code": "FJD",
+    "label": "currencies.FJD"
+  },
+  {
+    "code": "GBP",
+    "label": "currencies.GBP"
+  },
+  {
+    "code": "HKD",
+    "label": "currencies.HKD"
+  },
+  {
+    "code": "HUF",
+    "label": "currencies.HUF"
+  },
+  {
+    "code": "IDR",
+    "label": "currencies.IDR"
+  },
+  {
+    "code": "INR",
+    "label": "currencies.INR"
+  },
+  {
+    "code": "JPY",
+    "label": "currencies.JPY"
+  },
+  {
+    "code": "KHR",
+    "label": "currencies.KHR"
+  },
+  {
+    "code": "LKR",
+    "label": "currencies.LKR"
+  },
+  {
+    "code": "MNT",
+    "label": "currencies.MNT"
+  },
+  {
+    "code": "MOP",
+    "label": "currencies.MOP"
+  },
+  {
+    "code": "MUR",
+    "label": "currencies.MUR"
+  },
+  {
+    "code": "MXN",
+    "label": "currencies.MXN"
+  },
+  {
+    "code": "MYR",
+    "label": "currencies.MYR"
+  },
+  {
+    "code": "NIS",
+    "label": "currencies.NIS"
+  },
+  {
+    "code": "NOK",
+    "label": "currencies.NOK"
+  },
+  {
+    "code": "NPR",
+    "label": "currencies.NPR"
+  },
+  {
+    "code": "NZD",
+    "label": "currencies.NZD"
+  },
+  {
+    "code": "PHP",
+    "label": "currencies.PHP"
+  },
+  {
+    "code": "PKR",
+    "label": "currencies.PKR"
+  },
+  {
+    "code": "PLN",
+    "label": "currencies.PLN"
+  },
+  {
+    "code": "QAR",
+    "label": "currencies.QAR"
+  },
+  {
+    "code": "RMB",
+    "label": "currencies.RMB"
+  },
+  {
+    "code": "RUB",
+    "label": "currencies.RUB"
+  },
+  {
+    "code": "SAR",
+    "label": "currencies.SAR"
+  },
+  {
+    "code": "SEK",
+    "label": "currencies.SEK"
+  },
+  {
+    "code": "SGD",
+    "label": "currencies.SGD"
+  },
+  {
+    "code": "THB",
+    "label": "currencies.THB"
+  },
+  {
+    "code": "TK",
+    "label": "currencies.TK"
+  },
+  {
+    "code": "TRY",
+    "label": "currencies.TRY"
+  },
+  {
+    "code": "USD",
+    "label": "currencies.USD"
+  },
+  {
+    "code": "UYU",
+    "label": "currencies.UYU"
+  },
+  {
+    "code": "VND",
+    "label": "currencies.VND"
+  },
+  {
+    "code": "WON",
+    "label": "currencies.WON"
+  },
+  {
+    "code": "XCD",
+    "label": "currencies.XCD"
+  },
+  {
+    "code": "XOF",
+    "label": "currencies.XOF"
+  },
+  {
+    "code": "XPF",
+    "label": "currencies.XPF"
+  },
+  {
+    "code": "ZAR",
+    "label": "currencies.ZAR"
+  }
 ]
 
  // const industries = [
