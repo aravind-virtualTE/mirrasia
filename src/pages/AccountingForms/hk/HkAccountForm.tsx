@@ -32,7 +32,7 @@ const HkAccountForm: React.FC = () => {
             <Card className="max-w-5xl mx-auto ">
                 <CardHeader className="bg-sky-100 dark:bg-sky-900">
                     <CardTitle>
-                        Accounting Settlement Business Application Form
+                        Accounting Services Business Application Form
                     </CardTitle>
                 </CardHeader>
 
@@ -41,7 +41,7 @@ const HkAccountForm: React.FC = () => {
                     <div className="space-y-4 text-sm">
                         <div className="space-y-2 text-foreground">
                             <p>
-                                This application form is written in a questionnaire format to provide the information that is absolutely necessary for our company to conduct accounting settlement work. The content of the questions and tax matters may be difficult for some customers or may take some time to respond. Accordingly, we ask that you answer them one by one when you have time, and prepare and submit the related documents. If you have any difficulties in writing the form or if there is anything you do not understand, please contact us at the contact information above.
+                                This application form is written in a questionnaire format to provide the information that is absolutely necessary to provide accounting services. The content of the questions and tax matters may be difficult for some customers or may take some time to respond. Accordingly, we ask that you answer them one by one when you have time, and prepare and submit the related documents. If you have any difficulties in writing the form or if there is anything you do not understand, please contact us at the contact information above.
                             </p>
                             <p>Thank you.</p>
                         </div>

@@ -15,9 +15,10 @@ import { deleteTodoAtom, updateStatusAtom } from "./todoAtom";
 
 interface TodoItemProps {
   todo: Todo;
+  companyId: string;
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
+const TodoItem: React.FC<TodoItemProps> = ({ todo, companyId }) => {
   const [, updateStatus] = useAtom(updateStatusAtom);
   const [, deleteTodo] = useAtom(deleteTodoAtom);
 
@@ -29,28 +30,15 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
   };
 
   const handleCheck = () => {
-    if (todo.status === "Completed") {
-      updateStatus({ id: todo.id, status: "Pending" });
-    } else {
-      updateStatus({ id: todo.id, status: "Completed" });
-    }
+    // console.log("todo",todo)
+    updateStatus({ companyId, id: todo._id, status: todo.status === "Completed" ? "Pending" : "Completed" });
   };
 
   return (
     <div className="flex items-start gap-2 py-2 border-b border-gray-100">
-      <Checkbox
-        checked={todo.status === "Completed"}
-        onCheckedChange={handleCheck}
-        className="mt-1"
-      />
+      <Checkbox checked={todo.status === "Completed"} onCheckedChange={handleCheck} className="mt-1" />
       <div className="flex-1 min-w-0">
-        <p
-          className={`text-sm ${
-            todo.status === "Completed" ? "line-through text-gray-500" : ""
-          }`}
-        >
-          {todo.title}
-        </p>
+        <p className={`text-sm ${todo.status === "Completed" ? "line-through text-gray-500" : ""}`}>{todo.title}</p>
         {todo.deadline && (
           <div className="flex items-center text-xs text-gray-500 mt-0.5">
             <Calendar size={12} className="mr-1" />
@@ -59,13 +47,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
         )}
       </div>
       <div className="flex items-center space-x-2">
-        <span
-          className={`text-xs px-2 py-0.5 rounded-full border ${
-            statusColors[todo.status]
-          }`}
-        >
-          {todo.status}
-        </span>
+        <span className={`text-xs px-2 py-0.5 rounded-full border ${statusColors[todo.status]}`}>{todo.status}</span>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -73,22 +55,12 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => updateStatus({ id: todo.id, status: "Pending" })}>
-              Mark as Pending
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => updateStatus({ id: todo.id, status: "Processing" })}>
-              Mark as Processing
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => updateStatus({ id: todo.id, status: "Completed" })}>
-              Mark as Completed
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => updateStatus({ id: todo.id, status: "Deadline" })}>
-              Mark as Deadline
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => deleteTodo(todo.id)}
-              className="text-red-600"
-            >
+            {(["Pending", "Processing", "Completed", "Deadline"] as const).map((status) => (
+              <DropdownMenuItem key={status} onClick={() => updateStatus({ companyId, id: todo._id, status })}>
+                Mark as {status}
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuItem onClick={() => deleteTodo({ companyId, id: todo._id })} className="text-red-600">
               <Trash2 className="h-4 w-4 mr-2" />
               Delete
             </DropdownMenuItem>

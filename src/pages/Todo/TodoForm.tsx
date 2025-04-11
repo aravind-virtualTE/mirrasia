@@ -1,3 +1,4 @@
+import React from "react";
 import { format } from "date-fns";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,7 +30,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const TodoForm = () => {
+const TodoForm:React.FC<{companyId: string}> = ({companyId}) => {
   const [, addTodo] = useAtom(addTodoAtom);
 
   const form = useForm<FormValues>({
@@ -41,7 +42,7 @@ const TodoForm = () => {
   });
 
   const onSubmit = (values: FormValues) => {
-    addTodo({ title: values.title, deadline: values.deadline ?? null });
+    addTodo({ companyId, title: values.title, deadline: values.deadline ?? null });
     form.reset();
   };
 
