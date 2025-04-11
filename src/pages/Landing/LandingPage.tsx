@@ -25,7 +25,8 @@ const LandingPage = () => {
   const incorporationRef = useRef<HTMLDivElement>(null)
   const accountingRef = useRef<HTMLDivElement>(null)
   const pricingRef = useRef<HTMLDivElement>(null)
-
+  const homeRef = useRef<HTMLDivElement>(null)
+  
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: "smooth" })
@@ -52,6 +53,8 @@ const LandingPage = () => {
                 height: "25px",
                 objectFit: "cover",
               }}
+              className="cursor-pointer"
+              onClick={() => scrollToSection(homeRef)}
             />
 
             {/* Desktop Navigation */}
@@ -117,7 +120,7 @@ const LandingPage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-white to-gray-50 py-16 md:py-24">
+      <section ref={homeRef} id="home" className="bg-gradient-to-b from-white to-gray-50 py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* First Row - Business Women */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center mb-16 md:mb-24">
