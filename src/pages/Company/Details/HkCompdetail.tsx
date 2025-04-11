@@ -591,7 +591,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <TabsContent value="details" className="p-6">
                 <div className="space-y-8">
                     <h1 className="text-2xl font-bold">Company Details</h1>
-                    <TodoApp />
+                    <TodoApp id={company._id} />
 
                     {sections.map((section) => (
                         <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
