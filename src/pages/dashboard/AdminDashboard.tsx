@@ -19,6 +19,7 @@ import {
   ChevronUp,
   ChevronDown,
   XCircle,
+  ListTodo
 } from "lucide-react"
 import { getIncorporationList } from "@/services/dataFetch"
 import { useAtom, useSetAtom } from "jotai"
@@ -175,9 +176,9 @@ const AdminDashboard = () => {
       {/* Additional Cards Section */}
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
         <ProjectsCard />
+        <AdminTodo />
         <UsersCard />
         <CurrentClients />
-        <AdminTodo />
       </div>
 
       {/* Companies Table */}
@@ -461,7 +462,7 @@ const ProjectsCard: React.FC = () => {
       <Card className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-violet-500" />
+            <ListTodo className="h-4 w-4 text-green-500" />
             <span className="text-sm font-medium">To-do list</span>
           </div>
           <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
