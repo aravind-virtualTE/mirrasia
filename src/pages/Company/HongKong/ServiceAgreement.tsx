@@ -111,7 +111,7 @@ const ServiceAgreementDocument: React.FC = () => {
   // console.log("finalForm", finalForm)
 
   useEffect(() => {
-    console.log("finalForm.serviceAgreementConsent",finalForm.serviceAgreementConsent)
+    // console.log("finalForm.serviceAgreementConsent",finalForm.serviceAgreementConsent)
     if (finalForm.serviceAgreementConsent) {
       setConsent(true)
     }
@@ -177,7 +177,7 @@ const ServiceAgreementDocument: React.FC = () => {
       <ScrollArea className="h-[600px] w-full rounded-md border p-4">
         <Accordion type="single" collapsible className="w-full">
           {fullAgreementSections.map((section, index) => (
-            <AccordionItem value={`section-${index}`} key={index}>
+            <AccordionItem value={`section-${index}`} key={index} className="border rounded-md overflow-hidden">
               <AccordionTrigger className="text-lg font-semibold hover:bg-gray-100 px-4 py-2 rounded-md">
                 {section.title}
               </AccordionTrigger>

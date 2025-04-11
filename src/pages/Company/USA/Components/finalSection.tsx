@@ -32,18 +32,10 @@ const FinalSection = () => {
             Thank you for completing the USA company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.
           </p>
           <p>Thank you.</p>
-          {/* <p className="text-700">
-            One of our expert representatives will now handle the remaining steps of your incorporation process.
-          </p>
-          <p className="text-700">
-            You can track the progress of your incorporation through your dashboard at any time. We are here to ensure a smooth and efficient experience for you.
-          </p> */}
+        
         </CardContent>
         <CardFooter className="flex justify-center space-x-4">
           <Button className="bg-green-600 hover:bg-green-700" onClick={navigateRoute}>Go to Dashboard</Button>
-          {/* <Button variant="outline" className="border-green-600 text-green-600 ">
-            Contact Support
-          </Button> */}
         </CardFooter>
       </Card>
     </div>

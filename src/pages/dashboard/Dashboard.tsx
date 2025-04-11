@@ -21,13 +21,16 @@ import jwtDecode from "jwt-decode";
 import ServiceCarousel from "./ServiceCarousel";
 import MainFunctionalities from "./MainFunctionalities";
 import { useTranslation } from "react-i18next";
+import { usaFormWithResetAtom } from "../Company/USA/UsState";
 
 const Dashboard = () => {
   const [cList,] = useAtom(companyIncorporationList)
   const setCompIncList = useSetAtom(companyIncorporationList);
   const [allList, setAllList] = useAtom(allCompListAtom)
+  const [, setUsaReset] = useAtom(usaFormWithResetAtom)
   const navigate = useNavigate();
   const { t } = useTranslation();
+  
 
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
@@ -36,6 +39,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     resetAllForms()
+    setUsaReset('reset')
     async function fetchData() {
       const result = await getIncorporationListByUserId(`${decodedToken.userId}`)
       return result
@@ -65,7 +69,7 @@ const Dashboard = () => {
     < >
       {/* Main Content */}
       <div className="flex-1 p-8">
-        <h1 className="text-2xl font-semibold mb-8">{t('dashboard.welcome')}User {t('dashboard.welcome1')}</h1>
+        <h1 className="text-2xl font-semibold mb-6">{t('dashboard.welcome')}User {t('dashboard.welcome1')}</h1>
         <MainFunctionalities />
         {/* Companies Table */}
         {cList.length > 0 && <div className="mb-12">

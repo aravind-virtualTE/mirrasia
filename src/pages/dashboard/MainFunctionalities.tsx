@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building2, CreditCard, RefreshCw } from 'lucide-react';
+import { Building2, CreditCard, RefreshCw, BriefcaseBusiness } from 'lucide-react';
 import MainFunctionalityCard from './MainFunctionalityCard';
 import { useResetAllForms } from "@/lib/atom";
 import { useNavigate } from 'react-router-dom';
@@ -13,8 +13,8 @@ const MainFunctionalities: React.FC = () => {
     const navigate = useNavigate();
     const [, setAllList] = useAtom(allCompListAtom)
     const [, setUSForm] = useAtom(usaFormWithResetAtom)
-      const { t } = useTranslation();
-    
+    const { t } = useTranslation();
+
     const handleComapanyCard = () => {
         setAllList('reset')
         setUSForm('reset')
@@ -31,12 +31,17 @@ const MainFunctionalities: React.FC = () => {
         navigate('/switch-services');
     };
 
+    const handleProjectCard = () => {
+        resetAllForms();
+        navigate('/project-services');
+    }
+
     const mainFunctionalities = [
         {
             icon: Building2,
             title: t('dashboard.startNew'),
             description: t('dashboard.regComp'),
-            onClick: handleComapanyCard, 
+            onClick: handleComapanyCard,
         },
         {
             icon: CreditCard,
@@ -47,15 +52,21 @@ const MainFunctionalities: React.FC = () => {
         {
             icon: RefreshCw,
             title: t('dashboard.switchServices'),
-            description:t('dashboard.SserDesc'),
-            onClick:handleServicesCard,
+            description: t('dashboard.SserDesc'),
+            onClick: handleServicesCard,
+        },
+        {
+            icon: BriefcaseBusiness,
+            title: t('dashboard.project'),
+            description: t('dashboard.projectDesc'),
+            onClick: handleProjectCard,
         },
     ];
 
     return (
-        <div className="mb-16 animate-fade-in">
-            <h2 className="text-2xl font-semibold mb-6">{t('dashboard.solutions')}: </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mb-6 animate-fade-in">
+            <h2 className="text-xl font-semibold mb-6">{t('dashboard.solutions')}: </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:grid-cols-[repeat(auto-fit,minmax(200px,1fr))] lg:gap-4">
                 {mainFunctionalities.map((functionality, index) => (
                     <MainFunctionalityCard
                         key={index}
@@ -64,7 +75,7 @@ const MainFunctionalities: React.FC = () => {
                         description={functionality.description}
                         className="animate-slide-in"
                         style={{ animationDelay: `${index * 0.1}s` }}
-                        onClick={functionality.onClick} 
+                        onClick={functionality.onClick}
                     />
                 ))}
             </div>

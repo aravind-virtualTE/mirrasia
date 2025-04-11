@@ -44,6 +44,7 @@ import InviteUsaDirShir from './pages/InviteUsaDirShir/USA/InviteUsaDirShir';
 import ServiceAgreementSignDocs from './components/ServiceAgreementSignDocs/ServiceAgreementSignDocs';
 import {SocketProvider } from '@/hooks/Socket';
 import ChatInterface from './components/chat/ChatInterface';
+import ProjectActivity from './pages/Projects/Project';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -105,7 +106,7 @@ const App: React.FC = () => {
                       <Route path="/accounting-support-list" element={<AccountingHkList />} />
                       <Route path="/member-registration" element={<InviteUsaDirShir />} />
                       <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
-                      <Route path="/messages" element={<ChatInterface />} />
+                      <Route path="/project-services" element={<ProjectActivity />} />                      
                     </Route>
                   </Route>
 
@@ -113,10 +114,10 @@ const App: React.FC = () => {
                   <Route element={<ProtectedRoute allowedRoles={["admin" , 'master']} />}>
                     <Route element={<Layout />}>
                       <Route path="/compReg" element={<CompanyRegistration2 />} />
-                      <Route path="/admin-dashboard" element={<AdminDashboard />} />                    
+                      <Route path="/admin-dashboard" element={<AdminDashboard />} />
                       <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
                       <Route path="/company-details/:id" element={<CompanyDetail />} />
-                      
+                      <Route path="/messages" element={<ChatInterface />} />                      
                       {/* Add more admin-specific routes here */}
                     </Route>
                   </Route>

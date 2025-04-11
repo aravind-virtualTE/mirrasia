@@ -65,7 +65,7 @@ export default function FAQs() {
       <div className="max-w-8xl mx-auto">
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold text-center">
+            <CardTitle className="text-2xl font-bold text-center">
               Frequently Asked Questions
             </CardTitle>
           </CardHeader>
@@ -73,7 +73,7 @@ export default function FAQs() {
             <Accordion type="single" collapsible className="w-full">
               {faqs.map((faq, index) => (
                 <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger className="text-left text-lg font-semibold">
+                  <AccordionTrigger className="text-left text-base font-semibold">
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">

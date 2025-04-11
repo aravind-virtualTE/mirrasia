@@ -2,10 +2,8 @@ import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import ApplicantInformation from "./Components/ApplicantInformation"
 import CompanyInformationUS from "./Components/CompanyInformationUS"
-import Section4 from "./Components/Section4"
-import Section6 from "./Components/Section6"
+import UsServiceSelection from "./Components/UsServiceSelection"
 import AmlCddUS from "./Components/AmlCddUS"
-import Section14 from "./Components/Section14"
 import PaymentInformation from "./Components/Section15"
 // import FormSections from "./Components/Section16"
 import { Button } from "@/components/ui/button";
@@ -19,6 +17,8 @@ import api from "@/services/fetch"
 import { toast } from '@/hooks/use-toast';
 import FinalSection from "./Components/finalSection"
 import InvoiceUs from "./Components/InvoiceUs"
+import ServiceAgreement from "./Components/ServiceAgreement"
+import RegistrationDetails from "./Components/RegistrationDetails"
 
 const IncorporateUSACompany = () => {
     const [currentSection, setCurrentSection] = useState(1);
@@ -27,14 +27,18 @@ const IncorporateUSACompany = () => {
     const decodedToken = jwtDecode<TokenData>(token);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const steps = [
-        { number: 1, label: "Applicant information", active: currentSection === 1 },
+        {
+            number: 1,
+            label: "Applicant information",
+            active: currentSection === 1,
+        },
         { number: 2, label: "Aml Cdd", active: currentSection === 2 },
         { number: 3, label: "Company Information", active: currentSection === 3 },
-        { number: 4, label: "Registration Details", active: currentSection === 4 },
+        { number: 4, label: "Service Agreement", active: currentSection === 4 },
         { number: 5, label: "Service Selection", active: currentSection === 5 },
         { number: 6, label: "Invoice", active: currentSection === 6 },
-        { number: 7, label: "Consent", active: currentSection === 7 },
-        { number: 8, label: "Payment", active: currentSection === 8 },
+        { number: 7, label: "Payment", active: currentSection === 7 },
+        { number: 8, label: "Information For Incorporation", active: currentSection === 8 },
         { number: 9, label: "Incorporation", active: currentSection === 9 },
     ];
 
@@ -45,10 +49,10 @@ const IncorporateUSACompany = () => {
         setIsSubmitting(true);
         // const docId = localStorage.getItem("companyRecordId");
         formData.userId = `${decodedToken.userId}`
-        const payload = {  ...formData };
+        const payload = { ...formData };
         // console.log("formdata", formData)
         try {
-            const response = await api.post("/company/usa-form",payload);
+            const response = await api.post("/company/usa-form", payload);
             if (response.status === 200) {
                 // console.log("formdata", response.data);
                 window.history.pushState(
@@ -67,9 +71,9 @@ const IncorporateUSACompany = () => {
     }
     const nextSection = async () => {
         switch (currentSection) {
-            case 1:{
+            case 1: {
                 const errors = [];
-                if (!formData.name || formData.name.trim() === "" ) {
+                if (!formData.name || formData.name.trim() === "") {
                     errors.push("Invalid name format or empty name.");
                 }
                 const email = formData.email
@@ -120,6 +124,39 @@ const IncorporateUSACompany = () => {
                     }
                     break;
                 }
+            case 3:
+                {
+                    const emptyNameShareholders = formData.shareHolders.filter(
+                        (shareholder) => !shareholder.name.trim()
+                    );
+                    const state = formData.selectedState
+                    const entity = formData.selectedEntity
+
+                    if (emptyNameShareholders.length > 0 && state =="" && entity=="") {
+                        toast({
+                            title: "Fill Details (Shareholder(s) / Director(s))",
+                            description: "Fill the required fields Shareholder(s) / Director(s)",
+                        });
+                    } else {
+                        await updateDoc();
+                        setCurrentSection(currentSection + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    }                    
+                    break;
+                }
+            case 4:
+                if (formData.serviceAgreementConsent == false) {
+                    toast({
+                        title: "Service Agreement.",
+                        description:
+                            "Please accept the service agreement to proceed.",
+                    });
+                } else {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+                break;
             // case 13:
             //     break;
             default:
@@ -170,11 +207,11 @@ const IncorporateUSACompany = () => {
                             {currentSection === 1 && <ApplicantInformation />}
                             {currentSection === 2 && <AmlCddUS />}
                             {currentSection === 3 && <CompanyInformationUS />}
-                            {currentSection === 4 && <Section4 />}
-                            {currentSection === 5 && <Section6 />}
+                            {currentSection === 4 && <ServiceAgreement />}
+                            {currentSection === 5 && <UsServiceSelection />}
                             {currentSection === 6 && <InvoiceUs />}
-                            {currentSection === 7 && <Section14 />}
-                            {currentSection === 8 && <PaymentInformation />}
+                            {currentSection === 7 && <PaymentInformation />}
+                            {currentSection === 8 && <RegistrationDetails />}
                             {currentSection === 9 && <FinalSection />}
                         </motion.div>
                     </AnimatePresence>

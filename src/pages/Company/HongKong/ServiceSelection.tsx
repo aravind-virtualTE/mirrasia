@@ -24,7 +24,7 @@ const ServiceSelection: React.FC = () => {
   const [, setCorpoInvoiceAtom] = useAtom(companyIncorporateInvoiceAtom);
   const [serviceSelectionState, setServiceSelectionState] = useAtom(serviceSelectionStateAtom);
   const { t } = useTranslation();
-  console.log("serviceSelectionState",serviceSelectionState)
+  // console.log("serviceSelectionState",serviceSelectionState)
   // Memoized initial state to prevent unnecessary re-renders
   const initialState = useMemo(() => ({
     selectedServices: serviceSelectionState?.selectedServices || [],
