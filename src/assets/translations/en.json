@@ -29,6 +29,8 @@
     "mirrChat":"MirrAsia Chat"
   },
   "dashboard":{
+    "project":"Projects",
+    "projectDesc":"Manage your projects efficiently.",
     "welcome": "Welcome, ",
     "welcome1": "Here's what you can do to get started.",
     "companiesH": "Your Companies",
@@ -542,7 +544,7 @@
     "error_message": "An error occurred while submitting the request."
   },
   "ServiceAgreementDocument": {
-    "title": "Company Secretary Service Agreement",
+    "title": "Company Services Agreement",
     "section1Title": "1. Purpose of Service Agreement",
     "section1Content": "The purpose of this agreement is to prevent any misunderstandings or disputes that may arise regarding the scope of services provided by MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED (“MIRR ASIA”) and its limitations in relation to your company, which will be incorporated soon in the HKSAR (”Client”).",
     "section2Title":"2. Role of Hong Kong Company Secretary and Limitation of Liability",

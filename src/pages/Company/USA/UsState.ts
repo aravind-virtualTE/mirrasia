@@ -1,5 +1,4 @@
 import { atom } from 'jotai';
-import { Option } from "@/components/MultiSelectInput";
 export interface UsaFormData {
   _id: string;
   email: string;
@@ -21,11 +20,13 @@ export interface UsaFormData {
   sanctionedTiesPresent: string;
   businessInCrimea: string;
   involvedInRussianEnergyDefense: string;
-  selectedIndustry: Option[];
+  selectedIndustry: string[];
+  otherIndustryText: string;
   descriptionOfProducts: string;
   descriptionOfBusiness: string;
   webAddress: string;
-  purposeOfEstablishmentCompany: Option[];
+  purposeOfEstablishmentCompany: string[];
+  otherCompanyPurposeText: string;
   companyName: string[];
   totalCapital: string | number;
   companyExecutives: string | number;
@@ -58,6 +59,7 @@ export interface UsaFormData {
   paymentId: string
   status: string
   incorporationDate: string
+  serviceAgreementConsent: boolean
 }
 
 const initialFormState: UsaFormData = {
@@ -86,10 +88,12 @@ const initialFormState: UsaFormData = {
   businessInCrimea: '',
   involvedInRussianEnergyDefense: '',
   selectedIndustry: [],
+  otherIndustryText:"",
   descriptionOfProducts: '',
   descriptionOfBusiness: '',
   webAddress: '',
   purposeOfEstablishmentCompany: [],
+  otherCompanyPurposeText: "",
   companyName: ['', '', ''],
   totalCapital: '',
   companyExecutives: '',
@@ -111,6 +115,7 @@ const initialFormState: UsaFormData = {
   paymentId: '',
   status: "pending",
   incorporationDate:"",
+  serviceAgreementConsent:false
 };
 
 // Create the base atom

@@ -26,6 +26,8 @@ import { useAtom, useSetAtom } from "jotai"
 import { allCompListAtom, companyIncorporationList } from "@/services/state"
 import { cn } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
+import { usaFormWithResetAtom } from "../Company/USA/UsState"
+import { useResetAllForms } from "@/lib/atom"
 
 interface Stats {
   pending: number
@@ -44,12 +46,16 @@ const AdminDashboard = () => {
   const setCompIncList = useSetAtom(companyIncorporationList)
   const [allList, setAllList] = useAtom(allCompListAtom)
   const navigate = useNavigate()
+  const [, setUsaReset] = useAtom(usaFormWithResetAtom)
+  const resetAllForms = useResetAllForms();
   const [sortConfig, setSortConfig] = useState<{
     key: string
     direction: "ascending" | "descending"
   } | null>(null)
 
   useEffect(() => {
+    setUsaReset('reset')
+    resetAllForms()
     async function fetchData() {
       const result = await getIncorporationList()
       return result

@@ -41,7 +41,7 @@ export default function CompanyInformationUS() {
     t('usa.Section2StateOptions.Nevada'),
     t('usa.Section2StateOptions.Florida'),
     t('usa.Section2StateOptions.Georgia'),
-    t('usa.Section2StateOptions.Other'),
+    // t('usa.Section2StateOptions.Other'),
   ];
   const handleOptionChange = (value: string) => {
     setFormData({ ...formData, selectedEntity: value });
