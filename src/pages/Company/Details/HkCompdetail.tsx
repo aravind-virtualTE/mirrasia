@@ -45,6 +45,8 @@ import { updateCompanyIncorporationAtom } from "@/lib/atom";
 import { ShareHolderDirectorController } from "@/types/hongkongForm";
 import MemoApp from "./MemosHK";
 
+import TodoApp from "@/pages/Todo/TodoApp";
+
 export interface SessionData {
     _id: string;
     amount: number;
@@ -589,6 +591,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <TabsContent value="details" className="p-6">
                 <div className="space-y-8">
                     <h1 className="text-2xl font-bold">Company Details</h1>
+                    <TodoApp />
 
                     {sections.map((section) => (
                         <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">

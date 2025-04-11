@@ -176,12 +176,14 @@ const AdminDashboard = () => {
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
         <ProjectsCard />
         <UsersCard />
+        {/* <UsersCard1 />
+        <UsersCard2 /> */}
       </div>
 
       {/* Companies Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Companies Overview</CardTitle>
+          <CardTitle>Incorporation Process</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="border rounded-md overflow-hidden">
@@ -432,10 +434,38 @@ const ProjectsCard: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-violet-500" />
-            <span className="text-sm font-medium">Existing Users</span>
+            <span className="text-sm font-medium">Current Corporate Clients</span>
           </div>
           <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
         </div>
       </Card>
     )
   }
+
+//   const UsersCard1: React.FC = () => {
+//     return (
+//       <Card className="p-4">
+//         <div className="flex items-center justify-between">
+//           <div className="flex items-center gap-2">
+//             <Users className="h-4 w-4 text-violet-500" />
+//             <span className="text-sm font-medium">Current Individual Clients</span>
+//           </div>
+//           <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
+//         </div>
+//       </Card>
+//     )
+//   }
+
+//   const UsersCard2: React.FC = () => {
+//     return (
+//       <Card className="p-4">
+//         <div className="flex items-center justify-between">
+//           <div className="flex items-center gap-2">
+//             <Users className="h-4 w-4 text-violet-500" />
+//             <span className="text-sm font-medium">To-do list</span>
+//           </div>
+//           <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
+//         </div>
+//       </Card>
+//     )
+//   }

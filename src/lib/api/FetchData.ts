@@ -71,3 +71,51 @@ export const shareMemo = async (
   });
   return res.data;
 };
+
+
+export const fetchTodosByCompany = async (companyId: string) => {
+  try {
+    const response = await api.get(`/todo/${companyId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    throw error;
+  }
+};
+
+// Add a new todo for a company
+export const addTodo = async (companyId: string, todo: { title: string; deadline?: Date | null }) => {
+  try {
+    const response = await api.post(`/todo/${companyId}`, todo);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding todo:", error);
+    throw error;
+  }
+};
+
+// Update a specific todo (status, title, or deadline)
+export const updateTodo = async (
+  companyId: string,
+  todoId: string,
+  updates: Partial<{ status: string; title: string; deadline: Date | null }>
+) => {
+  try {
+    const response = await api.patch(`/todo/${companyId}/${todoId}`, updates);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating todo:", error);
+    throw error;
+  }
+};
+
+// Delete a specific todo
+export const deleteTodo = async (companyId: string, todoId: string) => {
+  try {
+    const response = await api.delete(`/todo/${companyId}/${todoId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting todo:", error);
+    throw error;
+  }
+};
