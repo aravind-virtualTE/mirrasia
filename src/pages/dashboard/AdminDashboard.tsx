@@ -28,6 +28,8 @@ import { cn } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
 import { usaFormWithResetAtom } from "../Company/USA/UsState"
 import { useResetAllForms } from "@/lib/atom"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import AdminTodoList from "./AdminTodo/TodoApp"
 
 interface Stats {
   pending: number
@@ -422,57 +424,76 @@ const StatsCard: React.FC<StatsCardProps> = ({ stats }) => {
 }
 
 const ProjectsCard: React.FC = () => {
-    return (
-      <Card className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FolderKanban className="h-4 w-4 text-teal-500" />
-            <span className="text-sm font-medium">Projects</span>
-          </div>
-          <span className="text-sm text-muted-foreground">Active: <span className="font-bold">0</span></span>
+  return (
+    <Card className="p-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <FolderKanban className="h-4 w-4 text-teal-500" />
+          <span className="text-sm font-medium">Projects</span>
         </div>
-      </Card>
-    )
-  }
-  
-  const UsersCard: React.FC = () => {
-    return (
-      <Card className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-violet-500" />
-            <span className="text-sm font-medium">Current Corporate Clients</span>
-          </div>
-          <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
-        </div>
-      </Card>
-    )
-  }
+        <span className="text-sm text-muted-foreground">Active: <span className="font-bold">0</span></span>
+      </div>
+    </Card>
+  )
+}
 
-  const CurrentClients: React.FC = () => {
-    return (
-      <Card className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-violet-500" />
-            <span className="text-sm font-medium">Current Individual Clients</span>
-          </div>
-          <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
+const UsersCard: React.FC = () => {
+  return (
+    <Card className="p-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Users className="h-4 w-4 text-violet-500" />
+          <span className="text-sm font-medium">Current Corporate Clients</span>
         </div>
-      </Card>
-    )
-  }
+        <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
+      </div>
+    </Card>
+  )
+}
 
-  const AdminTodo: React.FC = () => {
-    return (
-      <Card className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <ListTodo className="h-4 w-4 text-green-500" />
-            <span className="text-sm font-medium">To-do list</span>
-          </div>
-          <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
+const CurrentClients: React.FC = () => {
+  return (
+    <Card className="p-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Users className="h-4 w-4 text-violet-500" />
+          <span className="text-sm font-medium">Current Individual Clients</span>
         </div>
-      </Card>
-    )
-  }
+        <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
+      </div>
+    </Card>
+  )
+}
+
+const AdminTodo: React.FC = () => {
+  const [open, setOpen] = useState(false)
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Card onClick={() => setOpen(true)} className="cursor-pointer hover:shadow-lg transition-shadow">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <ListTodo className="h-4 w-4 text-green-500" />
+              Admin Todo
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            Click to view admin todo list
+          </CardContent>
+        </Card>
+      </DialogTrigger>
+      <DialogContent
+        className="w-[70vw] h-[70vh] max-w-none"
+        style={{ maxHeight: "90vh" }}
+      >
+        <DialogHeader>
+          <DialogTitle>Todo List</DialogTitle>
+        </DialogHeader>
+        <div>
+          <AdminTodoList />
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
