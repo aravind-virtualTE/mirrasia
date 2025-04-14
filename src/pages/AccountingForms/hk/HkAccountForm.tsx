@@ -14,7 +14,7 @@ const HkAccountForm: React.FC = () => {
     // const { toast } = useToast();
     const steps = [
         {
-            number: 1,label: "companyInfo",active: currentSection === 1,
+            number: 1,label: "Company Info",active: currentSection === 1,
         },
         {
             number: 1,label: "Transactional Info",active: currentSection === 2,
@@ -23,7 +23,7 @@ const HkAccountForm: React.FC = () => {
             number: 1,label: "Accounting Info",active: currentSection === 3,
         },
         {
-            number: 1, label: "Accounting Info Data", active: currentSection === 4,
+            number: 1, label: "Provide Accounting Data", active: currentSection === 4,
         },
         {
             number: 1, label: "Acknowledgement", active: currentSection === 5,
