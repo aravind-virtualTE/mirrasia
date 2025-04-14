@@ -23,6 +23,7 @@ import { Switch } from '@/components/ui/switch';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
 import MemoApp from './MemosHK';
+import TodoApp from '@/pages/Todo/TodoApp';
 
 const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
@@ -433,7 +434,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <TabsContent value="details" className="p-6">
                 <div className="space-y-8">
                     <h1 className="text-2xl font-bold">Company Details</h1>
-
+                    <TodoApp id={id} />
                     {sections.map((section) => (
                         <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
                             <CardHeader className="bg-muted/50 py-4">
