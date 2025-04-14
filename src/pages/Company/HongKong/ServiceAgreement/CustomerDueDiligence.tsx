@@ -127,7 +127,7 @@ export default function CustomerDueDiligence() {
     }));
   };
 
-  console.log("cddForm", serviceAgrementDetails.customerDueDiligence);
+  // console.log("cddForm", serviceAgrementDetails.customerDueDiligence);
 
   return (
     // max-w-4xl mx-auto

@@ -67,7 +67,6 @@ export default function AppointmentLetter({ editable }: { editable: boolean }) {
       value: item.name
     })
   })
-  // console.log("dirShrList",dirShrList)
 
   const handleSelectChange = (value: string) => {
     // console.log("value", value, 'key')
@@ -218,15 +217,18 @@ export default function AppointmentLetter({ editable }: { editable: boolean }) {
                 value={directorName}
                 onValueChange={handleSelectChange}
               >
-                <SelectTrigger id="dirShrList" className="w-full ">
+                <SelectTrigger id="dirShrList" className="w-full">
                   <SelectValue placeholder="Select Director" />
                 </SelectTrigger>
                 <SelectContent>
-                  {dirShrList && dirShrList.map((platform) => (
-                    <SelectItem key={platform.key} value={platform.key}>
-                      {platform.value}
-                    </SelectItem>
-                  ))}
+                  {dirShrList &&
+                    dirShrList
+                      .filter((platform) => platform.key !== "")
+                      .map((platform) => (
+                        <SelectItem key={platform.key} value={platform.key}>
+                          {platform.value}
+                        </SelectItem>
+                      ))}
                 </SelectContent>
               </Select>
 

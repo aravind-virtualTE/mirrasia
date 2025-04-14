@@ -1,9 +1,16 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react';
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 import { getCompDocs, getIncorporationListByCompId } from '@/services/dataFetch';
-import SAgrementPdf from '@/pages/Company/HongKong/ServiceAgreement/SAgrementPdf';
+const SAgrementPdf = lazy(() => import('@/pages/Company/HongKong/ServiceAgreement/SAgrementPdf'));
 import { useSetAtom } from 'jotai';
 import { updateCompanyIncorporationAtom } from '@/lib/atom';
 
@@ -17,9 +24,10 @@ const ServiceAgreementSignDocs: React.FC = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [dataFetched, setDataFetched] = useState<boolean>(false);
+
   const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
 
-  // Fetch company list on mount
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
@@ -34,23 +42,27 @@ const ServiceAgreementSignDocs: React.FC = () => {
         console.error('Error fetching companies:', error);
       }
     };
-
     fetchCompanies();
   }, []);
 
-  // Fetch company details when selectedCompanyId changes
-  const fetchCompInfo = useCallback(async (companyId: string) => {
-    setLoading(true);
-    try {
-      const companyData = await getIncorporationListByCompId(companyId);
-      if (companyData.length > 0) {
-        updateCompanyData(companyData[0]);
+  const fetchCompInfo = useCallback(
+    async (companyId: string) => {
+      setLoading(true);
+      setDataFetched(false);
+      try {
+        const companyData = await getIncorporationListByCompId(companyId);
+        if (companyData.length > 0) {
+          updateCompanyData(companyData[0]);
+          setDataFetched(true); 
+        }
+      } catch (error) {
+        console.error('Error fetching company data:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching company data:', error);
-    }
-    setLoading(false);
-  }, [updateCompanyData]);
+    },
+    [updateCompanyData]
+  );
 
   useEffect(() => {
     if (selectedCompanyId) {
@@ -59,21 +71,24 @@ const ServiceAgreementSignDocs: React.FC = () => {
   }, [selectedCompanyId, fetchCompInfo]);
 
   const handleCompanySelect = (companyId: string): void => {
+    setDataFetched(false);
     setSelectedCompanyId(companyId);
   };
 
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h1 className="text-2xl font-bold mb-4">Sign Incorporation Documents</h1>
+        <h1 className="text-2xl font-bold mb-4">
+          Sign Incorporation Documents
+        </h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <Select onValueChange={handleCompanySelect} value={selectedCompanyId || ''}>
             <SelectTrigger className="w-full md:w-80">
               <SelectValue placeholder="Select a company" />
             </SelectTrigger>
             <SelectContent>
-              {companies.map(company => (
-                <SelectItem key={company.id} value={company.id.toString()}>
+              {companies.map((company) => (
+                <SelectItem key={company.id} value={company.id}>
                   {company.companyName}
                 </SelectItem>
               ))}
@@ -81,10 +96,16 @@ const ServiceAgreementSignDocs: React.FC = () => {
           </Select>
         </div>
       </div>
+
       {loading ? (
         <p>Loading company details...</p>
       ) : (
-        selectedCompanyId && <SAgrementPdf id={selectedCompanyId} />
+        // Render SAgrementPdf only if the data has been successfully fetched
+        dataFetched && (
+          <Suspense fallback={<p>Loading SAgrementPdf component...</p>}>
+            <SAgrementPdf id={selectedCompanyId || ''} />
+          </Suspense>
+        )
       )}
     </div>
   );
