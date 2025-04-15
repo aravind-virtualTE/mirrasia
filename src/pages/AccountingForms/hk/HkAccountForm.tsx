@@ -9,7 +9,7 @@ import { useAtom } from 'jotai';
 
 const HkAccountForm: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
-    const [formState, ] = useAtom(switchServicesFormAtom)
+    const [formState,setFormState ] = useAtom(switchServicesFormAtom)
 
     // const { toast } = useToast();
     const steps = [
@@ -29,9 +29,21 @@ const HkAccountForm: React.FC = () => {
             number: 1, label: "Acknowledgement", active: currentSection === 5,
         },
     ];
-
-    const updateDoc = () => {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    const currentUser = user ? { _id: user.id, fullName: user.fullName } : { _id: "", fullName: "" };
+  
+    const updateDoc = async () => {
         console.log("formState", formState)
+        const payload = {  ...formState,userId: currentUser._id };
+
+        const result = await saveAccountingService(payload)
+        // console.log("result", result)
+        setFormState(result)
+        window.history.pushState(
+            {},
+            "",
+            `/accounting-services/HK/${result._id}`
+        );
     }
     const nextSection = async () => {
         await updateDoc()
@@ -205,7 +217,7 @@ const CompanyInfo: React.FC = () => {
                             <Input
                                 id="companyName"
                                 type="string"
-                                placeholder="Valid Name"
+                                placeholder="Valid CompanyName"
                                 className="w-full"
                                 value={formState.companyName}
                                 onChange={(e) => handleInputChange('companyName', e.target.value)}
@@ -436,6 +448,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { saveAccountingService } from './accountingServiceFetch';
 
 const AccountingForm = () => {
     const { theme } = useTheme();

@@ -100,6 +100,7 @@ const App: React.FC = () => {
                       <Route path="/switch-services" element={<SwitchServices />} />
                       <Route path="/switch-services/:countryCode/:id" element={<SwitchServices />} />
                       <Route path="/accounting-services" element={<AccountingForms />} />
+                      <Route path="/accounting-services/:countryCode/:id" element={<AccountingForms />} />
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/hk-bank-account-list" element={<BkFrmList />} />
                       <Route path="/switch-services-list" element={<SwitchServicesList />} />
