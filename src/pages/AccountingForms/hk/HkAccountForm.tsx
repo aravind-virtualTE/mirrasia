@@ -10,8 +10,7 @@ import { useAtom } from 'jotai';
 const HkAccountForm: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
     const [formState,setFormState ] = useAtom(switchServicesFormAtom)
-
-    // const { toast } = useToast();
+    const { toast } = useToast();
     const steps = [
         {
             number: 1,label: "Company Info",active: currentSection === 1,
@@ -33,12 +32,16 @@ const HkAccountForm: React.FC = () => {
     const currentUser = user ? { _id: user.id, fullName: user.fullName } : { _id: "", fullName: "" };
   
     const updateDoc = async () => {
-        console.log("formState", formState)
+        // console.log("formState", formState)
         const payload = {  ...formState,userId: currentUser._id };
 
         const result = await saveAccountingService(payload)
         // console.log("result", result)
         setFormState(result)
+        toast({
+          title: "Data Saved",
+          description: "Data saved successfully",
+        });
         window.history.pushState(
             {},
             "",
@@ -449,6 +452,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { saveAccountingService } from './accountingServiceFetch';
+import { useToast } from '@/hooks/use-toast';
 
 const AccountingForm = () => {
     const { theme } = useTheme();
