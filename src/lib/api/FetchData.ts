@@ -41,14 +41,23 @@ export const getSwitchServicesList = async (id?: string) => {
   }
 };
 
-export const createOrUpdateMemo = async (memoData: {
-  text: string;
-  author: string;
-  timestamp: string;
-  companyId: string;
-  // userId: string
-}) => {
-  const res = await api.post('/memo', memoData); // server will handle create or push
+// export const createOrUpdateMemo = async (memoData: {
+//   text: string;
+//   author: string;
+//   timestamp: string;
+//   companyId: string;
+//   // userId: string
+// }) => {
+//   const res = await api.post('/memo', memoData); // server will handle create or push
+//   return res.data;
+// };
+
+export const createOrUpdateMemo = async (formData: FormData) => {
+  const res = await api.post('/memo', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return res.data;
 };
 
@@ -59,6 +68,11 @@ export const getMemos = async (companyId: string) => {
 
 export const updateMemo = async (memoId: string, text: string) => {
   const res = await api.put(`/memo/${memoId}`, { text });
+  return res.data;
+};
+
+export const deleteMemo = async (memoId: string, companyId: string, fileUrl: string) => {
+  const res = await api.delete(`/memo/${memoId}`, {data: { companyId,fileUrl }});
   return res.data;
 };
 
