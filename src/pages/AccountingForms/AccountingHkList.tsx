@@ -42,20 +42,24 @@ const AccountingHkList: React.FC = () => {
   }
 
   const user = JSON.parse(localStorage.getItem("user") || "null");
-  const currentUser = user ? { _id: user.id, fullName: user.fullName } : { _id: "", fullName: "" };
+  const currentUser = user ? { _id: user.id, fullName: user.fullName, role:user.role } : { _id: "", fullName: "" , role: ""};
 
   useEffect(() => {
-    console.log(currentUser);
+    // console.log('currentUser',currentUser);
     const getData = async () => {
-      const result = await fetchAccountingServices(currentUser._id)
+      let result = []
+      if(currentUser.role === 'user'){
+        result = await fetchAccountingServices(currentUser._id)
+      }else{
+        result = await fetchAccountingServices()      
+      }
       setData(result);
-
     }
     if (currentUser._id) {
       getData();
     }
   }, [])
-  console.log('data', data);
+  // console.log('data', data);
   return (
     <div className="rounded-md border">
       <Table className="w-full">
