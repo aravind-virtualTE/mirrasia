@@ -1,6 +1,4 @@
 import { atom } from 'jotai';
-import { Option } from '@/components/MultiSelectInput'
-
 
 export type hkAccountFormState = {
     _id: string;
@@ -8,10 +6,12 @@ export type hkAccountFormState = {
     email: string;
     companyName: string;
     dateOfIncorporation: string;
-    selectedIndustry: Option[];
+    selectedIndustry: string[];
+    isOtherIndustry: string;
     countryName:string;
     transactionDescription: string;
-    costOfGoodsSold:Option[];
+    costOfGoodsSold:string[];
+    isOtherCostGoodSold : string;
     costSaleRatio: string;
     accountingForm :{
         inventory: string;
@@ -25,7 +25,16 @@ export type hkAccountFormState = {
         employeeSalaries: string;
         officeRent: string;
         salesExpenses: string;
-    }
+    },
+    accountInfoData: {
+        affiliatedCompany: string | null;
+        hasBranch: string | null;
+        bankAccounts: string;
+        salesExpenseFiles: File[];
+        subsidiaryFiles: File[];
+        branchFiles: File[];
+        transactionFiles: File[];
+    };
 }
 
 const initialState: hkAccountFormState = {
@@ -35,9 +44,11 @@ const initialState: hkAccountFormState = {
     companyName: "",
     dateOfIncorporation: "",
     selectedIndustry: [],
+    isOtherIndustry:"",
     countryName:"",
     transactionDescription: "",
     costOfGoodsSold:[],
+    isOtherCostGoodSold: "",
     costSaleRatio: "",
     accountingForm :{
         inventory: "",
@@ -50,8 +61,17 @@ const initialState: hkAccountFormState = {
         nonBankTransactions: "",
         employeeSalaries: "",
         officeRent: "",
-        salesExpenses: ""
-    }
+        salesExpenses: "",
+    },
+    accountInfoData: {
+        affiliatedCompany: null,
+        hasBranch: null,
+        bankAccounts: '',
+        salesExpenseFiles: [],
+        subsidiaryFiles: [],
+        branchFiles: [],
+        transactionFiles: [],
+    },
 }
 
 export const accountingServicesAtom = atom<hkAccountFormState>(initialState);

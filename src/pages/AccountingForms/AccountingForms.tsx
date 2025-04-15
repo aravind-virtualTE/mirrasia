@@ -1,14 +1,39 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { useParams } from "react-router-dom";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { CountryState } from "@/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HkAccountForm from "./hk/HkAccountForm";
-
+import { useAtom } from "jotai";
+import { switchServicesFormAtom } from "./hk/hkAccountState";
+import { fetchAccountingServicesById } from "./hk/accountingServiceFetch";
 
 const AccountingForms = () => {
-
     const [countryState, setCountryState] = useState<CountryState>({ code: undefined, name: undefined });
+    const { countryCode, id } = useParams();
+    const [,setFormState ] = useAtom(switchServicesFormAtom)    
 
+    useEffect(() => {
+        if (id && countryCode == "HK") {
+            const fetchData = async() =>{
+                const result = await fetchAccountingServicesById(id)
+                // console.log("result", result)
+                setFormState(result)
+                setCountryState({
+                    code: 'HK', name: 'Hong Kong'
+                 });
+            }
+            fetchData()
+
+        }
+        else if (id && countryCode == "US") {
+            console.log("Usa Form")
+            setCountryState({
+                code: 'US', name: 'United States'
+             });
+        }
+
+    }, [])
     const countries = [
         { code: 'HK', name: 'Hong Kong' },
         { code: 'SG', name: 'Singapore' },
@@ -83,8 +108,8 @@ const AccountingForms = () => {
                 </div>
 
             ) : (
-                <>              
-                    {renderSection()}   
+                <>
+                    {renderSection()}
                 </>
             )}
         </>
