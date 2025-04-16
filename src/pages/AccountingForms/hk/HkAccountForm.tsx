@@ -9,17 +9,17 @@ import { useAtom } from 'jotai';
 
 const HkAccountForm: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
-    const [formState,setFormState ] = useAtom(switchServicesFormAtom)
+    const [formState, setFormState] = useAtom(switchServicesFormAtom)
     const { toast } = useToast();
     const steps = [
         {
-            number: 1,label: "Company Info",active: currentSection === 1,
+            number: 1, label: "Company Info", active: currentSection === 1,
         },
         {
-            number: 1,label: "Transactional Info",active: currentSection === 2,
+            number: 1, label: "Transactional Info", active: currentSection === 2,
         },
         {
-            number: 1,label: "Accounting Info",active: currentSection === 3,
+            number: 1, label: "Accounting Info", active: currentSection === 3,
         },
         {
             number: 1, label: "Provide Accounting Data", active: currentSection === 4,
@@ -30,17 +30,17 @@ const HkAccountForm: React.FC = () => {
     ];
     const user = JSON.parse(localStorage.getItem("user") || "null");
     const currentUser = user ? { _id: user.id, fullName: user.fullName } : { _id: "", fullName: "" };
-  
+
     const updateDoc = async () => {
         // console.log("formState", formState)
-        const payload = {  ...formState,userId: currentUser._id };
+        const payload = { ...formState, userId: currentUser._id };
 
         const result = await saveAccountingService(payload)
         // console.log("result", result)
         setFormState(result)
         toast({
-          title: "Data Saved",
-          description: "Data saved successfully",
+            title: "Data Saved",
+            description: "Data saved successfully",
         });
         window.history.pushState(
             {},
@@ -313,6 +313,8 @@ const CompanyInfo: React.FC = () => {
 const TransactionalInfo: React.FC = () => {
     const { theme } = useTheme();
     const [formState, setFormState] = useAtom(switchServicesFormAtom)
+    // const [countryState, setCountryState] = useState<CountryState>({ code: undefined, name: undefined });
+
     const costList = [
         { id: "direct_manufacturing", label: "Direct manufacturing" },
         { id: "outsourcing", label: "Outsourcing in whole or in part" },
@@ -333,12 +335,31 @@ const TransactionalInfo: React.FC = () => {
                 : formState.costOfGoodsSold.filter((item) => item !== id)
         });
     };
+    // const countries = [
+    //     { code: 'HK', name: 'Hong Kong' },
+    //     { code: 'SG', name: 'Singapore' },
+    //     { code: 'US', name: 'United States' },
+    //     { code: 'UK', name: 'United Kingdom' },
+    //     // Add more countries as needed
+    // ];
+
+    // const updateCountry = (countryCode: string) => {
+    //     const selectedCountry = countries.find(country => country.code === countryCode);
+    //     if (selectedCountry) {
+    //         setCountryState({
+    //             code: selectedCountry.code,
+    //             name: selectedCountry.name
+    //         });
+    //     }
+    // };
+
+
     return (
         <div className="flex w-full p-4">
             <aside
                 className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
-                        ? "bg-blue-50 text-gray-800"
-                        : "bg-gray-800 text-gray-200"
+                    ? "bg-blue-50 text-gray-800"
+                    : "bg-gray-800 text-gray-200"
                     }`}
             >
                 <h2 className="text-lg font-semibold mb-2">Transactional Info</h2>
@@ -362,6 +383,27 @@ const TransactionalInfo: React.FC = () => {
                                 }
                                 required
                             />
+
+                            {/* <Select value={formState.countryName} onValueChange={(value) => updateCountry(value)}>
+                                <SelectTrigger
+                                    className="w-full bg-white border-[2px] border-orange-500 rounded-md 
+                                             focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent 
+                                             text-gray-700 hover:border-orange-600 transition-colors duration-200"
+                                >
+                                    <SelectValue placeholder="Select a country" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {countries.map((country) => (
+                                        <SelectItem
+                                            key={country.code}
+                                            value={country.code}
+                                            className="hover:bg-gray-100 border-[1px] cursor-pointer"
+                                        >
+                                            {country.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select> */}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="transactionDescription" className="text-sm">
@@ -453,6 +495,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { saveAccountingService } from './accountingServiceFetch';
 import { useToast } from '@/hooks/use-toast';
+// import { CountryState } from '@/types';
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const AccountingForm = () => {
     const { theme } = useTheme();

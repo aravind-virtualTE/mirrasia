@@ -4,32 +4,13 @@ import { format } from "date-fns"
 import { FileIcon, ImageIcon, FileTextIcon, ExternalLinkIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card"
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AccountingServiceItem, DetailDialogProps } from './types/accTypes';
 
-interface AccountingServiceItem {
-  _id: string
-  userId: string
-  companyName: string
-  email: string
-  countryName: string
-  dateOfIncorporation: string
-  selectedIndustry: string[]
-  transactionDescription: string
-  costOfGoodsSold: string[]
-  costSaleRatio: string
-  accountingForm: Record<string, string | number | boolean>
-  accountInfoData: {
-    [key: string]: string[] | string | number
-    salesExpenseFiles: string[]
-    subsidiaryFiles: string[]
-    branchFiles: string[]
-    transactionFiles: string[]
-  }
-}
+
 
 const AccountingHkList: React.FC = () => {
   const [data, setData] = useState([]);
@@ -59,7 +40,7 @@ const AccountingHkList: React.FC = () => {
       getData();
     }
   }, [])
-  console.log('data', data);
+  // console.log('data', data);
   return (
     <Card>
       <CardHeader>
@@ -115,14 +96,6 @@ const AccountingHkList: React.FC = () => {
 
 export default AccountingHkList
 
-
-
-
-interface DetailDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  data: AccountingServiceItem | null
-}
 
 export function DetailDialog({ open, onOpenChange, data }: DetailDialogProps) {
   if (!data) return null
@@ -228,13 +201,7 @@ function formatLabel(key: string): string {
     .replace(/([A-Z][a-z])/g, " $1")
 }
 
-
-
-interface FileDisplayProps {
-  url: string
-}
-
-export function FileDisplay({ url }: FileDisplayProps) {
+export function FileDisplay({ url }: {url: string}) {
   const [expanded, setExpanded] = useState(false)
   const fileName = url.split("/").pop() || "File"
   const fileType = getFileType(url)

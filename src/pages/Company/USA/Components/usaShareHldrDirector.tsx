@@ -133,11 +133,11 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
           <Select
             value={isDirector}
             onValueChange={(value) => {
-              const newIsDirector = value == 'Yes';              
+              // const newIsDirector = value == 'Yes';              
               onUpdate({
                 isDirector: value,
                 // If setting as director, automatically set legal person to false
-                ...(newIsDirector ? { isLegalPerson: 'No' } : {})
+                // ...(newIsDirector ? { isLegalPerson: 'No' } : {})
               });
             }}
           >
@@ -154,12 +154,12 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
            <Select
             value={isLegalPerson}
             onValueChange={(value) => {
-              const newIsLegal = isDirector == 'Yes';
-              console.log("value",value)
+              // const newIsLegal = isDirector == 'Yes';
+              // console.log("value",value)
               onUpdate({
                 isLegalPerson: value,
                 // If setting as director, automatically set legal person to false
-                ...(newIsLegal ? { isLegalPerson: 'No' } : {})
+                // ...(newIsLegal ? { isLegalPerson: 'No' } : {})
               });
             }}
           >

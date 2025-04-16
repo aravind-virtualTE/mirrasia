@@ -32,7 +32,7 @@ const IncorporateUSACompany = () => {
             label: "Applicant information",
             active: currentSection === 1,
         },
-        { number: 2, label: "Aml Cdd", active: currentSection === 2 },
+        { number: 2, label: "KYC CDD", active: currentSection === 2 },
         { number: 3, label: "Company Information", active: currentSection === 3 },
         { number: 4, label: "Service Agreement", active: currentSection === 4 },
         { number: 5, label: "Service Selection", active: currentSection === 5 },
