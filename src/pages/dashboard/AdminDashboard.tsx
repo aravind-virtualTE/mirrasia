@@ -474,11 +474,11 @@ const AdminTodo: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <ListTodo className="h-4 w-4 text-green-500" />
-              Admin Todo
+              To-do List
             </CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            Click to view admin todo list
+            Click to view admin to-do list
           </CardContent>
         </Card>
       </DialogTrigger>
@@ -487,7 +487,7 @@ const AdminTodo: React.FC = () => {
         style={{ maxHeight: "90vh" }}
       >
         <DialogHeader>
-          <DialogTitle>Todo List</DialogTitle>
+          <DialogTitle>To-do List</DialogTitle>
         </DialogHeader>
         <div>
           <AdminTodoList />

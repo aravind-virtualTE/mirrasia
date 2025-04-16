@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import { toast } from 'sonner';
 import { fetchTodosByUserId, addTodo as addTodoApi, updateTodo as updateTodoApi, deleteTodo as deleteTodoApi,reassignTodo } from './fetch';
-export type TodoStatus = "Pending" | "Processing" | "Completed" | "Deadline";
+export type TodoStatus = "Pending" | "Processing" | "Completed" | "Deadline" | "Urgent";
 
 export interface Todo {
   _id: string;
@@ -10,6 +10,7 @@ export interface Todo {
   deadline: Date | null;
   createdAt: Date;
   userId?: string;
+  docId?: string;
 }
 
 // Initial todos state
@@ -73,10 +74,10 @@ export const deleteTodoAtom = atom(null, async (get, set, { userId, id }: { user
 // Update status only
 export const updateStatusAtom = atom(
   null,
-  async (_get,set,{userId,role,id,status,}: {
-      userId: string;role:string; id: string; status: TodoStatus; }) => {
+  async (_get,set,{userId,role,id,status,docId}: {
+      userId: string;role:string; id: string; status: TodoStatus;docId:string }) => {
     try {
-      await updateTodoApi(userId, id, { status });
+      await updateTodoApi(docId, id, { status });
       const todos = await fetchTodosByUserId(userId,role);
       set(todosAtom, todos);
       toast.success("Todo status updated");

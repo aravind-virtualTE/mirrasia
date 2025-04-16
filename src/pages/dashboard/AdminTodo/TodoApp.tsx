@@ -23,7 +23,6 @@ const AdminTodoList: React.FC = () => {
   }, [])
   return (
     <Provider>
-      {/* <TodoList userId={id} /> */}
       <TodoList userId={id} currentUser={user} users={users} />
     </Provider>
   );
