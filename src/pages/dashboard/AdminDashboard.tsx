@@ -157,18 +157,7 @@ const AdminDashboard = () => {
     }
     return filterData
   }
-  const projectsData = allList.filter((e): e is companyTableData => {
-    return (
-      !active_status.includes((e as { status: string }).status) &&
-      "country" in e &&
-      "companyName" in e &&
-      "applicantName" in e &&
-      "assignedTo" in e &&
-      "status" in e &&
-      "incorporationDate" in e &&
-      "lastLogin" in e
-    )
-  })
+  const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { status: string }).status))
   return (
     <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
       {/* Stats Cards */}
