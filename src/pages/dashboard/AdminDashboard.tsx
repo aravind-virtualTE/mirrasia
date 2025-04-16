@@ -14,12 +14,9 @@ import {
   RefreshCw,
   CalendarCheck,
   Pencil,
-  Users,
-  FolderKanban,
   ChevronUp,
   ChevronDown,
   XCircle,
-  ListTodo
 } from "lucide-react"
 import { getIncorporationList } from "@/services/dataFetch"
 import { useAtom, useSetAtom } from "jotai"
@@ -28,21 +25,13 @@ import { cn } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
 import { usaFormWithResetAtom } from "../Company/USA/UsState"
 import { useResetAllForms } from "@/lib/atom"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import AdminTodoList from "./AdminTodo/TodoApp"
+import { formatDateTime } from "./Admin/utils"
+import { companyTableData, Stats, StatsCardProps } from "./Admin/types"
+import ProjectsCard from "./Admin/ProjectsCard"
+import CurrentClients from "./Admin/CurrentClients"
+import CurrentCorporateClient from "./Admin/CurrentCorporateClients"
+import AdminTodo from "./Admin/AdminTodoCard"
 
-interface Stats {
-  pending: number
-  kycVerification: number
-  waitingForPayment: number
-  waitingForDocuments: number
-  waitingForIncorporation: number
-  incorporationCompleted: number
-  goodStanding: number
-  renewalProcessing: number
-  renewalCompleted: number
-  rejected: number
-}
 
 const AdminDashboard = () => {
   const setCompIncList = useSetAtom(companyIncorporationList)
@@ -118,20 +107,6 @@ const AdminDashboard = () => {
     navigate(`/company-register/${countryCode}/${companyId}`)
   }
 
-  function formatDateTime(isoDateString: string) {
-    if (!isoDateString) return ""
-    try {
-      const date = new Date(isoDateString)
-      const day = date.getDate().toString().padStart(2, "0")
-      const month = (date.getMonth() + 1).toString().padStart(2, "0")
-      const year = date.getFullYear()
-      return `${day}-${month}-${year}`
-    } catch (error) {
-      console.error("Error formatting date:", error)
-      return ""
-    }
-  }
-
   const requestSort = (key: string) => {
     let direction: "ascending" | "descending" = "ascending"
     if (sortConfig && sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -140,11 +115,21 @@ const AdminDashboard = () => {
     setSortConfig({ key, direction })
   }
 
+  const active_status = [
+    'Pending',
+    'KYC Verification',
+    'Waiting for Payment',
+    'Waiting for Documents',
+    'Waiting for Incorporation'
+  ]
   const getSortedData = () => {
     const sortedData = [...allList]
+    // console.log("sortedData",sortedData.length)
+    const filterData = sortedData.filter((e) => active_status.includes((e as { status: string }).status))
+    // console.log("filterData",filterData.length)
 
     if (sortConfig !== null) {
-      sortedData.sort((a: any, b: any) => {
+      filterData.sort((a: any, b: any) => {
         let aValue, bValue
 
         if (sortConfig.key === "companyName") {
@@ -170,10 +155,9 @@ const AdminDashboard = () => {
         return 0
       })
     }
-
-    return sortedData
+    return filterData
   }
-
+  const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { status: string }).status))
   return (
     <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
       {/* Stats Cards */}
@@ -183,9 +167,9 @@ const AdminDashboard = () => {
 
       {/* Additional Cards Section */}
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-        <ProjectsCard />
+        <ProjectsCard data={projectsData} />
         <AdminTodo />
-        <UsersCard />
+        <CurrentCorporateClient />
         <CurrentClients />
       </div>
 
@@ -258,6 +242,20 @@ const AdminDashboard = () => {
                     </div>
                   </TableHead>
                   <TableHead>Edit</TableHead>
+                  <TableHead
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => requestSort("assignedTo")}
+                  >
+                    <div className="flex items-center">
+                      Assigned To
+                      {sortConfig?.key === "assignedTo" &&
+                        (sortConfig.direction === "ascending" ? (
+                          <ChevronUp className="ml-1 h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="ml-1 h-4 w-4" />
+                        ))}
+                    </div>
+                  </TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => requestSort("lastLogin")}>
                     <div className="flex items-center">
                       User Latest Login
@@ -277,6 +275,7 @@ const AdminDashboard = () => {
                     country: { name: string; code: string }
                     companyName: string[]
                     applicantName: string
+                    assignedTo: string
                     status: string
                     incorporationDate: string | null
                     lastLogin: string | null
@@ -323,6 +322,9 @@ const AdminDashboard = () => {
                         >
                           <Pencil size={16} />
                         </button>
+                      </TableCell>
+                      <TableCell className="py-2">
+                        {typedCompany.assignedTo ? typedCompany.assignedTo : "N/A"}
                       </TableCell>
                       <TableCell className="py-2">
                         {typedCompany.lastLogin ? formatDateTime(typedCompany.lastLogin) : "N/A"}
@@ -380,9 +382,7 @@ const titles: Record<keyof Stats, string> = {
   rejected: "Rejected Applications",
 }
 
-interface StatsCardProps {
-  stats: Stats
-}
+
 
 const StatsCard: React.FC<StatsCardProps> = ({ stats }) => {
   const [hoveredCard, setHoveredCard] = useState<keyof Stats | null>(null)
@@ -422,78 +422,3 @@ const StatsCard: React.FC<StatsCardProps> = ({ stats }) => {
     </div>
   )
 }
-
-const ProjectsCard: React.FC = () => {
-  return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <FolderKanban className="h-4 w-4 text-teal-500" />
-          <span className="text-sm font-medium">Projects</span>
-        </div>
-        <span className="text-sm text-muted-foreground">Active: <span className="font-bold">0</span></span>
-      </div>
-    </Card>
-  )
-}
-
-const UsersCard: React.FC = () => {
-  return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Users className="h-4 w-4 text-violet-500" />
-          <span className="text-sm font-medium">Current Corporate Clients</span>
-        </div>
-        <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
-      </div>
-    </Card>
-  )
-}
-
-const CurrentClients: React.FC = () => {
-  return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Users className="h-4 w-4 text-violet-500" />
-          <span className="text-sm font-medium">Current Individual Clients</span>
-        </div>
-        <span className="text-sm text-muted-foreground">Total: <span className="font-bold">0</span></span>
-      </div>
-    </Card>
-  )
-}
-
-const AdminTodo: React.FC = () => {
-  const [open, setOpen] = useState(false)
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Card onClick={() => setOpen(true)} className="cursor-pointer hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <ListTodo className="h-4 w-4 text-green-500" />
-              To-do List
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
-            Click to view admin to-do list
-          </CardContent>
-        </Card>
-      </DialogTrigger>
-      <DialogContent
-        className="w-[70vw] h-[70vh] max-w-none"
-        style={{ maxHeight: "90vh" }}
-      >
-        <DialogHeader>
-          <DialogTitle>To-do List</DialogTitle>
-        </DialogHeader>
-        <div>
-          <AdminTodoList />
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
-}
-

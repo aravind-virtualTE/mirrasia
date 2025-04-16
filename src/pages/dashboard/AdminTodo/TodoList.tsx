@@ -68,11 +68,8 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
       console.error("Error reassigning todo", error);
     }
   };
-
-  console.log("todos", todos)
-
   return (
-    <Card className="w-full shadow-sm border-orange-100">
+    <Card className="w-full h-full shadow-sm border-orange-100">
       <CardContent className="pt-4">
         <TodoForm userId={userId} role={currentUser.role} />
         <div className="space-y-0">
@@ -82,7 +79,7 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
             </p>
           ) : (
             todos.map((todo) => (
-              <div className="flex items-start gap-2 py-2 border-b border-gray-100">
+              <div className="flex items-start gap-2 py-2 border-b border-gray-100" key={todo._id}>
                 <Checkbox
                   checked={todo.status === "Completed"}
                   onCheckedChange={() => handleCheck(todo)}

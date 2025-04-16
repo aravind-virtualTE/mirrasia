@@ -9,7 +9,6 @@ const AdminTodoList: React.FC = () => {
   const id = user ? user.id : ""
 
   useEffect(() => {
-
     const fetchUser = async () => {
       await fetchUsers().then((response) => {
         // console.log("response", response)
