@@ -30,6 +30,7 @@ import { usaFormWithResetAtom } from "../Company/USA/UsState"
 import { useResetAllForms } from "@/lib/atom"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import AdminTodoList from "./AdminTodo/TodoApp"
+import { loadTodosAtom, todosAtom } from "./AdminTodo/adminTodoAtom"
 
 interface Stats {
   pending: number
@@ -441,19 +442,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ stats }) => {
   )
 }
 
-const ProjectsCard: React.FC = () => {
-  return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <FolderKanban className="h-4 w-4 text-teal-500" />
-          <span className="text-sm font-medium">Projects</span>
-        </div>
-        <span className="text-sm text-muted-foreground">Active: <span className="font-bold">0</span></span>
-      </div>
-    </Card>
-  )
-}
+
 
 const UsersCard: React.FC = () => {
   return (
@@ -483,21 +472,40 @@ const CurrentClients: React.FC = () => {
   )
 }
 
+const ProjectsCard: React.FC = () => {
+  return (
+    <Card className="p-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <FolderKanban className="h-4 w-4 text-teal-500" />
+          <span className="text-sm font-medium">Projects</span>
+        </div>
+        <span className="text-sm text-muted-foreground">Active: <span className="font-bold">0</span></span>
+      </div>
+    </Card>
+  )
+}
+
 const AdminTodo: React.FC = () => {
   const [open, setOpen] = useState(false)
+    const [todos] = useAtom(todosAtom);
+    const [, loadTodos] = useAtom(loadTodosAtom);
+    useEffect(() =>{
+       const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+      const id = user ? user.id : ""
+      loadTodos(id, user.role);
+    }, [])
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Card onClick={() => setOpen(true)} className="cursor-pointer hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
+        <Card onClick={() => setOpen(true)} className="cursor-pointer hover:shadow-lg transition-shadow p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
               <ListTodo className="h-4 w-4 text-green-500" />
-              To-do List
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
-            Click to view admin to-do list
-          </CardContent>
+              <span className="text-sm font-medium">To-do List</span>
+            </div>
+            <span className="text-sm text-muted-foreground">Active: <span className="font-bold">{todos.length}</span></span>
+          </div>
         </Card>
       </DialogTrigger>
       <DialogContent
@@ -507,7 +515,7 @@ const AdminTodo: React.FC = () => {
         <DialogHeader>
           <DialogTitle>To-do List</DialogTitle>
         </DialogHeader>
-          <AdminTodoList />
+        <AdminTodoList />
       </DialogContent>
     </Dialog>
   )

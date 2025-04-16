@@ -79,7 +79,7 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
             </p>
           ) : (
             todos.map((todo) => (
-              <div className="flex items-start gap-2 py-2 border-b border-gray-100">
+              <div className="flex items-start gap-2 py-2 border-b border-gray-100" key={todo._id}>
                 <Checkbox
                   checked={todo.status === "Completed"}
                   onCheckedChange={() => handleCheck(todo)}
