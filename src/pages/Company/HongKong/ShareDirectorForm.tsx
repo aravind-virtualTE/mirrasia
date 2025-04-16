@@ -137,7 +137,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
               onUpdate({
                 isDirector: newIsDirector,
                 // If setting as director, automatically set legal person to false
-                ...(newIsDirector ? { isLegalPerson: false } : {})
+                // ...(newIsDirector ? { isLegalPerson: false } : {})
               });
             }}
           >
@@ -154,9 +154,9 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
           <Select
             value={isLegalPerson.toString()}
             onValueChange={(value) => onUpdate({ isLegalPerson: value === 'true' })}
-            disabled={isDirector}
+            // disabled={isDirector}
           >
-            <SelectTrigger className={`input ${isDirector ? 'opacity-50' : ''}`}>
+            <SelectTrigger className="input">
               <SelectValue>{isLegalPerson ? 'Yes' : 'No'}</SelectValue>
             </SelectTrigger>
             <SelectContent>
