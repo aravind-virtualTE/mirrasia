@@ -316,25 +316,27 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 let companyData
                 if (id) {
                     companyData = await getIncorporationListByCompId(id);
-                    console.log("companyData", companyData);
+                    // console.log("companyData", companyData);
                     setAdminAssigned(companyData[0].assignedTo)
                     setCompany(companyData[0])
                 }
-                const session = await paymentApi.getSession(companyData[0].sessionId);
-                // console.log("session", session);
-                const transformedSession: SessionData = {
-                    _id: session._id,
-                    amount: session.amount,
-                    currency: session.currency,
-                    expiresAt: session.expiresAt,
-                    status: session.status,
-                    paymentId: session.paymentId,
-                };
-
-                setSession(transformedSession);
+                if(companyData[0].sessionId){
+                    const session = await paymentApi.getSession(companyData[0].sessionId);
+                    // console.log("session", session);
+                    const transformedSession: SessionData = {
+                        _id: session._id,
+                        amount: session.amount,
+                        currency: session.currency,
+                        expiresAt: session.expiresAt,
+                        status: session.status,
+                        paymentId: session.paymentId,
+                    };
+    
+                    setSession(transformedSession);
+                }
                 await fetchUsers().then((response) => {
-                    // console.log("response", response)
                     const data = response.filter((e: { role: string; }) => e.role == 'admin' || e.role == 'master')
+                    console.log("responsedata", data)
                     setUsers(data);
                 })
             } catch (error) {

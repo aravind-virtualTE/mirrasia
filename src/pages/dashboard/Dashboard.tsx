@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import {
   // Rocket,
   // Users,
   // FileSignature,
   HelpCircle,
-  Building,
+  // Building,
 } from "lucide-react";
 
 import { useNavigate } from 'react-router-dom';
@@ -30,7 +30,6 @@ const Dashboard = () => {
   const [, setUsaReset] = useAtom(usaFormWithResetAtom)
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
 
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
@@ -52,17 +51,15 @@ const Dashboard = () => {
 
   }, [decodedToken.userId, setCompIncList]);
 
-
   const handleRowClick = (companyId: string, countryCode: string) => {
     localStorage.setItem('companyRecordId', companyId);
     navigate(`/company-register/${countryCode}/${companyId}`);
   };
 
-
-  const handleAccountingCard = () => {
-    resetAllForms();
-    navigate('/accounting-services');
-  };
+  // const handleAccountingCard = () => {
+  //   resetAllForms();
+  //   navigate('/project-services');
+  // };
 
   // console.log("allList", allList)
   return (
@@ -151,20 +148,20 @@ const Dashboard = () => {
 
         {/* Bottom Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
+          {/* <Card>
             <CardContent className="p-6">
               <div className="flex items-center space-x-4">
                 <Building className="w-8 h-8" />
                 <div>
-                  <h3 className="text-lg font-semibold">{t('dashboard.accountSupport')}</h3>
-                  <p className="text-gray-600">{t('dashboard.accountText')}</p>
+                  <h3 className="text-lg font-semibold">{t('dashboard.project')}</h3>
+                  <p className="text-gray-600">{t('dashboard.projectDesc')}</p>
                   <Button variant="link" className="p-0 mt-2" onClick={handleAccountingCard}>
                   {t('dashboard.getQuote')} →
                   </Button>
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           <Card>
             <CardContent className="p-6">

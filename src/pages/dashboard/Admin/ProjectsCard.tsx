@@ -11,7 +11,6 @@ import { formatDateTime } from "./utils";
 const ProjectsCard: React.FC<{ data: companyTableData[] }> = ({ data }) => {
     const [open, setOpen] = useState(false)
     const navigate = useNavigate()
-
     // console.log("data",data)
     const handleRowClick = (companyId: string, countryCode: string) => {
         navigate(`/company-details/${countryCode}/${companyId}`)
