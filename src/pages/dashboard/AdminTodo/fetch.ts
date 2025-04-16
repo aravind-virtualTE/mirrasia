@@ -24,12 +24,12 @@ export const fetchTodosByUserId = async (userId: string, role: string) => {
   
   // Update a specific todo (status, title, or deadline)
   export const updateTodo = async (
-    userId: string,
+    docId: string,
     todoId: string,
     updates: Partial<{ status: string; title: string; deadline: Date | null }>
   ) => {
     try {
-      const response = await api.patch(`/adminTodo/${userId}/${todoId}`, updates);
+      const response = await api.patch(`/adminTodo/${docId}/${todoId}`, updates);
       return response.data;
     } catch (error) {
       console.error("Error updating todo:", error);

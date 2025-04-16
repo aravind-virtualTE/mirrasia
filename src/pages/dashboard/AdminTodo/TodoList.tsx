@@ -18,6 +18,7 @@ const statusColors: Record<string, string> = {
   Processing: "bg-blue-100 text-blue-800 border-blue-300",
   Completed: "bg-green-100 text-green-800 border-green-300",
   Deadline: "bg-red-100 text-red-800 border-red-300",
+  Urgent: "bg-purple-100 text-purple-800 border-purple-200",
 };
 
 interface CurrentUser {
@@ -50,6 +51,7 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
       role: currentUser.role,
       id: todo._id,
       status: todo.status === "Completed" ? "Pending" : "Completed",
+      docId: todo.docId || ""
     });
   };
 
@@ -145,6 +147,7 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
                           "Processing",
                           "Completed",
                           "Deadline",
+                          "Urgent",
                         ] as const
                       ).map((status) => (
                         <DropdownMenuItem
@@ -155,6 +158,7 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
                               role: currentUser.role,
                               id: todo._id,
                               status,
+                              docId: todo.docId || ""
                             })
                           }
                         >

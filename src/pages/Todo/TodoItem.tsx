@@ -27,6 +27,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, companyId }) => {
     Processing: "bg-blue-100 text-blue-800 border-blue-200",
     Completed: "bg-green-100 text-green-800 border-green-200",
     Deadline: "bg-red-100 text-red-800 border-red-200",
+    Urgent: "bg-purple-100 text-purple-800 border-purple-200",
   };
 
   const handleCheck = () => {
@@ -55,7 +56,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, companyId }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {(["Pending", "Processing", "Completed", "Deadline"] as const).map((status) => (
+            {(["Pending", "Processing", "Completed", "Deadline", "Urgent"] as const).map((status) => (
               <DropdownMenuItem key={status} onClick={() => updateStatus({ companyId, id: todo._id, status })}>
                 Mark as {status}
               </DropdownMenuItem>

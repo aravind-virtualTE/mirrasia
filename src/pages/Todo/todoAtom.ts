@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import { toast } from 'sonner';
 import { fetchTodosByCompany, addTodo as addTodoApi, updateTodo as updateTodoApi, deleteTodo as deleteTodoApi } from '@/lib/api/FetchData';
-export type TodoStatus = "Pending" | "Processing" | "Completed" | "Deadline";
+export type TodoStatus = "Pending" | "Processing" | "Completed" | "Deadline" | "Urgent";
 
 export interface Todo {
   _id: string;

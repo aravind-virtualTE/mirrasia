@@ -26,47 +26,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Chat, ChatMessage, Group, User } from "./types/ChatTypes";
 
-interface User {
-  _id?: string;
-  fullName: string;
-  email: string;
-  role: string;
-  picture: string;
-  online: boolean;
-}
-
-interface Group {
-  _id: string;
-  name: string;
-  members: string[];
-  createdBy: string;
-  createdAt: string;
-  picture?: string;
-}
-
-interface ChatMessage {
-  from: "me" | "them";
-  text: string;
-  timestamp: string;
-  senderId?: string;
-  senderName?: string;
-  read: boolean;
-  messageId?: string;
-  groupId?: string;
-}
-
-interface Chat {
-  id: string;
-  type: "user" | "group";
-  name: string;
-  picture?: string;
-  online?: boolean;
-  lastMessage?: {
-    text: string;
-    timestamp: string;
-  };
-}
 
 export default function ChatInterface() {
   const socket = useSocket();
