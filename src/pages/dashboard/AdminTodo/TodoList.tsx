@@ -69,7 +69,7 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
     }
   };
   return (
-    <Card className="w-full shadow-sm border-orange-100">
+    <Card className="w-full h-full shadow-sm border-orange-100">
       <CardContent className="pt-4">
         <TodoForm userId={userId} role={currentUser.role} />
         <div className="space-y-0">
