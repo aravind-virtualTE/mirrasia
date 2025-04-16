@@ -19,7 +19,7 @@ const Section12 = () => {
     })
 
     const handleSelect = (value: string | number) => {
-        console.log('Selected Value:', value);
+        // console.log('Selected Value:', value);
         setFormData({ ...formData, designatedContact: value });
 
     };

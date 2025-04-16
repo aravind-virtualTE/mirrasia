@@ -84,7 +84,7 @@ const InvoiceUs: React.FC = () => {
         <div className="w-full max-w-4xl mx-auto py-8 px-4">
             <Card className="w-full">
                 <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>GLOBAL BUSINESS ADVISORY & SECRETARIAL SERVICES LIMITED</CardTitle>
+                    <CardTitle>MIRR ASIA BUSINESS ADVISORY & SECRETARIAL SERVICES LIMITED</CardTitle>
                     {/* <Badge variant="secondary">Generated: {currentDate}</Badge> */}
                 </CardHeader>
                 <CardContent>
