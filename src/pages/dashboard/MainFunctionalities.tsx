@@ -33,7 +33,7 @@ const MainFunctionalities: React.FC = () => {
 
     const handleProjectCard = () => {
         resetAllForms();
-        navigate('/project-services');
+        navigate('/accounting-services');
     }
 
     const mainFunctionalities = [
@@ -57,8 +57,8 @@ const MainFunctionalities: React.FC = () => {
         },
         {
             icon: BriefcaseBusiness,
-            title: t('dashboard.project'),
-            description: t('dashboard.projectDesc'),
+            title: t('dashboard.accountSupport'),
+            description: t('dashboard.accountText'),
             onClick: handleProjectCard,
         },
     ];

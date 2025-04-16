@@ -3,7 +3,7 @@ import { fetchAccountingServices } from './hk/accountingServiceFetch';
 import { format } from "date-fns"
 import { FileIcon, ImageIcon, FileTextIcon, ExternalLinkIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -59,51 +59,57 @@ const AccountingHkList: React.FC = () => {
       getData();
     }
   }, [])
-  // console.log('data', data);
+  console.log('data', data);
   return (
-    <div className="rounded-md border">
-      <Table className="w-full">
-        <TableHeader>
-          <TableRow className="bg-muted/50">
-            <TableHead className="w-[100px]">ID</TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Country</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Industry</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((item: AccountingServiceItem) => (
-            <TableRow
-              key={item._id}
-              className="cursor-pointer hover:bg-muted/50 transition-colors"
-              onClick={() => handleRowClick(item)}
-            >
-              <TableCell className="font-mono text-xs">{item._id.substring(0, 8)}...</TableCell>
-              <TableCell className="font-medium">{item.companyName}</TableCell>
-              <TableCell>{item.email}</TableCell>
-              <TableCell className="capitalize">{item.countryName}</TableCell>
-              <TableCell>{format(new Date(item.dateOfIncorporation), "MMM d, yyyy")}</TableCell>
-              <TableCell>
-                <div className="flex flex-wrap gap-1">
-                  {item.selectedIndustry.map((industry: string) => (
-                    <span
-                      key={industry}
-                      className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold capitalize"
-                    >
-                      {industry}
-                    </span>
-                  ))}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      <DetailDialog open={dialogOpen} onOpenChange={setDialogOpen} data={selectedItem} />
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold">Accounting Services List</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="rounded-md border">
+          <Table className="w-full">
+            <TableHeader>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-[100px]">ID</TableHead>
+                <TableHead>Company</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Country</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Industry</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.map((item: AccountingServiceItem) => (
+                <TableRow
+                  key={item._id}
+                  className="cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => handleRowClick(item)}
+                >
+                  <TableCell className="font-mono text-xs">{item._id.substring(0, 8)}...</TableCell>
+                  <TableCell className="font-medium">{item.companyName}</TableCell>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell className="capitalize">{item.countryName}</TableCell>
+                  <TableCell>{format(new Date(item.dateOfIncorporation), "MMM d, yyyy")}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {item.selectedIndustry.map((industry: string) => (
+                        <span
+                          key={industry}
+                          className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold capitalize"
+                        >
+                          {industry}
+                        </span>
+                      ))}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <DetailDialog open={dialogOpen} onOpenChange={setDialogOpen} data={selectedItem} />
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
