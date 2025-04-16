@@ -258,6 +258,20 @@ const AdminDashboard = () => {
                     </div>
                   </TableHead>
                   <TableHead>Edit</TableHead>
+                  <TableHead
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => requestSort("assignedTo")}
+                  >
+                    <div className="flex items-center">
+                      Assigned To
+                      {sortConfig?.key === "assignedTo" &&
+                        (sortConfig.direction === "ascending" ? (
+                          <ChevronUp className="ml-1 h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="ml-1 h-4 w-4" />
+                        ))}
+                    </div>
+                  </TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => requestSort("lastLogin")}>
                     <div className="flex items-center">
                       User Latest Login
@@ -277,6 +291,7 @@ const AdminDashboard = () => {
                     country: { name: string; code: string }
                     companyName: string[]
                     applicantName: string
+                    assignedTo: string
                     status: string
                     incorporationDate: string | null
                     lastLogin: string | null
@@ -323,6 +338,9 @@ const AdminDashboard = () => {
                         >
                           <Pencil size={16} />
                         </button>
+                      </TableCell>
+                      <TableCell className="py-2">
+                        {typedCompany.assignedTo ? typedCompany.assignedTo : "N/A"}
                       </TableCell>
                       <TableCell className="py-2">
                         {typedCompany.lastLogin ? formatDateTime(typedCompany.lastLogin) : "N/A"}
@@ -489,9 +507,7 @@ const AdminTodo: React.FC = () => {
         <DialogHeader>
           <DialogTitle>To-do List</DialogTitle>
         </DialogHeader>
-        <div>
           <AdminTodoList />
-        </div>
       </DialogContent>
     </Dialog>
   )

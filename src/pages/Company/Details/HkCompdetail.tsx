@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SAgrementPdf from "../HongKong/ServiceAgreement/SAgrementPdf";
-import { updateEditValues, getIncorporationListByCompId } from "@/services/dataFetch";
+import { updateEditValues, getIncorporationListByCompId, fetchUsers } from "@/services/dataFetch";
 import React, { useEffect, useMemo, useState } from "react";
 import { paymentApi } from "@/lib/api/payment";
 import {
@@ -44,9 +44,8 @@ import { Switch } from "@/components/ui/switch";
 import { updateCompanyIncorporationAtom } from "@/lib/atom";
 import { ShareHolderDirectorController } from "@/types/hongkongForm";
 import MemoApp from "./MemosHK";
-
 import TodoApp from "@/pages/Todo/TodoApp";
-
+import { User } from "@/components/userList/UsersList";
 export interface SessionData {
     _id: string;
     amount: number;
@@ -154,6 +153,7 @@ interface Company {
     sessionId: string;
     isDisabled: boolean;
     receiptUrl: string;
+    assignedTo: string;
     __v: number;
 }
 
@@ -163,6 +163,8 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [companies] = useAtom(companyIncorporationList);
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     // const [companyData, setCompData] = useAtom(companyIncorporationAtom);
+    const [users, setUsers] = useState<User[]>([]);
+    const [adminAssigned, setAdminAssigned] = useState("");
     const companyDetail = companies.find(
         (c) => c._id === id
     ) as unknown as Company;
@@ -314,7 +316,8 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 let companyData
                 if (id) {
                     companyData = await getIncorporationListByCompId(id);
-                    // console.log("companyData", companyData);
+                    console.log("companyData", companyData);
+                    setAdminAssigned(companyData[0].assignedTo)
                     setCompany(companyData[0])
                 }
                 const session = await paymentApi.getSession(companyData[0].sessionId);
@@ -329,6 +332,11 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 };
 
                 setSession(transformedSession);
+                await fetchUsers().then((response) => {
+                    // console.log("response", response)
+                    const data = response.filter((e: { role: string; }) => e.role == 'admin' || e.role == 'master')
+                    setUsers(data);
+                })
             } catch (error) {
                 console.error("Failed to fetch session:", error);
             }
@@ -555,15 +563,38 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
         const payload = JSON.stringify({
             company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK" },
-            session: { id: session._id, expiresAt: (session.expiresAt), status: session.status }
+            session: { id: session._id, expiresAt: (session.expiresAt), status: session.status },
+            assignedTo : adminAssigned
         })
-        // {
-        //     id: companyDetail._id,
-        //     value: false,
-        // }
         await updateEditValues(payload);
         toast({ description: "Record updated successfully" });
     };
+
+    const AssignAdmin = () => {
+        const handleAssign = (value:string) =>{
+            setAdminAssigned(value)
+        }
+        return (
+            <div className="flex items-center gap-4">
+                <span className="text-sm font-medium">Assign Admin:</span>
+                <Select
+                    onValueChange={handleAssign}
+                    value={adminAssigned}
+                >
+                    <SelectTrigger className="w-60 h-8 text-xs">
+                        <SelectValue placeholder="Assign Admin to..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {users.map((u) => (
+                            <SelectItem key={u._id} value={u.fullName || ""}>
+                                {u.fullName || u.email}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+        )
+    }
 
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full max-w-5xl mx-auto">
@@ -592,7 +623,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 <div className="space-y-8">
                     <h1 className="text-2xl font-bold">Company Details</h1>
                     <TodoApp id={company._id} />
-
+                    <AssignAdmin />
                     {sections.map((section) => (
                         <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
                             <CardHeader className="bg-muted/50 py-4">

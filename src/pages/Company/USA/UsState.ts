@@ -60,6 +60,7 @@ export interface UsaFormData {
   status: string
   incorporationDate: string
   serviceAgreementConsent: boolean
+  assignedTo: string
 }
 
 const initialFormState: UsaFormData = {
@@ -115,7 +116,8 @@ const initialFormState: UsaFormData = {
   paymentId: '',
   status: "pending",
   incorporationDate:"",
-  serviceAgreementConsent:false
+  serviceAgreementConsent:false,
+  assignedTo : ""
 };
 
 // Create the base atom

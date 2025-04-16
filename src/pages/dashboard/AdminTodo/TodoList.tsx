@@ -68,9 +68,6 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
       console.error("Error reassigning todo", error);
     }
   };
-
-  console.log("todos", todos)
-
   return (
     <Card className="w-full shadow-sm border-orange-100">
       <CardContent className="pt-4">
