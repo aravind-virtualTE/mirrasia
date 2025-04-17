@@ -16,9 +16,9 @@ import {
   Pencil,
   ChevronUp,
   ChevronDown,
-  XCircle,
+  XCircle, Trash2
 } from "lucide-react"
-import { getIncorporationList } from "@/services/dataFetch"
+import { deleteCompanyRecord, getIncorporationList } from "@/services/dataFetch"
 import { useAtom, useSetAtom } from "jotai"
 import { allCompListAtom, companyIncorporationList } from "@/services/state"
 import { cn } from "@/lib/utils"
@@ -158,6 +158,19 @@ const AdminDashboard = () => {
     return filterData
   }
   const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { status: string }).status))
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const currentUser = user ? { role: user.role } : { role: ""};
+
+  const handleDeleteClick = async (companyId: string, countryCode: string) => {
+      const result = await deleteCompanyRecord({ _id: companyId, country: countryCode })
+      console.log("result", result)
+      if (result) {
+        // Filter out the deleted company and update the atom
+        const updatedList = allList.filter(company => company._id !== companyId);
+        setAllList(updatedList);
+      }
+  }
+
   return (
     <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
       {/* Stats Cards */}
@@ -267,6 +280,7 @@ const AdminDashboard = () => {
                         ))}
                     </div>
                   </TableHead>
+                  {currentUser.role == "master" && <TableHead>Delete</TableHead>}
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -329,6 +343,14 @@ const AdminDashboard = () => {
                       <TableCell className="py-2">
                         {typedCompany.lastLogin ? formatDateTime(typedCompany.lastLogin) : "N/A"}
                       </TableCell>
+                      {currentUser.role == "master" && <TableCell className="py-2">
+                        <button
+                          className="text-red-500 hover:red-blue-700 transition"
+                          onClick={() => handleDeleteClick(typedCompany._id, typedCompany.country.code)}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </TableCell>}
                     </TableRow>
                   )
                 })}

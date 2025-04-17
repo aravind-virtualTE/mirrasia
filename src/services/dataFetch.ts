@@ -251,3 +251,12 @@ export const getUsIncorpoDataById = async (userId: string) => {
     console.error("Error fetching company incorporation list by userId:", error);
   }
 };
+
+export const deleteCompanyRecord = async (data: { _id: string | null;country: string}) => {
+  try {
+    const response = await api.post('company/deleteCompanyById',data);
+    return response.data;
+  } catch (error) {
+    console.error("Error sending invite to significant director:", error);
+  }
+};
