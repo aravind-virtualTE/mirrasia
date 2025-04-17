@@ -55,7 +55,7 @@ const IncorporateUSACompany = () => {
         try {
             const response = await api.post("/company/usa-form", payload);
             if (response.status === 200) {
-                console.log("formdata", response.data);
+                // console.log("formdata", response.data);
                 localStorage.setItem("companyRecordId", response.data.data._id);
                 setFormData(response.data.data)
                 window.history.pushState(
@@ -204,6 +204,22 @@ const IncorporateUSACompany = () => {
                         title: "Payment Pending",
                         description: "Please complete the payment to proceed",
                     });
+                }
+                break;
+            }
+            case 8: {            
+                const values = [formData.companyExecutives, formData.localCompanyRegistration, formData.totalCapital, formData.noOfSharesSelected]
+
+                if (values.some(value => value === "")) {
+                    toast({
+                        title: "Please Fill Incorporation Data.",
+                        description:
+                            "Please Fill Incorporation data.",
+                    });
+                } else {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                 }
                 break;
             }
