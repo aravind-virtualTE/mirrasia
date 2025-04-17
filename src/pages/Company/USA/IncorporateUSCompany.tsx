@@ -162,7 +162,7 @@ const IncorporateUSACompany = () => {
             // case 13:
             //     break;
             default:
-                if (currentSection! <= 14) {
+                if (currentSection! <= 9) {
                     await updateDoc();
                     setCurrentSection(prev => prev + 1);
                     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -179,7 +179,7 @@ const IncorporateUSACompany = () => {
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
-
+    console.log("currentSection",currentSection)
     return (
         <div className="flex flex-col md:flex-row h-screen">
             {/* Main Content */}
@@ -222,7 +222,7 @@ const IncorporateUSACompany = () => {
 
                 {/* Navigation buttons - Sticky positioning */}
                 <div className="sticky bottom-0 bg-background border-t p-1 mt-auto"> {/* Sticky positioning */}
-                    <div className="flex justify-between">
+                    {currentSection !== 9 && <div className="flex justify-between">
                         <Button
                             variant="outline"
                             onClick={previousSection}
@@ -237,7 +237,7 @@ const IncorporateUSACompany = () => {
                         >
                             <span>{currentSection === 16 ? "SUBMIT" : "NEXT →"}</span>
                         </Button>
-                    </div>
+                    </div>}
                 </div>
             </div>
 
