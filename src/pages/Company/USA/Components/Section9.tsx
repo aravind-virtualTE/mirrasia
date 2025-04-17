@@ -151,7 +151,9 @@ const Section9 = () => {
                 </div>
                 {/* prodDesc Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="prodDesc" className="inline-flex">
+                    <Label htmlFor="prodDesc"
+                      //  className="inline-flex"
+                       >
                         Description of the product name, product type, service content, service type, etc. to be transacted after incorporation<span className="text-destructive">*</span>
                     </Label>
                     <Input id="prodDesc" placeholder="Your answer" required value={formData.descriptionOfProducts} onChange={(e) => setFormData({ ...formData, descriptionOfProducts: e.target.value })} />

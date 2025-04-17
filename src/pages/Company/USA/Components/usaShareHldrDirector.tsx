@@ -10,7 +10,7 @@ import CustomLoader from '@/components/ui/customLoader';
 import { sendInviteToShDir } from '@/services/dataFetch';
 import { isValidEmail } from '@/middleware';
 import { useToast } from "@/hooks/use-toast"
-import { useTranslation  } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { usaFormWithResetAtom } from '../UsState';
 
 interface ShareholderDirectorProps {
@@ -151,7 +151,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
           </Select>
 
           <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
-           <Select
+          <Select
             value={isLegalPerson}
             onValueChange={(value) => {
               // const newIsLegal = isDirector == 'Yes';
@@ -202,7 +202,7 @@ const ShareholderDirectorForm: React.FC = () => {
     },
   ]);
   const [totalOwnership, setTotalOwnership] = useState(0);
-//   const [isLoading, ] = useState(false);
+  //   const [isLoading, ] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast()
   const { t } = useTranslation();
@@ -229,7 +229,7 @@ const ShareholderDirectorForm: React.FC = () => {
       isDirector: obj.isDirector,
       isLegalPerson: obj.isLegalPerson
     }));
-    setFormData({...formData, shareHolders: filteredArray});
+    setFormData({ ...formData, shareHolders: filteredArray });
   }, [shareholders, setFormData]);
 
   useEffect(() => {
@@ -270,7 +270,7 @@ const ShareholderDirectorForm: React.FC = () => {
   };
 
   const sendMailFunction = async () => {
-   
+
     try {
       setIsLoading(true);
       const extractedData = shareholders.map(item => {
@@ -282,25 +282,25 @@ const ShareholderDirectorForm: React.FC = () => {
 
         return { name, email };
       });
-      console.log("shareholders",extractedData)
+      console.log("shareholders", extractedData)
       const docId = localStorage.getItem('companyRecordId');
       const payload = { _id: docId, inviteData: extractedData, country: 'US' };
-    //   // console.log("send mail function", payload)
+      //   // console.log("send mail function", payload)
       const response = await sendInviteToShDir(payload);
-    //   // console.log("send mail response", response)
-      if (response.summary.successful > 0){
+      //   // console.log("send mail response", response)
+      if (response.summary.successful > 0) {
         toast({
           title: 'Success',
           description: `Successfully sent invitation mail to ${response.summary.successful} people`,
         })
       }
-      if (response.summary.alreadyExists > 0){
+      if (response.summary.alreadyExists > 0) {
         toast({
           title: 'Success',
           description: `Some Users Already Exist`,
         })
       }
-      if (response.summary.failed > 0){
+      if (response.summary.failed > 0) {
         toast({
           title: 'Failed',
           description: `Some Invitations Failed`,
@@ -316,6 +316,21 @@ const ShareholderDirectorForm: React.FC = () => {
 
   return (
     <div className="flex flex-col">
+      {totalOwnership === 0 && (
+        <div className="text-red-500 mb-4 text-center">
+          Ownership is currently 0%. Please assign ownership.
+        </div>
+      )}
+      {totalOwnership > 0 && totalOwnership < 100 && (
+        <div className="text-red-500 mb-4 text-center">
+          {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%
+        </div>
+      )}
+      {totalOwnership === 100 && (
+        <div className="text-green-600 font-medium mb-4 text-center">
+          ✅ Ownership perfectly distributed at 100%
+        </div>
+      )}
       {totalOwnership > 100 && (
         <div className="text-red-500 mb-4 text-center">
           {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%
