@@ -133,10 +133,9 @@ const IncorporateUSACompany = () => {
                     );
                     const state = formData.selectedState
                     const entity = formData.selectedEntity
-
-                    if (emptyNameShareholders.length > 0 && state =="" && entity=="") {
+                    if (emptyNameShareholders.length > 0 || state == "" || entity== "") {
                         toast({
-                            title: "Fill Details (Shareholder(s) / Director(s))",
+                            title: "Fill Details (Shareholder(s) / Director(s)), State,",
                             description: "Fill the required fields Shareholder(s) / Director(s)",
                         });
                     } else {
