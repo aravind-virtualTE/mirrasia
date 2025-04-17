@@ -257,6 +257,11 @@ const CompanyDocumentManager: React.FC = () => {
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h1 className="text-2xl font-bold mb-4">Company Document Manager</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          {companies.length == 0 && (
+            <div className="rounded-md bg-muted text-muted-foreground p-2 text-sm">
+            No companies found
+          </div>
+          )}
           <Select onValueChange={handleCompanySelect} value={selectedCompany?.id}>
             <SelectTrigger className="w-full md:w-80">
               <SelectValue placeholder="Select a company" />

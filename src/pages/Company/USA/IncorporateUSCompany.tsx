@@ -19,6 +19,7 @@ import FinalSection from "./Components/finalSection"
 import InvoiceUs from "./Components/InvoiceUs"
 import ServiceAgreement from "./Components/ServiceAgreement"
 import RegistrationDetails from "./Components/RegistrationDetails"
+import { paymentApi } from "@/lib/api/payment"
 
 const IncorporateUSACompany = () => {
     const [currentSection, setCurrentSection] = useState(1);
@@ -113,6 +114,14 @@ const IncorporateUSACompany = () => {
                     const involved = formData.involvedInRussianEnergyDefense
                     const legalInfo = formData.hasLegalEthicalIssues
                     const annualRenew = formData.annualRenewalTermsAgreement
+                    const values = [rcActivity, rcSanctions, bsnsCremia, involved, legalInfo, annualRenew];
+                    if (values.some(value => value === "")) {
+                        toast({
+                          title: "Incomplete Information",
+                          description: "Please complete all fields before proceeding.",
+                        });
+                        return;
+                      }
                     if (rcActivity == 'no' && rcSanctions == 'no' && bsnsCremia == 'no' && involved == 'no' && legalInfo == 'no' && annualRenew == 'no') {
                         await updateDoc();
                         setCurrentSection(prev => prev + 1);
@@ -133,9 +142,32 @@ const IncorporateUSACompany = () => {
                     );
                     const state = formData.selectedState
                     const entity = formData.selectedEntity
-                    if (emptyNameShareholders.length > 0 || state == "" || entity== "") {
+                    const dContact = formData.designatedContact
+                    const industryList = formData.selectedIndustry.length
+                    const descriptionOfProducts = formData.descriptionOfProducts
+                    const descriptionOfBusiness = formData.descriptionOfBusiness
+                    const purpose = formData.purposeOfEstablishmentCompany.length
+                    // const total = emptyNameShareholders.reduce((sum, shareholder) => sum + shareholder.ownershipRate, 0);
+                    // console.log("total",total)
+                    // if(total < 100){
+                    //     toast({
+                    //         title: "Shareholder Count mismatch",
+                    //         description: "Shareholder count should match 100%",
+                    //     });
+                    //     return
+                    // }
+                    
+                    // console.log("industryList",descriptionOfProducts)
+                    if(industryList == 0 || descriptionOfProducts == "" || descriptionOfBusiness == "" || purpose ==0){
                         toast({
-                            title: "Fill Details (Shareholder(s) / Director(s)), State,",
+                            title: "Select the Industry / fill required inputs",
+                            description: "Select the required industry, fill required details",
+                        });
+                        return
+                    }
+                    if (emptyNameShareholders.length > 0 || state == "" || entity== "" || dContact == '') {
+                        toast({
+                            title: "Fill Details (Shareholder(s) / Director(s)), State, designated Contact",
                             description: "Fill the required fields Shareholder(s) / Director(s)",
                         });
                     } else {
@@ -160,6 +192,37 @@ const IncorporateUSACompany = () => {
                 break;
             // case 13:
             //     break;
+            case 7: {
+                const session = await paymentApi.getSession(formData.sessionId)
+                            // console.log("session--->", session)
+                if(session.status === 'completed'){
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }else{
+                    toast({
+                        title: "Payment Pending",
+                        description: "Please complete the payment to proceed",
+                    });
+                }
+                break;
+            }
+            case 8: {            
+                const values = [formData.companyExecutives, formData.localCompanyRegistration, formData.totalCapital, formData.noOfSharesSelected]
+
+                if (values.some(value => value === "")) {
+                    toast({
+                        title: "Please Fill Incorporation Data.",
+                        description:
+                            "Please Fill Incorporation data.",
+                    });
+                } else {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+                break;
+            }
             default:
                 if (currentSection! <= 9) {
                     await updateDoc();
@@ -178,7 +241,7 @@ const IncorporateUSACompany = () => {
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
-    console.log("currentSection",currentSection)
+    // console.log("currentSection",currentSection)
     return (
         <div className="flex flex-col md:flex-row h-screen">
             {/* Main Content */}

@@ -305,6 +305,21 @@ const ShareholderDirectorForm: React.FC = () => {
 
   return (
     <div className="flex flex-col">
+        {totalOwnership === 0 && (
+        <div className="text-red-500 mb-4 text-center">
+          Ownership is currently 0%. Please assign ownership.
+        </div>
+      )}
+      {totalOwnership > 0 && totalOwnership < 100 && (
+        <div className="text-red-500 mb-4 text-center">
+          {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%
+        </div>
+      )}
+      {totalOwnership === 100 && (
+        <div className="text-green-600 font-medium mb-4 text-center">
+          ✅ Ownership perfectly distributed at 100%
+        </div>
+      )}
       {totalOwnership > 100 && (
         <div className="text-red-500 mb-4 text-center">
           {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%

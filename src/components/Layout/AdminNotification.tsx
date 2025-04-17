@@ -7,6 +7,7 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { Badge } from "../ui/badge";
+import { useNavigate } from "react-router-dom";
 import { getNotificList,updateNotifications } from '@/lib/api/FetchData';
 
 const AdminNotification: React.FC = () => {
@@ -18,6 +19,8 @@ const AdminNotification: React.FC = () => {
             message: 'User from United States just viewed your profile',
             time: '5 minutes ago',
             read: false,
+            docId: '12345',
+            country: "US"
         },       
         {
             _id: '2',
@@ -25,13 +28,15 @@ const AdminNotification: React.FC = () => {
             message: 'You received a new message from John Doe',
             time: '2 hours ago',
             read: true,
+            country: "HK",
+            docId: '12345',
         },
     ]);
-
+    const navigate = useNavigate();
     useEffect(() => {
         const getData = async () =>{
             const response = await getNotificList()
-            // console.log("response-->", response)
+            console.log("response-->", response)
             setNotifications(response)
         }
         getData()
@@ -48,8 +53,9 @@ const AdminNotification: React.FC = () => {
     // const markAllAsRead = () => {
     //     setNotifications(notifications.map(notification => ({ ...notification, read: true })));
     // };
-    const markAsRead = async (_id: string) => {
-        await updateNotifications([_id]);
+    const markAsRead = async (_id: string, docId: string, countryCode: string) => {
+        await updateNotifications([_id]);        
+        navigate(`/company-details/${countryCode}/${docId}`)
         setNotifications(notifications.map(notification =>
             notification._id == (_id) ? { ...notification, read: true } : notification
         ));
@@ -62,7 +68,7 @@ const AdminNotification: React.FC = () => {
             setNotifications(notifications.map(notification => ({ ...notification, read: true })));
         }
     };
-
+    // console.log("notifications",notifications)
     return (
         <Popover>
             <PopoverTrigger asChild>
@@ -109,7 +115,7 @@ const AdminNotification: React.FC = () => {
                             <div
                                 key={notification._id}
                                 className={`p-4 border-b flex items-start gap-2 hover:bg-muted/40 cursor-pointer ${notification.read ? 'opacity-70' : 'bg-muted/20'}`}
-                                onClick={() => markAsRead(`${notification._id}`)}
+                                onClick={() => markAsRead(`${notification._id}`, `${notification.docId}`,`${notification.country}`)}
                             >
                                 <div className="rounded-full bg-blue-100 p-2 mt-1">
                                     <Bell className="h-4 w-4 text-blue-500" />
