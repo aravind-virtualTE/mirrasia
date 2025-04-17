@@ -67,9 +67,10 @@
   };
   
   export const service_list = [
+    "Other EMI(Digital Bank) account opening arrangement",
     "US company formation + Company maintenance until the renewal date or anniversary date of its incorporation (standard service)",
-    // "EMI (Electronic Money Institution) list provided (free to customers who use Mirr Asia's service)",
-    // "EMI (Electronic Money Institution) account opening application and advice (separate quote after review of business documents)",
+    "Airwallex Account opening arrangement",
+    "Payoneer Account opening arrangement",
     "Bank account opening application and advice (separate quotation after review of business documents)",
     "US legal opinion (separate quote after review of white paper)",
     "Legal opinion for listing on domestic stock exchanges (separate quote after review of white paper)",

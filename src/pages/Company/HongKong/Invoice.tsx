@@ -97,8 +97,8 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({ invoiceData }) => {
           <Card className="w-64">
             <CardContent className="pt-4">
               <div className="flex justify-between mb-2">
-                <span>{t('invoice.total')}:</span>
-                <span className="font-semibold">
+                <span className="font-xs text-xs line-through text-gray-500">{t('invoice.total')}:</span>
+                <span className="font-xs text-xs line-through text-gray-500">
                   {formatCurrency(invoiceData.totals.original.replace('USD ', ''))}
                 </span>
               </div>

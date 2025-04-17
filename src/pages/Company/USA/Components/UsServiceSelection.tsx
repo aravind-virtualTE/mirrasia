@@ -22,36 +22,29 @@ const UsServiceSelection:React.FC = () => {
       isHighlight: false,
       isOptional: false,
     },
-    {
-      description: `Airwallex Account opening arrangement`,
-      originalPrice: 0,
-      discountedPrice: 0,
-      note: "",
-      isHighlight: false,
-      isOptional: true,
-    },
-    {
-      description: `Payoneer Account opening arrangement`,
-      originalPrice: 0,
-      discountedPrice: 0,
-      note: "",
-      isHighlight: false,
-      isOptional: true,
-    },
+    // {
+    //   description: `Airwallex Account opening arrangement`,
+    //   originalPrice: 0,
+    //   discountedPrice: 0,
+    //   note: "",
+    //   isHighlight: false,
+    //   isOptional: true,
+    // },
+    // {
+    //   description: `Payoneer Account opening arrangement`,
+    //   originalPrice: 0,
+    //   discountedPrice: 0,
+    //   note: "",
+    //   isHighlight: false,
+    //   isOptional: true,
+    // },
   ]
 
-  const optionalFees = [
-    {
-      description: `Other EMI(Digital Bank) account opening arrangement`,
-      originalPrice: 400,
-      discountedPrice: 400,
-      isHighlight: false,
-      isOptional: true,
-    },
+  const optionalFees = [   
     ...service_list.map((item) => ({
       description: item,
-      originalPrice: 0,
-      discountedPrice: 0,
+      originalPrice: item === "Other EMI(Digital Bank) account opening arrangement" ? 400 : 0,
+      discountedPrice: item === "Other EMI(Digital Bank) account opening arrangement" ? 400 : 0,
       isHighlight: false,
       isOptional: true,
     }))
