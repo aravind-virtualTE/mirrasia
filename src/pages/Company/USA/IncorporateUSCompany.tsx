@@ -166,6 +166,7 @@ const IncorporateUSACompany = () => {
                     await updateDoc();
                     setCurrentSection(prev => prev + 1);
                     window.scrollTo({ top: 0, behavior: "smooth" });
+                    break;
                 } else {
                     console.log("end of the form")
                 }

@@ -9,7 +9,8 @@ const FinalSection = () => {
     const decodedToken = jwtDecode<TokenData>(token);
 
   const navigateRoute = () => {
-    if (decodedToken.role === 'admin') {
+    // console.log(`decodedToken`,decodedToken)
+    if (decodedToken.role === 'admin'|| decodedToken.role === "master") {
         navigate('/admin-dashboard');
     }
     else if (decodedToken.role === 'hk_shdr') {
