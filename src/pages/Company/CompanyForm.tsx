@@ -31,7 +31,7 @@ const CompanyRegistration = () => {
             }
             fetchData().then((result) => {
                 // console.log("result--->",result)
-                setCompaniesList(result.companies);
+                setCompaniesList(result.companies.mergedList);
                 const company = companies.find(c => c._id === id);
                 const cntry = company?.country as Record<string, string | undefined>;
                 if (company) setCountryState(cntry);
