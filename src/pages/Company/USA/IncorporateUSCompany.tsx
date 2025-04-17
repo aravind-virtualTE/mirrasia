@@ -55,6 +55,8 @@ const IncorporateUSACompany = () => {
             const response = await api.post("/company/usa-form", payload);
             if (response.status === 200) {
                 // console.log("formdata", response.data);
+                localStorage.setItem("companyRecordId", response.data.data._id);
+                setFormData(response.data.data)
                 window.history.pushState(
                     {},
                     "",
