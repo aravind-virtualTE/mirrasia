@@ -28,7 +28,7 @@ const UsServiceSelection:React.FC = () => {
       discountedPrice: 0,
       note: "",
       isHighlight: false,
-      isOptional: false,
+      isOptional: true,
     },
     {
       description: `Payoneer Account opening arrangement`,
@@ -36,7 +36,7 @@ const UsServiceSelection:React.FC = () => {
       discountedPrice: 0,
       note: "",
       isHighlight: false,
-      isOptional: false,
+      isOptional: true,
     },
   ]
 

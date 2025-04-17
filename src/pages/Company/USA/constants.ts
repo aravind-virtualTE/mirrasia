@@ -98,9 +98,9 @@
     if (typeof entityData === "number") {
       return { price: entityData, note: '' } ;
     } else if (entityData) {
-        console.log("entityData",entityData)
+        // console.log("entityData",entityData)
         if(entityType.includes("Corporation")) {
-            console.log("entered")
+            // console.log("entered")
             return entityData.note 
                 ? { price: entityData.total, note: entityData.note } 
                 : { price: entityData.total };

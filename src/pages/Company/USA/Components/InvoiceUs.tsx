@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { getEntityBasicPrice, service_list } from '../constants'
 import { useAtom } from "jotai"
 import { usaFormWithResetAtom ,usaPriceAtom} from "../UsState"
-import { Badge } from "@/components/ui/badge"
+// import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
@@ -13,11 +13,8 @@ const InvoiceUs: React.FC = () => {
     const state = formData.selectedState
     const entity = formData.selectedEntity
     const price = getEntityBasicPrice(state, entity)
-    console.log("price-->", formData.serviceItemsSelected)
-    useEffect(() => {
-        setUsPrice(price?.price || 0)
-    }, [])
-
+    // console.log("price-->", formData.serviceItemsSelected)    
+    // console.log("service_list",service_list)
     const fees = [
         {
             description: `${state} (${entity})`,
@@ -33,7 +30,7 @@ const InvoiceUs: React.FC = () => {
             discountedPrice: `0`,
             note: "",
             isHighlight: false,
-            isOptional: false,
+            isOptional: true,
         },
         {
             description: `Payoneer Account opening arrangement`,
@@ -41,26 +38,32 @@ const InvoiceUs: React.FC = () => {
             discountedPrice: `0`,
             note: "",
             isHighlight: false,
-            isOptional: false,
-        },      
+            isOptional: true,
+        },
+        {
+            description: `Other EMI(Digital Bank) account opening arrangement`,
+            originalPrice: '400',
+            discountedPrice: '400',
+            isHighlight: false,
+            isOptional: true,
+          },    
         ...service_list.map((item) => ({
             description: item,
             originalPrice: "0",
             discountedPrice: "0",
             isOptional: true,
-            isHighlight: false, // Provide a default value for isHighlight
+            isHighlight: false,
         }))
 
     ]
-
     const optionalFees = [
-        {
-          description: `Other EMI(Digital Bank) account opening arrangement`,
-          originalPrice: 400,
-          discountedPrice: 400,
-          isHighlight: false,
-          isOptional: true,
-        },
+        // {
+        //   description: `Other EMI(Digital Bank) account opening arrangement`,
+        //   originalPrice: 400,
+        //   discountedPrice: 400,
+        //   isHighlight: false,
+        //   isOptional: true,
+        // },
         ...service_list.map((item) => ({
           description: item,
           originalPrice: 0,
@@ -70,16 +73,21 @@ const InvoiceUs: React.FC = () => {
         }))
       ]
 
+    // console.log("optionalFees",optionalFees)
     const selectedOptionalFees = optionalFees.filter((fee) =>selectedServices.includes(fee.description))
-
+    // console.log("selectedOptionalFees",selectedOptionalFees)
     const totalOriginal = fees.reduce((sum, item) => sum + Number(item.originalPrice), 0) + selectedOptionalFees.reduce((sum, item) => sum + item.originalPrice, 0);
     const totalDiscounted = fees.reduce((sum, item) => sum + Number(item.discountedPrice), 0)+ selectedOptionalFees.reduce((sum, item) => sum + item.discountedPrice, 0);
 
+    useEffect(() => {
+        setUsPrice(totalDiscounted || 0)
+    }, [])
     // const currentDate = new Date().toLocaleDateString("en-US", {
     //     month: "numeric",
     //     day: "numeric",
     //     year: "numeric",
     // })
+    // console.log("fees",fees)
     return (       
         <div className="w-full max-w-4xl mx-auto py-8 px-4">
             <Card className="w-full">
@@ -104,9 +112,9 @@ const InvoiceUs: React.FC = () => {
                                     <TableCell>
                                         <div className="flex items-center gap-2">
                                             <span className={item.isHighlight ? "font-semibold" : ""}>{item.description}</span>
-                                            {item.isOptional && (
+                                            {/* {item.isOptional && (
                                                 <Badge variant="outline" className="text-xs">Optional</Badge>
-                                            )}
+                                            )} */}
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right text-muted-foreground">

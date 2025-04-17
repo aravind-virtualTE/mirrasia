@@ -45,7 +45,7 @@ const Dashboard = () => {
     }
     fetchData().then((result) => {
       // console.log("result", result)
-      setCompIncList(result.companies);
+      setCompIncList(result.companies.mergedList)
       setAllList(result.allCompanies)
     })
 
@@ -196,7 +196,6 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
-
         </div>
       </div>
     </>

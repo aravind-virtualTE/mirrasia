@@ -114,7 +114,7 @@ const initialFormState: UsaFormData = {
   receiptUrl : "",
   sessionId: '',
   paymentId: '',
-  status: "",
+  status: "Pending",
   incorporationDate:"",
   serviceAgreementConsent:false,
   assignedTo : ""

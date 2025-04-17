@@ -86,9 +86,9 @@ export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPayment
             // console.log("paymentId", paymentId)
             const docId = localStorage.getItem('companyRecordId');
             // Send paymentMethod.id to the backend
-            const sessionData = await paymentApi.updateFinalPaymentStatus(sessionId, paymentId, docId!, paymentIntent)
-            updateCompanyData(sessionData.updatedData)
+            const sessionData = await paymentApi.updateFinalPaymentStatus(sessionId, paymentId, docId!, paymentIntent, "US")
             // console.log("sessionUpdatedData", sessionData)
+            updateCompanyData(sessionData.updatedData)
             setPaymentStatus({
               type: 'success',
               message: 'Payment successful! Thank you for your purchase.'
