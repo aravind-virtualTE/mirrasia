@@ -45,6 +45,7 @@ import ServiceAgreementSignDocs from './components/ServiceAgreementSignDocs/Serv
 import {SocketProvider } from '@/hooks/Socket';
 import ChatInterface from './components/chat/ChatInterface';
 import ProjectActivity from './pages/Projects/Project';
+import AdminProject from './pages/dashboard/Admin/Projects/AdminProject';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -119,7 +120,8 @@ const App: React.FC = () => {
                       <Route path="/admin-dashboard" element={<AdminDashboard />} />
                       <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
                       <Route path="/company-details/:id" element={<CompanyDetail />} />
-                      <Route path="/messages" element={<ChatInterface />} />                      
+                      <Route path="/messages" element={<ChatInterface />} />
+                      <Route path="/projects" element={<AdminProject />} />
                       {/* Add more admin-specific routes here */}
                     </Route>
                   </Route>
