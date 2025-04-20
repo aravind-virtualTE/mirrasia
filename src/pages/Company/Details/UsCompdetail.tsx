@@ -25,6 +25,7 @@ import { useToast } from '@/hooks/use-toast';
 import MemoApp from './MemosHK';
 import TodoApp from '@/pages/Todo/TodoApp';
 import { User } from '@/components/userList/UsersList';
+import { useNavigate } from 'react-router-dom';
 
 const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
@@ -40,7 +41,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         status: "",
         paymentId: "",
     });
-
+    const navigate = useNavigate()
     useEffect(() => {
         async function getUsData() {
             const data = await getUsIncorpoDataById(`${id}`)
@@ -203,7 +204,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         const payload = JSON.stringify({
             company: { id: formData._id, status: formData.status, isDisabled: formData.isDisabled, incorporationDate: formData.incorporationDate, country: "US" },
             session: { id: session._id, expiresAt: (session.expiresAt), status: session.status },
-            assignedTo : adminAssigned
+            assignedTo: adminAssigned
         })
         const response = await updateEditValues(payload);
         if (response.success) {
@@ -419,30 +420,30 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     };
 
     const AssignAdmin = () => {
-            const handleAssign = (value:string) =>{
-                setAdminAssigned(value)
-            }
-            return (
-                <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium">Assign Admin:</span>
-                    <Select
-                        onValueChange={handleAssign}
-                        value={adminAssigned}
-                    >
-                        <SelectTrigger className="w-60 h-8 text-xs">
-                            <SelectValue placeholder="Assign Admin to..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {users.map((u) => (
-                                <SelectItem key={u._id} value={u.fullName || ""}>
-                                    {u.fullName || u.email}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-            )
+        const handleAssign = (value: string) => {
+            setAdminAssigned(value)
         }
+        return (
+            <div className="flex items-center gap-4">
+                <span className="text-sm font-medium">Assign Admin:</span>
+                <Select
+                    onValueChange={handleAssign}
+                    value={adminAssigned}
+                >
+                    <SelectTrigger className="w-60 h-8 text-xs">
+                        <SelectValue placeholder="Assign Admin to..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {users.map((u) => (
+                            <SelectItem key={u._id} value={u.fullName || ""}>
+                                {u.fullName || u.email}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+        )
+    }
 
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full max-w-5xl mx-auto">
@@ -471,7 +472,12 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 <div className="space-y-8">
                     <h1 className="text-2xl font-bold">Company Details</h1>
                     <TodoApp id={id} />
-                    <AssignAdmin />
+                    <div className='flex gap-x-8'>
+                        <AssignAdmin />
+                        <Button onClick={() => navigate(`/company-documents/US/${id}`)}>
+                            Company Docs
+                        </Button>
+                    </div>
                     {sections.map((section) => (
                         <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
                             <CardHeader className="bg-muted/50 py-4">
