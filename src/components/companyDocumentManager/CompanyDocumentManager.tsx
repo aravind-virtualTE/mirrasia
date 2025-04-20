@@ -24,7 +24,7 @@ import { toast } from '@/hooks/use-toast';
 import { deleteCompanyDoc, getCompDocs, uploadCompanyDocs } from '@/services/dataFetch';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
-
+import { useParams } from "react-router-dom";
 // Define types
 interface Document {
   id: string;
@@ -37,11 +37,12 @@ export interface Company {
   id: string;
   companyName: string;
   companyDocs: Document[];
+  country: { code: string, name: string }
 }
 
 const CompanyDocumentManager: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const { countryCode, id } = useParams();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -60,11 +61,20 @@ const CompanyDocumentManager: React.FC = () => {
         const data = await response;
         setCompanies(data);
         if (data.length > 0) {
-          setSelectedCompany(data[0]);
-          setUploadedFiles([]);
-          setDocumentToReplace(null);
-          setExpandedDoc(null);
-          setShowUploadSection(false);
+          if (id !== undefined && id !== "" && countryCode !== undefined && countryCode !== "") {
+            const result = data.find((company: { id: string; }) => company.id === id);
+            setSelectedCompany(result);
+            setUploadedFiles([]);
+            setDocumentToReplace(null);
+            setExpandedDoc(null);
+            setShowUploadSection(false);
+          } else {
+            setSelectedCompany(data[0]);
+            setUploadedFiles([]);
+            setDocumentToReplace(null);
+            setExpandedDoc(null);
+            setShowUploadSection(false);
+          }
         }
       } catch (error) {
         console.error('Error fetching companies:', error);
@@ -76,6 +86,7 @@ const CompanyDocumentManager: React.FC = () => {
   // Handle company selection
   const handleCompanySelect = (companyId: string): void => {
     const company = companies.find(c => c.id === companyId);
+    // console.log('company', company)
     if (company) {
       setSelectedCompany(company);
       setUploadedFiles([]);
@@ -236,7 +247,8 @@ const CompanyDocumentManager: React.FC = () => {
 
       // Send data to backend to delete the document
       try {
-        const payload = JSON.stringify({ docId: company.id, ...documentToDelete });
+        // console.log("company",company)
+        const payload = JSON.stringify({ docId: company.id, country: company.country, ...documentToDelete });
         await deleteCompanyDoc(payload);
         toast({
           title: "Document deleted",
@@ -259,8 +271,8 @@ const CompanyDocumentManager: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           {companies.length == 0 && (
             <div className="rounded-md bg-muted text-muted-foreground p-2 text-sm">
-            No companies found
-          </div>
+              No companies found
+            </div>
           )}
           <Select onValueChange={handleCompanySelect} value={selectedCompany?.id}>
             <SelectTrigger className="w-full md:w-80">

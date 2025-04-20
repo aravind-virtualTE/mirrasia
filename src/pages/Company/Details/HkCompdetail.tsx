@@ -46,6 +46,7 @@ import { ShareHolderDirectorController } from "@/types/hongkongForm";
 import MemoApp from "./MemosHK";
 import TodoApp from "@/pages/Todo/TodoApp";
 import { User } from "@/components/userList/UsersList";
+import { useNavigate } from "react-router-dom";
 export interface SessionData {
     _id: string;
     amount: number;
@@ -165,6 +166,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     // const [companyData, setCompData] = useAtom(companyIncorporationAtom);
     const [users, setUsers] = useState<User[]>([]);
     const [adminAssigned, setAdminAssigned] = useState("");
+    const navigate = useNavigate()
     const companyDetail = companies.find(
         (c) => c._id === id
     ) as unknown as Company;
@@ -625,7 +627,12 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 <div className="space-y-8">
                     <h1 className="text-2xl font-bold">Company Details</h1>
                     <TodoApp id={company._id} />
-                    <AssignAdmin />
+                    <div className='flex gap-x-8'>
+                        <AssignAdmin />
+                        <Button onClick={() => navigate(`/company-documents/${company.country.code}/${company._id}`)}>
+                            Company Docs
+                        </Button>
+                    </div>
                     {sections.map((section) => (
                         <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
                             <CardHeader className="bg-muted/50 py-4">

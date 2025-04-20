@@ -96,6 +96,7 @@ const App: React.FC = () => {
                       <Route path="/company-register/:countryCode/:id" element={<CompanyRegistration />} />
                       <Route path="/company-register/:id" element={<CompanyRegistration />} />
                       <Route path="/company-documents" element={<CompanyDocumentManager />} />
+                      <Route path="/company-documents/:countryCode/:id" element={<CompanyDocumentManager />} />
                       <Route path="/pba-forms" element={<BankForms />} />
                       <Route path="/switch-services" element={<SwitchServices />} />
                       <Route path="/switch-services/:countryCode/:id" element={<SwitchServices />} />
