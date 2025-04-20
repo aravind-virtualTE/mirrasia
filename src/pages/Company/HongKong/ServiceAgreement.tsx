@@ -1,17 +1,11 @@
-import React, { useEffect,  useState } from 'react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAtom } from "jotai";
 import { companyServiceAgreementConsentAtom, companyIncorporationAtom } from "@/lib/atom";
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from "react-i18next";
+import { Card, CardContent } from '@/components/ui/card';
 // import { API_URL } from '@/services/fetch';
 // import { getPdfDoc } from '@/services/dataFetch';
 
@@ -73,7 +67,7 @@ const ServiceAgreementDocument: React.FC = () => {
     {
       title: t("ServiceAgreementDocument.section4Title"),
       content: t("ServiceAgreementDocument.section4Content"),
-      services : serviceKeys,
+      services: serviceKeys,
       subsections: [
         {
           subtitle: t("ServiceAgreementDocument.section4_1"),
@@ -97,7 +91,7 @@ const ServiceAgreementDocument: React.FC = () => {
     { title: t("ServiceAgreementDocument.section11Title"), content: t("ServiceAgreementDocument.section11Content") },
     { title: t("ServiceAgreementDocument.section12Title"), content: t("ServiceAgreementDocument.section12Content") },
     {
-      title: t("ServiceAgreementDocument.section13Title"), 
+      title: t("ServiceAgreementDocument.section13Title"),
       content: t("ServiceAgreementDocument.section13Content"),
       subsections: [
         {
@@ -168,77 +162,66 @@ const ServiceAgreementDocument: React.FC = () => {
   //   }
   // }
 
+  console.log("fullAgreementSections", fullAgreementSections)
+
   return (
     <div className="mx-auto p-1 space-y-6">
       <h1 className="text-3xl font-bold text-center mb-6">
         {t("ServiceAgreementDocument.title")}
       </h1>
 
-      <ScrollArea className="h-[600px] w-full rounded-md border p-4">
-        <Accordion type="single" collapsible className="w-full">
-          {fullAgreementSections.map((section, index) => (
-            <AccordionItem value={`section-${index}`} key={index} className="border rounded-md overflow-hidden">
-              <AccordionTrigger className="text-lg font-semibold hover:bg-gray-100 px-4 py-2 rounded-md">
-                {section.title}
-              </AccordionTrigger>
-              <AccordionContent className="p-4 bg-gray-50 rounded-md">
-                {section.services && (
-                  <ul className="list-disc list-inside space-y-2">
-                  {section.services.map((service, index) => (
-                    <li key={index} className="text-sm text-gray-700">
-                      {service}
-                    </li>
-                  ))}
-                </ul>
-                )}
-                {section.content && (
-                  <p className="text-gray-700 whitespace-pre-wrap">{section.content}</p>
-                )}
-                {section.subsections &&
-                  section.subsections.map((subsection, subIndex) => (
-                    <div key={subIndex} className="mt-4">
-                      {subsection.subtitle && (
-                        <h4 className="font-semibold text-gray-800 mb-2">
-                          {subsection.subtitle}
-                        </h4>
+        <div className="space-y-6">
+          <Card className="border rounded-lg shadow-sm">
+            <CardContent className="p-6 space-y-4">
+              {fullAgreementSections.map((section, index) => (
+                <div key={index}>
+                  <h2 className="text-xl font-bold text-gray-900">{section.title}</h2>
+
+                  {section.content && (
+                    <p className="text-gray-700 whitespace-pre-wrap">{section.content}</p>
+                  )}
+
+                  {section.services && (
+                    <ul className="list-disc list-inside space-y-2 text-gray-700">
+                      {section.services.map((service: string, idx: number) => (
+                        <li key={idx}>{service}</li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {section.subsections?.map((sub, subIdx) => (
+                    <div key={subIdx} className="space-y-1">
+                      {sub.subtitle && (
+                        <h4 className="font-semibold text-gray-800">{sub.subtitle}</h4>
                       )}
-                      <p className="text-gray-700 whitespace-pre-wrap">
-                        {subsection.content}
-                      </p>
+                      <p className="text-gray-700 whitespace-pre-wrap">{sub.content}</p>
                     </div>
                   ))}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
+                </div>
+              ))}
+              <div className="space-y-6">
+                {additionalSections.map((section, index) => (
+                  <div key={index} >
+                    <h2 className="text-xl font-bold text-gray-900">{section.title}</h2>
 
-          {additionalSections.map((section, index) => (
-            <AccordionItem value={`additional-${index}`} key={`additional-${index}`}>
-              <AccordionTrigger className="text-lg font-semibold hover:bg-gray-100 px-4 py-2 rounded-md">
-                {section.title}
-              </AccordionTrigger>
-              <AccordionContent className="p-4 bg-gray-50 rounded-md">
-                {section.content && (
-                  <p className="text-gray-700 whitespace-pre-wrap">{section.content}</p>
-                )}
-                {section.subsections &&
-                  section.subsections.map((subsection, subIndex) => (
-                    <div key={subIndex} className="mt-4">
-                      {subsection.subtitle && (
-                        <h4 className="font-semibold text-gray-800 mb-2">
-                          {subsection.subtitle}
-                        </h4>
-                      )}
-                      <p className="text-gray-700 whitespace-pre-wrap">
-                        {subsection.content}
-                      </p>
-                    </div>
-                  ))}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </ScrollArea>    
+                    {section.content && (
+                      <p className="text-gray-700 whitespace-pre-wrap">{section.content}</p>
+                    )}
 
+                    {section.subsections?.map((subsection, subIndex) => (
+                      <div key={subIndex} className="space-y-1">
+                        {subsection.subtitle && (
+                          <h4 className="font-semibold text-gray-800">{subsection.subtitle}</h4>
+                        )}
+                        <p className="text-gray-700 whitespace-pre-wrap">{subsection.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       {/* <div className="App">
         <Button onClick={handleGeneratePdf} className="mt-4">
           Generate Pdf
@@ -264,10 +247,10 @@ const ServiceAgreementDocument: React.FC = () => {
           I accept the terms and conditions of the Service Agreement.
         </label>
       </div>
-        {finalForm.serviceAgreementConsent !== true && <Button onClick={handleConsentSubmit} className="mt-4">
+      {finalForm.serviceAgreementConsent !== true && <Button onClick={handleConsentSubmit} className="mt-4">
         Submit Consent
       </Button>}
-      
+
     </div>
   );
 };
