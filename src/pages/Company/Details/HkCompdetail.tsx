@@ -486,7 +486,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             'Waiting for Documents',
             'Waiting for Incorporation',
             'Incorporation Completed',
-            'Good Standing',
+            // 'Good Standing',
             'Renewal Processing',
             'Renewal Completed',
         ];

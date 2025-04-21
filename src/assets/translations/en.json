@@ -929,13 +929,60 @@
       "koreanLlcRule":"For Korean residents, LLC income is recognized as personal income and reported comprehensively. Local tax rates and expected profits should be reviewed.",
       "spclCase":"Special Cases (Crypto Industry)",
       "cryptoLegalBusiness":"For crypto-related businesses, legal regulations and accounting standards for cryptocurrencies need to be reviewed. Some countries may tax cryptocurrencies as assets.",
-      "cryptoNotTaxed":"In some countries, cryptocurrencies are not taxed, and they may be recognized as assets. Local tax rates and withholding taxes should be reviewed."
+      "cryptoNotTaxed":"In some countries, cryptocurrencies are not taxed, and they may be recognized as assets. Local tax rates and withholding taxes should be reviewed.",
+      "tax":"Taxation"
     },
     "relation":{
       "director-officer":"Director/Officer of the proposed US company",
       "delegated-by-the-director":"Delegated by the director of the proposed US company",
       "shareholder-holding-majority":"Shareholder of the proposed US company holding majority of the shares",
       "a-pro-lawyer-accountant":"A professional(e.g. lawyer, accountant) who provides incorporation advice to the US company"
+    },
+    "bInfo":{
+      "bInfoHeading":"Business information of the proposed US company.",
+      "bInfoPara":"In this section, you can enter information about the U.S. company you wish to establish and related business.",
+      "selectIndustryItems":"Select industry (check all relevant items)",
+      "descProductName":"Description of the product name, product type, service content, service type, etc. to be transacted after incorporation",
+      "descBusinessInfo":"Description of the business activities of the proposed US company (at least 50 characters) ",
+      "enterWeb":"Enter your website address (if available)",
+      "purposeEstablish":"Purpose of establishing a US company and expected future effects",
+      "pList":{
+        "1":"Business diversification through regulatory relief",
+        "2":"A legal advisor, investor or business partner suggests forming a US company.",
+        "3":"Expanding business into various overseas countries (international business)",
+        "4":"Asset management by investing in real estate or financial assets",
+        "5":"As a holding company, the purpose is to invest in and manage subsidiaries or affiliated companies.",
+        "6":"Pursuing competitive advantage through liberal financial policies",
+        "7":"Increased transaction volume due to low tax rate and non-VAT",
+        "8":"other"
+      },
+      "iList":{
+        "1":"Cryptocurrency-related (cryptocurrency issuance, sale, donation, ICO, exchange, wallet service, etc.)",
+        "2":"Development of IT, blockchain, software, etc.",
+        "3":"Cryptocurrency-based investment-related business",
+        "4":"Cryptocurrency-based games",
+        "5":"foreign exchange trading",
+        "6":"Finance, investment, advisory, loan business, etc.",
+        "7":"trade industry",
+        "8":"Wholesale/retail distribution industry",
+        "9":"consulting",
+        "10":"manufacturing",
+        "11":"Online service industry (e-commerce)",
+        "12":"Online direct purchase/delivery/purchase agency"
+      },
+      "shrldSection":{
+        "heading" : "Shareholders/officers of the proposed US company",
+        "para":"In this section, you must provide information about the members (shareholders), executives, and contact persons of the U.S. company you wish to establish.",
+        "desgContact":"Designated Contact Person",
+        "desgnToolTip":"You must designate a designated contact person to handle company-related communications. This designated contact person will be responsible for all major communications with our company, including inquiries about the company and business matters, progress checks, and registered documents. The designated contact person will have access to your company's information and documents, including mail. The designation of one contact person is free of charge. For two or more persons, there will be a fee of USD 250 per person per year. The designated contact person, designated by your company and separately registered with us, serves to protect your company's information and prevent confusion in business. (The designated contact person must submit a copy of their passport, proof of address, and undergo a verification process, similar to shareholders and officers.)",
+        "selectSignificantController":"Select significant Controller",
+        "shareholderOfficer":"Shareholder(s) / Officer(s) Name:",
+        "ownerShp0":"Ownership is currently 0%. Please assign ownership.",
+        "ownerShip100":"Ownership perfectly distributed at 100%"
+      },
+      "accountHeading":"The location where the accounting/financial data of the proposed US company will be kept",
+      "accountingAddress":"If you store accounting statements, financial data, contracts, invoices, etc. in a country other than the United States, please enter your address below.",
+      "enterAddress":"Please enter the address where the accounting and financial data of the proposed US company will be kept."
     }
   },
   "SwitchService": {

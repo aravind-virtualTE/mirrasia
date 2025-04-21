@@ -5,7 +5,7 @@ export interface Stats {
   waitingForDocuments: number
   waitingForIncorporation: number
   incorporationCompleted: number
-  goodStanding: number
+  // goodStanding: number
   renewalProcessing: number
   renewalCompleted: number
   rejected: number

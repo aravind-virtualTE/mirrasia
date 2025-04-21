@@ -4,98 +4,101 @@ import { useAtom } from 'jotai';
 import { usaFormWithResetAtom } from '../UsState';
 import { useTheme } from "@/components/theme-provider";
 import { Checkbox } from "@/components/ui/checkbox"
+import { useTranslation } from "react-i18next";
 
 const Section9 = () => {
+    const { t } = useTranslation();
+  
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const { theme } = useTheme();   
 
     const purposeList = [
         {
           "id": "business-diversification-through-regulatory",
-          "label": "Business diversification through regulatory relief"
+          "label": "usa.bInfo.pList.1"
         },
         {
           "id": "a-legal-advisor-investor-or-business-partner-suggests-forming-a-us",
-          "label": "A legal advisor, investor or business partner suggests forming a US company."
+          "label": "usa.bInfo.pList.2"
         },
         {
           "id": "expanding-business-into-various-overseas-countries",
-          "label": "Expanding business into various overseas countries (international business)"
+          "label":"usa.bInfo.pList.3"
         },
         {
           "id": "asset-management-by-investing-in-real-estate-or-financial",
-          "label": "Asset management by investing in real estate or financial assets"
+          "label": "usa.bInfo.pList.4"
         },
         {
           "id": "as-a-holding-company-the-purpose-is-to-invest-in-and-manage-subsidiariesk",
-          "label": "As a holding company, the purpose is to invest in and manage subsidiaries or affiliated companies."
+          "label":"usa.bInfo.pList.5"
         },
         {
           "id": "pursuing-competitive-advantage-through-liberal",
-          "label": "Pursuing competitive advantage through liberal financial policies"
+          "label": "usa.bInfo.pList.6"
         },
         {
           "id": "increased-transaction-volume-due-to-low-tax-rate",
-          "label": "Increased transaction volume due to low tax rate and non-VAT"
+          "label": "usa.bInfo.pList.7"
         },
         {
           "id": "other",
-          "label": "other",
+          "label": "usa.bInfo.pList.8",
           isOther: true
         }
       ]
     const industryList = [
         {
           "id": "cryptocurrency-related",
-          "label": "Cryptocurrency-related (cryptocurrency issuance, sale, donation, ICO, exchange, wallet service, etc.)"
+          "label": "usa.bInfo.iList.1"
         },
         {
           "id": "development-of-it-blockchain",
-          "label": "Development of IT, blockchain, software, etc."
+          "label": "usa.bInfo.iList.2"
         },
         {
           "id": "cryptocurrency-based-investment",
-          "label": "Cryptocurrency-based investment-related business"
+          "label": "usa.bInfo.iList.3"
         },
         {
           "id": "cryptocurrency-based-games",
-          "label": "Cryptocurrency-based games"
+          "label": "usa.bInfo.iList.4"
         },
         {
           "id": "foreign-exchange-trading",
-          "label": "foreign exchange trading"
+          "label": "usa.bInfo.iList.5"
         },
         {
           "id": "finance-investment-advisory-loan",
-          "label": "Finance, investment, advisory, loan business, etc."
+          "label": "usa.bInfo.iList.6"
         },
         {
           "id": "trade-industry",
-          "label": "trade industry"
+          "label": "usa.bInfo.iList.7"
         },
         {
           "id": "wholesaleretail-distribution-industry",
-          "label": "Wholesale/retail distribution industry"
+          "label": "usa.bInfo.iList.8"
         },
         {
           "id": "consulting",
-          "label": "consulting"
+          "label": "usa.bInfo.iList.9"
         },
         {
           "id": "manufacturing",
-          "label": "manufacturing"
+          "label": "usa.bInfo.iList.10"
         },
         {
           "id": "online-service-industry-e-commerce",
-          "label": "Online service industry (e-commerce)"
+          "label": "usa.bInfo.iList.11"
         },
         {
           "id": "online-direct-purchasedeliverypurchase-agency",
-          "label": "Online direct purchase/delivery/purchase agency"
+          "label": "usa.bInfo.iList.12"
         },
         {
           "id": "other",
-          "label": "Other",
+          "label": "usa.bInfo.pList.8",
           isOther: true
         }
       ]
@@ -109,15 +112,15 @@ const Section9 = () => {
                     }`}
             >
                 <h2 className="text-m font-semibold mb-0">
-                    Business information of the proposed US company.
+                  {t("usa.bInfo.bInfoHeading")}
                 </h2>
-                <p className="text-sm text-gray-600"> In this section, you can enter information about the U.S. company you wish to establish and related business.</p>
+                <p className="text-sm text-gray-600"> {t("usa.bInfo.bInfoPara")}</p>
             </aside>
             <div className="w-3/4 ml-4">
                 {/* select Industry */}
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="text-base flex items-center font-semibold gap-2">
-                        Select industry (check all relevant items) <span className="text-red-500 flex font-bold ml-1">*</span>
+                    {t("usa.bInfo.selectIndustryItems")}<span className="text-red-500 flex font-bold ml-1">*</span>
                     </Label>
                 </div>
                 <div className="space-y-2">
@@ -136,7 +139,7 @@ const Section9 = () => {
                             />
                             {option.isOther ? (
                                 <div className="space-y-1 w-full">
-                                    <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
+                                    <Label htmlFor={option.id} className="font-normal">{t(option.label)}</Label>
                                     <Input
                                         value={formData.otherIndustryText}
                                         onChange={(e) => setFormData({ ...formData, otherIndustryText: e.target.value })}
@@ -144,7 +147,7 @@ const Section9 = () => {
                                     />
                                 </div>
                             ) : (
-                                <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
+                                <Label htmlFor={option.id} className="font-normal">{t(option.label)}</Label>
                             )}
                         </div>
                     ))}
@@ -153,8 +156,7 @@ const Section9 = () => {
                 <div className="space-y-2">
                     <Label htmlFor="prodDesc"
                       //  className="inline-flex"
-                       >
-                        Description of the product name, product type, service content, service type, etc. to be transacted after incorporation<span className="text-destructive">*</span>
+                       > {t("usa.bInfo.descProductName")} <span className="text-destructive">*</span>
                     </Label>
                     <Input id="prodDesc" placeholder="Your answer" required value={formData.descriptionOfProducts} onChange={(e) => setFormData({ ...formData, descriptionOfProducts: e.target.value })} />
                 </div>
@@ -162,22 +164,20 @@ const Section9 = () => {
                 {/* descBusiness Field */}
                 <div className="space-y-2">
                     <Label htmlFor="descBusiness" className="inline-flex">
-                        Description of the business activities of the proposed US company (at least 50 characters) <span className="text-destructive">*</span>
+                    {t("usa.bInfo.descBusinessInfo")} <span className="text-destructive">*</span>
                     </Label>
                     <Input id="descBusiness" placeholder="Your answer" required value={formData.descriptionOfBusiness} onChange={(e) => setFormData({ ...formData, descriptionOfBusiness: e.target.value })} />
                 </div>
 
                 {/* website Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="website" className="inline-flex">
-                        Enter your website address (if available)
-                    </Label>
+                    <Label htmlFor="website" className="inline-flex"> {t("usa.bInfo.enterWeb")} </Label>
                     <Input id="website" placeholder="Your answer" required value={formData.webAddress} onChange={(e) => setFormData({ ...formData, webAddress: e.target.value })} />
                 </div>
 
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="text-base flex items-center font-semibold gap-2">
-                        Purpose of establishing a US company and expected future effects <span className="text-red-500 flex font-bold ml-1">*</span>
+                       {t("usa.bInfo.purposeEstablish")} <span className="text-red-500 flex font-bold ml-1">*</span>
                     </Label>
                     {purposeList.map((option) => (
                         <div key={option.id} className="flex items-start space-x-2">
@@ -194,7 +194,7 @@ const Section9 = () => {
                             />
                             {option.isOther ? (
                                 <div className="space-y-1 w-full">
-                                    <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
+                                    <Label htmlFor={option.id} className="font-normal">{t(option.label)}</Label>
                                     <Input
                                         value={formData.otherCompanyPurposeText}
                                         onChange={(e) => setFormData({ ...formData, otherCompanyPurposeText: e.target.value })}
@@ -202,7 +202,7 @@ const Section9 = () => {
                                     />
                                 </div>
                             ) : (
-                                <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
+                                <Label htmlFor={option.id} className="font-normal">{t(option.label)}</Label>
                             )}
                         </div>
                     ))}

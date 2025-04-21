@@ -18,8 +18,14 @@ interface ShareholderDirectorProps {
   email: string;
   phone: string;
   ownershipRate: number;
-  isDirector: string;
-  isLegalPerson: string;
+  isDirector: {
+    value: string,
+    id: string
+  };
+  isLegalPerson: {
+    value: string,
+    id: string
+  };
   onDelete: () => void;
   onUpdate: (updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => void;
   isRemovable: boolean;
@@ -70,11 +76,16 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
     return true;
   };
 
+  const yesNoOptions = [
+    { id: "yes", value: "AmlCdd.options.yes" },
+    { id: "no", value: "AmlCdd.options.no" },
+  ];
+
   return (
     <Card className="mb-4 pt-4">
       <CardContent className="grid grid-cols-3 gap-4">
         <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">Shareholder(s) / Officer(s) Name:</Label>
+          <Label className="font-medium">{t('usa.bInfo.shrldSection.shareholderOfficer')}</Label>
           <Input
             type="text"
             className="input col-span-2"
@@ -131,44 +142,45 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
         <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
           <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
           <Select
-            value={isDirector}
-            onValueChange={(value) => {
-              // const newIsDirector = value == 'Yes';              
-              onUpdate({
-                isDirector: value,
-                // If setting as director, automatically set legal person to false
-                // ...(newIsDirector ? { isLegalPerson: 'No' } : {})
-              });
+            value={isDirector.id}
+            onValueChange={(selectedId) => {
+              const selectedOption = yesNoOptions.find(opt => opt.id === selectedId);
+              if (selectedOption) {
+                onUpdate({ isDirector: selectedOption });
+              }
             }}
           >
             <SelectTrigger className="input">
-              <SelectValue>{isDirector == 'Yes' ? 'Yes' : 'No'}</SelectValue>
+              <SelectValue>{t(isDirector.value)}</SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Yes">Yes</SelectItem>
-              <SelectItem value="No">No</SelectItem>
+              {yesNoOptions.map((option) => (
+                <SelectItem key={option.id} value={option.id}>
+                  {t(option.value)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
           <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
           <Select
-            value={isLegalPerson}
-            onValueChange={(value) => {
-              // const newIsLegal = isDirector == 'Yes';
-              // console.log("value",value)
-              onUpdate({
-                isLegalPerson: value,
-                // If setting as director, automatically set legal person to false
-                // ...(newIsLegal ? { isLegalPerson: 'No' } : {})
-              });
+            value={isLegalPerson.id}
+            onValueChange={(selectedId) => {
+              const selectedOption = yesNoOptions.find(opt => opt.id === selectedId);
+              if (selectedOption) {
+                onUpdate({ isLegalPerson: selectedOption });
+              }
             }}
           >
             <SelectTrigger className="input">
-              <SelectValue>{isLegalPerson == 'Yes' ? 'Yes' : 'No'}</SelectValue>
+              <SelectValue>{t(isLegalPerson.value)}</SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Yes">Yes</SelectItem>
-              <SelectItem value="No">No</SelectItem>
+              {yesNoOptions.map((option) => (
+                <SelectItem key={option.id} value={option.id}>
+                  {t(option.value)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -187,6 +199,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
 };
 
 const ShareholderDirectorForm: React.FC = () => {
+  const { t } = useTranslation()
   const [formData, setFormData] = useAtom(usaFormWithResetAtom);
   const [shareholders, setShareholders] = useState<ShareholderDirectorProps[]>([
     {
@@ -194,18 +207,17 @@ const ShareholderDirectorForm: React.FC = () => {
       email: '',
       phone: '',
       ownershipRate: 0,
-      isDirector: 'No',
-      isLegalPerson: 'No',
+      isDirector: { id: "no", value: t("AmlCdd.option.no") },
+      isLegalPerson: { id: "no", value: t("AmlCdd.option.no") },
       onDelete: () => { },
       onUpdate: () => { },
       isRemovable: false,
     },
   ]);
   const [totalOwnership, setTotalOwnership] = useState(0);
-  //   const [isLoading, ] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast()
-  const { t } = useTranslation();
+
 
   useEffect(() => {
     if (formData.shareHolders && formData.shareHolders.length > 0) {
@@ -217,7 +229,6 @@ const ShareholderDirectorForm: React.FC = () => {
       }));
       setShareholders(hydratedShareholders);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -245,8 +256,8 @@ const ShareholderDirectorForm: React.FC = () => {
         email: '',
         phone: '',
         ownershipRate: 0,
-        isDirector: 'No',
-        isLegalPerson: 'No',
+        isDirector: { id: "no", value: t("AmlCdd.option.no") },
+        isLegalPerson: { id: "no", value: t("AmlCdd.option.no") },
         onDelete: () => { },
         onUpdate: () => { },
         isRemovable: true,
@@ -263,7 +274,6 @@ const ShareholderDirectorForm: React.FC = () => {
   };
 
   const updateShareholder = (index: number, updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => {
-    // console.log("updates",updates)
     const newShareholders = [...shareholders];
     newShareholders[index] = { ...newShareholders[index], ...updates };
     setShareholders(newShareholders);
@@ -279,15 +289,11 @@ const ShareholderDirectorForm: React.FC = () => {
         if (!isValidEmail(email)) {
           alert(`Invalid email format for ${name}: ${email}`);
         }
-
         return { name, email };
       });
-      console.log("shareholders", extractedData)
       const docId = localStorage.getItem('companyRecordId');
       const payload = { _id: docId, inviteData: extractedData, country: 'US' };
-      //   // console.log("send mail function", payload)
       const response = await sendInviteToShDir(payload);
-      //   // console.log("send mail response", response)
       if (response.summary.successful > 0) {
         toast({
           title: 'Success',
@@ -306,19 +312,17 @@ const ShareholderDirectorForm: React.FC = () => {
           description: `Some Invitations Failed`,
         })
       }
-      console.log("send mail response", response)
       setIsLoading(false);
 
     } catch (e) {
       console.log(e)
     }
   }
-
   return (
     <div className="flex flex-col">
       {totalOwnership === 0 && (
         <div className="text-red-500 mb-4 text-center">
-          Ownership is currently 0%. Please assign ownership.
+          {t('usa.bInfo.shrldSection.ownerShp0')}
         </div>
       )}
       {totalOwnership > 0 && totalOwnership < 100 && (
@@ -328,7 +332,7 @@ const ShareholderDirectorForm: React.FC = () => {
       )}
       {totalOwnership === 100 && (
         <div className="text-green-600 font-medium mb-4 text-center">
-          ✅ Ownership perfectly distributed at 100%
+          ✅{t('usa.bInfo.shrldSection.ownerShip100')}
         </div>
       )}
       {totalOwnership > 100 && (
