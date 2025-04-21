@@ -987,7 +987,22 @@
       "accountHeading": "제안하는 미국 회사의 회계/재무 데이터 보관 장소",
       "accountingAddress": "회계 장부, 재무 자료, 계약서, 송장 등을 미국 외 다른 국가에 보관하는 경우 아래에 주소를 입력하십시오.",
       "enterAddress": "제안하는 미국 회사의 회계 및 재무 데이터가 보관될 주소를 입력하십시오."
-    }
+    },
+    "serviceSelection": {
+    "heading": "법인 설립 및 첫 해 연간 비용 상세",
+    "col1": "서비스 설명",
+    "col2": "원가",
+    "col3": "할인 가격",
+    "totalCost": "총 비용",
+    "otherEmi": "기타 EMI(디지털 은행) 계좌 개설 지원",
+    "usCompanyFormation": "미국 회사 설립 + 설립 갱신일 또는 기념일까지의 회사 유지 (표준 서비스)",
+    "airwallex": "Airwallex 계좌 개설 지원",
+    "payoneer": "Payoneer 계좌 개설 지원",
+    "bankAdvice": "은행 계좌 개설 신청 및 자문 (사업 서류 검토 후 별도 견적)",
+    "usLegalOpinion": "미국 법률 의견 (백서 검토 후 별도 견적)",
+    "stockLegalOpinion": "국내 증권 시장 상장 법률 의견 (백서 검토 후 별도 견적)",
+    "consulting": "사업 규제 확인, 타당성 검토, 서류 준비 및 운영 자문 등 컨설팅 서비스 (별도 견적)"
+  }
   },
   "SwitchService": {
     "ApplicantInfoForm": {

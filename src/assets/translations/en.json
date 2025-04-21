@@ -994,6 +994,21 @@
       "accountHeading":"The location where the accounting/financial data of the proposed US company will be kept",
       "accountingAddress":"If you store accounting statements, financial data, contracts, invoices, etc. in a country other than the United States, please enter your address below.",
       "enterAddress":"Please enter the address where the accounting and financial data of the proposed US company will be kept."
+    },
+    "serviceSelection":{
+      "heading":"Incorporation and First Year Annual Fees Details",
+      "col1":"Service Description",
+      "col2":"Original Price",
+      "col3":"Discounted Price",
+      "totalCost":"Total Cost",
+      "otherEmi":"Other EMI(Digital Bank) account opening arrangement",
+      "usCompanyFormation":"US company formation + Company maintenance until the renewal date or anniversary date of its incorporation (standard service)",
+      "airwallex":"Airwallex Account opening arrangement",
+      "payoneer":"Payoneer Account opening arrangement",
+      "bankAdvice":"Bank account opening application and advice (separate quotation after review of business documents)",
+      "usLegalOpinion":"US legal opinion (separate quote after review of white paper)",
+      "stockLegalOpinion":"Legal opinion for listing on domestic stock exchanges (separate quote after review of white paper)",
+      "consulting":"Consulting services such as business regulatory confirmation, feasibility review, document preparation and operational advice (separate quotation)"
     }
   },
   "SwitchService": {

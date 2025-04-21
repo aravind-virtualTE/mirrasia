@@ -2,11 +2,14 @@ import React, { useState, } from 'react'
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
 import { useAtom } from "jotai"
 import { usaFormWithResetAtom } from "../UsState"
-import {  getEntityBasicPrice, service_list } from '../constants'
+import { getEntityBasicPrice, service_list } from '../constants'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useTranslation } from 'react-i18next'
 
-const UsServiceSelection:React.FC = () => {
+const UsServiceSelection: React.FC = () => {
+  const { t } = useTranslation();
+
   const [formData, setFormData] = useAtom(usaFormWithResetAtom)
   const [selectedServices, setSelectedServices] = useState<string[]>(formData.serviceItemsSelected)
   const state = formData.selectedState
@@ -15,60 +18,44 @@ const UsServiceSelection:React.FC = () => {
 
   const baseFees = [
     {
+      id:"state",
       description: `${state} (${entity})`,
       originalPrice: Number(basePriceData?.price || 0),
       discountedPrice: Number(basePriceData?.price || 0),
       note: `${basePriceData?.note || ""}`,
       isHighlight: false,
       isOptional: false,
+      isChecked: false, // Add isChecked property
     },
-    // {
-    //   description: `Airwallex Account opening arrangement`,
-    //   originalPrice: 0,
-    //   discountedPrice: 0,
-    //   note: "",
-    //   isHighlight: false,
-    //   isOptional: true,
-    // },
-    // {
-    //   description: `Payoneer Account opening arrangement`,
-    //   originalPrice: 0,
-    //   discountedPrice: 0,
-    //   note: "",
-    //   isHighlight: false,
-    //   isOptional: true,
-    // },
   ]
 
-  const optionalFees = [   
-    ...service_list.map((item) => ({
-      description: item,
-      originalPrice: item === "Other EMI(Digital Bank) account opening arrangement" ? 400 : 0,
-      discountedPrice: item === "Other EMI(Digital Bank) account opening arrangement" ? 400 : 0,
-      isHighlight: false,
-      isOptional: true,
-    }))
-  ]
+  const optionalFees = service_list.map((service) => ({
+    id: service.id,
+    description: t(service.key),
+    originalPrice: service.price || 0,
+    discountedPrice: service.price || 0,
+    isHighlight: false,
+    isOptional: true,
+    isChecked: false
+  }))
 
-  const handleCheckboxChange = (description: string) => {
+  const handleCheckboxChange = (id: string) => {
     setSelectedServices((prev) => {
-      const updated = prev.includes(description)
-        ? prev.filter((item) => item !== description)
-        : [...prev, description]
-      // Update the atom only after computing updated state
+      const updated = prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
       setFormData({ ...formData, serviceItemsSelected: updated })
       return updated
     })
   }
-
   // Combine selected optional fees with base fees
   const selectedOptionalFees = optionalFees.filter((fee) =>
-    selectedServices.includes(fee.description)
+    selectedServices.includes(fee.id)
   )
 
   const displayedFees = [...baseFees, ...optionalFees.map(fee => ({
     ...fee,
-    isChecked: selectedServices.includes(fee.description)
+    isChecked: selectedServices.includes(fee.id),
   }))]
 
   const totalOriginal = baseFees.reduce((sum, item) => sum + item.originalPrice, 0)
@@ -81,16 +68,16 @@ const UsServiceSelection:React.FC = () => {
     <Card className="w-full max-w-4xl">
       <CardHeader className="flex flex-row justify-between items-center">
         <CardTitle className="text-xl text-cyan-400">
-          Incorporation and First Year Annual Fees Details
+          {t('usa.serviceSelection.heading')}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-1/2">Service Description</TableHead>
-              <TableHead className="text-right">Original Price</TableHead>
-              <TableHead className="text-right">Discounted Price</TableHead>
+              <TableHead className="w-1/2">{t('usa.serviceSelection.col1')}</TableHead>
+              <TableHead className="text-right">{t('usa.serviceSelection.col2')}</TableHead>
+              <TableHead className="text-right">{t('usa.serviceSelection.col3')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -100,8 +87,8 @@ const UsServiceSelection:React.FC = () => {
                   <div className="flex items-center gap-2">
                     {fee.isOptional && (
                       <Checkbox
-                        checked={selectedServices.includes(fee.description)}
-                        onCheckedChange={() => handleCheckboxChange(fee.description)}
+                        checked={fee.isChecked}
+                        onCheckedChange={() => handleCheckboxChange(fee.id)}
                       />
                     )}
                     {fee.description}
@@ -111,12 +98,12 @@ const UsServiceSelection:React.FC = () => {
                   USD {fee.originalPrice}
                 </TableCell>
                 <TableCell className={`text-right ${fee.discountedPrice === 0 ? "text-red-500 font-semibold" : ""}`}>
-                  {fee.discountedPrice === 0 ? "FREE" : `USD ${fee.discountedPrice}`}
+                  {fee.discountedPrice === 0 ? t('ServiceSelection.FREE') : `USD ${fee.discountedPrice}`}
                 </TableCell>
               </TableRow>
             ))}
             <TableRow className="font-bold bg-gray-100">
-              <TableCell>Total Cost</TableCell>
+              <TableCell>{t('usa.serviceSelection.totalCost')}</TableCell>
               <TableCell className="text-right line-through text-gray-500">
                 USD {totalOriginal}
               </TableCell>
