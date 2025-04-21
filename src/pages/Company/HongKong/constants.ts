@@ -405,10 +405,10 @@ export const paymentOptions = [
 ];
 
 export const snsPlatforms = [
-  { id: 'wechat', name: 'WeChat' },
-  { id: 'telegram', name: 'Telegram' },
-  { id: 'kakao', name: 'Kakao Talk' },
-  { id: 'whatsapp', name: 'WhatsApp' }
+  { id: 'wechat', name: 'dashboard.wechat' },
+  { id: 'telegram', name: 'usa.AppInfo.telegram' },
+  { id: 'kakao', name: 'dashboard.kakaoT' },
+  { id: 'whatsapp', name: 'usa.AppInfo.whatsapp' }
 ];
 
 interface Currency {

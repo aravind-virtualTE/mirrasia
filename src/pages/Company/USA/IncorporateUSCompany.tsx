@@ -115,14 +115,15 @@ const IncorporateUSACompany = () => {
                     const legalInfo = formData.hasLegalEthicalIssues
                     const annualRenew = formData.annualRenewalTermsAgreement
                     const values = [rcActivity, rcSanctions, bsnsCremia, involved, legalInfo, annualRenew];
-                    if (values.some(value => value === "")) {
+                    // console.log("values", values)
+                    if (values.some(value => value.value === "")) {
                         toast({
                           title: "Incomplete Information",
                           description: "Please complete all fields before proceeding.",
                         });
                         return;
                       }
-                    if (rcActivity == 'no' && rcSanctions == 'no' && bsnsCremia == 'no' && involved == 'no' && legalInfo == 'no' && annualRenew == 'no') {
+                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && annualRenew.id == 'no') {
                         await updateDoc();
                         setCurrentSection(prev => prev + 1);
                         window.scrollTo({ top: 0, behavior: "smooth" });

@@ -9,17 +9,14 @@ export interface UsaFormData {
   name: string;
   establishedRelationshipType: string[];
   phoneNum: string;
-  snsAccountId: {
-    value: string
-    id: string
-  };
+  snsAccountId: {  value: string,  id: string };
   serviceItemsSelected: string[];
-  hasLegalEthicalIssues: string | undefined;
-  annualRenewalTermsAgreement: string | undefined;
-  restrictedCountriesWithActivity: string;
-  sanctionedTiesPresent: string;
-  businessInCrimea: string;
-  involvedInRussianEnergyDefense: string;
+  hasLegalEthicalIssues: { id: string,  value: string };
+  annualRenewalTermsAgreement:{ id: string,  value: string };
+  restrictedCountriesWithActivity: { id: string,  value: string };
+  sanctionedTiesPresent: { id: string,  value: string };
+  businessInCrimea: { id: string,  value: string };
+  involvedInRussianEnergyDefense: { id: string,  value: string };
   selectedIndustry: string[];
   otherIndustryText: string;
   descriptionOfProducts: string;
@@ -82,12 +79,12 @@ const initialFormState: UsaFormData = {
     id: ''
   },
   serviceItemsSelected: [],
-  hasLegalEthicalIssues: "",
-  annualRenewalTermsAgreement: "",
-  restrictedCountriesWithActivity: '',
-  sanctionedTiesPresent: '',
-  businessInCrimea: '',
-  involvedInRussianEnergyDefense: '',
+  hasLegalEthicalIssues: { id: '', value: '' },
+  annualRenewalTermsAgreement: { id: '', value: '' },
+  restrictedCountriesWithActivity: { id: '', value: '' },
+  sanctionedTiesPresent: { id: '', value: '' },
+  businessInCrimea: { id: '', value: '' },
+  involvedInRussianEnergyDefense: { id: '', value: '' },
   selectedIndustry: [],
   otherIndustryText:"",
   descriptionOfProducts: '',

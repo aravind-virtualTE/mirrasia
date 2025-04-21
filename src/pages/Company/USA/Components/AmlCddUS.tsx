@@ -9,16 +9,21 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useTheme } from "@/components/theme-provider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useTranslation } from 'react-i18next'
 
 const list = [
-    'yes', 'no', "Don't know", 'Consultation required before proceeding'
+    {id: "yes", value: "AmlCdd.options.yes"},{id:"no",value: "AmlCdd.options.no"},{id:"unknown",value: "AmlCdd.options.unknown"},{id:"heading",value: "SwitchService.Consultation.heading"}
 ]
 
 const list2 = [
-    'yes', 'no', 'I/We can handle on our own after incorporation', " If a fixed cost would be incurred every year after incorporation, I don't intend to incorporate", 'Consultation required before proceeding'
+    { "id": "yes", "value": "AmlCdd.options.yes" },
+    { "id": "no", "value": "AmlCdd.options.no" },
+    { "id": "handleOwnIncorpo", "value": "usa.AppInfo.handleOwnIncorpo" },
+    { "id": "didntIntedEveryYear", "value": "usa.AppInfo.didntIntedEveryYear" },
+    { "id": "consultationRequired", "value": "usa.AppInfo.consultationRequired" }
 ]
 const AmlCddUS: React.FC = () => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const { theme } = useTheme();
     const hasLegalEthicalIssues = formData.hasLegalEthicalIssues
@@ -28,28 +33,48 @@ const AmlCddUS: React.FC = () => {
     const businessInCrimea = formData.businessInCrimea
     const involvedInRussianEnergyDefense = formData.involvedInRussianEnergyDefense
 
-    const hasIssues = [ 
-        hasLegalEthicalIssues,
-        annualRenewalTermsAgreement,
-        restrictedCountriesWithActivity,
-        sanctionedTiesPresent,
-        businessInCrimea,
-        involvedInRussianEnergyDefense
-    ].some(value => (value) !== "no");
-    
-      console.log("hasIssues",hasIssues)
+    const hasIssues = [
+        hasLegalEthicalIssues.id,
+        annualRenewalTermsAgreement.id,
+        restrictedCountriesWithActivity.id,
+        sanctionedTiesPresent.id,
+        businessInCrimea.id,
+        involvedInRussianEnergyDefense.id
+    ].some(value => (value) != "no");
+
     const [initialDialogOpen, setInitialDialogOpen] = useState(hasIssues);
     const handleQuestionChange = (value: string) => {
-        // console.log("value", value)
-        setFormData({ ...formData, hasLegalEthicalIssues: value })
+        const selectedItem = list.find(item => t(item.value) == t(value));
+        setFormData({ 
+            ...formData, 
+            hasLegalEthicalIssues: selectedItem || {id: '', value : ""}  })
     };
     const handleQuestion2Change = (value: string) => {
         // console.log("value", value)
-        setFormData({ ...formData, annualRenewalTermsAgreement: value })
+        const selectedItem = list.find(item => t(item.value) == t(value));
+        setFormData({ ...formData, annualRenewalTermsAgreement:  selectedItem || {id: '', value : ""}  })
     };
-    // const handleOptionChange = (value: string) => {
-    //     setFormData({ ...formData, restrictedCountriesWithActivity: value });
-    // };
+
+    const handleBusinessActivity = (value: string) =>{
+        const selectedItem = list.find(item => t(item.value) == t(value));
+
+        setFormData({ ...formData, restrictedCountriesWithActivity: selectedItem || {id: '', value : ""}  })
+    }
+
+    const handleOtherPresence = (value: string) =>{
+        const selectedItem = list.find(item => t(item.value) == t(value));
+        setFormData({ ...formData,   sanctionedTiesPresent: selectedItem || {id: '', value : ""}   })
+    }
+
+    const handleBusinessCremia = (value: string) =>{
+        const selectedItem = list.find(item => t(item.value) == t(value));
+        setFormData({ ...formData,  businessInCrimea: selectedItem || {id: '', value : ""} })
+    }
+
+    const handleEnergyPresence = (value: string) =>{
+        const selectedItem = list.find(item => t(item.value) == t(value));
+        setFormData({ ...formData,  involvedInRussianEnergyDefense: selectedItem || {id: '', value : ""} })
+    }
 
     return (
         <>
@@ -63,35 +88,37 @@ const AmlCddUS: React.FC = () => {
                                 }`}
                         >
                             <h2 className="text-lg font-semibold mb-2">
-                                Legal and Ethical Assessment
+                                {t('AmlCdd.legal_assessment_title')}
                             </h2>
                         </aside>
                         <div className="w-3/4 ml-4">
-                            <p className="inline-flex">Confirmation of customer's business intentions
+                            <p className="inline-flex">
+                                {t('SwitchService.Intenstions.heading')}
                                 <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-[500px] text-base">
-                                    This section is prepared to minimize misunderstandings between us in the future by understanding the customer's business intentions and checking in advance whether the service we provide matches them. If you answer the questions accurately, we will provide advice or suggest services accordingly.
-                                </TooltipContent>
-                            </Tooltip></p>
+                                    <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-[500px] text-base">
+                                        {t('usa.AppInfo.amlCddPopup')}
+                                    </TooltipContent>
+                                </Tooltip></p>
                             <div key='legal1234' className="space-y-2">
-                                <Label htmlFor="serviceID" className="text-base flex items-center font-semibold gap-2">
-                                    Are there any legal or ethical issues such as money laundering, gambling, tax evasion, concealment of assets, avoidance of illegal business, bribery, fraud, etc.?<span className="text-red-500 flex font-bold ml-1">*</span>
+                                <Label htmlFor="serviceID" className="text-base font-semibold">
+                                    {t('usa.AppInfo.amlLegalThings')}
+                                    <span className="text-red-500 font-bold">*</span>
                                 </Label>
                                 <RadioGroup
-                                    value={hasLegalEthicalIssues}
+                                    value={t(hasLegalEthicalIssues.value || '')}
                                     onValueChange={(value) => handleQuestionChange(value)}
                                     disabled={formData.isDisabled}
                                 >
                                     {
-                                        list.map(item => {
+                                        list.map((item, idx) => {
                                             return (
-                                                <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value={item} id={`legal1234-${item}`} />
+                                                <div className="flex items-center space-x-2" key={`alt${idx}`}>
+                                                    <RadioGroupItem value={t(item.value)} id={`legal1234-${item.id}`} />
                                                     <Label htmlFor={`legal1234-${item}`} className="text-sm">
-                                                        {item}
+                                                        {t(item.value)}
                                                     </Label>
                                                 </div>
                                             )
@@ -100,21 +127,22 @@ const AmlCddUS: React.FC = () => {
                                 </RadioGroup>
                             </div>
                             <div key='legal12345' className="space-y-2">
-                                <Label htmlFor="serviceID" className="text-base flex items-center font-semibold gap-2">
-                                    After the establishment of the US company, annual renewal(registered agent, registered address service) will occur every year, and all these tasks are accompanied by an obligation to provide related expenses and documentations. Do you agree with this?<span className="text-red-500 flex font-bold ml-1">*</span>
+                                <Label htmlFor="serviceID" className="text-base font-semibold">
+                                    {t('usa.AppInfo.amlUsEstablishment')}
+                                    <span className="text-red-500 font-bold">*</span>
                                 </Label>
                                 <RadioGroup
-                                    value={annualRenewalTermsAgreement}
+                                    value={t(annualRenewalTermsAgreement.value || '')}
                                     onValueChange={(value) => handleQuestion2Change(value)}
                                     disabled={formData.isDisabled}
                                 >
                                     {
-                                        list2.map(item => {
+                                        list2.map((item, idx) => {
                                             return (
-                                                <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value={item} id={`legal1234-${item}`} />
-                                                    <Label htmlFor={`legal1234-${item}`} className="text-sm">
-                                                        {item}
+                                                <div className="flex items-center space-x-2" key={`use${idx}`}>
+                                                    <RadioGroupItem value={t(item.value)} id={`legal123-${item.id}`} />
+                                                    <Label htmlFor={`legal123-${item.id}`} className="text-sm">
+                                                        {t(item.value)}
                                                     </Label>
                                                 </div>
                                             )
@@ -134,41 +162,32 @@ const AmlCddUS: React.FC = () => {
                                 }`}
                         >
                             <h2 className="text-lg font-semibold mb-2">
-                                Questions on the subject of transaction sanctions</h2>
+                                {t('usa.AppInfo.amlCddQuestion')}
+                            </h2>
                             <p className="text-sm text-gray-600">
-                                This section is about whether there are transactions with countries subject to sanctions stipulated or recommended by FATF, UNGC, OFAC, etc. Please make sure to answer the related questions without any distortion or error.
+                                {t('usa.AppInfo.amlCddQPara')}
                             </p>
                         </aside>
                         <div className="w-3/4 ml-4">
                             <div className="space-y-2">
-                                <Label htmlFor="question1" className="inline-flex">
-                                    Does the proposed US company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)?
-                                    <span className="text-red-500 font-bold ml-1 flex">*</span>
+                                <Label htmlFor="question1" className="text-base font-semibold"> 
+                                    {t('usa.AppInfo.plannedBusinessActivity')}
+                                    <span className="text-red-500 font-bold">
+                                        *
+                                    </span>
                                 </Label>
-                                {/* <Select onValueChange={handleOptionChange} value={formData.restrictedCountriesWithActivity}>
-                                    <SelectTrigger className="w-full md:w-80">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {list.map(state => (
-                                            <SelectItem key={state} value={state}>
-                                                {state}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <RadioGroup
-                                    value={restrictedCountriesWithActivity}
-                                    onValueChange={(e) => setFormData({ ...formData, restrictedCountriesWithActivity: e })}
+                                    value={t(restrictedCountriesWithActivity.value || '') }
+                                    onValueChange={(e) => handleBusinessActivity(e)}
                                     disabled={formData.isDisabled}
                                 >
                                     {
-                                        list.map(item => {
+                                        list.map((item, idx) => {
                                             return (
-                                                <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value={item} id={`legal1234-${item}`} />
-                                                    <Label htmlFor={`legal1234-${item}`} className="text-sm">
-                                                        {item}
+                                                <div className="flex items-center space-x-2" key={`pbs${idx}`}>
+                                                    <RadioGroupItem value={t(item.value)} id={`legal1234-${item.id}`} />
+                                                    <Label htmlFor={`legal1234-${item.id}`} className="text-sm">
+                                                        {t(item.value)}
                                                     </Label>
                                                 </div>
                                             )
@@ -178,22 +197,22 @@ const AmlCddUS: React.FC = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="question2" className="inline-flex">
-                                    To the best of your knowledge, does the proposed US company or any of the company's connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by sanctions administered by the following bodies: UN, EU, UKHMT, HKMA, OFAC, or as part of local sanctions law?
-                                    <span className="text-red-500 font-bold ml-1 flex">*</span>
-                                </Label>                               
+                                <Label htmlFor="question2" className="text-base font-semibold">
+                                    {t('usa.AppInfo.otherPresence')}
+                                    <span className="text-red-500 font-bold">*</span>
+                                </Label>
                                 <RadioGroup
-                                    value={sanctionedTiesPresent}
-                                    onValueChange={(e) => setFormData({ ...formData, sanctionedTiesPresent: e })}
+                                    value={t(sanctionedTiesPresent.value || '') }
+                                    onValueChange={(e) => handleOtherPresence(e)}
                                     disabled={formData.isDisabled}
                                 >
                                     {
-                                        list.map(item => {
+                                        list.map((item, idx) => {
                                             return (
-                                                <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value={item} id={`legal1234-${item}`} />
-                                                    <Label htmlFor={`legal1234-${item}`} className="text-sm">
-                                                        {item}
+                                                <div className="flex items-center space-x-2" key={`op${idx}`}>
+                                                    <RadioGroupItem value={t(item.value)} id={`legal134-${item}`} />
+                                                    <Label htmlFor={`legal134-${item}`} className="text-sm">
+                                                        {t(item.value)}
                                                     </Label>
                                                 </div>
                                             )
@@ -203,34 +222,23 @@ const AmlCddUS: React.FC = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="question3" className="inline-flex">
-                                    To the best of your knowledge, does the proposed US company or any of its connected or other related parties have any current or planned business activities in Crimea/Sevastopol Regions?
-                                    <span className="text-red-500 font-bold ml-1 flex">*</span>
+                                <Label htmlFor="question3" className="text-base font-semibold">
+                                    {t('usa.AppInfo.planBusinesInCrimea')}
+                                    <span className="text-red-500 font-bold">*</span>
                                 </Label>
-                                {/* <Select onValueChange={(e) => setFormData({ ...formData, businessInCrimea: e })} value={formData.businessInCrimea}>
-                                    <SelectTrigger className="w-full md:w-80">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {list.map(state => (
-                                            <SelectItem key={state} value={state}>
-                                                {state}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
+
                                 <RadioGroup
-                                    value={businessInCrimea}
-                                    onValueChange={(e) => setFormData({ ...formData, businessInCrimea: e })}
+                                    value={t(businessInCrimea.value || '')}
+                                    onValueChange={(e) => handleBusinessCremia(e)}
                                     disabled={formData.isDisabled}
                                 >
                                     {
-                                        list.map(item => {
+                                        list.map((item, idx) => {
                                             return (
-                                                <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value={item} id={`legal1234-${item}`} />
-                                                    <Label htmlFor={`legal1234-${item}`} className="text-sm">
-                                                        {item}
+                                                <div className="flex items-center space-x-2" key={`pbc${idx}`}>
+                                                    <RadioGroupItem value={t(item.value)} id={`legal234-${item.id}`} />
+                                                    <Label htmlFor={`legal234-${item.id}`} className="text-sm">
+                                                        {t(item.value)}
                                                     </Label>
                                                 </div>
                                             )
@@ -240,34 +248,22 @@ const AmlCddUS: React.FC = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="question4" className="inline-flex">
-                                    To the best of your knowledge, does the proposed US company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?
-                                    <span className="text-red-500 font-bold ml-1 flex">*</span>
+                                <Label htmlFor="question4" className="text-base font-semibold">
+                                    {t('usa.AppInfo.energyPresence')}
+                                    <span className="text-red-500 font-bold">*</span>
                                 </Label>
-                                {/* <Select onValueChange={(e) => setFormData({ ...formData, involvedInRussianEnergyDefense: e })} value={formData.involvedInRussianEnergyDefense}>
-                                    <SelectTrigger className="w-full md:w-80">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {list.map(state => (
-                                            <SelectItem key={state} value={state}>
-                                                {state}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <RadioGroup
-                                    value={involvedInRussianEnergyDefense}
-                                    onValueChange={(e) => setFormData({ ...formData, involvedInRussianEnergyDefense: e })}
+                                    value={t(involvedInRussianEnergyDefense.value || '') }
+                                    onValueChange={(e) => handleEnergyPresence(e)}
                                     disabled={formData.isDisabled}
                                 >
                                     {
-                                        list.map(item => {
+                                        list.map((item, idx) => {
                                             return (
-                                                <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value={item} id={`legal1234-${item}`} />
-                                                    <Label htmlFor={`legal1234-${item}`} className="text-sm">
-                                                        {item}
+                                                <div className="flex items-center space-x-2" key={`engp${idx}`}>
+                                                    <RadioGroupItem value={t(item.value)} id={`legal1235-${item.id}`} />
+                                                    <Label htmlFor={`legal1235-${item.id}`} className="text-sm">
+                                                        {t(item.value)}
                                                     </Label>
                                                 </div>
                                             )
@@ -283,11 +279,11 @@ const AmlCddUS: React.FC = () => {
             <Dialog open={initialDialogOpen} onOpenChange={setInitialDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Important Notice</DialogTitle>
+                        <DialogTitle> {t('AmlCdd.dialog_initial_title')}</DialogTitle>
                     </DialogHeader>
-                    <p>All fields must be filled out carefully. Once completed, this form will not be editable.</p>
+                    <p>{t('AmlCdd.dialog_initial_message')}</p>
                     <Button onClick={() => setInitialDialogOpen(false)}>
-                        Got it
+                        {t('AmlCdd.dialog_button')}
                     </Button>
                 </DialogContent>
             </Dialog>
