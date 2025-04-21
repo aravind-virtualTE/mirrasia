@@ -929,7 +929,8 @@
       "koreanLlcRule":"For Korean residents, LLC income is recognized as personal income and reported comprehensively. Local tax rates and expected profits should be reviewed.",
       "spclCase":"Special Cases (Crypto Industry)",
       "cryptoLegalBusiness":"For crypto-related businesses, legal regulations and accounting standards for cryptocurrencies need to be reviewed. Some countries may tax cryptocurrencies as assets.",
-      "cryptoNotTaxed":"In some countries, cryptocurrencies are not taxed, and they may be recognized as assets. Local tax rates and withholding taxes should be reviewed."
+      "cryptoNotTaxed":"In some countries, cryptocurrencies are not taxed, and they may be recognized as assets. Local tax rates and withholding taxes should be reviewed.",
+      "tax":"Taxation"
     },
     "relation":{
       "director-officer":"Director/Officer of the proposed US company",

@@ -74,7 +74,8 @@ export default function CompanyInformationUS() {
                 className="text-m font-semibold mb-0 cursor-pointer underline"
                 onClick={openDialog}
               >
-                Differences Between Corporations and LLCs<span className="text-red-500">*</span>
+                 {t('usa.compInfo.infoHeading')}
+                <span className="text-red-500">*</span>
               </h2>
             </aside>
             <div className="w-full md:w-3/4 md:ml-4">
@@ -107,7 +108,7 @@ export default function CompanyInformationUS() {
                 }`}
             >
               <h2 className="text-m font-semibold mb-0">
-                State Selection
+               {t('usa.compInfo.stateSelection')}
               </h2>
             </aside>
             <div className="w-full md:w-3/4 md:ml-4">
@@ -136,18 +137,18 @@ export default function CompanyInformationUS() {
       <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
         <DialogContent className="max-w-[70%] w-full mx-auto my-auto p-6">
           <DialogHeader className="text-center">
-            <DialogTitle className="text-2xl font-bold mb-2">
-              Corporation vs LLC: Key Differences
+            <DialogTitle className="text-2xl font-bold mb-2">              
+              {t('usa.compInfo.corpandLlc')}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground mb-4">
-              Understand the fundamental differences between Corporations and Limited Liability Companies
+            {t('usa.compInfo.fundamentalDiff')}              
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[70vh] w-full pr-4">
             <CorporationVsLLC />
           </ScrollArea>
           <div className="flex justify-center mt-4">
-            <Button onClick={closeDialog} className="w-full md:w-auto">Close</Button>
+            <Button onClick={closeDialog} className="w-full md:w-auto">{t('usa.compInfo.close')}</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -156,70 +157,54 @@ export default function CompanyInformationUS() {
 }
 
 const CorporationVsLLC = () => {
+  const { t } = useTranslation();
   return (
     <div className="w-full overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[200px] min-w-[150px]">Category</TableHead>
-            <TableHead className="min-w-[250px]">Corporation</TableHead>
-            <TableHead className="min-w-[250px]">LLC (Limited Liability Company)</TableHead>
+            <TableHead className="w-[200px] min-w-[150px]">{t('usa.compInfo.category')}</TableHead>
+            <TableHead className="min-w-[250px]">{t('usa.compInfo.corporation')}</TableHead>
+            <TableHead className="min-w-[250px]">{t('usa.compInfo.llc')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow>
-            <TableCell className="font-medium">Definition</TableCell>
-            <TableCell>
-              Known as Corporation in the U.S. and Private Limited Company in the UK.
+            <TableCell className="font-medium">{t('usa.compInfo.definition')}</TableCell>
+            <TableCell>{t('usa.compInfo.knownAsCorpo')}              
             </TableCell>
             <TableCell>
-              A limited liability company, similar to a sole proprietorship or partnership (a concept not present in Korea).
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Taxation</TableCell>
-            <TableCell>
-              Corporate tax rates are fixed, and in countries with dividend taxes (e.g., U.S., Korea), double taxation (corporate tax + dividend tax) applies.
-            </TableCell>
-            <TableCell>
-              In countries like the U.S., LLCs are often established to avoid double taxation. LLC income is recognized as personal income based on ownership shares, avoiding double taxation.
+            {t('usa.compInfo.llcProprietoryPartner')}             
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="font-medium">Profit Realization</TableCell>
+            <TableCell className="font-medium"> {t('usa.compInfo.tax')}</TableCell>
             <TableCell>
-              Profits are realized through dividends.
+            {t('usa.compInfo.corporateTax')}              
             </TableCell>
             <TableCell>
-              There is no dividend concept. Profits are recognized as personal income based on ownership shares.
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Retained Earnings</TableCell>
-            <TableCell>
-              In countries where dividends are taxed, profits can be retained as retained earnings for long-term asset management, generating additional income for future tax planning.
-            </TableCell>
-            <TableCell>
-              Since profits are recognized as personal income, retained earnings cannot be set aside.
+            {t('usa.compInfo.llcIncome')}
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="font-medium">Other Considerations</TableCell>
-            <TableCell>
-              For Korean residents, forming a corporation may result in double taxation (local corporate tax + Korean dividend tax). Tax planning, such as splitting dividends or reinvesting retained earnings, may be necessary.
-            </TableCell>
-            <TableCell>
-              For Korean residents, LLC income is recognized as personal income and reported comprehensively. Local tax rates and expected profits should be reviewed.
-            </TableCell>
+            <TableCell className="font-medium">{t('usa.compInfo.profitRealiz')}</TableCell>
+            <TableCell>{t('usa.compInfo.profitDividend')}</TableCell>
+            <TableCell>{t('usa.compInfo.noDividend')}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="font-medium">Special Cases (Crypto Industry)</TableCell>
-            <TableCell>
-              For crypto-related businesses, legal regulations and accounting standards for cryptocurrencies need to be reviewed. Some countries may tax cryptocurrencies as assets.
-            </TableCell>
-            <TableCell>
-              In some countries, cryptocurrencies are not taxed, and they may be recognized as assets. Local tax rates and withholding taxes should be reviewed.
-            </TableCell>
+            <TableCell className="font-medium">{t('usa.compInfo.retainedEarning')}</TableCell>
+            <TableCell>{t('usa.compInfo.dividentTaxed')}</TableCell>
+            <TableCell>{t('usa.compInfo.profitPersonalIncome')}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="font-medium">{t('usa.compInfo.otherConsideration')}</TableCell>
+            <TableCell>{t('usa.compInfo.koreanConsideration')}</TableCell>
+            <TableCell>{t('usa.compInfo.koreanLlcRule')}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="font-medium">{t('usa.compInfo.spclCase')}</TableCell>
+            <TableCell>{t('usa.compInfo.cryptoLegalBusiness')}</TableCell>
+            <TableCell>{t('usa.compInfo.cryptoNotTaxed')}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
