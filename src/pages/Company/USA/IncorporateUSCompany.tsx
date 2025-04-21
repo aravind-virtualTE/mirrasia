@@ -20,8 +20,10 @@ import InvoiceUs from "./Components/InvoiceUs"
 import ServiceAgreement from "./Components/ServiceAgreement"
 import RegistrationDetails from "./Components/RegistrationDetails"
 import { paymentApi } from "@/lib/api/payment"
+import { useTranslation } from "react-i18next"
 
 const IncorporateUSACompany = () => {
+    const { t } = useTranslation();
     const [currentSection, setCurrentSection] = useState(1);
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const token = localStorage.getItem("token") as string;
@@ -30,17 +32,17 @@ const IncorporateUSACompany = () => {
     const steps = [
         {
             number: 1,
-            label: "Applicant information",
+            label: t('usa.steps.step1'),
             active: currentSection === 1,
         },
-        { number: 2, label: "KYC CDD", active: currentSection === 2 },
-        { number: 3, label: "Company Information", active: currentSection === 3 },
-        { number: 4, label: "Service Agreement", active: currentSection === 4 },
-        { number: 5, label: "Service Selection", active: currentSection === 5 },
-        { number: 6, label: "Invoice", active: currentSection === 6 },
-        { number: 7, label: "Payment", active: currentSection === 7 },
-        { number: 8, label: "Information For Incorporation", active: currentSection === 8 },
-        { number: 9, label: "Incorporation", active: currentSection === 9 },
+        { number: 2, label: t('usa.steps.step2'), active: currentSection === 2 },
+        { number: 3, label: t('usa.steps.step3'), active: currentSection === 3 },
+        { number: 4, label: t('usa.steps.step4'), active: currentSection === 4 },
+        { number: 5, label: t('usa.steps.step5'), active: currentSection === 5 },
+        { number: 6, label: t('usa.steps.step6'), active: currentSection === 6 },
+        { number: 7, label: t('usa.steps.step7'), active: currentSection === 7 },
+        { number: 8, label: t('usa.steps.step8'), active: currentSection === 8 },
+        { number: 9, label: t('usa.steps.step9'), active: currentSection === 9 },
     ];
 
     const updateDoc = async () => {
