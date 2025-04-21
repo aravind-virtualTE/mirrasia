@@ -36,8 +36,14 @@ export interface UsaFormData {
     email: string;
     phone: string;
     ownershipRate: number;
-    isDirector: string
-    isLegalPerson: string
+    isDirector: {
+      value: string,
+      id: string
+    }
+    isLegalPerson: {
+      value: string,
+      id: string
+    }
   }[];
   designatedContact: string | number;
   accountingDataAddress: string;
