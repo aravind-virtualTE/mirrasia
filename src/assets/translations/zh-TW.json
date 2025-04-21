@@ -988,6 +988,21 @@
       "accountHeading": "建議設立之美國公司的會計/財務數據存放地點",
       "accountingAddress": "如果您將會計報表、財務數據、合約、發票等文件存放在美國以外的國家，請在下方輸入地址。",
       "enterAddress": "請輸入建議設立之美國公司的會計和財務數據存放地址。"
+    },
+    "serviceSelection": {
+      "heading": "公司設立及首年年度費用詳細",
+      "col1": "服務說明",
+      "col2": "原價",
+      "col3": "折扣價格",
+      "totalCost": "總費用",
+      "otherEmi": "其他EMI（數位銀行）帳戶開立安排",
+      "usCompanyFormation": "美國公司設立 + 至設立續期日或週年紀念日之公司維護（標準服務）",
+      "airwallex": "Airwallex 帳戶開立安排",
+      "payoneer": "Payoneer 帳戶開立安排",
+      "bankAdvice": "銀行帳戶開立申請及建議（業務文件審查後另行報價）",
+      "usLegalOpinion": "美國法律意見（白皮書審查後另行報價）",
+      "stockLegalOpinion": "國內證券交易所上市法律意見（白皮書審查後另行報價）",
+      "consulting": "業務法規確認、可行性審查、文件準備及營運諮詢等諮詢服務（另行報價）"
     }
   },
   "SwitchService": {

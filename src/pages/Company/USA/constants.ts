@@ -66,16 +66,52 @@
     // }
   };
   
+  // export const service_list = [
+  //   "Other EMI(Digital Bank) account opening arrangement",
+  //   "US company formation + Company maintenance until the renewal date or anniversary date of its incorporation (standard service)",
+  //   "Airwallex Account opening arrangement",
+  //   "Payoneer Account opening arrangement",
+  //   "Bank account opening application and advice (separate quotation after review of business documents)",
+  //   "US legal opinion (separate quote after review of white paper)",
+  //   "Legal opinion for listing on domestic stock exchanges (separate quote after review of white paper)",
+  //   "Consulting services such as business regulatory confirmation, feasibility review, document preparation and operational advice (separate quotation)"
+  // ];
   export const service_list = [
-    "Other EMI(Digital Bank) account opening arrangement",
-    "US company formation + Company maintenance until the renewal date or anniversary date of its incorporation (standard service)",
-    "Airwallex Account opening arrangement",
-    "Payoneer Account opening arrangement",
-    "Bank account opening application and advice (separate quotation after review of business documents)",
-    "US legal opinion (separate quote after review of white paper)",
-    "Legal opinion for listing on domestic stock exchanges (separate quote after review of white paper)",
-    "Consulting services such as business regulatory confirmation, feasibility review, document preparation and operational advice (separate quotation)"
+    {
+      id: "otherEmi",
+      key: "usa.serviceSelection.otherEmi",
+      price: 400,
+    },
+    {
+      id: "usCompanyFormation",
+      key: "usa.serviceSelection.usCompanyFormation",
+    },
+    {
+      id: "airwallex",
+      key: "usa.serviceSelection.airwallex",
+    },
+    {
+      id: "payoneer",
+      key: "usa.serviceSelection.payoneer",
+    },
+    {
+      id: "bankAdvice",
+      key: "usa.serviceSelection.bankAdvice",
+    },
+    {
+      id: "usLegalOpinion",
+      key: "usa.serviceSelection.usLegalOpinion",
+    },
+    {
+      id: "stockLegalOpinion",
+      key: "usa.serviceSelection.stockLegalOpinion",
+    },
+    {
+      id: "consulting",
+      key: "usa.serviceSelection.consulting",
+    },
   ];
+
   
   export const entity_types = [
     'LLC (limited liability company)',
