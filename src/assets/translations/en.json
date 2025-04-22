@@ -1009,6 +1009,19 @@
       "usLegalOpinion":"US legal opinion (separate quote after review of white paper)",
       "stockLegalOpinion":"Legal opinion for listing on domestic stock exchanges (separate quote after review of white paper)",
       "consulting":"Consulting services such as business regulatory confirmation, feasibility review, document preparation and operational advice (separate quotation)"
+    },
+    "regDetails":{
+      "heading":"Registration details of the proposed US company",
+      "htoolTip":"In this section, you can provide information such as investment capital, members (shareholders), executives, and companies to be registered in the U.S. company you are establishing.",
+      "totalPaid":"Total capital to be paid (in USD)",
+      "totalPaidTtip":"The minimum capital is USD 1, and there is no obligation to pay capital. If there are multiple shareholders or you wish to split/transfer/sell part of the capital investment ratio, please set the amount to support the number of the desired ratio (e.g. 49.99%). If you need further explanation, please contact us.",
+      "executiveTeam":"Composition of the executive team of the U.S. company you are establishing",
+      "executiveTeamTtip":"In U.S. companies, other corporations can be registered as executives, and when making decisions, representatives delegated by the corporation can participate in decision-making. In this case, you must provide a board resolution and proxy document prepared by the relevant corporation. (Due to the complexity of the document process when making decisions, it is not recommended for small companies or companies without separate experts.) A U.S. company must have at least one natural person (meaning an ordinary individual, the opposite of a legal person). must be appointed as an executive.",
+      "usLocalReg":"U.S. local company registration address",
+      "usLocalRegTtip":"To establish and maintain a U.S. company, you must have a commercial address in the state you wish to establish. Our company provides address services for use in registration purposes, and this service includes registration address and mail processing services. (It may be difficult to register the address of a residential or lodging business as a company address.)",
+      "enterUsAddress":"Please enter your business address within the United States.",
+      "totalNumShares":"Total number of shares to be issued (minimum 1 share)",
+      "additionalCosts":"Since additional costs will be incurred when issuing new stocks or acquiring shares after establishment, please carefully decide on the capital and number of shares."
     }
   },
   "SwitchService": {
@@ -1139,5 +1152,10 @@
     "clientConfirmPurpose":"The Client confirms that the purpose of the request for this service and the funds to be received in the future are not related to or derived from illegal activities such as illegal weapons, money laundering, terrorist financing, illegal drugs or fraud. MIRR ASIA reserves the right to suspend the service without prior notice if any illegal activity is suspected. The Customer agrees to provide the necessary documents and information in connection with this Service and agrees that such documents and information may be provided to institutions, government agencies and companies that are essential to the provision of the Service.",
     "checkBox":"I have read and agree to the terms and conditions outlined in this Service Agreement. I understand that by checking this box and clicking 'Accept Agreement', I am entering into a legally binding agreement with MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED.",
     "agreeSa":"Accept Agreement"
+  },
+  "finalMsg":{
+    "congrats":"Congratulations!",
+    "usPara":"Thank you for completing the USA company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.",
+    "returntoDash":"Go to Dashboard"
   }
 }

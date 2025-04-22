@@ -1,5 +1,4 @@
 import { Card, CardContent } from "@/components/ui/card"
-// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from "lucide-react"
@@ -15,6 +14,7 @@ import { useAtom } from 'jotai';
 import { usaFormWithResetAtom } from '../UsState';
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/components/theme-provider";
+import { useTranslation } from "react-i18next";
 
 const list = ['1', '100', '1000', '10000']
 
@@ -30,6 +30,7 @@ const noShareList = [
   'Total capital divided by $1 (1 share price = $1; universal method)', '1 share (minimum) (1 share price = total capital)', '100', '1,000', '10,000'
 ]
 const RegistrationDetails = () => {
+  const {t} = useTranslation()
   const { theme } = useTheme();
   const [formData, setFormData] = useAtom(usaFormWithResetAtom);
 
@@ -63,7 +64,7 @@ const RegistrationDetails = () => {
                 }`}
             >
               <h2 className="text-m font-semibold mb-0 cursor-pointer ">
-                Registration details of the proposed US company
+                {t('usa.regDetails.heading')}
                 <span className="text-red-500">
                   *
                   <Tooltip>
@@ -71,10 +72,7 @@ const RegistrationDetails = () => {
                       <HelpCircle className="text-red-500 ld h-4 w-4 mt-1 ml-2 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-[500px] text-base">
-                      In this section, you can provide information such as
-                      investment capital, members (shareholders), executives,
-                      and companies to be registered in the U.S. company you
-                      are establishing.
+                    {t('usa.regDetails.htoolTip')}                      
                     </TooltipContent>
                   </Tooltip>
                 </span>
@@ -83,7 +81,7 @@ const RegistrationDetails = () => {
             <div className="w-full md:w-3/4 md:ml-4">
               <div className="space-y-2">
                 <Label htmlFor="relationbtwauth" className="inline-flex">
-                  Total capital to be paid (in USD){" "}
+                  {t('usa.regDetails.totalPaid')}
                   <span className="text-red-500 font-bold ml-1 flex">
                     *
                     <Tooltip>
@@ -91,13 +89,7 @@ const RegistrationDetails = () => {
                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-[500px] text-base">
-                        The minimum capital is USD 1, and there is no
-                        obligation to pay capital. If there are multiple
-                        shareholders or you wish to split/transfer/sell part
-                        of the capital investment ratio, please set the amount
-                        to support the number of the desired ratio (e.g.
-                        49.99%). If you need further explanation, please
-                        contact us.
+                      {t('usa.regDetails.totalPaidTtip')}                        
                       </TooltipContent>
                     </Tooltip>
                   </span>
@@ -111,8 +103,7 @@ const RegistrationDetails = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="relationbtwauth" className="inline-flex">
-                  Composition of the executive team of the U.S. company you
-                  are establishing{" "}
+                {t('usa.regDetails.executiveTeam')}                  
                   <span className="text-red-500 font-bold ml-1 flex">
                     *
                     <Tooltip>
@@ -120,18 +111,7 @@ const RegistrationDetails = () => {
                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-[500px] text-base">
-                        In U.S. companies, other corporations can be
-                        registered as executives, and when making decisions,
-                        representatives delegated by the corporation can
-                        participate in decision-making. In this case, you must
-                        provide a board resolution and proxy document prepared
-                        by the relevant corporation. (Due to the complexity of
-                        the document process when making decisions, it is not
-                        recommended for small companies or companies without
-                        separate experts.) A U.S. company must have at least
-                        one natural person (meaning an ordinary individual,
-                        the opposite of a legal person). must be appointed as
-                        an executive.
+                      {t('usa.regDetails.executiveTeamTtip')}
                       </TooltipContent>
                     </Tooltip>
                   </span>
@@ -146,7 +126,7 @@ const RegistrationDetails = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="relationbtwauth" className="inline-flex">
-                  U.S. local company registration address
+                  {t('usa.regDetails.usLocalReg')}
                   <span className="text-red-500 font-bold ml-1 flex">
                     *
                     <Tooltip>
@@ -154,14 +134,7 @@ const RegistrationDetails = () => {
                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-[500px] text-base">
-                        To establish and maintain a U.S. company, you must
-                        have a commercial address in the state you wish to
-                        establish. Our company provides address services for
-                        use in registration purposes, and this service
-                        includes registration address and mail processing
-                        services. (It may be difficult to register the address
-                        of a residential or lodging business as a company
-                        address.)
+                      {t('usa.regDetails.usLocalRegTtip')}                       
                       </TooltipContent>
                     </Tooltip>
                   </span>
@@ -187,8 +160,7 @@ const RegistrationDetails = () => {
                 "There is a separate address to use as a business address in the United States (do not use Mir Asia’s registered address service)" && (
                   <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
-                      Please enter your business address within the United
-                      States.
+                    {t('usa.regDetails.enterUsAddress')}
                     </Label>
                     <Input
                       id="descBusiness"
@@ -207,7 +179,7 @@ const RegistrationDetails = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="name" className="inline-flex">
-                  Total number of shares to be issued (minimum 1 share){" "}
+                  {t('usa.regDetails.totalNumShares')}                  
                   <span className="text-red-500 font-bold ml-1 flex">
                     *
                     <Tooltip>
@@ -215,10 +187,7 @@ const RegistrationDetails = () => {
                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-[500px] text-base">
-                        Since additional costs will be incurred when issuing
-                        new stocks or acquiring shares after establishment,
-                        please carefully decide on the capital and number of
-                        shares.
+                      {t('usa.regDetails.additionalCosts')}                       
                       </TooltipContent>
                     </Tooltip>
                   </span>

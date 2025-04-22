@@ -8,10 +8,12 @@ import { useAtom } from 'jotai';
 // import { companyIncorporationAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
 import { usePaymentSession } from '@/hooks/usePaymentSession';
 import { usaFormWithResetAtom } from '../../UsState';
+import { useTranslation } from 'react-i18next';
 
 interface ReceiptUploadProps {sessionId: string;}
 
 export default function UsReceiptUpload({ sessionId }: ReceiptUploadProps) {
+  const {t} = useTranslation()
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   // const [formData] = useAtom(companyIncorporationAtom);
@@ -45,7 +47,7 @@ export default function UsReceiptUpload({ sessionId }: ReceiptUploadProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Upload Payment Receipt</CardTitle>
+        <CardTitle className="text-lg">{t('payment.uploadPReceipt')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {formData.receiptUrl && (
@@ -91,7 +93,7 @@ export default function UsReceiptUpload({ sessionId }: ReceiptUploadProps) {
 
         {uploadStatus === 'success' && (
           <p className="text-sm text-green-600 text-center">
-            Receipt uploaded successfully. Our team will verify it shortly.
+            {t('payment.uploadPReceiptSuccess')}
           </p>
         )}
       </CardContent>

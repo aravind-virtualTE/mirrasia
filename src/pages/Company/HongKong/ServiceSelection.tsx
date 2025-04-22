@@ -120,7 +120,7 @@ const ServiceSelection: React.FC = () => {
       isHighlight: false,
     },
   ], [t]);
-  console.log("fees",fees)
+  // console.log("fees",fees)
   // console.log("serviceSelectionState",serviceSelectionState)
   const legalPersonFees = shareHolderAtom.shareHolders.filter((shareholder) => shareholder.isLegalPerson).length;
   const individualFees = shareHolderAtom.shareHolders.filter((shareholder) => !shareholder.isLegalPerson).length;
@@ -156,6 +156,7 @@ const ServiceSelection: React.FC = () => {
   }, [t,fees, legalPersonFees, individualFees]);
 
   const handleCheckboxChange = (description: string) => {
+
     setSelectedServices((prev) =>
       prev.includes(description)
         ? prev.filter((item) => item !== description)
@@ -217,7 +218,7 @@ const ServiceSelection: React.FC = () => {
         generatedAt: new Date().toISOString(),
       }
     };
-    console.log("invoiceData",invoiceData)
+    // console.log("invoiceData",invoiceData)
     setCorpoInvoiceAtom([invoiceData])
     return {
       totalOriginal: `USD ${originalSum.toFixed(2)}`,
