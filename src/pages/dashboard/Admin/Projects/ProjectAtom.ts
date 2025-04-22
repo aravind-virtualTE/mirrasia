@@ -1,8 +1,9 @@
+import api from '@/services/fetch';
 import { atom } from 'jotai';
 
 // Define the project type
 export interface Project {
-    id: number | null;
+    _id: string;
     email: string;
     projectName: string;
     jurisdiction: string;
@@ -17,7 +18,7 @@ export interface Project {
   
   // Define the initial project state
   export const initialProject: Project = {
-    id: null,
+    _id: '',
     email: '',
     projectName: '',
     jurisdiction: '',
@@ -33,3 +34,23 @@ export interface Project {
 
   export const projectsAtom = atom<Project[]>([]);
   export const currentProjectAtom = atom<Project>(initialProject);
+
+
+  export const fetchProjects = async () => {
+    const { data } = await api.get('/projects');
+    return data;
+  };
+
+  export const createProject = async (project: Omit<Project, 'id'>) => {
+    const { data } = await api.post('/projects', project);
+    return data;
+  };
+  
+  export const updateProject = async (id: string, project: Project) => {
+    const { data } = await api.put(`/projects/${id}`, project);
+    return data;
+  };
+  
+  export const deleteProject = async (id: string) => {
+    await api.delete(`/projects/${id}`);
+  };

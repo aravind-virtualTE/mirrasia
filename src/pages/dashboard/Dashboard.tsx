@@ -14,7 +14,9 @@ import { useResetAllForms } from "@/lib/atom";
 import { useAtom, useSetAtom } from "jotai";
 import { allCompListAtom, companyIncorporationList } from "@/services/state";
 import { cn } from "@/lib/utils";
-import { useEffect } from "react";
+import { useEffect, 
+  // useState 
+} from "react";
 import { getIncorporationListByUserId } from "@/services/dataFetch";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
@@ -22,6 +24,7 @@ import ServiceCarousel from "./ServiceCarousel";
 import MainFunctionalities from "./MainFunctionalities";
 import { useTranslation } from "react-i18next";
 import { usaFormWithResetAtom } from "../Company/USA/UsState";
+// import { ReferralPromptDialog } from "@/components/userList/ReferralPromptDialog";
 
 const Dashboard = () => {
   const [cList,] = useAtom(companyIncorporationList)
@@ -30,13 +33,14 @@ const Dashboard = () => {
   const [, setUsaReset] = useAtom(usaFormWithResetAtom)
   const navigate = useNavigate();
   const { t } = useTranslation();
-
+  // const [showPrompt, setShowPrompt] = useState(false);
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
 
   const resetAllForms = useResetAllForms();
 
   useEffect(() => {
+    // setShowPrompt(true);
     resetAllForms()
     setUsaReset('reset')
     async function fetchData() {
@@ -62,8 +66,19 @@ const Dashboard = () => {
   // };
 
   // console.log("allList", allList)
+  // const handleReferralSubmit = async (data: { type: "referral" | "sales"; value: string }) => {
+  //   try {
+  //     // console.log("data",data)
+  //     // update local user
+  //     // setUser((prev) => ({ ...prev, referralSource: data }));
+  //     setShowPrompt(false);
+  //   } catch (error) {
+  //     console.error("Failed to submit referral info", error);
+  //   }
+  // };
   return (
     < >
+      {/* <ReferralPromptDialog  open={showPrompt} onClose={() => setShowPrompt(false)} onSubmit={handleReferralSubmit} /> */}
       {/* Main Content */}
       <div className="flex-1 p-8">
         <h1 className="text-2xl font-semibold mb-6">{t('dashboard.welcome')}User {t('dashboard.welcome1')}</h1>
@@ -75,6 +90,7 @@ const Dashboard = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead >S.No</TableHead>
                   <TableHead className="w-[40%]">{t('dashboard.tCompName')}</TableHead>
                   <TableHead className="w-[20%]">{t('dashboard.tcountry')}</TableHead>
                   <TableHead className="w-[20%]">{t('dashboard.status')}</TableHead>
@@ -82,7 +98,7 @@ const Dashboard = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {allList.map((company) => {
+                {allList.map((company, idx) => {
                   // Type cast each company
                   const typedCompany = company as {
                     companyName: string[];
@@ -105,6 +121,7 @@ const Dashboard = () => {
 
                   return (
                     <TableRow key={typedCompany._id}>
+                      <TableCell>{idx +1}</TableCell>
                       <TableCell
                         className="font-medium cursor-pointer"
                         onClick={() => handleRowClick(typedCompany._id, typedCompany.country.code)}

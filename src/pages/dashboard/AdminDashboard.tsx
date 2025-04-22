@@ -196,6 +196,7 @@ const AdminDashboard = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>S.No</TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => requestSort("companyName")}>
                     <div className="flex items-center">
                       Company Name
@@ -284,7 +285,7 @@ const AdminDashboard = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {getSortedData().map((company) => {
+                {getSortedData().map((company, idx) => {
                   const typedCompany = company as {
                     country: { name: string; code: string }
                     companyName: string[]
@@ -304,6 +305,9 @@ const AdminDashboard = () => {
 
                   return (
                     <TableRow key={typedCompany._id} className="text-xs h-10">
+                      <TableCell>
+                        {idx +1}
+                      </TableCell>
                       <TableCell
                         className="font-medium cursor-pointer py-2"
                         onClick={() => handleRowClick(typedCompany._id, typedCompany.country.code)}
