@@ -32,6 +32,7 @@ export interface UsaFormData {
   noOfShareholders: string;
   noOfOfficers: string;
   shareHolders: {
+    [x: string]: any;
     name: string;
     email: string;
     phone: string;
