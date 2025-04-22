@@ -6,6 +6,7 @@ import { getEntityBasicPrice, service_list } from '../constants'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useTranslation } from 'react-i18next'
+import { toast } from '@/hooks/use-toast'
 
 const UsServiceSelection: React.FC = () => {
   const { t } = useTranslation();
@@ -18,7 +19,7 @@ const UsServiceSelection: React.FC = () => {
 
   const baseFees = [
     {
-      id:"state",
+      id: "state",
       description: `${state} (${entity})`,
       originalPrice: Number(basePriceData?.price || 0),
       discountedPrice: Number(basePriceData?.price || 0),
@@ -40,13 +41,20 @@ const UsServiceSelection: React.FC = () => {
   }))
 
   const handleCheckboxChange = (id: string) => {
-    setSelectedServices((prev) => {
-      const updated = prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id]
-      setFormData({ ...formData, serviceItemsSelected: updated })
-      return updated
-    })
+    if (formData.sessionId != "") {
+      toast({
+        title: "Payment Session Initiated",
+        description: `Cant select extra items once payment session initiated`,
+      });
+    } else {
+      setSelectedServices((prev) => {
+        const updated = prev.includes(id)
+          ? prev.filter((item) => item !== id)
+          : [...prev, id]
+        setFormData({ ...formData, serviceItemsSelected: updated })
+        return updated
+      })
+    }
   }
   // Combine selected optional fees with base fees
   const selectedOptionalFees = optionalFees.filter((fee) =>

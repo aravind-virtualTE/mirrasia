@@ -36,7 +36,7 @@ const AdminNotification: React.FC = () => {
     useEffect(() => {
         const getData = async () =>{
             const response = await getNotificList()
-            console.log("response-->", response)
+            // console.log("response-->", response)
             setNotifications(response)
         }
         getData()

@@ -111,16 +111,6 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({ invoiceData }) => {
             </CardContent>
           </Card>
         </div>
-
-        {/* Additional Metadata */}
-        <div className="mt-4 text-sm text-muted-foreground flex justify-between">
-          <div>
-            <p>{t('CompanyInformation.shareholders')}:
-              {invoiceData.customer.shareholderCount.legalPerson} {t('invoice.legalPersons')},
-              {invoiceData.customer.shareholderCount.individual} {t('compFormation.individuals')}
-            </p>
-          </div>
-        </div>       
       </CardContent>
     </Card>
   );
@@ -129,6 +119,6 @@ const InvoiceComponent: React.FC<InvoiceComponentProps> = ({ invoiceData }) => {
 export default function Invoice() {
   const [corpoInvoiceAtom] = useAtom(companyIncorporateInvoiceAtom);
   const invoiceData = corpoInvoiceAtom[0] as unknown as InvoiceData;
-  // console.log("corpoInvoiceAtom",corpoInvoiceAtom)
+  // console.log("corpoInvoiceAtom",invoiceData)
   return <InvoiceComponent invoiceData={invoiceData} />;
 }

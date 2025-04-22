@@ -11,7 +11,7 @@ import { isValidEmail } from '@/middleware';
 import { sendInviteToShDir } from '@/services/dataFetch';
 import CustomLoader from '@/components/ui/customLoader';
 import { useToast } from "@/hooks/use-toast"
-import { useTranslation  } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 interface ShareholderDirectorProps {
   name: string;
@@ -154,7 +154,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
           <Select
             value={isLegalPerson.toString()}
             onValueChange={(value) => onUpdate({ isLegalPerson: value === 'true' })}
-            // disabled={isDirector}
+          // disabled={isDirector}
           >
             <SelectTrigger className="input">
               <SelectValue>{isLegalPerson ? 'Yes' : 'No'}</SelectValue>
@@ -273,23 +273,23 @@ const ShareholderDirectorForm: React.FC = () => {
         return { name, email };
       });
       const docId = localStorage.getItem('companyRecordId');
-      const payload = { _id: docId, inviteData: extractedData,country: 'HK'  };
+      const payload = { _id: docId, inviteData: extractedData, country: 'HK' };
       // console.log("send mail function", payload)
       const response = await sendInviteToShDir(payload);
       // console.log("send mail response", response)
-      if (response.summary.successful > 0){
+      if (response.summary.successful > 0) {
         toast({
           title: 'Success',
           description: `Successfully sent invitation mail to ${response.summary.successful} people`,
         })
       }
-      if (response.summary.alreadyExists > 0){
+      if (response.summary.alreadyExists > 0) {
         toast({
           title: 'Success',
           description: `Some Users Already Exist`,
         })
       }
-      if (response.summary.failed > 0){
+      if (response.summary.failed > 0) {
         toast({
           title: 'Failed',
           description: `Some Invitations Failed`,
@@ -305,9 +305,9 @@ const ShareholderDirectorForm: React.FC = () => {
 
   return (
     <div className="flex flex-col">
-        {totalOwnership === 0 && (
+      {totalOwnership === 0 && (
         <div className="text-red-500 mb-4 text-center">
-          Ownership is currently 0%. Please assign ownership.
+          {t('usa.bInfo.shrldSection.ownerShp0')}
         </div>
       )}
       {totalOwnership > 0 && totalOwnership < 100 && (
@@ -317,7 +317,7 @@ const ShareholderDirectorForm: React.FC = () => {
       )}
       {totalOwnership === 100 && (
         <div className="text-green-600 font-medium mb-4 text-center">
-          ✅ Ownership perfectly distributed at 100%
+          ✅{t('usa.bInfo.shrldSection.ownerShip100')}
         </div>
       )}
       {totalOwnership > 100 && (

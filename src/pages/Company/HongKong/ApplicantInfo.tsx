@@ -397,7 +397,7 @@ const ApplicantInfoForm = () => {
                 <SelectContent>
                   {snsPlatforms.map((platform) => (
                     <SelectItem key={platform.id} value={platform.id}>
-                      {platform.name}
+                      {t(platform.name)}
                     </SelectItem>
                   ))}
                 </SelectContent>

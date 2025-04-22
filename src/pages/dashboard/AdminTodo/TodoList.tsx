@@ -163,7 +163,7 @@ const TodoList: React.FC<{ userId: string, currentUser: CurrentUser, users: User
                         </DropdownMenuItem>
                       ))}
                       <DropdownMenuItem
-                        onClick={() => deleteTodo({ userId, id: todo._id })}
+                        onClick={() => deleteTodo({ userId: todo.userId || userId, id: todo._id })}
                         className="text-red-600"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
