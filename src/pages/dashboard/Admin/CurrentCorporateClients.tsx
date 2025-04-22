@@ -29,7 +29,7 @@ const CurrentCorporateClient: React.FC<{ data: companyTableData[] }> = ({ data }
               <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                       <Users className="h-4 w-4 text-green-500" />
-                      <span className="text-sm font-medium">Projects</span>
+                      <span className="text-sm font-medium">Current Corporate Client</span>
                   </div>
                   <span className="text-sm text-muted-foreground">Active: <span className="font-bold">{data.length}</span></span>
               </div>
