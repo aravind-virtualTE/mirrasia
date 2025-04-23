@@ -5,6 +5,7 @@ import {
   // Users,
   // FileSignature,
   HelpCircle,
+  Pencil,
   // Building,
 } from "lucide-react";
 
@@ -14,7 +15,8 @@ import { useResetAllForms } from "@/lib/atom";
 import { useAtom, useSetAtom } from "jotai";
 import { allCompListAtom, companyIncorporationList } from "@/services/state";
 import { cn } from "@/lib/utils";
-import { useEffect, 
+import {
+  useEffect,
   // useState 
 } from "react";
 import { getIncorporationListByUserId } from "@/services/dataFetch";
@@ -57,7 +59,8 @@ const Dashboard = () => {
 
   const handleRowClick = (companyId: string, countryCode: string) => {
     localStorage.setItem('companyRecordId', companyId);
-    navigate(`/company-register/${countryCode}/${companyId}`);
+    console.log("companyId", countryCode)
+
   };
 
   // const handleAccountingCard = () => {
@@ -76,6 +79,11 @@ const Dashboard = () => {
   //     console.error("Failed to submit referral info", error);
   //   }
   // };
+
+  const handleEditClick = (companyId: string, countryCode: string) => {
+    localStorage.setItem("companyRecordId", companyId)
+    navigate(`/company-register/${countryCode}/${companyId}`);
+  }
   return (
     < >
       {/* <ReferralPromptDialog  open={showPrompt} onClose={() => setShowPrompt(false)} onSubmit={handleReferralSubmit} /> */}
@@ -90,11 +98,12 @@ const Dashboard = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead >S.No</TableHead>
-                  <TableHead className="w-[40%]">{t('dashboard.tCompName')}</TableHead>
-                  <TableHead className="w-[20%]">{t('dashboard.tcountry')}</TableHead>
-                  <TableHead className="w-[20%]">{t('dashboard.status')}</TableHead>
-                  <TableHead className="w-[20%]">{t('dashboard.incorpoDate')}</TableHead>
+                  <TableHead className="py-2 px-3">S.No</TableHead>
+                  <TableHead className="w-[40%] py-2 px-3">{t('dashboard.tCompName')}</TableHead>
+                  <TableHead className="w-[20%] py-2 px-3">{t('dashboard.tcountry')}</TableHead>
+                  <TableHead className="w-[20%] py-2 px-3">{t('dashboard.status')}</TableHead>
+                  <TableHead className="w-[20%] py-2 px-3">{t('dashboard.incorpoDate')}</TableHead>
+                  <TableHead className="py-2 px-3">Edit</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -121,17 +130,20 @@ const Dashboard = () => {
 
                   return (
                     <TableRow key={typedCompany._id}>
-                      <TableCell>{idx +1}</TableCell>
+                      {/* Added padding classes to TableCell */}
+                      <TableCell className="py-2 px-3">{idx + 1}</TableCell>
                       <TableCell
-                        className="font-medium cursor-pointer"
+                        className={cn(
+                          "font-medium cursor-pointer py-2 px-3" // Combined existing classes with padding
+                        )}
                         onClick={() => handleRowClick(typedCompany._id, typedCompany.country.code)}
                       >
                         {validCompanyNames.length > 0 ? validCompanyNames.join(", ") : ""}
                       </TableCell>
 
-                      <TableCell>{typedCompany.country.name || "N/A"}</TableCell>
+                      <TableCell className="py-2 px-3">{typedCompany.country.name || "N/A"}</TableCell>
 
-                      <TableCell>
+                      <TableCell className="py-2 px-3"> {/* Added padding */}
                         <span
                           className={cn(
                             "inline-flex items-center rounded-full text-xs font-medium",
@@ -146,7 +158,15 @@ const Dashboard = () => {
                         </span>
                       </TableCell>
 
-                      <TableCell>{date || "N/A"}</TableCell>
+                      <TableCell className="py-2 px-3">{date || "N/A"}</TableCell>
+                      <TableCell className="py-2 px-3">
+                        <button
+                          className="text-blue-500 hover:text-blue-700 transition"
+                          onClick={() => handleEditClick(typedCompany._id, typedCompany.country.code)}
+                        >
+                          <Pencil size={16} />
+                        </button>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -201,7 +221,7 @@ const Dashboard = () => {
                 <p>
                   <strong>{t('dashboard.kakaChannel')}:</strong>{" "}
                   <a href="https://pf.kakao.com/_KxmnZT" className="text-primary underline" target="_blank" rel="noopener noreferrer">
-                  {t('dashboard.clickHere')}
+                    {t('dashboard.clickHere')}
                   </a>
                 </p>
                 <p>
