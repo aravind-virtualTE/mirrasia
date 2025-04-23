@@ -26,27 +26,19 @@ const InformationIncorporation = () => {
   const handlePaymentOptionChange = (registerPaymentShare: string) => {
     setCompanyInfo((prev) => ({ ...prev, registerPaymentShare }));
   };
-
-
-
   const handleNumShareIssueOptionChange = (registerNumSharesAtom: string | number) => {
     setCompanyInfo((prev) => ({ ...prev, registerNumSharesAtom }));  
   };
-
-
   const handlePriceSelect = (registerAmountAtom: string | number) => {
     // console.log('Selected Price:', registerAmountAtom);
     setCompanyInfo((prev) => ({ ...prev, registerAmountAtom }));
   };
-
   const handleCurrencySelect = (currency: { code: string; label: string }) => {
     // console.log("Selected currency:", currency);
     setCompanyInfo((prev) => ({ ...prev, registerCurrencyAtom: currency.code }));
   };
-
   const currenc = currencies.find((item) => comapnyInfo.registerCurrencyAtom === item.code)
-
-  console.log("comapnyInfo",comapnyInfo)
+  // console.log("comapnyInfo",comapnyInfo)
   return (
     <div className="flex w-full p-4">
       <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
