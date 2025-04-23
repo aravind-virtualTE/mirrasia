@@ -22,8 +22,6 @@ const CompanyRegistration = () => {
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     const [ formData,setFormData] = useAtom(usaFormWithResetAtom);
     useEffect(() => {
-        // console.log("companies",companies)
-        // console.log("id-->", id, "countryCode-->", countryCode);
         if (id && countryCode == "HK") {
             async function fetchData() {
                 const result = await getIncorporationListByUserId(`${decodedToken.userId}`);
@@ -38,11 +36,11 @@ const CompanyRegistration = () => {
             });
 
             async function fetchCompData() {
-                const result = await getIncorporationListByCompId(`${id}`);
+                const result = await getIncorporationListByCompId(`${id}`);                
                 return result;
             }
             fetchCompData().then((result) => {
-                // console.log("result-->", result);
+                console.log("resultIncorporation--->", result)
                 updateCompanyData(result[0]);
             });
         }
