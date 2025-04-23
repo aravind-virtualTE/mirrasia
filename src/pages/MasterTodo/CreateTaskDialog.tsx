@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { Task, TaskPriority, TaskStatus, tasksAtom, createTaskFormAtom, users, priorities, statuses, defaultFormState } from './mTodoStore';
+import { Task, TaskPriority, TaskStatus, tasksAtom, createTaskFormAtom, priorities, statuses, defaultFormState, usersAtom, updateTask, createTask } from './mTodoStore';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import {
@@ -16,10 +16,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Plus, CalendarIcon, Flag, MessageCircle } from 'lucide-react';
+import { Plus, CalendarIcon, Flag, MessageCircle, X, Check, ChevronDown } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { formatDistanceToNow } from 'date-fns';
-
+import { useState, useRef, useEffect } from 'react';
 interface CreateTaskDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -35,55 +35,122 @@ export const CreateTaskDialog = ({
 }: CreateTaskDialogProps) => {
     const [tasks, setTasks] = useAtom(tasksAtom);
     const [formState, setFormState] = useAtom(createTaskFormAtom);
+    const [users,] = useAtom(usersAtom);
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
 
-    const handleSubmit = () => {
+    // State for multi-select dropdown
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const userId = user ? user.id : ""
+    // Effect to handle clicking outside the dropdown to close it
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    // Initialize form state when editing a task
+    useEffect(() => {
+        if (isEditMode && taskToEdit && open) {
+            // Find the user objects for each assignee name
+            // const selectedUserObjects = taskToEdit.assignees.map(assigneeName => {
+            //     return users.find(user => user.fullName === assigneeName) || users[0];
+            // }).filter(Boolean);
+
+            setFormState({
+                taskName: taskToEdit.name,
+                description: taskToEdit.description || '',
+                comment: '',
+                dueDate: taskToEdit.dueDate,
+                priority: taskToEdit.priority,
+                status: taskToEdit.status,
+                selectedUsers: taskToEdit.assignees.map(assignee => ({
+                    id: assignee._id || "",
+                    name: assignee.name,
+                }))
+            });
+        } else if (!isEditMode && open) {
+            setFormState(defaultFormState);
+        }
+    }, [isEditMode, taskToEdit, open, setFormState]);
+
+    // Handle user selection in multi-select
+    const toggleUser = (user: { id: string; name: string }) => {
+        // console.log("user._id", user)
+        const isSelected = formState.selectedUsers.some(u => u.id === user.id);
+
+        if (isSelected) {
+            // Don't allow removing the last user
+            if (formState.selectedUsers.length > 1) {
+                setFormState({
+                    ...formState,
+                    selectedUsers: formState.selectedUsers.filter(u => u.id !== user.id)
+                });
+            }
+        } else {
+            setFormState({
+                ...formState,
+                selectedUsers: [...formState.selectedUsers, user]
+            });
+        }
+    };
+
+    const handleSubmit = async () => {
         if (!formState.taskName) return;
 
         if (isEditMode && taskToEdit) {
             // Update existing task
-            const updatedTask: Task = {
+            const updatedTaskData: Task = {
                 ...taskToEdit,
                 name: formState.taskName,
                 description: formState.description,
-                assignee: formState.selectedUser.name,
-                dueDate :formState.dueDate,
+                assignees: formState.selectedUsers, // Extract names from selected users
+                dueDate: formState.dueDate,
                 priority: formState.priority,
                 status: formState.status,
                 comments: formState.comment
                     ? [
                         ...taskToEdit.comments,
                         {
-                            id: (taskToEdit.comments.length + 1).toString(),
                             text: formState.comment,
                             timestamp: new Date().toISOString(),
                         },
                     ]
                     : taskToEdit.comments,
             };
-
-            setTasks(tasks.map((task) => (task.id === taskToEdit.id ? updatedTask : task)));
+            if (!taskToEdit._id) {
+                console.error("Task ID is undefined");
+                return;
+            }
+            const updatedTask = await updateTask(taskToEdit._id, updatedTaskData);
+            setTasks(tasks.map((task) => (task._id === taskToEdit._id ? updatedTask : task)));
         } else {
             // Create new task
-            const newTask: Task = {
-                id: (tasks.length + 1).toString(),
+            const newTaskData: Task = {
                 name: formState.taskName,
                 description: formState.description,
-                assignee: formState.selectedUser.name,
+                assignees: formState.selectedUsers, // Extract names from selected users
                 dueDate: formState.dueDate,
                 priority: formState.priority,
                 status: formState.status,
+                userId,
                 comments: formState.comment
                     ? [
                         {
-                            id: '1',
                             text: formState.comment,
                             timestamp: new Date().toISOString(),
                         },
                     ]
                     : [],
             };
-
-            setTasks([...tasks, newTask]);
+            const createdTask = await createTask(newTaskData);
+            setTasks([createdTask,...tasks]);
         }
         setFormState(defaultFormState);
         onOpenChange(false);
@@ -91,8 +158,6 @@ export const CreateTaskDialog = ({
 
     // Display comments section if there are existing comments
     const showExistingComments = isEditMode && taskToEdit && taskToEdit.comments.length > 0;
-
-    
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -149,25 +214,48 @@ export const CreateTaskDialog = ({
                                 </SelectContent>
                             </Select>
 
-                            {/* Assignee */}
-                            <Select
-                                value={formState.selectedUser.id}
-                                onValueChange={(value) => {
-                                    const user = users.find((u) => u.id === value);
-                                    if (user) setFormState({ ...formState, selectedUser: user });
-                                }}
-                            >
-                                <SelectTrigger id="assignee" className="w-full">
-                                    <SelectValue>{formState.selectedUser.name}</SelectValue>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {users.map((user) => (
-                                        <SelectItem key={user.id} value={user.id}>
-                                            {user.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            {/* Multi-select Assignee with custom HTML/Tailwind */}
+                            <div className="relative" ref={dropdownRef}>
+                                <button
+                                    type="button"
+                                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                                    className="relative w-full flex items-center justify-between bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                >
+                                    <div className="flex flex-wrap gap-1 max-w-full overflow-hidden">
+                                        {formState.selectedUsers.length > 0 ? (
+                                            formState.selectedUsers.map((user) => (
+                                                <div key={user.id} className="flex items-center bg-blue-100 text-blue-800 rounded px-2 py-0.5 text-xs">
+                                                    {user.name}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <span className="text-gray-500">Select assignees</span>
+                                        )}
+                                    </div>
+                                    <ChevronDown className="h-4 w-4 text-gray-500" />
+                                </button>
+
+                                {dropdownOpen && (
+                                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                                        <div className="p-1">
+                                            {users.map((user) => {
+                                                const isSelected = formState.selectedUsers.some(u => u.id === user._id);
+                                                return (
+                                                    <div
+                                                        key={user._id}
+                                                        onClick={() => toggleUser({ id: user._id || "", name: user.fullName })}
+                                                        className={`flex items-center justify-between px-3 py-2 text-sm rounded cursor-pointer ${isSelected ? 'bg-blue-50 text-blue-800' : 'hover:bg-gray-100'
+                                                            }`}
+                                                    >
+                                                        <span>{user.fullName}</span>
+                                                        {isSelected && <Check className="h-4 w-4 text-blue-600" />}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
@@ -185,8 +273,7 @@ export const CreateTaskDialog = ({
                                         selected={formState.dueDate ?? undefined}
                                         className="pointer-events-auto"
                                         onSelect={(date) => {
-                                            console.log("Date selected:", date);
-                                            setFormState({ ...formState, dueDate:date })
+                                            setFormState({ ...formState, dueDate: date });
                                         }}
                                         initialFocus
                                     />
@@ -202,21 +289,44 @@ export const CreateTaskDialog = ({
                                     <SelectValue>{formState.priority}</SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
-                                {priorities.map((p) => (
-                                    <SelectItem key={p.value} value={p.value}>
-                                        <div className="flex items-center">
-                                            <Flag
-                                                className={cn('mr-2 h-4 w-4', p.color)}
-                                                fill={'currentColor'}
-                                                strokeWidth={p.value === 'High' ? 2 : p.value === 'Medium' ? 1.5 : 1}
-                                            />
-                                            {p.label}
-                                        </div>
-                                    </SelectItem>
-                                ))}
+                                    {priorities.map((p) => (
+                                        <SelectItem key={p.value} value={p.value}>
+                                            <div className="flex items-center">
+                                                <Flag
+                                                    className={cn('mr-2 h-4 w-4', p.color)}
+                                                    fill={'currentColor'}
+                                                    strokeWidth={p.value === 'High' ? 2 : p.value === 'Medium' ? 1.5 : 1}
+                                                />
+                                                {p.label}
+                                            </div>
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>
+
+                        {/* Display selected assignees with remove option */}
+                        {formState.selectedUsers.length > 0 && (
+                            <div className="pt-2">
+                                <p className="text-sm font-medium mb-2">Assigned to:</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {formState.selectedUsers.map(user => (
+                                        <div key={user.id} className="flex items-center bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm">
+                                            {user.name}
+                                            {formState.selectedUsers.length > 1 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleUser(user)}
+                                                    className="ml-1 text-blue-600 hover:text-blue-800"
+                                                >
+                                                    <X className="h-3 w-3" />
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* RIGHT: Comments (1/3 width) */}
@@ -230,7 +340,7 @@ export const CreateTaskDialog = ({
                                 </div>
                                 <div className="max-h-48 overflow-y-auto border rounded-md p-2 bg-gray-50">
                                     {taskToEdit.comments.map((comment) => (
-                                        <div key={comment.id} className="border-b last:border-0 py-2">
+                                        <div key={comment._id} className="border-b last:border-0 py-2">
                                             <p className="text-sm">{comment.text}</p>
                                             <p className="text-xs text-gray-500 mt-1">
                                                 {formatDistanceToNow(new Date(comment.timestamp), { addSuffix: true })}
@@ -264,7 +374,6 @@ export const CreateTaskDialog = ({
                     </Button>
                 </DialogFooter>
             </DialogContent>
-
         </Dialog>
     );
 };

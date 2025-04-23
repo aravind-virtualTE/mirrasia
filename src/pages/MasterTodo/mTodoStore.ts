@@ -1,64 +1,34 @@
-// mTodoStore.ts
+import { User } from '@/components/userList/UsersList';
 import { atom } from 'jotai';
+import api from '@/services/fetch';
+
 
 export type TaskPriority = 'Low' | 'Medium' | 'High';
 export type TaskStatus = 'TO DO' | 'IN PROGRESS' | 'IN REVIEW' | 'COMPLETED';
 
 export interface Comment {
-  id: string;
+  _id?: string;
   text: string;
   timestamp: string;
 }
 
 export interface Task {
-  id: string;
+  _id?: string;
   name: string;
   description?: string;
-  assignee: string;
+  assignees: {
+    _id?: string;
+    name: string;
+  }[];
   dueDate: Date | undefined;
   priority: TaskPriority;
   status: TaskStatus;
   comments: Comment[];
+  companyId?: string;
+  userId?: string;
 }
 
-export const tasksAtom = atom<Task[]>([
-  {
-    id: '1',
-    name: 'Lorem ipsum dolor sit amet',
-    assignee: 'US1',
-    dueDate: new Date(),
-    priority: 'Medium',
-    status: 'IN REVIEW',
-    comments: [],
-  },
-  {
-    id: '2',
-    name: 'Lorem ipsum dolor sit amet',
-    assignee: 'US2',
-    dueDate: new Date('2025-04-10'),
-    priority: 'Medium',
-    status: 'IN REVIEW',
-    comments: [],
-  },
-  {
-    id: '3',
-    name: 'Lorem ipsum dolor sit amet',
-    assignee: 'US1',
-    dueDate: new Date('2025-04-18'),
-    priority: 'Medium',
-    status: 'IN PROGRESS',
-    comments: [],
-  },
-  {
-    id: '4',
-    name: 'Lorem ipsum dolor sit amet',
-    assignee: 'US2',
-    dueDate: new Date('2025-04-25'),
-    priority: 'Low',
-    status: 'TO DO',
-    comments: [],
-  },
-]);
+export const tasksAtom = atom<Task[]>([]);
 
 export const viewModeAtom = atom<'expanded' | 'grouped'>('expanded');
 
@@ -66,10 +36,10 @@ export interface CreateTaskFormState {
   taskName: string;
   description: string;
   comment: string;
-  dueDate?: Date  | undefined;
+  dueDate?: Date | undefined;
   priority: TaskPriority;
   status: TaskStatus;
-  selectedUser: { id: string; name: string };
+  selectedUsers: { id: string; name: string }[];
 }
 
 export const users = [
@@ -87,10 +57,12 @@ export const defaultFormState: CreateTaskFormState = {
   dueDate: new Date(),
   priority: 'Medium',
   status: 'TO DO',
-  selectedUser: users[0], // Default to the first user
+  selectedUsers: [],
 };
 
 export const createTaskFormAtom = atom<CreateTaskFormState>(defaultFormState);
+
+export const usersAtom = atom<User[]>([]);
 
 export const priorities: { label: string; value: TaskPriority; color: string }[] = [
   { label: "High", value: "High", color: "text-red-500" },
@@ -104,3 +76,57 @@ export const statuses: { label: TaskStatus; color: string; bgColor: string }[] =
   { label: "IN REVIEW", color: "text-orange-800", bgColor: "bg-orange-100" },
   { label: "COMPLETED", color: "text-purple-800", bgColor: "bg-purple-100" },
 ];
+
+
+export const createTask = async (taskData:Task) => {
+    try {
+      const response = await api.post('/tasks', taskData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating task:', error);
+      throw error;
+    }
+  };
+  
+  export const getTasks = async (filters = {}) => {
+    try {
+      const response = await api.get('/tasks', { params: filters });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      throw error;
+    }
+  };
+  
+  // GET a single task by ID
+  export const getTaskById = async (id: string) => {
+    try {
+      const response = await api.get(`/tasks/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching task ${id}:`, error);
+      throw error;
+    }
+  };
+  
+  // UPDATE a task by ID
+  export const updateTask = async (id:string, updates:Task) => {
+    try {
+      const response = await api.put(`/tasks/${id}`, updates);
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating task ${id}:`, error);
+      throw error;
+    }
+  };
+  
+  // DELETE a task by ID
+  export const deleteTask = async (id:string) => {
+    try {
+      const response = await api.delete(`/tasks/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting task ${id}:`, error);
+      throw error;
+    }
+  };

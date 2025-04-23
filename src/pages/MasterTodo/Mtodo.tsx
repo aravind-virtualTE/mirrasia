@@ -1,15 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAtom } from "jotai";
 import { Layers, Plus } from "lucide-react";
 import { TaskList } from "./TaskList";
-import { createTaskFormAtom, defaultFormState, viewModeAtom } from "./mTodoStore";
+import { createTaskFormAtom, defaultFormState, getTasks, tasksAtom, usersAtom, viewModeAtom } from "./mTodoStore";
 import { CreateTaskDialog } from "./CreateTaskDialog";
+import { fetchUsers } from "@/services/dataFetch";
 
 const ToDoList = () => {
   const [viewMode, setViewMode] = useAtom(viewModeAtom);
   const [openDialog, setOpenDialog] = useState(false);
   const [, setFormState] = useAtom(createTaskFormAtom);
+  const [, setListState] = useAtom(tasksAtom);
+  
+  const [, setUsers] = useAtom(usersAtom);
+  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+  const userId = user ? user.id : ""
+
+    useEffect(() => {
+          const fetchUser = async () => {
+            await fetchUsers().then((response) => {
+                let data
+                if(user.role === 'admin') data = response.filter((e: { _id: string; }) => e._id == userId)
+                else data = response.filter((e: { role: string; }) => e.role == 'admin' || e.role == 'master')
+              setUsers(data);
+            })
+            let filters = {}
+            if(user.role === 'admin') filters = { userId: userId,}
+             
+            await getTasks(filters).then((response) => {
+                // console.log("response--->", response)
+                setListState(response);
+            })
+          }
+          fetchUser()
+        //   if (user.role === 'master') {
+        //   }
+        }, [])
 
   const createTaskAction = () =>{
     setOpenDialog(true)

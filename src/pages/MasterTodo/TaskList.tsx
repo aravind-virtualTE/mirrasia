@@ -1,9 +1,9 @@
 // TaskList.tsx
 import { useAtom } from 'jotai';
-import { Task, tasksAtom, TaskStatus, viewModeAtom, createTaskFormAtom, users } from './mTodoStore';
+import { Task, tasksAtom, TaskStatus, viewModeAtom, createTaskFormAtom, users, deleteTask } from './mTodoStore';
 import { Edit, Flag, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { format} from 'date-fns';
+import { format } from 'date-fns';
 import { useState } from 'react';
 import { CreateTaskDialog } from './CreateTaskDialog';
 import {
@@ -36,7 +36,6 @@ const priorityColors: Record<string, string> = {
     'High': 'text-red-500',
 };
 
-
 const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     const [, setFormState] = useAtom(createTaskFormAtom);
     const [, setAllTasks] = useAtom(tasksAtom);
@@ -44,6 +43,11 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
 
     const handleEditClick = (task: Task) => {
+
+        const assigneeNames = task.assignees.map(a => a.name);
+
+        const selectedUserObjects = users.filter(user => assigneeNames.includes(user.name));
+
         setFormState({
             taskName: task.name,
             description: task.description || '',
@@ -51,15 +55,38 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
             dueDate: task.dueDate,
             priority: task.priority,
             status: task.status,
-            selectedUser: users.find((u) => u.name === task.assignee) || users[0],
+            selectedUsers: selectedUserObjects,
         });
         setSelectedTask(task);
         setEditDialogOpen(true);
     };
 
-    const handleDeleteTask = (id: string) => {
-        setAllTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    const handleDeleteTask = async (id: string) => {
+        await deleteTask(id);
+        setAllTasks((prevTasks: Task[]) => prevTasks.filter((task) => task._id !== id));
     };
+
+    const renderAssignees = (assigneeNames: { _id?: string, name: string }[]) => {
+        const MAX_AVATARS = 3;
+        if (assigneeNames.length === 0) return null;
+        return (
+            <div className="flex items-center -space-x-2">
+                {assigneeNames.slice(0, MAX_AVATARS).map((item, index) => (
+                    <Avatar key={index} className="h-6 w-6 border-2 border-white">
+                        <AvatarFallback className="text-xs">
+                            {item.name.charAt(0)}
+                        </AvatarFallback>
+                    </Avatar>
+                ))}
+                {assigneeNames.length > MAX_AVATARS && (
+                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-200 text-xs font-medium text-gray-500 border-2 border-white">
+                        +{assigneeNames.length - MAX_AVATARS}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     return (
         <>
             <div className="mt-4">
@@ -67,7 +94,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-[200px]">Task</TableHead>
-                            <TableHead className="w-[100px]">Assignee</TableHead>
+                            <TableHead className="w-[100px]">Assignees</TableHead>
                             <TableHead className="w-[100px]">Due</TableHead>
                             <TableHead className="w-[100px]">Priority</TableHead>
                             <TableHead className="w-[80px]">Actions</TableHead>
@@ -75,7 +102,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                     </TableHeader>
                     <TableBody>
                         {tasks.map((task) => (
-                            <TableRow key={task.id} className="h-12 hover:bg-gray-50">
+                            <TableRow key={task._id} className="h-12 hover:bg-gray-50">
                                 <TableCell className="py-1">
                                     <div className="flex items-center gap-2">
                                         <Badge variant="outline" className={`text-xs ${statusColors[task.status]}`}>
@@ -90,11 +117,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                     </div>
                                 </TableCell>
                                 <TableCell className="py-1">
-                                    <Avatar className="h-6 w-6">
-                                        <AvatarFallback className="text-xs">
-                                            {task.assignee.charAt(0)}
-                                        </AvatarFallback>
-                                    </Avatar>
+                                    {renderAssignees(task.assignees)}
                                 </TableCell>
                                 <TableCell className="py-1 text-sm">
                                     {task.dueDate ? format(new Date(task.dueDate), "dd MMM yyyy") : "No due date"}
@@ -119,7 +142,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                             variant="ghost"
                                             size="sm"
                                             className="h-6 w-6 p-0"
-                                            onClick={() => handleDeleteTask(task.id)}
+                                            onClick={() => handleDeleteTask(task._id || '')}
                                         >
                                             <Trash2 className="h-3 w-3 text-red-500" />
                                         </Button>
