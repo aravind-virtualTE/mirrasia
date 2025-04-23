@@ -46,6 +46,7 @@ import {SocketProvider } from '@/hooks/Socket';
 import ChatInterface from './components/chat/ChatInterface';
 import ProjectActivity from './pages/Projects/Project';
 import AdminProject from './pages/dashboard/Admin/Projects/AdminProject';
+import ToDoList from './pages/MasterTodo/Mtodo';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -77,6 +78,7 @@ const App: React.FC = () => {
                 <Routes>
                   {/* Public routes */}
                   <Route path="/logout" element={<Logout />} />
+                  
                   <Route element={<PublicRoute />}>
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginComponent />} />
@@ -122,6 +124,7 @@ const App: React.FC = () => {
                       <Route path="/company-details/:id" element={<CompanyDetail />} />
                       <Route path="/messages" element={<ChatInterface />} />
                       <Route path="/projects" element={<AdminProject />} />
+                      <Route path="/MasterTodo" element={<ToDoList />} />
                       {/* Add more admin-specific routes here */}
                     </Route>
                   </Route>
