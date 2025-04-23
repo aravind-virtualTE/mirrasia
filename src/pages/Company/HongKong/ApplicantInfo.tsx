@@ -232,7 +232,7 @@ const ApplicantInfoForm = () => {
 
     handleChange('snsPlatform')(syntheticEvent);
   };
-  // console.log('Form submitted:', formData);
+  console.log('Section1Applicant Info:', formData);
 
   return (
     <Card>
