@@ -1,7 +1,7 @@
 // TaskList.tsx
 import { useAtom } from 'jotai';
 import { Task, tasksAtom, TaskStatus, viewModeAtom, createTaskFormAtom, users, deleteTask } from './mTodoStore';
-import { Edit, Flag, Trash2 } from 'lucide-react';
+import { Edit, Flag, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { useState } from 'react';
@@ -36,16 +36,98 @@ const priorityColors: Record<string, string> = {
     'High': 'text-red-500',
 };
 
+// Task Detail Popup Component
+const TaskDetailPopup = ({ task, onClose }: { task: Task | null, onClose: () => void }) => {
+    if (!task) return null;
+
+    return (
+        <div className="fixed inset-0 flex items-center justify-center z-50" onClick={onClose}>
+            <div className="absolute inset-0 bg-black opacity-20" />
+            <div
+                className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-10"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="flex justify-between items-start mb-4">
+                    <Badge variant="outline" className={`text-xs px-2 py-1 ${statusColors[task.status]}`}>
+                        {task.status}
+                    </Badge>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onClose}>
+                        <X className="h-4 w-4" />
+                    </Button>
+                </div>
+
+                <h3 className="text-xl font-semibold mb-2">{task.name}</h3>
+
+                <div className="space-y-4">
+                    {task.description && (
+                        <div className="max-w-full">
+                            <p className="text-sm text-gray-700 whitespace-normal break-words">
+                                {task.description}
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">Priority:</span>
+                        <div className="flex items-center gap-1">
+                            <Flag className={`h-4 w-4 ${priorityColors[task.priority]}`} fill={'currentColor'} />
+                            <span className="text-sm">{task.priority}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span className="text-sm font-medium">Due date:</span>
+                        <span className="text-sm ml-2">
+                            {task.dueDate ? format(new Date(task.dueDate), "dd MMMM yyyy") : "No due date"}
+                        </span>
+                    </div>
+
+                    {task.assignees.length > 0 && (
+                        <div>
+                            <span className="text-sm font-medium">Assignees:</span>
+                            <div className="flex flex-wrap gap-2 mt-1">
+                                {task.assignees.map((assignee, index) => (
+                                    <div key={index} className="flex items-center gap-1">
+                                        <Avatar className="h-6 w-6">
+                                            <AvatarFallback className="text-xs">
+                                                {assignee.name.charAt(0)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <span className="text-sm">{assignee.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {task.comments && task.comments.length > 0 && (
+                        <div>
+                            <span className="text-sm font-medium">Comments:</span>
+                            <div className="mt-1 space-y-2">
+                                {task.comments.map((comment, index) => (
+                                    <div key={index} className="bg-gray-50 p-2 rounded text-sm">
+                                        {typeof comment === 'string' ? comment : JSON.stringify(comment)}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     const [, setFormState] = useAtom(createTaskFormAtom);
     const [, setAllTasks] = useAtom(tasksAtom);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
+    const [popupTask, setPopupTask] = useState<Task | null>(null);
 
-    const handleEditClick = (task: Task) => {
-
+    const handleEditClick = (task: Task, e: React.MouseEvent) => {
+        e.stopPropagation(); 
         const assigneeNames = task.assignees.map(a => a.name);
-
         const selectedUserObjects = users.filter(user => assigneeNames.includes(user.name));
 
         setFormState({
@@ -61,10 +143,15 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         setEditDialogOpen(true);
     };
 
-    const handleDeleteTask = async (id: string) => {
+    const handleDeleteTask = async (id: string, e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent row click from triggering
         await deleteTask(id);
         setAllTasks((prevTasks: Task[]) => prevTasks.filter((task) => task._id !== id));
     };
+
+    // const handleRowClick = (task: Task) => {
+    //     setPopupTask(task);
+    // };
 
     const renderAssignees = (assigneeNames: { _id?: string, name: string }[]) => {
         const MAX_AVATARS = 3;
@@ -102,16 +189,22 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                     </TableHeader>
                     <TableBody>
                         {tasks.map((task) => (
-                            <TableRow key={task._id} className="h-12 hover:bg-gray-50">
+                            <TableRow
+                                key={task._id}
+                                className="h-12 hover:bg-gray-100 "
+                                // onClick={() => handleRowClick(task)}cursor-pointer
+                            >
                                 <TableCell className="py-1">
-                                    <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className={`text-xs ${statusColors[task.status]}`}>
+                                    <div className="flex items-center">
+                                        <Badge variant="outline" className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}>
                                             {task.status}
                                         </Badge>
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-medium line-clamp-1">{task.name}</span>
+                                        <div className="flex flex-col ml-2" style={{ width: '200px' }}>
+                                            <span className="text-base font-semibold truncate">{task.name}</span>
                                             {task.description && (
-                                                <span className="text-xs text-gray-500 line-clamp-1">{task.description}</span>
+                                                <span className="text-sm text-gray-500 truncate w-48 sm:w-56 md:w-64 lg:w-96" >
+                                                    {task.description}
+                                                </span>
                                             )}
                                         </div>
                                     </div>
@@ -128,13 +221,13 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                         <span className="text-sm">{task.priority}</span>
                                     </div>
                                 </TableCell>
-                                <TableCell className="py-1">
+                                <TableCell className="py-1" onClick={(e) => e.stopPropagation()}>
                                     <div className="flex gap-1">
                                         <Button
                                             variant="ghost"
                                             size="sm"
                                             className="h-6 w-6 p-0"
-                                            onClick={() => handleEditClick(task)}
+                                            onClick={(e) => handleEditClick(task, e)}
                                         >
                                             <Edit className="h-3 w-3" />
                                         </Button>
@@ -142,7 +235,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                             variant="ghost"
                                             size="sm"
                                             className="h-6 w-6 p-0"
-                                            onClick={() => handleDeleteTask(task._id || '')}
+                                            onClick={(e) => handleDeleteTask(task._id || '', e)}
                                         >
                                             <Trash2 className="h-3 w-3 text-red-500" />
                                         </Button>
@@ -153,6 +246,15 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                     </TableBody>
                 </Table>
             </div>
+
+            {/* Task Detail Popup */}
+            {popupTask && (
+                <TaskDetailPopup
+                    task={popupTask}
+                    onClose={() => setPopupTask(null)}
+                />
+            )}
+
             {editDialogOpen && (
                 <CreateTaskDialog
                     open={editDialogOpen}
@@ -167,25 +269,35 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
 
 const GroupedTasks = ({ tasks }: { tasks: Task[] }) => {
     const statuses: TaskStatus[] = ['IN REVIEW', 'IN PROGRESS', 'TO DO', 'COMPLETED'];
+    const [popupTask, setPopupTask] = useState<Task | null>(null);
 
     return (
-        <Accordion type="multiple" className="mt-4 space-y-2">
-            {statuses.map((status) => {
-                const statusTasks = tasks.filter((task) => task.status === status);
-                if (statusTasks.length === 0) return null;
+        <>
+            <Accordion type="multiple" className="mt-4 space-y-2">
+                {statuses.map((status) => {
+                    const statusTasks = tasks.filter((task) => task.status === status);
+                    if (statusTasks.length === 0) return null;
+                    return (
+                        <AccordionItem value={status} key={status} className="rounded-md border shadow-sm">
+                            <AccordionTrigger className={`px-4 py-2 text-left font-medium ${statusColors[status]} [&>svg]:h-5 [&>svg]:w-5 [&>svg]:stroke-2 [&>svg]:text-gray-800`}>
+                                {status}
+                            </AccordionTrigger>
+                            <AccordionContent className="p-4 pt-2">
+                                <TaskTable tasks={statusTasks} />
+                            </AccordionContent>
+                        </AccordionItem>
+                    );
+                })}
+            </Accordion>
 
-                return (
-                    <AccordionItem value={status} key={status} className="rounded-md border shadow-sm">
-                        <AccordionTrigger className={`px-4 py-2 text-left font-medium ${statusColors[status]}`}>
-                            {status}
-                        </AccordionTrigger>
-                        <AccordionContent className="p-4 pt-2">
-                            <TaskTable tasks={statusTasks} />
-                        </AccordionContent>
-                    </AccordionItem>
-                );
-            })}
-        </Accordion>
+            {/* Task Detail Popup at GroupedTasks level */}
+            {popupTask && (
+                <TaskDetailPopup
+                    task={popupTask}
+                    onClose={() => setPopupTask(null)}
+                />
+            )}
+        </>
     );
 };
 

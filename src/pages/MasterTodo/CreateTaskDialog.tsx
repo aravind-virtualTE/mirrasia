@@ -16,9 +16,11 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Plus, CalendarIcon, Flag, MessageCircle, X, Check, ChevronDown } from 'lucide-react';
+import { Plus, CalendarIcon, Flag,
+    //  MessageCircle,
+      X, Check, ChevronDown } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import { formatDistanceToNow } from 'date-fns';
+// import { formatDistanceToNow } from 'date-fns';
 import { useState, useRef, useEffect } from 'react';
 interface CreateTaskDialogProps {
     open: boolean;
@@ -157,7 +159,7 @@ export const CreateTaskDialog = ({
     };
 
     // Display comments section if there are existing comments
-    const showExistingComments = isEditMode && taskToEdit && taskToEdit.comments.length > 0;
+    // const showExistingComments = isEditMode && taskToEdit && taskToEdit.comments.length > 0;
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -176,10 +178,7 @@ export const CreateTaskDialog = ({
                             : 'Create a new task with all the details below.'}
                     </DialogDescription>
                 </DialogHeader>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-4">
-                    {/* LEFT: Form fields (2/3 width) */}
-                    <div className="md:col-span-2 space-y-4">
+                <div className="md:col-span-2 space-y-4">
                         <Input
                             id="task-name"
                             value={formState.taskName}
@@ -193,7 +192,7 @@ export const CreateTaskDialog = ({
                             value={formState.description}
                             onChange={(e) => setFormState({ ...formState, description: e.target.value })}
                             placeholder="Enter task description"
-                            className="w-full"
+                            className="w-full min-h-[150px]"
                         />
 
                         <div className="grid grid-cols-2 gap-4">
@@ -329,9 +328,13 @@ export const CreateTaskDialog = ({
                         )}
                     </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-4">
+                    {/* LEFT: Form fields (2/3 width) */}
+                    
+
                     {/* RIGHT: Comments (1/3 width) */}
-                    <div className="space-y-4">
-                        {/* Existing Comments */}
+
+                    {/* <div className="space-y-4">
                         {showExistingComments && (
                             <div>
                                 <div className="flex items-center mb-2">
@@ -350,8 +353,6 @@ export const CreateTaskDialog = ({
                                 </div>
                             </div>
                         )}
-
-                        {/* Add New Comment */}
                         <div>
                             <div className="flex items-center mb-2">
                                 <MessageCircle className="h-4 w-4 mr-2" />
@@ -365,7 +366,7 @@ export const CreateTaskDialog = ({
                                 className="w-full"
                             />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 <DialogFooter>

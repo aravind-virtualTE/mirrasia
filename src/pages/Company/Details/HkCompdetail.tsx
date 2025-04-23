@@ -139,9 +139,9 @@ export interface PaymentDetails {
 interface Company {
     incorporationDate: string;
     is_draft: boolean;
-    _id: string; // Changed to string for frontend
-    userId: string; // Changed to string for frontend
-    country: Country;   //Record<string, string | undefined>;
+    _id: string;
+    userId: string;
+    country: Country;   
     applicantInfoForm: ApplicantInfoForm;
     businessInfoHkCompany: BusinessInfoHkCompany;
     companyBusinessInfo: CompanyBusinessInfo;
@@ -167,9 +167,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [users, setUsers] = useState<User[]>([]);
     const [adminAssigned, setAdminAssigned] = useState("");
     const navigate = useNavigate()
-    const companyDetail = companies.find(
-        (c) => c._id === id
-    ) as unknown as Company;
+    const companyDetail = companies.find((c) => c._id === id) as unknown as Company;
     const [company, setCompany] = useState(companyDetail);
     const [session, setSession] = useState<SessionData>({
         _id: "",
@@ -180,7 +178,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         paymentId: "",
     });
     const [isSheetOpen, setIsSheetOpen] = useState(false)
-
+    // const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
         updateCompanyData(company);
@@ -307,7 +305,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
         return sections;
     };
-
     const sections = useMemo(() => {
         if (!company) return [];
         return generateSections(company, session);
@@ -333,7 +330,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         status: session.status,
                         paymentId: session.paymentId,
                     };
-    
                     setSession(transformedSession);
                 }
                 await fetchUsers().then((response) => {
@@ -351,18 +347,15 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     if (!company) {
         return <div>Company not found</div>;
     }
-
     const handleSessionDataChange = (key: keyof SessionData, value: string) => {
         setSession({ ...session, [key]: value });
     };
-
     const handleCompanyDataChange = (
         key: keyof Company,
         value: string | boolean
     ) => {
         setCompany({ ...company, [key]: value });
     };
-
     const IncorporationDateFrag = () => {
         let date = company.incorporationDate
         if (date !== null) {
