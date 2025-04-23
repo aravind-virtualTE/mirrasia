@@ -31,6 +31,7 @@ import ProjectsCard from "./Admin/ProjectsCard"
 import CurrentClients from "./Admin/CurrentClients"
 import CurrentCorporateClient from "./Admin/CurrentCorporateClients"
 import AdminTodo from "./Admin/AdminTodoCard"
+import { toast } from "@/hooks/use-toast"
 
 
 const AdminDashboard = () => {
@@ -102,9 +103,16 @@ const AdminDashboard = () => {
     localStorage.setItem("companyRecordId", companyId)
   }
 
-  const handleEditClick = (companyId: string, countryCode: string) => {
-    localStorage.setItem("companyRecordId", companyId)
-    navigate(`/company-register/${countryCode}/${companyId}`)
+  const handleEditClick = (companyId: string, countryCode: string, status:string) => {
+    if (active_status.includes(status)) {
+      localStorage.setItem("companyRecordId", companyId)
+      navigate(`/company-register/${countryCode}/${companyId}`);
+    }else{
+      toast({
+        title: "Cant Edit",
+        description: "Company got incorporated",
+      })
+    }
   }
 
   const requestSort = (key: string) => {
@@ -163,7 +171,7 @@ const AdminDashboard = () => {
 
   const handleDeleteClick = async (companyId: string, countryCode: string) => {
       const result = await deleteCompanyRecord({ _id: companyId, country: countryCode })
-      console.log("result", result)
+      // console.log("result", result)
       if (result) {
         // Filter out the deleted company and update the atom
         const updatedList = allList.filter(company => company._id !== companyId);
@@ -336,7 +344,7 @@ const AdminDashboard = () => {
                       <TableCell className="py-2">
                         <button
                           className="text-blue-500 hover:text-blue-700 transition"
-                          onClick={() => handleEditClick(typedCompany._id, typedCompany.country.code)}
+                          onClick={() => handleEditClick(typedCompany._id, typedCompany.country.code, typedCompany.status)}
                         >
                           <Pencil size={16} />
                         </button>

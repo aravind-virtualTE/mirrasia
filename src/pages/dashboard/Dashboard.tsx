@@ -26,6 +26,7 @@ import ServiceCarousel from "./ServiceCarousel";
 import MainFunctionalities from "./MainFunctionalities";
 import { useTranslation } from "react-i18next";
 import { usaFormWithResetAtom } from "../Company/USA/UsState";
+import { toast } from "@/hooks/use-toast";
 // import { ReferralPromptDialog } from "@/components/userList/ReferralPromptDialog";
 
 const Dashboard = () => {
@@ -80,9 +81,24 @@ const Dashboard = () => {
   //   }
   // };
 
-  const handleEditClick = (companyId: string, countryCode: string) => {
-    localStorage.setItem("companyRecordId", companyId)
-    navigate(`/company-register/${countryCode}/${companyId}`);
+  const handleEditClick = (companyId: string, countryCode: string, status: string) => {
+
+    const active_status = [
+      'Pending',
+      'KYC Verification',
+      'Waiting for Payment',
+      'Waiting for Documents',
+      'Waiting for Incorporation'
+    ]
+    if (active_status.includes(status)) {
+      localStorage.setItem("companyRecordId", companyId)
+      navigate(`/company-register/${countryCode}/${companyId}`);
+    }else{
+      toast({
+        title: "Cant Edit",
+        description: "Company got incorporated",
+      })
+    }
   }
   return (
     < >
@@ -143,7 +159,7 @@ const Dashboard = () => {
 
                       <TableCell className="py-2 px-3">{typedCompany.country.name || "N/A"}</TableCell>
 
-                      <TableCell className="py-2 px-3"> {/* Added padding */}
+                      <TableCell className="py-2 px-3">
                         <span
                           className={cn(
                             "inline-flex items-center rounded-full text-xs font-medium",
@@ -162,7 +178,7 @@ const Dashboard = () => {
                       <TableCell className="py-2 px-3">
                         <button
                           className="text-blue-500 hover:text-blue-700 transition"
-                          onClick={() => handleEditClick(typedCompany._id, typedCompany.country.code)}
+                          onClick={() => handleEditClick(typedCompany._id, typedCompany.country.code, typedCompany.status)}
                         >
                           <Pencil size={16} />
                         </button>
