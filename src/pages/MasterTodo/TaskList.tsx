@@ -126,7 +126,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     const [popupTask, setPopupTask] = useState<Task | null>(null);
 
     const handleEditClick = (task: Task, e: React.MouseEvent) => {
-        e.stopPropagation(); 
+        e.stopPropagation();
         const assigneeNames = task.assignees.map(a => a.name);
         const selectedUserObjects = users.filter(user => assigneeNames.includes(user.name));
 
@@ -181,8 +181,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-[200px]">Task</TableHead>
-                            <TableHead className="w-[100px]">Assignees</TableHead>
-                            <TableHead className="w-[100px]">Due</TableHead>
+                            <TableHead className="w-[100px]">Assignee</TableHead>
+                            <TableHead className="w-[100px]">Due Date</TableHead>
                             <TableHead className="w-[100px]">Priority</TableHead>
                             <TableHead className="w-[80px]">Actions</TableHead>
                         </TableRow>
@@ -192,13 +192,13 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                             <TableRow
                                 key={task._id}
                                 className="h-12 hover:bg-gray-100 "
-                                // onClick={() => handleRowClick(task)}cursor-pointer
+                            // onClick={() => handleRowClick(task)}cursor-pointer ${statusColors[task.status]}
                             >
                                 <TableCell className="py-1">
                                     <div className="flex items-center">
                                         <Badge variant="outline" className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}>
                                             {task.status}
-                                        </Badge>
+                                        </Badge>                                       
                                         <div className="flex flex-col ml-2" style={{ width: '200px' }}>
                                             <span className="text-base font-semibold truncate">{task.name}</span>
                                             {task.description && (
