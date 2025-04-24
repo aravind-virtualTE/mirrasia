@@ -26,6 +26,7 @@ interface CreateTaskDialogProps {
     onOpenChange: (open: boolean) => void;
     isEditMode?: boolean;
     taskToEdit?: Task;
+    disbleCompany?: boolean;
 }
 
 export const CreateTaskDialog = ({
@@ -33,6 +34,7 @@ export const CreateTaskDialog = ({
     onOpenChange,
     isEditMode = false,
     taskToEdit,
+    disbleCompany = false
 }: CreateTaskDialogProps) => {
     const [tasks, setTasks] = useAtom(tasksAtom);
     const [formState, setFormState] = useAtom(createTaskFormAtom);
@@ -351,6 +353,7 @@ export const CreateTaskDialog = ({
                             <Select
                                 onValueChange={handleCompanyChange}
                                 value={formState.selectedCompany?.id || ''}
+                                disabled={disbleCompany}
                             >
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder={formState.selectedCompany?.name || "Select a Company"} />
