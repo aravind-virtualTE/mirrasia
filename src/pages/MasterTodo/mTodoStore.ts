@@ -3,7 +3,7 @@ import { atom } from 'jotai';
 import api from '@/services/fetch';
 
 
-export type TaskPriority = 'Low' | 'Medium' | 'High';
+export type TaskPriority = 'Low' | 'Medium' | 'High' | 'Urgent';
 export type TaskStatus = 'TO DO' | 'IN PROGRESS' | 'IN REVIEW' | 'COMPLETED';
 
 export interface Comment {
@@ -65,9 +65,10 @@ export const createTaskFormAtom = atom<CreateTaskFormState>(defaultFormState);
 export const usersAtom = atom<User[]>([]);
 
 export const priorities: { label: string; value: TaskPriority; color: string }[] = [
-  { label: "High", value: "High", color: "text-red-500" },
-  { label: "Medium", value: "Medium", color: "text-yellow-500" },
-  { label: "Low", value: "Low", color: "text-green-500" },
+  { label: "High", value: "High", color: "text-yellow-500" },
+  { label: "Medium", value: "Medium", color: "text-blue-500" },
+  { label: "Low", value: "Low", color: "text-gray-500" },
+  { label: "Urgent", value: "Urgent", color: "text-red-500" },
 ];
 
 export const statuses: { label: TaskStatus; color: string; bgColor: string }[] = [
