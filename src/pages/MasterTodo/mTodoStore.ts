@@ -54,7 +54,7 @@ export const defaultFormState: CreateTaskFormState = {
   taskName: '',
   description: '',
   comment: '',
-  dueDate: new Date(),
+  dueDate: undefined,
   priority: 'Medium',
   status: 'TO DO',
   selectedUsers: [],
