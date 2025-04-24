@@ -9,6 +9,7 @@ export type TaskStatus = 'TO DO' | 'IN PROGRESS' | 'IN REVIEW' | 'COMPLETED';
 export interface Comment {
   _id?: string;
   text: string;
+  author?:string;
   timestamp: string;
 }
 
@@ -82,6 +83,20 @@ export const statuses: { label: TaskStatus; color: string; bgColor: string }[] =
   { label: "COMPLETED", color: "text-purple-800", bgColor: "bg-purple-100" },
 ];
 
+
+export const statusColors: Record<TaskStatus, string> = {
+    'TO DO': 'bg-blue-100 text-blue-800',
+    'IN PROGRESS': 'bg-green-100 text-green-800',
+    'IN REVIEW': 'bg-orange-100 text-orange-800',
+    'COMPLETED': 'bg-purple-100 text-purple-800',
+};
+
+export const priorityColors: Record<string, string> = {
+    'Low': 'text-gray-700',
+    'Medium': 'text-blue-600',
+    'High': 'text-yellow-500',
+    'Urgent': 'text-red-600',
+};
 
 export const users = [
     { id: "1", name: "Nolan Kim" },

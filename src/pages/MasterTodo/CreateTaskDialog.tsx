@@ -9,17 +9,13 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-    DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import {
-    Plus, CalendarIcon, Flag,
-    X, Check, ChevronDown
-} from 'lucide-react';
+import {CalendarIcon, Flag, X, Check, ChevronDown} from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useState, useRef, useEffect } from 'react';
 import { allCompListAtom } from '@/services/state';
@@ -208,13 +204,7 @@ export const CreateTaskDialog = ({
     // };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogTrigger asChild>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create new task
-                </Button>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>           
             <DialogContent className="max-w-[900px]">
                 <DialogHeader>
                     <DialogTitle>{isEditMode ? 'Edit Task' : 'Create Task'}</DialogTitle>
