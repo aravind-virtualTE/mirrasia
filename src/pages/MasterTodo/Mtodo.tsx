@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { useAtom } from "jotai";
 import { Layers, Plus } from "lucide-react";
 import { TaskList } from "./TaskList";
-import { createTaskFormAtom, defaultFormState, getTasks, tasksAtom, usersAtom, viewModeAtom } from "./mTodoStore";
+import { createTaskFormAtom, defaultFormState, getTasks, tasksAtom, viewModeAtom } from "./mTodoStore";
 import { CreateTaskDialog } from "./CreateTaskDialog";
-import { fetchUsers, getIncorporationList } from "@/services/dataFetch";
+import { getIncorporationList } from "@/services/dataFetch";
 import { allCompListAtom } from "@/services/state";
 
 const ToDoList = () => {
@@ -14,21 +14,13 @@ const ToDoList = () => {
     const [, setFormState] = useAtom(createTaskFormAtom);
     const [, setListState] = useAtom(tasksAtom);
     const [, setAllList] = useAtom(allCompListAtom)
-    const [, setUsers] = useAtom(usersAtom);
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const userId = user ? user.id : ""
 
     useEffect(() => {
         const fetchUser = async () => {
-            await fetchUsers().then((response) => {
-                let data
-                if (user.role === 'admin') data = response.filter((e: { _id: string; }) => e._id == userId)
-                else data = response.filter((e: { role: string; }) => e.role == 'admin' || e.role == 'master')
-                setUsers(data);
-            })
             let filters = {}
             if (user.role === 'admin') filters = { userId: userId, }
-
             await getTasks(filters).then((response) => {
                 // console.log("response--->", response)
                 setListState(response);
@@ -45,7 +37,6 @@ const ToDoList = () => {
         setOpenDialog(true)
         setFormState(defaultFormState);
     }
-
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-6">

@@ -334,7 +334,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 }
                 await fetchUsers().then((response) => {
                     const data = response.filter((e: { role: string; }) => e.role == 'admin' || e.role == 'master')
-                    console.log("responsedata", data)
+                    // console.log("responsedata", data)
                     setUsers(data);
                 })
             } catch (error) {
@@ -593,6 +593,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         )
     }
 
+    console.log("company", company)
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full max-w-5xl mx-auto">
             <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -619,7 +620,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <TabsContent value="details" className="p-6">
                 <div className="space-y-8">
                     <h1 className="text-2xl font-bold">Company Details</h1>
-                    <TodoApp id={company._id} />
+                    <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />
                     <div className='flex gap-x-8'>
                         <AssignAdmin />
                         <Button onClick={() => navigate(`/company-documents/${company.country.code}/${company._id}`)}>
