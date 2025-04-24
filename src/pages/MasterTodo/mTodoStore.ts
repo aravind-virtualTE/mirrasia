@@ -9,6 +9,7 @@ export type TaskStatus = 'TO DO' | 'IN PROGRESS' | 'IN REVIEW' | 'COMPLETED';
 export interface Comment {
   _id?: string;
   text: string;
+  author?:string;
   timestamp: string;
 }
 
@@ -17,14 +18,21 @@ export interface Task {
   name: string;
   description?: string;
   assignees: {
-    _id?: string;
+    id?: string;
     name: string;
   }[];
   dueDate: Date | undefined;
   priority: TaskPriority;
   status: TaskStatus;
   comments: Comment[];
-  companyId?: string;
+  company?: {
+    id: string;
+    name: string;
+  };
+  project?: {
+    id: string;
+    name: string;
+  };
   userId?: string;
 }
 
@@ -40,15 +48,9 @@ export interface CreateTaskFormState {
   priority: TaskPriority;
   status: TaskStatus;
   selectedUsers: { id: string; name: string }[];
+  selectedCompany: { id: string ; name: string } | undefined;
+  selectedProject: { id: string  ; name: string } | undefined;
 }
-
-export const users = [
-  { id: "1", name: "Nolan Kim" },
-  { id: "2", name: "Sarah Johnson" },
-  { id: "3", name: "Alex Wong" },
-  { id: "4", name: "Maria Garcia" },
-  { id: "5", name: "David Lee" },
-];
 
 export const defaultFormState: CreateTaskFormState = {
   taskName: '',
@@ -58,6 +60,9 @@ export const defaultFormState: CreateTaskFormState = {
   priority: 'Medium',
   status: 'TO DO',
   selectedUsers: [],
+  selectedCompany: undefined,
+  selectedProject: undefined
+  
 };
 
 export const createTaskFormAtom = atom<CreateTaskFormState>(defaultFormState);
@@ -78,6 +83,29 @@ export const statuses: { label: TaskStatus; color: string; bgColor: string }[] =
   { label: "COMPLETED", color: "text-purple-800", bgColor: "bg-purple-100" },
 ];
 
+
+export const statusColors: Record<TaskStatus, string> = {
+    'TO DO': 'bg-blue-100 text-blue-800',
+    'IN PROGRESS': 'bg-green-100 text-green-800',
+    'IN REVIEW': 'bg-orange-100 text-orange-800',
+    'COMPLETED': 'bg-purple-100 text-purple-800',
+};
+
+export const priorityColors: Record<string, string> = {
+    'Low': 'text-gray-700',
+    'Medium': 'text-blue-600',
+    'High': 'text-yellow-500',
+    'Urgent': 'text-red-600',
+};
+
+export const users = [
+    { id: "1", name: "Nolan Kim" },
+    { id: "2", name: "Sarah Johnson" },
+    { id: "3", name: "Alex Wong" },
+    { id: "4", name: "Maria Garcia" },
+    { id: "5", name: "David Lee" },
+  ];
+  
 
 export const createTask = async (taskData:Task) => {
     try {

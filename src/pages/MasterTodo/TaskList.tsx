@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
-import { Task, tasksAtom, TaskStatus, viewModeAtom, createTaskFormAtom, users, deleteTask } from './mTodoStore';
-import { Edit, Flag, Trash2, X } from 'lucide-react';
+import { Task, tasksAtom, TaskStatus, viewModeAtom, createTaskFormAtom, users, deleteTask, statusColors, priorityColors } from './mTodoStore';
+import { Edit, Flag, Trash2, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { useState } from 'react';
@@ -22,102 +22,13 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
-
-const statusColors: Record<TaskStatus, string> = {
-    'TO DO': 'bg-blue-100 text-blue-800',
-    'IN PROGRESS': 'bg-green-100 text-green-800',
-    'IN REVIEW': 'bg-orange-100 text-orange-800',
-    'COMPLETED': 'bg-purple-100 text-purple-800',
-};
-
-const priorityColors: Record<string, string> = {
-    'Low': 'text-gray-700',
-    'Medium': 'text-blue-600',
-    'High': 'text-yellow-500',
-    'Urgent': 'text-red-600',
-};
-
-// Task Detail Popup Component
-const TaskDetailPopup = ({ task, onClose }: { task: Task | null, onClose: () => void }) => {
-    if (!task) return null;
-
-    return (
-        <div className="fixed inset-0 flex items-center justify-center z-50" onClick={onClose}>
-            <div className="absolute inset-0 bg-black opacity-20" />
-            <div
-                className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-10"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="flex justify-between items-start mb-4">
-                    <Badge variant="outline" className={`text-xs px-2 py-1 ${statusColors[task.status]}`}>
-                        {task.status}
-                    </Badge>
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onClose}>
-                        <X className="h-4 w-4" />
-                    </Button>
-                </div>
-
-                <h3 className="text-xl font-semibold mb-2">{task.name}</h3>
-
-                <div className="space-y-4">
-                    {task.description && (
-                        <div className="max-w-full">
-                            <p className="text-sm text-gray-700 whitespace-normal break-words">
-                                {task.description}
-                            </p>
-                        </div>
-                    )}
-
-                    <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">Priority:</span>
-                        <div className="flex items-center gap-1">
-                            <Flag className={`h-4 w-4 ${priorityColors[task.priority]}`} fill={'currentColor'} />
-                            <span className="text-sm">{task.priority}</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <span className="text-sm font-medium">Due date:</span>
-                        <span className="text-sm ml-2">
-                            {task.dueDate ? format(new Date(task.dueDate), "dd MMMM yyyy") : "No due date"}
-                        </span>
-                    </div>
-
-                    {task.assignees.length > 0 && (
-                        <div>
-                            <span className="text-sm font-medium">Assignees:</span>
-                            <div className="flex flex-wrap gap-2 mt-1">
-                                {task.assignees.map((assignee, index) => (
-                                    <div key={index} className="flex items-center gap-1">
-                                        <Avatar className="h-6 w-6">
-                                            <AvatarFallback className="text-xs">
-                                                {assignee.name.charAt(0)}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <span className="text-sm">{assignee.name}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {task.comments && task.comments.length > 0 && (
-                        <div>
-                            <span className="text-sm font-medium">Comments:</span>
-                            <div className="mt-1 space-y-2">
-                                {task.comments.map((comment, index) => (
-                                    <div key={index} className="bg-gray-50 p-2 rounded text-sm">
-                                        {typeof comment === 'string' ? comment : JSON.stringify(comment)}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-};
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import TaskDetailPopup from './TaskDetailPopup';
 
 const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     const [, setFormState] = useAtom(createTaskFormAtom);
@@ -141,6 +52,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
             priority: task.priority,
             status: task.status,
             selectedUsers: selectedUserObjects,
+            selectedCompany: task.company,
+            selectedProject: task.project
         });
         setSelectedTask(task);
         setEditDialogOpen(true);
@@ -167,24 +80,37 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         setPopupTask(task);
     };
 
-    const renderAssignees = (assigneeNames: { _id?: string, name: string }[]) => {
+    const renderAssignees = (assigneeNames: { id?: string; name: string }[]) => {
         const MAX_AVATARS = 3;
         if (assigneeNames.length === 0) return null;
+
+        const tooltipText = assigneeNames.map((a) => a.name).join(", ");
+
         return (
-            <div className="flex items-center -space-x-2">
-                {assigneeNames.slice(0, MAX_AVATARS).map((item, index) => (
-                    <Avatar key={index} className="h-6 w-6 border-2 border-white">
-                        <AvatarFallback className="text-xs">
-                            {item.name.charAt(0)}
-                        </AvatarFallback>
-                    </Avatar>
-                ))}
-                {assigneeNames.length > MAX_AVATARS && (
-                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-200 text-xs font-medium text-gray-500 border-2 border-white">
-                        +{assigneeNames.length - MAX_AVATARS}
-                    </div>
-                )}
-            </div>
+            <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="flex items-center space-x-2 cursor-pointer">
+                            {assigneeNames.slice(0, MAX_AVATARS).map((item, index) => (
+                                <Avatar key={index} className="h-6 w-6 border-2 border-white">
+                                    <AvatarFallback className="text-xs">
+                                        {item.name.charAt(0)}
+                                    </AvatarFallback>
+                                </Avatar>
+                            ))}
+
+                            {assigneeNames.length > MAX_AVATARS && (
+                                <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-200 text-xs font-medium text-gray-500 border-2 border-white">
+                                    +{assigneeNames.length - MAX_AVATARS}
+                                </div>
+                            )}
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs break-words">
+                        {tooltipText}
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         );
     };
 
@@ -205,15 +131,21 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                         {tasks.map((task) => (
                             <TableRow
                                 key={task._id}
-                                className="h-12 hover:bg-gray-100 cursor-pointer "
-                                onClick={() => handleRowClick(task)}                            >
+                                className="h-12 hover:bg-gray-100"                                                         >
                                 <TableCell className="py-1">
                                     <div className="flex items-center">
                                         <Badge variant="outline" className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}>
                                             {task.status}
                                         </Badge>
+
                                         <div className="flex flex-col ml-2" style={{ width: '200px' }}>
-                                            <span className="text-base font-semibold truncate">{task.name}</span>
+                                            <span className="text-base font-semibold truncate">
+                                                {task.name}
+                                                {task.company?.name && (<Badge variant="outline" className={`text-[10px] px-1.5 py-0.5`}>
+                                                    {task.company.name}
+                                                </Badge>
+                                                )}
+                                            </span>
                                             {task.description && (
                                                 <span className="text-sm text-gray-500 truncate w-48 sm:w-56 md:w-64 lg:w-96" >
                                                     {task.description}
@@ -235,7 +167,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                     </div>
                                 </TableCell>
                                 <TableCell className="py-1" onClick={(e) => e.stopPropagation()}>
-                                    <div className="flex gap-1">
+                                    <div className="flex gap-1 cursor-pointer">
                                         <Button
                                             variant="ghost"
                                             size="sm"
@@ -252,12 +184,21 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                         >
                                             <Trash2 className="h-3 w-3 text-red-500" />
                                         </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-6 w-6 p-0"
+                                            onClick={() => handleRowClick(task)}
+                                        >
+                                            <MessageCircle className="h-3 w-3 text-green-500" />
+                                        </Button>
+
                                     </div>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
-                </Table>                
+                </Table>
                 <ConfirmDialog
                     open={deleteDialogOpen}
                     onOpenChange={setDeleteDialogOpen}
@@ -272,13 +213,12 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                     cancelText="Cancel"
                     onConfirm={confirmDelete}
                 />
-
             </div>
 
             {/* Task Detail Popup */}
             {popupTask && (
                 <TaskDetailPopup
-                    task={popupTask}
+                    taskId={popupTask?._id ?? null}
                     onClose={() => setPopupTask(null)}
                 />
             )}
@@ -321,7 +261,7 @@ const GroupedTasks = ({ tasks }: { tasks: Task[] }) => {
             {/* Task Detail Popup at GroupedTasks level */}
             {popupTask && (
                 <TaskDetailPopup
-                    task={popupTask}
+                    taskId={popupTask?._id ?? null}
                     onClose={() => setPopupTask(null)}
                 />
             )}
