@@ -599,27 +599,27 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
                 <TabsTrigger
                     value="details"
-                    className="flex-1 py-3 text-sm font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                    className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
                 >
                     Company Details
                 </TabsTrigger>
                 <TabsTrigger
                     value="service-agreement"
-                    className="flex-1 py-3 text-sm font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                    className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
                 >
                     Record of Documents
                 </TabsTrigger>
                 <TabsTrigger
                     value="Memos"
-                    className="flex-1 py-3 text-sm font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                    className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
                 >
                     Memo
                 </TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="p-6">
-                <div className="space-y-8">
-                    <h1 className="text-2xl font-bold">Company Details</h1>
+                <div className="space-y-4">
+                    {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
                     <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />
                     <div className='flex gap-x-8'>
                         <AssignAdmin />
