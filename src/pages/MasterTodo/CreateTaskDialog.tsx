@@ -15,10 +15,11 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import {CalendarIcon, Flag, X, Check, ChevronDown} from 'lucide-react';
+import { CalendarIcon, Flag, X, Check, ChevronDown } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useState, useRef, useEffect } from 'react';
 import { allCompListAtom } from '@/services/state';
+import { fetchUsers } from '@/services/dataFetch';
 
 interface CreateTaskDialogProps {
     open: boolean;
@@ -35,7 +36,7 @@ export const CreateTaskDialog = ({
 }: CreateTaskDialogProps) => {
     const [tasks, setTasks] = useAtom(tasksAtom);
     const [formState, setFormState] = useAtom(createTaskFormAtom);
-    const [users] = useAtom(usersAtom);
+    const [users, setUsers] = useAtom(usersAtom);
     const [allList] = useAtom(allCompListAtom);
 
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
@@ -69,9 +70,20 @@ export const CreateTaskDialog = ({
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
+        const fetchUser = async () => {
+            const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+            await fetchUsers().then((response) => {
+                let data
+                if (user.role === 'admin') data = response.filter((e: { _id: string; }) => e._id == userId)
+                else data = response.filter((e: { role: string; }) => e.role == 'admin' || e.role == 'master')
+                setUsers(data);
+            })
+        }
+        fetchUser()
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
+
     }, []);
 
     useEffect(() => {
@@ -183,7 +195,7 @@ export const CreateTaskDialog = ({
         } else {
             setFormState({
                 ...formState,
-                selectedCompany: {id: "", name: ""}
+                selectedCompany: { id: "", name: "" }
             });
         }
     };
@@ -192,15 +204,14 @@ export const CreateTaskDialog = ({
     //     // This is a placeholder - you would need to implement project filtering
     //     // similar to how companies are filtered
     //     const project = { id: projectId, name: "Project Name" }; // Replace with actual project data
-        
+
     //     setFormState({
     //         ...formState,
     //         selectedProject: project
     //     });
     // };
-    console.log("formState.selectedUsers",formState.selectedUsers)
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>           
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-[900px]">
                 <DialogHeader>
                     <DialogTitle>{isEditMode ? 'Edit Task' : 'Create Task'}</DialogTitle>
@@ -334,7 +345,7 @@ export const CreateTaskDialog = ({
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">   
+                    <div className="grid grid-cols-2 gap-4">
                         {/* Company Selection */}
                         <div className="mb-4">
                             <Select
@@ -356,7 +367,7 @@ export const CreateTaskDialog = ({
                                 </SelectContent>
                             </Select>
                         </div>
-                        
+
                         {/* Project Selection */}
                         {/* <div className="mb-4">
                             <Select
@@ -384,12 +395,12 @@ export const CreateTaskDialog = ({
                                     <div key={`user-${user.id}`} className="flex items-center bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm">
                                         {user.name}
                                         <button
-                                                type="button"
-                                                onClick={() => toggleUser({ id: user.id || "", name: user.name })}
-                                                className="ml-1 text-blue-600 hover:text-blue-800"
-                                            >
-                                                <X className="h-3 w-3" />
-                                            </button>
+                                            type="button"
+                                            onClick={() => toggleUser({ id: user.id || "", name: user.name })}
+                                            className="ml-1 text-blue-600 hover:text-blue-800"
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </button>
                                     </div>
                                 ))}
                             </div>

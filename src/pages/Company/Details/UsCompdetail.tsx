@@ -467,7 +467,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       <TabsContent value="details" className="p-6">
         <div className="space-y-8">
           <h1 className="text-2xl font-bold">Company Details</h1>
-          <TodoApp id={id} />
+          <TodoApp id={id} name={formData.companyName[0]} />
           <div className="flex gap-x-8">
             <AssignAdmin />
             <Button onClick={() => navigate(`/company-documents/US/${id}`)}>

@@ -62,7 +62,6 @@ export const defaultFormState: CreateTaskFormState = {
   selectedUsers: [],
   selectedCompany: undefined,
   selectedProject: undefined
-  
 };
 
 export const createTaskFormAtom = atom<CreateTaskFormState>(defaultFormState);
