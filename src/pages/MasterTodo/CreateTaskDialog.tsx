@@ -137,8 +137,8 @@ export const CreateTaskDialog = ({
             const newTaskData: Task = {
                 name: formState.taskName,
                 description: formState.description,
-                assignees: formState.selectedUsers, // Extract names from selected users
-                dueDate: formState.dueDate,
+                assignees: formState.selectedUsers,
+                dueDate: formState.dueDate ?? undefined,
                 priority: formState.priority,
                 status: formState.status,
                 userId,
@@ -151,6 +151,7 @@ export const CreateTaskDialog = ({
                     ]
                     : [],
             };
+            // console.log("newTaskData--->", newTaskData)
             const createdTask = await createTask(newTaskData);
             setTasks([createdTask,...tasks]);
         }
