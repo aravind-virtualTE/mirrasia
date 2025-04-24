@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { Task, tasksAtom, TaskStatus, viewModeAtom, createTaskFormAtom, users, deleteTask } from './mTodoStore';
-import { Edit, Flag, Trash2, X } from 'lucide-react';
+import { Edit, Flag, Trash2, X ,MessageCircle} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { useState } from 'react';
@@ -22,6 +22,13 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 
 const statusColors: Record<TaskStatus, string> = {
     'TO DO': 'bg-blue-100 text-blue-800',
@@ -141,6 +148,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
             priority: task.priority,
             status: task.status,
             selectedUsers: selectedUserObjects,
+            selectedCompany: task.company,
+            selectedProject: task.project
         });
         setSelectedTask(task);
         setEditDialogOpen(true);
@@ -167,24 +176,37 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         setPopupTask(task);
     };
 
-    const renderAssignees = (assigneeNames: { _id?: string, name: string }[]) => {
+    const renderAssignees = (assigneeNames: { _id?: string; name: string }[]) => {
         const MAX_AVATARS = 3;
         if (assigneeNames.length === 0) return null;
+
+        const tooltipText = assigneeNames.map((a) => a.name).join(", ");
+
         return (
-            <div className="flex items-center -space-x-2">
-                {assigneeNames.slice(0, MAX_AVATARS).map((item, index) => (
-                    <Avatar key={index} className="h-6 w-6 border-2 border-white">
-                        <AvatarFallback className="text-xs">
-                            {item.name.charAt(0)}
-                        </AvatarFallback>
-                    </Avatar>
-                ))}
-                {assigneeNames.length > MAX_AVATARS && (
-                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-200 text-xs font-medium text-gray-500 border-2 border-white">
-                        +{assigneeNames.length - MAX_AVATARS}
-                    </div>
-                )}
-            </div>
+            <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="flex items-center space-x-2 cursor-pointer">
+                            {assigneeNames.slice(0, MAX_AVATARS).map((item, index) => (
+                                <Avatar key={index} className="h-6 w-6 border-2 border-white">
+                                    <AvatarFallback className="text-xs">
+                                        {item.name.charAt(0)}
+                                    </AvatarFallback>
+                                </Avatar>
+                            ))}
+
+                            {assigneeNames.length > MAX_AVATARS && (
+                                <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-200 text-xs font-medium text-gray-500 border-2 border-white">
+                                    +{assigneeNames.length - MAX_AVATARS}
+                                </div>
+                            )}
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent  className="max-w-xs break-words">
+                        {tooltipText}
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         );
     };
 
@@ -205,12 +227,14 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                         {tasks.map((task) => (
                             <TableRow
                                 key={task._id}
-                                className="h-12 hover:bg-gray-100 cursor-pointer "
-                                onClick={() => handleRowClick(task)}                            >
+                                className="h-12 hover:bg-gray-100"                                                         >
                                 <TableCell className="py-1">
                                     <div className="flex items-center">
                                         <Badge variant="outline" className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}>
                                             {task.status}
+                                        </Badge>
+                                        <Badge variant="outline" className={`text-[10px] px-1.5 py-0.5`}>
+                                            {task.company?.name}
                                         </Badge>
                                         <div className="flex flex-col ml-2" style={{ width: '200px' }}>
                                             <span className="text-base font-semibold truncate">{task.name}</span>
@@ -235,7 +259,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                     </div>
                                 </TableCell>
                                 <TableCell className="py-1" onClick={(e) => e.stopPropagation()}>
-                                    <div className="flex gap-1">
+                                    <div className="flex gap-1 cursor-pointer">
                                         <Button
                                             variant="ghost"
                                             size="sm"
@@ -252,12 +276,21 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                         >
                                             <Trash2 className="h-3 w-3 text-red-500" />
                                         </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-6 w-6 p-0"
+                                            onClick={() => handleRowClick(task)}
+                                        >
+                                            <MessageCircle className="h-3 w-3 text-green-500" />
+                                        </Button>
+                                        
                                     </div>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
-                </Table>                
+                </Table>
                 <ConfirmDialog
                     open={deleteDialogOpen}
                     onOpenChange={setDeleteDialogOpen}
@@ -272,7 +305,6 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                     cancelText="Cancel"
                     onConfirm={confirmDelete}
                 />
-
             </div>
 
             {/* Task Detail Popup */}

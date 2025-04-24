@@ -24,7 +24,14 @@ export interface Task {
   priority: TaskPriority;
   status: TaskStatus;
   comments: Comment[];
-  companyId?: string;
+  company?: {
+    id: string;
+    name: string;
+  };
+  project?: {
+    id: string;
+    name: string;
+  };
   userId?: string;
 }
 
@@ -40,15 +47,9 @@ export interface CreateTaskFormState {
   priority: TaskPriority;
   status: TaskStatus;
   selectedUsers: { id: string; name: string }[];
+  selectedCompany: { id: string ; name: string } | undefined;
+  selectedProject: { id: string  ; name: string } | undefined;
 }
-
-export const users = [
-  { id: "1", name: "Nolan Kim" },
-  { id: "2", name: "Sarah Johnson" },
-  { id: "3", name: "Alex Wong" },
-  { id: "4", name: "Maria Garcia" },
-  { id: "5", name: "David Lee" },
-];
 
 export const defaultFormState: CreateTaskFormState = {
   taskName: '',
@@ -58,6 +59,9 @@ export const defaultFormState: CreateTaskFormState = {
   priority: 'Medium',
   status: 'TO DO',
   selectedUsers: [],
+  selectedCompany: undefined,
+  selectedProject: undefined
+  
 };
 
 export const createTaskFormAtom = atom<CreateTaskFormState>(defaultFormState);
@@ -78,6 +82,15 @@ export const statuses: { label: TaskStatus; color: string; bgColor: string }[] =
   { label: "COMPLETED", color: "text-purple-800", bgColor: "bg-purple-100" },
 ];
 
+
+export const users = [
+    { id: "1", name: "Nolan Kim" },
+    { id: "2", name: "Sarah Johnson" },
+    { id: "3", name: "Alex Wong" },
+    { id: "4", name: "Maria Garcia" },
+    { id: "5", name: "David Lee" },
+  ];
+  
 
 export const createTask = async (taskData:Task) => {
     try {
