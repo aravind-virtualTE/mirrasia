@@ -31,9 +31,10 @@ const statusColors: Record<TaskStatus, string> = {
 };
 
 const priorityColors: Record<string, string> = {
-    'Low': 'text-green-500',
-    'Medium': 'text-yellow-500',
-    'High': 'text-red-500',
+    'Low': 'text-gray-700',   
+    'Medium': 'text-blue-600',
+    'High': 'text-yellow-500',
+    'Urgent': 'text-red-600',
 };
 
 // Task Detail Popup Component
