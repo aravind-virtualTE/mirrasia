@@ -1,4 +1,3 @@
-// TaskList.tsx
 import { useAtom } from 'jotai';
 import { Task, tasksAtom, TaskStatus, viewModeAtom, createTaskFormAtom, users, deleteTask } from './mTodoStore';
 import { Edit, Flag, Trash2, X } from 'lucide-react';
@@ -22,6 +21,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
 
 const statusColors: Record<TaskStatus, string> = {
     'TO DO': 'bg-blue-100 text-blue-800',
@@ -31,7 +31,7 @@ const statusColors: Record<TaskStatus, string> = {
 };
 
 const priorityColors: Record<string, string> = {
-    'Low': 'text-gray-700',   
+    'Low': 'text-gray-700',
     'Medium': 'text-blue-600',
     'High': 'text-yellow-500',
     'Urgent': 'text-red-600',
@@ -125,6 +125,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
     const [popupTask, setPopupTask] = useState<Task | null>(null);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
 
     const handleEditClick = (task: Task, e: React.MouseEvent) => {
         e.stopPropagation();
@@ -144,15 +146,26 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         setEditDialogOpen(true);
     };
 
-    const handleDeleteTask = async (id: string, e: React.MouseEvent) => {
-        e.stopPropagation(); // Prevent row click from triggering
-        await deleteTask(id);
-        setAllTasks((prevTasks: Task[]) => prevTasks.filter((task) => task._id !== id));
+    const handleDeleteClick = (task: Task, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setTaskToDelete(task);
+        setDeleteDialogOpen(true);
     };
 
-    // const handleRowClick = (task: Task) => {
-    //     setPopupTask(task);
-    // };
+    const confirmDelete = async () => {
+        if (taskToDelete?._id) {
+            await deleteTask(taskToDelete._id);
+            setAllTasks((prevTasks: Task[]) =>
+                prevTasks.filter((task) => task._id !== taskToDelete._id)
+            );
+        }
+        setDeleteDialogOpen(false);
+        setTaskToDelete(null);
+    };
+
+    const handleRowClick = (task: Task) => {
+        setPopupTask(task);
+    };
 
     const renderAssignees = (assigneeNames: { _id?: string, name: string }[]) => {
         const MAX_AVATARS = 3;
@@ -192,14 +205,13 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                         {tasks.map((task) => (
                             <TableRow
                                 key={task._id}
-                                className="h-12 hover:bg-gray-100 "
-                            // onClick={() => handleRowClick(task)}cursor-pointer ${statusColors[task.status]}
-                            >
+                                className="h-12 hover:bg-gray-100 cursor-pointer "
+                                onClick={() => handleRowClick(task)}                            >
                                 <TableCell className="py-1">
                                     <div className="flex items-center">
                                         <Badge variant="outline" className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}>
                                             {task.status}
-                                        </Badge>                                       
+                                        </Badge>
                                         <div className="flex flex-col ml-2" style={{ width: '200px' }}>
                                             <span className="text-base font-semibold truncate">{task.name}</span>
                                             {task.description && (
@@ -236,7 +248,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                             variant="ghost"
                                             size="sm"
                                             className="h-6 w-6 p-0"
-                                            onClick={(e) => handleDeleteTask(task._id || '', e)}
+                                            onClick={(e) => handleDeleteClick(task, e)}
                                         >
                                             <Trash2 className="h-3 w-3 text-red-500" />
                                         </Button>
@@ -245,7 +257,22 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                             </TableRow>
                         ))}
                     </TableBody>
-                </Table>
+                </Table>                
+                <ConfirmDialog
+                    open={deleteDialogOpen}
+                    onOpenChange={setDeleteDialogOpen}
+                    title="Delete Task"
+                    description={
+                        <>
+                            Are you sure you want to delete{" "}
+                            <span className="font-medium text-red-600">{taskToDelete?.name}</span>?
+                        </>
+                    }
+                    confirmText="Delete"
+                    cancelText="Cancel"
+                    onConfirm={confirmDelete}
+                />
+
             </div>
 
             {/* Task Detail Popup */}

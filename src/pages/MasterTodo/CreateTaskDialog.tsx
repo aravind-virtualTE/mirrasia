@@ -184,8 +184,9 @@ export const CreateTaskDialog = ({
                             id="task-name"
                             value={formState.taskName}
                             onChange={(e) => setFormState({ ...formState, taskName: e.target.value })}
-                            placeholder="Enter task title"
-                            className="w-full"
+                            placeholder="Enter task title (*)"
+                            className="w-full placeholder:italic placeholder:text-red-500"
+                            required
                         />
 
                         <Textarea
