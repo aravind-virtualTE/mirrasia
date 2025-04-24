@@ -80,7 +80,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         setPopupTask(task);
     };
 
-    const renderAssignees = (assigneeNames: { _id?: string; name: string }[]) => {
+    const renderAssignees = (assigneeNames: { id?: string; name: string }[]) => {
         const MAX_AVATARS = 3;
         if (assigneeNames.length === 0) return null;
 

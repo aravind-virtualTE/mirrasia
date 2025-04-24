@@ -10,7 +10,7 @@ import { priorityColors, statusColors, tasksAtom, updateTask } from "./mTodoStor
 import { useState } from "react"
 
 
-const TaskDetailPopup = ({ taskId, onClose }: { taskId: string  | null; onClose: () => void }) => {
+const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: () => void }) => {
     const [tasks, setTasks] = useAtom(tasksAtom)
     const [comment, setComment] = useState("")
     const task = tasks.find((t) => t._id === taskId)
@@ -21,7 +21,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string  | null; onClose:
             text: comment.trim(),
             timestamp: new Date().toISOString(),
             author: ""
-        }      
+        }
 
         try {
             if (!task || !task._id) return
@@ -57,7 +57,11 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string  | null; onClose:
                         </Button>
                     </div>
 
-                    <h3 className="text-xl font-semibold mb-4">{task.name}</h3>
+
+                    <div className="grid grid-cols-[120px_1fr] gap-2">
+                        <span className="text-sm font-medium">Title:</span>
+                        <h3 className="text-xl font-semibold mb-4">{task.name}</h3>
+                    </div>
 
                     <div className="space-y-4">
                         <div className="grid grid-cols-[120px_1fr] gap-2">
@@ -136,7 +140,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string  | null; onClose:
                                             {format(new Date(comment.timestamp), "PPpp")}
                                         </span>
                                     </div>
-                                    
+
                                 </div>
                             ))
                         ) : (

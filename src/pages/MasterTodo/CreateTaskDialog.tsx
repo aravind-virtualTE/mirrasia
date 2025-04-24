@@ -84,7 +84,7 @@ export const CreateTaskDialog = ({
                 priority: taskToEdit.priority,
                 status: taskToEdit.status,
                 selectedUsers: taskToEdit.assignees.map(assignee => ({
-                    id: assignee._id || "",
+                    id: assignee.id || "",
                     name: assignee.name,
                 })),
                 selectedCompany: taskToEdit.company,
@@ -98,15 +98,11 @@ export const CreateTaskDialog = ({
     // Handle user selection in multi-select
     const toggleUser = (user: { id: string; name: string }) => {
         const isSelected = formState.selectedUsers.some(u => u.id === user.id);
-
         if (isSelected) {
-            // Don't allow removing the last user
-            if (formState.selectedUsers.length > 1) {
-                setFormState({
-                    ...formState,
-                    selectedUsers: formState.selectedUsers.filter(u => u.id !== user.id)
-                });
-            }
+            setFormState({
+                ...formState,
+                selectedUsers: formState.selectedUsers.filter(u => u.id !== user.id)
+            });
         } else {
             setFormState({
                 ...formState,
@@ -202,7 +198,7 @@ export const CreateTaskDialog = ({
     //         selectedProject: project
     //     });
     // };
-
+    console.log("formState.selectedUsers",formState.selectedUsers)
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>           
             <DialogContent className="max-w-[900px]">
@@ -385,17 +381,15 @@ export const CreateTaskDialog = ({
                             <p className="text-sm font-medium mb-2">Assigned to:</p>
                             <div className="flex flex-wrap gap-2">
                                 {formState.selectedUsers.map(user => (
-                                    <div key={user.id} className="flex items-center bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm">
+                                    <div key={`user-${user.id}`} className="flex items-center bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm">
                                         {user.name}
-                                        {formState.selectedUsers.length > 1 && (
-                                            <button
+                                        <button
                                                 type="button"
-                                                onClick={() => toggleUser(user)}
+                                                onClick={() => toggleUser({ id: user.id || "", name: user.name })}
                                                 className="ml-1 text-blue-600 hover:text-blue-800"
                                             >
                                                 <X className="h-3 w-3" />
                                             </button>
-                                        )}
                                     </div>
                                 ))}
                             </div>

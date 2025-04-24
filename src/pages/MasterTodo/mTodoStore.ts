@@ -18,7 +18,7 @@ export interface Task {
   name: string;
   description?: string;
   assignees: {
-    _id?: string;
+    id?: string;
     name: string;
   }[];
   dueDate: Date | undefined;
