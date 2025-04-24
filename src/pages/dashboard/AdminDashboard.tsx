@@ -32,6 +32,7 @@ import CurrentClients from "./Admin/CurrentClients"
 import CurrentCorporateClient from "./Admin/CurrentCorporateClients"
 import AdminTodo from "./Admin/AdminTodoCard"
 import { toast } from "@/hooks/use-toast"
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
 
 
 const AdminDashboard = () => {
@@ -40,10 +41,9 @@ const AdminDashboard = () => {
   const navigate = useNavigate()
   const [, setUsaReset] = useAtom(usaFormWithResetAtom)
   const resetAllForms = useResetAllForms();
-  const [sortConfig, setSortConfig] = useState<{
-    key: string
-    direction: "ascending" | "descending"
-  } | null>(null)
+  const [sortConfig, setSortConfig] = useState<{ key: string, direction: "ascending" | "descending" } | null>(null)
+  const [taskToDelete, setTaskToDelete] = useState<{ companyId: string, countryCode: string } | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     setUsaReset('reset')
@@ -103,11 +103,11 @@ const AdminDashboard = () => {
     localStorage.setItem("companyRecordId", companyId)
   }
 
-  const handleEditClick = (companyId: string, countryCode: string, status:string) => {
+  const handleEditClick = (companyId: string, countryCode: string, status: string) => {
     if (active_status.includes(status)) {
       localStorage.setItem("companyRecordId", companyId)
       navigate(`/company-register/${countryCode}/${companyId}`);
-    }else{
+    } else {
       toast({
         title: "Cant Edit",
         description: "Company got incorporated",
@@ -167,33 +167,50 @@ const AdminDashboard = () => {
   }
   const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { status: string }).status))
   const user = JSON.parse(localStorage.getItem("user") || "null");
-  const currentUser = user ? { role: user.role } : { role: ""};
+  const currentUser = user ? { role: user.role } : { role: "" };
 
-  const handleDeleteClick = async (companyId: string, countryCode: string) => {
-      const result = await deleteCompanyRecord({ _id: companyId, country: countryCode })
+  // const handleDeleteClick = async (companyId: string, countryCode: string) => {
+  //     const result = await deleteCompanyRecord({ _id: companyId, country: countryCode })
+  //     // console.log("result", result)
+  //     if (result) {
+  //       // Filter out the deleted company and update the atom
+  //       const updatedList = allList.filter(company => company._id !== companyId);
+  //       setAllList(updatedList);
+  //     }
+  // }
+
+  const handleDeleteClick = (companyId: string, countryCode: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTaskToDelete({ companyId, countryCode });
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (taskToDelete?.companyId) {
+          const result = await deleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode })
       // console.log("result", result)
       if (result) {
         // Filter out the deleted company and update the atom
-        const updatedList = allList.filter(company => company._id !== companyId);
+        const updatedList = allList.filter(company => company._id !== taskToDelete.companyId);
         setAllList(updatedList);
       }
-  }
+    }
+    setDeleteDialogOpen(false);
+    setTaskToDelete(null);
+  };
 
   return (
     <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
       {/* Stats Cards */}
       <StatsCard stats={calculateStats()} />
-
       <Separator className="my-6" />
-
       {/* Additional Cards Section */}
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-        <ProjectsCard  />
+        <ProjectsCard />
         <AdminTodo />
         <CurrentCorporateClient data={projectsData} />
         <CurrentClients />
       </div>
-
       {/* Companies Table */}
       <Card>
         <CardHeader>
@@ -314,7 +331,7 @@ const AdminDashboard = () => {
                   return (
                     <TableRow key={typedCompany._id} className="text-xs h-10">
                       <TableCell>
-                        {idx +1}
+                        {idx + 1}
                       </TableCell>
                       <TableCell
                         className="font-medium cursor-pointer py-2"
@@ -358,7 +375,8 @@ const AdminDashboard = () => {
                       {currentUser.role == "master" && <TableCell className="py-2">
                         <button
                           className="text-red-500 hover:red-blue-700 transition"
-                          onClick={() => handleDeleteClick(typedCompany._id, typedCompany.country.code)}
+                          // onClick={() => handleDeleteClick(typedCompany._id, typedCompany.country.code)}
+                          onClick={(e) => handleDeleteClick(typedCompany._id, typedCompany.country.code, e)}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -368,6 +386,19 @@ const AdminDashboard = () => {
                 })}
               </TableBody>
             </Table>
+            <ConfirmDialog
+              open={deleteDialogOpen}
+              onOpenChange={setDeleteDialogOpen}
+              title="Delete Task"
+              description={
+                <>
+                  Are you sure you want to delete company?
+                </>
+              }
+              confirmText="Delete"
+              cancelText="Cancel"
+              onConfirm={confirmDelete}
+            />
           </div>
         </CardContent>
       </Card>
