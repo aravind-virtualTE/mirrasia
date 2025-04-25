@@ -110,8 +110,9 @@ const App: React.FC = () => {
                       <Route path="/switch-services-list" element={<SwitchServicesList />} />
                       <Route path="/accounting-support-list" element={<AccountingHkList />} />
                       <Route path="/member-registration" element={<InviteUsaDirShir />} />
-                      <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
-                      <Route path="/project-services" element={<ProjectActivity />} />                      
+                      <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />                      
+                      <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
+                      <Route path="/company-details/:id" element={<CompanyDetail />} />
                     </Route>
                   </Route>
 
@@ -119,12 +120,11 @@ const App: React.FC = () => {
                   <Route element={<ProtectedRoute allowedRoles={["admin" , 'master']} />}>
                     <Route element={<Layout />}>
                       <Route path="/compReg" element={<CompanyRegistration2 />} />
-                      <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                      <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
-                      <Route path="/company-details/:id" element={<CompanyDetail />} />
+                      <Route path="/admin-dashboard" element={<AdminDashboard />} />                      
                       <Route path="/messages" element={<ChatInterface />} />
                       <Route path="/projects" element={<AdminProject />} />
                       <Route path="/MasterTodo" element={<ToDoList />} />
+                      <Route path="/project-services" element={<ProjectActivity />} />
                       {/* Add more admin-specific routes here */}
                     </Route>
                   </Route>

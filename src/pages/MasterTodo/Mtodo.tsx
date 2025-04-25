@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAtom } from "jotai";
-import { Layers, Plus } from "lucide-react";
+import { Layers, PlusCircle } from "lucide-react";
 import { TaskList } from "./TaskList";
 import { createTaskFormAtom, defaultFormState, getTasks, tasksAtom, viewModeAtom } from "./mTodoStore";
 import { CreateTaskDialog } from "./CreateTaskDialog";
@@ -48,6 +48,7 @@ const ToDoList = () => {
                     <Button
                         variant={viewMode === "grouped" ? "default" : "outline"}
                         onClick={() => setViewMode("grouped")}
+                        className="h-8 px-3 text-xs"
                     >
                         <Layers className="mr-2 h-4 w-4" />
                         Group By Status
@@ -55,14 +56,15 @@ const ToDoList = () => {
                     <Button
                         variant={viewMode === "expanded" ? "default" : "outline"}
                         onClick={() => setViewMode("expanded")}
+                        className="h-8 px-3 text-xs"
                     >
-                        <Plus className="mr-2 h-4 w-4" />
+                        <PlusCircle className="mr-2 h-4 w-4" />
                         Expand
                     </Button>
                 </div>
 
-                <Button onClick={createTaskAction}>
-                    <Plus className="mr-2 h-4 w-4" />
+                <Button onClick={createTaskAction} className="h-8 px-3 text-xs mr-4">
+                    <PlusCircle className="mr-2 h-4 w-4" />
                     Create new task
                 </Button>
             </div>

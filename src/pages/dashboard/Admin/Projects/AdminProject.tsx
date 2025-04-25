@@ -3,16 +3,8 @@ import { atom, useAtom } from 'jotai';
 import { PlusCircle, Pencil, Trash2 } from 'lucide-react';
 import {
   Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -23,7 +15,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createProject, currentProjectAtom, deleteProject, fetchProjects, initialProject, Project, projectsAtom, updateProject } from './ProjectAtom';
-
+import { allCompListAtom } from '@/services/state';
+import ProjectFormDialog from './ProjectFormDialog';
 
 const isEditingAtom = atom<boolean>(false);
 const isOpenAtom = atom<boolean>(false);
@@ -33,6 +26,7 @@ const AdminProject: React.FC = () => {
   const [currentProject, setCurrentProject] = useAtom(currentProjectAtom);
   const [isEditing, setIsEditing] = useAtom(isEditingAtom);
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
+  const [allList] = useAtom(allCompListAtom);
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -71,8 +65,6 @@ const AdminProject: React.FC = () => {
         setProjects(projects.map(p => p._id === updated.id ? updated : p));
       } else {
         const created = await createProject(currentProject);
-        console.log("created", created)
-        console.log("[...projects, created]", [...projects, created])
         setProjects([...projects, created]);
       }
     } catch (error) {
@@ -106,164 +98,66 @@ const AdminProject: React.FC = () => {
     setIsOpen(false);
   };
 
-  return (
-    <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Project Management</h1>
+  const getFilteredCompanies = () => {
+    if (allList.length > 0) {
+      return allList.map((company) => {
+        if (typeof company._id === 'string' && Array.isArray(company.companyName) && typeof company.companyName[0] === 'string') {
+          return {
+            id: company._id,
+            name: company.companyName[0],
+          };
+        }
+        return { id: '', name: '' };
+      }).filter(company => company.id !== '');
+    }
+    return [];
+  };
 
+  const filteredCompanies = getFilteredCompanies();
+
+  const handleCompanyChange = (companyId: string) => {
+    const company = filteredCompanies.find(c => c.id === companyId);
+    if (company) {
+      setCurrentProject({
+        ...currentProject,
+        company: {
+          id: company.id,
+          name: company.name
+        }
+      });
+    } else {
+      setCurrentProject({
+        ...currentProject,
+        company: { id: "", name: "" }
+      });
+    }
+  };
+
+  return (
+    <div className="container py-8">
+      <div className="flex justify-between items-center mb-6 ">
+        <h1 className="text-2xl font-bold ml-2">Project Management</h1>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => {
               setCurrentProject(initialProject);
               setIsEditing(false);
-            }}>
+            }} className="h-8 px-3 text-xs mr-4">
               <PlusCircle className="mr-2 h-4 w-4" />
               Add Project
             </Button>
           </DialogTrigger>
-          <DialogContent className="w-[95%] sm:w-[70%] max-w-[1800px]">
-            <DialogHeader>
-              <DialogTitle>{isEditing ? 'Edit Project' : 'Add New Project'}</DialogTitle>
-            </DialogHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-4 py-4">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                {/* First Column */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={currentProject.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="jurisdiction">Jurisdiction/Country</Label>
-                    <Input
-                      id="jurisdiction"
-                      name="jurisdiction"
-                      value={currentProject.jurisdiction}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      value={currentProject.phone}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="capacity">Capacity/Position</Label>
-                    <Input
-                      id="capacity"
-                      name="capacity"
-                      value={currentProject.capacity}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-
-                {/* Second Column */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="projectName">Project/Company Name</Label>
-                    <Input
-                      id="projectName"
-                      name="projectName"
-                      value={currentProject.projectName}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="contactName">Contact Person's Name</Label>
-                    <Input
-                      id="contactName"
-                      name="contactName"
-                      value={currentProject.contactName}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="snsPlatform">SNS Platform</Label>
-                    <Select
-                      value={currentProject.snsPlatform}
-                      onValueChange={handleSelectChange}
-                    >
-                      <SelectTrigger id="snsPlatform">
-                        <SelectValue placeholder="Select SNS Platform" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="whatsapp">WhatsApp</SelectItem>
-                        <SelectItem value="kakaotalk">Kakao Talk</SelectItem>
-                        <SelectItem value="telegram">Telegram</SelectItem>
-                        <SelectItem value="wechat">WeChat</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="snsAccountId">SNS Account ID</Label>
-                    <Input
-                      id="snsAccountId"
-                      name="snsAccountId"
-                      value={currentProject.snsAccountId}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Full width fields */}
-              <div className="space-y-2">
-                <Label htmlFor="description">Project Description</Label>
-                <Textarea
-                  id="description"
-                  name="description"
-                  rows={3}
-                  value={currentProject.description}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="otherInformation">Other Information</Label>
-                <Textarea
-                  id="otherInformation"
-                  name="otherInformation"
-                  rows={2}
-                  value={currentProject.otherInformation}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleCancel}
-                  className="mr-2"
-                >
-                  Cancel
-                </Button>
-                <Button type="submit">
-                  {isEditing ? 'Update' : 'Save'}
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
+          <ProjectFormDialog
+            isEditing={isEditing}
+            currentProject={currentProject}
+            handleInputChange={handleInputChange}
+            handleSelectChange={handleSelectChange}
+            handleCompanyChange={handleCompanyChange}
+            handleSubmit={handleSubmit}
+            handleCancel={handleCancel}
+            filteredCompanies={filteredCompanies}
+          />
         </Dialog>
       </div>
 
@@ -272,35 +166,38 @@ const AdminProject: React.FC = () => {
           No projects added yet. Click "Add Project" to get started.
         </div>
       ) : (
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
+        <div className="rounded-xl border mt-6 ml-2 mr-2">
+          <Table className="w-full text-sm text-left text-gray-700">
+            <TableHeader className="bg-gray-100">
               <TableRow>
-                <TableHead >S.No</TableHead>
-                <TableHead className="w-[200px]">Project Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Jurisdiction</TableHead>
-                <TableHead>SNS</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="px-4 py-3">S.No</TableHead>
+                <TableHead className="px-4 py-3 w-[200px]">Project Name</TableHead>
+                <TableHead className="px-4 py-3">Email</TableHead>
+                <TableHead className="px-4 py-3">Contact</TableHead>
+                <TableHead className="px-4 py-3">Jurisdiction</TableHead>
+                <TableHead className="px-4 py-3">SNS</TableHead>
+                <TableHead className="px-4 py-3">Description</TableHead>
+                <TableHead className="px-4 py-3 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {projects.map((project, key) => (
-                <TableRow key={project._id}>
-                  <TableCell >{key + 1}</TableCell>
-                  <TableCell className="font-medium">{project.projectName}</TableCell>
-                  <TableCell>{project.email}</TableCell>
-                  <TableCell>{project.contactName}</TableCell>
-                  <TableCell>{project.jurisdiction}</TableCell>
-                  <TableCell>
+                <TableRow
+                  key={project._id}
+                  className="h-12 cursor-pointer"
+                >
+                  <TableCell className="px-4 py-3">{key + 1}</TableCell>
+                  <TableCell className="px-4 py-3 font-medium">{project.projectName}</TableCell>
+                  <TableCell className="px-4 py-3">{project.email}</TableCell>
+                  <TableCell className="px-4 py-3">{project.contactName}</TableCell>
+                  <TableCell className="px-4 py-3">{project.jurisdiction}</TableCell>
+                  <TableCell className="px-4 py-3">
                     {project.snsPlatform ? `${project.snsPlatform} (${project.snsAccountId})` : '-'}
                   </TableCell>
-                  <TableCell className="max-w-[200px] truncate">
+                  <TableCell className="px-4 py-3 max-w-[200px] truncate">
                     {project.description ? project.description : '-'}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="px-4 py-3 text-right">
                     <div className="flex justify-end space-x-2">
                       <Button
                         variant="ghost"
@@ -323,6 +220,7 @@ const AdminProject: React.FC = () => {
             </TableBody>
           </Table>
         </div>
+
       )}
     </div>
   );

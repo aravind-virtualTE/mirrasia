@@ -302,7 +302,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 "AML/CDD Edit": company.isDisabled ? "No" : "Yes",
             },
         });
-
+        
         return sections;
     };
     const sections = useMemo(() => {
@@ -366,7 +366,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <React.Fragment>
                 <TableCell className="font-medium">Incorporation Date</TableCell>
                 <TableCell>{date || "Not set"}</TableCell>
-                <TableCell>
+                {user.role !== 'user' && <TableCell>
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="outline">Edit</Button>
@@ -399,7 +399,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             </div>
                         </DialogContent>
                     </Dialog>
-                </TableCell>
+                </TableCell>}
             </React.Fragment>
         );
     };
@@ -409,7 +409,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <React.Fragment>
                 <TableCell className="font-medium">Payment Expire Date</TableCell>
                 <TableCell>{new Date(session.expiresAt).toLocaleString() || "Not set"}</TableCell>
-                <TableCell>
+                {user.role !== 'user' && <TableCell>
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="outline">Edit</Button>
@@ -442,7 +442,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             </div>
                         </DialogContent>
                     </Dialog>
-                </TableCell>
+                </TableCell>}
             </React.Fragment>
         );
     }
@@ -452,7 +452,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <React.Fragment>
                 <TableCell className="font-medium">Payment Status</TableCell>
                 <TableCell>{session.status}</TableCell>
-                <TableCell>
+                {user.role !== 'user' && <TableCell>
                     <Select
                         value={session.status}
                         onValueChange={(value) => handleSessionDataChange("status", value)}
@@ -466,7 +466,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             <SelectItem value="expired">Expired</SelectItem>
                         </SelectContent>
                     </Select>
-                </TableCell>
+                </TableCell>}
             </React.Fragment>
         );
     }
@@ -487,7 +487,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <React.Fragment>
                 <TableCell className="font-medium">InCorporation Status</TableCell>
                 <TableCell>{company.status}</TableCell>
-                <TableCell>
+                { user.role !== 'user' && <TableCell>
                     <Select
                         value={company.status}
                         onValueChange={(value) => handleCompanyDataChange("status", value)}
@@ -503,7 +503,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             ))}
                         </SelectContent>
                     </Select>
-                </TableCell>
+                </TableCell>}
             </React.Fragment>
         );
     };
@@ -592,8 +592,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             </div>
         )
     }
-
-    console.log("company", user)
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full max-w-5xl mx-auto">
             <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -609,20 +607,22 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 >
                     Record of Documents
                 </TabsTrigger>
-                <TabsTrigger
-                    value="Memos"
-                    className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-                >
-                    Memo
-                </TabsTrigger>
+                {user.role !== 'user' && (
+                    <TabsTrigger
+                        value="Memos"
+                        className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                    >
+                        Memo
+                    </TabsTrigger>
+                )}
             </TabsList>
 
             <TabsContent value="details" className="p-6">
                 <div className="space-y-4">
                     {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
-                    <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />
+                    {user.role !== 'user' && <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />}
                     <div className='flex gap-x-8'>
-                        <AssignAdmin />
+                        {user.role !== 'user' && <AssignAdmin />}
                         <Button onClick={() => navigate(`/company-documents/${company.country.code}/${company._id}`)}>
                             Company Docs
                         </Button>
@@ -639,7 +639,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                         <TableRow className="border-b hover:bg-muted/30">
                                             <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Field</TableHead>
                                             <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Value</TableHead>
-                                            <TableHead className="w-1/5 py-3 px-4 text-sm font-medium">Action</TableHead>
+                                           {user.role !== 'user' && <TableHead className="w-1/5 py-3 px-4 text-sm font-medium">Action</TableHead>}
                                         </TableRow>
                                     </TableHeader>
 
@@ -653,7 +653,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                 return <TableRow key={key} className="border-b hover:bg-muted/30"><CompanyIncorpoStatus /></TableRow>
                                             if (key == "Receipt")
                                                 return <TableRow key={key} className="border-b hover:bg-muted/30"><ReceietPaymentFrag /></TableRow>
-                                            if (key == 'AML/CDD Edit')
+                                            if (key == 'AML/CDD Edit' && user.role !== 'user' )
                                                 return <TableRow key={key} className="border-b hover:bg-muted/30"><AMLCDDEdit /></TableRow>
                                             if (key == 'Payment Status')
                                                 return <TableRow key={key} className="border-b hover:bg-muted/30"><PaymentStatus /></TableRow>
@@ -671,7 +671,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                     </TableBody>
                                 </Table>
 
-                                {section.title === "Status Information" && (
+                                {section.title === "Status Information" && user.role !== 'user' && (
                                     <div className="flex items-center gap-4 p-4 bg-muted/50 border-t">
                                         <span className="text-sm font-medium">
                                             Click here to Save the Data

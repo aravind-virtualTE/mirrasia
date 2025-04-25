@@ -108,44 +108,65 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         );
     };
 
+    if (tasks.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-full text-gray-500">
+                <p>No To-do tasks available</p>
+            </div>
+        )
+    }
+    // console.log("tasks--->", tasks)
     return (
         <>
-            <div className="mt-2">
+            <div className="mt-2 rounded-md border">
                 <Table className="compact-table">
-                    <TableHeader>
+                    <TableHeader className="bg-gray-100">
                         <TableRow>
-                            <TableHead className="w-[200px]">Task</TableHead>
-                            <TableHead className="w-[100px]">Assignee</TableHead>
-                            <TableHead className="w-[100px]">Due Date</TableHead>
-                            <TableHead className="w-[100px]">Priority</TableHead>
+                            <TableHead className="w-[5px]">Status</TableHead>
+                            <TableHead className="w-[300px]">Task</TableHead>
+                            <TableHead className="w-[80px]">Assignee</TableHead>
+                            <TableHead className="w-[80px]">Due Date</TableHead>
+                            <TableHead className="w-[80px]">Priority</TableHead>
                             <TableHead className="w-[80px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {tasks.map((task) => (
                             <TableRow
+                                onClick={() => handleRowClick(task)}
                                 key={task._id}
-                                className="h-12 hover:bg-gray-100"                                                         >
-                                <TableCell className="py-1">
-                                    <div className="flex items-center">
-                                        <Badge variant="outline" className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}>
-                                            {task.status}
-                                        </Badge>
-
-                                        <div className="flex flex-col ml-2" style={{ width: '200px' }}>
-                                            <span className="text-base font-semibold truncate">
+                                className="h-12 cursor-pointer">
+                                <TableCell className="py-1 max-w-[5px]">
+                                    <Badge variant="outline" className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}>
+                                        {task.status}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell className="py-1 max-w-[300px]">
+                                    <div className="flex items-center justify-between w-full ">
+                                        <div className="flex flex-col flex-1 min-w-0 mr-2">
+                                            <span
+                                                className="text-base font-semibold truncate"
+                                                title={task.name} 
+                                            >
                                                 {task.name}
-                                                {task.company?.name && (<Badge variant="outline" className={`text-[10px] px-1.5 py-0.5`}>
-                                                    {task.company.name}
-                                                </Badge>
-                                                )}
                                             </span>
                                             {task.description && (
-                                                <span className="text-sm text-gray-500 truncate w-48 sm:w-56 md:w-64 lg:w-96" >
+                                                <span
+                                                    className="text-sm text-gray-500 truncate"
+                                                    title={task.description} 
+                                                >
                                                     {task.description}
                                                 </span>
                                             )}
                                         </div>
+                                        {task.company?.name && (
+                                            <Badge
+                                                variant="outline"
+                                                className="text-[10px] px-1.5 py-0.5 flex-shrink-0"
+                                            >
+                                                {task.company.name}
+                                            </Badge>
+                                        )}
                                     </div>
                                 </TableCell>
                                 <TableCell className="py-1">
@@ -186,7 +207,6 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                         >
                                             <MessageCircle className="h-3 w-3 text-green-500" />
                                         </Button>
-
                                     </div>
                                 </TableCell>
                             </TableRow>

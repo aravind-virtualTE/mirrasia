@@ -60,6 +60,7 @@ const Dashboard = () => {
 
   const handleRowClick = (companyId: string, countryCode: string) => {
     localStorage.setItem('companyRecordId', companyId);
+    navigate(`/company-details/${countryCode}/${companyId}`)
     console.log("companyId", countryCode)
 
   };
