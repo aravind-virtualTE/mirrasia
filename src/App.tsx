@@ -44,9 +44,9 @@ import InviteUsaDirShir from './pages/InviteUsaDirShir/USA/InviteUsaDirShir';
 import ServiceAgreementSignDocs from './components/ServiceAgreementSignDocs/ServiceAgreementSignDocs';
 import {SocketProvider } from '@/hooks/Socket';
 import ChatInterface from './components/chat/ChatInterface';
-import ProjectActivity from './pages/Projects/Project';
 import AdminProject from './pages/dashboard/Admin/Projects/AdminProject';
 import ToDoList from './pages/MasterTodo/Mtodo';
+import ProjectDetail from './pages/dashboard/Admin/Projects/ProjectDetail';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -60,6 +60,7 @@ const queryClient = new QueryClient({
     },
   },
 });
+
 
 const App: React.FC = () => {
   // const [loading, setLoading] = useState<boolean>(true);
@@ -110,8 +111,9 @@ const App: React.FC = () => {
                       <Route path="/switch-services-list" element={<SwitchServicesList />} />
                       <Route path="/accounting-support-list" element={<AccountingHkList />} />
                       <Route path="/member-registration" element={<InviteUsaDirShir />} />
-                      <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
-                      <Route path="/project-services" element={<ProjectActivity />} />                      
+                      <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />                      
+                      <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
+                      <Route path="/company-details/:id" element={<CompanyDetail />} />
                     </Route>
                   </Route>
 
@@ -119,12 +121,12 @@ const App: React.FC = () => {
                   <Route element={<ProtectedRoute allowedRoles={["admin" , 'master']} />}>
                     <Route element={<Layout />}>
                       <Route path="/compReg" element={<CompanyRegistration2 />} />
-                      <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                      <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
-                      <Route path="/company-details/:id" element={<CompanyDetail />} />
+                      <Route path="/admin-dashboard" element={<AdminDashboard />} />                      
                       <Route path="/messages" element={<ChatInterface />} />
                       <Route path="/projects" element={<AdminProject />} />
                       <Route path="/MasterTodo" element={<ToDoList />} />
+                      <Route path="/project-detail/:id" element={<ProjectDetail />} />
+                      
                       {/* Add more admin-specific routes here */}
                     </Route>
                   </Route>

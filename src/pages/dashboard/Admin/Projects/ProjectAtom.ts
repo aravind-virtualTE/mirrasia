@@ -14,6 +14,7 @@ export interface Project {
     capacity: string;
     description: string;
     otherInformation: string;
+    company:{id: string, name: string};
   }
   
   // Define the initial project state
@@ -28,7 +29,8 @@ export interface Project {
     snsAccountId: '',
     capacity: '',
     description: '',
-    otherInformation: ''
+    otherInformation: '',
+    company:{id: '', name: ''}
   };
 
 

@@ -6,15 +6,17 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { priorityColors, statusColors, tasksAtom, updateTask } from "./mTodoStore"
+import { priorityColors, statusColors, tasksAtom, updateTask, usersAtom } from "./mTodoStore"
 import { useState } from "react"
 
 
 const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: () => void }) => {
     const [tasks, setTasks] = useAtom(tasksAtom)
     const [comment, setComment] = useState("")
+    const [users,] = useAtom(usersAtom);
     const task = tasks.find((t) => t._id === taskId)
-    console.log("task", task)
+    const createdUser = users.find((user) => user._id === task?.userId)
+    console.log("task", createdUser)
     const handleCommentSubmit = async () => {
         if (!comment.trim()) return
         const newComment = {
@@ -60,7 +62,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
 
                     <div className="grid grid-cols-[120px_1fr] gap-2">
                         <span className="text-sm font-medium">Title:</span>
-                        <h3 className="text-xl font-semibold mb-4">{task.name}</h3>
+                        <h3 className="text-xl font-semibold mb-4 whitespace-normal break-words overflow-hidden">{task.name}</h3>
                     </div>
 
                     <div className="space-y-4">
@@ -93,11 +95,24 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                                 {task.dueDate ? format(new Date(task.dueDate), "dd MMMM yyyy") : "No due date"}
                             </span>
                         </div>
+                        <div className="grid grid-cols-[120px_1fr] gap-2">
+                            <span className="text-sm font-medium">Created By:</span>
+                            <span className="text-sm">
+                                {task.userId ? createdUser?.fullName : "N/A"}
+                            </span>
+                        </div>
 
                         {task.company && (
                             <div className="grid grid-cols-[120px_1fr] gap-2">
                                 <span className="text-sm font-medium">Company:</span>
                                 <span className="text-sm">{task.company.name}</span>
+                            </div>
+                        )}
+
+                        {task.project && (
+                            <div className="grid grid-cols-[120px_1fr] gap-2">
+                                <span className="text-sm font-medium">Project:</span>
+                                <span className="text-sm">{task.project.name}</span>
                             </div>
                         )}
 

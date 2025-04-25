@@ -20,6 +20,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useState, useRef, useEffect } from 'react';
 import { allCompListAtom } from '@/services/state';
 import { fetchUsers } from '@/services/dataFetch';
+import { projectsAtom } from '../dashboard/Admin/Projects/ProjectAtom';
 
 interface CreateTaskDialogProps {
     open: boolean;
@@ -40,6 +41,7 @@ export const CreateTaskDialog = ({
     const [formState, setFormState] = useAtom(createTaskFormAtom);
     const [users, setUsers] = useAtom(usersAtom);
     const [allList] = useAtom(allCompListAtom);
+    const [projects,] = useAtom(projectsAtom);
 
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     // State for multi-select dropdown
@@ -139,7 +141,7 @@ export const CreateTaskDialog = ({
                 priority: formState.priority,
                 status: formState.status,
                 company: formState.selectedCompany,
-                // project: formState.selectedProject,
+                project: formState.selectedProject,
                 comments: formState.comment
                     ? [
                         ...taskToEdit.comments,
@@ -154,6 +156,7 @@ export const CreateTaskDialog = ({
                 console.error("Task ID is undefined");
                 return;
             }
+            if(formState.selectedProject !== undefined) updatedTaskData.isProject = true
             const updatedTask = await updateTask(taskToEdit._id, updatedTaskData);
             setTasks(tasks.map((task) => (task._id === taskToEdit._id ? updatedTask : task)));
         } else {
@@ -167,7 +170,7 @@ export const CreateTaskDialog = ({
                 status: formState.status,
                 userId,
                 company: formState.selectedCompany,
-                // project: formState.selectedProject,
+                project: formState.selectedProject,
                 comments: formState.comment
                     ? [
                         {
@@ -177,6 +180,8 @@ export const CreateTaskDialog = ({
                     ]
                     : [],
             };
+            // console.log("newTaskData", formState.selectedProject)
+            if(formState.selectedProject !== undefined) newTaskData.isProject = true
             const createdTask = await createTask(newTaskData);
             setTasks([createdTask, ...tasks]);
         }
@@ -202,16 +207,27 @@ export const CreateTaskDialog = ({
         }
     };
 
-    // const handleProjectChange = (projectId: string) => {
-    //     // This is a placeholder - you would need to implement project filtering
-    //     // similar to how companies are filtered
-    //     const project = { id: projectId, name: "Project Name" }; // Replace with actual project data
-
-    //     setFormState({
-    //         ...formState,
-    //         selectedProject: project
-    //     });
-    // };
+    const handleProjectChange = (projectId: string) => {
+        // This is a placeholder - you would need to implement project filtering
+        // similar to how companies are filtered
+        const project = projects.find(c => c._id === projectId);
+        if (project) {
+            setFormState({
+                ...formState,
+                selectedProject: {
+                    id: project._id,
+                    name: project.projectName
+                }
+            });
+        } else {
+            setFormState({
+                ...formState,
+                selectedProject: { id: "", name: "" }
+            });
+        }      
+    };
+console.log("formState.selectedProject",filteredCompanies)
+const projectsList = projects.map((project) => ({id: project._id, name: project.projectName}))
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-[900px]">
@@ -230,6 +246,7 @@ export const CreateTaskDialog = ({
                         onChange={(e) => setFormState({ ...formState, taskName: e.target.value })}
                         placeholder="Enter task title *"
                         className="w-full placeholder:italic placeholder:text-red-500"
+                        maxLength={80}
                         required
                     />
                     <Textarea
@@ -372,7 +389,7 @@ export const CreateTaskDialog = ({
                         </div>
 
                         {/* Project Selection */}
-                        {/* <div className="mb-4">
+                        <div className="mb-4">
                             <Select
                                 onValueChange={handleProjectChange}
                                 value={formState.selectedProject?.id || ''}
@@ -383,12 +400,15 @@ export const CreateTaskDialog = ({
                                 <SelectContent>
                                     <SelectGroup>
                                         <SelectLabel>{"Project"}</SelectLabel>
-                                        <SelectItem value="project-1">Project 1</SelectItem>
-                                        <SelectItem value="project-2">Project 2</SelectItem>
+                                        {projectsList.map((project) => (
+                                            <SelectItem key={project.id} value={project.id}>
+                                                {project.name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
-                        </div> */}
+                        </div>
                     </div>
                     {formState.selectedUsers.length > 0 && (
                         <div className="pt-2">
