@@ -107,3 +107,9 @@ export const loginWithEmail = async (email: string, password: string,) => {
       throw new Error('Token validation failed');
     }
   }
+
+  export const resetPassword = async (email: string, newPassword: string) => {
+    const response = await api.post('/auth/reset-password', { email, newPassword });
+    return response.data;
+  };
+  
