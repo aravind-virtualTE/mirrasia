@@ -117,9 +117,10 @@ const LoginComponent: React.FC = () => {
   const handlePasswordReset = async () => {
     setResetStatus('');
     try {
-      const res = await resetPassword(resetEmail, newPassword);
+      await resetPassword(resetEmail, newPassword);      
       setResetStatus('Password updated successfully.');
     } catch (err) {
+      console.error('Error resetting password:', err);
       setResetStatus('Failed to reset password. Please try again.');
     }
   };
