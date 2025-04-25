@@ -178,7 +178,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         paymentId: "",
     });
     const [isSheetOpen, setIsSheetOpen] = useState(false)
-    // const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
         updateCompanyData(company);
@@ -593,7 +593,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         )
     }
 
-    console.log("company", company)
+    console.log("company", user)
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full max-w-5xl mx-auto">
             <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">

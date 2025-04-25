@@ -3,14 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-// import Logo from '@/common/LogoComponent';
 import { useNavigate } from 'react-router-dom';
-import { authAtom, loginWithEmail, loginWithGoogle } from '@/hooks/useAuth';
+import { authAtom, loginWithEmail, loginWithGoogle, resetPassword } from '@/hooks/useAuth';
 import { Eye, EyeOff } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useAtom } from 'jotai';
 import Loader from '@/common/Loader';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+
 const LoginComponent: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -19,6 +27,10 @@ const LoginComponent: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetStatus, setResetStatus] = useState('');
   const [, setAuth] = useAtom(authAtom);
   const handleLogin = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
@@ -26,20 +38,18 @@ const LoginComponent: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // localStorage.setItem('isAuthenticated', 'true');
-      const response = await loginWithEmail(email, password);    
-      // console.log("response", response)
+      const response = await loginWithEmail(email, password);
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response.user))
       setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
-      if(response.user.role === 'admin' || response.user.role === 'master') {
+      if (response.user.role === 'admin' || response.user.role === 'master') {
         navigate('/admin-dashboard');
       }
-      else if(response.user.role === 'hk_shdr'){
+      else if (response.user.role === 'hk_shdr') {
         navigate('/viewboard');
       }
-      else{
+      else {
         navigate('/dashboard');
       }
     } catch (err) {
@@ -54,7 +64,6 @@ const LoginComponent: React.FC = () => {
     onSuccess: async (credentialResponse) => {
       setIsLoading(true); // Show loader
       // Handle successful login, e.g., send credentialResponse to your backend
-      // console.log('credentialResponse', credentialResponse);
       await loginWithGoogle(credentialResponse.access_token)
         .then((response) => {
           localStorage.setItem('isAuthenticated', 'true');
@@ -62,7 +71,7 @@ const LoginComponent: React.FC = () => {
           // console.log('response', response);
           localStorage.setItem("user", JSON.stringify(response.user))
           setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
-  
+
           if (response.user.role === 'admin' || response.user.role === 'master') {
             navigate('/admin-dashboard');
           } else {
@@ -74,18 +83,15 @@ const LoginComponent: React.FC = () => {
           setError('Google sign in failed. Please try again.');
         })
         .finally(() => {
-          setIsLoading(false); // Hide loader in all cases
+          setIsLoading(false);
         });
     },
     onError: (error) => {
-      // Handle errors, e.g., display an error message to the user
       console.log("err", error)
       setError('Google sign in failed. Please try again.');
-      setIsLoading(false); // Hide loader for error case
+      setIsLoading(false);
     },
   });
-
-
 
   const onSignUp = () => {
     navigate('/signup');
@@ -105,9 +111,18 @@ const LoginComponent: React.FC = () => {
     validateEmail(e.target.value);
   };
   if (isLoading) {
-    // Show full-page loader
     return <Loader />;
   }
+
+  const handlePasswordReset = async () => {
+    setResetStatus('');
+    try {
+      const res = await resetPassword(resetEmail, newPassword);
+      setResetStatus('Password updated successfully.');
+    } catch (err) {
+      setResetStatus('Failed to reset password. Please try again.');
+    }
+  };
 
 
   return (
@@ -116,21 +131,16 @@ const LoginComponent: React.FC = () => {
         <Card className="bg-white shadow-lg">
           <CardHeader className="space-y-2 text-center">
             <div className="flex justify-center mb-4">
-              {/* <Logo width={30} height={30} />
-              <h1 className="text-2xl font-bold">
-                MirAsia
-              </h1> */}
-               <img
-                    src= "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
-                    alt="MIRR ASIA"
-                    width={175}
-                    height={25}
-                    srcSet="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
-                    // fetchPriority="high"
-                    style={{ width: '175px', height: '25px', objectFit: 'cover',  }}
-                    className="cursor-pointer"
-                    onClick={() => navigate('/')}
-                />
+              <img
+                src="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
+                alt="MIRR ASIA"
+                width={175}
+                height={25}
+                srcSet="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
+                style={{ width: '175px', height: '25px', objectFit: 'cover', }}
+                className="cursor-pointer"
+                onClick={() => navigate('/')}
+              />
             </div>
             <h2 className="text-2xl font-semibold">Welcome</h2>
           </CardHeader>
@@ -149,7 +159,6 @@ const LoginComponent: React.FC = () => {
                   type="email"
                   placeholder="Email address*"
                   value={email}
-                  // onChange={(e) => setEmail(e.target.value)}
                   onChange={handleEmailChange}
                   className="w-full px-3 py-2"
                   required
@@ -179,9 +188,13 @@ const LoginComponent: React.FC = () => {
               </div>
 
               <div className="text-right">
-                <a href="#" className="text-sm">
+                <button
+                  type="button"
+                  onClick={() => setForgotPasswordOpen(true)}
+                  className="text-sm text-blue-600 underline"
+                >
                   Forgot password?
-                </a>
+                </button>
               </div>
 
               <Button
@@ -228,6 +241,38 @@ const LoginComponent: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+      <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>New Password</Label>
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
+            {resetStatus && (
+              <div className="text-sm text-center text-red-500">{resetStatus}</div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button onClick={handlePasswordReset}>Reset Password</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 };
