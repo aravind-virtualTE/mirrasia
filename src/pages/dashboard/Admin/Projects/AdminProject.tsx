@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { atom, useAtom } from 'jotai';
 import { PlusCircle, Pencil, Trash2 } from 'lucide-react';
 import {
@@ -17,6 +17,9 @@ import {
 import { createProject, currentProjectAtom, deleteProject, fetchProjects, initialProject, Project, projectsAtom, updateProject } from './ProjectAtom';
 import { allCompListAtom } from '@/services/state';
 import ProjectFormDialog from './ProjectFormDialog';
+import ProjectsTask from './ProjectTask';
+import { useNavigate } from 'react-router-dom';
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 
 const isEditingAtom = atom<boolean>(false);
 const isOpenAtom = atom<boolean>(false);
@@ -27,6 +30,10 @@ const AdminProject: React.FC = () => {
   const [isEditing, setIsEditing] = useAtom(isEditingAtom);
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const [allList] = useAtom(allCompListAtom);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteProj, setDeleteProj] = useState('');
+  
+  const navigate = useNavigate()
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -82,16 +89,6 @@ const AdminProject: React.FC = () => {
     setIsOpen(true);
   };
 
-  const handleDelete = async (id: string | null) => {
-    if (id === null) return;
-    try {
-      await deleteProject(id);
-      setProjects(projects.filter(project => project._id !== id));
-    } catch (error) {
-      console.error('Failed to delete project', error);
-    }
-  };
-
   const handleCancel = () => {
     setCurrentProject(initialProject);
     setIsEditing(false);
@@ -133,10 +130,30 @@ const AdminProject: React.FC = () => {
     }
   };
 
+  const handleNavigate = (project: Project) => {
+    // console.log("project--->", project)
+    navigate(`/project-detail/${project._id}`)
+  };
+
+  const handleDelete = async (id: string | null) => {
+    if (id === null) return;
+    setDeleteProj(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteProject(deleteProj);
+      setProjects(projects.filter(project => project._id !== deleteProj));
+    } catch (error) {
+      console.error('Failed to delete project', error);
+    }
+  };
+
   return (
-    <div className="container py-8">
-      <div className="flex justify-between items-center mb-6 ">
-        <h1 className="text-2xl font-bold ml-2">Project Management</h1>
+    <div className="container py-4">
+      <div className="flex justify-between items-center mb-2 ">
+        <h3 className="text-2xl font-bold ml-2">Project Management</h3>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => {
@@ -147,7 +164,6 @@ const AdminProject: React.FC = () => {
               Add Project
             </Button>
           </DialogTrigger>
-
           <ProjectFormDialog
             isEditing={isEditing}
             currentProject={currentProject}
@@ -160,7 +176,7 @@ const AdminProject: React.FC = () => {
           />
         </Dialog>
       </div>
-
+      <ProjectsTask />
       {projects.length === 0 ? (
         <div className="text-center py-10 text-muted-foreground">
           No projects added yet. Click "Add Project" to get started.
@@ -185,9 +201,10 @@ const AdminProject: React.FC = () => {
                 <TableRow
                   key={project._id}
                   className="h-12 cursor-pointer"
+                  onClick={() => handleNavigate(project)}
                 >
-                  <TableCell className="px-4 py-3">{key + 1}</TableCell>
-                  <TableCell className="px-4 py-3 font-medium">{project.projectName}</TableCell>
+                  <TableCell className="px-4 py-3" >{key + 1}</TableCell>
+                  <TableCell className="px-4 py-3 font-medium" >{project.projectName}</TableCell>
                   <TableCell className="px-4 py-3">{project.email}</TableCell>
                   <TableCell className="px-4 py-3">{project.contactName}</TableCell>
                   <TableCell className="px-4 py-3">{project.jurisdiction}</TableCell>
@@ -202,16 +219,22 @@ const AdminProject: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleEdit(project)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEdit(project);
+                        }}
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleDelete(project._id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(project._id);
+                        }}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3 w-3 text-red-500" />
                       </Button>
                     </div>
                   </TableCell>
@@ -220,8 +243,21 @@ const AdminProject: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-
       )}
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Task"
+        description={
+          <>
+            Are you sure you want to delete?
+            ?
+          </>
+        }
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 };

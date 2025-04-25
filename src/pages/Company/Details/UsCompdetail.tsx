@@ -27,6 +27,7 @@ import TodoApp from '@/pages/Todo/TodoApp';
 import { User } from '@/components/userList/UsersList';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import ProjectDetail from '@/pages/dashboard/Admin/Projects/ProjectDetail';
 
 const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const { t } = useTranslation()
@@ -236,7 +237,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       <React.Fragment>
         <TableCell className="font-medium">Incorporation Date</TableCell>
         <TableCell>{date || 'Not set'}</TableCell>
-        { user.role !== 'user' && <TableCell>
+        {user.role !== 'user' && <TableCell>
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline">Edit</Button>
@@ -326,7 +327,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       <React.Fragment>
         <TableCell className="font-medium">Payment Status</TableCell>
         <TableCell>{session.status}</TableCell>
-        { user.role !== 'user' && <TableCell>
+        {user.role !== 'user' && <TableCell>
           <Select
             value={session.status}
             onValueChange={(value) => handleSessionDataChange('status', value)}
@@ -466,13 +467,21 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
             Memo
           </TabsTrigger>
         )}
+        {user.role !== 'user' && (
+          <TabsTrigger
+            value="Projects"
+            className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+          >
+            Project
+          </TabsTrigger>
+        )}
       </TabsList>
       <TabsContent value="details" className="p-6">
         <div className="space-y-4">
           {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
           {user.role !== 'user' && <TodoApp id={id} name={formData.companyName[0]} />}
           <div className="flex gap-x-8">
-            { user.role !== 'user' && <AssignAdmin />}
+            {user.role !== 'user' && <AssignAdmin />}
             <Button onClick={() => navigate(`/company-documents/US/${id}`)}>
               Company Docs
             </Button>
@@ -515,7 +524,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     })}
                   </TableBody>
                 </Table>
-                {section.title === 'Status Information'  && user.role !== 'user' && (
+                {section.title === 'Status Information' && user.role !== 'user' && (
                   <div className="flex items-center gap-4 p-4 bg-muted/50 border-t">
                     <span className="text-sm font-medium">
                       Click here to Save the Data
@@ -541,6 +550,11 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       <TabsContent value="Memos" className="p-6">
         <div className="space-y-6">
           <MemoApp id={id} />
+        </div>
+      </TabsContent>
+      <TabsContent value="Projects" className="p-6">
+        <div className="space-y-6">
+          <ProjectDetail compId={id} />
         </div>
       </TabsContent>
     </Tabs>

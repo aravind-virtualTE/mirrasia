@@ -47,6 +47,7 @@ import MemoApp from "./MemosHK";
 import TodoApp from "@/pages/Todo/TodoApp";
 import { User } from "@/components/userList/UsersList";
 import { useNavigate } from "react-router-dom";
+import ProjectDetail from "@/pages/dashboard/Admin/Projects/ProjectDetail";
 export interface SessionData {
     _id: string;
     amount: number;
@@ -615,6 +616,14 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         Memo
                     </TabsTrigger>
                 )}
+                {user.role !== 'user' && (
+                    <TabsTrigger
+                        value="Projects"
+                        className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                    >
+                        Project
+                    </TabsTrigger>
+                )}
             </TabsList>
 
             <TabsContent value="details" className="p-6">
@@ -699,6 +708,11 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <TabsContent value="Memos" className="p-6">
                 <div className="space-y-6">
                     <MemoApp id={id} />
+                </div>
+            </TabsContent>
+            <TabsContent value="Projects" className="p-6">
+                <div className="space-y-6">
+                    <ProjectDetail compId={id} />
                 </div>
             </TabsContent>
         </Tabs>

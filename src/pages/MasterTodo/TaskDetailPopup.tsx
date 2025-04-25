@@ -109,6 +109,13 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                             </div>
                         )}
 
+                        {task.project && (
+                            <div className="grid grid-cols-[120px_1fr] gap-2">
+                                <span className="text-sm font-medium">Project:</span>
+                                <span className="text-sm">{task.project.name}</span>
+                            </div>
+                        )}
+
                         {task.assignees.length > 0 && (
                             <div className="grid grid-cols-[120px_1fr] gap-2">
                                 <span className="text-sm font-medium">Assignees:</span>

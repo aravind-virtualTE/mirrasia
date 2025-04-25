@@ -44,9 +44,9 @@ import InviteUsaDirShir from './pages/InviteUsaDirShir/USA/InviteUsaDirShir';
 import ServiceAgreementSignDocs from './components/ServiceAgreementSignDocs/ServiceAgreementSignDocs';
 import {SocketProvider } from '@/hooks/Socket';
 import ChatInterface from './components/chat/ChatInterface';
-import ProjectActivity from './pages/Projects/Project';
 import AdminProject from './pages/dashboard/Admin/Projects/AdminProject';
 import ToDoList from './pages/MasterTodo/Mtodo';
+import ProjectDetail from './pages/dashboard/Admin/Projects/ProjectDetail';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -60,6 +60,7 @@ const queryClient = new QueryClient({
     },
   },
 });
+
 
 const App: React.FC = () => {
   // const [loading, setLoading] = useState<boolean>(true);
@@ -124,7 +125,8 @@ const App: React.FC = () => {
                       <Route path="/messages" element={<ChatInterface />} />
                       <Route path="/projects" element={<AdminProject />} />
                       <Route path="/MasterTodo" element={<ToDoList />} />
-                      <Route path="/project-services" element={<ProjectActivity />} />
+                      <Route path="/project-detail/:id" element={<ProjectDetail />} />
+                      
                       {/* Add more admin-specific routes here */}
                     </Route>
                   </Route>

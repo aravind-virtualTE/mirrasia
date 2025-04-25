@@ -34,6 +34,8 @@ export interface Task {
     name: string;
   };
   userId?: string;
+  isProject?: boolean;
+  
 }
 
 export const tasksAtom = atom<Task[]>([]);
@@ -50,6 +52,7 @@ export interface CreateTaskFormState {
   selectedUsers: { id: string; name: string }[];
   selectedCompany: { id: string ; name: string } | undefined;
   selectedProject: { id: string  ; name: string } | undefined;
+  isProject?: boolean;
 }
 
 export const defaultFormState: CreateTaskFormState = {
@@ -61,7 +64,9 @@ export const defaultFormState: CreateTaskFormState = {
   status: 'TO DO',
   selectedUsers: [],
   selectedCompany: undefined,
-  selectedProject: undefined
+  selectedProject: undefined,
+  isProject: false,
+  
 };
 
 export const createTaskFormAtom = atom<CreateTaskFormState>(defaultFormState);

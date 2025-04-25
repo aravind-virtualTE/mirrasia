@@ -1,32 +1,20 @@
-// import React from "react";
-// import TodoList from "./TodoList";
-// import { Provider } from "jotai";
-// const TodoApp: React.FC<{ id: string;}> = ({id}) => {
-//   return (
-//     <Provider>
-//         <TodoList companyId={id} />
-//     </Provider>
-//   );
-// };
-// export default TodoApp;
-
 import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
-import { createTaskFormAtom, defaultFormState, getTasks, tasksAtom } from '../MasterTodo/mTodoStore';
-import TaskTable from '../MasterTodo/TaskTable';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
-import { CreateTaskDialog } from '../MasterTodo/CreateTaskDialog';
 import { useAtom } from 'jotai';
-const TodoApp: React.FC<{ id: string;name:string }> = ({ id, name }) => {
+import { createTaskFormAtom, defaultFormState, getTasks, tasksAtom } from '@/pages/MasterTodo/mTodoStore';
+import TaskTable from '@/pages/MasterTodo/TaskTable';
+import { CreateTaskDialog } from '@/pages/MasterTodo/CreateTaskDialog';
+
+const ProjectsTask: React.FC = () => {
   const [tasks, setTasks] = useAtom(tasksAtom);
   const [openDialog, setOpenDialog] = useState(false);
 
   const [, setFormState] = useAtom(createTaskFormAtom);
   useEffect(() => {
     const fetchTask = async () => {
-      let filters = {}
-      if (id) filters = { companyId: id, }
+      const filters = {isProject: true}      
       await getTasks(filters).then((response) => {
         setTasks(response)
       })
@@ -35,11 +23,12 @@ const TodoApp: React.FC<{ id: string;name:string }> = ({ id, name }) => {
   }, [])
 
   const createTaskAction = () => {
-    defaultFormState.selectedCompany = {'id': id, 'name': name}
+    defaultFormState.isProject = true
     setOpenDialog(true)
     setFormState(defaultFormState);
   }
-  const companyTasks = tasks?.filter((task) => task.company?.id === id) || [];
+
+  const projectsTasks = tasks?.filter((task) => task.isProject == true) || [];
   return (
     <Card className="w-full shadow-sm border-orange-100">
       <CardContent className="p-6 ">
@@ -50,17 +39,17 @@ const TodoApp: React.FC<{ id: string;name:string }> = ({ id, name }) => {
             Create New Task
           </Button>
         </div>
-        {companyTasks.length === 0 ? (
+        {tasks.length === 0 ? (
           <p className="text-center text-gray-500 py-4">
             No tasks yet. Add a new task above.
           </p>
         ) : (
-          <TaskTable tasks={companyTasks} />
+          <TaskTable tasks={projectsTasks} />
         )}
-        <CreateTaskDialog open={openDialog} onOpenChange={setOpenDialog} disbleCompany={true}/>
+        <CreateTaskDialog open={openDialog} onOpenChange={setOpenDialog} disbleCompany={false}/>
       </CardContent>
     </Card>
   )
 }
 
-export default TodoApp
+export default ProjectsTask
