@@ -150,14 +150,14 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                             >
                                                 {task.name}
                                             </span>
-                                            {task.description && (
+                                            {/* {task.description && (
                                                 <span
                                                     className="text-sm text-gray-500 truncate"
                                                     title={task.description} 
                                                 >
                                                     {task.description}
                                                 </span>
-                                            )}
+                                            )} */}
                                         </div>
                                         {task.company?.name && (
                                             <Badge

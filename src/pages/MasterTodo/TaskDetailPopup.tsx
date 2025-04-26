@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { priorityColors, statusColors, tasksAtom, updateTask, usersAtom } from "./mTodoStore"
 import { useState } from "react"
-
+import { RichTextViewer } from "@/components/rich-text-viewer"
 
 const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: () => void }) => {
     const [tasks, setTasks] = useAtom(tasksAtom)
@@ -68,12 +68,13 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                     <div className="space-y-4">
                         <div className="grid grid-cols-[120px_1fr] gap-2">
                             <span className="text-sm font-medium">Description:</span>
-                            <p
+                            <RichTextViewer content={task.description || ""} className="bg-gray-50 p-4 rounded-md" />
+                            {/* <p
                                 className="text-sm text-gray-700 whitespace-normal break-words overflow-hidden"
                                 style={{ wordBreak: "break-word", hyphens: "auto" }}
                             >
                                 {task.description || "No description"}
-                            </p>
+                            </p> */}
                         </div>
 
                         <div className="grid grid-cols-[120px_1fr] gap-2 items-center">
