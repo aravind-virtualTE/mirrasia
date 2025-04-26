@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fetchUsers, getUsIncorpoDataById, updateEditValues } from '@/services/dataFetch';
 import { useAtom } from 'jotai';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -482,7 +483,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
           {user.role !== 'user' && <TodoApp id={id} name={formData.companyName[0]} />}
           <div className="flex gap-x-8">
             {user.role !== 'user' && <AssignAdmin />}
-            <Button onClick={() => navigate(`/company-documents/US/${id}`)}>
+            <Button onClick={() => navigate(`/company-documents/US/${id}`)} size="sm" className="flex items-center gap-2">
               Company Docs
             </Button>
           </div>
