@@ -183,8 +183,8 @@ const AdminProject: React.FC = () => {
         </div>
       ) : (
         <div className="rounded-xl border mt-6 ml-2 mr-2">
-          <Table className="w-full text-sm text-left text-gray-700">
-            <TableHeader className="bg-gray-100">
+          <Table className="w-full text-sm text-left">
+            <TableHeader className="">
               <TableRow>
                 <TableHead className="px-4 py-3">S.No</TableHead>
                 <TableHead className="px-4 py-3 w-[200px]">Project Name</TableHead>
