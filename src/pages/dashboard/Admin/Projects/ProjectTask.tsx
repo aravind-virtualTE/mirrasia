@@ -7,7 +7,7 @@ import { createTaskFormAtom, defaultFormState, getTasks, tasksAtom } from '@/pag
 import TaskTable from '@/pages/MasterTodo/TaskTable';
 import { CreateTaskDialog } from '@/pages/MasterTodo/CreateTaskDialog';
 
-const ProjectsTask: React.FC = () => {
+const ProjectsTask: React.FC<{id: string, name:string}> = ({id, name}) => {
   const [tasks, setTasks] = useAtom(tasksAtom);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -24,11 +24,12 @@ const ProjectsTask: React.FC = () => {
 
   const createTaskAction = () => {
     defaultFormState.isProject = true
+    defaultFormState.selectedProject = {'id': id, 'name': name}
     setOpenDialog(true)
     setFormState(defaultFormState);
   }
 
-  const projectsTasks = tasks?.filter((task) => task.isProject == true) || [];
+  const projectsTasks = tasks?.filter((task) => task.project?.id == id) || [];
   return (
     <Card className="w-full shadow-sm border-orange-100">
       <CardContent className="p-6 ">
@@ -46,7 +47,7 @@ const ProjectsTask: React.FC = () => {
         ) : (
           <TaskTable tasks={projectsTasks} />
         )}
-        <CreateTaskDialog open={openDialog} onOpenChange={setOpenDialog} disbleCompany={false}/>
+        <CreateTaskDialog open={openDialog} onOpenChange={setOpenDialog} disbleProject={false}/>
       </CardContent>
     </Card>
   )

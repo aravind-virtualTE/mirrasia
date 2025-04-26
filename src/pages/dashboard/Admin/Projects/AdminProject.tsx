@@ -17,7 +17,6 @@ import {
 import { createProject, currentProjectAtom, deleteProject, fetchProjects, initialProject, Project, projectsAtom, updateProject } from './ProjectAtom';
 import { allCompListAtom } from '@/services/state';
 import ProjectFormDialog from './ProjectFormDialog';
-import ProjectsTask from './ProjectTask';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 
@@ -176,7 +175,7 @@ const AdminProject: React.FC = () => {
           />
         </Dialog>
       </div>
-      <ProjectsTask />
+      
       {projects.length === 0 ? (
         <div className="text-center py-10 text-muted-foreground">
           No projects added yet. Click "Add Project" to get started.

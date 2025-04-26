@@ -5,6 +5,7 @@ import { projectsAtom } from "./ProjectAtom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
+import ProjectsTask from "./ProjectTask"
 // import ProjectsTask from "./ProjectTask"
 
 interface ProjectDetailProps {
@@ -42,16 +43,16 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ compId }) => {
         Capacity: project.capacity,
         "Other Information": project.otherInformation,
     }
-
     return (
         <div className="space-y-4 px-4 md:px-8 mt-2">
             {id && id !== "" && (
                 <div className="flex justify-end">
-                    <Button onClick={() => navigate("/projects")} className="mb-2">
+                    <Button onClick={() => navigate("/projects")} size="sm" className="flex items-center gap-2">
                         Back to Projects
                     </Button>
                 </div>
             )}
+            <ProjectsTask id={project._id} name={project.projectName} />
             <Card className="border rounded-lg overflow-hidden transition-all hover:shadow-md">
                 <CardHeader>
                     <CardTitle>Project Information</CardTitle>

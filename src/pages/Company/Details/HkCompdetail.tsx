@@ -632,7 +632,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     {user.role !== 'user' && <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />}
                     <div className='flex gap-x-8'>
                         {user.role !== 'user' && <AssignAdmin />}
-                        <Button onClick={() => navigate(`/company-documents/${company.country.code}/${company._id}`)}>
+                        <Button onClick={() => navigate(`/company-documents/${company.country.code}/${company._id}`)} size="sm" className="flex items-center gap-2">
                             Company Docs
                         </Button>
                     </div>

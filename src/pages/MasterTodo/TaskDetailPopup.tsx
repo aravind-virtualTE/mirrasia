@@ -54,9 +54,6 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                         <Badge variant="outline" className={`text-xs px-2 py-1 ${statusColors[task.status]}`}>
                             {task.status}
                         </Badge>
-                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onClose}>
-                            <X className="h-4 w-4" />
-                        </Button>
                     </div>
 
 
@@ -140,7 +137,17 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
 
                 {/* Right Section - Comments */}
                 <div className="w-1/2 p-6 flex flex-col h-full">
-                    <h4 className="text-lg font-medium mb-4">Comments</h4>
+                    <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-lg font-semibold">Comments</h4>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 p-0 hover:border hover:border-red-500"
+                            onClick={onClose}
+                        >
+                            <X className="h-7 w-7 stroke-[2.5]" />
+                        </Button>
+                    </div>
 
                     <div className="flex-grow overflow-y-auto mb-4 space-y-4">
                         {task.comments && task.comments.length > 0 ? (

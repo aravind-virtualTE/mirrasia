@@ -29,6 +29,7 @@ interface CreateTaskDialogProps {
     isEditMode?: boolean;
     taskToEdit?: Task;
     disbleCompany?: boolean;
+    disbleProject?: boolean;
 }
 
 export const CreateTaskDialog = ({
@@ -36,7 +37,8 @@ export const CreateTaskDialog = ({
     onOpenChange,
     isEditMode = false,
     taskToEdit,
-    disbleCompany = false
+    disbleCompany = false,
+    disbleProject  = false
 }: CreateTaskDialogProps) => {
     const [tasks, setTasks] = useAtom(tasksAtom);
     const [formState, setFormState] = useAtom(createTaskFormAtom);
@@ -260,7 +262,7 @@ export const CreateTaskDialog = ({
                         <RichTextEditor
                             value={formState.description}
                             onChange={(value) => setFormState({ ...formState, description: value })}
-                            placeholder="Enter task description"
+                            placeholder=""
                             className="w-full min-h-[150px]"
                         />
                     <div className="relative">
@@ -402,6 +404,7 @@ export const CreateTaskDialog = ({
                             <Select
                                 onValueChange={handleProjectChange}
                                 value={formState.selectedProject?.id || ''}
+                                disabled={disbleProject}
                             >
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder={formState.selectedProject?.name || "Select a Project"} />
