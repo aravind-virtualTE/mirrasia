@@ -16,11 +16,12 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon, Flag, X, Check, ChevronDown } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
+// import { Textarea } from '@/components/ui/textarea';
 import { useState, useRef, useEffect } from 'react';
 import { allCompListAtom } from '@/services/state';
 import { fetchUsers } from '@/services/dataFetch';
 import { projectsAtom } from '../dashboard/Admin/Projects/ProjectAtom';
+import { RichTextEditor } from "@/components/rich-text-editor"
 
 interface CreateTaskDialogProps {
     open: boolean;
@@ -156,7 +157,7 @@ export const CreateTaskDialog = ({
                 console.error("Task ID is undefined");
                 return;
             }
-            if(formState.selectedProject !== undefined) updatedTaskData.isProject = true
+            if (formState.selectedProject !== undefined) updatedTaskData.isProject = true
             const updatedTask = await updateTask(taskToEdit._id, updatedTaskData);
             setTasks(tasks.map((task) => (task._id === taskToEdit._id ? updatedTask : task)));
         } else {
@@ -181,7 +182,7 @@ export const CreateTaskDialog = ({
                     : [],
             };
             // console.log("newTaskData", formState.selectedProject)
-            if(formState.selectedProject !== undefined) newTaskData.isProject = true
+            if (formState.selectedProject !== undefined) newTaskData.isProject = true
             const createdTask = await createTask(newTaskData);
             setTasks([createdTask, ...tasks]);
         }
@@ -224,10 +225,10 @@ export const CreateTaskDialog = ({
                 ...formState,
                 selectedProject: { id: "", name: "" }
             });
-        }      
+        }
     };
-console.log("formState.selectedProject",filteredCompanies)
-const projectsList = projects.map((project) => ({id: project._id, name: project.projectName}))
+    // console.log("formState.selectedProject",filteredCompanies)
+    const projectsList = projects.map((project) => ({ id: project._id, name: project.projectName }))
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-[900px]">
@@ -249,13 +250,21 @@ const projectsList = projects.map((project) => ({id: project._id, name: project.
                         maxLength={80}
                         required
                     />
-                    <Textarea
+                    {/* <Textarea
                         id="description"
                         value={formState.description}
                         onChange={(e) => setFormState({ ...formState, description: e.target.value })}
                         placeholder="Enter task description"
                         className="w-full min-h-[150px]"
-                    />
+                    /> */}
+                        <RichTextEditor
+                            value={formState.description}
+                            onChange={(value) => setFormState({ ...formState, description: value })}
+                            placeholder="Enter task description"
+                            className="w-full min-h-[150px]"
+                        />
+                    <div className="relative">
+                    </div>
                     {/* Status */}
                     <div className="grid grid-cols-2 gap-4">
                         <Select
@@ -430,7 +439,7 @@ const projectsList = projects.map((project) => ({id: project._id, name: project.
                         </div>
                     )}
                 </div>
-                <DialogFooter>
+                <DialogFooter className="w-full">
                     <Button onClick={handleSubmit} type="submit">
                         {isEditMode ? 'Update Task' : 'Create Task'}
                     </Button>

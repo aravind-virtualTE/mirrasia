@@ -24,7 +24,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ compId }) => {
     if (compId !== "" && compId !== undefined) {
         project = projects.find((p) => p.company?.id === compId)
     }
-    console.log("compId--->", compId,project)
+    // console.log("compId--->", compId,project)
 
     if (!project) return <p className="ml-8 mr-8 mt-4">No project found</p>
 
