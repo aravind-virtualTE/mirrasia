@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { atom } from 'jotai';
 export interface UsaFormData {
   _id: string;

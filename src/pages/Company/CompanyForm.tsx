@@ -12,6 +12,7 @@ import IncorporateUSACompany from './USA/IncorporateUSCompany';
 import { Card, CardContent } from '@/components/ui/card';
 import { usaFormWithResetAtom } from './USA/UsState';
 import { useTranslation } from "react-i18next";
+import IncorporateSg from './Singapore/IncorporateSg';
 const CompanyRegistration = () => {
     const { t } = useTranslation();
     const [countryState, setCountryState] = useAtom(countryAtom);
@@ -23,38 +24,16 @@ const CompanyRegistration = () => {
     const [ formData,setFormData] = useAtom(usaFormWithResetAtom);
     useEffect(() => {
         if (id && countryCode == "HK") {
-            // async function fetchData() {
-            //     const result = await getIncorporationListByUserId(`${decodedToken.userId}`);
-            //     return result;
-            // }
-            // fetchData().then((result) => {
-            //     // console.log("result--->",result)
-            //     setCompaniesList(result.companies.mergedList);
-            //     const company = companies.find(c => c._id === id);
-            //     const cntry = company?.country as Record<string, string | undefined>;
-            //     if (company) setCountryState(cntry);
-            // });
-
-            // async function fetchCompData() {
-            //     console.log("id",id)
-            //     const result = await getIncorporationListByCompId(`${id}`);                
-            //     return result;
-            // }
-            // fetchCompData().then((result) => {
-            //     console.log("resultIncorporation--->", result)
-            //     updateCompanyData(result[0]);
-            // });
+       
             if (!id || !decodedToken?.userId) return;
             (async () => {
                 // Fetch all companies
                 const result = await getIncorporationListByUserId(`${decodedToken.userId}`);
                 setCompaniesList(result.companies.mergedList);
-          
                 // Find the current company from fetched list
                 const company = result.companies.mergedList.find((c: { _id: string; }) => c._id === id);
                 const cntry = company?.country as Record<string, string | undefined>;
                 if (company) setCountryState(cntry);
-          
                 // Fetch and update incorporation details for this specific company
                 const compData = await getIncorporationListByCompId(`${id}`);
                 if (compData && compData.length > 0) {
@@ -76,6 +55,11 @@ const CompanyRegistration = () => {
             })
             setCountryState({
                 code: 'US', name: 'United States'
+             });
+        }
+        else if (id && countryCode == "SG") {
+            setCountryState({
+                code: 'SG', name: 'Singapore'
              });
         }
     }, []);
@@ -113,7 +97,7 @@ const CompanyRegistration = () => {
             case 'US':
                 return <IncorporateUSACompany />;
             case 'SG':
-                return <div>Registration form for {countryState.name} is not available yet.</div>;
+                return <IncorporateSg />;
             default:
                 return <div>Registration form for {countryState.name} is not available yet.</div>;
         }
