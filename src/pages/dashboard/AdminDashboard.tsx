@@ -45,6 +45,8 @@ const AdminDashboard = () => {
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: "ascending" | "descending" } | null>(null)
   const [taskToDelete, setTaskToDelete] = useState<{ companyId: string, countryCode: string } | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20
 
   useEffect(() => {
     setUsaReset('reset')
@@ -188,7 +190,7 @@ const AdminDashboard = () => {
 
   const confirmDelete = async () => {
     if (taskToDelete?.companyId) {
-          const result = await deleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode })
+      const result = await deleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode })
       // console.log("result", result)
       if (result) {
         // Filter out the deleted company and update the atom
@@ -199,6 +201,11 @@ const AdminDashboard = () => {
     setDeleteDialogOpen(false);
     setTaskToDelete(null);
   };
+
+  const paginatedData = getSortedData().slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
@@ -311,7 +318,7 @@ const AdminDashboard = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {getSortedData().map((company, idx) => {
+                {paginatedData.map((company, idx) => {
                   const typedCompany = company as {
                     country: { name: string; code: string }
                     companyName: string[]
@@ -332,7 +339,7 @@ const AdminDashboard = () => {
                   return (
                     <TableRow key={typedCompany._id} className="text-xs h-10">
                       <TableCell>
-                        {idx + 1}
+                        {(currentPage - 1) * itemsPerPage + idx + 1}
                       </TableCell>
                       <TableCell
                         className="font-medium cursor-pointer py-2"
@@ -387,6 +394,23 @@ const AdminDashboard = () => {
                 })}
               </TableBody>
             </Table>
+            <div className="flex justify-end items-center p-2 space-x-2">
+              <button
+                className="px-3 py-1 border rounded disabled:opacity-50"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span>Page {currentPage}</span>
+              <button
+                className="px-3 py-1 border rounded disabled:opacity-50"
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                disabled={currentPage * itemsPerPage >= getSortedData().length}
+              >
+                Next
+              </button>
+            </div>
             <ConfirmDialog
               open={deleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}
