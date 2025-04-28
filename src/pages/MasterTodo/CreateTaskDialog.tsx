@@ -78,11 +78,9 @@ export const CreateTaskDialog = ({
         };
         document.addEventListener('mousedown', handleClickOutside);
         const fetchUser = async () => {
-            const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+            // const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
             await fetchUsers().then((response) => {
-                let data
-                if (user.role === 'admin') data = response.filter((e: { _id: string; }) => e._id == userId)
-                else data = response.filter((e: { role: string; }) => e.role == 'admin' || e.role == 'master')
+                const data = response.filter((e: { role: string; }) => e.role == 'admin' || e.role == 'master')
                 setUsers(data);
             })
         }
