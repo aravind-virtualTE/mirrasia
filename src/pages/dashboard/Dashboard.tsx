@@ -178,7 +178,7 @@ const Dashboard = () => {
                       <TableCell className="py-2 px-3">{date || "N/A"}</TableCell>
                       <TableCell className="py-2 px-3">
                         <button
-                          className="text-blue-500 hover:text-blue-700 transition"
+                          className="transition"
                           onClick={() => handleEditClick(typedCompany._id, typedCompany.country.code, typedCompany.status)}
                         >
                           <Pencil size={16} />
