@@ -29,7 +29,7 @@ const CompanyRegistration = () => {
             if (!id || !decodedToken?.userId) return;
             (async () => {
                 // Fetch all companies
-                const result = await getIncorporationListByUserId(`${decodedToken.userId}`);
+                const result = await getIncorporationListByUserId(`${decodedToken.userId}`, `${decodedToken.role}`);
                 setCompaniesList(result.companies.mergedList);
                 // Find the current company from fetched list
                 const company = result.companies.mergedList.find((c: { _id: string; }) => c._id === id);

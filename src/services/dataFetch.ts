@@ -4,9 +4,10 @@ import { Company } from "@/components/companyDocumentManager/CompanyDocumentMana
 
 export const getIncorporationListByUserId = async (
   userId: string,
+  role:string
 ) => {
   try {
-    const response = await api.get(`company/company-incorporation/user/${userId}`);
+    const response = await api.get(`company/company-incorporation/user/${userId}/${role}`);
     // console.log("response-->",response)
     return response.data;
   } catch (error) {
