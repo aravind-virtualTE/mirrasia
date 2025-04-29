@@ -101,6 +101,7 @@ const IncorporationForm = () => {
                 if (response.status === 200) {
                     if (response.data && response.data.data._id) {
                         localStorage.setItem("companyRecordId", response.data.data._id);
+                        console.log("response.data.data", response.data.data);
                         updateCompanyData(response.data.data);
                         window.history.pushState(
                             {}, 
