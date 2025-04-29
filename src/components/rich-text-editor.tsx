@@ -101,7 +101,7 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
   return (
     <div className={cn("border rounded-md overflow-hidden max-h-[300px] overflow-y-auto", className)}>
       <MenuBar editor={editor} />
-      <EditorContent editor={editor} className="w-full break-words whitespace-pre-wrap" />
+      <EditorContent editor={editor} className="prose prose-sm w-full break-words whitespace-pre-wrap" />
       {!value && !editor?.isFocused && (
         <div className="absolute top-[52px] left-3 text-gray-400 pointer-events-none">{placeholder}</div>
       )}
