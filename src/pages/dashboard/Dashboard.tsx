@@ -47,7 +47,7 @@ const Dashboard = () => {
     resetAllForms()
     setUsaReset('reset')
     async function fetchData() {
-      const result = await getIncorporationListByUserId(`${decodedToken.userId}`)
+      const result = await getIncorporationListByUserId(`${decodedToken.userId}`, `${decodedToken.role}`);
       return result
     }
     fetchData().then((result) => {
