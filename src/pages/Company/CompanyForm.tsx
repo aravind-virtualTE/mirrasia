@@ -1,7 +1,7 @@
 import { useEffect, } from 'react';
 import { useParams } from "react-router-dom";
 import { useAtom, useSetAtom } from 'jotai';
-import { countryAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
+import { applicantInfoFormAtom, countryAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
 import { companyIncorporationList } from '@/services/state';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import IncorporationForm from './HongKong/IncorporationForm';
@@ -22,13 +22,14 @@ const CompanyRegistration = () => {
     const decodedToken = jwtDecode<TokenData>(token);
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     const [ formData,setFormData] = useAtom(usaFormWithResetAtom);
+    const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
     useEffect(() => {
         if (id && countryCode == "HK") {
        
             if (!id || !decodedToken?.userId) return;
             (async () => {
                 // Fetch all companies
-                const result = await getIncorporationListByUserId(`${decodedToken.userId}`);
+                const result = await getIncorporationListByUserId(`${decodedToken.userId}`, `${decodedToken.role}`);
                 setCompaniesList(result.companies.mergedList);
                 // Find the current company from fetched list
                 const company = result.companies.mergedList.find((c: { _id: string; }) => c._id === id);
@@ -37,8 +38,9 @@ const CompanyRegistration = () => {
                 // Fetch and update incorporation details for this specific company
                 const compData = await getIncorporationListByCompId(`${id}`);
                 if (compData && compData.length > 0) {
-                  updateCompanyData(compData[0]);
-                //   console.log("resultIncorporation--->", compData);
+                    setApplicantHkInfoData(compData[0].applicantInfoForm);
+                    updateCompanyData(compData[0]);
+                  console.log("resultIncorporation--->", compData);
                 } else {
                   console.warn("No incorporation data found for id:", id);
                 }

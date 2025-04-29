@@ -4,6 +4,10 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import ShareholderDirectorForm from './sgShrHldDir';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { HelpCircle } from 'lucide-react';
+import AccountingSgTax from './AccountingSgTax';
 
 const BusinessInfoSg: React.FC = () => {
     const { theme } = useTheme();
@@ -145,6 +149,62 @@ const BusinessInfoSg: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                <div className='flex w-full p-4'>
+                    <aside
+                        className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
+                            ? "bg-blue-50 text-gray-800"
+                            : "bg-gray-800 text-gray-200"
+                            }`}
+                    >
+                        <h2 className="text-lg font-semibold mb-2">
+                         Shareholders/Directors of the Singapore company
+                        </h2>
+
+                    </aside>
+                    <div className="w-3/4 ml-4">
+                        <ShareholderDirectorForm />
+                        <div className="space-y-2">
+                            <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
+                                Significant Controller<span className="text-red-500 inline-flex">*
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-[500px] text-base">
+                                            The significant controller is the person who has the final and practical decision-making power of the company.
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </span>
+                            </Label>
+                            <Input
+                                placeholder="Your answer"
+                            // value={productDescription}
+                            // onChange={(e) => setProductDescription(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
+                                Designated Contact Person
+                                <span className="text-red-500 inline-flex">*
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-[500px] text-base">
+                                            You need to delegate a person("designated contact person") who will be in charge of contacting in relation to your company's business, incorporation and renewal of your company, registration of documents, confirmations of the required information, and communications for various matters in respect of our services. Appointment of the designated contact person is free for up to 1 person, and if you would like to delegate 2 or more designated contact persons, an annual fee of USD250 per person will be charged. The designated contact person will be delegated by your company and should be registered separately with us to protect your company's information, reduce business confusion, and prevent identity fraud. (The designated contact person must go through the same procedures as the shareholders/directors by submitting the passport copy, address proof, and personal verification.)
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </span>
+                            </Label>
+                            <Input
+                                placeholder="Your answer"
+                            // value={productDescription}
+                            // onChange={(e) => setProductDescription(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <AccountingSgTax />
             </CardContent>
         </Card>
     )

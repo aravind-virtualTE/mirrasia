@@ -5,14 +5,14 @@ import { Label } from "@/components/ui/label"
 import { useTranslation } from "react-i18next";
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useAtom } from 'jotai';
-import { usaFormWithResetAtom } from '../UsState';
 import { useToast } from '@/hooks/use-toast';
 import CommonServiceAgrementTxt from "../../CommonServiceAgrementTxt";
+import { sgFormWithResetAtom } from "../SgState";
 
 export default function ServiceAgreement() {
     const { t } = useTranslation();
     const { toast } = useToast();
-    const [formData, setFormData] = useAtom(usaFormWithResetAtom);
+    const [formData, setFormData] = useAtom(sgFormWithResetAtom);
     const [consent, setConsent] = useState(false);
 
     useEffect(() => {

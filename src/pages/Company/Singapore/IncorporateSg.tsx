@@ -8,6 +8,10 @@ import AmlCddSg from './Components/AmlCddSg';
 import FeasibilityBankOpening from './Components/FeasibilityBankOpening';
 import OpeningBank from './Components/OpeningBank';
 import BusinessInfoSg from './Components/BusinessInfoSg';
+import ServiceAgreement from './Components/ServiceAgreement';
+import SgServiceSelection from './Components/SgServiceSelection';
+import InvoiceSg from './Components/SgInvoice';
+import PaymentInformation from './Components/SgPaymentInfo';
 
 const IncorporateSg: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
@@ -38,6 +42,26 @@ const IncorporateSg: React.FC = () => {
             number: 5,
             label: "Company Information",
             active: currentSection === 5,
+        },
+        {
+            number: 6,
+            label: "Service Agreement",
+            active: currentSection === 6,
+        },
+        {
+            number: 7,
+            label: "Service Selection",
+            active: currentSection === 7,
+        },
+        {
+            number: 8,
+            label: "Invoice",
+            active: currentSection === 8,
+        },
+        {
+            number: 9,
+            label: "Payment",
+            active: currentSection === 9,
         },
     ]
 
@@ -85,6 +109,11 @@ const IncorporateSg: React.FC = () => {
                             {currentSection === 3 && <FeasibilityBankOpening />}
                             {currentSection === 4 && <OpeningBank />}
                             {currentSection === 5 && <BusinessInfoSg />}
+                            {currentSection === 6 && <ServiceAgreement />}
+                            {currentSection === 7 && <SgServiceSelection />}
+                            {currentSection === 8 && <InvoiceSg />}
+                            {currentSection === 9 && <PaymentInformation />}
+                            
                             
 
                         </motion.div>
@@ -93,7 +122,7 @@ const IncorporateSg: React.FC = () => {
 
                 {/* Navigation buttons - Sticky positioning */}
                 <div className="sticky bottom-0 bg-background border-t p-1 mt-auto"> {/* Sticky positioning */}
-                    {currentSection !== 9 && <div className="flex justify-between">
+                    {currentSection !== 12 && <div className="flex justify-between">
                         <Button
                             variant="outline"
                             onClick={previousSection}
@@ -106,7 +135,7 @@ const IncorporateSg: React.FC = () => {
                             onClick={nextSection}
                             className="flex items-center space-x-2 bg-primary"
                         >
-                            <span>{currentSection === 16 ? "SUBMIT" : "NEXT →"}</span>
+                            <span>{currentSection === 12 ? "SUBMIT" : "NEXT →"}</span>
                         </Button>
                     </div>}
                 </div>

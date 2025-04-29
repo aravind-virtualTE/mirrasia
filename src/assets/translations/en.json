@@ -1156,6 +1156,8 @@
   "finalMsg":{
     "congrats":"Congratulations!",
     "usPara":"Thank you for completing the USA company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.",
+    "hkPara":"Thank you for completing the Hong Kong company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.",
+    "sgPara":"Thank you for completing the Singapore company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.",
     "returntoDash":"Go to Dashboard"
   }
 }
