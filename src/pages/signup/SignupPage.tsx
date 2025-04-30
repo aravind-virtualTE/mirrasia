@@ -116,7 +116,7 @@ const SignupPage = () => {
         // Save the token to localStorage
         localStorage.setItem("token", token);
         localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("user", user)
+        localStorage.setItem("user", JSON.stringify(user))
         setAuth({ user, isAuthenticated: true, loading: false, error: null });
         if (user.role === "admin" || user.role === "master") {
           navigate("/admin-dashboard");
