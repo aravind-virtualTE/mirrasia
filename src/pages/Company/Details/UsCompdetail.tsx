@@ -28,7 +28,6 @@ import TodoApp from '@/pages/Todo/TodoApp';
 import { User } from '@/components/userList/UsersList';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-// import ProjectDetail from '@/pages/dashboard/Admin/Projects/ProjectDetail';
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 
 
@@ -96,7 +95,37 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     sections.push({
       title: 'Applicant Information',
       data: {
-        'Company Name': formData.companyName[0],
+        'Company Name': (
+          <div className="space-y-4">
+            <div className="grid gap-2">
+              {formData.companyName.slice(0, 3).map((name, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <div className="flex-1 p-2 border rounded-md bg-background">{name || "N/A"}</div>
+                  {index > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const newNames = [...formData.companyName]
+                        // Move this item to the first position
+                        const [removed] = newNames.splice(index, 1)
+                        newNames.unshift(removed)
+
+                        // Update the company state
+                        setFormData({
+                          ...formData,
+                          companyName: newNames,
+                        })
+                      }}
+                    >
+                      Move to Top
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ),
         'Applicant Name': formData.name,
         Email: formData.email,
         Phone: formData.phoneNum,
@@ -207,6 +236,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         isDisabled: formData.isDisabled,
         incorporationDate: formData.incorporationDate,
         country: 'US',
+        companyName: formData.companyName
       },
       session: {
         id: session._id,

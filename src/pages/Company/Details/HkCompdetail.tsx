@@ -47,7 +47,6 @@ import MemoApp from "./MemosHK";
 import TodoApp from "@/pages/Todo/TodoApp";
 import { User } from "@/components/userList/UsersList";
 import { useNavigate } from "react-router-dom";
-// import ProjectDetail from "@/pages/dashboard/Admin/Projects/ProjectDetail";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 export interface SessionData {
     _id: string;
@@ -57,13 +56,11 @@ export interface SessionData {
     status: string;
     paymentId: string;
 }
-
 interface Country {
     [key: string]: string | undefined;
     code: string | undefined;
     name: string | undefined;
 }
-
 interface ApplicantInfoForm {
     name: string;
     relationships: string[];
@@ -75,7 +72,6 @@ interface ApplicantInfoForm {
     snsPlatform: string;
     chinaCompanyName: string[];
 }
-
 interface BusinessInfoHkCompany {
     [key: string]: string | undefined;
     sanctioned_countries?: string;
@@ -84,13 +80,11 @@ interface BusinessInfoHkCompany {
     russian_business_presence?: string;
     legal_assessment?: string;
 }
-
 interface CompanyBusinessInfo {
     business_product_description: string;
     business_industry: string;
     business_purpose: string[];
 }
-
 interface RegCompanyInfo {
     registerCompanyNameAtom: string;
     registerShareTypeAtom: string[];
@@ -103,7 +97,6 @@ interface RegCompanyInfo {
 interface AccountingTaxInfo {
     anySoftwareInUse: string;
 }
-
 export interface PaymentDetails {
     paymentData: {
         id: string;
@@ -137,7 +130,6 @@ export interface PaymentDetails {
         status: string;
     };
 }
-
 interface Company {
     incorporationDate: string;
     is_draft: boolean;
@@ -159,7 +151,6 @@ interface Company {
     assignedTo: string;
     __v: number;
 }
-
 const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
     const { toast } = useToast();
@@ -184,13 +175,44 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
         updateCompanyData(company);
-        // console.log("company", company)
-        // Applicant Information Section
         if (company.applicantInfoForm) {
             sections.push({
                 title: "Applicant Information",
                 data: {
-                    "Company Name": company.applicantInfoForm.companyName,
+                    "Company Name": (
+                        <div className="space-y-4">
+                          <div className="grid gap-2">
+                            {company.applicantInfoForm.companyName.slice(0, 3).map((name, index) => (
+                              <div key={index} className="flex items-center gap-2">
+                                <div className="flex-1 p-2 border rounded-md bg-background">{name || "N/A"}</div>
+                                {index > 0 && (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      const newNames = [...company.applicantInfoForm.companyName]
+                                      // Move this item to the first position
+                                      const [removed] = newNames.splice(index, 1)
+                                      newNames.unshift(removed)
+            
+                                      // Update the company state
+                                      setCompany({
+                                        ...company,
+                                        applicantInfoForm: {
+                                          ...company.applicantInfoForm,
+                                          companyName: newNames,
+                                        },
+                                      })
+                                    }}
+                                  >
+                                    Move to Top
+                                  </Button>
+                                )}
+                              </div>
+                            ))}
+                          </div>                         
+                        </div>
+                      ),
                     "Applicant Name": company.applicantInfoForm.name,
                     Email: company.applicantInfoForm.email,
                     Phone: company.applicantInfoForm.phoneNumber,
@@ -559,9 +581,9 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     )
 
     const handleUpdate = async () => {
-
+        // console.log("company", company)
         const payload = JSON.stringify({
-            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK" },
+            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK", companyName: company.applicantInfoForm.companyName },
             session: { id: session._id, expiresAt: (session.expiresAt), status: session.status },
             assignedTo : adminAssigned
         })
