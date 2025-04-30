@@ -64,11 +64,12 @@ const AdminProject: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    // console.log(isEditing, currentProject._id)
     try {
       if (isEditing && currentProject._id !== null) {
         const updated = await updateProject(currentProject._id, currentProject);
-        setProjects(projects.map(p => p._id === updated.id ? updated : p));
+        // console.log("updated--->", updated)
+        setProjects(projects.map(p => p._id === updated._id ? updated : p));
       } else {
         const created = await createProject(currentProject);
         setProjects([...projects, created]);
@@ -144,6 +145,8 @@ const AdminProject: React.FC = () => {
     try {
       await deleteProject(deleteProj);
       setProjects(projects.filter(project => project._id !== deleteProj));
+      setDeleteDialogOpen(false);
+      setDeleteProj('');
     } catch (error) {
       console.error('Failed to delete project', error);
     }
