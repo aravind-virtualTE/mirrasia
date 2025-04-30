@@ -311,7 +311,7 @@ const LandingPage = () => {
                 Pricing
               </h1>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Mirr Asia believes in transparent and competitive pricing for all services. They offer customized packages tailored to each client's specific requirements, ensuring that businesses receive the support they need without unnecessary costs. Detailed pricing information is available upon consultation, allowing clients to make informed decisions based on their budgets and service needs.
+                Mirr Asia believes in transparent pricing and competitive pricing for all services. They offer customized packages tailored to each client's specific requirements, ensuring that businesses receive the support they need without unnecessary costs. Detailed pricing information is available upon consultation, allowing clients to make informed decisions based on their budgets and service needs.
                 This approach to pricing reflects Mirr Asia's commitment to building long-term relationships with clients, providing value-driven services that support sustainable business success. These sections encapsulate the comprehensive services offered by Mirr Asia, highlighting expertise and commitment to helping businesses across the globe.
               </p>
             </div>

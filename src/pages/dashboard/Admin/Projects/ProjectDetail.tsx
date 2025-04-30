@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { useAtom } from "jotai"
 import { useNavigate, useParams } from "react-router-dom"
 import { projectsAtom } from "./ProjectAtom"
@@ -16,17 +16,17 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ compId }) => {
     const { id: paramId } = useParams()
     const [projects] = useAtom(projectsAtom)
     const navigate = useNavigate()
-    // console.log("projects--->", projects)
-    const id = paramId
-    let project
-    if (id !== "" && id !== undefined) {
-        project = projects.find((p) => p._id === id)
-    }
-    if (compId !== "" && compId !== undefined) {
-        project = projects.find((p) => p.company?.id === compId)
-    }
-    // console.log("compId--->", compId,project)
-
+  
+    const project = useMemo(() => {
+      if (compId) {
+        return projects.find((p) => p.company?.id === compId)
+      }
+      if (paramId) {
+        return projects.find((p) => p._id === paramId)
+      }
+      return null
+    }, [projects, paramId, compId])
+  
     if (!project) return <p className="ml-8 mr-8 mt-4">No project found</p>
 
     const data: Record<string, string> = {
@@ -45,7 +45,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ compId }) => {
     }
     return (
         <div className="space-y-4 px-4 md:px-8 mt-2">
-            {id && id !== "" && (
+            {paramId && paramId !== "" && (
                 <div className="flex justify-end">
                     <Button onClick={() => navigate("/projects")} size="sm" className="flex items-center gap-2">
                         Back to Projects
