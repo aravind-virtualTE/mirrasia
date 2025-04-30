@@ -28,7 +28,9 @@ import TodoApp from '@/pages/Todo/TodoApp';
 import { User } from '@/components/userList/UsersList';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import ProjectDetail from '@/pages/dashboard/Admin/Projects/ProjectDetail';
+// import ProjectDetail from '@/pages/dashboard/Admin/Projects/ProjectDetail';
+import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
+
 
 const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const { t } = useTranslation()
@@ -555,7 +557,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       </TabsContent>
       <TabsContent value="Projects" className="p-6">
         <div className="space-y-6">
-          <ProjectDetail compId={id} />
+          <AdminProject id={id} />
         </div>
       </TabsContent>
     </Tabs>
