@@ -23,7 +23,7 @@ import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 const isEditingAtom = atom<boolean>(false);
 const isOpenAtom = atom<boolean>(false);
 
-const AdminProject: React.FC = () => {
+const AdminProject: React.FC<{id?: string}> = ({id}) => {
   const [projects, setProjects] = useAtom(projectsAtom);
   const [currentProject, setCurrentProject] = useAtom(currentProjectAtom);
   const [isEditing, setIsEditing] = useAtom(isEditingAtom);
@@ -37,7 +37,7 @@ const AdminProject: React.FC = () => {
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        const data = await fetchProjects();
+        const data = await fetchProjects(id);
         setProjects(data);
       } catch (error) {
         console.error('Failed to fetch projects', error);

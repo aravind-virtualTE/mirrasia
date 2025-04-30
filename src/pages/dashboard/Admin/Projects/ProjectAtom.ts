@@ -38,8 +38,8 @@ export interface Project {
   export const currentProjectAtom = atom<Project>(initialProject);
 
 
-  export const fetchProjects = async () => {
-    const { data } = await api.get('/projects');
+  export const fetchProjects = async (id?: string) => {
+    const { data } = await api.get('/projects/', { params: { id } });
     return data;
   };
 
