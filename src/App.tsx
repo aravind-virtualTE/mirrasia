@@ -123,7 +123,7 @@ const App: React.FC = () => {
                   <Route element={<ProtectedRoute allowedRoles={["admin" , 'master']} />}>
                     <Route element={<Layout />}>
                       <Route path="/compReg" element={<CompanyRegistration2 />} />
-                      <Route path="/admin-dashboard" element={<AdminDashboard />} />                      
+                      <Route path="/admin-dashboard" element={<AdminDashboard />} />
                       <Route path="/messages" element={<ChatInterface />} />
                       <Route path="/projects" element={<AdminProject />} />
                       <Route path="/MasterTodo" element={<ToDoList />} />

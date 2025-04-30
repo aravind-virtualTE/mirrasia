@@ -16,7 +16,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
     const [users,] = useAtom(usersAtom);
     const task = tasks.find((t) => t._id === taskId)
     const createdUser = users.find((user) => user._id === task?.userId)
-    console.log("task", createdUser)
+    // console.log("task", createdUser)
     const handleCommentSubmit = async () => {
         if (!comment.trim()) return
         const newComment = {
