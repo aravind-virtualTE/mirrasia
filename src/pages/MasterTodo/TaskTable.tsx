@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { Task, tasksAtom, createTaskFormAtom, users, deleteTask, statusColors, priorityColors } from './mTodoStore';
-import { Edit, Flag, Trash2, MessageCircle } from 'lucide-react';
+import { Edit, Flag, Trash2, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { useState } from 'react';
@@ -32,6 +32,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     const [popupTask, setPopupTask] = useState<Task | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+    const [sortField, setSortField] = useState<'dueDate' | 'priority' | null>(null);
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
     const handleEditClick = (task: Task, e: React.MouseEvent) => {
         e.stopPropagation();
@@ -115,6 +117,41 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
             </div>
         )
     }
+
+    const handleSort = (field: 'dueDate' | 'priority') => {
+        if (sortField === field) {
+            setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+        } else {
+            setSortField(field);
+            setSortOrder('asc');
+        }
+    };
+
+    const sortedTasks = [...tasks].sort((a, b) => {
+        if (!sortField) return 0;
+
+        let aVal = a[sortField];
+        let bVal = b[sortField];
+
+        // Handle undefined or null values
+        if (!aVal) return sortOrder === 'asc' ? 1 : -1;
+        if (!bVal) return sortOrder === 'asc' ? -1 : 1;
+
+        if (sortField === 'dueDate') {
+            const aDate = new Date(aVal).getTime();
+            const bDate = new Date(bVal).getTime();
+            return sortOrder === 'asc' ? aDate - bDate : bDate - aDate;
+        }
+
+        if (sortField === 'priority') {
+            const priorityMap = { Low: 1, Medium: 2, High: 3, Urgent: 4 };
+            return sortOrder === 'asc'
+                ? priorityMap[aVal as keyof typeof priorityMap] - priorityMap[bVal as keyof typeof priorityMap]
+                : (priorityMap[bVal as keyof typeof priorityMap] - priorityMap[aVal as keyof typeof priorityMap]);
+        }
+
+        return 0;
+    });
     // console.log("tasks--->", tasks)
     return (
         <>
@@ -125,13 +162,28 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                             <TableHead className="w-[5px]">Status</TableHead>
                             <TableHead className="w-[300px]">Task</TableHead>
                             <TableHead className="w-[80px]">Assignee</TableHead>
-                            <TableHead className="w-[80px]">Due Date</TableHead>
-                            <TableHead className="w-[80px]">Priority</TableHead>
+                            <TableHead
+                                className="w-[80px] cursor-pointer"
+                                onClick={() => handleSort('dueDate')}
+                            >
+                                <div className="flex items-center">
+                                    Due Date {sortField === 'dueDate' && (sortOrder === 'asc' ? <ChevronUp className="ml-1 h-4 w-4" /> : <ChevronDown className="ml-1 h-4 w-4" />)}
+                                </div>
+                            </TableHead>
+                            <TableHead
+                                className="w-[80px] cursor-pointer"
+                                onClick={() => handleSort('priority')}
+                            >
+                                <div className="flex items-center">
+
+                                    Priority {sortField === 'priority' && (sortOrder === 'asc' ? <ChevronUp className="ml-1 h-4 w-4" /> : <ChevronDown className="ml-1 h-4 w-4" />)}
+                                </div>
+                            </TableHead>
                             <TableHead className="w-[80px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {tasks.map((task) => (
+                        {sortedTasks.map((task) => (
                             <TableRow
                                 onClick={() => handleRowClick(task)}
                                 key={task._id}
@@ -146,18 +198,10 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                         <div className="flex flex-col flex-1 min-w-0 mr-2">
                                             <span
                                                 className="text-base font-semibold truncate"
-                                                title={task.name} 
+                                                title={task.name}
                                             >
                                                 {task.name}
                                             </span>
-                                            {/* {task.description && (
-                                                <span
-                                                    className="text-sm text-gray-500 truncate"
-                                                    title={task.description} 
-                                                >
-                                                    {task.description}
-                                                </span>
-                                            )} */}
                                         </div>
                                         {task.company?.name && (
                                             <Badge
