@@ -4,18 +4,16 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from '@/components/ui/card';
 import ApplicantInfo from './Components/ApplicantInfo';
-import AmlCddSg from './Components/AmlCddSg';
-import FeasibilityBankOpening from './Components/FeasibilityBankOpening';
-import OpeningBank from './Components/OpeningBank';
-import BusinessInfoSg from './Components/BusinessInfoSg';
-import ServiceAgreement from './Components/ServiceAgreement';
-import SgServiceSelection from './Components/SgServiceSelection';
-import InvoiceSg from './Components/SgInvoice';
-import PaymentInformation from './Components/SgPaymentInfo';
-import InfoForIncorpoSg from './Components/InfoForIncorpoSg';
-import SgFinalSection from './Components/sgFinalSection';
+import PanamaEntity from './Components/PanamaEntity';
+import BusinessInfoPa from './Components/BusinessInfoPa';
+// import ServiceAgreement from './Components/ServiceAgreement';
+// import SgServiceSelection from './Components/SgServiceSelection';
+// import InvoiceSg from './Components/SgInvoice';
+// import PaymentInformation from './Components/SgPaymentInfo';
+// import InfoForIncorpoSg from './Components/InfoForIncorpoSg';
+// import SgFinalSection from './Components/sgFinalSection';
 
-const IncorporateSg: React.FC = () => {
+const IncorporatePa: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
 
 
@@ -27,53 +25,43 @@ const IncorporateSg: React.FC = () => {
         },
         {
             number: 2,
-            label: "Aml/Cdd",
+            label: "Panama Entity",
             active: currentSection === 2,
         },
         {
             number: 3,
-            label: "Feasibility Bank Opening",
+            label: "Company Information",
             active: currentSection === 3,
         },
         {
             number: 4,
-            label: "Bank Opening",
+            label: "Service Agreement",
             active: currentSection === 4,
         },
         {
             number: 5,
-            label: "Company Information",
+            label: "Service Selection",
             active: currentSection === 5,
         },
         {
             number: 6,
-            label: "Service Agreement",
+            label: "Invoice",
             active: currentSection === 6,
         },
         {
-            number: 7,
-            label: "Service Selection",
+            number:7,
+            label: "Payment",
             active: currentSection === 7,
         },
         {
             number: 8,
-            label: "Invoice",
+            label: "Information for Incorporation",
             active: currentSection === 8,
         },
         {
             number: 9,
-            label: "Payment",
-            active: currentSection === 9,
-        },
-        {
-            number: 10,
-            label: "Information for Incorporation",
-            active: currentSection === 10,
-        },
-        {
-            number: 11,
             label: "Incorporation",
-            active: currentSection === 11,
+            active: currentSection === 9,
         },
     ]
 
@@ -117,16 +105,15 @@ const IncorporateSg: React.FC = () => {
                             className="h-full w-auto"
                         >
                             {currentSection === 1 && <ApplicantInfo />}
-                            {currentSection === 2 && <AmlCddSg />}
-                            {currentSection === 3 && <FeasibilityBankOpening />}
-                            {currentSection === 4 && <OpeningBank />}
-                            {currentSection === 5 && <BusinessInfoSg />}
-                            {currentSection === 6 && <ServiceAgreement />}
+                            {currentSection === 2 && <PanamaEntity />}
+                            {currentSection === 3 && <BusinessInfoPa />}
+                            {/* 
+                            {currentSection === 4 && <ServiceAgreement />}
                             {currentSection === 7 && <SgServiceSelection />}
                             {currentSection === 8 && <InvoiceSg />}
                             {currentSection === 9 && <PaymentInformation />}
                             {currentSection === 10 && <InfoForIncorpoSg />}
-                            {currentSection === 11 && <SgFinalSection />}
+                            {currentSection === 11 && <SgFinalSection />} */}
                         </motion.div>
                     </AnimatePresence>
                 </div>
@@ -182,4 +169,4 @@ const IncorporateSg: React.FC = () => {
     )
 }
 
-export default IncorporateSg
+export default IncorporatePa

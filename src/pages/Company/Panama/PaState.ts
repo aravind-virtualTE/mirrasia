@@ -48,7 +48,7 @@ export interface UsaFormData {
     value: string,
     id: string
   };
-  sgTotalCapPaid : string;
+  paTotalCapPaid : string;
   registerAmountAtom : string | number;
   registerCurrencyAtom?: string;
 
@@ -91,34 +91,34 @@ const initialFormState: UsaFormData = {
     value: '',
     id: ''
   },
-  sgTotalCapPaid: "",
+  paTotalCapPaid: "",
   registerAmountAtom: '',
   registerCurrencyAtom: '',
 };
 
 // Create the base atom
-export const sgFormAtom = atom<UsaFormData>(initialFormState);
+export const paFormAtom = atom<UsaFormData>(initialFormState);
 
 // Atom with reset functionality
-export const sgFormWithResetAtom = atom(
-  (get) => get(sgFormAtom),
+export const paFormWithResetAtom = atom(
+  (get) => get(paFormAtom),
   (_get, set, update: UsaFormData | 'reset') => {
     if (update === 'reset') {
-      set(sgFormAtom, initialFormState);
+      set(paFormAtom, initialFormState);
     } else {
-      set(sgFormAtom, update);
+      set(paFormAtom, update);
     }
   }
 );
 
-export const sgPrice = atom(0)
-export const sgPriceAtom = atom(
-  (get) => get(sgPrice),
+export const paPrice = atom(0)
+export const paPriceAtom = atom(
+  (get) => get(paPrice),
   (_get, set, update: number | 'reset') => {
     if (update === 'reset') {
-      set(sgPrice, 0);
+      set(paPrice, 0);
     }else{
-      set(sgPrice, update);
+      set(paPrice, update);
     }
   }
 );

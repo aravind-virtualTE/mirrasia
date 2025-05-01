@@ -78,10 +78,7 @@ const initialFormState: UsaFormData = {
   name: '',
   establishedRelationshipType: [],
   phoneNum: '',
-  country: {
-    code: undefined,
-    name: undefined,
-  },
+  country:{ code: 'US', name: 'United States' },
   snsAccountId:{
     value: '',
     id: ''

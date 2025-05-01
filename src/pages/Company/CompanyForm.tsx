@@ -13,6 +13,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { usaFormWithResetAtom } from './USA/UsState';
 import { useTranslation } from "react-i18next";
 import IncorporateSg from './Singapore/IncorporateSg';
+import IncorporatePa from './Panama/PaIncorporation';
 const CompanyRegistration = () => {
     const { t } = useTranslation();
     const [countryState, setCountryState] = useAtom(countryAtom);
@@ -21,7 +22,7 @@ const CompanyRegistration = () => {
     const token = localStorage.getItem('token') as string;
     const decodedToken = jwtDecode<TokenData>(token);
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
-    const [ formData,setFormData] = useAtom(usaFormWithResetAtom);
+    const [ ,setFormData] = useAtom(usaFormWithResetAtom);
     const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
     useEffect(() => {
         if (id && countryCode == "HK") {
@@ -71,6 +72,7 @@ const CompanyRegistration = () => {
         { code: 'SG', name: t('countrySelection.sg') },
         { code: 'US', name: t('countrySelection.us') },
         { code: 'UK', name: t('countrySelection.uk') },
+        { code: 'PA', name: t('countrySelection.pa') },
         // Add more countries as needed
     ];
 
@@ -81,12 +83,6 @@ const CompanyRegistration = () => {
                 code: selectedCountry.code,
                 name: selectedCountry.name
             });
-        }
-        else if (countryCode == "US") {
-            setCountryState({
-               code: 'US', name: 'United States'
-            });
-            setFormData({...formData, country : { code: 'US', name: 'United States' }});
         }
     };
 
@@ -100,6 +96,8 @@ const CompanyRegistration = () => {
                 return <IncorporateUSACompany />;
             case 'SG':
                 return <IncorporateSg />;
+            case 'PA':
+                return <IncorporatePa />;
             default:
                 return <div>Registration form for {countryState.name} is not available yet.</div>;
         }
