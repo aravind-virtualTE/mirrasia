@@ -74,7 +74,8 @@
     "hk": "Hong Kong",
     "us": "United States",
     "sg": "Singapore",
-    "uk": "United Kingdom"
+    "uk": "United Kingdom",
+    "pa": "Panama"
   },
   "compFormation":{
     "appInfo":"Applicant\ninformation",
