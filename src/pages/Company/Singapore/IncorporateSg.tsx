@@ -12,6 +12,8 @@ import ServiceAgreement from './Components/ServiceAgreement';
 import SgServiceSelection from './Components/SgServiceSelection';
 import InvoiceSg from './Components/SgInvoice';
 import PaymentInformation from './Components/SgPaymentInfo';
+import InfoForIncorpoSg from './Components/InfoForIncorpoSg';
+import SgFinalSection from './Components/sgFinalSection';
 
 const IncorporateSg: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
@@ -63,6 +65,16 @@ const IncorporateSg: React.FC = () => {
             label: "Payment",
             active: currentSection === 9,
         },
+        {
+            number: 10,
+            label: "Information for Incorporation",
+            active: currentSection === 10,
+        },
+        {
+            number: 11,
+            label: "Incorporation",
+            active: currentSection === 11,
+        },
     ]
 
     const nextSection = async () => {
@@ -113,9 +125,8 @@ const IncorporateSg: React.FC = () => {
                             {currentSection === 7 && <SgServiceSelection />}
                             {currentSection === 8 && <InvoiceSg />}
                             {currentSection === 9 && <PaymentInformation />}
-                            
-                            
-
+                            {currentSection === 10 && <InfoForIncorpoSg />}
+                            {currentSection === 11 && <SgFinalSection />}
                         </motion.div>
                     </AnimatePresence>
                 </div>

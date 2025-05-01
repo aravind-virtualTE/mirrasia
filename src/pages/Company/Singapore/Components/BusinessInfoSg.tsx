@@ -8,6 +8,8 @@ import ShareholderDirectorForm from './sgShrHldDir';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
 import AccountingSgTax from './AccountingSgTax';
+import { t } from 'i18next';
+import { typesOfShares } from '../../HongKong/constants';
 
 const BusinessInfoSg: React.FC = () => {
     const { theme } = useTheme();
@@ -17,6 +19,7 @@ const BusinessInfoSg: React.FC = () => {
     const [otherPurpose, setOtherPurpose] = useState("");
     const [productDescription, setProductDescription] = useState("");
     const [websiteAddress, setWebsiteAddress] = useState("");
+    const [registerShareTypeAtom, ] = useState<string[]>([]);
 
     const industries = [
         { id: "trade", value: "Trade" },
@@ -55,7 +58,9 @@ const BusinessInfoSg: React.FC = () => {
             prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
         );
     };
-
+    const handleSharesChange = (checked: boolean, purpose: string) => {
+        console.log("checked",checked,purpose)
+      };
 
     return (
         <Card>
@@ -157,12 +162,47 @@ const BusinessInfoSg: React.FC = () => {
                             }`}
                     >
                         <h2 className="text-lg font-semibold mb-2">
-                         Shareholders/Directors of the Singapore company
+                            Shareholders/Directors of the Singapore company
                         </h2>
 
                     </aside>
                     <div className="w-3/4 ml-4">
                         <ShareholderDirectorForm />
+                        <div>
+                            <Label className="text-base font-semibold flex items-center gap-2">
+                                {t('CompanyInformation.typeOfShares')}{" "}
+                                <span className="text-red-500 font-bold ml-1 flex">
+                                    *
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-[500px] text-base">
+                                            {t('CompanyInformation.typeShareInfo')}
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </span>
+                            </Label>
+                            {typesOfShares.map((purpose) => (
+                                <div key={t(purpose)} className="flex items-start space-x-3">
+                                    <Checkbox
+                                        id={t(purpose)}
+                                        checked={registerShareTypeAtom.includes(
+                                            t(purpose)
+                                        )}
+                                        onCheckedChange={(checked) =>
+                                            handleSharesChange(checked as boolean, t(purpose))
+                                        }
+                                    />
+                                    <Label
+                                        htmlFor={t(purpose)}
+                                        className="font-normal text-sm leading-normal cursor-pointer"
+                                    >
+                                        {t(purpose)}
+                                    </Label>
+                                </div>
+                            ))}
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
                                 Significant Controller<span className="text-red-500 inline-flex">*

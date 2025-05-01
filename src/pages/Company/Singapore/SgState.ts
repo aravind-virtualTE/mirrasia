@@ -44,6 +44,14 @@ export interface UsaFormData {
   incorporationDate: string
   serviceAgreementConsent: boolean
   assignedTo: string
+  shareCapitalPayment?:  {
+    value: string,
+    id: string
+  };
+  sgTotalCapPaid : string;
+  registerAmountAtom : string | number;
+  registerCurrencyAtom?: string;
+
 }
 
 const initialFormState: UsaFormData = {
@@ -78,7 +86,14 @@ const initialFormState: UsaFormData = {
   status: "Pending",
   incorporationDate:"",
   serviceAgreementConsent:false,
-  assignedTo : ""
+  assignedTo : "",
+  shareCapitalPayment: {
+    value: '',
+    id: ''
+  },
+  sgTotalCapPaid: "",
+  registerAmountAtom: '',
+  registerCurrencyAtom: '',
 };
 
 // Create the base atom
