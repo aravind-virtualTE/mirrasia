@@ -1,6 +1,6 @@
 // import { companyIncorporationAtom } from '@/lib/atom';
 import { atom } from 'jotai';
-
+import { User } from "@/components/userList/UsersList";
 export type AnyObject = Record<string, unknown>;
 export const companyIncorporationList = atom<AnyObject[]>([]);
 
@@ -19,3 +19,5 @@ export const dashboardCompaniesAtom = atom<AnyObject[]>([]);
       }
     }
   );
+
+  export const usersData = atom<User[]>([]);
