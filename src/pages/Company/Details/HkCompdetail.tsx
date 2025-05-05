@@ -624,7 +624,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         const now = new Date().toISOString();
         if (isChecked) {
             const updatedCheckedItems = [
-                ...company.checkedItems,
+                ...company.checkedItems ?? [],
                 { id: itemId, checkedBy: currentUserId, checkedAt: now }
             ];
             setCompany({ ...company, checkedItems: updatedCheckedItems });
