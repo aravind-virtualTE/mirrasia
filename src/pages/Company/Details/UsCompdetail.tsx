@@ -483,7 +483,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const now = new Date().toISOString();
     if (isChecked) {
       const updatedCheckedItems = [
-        ...formData.checkedItems,
+        ...formData.checkedItems  ?? [],
         { id: itemId, checkedBy: currentUserId, checkedAt: now }
       ];
       setFormData({ ...formData, checkedItems: updatedCheckedItems });
