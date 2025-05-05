@@ -1,19 +1,29 @@
 import React, { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import { useAtom } from 'jotai';
 import { useTheme } from '@/components/theme-provider';
+import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
 import ShareholderDirectorFormPa from './PaShrDlr';
+import { typesOfShares } from '../../HongKong/constants';
+import { t } from 'i18next';
+import { paFormWithResetAtom } from '../PaState';
 
 const BusinessInfoPa: React.FC = () => {
     const { theme } = useTheme();
+    const [formData] = useAtom(paFormWithResetAtom);
     const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
     const [otherIndustry, setOtherIndustry] = useState("");
     const [selectedPurposes, setSelectedPurposes] = useState<string[]>([]);
     const [otherPurpose, setOtherPurpose] = useState("");
+    const [selectedSource, setSelectedSources] = useState<string[]>([]);
+    const [otherSource, setOtherSource] = useState("");
+    // const [selectedNomiee, setSelecteNomiee] = useState<string[]>([]);
+    // const [otherNomiee, setOtherNominee] = useState("");
+
 
 
     const industries = [
@@ -63,6 +73,33 @@ const BusinessInfoPa: React.FC = () => {
             prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
         );
     };
+
+    const handleSourceChange = (id: string) => {
+        setSelectedSources((prev) =>
+            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+        );
+    };
+
+    // const nomineeDirectorList = [
+    //     { id: "shHolder", value: "Shareholder" },
+    //     { id: "president", value: "President" },
+    //     { id: "secretary", value: "Secretary" },
+    //     { id: "tresurer", value: "Treasurer" },
+    //     { id: "founder", value: "Founder" },
+    //     { id: "nomineService", value: "I don't need a nominee service" },
+    //     { id: "other", value: "Other" }
+    // ]
+
+
+    // const handleNomineeChange = (id: string) => {
+    //     setSelecteNomiee((prev) =>
+    //         prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    //     );
+    // };
+
+    const handleSharesChange = (checked: boolean, purpose: string) => {
+        console.log("checked",checked,purpose)
+      };
 
     return (
         <Card>
@@ -144,7 +181,7 @@ const BusinessInfoPa: React.FC = () => {
                                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                     </TooltipTrigger>
                                     <TooltipContent className="max-w-[500px] text-base">
-                                    Please list the countries where your business transactions will take place after incorporation in Panama.
+                                        Please list the countries where your business transactions will take place after incorporation in Panama.
                                     </TooltipContent>
                                 </Tooltip>
                             </span>
@@ -158,7 +195,7 @@ const BusinessInfoPa: React.FC = () => {
                                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                     </TooltipTrigger>
                                     <TooltipContent className="max-w-[500px] text-base">
-                                    Please select details of the source of funding for the Ultimate Beneficial Owner (UBO), who is the principal or beneficial (direct or indirect) owner of the entity, and the source of funding that will be used to start the company.
+                                        Please select details of the source of funding for the Ultimate Beneficial Owner (UBO), who is the principal or beneficial (direct or indirect) owner of the entity, and the source of funding that will be used to start the company.
                                     </TooltipContent>
                                 </Tooltip>
                             </span>
@@ -168,27 +205,27 @@ const BusinessInfoPa: React.FC = () => {
                                     <div className="flex items-start space-x-3">
                                         <Checkbox
                                             id={`industry-${industry.id}`}
-                                            checked={selectedPurposes.includes(industry.id)}
-                                            onCheckedChange={() => handlePurposeChange(industry.id)}
+                                            checked={selectedSource.includes(industry.id)}
+                                            onCheckedChange={() => handleSourceChange(industry.id)}
                                         />
                                         <Label className="font-normal" htmlFor={`industry-${industry.id}`} >
                                             {industry.value}
                                         </Label>
                                     </div>
-                                    {industry.id === "other" && selectedPurposes.includes("other") && (
+                                    {industry.id === "other" && selectedSource.includes("other") && (
                                         <Input
                                             placeholder="Please specify"
-                                            value={otherPurpose}
-                                            onChange={(e) => setOtherPurpose(e.target.value)}
+                                            value={otherSource}
+                                            onChange={(e) => setOtherSource(e.target.value)}
                                         />
                                     )}
                                 </div>
                             ))}
                         </div>
-                    </div>                
+                    </div>
                 </div>
                 <div className='flex w-full p-4'>
-                <aside
+                    <aside
                         className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
                             ? "bg-blue-50 text-gray-800"
                             : "bg-gray-800 text-gray-200"
@@ -200,6 +237,82 @@ const BusinessInfoPa: React.FC = () => {
                     </aside>
                     <div className="w-3/4 ml-4">
                         <ShareholderDirectorFormPa />
+                        <div className="space-y-2">
+                            <Label className="text-base font-semibold flex items-center gap-2">
+                                {t('CompanyInformation.typeOfShares')}{" "}
+                                <span className="text-red-500 font-bold ml-1 flex">
+                                    *
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-[500px] text-base">
+                                            {t('CompanyInformation.typeShareInfo')}
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </span>
+                            </Label>
+                            {typesOfShares.map((purpose) => (
+                                <div key={t(purpose)} className="flex items-start space-x-3">
+                                    <Checkbox
+                                        id={t(purpose)}
+                                        checked={formData.typeOfShare.includes(
+                                            t(purpose)
+                                        )}
+                                        onCheckedChange={(checked) =>
+                                            handleSharesChange(checked as boolean, t(purpose))
+                                        }
+                                    />
+                                    <Label
+                                        htmlFor={t(purpose)}
+                                        className="font-normal text-sm leading-normal cursor-pointer"
+                                    >
+                                        {t(purpose)}
+                                    </Label>
+                                </div>
+                            ))}
+                        </div>
+                        {/* <div className="space-y-2">
+                            <Label className="flex items-center gap-2">If you would like to use a local nominee service, please select<span className="text-red-500 font-bold ml-1 flex">*
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-[500px] text-base">
+                                        Mandatory members (3 persons): President, Secretary, Treasurer
+                                        Minimum nominee service period: 1 year
+
+                                        Panama does provide a local nominee service to protect publicly available registry information. However, this is primarily for the purpose of protecting publicly available information and does not involve or represent the local nominee in all or any part of the foundation's operations. In addition, in accordance with KYC/CDD regulations, you must inform us, the virtual asset exchange or financial institution, etc. the information of the actual operator and UBO(Ultimate Beneficial Owner).
+
+                                        In general, it is common to provide the services of two nominee directors in addition to the name of one client, as it can be generally interpreted that the foundation does not have any scam or impure purpose and is operated under the supervision of one representative. Therefore, if you wish to use the services of all three board members as nominees, please provide the reasons for this.
+                                        Cost of nominee director service (1 year):
+                                        USD1,200 for 1 nominee / USD1,700 for 2 nominees / USD2,200 for 3 nominees
+                                    </TooltipContent>
+                                </Tooltip>
+                            </span>
+                            </Label>
+                            {nomineeDirectorList.map((nominee) => (
+                                <div key={nominee.id} className="flex flex-col gap-2">
+                                    <div className="flex items-start space-x-3">
+                                        <Checkbox
+                                            id={`nominee-${nominee.id}`}
+                                            checked={selectedNomiee.includes(nominee.id)}
+                                            onCheckedChange={() => handleNomineeChange(nominee.id)}
+                                        />
+                                        <Label className="font-normal" htmlFor={`nominee-${nominee.id}`} >
+                                            {nominee.value}
+                                        </Label>
+                                    </div>
+                                    {nominee.id === "other" && selectedNomiee.includes("other") && (
+                                        <Input
+                                            placeholder="Please specify"
+                                            value={otherNomiee}
+                                            onChange={(e) => setOtherNominee(e.target.value)}
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                        </div> */}
                     </div>
                 </div>
             </CardContent>

@@ -168,7 +168,7 @@ const BusinessInfoSg: React.FC = () => {
                     </aside>
                     <div className="w-3/4 ml-4">
                         <ShareholderDirectorForm />
-                        <div>
+                        <div className="space-y-2">
                             <Label className="text-base font-semibold flex items-center gap-2">
                                 {t('CompanyInformation.typeOfShares')}{" "}
                                 <span className="text-red-500 font-bold ml-1 flex">

@@ -156,6 +156,7 @@ export const companyDocManager = atomWithReset<CompanyDocManager[]>([]);
 export const serviceSelectionStateAtom = atomWithReset<ServiceSelectionState | null>(null);
 export const receiptUrl = atomWithReset("");
 export const assignedTo = atomWithReset("");
+export const checkedItems = atomWithReset<string[]>([]);
 // hong kong company incorporation Atom for state management
 export const companyIncorporationAtom = atom((get) => ({
   userId: '',
@@ -177,7 +178,8 @@ export const companyIncorporationAtom = atom((get) => ({
   serviceSelectionState: get(serviceSelectionStateAtom),
   companyDocs: get(companyDocManager),
   receiptUrl: get(receiptUrl),
-  assignedTo: get(assignedTo)
+  assignedTo: get(assignedTo),
+  checkedItems: get(checkedItems)
 }));
 
 
@@ -198,6 +200,8 @@ export const useResetAllForms = () => {
   const resetCompanyDocManager = useResetAtom(companyDocManager)
   const resetReceiptUrl = useResetAtom(receiptUrl)
   const resetAssignedTo = useResetAtom(assignedTo)
+  const resetCheckedItem = useResetAtom(checkedItems)
+  
 
   const resetAll = () => {
     resetApplicantInfo();
@@ -216,6 +220,7 @@ export const useResetAllForms = () => {
     resetCompanyDocManager()
     resetReceiptUrl()
     resetAssignedTo()
+    resetCheckedItem()
   };
 
   return resetAll;
@@ -244,6 +249,7 @@ export const updateCompanyIncorporationAtom = atom(
       companyDocs: typeof companyDocManager['init']
       receiptUrl: string;
       assignedTo: string
+      checkedItems: string[];
     }>
   ) => {
     if (updates.country) {
@@ -257,6 +263,9 @@ export const updateCompanyIncorporationAtom = atom(
     }
     if (updates.assignedTo) {
       set(assignedTo, updates.assignedTo);
+    }
+    if (updates.checkedItems) {
+      set(checkedItems, updates.checkedItems);
     }
     if (updates.companyDocs) {
       set(companyDocManager, updates.companyDocs);

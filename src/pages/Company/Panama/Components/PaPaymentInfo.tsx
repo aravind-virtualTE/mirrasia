@@ -7,9 +7,9 @@ import { paymentApi, type PaymentSession } from "@/lib/api/payment";
 import { PaymentConditions } from "../../payment/PaymentConditions";
 import { useAtom } from "jotai";
 import { useTranslation } from "react-i18next";
-import { sgFormWithResetAtom, sgPriceAtom } from "../SgState";
-import PaymentSGTimer from "./payment/PaymentTimerSg";
-import SgPaymentMethods from "./payment/SgPaymentMethods";
+import PaymentPaTimer from "./payment/PaymentTimerSg";
+import PaPaymentMethods from "./payment/PaPaymentMethods";
+import { paFormWithResetAtom ,paPriceAtom} from "../PaState";
 
 
 
@@ -19,8 +19,8 @@ const PaymentInformation: React.FC = () => {
     const [sessionId, setSessionId] = useState<PaymentSession['id']>('');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [formData, setFormData] = useAtom(sgFormWithResetAtom);
-    const [singporePrice,] = useAtom(sgPriceAtom)
+    const [formData, setFormData] = useAtom(paFormWithResetAtom);
+    const [panamaPrice,] = useAtom(paPriceAtom)
 
       useEffect(() => {
         const initializePaymentSession = async () => {
@@ -28,7 +28,7 @@ const PaymentInformation: React.FC = () => {
             setIsLoading(true);
             // console.log("formData",formData.id)
             // const docId = localStorage.getItem('companyRecordId');
-            const sessionData = await paymentApi.createSession(singporePrice, 'USD', `${formData._id}`, 'USA');
+            const sessionData = await paymentApi.createSession(panamaPrice, 'USD', `${formData._id}`, 'USA');
             const session = sessionData.session._id;
             setSessionId(session);
             // console.log("sessionId-->", session)
@@ -43,7 +43,7 @@ const PaymentInformation: React.FC = () => {
         const updateSession = async () => {
           try {
             setIsLoading(true);
-            await paymentApi.updateSession(formData.sessionId, singporePrice, 'USD');
+            await paymentApi.updateSession(formData.sessionId, panamaPrice, 'USD');
           } catch (err) {
             console.error('Payment session update failed:', err);
             setError('Failed to update payment session');
@@ -94,9 +94,9 @@ const PaymentInformation: React.FC = () => {
                     <CardTitle className="text-2xl font-bold text-primary">{t('payment.pInfo')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    <PaymentSGTimer sessionId={sessionId} />
+                    <PaymentPaTimer sessionId={sessionId} />
                     <Separator />
-                    <SgPaymentMethods sessionId={sessionId} amount={singporePrice} id={formData._id} />
+                    <PaPaymentMethods sessionId={sessionId} amount={panamaPrice} id={formData._id} />
                     <Separator />
                     <PaymentConditions />
                     <Separator />

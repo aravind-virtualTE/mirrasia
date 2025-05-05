@@ -75,7 +75,8 @@
     "us": "United States",
     "sg": "Singapore",
     "uk": "United Kingdom",
-    "pa": "Panama"
+    "pa": "Panama",
+    "pafn": "Panama Foundation"
   },
   "compFormation":{
     "appInfo":"Applicant\ninformation",

@@ -66,6 +66,7 @@ export interface UsaFormData {
   incorporationDate: string
   serviceAgreementConsent: boolean
   assignedTo: string
+  checkedItems : string[];
 }
 
 const initialFormState: UsaFormData = {
@@ -119,7 +120,8 @@ const initialFormState: UsaFormData = {
   status: "Pending",
   incorporationDate:"",
   serviceAgreementConsent:false,
-  assignedTo : ""
+  assignedTo : "",
+  checkedItems : []
 };
 
 // Create the base atom

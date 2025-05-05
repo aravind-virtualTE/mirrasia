@@ -18,10 +18,26 @@ export interface UsaFormData {
   noOfShareholders: string;
   noOfOfficers: string;
   shareHolders: {
-    [x: string]: any;
+    // [x: string]: any;
     name: string;
     email: string;
     phone: string;
+    ownershipRate: number;
+    role:{
+        value: string,
+        id: string
+    };
+    isDirector: {
+      value: string,
+      id: string
+    }
+    isLegalPerson: {
+      value: string,
+      id: string
+    }
+  }[];
+  legalDirectors: {
+    [x: string]: any;
     ownershipRate: number;
     isDirector: {
       value: string,
@@ -42,6 +58,7 @@ export interface UsaFormData {
   paymentId: string
   status: string
   incorporationDate: string
+  typeOfShare:string[]
   serviceAgreementConsent: boolean
   assignedTo: string
   shareCapitalPayment?:  {
@@ -75,10 +92,12 @@ const initialFormState: UsaFormData = {
   noOfShareholders: '',
   noOfOfficers: '',
   shareHolders: [],
+  legalDirectors : [],
   designatedContact: '',
   accountingDataAddress: '',
   isTermsAndConditionsAccepted: '',
   serviceItemsSelected: [],
+  typeOfShare:[],
   isDisabled : false,
   receiptUrl : "",
   sessionId: '',

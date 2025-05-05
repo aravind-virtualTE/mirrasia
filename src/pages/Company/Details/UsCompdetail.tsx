@@ -29,6 +29,8 @@ import { User } from '@/components/userList/UsersList';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
+import { usChecklistItems } from './detailConstants';
+import Checklist from './DocChecklist';
 
 
 const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
@@ -48,7 +50,6 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   });
   const navigate = useNavigate();
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
-
 
   useEffect(() => {
     async function getUsData() {
@@ -162,7 +163,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     // Shareholder and Director Information Section
     if (formData.shareHolders) {
       const shareholderData = formData.shareHolders;
-      console.log("shareholderDat", shareholderData)
+      // console.log("shareholderDat", shareholderData)
       sections.push({
         title: 'Shareholder and Director Information',
         data: {
@@ -236,7 +237,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         isDisabled: formData.isDisabled,
         incorporationDate: formData.incorporationDate,
         country: 'US',
-        companyName: formData.companyName
+        companyName: formData.companyName,
+        checkedItems: formData.checkedItems
       },
       session: {
         id: session._id,
@@ -477,8 +479,20 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     );
   };
 
+  const handleCheckboxChange = (itemId: string, isChecked: boolean) => {
+    if (isChecked) {
+      // setCheckedItems([...checkedItems, itemId]);
+      const updatedCompany = { ...formData, checkedItems: [...formData.checkedItems ?? [], itemId] };
+      setFormData(updatedCompany);
+    } else {
+      // setCheckedItems(checkedItems.filter((id) => id !== itemId));
+      const updatedCompany = { ...formData, checkedItems: formData.checkedItems?.filter((id) => id !== itemId) };
+      setFormData(updatedCompany);
+    }
+  };
+
   return (
-    <Tabs defaultValue="details" className="flex flex-col w-full max-w-5xl mx-auto">
+    <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
         <TabsTrigger
           value="details"
@@ -512,12 +526,36 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       <TabsContent value="details" className="p-6">
         <div className="space-y-4">
           {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
-          {user.role !== 'user' && <TodoApp id={id} name={formData.companyName[0]} />}
-          <div className="flex gap-x-8">
-            {user.role !== 'user' && <AssignAdmin />}
-            <Button onClick={() => navigate(`/company-documents/US/${id}`)} size="sm" className="flex items-center gap-2">
-              Company Docs
-            </Button>
+          <div className="grid grid-cols-12 gap-6">
+            {/* Left Side - Checklist */}
+            {user.role !== 'user' && <div className="col-span-4 border rounded-md p-4">
+              <h3 className="text-lg font-semibold mb-2">Check List:</h3>
+              <Checklist
+                items={usChecklistItems}
+                checkedItems={formData.checkedItems}
+                onCheckedChange={handleCheckboxChange}
+              />
+            </div>}
+
+            {/* Right Side - TodoApp on top, bottom buttons */}
+            <div className="col-span-8 flex flex-col justify-between">
+              {user.role !== 'user' && (
+                <div className="mb-4">
+                  <TodoApp id={id} name={formData.companyName[0]} />
+                </div>
+              )}
+
+              <div className="flex gap-4 mt-auto">
+                {user.role !== 'user' && <AssignAdmin />}
+                <Button
+                  onClick={() => navigate(`/company-documents/US/${id}`)}
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  Company Docs
+                </Button>
+              </div>
+            </div>
           </div>
           {sections.map((section) => (
             <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
