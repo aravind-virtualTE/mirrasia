@@ -57,3 +57,14 @@ export  const hkChecklistItems = [
     { id: "send-incorporation-docs", label: "Send out the incorporation docs to client by email" },
     { id: "open-bank-account", label: "Proceed with opening the bank account (if the client requested)" },
   ];
+
+  export interface ChecklistCheck {
+    id: string;
+    checkedBy: string; 
+    checkedAt: string;
+  }
+  export interface ChecklistItem {
+    id: string;
+    label: string;
+  }
+  

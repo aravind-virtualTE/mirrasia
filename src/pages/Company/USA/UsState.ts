@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { atom } from 'jotai';
+import { ChecklistCheck } from '../Details/detailConstants';
 export interface UsaFormData {
   _id: string;
   email: string;
@@ -66,7 +67,7 @@ export interface UsaFormData {
   incorporationDate: string
   serviceAgreementConsent: boolean
   assignedTo: string
-  checkedItems : string[];
+  checkedItems : ChecklistCheck[];
 }
 
 const initialFormState: UsaFormData = {

@@ -1,38 +1,54 @@
-import React from "react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
+import Checklist from "./CheckList";
+import { ChecklistCheck, ChecklistItem } from "./detailConstants";
 
-interface ChecklistItem {
-  id: string;
-  label: string;
-}
-
-interface ChecklistProps {
+interface ChecklistHistoryProps {
   items: ChecklistItem[];
-  checkedItems: string[];
+  checkedItems: ChecklistCheck[];
   onCheckedChange: (itemId: string, isChecked: boolean) => void;
+  currentUserRole: "user" | "admin" | "master";
 }
 
-const Checklist: React.FC<ChecklistProps> = ({ items, checkedItems= [], onCheckedChange }) => {
+const ChecklistHistory: React.FC<ChecklistHistoryProps> = ({
+  items,
+  checkedItems,
+  onCheckedChange,
+  currentUserRole,
+}) => {
+  const [activeTab, setActiveTab] = useState<string>("incorporation");
+
   return (
-    <ul className="space-y-2">
-      {items.map((item) => (
-        <li key={item.id} className="flex items-start gap-2 p-0 border-b border-gray-100 dark:border-gray-700">
-          <Checkbox
-            id={item.id}
-            checked={checkedItems.includes(item.id)}
-            onCheckedChange={(checked) => onCheckedChange(item.id, Boolean(checked))}
+    <div className="container mx-auto px-4 py-2">
+      <h3 className="text-lg font-semibold">Check List:</h3>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <div className="flex items-center justify-between mb-6">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="incorporation">Incorporation</TabsTrigger>
+            <TabsTrigger value="renew">Renew</TabsTrigger>
+          </TabsList>
+        </div>
+
+        <TabsContent value="incorporation">
+          <Checklist
+            items={items}
+            checkedItems={checkedItems}
+            onCheckedChange={onCheckedChange}
+            currentUserRole={currentUserRole}
           />
-          <Label
-            htmlFor={item.id}
-            className={checkedItems.includes(item.id) ? "line-through text-gray-500" : "cursor-pointer"}
-          >
-            {item.label}
-          </Label>
-        </li>
-      ))}
-    </ul>
+        </TabsContent>
+        {/* You can add Renew tab rendering logic here in future if needed */}
+      </Tabs>
+    </div>
   );
 };
 
-export default Checklist;
+export default ChecklistHistory;

@@ -30,7 +30,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import { usChecklistItems } from './detailConstants';
-import Checklist from './DocChecklist';
+import ChecklistHistory from './DocChecklist';
 
 
 const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
@@ -479,15 +479,17 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     );
   };
 
-  const handleCheckboxChange = (itemId: string, isChecked: boolean) => {
+  const handleCheckboxChange = (itemId: string, isChecked: boolean, currentUserId: string) => {
+    const now = new Date().toISOString();
     if (isChecked) {
-      // setCheckedItems([...checkedItems, itemId]);
-      const updatedCompany = { ...formData, checkedItems: [...formData.checkedItems ?? [], itemId] };
-      setFormData(updatedCompany);
+      const updatedCheckedItems = [
+        ...formData.checkedItems,
+        { id: itemId, checkedBy: currentUserId, checkedAt: now }
+      ];
+      setFormData({ ...formData, checkedItems: updatedCheckedItems });
     } else {
-      // setCheckedItems(checkedItems.filter((id) => id !== itemId));
-      const updatedCompany = { ...formData, checkedItems: formData.checkedItems?.filter((id) => id !== itemId) };
-      setFormData(updatedCompany);
+      const updatedCheckedItems = formData.checkedItems.filter(item => item.id !== itemId);
+      setFormData({ ...formData, checkedItems: updatedCheckedItems });
     }
   };
 
@@ -522,40 +524,31 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
             Project
           </TabsTrigger>
         )}
+        <TabsTrigger
+          value="Checklist"
+          className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+        >
+          Checklist
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="details" className="p-6">
         <div className="space-y-4">
           {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
-          <div className="grid grid-cols-12 gap-6">
-            {/* Left Side - Checklist */}
-            {user.role !== 'user' && <div className="col-span-4 border rounded-md p-4">
-              <h3 className="text-lg font-semibold mb-2">Check List:</h3>
-              <Checklist
-                items={usChecklistItems}
-                checkedItems={formData.checkedItems}
-                onCheckedChange={handleCheckboxChange}
-              />
-            </div>}
-
-            {/* Right Side - TodoApp on top, bottom buttons */}
-            <div className="col-span-8 flex flex-col justify-between">
-              {user.role !== 'user' && (
-                <div className="mb-4">
-                  <TodoApp id={id} name={formData.companyName[0]} />
-                </div>
-              )}
-
-              <div className="flex gap-4 mt-auto">
-                {user.role !== 'user' && <AssignAdmin />}
-                <Button
-                  onClick={() => navigate(`/company-documents/US/${id}`)}
-                  size="sm"
-                  className="flex items-center gap-2"
-                >
-                  Company Docs
-                </Button>
-              </div>
+          {user.role !== 'user' && (
+            <div className="mb-4">
+              <TodoApp id={id} name={formData.companyName[0]} />
             </div>
+          )}
+
+          <div className="flex gap-4 mt-auto">
+            {user.role !== 'user' && <AssignAdmin />}
+            <Button
+              onClick={() => navigate(`/company-documents/US/${id}`)}
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              Company Docs
+            </Button>
           </div>
           {sections.map((section) => (
             <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
@@ -627,6 +620,14 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         <div className="space-y-6">
           <AdminProject id={id} />
         </div>
+      </TabsContent>
+      <TabsContent value="Checklist" className="p-6">
+        <ChecklistHistory
+          items={usChecklistItems}
+          checkedItems={formData.checkedItems}
+          onCheckedChange={(itemId, checked) => handleCheckboxChange(itemId, checked, user.id)}
+          currentUserRole={user.role}
+        />
       </TabsContent>
     </Tabs>
   );
