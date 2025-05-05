@@ -14,363 +14,598 @@ import { useTranslation } from "react-i18next";
 import { paFormWithResetAtom } from '../PaState';
 
 interface ShareholderDirectorProps {
-  name: string;
-  email: string;
-  phone: string;
-  ownershipRate: number;
-  isDirector: {
-    value: string,
-    id: string
-  };
-  isLegalPerson: {
-    value: string,
-    id: string
-  };
-  onDelete: () => void;
-  onUpdate: (updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => void;
-  isRemovable: boolean;
+    name: string;
+    email: string;
+    phone: string;
+    ownershipRate: number;
+    isDirector: {
+        value: string,
+        id: string
+    };
+    isLegalPerson: {
+        value: string,
+        id: string
+    };
+    role: {
+        id: string;
+        value: string;
+    };
+    onDelete: () => void;
+    onUpdate: (updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => void;
+    isRemovable: boolean;
+}
+interface LegalDirectorProps {
+    ownershipRate: number;
+    isDirector: {
+        value: string,
+        id: string
+    };
+    isLegalPerson: {
+        value: string,
+        id: string
+    };
+    onDelete: () => void;
+    onUpdate: (updates: Partial<Omit<LegalDirectorProps, 'onDelete' | 'onUpdate'>>) => void;
+    isRemovable: boolean;
 }
 
+const roleOptions = [
+    { id: 'representative', value: 'Representative' },
+    { id: 'financial_officer', value: 'Financial Officer' },
+    { id: 'secretary', value: 'Secretary' },
+];
+
 const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
-  name,
-  email,
-  phone,
-  ownershipRate,
-  isDirector,
-  isLegalPerson,
-  onDelete,
-  onUpdate,
-  isRemovable,
+    name,
+    email,
+    phone,
+    ownershipRate,
+    isDirector,
+    isLegalPerson,
+    onDelete,
+    onUpdate,
+    role,
+    isRemovable,
 }) => {
-  // Validation states
-  const [emailError, setEmailError] = useState('');
-  const [phoneError, setPhoneError] = useState('');
-  const { t } = useTranslation();
-  // Email validation
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      setEmailError('Email is required');
-      return false;
-    }
-    if (!emailRegex.test(email)) {
-      setEmailError('Please enter a valid email address');
-      return false;
-    }
-    setEmailError('');
-    return true;
-  };
+    const [emailError, setEmailError] = useState('');
+    const [phoneError, setPhoneError] = useState('');
+    const { t } = useTranslation();
+    const validateEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email) {
+            setEmailError('Email is required');
+            return false;
+        }
+        if (!emailRegex.test(email)) {
+            setEmailError('Please enter a valid email address');
+            return false;
+        }
+        setEmailError('');
+        return true;
+    };
+    const validatePhone = (phone: string) => {
+        const phoneRegex = /^\+?[\d\s-]{10,}$/;
+        if (!phone) {
+            setPhoneError('Phone number is required');
+            return false;
+        }
+        if (!phoneRegex.test(phone)) {
+            setPhoneError('Please enter a valid phone number');
+            return false;
+        }
+        setPhoneError('');
+        return true;
+    };
 
-  // Phone validation
-  const validatePhone = (phone: string) => {
-    const phoneRegex = /^\+?[\d\s-]{10,}$/;
-    if (!phone) {
-      setPhoneError('Phone number is required');
-      return false;
-    }
-    if (!phoneRegex.test(phone)) {
-      setPhoneError('Please enter a valid phone number');
-      return false;
-    }
-    setPhoneError('');
-    return true;
-  };
+    const yesNoOptions = [
+        { id: "yes", value: "AmlCdd.options.yes" },
+        { id: "no", value: "AmlCdd.options.no" },
+    ];
 
-  const yesNoOptions = [
-    { id: "yes", value: "AmlCdd.options.yes" },
-    { id: "no", value: "AmlCdd.options.no" },
-  ];
+    return (
+        <Card className="mb-4 pt-4">
+            <CardContent className="grid grid-cols-3 gap-4">
+                <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
+                    <Label className="font-medium">{t('CompanyInformation.shareDirName')}</Label>
+                    <Input
+                        type="text"
+                        className="input col-span-2"
+                        placeholder="Name on passport/official documents"
+                        value={name}
+                        onChange={(e) => onUpdate({ name: e.target.value })}
+                    />
+                    <Label className="font-medium">{t('CompanyInformation.ownerShpRte')}</Label>
+                    <Input
+                        type="number"
+                        className="input"
+                        min={0}
+                        max={100}
+                        step={0.01}
+                        value={ownershipRate}
+                        onChange={(e) => onUpdate({ ownershipRate: parseFloat(e.target.value) })}
+                    />
+                </div>
 
-  return (
-    <Card className="mb-4 pt-4">
-      <CardContent className="grid grid-cols-3 gap-4">
-        <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">{t('CompanyInformation.shareDirName')}</Label>
-          <Input
-            type="text"
-            className="input col-span-2"
-            placeholder="Name on passport/official documents"
-            value={name}
-            onChange={(e) => onUpdate({ name: e.target.value })}
-          />
-          <Label className="font-medium">{t('CompanyInformation.ownerShpRte')}</Label>
-          <Input
-            type="number"
-            className="input"
-            min={0}
-            max={100}
-            step={0.01}
-            value={ownershipRate}
-            onChange={(e) => onUpdate({ ownershipRate: parseFloat(e.target.value) })}
-          />
-        </div>
+                <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
+                    <Label className="font-medium">{t('ApplicantInfoForm.email')}:</Label>
+                    <div className="col-span-2">
+                        <Input
+                            type="email"
+                            className={`input w-full ${emailError ? 'border-red-500' : ''}`}
+                            placeholder="email@example.com"
+                            value={email}
+                            onChange={(e) => {
+                                const newEmail = e.target.value;
+                                validateEmail(newEmail);
+                                onUpdate({ email: newEmail });
+                            }}
+                        />
+                        {emailError && <span className="text-red-500 text-sm">{emailError}</span>}
+                    </div>
 
-        <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">{t('ApplicantInfoForm.email')}:</Label>
-          <div className="col-span-2">
-            <Input
-              type="email"
-              className={`input w-full ${emailError ? 'border-red-500' : ''}`}
-              placeholder="email@example.com"
-              value={email}
-              onChange={(e) => {
-                const newEmail = e.target.value;
-                validateEmail(newEmail);
-                onUpdate({ email: newEmail });
-              }}
-            />
-            {emailError && <span className="text-red-500 text-sm">{emailError}</span>}
-          </div>
+                    <Label className="font-medium">{t('ApplicantInfoForm.phoneNum')}:</Label>
+                    <div>
+                        <Input
+                            type="tel"
+                            className={`input w-full ${phoneError ? 'border-red-500' : ''}`}
+                            placeholder="+1234567890"
+                            value={phone}
+                            onChange={(e) => {
+                                const newPhone = e.target.value;
+                                validatePhone(newPhone);
+                                onUpdate({ phone: newPhone });
+                            }}
+                        />
+                        {phoneError && <span className="text-red-500 text-sm">{phoneError}</span>}
+                    </div>
+                </div>
 
-          <Label className="font-medium">{t('ApplicantInfoForm.phoneNum')}:</Label>
-          <div>
-            <Input
-              type="tel"
-              className={`input w-full ${phoneError ? 'border-red-500' : ''}`}
-              placeholder="+1234567890"
-              value={phone}
-              onChange={(e) => {
-                const newPhone = e.target.value;
-                validatePhone(newPhone);
-                onUpdate({ phone: newPhone });
-              }}
-            />
-            {phoneError && <span className="text-red-500 text-sm">{phoneError}</span>}
-          </div>
-        </div>
+                <div className="col-span-3 grid grid-cols-[2fr_2fr_2fr_auto] gap-4 items-center">
+                    {/* Role Select */}
+                    <div>
+                        <Label className="font-medium">Role</Label>
+                        <Select
+                            value={role?.id || ''}
+                            onValueChange={(selectedId) => {
+                                const selectedRole = roleOptions.find(role => role.id === selectedId);
+                                if (selectedRole) {
+                                    onUpdate({ role: selectedRole });
+                                }
+                            }}
+                        >
+                            <SelectTrigger className="input">
+                                <SelectValue placeholder="Select role">
+                                    {role ? t(role.value) : ''}
+                                </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {roleOptions.map(role => (
+                                    <SelectItem key={role.id} value={role.id}>
+                                        {t(role.value)}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-        <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
-          <Select
-            value={isDirector.id}
-            onValueChange={(selectedId) => {
-              const selectedOption = yesNoOptions.find(opt => opt.id === selectedId);
-              if (selectedOption) {
-                onUpdate({ isDirector: selectedOption });
-              }
-            }}
-          >
-            <SelectTrigger className="input">
-              <SelectValue>{t(isDirector.value)}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {yesNoOptions.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  {t(option.value)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                    {/* Is Director */}
+                    <div>
+                        <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
+                        <Select
+                            value={isDirector.id}
+                            onValueChange={(selectedId) => {
+                                const selectedOption = yesNoOptions.find(opt => opt.id === selectedId);
+                                if (selectedOption) {
+                                    onUpdate({ isDirector: selectedOption });
+                                }
+                            }}
+                        >
+                            <SelectTrigger className="input">
+                                <SelectValue>{t(isDirector.value)}</SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {yesNoOptions.map((option) => (
+                                    <SelectItem key={option.id} value={option.id}>
+                                        {t(option.value)}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-          <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
-          <Select
-            value={isLegalPerson.id}
-            onValueChange={(selectedId) => {
-              const selectedOption = yesNoOptions.find(opt => opt.id === selectedId);
-              if (selectedOption) {
-                onUpdate({ isLegalPerson: selectedOption });
-              }
-            }}
-          >
-            <SelectTrigger className="input">
-              <SelectValue>{t(isLegalPerson.value)}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {yesNoOptions.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  {t(option.value)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                    {/* Is Legal Person */}
+                    <div>
+                        <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
+                        <Select
+                            value={isLegalPerson.id}
+                            onValueChange={(selectedId) => {
+                                const selectedOption = yesNoOptions.find(opt => opt.id === selectedId);
+                                if (selectedOption) {
+                                    onUpdate({ isLegalPerson: selectedOption });
+                                }
+                            }}
+                        >
+                            <SelectTrigger className="input">
+                                <SelectValue>{t(isLegalPerson.value)}</SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {yesNoOptions.map((option) => (
+                                    <SelectItem key={option.id} value={option.id}>
+                                        {t(option.value)}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-          {isRemovable && (
-            <button
-              className="btn btn-icon text-red-500 hover:text-red-700"
-              onClick={onDelete}
-            >
-              <Trash2 />
-            </button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
+                    {/* Trash icon */}
+                    {isRemovable && (
+                        <div className="flex justify-end pt-6">
+                            <button
+                                className="btn btn-icon text-red-500 hover:text-red-700"
+                                onClick={onDelete}
+                            >
+                                <Trash2 />
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+            </CardContent>
+        </Card>
+    );
+};
+
+const LegalDirectorList: React.FC<LegalDirectorProps> = ({
+    ownershipRate,
+    isDirector,
+    isLegalPerson,
+    onDelete,
+    onUpdate,
+    isRemovable,
+}) => {
+    const { t } = useTranslation();
+
+    const yesNoOptions = [
+        { id: "yes", value: "AmlCdd.options.yes" },
+        { id: "no", value: "AmlCdd.options.no" },
+    ];
+
+    return (
+        <Card className="mb-4">
+            <CardContent className="grid grid-cols-[2fr_2fr_2fr_2fr_auto] gap-4 items-end py-4">
+                {/* Ownership Rate */}
+                <div>
+                    <Label className="font-medium">{t('CompanyInformation.ownerShpRte')}</Label>
+                    <Input
+                        type="number"
+                        min={0}
+                        max={100}
+                        step={0.01}
+                        className="input"
+                        value={ownershipRate}
+                        onChange={(e) => onUpdate({ ownershipRate: parseFloat(e.target.value) })}
+                    />
+                </div>
+
+                {/* Is Director */}
+                <div>
+                    <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
+                    <Select
+                        value={isDirector.id}
+                        onValueChange={(selectedId) => {
+                            const selectedOption = yesNoOptions.find(opt => opt.id === selectedId);
+                            if (selectedOption) {
+                                onUpdate({ isDirector: selectedOption });
+                            }
+                        }}
+                    >
+                        <SelectTrigger className="input">
+                            <SelectValue>{t(isDirector.value)}</SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                            {yesNoOptions.map((option) => (
+                                <SelectItem key={option.id} value={option.id}>
+                                    {t(option.value)}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                {/* Is Legal Person */}
+                <div>
+                    <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
+                    <Select
+                        value={isLegalPerson.id}
+                        onValueChange={(selectedId) => {
+                            const selectedOption = yesNoOptions.find(opt => opt.id === selectedId);
+                            if (selectedOption) {
+                                onUpdate({ isLegalPerson: selectedOption });
+                            }
+                        }}
+                    >
+                        <SelectTrigger className="input">
+                            <SelectValue>{t(isLegalPerson.value)}</SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                            {yesNoOptions.map((option) => (
+                                <SelectItem key={option.id} value={option.id}>
+                                    {t(option.value)}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                {/* Delete Button */}
+                {isRemovable && (
+                    <div className="flex items-end justify-end pb-[6px]">
+                        <button
+                            className="btn btn-icon text-red-500 hover:text-red-700"
+                            onClick={onDelete}
+                        >
+                            <Trash2 />
+                        </button>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+    );
 };
 
 const ShareholderDirectorFormPa: React.FC = () => {
-  const { t } = useTranslation()
-  const [formData, setFormData] = useAtom(paFormWithResetAtom);
-  const [shareholders, setShareholders] = useState<ShareholderDirectorProps[]>([
-    {
-      name: '',
-      email: '',
-      phone: '',
-      ownershipRate: 0,
-      isDirector: { id: "no", value: t("AmlCdd.options.no") },
-      isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
-      onDelete: () => { },
-      onUpdate: () => { },
-      isRemovable: false,
-    },
-  ]);
-  const [totalOwnership, setTotalOwnership] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast()
-
-
-  useEffect(() => {
-    if (formData.shareHolders && formData.shareHolders.length > 0) {
-      const hydratedShareholders = formData.shareHolders.map((shareholder, index) => ({
-        ...shareholder,
-        onDelete: () => { },
-        onUpdate: () => { },
-        isRemovable: index !== 0,
-      }));
-      setShareholders(hydratedShareholders);
-    }
-  }, []);
-
-  useEffect(() => {
-    const filteredArray = shareholders.map(obj => ({
-      name: obj.name,
-      email: obj.email,
-      phone: obj.phone,
-      ownershipRate: obj.ownershipRate,
-      isDirector: obj.isDirector,
-      isLegalPerson: obj.isLegalPerson
-    }));
-    setFormData({ ...formData, shareHolders: filteredArray });
-  }, [shareholders, setFormData]);
-
-  useEffect(() => {
-    const total = shareholders.reduce((sum, shareholder) => sum + shareholder.ownershipRate, 0);
-    setTotalOwnership(total);
-  }, [shareholders]);
-
-  const addShareholder = () => {
-    setShareholders([
-      ...shareholders,
-      {
-        name: '',
-        email: '',
-        phone: '',
-        ownershipRate: 0,
-        isDirector: { id: "no", value: t("AmlCdd.options.no") },
-        isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
-        onDelete: () => { },
-        onUpdate: () => { },
-        isRemovable: true,
-      },
+    const { t } = useTranslation()
+    const [formData, setFormData] = useAtom(paFormWithResetAtom);
+    const [shareholders, setShareholders] = useState<ShareholderDirectorProps[]>([
+        {
+            name: '',
+            email: '',
+            phone: '',
+            ownershipRate: 0,
+            role: { id: '', value: '' },
+            isDirector: { id: "no", value: t("AmlCdd.options.no") },
+            isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
+            onDelete: () => { },
+            onUpdate: () => { },
+            isRemovable: false,
+        },
     ]);
-  };
+    const [legalDirectors, setLegalDirectors] = useState<LegalDirectorProps[]>([
+        {
+            ownershipRate: 0,
+            isDirector: { id: "no", value: t("AmlCdd.options.no") },
+            isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
+            onDelete: () => { },
+            onUpdate: () => { },
+            isRemovable: false,
+        },
+    ]);
+    const [totalOwnership, setTotalOwnership] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+    const { toast } = useToast()
 
-  const deleteShareholder = (index: number) => {
-    if (shareholders.length > 1) {
-      const newShareholders = [...shareholders];
-      newShareholders.splice(index, 1);
-      setShareholders(newShareholders);
-    }
-  };
 
-  const updateShareholder = (index: number, updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => {
-    const newShareholders = [...shareholders];
-    newShareholders[index] = { ...newShareholders[index], ...updates };
-    setShareholders(newShareholders);
-  };
-
-  const sendMailFunction = async () => {
-
-    try {
-      setIsLoading(true);
-      const extractedData = shareholders.map(item => {
-        const { name, email } = item;
-
-        if (!isValidEmail(email)) {
-          alert(`Invalid email format for ${name}: ${email}`);
+    useEffect(() => {
+        if (formData.shareHolders && formData.shareHolders.length > 0) {
+            const hydratedShareholders = formData.shareHolders.map((shareholder, index) => ({
+                ...shareholder,
+                onDelete: () => { },
+                onUpdate: () => { },
+                isRemovable: index !== 0,
+            }));
+            setShareholders(hydratedShareholders);
         }
-        return { name, email };
-      });
-      const docId = localStorage.getItem('companyRecordId');
-      const payload = { _id: docId, inviteData: extractedData, country: 'US' };
-      const response = await sendInviteToShDir(payload);
-      if (response.summary.successful > 0) {
-        toast({
-          title: 'Success',
-          description: `Successfully sent invitation mail to ${response.summary.successful} people`,
-        })
-      }
-      if (response.summary.alreadyExists > 0) {
-        toast({
-          title: 'Success',
-          description: `Some Users Already Exist`,
-        })
-      }
-      if (response.summary.failed > 0) {
-        toast({
-          title: 'Failed',
-          description: `Some Invitations Failed`,
-        })
-      }
-      setIsLoading(false);
+        if (formData.legalDirectors && formData.legalDirectors.length > 0) {
+            const hydratedShareholders = formData.legalDirectors.map((shareholder, index) => ({
+                ...shareholder,
+                onDelete: () => { },
+                onUpdate: () => { },
+                isRemovable: index !== 0,
+            }));
+            setLegalDirectors(hydratedShareholders);
+        }
+    }, []);
 
-    } catch (e) {
-      console.log(e)
+    useEffect(() => {
+        const filteredArray = shareholders.map(obj => ({
+            name: obj.name,
+            email: obj.email,
+            phone: obj.phone,
+            role: obj.role,
+            ownershipRate: obj.ownershipRate,
+            isDirector: obj.isDirector,
+            isLegalPerson: obj.isLegalPerson
+        }));
+        setFormData({ ...formData, shareHolders: filteredArray });
+    }, [shareholders, setFormData]);
+
+    useEffect(() => {
+        const filteredArray = legalDirectors.map(obj => ({
+            ownershipRate: obj.ownershipRate,
+            isDirector: obj.isDirector,
+            isLegalPerson: obj.isLegalPerson
+        }));
+        setFormData({ ...formData, legalDirectors: filteredArray });
+    }, [legalDirectors, setFormData]);
+
+    useEffect(() => {
+        const total = shareholders.reduce((sum, shareholder) => sum + shareholder.ownershipRate, 0) + legalDirectors.reduce((sum, legalDirector) => sum + legalDirector.ownershipRate, 0);
+        setTotalOwnership(total);
+    }, [shareholders,legalDirectors]);
+
+    const addShareholder = () => {
+        setShareholders([
+            ...shareholders,
+            {
+                name: '',
+                email: '',
+                phone: '',
+                role: { id: '', value: '' },
+                ownershipRate: 0,
+                isDirector: { id: "no", value: t("AmlCdd.options.no") },
+                isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
+                onDelete: () => { },
+                onUpdate: () => { },
+                isRemovable: true,
+            },
+        ]);
+    };
+
+    const deleteShareholder = (index: number) => {
+        if (shareholders.length > 1) {
+            const newShareholders = [...shareholders];
+            newShareholders.splice(index, 1);
+            setShareholders(newShareholders);
+        }
+    };
+
+    const updateShareholder = (index: number, updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => {
+        const newShareholders = [...shareholders];
+        newShareholders[index] = { ...newShareholders[index], ...updates };
+        setShareholders(newShareholders);
+    };
+
+    const sendMailFunction = async () => {
+
+        try {
+            setIsLoading(true);
+            const extractedData = shareholders.map(item => {
+                const { name, email } = item;
+
+                if (!isValidEmail(email)) {
+                    alert(`Invalid email format for ${name}: ${email}`);
+                }
+                return { name, email };
+            });
+            const docId = localStorage.getItem('companyRecordId');
+            const payload = { _id: docId, inviteData: extractedData, country: 'PA' };
+            const response = await sendInviteToShDir(payload);
+            if (response.summary.successful > 0) {
+                toast({
+                    title: 'Success',
+                    description: `Successfully sent invitation mail to ${response.summary.successful} people`,
+                })
+            }
+            if (response.summary.alreadyExists > 0) {
+                toast({
+                    title: 'Success',
+                    description: `Some Users Already Exist`,
+                })
+            }
+            if (response.summary.failed > 0) {
+                toast({
+                    title: 'Failed',
+                    description: `Some Invitations Failed`,
+                })
+            }
+            setIsLoading(false);
+
+        } catch (e) {
+            console.log(e)
+        }
     }
-  }
-  return (
-    <div className="flex flex-col">
-      {totalOwnership === 0 && (
-        <div className="text-red-500 mb-4 text-center">
-          {t('usa.bInfo.shrldSection.ownerShp0')}
+
+    const addLegalDirector = () => {
+        setLegalDirectors([
+            ...legalDirectors,
+            {
+                ownershipRate: 0,
+                isDirector: { id: "no", value: t("AmlCdd.options.no") },
+                isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
+                onDelete: () => { },
+                onUpdate: () => { },
+                isRemovable: true,
+            },
+        ]);
+    };
+
+    const deleteLegalDirector = (index: number) => {
+        if (legalDirectors.length > 1) {
+            const newShareholders = [...legalDirectors];
+            newShareholders.splice(index, 1);
+            setLegalDirectors(newShareholders);
+        }
+    };
+
+    const updateLegalDirector = (index: number, updates: Partial<Omit<LegalDirectorProps, 'onDelete' | 'onUpdate'>>) => {
+        const newLegalDirector = [...legalDirectors];
+        newLegalDirector[index] = { ...newLegalDirector[index], ...updates };
+        // console.log("newLegalDirector--->", newLegalDirector)
+        setLegalDirectors(newLegalDirector);
+    };
+    return (
+        <div className="flex flex-col">
+            {totalOwnership === 0 && (
+                <div className="text-red-500 mb-4 text-center">
+                    {t('usa.bInfo.shrldSection.ownerShp0')}
+                </div>
+            )}
+            {totalOwnership > 0 && totalOwnership < 100 && (
+                <div className="text-red-500 mb-4 text-center">
+                    {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%
+                </div>
+            )}
+            {totalOwnership === 100 && (
+                <div className="text-green-600 font-medium mb-4 text-center">
+                    ✅{t('usa.bInfo.shrldSection.ownerShip100')}
+                </div>
+            )}
+            {totalOwnership > 100 && (
+                <div className="text-red-500 mb-4 text-center">
+                    {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%
+                </div>
+            )}
+            <div>
+                {shareholders.map((shareholder, index) => (
+                    <ShareholderDirector
+                        key={index}
+                        {...shareholder}
+                        onDelete={() => deleteShareholder(index)}
+                        onUpdate={(updates) => updateShareholder(index, updates)}
+                    />
+                ))}
+            </div>
+            <div className="flex justify-around mt-0">
+                <Button onClick={sendMailFunction}
+                    disabled={isLoading}
+                    className="flex items-center"
+                    aria-busy={isLoading}
+                    aria-live="polite"
+                >{isLoading ? (
+                    <>
+                        <CustomLoader />
+                        <span className="ml-2">Processing...</span>
+                    </>
+                ) : (<span>{t("CompanyInformation.sendInvitation")}</span>)}</Button>
+                <Button
+                    className="btn btn-primary w-fit"
+                    onClick={addShareholder}
+                >
+                    {t('CompanyInformation.addShldrDir')}
+                </Button>
+            </div>
+            <div className="relative mt-2">
+                <div className="absolute top-0 right-0 mt-2 mr-2">
+                    <Button
+                        className="btn btn-primary"
+                        onClick={addLegalDirector}
+                    >
+                        Add Legal Director
+                    </Button>
+                </div>
+
+                {legalDirectors.map((shareholder, index) => (
+                    <LegalDirectorList
+                        key={index}
+                        {...shareholder}
+                        onDelete={() => deleteLegalDirector(index)}
+                        onUpdate={(updates) => updateLegalDirector(index, updates)}
+                    />
+                ))}
+            </div>
         </div>
-      )}
-      {totalOwnership > 0 && totalOwnership < 100 && (
-        <div className="text-red-500 mb-4 text-center">
-          {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%
-        </div>
-      )}
-      {totalOwnership === 100 && (
-        <div className="text-green-600 font-medium mb-4 text-center">
-          ✅{t('usa.bInfo.shrldSection.ownerShip100')}
-        </div>
-      )}
-      {totalOwnership > 100 && (
-        <div className="text-red-500 mb-4 text-center">
-          {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%
-        </div>
-      )}
-      <div>
-        {shareholders.map((shareholder, index) => (
-          <ShareholderDirector
-            key={index}
-            {...shareholder}
-            onDelete={() => deleteShareholder(index)}
-            onUpdate={(updates) => updateShareholder(index, updates)}
-          />
-        ))}
-      </div>
-      <div className="flex justify-around mt-4">
-        <Button onClick={sendMailFunction}
-          disabled={isLoading}
-          className="flex items-center"
-          aria-busy={isLoading}
-          aria-live="polite"
-        >{isLoading ? (
-          <>
-            <CustomLoader />
-            <span className="ml-2">Processing...</span>
-          </>
-        ) : (<span>{t("CompanyInformation.sendInvitation")}</span>)}</Button>
-        <Button
-          className="btn btn-primary w-fit"
-          onClick={addShareholder}
-        >
-          {t('CompanyInformation.addShldrDir')}
-        </Button>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ShareholderDirectorFormPa;

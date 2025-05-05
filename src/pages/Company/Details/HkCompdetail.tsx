@@ -48,6 +48,8 @@ import TodoApp from "@/pages/Todo/TodoApp";
 import { User } from "@/components/userList/UsersList";
 import { useNavigate } from "react-router-dom";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
+import { hkChecklistItems } from './detailConstants';
+import Checklist from "./DocChecklist";
 export interface SessionData {
     _id: string;
     amount: number;
@@ -135,7 +137,7 @@ interface Company {
     is_draft: boolean;
     _id: string;
     userId: string;
-    country: Country;   
+    country: Country;
     applicantInfoForm: ApplicantInfoForm;
     businessInfoHkCompany: BusinessInfoHkCompany;
     companyBusinessInfo: CompanyBusinessInfo;
@@ -149,6 +151,7 @@ interface Company {
     isDisabled: boolean;
     receiptUrl: string;
     assignedTo: string;
+    checkedItems: string[]
     __v: number;
 }
 const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
@@ -172,6 +175,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     });
     const [isSheetOpen, setIsSheetOpen] = useState(false)
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
         updateCompanyData(company);
@@ -181,38 +185,38 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 data: {
                     "Company Name": (
                         <div className="space-y-4">
-                          <div className="grid gap-2">
-                            {company.applicantInfoForm.companyName.slice(0, 3).map((name, index) => (
-                              <div key={index} className="flex items-center gap-2">
-                                <div className="flex-1 p-2 border rounded-md bg-background">{name || "N/A"}</div>
-                                {index > 0 && (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => {
-                                      const newNames = [...company.applicantInfoForm.companyName]
-                                      // Move this item to the first position
-                                      const [removed] = newNames.splice(index, 1)
-                                      newNames.unshift(removed)
-            
-                                      // Update the company state
-                                      setCompany({
-                                        ...company,
-                                        applicantInfoForm: {
-                                          ...company.applicantInfoForm,
-                                          companyName: newNames,
-                                        },
-                                      })
-                                    }}
-                                  >
-                                    Move to Top
-                                  </Button>
-                                )}
-                              </div>
-                            ))}
-                          </div>                         
+                            <div className="grid gap-2">
+                                {company.applicantInfoForm.companyName.slice(0, 3).map((name, index) => (
+                                    <div key={index} className="flex items-center gap-2">
+                                        <div className="flex-1 p-2 border rounded-md bg-background">{name || "N/A"}</div>
+                                        {index > 0 && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => {
+                                                    const newNames = [...company.applicantInfoForm.companyName]
+                                                    // Move this item to the first position
+                                                    const [removed] = newNames.splice(index, 1)
+                                                    newNames.unshift(removed)
+
+                                                    // Update the company state
+                                                    setCompany({
+                                                        ...company,
+                                                        applicantInfoForm: {
+                                                            ...company.applicantInfoForm,
+                                                            companyName: newNames,
+                                                        },
+                                                    })
+                                                }}
+                                            >
+                                                Move to Top
+                                            </Button>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                      ),
+                    ),
                     "Applicant Name": company.applicantInfoForm.name,
                     Email: company.applicantInfoForm.email,
                     Phone: company.applicantInfoForm.phoneNumber,
@@ -326,7 +330,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 "AML/CDD Edit": company.isDisabled ? "No" : "Yes",
             },
         });
-        
+
         return sections;
     };
     const sections = useMemo(() => {
@@ -343,7 +347,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     setAdminAssigned(companyData[0].assignedTo)
                     setCompany(companyData[0])
                 }
-                if(companyData[0].sessionId){
+                if (companyData[0].sessionId) {
                     const session = await paymentApi.getSession(companyData[0].sessionId);
                     // console.log("session", session);
                     const transformedSession: SessionData = {
@@ -511,7 +515,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <React.Fragment>
                 <TableCell className="font-medium">InCorporation Status</TableCell>
                 <TableCell>{company.status}</TableCell>
-                { user.role !== 'user' && <TableCell>
+                {user.role !== 'user' && <TableCell>
                     <Select
                         value={company.status}
                         onValueChange={(value) => handleCompanyDataChange("status", value)}
@@ -583,16 +587,16 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const handleUpdate = async () => {
         // console.log("company", company)
         const payload = JSON.stringify({
-            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK", companyName: company.applicantInfoForm.companyName },
+            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK", companyName: company.applicantInfoForm.companyName,checkedItems: company.checkedItems },
             session: { id: session._id, expiresAt: (session.expiresAt), status: session.status },
-            assignedTo : adminAssigned
+            assignedTo: adminAssigned
         })
         await updateEditValues(payload);
         toast({ description: "Record updated successfully" });
     };
 
     const AssignAdmin = () => {
-        const handleAssign = (value:string) =>{
+        const handleAssign = (value: string) => {
             setAdminAssigned(value)
         }
         return (
@@ -616,8 +620,16 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             </div>
         )
     }
+    const handleCheckboxChange = (itemId: string, isChecked: boolean) => {
+        if (isChecked) {
+            const updatedCompany = { ...company, checkedItems: [...company.checkedItems ?? [], itemId] };
+            setCompany(updatedCompany);
+        } else {
+            setCompany({ ...company, checkedItems: company.checkedItems.filter((id) => id !== itemId) });
+        }
+    };
     return (
-        <Tabs defaultValue="details" className="flex flex-col w-full max-w-5xl mx-auto">
+        <Tabs defaultValue="details" className="flex flex-col w-full  mx-auto">
             <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
                 <TabsTrigger
                     value="details"
@@ -652,12 +664,43 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <TabsContent value="details" className="p-6">
                 <div className="space-y-4">
                     {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
-                    {user.role !== 'user' && <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />}
+                    {/* {user.role !== 'user' && <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />}
                     <div className='flex gap-x-8'>
                         {user.role !== 'user' && <AssignAdmin />}
                         <Button onClick={() => navigate(`/company-documents/${company.country.code}/${company._id}`)} size="sm" className="flex items-center gap-2">
                             Company Docs
                         </Button>
+                    </div> */}
+                    <div className="grid grid-cols-12 gap-6">
+                        {/* Left Side - Checklist */}
+                        {user.role !== 'user' && <div className="col-span-4 border rounded-md p-4">
+                            <h3 className="text-lg font-semibold mb-2">Check List:</h3>
+                            <Checklist
+                                items={hkChecklistItems}
+                                checkedItems={company.checkedItems}
+                                onCheckedChange={handleCheckboxChange}
+                            />
+                        </div>}
+
+                        {/* Right Side - TodoApp on top, bottom buttons */}
+                        <div className="col-span-8 flex flex-col justify-between">
+                            {user.role !== 'user' && (
+                                <div className="mb-4">
+                                     <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />
+                                </div>
+                            )}
+
+                            <div className="flex gap-4 mt-auto">
+                                {user.role !== 'user' && <AssignAdmin />}
+                                <Button
+                                    onClick={() => navigate(`/company-documents/US/${id}`)}
+                                    size="sm"
+                                    className="flex items-center gap-2"
+                                >
+                                    Company Docs
+                                </Button>
+                            </div>
+                        </div>
                     </div>
                     {sections.map((section) => (
                         <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
@@ -671,7 +714,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                         <TableRow className="border-b hover:bg-muted/30">
                                             <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Field</TableHead>
                                             <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Value</TableHead>
-                                           {user.role !== 'user' && <TableHead className="w-1/5 py-3 px-4 text-sm font-medium">Action</TableHead>}
+                                            {user.role !== 'user' && <TableHead className="w-1/5 py-3 px-4 text-sm font-medium">Action</TableHead>}
                                         </TableRow>
                                     </TableHeader>
 
@@ -685,7 +728,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                 return <TableRow key={key} className="border-b hover:bg-muted/30"><CompanyIncorpoStatus /></TableRow>
                                             if (key == "Receipt")
                                                 return <TableRow key={key} className="border-b hover:bg-muted/30"><ReceietPaymentFrag /></TableRow>
-                                            if (key == 'AML/CDD Edit' && user.role !== 'user' )
+                                            if (key == 'AML/CDD Edit' && user.role !== 'user')
                                                 return <TableRow key={key} className="border-b hover:bg-muted/30"><AMLCDDEdit /></TableRow>
                                             if (key == 'Payment Status')
                                                 return <TableRow key={key} className="border-b hover:bg-muted/30"><PaymentStatus /></TableRow>

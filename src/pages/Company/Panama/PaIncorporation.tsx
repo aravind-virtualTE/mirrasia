@@ -6,12 +6,13 @@ import { Card } from '@/components/ui/card';
 import ApplicantInfo from './Components/ApplicantInfo';
 import PanamaEntity from './Components/PanamaEntity';
 import BusinessInfoPa from './Components/BusinessInfoPa';
-// import ServiceAgreement from './Components/ServiceAgreement';
-// import SgServiceSelection from './Components/SgServiceSelection';
-// import InvoiceSg from './Components/SgInvoice';
+import PaServiceAgreement from './Components/PaServiceAgrmt';
+import PaymentInformation from './Components/PaPaymentInfo';
+// import PaServiceSelection from './Components/PaServiceSelection';
+import InvoicePA from './Components/InvoicePA';
 // import PaymentInformation from './Components/SgPaymentInfo';
-// import InfoForIncorpoSg from './Components/InfoForIncorpoSg';
-// import SgFinalSection from './Components/sgFinalSection';
+import InfoForIncorpoPA from './Components/InfoForIncorpoPA';
+import PaFinalSection from './Components/PaFinalSection';
 
 const IncorporatePa: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
@@ -38,30 +39,30 @@ const IncorporatePa: React.FC = () => {
             label: "Service Agreement",
             active: currentSection === 4,
         },
+        // {
+        //     number: 5,
+        //     label: "Service Selection",
+        //     active: currentSection === 5,
+        // },
         {
             number: 5,
-            label: "Service Selection",
+            label: "Invoice",
             active: currentSection === 5,
         },
         {
-            number: 6,
-            label: "Invoice",
+            number:6,
+            label: "Payment",
             active: currentSection === 6,
         },
         {
-            number:7,
-            label: "Payment",
+            number: 7,
+            label: "Information for Incorporation",
             active: currentSection === 7,
         },
         {
             number: 8,
-            label: "Information for Incorporation",
-            active: currentSection === 8,
-        },
-        {
-            number: 9,
             label: "Incorporation",
-            active: currentSection === 9,
+            active: currentSection === 8,
         },
     ]
 
@@ -107,13 +108,13 @@ const IncorporatePa: React.FC = () => {
                             {currentSection === 1 && <ApplicantInfo />}
                             {currentSection === 2 && <PanamaEntity />}
                             {currentSection === 3 && <BusinessInfoPa />}
-                            {/* 
-                            {currentSection === 4 && <ServiceAgreement />}
-                            {currentSection === 7 && <SgServiceSelection />}
-                            {currentSection === 8 && <InvoiceSg />}
-                            {currentSection === 9 && <PaymentInformation />}
-                            {currentSection === 10 && <InfoForIncorpoSg />}
-                            {currentSection === 11 && <SgFinalSection />} */}
+                            {currentSection === 4 && <PaServiceAgreement />}
+                            {/* {currentSection === 5 && <PaServiceSelection />} */}
+                            {currentSection === 5 && <InvoicePA />}
+                            {currentSection === 6 && <PaymentInformation />}
+                            {currentSection === 7 && <InfoForIncorpoPA />}
+                            {currentSection === 8 && <PaFinalSection />}
+                           
                         </motion.div>
                     </AnimatePresence>
                 </div>

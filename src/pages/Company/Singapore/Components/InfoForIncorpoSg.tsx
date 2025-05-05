@@ -9,14 +9,12 @@ import { useAtom } from "jotai"
 
 import SearchSelect from "@/components/SearchSelect"
 import DropdownSelect from "@/components/DropdownSelect"
-import { useTranslation } from "react-i18next";
 import { sgFormWithResetAtom } from "../SgState"
 import { amountOptions, currencies } from "../../HongKong/constants"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 
 const InfoForIncorpoSg = () => {
-    const { t } = useTranslation();
     const { theme } = useTheme();
     const [comapnyInfo,] = useAtom(sgFormWithResetAtom);
     const [servicesSelection, setServicesSelection] = useState("");
@@ -52,8 +50,7 @@ const InfoForIncorpoSg = () => {
                 ? 'bg-blue-50 text-gray-800'
                 : 'bg-gray-800 text-gray-200'
                 }`}>
-                <h2 className="text-lg font-semibold mb-2">{t('InfoIncorpo.regDetails')}</h2>
-                <p className="text-sm text-gray-500">{t('InfoIncorpo.regDetailPara')}</p>
+                <h2 className="text-lg font-semibold mb-2">Information on the registry of your Singapore company</h2>
             </aside>
             <div className="w-3/4 ml-4">
                 <Card>
