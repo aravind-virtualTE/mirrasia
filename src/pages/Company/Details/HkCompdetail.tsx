@@ -48,8 +48,8 @@ import TodoApp from "@/pages/Todo/TodoApp";
 import { User } from "@/components/userList/UsersList";
 import { useNavigate } from "react-router-dom";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
-import { hkChecklistItems } from './detailConstants';
-import Checklist from "./DocChecklist";
+import { ChecklistCheck, hkChecklistItems } from './detailConstants';
+import ChecklistHistory from "./DocChecklist";
 export interface SessionData {
     _id: string;
     amount: number;
@@ -151,7 +151,7 @@ interface Company {
     isDisabled: boolean;
     receiptUrl: string;
     assignedTo: string;
-    checkedItems: string[]
+    checkedItems: ChecklistCheck[]
     __v: number;
 }
 const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
@@ -175,7 +175,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     });
     const [isSheetOpen, setIsSheetOpen] = useState(false)
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
-
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
         updateCompanyData(company);
@@ -587,7 +586,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const handleUpdate = async () => {
         // console.log("company", company)
         const payload = JSON.stringify({
-            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK", companyName: company.applicantInfoForm.companyName,checkedItems: company.checkedItems },
+            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK", companyName: company.applicantInfoForm.companyName, checkedItems: company.checkedItems },
             session: { id: session._id, expiresAt: (session.expiresAt), status: session.status },
             assignedTo: adminAssigned
         })
@@ -620,12 +619,17 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             </div>
         )
     }
-    const handleCheckboxChange = (itemId: string, isChecked: boolean) => {
+    const handleCheckboxChange = (itemId: string, isChecked: boolean, currentUserId: string) => {
+        const now = new Date().toISOString();
         if (isChecked) {
-            const updatedCompany = { ...company, checkedItems: [...company.checkedItems ?? [], itemId] };
-            setCompany(updatedCompany);
+            const updatedCheckedItems = [
+                ...company.checkedItems,
+                { id: itemId, checkedBy: currentUserId, checkedAt: now }
+            ];
+            setCompany({ ...company, checkedItems: updatedCheckedItems });
         } else {
-            setCompany({ ...company, checkedItems: company.checkedItems.filter((id) => id !== itemId) });
+            const updatedCheckedItems = company.checkedItems.filter(item => item.id !== itemId);
+            setCompany({ ...company, checkedItems: updatedCheckedItems });
         }
     };
     return (
@@ -659,48 +663,23 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         Project
                     </TabsTrigger>
                 )}
+                <TabsTrigger
+                    value="Checklist"
+                    className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                >
+                    Checklist
+                </TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="p-6">
                 <div className="space-y-4">
                     {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
-                    {/* {user.role !== 'user' && <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />}
+                    {user.role !== 'user' && <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />}
                     <div className='flex gap-x-8'>
                         {user.role !== 'user' && <AssignAdmin />}
                         <Button onClick={() => navigate(`/company-documents/${company.country.code}/${company._id}`)} size="sm" className="flex items-center gap-2">
                             Company Docs
                         </Button>
-                    </div> */}
-                    <div className="grid grid-cols-12 gap-6">
-                        {/* Left Side - Checklist */}
-                        {user.role !== 'user' && <div className="col-span-4 border rounded-md p-4">
-                            <h3 className="text-lg font-semibold mb-2">Check List:</h3>
-                            <Checklist
-                                items={hkChecklistItems}
-                                checkedItems={company.checkedItems}
-                                onCheckedChange={handleCheckboxChange}
-                            />
-                        </div>}
-
-                        {/* Right Side - TodoApp on top, bottom buttons */}
-                        <div className="col-span-8 flex flex-col justify-between">
-                            {user.role !== 'user' && (
-                                <div className="mb-4">
-                                     <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />
-                                </div>
-                            )}
-
-                            <div className="flex gap-4 mt-auto">
-                                {user.role !== 'user' && <AssignAdmin />}
-                                <Button
-                                    onClick={() => navigate(`/company-documents/US/${id}`)}
-                                    size="sm"
-                                    className="flex items-center gap-2"
-                                >
-                                    Company Docs
-                                </Button>
-                            </div>
-                        </div>
                     </div>
                     {sections.map((section) => (
                         <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
@@ -780,6 +759,14 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 <div className="space-y-6">
                     <AdminProject id={id} />
                 </div>
+            </TabsContent>
+            <TabsContent value="Checklist" className="p-6">
+                <ChecklistHistory
+                    items={hkChecklistItems}
+                    checkedItems={company.checkedItems}
+                    onCheckedChange={(itemId, checked) => handleCheckboxChange(itemId, checked, user.id)}
+                    currentUserRole={user.role}
+                />
             </TabsContent>
         </Tabs>
     )

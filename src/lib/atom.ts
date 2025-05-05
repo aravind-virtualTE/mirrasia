@@ -1,4 +1,5 @@
 import { Option } from '@/components/MultiSelectInput';
+import { ChecklistCheck } from '@/pages/Company/Details/detailConstants';
 import { atom } from 'jotai';
 import { atomWithReset, useResetAtom } from 'jotai/utils';
 // company Incorporation
@@ -156,7 +157,7 @@ export const companyDocManager = atomWithReset<CompanyDocManager[]>([]);
 export const serviceSelectionStateAtom = atomWithReset<ServiceSelectionState | null>(null);
 export const receiptUrl = atomWithReset("");
 export const assignedTo = atomWithReset("");
-export const checkedItems = atomWithReset<string[]>([]);
+export const checkedItems = atomWithReset<ChecklistCheck[]>([]);
 // hong kong company incorporation Atom for state management
 export const companyIncorporationAtom = atom((get) => ({
   userId: '',
@@ -249,7 +250,7 @@ export const updateCompanyIncorporationAtom = atom(
       companyDocs: typeof companyDocManager['init']
       receiptUrl: string;
       assignedTo: string
-      checkedItems: string[];
+      checkedItems: ChecklistCheck[];
     }>
   ) => {
     if (updates.country) {
