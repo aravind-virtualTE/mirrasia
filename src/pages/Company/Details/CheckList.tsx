@@ -2,6 +2,8 @@ import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ChecklistCheck,ChecklistItem } from "./detailConstants";
+import { useAtom } from "jotai";
+import { usersData } from "@/services/state";
 
 interface ChecklistProps {
   items: ChecklistItem[];
@@ -12,12 +14,14 @@ interface ChecklistProps {
 
 const Checklist: React.FC<ChecklistProps> = ({ items, checkedItems = [], onCheckedChange, currentUserRole }) => {
   const isEditable = currentUserRole === "admin" || currentUserRole === "master";
-
+  const [users,] = useAtom(usersData);
   return (
     <ul className="space-y-2">
       {items.map((item) => {
         const checkedEntry = checkedItems.find(i => i.id === item.id);
         const isChecked = !!checkedEntry;
+        const checkedUser = users.find(u => u._id === checkedEntry?.checkedBy);
+        const checkedByName = checkedUser?.fullName || checkedEntry?.checkedBy || "Unknown";
         return (
           <li key={item.id} className="flex flex-col gap-1 border-b border-gray-100 dark:border-gray-700 py-1">
             <div className="flex items-center gap-2">
@@ -36,7 +40,8 @@ const Checklist: React.FC<ChecklistProps> = ({ items, checkedItems = [], onCheck
             </div>
             {isChecked && (
               <span className="text-xs text-muted-foreground pl-6">
-                ✔ Checked by {checkedEntry?.checkedBy} on {new Date(checkedEntry!.checkedAt).toLocaleString()}
+                ✔ Checked by {checkedByName} on{" "}
+                {new Date(checkedEntry!.checkedAt).toLocaleString()}
               </span>
             )}
           </li>

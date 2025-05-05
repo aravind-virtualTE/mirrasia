@@ -27,8 +27,6 @@ const ChecklistHistory: React.FC<ChecklistHistoryProps> = ({
 
   return (
     <div className="container mx-auto px-4 py-2">
-      <h3 className="text-lg font-semibold">Check List:</h3>
-
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="flex items-center justify-between mb-6">
           <TabsList className="grid w-full max-w-md grid-cols-2">

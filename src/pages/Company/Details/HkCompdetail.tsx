@@ -1,6 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useToast } from "@/hooks/use-toast";
-import { companyIncorporationList } from "@/services/state";
+import { companyIncorporationList, usersData } from "@/services/state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Table,
@@ -45,7 +45,6 @@ import { updateCompanyIncorporationAtom } from "@/lib/atom";
 import { ShareHolderDirectorController } from "@/types/hongkongForm";
 import MemoApp from "./MemosHK";
 import TodoApp from "@/pages/Todo/TodoApp";
-import { User } from "@/components/userList/UsersList";
 import { useNavigate } from "react-router-dom";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import { ChecklistCheck, hkChecklistItems } from './detailConstants';
@@ -160,7 +159,8 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [companies] = useAtom(companyIncorporationList);
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     // const [companyData, setCompData] = useAtom(companyIncorporationAtom);
-    const [users, setUsers] = useState<User[]>([]);
+    // const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useAtom(usersData);
     const [adminAssigned, setAdminAssigned] = useState("");
     const navigate = useNavigate()
     const companyDetail = companies.find((c) => c._id === id) as unknown as Company;
@@ -620,6 +620,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         )
     }
     const handleCheckboxChange = (itemId: string, isChecked: boolean, currentUserId: string) => {
+        // console.log("itemId", itemId, "isChecked", isChecked, "currentUserId", currentUserId)
         const now = new Date().toISOString();
         if (isChecked) {
             const updatedCheckedItems = [
