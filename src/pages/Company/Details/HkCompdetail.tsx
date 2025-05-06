@@ -47,8 +47,7 @@ import MemoApp from "./MemosHK";
 import TodoApp from "@/pages/Todo/TodoApp";
 import { useNavigate } from "react-router-dom";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
-import { ChecklistCheck, hkChecklistItems } from './detailConstants';
-import ChecklistHistory from "./DocChecklist";
+import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 export interface SessionData {
     _id: string;
     amount: number;
@@ -150,7 +149,6 @@ interface Company {
     isDisabled: boolean;
     receiptUrl: string;
     assignedTo: string;
-    checkedItems: ChecklistCheck[]
     __v: number;
 }
 const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
@@ -586,7 +584,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const handleUpdate = async () => {
         // console.log("company", company)
         const payload = JSON.stringify({
-            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK", companyName: company.applicantInfoForm.companyName, checkedItems: company.checkedItems },
+            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK", companyName: company.applicantInfoForm.companyName},
             session: { id: session._id, expiresAt: (session.expiresAt), status: session.status },
             assignedTo: adminAssigned
         })
@@ -619,20 +617,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             </div>
         )
     }
-    const handleCheckboxChange = (itemId: string, isChecked: boolean, currentUserId: string) => {
-        // console.log("itemId", itemId, "isChecked", isChecked, "currentUserId", currentUserId)
-        const now = new Date().toISOString();
-        if (isChecked) {
-            const updatedCheckedItems = [
-                ...company.checkedItems ?? [],
-                { id: itemId, checkedBy: currentUserId, checkedAt: now }
-            ];
-            setCompany({ ...company, checkedItems: updatedCheckedItems });
-        } else {
-            const updatedCheckedItems = company.checkedItems.filter(item => item.id !== itemId);
-            setCompany({ ...company, checkedItems: updatedCheckedItems });
-        }
-    };
+ 
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full  mx-auto">
             <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -762,12 +747,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 </div>
             </TabsContent>
             <TabsContent value="Checklist" className="p-6">
-                <ChecklistHistory
-                    items={hkChecklistItems}
-                    checkedItems={company.checkedItems}
-                    onCheckedChange={(itemId, checked) => handleCheckboxChange(itemId, checked, user.id)}
-                    currentUserRole={user.role}
-                />
+                <ChecklistHistory id={id} />
             </TabsContent>
         </Tabs>
     )

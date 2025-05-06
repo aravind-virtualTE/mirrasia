@@ -29,8 +29,7 @@ import { User } from '@/components/userList/UsersList';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
-import { usChecklistItems } from './detailConstants';
-import ChecklistHistory from './DocChecklist';
+import ChecklistHistory from '@/pages/Checklist/ChecklistHistory';
 
 
 const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
@@ -237,8 +236,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         isDisabled: formData.isDisabled,
         incorporationDate: formData.incorporationDate,
         country: 'US',
-        companyName: formData.companyName,
-        checkedItems: formData.checkedItems
+        companyName: formData.companyName
       },
       session: {
         id: session._id,
@@ -479,20 +477,6 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     );
   };
 
-  const handleCheckboxChange = (itemId: string, isChecked: boolean, currentUserId: string) => {
-    const now = new Date().toISOString();
-    if (isChecked) {
-      const updatedCheckedItems = [
-        ...formData.checkedItems  ?? [],
-        { id: itemId, checkedBy: currentUserId, checkedAt: now }
-      ];
-      setFormData({ ...formData, checkedItems: updatedCheckedItems });
-    } else {
-      const updatedCheckedItems = formData.checkedItems.filter(item => item.id !== itemId);
-      setFormData({ ...formData, checkedItems: updatedCheckedItems });
-    }
-  };
-
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -622,12 +606,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         </div>
       </TabsContent>
       <TabsContent value="Checklist" className="p-6">
-        <ChecklistHistory
-          items={usChecklistItems}
-          checkedItems={formData.checkedItems}
-          onCheckedChange={(itemId, checked) => handleCheckboxChange(itemId, checked, user.id)}
-          currentUserRole={user.role}
-        />
+        <ChecklistHistory id={id} />
       </TabsContent>
     </Tabs>
   );
