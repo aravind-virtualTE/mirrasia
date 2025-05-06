@@ -1,5 +1,4 @@
 import { Option } from '@/components/MultiSelectInput';
-import { ChecklistCheck } from '@/pages/Company/Details/detailConstants';
 import { atom } from 'jotai';
 import { atomWithReset, useResetAtom } from 'jotai/utils';
 // company Incorporation
@@ -157,7 +156,6 @@ export const companyDocManager = atomWithReset<CompanyDocManager[]>([]);
 export const serviceSelectionStateAtom = atomWithReset<ServiceSelectionState | null>(null);
 export const receiptUrl = atomWithReset("");
 export const assignedTo = atomWithReset("");
-export const checkedItems = atomWithReset<ChecklistCheck[]>([]);
 // hong kong company incorporation Atom for state management
 export const companyIncorporationAtom = atom((get) => ({
   userId: '',
@@ -180,7 +178,6 @@ export const companyIncorporationAtom = atom((get) => ({
   companyDocs: get(companyDocManager),
   receiptUrl: get(receiptUrl),
   assignedTo: get(assignedTo),
-  checkedItems: get(checkedItems)
 }));
 
 
@@ -201,7 +198,6 @@ export const useResetAllForms = () => {
   const resetCompanyDocManager = useResetAtom(companyDocManager)
   const resetReceiptUrl = useResetAtom(receiptUrl)
   const resetAssignedTo = useResetAtom(assignedTo)
-  const resetCheckedItem = useResetAtom(checkedItems)
   
 
   const resetAll = () => {
@@ -221,7 +217,6 @@ export const useResetAllForms = () => {
     resetCompanyDocManager()
     resetReceiptUrl()
     resetAssignedTo()
-    resetCheckedItem()
   };
 
   return resetAll;
@@ -250,7 +245,6 @@ export const updateCompanyIncorporationAtom = atom(
       companyDocs: typeof companyDocManager['init']
       receiptUrl: string;
       assignedTo: string
-      checkedItems: ChecklistCheck[];
     }>
   ) => {
     if (updates.country) {
@@ -264,9 +258,6 @@ export const updateCompanyIncorporationAtom = atom(
     }
     if (updates.assignedTo) {
       set(assignedTo, updates.assignedTo);
-    }
-    if (updates.checkedItems) {
-      set(checkedItems, updates.checkedItems);
     }
     if (updates.companyDocs) {
       set(companyDocManager, updates.companyDocs);

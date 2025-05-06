@@ -1,15 +1,15 @@
 export  const hkChecklistItems = [
-    { id: "required-docs", label: "Checking the required documents" },
-    { id: "kyc-invoice", label: "KYC, INVOICE" },
-    { id: "passport-ctc", label: "Preparation of passport copy for CTC" },
-    { id: "company-docs", label: "Preparation of company docs" },
-    { id: "cr-online-account", label: "Create the CR online account for incorporation" },
-    { id: "submit-docs", label: "Submit to the Companies Registry with cheque" },
-    { id: "company-kit", label: "Preparation of company kit" },
-    { id: "bank-account", label: "Proceed with opening bank account or digital account" },
-    { id: "commencement-date", label: "Check the commencement date with client" },
-    { id: "incorporation-pack", label: "Send out the incorporation pack" },
-    { id: "file-docs", label: "Affix the date chop on documents then file into the black file case" },
+    { id: "required-docs", label: "Checking the required documents",completed: false },
+    { id: "kyc-invoice", label: "KYC, INVOICE",completed: false },
+    { id: "passport-ctc", label: "Preparation of passport copy for CTC",completed: false },
+    { id: "company-docs", label: "Preparation of company docs",completed: false },
+    { id: "cr-online-account", label: "Create the CR online account for incorporation",completed: false },
+    { id: "submit-docs", label: "Submit to the Companies Registry with cheque",completed: false },
+    { id: "company-kit", label: "Preparation of company kit",completed: false },
+    { id: "bank-account", label: "Proceed with opening bank account or digital account",completed: false },
+    { id: "commencement-date", label: "Check the commencement date with client",completed: false },
+    { id: "incorporation-pack", label: "Send out the incorporation pack",completed: false },
+    { id: "file-docs", label: "Affix the date chop on documents then file into the black file case",completed: false },
   ];
 
   export const usChecklistItems = [
@@ -57,14 +57,3 @@ export  const hkChecklistItems = [
     { id: "send-incorporation-docs", label: "Send out the incorporation docs to client by email" },
     { id: "open-bank-account", label: "Proceed with opening the bank account (if the client requested)" },
   ];
-
-  export interface ChecklistCheck {
-    id: string;
-    checkedBy: string; 
-    checkedAt: string;
-  }
-  export interface ChecklistItem {
-    id: string;
-    label: string;
-  }
-  
