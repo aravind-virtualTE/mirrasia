@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { atom, useAtom } from "jotai"
 import { Plus, Save, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -6,62 +6,29 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { createCheckList, formDataAtom, getCheckList } from "./checkListData"
 
-// Define the task interface
-interface Task {
-  id: string
-  label: string
-  completed: boolean
-  timestamp?: string
-}
-
-// Define the data structure
-interface FormData {
-  _id?: string
-  incorporation: {
-    tasks: Task[]
-  }
-  renewal: {
-    years: Record<
-      string,
-      {
-        tasks: Task[]
-      }
-    >
-  }
-}
-
-// Create the atom for the data
-const formDataAtom = atom<FormData>({
-  incorporation: {
-    tasks: [
-    
-    ],
-  },
-  renewal: {
-    years: {
-      "2025": {
-        tasks: [
-          
-        ],
-      },
-    },
-  },
-})
-
-// Create atom for the current year in renewal tab
 const currentYearAtom = atom<string>("2025")
-
 export default function ChecklistHistory({ id }: { id?: string }) {
-  console.log("id--->", id)
+  // console.log("id--->", id)
   const [formData, setFormData] = useAtom(formDataAtom)
   const [currentYear, setCurrentYear] = useAtom(currentYearAtom)
   const [activeTab, setActiveTab] = useState<string>("incorporation")
   const [newTaskLabel, setNewTaskLabel] = useState<string>("")
-
-  // Generate a list of years (current year +/- 5 years)
+  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
   const currentYearNum = new Date().getFullYear()
   const yearOptions = Array.from({ length: 11 }, (_, i) => (currentYearNum - 5 + i).toString())
+
+  const getData = async () =>{
+    const data  = await getCheckList({'companyId' : id})
+    // console.log("data",data)
+    if(data.length >0){
+      setFormData(data[0])
+    }
+  }
+  useEffect(() =>{
+    getData()
+  }, [id])
 
   // Handle adding a new task
   const handleAddTask = () => {
@@ -70,12 +37,13 @@ export default function ChecklistHistory({ id }: { id?: string }) {
     if (activeTab === "incorporation") {
       setFormData({
         ...formData,
+        companyId : id || '',
         incorporation: {
           ...formData.incorporation,
           tasks: [
             ...formData.incorporation.tasks,
             {
-              id: `inc-${Date.now()}`,
+              _id: `inc-${Date.now()}`,
               label: newTaskLabel,
               completed: false,
             },
@@ -94,7 +62,7 @@ export default function ChecklistHistory({ id }: { id?: string }) {
         tasks: [
           ...updatedYears[currentYear].tasks,
           {
-            id: `ren-${Date.now()}-${currentYear}`,
+            _id: `ren-${Date.now()}-${currentYear}`,
             label: newTaskLabel,
             completed: false,
           },
@@ -103,6 +71,7 @@ export default function ChecklistHistory({ id }: { id?: string }) {
 
       setFormData({
         ...formData,
+        companyId : id || '',
         renewal: {
           ...formData.renewal,
           years: updatedYears,
@@ -121,7 +90,7 @@ export default function ChecklistHistory({ id }: { id?: string }) {
         incorporation: {
           ...formData.incorporation,
           tasks: formData.incorporation.tasks.map((task) =>
-            task.id === taskId ? { ...task, completed: !task.completed } : task,
+            task._id === taskId ? { ...task, completed: !task.completed } : task,
           ),
         },
       })
@@ -131,7 +100,7 @@ export default function ChecklistHistory({ id }: { id?: string }) {
       updatedYears[currentYear] = {
         ...updatedYears[currentYear],
         tasks: updatedYears[currentYear].tasks.map((task) =>
-          task.id === taskId ? { ...task, completed: !task.completed } : task,
+          task._id === taskId ? { ...task, completed: !task.completed } : task,
         ),
       }
 
@@ -152,7 +121,7 @@ export default function ChecklistHistory({ id }: { id?: string }) {
         ...formData,
         incorporation: {
           ...formData.incorporation,
-          tasks: formData.incorporation.tasks.filter((task) => task.id !== taskId),
+          tasks: formData.incorporation.tasks.filter((task) => task._id !== taskId),
         },
       })
     } else if (activeTab === "renewal") {
@@ -160,7 +129,7 @@ export default function ChecklistHistory({ id }: { id?: string }) {
 
       updatedYears[currentYear] = {
         ...updatedYears[currentYear],
-        tasks: updatedYears[currentYear].tasks.filter((task) => task.id !== taskId),
+        tasks: updatedYears[currentYear].tasks.filter((task) => task._id !== taskId),
       }
 
       setFormData({
@@ -195,11 +164,17 @@ export default function ChecklistHistory({ id }: { id?: string }) {
   }
 
   // Handle save button click
-  const handleSave = () => {
-    console.log("Saving data:", formData)
-    // Here you would typically send the data to an API
+  const handleSave = async () => {
+    // console.log("Saving data:", formData)
+    try{
+       await createCheckList(formData)
+      // console.log("data", data)
+      await getData()
+    }catch(e){
+      console.log("err",e)
+    }
   }
-
+// console.log("formData",formData)
   return (
     <div className="w-full mx-auto p-4 border rounded-lg shadow-sm">
       <div className="flex justify-between items-center mb-4">
@@ -210,7 +185,7 @@ export default function ChecklistHistory({ id }: { id?: string }) {
               <TabsTrigger value="renewal">Renewal</TabsTrigger>
             </TabsList>
 
-            <div className="flex items-center gap-2">
+            {user.role !=='user' && (<div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -225,10 +200,10 @@ export default function ChecklistHistory({ id }: { id?: string }) {
                 <Save className="h-4 w-4 mr-1" />
                 Save
               </Button>
-            </div>
+            </div>)}
           </div>
 
-          <div className="flex items-center gap-2 mb-4">
+          {user.role !=='user' && <div className="flex items-center gap-2 mb-4">
             <Input
               placeholder="New item label"
               value={newTaskLabel}
@@ -237,32 +212,33 @@ export default function ChecklistHistory({ id }: { id?: string }) {
             />
             <Button onClick={handleAddTask}>Add</Button>
             <Button variant="outline">Cancel</Button>
-          </div>
+          </div>}
 
           <TabsContent value="incorporation" className="mt-0">
             <div className="border rounded-lg p-4">
               <h2 className="text-lg font-medium mb-4">Incorporation Tasks</h2>
               <div className="space-y-3">
-                {formData.incorporation.tasks.map((task) => (
-                  <div key={task.id} className="flex items-center justify-between">
+                {formData?.incorporation?.tasks.map((task) => (
+                  <div key={task._id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Checkbox
-                        id={task.id}
+                        id={task._id}
                         checked={task.completed}
-                        onCheckedChange={() => handleTaskToggle(task.id)}
+                        onCheckedChange={() => handleTaskToggle(task._id || '')}
+                        disabled={user.role =='user'}
                       />
-                      <label htmlFor={task.id} className={`${task.completed ? "line-through text-gray-500" : ""}`}>
+                      <label htmlFor={task._id} className={`${task.completed ? "line-through text-gray-500" : ""}`}>
                         {task.label} {task.timestamp && <span className="text-gray-500 text-sm">{task.timestamp}</span>}
                       </label>
                     </div>
-                    <div className="flex items-center gap-2">
+                    {user.role !=='user' && <div className="flex items-center gap-2">
                       {/* <Button variant="ghost" size="icon">
                         <Pencil className="h-4 w-4" />
                       </Button> */}
-                      <Button variant="ghost" className='text-red-500' size="icon" onClick={() => handleDeleteTask(task.id)}>
+                      <Button variant="ghost" className='text-red-500' size="icon" onClick={() => handleDeleteTask(task._id || '')}>
                         <Trash2 className="h-4 w-4 " />
                       </Button>
-                    </div>
+                    </div>}
                   </div>
                 ))}
               </div>
@@ -288,26 +264,27 @@ export default function ChecklistHistory({ id }: { id?: string }) {
             <div className="border rounded-lg p-4">
               <h2 className="text-lg font-medium mb-4">Renewal Tasks ({currentYear})</h2>
               <div className="space-y-3">
-                {formData.renewal.years[currentYear]?.tasks.map((task) => (
-                  <div key={task.id} className="flex items-center justify-between">
+                {formData?.renewal?.years[currentYear]?.tasks.map((task) => (
+                  <div key={task._id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Checkbox
-                        id={task.id}
+                        id={task._id}
                         checked={task.completed}
-                        onCheckedChange={() => handleTaskToggle(task.id)}
+                        onCheckedChange={() => handleTaskToggle(task._id || '')}
+                        disabled={user.role =='user'}
                       />
-                      <label htmlFor={task.id} className={`${task.completed ? "line-through text-gray-500" : ""}`}>
+                      <label htmlFor={task._id} className={`${task.completed ? "line-through text-gray-500" : ""}`}>
                         {task.label}
                       </label>
                     </div>
-                    <div className="flex items-center gap-2">
+                    {user.role !=='user' && <div className="flex items-center gap-2">
                       <Button variant="ghost" size="icon">
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDeleteTask(task.id)}>
+                      <Button variant="ghost" size="icon" onClick={() => handleDeleteTask(task._id || "")}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
-                    </div>
+                    </div>}
                   </div>
                 ))}
 
