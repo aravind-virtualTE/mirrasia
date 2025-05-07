@@ -189,6 +189,7 @@ export default function ChecklistHistory({ id, items }: { id?: string, items: an
   // Handle year change in renewal tab
   const handleYearChange = (year: string) => {
     setCurrentYear(year)
+    const [, renewalItems] = items
 
     // Create empty data structure for the year if it doesn't exist
     if (!formData.renewal.years[year]) {
@@ -199,7 +200,7 @@ export default function ChecklistHistory({ id, items }: { id?: string, items: an
           years: {
             ...formData.renewal.years,
             [year]: {
-              tasks: [],
+              tasks: renewalItems,
             },
           },
         },
