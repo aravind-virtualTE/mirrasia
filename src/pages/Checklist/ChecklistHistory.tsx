@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast"
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
 import { usersAtom } from "../MasterTodo/mTodoStore"
 
-const currentYearAtom = atom<string>("2025")
+const currentYearAtom = atom<string>("2024")
 export default function ChecklistHistory({ id, items }: { id?: string, items: any }) {
   // console.log(items,"formDataAtom--->", formDataAtom)
   const [formData, setFormData] = useAtom(formDataAtom)
@@ -21,12 +21,10 @@ export default function ChecklistHistory({ id, items }: { id?: string, items: an
   const [newTaskLabel, setNewTaskLabel] = useState<string>("")
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
   const currentYearNum = new Date().getFullYear()
-  const yearOptions = Array.from({ length: 11 }, (_, i) => (currentYearNum - 5 + i).toString())
+  const yearOptions = Array.from({ length: 6 }, (_, i) => (currentYearNum - 6 + i).toString())
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState('');
   const [users,] = useAtom(usersAtom);
-
-  console.log("user", users)
 
   const getData = async () => {
     const data = await getCheckList({ 'companyId': id })
