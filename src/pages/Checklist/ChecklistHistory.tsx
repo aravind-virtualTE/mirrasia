@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react"
 import { atom, useAtom } from "jotai"
-import { Plus, Save, Pencil, Trash2 } from "lucide-react"
+import { Plus, Save, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -9,8 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { createCheckList, formDataAtom, getCheckList } from "./checkListData"
 
 const currentYearAtom = atom<string>("2025")
-export default function ChecklistHistory({ id }: { id?: string }) {
-  // console.log("id--->", id)
+export default function ChecklistHistory({ id, items }: { id?: string, items:any }) {
+  // console.log(items,"formDataAtom--->", formDataAtom)
   const [formData, setFormData] = useAtom(formDataAtom)
   const [currentYear, setCurrentYear] = useAtom(currentYearAtom)
   const [activeTab, setActiveTab] = useState<string>("incorporation")
@@ -21,9 +22,25 @@ export default function ChecklistHistory({ id }: { id?: string }) {
 
   const getData = async () =>{
     const data  = await getCheckList({'companyId' : id})
-    // console.log("data",data)
+    console.log("data",data)
     if(data.length >0){
       setFormData(data[0])
+    }else{
+      const [incorporationItems, renewalItems] = items
+
+      setFormData({
+        companyId: id || '',
+        incorporation: {
+          tasks: incorporationItems,
+        },
+        renewal: {
+          years: {
+            [currentYear]: {
+              tasks: renewalItems,
+            },
+          },
+        },
+      })
     }
   }
   useEffect(() =>{
@@ -278,10 +295,10 @@ export default function ChecklistHistory({ id }: { id?: string }) {
                       </label>
                     </div>
                     {user.role !=='user' && <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="icon">
+                      {/* <Button variant="ghost" size="icon">
                         <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDeleteTask(task._id || "")}>
+                      </Button> */}
+                      <Button variant="ghost" className='text-red-500' size="icon" onClick={() => handleDeleteTask(task._id || "")}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>}

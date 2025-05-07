@@ -30,6 +30,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from '@/pages/Checklist/ChecklistHistory';
+import { usIncorporationItems, usRenewalList } from './detailConstants';
 
 
 const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
@@ -606,7 +607,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         </div>
       </TabsContent>
       <TabsContent value="Checklist" className="p-6">
-        <ChecklistHistory id={id} />
+        <ChecklistHistory id={id} items={[usIncorporationItems, usRenewalList]} />
       </TabsContent>
     </Tabs>
   );
