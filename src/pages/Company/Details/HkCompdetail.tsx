@@ -48,6 +48,7 @@ import TodoApp from "@/pages/Todo/TodoApp";
 import { useNavigate } from "react-router-dom";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
+import { hkIncorporationItems, hkRenewalList } from "./detailConstants";
 export interface SessionData {
     _id: string;
     amount: number;
@@ -747,7 +748,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 </div>
             </TabsContent>
             <TabsContent value="Checklist" className="p-6">
-                <ChecklistHistory id={id} />
+                <ChecklistHistory id={id} items={[hkIncorporationItems, hkRenewalList]} />
             </TabsContent>
         </Tabs>
     )
