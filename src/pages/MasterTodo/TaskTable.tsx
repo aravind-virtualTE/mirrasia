@@ -130,8 +130,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     const sortedTasks = [...tasks].sort((a, b) => {
         if (!sortField) return 0;
 
-        let aVal = a[sortField];
-        let bVal = b[sortField];
+        const aVal = a[sortField];
+        const bVal = b[sortField];
 
         // Handle undefined or null values
         if (!aVal) return sortOrder === 'asc' ? 1 : -1;

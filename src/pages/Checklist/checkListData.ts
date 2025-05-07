@@ -7,6 +7,7 @@ export interface Task {
   label: string
   completed: boolean
   timestamp?: string
+  userid?: string
 }
 
 // Define the data structure
