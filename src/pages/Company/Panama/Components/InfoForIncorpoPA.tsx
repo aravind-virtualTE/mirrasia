@@ -9,24 +9,21 @@ import { useAtom } from "jotai"
 import SearchSelect from "@/components/SearchSelect"
 import DropdownSelect from "@/components/DropdownSelect"
 import { amountOptions, currencies } from "../../HongKong/constants"
-import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { paFormWithResetAtom } from "../PaState"
 const InfoForIncorpoPA = () => {
     const { theme } = useTheme();
-    const [comapnyInfo,] = useAtom(paFormWithResetAtom);
-    const [servicesSelection, setServicesSelection] = useState("");
+    const [formData,setFormData] = useAtom(paFormWithResetAtom);
 
-    const handlePriceSelect = (registerAmountAtom: string | number) => {
-        console.log('Selected Price:', registerAmountAtom);
-        // setCompanyInfo((prev) => ({ ...prev, registerAmountAtom }));
+    const handlePriceSelect = (totalAmountCap: string | number) => {
+        // console.log('Selected Price:', totalAmountCap);
+        setFormData({ ...formData, 'totalAmountCap': totalAmountCap });
     };
     const handleCurrencySelect = (currency: { code: string; label: string }) => {
-        console.log("Selected currency:", currency);
-        // setCompanyInfo((prev) => ({ ...prev, registerCurrencyAtom: currency.code }));
+        // console.log("Selected currency:", currency);
+        setFormData({ ...formData, registerCurrencyAtom: currency });
     };
-    const currenc = currencies.find((item) => comapnyInfo.registerCurrencyAtom === item.code)
-    // console.log("comapnyInfo",comapnyInfo)
+    // console.log("formData",formData)
     const amountList = [...amountOptions, '50,000',]
 
     const bookkeepingCycleOptions = [{ value: '100oIndvi', label: 'Use the Registered Address Service that Mirr Asia provides' }, { value: '100OHldComp', label: "I have a separate address in Panama to use as the company's address (not using Mirr Asia's registered address service)" }, { value: 'other', label: 'Other' }]
@@ -58,7 +55,7 @@ const InfoForIncorpoPA = () => {
                             <SearchSelect
                                 items={currencies}
                                 placeholder="Select currency..."
-                                selectedItem={currenc}
+                                selectedItem={formData.registerCurrencyAtom}
                                 onSelect={handleCurrencySelect}
                             />
                         </div>
@@ -77,7 +74,7 @@ const InfoForIncorpoPA = () => {
                             <DropdownSelect
                                 options={amountList}
                                 placeholder="Enter custom price"
-                                selectedValue={comapnyInfo.registerAmountAtom}
+                                selectedValue={formData.totalAmountCap}
                                 onSelect={handlePriceSelect}
                             />
                         </div>
@@ -88,21 +85,22 @@ const InfoForIncorpoPA = () => {
                                 </span>
                             </Label>
                             <Input
-                                placeholder="Please specify"
+                                placeholder="Please specify" value={formData.noOfSharesIssued} onChange={(e) => setFormData({ ...formData, noOfSharesIssued: e.target.value })}
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
+                            <Label htmlFor="specificProvisions" className="text-sm font-semibold mb-2">
                                 If there are any specific provisions, requirements, by-laws, etc. that need to be included in the articles of association regarding the operation of the entity, please describe them.
                                 <span className="text-red-500 inline-flex">*</span>
                             </Label>
                             <Input
-                                placeholder="Please specify"
+                                placeholder="Please specify" id="specificProvisions"
+                                value={formData.specificProvisions} onChange={(e) => setFormData({ ...formData, specificProvisions: e.target.value })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
+                            <Label htmlFor="regAddress" className="text-sm font-semibold mb-2">
                                 Registered address of the company
                                 <span className="text-red-500 inline-flex">*<Tooltip>
                                     <TooltipTrigger asChild>
@@ -113,7 +111,10 @@ const InfoForIncorpoPA = () => {
                                     </TooltipContent>
                                 </Tooltip></span>
                             </Label>
-                            <RadioGroup value={servicesSelection} onValueChange={setServicesSelection} className="gap-4">
+                            <RadioGroup id="regAddress"  value={formData.accountingDataAddress}
+                                onValueChange={(value) =>
+                                    setFormData({ ...formData, accountingDataAddress: value })
+                                } className="gap-4">
                                 {bookkeepingCycleOptions.map(option => (
                                     <div key={option.value} className="flex items-center space-x-2">
                                         <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
@@ -122,8 +123,8 @@ const InfoForIncorpoPA = () => {
                                         </Label>
                                     </div>
                                 ))}
-                                {servicesSelection === "other" && (
-                                    <Input placeholder="Please specify" />
+                                {formData.accountingDataAddress === "other" && (
+                                    <Input placeholder="Please specify" value={formData.otherAccountingAddress} onChange={(e) => setFormData({ ...formData, otherAccountingAddress: e.target.value })}  />
                                 )}
                             </RadioGroup>
                         </div>

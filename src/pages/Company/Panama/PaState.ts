@@ -8,24 +8,29 @@ export interface UsaFormData {
     code?: string;
     name?: string;
   }
-  noOfSharesSelected: string | number;
+  noOfSharesIssued: string | number;
   name: string;
-  establishedRelationshipType: string[];
+  legalEntity: string;
+  address: string;
+  // establishedRelationshipType: string[];
   phoneNum: string;
-  snsAccountId: {  value: string,  id: string };
-  webAddress: string;
+  snsAccountId: { value: string, id: string };
+  // webAddress: string;
   companyName: string[];
-  noOfShareholders: string;
-  noOfOfficers: string;
+  panamaEntity: { id: string, value: string };
+  pEntityInfo: string;
+  otherPanamaEntity: string
+  // noOfShareholders: string;
+  // noOfOfficers: string;
   shareHolders: {
     // [x: string]: any;
     name: string;
     email: string;
     phone: string;
     ownershipRate: number;
-    role:{
-        value: string,
-        id: string
+    role: {
+      value: string,
+      id: string
     };
     isDirector: {
       value: string,
@@ -39,6 +44,10 @@ export interface UsaFormData {
   legalDirectors: {
     [x: string]: any;
     ownershipRate: number;
+    role?: {
+      value: string,
+      id: string
+    };
     isDirector: {
       value: string,
       id: string
@@ -48,26 +57,36 @@ export interface UsaFormData {
       id: string
     }
   }[];
-  designatedContact: string | number;
+  // designatedContact: string | number;
   accountingDataAddress: string;
+  otherAccountingAddress: string;
   serviceItemsSelected: string[];
   isTermsAndConditionsAccepted: string;
-  isDisabled : boolean
+  isDisabled: boolean
   receiptUrl: string
   sessionId: string
   paymentId: string
   status: string
   incorporationDate: string
-  typeOfShare:string[]
+  typeOfShare: string;
   serviceAgreementConsent: boolean
   assignedTo: string
-  shareCapitalPayment?:  {
+  shareCapitalPayment?: {
     value: string,
     id: string
   };
-  paTotalCapPaid : string;
-  registerAmountAtom : string | number;
-  registerCurrencyAtom?: string;
+  paTotalCapPaid: string;
+  totalAmountCap: string | number;
+  registerCurrencyAtom?: {code:string, label: string};
+  selectedIndustry: string[];
+  otherIndustryText: string;
+  tradeAfterIncorporation: string;
+  purposePaCompany: string[]
+  otherPurposePaCompany: string
+  listCountry: string
+  sourceFunding: string[],
+  otherSourceFund: string
+  specificProvisions: string
 
 }
 
@@ -75,44 +94,60 @@ const initialFormState: UsaFormData = {
   _id: '',
   userId: '',
   email: '',
-  noOfSharesSelected: '',
+  noOfSharesIssued: '',
   name: '',
-  establishedRelationshipType: [],
+  // establishedRelationshipType: [],
+  legalEntity: '',
+  panamaEntity: { id: '', value: '' },
+  otherPanamaEntity: "",
+  pEntityInfo: '',
   phoneNum: '',
   country: {
-    code: undefined,
-    name: undefined,
+    code: 'PA',
+    name: 'Panama',
   },
-  snsAccountId:{
+  snsAccountId: {
     value: '',
     id: ''
-  }, 
-  webAddress: '',
+  },
+  address: "",
+  // webAddress: '',
   companyName: ['', '', ''],
-  noOfShareholders: '',
-  noOfOfficers: '',
+  // noOfShareholders: '',
+  // noOfOfficers: '',
   shareHolders: [],
-  legalDirectors : [],
-  designatedContact: '',
+  legalDirectors: [],
+  // designatedContact: '',
   accountingDataAddress: '',
+  otherAccountingAddress:'',
   isTermsAndConditionsAccepted: '',
   serviceItemsSelected: [],
-  typeOfShare:[],
-  isDisabled : false,
-  receiptUrl : "",
+  typeOfShare: '',
+  isDisabled: false,
+  receiptUrl: "",
   sessionId: '',
   paymentId: '',
   status: "Pending",
-  incorporationDate:"",
-  serviceAgreementConsent:false,
-  assignedTo : "",
+  incorporationDate: "",
+  serviceAgreementConsent: false,
+  assignedTo: "",
   shareCapitalPayment: {
     value: '',
     id: ''
   },
   paTotalCapPaid: "",
-  registerAmountAtom: '',
-  registerCurrencyAtom: '',
+  totalAmountCap: '',
+  registerCurrencyAtom: {code:'', label: ''},
+  selectedIndustry: [],
+  otherIndustryText: "",
+  tradeAfterIncorporation: "",
+  purposePaCompany: [],
+  otherPurposePaCompany: '',
+  listCountry: '',
+  sourceFunding: [],
+  otherSourceFund: '',
+  specificProvisions : ''
+
 };
 
 // Create the base atom
@@ -136,7 +171,7 @@ export const paPriceAtom = atom(
   (_get, set, update: number | 'reset') => {
     if (update === 'reset') {
       set(paPrice, 0);
-    }else{
+    } else {
       set(paPrice, update);
     }
   }

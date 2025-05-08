@@ -13,9 +13,17 @@ import InvoicePA from './Components/InvoicePA';
 // import PaymentInformation from './Components/SgPaymentInfo';
 import InfoForIncorpoPA from './Components/InfoForIncorpoPA';
 import PaFinalSection from './Components/PaFinalSection';
+import { paFormWithResetAtom } from './PaState';
+import { useAtom } from 'jotai';
+import jwtDecode from 'jwt-decode';
+import { TokenData } from '@/middleware/ProtectedRoutes';
 
 const IncorporatePa: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
+    const [formData,] = useAtom(paFormWithResetAtom);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const token = localStorage.getItem("token") as string;
+    const decodedToken = jwtDecode<TokenData>(token);
 
 
     const steps = [
@@ -66,9 +74,37 @@ const IncorporatePa: React.FC = () => {
         },
     ]
 
+    const updateDoc = async () =>{
+        if (isSubmitting) {
+            return;
+        }
+        setIsSubmitting(true);
+        formData.userId = `${decodedToken.userId}`
+        const payload = { ...formData };
+        try{
+            console.log("payload",payload)
+
+        }catch(e){
+            console.log("submission", e)
+        }finally{
+            setIsSubmitting(false);
+        }
+
+    }
+
     const nextSection = async () => {
-        setCurrentSection(prev => prev + 1);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        switch (currentSection) {
+            case 1:
+                await updateDoc();
+                setCurrentSection(prev => prev + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                break
+            default:
+                await updateDoc();
+                setCurrentSection(prev => prev + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                break
+        }
     };
 
 

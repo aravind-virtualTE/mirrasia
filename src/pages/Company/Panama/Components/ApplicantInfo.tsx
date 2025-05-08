@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent } from 'react'
 import { useTheme } from '@/components/theme-provider';
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input';
@@ -6,14 +6,44 @@ import { Label } from '@/components/ui/label';
 import { t } from 'i18next';
 import { snsPlatforms } from '../../HongKong/constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tooltip, TooltipContent,  TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
+import { useAtom } from 'jotai';
+import { paFormWithResetAtom } from '../PaState';
 
 
 const ApplicantInfo: React.FC = () => {
     const { theme } = useTheme();
-    const [snsPlatform, setSnsPlatform] = useState<string>("");
-    const [snsAccountId, setSnsAccountId] = useState<string>("");
+    const [formData, setFormData] = useAtom(paFormWithResetAtom)
+
+    const handleChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        // console.log("name", name)
+        const values = [...formData.companyName];
+        values[index] = e.target.value;
+        setFormData({ ...formData, companyName: values });
+    }
+
+    const handleSelectChange = (value: string) => {
+        // console.log("value", value)
+        setFormData({
+            ...formData,
+            snsAccountId: {
+                ...formData.snsAccountId,
+                id: value
+            }
+        })
+    }
+
+    const handleSNSChange = (e: ChangeEvent<HTMLInputElement>): void => {
+            // console.log("change",e)
+            setFormData({
+                ...formData,
+                snsAccountId: {
+                    ...formData.snsAccountId,
+                    value: e.target.value
+                }
+            })
+        }
 
     return (
         <Card>
@@ -33,16 +63,16 @@ const ApplicantInfo: React.FC = () => {
                             <Label htmlFor="name" className="inline-flex">
                                 Name of the applicant <span className="text-red-500 font-bold ml-1 flex">*</span>
                             </Label>
-                            <Input id="name" placeholder="Enter name" className="w-full" />
+                            <Input id="name" placeholder="Enter name" className="w-full" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="email" className="inline-flex">
                                 Email Address <span className="text-red-500 font-bold ml-1 flex">*</span>
                             </Label>
-                            <Input id="email" placeholder="Enter your email address" className="w-full" />
+                            <Input id="email" placeholder="Enter your email address" className="w-full" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                         </div>
                         <div className="space-y-2">
-                           <Label className="flex items-center gap-2">Name of the applicant's company, if any<span className="text-red-500 font-bold ml-1 flex">*
+                            <Label className="flex items-center gap-2">Name of the applicant's company, if any<span className="text-red-500 font-bold ml-1 flex">*
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
@@ -53,21 +83,31 @@ const ApplicantInfo: React.FC = () => {
                                 </Tooltip>
                             </span>
                             </Label>
-                            <Input id="companyName" placeholder="Enter company name.." className="w-full" />
-                            <Input id="companyName1" placeholder="Enter company name.." className="w-full" />
-                            <Input id="companyName2" placeholder="Enter company name.." className="w-full" />
+                            {
+                                formData.companyName.map((name, index) => (
+                                    <Input
+                                        key={index}
+                                        id={`companyName${index}`}
+                                        placeholder={t('usa.AppInfo.namePlaceholder')}
+                                        value={name}
+                                        onChange={handleChange(index)}
+                                        required />
+                                ))
+                            }
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="legalEntity" className="inline-flex">
                                 Applicant's current legal entity, if any <span className="text-red-500 font-bold ml-1 flex">*</span>
                             </Label>
-                            <Input id="legalEntity" placeholder="Enter if any.." className="w-full" />
+                            <Input id="legalEntity" placeholder="Enter if any.." className="w-full"
+                            value={formData.legalEntity} onChange={(e) => setFormData({ ...formData, legalEntity: e.target.value })}
+                             />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="residentialAddress" className="inline-flex">
                                 Applicant's residential address <span className="text-red-500 font-bold ml-1 flex">*</span>
                             </Label>
-                            <Input id="residentialAddress" placeholder="Enter address.." className="w-full" />
+                            <Input id="residentialAddress" placeholder="Enter address.." className="w-full" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="phone" className="text-sm">
@@ -76,8 +116,8 @@ const ApplicantInfo: React.FC = () => {
                             <Input
                                 id="phoneNum"
                                 placeholder="Enter phone number"
-                                // value={phoneNumber}
-                                // onChange={(e) => setPhoneNumber(e.target.value)}
+                                value={formData.phoneNum}
+                                onChange={(e) => setFormData({ ...formData, phoneNum: e.target.value })}
                                 required
                                 className="w-full"
                             />
@@ -88,8 +128,8 @@ const ApplicantInfo: React.FC = () => {
                                     SNS Platform
                                 </Label>
                                 <Select
-                                    value={snsPlatform}
-                                    onValueChange={setSnsPlatform}
+                                     value={formData.snsAccountId.id}
+                                     onValueChange={handleSelectChange}
                                 >
                                     <SelectTrigger id="snsPlatform" className="w-full">
                                         <SelectValue placeholder="Select SNS Platform" />
@@ -102,7 +142,6 @@ const ApplicantInfo: React.FC = () => {
                                         ))}
                                     </SelectContent>
                                 </Select>
-
                             </div>
                             <div className="col-span-8 space-y-2">
                                 <Label htmlFor="snsAccountId" className="text-sm">
@@ -110,12 +149,11 @@ const ApplicantInfo: React.FC = () => {
                                 </Label>
                                 <Input
                                     id="snsAccountId"
-                                    placeholder={`Enter your ${snsPlatform ? snsPlatforms.find(p => p.id === snsPlatform)?.name : 'SNS'} ID`}
-                                    value={snsAccountId}
-                                    onChange={(e) => setSnsAccountId(e.target.value)}
+                                    // placeholder={`Enter your ${snsPlatform ? snsPlatforms.find(p => p.id === snsPlatform)?.name : 'SNS'} ID`}
+                                    value={formData.snsAccountId.value || ''}
+                                    onChange={handleSNSChange}
                                     className="w-full"
                                 />
-
                             </div>
                         </div>
                     </div>

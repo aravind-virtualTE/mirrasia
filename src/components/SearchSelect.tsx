@@ -34,7 +34,7 @@ export default function SearchSelect({
   const filteredItems = items.filter(
     (item) =>
       item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.label.toLowerCase().includes(searchTerm.toLowerCase())
+      t(item.label).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Close the dropdown when clicking outside

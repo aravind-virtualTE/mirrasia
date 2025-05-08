@@ -363,6 +363,11 @@ export const typesOfShares = [
   "CompanyInformation.typeOfShare.preferenceShares",
 ];
 
+export const typesOfSharesObj = [
+  { id: "ordinaryShares", label: "CompanyInformation.typeOfShare.ordinaryShares" },
+  { id: "preferenceShares", label: "CompanyInformation.typeOfShare.preferenceShares" },
+];
+
 export const purposeOptions = [
   "CompanyInformation.purposeOptions.enteringBusiness",
   "CompanyInformation.purposeOptions.assetManagement",

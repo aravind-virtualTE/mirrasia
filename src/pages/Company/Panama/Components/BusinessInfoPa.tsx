@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from 'react'
 import { useAtom } from 'jotai';
 import { useTheme } from '@/components/theme-provider';
 import { Card, CardContent } from '@/components/ui/card'
@@ -8,23 +9,14 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
 import ShareholderDirectorFormPa from './PaShrDlr';
-import { typesOfShares } from '../../HongKong/constants';
+import { typesOfSharesObj } from '../../HongKong/constants';
 import { t } from 'i18next';
 import { paFormWithResetAtom } from '../PaState';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const BusinessInfoPa: React.FC = () => {
     const { theme } = useTheme();
-    const [formData] = useAtom(paFormWithResetAtom);
-    const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
-    const [otherIndustry, setOtherIndustry] = useState("");
-    const [selectedPurposes, setSelectedPurposes] = useState<string[]>([]);
-    const [otherPurpose, setOtherPurpose] = useState("");
-    const [selectedSource, setSelectedSources] = useState<string[]>([]);
-    const [otherSource, setOtherSource] = useState("");
-    // const [selectedNomiee, setSelecteNomiee] = useState<string[]>([]);
-    // const [otherNomiee, setOtherNominee] = useState("");
-
-
+    const [formData, setFormData] = useAtom(paFormWithResetAtom);
 
     const industries = [
         { id: "trade", value: "Trade" },
@@ -36,7 +28,7 @@ const BusinessInfoPa: React.FC = () => {
         { id: "online-direct", value: "Online direct sales/distribution/agency" },
         { id: "it-software", value: "IT and software development" },
         { id: "crypto", value: "Cryptocurrency related business (ICOs, exchange, wallet service, etc.)" },
-        { id: "other", value: "Other" },
+        { id: "other", value: "Other", },
     ];
 
     const purposeCompList = [
@@ -62,23 +54,6 @@ const BusinessInfoPa: React.FC = () => {
         { id: "other", value: "Other" },
     ]
 
-    const handleIndustryChange = (id: string) => {
-        setSelectedIndustries((prev) =>
-            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-        );
-    };
-
-    const handlePurposeChange = (id: string) => {
-        setSelectedPurposes((prev) =>
-            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-        );
-    };
-
-    const handleSourceChange = (id: string) => {
-        setSelectedSources((prev) =>
-            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-        );
-    };
 
     // const nomineeDirectorList = [
     //     { id: "shHolder", value: "Shareholder" },
@@ -97,9 +72,6 @@ const BusinessInfoPa: React.FC = () => {
     //     );
     // };
 
-    const handleSharesChange = (checked: boolean, purpose: string) => {
-        console.log("checked",checked,purpose)
-      };
 
     return (
         <Card>
@@ -125,18 +97,24 @@ const BusinessInfoPa: React.FC = () => {
                                     <div className="flex items-start space-x-3">
                                         <Checkbox
                                             id={`industry-${industry.id}`}
-                                            checked={selectedIndustries.includes(industry.id)}
-                                            onCheckedChange={() => handleIndustryChange(industry.id)}
+                                            checked={formData.selectedIndustry.includes(industry.id)}
+
+                                            onCheckedChange={(checked: any) => {
+                                                const updated = checked
+                                                    ? [...formData.selectedIndustry, industry.id]
+                                                    : formData.selectedIndustry.filter(id => id !== industry.id);
+                                                setFormData({ ...formData, selectedIndustry: updated });
+                                            }}
                                         />
                                         <Label className="font-normal" htmlFor={`industry-${industry.id}`} >
                                             {industry.value}
                                         </Label>
                                     </div>
-                                    {industry.id === "other" && selectedIndustries.includes("other") && (
+                                    {industry.id === "other" && formData.selectedIndustry.includes("other") && (
                                         <Input
                                             placeholder="Please specify"
-                                            value={otherIndustry}
-                                            onChange={(e) => setOtherIndustry(e.target.value)}
+                                            value={formData.otherIndustryText}
+                                            onChange={(e) => setFormData({ ...formData, otherIndustryText: e.target.value })}
                                         />
                                     )}
                                 </div>
@@ -146,7 +124,8 @@ const BusinessInfoPa: React.FC = () => {
                             <Label htmlFor="descWhat" className="text-sm font-semibold mb-2">
                                 A description of what you will be trading after incorporation, including the name of the goods, type of goods, content of the service, and form of service.<span className="text-red-500">*</span>
                             </Label>
-                            <Input type="text" id="descWhat" className="w-full p-2 border rounded-md" placeholder="Please be as specific as possible." required />
+                            <Input type="text" id="descWhat" className="w-full p-2 border rounded-md" placeholder="Please be as specific as possible." value={formData.tradeAfterIncorporation}
+                                onChange={(e) => setFormData({ ...formData, tradeAfterIncorporation: e.target.value })} />
                         </div>
                         <div className="space-y-2">
                             <Label className="text-base font-semibold">
@@ -157,18 +136,24 @@ const BusinessInfoPa: React.FC = () => {
                                     <div className="flex items-start space-x-3">
                                         <Checkbox
                                             id={`industry-${industry.id}`}
-                                            checked={selectedPurposes.includes(industry.id)}
-                                            onCheckedChange={() => handlePurposeChange(industry.id)}
+                                            checked={formData.purposePaCompany.includes(industry.id)}
+
+                                            onCheckedChange={(checked: any) => {
+                                                const updated = checked
+                                                    ? [...formData.purposePaCompany, industry.id]
+                                                    : formData.purposePaCompany.filter(id => id !== industry.id);
+                                                setFormData({ ...formData, purposePaCompany: updated });
+                                            }}
                                         />
                                         <Label className="font-normal" htmlFor={`industry-${industry.id}`} >
                                             {industry.value}
                                         </Label>
                                     </div>
-                                    {industry.id === "other" && selectedPurposes.includes("other") && (
+                                    {industry.id === "other" && formData.purposePaCompany.includes("other") && (
                                         <Input
                                             placeholder="Please specify"
-                                            value={otherPurpose}
-                                            onChange={(e) => setOtherPurpose(e.target.value)}
+                                            value={formData.otherPurposePaCompany}
+                                            onChange={(e) => setFormData({ ...formData, otherPurposePaCompany: e.target.value })}
                                         />
                                     )}
                                 </div>
@@ -186,7 +171,8 @@ const BusinessInfoPa: React.FC = () => {
                                 </Tooltip>
                             </span>
                             </Label>
-                            <Input id="listCountry" placeholder="Enter Country.." className="w-full" />
+                            <Input id="listCountry" placeholder="Enter Country.." className="w-full" value={formData.listCountry}
+                                onChange={(e) => setFormData({ ...formData, listCountry: e.target.value })} />
                         </div>
                         <div className="space-y-2">
                             <Label className="text-base font-semibold">Please select the source of funding for your Panama incorporated business from the following<span className="text-red-500 font-bold ml-1 flex">*
@@ -205,18 +191,24 @@ const BusinessInfoPa: React.FC = () => {
                                     <div className="flex items-start space-x-3">
                                         <Checkbox
                                             id={`industry-${industry.id}`}
-                                            checked={selectedSource.includes(industry.id)}
-                                            onCheckedChange={() => handleSourceChange(industry.id)}
+                                            checked={formData.sourceFunding.includes(industry.id)}
+
+                                            onCheckedChange={(checked: any) => {
+                                                const updated = checked
+                                                    ? [...formData.sourceFunding, industry.id]
+                                                    : formData.sourceFunding.filter(id => id !== industry.id);
+                                                setFormData({ ...formData, sourceFunding: updated });
+                                            }}
                                         />
                                         <Label className="font-normal" htmlFor={`industry-${industry.id}`} >
                                             {industry.value}
                                         </Label>
                                     </div>
-                                    {industry.id === "other" && selectedSource.includes("other") && (
+                                    {industry.id === "other" && formData.sourceFunding.includes("other") && (
                                         <Input
                                             placeholder="Please specify"
-                                            value={otherSource}
-                                            onChange={(e) => setOtherSource(e.target.value)}
+                                            value={formData.otherSourceFund}
+                                            onChange={(e) => setFormData({ ...formData, otherSourceFund: e.target.value })}
                                         />
                                     )}
                                 </div>
@@ -252,25 +244,21 @@ const BusinessInfoPa: React.FC = () => {
                                     </Tooltip>
                                 </span>
                             </Label>
-                            {typesOfShares.map((purpose) => (
-                                <div key={t(purpose)} className="flex items-start space-x-3">
-                                    <Checkbox
-                                        id={t(purpose)}
-                                        checked={formData.typeOfShare.includes(
-                                            t(purpose)
-                                        )}
-                                        onCheckedChange={(checked) =>
-                                            handleSharesChange(checked as boolean, t(purpose))
-                                        }
-                                    />
-                                    <Label
-                                        htmlFor={t(purpose)}
-                                        className="font-normal text-sm leading-normal cursor-pointer"
-                                    >
-                                        {t(purpose)}
-                                    </Label>
+                            <RadioGroup
+                                value={formData.typeOfShare}
+                                onValueChange={(value) =>
+                                    setFormData({ ...formData, typeOfShare: value })
+                                }
+                            >
+                                <div className="space-y-2 mt-2">
+                                    {typesOfSharesObj.map((option) => (
+                                        <div key={option.id} className="flex items-center space-x-2">
+                                            <RadioGroupItem value={option.id} id={option.id} />
+                                            <Label htmlFor={option.id}>{t(option.label)}</Label>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            </RadioGroup>
                         </div>
                         {/* <div className="space-y-2">
                             <Label className="flex items-center gap-2">If you would like to use a local nominee service, please select<span className="text-red-500 font-bold ml-1 flex">*
