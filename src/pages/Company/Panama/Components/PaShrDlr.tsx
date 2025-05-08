@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Trash2 } from 'lucide-react';
+import { HelpCircle, Trash2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import { isValidEmail } from '@/middleware';
 import { useToast } from "@/hooks/use-toast"
 import { useTranslation } from "react-i18next";
 import { paFormWithResetAtom } from '../PaState';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ShareholderDirectorProps {
     name: string;
@@ -44,6 +45,10 @@ interface LegalDirectorProps {
         value: string,
         id: string
     };
+    role?: {
+        id: string;
+        value: string;
+    };
     onDelete: () => void;
     onUpdate: (updates: Partial<Omit<LegalDirectorProps, 'onDelete' | 'onUpdate'>>) => void;
     isRemovable: boolean;
@@ -52,6 +57,12 @@ interface LegalDirectorProps {
 const roleOptions = [
     { id: 'representative', value: 'Representative' },
     { id: 'financial_officer', value: 'Financial Officer' },
+    { id: 'secretary', value: 'Secretary' },
+];
+
+const roleOptions1 = [
+    { id: 'president', value: 'President' },
+    { id: 'treasurer', value: 'Treasurer' },
     { id: 'secretary', value: 'Secretary' },
 ];
 
@@ -260,6 +271,7 @@ const LegalDirectorList: React.FC<LegalDirectorProps> = ({
     ownershipRate,
     isDirector,
     isLegalPerson,
+    role,
     onDelete,
     onUpdate,
     isRemovable,
@@ -274,7 +286,31 @@ const LegalDirectorList: React.FC<LegalDirectorProps> = ({
     return (
         <Card className="mb-4">
             <CardContent className="grid grid-cols-[2fr_2fr_2fr_2fr_auto] gap-4 items-end py-4">
-                {/* Ownership Rate */}
+                <div>
+                    <Label className="font-medium">Role</Label>
+                    <Select
+                        value={role?.id || ''}
+                        onValueChange={(selectedId) => {
+                            const selectedRole = roleOptions1.find(role => role.id === selectedId);
+                            if (selectedRole) {
+                                onUpdate({ role: selectedRole });
+                            }
+                        }}
+                    >
+                        <SelectTrigger className="input">
+                            <SelectValue placeholder="Select role">
+                                {role ? t(role.value) : ''}
+                            </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                            {roleOptions1.map(role => (
+                                <SelectItem key={role.id} value={role.id}>
+                                    {t(role.value)}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
                 <div>
                     <Label className="font-medium">{t('CompanyInformation.ownerShpRte')}</Label>
                     <Input
@@ -287,8 +323,6 @@ const LegalDirectorList: React.FC<LegalDirectorProps> = ({
                         onChange={(e) => onUpdate({ ownershipRate: parseFloat(e.target.value) })}
                     />
                 </div>
-
-                {/* Is Director */}
                 <div>
                     <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
                     <Select
@@ -312,8 +346,6 @@ const LegalDirectorList: React.FC<LegalDirectorProps> = ({
                         </SelectContent>
                     </Select>
                 </div>
-
-                {/* Is Legal Person */}
                 <div>
                     <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
                     <Select
@@ -337,8 +369,6 @@ const LegalDirectorList: React.FC<LegalDirectorProps> = ({
                         </SelectContent>
                     </Select>
                 </div>
-
-                {/* Delete Button */}
                 {isRemovable && (
                     <div className="flex items-end justify-end pb-[6px]">
                         <button
@@ -372,14 +402,15 @@ const ShareholderDirectorFormPa: React.FC = () => {
         },
     ]);
     const [legalDirectors, setLegalDirectors] = useState<LegalDirectorProps[]>([
-        {
-            ownershipRate: 0,
-            isDirector: { id: "no", value: t("AmlCdd.options.no") },
-            isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
-            onDelete: () => { },
-            onUpdate: () => { },
-            isRemovable: false,
-        },
+        // {
+        //     ownershipRate: 0,
+        //     isDirector: { id: "no", value: t("AmlCdd.options.no") },
+        //     isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
+        //     role: { id: '', value: '' },
+        //     onDelete: () => { },
+        //     onUpdate: () => { },
+        //     isRemovable: false,
+        // },
     ]);
     const [totalOwnership, setTotalOwnership] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -397,18 +428,18 @@ const ShareholderDirectorFormPa: React.FC = () => {
             setShareholders(hydratedShareholders);
         }
         if (formData.legalDirectors && formData.legalDirectors.length > 0) {
-            const hydratedShareholders = formData.legalDirectors.map((shareholder, index) => ({
+            const hydratedShareholders = formData.legalDirectors.map((shareholder, ) => ({
                 ...shareholder,
                 onDelete: () => { },
                 onUpdate: () => { },
-                isRemovable: index !== 0,
+                isRemovable: true,
             }));
             setLegalDirectors(hydratedShareholders);
         }
     }, []);
 
     useEffect(() => {
-        const filteredArray = shareholders.map(obj => ({
+        const filteredShareholders = shareholders.map(obj => ({
             name: obj.name,
             email: obj.email,
             phone: obj.phone,
@@ -417,22 +448,25 @@ const ShareholderDirectorFormPa: React.FC = () => {
             isDirector: obj.isDirector,
             isLegalPerson: obj.isLegalPerson
         }));
-        setFormData({ ...formData, shareHolders: filteredArray });
-    }, [shareholders, setFormData]);
 
-    useEffect(() => {
-        const filteredArray = legalDirectors.map(obj => ({
+        const filteredLegalDirectors = legalDirectors.map(obj => ({
             ownershipRate: obj.ownershipRate,
+            role: obj.role,
             isDirector: obj.isDirector,
             isLegalPerson: obj.isLegalPerson
         }));
-        setFormData({ ...formData, legalDirectors: filteredArray });
-    }, [legalDirectors, setFormData]);
 
-    useEffect(() => {
-        const total = shareholders.reduce((sum, shareholder) => sum + shareholder.ownershipRate, 0) + legalDirectors.reduce((sum, legalDirector) => sum + legalDirector.ownershipRate, 0);
+        const total = shareholders.reduce((sum, shareholder) => sum + (shareholder.ownershipRate || 0), 0) +
+            legalDirectors.reduce((sum, legalDirector) => sum + (legalDirector.ownershipRate || 0), 0);
+
+        setFormData({
+            ...formData,
+            shareHolders: filteredShareholders,
+            legalDirectors: filteredLegalDirectors
+        });
         setTotalOwnership(total);
-    }, [shareholders,legalDirectors]);
+
+    }, [shareholders, legalDirectors]);
 
     const addShareholder = () => {
         setShareholders([
@@ -521,11 +555,11 @@ const ShareholderDirectorFormPa: React.FC = () => {
     };
 
     const deleteLegalDirector = (index: number) => {
-        if (legalDirectors.length > 1) {
-            const newShareholders = [...legalDirectors];
-            newShareholders.splice(index, 1);
-            setLegalDirectors(newShareholders);
-        }
+        const newShareholders = [...legalDirectors];
+        newShareholders.splice(index, 1);
+        setLegalDirectors(newShareholders);
+        // if (legalDirectors.length > 1) {
+        // }
     };
 
     const updateLegalDirector = (index: number, updates: Partial<Omit<LegalDirectorProps, 'onDelete' | 'onUpdate'>>) => {
@@ -569,7 +603,7 @@ const ShareholderDirectorFormPa: React.FC = () => {
             <div className="flex justify-around mt-0">
                 <Button onClick={sendMailFunction}
                     disabled={isLoading}
-                    className="flex items-center"
+                    className="flex items-center text-xs"
                     aria-busy={isLoading}
                     aria-live="polite"
                 >{isLoading ? (
@@ -579,22 +613,41 @@ const ShareholderDirectorFormPa: React.FC = () => {
                     </>
                 ) : (<span>{t("CompanyInformation.sendInvitation")}</span>)}</Button>
                 <Button
-                    className="btn btn-primary w-fit"
+                    className="btn btn-primary w-fit text-xs"
                     onClick={addShareholder}
                 >
                     {t('CompanyInformation.addShldrDir')}
                 </Button>
             </div>
-            <div className="relative mt-2">
-                <div className="absolute top-0 right-0 mt-2 mr-2">
-                    <Button
-                        className="btn btn-primary"
+            <div className='flex flex-row justify-between'>
+                <Label className="flex items-center gap-2 mt-2">If you would like to use a local nominee service, please select<span className="text-red-500 font-bold ml-1 flex">*
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-[500px] text-base">
+                            Mandatory members (3 persons): President, Secretary, Treasurer
+                            Minimum nominee service period: 1 year
+
+                            Panama does provide a local nominee service to protect publicly available registry information. However, this is primarily for the purpose of protecting publicly available information and does not involve or represent the local nominee in all or any part of the foundation's operations. In addition, in accordance with KYC/CDD regulations, you must inform us, the virtual asset exchange or financial institution, etc. the information of the actual operator and UBO(Ultimate Beneficial Owner).
+
+                            In general, it is common to provide the services of two nominee directors in addition to the name of one client, as it can be generally interpreted that the foundation does not have any scam or impure purpose and is operated under the supervision of one representative.
+                            Cost of nominee director service (1 year):
+                            USD1,200 for 1 nominee / USD1,700 for 2 nominees / USD2,200 for 3 nominees
+                        </TooltipContent>
+                    </Tooltip>
+                </span>
+                </Label>
+                <Button
+                        className="btn btn-primary text-xs m-2"
                         onClick={addLegalDirector}
                     >
                         Add Legal Director
                     </Button>
-                </div>
-
+            </div>
+            <div className="relative mt-2">
+                {/* <div className="absolute top-0 right-0 mt-2 mr-2">
+                </div> */}
                 {legalDirectors.map((shareholder, index) => (
                     <LegalDirectorList
                         key={index}

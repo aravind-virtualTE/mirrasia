@@ -129,7 +129,7 @@ const Section9 = () => {
                             <Checkbox
                                 id={option.id}
                                 checked={formData.selectedIndustry.includes(option.id)}
-                                onCheckedChange={(checked) => {
+                                onCheckedChange={(checked: any) => {
                                     const updated = checked
                                         ? [...formData.selectedIndustry, option.id]
                                         : formData.selectedIndustry.filter(id => id !== option.id);
