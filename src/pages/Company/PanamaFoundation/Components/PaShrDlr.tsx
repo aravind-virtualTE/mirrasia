@@ -19,10 +19,10 @@ interface ShareholderDirectorProps {
     email: string;
     phone: string;
     ownershipRate: number;
-    // isDirector: {
-    //     value: string,
-    //     id: string
-    // };
+    isDirector: {
+        value: string,
+        id: string
+    };
     isLegalPerson: {
         value: string,
         id: string
@@ -37,10 +37,10 @@ interface ShareholderDirectorProps {
 }
 interface LegalDirectorProps {
     ownershipRate: number;
-    // isDirector: {
-    //     value: string,
-    //     id: string
-    // };
+    isDirector: {
+        value: string,
+        id: string
+    };
     isLegalPerson: {
         value: string,
         id: string
@@ -71,7 +71,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
     email,
     phone,
     ownershipRate,
-    // isDirector,
+    isDirector,
     isLegalPerson,
     onDelete,
     onUpdate,
@@ -200,7 +200,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                     </div>
 
                     {/* Is Director */}
-                    {/* <div>
+                    <div>
                         <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
                         <Select
                             value={isDirector.id}
@@ -222,7 +222,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                                 ))}
                             </SelectContent>
                         </Select>
-                    </div> */}
+                    </div>
 
                     {/* Is Legal Person */}
                     <div>
@@ -269,7 +269,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
 
 const LegalDirectorList: React.FC<LegalDirectorProps> = ({
     ownershipRate,
-    // isDirector,
+    isDirector,
     isLegalPerson,
     role,
     onDelete,
@@ -323,7 +323,7 @@ const LegalDirectorList: React.FC<LegalDirectorProps> = ({
                         onChange={(e) => onUpdate({ ownershipRate: parseFloat(e.target.value) })}
                     />
                 </div>
-                {/* <div>
+                <div>
                     <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
                     <Select
                         value={isDirector.id}
@@ -345,7 +345,7 @@ const LegalDirectorList: React.FC<LegalDirectorProps> = ({
                             ))}
                         </SelectContent>
                     </Select>
-                </div> */}
+                </div>
                 <div>
                     <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
                     <Select
@@ -394,7 +394,7 @@ const ShareholderDirectorFormPa: React.FC = () => {
             phone: '',
             ownershipRate: 0,
             role: { id: '', value: '' },
-            // isDirector: { id: "no", value: t("AmlCdd.options.no") },
+            isDirector: { id: "no", value: t("AmlCdd.options.no") },
             isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
             onDelete: () => { },
             onUpdate: () => { },
@@ -445,14 +445,14 @@ const ShareholderDirectorFormPa: React.FC = () => {
             phone: obj.phone,
             role: obj.role,
             ownershipRate: obj.ownershipRate,
-            // isDirector: obj.isDirector,
+            isDirector: obj.isDirector,
             isLegalPerson: obj.isLegalPerson
         }));
 
         const filteredLegalDirectors = legalDirectors.map(obj => ({
             ownershipRate: obj.ownershipRate,
             role: obj.role,
-            // isDirector: obj.isDirector,
+            isDirector: obj.isDirector,
             isLegalPerson: obj.isLegalPerson
         }));
 
@@ -477,7 +477,7 @@ const ShareholderDirectorFormPa: React.FC = () => {
                 phone: '',
                 role: { id: '', value: '' },
                 ownershipRate: 0,
-                // isDirector: { id: "no", value: t("AmlCdd.options.no") },
+                isDirector: { id: "no", value: t("AmlCdd.options.no") },
                 isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
                 onDelete: () => { },
                 onUpdate: () => { },
@@ -545,7 +545,7 @@ const ShareholderDirectorFormPa: React.FC = () => {
             ...legalDirectors,
             {
                 ownershipRate: 0,
-                // isDirector: { id: "no", value: t("AmlCdd.options.no") },
+                isDirector: { id: "no", value: t("AmlCdd.options.no") },
                 isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
                 onDelete: () => { },
                 onUpdate: () => { },

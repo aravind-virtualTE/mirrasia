@@ -14,7 +14,7 @@ const PanamaEntity: React.FC = () => {
     const entityOptions = [{ value: 'Yes', id: 'yes' },
     { value: 'No', id: 'no' }, { value: 'Other', id: 'other' }]
     
-    // console.log("formData",formData)
+    console.log("formData",formData)
 
     const handlePanamaEntity = (value: string) =>{
         const selectedItem = entityOptions.find(item => (item.value) == (value));

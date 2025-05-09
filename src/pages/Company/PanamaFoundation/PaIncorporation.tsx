@@ -8,9 +8,6 @@ import PanamaEntity from './Components/PanamaEntity';
 import BusinessInfoPa from './Components/BusinessInfoPa';
 import PaServiceAgreement from './Components/PaServiceAgrmt';
 import PaymentInformation from './Components/PaPaymentInfo';
-import api from "@/services/fetch"
-import { paymentApi } from "@/lib/api/payment"
-import { toast } from '@/hooks/use-toast';
 // import PaServiceSelection from './Components/PaServiceSelection';
 import InvoicePA from './Components/InvoicePA';
 // import PaymentInformation from './Components/SgPaymentInfo';
@@ -23,7 +20,7 @@ import { TokenData } from '@/middleware/ProtectedRoutes';
 
 const IncorporatePa: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
-    const [formData, setFormData] = useAtom(paFormWithResetAtom);
+    const [formData,] = useAtom(paFormWithResetAtom);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const token = localStorage.getItem("token") as string;
     const decodedToken = jwtDecode<TokenData>(token);
@@ -61,7 +58,7 @@ const IncorporatePa: React.FC = () => {
             active: currentSection === 5,
         },
         {
-            number: 6,
+            number:6,
             label: "Payment",
             active: currentSection === 6,
         },
@@ -77,31 +74,19 @@ const IncorporatePa: React.FC = () => {
         },
     ]
 
-    const updateDoc = async () => {
+    const updateDoc = async () =>{
         if (isSubmitting) {
             return;
         }
         setIsSubmitting(true);
         formData.userId = `${decodedToken.userId}`
         const payload = { ...formData };
-        // console.log("payload", payload)
-        try {
-            const response = await api.post("/company/pa-form", payload);
-            if (response.status === 200) {
-                console.log("formdata", response.data);
-                localStorage.setItem("companyRecordId", response.data.data._id);
-                setFormData(response.data.data)
-                window.history.pushState(
-                    {},
-                    "",
-                    `/company-register/PA/${response.data.data._id}`
-                );
-            } else {
-                console.log("error-->", response);
-            }
-        } catch (error) {
-            console.error("Submission error:", error);
-        } finally {
+        try{
+            console.log("payload",payload)
+
+        }catch(e){
+            console.log("submission", e)
+        }finally{
             setIsSubmitting(false);
         }
 
@@ -114,21 +99,6 @@ const IncorporatePa: React.FC = () => {
                 setCurrentSection(prev => prev + 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
                 break
-            case 6: {
-                const session = await paymentApi.getSession(formData.sessionId)
-                // console.log("session--->", session)
-                if (session.status === 'completed') {
-                    await updateDoc();
-                    setCurrentSection(currentSection + 1);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                } else {
-                    toast({
-                        title: "Payment Pending",
-                        description: "Please complete the payment to proceed",
-                    });
-                }
-                break;
-            }
             default:
                 await updateDoc();
                 setCurrentSection(prev => prev + 1);
@@ -180,7 +150,7 @@ const IncorporatePa: React.FC = () => {
                             {currentSection === 6 && <PaymentInformation />}
                             {currentSection === 7 && <InfoForIncorpoPA />}
                             {currentSection === 8 && <PaFinalSection />}
-
+                           
                         </motion.div>
                     </AnimatePresence>
                 </div>

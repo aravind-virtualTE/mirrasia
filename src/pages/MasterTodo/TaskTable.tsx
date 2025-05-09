@@ -1,7 +1,5 @@
 import { useAtom } from 'jotai';
-import { Task, tasksAtom, createTaskFormAtom, users,
-    //  deleteTask,
-    statusColors, priorityColors } from './mTodoStore';
+import { Task, tasksAtom, createTaskFormAtom, users, deleteTask, statusColors, priorityColors } from './mTodoStore';
 import { Edit, Flag, Trash2, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
@@ -65,17 +63,9 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
 
     const confirmDelete = async () => {
         if (taskToDelete?._id) {
-            // await deleteTask(taskToDelete._id);
+            await deleteTask(taskToDelete._id);
             setAllTasks((prevTasks) =>
-                prevTasks.map((task) => {
-                    if (task._id === taskToDelete._id) {
-                        return {
-                            ...task, 
-                            status: 'COMPLETED', 
-                        };
-                    }
-                    return task;
-                })
+                prevTasks.filter((task) => task._id !== taskToDelete._id)
             );
         }
         setDeleteDialogOpen(false);
@@ -162,6 +152,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
 
         return 0;
     });
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+
     // console.log("tasks--->", tasks)
     return (
         <>
@@ -263,14 +255,14 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                         >
                                             <Edit className="h-3 w-3" />
                                         </Button>
-                                        <Button
+                                        {task.status == 'COMPLETED' && user.role == 'master' && <Button
                                             variant="ghost"
                                             size="sm"
                                             className="h-6 w-6 p-0"
                                             onClick={(e) => handleDeleteClick(task, e)}
                                         >
                                             <Trash2 className="h-3 w-3 text-red-500" />
-                                        </Button>
+                                        </Button>}
                                         <Button
                                             variant="ghost"
                                             size="sm"
@@ -292,8 +284,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                     title="Delete Task"
                     description={
                         <>
-                            Are you sure you want move task to Delete{" "}
-                            {/* <span className="font-medium text-red-600">{taskToDelete?.name}</span>? */}
+                            Are you sure you want to Delete{" "}
+                            <span className="font-medium text-red-600">{taskToDelete?.name}</span>?
                         </>
                     }
                     confirmText="Delete"

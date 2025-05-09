@@ -32,10 +32,10 @@ export interface UsaFormData {
       value: string,
       id: string
     };
-    // isDirector: {
-    //   value: string,
-    //   id: string
-    // }
+    isDirector: {
+      value: string,
+      id: string
+    }
     isLegalPerson: {
       value: string,
       id: string
@@ -48,10 +48,10 @@ export interface UsaFormData {
       value: string,
       id: string
     };
-    // isDirector: {
-    //   value: string,
-    //   id: string
-    // }
+    isDirector: {
+      value: string,
+      id: string
+    }
     isLegalPerson: {
       value: string,
       id: string
