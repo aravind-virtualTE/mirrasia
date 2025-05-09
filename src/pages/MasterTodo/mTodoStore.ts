@@ -40,7 +40,7 @@ export interface Task {
 
 export const tasksAtom = atom<Task[]>([]);
 
-export const viewModeAtom = atom<'expanded' | 'grouped'>('expanded');
+export const viewModeAtom = atom<'expanded' | 'grouped' | 'completed'>('expanded');
 
 export interface CreateTaskFormState {
   taskName: string;

@@ -1,5 +1,7 @@
 import { useAtom } from 'jotai';
-import { Task, tasksAtom, createTaskFormAtom, users, deleteTask, statusColors, priorityColors } from './mTodoStore';
+import { Task, tasksAtom, createTaskFormAtom, users,
+    //  deleteTask,
+    statusColors, priorityColors } from './mTodoStore';
 import { Edit, Flag, Trash2, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
@@ -63,9 +65,17 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
 
     const confirmDelete = async () => {
         if (taskToDelete?._id) {
-            await deleteTask(taskToDelete._id);
-            setAllTasks((prevTasks: Task[]) =>
-                prevTasks.filter((task) => task._id !== taskToDelete._id)
+            // await deleteTask(taskToDelete._id);
+            setAllTasks((prevTasks) =>
+                prevTasks.map((task) => {
+                    if (task._id === taskToDelete._id) {
+                        return {
+                            ...task, 
+                            status: 'COMPLETED', 
+                        };
+                    }
+                    return task;
+                })
             );
         }
         setDeleteDialogOpen(false);
@@ -282,8 +292,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                     title="Delete Task"
                     description={
                         <>
-                            Are you sure you want to delete{" "}
-                            <span className="font-medium text-red-600">{taskToDelete?.name}</span>?
+                            Are you sure you want move task to Delete{" "}
+                            {/* <span className="font-medium text-red-600">{taskToDelete?.name}</span>? */}
                         </>
                     }
                     confirmText="Delete"
