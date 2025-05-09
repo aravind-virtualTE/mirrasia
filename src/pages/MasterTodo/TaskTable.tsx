@@ -156,30 +156,41 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     return (
         <>
             <div className="mt-2 rounded-md border">
-                <Table className="compact-table">
+                <Table className="compact-table w-full table-fixed">
                     <TableHeader className="bg-gray-100">
                         <TableRow>
-                            <TableHead className="w-[5px]">Status</TableHead>
-                            <TableHead className="w-[300px]">Task</TableHead>
-                            <TableHead className="w-[80px]">Assignee</TableHead>
+                            <TableHead className="w-[80px]">Status</TableHead>
+                            <TableHead className="w-auto">Task</TableHead>
+                            <TableHead className="w-[100px]">Assignee</TableHead>
                             <TableHead
-                                className="w-[80px] cursor-pointer"
-                                onClick={() => handleSort('dueDate')}
+                                className="w-[120px] cursor-pointer"
+                                onClick={() => handleSort("dueDate")}
                             >
                                 <div className="flex items-center">
-                                    Due Date {sortField === 'dueDate' && (sortOrder === 'asc' ? <ChevronUp className="ml-1 h-4 w-4" /> : <ChevronDown className="ml-1 h-4 w-4" />)}
+                                    Due Date{" "}
+                                    {sortField === "dueDate" &&
+                                        (sortOrder === "asc" ? (
+                                            <ChevronUp className="ml-1 h-4 w-4" />
+                                        ) : (
+                                            <ChevronDown className="ml-1 h-4 w-4" />
+                                        ))}
                                 </div>
                             </TableHead>
                             <TableHead
-                                className="w-[80px] cursor-pointer"
-                                onClick={() => handleSort('priority')}
+                                className="w-[100px] cursor-pointer"
+                                onClick={() => handleSort("priority")}
                             >
                                 <div className="flex items-center">
-
-                                    Priority {sortField === 'priority' && (sortOrder === 'asc' ? <ChevronUp className="ml-1 h-4 w-4" /> : <ChevronDown className="ml-1 h-4 w-4" />)}
+                                    Priority{" "}
+                                    {sortField === "priority" &&
+                                        (sortOrder === "asc" ? (
+                                            <ChevronUp className="ml-1 h-4 w-4" />
+                                        ) : (
+                                            <ChevronDown className="ml-1 h-4 w-4" />
+                                        ))}
                                 </div>
                             </TableHead>
-                            <TableHead className="w-[80px]">Actions</TableHead>
+                            <TableHead className="w-[100px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -187,14 +198,18 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                             <TableRow
                                 onClick={() => handleRowClick(task)}
                                 key={task._id}
-                                className="h-12 cursor-pointer">
-                                <TableCell className="py-1 max-w-[5px]">
-                                    <Badge variant="outline" className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}>
+                                className="h-12 cursor-pointer"
+                            >
+                                <TableCell className="py-1">
+                                    <Badge
+                                        variant="outline"
+                                        className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}
+                                    >
                                         {task.status}
                                     </Badge>
                                 </TableCell>
-                                <TableCell className="py-1 max-w-[300px]">
-                                    <div className="flex items-center justify-between w-full ">
+                                <TableCell className="py-1">
+                                    <div className="flex items-center justify-between w-full">
                                         <div className="flex flex-col flex-1 min-w-0 mr-2">
                                             <span
                                                 className="text-base font-semibold truncate"
@@ -213,20 +228,23 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                         )}
                                     </div>
                                 </TableCell>
-                                <TableCell className="py-1">
-                                    {renderAssignees(task.assignees)}
+                                <TableCell className="py-1 text-xs">{renderAssignees(task.assignees)}</TableCell>
+                                <TableCell className="py-1 text-sm">
+                                    {task.dueDate
+                                        ? format(new Date(task.dueDate), "dd MMM yyyy")
+                                        : "No due date"}
                                 </TableCell>
                                 <TableCell className="py-1 text-sm">
-                                    {task.dueDate ? format(new Date(task.dueDate), "dd MMM yyyy") : "No due date"}
-                                </TableCell>
-                                <TableCell className="py-1">
                                     <div className="flex items-center gap-1">
-                                        <Flag className={`h-3 w-3 ${priorityColors[task.priority]}`} fill={'currentColor'} />
+                                        <Flag
+                                            className={`h-3 w-3 ${priorityColors[task.priority]}`}
+                                            fill={"currentColor"}
+                                        />
                                         <span className="text-sm">{task.priority}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell className="py-1" onClick={(e) => e.stopPropagation()}>
-                                    <div className="flex gap-1 cursor-pointer">
+                                    <div className="flex space-x-1">
                                         <Button
                                             variant="ghost"
                                             size="sm"
@@ -257,6 +275,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                         ))}
                     </TableBody>
                 </Table>
+
                 <ConfirmDialog
                     open={deleteDialogOpen}
                     onOpenChange={setDeleteDialogOpen}
