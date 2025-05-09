@@ -7,13 +7,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import IncorporationForm from './HongKong/IncorporationForm';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
-import { getIncorporationListByCompId, getIncorporationListByUserId, getUsIncorpoDataById } from '@/services/dataFetch';
+import { getIncorporationListByCompId, getIncorporationListByUserId, getUsIncorpoDataById,getPaIncorpoDataById } from '@/services/dataFetch';
 import IncorporateUSACompany from './USA/IncorporateUSCompany';
 import { Card, CardContent } from '@/components/ui/card';
 import { usaFormWithResetAtom } from './USA/UsState';
 import { useTranslation } from "react-i18next";
 import IncorporateSg from './Singapore/IncorporateSg';
 import IncorporatePa from './Panama/PaIncorporation';
+import { paFormWithResetAtom } from './Panama/PaState';
 const CompanyRegistration = () => {
     const { t } = useTranslation();
     const [countryState, setCountryState] = useAtom(countryAtom);
@@ -23,6 +24,7 @@ const CompanyRegistration = () => {
     const decodedToken = jwtDecode<TokenData>(token);
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     const [ ,setFormData] = useAtom(usaFormWithResetAtom);
+    const [ ,setPAFormData] = useAtom(paFormWithResetAtom);
     const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
     useEffect(() => {
         if (id && countryCode == "HK") {
@@ -59,6 +61,17 @@ const CompanyRegistration = () => {
             setCountryState({
                 code: 'US', name: 'United States'
              });
+        }
+        else if(id && countryCode == "PA") {
+
+            async function getPAData(){
+                return await getPaIncorpoDataById(`${id}`)
+            }
+            getPAData().then((result) => {
+                // console.log("result-->", result);
+                setPAFormData(result)
+            })
+            setCountryState({code: 'PA', name: 'Panama'});
         }
         else if (id && countryCode == "SG") {
             setCountryState({
