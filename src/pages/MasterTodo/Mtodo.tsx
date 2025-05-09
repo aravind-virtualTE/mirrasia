@@ -25,12 +25,10 @@ const ToDoList = () => {
                 // console.log("response--->", response)
                 setListState(response);
             })
-             const result = await getIncorporationList()
-             setAllList(result.allCompanies)
+            const result = await getIncorporationList()
+            setAllList(result.allCompanies)
         }
         fetchUser()
-        //   if (user.role === 'master') {
-        //   }
     }, [])
 
     const createTaskAction = () => {
@@ -60,6 +58,14 @@ const ToDoList = () => {
                     >
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Expand
+                    </Button>
+                    <Button
+                        variant={viewMode === "completed" ? "default" : "outline"}
+                        onClick={() => setViewMode("completed")}
+                        className="h-8 px-3 text-xs"
+                    >
+                        {/* <CheckCircle className="mr-2 h-4 w-4" /> */}
+                        Deleted
                     </Button>
                 </div>
 

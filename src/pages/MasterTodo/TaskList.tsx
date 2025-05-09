@@ -28,8 +28,6 @@ const GroupedTasks = ({ tasks }: { tasks: Task[] }) => {
                     );
                 })}
             </Accordion>
-
-            {/* Task Detail Popup at GroupedTasks level */}
             {popupTask && (
                 <TaskDetailPopup
                     taskId={popupTask?._id ?? null}
@@ -44,9 +42,15 @@ export const TaskList = () => {
     const [tasks] = useAtom(tasksAtom);
     const [viewMode] = useAtom(viewModeAtom);
 
-    return viewMode === 'expanded' ? (
-        <TaskTable tasks={tasks} />
-    ) : (
-        <GroupedTasks tasks={tasks} />
-    );
+    const completedTasks = tasks.filter((task) => task.status === 'COMPLETED');
+    const normalTasks = tasks.filter((task) => task.status !== 'COMPLETED');
+
+    switch (viewMode) {
+        case 'expanded':
+            return <TaskTable tasks={normalTasks} />; 
+        case 'completed':
+            return <TaskTable tasks={completedTasks} />;
+        default:
+            return <GroupedTasks tasks={tasks} />;
+    }
 };
