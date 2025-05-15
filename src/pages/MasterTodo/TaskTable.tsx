@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom } from 'jotai';
 import { Task, tasksAtom, createTaskFormAtom, users, deleteTask, statusColors, priorityColors } from './mTodoStore';
 import { Edit, Flag, Trash2, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
@@ -32,7 +33,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     const [popupTask, setPopupTask] = useState<Task | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
-    const [sortField, setSortField] = useState<'dueDate' | 'priority' | null>(null);
+    const [sortField, setSortField] = useState<'dueDate' | 'priority' | 'assignees' | null>(null);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
     const handleEditClick = (task: Task, e: React.MouseEvent) => {
@@ -118,7 +119,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         )
     }
 
-    const handleSort = (field: 'dueDate' | 'priority') => {
+    const handleSort = (field: 'dueDate' | 'priority' | 'assignees') => {
         if (sortField === field) {
             setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
         } else {
@@ -127,6 +128,31 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         }
     };
 
+    // const sortedTasks = [...tasks].sort((a, b) => {
+    //     if (!sortField) return 0;
+
+    //     const aVal = a[sortField];
+    //     const bVal = b[sortField];
+
+    //     // Handle undefined or null values
+    //     if (!aVal) return sortOrder === 'asc' ? 1 : -1;
+    //     if (!bVal) return sortOrder === 'asc' ? -1 : 1;
+
+    //     if (sortField === 'dueDate') {
+    //         const aDate = new Date(aVal).getTime();
+    //         const bDate = new Date(bVal).getTime();
+    //         return sortOrder === 'asc' ? aDate - bDate : bDate - aDate;
+    //     }
+
+    //     if (sortField === 'priority') {
+    //         const priorityMap = { Low: 1, Medium: 2, High: 3, Urgent: 4 };
+    //         return sortOrder === 'asc'
+    //             ? priorityMap[aVal as keyof typeof priorityMap] - priorityMap[bVal as keyof typeof priorityMap]
+    //             : (priorityMap[bVal as keyof typeof priorityMap] - priorityMap[aVal as keyof typeof priorityMap]);
+    //     }
+
+    //     return 0;
+    // });
     const sortedTasks = [...tasks].sort((a, b) => {
         if (!sortField) return 0;
 
@@ -137,9 +163,10 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         if (!aVal) return sortOrder === 'asc' ? 1 : -1;
         if (!bVal) return sortOrder === 'asc' ? -1 : 1;
 
+        // Special handling for different fields
         if (sortField === 'dueDate') {
-            const aDate = new Date(aVal).getTime();
-            const bDate = new Date(bVal).getTime();
+            const aDate = aVal instanceof Date ? aVal.getTime() : new Date(aVal as string | number).getTime();
+            const bDate = bVal instanceof Date ? bVal.getTime() : new Date(bVal as string | number).getTime();
             return sortOrder === 'asc' ? aDate - bDate : bDate - aDate;
         }
 
@@ -147,9 +174,31 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
             const priorityMap = { Low: 1, Medium: 2, High: 3, Urgent: 4 };
             return sortOrder === 'asc'
                 ? priorityMap[aVal as keyof typeof priorityMap] - priorityMap[bVal as keyof typeof priorityMap]
-                : (priorityMap[bVal as keyof typeof priorityMap] - priorityMap[aVal as keyof typeof priorityMap]);
+                : priorityMap[bVal as keyof typeof priorityMap] - priorityMap[aVal as keyof typeof priorityMap];
         }
 
+        if (sortField === 'assignees') {
+            const getFirstAssigneeName = (task: any) => {
+                return task.assignees?.length
+                    ? task.assignees
+                        .map((a: any) => a.name.toLowerCase())
+                        .sort()[0] || ''
+                    : '';
+            };
+
+            const aName = getFirstAssigneeName(a);
+            const bName = getFirstAssigneeName(b);
+
+            if (aName < bName) return sortOrder === 'asc' ? -1 : 1;
+            if (aName > bName) return sortOrder === 'asc' ? 1 : -1;
+            return 0;
+        }
+
+        // Default string comparison
+        const aStr = String(aVal).toLowerCase();
+        const bStr = String(bVal).toLowerCase();
+        if (aStr < bStr) return sortOrder === 'asc' ? -1 : 1;
+        if (aStr > bStr) return sortOrder === 'asc' ? 1 : -1;
         return 0;
     });
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
@@ -163,7 +212,20 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                         <TableRow>
                             <TableHead className="w-[80px]">Status</TableHead>
                             <TableHead className="w-auto">Task</TableHead>
-                            <TableHead className="w-[100px]">Assignee</TableHead>
+                            <TableHead
+                                className="w-[100px] cursor-pointer"
+                                onClick={() => handleSort("assignees")}
+                            >
+                                <div className="flex items-center">
+                                    Assignee{" "}
+                                    {sortField === "assignees" &&
+                                        (sortOrder === "asc" ? (
+                                            <ChevronUp className="ml-1 h-4 w-4" />
+                                        ) : (
+                                            <ChevronDown className="ml-1 h-4 w-4" />
+                                        ))}
+                                </div>
+                            </TableHead>
                             <TableHead
                                 className="w-[120px] cursor-pointer"
                                 onClick={() => handleSort("dueDate")}
@@ -195,6 +257,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                             <TableHead className="w-[100px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
+
                     <TableBody>
                         {sortedTasks.map((task) => (
                             <TableRow
