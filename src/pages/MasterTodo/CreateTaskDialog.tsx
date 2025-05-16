@@ -16,13 +16,11 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon, Flag, X, Check, ChevronDown } from 'lucide-react';
-// import { Textarea } from '@/components/ui/textarea';
 import { useState, useRef, useEffect } from 'react';
 import { allCompListAtom } from '@/services/state';
 import { fetchUsers } from '@/services/dataFetch';
 import { projectsAtom } from '../dashboard/Admin/Projects/ProjectAtom';
 import { RichTextEditor } from "@/components/rich-text-editor"
-
 interface CreateTaskDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -38,7 +36,7 @@ export const CreateTaskDialog = ({
     isEditMode = false,
     taskToEdit,
     disbleCompany = false,
-    disbleProject  = false
+    disbleProject = false
 }: CreateTaskDialogProps) => {
     const [tasks, setTasks] = useAtom(tasksAtom);
     const [formState, setFormState] = useAtom(createTaskFormAtom);
@@ -228,7 +226,11 @@ export const CreateTaskDialog = ({
         }
     };
     // console.log("formState.selectedProject",filteredCompanies)
+    // console.log("user",user)
     const projectsList = projects.map((project) => ({ id: project._id, name: project.projectName }))
+    const allowedStatuses = user.role === 'master'
+    ? statuses
+    : statuses.filter((s) => s.label !== 'COMPLETED');
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-[900px]">
@@ -250,32 +252,29 @@ export const CreateTaskDialog = ({
                         maxLength={80}
                         required
                     />
-                    {/* <Textarea
-                        id="description"
+                    <RichTextEditor
                         value={formState.description}
-                        onChange={(e) => setFormState({ ...formState, description: e.target.value })}
-                        placeholder="Enter task description"
+                        onChange={(value) => setFormState({ ...formState, description: value })}
+                        placeholder=""
                         className="w-full min-h-[150px]"
-                    /> */}
-                        <RichTextEditor
-                            value={formState.description}
-                            onChange={(value) => setFormState({ ...formState, description: value })}
-                            placeholder=""
-                            className="w-full min-h-[150px]"
-                        />
+                    />
                     <div className="relative">
                     </div>
                     {/* Status */}
                     <div className="grid grid-cols-2 gap-4">
                         <Select
                             value={formState.status}
-                            onValueChange={(value: TaskStatus) => setFormState({ ...formState, status: value })}
+                            // onValueChange={(value: TaskStatus) => setFormState({ ...formState, status: value })}
+                            onValueChange={(value: TaskStatus) => {
+                                if (value === 'COMPLETED' && user.role !== 'master') return;
+                                setFormState({ ...formState, status: value });
+                            }}
                         >
                             <SelectTrigger id="status" className="w-full">
                                 <SelectValue>{formState.status}</SelectValue>
                             </SelectTrigger>
                             <SelectContent>
-                                {statuses.map((s) => (
+                                {allowedStatuses.map((s) => (
                                     <SelectItem key={s.label} value={s.label}>
                                         {s.label}
                                     </SelectItem>
