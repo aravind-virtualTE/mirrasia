@@ -162,7 +162,7 @@ const ServiceAgreementDocument: React.FC = () => {
   //   }
   // }
 
-  console.log("fullAgreementSections", fullAgreementSections)
+  // console.log("fullAgreementSections", fullAgreementSections)
 
   return (
     <div className="mx-auto p-1 space-y-6">

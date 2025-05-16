@@ -53,7 +53,7 @@ const IncorporationForm = () => {
     const steps = [
         {
             number: 1,
-            label:t("compFormation.appInfo"),
+            label: t("compFormation.appInfo"),
             active: currentSection === 1,
         },
         { number: 2, label: t("compFormation.amlcd"), active: currentSection === 2 },
@@ -104,8 +104,8 @@ const IncorporationForm = () => {
                         console.log("response.data.data", response.data.data);
                         updateCompanyData(response.data.data);
                         window.history.pushState(
-                            {}, 
-                            "", 
+                            {},
+                            "",
                             `/company-register/${response.data.data.country.code}/${response.data.data._id}`
                         );
                     }
@@ -162,13 +162,46 @@ const IncorporationForm = () => {
             }
         }
         else if (currentSection === 3) {
+            const businessPd = finalForm.companyBusinessInfo.business_product_description
+            const business_purpose = finalForm.companyBusinessInfo.business_purpose
+            const finYearEnd = finalForm.accountingTaxInfo.finYearEnd
+            const bookKeepCycle = finalForm.accountingTaxInfo.bookKeepCycle
+            const implementSoftware = finalForm.accountingTaxInfo.implementSoftware
+            const anySoftwareInUse = finalForm.accountingTaxInfo.anySoftwareInUse
             const emptyNameShareholders = shareHolderAtom.shareHolders.filter(
                 (shareholder) => !shareholder.name.trim()
             );
-            if (emptyNameShareholders.length > 0) {
+            if (businessPd == '' && business_purpose.length == 0) {
+                toast({
+                    title: "Fill Details.",
+                    description: "Fill the required fields Description, establishment Details",
+                });
+                return
+            }
+            if (emptyNameShareholders.length > 0 || shareHolderAtom.designatedContactPersonAtom == "") {
                 toast({
                     title: "Fill Details (Shareholder(s) / Director(s))",
                     description: "Fill the required fields Shareholder(s) / Director(s)",
+                });
+                return
+            }
+            else if (finYearEnd == '' || bookKeepCycle == undefined || implementSoftware == undefined || anySoftwareInUse == '') {
+                toast({
+                    title: "Fill Details.",
+                    description: "Fill the required fields in Accounting and taxation",
+                });
+                return
+            } else {
+                await updateDoc();
+                setCurrentSection(currentSection + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        }
+        else if (currentSection === 4) {
+            if (finalForm.serviceAgreementConsent == false || finalForm.serviceAgreementConsent == undefined) {
+                toast({
+                    title: "Consent Details",
+                    description: "Please consent to the service agreement",
                 });
             } else {
                 await updateDoc();
@@ -176,19 +209,7 @@ const IncorporationForm = () => {
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }
         }
-        else if (currentSection === 4){
-            if(finalForm.serviceAgreementConsent == false || finalForm.serviceAgreementConsent == undefined){
-                toast({
-                    title: "Consent Details",
-                    description: "Please consent to the service agreement",
-                });
-            }else{
-                await updateDoc();
-                setCurrentSection(currentSection + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-        }
-         else if (
+        else if (
             currentSection === 2 &&
             Object.values(businessInfoHkCompany).every((value) => value === "no")
         ) {
@@ -196,15 +217,15 @@ const IncorporationForm = () => {
             setCurrentSection(currentSection + 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
-        else if (currentSection === 7){
+        else if (currentSection === 7) {
             // console.log("form submission", finalForm);
             const session = await paymentApi.getSession(finalForm.sessionId)
             // console.log("session--->", session)
-            if(session.status === 'completed'){
+            if (session.status === 'completed') {
                 await updateDoc();
                 setCurrentSection(currentSection + 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
-            }else{
+            } else {
                 toast({
                     title: "Payment Pending",
                     description: "Please complete the payment to proceed",
