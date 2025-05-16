@@ -77,37 +77,67 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         setPopupTask(task);
     };
 
+    const getInitials = (name: string) => {
+        const parts = name.trim().split(" ");
+        return parts.length > 1
+            ? parts[0][0] + parts[1][0]
+            : parts[0].substring(0, 2).toUpperCase();
+    };
+
     const renderAssignees = (assigneeNames: { id?: string; name: string }[]) => {
+        // console.log("assigneeNames", assigneeNames)
         const MAX_AVATARS = 3;
+        const count = assigneeNames.length;
+        if (count === 0) return null;
         if (assigneeNames.length === 0) return null;
 
-        const tooltipText = assigneeNames.map((a) => a.name).join(", ");
+        if (count <= 2) {
+            return (
+                <div className=" text-gray-800">
+                    {assigneeNames.map((a, index) => (
+                        <span key={a.id || index}>
+                            {a.name}
+                            {index < count - 1 && ", "}
+                        </span>
+                    ))}
+                </div>
+            );
+        }
 
         return (
-            <TooltipProvider delayDuration={0}>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <div className="flex items-center space-x-2 cursor-pointer">
-                            {assigneeNames.slice(0, MAX_AVATARS).map((item, index) => (
-                                <Avatar key={index} className="h-6 w-6 border-2 border-white">
-                                    <AvatarFallback className="text-xs">
-                                        {item.name.charAt(0)}
-                                    </AvatarFallback>
-                                </Avatar>
-                            ))}
+            <div className="flex items-center space-x-2">
+                {assigneeNames.slice(0, MAX_AVATARS).map((item, index) => (
+                    <TooltipProvider key={index} delayDuration={0}>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div>
+                                    <Avatar className="h-6 w-6 border-2 border-white bg-muted">
+                                        <AvatarFallback className="text-[10px] font-medium">
+                                            {getInitials(item.name)}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent>{item.name}</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                ))}
 
-                            {assigneeNames.length > MAX_AVATARS && (
-                                <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-200 text-xs font-medium text-gray-500 border-2 border-white">
+                {assigneeNames.length > MAX_AVATARS && (
+                    <TooltipProvider delayDuration={0}>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-200 text-[10px] font-medium text-gray-600 border-2 border-white cursor-default">
                                     +{assigneeNames.length - MAX_AVATARS}
                                 </div>
-                            )}
-                        </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs break-words">
-                        {tooltipText}
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                {assigneeNames.slice(MAX_AVATARS).map((a) => a.name).join(", ")}
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                )}
+            </div>
         );
     };
 
@@ -213,7 +243,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                             <TableHead className="w-[80px]">Status</TableHead>
                             <TableHead className="w-auto">Task</TableHead>
                             <TableHead
-                                className="w-[100px] cursor-pointer"
+                                className="w-[130px] cursor-pointer"
                                 onClick={() => handleSort("assignees")}
                             >
                                 <div className="flex items-center">

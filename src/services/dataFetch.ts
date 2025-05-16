@@ -262,6 +262,15 @@ export const deleteCompanyRecord = async (data: { _id: string | null;country: st
   }
 };
 
+export const markDeleteCompanyRecord = async (data: { _id: string | null;country: string}) => {
+  try {
+    const response = await api.post('company/markDeleteCompanyById',data);
+    return response.data;
+  } catch (error) {
+    console.error("Error sending invite to significant director:", error);
+  }
+};
+
 export const getPaIncorpoDataById = async (userId: string) => {
   try {
     const response = await api.get(`company/pa-form/${userId}`);

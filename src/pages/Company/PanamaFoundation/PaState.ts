@@ -87,7 +87,7 @@ export interface UsaFormData {
   sourceFunding: string[],
   otherSourceFund: string
   specificProvisions: string
-
+  isDeleted : boolean
 }
 
 const initialFormState: UsaFormData = {
@@ -146,7 +146,8 @@ const initialFormState: UsaFormData = {
   listCountry: '',
   sourceFunding: [],
   otherSourceFund: '',
-  specificProvisions : ''
+  specificProvisions : '',
+  isDeleted : false
 
 };
 
