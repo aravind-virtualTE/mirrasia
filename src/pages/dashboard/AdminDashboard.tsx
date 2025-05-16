@@ -19,7 +19,7 @@ import {
   ChevronDown,
   XCircle, Trash2
 } from "lucide-react"
-import { deleteCompanyRecord, getIncorporationList } from "@/services/dataFetch"
+import { deleteCompanyRecord, getIncorporationList, markDeleteCompanyRecord } from "@/services/dataFetch"
 import { useAtom, useSetAtom } from "jotai"
 import { allCompListAtom, companyIncorporationList } from "@/services/state"
 import { cn } from "@/lib/utils"
@@ -47,6 +47,7 @@ const AdminDashboard = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20
+  const [activeTab, setActiveTab] = useState("active");
 
   useEffect(() => {
     setUsaReset('reset')
@@ -134,8 +135,11 @@ const AdminDashboard = () => {
     'Waiting for Incorporation'
   ]
   const getSortedData = () => {
-    const sortedData = [...allList]
-    // console.log("sortedData",sortedData.length)
+    const initialFilter = allList.filter(
+      company => activeTab === "active" ? !company.isDeleted : company.isDeleted
+    );
+    const sortedData = [...initialFilter]
+    console.log("sortedData",sortedData)
     const filterData = sortedData.filter((e) => active_status.includes((e as { status: string }).status))
     // console.log("filterData",filterData.length)
 
@@ -172,16 +176,6 @@ const AdminDashboard = () => {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = user ? { role: user.role } : { role: "" };
 
-  // const handleDeleteClick = async (companyId: string, countryCode: string) => {
-  //     const result = await deleteCompanyRecord({ _id: companyId, country: countryCode })
-  //     // console.log("result", result)
-  //     if (result) {
-  //       // Filter out the deleted company and update the atom
-  //       const updatedList = allList.filter(company => company._id !== companyId);
-  //       setAllList(updatedList);
-  //     }
-  // }
-
   const handleDeleteClick = (companyId: string, countryCode: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setTaskToDelete({ companyId, countryCode });
@@ -195,6 +189,22 @@ const AdminDashboard = () => {
       if (result) {
         // Filter out the deleted company and update the atom
         const updatedList = allList.filter(company => company._id !== taskToDelete.companyId);
+        setAllList(updatedList);
+      }
+    }
+    setDeleteDialogOpen(false);
+    setTaskToDelete(null);
+  };
+
+  const markDelete = async () => {
+    if (taskToDelete?.companyId) {
+      const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode })
+      if (result) {
+        const updatedList = allList.map(company =>
+          company._id === taskToDelete.companyId
+            ? { ...company, isDeleted: true }
+            : company
+        );
         setAllList(updatedList);
       }
     }
@@ -222,7 +232,18 @@ const AdminDashboard = () => {
       {/* Companies Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Incorporation Process</CardTitle>
+          <CardTitle><button
+            className={`px-4 py-2 ${activeTab === "active" ? "border-b-2 border-blue-500 font-medium" : "text-gray-500"}`}
+            onClick={() => setActiveTab("active")}
+          >
+            Incorporation Process
+          </button>
+            <button
+              className={`px-4 py-2 ${activeTab === "deleted" ? "border-b-2 border-blue-500 font-medium" : "text-gray-500"}`}
+              onClick={() => setActiveTab("deleted")}
+            >
+              Marked As Deleted
+            </button></CardTitle>
         </CardHeader>
         <CardContent>
           <div className="border rounded-md overflow-hidden">
@@ -331,7 +352,7 @@ const AdminDashboard = () => {
                   }
 
                   let date = typedCompany.incorporationDate
-                  if (date !== null) {
+                  if (date !== null && date !== '') {
                     const [year, month, day] = date.split("T")[0].split("-")
                     date = `${day}-${month}-${year}`
                   }
@@ -383,7 +404,6 @@ const AdminDashboard = () => {
                       {currentUser.role == "master" && <TableCell className="py-2">
                         <button
                           className="text-red-500 hover:red-blue-700 transition"
-                          // onClick={() => handleDeleteClick(typedCompany._id, typedCompany.country.code)}
                           onClick={(e) => handleDeleteClick(typedCompany._id, typedCompany.country.code, e)}
                         >
                           <Trash2 size={16} />
@@ -414,15 +434,13 @@ const AdminDashboard = () => {
             <ConfirmDialog
               open={deleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}
-              title="Delete Task"
-              description={
-                <>
-                  Are you sure you want to delete company?
-                </>
+              title= {activeTab == 'active' ? "Mark as Delete" : "Delete Task"}
+              description={         
+                activeTab == 'active'? 'Are you sure you want to mark as delete?' : ' Are you sure you want to delete company?'    
               }
               confirmText="Delete"
               cancelText="Cancel"
-              onConfirm={confirmDelete}
+              onConfirm={activeTab == 'active' ? markDelete : confirmDelete}
             />
           </div>
         </CardContent>
