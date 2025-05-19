@@ -171,7 +171,7 @@ const IncorporationForm = () => {
             const emptyNameShareholders = shareHolderAtom.shareHolders.filter(
                 (shareholder) => !shareholder.name.trim()
             );
-            if (businessPd == '' && business_purpose.length == 0) {
+            if (businessPd == '' || business_purpose.length == 0) {
                 toast({
                     title: "Fill Details.",
                     description: "Fill the required fields Description, establishment Details",
