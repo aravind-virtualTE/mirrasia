@@ -74,6 +74,9 @@ const LoginComponent: React.FC = () => {
 
           if (response.user.role === 'admin' || response.user.role === 'master') {
             navigate('/admin-dashboard');
+          }
+          else if (response.user.role === 'hk_shdr') {
+            navigate('/viewboard');
           } else {
             navigate('/dashboard');
           }
@@ -117,7 +120,7 @@ const LoginComponent: React.FC = () => {
   const handlePasswordReset = async () => {
     setResetStatus('');
     try {
-      await resetPassword(resetEmail, newPassword);      
+      await resetPassword(resetEmail, newPassword);
       setResetStatus('Password updated successfully.');
     } catch (err) {
       console.error('Error resetting password:', err);
