@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SAgrementPdf from "../HongKong/ServiceAgreement/SAgrementPdf";
-import { updateEditValues, getIncorporationListByCompId, fetchUsers } from "@/services/dataFetch";
+import { updateEditValues, getIncorporationListByCompId, fetchUsers, getShareHolderDirData } from "@/services/dataFetch";
 import React, { useEffect, useMemo, useState } from "react";
 import { paymentApi } from "@/lib/api/payment";
 import {
@@ -49,6 +49,7 @@ import { useNavigate } from "react-router-dom";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { hkIncorporationItems, hkRenewalList } from "./detailConstants";
+import DetailShdHk from "@/components/shareholderDirector/detailShddHk";
 export interface SessionData {
     _id: string;
     amount: number;
@@ -173,7 +174,22 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         paymentId: "",
     });
     const [isSheetOpen, setIsSheetOpen] = useState(false)
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [selectedData, setSelectedData] = useState<any>(null)
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+
+    const handleFetchShrDir = async (id : string, email: string) =>{
+        const fetchData = await getShareHolderDirData(id, email)
+        console.log("handleFet", fetchData)
+        if(fetchData){
+            setSelectedData(fetchData)
+            setIsDialogOpen(true)
+        }else{
+            toast({
+                description: "No Record Found" 
+            })
+        }
+    }
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
         updateCompanyData(company);
@@ -264,7 +280,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         // Shareholder and Director Information Section
         if (company.shareHolderDirectorController) {
             const shareholderData = company.shareHolderDirectorController;
-            // console.log("shareholderData", shareholderData)
             sections.push({
                 title: "Shareholder and Director Information",
                 data: {
@@ -289,7 +304,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             </TableHeader>
                             <TableBody>
                                 {Array.isArray(shareholderData.shareHolders) && shareholderData.shareHolders.map((shareholder, index) => (
-                                    <TableRow key={index}>
+                                    <TableRow className="cursor-pointer" key={index} onClick={() => handleFetchShrDir(company._id, shareholder.email)}>
                                         <TableCell>{shareholder.name}</TableCell>
                                         <TableCell>{shareholder.email}</TableCell>
                                         <TableCell>{shareholder.phone || "N/A"}</TableCell>
@@ -750,6 +765,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <TabsContent value="Checklist" className="p-6">
                 <ChecklistHistory id={id} items={[hkIncorporationItems, hkRenewalList]} />
             </TabsContent>
+            <DetailShdHk isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />
         </Tabs>
     )
 }

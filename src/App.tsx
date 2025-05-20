@@ -89,7 +89,7 @@ const App: React.FC = () => {
                   </Route>
                   <Route path="/unauthorized" element={<Unauthorized />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-  
+                  <Route path="/profile" element={<Profile />} />
                   <Route element={<ProtectedRoute allowedRoles={["master"]} />}>
                     <Route element={<Layout />}>
                       <Route path="/userslist" element={<UsersList />} />
@@ -108,7 +108,7 @@ const App: React.FC = () => {
                       <Route path="/switch-services/:countryCode/:id" element={<SwitchServices />} />
                       <Route path="/accounting-services" element={<AccountingForms />} />
                       <Route path="/accounting-services/:countryCode/:id" element={<AccountingForms />} />
-                      <Route path="/profile" element={<Profile />} />
+                      
                       <Route path="/hk-bank-account-list" element={<BkFrmList />} />
                       <Route path="/switch-services-list" element={<SwitchServicesList />} />
                       <Route path="/accounting-support-list" element={<AccountingHkList />} />
@@ -136,7 +136,7 @@ const App: React.FC = () => {
                     </Route>
                   </Route>
 
-                  <Route element={<ProtectedRoute allowedRoles={["hk_shdr"]} />}>
+                  <Route element={<ProtectedRoute allowedRoles={["hk_shdr", 'us_shdr', 'pa_shdr']} />}>
                     <Route element={<Layout />}>
                       <Route path="/viewboard" element={<ViewBoard />} />
                       <Route path='/registrationForm' element={<ShareHolderRegForm />} />
