@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom, useSetAtom } from "jotai";
 import { useToast } from "@/hooks/use-toast";
 import { companyIncorporationList, usersData } from "@/services/state";
