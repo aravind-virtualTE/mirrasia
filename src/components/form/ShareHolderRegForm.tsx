@@ -115,7 +115,9 @@ const ShareHolderRegForm = () => {
     const findData =  multiData.length >0
     ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
     : null;
-    setFormState({...formState, email:findData.email,companyName:findData.companyName  })
+    if(findData){
+      setFormState({...formState, email:findData.email,companyName:findData.companyName  })
+    }
     // console.log("multiShId",findData)
   }, [])
 
