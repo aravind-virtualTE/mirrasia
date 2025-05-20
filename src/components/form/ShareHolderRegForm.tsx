@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,20 +11,25 @@ import { useTranslation } from "react-i18next";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import { ShareHolderRegistrationForm } from "@/types/hkForm";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getShrDirRegData, saveShrDirRegData } from "@/services/dataFetch";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { FileDialog } from '../../components/ui/fileDialog'
+import { correspondenceAddressOptions, foreignInvestmentOptions, foreignInvestmentReportOptions, legalIssuesOptions, natureOfFundsOptions, overseasResidentStatusOptions, politicallyExposedOptions, roleMap, significantControllerMap, sourceOfFundsOptions, usResidencyOptions } from "./ShrDirConstants";
+import { useAtom } from "jotai";
+import { multiShrDirResetAtom } from "../shareholderDirector/constants";
 
 const ShareHolderRegForm = () => {
   const { id } = useParams();
   const { toast } = useToast();
-
+  const [multiData,] = useAtom<any>(multiShrDirResetAtom)
+  
+  const navigate = useNavigate();
   const { t } = useTranslation();
   // State Management
   const [formState, setFormState] = useState<ShareHolderRegistrationForm>({
-    _id : "",
+    _id: "",
     email: "",
     companyName: "",
     roles: [] as string[],
@@ -55,11 +61,11 @@ const ShareHolderRegForm = () => {
     pastParticipation: "",
     additionalInfo: "",
     agreementDeclaration: "",
-    regId : ""
+    regId: ""
   });
 
   const [errors, setErrors] = useState({
-    _id : "",
+    _id: "",
     email: "",
     companyName: "",
     roles: "",
@@ -105,28 +111,15 @@ const ShareHolderRegForm = () => {
       }
       fetchData(id)
     }
-  },[])
+    const multiShId = localStorage.getItem("shdrItem")
+    const findData =  multiData.length >0
+    ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
+    : null;
+    setFormState({...formState, email:findData.email,companyName:findData.companyName  })
+    // console.log("multiShId",findData)
+  }, [])
 
-  const roleOptions = [
-    "Major shareholder (holding the largest stake)",
-    "General shareholder",
-    "Nominee Shareholder",
-    "CEO",
-    "General executive director",
-    "Nominee Director",
-    "Designated Contact Person",
-    "ETC",
-  ];
-
-  const significantControllerOptions = [
-    "Holds 25% or more of the company's total shares",
-    "Holds less than 25% of the company's total shares, but has a higher stake than other shareholders (largest shareholder)",
-    "Holds less than 25% of the company's total shares, but the same as the share of other shareholders (e.g., 20% of shares out of 5 shareholders)",
-    "The entire share of the company is owned by another holding company, and I own 25% or more of the holding company.",
-    "The entire stake of the company is owned by another holding company, and I own less than 25% of the holding company, but the share is higher than other shareholders (the largest shareholder of the holding company).",
-    "The entire share of the company is owned by another holding company, and I own less than 25% of the holding company, but the same as the share of other shareholders (e.g., 20% of the holding company, 5 shareholders).",
-    "Do not know or do not understand",
-  ];
+  
   // Updated handleChange function to support generic types and specific fields
   const handleChange = <T extends keyof typeof formState>(
     field: T,
@@ -140,7 +133,7 @@ const ShareHolderRegForm = () => {
 
   const handleSubmit = async () => {
     const newErrors = {
-      _id : "",
+      _id: "",
       email: "",
       companyName: "",
       roles: "",
@@ -235,17 +228,21 @@ const ShareHolderRegForm = () => {
     if (!formState.agreementDeclaration.trim()) {
       newErrors.agreementDeclaration = "You must agree or disagree with the declaration.";
     }
+    console.log("Form formState-->", formState);
     setErrors(newErrors);
     if (Object.values(newErrors).every((error) => error === "")) {
       const formData = new FormData();
       formData.append("userData", JSON.stringify(formState));
-
       // Append files (assuming you have file inputs in your frontend)
       formData.append("passportCopy", formState.passportCopy);
       formData.append("personalCertificate", formState.personalCertificate);
       formData.append("proofOfAddress", formState.proofOfAddress);
       const result = await saveShrDirRegData(formState, id);
+      console.log("Form result-->", result);
+      localStorage.removeItem('shdrItem')
       if (result.success == true) {
+        setFormState(result.registeredData)
+        navigate("/viewboard")
         toast({
           title: "Details submitted",
           description: "Saved successfully"
@@ -255,74 +252,69 @@ const ShareHolderRegForm = () => {
     }
   };
 
-  const handleFileClick = (src:any) => {
+  const handleFileClick = (src: any) => {
     setFileSource(src);
     setOpenFile(true);
   }
+
+
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          {t("Registration form for HK company's director/member/controller")}
+          {t("hk_shldr.heading")}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-gray-500">
-          If an individual is registered as a shareholder/director of a Hong
-          Kong company, please fill out this application form.
-        </p>
-        <p className="text-sm text-gray-500 mt-2">
-          This application was written in the form of a questionnaire about the
-          necessary information for the registration of members of the Hong
-          Kong company (shareholders, directors, significant controllers,
-          contact persons, etc.). If, like a holding company, the shareholders
-          of a Hong Kong company are not natural persons, please fill out the
-          company application form.
-        </p>
-        <p className="text-sm text-gray-500 mt-2">
-          The questions may be difficult for some customers, or it may take
-          some time to answer. Accordingly, we ask that you answer step-by-step
-          when you have the time available and submit the relevant documents.
-        </p>
-        <p className="text-sm text-gray-500 mt-2">
-          If you have any difficulties or do not understand well in writing,
-          please contact us at the contact information below.
-        </p>
-        <p className="text-sm font-bold mt-4">Thank you.</p>
-        <div className="mt-4">
-          <p className="text-sm">
-            Mirr Asia<br />
-            (Hong Kong) +852-2187-2428<br />
-            (Korea) +82-2-543-6187<br />
-            Kakao Talk: mirrasia<br />
-            WeChat: mirrasia_hk<br />
-            Website:{" "}
-            <a
-              href="https://www.mirrasia.com"
-              className="text-blue-500 underline"
-            >
-              www.mirrasia.com
-            </a>
-            <br />
-            Plus Friend:{" "}
-            <a
-              href="https://pf.kakao.com/_KxmnZT"
-              className="text-blue-500 underline"
-            >
-              https://pf.kakao.com/_KxmnZT
-            </a>
+        <>
+          <p className="text-sm text-gray-500">
+            {t("hk_shldr.p1")}
           </p>
-        </div>
+          <p className="text-sm text-gray-500 mt-2">
+            {t("hk_shldr.p2")}
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            {t("hk_shldr.p3")}
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            {t("hk_shldr.p4")}
+          </p>
+          <p className="text-sm font-bold mt-4">{t("SwitchService.Consultation.thanks")}</p>
+          <div className="mt-4">
+            <p className="text-sm">
+              Mirr Asia<br />
+              (Hong Kong) +852-2187-2428<br />
+              (Korea) +82-2-543-6187<br />
+              {t("dashboard.kakaoT")}: mirrasia<br />
+              {t("dashboard.wechat")}: mirrasia_hk<br />
+              {t("dashboard.Website")}:{" "}
+              <a
+                href="https://www.mirrasia.com"
+                className="text-blue-500 underline"
+              >
+                www.mirrasia.com
+              </a>
+              <br />
+              {t("dashboard.kakaChannel")}:{" "}
+              <a
+                href="https://pf.kakao.com/_KxmnZT"
+                className="text-blue-500 underline"
+              >
+                https://pf.kakao.com/_KxmnZT
+              </a>
+            </p>
+          </div>
+        </>
         {/* Email Section */}
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="email" className="text-sm font-bold flex-shrink-0">
-              Email <span className="text-red-500">*</span>
+              {t("ApplicantInfoForm.email")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="email"
-              placeholder="Your email"
+              placeholder={t("usa.AppInfo.emailPlaceholder")}
               value={formState.email}
               onChange={(e) => handleChange("email", e.target.value)}
               className={`flex-grow ${errors.email ? "border-red-500" : ""}`}
@@ -338,11 +330,11 @@ const ShareHolderRegForm = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="companyName" className="text-sm font-bold whitespace-nowrap">
-              Company Name to be registered/appointed <span className="text-red-500">*</span>
+              {t("hk_shldr.compName")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="companyName"
-              placeholder="Enter company name"
+              placeholder={t("hk_shldr.compNamePlaceholder")}
               value={formState.companyName}
               onChange={(e) => handleChange("companyName", e.target.value)}
               className={`flex-1 ${errors.companyName ? "border-red-500" : ""}`}
@@ -357,32 +349,34 @@ const ShareHolderRegForm = () => {
         {/* Roles Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold flex items-center gap-2">
-            Roles to be played by the Hong Kong company (multiple possible){" "}
+            {t("hk_shldr.rolesPlayed")}{" "}
             <span className="text-red-500">*</span>
             <Tooltip>
               <TooltipTrigger asChild>
                 <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
               </TooltipTrigger>
               <TooltipContent className="max-w-md text-sm">
-                The designated contact person is responsible for contacting the company's main business, and the person is in charge of contacting company and business related inquiries, confirmation of progress, and registration documents. Your company must delegate at least one contact person who will be in charge of business contact, and the contact person can access your company's information and documents, as well as your mail contents. Appointment of contact person is free for up to 1 person, and in case of 2 or more people, an annual fee of HKD2,000 per person is incurred. The designated contact person is designated by your company and registered separately with us to protect your company's information and reduce confusion. (The designated contact person must go through the same procedure as the shareholders/directors to submit passport copies and proof of address documents/personal verification.)
+                {t("hk_shldr.rolesPlayedInfo")}
               </TooltipContent>
             </Tooltip>
           </Label>
           <div className="mt-4 space-y-2">
-            {roleOptions.map((role) => (
-              <div key={role} className="flex items-center space-x-2">
+            {roleMap.map(({ key, value }) => (
+              <div key={key} className="flex items-center space-x-2">
                 <Checkbox
-                  id={role}
+                  id={key}
+                  checked={formState.roles.includes(key)}
                   onCheckedChange={(checked) =>
                     handleChange(
                       "roles",
-                      checked ? [...formState.roles, role] : formState.roles.filter((r) => r !== role)
+                      checked
+                        ? [...formState.roles, key]
+                        : formState.roles.filter((r) => r !== key)
                     )
                   }
-                  checked= { formState.roles?.includes(role)}
                 />
-                <Label htmlFor={role} className="text-sm">
-                  {role}
+                <Label htmlFor={key} className="text-sm">
+                  {value}
                 </Label>
               </div>
             ))}
@@ -396,27 +390,29 @@ const ShareHolderRegForm = () => {
         {/* Significant Controller Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold flex items-center gap-2">
-            Significant Controller <span className="text-red-500">*</span>
+            {t("hk_shldr.signiControl")}<span className="text-red-500">*</span>
 
             <Tooltip>
               <TooltipTrigger asChild>
                 <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
               </TooltipTrigger>
               <TooltipContent className="max-w-md text-sm">
-                The significant controller refers to a person who is the largest shareholder or can exert a corresponding influence compared to other shareholders even if he or she owns 25% or more of the company's shares or less than that.
+                {t("hk_shldr.signiControlInfo")}
               </TooltipContent>
             </Tooltip>
           </Label>
           <RadioGroup
             className="mt-4 space-y-2"
             value={formState.significantController}
-            onValueChange={(value) => handleChange("significantController", value)}
+            onValueChange={(value) =>
+              handleChange("significantController", value)
+            }
           >
-            {significantControllerOptions.map((option) => (
-              <div key={option} className="flex items-center space-x-2">
-                <RadioGroupItem id={option} value={option} />
-                <Label htmlFor={option} className="text-sm">
-                  {option}
+            {significantControllerMap.map(({ key, value }) => (
+              <div key={key} className="flex items-center space-x-2">
+                <RadioGroupItem id={key} value={key} />
+                <Label htmlFor={key} className="text-sm">
+                  {value}
                 </Label>
               </div>
             ))}
@@ -431,11 +427,11 @@ const ShareHolderRegForm = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="fullName" className="text-sm font-bold whitespace-nowrap">
-              Full Name <span className="text-red-500">*</span>
+              {t("hk_shldr.fullName")}<span className="text-red-500">*</span>
             </Label>
             <Input
               id="fullName"
-              placeholder="Your full name"
+              placeholder={t("hk_shldr.fNamPlacHldr")}
               value={formState.fullName}
               onChange={(e) => handleChange("fullName", e.target.value)}
               className={`w-full ${errors.fullName ? "border-red-500" : ""}`}
@@ -451,11 +447,11 @@ const ShareHolderRegForm = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="mobileNumber" className="text-sm font-bold whitespace-nowrap">
-              Mobile Phone Number <span className="text-red-500">*</span>
+              {t("ApplicantInfoForm.phoneNum")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="mobileNumber"
-              placeholder="Your mobile phone number"
+              placeholder={t("hk_shldr.mobilHlder")}
               value={formState.mobileNumber}
               onChange={(e) => handleChange("mobileNumber", e.target.value)}
               className={`w-full ${errors.mobileNumber ? "border-red-500" : ""}`}
@@ -471,11 +467,11 @@ const ShareHolderRegForm = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="kakaoTalkId" className="text-sm font-bold whitespace-nowrap">
-              KakaoTalk ID
+              {t("dashboard.kakaoT")}
             </Label>
             <Input
               id="kakaoTalkId"
-              placeholder="Your KakaoTalk ID"
+              placeholder={t("hk_shldr.kakaoHlder")}
               value={formState.kakaoTalkId}
               onChange={(e) => handleChange("kakaoTalkId", e.target.value)}
               className="w-full"
@@ -486,11 +482,11 @@ const ShareHolderRegForm = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="weChatId" className="text-sm font-bold whitespace-nowrap">
-              WeChat ID
+              {t("dashboard.wechat")}
             </Label>
             <Input
               id="weChatId"
-              placeholder="Your WeChat ID"
+              placeholder={t("hk_shldr.wechatHldr")}
               value={formState.weChatId}
               onChange={(e) => handleChange("weChatId", e.target.value)}
               className="w-full"
@@ -501,22 +497,22 @@ const ShareHolderRegForm = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="passportCopy" className="text-sm font-bold whitespace-nowrap">
-              Upload passport copy <span className="text-red-500">*</span>
+              {t("hk_shldr.passport")}<span className="text-red-500">*</span>
               <Tooltip>
                 <TooltipContent className="max-w-md text-sm">
-                  Upload 1 supported file: PDF, drawing, or image. Max 10 MB.
+                  {t("hk_shldr.passportInfo")}
                 </TooltipContent>
               </Tooltip>
             </Label>
             {typeof formState.passportCopy === 'string' && formState.passportCopy?.split('/')[3] &&
-            <span
-              className={cn("flex h-9 w-1/4 pt-1 cursor-pointer")}
-              onClick={() => {
-                handleFileClick(formState.passportCopy);
-              }}
+              <span
+                className={cn("flex h-9 w-1/4 pt-1 cursor-pointer")}
+                onClick={() => {
+                  handleFileClick(formState.passportCopy);
+                }}
               >
                 {formState.passportCopy.split('/')[3]}
-            </span>}
+              </span>}
             <Input
               id="passportCopy"
               type="file"
@@ -535,33 +531,33 @@ const ShareHolderRegForm = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="personalCertificate" className="text-sm font-bold flex items-center whitespace-nowrap gap-2">
-              Upload personal certificate (within 3 months from issuance date){" "}
+              {t("hk_shldr.certifiedPass")}{" "}
               <span className="text-red-500">*</span>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-md text-sm">
-                  Choose one of the following documents:
+                  {t("hk_shldr.chooseHead")}
                   <ol className="list-decimal list-inside">
-                    <li>Take a photo with your passport and upload it.</li>
-                    <li>Get a Certificate of Passport Copy from the ward office and upload it.</li>
-                    <li>Go to the notary office and notarize your passport and upload it.</li>
-                    <li>Visit Mirr Asia Seoul office (near Nonhyeon Station) and authenticate a copy of your passport.</li>
+                    <li>{t("hk_shldr.chList1")}</li>
+                    <li>{t("hk_shldr.chList2")}</li>
+                    <li>{t("hk_shldr.chList3")}</li>
+                    <li>{t("hk_shldr.chList4")}</li>
                   </ol>
-                  <p>Upload up to 5 supported files: PDF, drawing, or image. Max 10 MB per file.</p>
+                  <p>{t("hk_shldr.chList5")}</p>
                 </TooltipContent>
               </Tooltip>
             </Label>
             {typeof formState.personalCertificate === 'string' && formState.personalCertificate?.split('/')[3] &&
-            <span
-              className={cn("flex h-9 w-1/2 pt-1 cursor-pointer")}
-              onClick={() => {
-                handleFileClick(formState.personalCertificate);
-              }}
+              <span
+                className={cn("flex h-9 w-1/2 pt-1 cursor-pointer")}
+                onClick={() => {
+                  handleFileClick(formState.personalCertificate);
+                }}
               >
                 {formState.personalCertificate.split('/')[3]}
-            </span>}
+              </span>}
             <Input
               id="personalCertificate"
               type="file"
@@ -576,37 +572,37 @@ const ShareHolderRegForm = () => {
               <AlertDescription>{errors.personalCertificate}</AlertDescription>
             </Alert>
           )}
-        </div>                        
+        </div>
         {/* Upload Proof of Address Section */}
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="proofOfAddress" className="text-sm font-bold flex items-center whitespace-nowrap gap-2">
-              Upload proof of address (within 3 months from issuance date){" "}
+              {t("hk_shldr.uploadProof")}{" "}
               <span className="text-red-500">*</span>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-md text-sm">
-                  Choose one of the following documents:
+                  {t("hk_shldr.upHead")}
                   <ol className="list-decimal list-inside">
-                    <li>English translation for overseas residents</li>
-                    <li>Driver's license translated into English and notarized</li>
-                    <li>Utility Bill or Bank Statement for overseas residents</li>
-                    <li>Other officially certifying address English documents or English translation notarized</li>
+                    <li>{t("hk_shldr.up1")}</li>
+                    <li>{t("hk_shldr.up2")}</li>
+                    <li>{t("hk_shldr.up3")}</li>
+                    <li>{t("hk_shldr.up4")}</li>
                   </ol>
-                  <p>Upload up to 5 supported files: PDF, drawing, or image. Max 10 MB per file.</p>
+                  <p>{t("hk_shldr.upPara")}</p>
                 </TooltipContent>
               </Tooltip>
             </Label>
             {typeof formState.proofOfAddress === 'string' && formState.proofOfAddress?.split('/')[3] &&
-            <span
-              className={cn("flex h-9 w-1/2 pt-1 cursor-pointer")}
-              onClick={() => {
-                handleFileClick(formState.proofOfAddress);
-              }}>
+              <span
+                className={cn("flex h-9 w-1/2 pt-1 cursor-pointer")}
+                onClick={() => {
+                  handleFileClick(formState.proofOfAddress);
+                }}>
                 {formState.proofOfAddress.split('/')[3]}
-            </span>}
+              </span>}
             <Input
               id="proofOfAddress"
               type="file"
@@ -626,11 +622,11 @@ const ShareHolderRegForm = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="passportDigits" className="text-sm font-bold whitespace-nowrap">
-              First 4 digits of passport number <span className="text-red-500">*</span>
+              {t("hk_shldr.first4Pass")}<span className="text-red-500">*</span>
             </Label>
             <Input
               id="passportDigits"
-              placeholder="Enter the first 4 digits"
+              placeholder={t("hk_shldr.first4PassInfo")}
               value={formState.passportDigits || ""}
               onChange={(e) => handleChange("passportDigits", e.target.value)}
               className={`w-full ${errors.passportDigits ? "border-red-500" : ""}`}
@@ -646,11 +642,11 @@ const ShareHolderRegForm = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="birthCountry" className="text-sm font-bold whitespace-nowrap">
-              Country of birth <span className="text-red-500">*</span>
+              {t("hk_shldr.countryBirth")}<span className="text-red-500">*</span>
             </Label>
             <Input
               id="birthCountry"
-              placeholder="Enter your country of birth"
+              placeholder={t("hk_shldr.countryBirthInfo")}
               value={formState.birthCountry || ""}
               onChange={(e) => handleChange("birthCountry", e.target.value)}
               className={`w-full ${errors.birthCountry ? "border-red-500" : ""}`}
@@ -666,11 +662,11 @@ const ShareHolderRegForm = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="currentResidence" className="text-sm font-bold whitespace-nowrap">
-              Current country of residence <span className="text-red-500">*</span>
+              {t("hk_shldr.currentRedsidency")}<span className="text-red-500">*</span>
             </Label>
             <Input
               id="currentResidence"
-              placeholder="Enter your current country of residence"
+              placeholder={t("hk_shldr.cRInfo")}
               value={formState.currentResidence || ""}
               onChange={(e) => handleChange("currentResidence", e.target.value)}
               className={`w-full ${errors.currentResidence ? "border-red-500" : ""}`}
@@ -684,7 +680,8 @@ const ShareHolderRegForm = () => {
         </div>
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            Are you planning to participate as the nominee or trustee on behalf of or on behalf of the actual owner or representative of the Hong Kong company you wish to establish? <span className="text-red-500">*</span>
+            {t("hk_shldr.participateNominee")}
+            <span className="text-red-500">*</span>
           </Label>
           <RadioGroup
             className="mt-4 space-y-2"
@@ -725,14 +722,14 @@ const ShareHolderRegForm = () => {
         {/* Correspondence Address Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold flex items-center gap-2">
-            What address do you want to register as a Correspondence Address that is open to the public?{" "}
+            {t("hk_shldr.whatAddress")}{" "}
             <span className="text-red-500">*</span>
             <Tooltip>
               <TooltipTrigger asChild>
                 <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
               </TooltipTrigger>
               <TooltipContent className="max-w-md text-sm">
-                The residence address of the individual director is registered as private information, and only the communication address is disclosed to the public.
+                {t("hk_shldr.whatAddressInfo")}
               </TooltipContent>
             </Tooltip>
           </Label>
@@ -741,28 +738,14 @@ const ShareHolderRegForm = () => {
             value={formState.correspondenceAddress}
             onValueChange={(value) => handleChange("correspondenceAddress", value)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="residential" value="Use residential address as the correspondence address" />
-              <Label htmlFor="residential" className="text-sm">
-                Use residential address as the correspondence address
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="business" value="Use registered business address as a correspondence address" />
-              <Label htmlFor="business" className="text-sm">
-                Use registered business address as a correspondence address (annual service fee of HKD 500 / billed per person)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="different" value="Use a different address as a correspondence address" />
-              <Label htmlFor="different" className="text-sm">
-                Use a different address as a correspondence address (requires proof of address)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="other" value="Other" />
-              <Label htmlFor="other" className="text-sm">Other</Label>
-            </div>
+            {correspondenceAddressOptions.map(({ key, label }) => (
+              <div key={key} className="flex items-center space-x-2">
+                <RadioGroupItem id={key} value={key} />
+                <Label htmlFor={key} className="text-sm">
+                  {label}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
           {errors.correspondenceAddress && (
             <Alert variant="destructive" className="mt-2">
@@ -773,15 +756,14 @@ const ShareHolderRegForm = () => {
         {/* Overseas Resident Status Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            Are you an overseas resident other than Hong Kong and are you subject to reporting of
-            overseas corporation establishment or foreign direct investment?{" "}
+            {t("hk_shldr.overSeasResident")}{" "}
             <span className="text-red-500">*</span>
             <Tooltip>
               <TooltipTrigger asChild>
                 <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
               </TooltipTrigger>
               <TooltipContent className="max-w-md text-sm">
-                See the guide slide below
+                {t("hk_shldr.osRGuide")}
               </TooltipContent>
             </Tooltip>
           </Label>
@@ -790,22 +772,14 @@ const ShareHolderRegForm = () => {
             value={formState.overseasResidentStatus}
             onValueChange={(value) => handleChange("overseasResidentStatus", value)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="yes" value="Yes" />
-              <Label htmlFor="yes" className="text-sm">Yes</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="no" value="No" />
-              <Label htmlFor="no" className="text-sm">No</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="unknown" value="Do not know" />
-              <Label htmlFor="unknown" className="text-sm">Do not know</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="other" value="Other" />
-              <Label htmlFor="other" className="text-sm">Other</Label>
-            </div>
+            {overseasResidentStatusOptions.map(({ key, value }) => (
+              <div key={key} className="flex items-center space-x-2">
+                <RadioGroupItem id={key} value={key} />
+                <Label htmlFor={key} className="text-sm">
+                  {value}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
           {errors.overseasResidentStatus && (
             <Alert variant="destructive" className="mt-2">
@@ -816,7 +790,7 @@ const ShareHolderRegForm = () => {
         {/* Have you filed a foreign direct investment report section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            Have you filed a foreign direct investment report or are you planning to proceed with the above information?{" "}
+            {t("hk_shldr.foreignDirectRep")}
             <span className="text-red-500">*</span>
           </Label>
           <RadioGroup
@@ -824,36 +798,14 @@ const ShareHolderRegForm = () => {
             value={formState.foreignInvestmentReport}
             onValueChange={(value) => handleChange("foreignInvestmentReport", value)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="yesReport" value="Yes" />
-              <Label htmlFor="yesReport" className="text-sm">
-                Yes
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="noReport" value="No" />
-              <Label htmlFor="noReport" className="text-sm">
-                No
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="handleIssue" value="I can handle this issue" />
-              <Label htmlFor="handleIssue" className="text-sm">
-                I can handle this issue
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="consultationRequired" value="Consultation required" />
-              <Label htmlFor="consultationRequired" className="text-sm">
-                Consultation required
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="otherReport" value="Other" />
-              <Label htmlFor="otherReport" className="text-sm">
-                Other
-              </Label>
-            </div>
+            {foreignInvestmentReportOptions.map(({ key, value }) => (
+              <div key={key} className="flex items-center space-x-2">
+                <RadioGroupItem id={key} value={value} />
+                <Label htmlFor={key} className="text-sm">
+                  {value}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
           {errors.foreignInvestmentReport && (
             <Alert variant="destructive" className="mt-2">
@@ -864,7 +816,7 @@ const ShareHolderRegForm = () => {
         {/* In accordance with the laws section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            In accordance with the laws of your country, you might be obligated to report foreign direct investment as a resident of your country. However, we are a company located in Hong Kong, and as we provide service related to establishing a company in Hong Kong, we are not responsible for direct or indirect responsibility of reporting foreign direct investment issue. Do you agree with this?{" "}
+            {t("hk_shldr.accordanceLaws")}
             <span className="text-red-500">*</span>
           </Label>
           <RadioGroup
@@ -872,30 +824,14 @@ const ShareHolderRegForm = () => {
             value={formState.foreignInvestmentAgreement}
             onValueChange={(value) => handleChange("foreignInvestmentAgreement", value)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="yesAgreement" value="Yes" />
-              <Label htmlFor="yesAgreement" className="text-sm">
-                Yes
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="noAgreement" value="No" />
-              <Label htmlFor="noAgreement" className="text-sm">
-                No
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="consultationRequiredAgreement" value="Consultation required" />
-              <Label htmlFor="consultationRequiredAgreement" className="text-sm">
-                Consultation required
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="otherAgreement" value="Other" />
-              <Label htmlFor="otherAgreement" className="text-sm">
-                Other
-              </Label>
-            </div>
+            {foreignInvestmentOptions.map((option) => (
+              <div key={option.key} className="flex items-center space-x-2">
+                <RadioGroupItem id={option.key} value={option.key} />
+                <Label htmlFor={option.key} className="text-sm">
+                  {option.value}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
           {errors.foreignInvestmentAgreement && (
             <Alert variant="destructive" className="mt-2">
@@ -906,19 +842,13 @@ const ShareHolderRegForm = () => {
         {/* Politically Exposed Person Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            Politically Exposed Person <span className="text-red-500">*</span>
+            {t("hk_shldr.politicalExposePersn")} <span className="text-red-500">*</span>
             <Tooltip>
               <TooltipTrigger asChild>
                 <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
               </TooltipTrigger>
               <TooltipContent className="max-w-md text-sm">
-                Political key figures are those who have political or social influence in their own country
-                or internationally in the present or in the past, or their immediate family members. For
-                example, high-ranking managers of government agencies, political parties, social groups,
-                international NGOs, international organizations or state-owned enterprises, or their
-                immediate family members are all political figures. In accordance with the recently
-                strengthened anti-money laundering laws, those who are politically important should clearly
-                inform them.
+                {t("hk_shldr.ppExpInfo")}
               </TooltipContent>
             </Tooltip>
           </Label>
@@ -927,40 +857,14 @@ const ShareHolderRegForm = () => {
             value={formState.politicallyExposedStatus}
             onValueChange={(value) => handleChange("politicallyExposedStatus", value)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="publicOffice" value="Worked in public office or family member in public office" />
-              <Label htmlFor="publicOffice" className="text-sm">
-                If you have worked for a current or past public office, or if there is such a person in your family
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="seniorManager" value="Worked as a senior manager in government or organization" />
-              <Label htmlFor="seniorManager" className="text-sm">
-                If you worked as a senior manager at a government agency, political party, social group, international NGO, etc.
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="politicalPerson" value="Present or past politically/socially influential person" />
-              <Label htmlFor="politicalPerson" className="text-sm">
-                Present or past politically or socially influential person, or someone in your family
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="none" value="None" />
-              <Label htmlFor="none" className="text-sm">None</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="unknown" value="Do not know or do not understand" />
-              <Label htmlFor="unknown" className="text-sm">Do not know or do not understand</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="consultation" value="Consultation required" />
-              <Label htmlFor="consultation" className="text-sm">Consultation required</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="other" value="Other" />
-              <Label htmlFor="other" className="text-sm">Other</Label>
-            </div>
+            {politicallyExposedOptions.map((option) => (
+              <div key={option.key} className="flex items-center space-x-2">
+                <RadioGroupItem id={option.key} value={option.key} />
+                <Label htmlFor={option.key} className="text-sm">
+                  {option.value}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
           {errors.politicallyExposedStatus && (
             <Alert variant="destructive" className="mt-2">
@@ -971,11 +875,11 @@ const ShareHolderRegForm = () => {
         {/* Political Details Section */}
         <div className="mt-6">
           <Label htmlFor="politicalDetails" className="text-sm font-bold">
-            If you are a political person, please provide details of the position held and association
+            {t("hk_shldr.politicalExplainDetails")}
           </Label>
           <Input
             id="politicalDetails"
-            placeholder="Describe your position, affiliation, length of service, or family relationship"
+            placeholder={t("hk_shldr.ppEInfo")}
             value={formState.politicalDetails}
             onChange={(e) => handleChange("politicalDetails", e.target.value)}
             className="w-full"
@@ -989,7 +893,7 @@ const ShareHolderRegForm = () => {
         {/* Pending Legal Claims Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            Do you have any pending or threatened claims or have you ever been convicted of any crimes/fraud under a court of law or under any investigation of any nature or involved in legal proceedings?{" "}
+            {t("hk_shldr.pendingThretenClaim")}
             <span className="text-red-500">*</span>
           </Label>
           <RadioGroup
@@ -997,22 +901,14 @@ const ShareHolderRegForm = () => {
             value={formState.legalIssuesStatus}
             onValueChange={(value) => handleChange("legalIssuesStatus", value)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="yesLegalIssues" value="Yes" />
-              <Label htmlFor="yesLegalIssues" className="text-sm">Yes</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="noLegalIssues" value="No" />
-              <Label htmlFor="noLegalIssues" className="text-sm">No</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="noInfoLegalIssues" value="I do not want to provide information" />
-              <Label htmlFor="noInfoLegalIssues" className="text-sm">I do not want to provide information</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="otherLegalIssues" value="Other" />
-              <Label htmlFor="otherLegalIssues" className="text-sm">Other</Label>
-            </div>
+            {legalIssuesOptions.map((option) => (
+              <div key={option.key} className="flex items-center space-x-2">
+                <RadioGroupItem id={option.key} value={option.key} />
+                <Label htmlFor={option.key} className="text-sm">
+                  {option.value}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
           {errors.legalIssuesStatus && (
             <Alert variant="destructive" className="mt-2">
@@ -1023,7 +919,7 @@ const ShareHolderRegForm = () => {
         {/* U.S. Citizenship or Residency Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            Are you a citizen, permanent resident, or resident of the United States?{" "}
+            {t("hk_shldr.youCitizen")}
             <span className="text-red-500">*</span>
           </Label>
           <RadioGroup
@@ -1031,18 +927,14 @@ const ShareHolderRegForm = () => {
             value={formState.usResidencyStatus}
             onValueChange={(value) => handleChange("usResidencyStatus", value)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="yesUsResident" value="Yes" />
-              <Label htmlFor="yesUsResident" className="text-sm">Yes</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="noUsResident" value="No" />
-              <Label htmlFor="noUsResident" className="text-sm">No</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="otherUsResident" value="Other" />
-              <Label htmlFor="otherUsResident" className="text-sm">Other</Label>
-            </div>
+            {usResidencyOptions.map((option) => (
+              <div key={option.key} className="flex items-center space-x-2">
+                <RadioGroupItem id={option.key} value={option.key} />
+                <Label htmlFor={option.key} className="text-sm">
+                  {option.value}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
           {errors.usResidencyStatus && (
             <Alert variant="destructive" className="mt-2">
@@ -1053,11 +945,11 @@ const ShareHolderRegForm = () => {
         {/* U.S. Residency Details Section */}
         <div className="mt-6">
           <Label htmlFor="usResidencyDetails" className="text-sm font-bold">
-            If applicable to the above, fill in the relevant information such as ITIN number, Visa number, Green Card number, etc.
+            {t("hk_shldr.iitnNum")}
           </Label>
           <Input
             id="usResidencyDetails"
-            placeholder="Enter relevant information"
+            placeholder={t("hk_shldr.iitnInfo")}
             value={formState.usResidencyDetails}
             onChange={(e) => handleChange("usResidencyDetails", e.target.value)}
             className="w-full"
@@ -1071,30 +963,26 @@ const ShareHolderRegForm = () => {
         {/* Nature of Funds Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            After the establishment of this Hong Kong company, what is the nature of the funds you will accumulate business capital or deposit to your bank account in the future and the main sources of the funds? (Multiple selection possible){" "}
+            {t("hk_shldr.natureOfFunds")}
             <span className="text-red-500">*</span>
           </Label>
           <div className="mt-4 space-y-2">
-            {[
-              "After the establishment of the company, profits will be generated through business such as sales",
-              "After incorporation or registration, the funds for the sale of assets will flow into the account",
-              "After incorporation or registration, the actual owner will deposit investment or loan funds",
-              "After incorporation or registration, the group or parent company will pay investment funds",
-              "Other",
-            ].map((option) => (
-              <div key={option} className="flex items-center space-x-2">
+            {natureOfFundsOptions.map((option) => (
+              <div key={option.key} className="flex items-center space-x-2">
                 <Checkbox
-                  id={option}
+                  id={option.key}
                   onCheckedChange={(checked) =>
                     handleChange(
                       "natureOfFunds",
-                      checked ? [...formState.natureOfFunds, option] : formState.natureOfFunds.filter((fund) => fund !== option)
+                      checked
+                        ? [...formState.natureOfFunds, option.key]
+                        : formState.natureOfFunds.filter((fund) => fund !== option.key)
                     )
                   }
-                  checked= { formState.natureOfFunds?.includes(option)}
+                  checked={formState.natureOfFunds?.includes(option.key)}
                 />
-                <Label htmlFor={option} className="text-sm">
-                  {option}
+                <Label htmlFor={option.key} className="text-sm">
+                  {option.value}
                 </Label>
               </div>
             ))}
@@ -1108,34 +996,26 @@ const ShareHolderRegForm = () => {
         {/* Source of Funds Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            What is the source of the funds you would like to invest or lend to a company or deposit in a Hong Kong company's bank account after the establishment of this Hong Kong company?{" "}
+            {t("hk_shldr.sourceOfFunds")}
             <span className="text-red-500">*</span>
           </Label>
           <div className="mt-4 space-y-2">
-            {[
-              "Investments or loans will be paid to the Hong Kong company, and these funds are profits from other businesses in the past.",
-              "Investments or loans will be paid to the Hong Kong company, which is generated from the sale of assets owned by the company in the past.",
-              "Investment funds or loans will be paid to the Hong Kong company, and these funds are loans (borrowed) from others.",
-              "Investments or loans will be paid to the Hong Kong company, and these are funds that other substantial owners wish to pay through their own.",
-              "Investments or loans will be paid to the Hong Kong company, which is earned income from past tenure.",
-              "Investments or loans will be paid to the Hong Kong company, and these funds are paid by the company or group to which the person is affiliated.",
-              "Investments or loans will be paid to the Hong Kong company, and these funds were deposited in and owned by the bank.",
-              "There is no plan to pay investment or loans to the Hong Kong company, and even if there is, it is a small amount, so this will be paid from the funds deposited in the bank.",
-              "Other",
-            ].map((option) => (
-              <div key={option} className="flex items-center space-x-2">
+            {sourceOfFundsOptions.map((option) => (
+              <div key={option.key} className="flex items-center space-x-2">
                 <Checkbox
-                  id={option}
+                  id={option.key}
                   onCheckedChange={(checked) =>
                     handleChange(
                       "sourceOfFunds",
-                      checked ? [...formState.sourceOfFunds, option] : formState.sourceOfFunds.filter((fund) => fund !== option)
+                      checked
+                        ? [...formState.sourceOfFunds, option.key]
+                        : formState.sourceOfFunds.filter((fund) => fund !== option.key)
                     )
                   }
-                  checked= { formState.sourceOfFunds?.includes(option)}
+                  checked={formState.sourceOfFunds?.includes(option.key)}
                 />
-                <Label htmlFor={option} className="text-sm">
-                  {option}
+                <Label htmlFor={option.key} className="text-sm">
+                  {option.value}
                 </Label>
               </div>
             ))}
@@ -1149,12 +1029,12 @@ const ShareHolderRegForm = () => {
         {/* Country of Fund Origin Section */}
         <div className="mt-6">
           <Label htmlFor="countryOfFundOrigin" className="text-sm font-bold">
-            Please write down the country from which the fund flows from the two questions above.{" "}
+            {t("hk_shldr.countryFundsFlow")}
             <span className="text-red-500">*</span>
           </Label>
           <Input
             id="countryOfFundOrigin"
-            placeholder="Enter country of fund origin"
+            placeholder={t("hk_shldr.ccFInfo")}
             value={formState.countryOfFundOrigin}
             onChange={(e) => handleChange("countryOfFundOrigin", e.target.value)}
             className={`w-full ${errors.countryOfFundOrigin ? "border-red-500" : ""}`}
@@ -1168,7 +1048,7 @@ const ShareHolderRegForm = () => {
         {/* Uncharged Bankruptcy Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold flex">
-            Are you currently undischarged bankrupt?{" "}
+            {t("hk_shldr.isBankrupt")}
             <span className="text-red-500">*</span>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -1176,13 +1056,7 @@ const ShareHolderRegForm = () => {
               </TooltipTrigger>
               {/* Tooltip Content */}
               <TooltipContent className="max-w-md text-sm">
-                In accordance with Article 480, Paragraph 1 of the Company Ordinance
-                (Cap.622), persons in the process of defaulting on debt shall not
-                participate in the company's management, either directly or indirectly, as
-                a director of the company without permission from the court. Violations of
-                these provisions may result in a fine of HK$700,000 and imprisonment of two
-                years upon prosecution and, on summary conviction, to a fine of $150,000
-                and to imprisonment for 12 months.
+                {t("hk_shldr.isBnkInfo")}
               </TooltipContent>
             </Tooltip>
           </Label>
@@ -1213,7 +1087,7 @@ const ShareHolderRegForm = () => {
         {/* Past Participation or Violations Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            In the past, have you established/joined/participated in a company/organization/business/joint venture/branch/contact office as a director/shareholder/cooperative/individual business entity in Hong Kong or have you ever violated company ordinances/tax ordinances/other laws due to refusal to subpoena a court subpoena, false report of submitted documents, etc., or have you ever been forcibly dissolved in accordance with a court order due to prosecution/bankruptcy/criminal violations?{" "}
+           {t("hk_shldr.violatedLaw")}
             <span className="text-red-500">*</span>
           </Label>
           <RadioGroup
@@ -1221,24 +1095,14 @@ const ShareHolderRegForm = () => {
             value={formState.pastParticipation}
             onValueChange={(value) => handleChange("pastParticipation", value)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="participationYes" value="Yes" />
-              <Label htmlFor="participationYes" className="text-sm">
-                Yes
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="participationNo" value="No" />
-              <Label htmlFor="participationNo" className="text-sm">
-                No
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="participationNotProvide" value="I do not want to provide information" />
-              <Label htmlFor="participationNotProvide" className="text-sm">
-                I do not want to provide information
-              </Label>
-            </div>
+            {legalIssuesOptions.map((option) => (
+              <div key={option.key} className="flex items-center space-x-2">
+                <RadioGroupItem id={option.key} value={option.key} />
+                <Label htmlFor={option.key} className="text-sm">
+                  {option.value}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
           {errors.pastParticipation && (
             <Alert variant="destructive" className="mt-2">
@@ -1250,11 +1114,11 @@ const ShareHolderRegForm = () => {
         {/* Additional Information Section */}
         <div className="mt-6">
           <Label htmlFor="additionalInfo" className="text-sm font-bold">
-            If any of the above questions apply, please describe your company name and related information.
+            {t("hk_shldr.anyQuestionsApply")}
           </Label>
           <Input
             id="additionalInfo"
-            placeholder="Enter details"
+            placeholder={t("hk_shldr.enterDetails")}
             value={formState.additionalInfo}
             onChange={(e) => handleChange("additionalInfo", e.target.value)}
             className="w-full"
@@ -1268,7 +1132,7 @@ const ShareHolderRegForm = () => {
         {/* Agreement and Declaration Section */}
         <div className="mt-6">
           <Label className="text-sm font-bold">
-            You agree to provide documents and information for our business in connection with this service, and in connection with this service, you agree that the purpose of establishing and operating the company is legitimate and for legitimate business. In operation after the establishment of a company, the Company is not obligated to provide assistance or advice on matters that violate the law, and if it is judged that there is a legal violation or related intention, the Company will suspend the service after a certain period of notice. You have the right to do it. You and the signatory of this application declare that all statements are true, complete, and correct to the best of my knowledge. Do you agree with this?{" "}
+            {t("hk_shldr.agreeDocsInfo")}
             <span className="text-red-500">*</span>
           </Label>
           <RadioGroup
@@ -1297,9 +1161,9 @@ const ShareHolderRegForm = () => {
         </div>
 
         <div className="mt-8 bg-gray-100 p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold text-gray-800">Complete</h2>
+          <h2 className="text-lg font-bold text-gray-800">{t("hk_shldr.complete")}</h2>
           <p className="text-sm text-gray-600 mt-2">
-            Thank you! We will check the contents of your reply and our consultant will contact you shortly.
+            {t("hk_shldr.thankYu")}
           </p>
         </div>
         {/* Submit Button */}
@@ -1309,12 +1173,12 @@ const ShareHolderRegForm = () => {
         <FileDialog
           open={openFile}
           onOpenChange={setOpenFile}
-          >
-            <iframe
-                src={fileSource}
-                className="w-full h-full object-contain"
-                title="Receipt"
-            />
+        >
+          <iframe
+            src={fileSource}
+            className="w-full h-full object-contain"
+            title="Receipt"
+          />
         </FileDialog>
       </CardContent>
     </Card>

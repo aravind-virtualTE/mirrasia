@@ -280,3 +280,21 @@ export const getPaIncorpoDataById = async (userId: string) => {
     console.error("Error fetching company incorporation list by userId:", error);
   }
 };
+
+export const getMultiShrDirData = async (id?: string) =>{
+  try {
+    const response = await api.get(`company/getMultiShrDirData/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}
+
+export const getShareHolderDirData = async (id: string, email : string) =>{
+try {
+    const response = await api.get(`company/getShareHolderDirData`, { params: { id, email } });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}

@@ -1,61 +1,108 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { getShrDirSavedData } from '@/services/dataFetch';
+import { getMultiShrDirData, getShrDirSavedData } from '@/services/dataFetch';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 import jwtDecode from 'jwt-decode';
+import { ArrowRightCircle, Pencil } from 'lucide-react';
+import { significantControllerMap } from '../form/ShrDirConstants';
+import { multiShrDirResetAtom } from './constants';
+import { useAtom } from 'jotai';
+import DetailShdHk from './detailShddHk';
 
 
 export default function ViewBoard() {
   const navigate = useNavigate();
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [selectedData, setsSelectedData] = useState<any>(null)
+  const [multiData, setMultiData] = useAtom<any>(multiShrDirResetAtom)
   const [fState, setFState] = useState([{
-    companyName : "" as string,fullName: "" as string,significantController : "" as string,_id: "" as string
+    companyName: "" as string, fullName: "" as string, significantController: "" as string, _id: "" as string
   }])
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
-  console.log("formState", decodedToken)
-
   useEffect(() => {
     const fetchData = async () => {
-      let data;
-      if (decodedToken.role === 'hk_shdr') {
-        data = await getShrDirSavedData(`${decodedToken.userId}`)
-      }else{
-        console.log("changes for the usa reg shareholder")
-      }
-      // console.log("test", data)
-      const formattedData = data.map((d: { _id: string; companyName: string; fullName: string; significantController: string; }) => {
-        return {
-          _id: d._id,
-          companyName: d.companyName,fullName: d.fullName,significantController: d.significantController}})
-          setFState(formattedData)
-      // setFormState(data)
+    try {
+      const [data, multiData] = await Promise.all([
+        getShrDirSavedData(`${decodedToken.userId}`),
+        getMultiShrDirData(`${decodedToken.userId}`)
+      ])
+
+      setFState(data)
+      setMultiData(multiData)
+    } catch (error) {
+      console.error("Error fetching data:", error)
     }
+  }
     fetchData()
   }, [])
+
+  const handleShowClick = (company: any) => {
+    setsSelectedData(company)
+    setIsDialogOpen(true)
+  }
+
+  // console.log('multiData', multiData)
+
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Welcome to Your Dashboard</h1>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="col-span-full md:col-span-1">
-          <CardHeader>
-            <CardTitle>Shareholder/Director Registration</CardTitle>
-            <CardDescription>Important information about your role</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              You have been allotted as a shareholder/director. Please register your details to proceed.
-            </p>
-          </CardContent>
-          <CardFooter>
-            <Button className="w-full" onClick={() => navigate("/registrationForm")}>
-              Click here to register your details
-            </Button>
-          </CardFooter>
-        </Card>
+        <Card className="col-span-full">
+      <CardHeader>
+        <CardTitle>Shareholder/Director Registration</CardTitle>
+        <CardDescription>Important information about your role</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground mb-4">
+          You have been allotted as a shareholder/director. Please register your details to proceed.
+        </p>
+        <div className="space-y-4">
+          {multiData.map((reg: any) => (
+            <div
+              key={reg._id}
+              className="rounded-sm border border-muted bg-background shadow-sm overflow-hidden"
+            >
+              <Table className="w-full text-sm text-left">
+                <TableHeader className="bg-muted/50 text-muted-foreground">
+                  <TableRow>
+                    <TableHead className="px-4 py-2">Company Name</TableHead>
+                    <TableHead className="px-4 py-2">Country</TableHead>
+                    <TableHead className="px-4 py-2">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow className="border-t">
+                    <TableCell className="px-4 py-3 font-medium">{reg.companyName}</TableCell>
+                    <TableCell className="px-4 py-3">{reg.country}</TableCell>
+                    <TableCell className="px-4 py-3">
+                      {!reg.dataFilled && (
+                        <Button
+                          variant="outline"
+                          className="flex items-center gap-2"
+                          onClick={() => {
+                            localStorage.setItem('shdrItem',reg._id)
+                            navigate(`/registrationForm`)
+                          }
+                          }
+                        >
+                          Register
+                          <ArrowRightCircle className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
         <Card className="col-span-full">
           <CardHeader>
             <CardTitle>All Associated Companies</CardTitle>
@@ -65,19 +112,36 @@ export default function ViewBoard() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead> </TableHead>
-                  <TableHead>Company Name</TableHead>
-                  <TableHead>fullName</TableHead>
-                  <TableHead>significantController</TableHead>
+                  <TableHead className="w-10">S.No</TableHead>
+                  <TableHead className="w-48">Company Name</TableHead>
+                  <TableHead className="w-48">Full Name</TableHead>
+                  <TableHead className="min-w-[300px]">Significant Controller</TableHead>
+                  <TableHead className="w-16 text-center">Edit</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {fState.map((company, index) => (
-                  <TableRow key={company.companyName} onClick={() => navigate(`/registrationForm/${company._id}`)} className='cursor-pointer'>
+                  <TableRow
+                    key={company.companyName}
+                    onClick={() => handleShowClick(company)}
+                    className="cursor-pointer"
+                  >
                     <TableCell className="font-medium">{index + 1}</TableCell>
                     <TableCell className="font-medium">{company.companyName}</TableCell>
                     <TableCell>{company.fullName}</TableCell>
-                    <TableCell>{company.significantController}</TableCell>
+                    <TableCell className="whitespace-normal">{company.significantController
+                      ? significantControllerMap.find(
+                        item => item.key === company.significantController
+                      )?.value || "N/A"
+                      : "N/A"}</TableCell>
+                    <TableCell className="text-center">
+                      <button onClick={(e) => {
+                        e.stopPropagation()
+                        navigate(`/registrationForm/${company._id}`)
+                      }} >
+                        <Pencil size={16} />
+                      </button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -85,6 +149,7 @@ export default function ViewBoard() {
           </CardContent>
         </Card>
       </div>
+      <DetailShdHk isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />
     </div>
   )
 }
