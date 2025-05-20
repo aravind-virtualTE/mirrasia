@@ -26,18 +26,18 @@ export default function ViewBoard() {
   const decodedToken = jwtDecode<TokenData>(token);
   useEffect(() => {
     const fetchData = async () => {
-    try {
-      const [data, multiData] = await Promise.all([
-        getShrDirSavedData(`${decodedToken.userId}`),
-        getMultiShrDirData(`${decodedToken.userId}`)
-      ])
+      try {
+        const [data, multiData] = await Promise.all([
+          getShrDirSavedData(`${decodedToken.userId}`),
+          getMultiShrDirData(`${decodedToken.userId}`)
+        ])
 
-      setFState(data)
-      setMultiData(multiData)
-    } catch (error) {
-      console.error("Error fetching data:", error)
+        setFState(data)
+        setMultiData(multiData)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
     }
-  }
     fetchData()
   }, [])
 
@@ -53,56 +53,56 @@ export default function ViewBoard() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="col-span-full">
-      <CardHeader>
-        <CardTitle>Shareholder/Director Registration</CardTitle>
-        <CardDescription>Important information about your role</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground mb-4">
-          You have been allotted as a shareholder/director. Please register your details to proceed.
-        </p>
-        <div className="space-y-4">
-          {multiData.map((reg: any) => (
-            <div
-              key={reg._id}
-              className="rounded-sm border border-muted bg-background shadow-sm overflow-hidden"
-            >
-              <Table className="w-full text-sm text-left">
-                <TableHeader className="bg-muted/50 text-muted-foreground">
-                  <TableRow>
-                    <TableHead className="px-4 py-2">Company Name</TableHead>
-                    <TableHead className="px-4 py-2">Country</TableHead>
-                    <TableHead className="px-4 py-2">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow className="border-t">
-                    <TableCell className="px-4 py-3 font-medium">{reg.companyName}</TableCell>
-                    <TableCell className="px-4 py-3">{reg.country}</TableCell>
-                    <TableCell className="px-4 py-3">
-                      {!reg.dataFilled && (
-                        <Button
-                          variant="outline"
-                          className="flex items-center gap-2"
-                          onClick={() => {
-                            localStorage.setItem('shdrItem',reg._id)
-                            navigate(`/registrationForm`)
-                          }
-                          }
-                        >
-                          Register
-                          <ArrowRightCircle className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+          <CardHeader>
+            <CardTitle>Shareholder/Director Registration</CardTitle>
+            <CardDescription>Important information about your role</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              You have been allotted as a shareholder/director. Please register your details to proceed.
+            </p>
+            <div className="space-y-4">
+
+              <div
+                className="rounded-sm border border-muted bg-background shadow-sm overflow-hidden"
+              >
+                <Table className="w-full text-sm text-left">
+                  <TableHeader className="bg-muted/50 text-muted-foreground">
+                    <TableRow>
+                      <TableHead className="px-4 py-2">Company Name</TableHead>
+                      <TableHead className="px-4 py-2">Country</TableHead>
+                      <TableHead className="px-4 py-2">Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  {multiData.map((reg: any) => (
+                    <TableBody>
+                      <TableRow key={reg._id} className="border-t">
+                        <TableCell className="px-4 py-3 font-medium">{reg.companyName}</TableCell>
+                        <TableCell className="px-4 py-3">{reg.country}</TableCell>
+                        <TableCell className="px-4 py-3">
+                          {!reg.dataFilled && (
+                            <Button
+                              variant="outline"
+                              className="flex items-center gap-2"
+                              onClick={() => {
+                                localStorage.setItem('shdrItem', reg._id)
+                                navigate(`/registrationForm`)
+                              }
+                              }
+                            >
+                              Register
+                              <ArrowRightCircle className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>))}
+                </Table>
+              </div>
+
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+          </CardContent>
+        </Card>
         <Card className="col-span-full">
           <CardHeader>
             <CardTitle>All Associated Companies</CardTitle>
