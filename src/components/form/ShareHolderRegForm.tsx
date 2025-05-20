@@ -378,7 +378,7 @@ const ShareHolderRegForm = () => {
                   }
                 />
                 <Label htmlFor={key} className="text-sm">
-                  {value}
+                  {t(value)}
                 </Label>
               </div>
             ))}
@@ -414,7 +414,7 @@ const ShareHolderRegForm = () => {
               <div key={key} className="flex items-center space-x-2">
                 <RadioGroupItem id={key} value={key} />
                 <Label htmlFor={key} className="text-sm">
-                  {value}
+                  {t(value)}
                 </Label>
               </div>
             ))}
@@ -690,30 +690,14 @@ const ShareHolderRegForm = () => {
             value={formState.nomineeParticipation || ""}
             onValueChange={(value) => handleChange("nomineeParticipation", value)}
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="yes" value="Yes" />
-              <Label htmlFor="yes" className="text-sm">
-                Yes
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="no" value="No" />
-              <Label htmlFor="no" className="text-sm">
-                No
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="doNotKnow" value="Do not know" />
-              <Label htmlFor="doNotKnow" className="text-sm">
-                Do not know
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem id="other" value="Other" />
-              <Label htmlFor="other" className="text-sm">
-                Other
-              </Label>
-            </div>
+            {overseasResidentStatusOptions.map(({ key, value }) => (
+              <div key={key} className="flex items-center space-x-2">
+                <RadioGroupItem id={key} value={key} />
+                <Label htmlFor={key} className="text-sm">
+                  {t(value)}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
           {errors.nomineeParticipation && (
             <Alert variant="destructive" className="mt-4">
@@ -744,7 +728,7 @@ const ShareHolderRegForm = () => {
               <div key={key} className="flex items-center space-x-2">
                 <RadioGroupItem id={key} value={key} />
                 <Label htmlFor={key} className="text-sm">
-                  {label}
+                  {t(label)}
                 </Label>
               </div>
             ))}
@@ -778,7 +762,7 @@ const ShareHolderRegForm = () => {
               <div key={key} className="flex items-center space-x-2">
                 <RadioGroupItem id={key} value={key} />
                 <Label htmlFor={key} className="text-sm">
-                  {value}
+                  {t(value)}
                 </Label>
               </div>
             ))}
@@ -804,7 +788,7 @@ const ShareHolderRegForm = () => {
               <div key={key} className="flex items-center space-x-2">
                 <RadioGroupItem id={key} value={value} />
                 <Label htmlFor={key} className="text-sm">
-                  {value}
+                  {t(value)}
                 </Label>
               </div>
             ))}
@@ -830,7 +814,7 @@ const ShareHolderRegForm = () => {
               <div key={option.key} className="flex items-center space-x-2">
                 <RadioGroupItem id={option.key} value={option.key} />
                 <Label htmlFor={option.key} className="text-sm">
-                  {option.value}
+                  {t(option.value)}
                 </Label>
               </div>
             ))}
@@ -863,7 +847,7 @@ const ShareHolderRegForm = () => {
               <div key={option.key} className="flex items-center space-x-2">
                 <RadioGroupItem id={option.key} value={option.key} />
                 <Label htmlFor={option.key} className="text-sm">
-                  {option.value}
+                  {t(option.value)}
                 </Label>
               </div>
             ))}
@@ -907,7 +891,7 @@ const ShareHolderRegForm = () => {
               <div key={option.key} className="flex items-center space-x-2">
                 <RadioGroupItem id={option.key} value={option.key} />
                 <Label htmlFor={option.key} className="text-sm">
-                  {option.value}
+                  {t(option.value)}
                 </Label>
               </div>
             ))}
@@ -933,7 +917,7 @@ const ShareHolderRegForm = () => {
               <div key={option.key} className="flex items-center space-x-2">
                 <RadioGroupItem id={option.key} value={option.key} />
                 <Label htmlFor={option.key} className="text-sm">
-                  {option.value}
+                  {t(option.value)}
                 </Label>
               </div>
             ))}
@@ -984,7 +968,7 @@ const ShareHolderRegForm = () => {
                   checked={formState.natureOfFunds?.includes(option.key)}
                 />
                 <Label htmlFor={option.key} className="text-sm">
-                  {option.value}
+                  {t(option.value)}
                 </Label>
               </div>
             ))}
@@ -1017,7 +1001,7 @@ const ShareHolderRegForm = () => {
                   checked={formState.sourceOfFunds?.includes(option.key)}
                 />
                 <Label htmlFor={option.key} className="text-sm">
-                  {option.value}
+                  {t(option.value)}
                 </Label>
               </div>
             ))}
@@ -1070,13 +1054,13 @@ const ShareHolderRegForm = () => {
             <div className="flex items-center space-x-2">
               <RadioGroupItem id="bankruptcyYes" value="Yes" />
               <Label htmlFor="bankruptcyYes" className="text-sm">
-                Yes
+                {t("AmlCdd.options.yes")}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem id="bankruptcyNo" value="No" />
               <Label htmlFor="bankruptcyNo" className="text-sm">
-                No
+                {t("AmlCdd.options.no")}
               </Label>
             </div>
           </RadioGroup>
@@ -1101,7 +1085,7 @@ const ShareHolderRegForm = () => {
               <div key={option.key} className="flex items-center space-x-2">
                 <RadioGroupItem id={option.key} value={option.key} />
                 <Label htmlFor={option.key} className="text-sm">
-                  {option.value}
+                  {t(option.value)}
                 </Label>
               </div>
             ))}
@@ -1145,13 +1129,13 @@ const ShareHolderRegForm = () => {
             <div className="flex items-center space-x-2">
               <RadioGroupItem id="agreementYes" value="Yes" />
               <Label htmlFor="agreementYes" className="text-sm">
-                Yes
+               {t("AmlCdd.options.yes")}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem id="agreementNo" value="No" />
               <Label htmlFor="agreementNo" className="text-sm">
-                No
+               {t("AmlCdd.options.no")}
               </Label>
             </div>
           </RadioGroup>

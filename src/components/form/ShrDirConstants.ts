@@ -1,109 +1,108 @@
 export const roleMap = [
-    { key: "maj", value: "Major shareholder (holding the largest stake)" },
-    { key: "gs", value: "General shareholder" },
-    { key: "ns", value: "Nominee Shareholder" },
-    { key: "ceo", value: "CEO" },
-    { key: "ged", value: "General executive director" },
-    { key: "nd", value: "Nominee Director" },
-    { key: "dcp", value: "Designated Contact Person" },
-    { key: "etc", value: "ETC" },
+    { key: "maj", value: "shldrOptions.roleMaj" },
+    { key: "gs", value: "shldrOptions.roleGs" },
+    { key: "ns", value: "shldrOptions.roleNs" },
+    { key: "ceo", value: "shldrOptions.roleCeo" },
+    { key: "ged", value: "shldrOptions.roleGen" },
+    { key: "nd", value: "shldrOptions.roleNd" },
+    { key: "dcp", value: "shldrOptions.roleDcp" },
+    { key: "etc", value: "shldrOptions.roleEtc" },
 ];
 export const significantControllerMap = [
-    { key: "s1", value: "Holds 25% or more of the company's total shares" },
-    { key: "s2", value: "Holds less than 25% of the company's total shares, but has a higher stake than other shareholders (largest shareholder)" },
-    { key: "s3", value: "Holds less than 25% of the company's total shares, but the same as the share of other shareholders (e.g., 20% of shares out of 5 shareholders)" },
-    { key: "s4", value: "The entire share of the company is owned by another holding company, and I own 25% or more of the holding company." },
-    { key: "s5", value: "The entire stake of the company is owned by another holding company, and I own less than 25% of the holding company, but the share is higher than other shareholders (the largest shareholder of the holding company)." },
-    { key: "s6", value: "The entire share of the company is owned by another holding company, and I own less than 25% of the holding company, but the same as the share of other shareholders (e.g., 20% of the holding company, 5 shareholders)." },
-    { key: "s7", value: "Do not know or do not understand" },
+    { key: "s1", value: "shldrOptions.sigNiConS1" },
+    { key: "s2", value: "shldrOptions.sigNiConS2" },
+    { key: "s3", value: "shldrOptions.sigNiConS3" },
+    { key: "s4", value: "shldrOptions.sigNiConS4" },
+    { key: "s5", value: "shldrOptions.sigNiConS5" },
+    { key: "s6", value: "shldrOptions.sigNiConS6" },
+    { key: "s7", value: "shldrOptions.sigNiConS7" },
 ];
 
 export const correspondenceAddressOptions = [
     {
         key: "residential",
-        label: "Use residential address as the correspondence address",
+        label: "shldrOptions.coresAddres",
     },
     {
         key: "business",
         label:
-            "Use registered business address as a correspondence address (annual service fee of HKD 500 / billed per person)",
+            "shldrOptions.coresAddres1",
     },
     {
         key: "different",
-        label:
-            "Use a different address as a correspondence address (requires proof of address)",
+        label: "shldrOptions.coresAddress2",
     },
     {
         key: "other",
-        label: "Other",
+        label: "usa.Section2StateOptions.Other",
     },
 ];
 
 export const overseasResidentStatusOptions = [
-    { key: "yes", value: "Yes" },
-    { key: "no", value: "No" },
-    { key: "unknown", value: "Do not know" },
-    { key: "other", value: "Other" },
+    { key: "yes", value: "AmlCdd.options.yes" },
+    { key: "no", value: "AmlCdd.options.no" },
+    { key: "unknown", value: "shldrOptions.dontKnow" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
 ];
 
 export const foreignInvestmentReportOptions = [
-    { key: "yesReport", value: "Yes" },
-    { key: "noReport", value: "No" },
-    { key: "handleIssue", value: "I can handle this issue" },
-    { key: "consultationRequired", value: "Consultation required" },
-    { key: "otherReport", value: "Other" },
+    { key: "yesReport", value: "AmlCdd.options.yes" },
+    { key: "noReport", value: "AmlCdd.options.no" },
+    { key: "handleIssue", value: "shldrOptions.handleIssue" },
+    { key: "consultationRequired", value: "shldrOptions.consultationReq" },
+    { key: "otherReport", value: "usa.Section2StateOptions.Other" },
 ];
 
 export const foreignInvestmentOptions = [
-    { key: "yes", value: "Yes" },
-    { key: "no", value: "No" },
-    { key: "consultation", value: "Consultation required" },
-    { key: "other", value: "Other" },
+    { key: "yes", value: "AmlCdd.options.yes" },
+    { key: "no", value: "AmlCdd.options.no" },
+    { key: "consultation", value: "shldrOptions.consultationReq" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
 ];
 
 export const politicallyExposedOptions = [
-    { key: "publicOffice", value: "If you have worked for a current or past public office, or if there is such a person in your family" },
-    { key: "seniorManager", value: "If you worked as a senior manager at a government agency, political party, social group, international NGO, etc." },
-    { key: "politicalPerson", value: "Present or past politically or socially influential person, or someone in your family" },
+    { key: "publicOffice", value: "shldrOptions.pep1" },
+    { key: "seniorManager", value: "shldrOptions.pep2" },
+    { key: "politicalPerson", value: "shldrOptions.pep3" },
     { key: "none", value: "None" },
-    { key: "unknown", value: "Do not know or do not understand" },
-    { key: "consultation", value: "Consultation required" },
-    { key: "other", value: "Other" },
+    { key: "unknown", value: "shldrOptions.sigNiConS7" },
+    { key: "consultation", value: "shldrOptions.consultationReq" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
 ];
 
 export const legalIssuesOptions = [
-    { key: "yes", value: "Yes" },
-    { key: "no", value: "No" },
-    { key: "noInfo", value: "I do not want to provide information" },
-    { key: "other", value: "Other" },
+    { key: "yes", value: "AmlCdd.options.yes" },
+    { key: "no", value: "AmlCdd.options.no" },
+    { key: "noInfo", value: "shldrOptions.optionsDoNotProvide" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
 ];
 
 export const usResidencyOptions = [
-    { key: "yes", value: "Yes" },
-    { key: "no", value: "No" },
-    { key: "other", value: "Other" },
+    { key: "yes", value: "AmlCdd.options.yes" },
+    { key: "no", value: "AmlCdd.options.no" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
 ];
 
 export const natureOfFundsOptions = [
     {
         key: "profitsFromBusiness",
-        value: "After the establishment of the company, profits will be generated through business such as sales",
+        value: "shldrOptions.natureFunds",
     },
     {
         key: "fundsFromAssetSales",
-        value: "After incorporation or registration, the funds for the sale of assets will flow into the account",
+        value: "shldrOptions.fundsFromSales",
     },
     {
         key: "ownerInvestmentOrLoan",
-        value: "After incorporation or registration, the actual owner will deposit investment or loan funds",
+        value: "shldrOptions.ownerInvestLoad",
     },
     {
         key: "groupOrParentInvestment",
-        value: "After incorporation or registration, the group or parent company will pay investment funds",
+        value: "shldrOptions.groupParentInvestment",
     },
     {
         key: "otherNatureOfFunds",
-        value: "Other",
+        value: "usa.Section2StateOptions.Other",
     },
 ];
 
@@ -111,45 +110,45 @@ export const sourceOfFundsOptions = [
     {
         key: "pastBusinessProfits",
         value:
-            "Investments or loans will be paid to the Hong Kong company, and these funds are profits from other businesses in the past.",
+            "shldrOptions.sourceFunds",
     },
     {
         key: "assetSaleFunds",
         value:
-            "Investments or loans will be paid to the Hong Kong company, which is generated from the sale of assets owned by the company in the past.",
+            "shldrOptions.assetSaleFunds",
     },
     {
         key: "borrowedFunds",
         value:
-            "Investment funds or loans will be paid to the Hong Kong company, and these funds are loans (borrowed) from others.",
+            "shldrOptions.borrowedFunds",
     },
     {
         key: "ownerPaidFunds",
         value:
-            "Investments or loans will be paid to the Hong Kong company, and these are funds that other substantial owners wish to pay through their own.",
+            "shldrOptions.ownerPaidFunds",
     },
     {
         key: "earnedIncome",
         value:
-            "Investments or loans will be paid to the Hong Kong company, which is earned income from past tenure.",
+            "shldrOptions.earnedIncome",
     },
     {
         key: "affiliatedCompanyFunds",
         value:
-            "Investments or loans will be paid to the Hong Kong company, and these funds are paid by the company or group to which the person is affiliated.",
+            "shldrOptions.affiliatedCompFunds",
     },
     {
         key: "bankOwnedFunds",
         value:
-            "Investments or loans will be paid to the Hong Kong company, and these funds were deposited in and owned by the bank.",
+            "shldrOptions.bankOwnedFunds",
     },
     {
         key: "noPlanSmallAmount",
         value:
-            "There is no plan to pay investment or loans to the Hong Kong company, and even if there is, it is a small amount, so this will be paid from the funds deposited in the bank.",
+            "shldrOptions.noPlanSmallAmount",
     },
     {
         key: "otherSourceOfFunds",
-        value: "Other",
+        value: "usa.Section2StateOptions.Other",
     },
 ];

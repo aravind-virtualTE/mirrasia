@@ -12,9 +12,11 @@ import { significantControllerMap } from '../form/ShrDirConstants';
 import { multiShrDirResetAtom } from './constants';
 import { useAtom } from 'jotai';
 import DetailShdHk from './detailShddHk';
+import { useTranslation } from 'react-i18next';
 
 
 export default function ViewBoard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedData, setsSelectedData] = useState<any>(null)
@@ -50,28 +52,26 @@ export default function ViewBoard() {
 
   return (
     <div className="container mx-auto p-6">
-
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="col-span-full">
           <CardHeader>
-            <CardTitle>Shareholder/Director Registration</CardTitle>
-            <CardDescription>Important information about your role</CardDescription>
+            <CardTitle>{t("shldr_viewboard.viewTitle")}</CardTitle>
+            <CardDescription>{t("shldr_viewboard.viewDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
-              You have been allotted as a shareholder/director. Please register your details to proceed.
+              {t("shldr_viewboard.viewPara")}
             </p>
             <div className="space-y-4">
-
               <div
                 className="rounded-sm border border-muted bg-background shadow-sm overflow-hidden"
               >
                 <Table className="w-full text-sm text-left">
                   <TableHeader className="bg-muted/50 text-muted-foreground">
                     <TableRow>
-                      <TableHead className="px-4 py-2">Company Name</TableHead>
-                      <TableHead className="px-4 py-2">Country</TableHead>
-                      <TableHead className="px-4 py-2">Action</TableHead>
+                      <TableHead className="px-4 py-2">{t("company.name")}</TableHead>
+                      <TableHead className="px-4 py-2">{t("dashboard.tcountry")}</TableHead>
+                      <TableHead className="px-4 py-2">{t("shldr_viewboard.action")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   {multiData.map((reg: any) => (
@@ -90,7 +90,7 @@ export default function ViewBoard() {
                               }
                               }
                             >
-                              Register
+                              {t("shldr_viewboard.register")}
                               <ArrowRightCircle className="w-4 h-4" />
                             </Button>
                           )}
@@ -105,18 +105,18 @@ export default function ViewBoard() {
         </Card>
         <Card className="col-span-full">
           <CardHeader>
-            <CardTitle>All Associated Companies</CardTitle>
-            <CardDescription>Complete list of all companies you're associated with</CardDescription>
+            <CardTitle>{t("shldr_viewboard.associatedComp")}</CardTitle>
+            <CardDescription>{t("shldr_viewboard.associatedDescComp")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-10">S.No</TableHead>
-                  <TableHead className="w-48">Company Name</TableHead>
-                  <TableHead className="w-48">Full Name</TableHead>
-                  <TableHead className="min-w-[300px]">Significant Controller</TableHead>
-                  <TableHead className="w-16 text-center">Edit</TableHead>
+                  <TableHead className="w-48">{t("company.name")}</TableHead>
+                  <TableHead className="w-48">{t("shldr_viewboard.fullName")}</TableHead>
+                  <TableHead className="min-w-[300px]">{t("shldr_viewboard.signiControl")}</TableHead>
+                  <TableHead className="w-16 text-center">{t("shldr_viewboard.edit")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
