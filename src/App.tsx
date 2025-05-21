@@ -20,8 +20,6 @@ import { TooltipProvider } from './components/ui/tooltip';
 import Unauthorized from './common/Unauthorized';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import CompanyDetail from './pages/Company/Details/CompanyDetail';
-import HkMultiStepForm from './components/company/hongkong/HkMultiStepForm';
-import ShareHolderRegForm from './components/form/ShareHolderRegForm';
 import QuatationForm from './components/form/quatationForm';
 import RenewalRequestForm from './components/form/renewalReqForm';
 import TransferManagementInfo from './components/form/TransferManagementInfo';
@@ -49,6 +47,8 @@ import ToDoList from './pages/MasterTodo/Mtodo';
 import ProjectDetail from './pages/dashboard/Admin/Projects/ProjectDetail';
 import CustomerDataManager from './pages/DataExcelManager';
 import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporateClientList';
+import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
+import UsShdr from './components/ShrDirForm/us/UsShdr';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -86,6 +86,8 @@ const App: React.FC = () => {
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />
+                    <Route path="/test" element={<UsShdr />} />
+                    
                   </Route>
                   <Route path="/unauthorized" element={<Unauthorized />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -139,8 +141,8 @@ const App: React.FC = () => {
                   <Route element={<ProtectedRoute allowedRoles={["hk_shdr", 'us_shdr', 'pa_shdr']} />}>
                     <Route element={<Layout />}>
                       <Route path="/viewboard" element={<ViewBoard />} />
-                      <Route path='/registrationForm' element={<ShareHolderRegForm />} />
-                      <Route path="/registrationForm/:id" element={<ShareHolderRegForm />} />
+                      <Route path='/registrationForm' element={<CountryWiseShareholder />} />
+                      <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
                     </Route>
                   </Route>
 
@@ -148,8 +150,6 @@ const App: React.FC = () => {
                   <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
                     <Route element={<Layout />}>
                       <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/hkCompanyRegister/" element={<HkMultiStepForm />} />
-                      <Route path="/hkCompanyRegister/:id" element={<HkMultiStepForm />} />
                       {/* Add more user-specific routes here */}
                       <Route path='/QuatationForm' element={<QuatationForm />} />
                       <Route path='/RenewalReqForm' element={<RenewalRequestForm />} />

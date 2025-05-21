@@ -15,12 +15,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getShrDirRegData, saveShrDirRegData } from "@/services/dataFetch";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { FileDialog } from '../../components/ui/fileDialog'
+import { FileDialog } from '../ui/fileDialog'
 import { correspondenceAddressOptions, foreignInvestmentOptions, foreignInvestmentReportOptions, legalIssuesOptions, natureOfFundsOptions, overseasResidentStatusOptions, politicallyExposedOptions, roleMap, significantControllerMap, sourceOfFundsOptions, usResidencyOptions } from "./ShrDirConstants";
 import { useAtom } from "jotai";
 import { multiShrDirResetAtom } from "../shareholderDirector/constants";
 
-const ShareHolderRegForm = () => {
+const HkShareHldrDir = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const [multiData,] = useAtom<any>(multiShrDirResetAtom)
@@ -106,7 +106,7 @@ const ShareHolderRegForm = () => {
       console.log('id--->', id)
       async function fetchData(id: string) {
         const data = await getShrDirRegData(id);
-        console.log("data", data)
+        // console.log("data", data)
         setFormState(data);
       }
       fetchData(id)
@@ -1171,4 +1171,4 @@ const ShareHolderRegForm = () => {
   );
 };
 
-export default ShareHolderRegForm;
+export default HkShareHldrDir;

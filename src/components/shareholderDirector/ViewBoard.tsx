@@ -130,13 +130,18 @@ export default function ViewBoard() {
                     <TableCell className="font-medium">{company.companyName}</TableCell>
                     <TableCell>{company.fullName}</TableCell>
                     <TableCell className="whitespace-normal">{company.significantController
-                      ? significantControllerMap.find(
-                        item => item.key === company.significantController
-                      )?.value || "N/A"
-                      : "N/A"}</TableCell>
+                      ? t(
+                        significantControllerMap.find(
+                          item => item.key === company.significantController
+                        )?.value || "N/A"
+                      )
+                      : t("N/A")}</TableCell>
                     <TableCell className="text-center">
                       <button onClick={(e) => {
                         e.stopPropagation()
+                        const shrId = multiData.find((item: { shrDirId: string; }) => item.shrDirId == company._id)
+                        // console.log("shrId",shrId)
+                        localStorage.setItem('shdrItem', shrId._id)
                         navigate(`/registrationForm/${company._id}`)
                       }} >
                         <Pencil size={16} />

@@ -44,7 +44,7 @@ const DeclarationForm = () => {
         </Alert>
 
         <div className="space-y-6">
-          {questions.map((q) => (
+          {questions.map(q => (
             <div key={q.id} className="p-4 rounded-lg border bg-white hover:bg-slate-50 transition-colors">
               <div className="space-y-4">
                 <Label className="text-base font-medium leading-relaxed">
