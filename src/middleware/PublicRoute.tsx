@@ -25,6 +25,7 @@ const PublicRoute: React.FC = () => {
       localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("shdrItem")
     }
   }
 

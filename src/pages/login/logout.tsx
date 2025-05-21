@@ -9,7 +9,9 @@ const Logout = () => {
       localStorage.setItem("isAuthenticated", "false");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("companyRecordId");
+      localStorage.removeItem("shdrItem")
       window.dispatchEvent(new Event("storage"));
       resetAllForms();
       navigate("/");

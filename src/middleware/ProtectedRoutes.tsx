@@ -32,6 +32,7 @@ const ProtectedRoute: React.FC<{ allowedRoles?: string[] }> = ({ allowedRoles })
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("shdrItem")
     return <Navigate to="/login" replace />;
   }
 
