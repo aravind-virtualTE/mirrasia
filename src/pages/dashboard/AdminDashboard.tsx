@@ -139,7 +139,7 @@ const AdminDashboard = () => {
       company => activeTab === "active" ? !company.isDeleted : company.isDeleted
     );
     const sortedData = [...initialFilter]
-    console.log("sortedData",sortedData)
+    // console.log("sortedData",sortedData)
     const filterData = sortedData.filter((e) => active_status.includes((e as { status: string }).status))
     // console.log("filterData",filterData.length)
 

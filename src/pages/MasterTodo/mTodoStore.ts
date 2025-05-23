@@ -11,6 +11,8 @@ export interface Comment {
   text: string;
   author?:string;
   timestamp: string;
+  fileUrl?: string | Blob | File | null
+  fileName?: string;
 }
 
 export interface Task {
@@ -145,7 +147,11 @@ export const createTask = async (taskData:Task) => {
   // UPDATE a task by ID
   export const updateTask = async (id:string, updates:Task) => {
     try {
-      const response = await api.put(`/tasks/${id}`, updates);
+      const response = await api.put(`/tasks/${id}`, updates,{
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
       return response.data;
     } catch (error) {
       console.error(`Error updating task ${id}:`, error);

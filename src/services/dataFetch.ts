@@ -110,7 +110,7 @@ export const updateServiceAgreementData = async (data: string) => {
     const response = await api.post('company/update-service-agreement', data);
     return response.data;
   } catch (error) {
-    console.error("Error saving service Agreement Data:", error);
+    console.error("Error updating service Agreement Data:", error);
   }
 }
 
@@ -119,7 +119,7 @@ export const updateEditValues = async (data: string) => {
     const response = await api.post('company/updateCompanySession', data);
     return response.data;
   } catch (error) {
-    console.error("Error saving service Agreement Data:", error);
+    console.error("Error updating Data:", error);
   }
 }
 
@@ -134,7 +134,7 @@ export const saveShrDirRegData = async (data: ShareHolderRegistrationForm, id?: 
     });
     return response.data;
   } catch (error) {
-    console.error("Error saving service Agreement Data:", error);
+    console.error("Error saving Data:", error);
   }
 }
 
@@ -146,7 +146,7 @@ export const getShrDirRegData = async ( id?: string) => {
     const response = await api.get(url);
     return response.data;
   } catch (error) {
-    console.error("Error saving service Agreement Data:", error);
+    console.error("Error fetching Data:", error);
   }
 }
 
@@ -296,5 +296,29 @@ try {
     return response.data;
   } catch (error) {
     console.error("Error fetching saved data:", error);
+  }
+}
+
+export const usIndividualShareholderData = async (data: any, id?: string) => {
+  try {
+    const url = id ? `company/registerUsIndividualShrDir/${id}` : 'company/registerUsIndividualShrDir';
+    const response = await api.post(url, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error saving Data:", error);
+  }
+}
+
+export const getUsIndividualShrDirRegData = async ( id?: string) => {
+  try {
+    const url = id ? `company/registerUsIndividualShrDir/${id}` : 'company/registerUsIndividualShrDir';
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching  Data:", error);
   }
 }
