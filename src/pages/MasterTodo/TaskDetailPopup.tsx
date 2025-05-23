@@ -1,28 +1,40 @@
 import { useAtom } from "jotai"
 import { format } from "date-fns"
-import { Flag, Send, X } from "lucide-react"
+import { Flag, Send, X, Paperclip } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { priorityColors, statusColors, tasksAtom, updateTask, usersAtom } from "./mTodoStore"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { RichTextViewer } from "@/components/rich-text-viewer"
 
 const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: () => void }) => {
     const [tasks, setTasks] = useAtom(tasksAtom)
     const [comment, setComment] = useState("")
     const [users,] = useAtom(usersAtom);
+    const [file, setFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const task = tasks.find((t) => t._id === taskId)
     const createdUser = users.find((user) => user._id === task?.userId)
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = e.target.files?.[0];
+        if (selectedFile) setFile(selectedFile);
+    };
+
+    const handleClipClick = () => {
+        fileInputRef.current?.click();
+    };
     // console.log("task", createdUser)
     const handleCommentSubmit = async () => {
         if (!comment.trim()) return
         const newComment = {
             text: comment.trim(),
             timestamp: new Date().toISOString(),
-            author: ""
+            author: createdUser?.fullName || "",
+            fileUrl: file
         }
 
         try {
@@ -31,25 +43,27 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                 ...task,
                 comments: [...((task?.comments || [])), newComment]
             })
+            console.log("response", response)
             setTasks((prev) =>
                 prev.map((t) => (t._id === task._id ? response : t))
             )
             setComment("")
+            setFile(null)
         } catch (error) {
             console.error("Failed to submit comment", error)
         }
     }
-
+    console.log("task", task)
     if (!task) return null
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50" onClick={onClose}>
             <div className="absolute inset-0 bg-black opacity-20" />
             <div
-                className="relative bg-white rounded-lg shadow-lg w-[80%] h-[80%] z-10 flex overflow-hidden"
+                className="relative bg-white rounded-lg shadow-lg w-[95%] h-[95%] z-10 flex overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Left Section - Task Details */}
-                <div className="w-1/2 p-6 overflow-y-auto">
+                <div className="w-1/3 p-6 overflow-y-auto">
                     <div className="flex justify-between items-start mb-4">
                         <Badge variant="outline" className={`text-xs px-2 py-1 ${statusColors[task.status]}`}>
                             {task.status}
@@ -131,12 +145,10 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                         )}
                     </div>
                 </div>
-
                 {/* Separator between sections */}
                 <Separator orientation="vertical" />
-
                 {/* Right Section - Comments */}
-                <div className="w-1/2 p-6 flex flex-col h-full">
+                <div className="w-2/3 p-6 flex flex-col h-full">
                     <div className="flex items-center justify-between mb-4">
                         <h4 className="text-lg font-semibold">Comments</h4>
                         <Button
@@ -154,16 +166,25 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                             task.comments.map((comment, index) => (
                                 <div key={index} className="bg-gray-50 p-3 rounded-lg">
                                     <div className="flex items-center gap-2 mb-1">
-                                        {/* <Avatar className="h-6 w-6">
-                                            <AvatarFallback className="text-xs">U</AvatarFallback>
-                                        </Avatar>
-                                        <span className="text-sm font-medium">{comment.author || "User"}</span> */}
                                         <p className="text-sm">{comment.text}</p>
+                                        <span className="text-xs text-gray-500">{comment.author}</span>
                                         <span className="text-xs text-gray-500">
                                             {format(new Date(comment.timestamp), "PPpp")}
                                         </span>
                                     </div>
-
+                                    {comment.fileUrl && (
+                                        <div className="mt-2 rounded border overflow-hidden">
+                                            <iframe
+                                                src={
+                                                    typeof comment.fileUrl === "string"
+                                                        ? comment.fileUrl
+                                                        : URL.createObjectURL(comment.fileUrl)
+                                                }
+                                                className="w-full h-64"
+                                                title={`Attachment ${index}`}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             ))
                         ) : (
@@ -175,20 +196,48 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                     </div>
 
                     <div className="mt-auto">
-                        <div className="flex gap-2">
-                            <Input
-                                placeholder="Add a comment..."
-                                className="flex-grow"
-                                value={comment}
-                                onChange={(e) => setComment(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") handleCommentSubmit()
-                                }}
-                            />
-                            <Button size="sm" className="px-3" onClick={handleCommentSubmit}>
-                                <Send className="h-4 w-4 mr-1" />
-                                Send
-                            </Button>
+                        <div className="flex flex-col gap-2">
+                            {file && (
+                                <div className="text-sm text-muted-foreground">
+                                    <Paperclip className="inline w-4 h-4 mr-1" />
+                                    {file.name}
+                                    <Button variant="link" onClick={() => setFile(null)}>Remove</Button>
+                                </div>
+                            )}
+
+                            <div className="flex gap-2 items-center">
+                                <Input
+                                    placeholder="Add a comment..."
+                                    className="flex-grow"
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") handleCommentSubmit();
+                                    }}
+                                />
+
+                                <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    type="button"
+                                    onClick={handleClipClick}
+                                    title="Attach a file"
+                                >
+                                    <Paperclip className="w-4 h-4" />
+                                </Button>
+
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    className="hidden"
+                                    onChange={handleFileChange}
+                                />
+
+                                <Button size="sm" className="px-3" onClick={handleCommentSubmit}>
+                                    <Send className="h-4 w-4 mr-1" />
+                                    Send
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
