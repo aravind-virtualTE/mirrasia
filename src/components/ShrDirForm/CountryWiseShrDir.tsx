@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import HkShareHldrDir from './HkShareHldrDir'
 import { multiShrDirResetAtom } from '../shareholderDirector/constants'
 import { useAtom } from 'jotai'
+import UsShdr from './us/UsShdr'
 
 const CountryWiseShareholder:React.FC = () => {
     const [multiData,] = useAtom<any>(multiShrDirResetAtom)
@@ -13,11 +14,12 @@ const CountryWiseShareholder:React.FC = () => {
     const findData =  multiData.length >0
     ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
     : null;
+    console.log("findData",findData)
     setCountry(findData.country)
-    // console.log("findData",findData)
     }, [])
     
     if(country == 'HK') return <HkShareHldrDir />
+    if(country == 'US') return <UsShdr />
 
     return (
       <div>

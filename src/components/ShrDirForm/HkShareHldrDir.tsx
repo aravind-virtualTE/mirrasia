@@ -100,6 +100,7 @@ const HkShareHldrDir = () => {
 
   const [fileSource, setFileSource] = useState<any>('');
   const [openFile, setOpenFile] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -230,17 +231,17 @@ const HkShareHldrDir = () => {
     if (!formState.agreementDeclaration.trim()) {
       newErrors.agreementDeclaration = "You must agree or disagree with the declaration.";
     }
-    console.log("Form formState-->", formState);
+    // console.log("Form formState-->", formState);
     setErrors(newErrors);
     if (Object.values(newErrors).every((error) => error === "")) {
-      const formData = new FormData();
-      formData.append("userData", JSON.stringify(formState));
-      // Append files (assuming you have file inputs in your frontend)
-      formData.append("passportCopy", formState.passportCopy);
-      formData.append("personalCertificate", formState.personalCertificate);
-      formData.append("proofOfAddress", formState.proofOfAddress);
+      // const formData = new FormData();
+      // formData.append("userData", JSON.stringify(formState));
+      // // Append files (assuming you have file inputs in your frontend)
+      // formData.append("passportCopy", formState.passportCopy);
+      // formData.append("personalCertificate", formState.personalCertificate);
+      // formData.append("proofOfAddress", formState.proofOfAddress);
       const result = await saveShrDirRegData(formState, id);
-      console.log("Form result-->", result);
+      // console.log("Form result-->", result);
       localStorage.removeItem('shdrItem')
       if (result.success == true) {
         setFormState(result.registeredData)
@@ -249,8 +250,15 @@ const HkShareHldrDir = () => {
           title: "Details submitted",
           description: "Saved successfully"
         });
+        setShowSuccess(true)
       }
       console.log("Form submitted successfully:", formState);
+    }else{
+      toast({
+        title: "Enter Missing Items",
+        description: "PLease enter all required items"
+      })
+      setShowSuccess(false)
     }
   };
 
@@ -332,11 +340,19 @@ const HkShareHldrDir = () => {
         <div className="mt-6">
           <div className="flex items-center gap-4">
             <Label htmlFor="companyName" className="text-sm font-bold whitespace-nowrap">
-              {t("hk_shldr.compName")} <span className="text-red-500">*</span>
+              {t("hk_shldr.compName")} <span className="text-red-500">* <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-md text-sm">
+                company name is created by user and should be same across application process
+              </TooltipContent>
+            </Tooltip></span>
             </Label>
             <Input
               id="companyName"
               placeholder={t("hk_shldr.compNamePlaceholder")}
+              disabled={true}
               value={formState.companyName}
               onChange={(e) => handleChange("companyName", e.target.value)}
               className={`flex-1 ${errors.companyName ? "border-red-500" : ""}`}
@@ -1146,12 +1162,12 @@ const HkShareHldrDir = () => {
           )}
         </div>
 
-        <div className="mt-8 bg-gray-100 p-6 rounded-lg shadow-md">
+        {showSuccess && <div className="mt-8 bg-gray-100 p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-bold text-gray-800">{t("hk_shldr.complete")}</h2>
           <p className="text-sm text-gray-600 mt-2">
             {t("hk_shldr.thankYu")}
           </p>
-        </div>
+        </div>}
         {/* Submit Button */}
         <div className="flex justify-end mt-6">
           <Button onClick={handleSubmit}>Submit</Button>
