@@ -12,7 +12,7 @@ export interface Comment {
   author?:string;
   timestamp: string;
   fileUrl?: string | Blob | File | null
-  fileName?: string;
+  authorId?: string;
 }
 
 export interface Task {
@@ -169,3 +169,13 @@ export const createTask = async (taskData:Task) => {
       throw error;
     }
   };
+
+  export const deleteTodoTaskComment = async (taskId: string, commentId: string) => {
+    try {
+      const response = await api.delete(`/tasks/${taskId}/comments/${commentId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting comment ${commentId} from task ${taskId}:`, error);
+      throw error;
+    }
+  }

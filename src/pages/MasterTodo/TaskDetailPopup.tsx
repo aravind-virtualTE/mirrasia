@@ -1,14 +1,15 @@
 import { useAtom } from "jotai"
 import { format } from "date-fns"
-import { Flag, Send, X, Paperclip } from "lucide-react"
+import { Flag, Send, X, Paperclip, MoreHorizontal, Trash2, } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { priorityColors, statusColors, tasksAtom, updateTask, usersAtom } from "./mTodoStore"
+import { priorityColors, statusColors, tasksAtom, updateTask, usersAtom, deleteTodoTaskComment } from "./mTodoStore"
 import { useRef, useState } from "react"
 import { RichTextViewer } from "@/components/rich-text-viewer"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: () => void }) => {
     const [tasks, setTasks] = useAtom(tasksAtom)
@@ -34,6 +35,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
             text: comment.trim(),
             timestamp: new Date().toISOString(),
             author: createdUser?.fullName || "",
+            authorId: createdUser?._id || "",
             fileUrl: file
         }
 
@@ -43,7 +45,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                 ...task,
                 comments: [...((task?.comments || [])), newComment]
             })
-            console.log("response", response)
+            // console.log("response", response)
             setTasks((prev) =>
                 prev.map((t) => (t._id === task._id ? response : t))
             )
@@ -53,7 +55,28 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
             console.error("Failed to submit comment", error)
         }
     }
-    console.log("task", task)
+    // console.log("task", task)
+    // const handleEditComment = (comment: TaskComment, index: number) => {
+    //     console.log("Edit comment:", comment, "at index:", index);
+    //     // TODO: populate comment in input for editing
+    // };
+
+    const handleDeleteComment = async (taskId: string, commentId: string) => {
+        const result = await deleteTodoTaskComment(taskId, commentId);
+        // console.log("Delete comment result:", result);
+        if (result.message == 'Comment deleted successfully') {
+            setTasks((prevTasks) =>
+                prevTasks.map((task) => {
+                    if (task._id !== taskId) return task;
+    
+                    return {
+                        ...task,
+                        comments: task.comments.filter((comment) => comment._id !== commentId),
+                    };
+                })
+            );
+        }
+    };
     if (!task) return null
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50" onClick={onClose}>
@@ -164,22 +187,44 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                     <div className="flex-grow overflow-y-auto mb-4 space-y-4">
                         {task.comments && task.comments.length > 0 ? (
                             task.comments.map((comment, index) => (
-                                <div key={index} className="bg-gray-50 p-3 rounded-lg">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <p className="text-sm">{comment.text}</p>
-                                        <span className="text-xs text-gray-500">{comment.author}</span>
-                                        <span className="text-xs text-gray-500">
-                                            {format(new Date(comment.timestamp), "PPpp")}
-                                        </span>
+                                <div key={index} className="bg-gray-50 p-3 rounded-lg relative group">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <div className="flex flex-col gap-1">
+                                            <p className="text-sm">{comment.text}</p>
+                                            <div className="flex gap-2 text-xs text-gray-500">
+                                                <span>{comment.author}</span>
+                                                <span>{format(new Date(comment.timestamp), "PPpp")}</span>
+                                            </div>
+                                        </div>
+
+                                       {createdUser && createdUser._id == comment.authorId &&  <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <button className="p-1 rounded hover:bg-gray-200">
+                                                    <MoreHorizontal className="w-4 h-4" />
+                                                </button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="w-32">
+                                                {/* <DropdownMenuItem onClick={() => handleEditComment(comment, index)}>
+                                                    <Edit2 className="w-4 h-4 mr-2" /> Edit
+                                                </DropdownMenuItem> */}
+                                                <DropdownMenuItem
+                                                    onClick={() => {
+                                                        // console.log("comment",comment)
+                                                        if (task._id && comment._id) {
+                                                            handleDeleteComment(task._id, comment._id);
+                                                        }
+                                                    }}
+                                                >
+                                                    <Trash2 className="w-4 h-4 mr-2 text-red-500" /> Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>}
                                     </div>
+
                                     {comment.fileUrl && (
                                         <div className="mt-2 rounded border overflow-hidden">
                                             <iframe
-                                                src={
-                                                    typeof comment.fileUrl === "string"
-                                                        ? comment.fileUrl
-                                                        : URL.createObjectURL(comment.fileUrl)
-                                                }
+                                                src={typeof comment.fileUrl === "string" ? comment.fileUrl : URL.createObjectURL(comment.fileUrl)}
                                                 className="w-full h-64"
                                                 title={`Attachment ${index}`}
                                             />
