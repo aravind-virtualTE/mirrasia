@@ -10,9 +10,11 @@ import { priorityColors, statusColors, tasksAtom, updateTask, usersAtom, deleteT
 import { useRef, useState } from "react"
 import { RichTextViewer } from "@/components/rich-text-viewer"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import CustomLoader from "@/components/ui/customLoader"
 
 const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: () => void }) => {
     const [tasks, setTasks] = useAtom(tasksAtom)
+    const [isLoading, setIsLoading] = useState(false)
     const [comment, setComment] = useState("")
     const [users,] = useAtom(usersAtom);
     const [file, setFile] = useState<File | null>(null);
@@ -31,6 +33,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
     // console.log("task", createdUser)
     const handleCommentSubmit = async () => {
         if (!comment.trim()) return
+        setIsLoading(true)
         const newComment = {
             text: comment.trim(),
             timestamp: new Date().toISOString(),
@@ -51,7 +54,9 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
             )
             setComment("")
             setFile(null)
+            setIsLoading(false)
         } catch (error) {
+            setIsLoading(false)
             console.error("Failed to submit comment", error)
         }
     }
@@ -68,7 +73,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
             setTasks((prevTasks) =>
                 prevTasks.map((task) => {
                     if (task._id !== taskId) return task;
-    
+
                     return {
                         ...task,
                         comments: task.comments.filter((comment) => comment._id !== commentId),
@@ -197,7 +202,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                                             </div>
                                         </div>
 
-                                       {createdUser && createdUser._id == comment.authorId &&  <DropdownMenu>
+                                        {createdUser && createdUser._id == comment.authorId && <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <button className="p-1 rounded hover:bg-gray-200">
                                                     <MoreHorizontal className="w-4 h-4" />
@@ -279,8 +284,17 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                                 />
 
                                 <Button size="sm" className="px-3" onClick={handleCommentSubmit}>
-                                    <Send className="h-4 w-4 mr-1" />
-                                    Send
+                                    {isLoading ? (
+                                        <>
+                                            <CustomLoader />
+                                            <span className="ml-2">Saving...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send className="h-4 w-4 mr-1" />
+                                            <span>Send</span>
+                                        </>
+                                    )}
                                 </Button>
                             </div>
                         </div>
