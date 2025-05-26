@@ -21,6 +21,8 @@ import { allCompListAtom } from '@/services/state';
 import { fetchUsers } from '@/services/dataFetch';
 import { projectsAtom } from '../dashboard/Admin/Projects/ProjectAtom';
 import { RichTextEditor } from "@/components/rich-text-editor"
+import CustomLoader from "@/components/ui/customLoader";
+
 interface CreateTaskDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -43,6 +45,7 @@ export const CreateTaskDialog = ({
     const [users, setUsers] = useAtom(usersAtom);
     const [allList] = useAtom(allCompListAtom);
     const [projects,] = useAtom(projectsAtom);
+    const [isLoading, setIsLoading] = useState(false);
 
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     // State for multi-select dropdown
@@ -128,7 +131,7 @@ export const CreateTaskDialog = ({
 
     const handleSubmit = async () => {
         if (!formState.taskName) return;
-
+        setIsLoading(true)
         if (isEditMode && taskToEdit) {
             // Update existing task
             const updatedTaskData: Task = {
@@ -186,6 +189,7 @@ export const CreateTaskDialog = ({
         }
         setFormState(defaultFormState);
         onOpenChange(false);
+        setIsLoading(false)
     };
 
     const handleCompanyChange = (companyId: string) => {
@@ -229,8 +233,8 @@ export const CreateTaskDialog = ({
     // console.log("user",user)
     const projectsList = projects.map((project) => ({ id: project._id, name: project.projectName }))
     const allowedStatuses = user.role === 'master'
-    ? statuses
-    : statuses.filter((s) => s.label !== 'COMPLETED');
+        ? statuses
+        : statuses.filter((s) => s.label !== 'COMPLETED');
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-[900px]">
@@ -441,7 +445,20 @@ export const CreateTaskDialog = ({
                 </div>
                 <DialogFooter className="w-full">
                     <Button onClick={handleSubmit} type="submit">
-                        {isEditMode ? 'Update Task' : 'Create Task'}
+
+                        <Button onClick={handleSubmit} type="submit">
+                            {isLoading ? (
+                                <>
+                                    <CustomLoader />
+                                    <span className="ml-2">Saving...</span>
+                                </>
+                            ) : isEditMode ? (
+                                'Update Task'
+                            ) : (
+                                'Create Task'
+                            )}
+                        </Button>
+
                     </Button>
                 </DialogFooter>
             </DialogContent>
