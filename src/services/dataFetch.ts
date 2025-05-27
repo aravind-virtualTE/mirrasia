@@ -203,7 +203,14 @@ export const uploadCompanyDocs = async (companiesData : Company[]) => {
     return {
       ...company,
       companyDocs: company.companyDocs.map(doc => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { file, ...rest } = doc;
+        return rest;
+      }),
+       kycDocs: (company.kycDocs ?? []).map(doc => {
+        const { file, ...rest } = doc;
+        return rest;
+      }),
+      letterDocs: (company.letterDocs ?? []).map(doc => {
         const { file, ...rest } = doc;
         return rest;
       })
@@ -215,7 +222,17 @@ export const uploadCompanyDocs = async (companiesData : Company[]) => {
   companiesData.forEach(company => {
     company.companyDocs.forEach(doc => {
       if (doc.file) {
-        formData.append('files', doc.file, doc.docName);
+        formData.append('companyDocs', doc.file, doc.docName);
+      }
+    });
+     company.kycDocs?.forEach((doc) => {
+      if (doc.file) {
+        formData.append('kycDocs', doc.file, doc.docName);
+      }
+    });
+     company.letterDocs?.forEach((doc) => {
+      if (doc.file) {
+        formData.append('letterDocs', doc.file, doc.docName);
       }
     });
   });
