@@ -36,9 +36,7 @@ const UsersList = () => {
 
     const handleRoleChange = async (userId: string, newRole: string) => {
         try {
-            // Here you would typically call an API to update the user's role
             await updateUserRole(userId, newRole);
-            // console.log("changs", userId, '\n role', newRole)
             setUsers((prevUsers) => prevUsers.map((user) => (user._id === userId ? { ...user, role: newRole } : user)))
             setSelectedUser((prevUser) => (prevUser ? { ...prevUser, role: newRole } : null)) 
             toast({
@@ -58,7 +56,6 @@ const UsersList = () => {
     const handleAddUser = async (e: React.FormEvent) => {
         e.preventDefault()
         try {
-            // Here you would typically call an API to add the new user
             const addedUser = await addUser(JSON.stringify(newUser));
             setUsers([...users, addedUser])
             setNewUser({ fullName: "", email: "", role: "user" })

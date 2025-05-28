@@ -339,3 +339,25 @@ export const getUsIndividualShrDirRegData = async ( id?: string) => {
     console.error("Error fetching  Data:", error);
   }
 }
+
+export const updateProfileData = async (data: any, id?: string) => {
+  try {
+    const response = await api.put(`user/updateUser/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error saving Data:", error);
+  }
+}
+
+export const getUserById = async ( id: string) =>{
+  try {
+    const response = await api.get(`user/getUser/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}
