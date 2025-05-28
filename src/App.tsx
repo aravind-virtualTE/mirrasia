@@ -49,6 +49,7 @@ import CustomerDataManager from './pages/DataExcelManager';
 import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporateClientList';
 import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
 import UsShdr from './components/ShrDirForm/us/UsShdr';
+import UsersList1 from './components/userList/uList2';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -91,10 +92,12 @@ const App: React.FC = () => {
                   </Route>
                   <Route path="/unauthorized" element={<Unauthorized />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                  <Route path="/profile" element={<Profile />} />
+                  
                   <Route element={<ProtectedRoute allowedRoles={["master"]} />}>
                     <Route element={<Layout />}>
                       <Route path="/userslist" element={<UsersList />} />
+                      <Route path="/userslist1" element={<UsersList1 />} />
+                      
                     </Route>
                   </Route>
 
@@ -110,7 +113,7 @@ const App: React.FC = () => {
                       <Route path="/switch-services/:countryCode/:id" element={<SwitchServices />} />
                       <Route path="/accounting-services" element={<AccountingForms />} />
                       <Route path="/accounting-services/:countryCode/:id" element={<AccountingForms />} />
-                      
+                      <Route path="/profile" element={<Profile />} />
                       <Route path="/hk-bank-account-list" element={<BkFrmList />} />
                       <Route path="/switch-services-list" element={<SwitchServicesList />} />
                       <Route path="/accounting-support-list" element={<AccountingHkList />} />
@@ -143,6 +146,7 @@ const App: React.FC = () => {
                       <Route path="/viewboard" element={<ViewBoard />} />
                       <Route path='/registrationForm' element={<CountryWiseShareholder />} />
                       <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
+                      <Route path="/profile" element={<Profile />} />
                     </Route>
                   </Route>
 
