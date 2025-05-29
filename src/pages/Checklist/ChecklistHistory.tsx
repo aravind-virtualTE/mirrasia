@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react"
 import { atom, useAtom } from "jotai"
-import { Plus, Save, Trash2 } from "lucide-react"
+import { Save, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -234,17 +234,7 @@ export default function ChecklistHistory({ id, items }: { id?: string, items: an
               <TabsTrigger value="renewal">Renewal</TabsTrigger>
             </TabsList>
 
-            {user.role !== 'user' && (<div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setNewTaskLabel("")
-                }}
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                Add
-              </Button>
+            {user.role !== 'user' && (<div className="flex items-center gap-2">              
               <Button onClick={handleSave} size="sm">
                 <Save className="h-4 w-4 mr-1" />
                 Save
@@ -260,7 +250,9 @@ export default function ChecklistHistory({ id, items }: { id?: string, items: an
               className="flex-1"
             />
             <Button onClick={handleAddTask}>Add</Button>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline" onClick={() => {
+                  setNewTaskLabel("")
+                }}>Cancel</Button>
           </div>}
 
           <TabsContent value="incorporation" className="mt-0">
