@@ -229,8 +229,6 @@ export const CreateTaskDialog = ({
             });
         }
     };
-    // console.log("formState.selectedProject",filteredCompanies)
-    // console.log("user",user)
     const projectsList = projects.map((project) => ({ id: project._id, name: project.projectName }))
     const allowedStatuses = user.role === 'master'
         ? statuses
@@ -268,7 +266,6 @@ export const CreateTaskDialog = ({
                     <div className="grid grid-cols-2 gap-4">
                         <Select
                             value={formState.status}
-                            // onValueChange={(value: TaskStatus) => setFormState({ ...formState, status: value })}
                             onValueChange={(value: TaskStatus) => {
                                 if (value === 'COMPLETED' && user.role !== 'master') return;
                                 setFormState({ ...formState, status: value });
@@ -444,9 +441,7 @@ export const CreateTaskDialog = ({
                     )}
                 </div>
                 <DialogFooter className="w-full">
-                    <Button onClick={handleSubmit} type="submit">
-
-                        <Button onClick={handleSubmit} type="submit">
+                   <Button onClick={handleSubmit} type="submit">
                             {isLoading ? (
                                 <>
                                     <CustomLoader />
@@ -458,8 +453,6 @@ export const CreateTaskDialog = ({
                                 'Create Task'
                             )}
                         </Button>
-
-                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
