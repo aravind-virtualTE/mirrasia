@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ShareHolderRegistrationForm } from "@/types/hkForm";
 import api from "./fetch";
 import { Company } from "@/components/companyDocumentManager/CompanyDocumentManager";
@@ -356,6 +358,25 @@ export const updateProfileData = async (data: any, id?: string) => {
 export const getUserById = async ( id: string) =>{
   try {
     const response = await api.get(`user/getUser/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}
+
+
+export const fetchDetailedUsers = async () =>{
+  try {
+    const response = await api.get(`user/getDetailedUsers`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}
+
+export const sendCustomMail = async (data: any,) =>{
+  try {
+    const response = await api.post(`user/sendCustomMail`, data);
     return response.data;
   } catch (error) {
     console.error("Error fetching saved data:", error);
