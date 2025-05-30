@@ -382,3 +382,22 @@ export const sendCustomMail = async (data: any,) =>{
     console.error("Error fetching saved data:", error);
   }
 }
+
+
+export const createOutstandingTask = async (data: any,) =>{
+  try {
+    const response = await api.post(`tasks/outstandingTasks`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}
+
+export const delOutstandingTask = async (data: any,) =>{
+  try {
+    const response = await api.post(`tasks/delOutstandingTasks`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}

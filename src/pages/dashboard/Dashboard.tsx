@@ -27,6 +27,7 @@ import MainFunctionalities from "./MainFunctionalities";
 import { useTranslation } from "react-i18next";
 import { usaFormWithResetAtom } from "../Company/USA/UsState";
 import { toast } from "@/hooks/use-toast";
+// import { Label } from "@/components/ui/label";
 // import { ReferralPromptDialog } from "@/components/userList/ReferralPromptDialog";
 
 const Dashboard = () => {
@@ -39,6 +40,7 @@ const Dashboard = () => {
   // const [showPrompt, setShowPrompt] = useState(false);
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
+  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
 
   const resetAllForms = useResetAllForms();
 
@@ -94,20 +96,42 @@ const Dashboard = () => {
     if (active_status.includes(status)) {
       localStorage.setItem("companyRecordId", companyId)
       navigate(`/company-register/${countryCode}/${companyId}`);
-    }else{
+    } else {
       toast({
         title: "Cant Edit",
         description: "Company got incorporated",
       })
     }
   }
+  console.log("users", typeof user.tasks)
+  const tasks = user?.tasks || [];
   return (
     < >
       {/* <ReferralPromptDialog  open={showPrompt} onClose={() => setShowPrompt(false)} onSubmit={handleReferralSubmit} /> */}
       {/* Main Content */}
       <div className="flex-1 p-8">
         <h1 className="text-2xl font-semibold mb-6">{t('dashboard.welcome')}User {t('dashboard.welcome1')}</h1>
-        <MainFunctionalities />
+        <h3 className="text-blue-500 font-semibold border-b pb-2">Outstanding Tasks</h3>
+        {tasks.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]">S.No</TableHead>
+                <TableHead>Task Name</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {tasks.map((task: { label: string; _id: string }, index: number) => (
+                <TableRow key={task._id || index}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{task.label}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <p className="text-muted-foreground">No outstanding tasks</p>
+        )}
         {/* Companies Table */}
         {cList.length > 0 && <div className="mb-12">
           <h2 className="text-xl font-semibold mb-4">{t('dashboard.companiesH')}</h2>
@@ -191,7 +215,7 @@ const Dashboard = () => {
             </Table>
           </div>
         </div>}
-
+        <MainFunctionalities />
         {/* Partners Section */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
