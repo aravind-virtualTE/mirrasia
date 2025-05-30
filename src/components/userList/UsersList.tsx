@@ -1,4 +1,4 @@
-import { addUser, updateUserRole, fetchDetailedUsers, sendCustomMail } from "@/services/dataFetch"
+import { addUser, updateUserRole, fetchDetailedUsers, sendCustomMail, createOutstandingTask } from "@/services/dataFetch"
 import { useEffect, useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -7,12 +7,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
-import { Building,  Clock, Mail, Pencil, Phone, Send, Shield, User } from "lucide-react"
+import { Building, Clock, Mail, Pencil, Phone, Save, Send, Shield, Trash2, User } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "../ui/textarea"
 import CustomLoader from "../ui/customLoader"
+import { Checkbox } from "../ui/checkbox"
+import { ConfirmDialog } from "../shared/ConfirmDialog"
 export interface User {
     _id?: string;
     fullName: string;
@@ -33,6 +35,10 @@ export interface User {
         companyName: string[];
         type: string;
     }[];
+    tasks?: {
+        label: string;
+        checked: boolean;
+    }[]
 }
 
 const UsersList = () => {
@@ -43,13 +49,12 @@ const UsersList = () => {
     const [selectedUser, setSelectedUser] = useState<User | null>(null)
     const [isUserDetailsOpen, setIsUserDetailsOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
-    // const [userDetails, setUserDetails] = useState<UserDetails | null>(null)
     const [message, setMessage] = useState("");
-    // const [sentMessages, setSentMessages] = useState([
-    //     { id: 1, content: "Hello, just checking in about the incorporation process." },
-    //     { id: 2, content: "Please review the attached documents." },
-    // ]);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [taskLabel, setTaskLabel] = useState("");
+    const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
     const navigate = useNavigate();
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -111,15 +116,13 @@ const UsersList = () => {
 
     const openUserDetails = (user: User) => {
         setSelectedUser(user)
-        // setUserDetails(generateUserDetails(user))
         setIsUserDetailsOpen(true)
+        // setTasks(user.tasks || []);
     }
     // console.log(selectedUser)
-
-    const handleSend = async () => {
+    const handleSendMail = async () => {
         if (message.trim()) {
             setIsLoading(true);
-            // console.log("Sending message:", message);
             const data = {
                 to: selectedUser?.email || "",
                 message: message,
@@ -134,7 +137,7 @@ const UsersList = () => {
                 });
                 setIsLoading(false);
                 return;
-            }else{
+            } else {
                 toast({
                     title: "Message Sent",
                     description: `Your message has been sent to ${selectedUser?.fullName || "the user"}.`,
@@ -146,6 +149,119 @@ const UsersList = () => {
             setIsLoading(false);
         }
     };
+
+    // const handleAddTask = () => {
+    //     if (taskLabel.trim()) {
+    //         setTasks([...tasks, { label: taskLabel.trim(), checked: false, _id: '' }]);
+    //         setTaskLabel("");
+    //     }
+    // };
+    // const toggleTask = (index: number) => {
+    //     const updatedTasks = [...tasks];
+    //     updatedTasks[index].checked = !updatedTasks[index].checked;
+    //     setTasks(updatedTasks);
+    // };
+    // const handleDeleteTask = async () => {
+    //     const sndData = {
+    //         index: index,
+    //         userId: selectedUser?._id || "",
+    //     }
+    //     console.log("Deleting task at index:", sndData);
+    //     const updatedTasks = tasks.filter((_, i) => i !== index);
+    //     const data = await delOutstandingTask(sndData)
+    //     console.log("data", data)
+    //     setTasks(updatedTasks);
+    //     setDeleteDialogOpen(false);
+    //     setDeleteIndex(null)
+    // }
+
+    const handleAddTask = () => {
+        if (taskLabel.trim() && selectedUser) {
+            const newTask = { label: taskLabel.trim(), checked: false };
+            const updatedUser = {
+                ...selectedUser,
+                tasks: [...(selectedUser.tasks || []), newTask]
+            };
+
+            // Update both selectedUser and users array
+            setSelectedUser(updatedUser);
+            setUsers(prevUsers =>
+                prevUsers.map(user =>
+                    user._id === selectedUser._id ? updatedUser : user
+                )
+            );
+            setTaskLabel("");
+        }
+    };
+
+    const toggleTask = (index: number) => {
+        if (selectedUser && selectedUser.tasks) {
+            const updatedTasks = [...selectedUser.tasks];
+            updatedTasks[index].checked = !updatedTasks[index].checked;
+            const updatedUser = {
+                ...selectedUser,
+                tasks: updatedTasks
+            };
+
+            // Update both selectedUser and users array
+            setSelectedUser(updatedUser);
+            setUsers(prevUsers =>
+                prevUsers.map(user =>
+                    user._id === selectedUser._id ? updatedUser : user
+                )
+            );
+        }
+    };
+    const handleDeleteTask = async () => {
+        if (selectedUser && selectedUser.tasks) {
+            const sndData = {
+                index: deleteIndex,
+                userId: selectedUser._id || "",
+            }
+            console.log("Deleting task at index:", sndData);
+            const updatedTasks = selectedUser.tasks.filter((_, i) => i !== deleteIndex);
+            // const data = await delOutstandingTask(sndData)
+            // console.log("data", data)
+
+            const updatedUser = {
+                ...selectedUser,
+                tasks: updatedTasks
+            };
+
+            // Update both selectedUser and users array
+            setSelectedUser(updatedUser);
+            setUsers(prevUsers =>
+                prevUsers.map(user =>
+                    user._id === selectedUser._id ? updatedUser : user
+                )
+            );
+            setDeleteDialogOpen(false);
+            setDeleteIndex(null)
+        }
+    }
+
+    const handleSave = async () => {
+        if (selectedUser && selectedUser.tasks) {
+            console.log("Saving data:", selectedUser.tasks)
+            try {
+                const object = {
+                    userId : selectedUser._id || "",
+                    email : selectedUser.email || "",
+                    tasks : selectedUser.tasks
+                }
+                const data = await createOutstandingTask(object)
+                if (data) {
+                    toast({
+                        title: "Check list",
+                        description: `Check list Saved`,
+                    })
+                }
+                // console.log("data", data)
+            } catch (e) {
+                console.log("err", e)
+            }
+        }
+    }
 
     return (
         <div className="space-y-4">
@@ -449,38 +565,71 @@ const UsersList = () => {
                         <TabsContent value="tasks" className="space-y-4">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Outstanding Tasks</CardTitle>
-                                    <CardDescription>
-                                        Tasks assigned to this user that are pending or in progress
-                                    </CardDescription>
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div>
+
+                                            <CardTitle>Outstanding Tasks</CardTitle>
+                                            <CardDescription>
+                                                Tasks assigned to this user that are pending or in progress
+                                            </CardDescription>
+                                        </div>
+                                        {user.role !== 'user' && (<div className="flex items-center gap-2">
+                                            <Button onClick={handleSave} size="sm">
+                                                <Save className="h-4 w-4 mr-1" />
+                                                Save
+                                            </Button>
+                                        </div>)}
+                                    </div>
                                 </CardHeader>
                                 <CardContent>
-                                    {/* {userDetails.outstandingTasks.length > 0 ? (
-                                            <div className="space-y-4">
-                                                {userDetails.outstandingTasks.map((task) => (
-                                                    <div key={task.id} className="border rounded-lg p-4">
-                                                        <div className="flex justify-between items-start mb-2">
-                                                            <h4 className="font-medium">{task.title}</h4>
-                                                            <div className="flex gap-2">
-                                                                <Badge className={`${getPriorityColor(task.priority)} text-white`}>
-                                                                    {task.priority}
-                                                                </Badge>
-                                                                <Badge className={`${getStatusColor(task.status)} text-white`}>
-                                                                    {task.status}
-                                                                </Badge>
-                                                            </div>
-                                                        </div>
-                                                        <p className="text-sm text-muted-foreground mb-2">{task.description}</p>
-                                                        <div className="text-xs text-muted-foreground">
-                                                            <p>Due: {new Date(task.dueDate).toLocaleDateString()}</p>
-                                                            <p>Assigned: {new Date(task.assignedDate).toLocaleDateString()}</p>
-                                                        </div>
+
+                                    <div className="flex items-center space-x-2">
+                                        <Input
+                                            placeholder="Enter task"
+                                            value={taskLabel}
+                                            onChange={(e) => setTaskLabel(e.target.value)}
+                                            className="flex-1"
+                                        />
+                                        <Button onClick={handleAddTask}>Add Task</Button>
+                                    </div>
+
+                                    {(selectedUser?.tasks || []).length === 0 ? (
+                                        <p className="text-muted-foreground">No outstanding tasks</p>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            {(selectedUser?.tasks ?? []).map((task, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="flex items-center justify-between space-x-2"
+                                                >
+                                                    <div className="flex items-center space-x-2">
+                                                        <Checkbox
+                                                            id={`task-${index}`}
+                                                            checked={task.checked}
+                                                            onCheckedChange={() => toggleTask(index)}
+                                                        />
+                                                        <label
+                                                            htmlFor={`task-${index}`}
+                                                            className={`${task.checked ? "line-through text-muted-foreground" : ""
+                                                                }`}
+                                                        >
+                                                            {task.label}
+                                                        </label>
                                                     </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                        )} */}
-                                    <p className="text-muted-foreground">No outstanding tasks</p>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => {
+                                                            setDeleteIndex(index)
+                                                            setDeleteDialogOpen(true)
+                                                        }}
+                                                    >
+                                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         </TabsContent>
@@ -497,14 +646,13 @@ const UsersList = () => {
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        {/* Textbox and Submit Button */}
                                         <div className=" flex space-y-2">
                                             <Textarea
                                                 placeholder="Type your message here..."
                                                 value={message}
                                                 onChange={(e) => setMessage(e.target.value)}
                                             />
-                                            <Button size="sm" className="px-3" onClick={handleSend}>
+                                            <Button size="sm" className="px-3" onClick={handleSendMail}>
                                                 {isLoading ? (
                                                     <>
                                                         <CustomLoader />
@@ -515,7 +663,7 @@ const UsersList = () => {
                                                         <Send className="h-4 w-4 mr-1" />
                                                         <span>Send</span>
                                                     </>
-                                                )}                                              
+                                                )}
                                             </Button>
                                         </div>
 
@@ -535,6 +683,19 @@ const UsersList = () => {
                     </Tabs>
                 </DialogContent>
             </Dialog>
+            <ConfirmDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                title="Delete Task"
+                description={
+                    <>
+                        Are you sure you want to delete this Task?
+                    </>
+                }
+                confirmText="Delete"
+                cancelText="Cancel"
+                onConfirm={handleDeleteTask}
+            />
         </div>
     )
 }
