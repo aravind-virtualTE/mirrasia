@@ -242,12 +242,13 @@ const UsersList = () => {
 
     const handleSave = async () => {
         if (selectedUser && selectedUser.tasks) {
-            console.log("Saving data:", selectedUser.tasks)
+            // console.log("Saving data:", selectedUser.tasks)
             try {
+                setIsLoading(true);
                 const object = {
-                    userId : selectedUser._id || "",
-                    email : selectedUser.email || "",
-                    tasks : selectedUser.tasks
+                    userId: selectedUser._id || "",
+                    email: selectedUser.email || "",
+                    tasks: selectedUser.tasks
                 }
                 const data = await createOutstandingTask(object)
                 if (data) {
@@ -256,6 +257,7 @@ const UsersList = () => {
                         description: `Check list Saved`,
                     })
                 }
+                setIsLoading(false);
                 // console.log("data", data)
             } catch (e) {
                 console.log("err", e)
@@ -574,9 +576,18 @@ const UsersList = () => {
                                             </CardDescription>
                                         </div>
                                         {user.role !== 'user' && (<div className="flex items-center gap-2">
-                                            <Button onClick={handleSave} size="sm">
-                                                <Save className="h-4 w-4 mr-1" />
-                                                Save
+                                            <Button size="sm" className="px-3" onClick={handleSave}>
+                                                {isLoading ? (
+                                                    <>
+                                                        <CustomLoader />
+                                                        <span className="ml-2">Saving...</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Save className="h-4 w-4 mr-1" />
+                                                        Save
+                                                    </>
+                                                )}
                                             </Button>
                                         </div>)}
                                     </div>
