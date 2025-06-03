@@ -39,7 +39,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
             text: comment.trim(),
             timestamp: new Date().toISOString(),
             author: commentingUser?.fullName || "",
-            authorId: commentingUser?._id || "",
+            authorId: commentingUser?.id || "",
             fileUrl: file
         }
 
