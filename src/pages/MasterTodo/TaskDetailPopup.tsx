@@ -21,7 +21,8 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const task = tasks.find((t) => t._id === taskId)
     const createdUser = users.find((user) => user._id === task?.userId)
-
+    const commentingUser = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+    console.log("commentingUser", commentingUser)
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
         if (selectedFile) setFile(selectedFile);
@@ -37,8 +38,8 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
         const newComment = {
             text: comment.trim(),
             timestamp: new Date().toISOString(),
-            author: createdUser?.fullName || "",
-            authorId: createdUser?._id || "",
+            author: commentingUser?.fullName || "",
+            authorId: commentingUser?._id || "",
             fileUrl: file
         }
 
