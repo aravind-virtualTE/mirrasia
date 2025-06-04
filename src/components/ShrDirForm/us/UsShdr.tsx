@@ -95,7 +95,7 @@ const UsShdr: React.FC = () => {
         if (id) {
             console.log('id--->', id)
             async function fetchData(id: string) {
-                const data = await getUsIndividualShrDirRegData(id);
+                const data = await getUsIndividualShrDirRegData(id, "individual");
                 console.log("data", data)
                 setFormState(data);
             }

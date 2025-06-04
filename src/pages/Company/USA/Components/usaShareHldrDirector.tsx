@@ -285,14 +285,18 @@ const ShareholderDirectorForm: React.FC = () => {
       setIsLoading(true);
       const extractedData = shareholders.map(item => {
         const { name, email } = item;
-
         if (!isValidEmail(email)) {
           alert(`Invalid email format for ${name}: ${email}`);
         }
         return { name, email };
       });
       const docId = localStorage.getItem('companyRecordId');
-      const payload = { _id: docId, inviteData: extractedData, country: 'US' };
+      console.log("formData",formData)
+      let country  = "US_Individual"
+      if(formData.selectedEntity == "Corporation") {
+        country = "US_Corporate"
+      }
+      const payload = { _id: docId, inviteData: extractedData, country };
       const response = await sendInviteToShDir(payload);
       if (response.summary.successful > 0) {
         toast({

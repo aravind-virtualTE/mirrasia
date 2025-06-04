@@ -152,3 +152,44 @@ export const sourceOfFundsOptions = [
         value: "usa.Section2StateOptions.Other",
     },
 ];
+
+export const usShrDirEngOptions = [
+    { key: "notaryTranslation", value: "Submit a notarized English translation of the shareholder register and copy of the register" },
+    { key: "submitDocsHeldInHouse", value: "First, submit the documents held in-house, and if necessary, have them notarized through a translation agency affiliated with Mir Asia (separate translation notarization fee)" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
+];
+
+export const usEgnArticleOptions = [
+    { key: "submitEngVersion", value: "Submit the English version of the Articles of Incorporation or a notarized English translation of the Articles of Incorporation" },
+    { key: "articlesSubmission", value: "First, submit the articles of incorporation held within the company, and if necessary, have them translated and notarized through a translation agency affiliated with Mir Asia (separate translation and notarization fee)" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
+];
+
+
+export const relationMap = [
+    { key: "shareHld", value: "shareholder" },
+    { key: "officer", value: "move" },
+    { key: "keyControl", value: "Trustee" },
+    { key: "other", value: "Other" },
+]
+export const investmentOptionsMap = [
+    { key: "shareHld", value: "Shareholders' capital or loans" },
+    { key: "businessIncome", value: "Business income" },
+    { key: "divident", value: "Dividend" },
+    { key: "depositSaving", value: "Deposits, savings" },
+    { key: "incomeFromRealEstate", value: "Income from real estate, stocks, and other investment assets" },
+    { key: "loanAmount", value: "Loan amount" },
+    { key: "saleOfCompany", value: "Proceeds from the sale of a company or shares" },
+    { key: "inheritance", value: "Inheritance funds of shareholders/directors or special persons" },
+    { key: "other", value: "Other" },
+]
+
+export const sourceFundMap = [
+    { key: "businessIncome", value: "Business income" },
+    { key: "intrestIncome", value: "Interest income" },
+    { key: "realEstateIncm", value: "Income from real estate, stocks, and other investment assets" },
+    { key: "saleOfcompanyShares", value: "Proceeds from the sale of a company or shares held" },
+    { key: "inheritted", value: "Inheritance/Gift" },
+    { key: "borrowing", value: "Borrowing/trusting/depositing, etc." },
+    { key: "other", value: "Other" },
+]

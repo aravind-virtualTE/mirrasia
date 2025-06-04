@@ -332,9 +332,9 @@ export const usIndividualShareholderData = async (data: any, id?: string) => {
   }
 }
 
-export const getUsIndividualShrDirRegData = async ( id?: string) => {
+export const getUsIndividualShrDirRegData = async ( id?: string, entity? : string) => {
   try {
-    const url = id ? `company/registerUsIndividualShrDir/${id}` : 'company/registerUsIndividualShrDir';
+    const url = id ? `company/registerUsIndividualShrDir/${id}/${entity}` : 'company/registerUsIndividualShrDir';
     const response = await api.get(url);
     return response.data;
   } catch (error) {
@@ -399,5 +399,15 @@ export const delOutstandingTask = async (data: any,) =>{
     return response.data;
   } catch (error) {
     console.error("Error fetching saved data:", error);
+  }
+}
+
+export const usCorporateShareholderData = async (data: any, id?: string) => {
+  try {
+    const url = id ? `company/registerUsCorporateShrDir/${id}` : 'company/registerUsCorporateShrDir';
+    const response = await api.post(url, data); //{headers: {'Content-Type': 'multipart/form-data'}}
+    return response.data;
+  } catch (error) {
+    console.error("Error saving Data:", error);
   }
 }

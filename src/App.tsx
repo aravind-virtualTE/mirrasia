@@ -48,8 +48,8 @@ import ProjectDetail from './pages/dashboard/Admin/Projects/ProjectDetail';
 import CustomerDataManager from './pages/DataExcelManager';
 import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporateClientList';
 import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
-import UsShdr from './components/ShrDirForm/us/UsShdr';
 import UsersList1 from './components/userList/uList2';
+import UsCorporateShdr from './components/ShrDirForm/us/UsCorporateShdr';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -87,7 +87,7 @@ const App: React.FC = () => {
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />
-                    <Route path="/test" element={<UsShdr />} />
+                    <Route path="/test" element={<UsCorporateShdr />} />
                     
                   </Route>
                   <Route path="/unauthorized" element={<Unauthorized />} />
@@ -135,7 +135,6 @@ const App: React.FC = () => {
                       <Route path="/project-detail/:id" element={<ProjectDetail />} />
                       <Route path="/customerDataManager" element={<CustomerDataManager />} />
                       <Route path="/current-corporate-client" element={<CurrentCorporateClientList />} />
-                      
                       
                       {/* Add more admin-specific routes here */}
                     </Route>
