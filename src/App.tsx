@@ -49,7 +49,6 @@ import CustomerDataManager from './pages/DataExcelManager';
 import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporateClientList';
 import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
 import UsersList1 from './components/userList/uList2';
-import UsCorporateShdr from './components/ShrDirForm/us/UsCorporateShdr';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -87,7 +86,7 @@ const App: React.FC = () => {
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />
-                    <Route path="/test" element={<UsCorporateShdr />} />
+                    {/* <Route path="/test" element={<UsCorporateShdr />} /> */}
                     
                   </Route>
                   <Route path="/unauthorized" element={<Unauthorized />} />
