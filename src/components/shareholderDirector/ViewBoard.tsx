@@ -27,9 +27,13 @@ export default function ViewBoard() {
   const [usState, setUsState] = useState([{
     companyName: "" as string, name: "" as string, percentShares: "" as string, _id: "" as string
   }])
+  const [usCorpState, setCorpUsState] = useState([{
+    companyName: "" as string, name: "" as string, amountInvestedAndShares: "" as string, _id: "" as string
+  }])
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
   useEffect(() => {
+    localStorage.removeItem('shdrItem')
     const fetchData = async () => {
       try {
         const [data, multiData] = await Promise.all([
@@ -39,6 +43,7 @@ export default function ViewBoard() {
         console.log("data", data)
         setFState(data.regData)
         setUsState(data.usRegData)
+        setCorpUsState(data.usCorpData)
         setMultiData(multiData)
       } catch (error) {
         console.error("Error fetching data:", error)
@@ -54,14 +59,14 @@ export default function ViewBoard() {
     setCountry(country)
   }
   // console.log('multiData', multiData)
-
+  console.log("usCorpState", usCorpState)
   return (
     <div className="container mx-auto p-6">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="col-span-full">
           <CardHeader>
             <CardTitle>{t("shldr_viewboard.viewTitle")}</CardTitle>
-             <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {t("shldr_viewboard.viewPara")}
             </p>
           </CardHeader>
@@ -78,9 +83,9 @@ export default function ViewBoard() {
                       <TableHead className="px-4 py-2">{t("shldr_viewboard.action")}</TableHead>
                     </TableRow>
                   </TableHeader>
-                  {multiData.map((reg: any) => (
-                    <TableBody>
-                      <TableRow key={reg._id} className="border-t">
+                  <TableBody>
+                    {multiData.map((reg: any, idx: any) => (
+                      <TableRow key={`${idx}-${reg._id}`} className="border-t">
                         <TableCell className="px-4 py-3 font-medium">{reg.companyName}</TableCell>
                         <TableCell className="px-4 py-3">{reg.country}</TableCell>
                         <TableCell className="px-4 py-3">
@@ -90,6 +95,7 @@ export default function ViewBoard() {
                               className="flex items-center gap-2"
                               onClick={() => {
                                 localStorage.setItem('shdrItem', reg._id)
+                                localStorage.setItem('country', reg.country)
                                 navigate(`/registrationForm`)
                               }
                               }
@@ -100,7 +106,8 @@ export default function ViewBoard() {
                           )}
                         </TableCell>
                       </TableRow>
-                    </TableBody>))}
+                    ))}
+                  </TableBody>
                 </Table>
               </div>
 
@@ -149,6 +156,7 @@ export default function ViewBoard() {
                             const shrId = multiData.find((item: { shrDirId: string; }) => item.shrDirId == company._id)
                             // console.log("shrId",shrId)
                             localStorage.setItem('shdrItem', shrId._id)
+                            localStorage.setItem('country', 'HK')
                             navigate(`/registrationForm/${company._id}`)
                           }} >
                             <Pencil size={16} />
@@ -191,6 +199,51 @@ export default function ViewBoard() {
                               const shrId = multiData.find((item: { shrDirId: string; }) => item.shrDirId == company._id)
                               // console.log("shrId",shrId)
                               localStorage.setItem('shdrItem', shrId._id)
+                              localStorage.setItem('country', 'US_Individual')
+                              navigate(`/registrationForm/${company._id}`)
+                            }} >
+                              <Pencil size={16} />
+                            </button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </>
+              )
+            }
+            {
+              usCorpState.length > 0 && (
+                <>
+                  <p>United States</p>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-10">S.No</TableHead>
+                        <TableHead className="w-48">{t("company.name")}</TableHead>
+                        <TableHead className="w-48">{t("shldr_viewboard.fullName")}</TableHead>
+                        <TableHead className="min-w-[300px]">percentage of share</TableHead>
+                        <TableHead className="w-16 text-center">{t("shldr_viewboard.edit")}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {usCorpState.map((company, index) => (
+                        <TableRow
+                          key={`${index}-${company.companyName}-${index}`}
+                          onClick={() => handleShowClick(company)}
+                          className="cursor-pointer"
+                        >
+                          <TableCell className="font-medium">{index + 1}</TableCell>
+                          <TableCell className="font-medium">{company.companyName}</TableCell>
+                          <TableCell>{company.name}</TableCell>
+                          <TableCell className="whitespace-normal">{company.amountInvestedAndShares}</TableCell>
+                          <TableCell className="text-center">
+                            <button onClick={(e) => {
+                              e.stopPropagation()
+                              const shrId = multiData.find((item: { shrDirId: string; }) => item.shrDirId == company._id)
+                              // console.log("shrId",shrId)
+                              localStorage.setItem('shdrItem', shrId._id)
+                              localStorage.setItem('country', 'US_Corporate')
                               navigate(`/registrationForm/${company._id}`)
                             }} >
                               <Pencil size={16} />
@@ -207,7 +260,7 @@ export default function ViewBoard() {
         </Card>
       </div>
       {country == 'HK' && <DetailShdHk isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}
-        {country == 'US' && (<p>Detail View in Progress...</p>)}
+      {country == 'US' && (<p>Detail View in Progress...</p>)}
     </div>
   )
 }
