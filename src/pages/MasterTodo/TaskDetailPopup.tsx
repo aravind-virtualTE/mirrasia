@@ -1,46 +1,40 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom } from "jotai"
 import { format } from "date-fns"
-import { Flag, Send, X, Paperclip, MoreHorizontal, Trash2, } from "lucide-react"
+import { Flag, X, MoreHorizontal, Trash2, } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { priorityColors, statusColors, tasksAtom, updateTask, usersAtom, deleteTodoTaskComment } from "./mTodoStore"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { RichTextViewer } from "@/components/rich-text-viewer"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import CustomLoader from "@/components/ui/customLoader"
+import ChatInput from "@/common/ChatInput"
 
 const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: () => void }) => {
     const [tasks, setTasks] = useAtom(tasksAtom)
     const [isLoading, setIsLoading] = useState(false)
-    const [comment, setComment] = useState("")
     const [users,] = useAtom(usersAtom);
-    const [file, setFile] = useState<File | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const task = tasks.find((t) => t._id === taskId)
     const createdUser = users.find((user) => user._id === task?.userId)
     const commentingUser = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
-    console.log("commentingUser", commentingUser)
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = e.target.files?.[0];
-        if (selectedFile) setFile(selectedFile);
-    };
+    // console.log(createdUser,"commentingUser", commentingUser)
 
-    const handleClipClick = () => {
-        fileInputRef.current?.click();
-    };
-    // console.log("task", createdUser)
-    const handleCommentSubmit = async () => {
-        if (!comment.trim()) return
+    // console.log("task", task)
+    // const handleEditComment = (comment: TaskComment, index: number) => {
+    //     console.log("Edit comment:", comment, "at index:", index);
+    //     // TODO: populate comment in input for editing
+    // };
+    const handleMessageSubmit = async (submissionData: any) => {
+        // console.log("submissionData",typeof submissionData,submissionData)
         setIsLoading(true)
         const newComment = {
-            text: comment.trim(),
+            text: submissionData.message.trim(),
             timestamp: new Date().toISOString(),
             author: commentingUser?.fullName || "",
             authorId: commentingUser?.id || "",
-            fileUrl: file
+            fileUrl: submissionData.attachments[0]
         }
 
         try {
@@ -53,19 +47,13 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
             setTasks((prev) =>
                 prev.map((t) => (t._id === task._id ? response : t))
             )
-            setComment("")
-            setFile(null)
             setIsLoading(false)
         } catch (error) {
             setIsLoading(false)
             console.error("Failed to submit comment", error)
         }
+
     }
-    // console.log("task", task)
-    // const handleEditComment = (comment: TaskComment, index: number) => {
-    //     console.log("Edit comment:", comment, "at index:", index);
-    //     // TODO: populate comment in input for editing
-    // };
 
     const handleDeleteComment = async (taskId: string, commentId: string) => {
         const result = await deleteTodoTaskComment(taskId, commentId);
@@ -202,8 +190,7 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                                                 <span>{format(new Date(comment.timestamp), "PPpp")}</span>
                                             </div>
                                         </div>
-
-                                        {createdUser && createdUser._id == comment.authorId && <DropdownMenu>
+                                        { commentingUser.id == comment.authorId && <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <button className="p-1 rounded hover:bg-gray-200">
                                                     <MoreHorizontal className="w-4 h-4" />
@@ -247,58 +234,8 @@ const TaskDetailPopup = ({ taskId, onClose }: { taskId: string | null; onClose: 
                     </div>
 
                     <div className="mt-auto">
-                        <div className="flex flex-col gap-2">
-                            {file && (
-                                <div className="text-sm text-muted-foreground">
-                                    <Paperclip className="inline w-4 h-4 mr-1" />
-                                    {file.name}
-                                    <Button variant="link" onClick={() => setFile(null)}>Remove</Button>
-                                </div>
-                            )}
 
-                            <div className="flex gap-2 items-center">
-                                <Input
-                                    placeholder="Add a comment..."
-                                    className="flex-grow"
-                                    value={comment}
-                                    onChange={(e) => setComment(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") handleCommentSubmit();
-                                    }}
-                                />
-
-                                <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    type="button"
-                                    onClick={handleClipClick}
-                                    title="Attach a file"
-                                >
-                                    <Paperclip className="w-4 h-4" />
-                                </Button>
-
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    className="hidden"
-                                    onChange={handleFileChange}
-                                />
-
-                                <Button size="sm" className="px-3" onClick={handleCommentSubmit}>
-                                    {isLoading ? (
-                                        <>
-                                            <CustomLoader />
-                                            <span className="ml-2">Saving...</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Send className="h-4 w-4 mr-1" />
-                                            <span>Send</span>
-                                        </>
-                                    )}
-                                </Button>
-                            </div>
-                        </div>
+                        <ChatInput onSubmit={handleMessageSubmit} disabled={isLoading} />
                     </div>
                 </div>
             </div>
