@@ -51,6 +51,7 @@ import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { hkIncorporationItems, hkRenewalList } from "./detailConstants";
 import DetailShdHk from "@/components/shareholderDirector/detailShddHk";
+import { t } from "i18next";
 export interface SessionData {
     _id: string;
     amount: number;
@@ -99,6 +100,8 @@ interface RegCompanyInfo {
 
 interface AccountingTaxInfo {
     anySoftwareInUse: string;
+    finYearEnd: string;
+    bookKeepCycle: string;
 }
 export interface PaymentDetails {
     paymentData: {
@@ -178,7 +181,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [selectedData, setSelectedData] = useState<any>(null)
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
-
+    console.log("company",company)
     const handleFetchShrDir = async (id : string, email: string) =>{
         const fetchData = await getShareHolderDirData(id, email)
         console.log("handleFet", fetchData)
@@ -245,10 +248,9 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         // Country Information Section
         if (company.country) {
             sections.push({
-                title: "Country Information",
+                title: "Jurisdiction Information",
                 data: {
                     Country: company.country.name,
-                    "Country Code": company.country.code,
                 },
             });
         }
@@ -256,7 +258,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         // Business Information Section
         if (company.businessInfoHkCompany || company.companyBusinessInfo) {
             sections.push({
-                title: "Business Information",
+                title: "AML/CDD Information",
                 data: {
                     ...(company.businessInfoHkCompany
                         ? {
@@ -272,8 +274,28 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                 company.businessInfoHkCompany.legal_assessment,
                         }
                         : {}),
-                    "Business Description":
-                        company.companyBusinessInfo?.business_product_description || "N/A",
+                },
+            });
+        }
+        if(company.companyBusinessInfo?.business_product_description){
+           sections.push({
+                title: "Company Business Information",
+                data: {
+                    "Business Industry": t(company.companyBusinessInfo?.business_industry) || "N/A",
+                    "Business Description":  company.companyBusinessInfo?.business_product_description || "N/A",
+                },
+            });
+        }
+
+
+        // accounting and Tax Information Section
+        if (company.accountingTaxInfo) {
+            sections.push({
+                title: "Accounting and Tax Information",
+                data: {
+                    "Any Software in Use": company.accountingTaxInfo.anySoftwareInUse || "N/A",
+                    "Financial Year End": company.accountingTaxInfo.finYearEnd || "N/A",
+                    "Bookkeeping Cycle": company.accountingTaxInfo.bookKeepCycle || "N/A",
                 },
             });
         }
@@ -527,7 +549,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         ];
         return (
             <React.Fragment>
-                <TableCell className="font-medium">InCorporation Status</TableCell>
+                <TableCell className="font-medium">Incorporation Status</TableCell>
                 <TableCell>{company.status}</TableCell>
                 {user.role !== 'user' && <TableCell>
                     <Select

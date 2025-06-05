@@ -113,7 +113,7 @@ export default function CustomerDataManager() {
           const sheetName = workbook.SheetNames[0]
           const worksheet = workbook.Sheets[sheetName]
           const jsonData = XLSX.utils.sheet_to_json(worksheet) as any[]
-
+          console.log("jsonData", jsonData)
           const validData = jsonData
             .filter((item) => item.name || item.email) // Filter out empty rows
             .map((item, index) => ({
