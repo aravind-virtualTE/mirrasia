@@ -320,7 +320,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     ];
     return (
       <React.Fragment>
-        <TableCell className="font-medium">InCorporation Status</TableCell>
+        <TableCell className="font-medium">Incorporation Status</TableCell>
         <TableCell>{formData.status}</TableCell>
         {user.role !== 'user' && <TableCell>
           <Select

@@ -434,7 +434,7 @@ const AdminDashboard = () => {
             <ConfirmDialog
               open={deleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}
-              title= {activeTab == 'active' ? "Mark as Delete" : "Delete Task"}
+              title= {activeTab == 'active' ? "Mark as Delete" : "Delete Company"}
               description={         
                 activeTab == 'active'? 'Are you sure you want to mark as delete?' : ' Are you sure you want to delete company?'    
               }
