@@ -91,7 +91,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
   const generateSections = (formData: UsaFormData, session: SessionData) => {
     const sections = [];
-
+    console.log("formData", formData);
     // Applicant Information Section
     sections.push({
       title: 'Applicant Information',
@@ -138,7 +138,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
     // Country Information Section
     sections.push({
-      title: 'Country Information',
+      title: 'Jurisdiction Information',
       data: {
         Country: 'United States',
         'Country Code': 'US',
@@ -149,7 +149,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
     // Business Information Section
     sections.push({
-      title: 'Business Information',
+      title: 'AML/CDD Information',
       data: {
         'Sanctioned Countries': t(renderValue(formData.restrictedCountriesWithActivity)),
         'Sanctions Presence': t(renderValue(formData.sanctionedTiesPresent)),
@@ -158,7 +158,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         'Legal Assessment': t(renderValue(formData.hasLegalEthicalIssues)),
         'Annual Renewal Terms': t(renderValue(formData.annualRenewalTermsAgreement)),
       },
-    });
+    })
 
     // Shareholder and Director Information Section
     if (formData.shareHolders) {

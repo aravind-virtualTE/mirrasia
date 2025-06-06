@@ -1,70 +1,112 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type React from "react"
-import { useState, useRef } from "react"
 import * as XLSX from "xlsx"
+import Papa from "papaparse"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { Toaster } from "@/components/ui/toaster"
-import { FileUp, MoreVertical,
-    //  Download,
-      Plus } from "lucide-react"
-import { toast } from "@/hooks/use-toast"
-import Papa from "papaparse";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { FileUp, Plus, Pencil, Trash2, Save } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
+import CustomLoader from "@/components/ui/customLoader"
+import { getCurrentClients, saveCurrentClients } from "@/services/dataFetch"
 
-// Sample customer data
-const sampleCustomerData = [
-  {
-    id: 1,
-    name: "John Smith",
-    email: "john.smith@example.com",
-    phone: "555-123-4567",
-    address: "123 Main St, Anytown, CA",
-    status: "Active",
-  }, 
-]
-
-// Customer type definition
-type Customer = {
-  id: number
+interface Director {
   name: string
   email: string
   phone: string
-  address: string
+}
+
+interface Shareholder {
+  name: string
+  email: string
+  totalShares: number
+}
+
+interface DesignatedContact {
+  name: string
+  email: string
+  phone: string
+}
+
+interface Company {
+  id: number
+  _id?: string
   status: string
-  [key: string]: any
+  jurisdiction: string
+  comments: string
+  incorporationDate: string
+  companyNameEng: string
+  companyNameChi: string
+  companyType: string
+  brnNo: string
+  noOfShares: number
+  shareCapital: string
+  directors: Director[]
+  shareholders: Shareholder[]
+  designatedContact: DesignatedContact
+  companySecretarialService: string
+  registeredBusinessAddressService: string
 }
 
 export default function CustomerDataManager() {
-  const [customers, setCustomers] = useState<Customer[]>(sampleCustomerData)
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [currentCustomer, setCurrentCustomer] = useState<Customer | null>(null)
-  const [newCustomer, setNewCustomer] = useState<Partial<Customer>>({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    status: "Active",
-  })
+  const [customers, setCustomers] = useState<Company[]>([])
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingCompany, setEditingCompany] = useState<Company | null>(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const { toast } = useToast()
 
-  // Handle file upload
+  const [formData, setFormData] = useState<Company>({
+    id: 0,
+    status: "",
+    jurisdiction: "",
+    comments: "",
+    incorporationDate: "",
+    companyNameEng: "",
+    companyNameChi: "",
+    companyType: "",
+    brnNo: "",
+    noOfShares: 0,
+    shareCapital: "",
+    directors: [{ name: "", email: "", phone: "" }, { name: "", email: "", phone: "" }],
+    shareholders: [{ name: "", email: "", totalShares: 0 }, { name: "", email: "", totalShares: 0 }],
+    designatedContact: { name: "", email: "", phone: "" },
+    companySecretarialService: "No",
+    registeredBusinessAddressService: "No",
+  })
+
+  useEffect(() => {
+    
+    const getData = async( ) =>{
+      try{
+        const data = await getCurrentClients()
+        console.log("data--->", data)
+        setCustomers(data)
+      }catch(e){
+        console.log("err", e)
+      }
+    }
+    getData()
+  }, [])
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
@@ -72,29 +114,52 @@ export default function CustomerDataManager() {
     const fileExtension = file.name.split(".").pop()?.toLowerCase()
 
     if (fileExtension === "csv") {
-    Papa.parse(file, {
-      header: true,
-      complete: (results) => {
+      Papa.parse(file, {
+        header: true,
+        complete: (results) => {
           const parsedData = results.data as any[]
           const validData = parsedData
-            .filter((item) => item.name || item.email) // Filter out empty rows
+            .filter((item) => item["COMPANY NAME (ENG)"])
             .map((item, index) => ({
               id: customers.length + index + 1,
-              name: item.name || "",
-              email: item.email || "",
-              phone: item.phone || "",
-              address: item.address || "",
-              status: item.status || "Active",
-              ...item, // Include any additional fields
+              status: item["status"] || "",
+              jurisdiction: item["Jurisdriction"] || "",
+              comments: item["comments"] || "",
+              incorporationDate: item["INCORPORATION DATE"] || "",
+              companyNameEng: item["COMPANY NAME (ENG)"] || "",
+              companyNameChi: item["COMPANY NAME (CHI)"] || "",
+              companyType: item["Company Type"] || "",
+              brnNo: item["BRN NO."] || "",
+              noOfShares: Number(item["No. of shares"]) || 0,
+              shareCapital: item["Share Capital"] || "",
+              directors: [
+                { name: item["dirName1"] || "", email: item["dirEmail1"] || "", phone: item["dirPhone1"] || "" },
+                { name: item["dirName2"] || "", email: item["dirEmail2"] || "", phone: item["dirPhone2"] || "" },
+                { name: item["dirName3"] || "", email: item["dirEmail3"] || "", phone: item["dirPhone3"] || "" },
+                { name: item["dirName4"] || "", email: item["dirEmail4"] || "", phone: item["dirPhone4"] || "" },
+              ],
+              shareholders: [
+                { name: item["shName1"] || "", email: item["shEmail1"] || "", totalShares: Number(item["totalShares1"]) || 0 },
+                { name: item["shName2"] || "", email: item["shEmail2"] || "", totalShares: Number(item["totalShares2"]) || 0 },
+                { name: item["shName3"] || "", email: item["shEmail3"] || "", totalShares: Number(item["totalShares3"]) || 0 },
+                { name: item["shName4"] || "", email: item["shEmail4"] || "", totalShares: Number(item["totalShares4"]) || 0 },
+              ],
+              designatedContact: {
+                name: item["Designated contact person's name"] || "",
+                email: item["DCP's email address"] || "",
+                phone: item["DCP's contact number"] || "",
+              },
+              companySecretarialService: item["Company Secretarial Service"] || "No",
+              registeredBusinessAddressService: item["Registered Business Address Service"] || "No",
             }))
 
           setCustomers((prev) => [...prev, ...validData])
           toast({
             title: "File uploaded successfully",
-            description: `Added ${validData.length} customer records`,
+            description: `Added ${validData.length} company records`,
           })
         },
-        error: (error:any) => {
+        error: (error: any) => {
           toast({
             title: "Error parsing CSV file",
             description: error.message,
@@ -107,29 +172,50 @@ export default function CustomerDataManager() {
       reader.onload = (e) => {
         const data = e.target?.result
         if (!data) return
-
         try {
           const workbook = XLSX.read(data, { type: "binary" })
           const sheetName = workbook.SheetNames[0]
           const worksheet = workbook.Sheets[sheetName]
           const jsonData = XLSX.utils.sheet_to_json(worksheet) as any[]
-          console.log("jsonData", jsonData)
           const validData = jsonData
-            .filter((item) => item.name || item.email) // Filter out empty rows
+            .filter((item) => item["COMPANY NAME (ENG)"])
             .map((item, index) => ({
               id: customers.length + index + 1,
-              name: item.name || "",
-              email: item.email || "",
-              phone: item.phone || "",
-              address: item.address || "",
-              status: item.status || "Active",
-              ...item, // Include any additional fields
+              status: item["status"] || "",
+              jurisdiction: item["Jurisdriction"] || "",
+              comments: item["comments"] || "",
+              incorporationDate: item["INCORPORATION DATE"] || "",
+              companyNameEng: item["COMPANY NAME (ENG)"] || "",
+              companyNameChi: item["COMPANY NAME (CHI)"] || "",
+              companyType: item["Company Type"] || "",
+              brnNo: item["BRN NO."] || "",
+              noOfShares: Number(item["No. of shares"]) || 0,
+              shareCapital: item["Share Capital"] || "",
+              directors: [
+                { name: item["dirName1"] || "", email: item["dirEmail1"] || "", phone: item["dirPhone1"] || "" },
+                { name: item["dirName2"] || "", email: item["dirEmail2"] || "", phone: item["dirPhone2"] || "" },
+                { name: item["dirName3"] || "", email: item["dirEmail3"] || "", phone: item["dirPhone3"] || "" },
+                { name: item["dirName4"] || "", email: item["dirEmail4"] || "", phone: item["dirPhone4"] || "" },
+              ],
+              shareholders: [
+                { name: item["shName1"] || "", email: item["shEmail1"] || "", totalShares: Number(item["totalShares1"]) || 0 },
+                { name: item["shName2"] || "", email: item["shEmail2"] || "", totalShares: Number(item["totalShares2"]) || 0 },
+                { name: item["shName3"] || "", email: item["shEmail3"] || "", totalShares: Number(item["totalShares3"]) || 0 },
+                { name: item["shName4"] || "", email: item["shEmail4"] || "", totalShares: Number(item["totalShares4"]) || 0 },
+              ],
+              designatedContact: {
+                name: item["Designated contact person's name"] || "",
+                email: item["DCP's email address"] || "",
+                phone: item["DCP's contact number"] || "",
+              },
+              companySecretarialService: item["Company Secretarial Service"] || "No",
+              registeredBusinessAddressService: item["Registered Business Address Service"] || "No",
             }))
-
+          console.log("validData--->", validData)
           setCustomers((prev) => [...prev, ...validData])
           toast({
             title: "File uploaded successfully",
-            description: `Added ${validData.length} customer records`,
+            description: `Added ${validData.length} company records`,
           })
         } catch (error: any) {
           toast({
@@ -148,345 +234,302 @@ export default function CustomerDataManager() {
       })
     }
 
-    // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
     }
   }
 
-  // CRUD operations
-  const addCustomer = () => {
-    const id = customers.length > 0 ? Math.max(...customers.map((c) => c.id)) + 1 : 1
-    const customer = { ...newCustomer, id } as Customer
-    setCustomers([...customers, customer])
-    setIsAddDialogOpen(false)
-    setNewCustomer({
-      name: "",
-      email: "",
-      phone: "",
-      address: "",
-      status: "Active",
+  const openAddDialog = () => {
+    setEditingCompany(null)
+    setFormData({
+      id: customers.length + 1,
+      status: '',
+      jurisdiction: "",
+      comments: "",
+      incorporationDate: "",
+      companyNameEng: "",
+      companyNameChi: "",
+      companyType: "",
+      brnNo: "",
+      noOfShares: 0,
+      shareCapital: "",
+      directors: [{ name: "", email: "", phone: "" }, { name: "", email: "", phone: "" }],
+      shareholders: [{ name: "", email: "", totalShares: 0 }, { name: "", email: "", totalShares: 0 }],
+      designatedContact: { name: "", email: "", phone: "" },
+      companySecretarialService: "No",
+      registeredBusinessAddressService: "No",
     })
-    toast({
-      title: "Customer added",
-      description: `${customer.name} has been added to the database`,
-    })
+    setIsDialogOpen(true)
   }
 
-  const updateCustomer = () => {
-    if (!currentCustomer) return
-
-    setCustomers(customers.map((c) => (c.id === currentCustomer.id ? currentCustomer : c)))
-    setIsEditDialogOpen(false)
-    setCurrentCustomer(null)
-    toast({
-      title: "Customer updated",
-      description: `${currentCustomer.name}'s information has been updated`,
-    })
+  const openEditDialog = (company: Company) => {
+    setEditingCompany(company)
+    setFormData(company)
+    setIsDialogOpen(true)
   }
 
-  const deleteCustomer = () => {
-    if (!currentCustomer) return
-
-    setCustomers(customers.filter((c) => c.id !== currentCustomer.id))
-    setIsDeleteDialogOpen(false)
-    toast({
-      title: "Customer deleted",
-      description: `${currentCustomer.name} has been removed from the database`,
-    })
-    setCurrentCustomer(null)
+  const handleDelete = (id: number) => {
+    setDeleteId(id)
+    setDeleteDialogOpen(true)
   }
 
-  // Export data as CSV
-//   const exportToCSV = () => {
-//     const csv = Papa.unparse(customers)
-//     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
-//     const url = URL.createObjectURL(blob)
-//     const link = document.createElement("a")
-//     link.href = url
-//     link.setAttribute("download", "customer_data.csv")
-//     document.body.appendChild(link)
-//     link.click()
-//     document.body.removeChild(link)
-//   }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (editingCompany) {
+      setCustomers(
+        customers.map((company) =>
+          company.id === editingCompany.id ? { ...formData, id: company.id } : company
+        )
+      )
+      toast({
+        title: "Company updated",
+        description: "The company record has been updated",
+      })
+    } else {
+      setCustomers([...customers, { ...formData, id: customers.length + 1 }])
+      toast({
+        title: "Company added",
+        description: "New company record has been added",
+      })
+    }
+    setIsDialogOpen(false)
+  }
 
-  // Generate sample data CSV for download
-//   const downloadSampleData = () => {
-//     const csv = Papa.unparse(sampleCustomerData)
-//     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
-//     const url = URL.createObjectURL(blob)
-//     const link = document.createElement("a")
-//     link.href = url
-//     link.setAttribute("download", "sample_customer_data.csv")
-//     document.body.appendChild(link)
-//     link.click()
-//     document.body.removeChild(link)
-//   }
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof Company | string,
+    index?: number,
+    subField?: keyof Director | keyof Shareholder | keyof DesignatedContact
+  ) => {
+    if (index !== undefined && subField) {
+      if (field === "directors" || field === "shareholders") {
+        setFormData((prev) => ({
+          ...prev,
+          [field]: prev[field].map((item: any, i: number) =>
+            i === index ? { ...item, [subField]: e.target.value } : item
+          ),
+        }))
+      } else if (field === "designatedContact") {
+        setFormData((prev) => ({
+          ...prev,
+          designatedContact: { ...prev.designatedContact, [subField]: e.target.value },
+        }))
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }))
+    }
+  }
 
+  const handleDeleteTask = async () => {
+    setCustomers(customers.filter((company) => company.id !== deleteId))
+    toast({
+      title: "Company deleted",
+      description: "The company record has been removed",
+    })
+    setDeleteDialogOpen(false)
+    setDeleteId(null)
+  }
+
+  const handleSave = async () => {
+    setIsLoading(true)
+    try {
+      // Simulate saving data to a server
+      console.log("Saving data...", customers)
+      const response  = await saveCurrentClients(customers)
+      console.log("Save response:", response)
+      toast({
+        title: "Data saved",
+        description: "All company records have been saved successfully",
+      })
+    } catch (error) {
+      console.error("Error saving data:", error)
+      toast({
+        title: "Error saving data",
+        description: "There was an error saving the company records",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Customer Data</CardTitle>
-          <CardDescription>Upload a CSV or Excel file with customer data or manage existing records</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="flex-1">
-              <Input
-                ref={fileInputRef}
-                type="file"
-                accept=".csv,.xlsx,.xls"
-                onChange={handleFileUpload}
-                className="hidden"
-                id="file-upload"
-              />
-              <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full sm:w-auto">
-                <FileUp className="mr-2 h-4 w-4" />
-                Upload File
-              </Button>
-              {/* <Button variant="ghost" onClick={downloadSampleData} className="ml-2" size="sm">
-                <Download className="mr-2 h-4 w-4" />
-                Sample Data
-              </Button> */}
-            </div>
-            <div className="flex gap-2 self-end">
-              <Button onClick={() => setIsAddDialogOpen(true)} className="w-full sm:w-auto">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Customer
-              </Button>
-              {/* <Button variant="outline" onClick={exportToCSV} className="w-full sm:w-auto">
-                <Download className="mr-2 h-4 w-4" />
-                Export CSV
-              </Button> */}
-            </div>
-          </div>
+    <div className="container mx-auto p-4">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex-1">
+          <Input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,.xlsx,.xls"
+            onChange={handleFileUpload}
+            className="hidden"
+            id="file-upload"
+          />
+          <Button size="sm" onClick={() => fileInputRef.current?.click()} className="px-3">
+            <FileUp className="mr-2 h-4 w-4" />
+            Upload File
+          </Button>
+        </div>
+        <div className="flex gap-2 self-end">
+          <Button size="sm" className="px-3" onClick={openAddDialog} >
+            <Plus className="h-4 w-4 mr-1" />
+            Add Company
+          </Button>
+        </div>
+        <div className="flex gap-2 self-end">
+          <Button size="sm" className="px-3" onClick={handleSave}>
+            {isLoading ? (
+              <>
+                <CustomLoader />
+                <span className="ml-2">Saving...</span>
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4" />
+                Save
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
 
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead className="hidden md:table-cell">Phone</TableHead>
-                  <TableHead className="hidden lg:table-cell">Address</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="w-[70px]">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {customers.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
-                      No customer data available. Upload a file or add customers manually.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  customers.map((customer) => (
-                    <TableRow key={customer.id}>
-                      <TableCell className="font-medium">{customer.name}</TableCell>
-                      <TableCell>{customer.email}</TableCell>
-                      <TableCell className="hidden md:table-cell">{customer.phone}</TableCell>
-                      <TableCell className="hidden lg:table-cell">{customer.address}</TableCell>
-                      <TableCell>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs ${
-                            customer.status === "Active"
-                              ? "bg-green-100 text-green-800"
-                              : customer.status === "Inactive"
-                                ? "bg-gray-100 text-gray-800"
-                                : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {customer.status}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreVertical className="h-4 w-4" />
-                              <span className="sr-only">Open menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() => {
-                                setCurrentCustomer(customer)
-                                setIsEditDialogOpen(true)
-                              }}
-                            >
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => {
-                                setCurrentCustomer(customer)
-                                setIsDeleteDialogOpen(true)
-                              }}
-                              className="text-red-600"
-                            >
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="rounded-xl border bg-white shadow-sm overflow-hidden">
+        <Table className="text-sm">
+          <TableHeader className="bg-gray-50">
+            <TableRow>
+              <TableHead className="w-12 text-center">S.No</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Company Name (ENG)</TableHead>
+              <TableHead>Jurisdiction</TableHead>
+              <TableHead>Incorporation Date</TableHead>
+              <TableHead>Company Type</TableHead>
+              <TableHead>BRN No.</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {customers.map((company, idx) => (
+              <TableRow key={company.id} className="hover:bg-muted transition-colors">
+                <TableCell className="text-center font-medium">{idx + 1}</TableCell>
+                <TableCell>{company.status}</TableCell>
+                <TableCell>{company.companyNameEng}</TableCell>
+                <TableCell>{company.jurisdiction}</TableCell>
+                <TableCell>{company.incorporationDate}</TableCell>
+                <TableCell>{company.companyType}</TableCell>
+                <TableCell>{company.brnNo}</TableCell>
+                <TableCell className="flex items-center justify-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => openEditDialog(company)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => handleDelete(company.id)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
-      {/* Add Customer Dialog */}
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-[900px] max-h-96 overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add New Customer</DialogTitle>
+            <DialogTitle>{editingCompany ? "Edit Company" : "Add Company"}</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label>Company Name (ENG)</Label>
               <Input
-                id="name"
-                value={newCustomer.name}
-                onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
+                value={formData.companyNameEng}
+                onChange={(e) => handleInputChange(e, "companyNameEng")}
+                required
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+            <div>
+              <Label>Jurisdiction</Label>
               <Input
-                id="email"
-                type="email"
-                value={newCustomer.email}
-                onChange={(e) => setNewCustomer({ ...newCustomer, email: e.target.value })}
+                value={formData.jurisdiction}
+                onChange={(e) => handleInputChange(e, "jurisdiction")}
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="phone">Phone</Label>
+            <div>
+              <Label>Incorporation Date</Label>
               <Input
-                id="phone"
-                value={newCustomer.phone}
-                onChange={(e) => setNewCustomer({ ...newCustomer, phone: e.target.value })}
+                value={formData.incorporationDate}
+                onChange={(e) => handleInputChange(e, "incorporationDate")}
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="address">Address</Label>
+            <div>
+              <Label>Company Type</Label>
               <Input
-                id="address"
-                value={newCustomer.address}
-                onChange={(e) => setNewCustomer({ ...newCustomer, address: e.target.value })}
+                value={formData.companyType}
+                onChange={(e) => handleInputChange(e, "companyType")}
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="status">Status</Label>
-              <select
-                id="status"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                value={newCustomer.status}
-                onChange={(e) => setNewCustomer({ ...newCustomer, status: e.target.value })}
-              >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="Pending">Pending</option>
-              </select>
+            <div>
+              <Label>BRN No.</Label>
+              <Input
+                value={formData.brnNo}
+                onChange={(e) => handleInputChange(e, "brnNo")}
+              />
             </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={addCustomer}>Add Customer</Button>
-          </DialogFooter>
+            <div>
+              <Label>Number of Shares</Label>
+              <Input
+                type="number"
+                value={formData.noOfShares}
+                onChange={(e) => handleInputChange(e, "noOfShares")}
+              />
+            </div>
+            <div>
+              <Label>Share Capital</Label>
+              <Input
+                value={formData.shareCapital}
+                onChange={(e) => handleInputChange(e, "shareCapital")}
+              />
+            </div>
+            <div>
+              <Label>Director 1 Name</Label>
+              <Input
+                value={formData.directors[0].name}
+                onChange={(e) => handleInputChange(e, "directors", 0, "name")}
+              />
+            </div>
+            <div>
+              <Label>Shareholder 1 Name</Label>
+              <Input
+                value={formData.shareholders[0].name}
+                onChange={(e) => handleInputChange(e, "shareholders", 0, "name")}
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit">{editingCompany ? "Update" : "Add"}</Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
-
-      {/* Edit Customer Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Customer</DialogTitle>
-          </DialogHeader>
-          {currentCustomer && (
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="edit-name">Name</Label>
-                <Input
-                  id="edit-name"
-                  value={currentCustomer.name}
-                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, name: e.target.value })}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-email">Email</Label>
-                <Input
-                  id="edit-email"
-                  type="email"
-                  value={currentCustomer.email}
-                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, email: e.target.value })}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-phone">Phone</Label>
-                <Input
-                  id="edit-phone"
-                  value={currentCustomer.phone}
-                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, phone: e.target.value })}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-address">Address</Label>
-                <Input
-                  id="edit-address"
-                  value={currentCustomer.address}
-                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, address: e.target.value })}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-status">Status</Label>
-                <select
-                  id="edit-status"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  value={currentCustomer.status}
-                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, status: e.target.value })}
-                >
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                  <option value="Pending">Pending</option>
-                </select>
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={updateCustomer}>Save Changes</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete {currentCustomer?.name}'s record from the database. This action cannot be
-              undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={deleteCustomer} className="bg-red-600 hover:bg-red-700">
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <Toaster />
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Task"
+        description={
+          <>
+            Are you sure you want to delete this Task?
+          </>
+        }
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={handleDeleteTask}
+      />
     </div>
   )
 }

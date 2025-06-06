@@ -411,3 +411,24 @@ export const usCorporateShareholderData = async (data: any, id?: string) => {
     console.error("Error saving Data:", error);
   }
 }
+
+
+export const saveCurrentClients = async (companiesList:any) => {
+  try {
+    const response = await api.post("/currentclicorp/currentClients", companiesList);
+    return response.data;
+  } catch (error) {
+    console.error("Error saving company data:", error);
+    throw error;
+  }
+};
+
+export const getCurrentClients = async () => {
+  try {
+    const response = await api.get("/currentclicorp/currentClient");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company data:", error);
+    throw error;
+  }
+};
