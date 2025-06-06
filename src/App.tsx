@@ -132,7 +132,7 @@ const App: React.FC = () => {
                       <Route path="/projects" element={<AdminProject />} />
                       <Route path="/MasterTodo" element={<ToDoList />} />
                       <Route path="/project-detail/:id" element={<ProjectDetail />} />
-                      <Route path="/customerDataManager" element={<CustomerDataManager />} />
+                      <Route path="/currentClientDataManager" element={<CustomerDataManager />} />
                       <Route path="/current-corporate-client" element={<CurrentCorporateClientList />} />
                       
                       {/* Add more admin-specific routes here */}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Menu, Home, Users, FileSignature, Files,
-    RefreshCw, Briefcase, FileCheck, MessageSquare } from 'lucide-react'
+    RefreshCw, Briefcase, FileCheck, MessageSquare} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Navigate, NavigateFunction, Outlet, useNavigate } from 'react-router-dom';
 import {
@@ -111,7 +111,15 @@ const Layout: React.FC = () => {
             onClick: (_, navigate) => {
                 navigate('/messages');
             },
-        },     
+        },
+        {
+            icon: <Briefcase className="w-4 h-4" />,
+            label: 'Current Corporate Client',
+            roles: ['admin', 'master'],
+            onClick: (_, navigate) => {
+                navigate('/currentClientDataManager');
+            },
+        },  
     ];
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
@@ -146,7 +154,7 @@ const Layout: React.FC = () => {
                                             onClick={() => item.onClick(decodedToken.role, navigate)}
                                         >
                                             {item.icon}
-                                            <span className={`ml-2 ${isCollapsed ? 'hidden' : 'inline'}`}>{item.label}</span>
+                                            <span className={` ${isCollapsed ? 'hidden' : 'inline'}`}>{item.label}</span>
                                         </Button>
                                     ))}
                             </nav>
