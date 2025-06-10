@@ -7,10 +7,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
-// import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { User, FileText, Upload, CheckCircle, AlertCircle, Clock, X } from "lucide-react"
+import { 
+  User, 
+  FileText, 
+  Upload, 
+  CheckCircle, 
+  AlertCircle, 
+  Clock, 
+  X, 
+  Shield,
+  Smartphone,
+  Copy,
+} from "lucide-react"
 import { getUserById, updateProfileData } from "@/services/dataFetch"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import {enable2FA, verify2FA, disable2FA, generate2FABackupCodes} from "@/hooks/useAuth"
 
 interface KYCDocument {
   file: File | null
@@ -18,10 +30,27 @@ interface KYCDocument {
   status: "pending" | "uploaded" | "verified" | "rejected"
 }
 
+interface TwoFASetup {
+  qrCode: string
+  secret: string
+  backupCodes: string[]
+}
+
 export default function Profile() {
   const [editing, setEditing] = useState(false)
   const [loading, setLoading] = useState(false)
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null
+  
+  // 2FA States
+  const [show2FADialog, setShow2FADialog] = useState(false)
+  const [twoFASetup, setTwoFASetup] = useState<TwoFASetup | null>(null)
+  const [verificationCode, setVerificationCode] = useState("")
+  const [backupCodes, setBackupCodes] = useState<string[]>([])
+  const [showBackupCodes, setShowBackupCodes] = useState(false)
+  const [twoFALoading, setTwoFALoading] = useState(false)
+  const [showDisable2FADialog, setShowDisable2FADialog] = useState(false)
+  const [disableCode, setDisableCode] = useState("")
+
   const [profile, setProfile] = useState({
     fullName: user?.fullName || "",
     email: user?.email || "",
@@ -31,6 +60,7 @@ export default function Profile() {
     dateOfBirth: user?.dateOfBirth || "",
     address: user?.address || "",
     status: "pending",
+    twoFactorEnabled: false,
     kycDocuments: { passportUrl: '', addressProofUrl: '' }
   })
 
@@ -51,6 +81,7 @@ export default function Profile() {
   })
 
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -61,24 +92,107 @@ export default function Profile() {
     fetchdata()
   }, [])
 
-  // Calculate KYC completion percentage
-  // const kycProgress = () => {
-  //   let completed = 0
-  //   if (kycDocuments.passport.status === "verified") completed += 50
-  //   if (kycDocuments.addressProof.status === "verified") completed += 50
-  //   return completed
-  // }
+  // 2FA Setup Process
+  const handleEnable2FA = async () => {
+    try {
+      setTwoFALoading(true)
+      const response = await enable2FA(user.id)
+      setTwoFASetup(response)
+      setShow2FADialog(true)
+      setError(null)
+    } catch (err) {
+      console.error('Error enabling 2FA:', err)
+      setError('Failed to setup 2FA. Please try again.')
+    } finally {
+      setTwoFALoading(false)
+    }
+  }
 
-  // const getKycStatus = () => {
-  //   const progress = kycProgress()
-  //   if (progress === 100) return { status: "verified", label: "Verified", color: "bg-green-500" }
-  //   if (progress > 0) return { status: "partial", label: "In Progress", color: "bg-yellow-500" }
-  //   return { status: "pending", label: "Pending", color: "bg-gray-500" }
-  // }
+  const handleVerify2FA = async () => {
+    if (!verificationCode || verificationCode.length !== 6) {
+      setError('Please enter a valid 6-digit code')
+      return
+    }
+
+    try {
+      setTwoFALoading(true)
+      const response = await verify2FA(user.id, verificationCode)
+      
+      if (response.success) {
+        setProfile(prev => ({ ...prev, twoFactorEnabled: true }))
+        setBackupCodes(response.backupCodes)
+        setShowBackupCodes(true)
+        setShow2FADialog(false)
+        setSuccess('Two-Factor Authentication has been enabled successfully!')
+        setVerificationCode("")
+      } else {
+        setError('Invalid verification code. Please try again.')
+      }
+    } catch (err) {
+      console.error('Error verifying 2FA:', err)
+      setError('Failed to verify 2FA code. Please try again.')
+    } finally {
+      setTwoFALoading(false)
+    }
+  }
+
+  const handleDisable2FA = async () => {
+    if (!disableCode || disableCode.length !== 6) {
+      setError('Please enter a valid 6-digit code')
+      return
+    }
+
+    try {
+      setTwoFALoading(true)
+      const response = await disable2FA(user.id, disableCode)
+      
+      if (response.success) {
+        setProfile(prev => ({ ...prev, twoFactorEnabled: false }))
+        setShowDisable2FADialog(false)
+        setSuccess('Two-Factor Authentication has been disabled.')
+        setDisableCode("")
+      } else {
+        setError('Invalid verification code. Please try again.')
+      }
+    } catch (err) {
+      console.error('Error disabling 2FA:', err)
+      setError('Failed to disable 2FA. Please try again.')
+    } finally {
+      setTwoFALoading(false)
+    }
+  }
+
+  const handleGenerateNewBackupCodes = async () => {
+    try {
+      setTwoFALoading(true)
+      const response = await generate2FABackupCodes(user.id)
+      console.log("Generated Backup Codes:", response)
+      setShowBackupCodes(true)
+      setBackupCodes(response.backupCodes)
+      setSuccess('New backup codes generated successfully!')
+    } catch (err) {
+      console.error('Error generating backup codes:', err)
+      setError('Failed to generate new backup codes.')
+    } finally {
+      setTwoFALoading(false)
+    }
+  }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    setSuccess('Copied to clipboard!')
+    setTimeout(() => setSuccess(null), 2000)
+  }
+
+  const copyBackupCodes = () => {
+    const codesText = backupCodes.join('\n')
+    navigator.clipboard.writeText(codesText)
+    setSuccess('Backup codes copied to clipboard!')
+    setTimeout(() => setSuccess(null), 2000)
+  }
 
   const handleFileUpload = (documentType: "passport" | "addressProof", file: File) => {
     if (file.size > 5 * 1024 * 1024) {
-      // 5MB limit
       setError("File size must be less than 5MB")
       return
     }
@@ -126,27 +240,20 @@ export default function Profile() {
       formData.append("address", profile.address);
       formData.append("phone", profile.phone);
 
-      // IMPORTANT: Field names must match multer.fields()
       if (kycDocuments.passport.file) {
         formData.append("passport", kycDocuments.passport.file);
       }
       if (kycDocuments.addressProof.file) {
         formData.append("addressProof", kycDocuments.addressProof.file);
       }
-      console.log("Profile Update Data:", formData)
+
       const result = await updateProfileData(formData, user.id)
       console.log("Profile Update Data:", result)
 
-      // await new Promise((resolve) => setTimeout(resolve, 2000))
-
       setEditing(false)
       setError(null)
+      setSuccess('Profile updated successfully!')
 
-      // Update document status to simulate verification process
-      // setKycDocuments((prev) => ({
-      //   passport: prev.passport.file ? { ...prev.passport, status: "verified" } : prev.passport,
-      //   addressProof: prev.addressProof.file ? { ...prev.addressProof, status: "verified" } : prev.addressProof,
-      // }))
     } catch (err) {
       console.error(err)
       setError("Failed to update profile")
@@ -155,25 +262,28 @@ export default function Profile() {
     }
   }
 
-  // const kycStatusInfo = getKycStatus()
-
+  // console.log("backupCodes", backupCodes)
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Profile Settings</h1>
-          <p className="text-gray-600 mt-1">Manage your account information and KYC verification</p>
+          <p className="text-gray-600 mt-1">Manage your account information and security settings</p>
         </div>
-        {/* <Badge variant="outline" className={`${kycStatusInfo.color} text-white`}>
-          {kycStatusInfo.label}
-        </Badge> */}
       </div>
 
       {error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {success && (
+        <Alert className="border-green-200 bg-green-50">
+          <CheckCircle className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-800">{success}</AlertDescription>
         </Alert>
       )}
 
@@ -195,7 +305,7 @@ export default function Profile() {
               />
             )}
             <div className="flex-1">
-              <h2 className="text-xl font-semibold ">{profile.fullName}</h2>
+              <h2 className="text-xl font-semibold">{profile.fullName}</h2>
               <p className="text-gray-600">{profile.email}</p>
               <p className="text-sm text-gray-500 mt-1">Signed in with {profile.provider}</p>
             </div>
@@ -241,6 +351,7 @@ export default function Profile() {
                   <Input id="email" type="email" value={profile.email} disabled className="bg-gray-50" />
                 </div>
               </div>
+
               <div>
                 <Label htmlFor="address">Address</Label>
                 <Input
@@ -250,9 +361,15 @@ export default function Profile() {
                   placeholder="Enter your full address"
                 />
               </div>
-              <Button type="button" variant="outline" onClick={() => setEditing(false)} disabled={loading}>
-                Cancel
-              </Button>
+
+              <div className="flex gap-2 pt-4">
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Saving..." : "Save"}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setEditing(false)} disabled={loading}>
+                  Cancel
+                </Button>
+              </div>
             </form>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -273,6 +390,214 @@ export default function Profile() {
         </CardContent>
       </Card>
 
+      {/* Security Settings Card */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <Shield className="h-5 w-5 text-green-600" />
+            <div>
+              <CardTitle>Security Settings</CardTitle>
+              <CardDescription>Manage your account security and two-factor authentication</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center justify-between p-4 border rounded-lg">
+            <div className="flex items-center space-x-3">
+              <Smartphone className="h-5 w-5 text-blue-600" />
+              <div>
+                <h3 className="font-medium">Two-Factor Authentication</h3>
+                <p className="text-sm text-gray-600">
+                  Add an extra layer of security to your account
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Badge variant={profile.twoFactorEnabled ? "default" : "secondary"}>
+                {profile.twoFactorEnabled ? "Enabled" : "Disabled"}
+              </Badge>
+              {profile.twoFactorEnabled ? (
+                <div className="space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleGenerateNewBackupCodes}
+                    disabled={twoFALoading}
+                  >
+                    New Backup Codes
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => setShowDisable2FADialog(true)}
+                    disabled={twoFALoading}
+                  >
+                    Disable
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={handleEnable2FA}
+                  disabled={twoFALoading}
+                  size="sm"
+                >
+                  {twoFALoading ? "Setting up..." : "Enable 2FA"}
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {backupCodes.length > 0 && showBackupCodes && (
+            <Alert className="border-orange-200 bg-orange-50">
+              <AlertCircle className="h-4 w-4 text-orange-600" />
+              <AlertDescription className="text-orange-800">
+                <div className="space-y-2">
+                  <p className="font-medium">Save these backup codes in a secure location:</p>
+                  <div className="grid grid-cols-2 gap-2 font-mono text-sm bg-white p-3 rounded border">
+                    {backupCodes.map((code, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <span>{code}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyToClipboard(code)}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={copyBackupCodes}
+                    >
+                      Copy All Codes
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowBackupCodes(false)}
+                    >
+                      I've Saved Them
+                    </Button>
+                  </div>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* 2FA Setup Dialog */}
+      <Dialog open={show2FADialog} onOpenChange={setShow2FADialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Setup Two-Factor Authentication</DialogTitle>
+            <DialogDescription>
+              Scan the QR code with your authenticator app, then enter the verification code.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {twoFASetup && (
+              <>
+                <div className="flex justify-center">
+                  <img 
+                    src={twoFASetup.qrCode} 
+                    alt="2FA QR Code" 
+                    className="w-48 h-48 border rounded"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Or enter this code manually:</Label>
+                  <div className="flex items-center space-x-2">
+                    <Input 
+                      value={twoFASetup.secret} 
+                      readOnly 
+                      className="font-mono text-sm"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => copyToClipboard(twoFASetup.secret)}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Enter verification code from your app:</Label>
+                  <Input
+                    placeholder="000000"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    maxLength={6}
+                  />
+                </div>
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={handleVerify2FA}
+                    disabled={twoFALoading || verificationCode.length !== 6}
+                    className="flex-1"
+                  >
+                    {twoFALoading ? "Verifying..." : "Verify & Enable"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShow2FADialog(false)}
+                    disabled={twoFALoading}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Disable 2FA Dialog */}
+      <Dialog open={showDisable2FADialog} onOpenChange={setShowDisable2FADialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Disable Two-Factor Authentication</DialogTitle>
+            <DialogDescription>
+              Enter a verification code from your authenticator app to disable 2FA.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Verification Code:</Label>
+              <Input
+                placeholder="000000"
+                value={disableCode}
+                onChange={(e) => setDisableCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                maxLength={6}
+              />
+            </div>
+            <div className="flex space-x-2">
+              <Button
+                variant="destructive"
+                onClick={handleDisable2FA}
+                disabled={twoFALoading || disableCode.length !== 6}
+                className="flex-1"
+              >
+                {twoFALoading ? "Disabling..." : "Disable 2FA"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowDisable2FADialog(false)}
+                disabled={twoFALoading}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* KYC Verification Card */}
       <Card>
         <CardHeader>
@@ -284,17 +609,10 @@ export default function Profile() {
                 <CardDescription>Upload required documents for identity verification</CardDescription>
               </div>
             </div>
-            {/* <div className="text-right">
-              <div className="text-sm font-medium text-gray-700">Progress</div>
-              <div className="flex items-center space-x-2 mt-1">
-                <Progress value={kycProgress()} className="w-20" />
-                <span className="text-sm text-gray-600">{kycProgress()}%</span>
-              </div>
-            </div> */}
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Passport Upload */}
+          {/* Existing KYC content remains the same */}
           {profile.kycDocuments.passportUrl && (
             <div>
               <div className="flex items-center justify-between">
@@ -313,6 +631,7 @@ export default function Profile() {
               />
             </div>
           )}
+
           {profile.kycDocuments.addressProofUrl && (
             <div>
               <div className="flex items-center justify-between">
@@ -331,6 +650,7 @@ export default function Profile() {
               />
             </div>
           )}
+
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="text-base font-medium">Passport / Government ID</Label>
@@ -386,7 +706,6 @@ export default function Profile() {
 
           <Separator />
 
-          {/* Address Proof Upload */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="text-base font-medium">Address Proof</Label>
@@ -397,8 +716,7 @@ export default function Profile() {
                 <div className="flex-1">
                   <p className="text-sm font-medium">{kycDocuments.addressProof.file?.name}</p>
                   <p className="text-xs text-gray-500">
-                    {kycDocuments.addressProof.file && (kycDocuments.addressProof.file.size / 1024 / 1024).toFixed(2)}{" "}
-                    MB
+                    {kycDocuments.addressProof.file && (kycDocuments.addressProof.file.size / 1024 / 1024).toFixed(2)} MB
                   </p>
                 </div>
                 <div className="flex space-x-2">
@@ -421,7 +739,7 @@ export default function Profile() {
                   className="hidden"
                   ref={(input) => {
                     if (input) {
-                      ; (window as any).addressInputRef = input
+                      (window as any).addressInputRef = input
                     }
                   }}
                 />
@@ -442,13 +760,6 @@ export default function Profile() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Action Buttons */}
-      <div className="flex justify-end space-x-3">
-        <Button onClick={handleProfileUpdate} disabled={loading} >
-          {loading ? "Saving..." : "Save Changes"}
-        </Button>
-      </div>
     </div>
   )
 }
