@@ -423,9 +423,39 @@ export const saveCurrentClients = async (companiesList:any) => {
   }
 };
 
-export const getCurrentClients = async () => {
+export const updateCurrentClient = async (company: any) => {
   try {
-    const response = await api.get("/currentclicorp/currentClient");
+    const response = await api.put(`/currentclicorp/currentClients/${company._id}`, company);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating company data:", error);
+    throw error;
+  }
+};
+// export const getCurrentClients = async () => {
+//   try {
+//     const response = await api.get("/currentclicorp/currentClient");
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error fetching company data:", error);
+//     throw error;
+//   }
+// };
+
+interface GetClientsParams {
+  page?: number;
+  limit?: number;
+  sortField?: string;
+  sortOrder?: "asc" | "desc";
+  status?: string;
+  jurisdiction?: string;
+}
+
+export const getCurrentClients = async (params: GetClientsParams = {}) => {
+  try {
+    const response = await api.get("/currentclicorp/currentClient", {
+      params,
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching company data:", error);
@@ -433,3 +463,12 @@ export const getCurrentClients = async () => {
   }
 };
 
+export const delCurrentClients = async (id:string) => {
+  try {
+    const response = await api.delete(`/currentclicorp/currentClient/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company data:", error);
+    throw error;
+  }
+};

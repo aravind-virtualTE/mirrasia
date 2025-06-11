@@ -45,10 +45,10 @@ import ChatInterface from './components/chat/ChatInterface';
 import AdminProject from './pages/dashboard/Admin/Projects/AdminProject';
 import ToDoList from './pages/MasterTodo/Mtodo';
 import ProjectDetail from './pages/dashboard/Admin/Projects/ProjectDetail';
-import CustomerDataManager from './pages/DataExcelManager';
 import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporateClientList';
 import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
 import UsersList1 from './components/userList/uList2';
+import CurrentCorporateClient from './pages/CurrentClient/CurrentCorpClient';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -132,7 +132,7 @@ const App: React.FC = () => {
                       <Route path="/projects" element={<AdminProject />} />
                       <Route path="/MasterTodo" element={<ToDoList />} />
                       <Route path="/project-detail/:id" element={<ProjectDetail />} />
-                      <Route path="/currentClientDataManager" element={<CustomerDataManager />} />
+                      <Route path="/currentClientDataManager" element={<CurrentCorporateClient />} />
                       <Route path="/current-corporate-client" element={<CurrentCorporateClientList />} />
                       
                       {/* Add more admin-specific routes here */}
