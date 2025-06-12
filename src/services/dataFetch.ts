@@ -472,3 +472,13 @@ export const delCurrentClients = async (id:string) => {
     throw error;
   }
 };
+
+export const getCurrentClientsCount = async () => {
+  try {
+    const response = await api.get("/currentclicorp/currentClientCount");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company data:", error);
+    throw error;
+  }
+};

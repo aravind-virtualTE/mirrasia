@@ -18,6 +18,7 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
 import CustomLoader from "@/components/ui/customLoader"
 import { delCurrentClients, getCurrentClients, saveCurrentClients, updateCurrentClient } from "@/services/dataFetch"
 import AddCompanyDialog from "./AddCompanyDialog"
+import { useNavigate } from "react-router-dom"
 
 interface Director {
     name: string
@@ -65,7 +66,7 @@ interface GetClientsParams {
     jurisdiction?: string
 }
 
-export default function CustomerDataManager() {
+export default function CurrentCorpClient() {
     const [customers, setCustomers] = useState<Company[]>([])
     const [totalItems, setTotalItems] = useState(0)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -78,6 +79,7 @@ export default function CustomerDataManager() {
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const { toast } = useToast()
+    const navigate = useNavigate()
 
     useEffect(() => {
         fetchClients()
@@ -228,8 +230,8 @@ export default function CustomerDataManager() {
 
     const handleCompanySubmit = async (companyData: Company) => {
         if (editingCompany) {
-             const updated = await updateCurrentClient(companyData);
-             console.log("Company updated successfully:", updated)
+            const updated = await updateCurrentClient(companyData);
+            console.log("Company updated successfully:", updated)
             setCustomers(
                 customers.map((company) =>
                     company._id === editingCompany._id ? { ...companyData, _id: company._id } : company
@@ -243,7 +245,7 @@ export default function CustomerDataManager() {
             console.log("Adding new company:", companyData)
             const result = await saveCurrentClients([companyData])
             console.log("New company added successfully:", result)
-            setCustomers([ result[0],...customers])
+            setCustomers([result[0], ...customers])
             setTotalItems((prev) => prev + 1)
             toast({
                 title: "Company added",
@@ -257,8 +259,8 @@ export default function CustomerDataManager() {
     const handleDeleteTask = async () => {
         try {
             // setCustomers(customers.filter((company) => company.id !== deleteId))
-           const result = await delCurrentClients(deleteId)
-           console.log("Company deleted successfully:", result)
+            const result = await delCurrentClients(deleteId)
+            console.log("Company deleted successfully:", result)
             setTotalItems((prev) => prev - 1)
             toast({
                 title: "Company deleted",
@@ -281,8 +283,8 @@ export default function CustomerDataManager() {
     const handleSave = async () => {
         setIsLoading(true)
         try {
-           const result =  await saveCurrentClients(customers)
-           console.log("Data saved successfully:", result)
+            const result = await saveCurrentClients(customers)
+            console.log("Data saved successfully:", result)
             toast({
                 title: "Data saved",
                 description: "All company records have been saved successfully",
@@ -300,6 +302,11 @@ export default function CustomerDataManager() {
     }
 
     const totalPages = Math.ceil(totalItems / itemsPerPage)
+
+    const handleRowClick = (companyId: string, countryCode: string) => {
+        navigate(`/company-details/${countryCode}/${companyId}`)
+        localStorage.setItem("companyRecordId", companyId)
+    }
 
     return (
         <div className="container mx-auto p-4">
@@ -427,7 +434,9 @@ export default function CustomerDataManager() {
                             </TableRow>
                         ) : (
                             customers.map((company, idx) => (
-                                <TableRow key={`company--${idx}`} className="hover:bg-muted transition-colors">
+                                <TableRow key={`company--${idx}`} className="hover:bg-muted transition-colors cursor-pointer"
+                                    onClick={() => handleRowClick(company._id ?? '', 'ccc')}
+                                >
                                     <TableCell className="text-center font-medium">
                                         {(currentPage - 1) * itemsPerPage + idx + 1}
                                     </TableCell>
@@ -450,7 +459,11 @@ export default function CustomerDataManager() {
                                             variant="ghost"
                                             size="icon"
                                             className="h-8 w-8"
-                                            onClick={() => handleDelete(company._id)}
+
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleDelete(company._id)
+                                            }}
                                         >
                                             <Trash2 className="h-4 w-4 text-destructive" />
                                         </Button>
