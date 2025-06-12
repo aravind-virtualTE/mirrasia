@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import MemoApp from './MemosHK';
 import AdminProject from '@/pages/dashboard/Admin/Projects/AdminProject';
 import { useAtom } from 'jotai';
@@ -7,26 +7,26 @@ import { cccCompanyData } from '@/pages/CurrentClient/cccState';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TodoApp from '@/pages/Todo/TodoApp';
 // import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User } from '@/components/userList/UsersList';
-import { fetchUsers } from '@/services/dataFetch';
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+// import { User } from '@/components/userList/UsersList';
+// import { fetchUsers } from '@/services/dataFetch';
 // import { useNavigate } from 'react-router-dom';
 
 const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
     const [customers,] = useAtom(cccCompanyData)
-    const [users, setUsers] = useState<User[]>([]);
-    const [adminAssigned, setAdminAssigned] = useState('');
+    // const [users, setUsers] = useState<User[]>([]);
+    // const [adminAssigned, setAdminAssigned] = useState('');
     // const navigate = useNavigate();
 
-    useEffect(() => {
-        async function getUsData() {
-          setAdminAssigned('');    
-          const response = await fetchUsers();
-          const filteredUsers = response.filter((e: { role: string }) => e.role === 'admin' || e.role === 'master');
-          setUsers(filteredUsers);
-        }    
-        getUsData()
-      }, []);
+    // useEffect(() => {
+    //     async function getUsData() {
+    //       setAdminAssigned('');    
+    //       const response = await fetchUsers();
+    //       const filteredUsers = response.filter((e: { role: string }) => e.role === 'admin' || e.role === 'master');
+    //       setUsers(filteredUsers);
+    //     }    
+    //     getUsData()
+    //   }, []);
 
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
 
@@ -81,37 +81,37 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
     //     registeredBusinessAddressService: "No",
     // }
     
-    console.log("customers====>", customers)
-    console.log("company====>", company)
+    // console.log("customers====>", customers)
+    // console.log("company====>", company)
     const activeDirectors = company?.directors?.filter((director) => director.name.trim() !== "") || [];
     const activeShareholders = company?.shareholders?.filter((shareholder) => shareholder.name.trim() !== "") || [];
     // console.log("activeDirectors", activeDirectors)
     // console.log("activeShareholders", activeShareholders)
-    const AssignAdmin = () => {
-        const handleAssign = (value: string) => {
-            setAdminAssigned(value);
-        };
-        return (
-            <div className="flex items-center gap-4">
-                <span className="text-sm font-medium">Assign Admin:</span>
-                <Select
-                    onValueChange={handleAssign}
-                    value={adminAssigned}
-                >
-                    <SelectTrigger className="w-60 h-8 text-xs">
-                        <SelectValue placeholder="Assign Admin to..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {users.map((u) => (
-                            <SelectItem key={u._id} value={u.fullName || ''}>
-                                {u.fullName || u.email}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
-        );
-    };
+    // const AssignAdmin = () => {
+    //     const handleAssign = (value: string) => {
+    //         setAdminAssigned(value);
+    //     };
+    //     return (
+    //         <div className="flex items-center gap-4">
+    //             <span className="text-sm font-medium">Assign Admin:</span>
+    //             <Select
+    //                 onValueChange={handleAssign}
+    //                 value={adminAssigned}
+    //             >
+    //                 <SelectTrigger className="w-60 h-8 text-xs">
+    //                     <SelectValue placeholder="Assign Admin to..." />
+    //                 </SelectTrigger>
+    //                 <SelectContent>
+    //                     {users.map((u) => (
+    //                         <SelectItem key={u._id} value={u.fullName || ''}>
+    //                             {u.fullName || u.email}
+    //                         </SelectItem>
+    //                     ))}
+    //                 </SelectContent>
+    //             </Select>
+    //         </div>
+    //     );
+    // };
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
             <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -158,16 +158,16 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                         <TodoApp id={id} name={company?.companyNameEng || ""} />
                     </div>
                 )}
-                <div className="flex gap-4 mt-auto">
-                    {user.role !== 'user' && <AssignAdmin />}
-                    {/* <Button
+               {/* <div className="flex gap-4 mt-auto">
+                     {user.role !== 'user' && <AssignAdmin />}
+                     <Button
                         onClick={() => navigate(`/company-documents/US/${id}`)}
                         size="sm"
                         className="flex items-center gap-2"
                     >
                         Company Docs
-                    </Button> */}
-                </div>
+                    </Button> 
+                </div>*/}
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-xl font-semibold">Applicant Information</CardTitle>
