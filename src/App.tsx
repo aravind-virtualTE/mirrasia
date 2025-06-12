@@ -47,7 +47,7 @@ import ToDoList from './pages/MasterTodo/Mtodo';
 import ProjectDetail from './pages/dashboard/Admin/Projects/ProjectDetail';
 import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporateClientList';
 import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
-import UsersList1 from './components/userList/uList2';
+// import UsersList1 from './components/userList/uList2';
 import CurrentCorpClient from './pages/CurrentClient/CurrentCorpClient';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -92,13 +92,13 @@ const App: React.FC = () => {
                   <Route path="/unauthorized" element={<Unauthorized />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   
-                  <Route element={<ProtectedRoute allowedRoles={["master"]} />}>
+                  {/* <Route element={<ProtectedRoute allowedRoles={["master"]} />}>
                     <Route element={<Layout />}>
                       <Route path="/userslist" element={<UsersList />} />
                       <Route path="/userslist1" element={<UsersList1 />} />
                       
                     </Route>
-                  </Route>
+                  </Route> */}
 
                   <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master"]} />}>
                     <Route element={<Layout />}>
@@ -126,6 +126,7 @@ const App: React.FC = () => {
                   {/* Protected routes for Admin */}
                   <Route element={<ProtectedRoute allowedRoles={["admin" , 'master']} />}>
                     <Route element={<Layout />}>
+                      <Route path="/userslist" element={<UsersList />} />
                       <Route path="/compReg" element={<CompanyRegistration2 />} />
                       <Route path="/admin-dashboard" element={<AdminDashboard />} />
                       <Route path="/messages" element={<ChatInterface />} />
