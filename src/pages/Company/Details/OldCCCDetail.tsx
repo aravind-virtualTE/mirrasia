@@ -81,7 +81,8 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
     //     registeredBusinessAddressService: "No",
     // }
     
-
+    console.log("customers====>", customers)
+    console.log("company====>", company)
     const activeDirectors = company?.directors?.filter((director) => director.name.trim() !== "") || [];
     const activeShareholders = company?.shareholders?.filter((shareholder) => shareholder.name.trim() !== "") || [];
     // console.log("activeDirectors", activeDirectors)
