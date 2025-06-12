@@ -19,43 +19,8 @@ import CustomLoader from "@/components/ui/customLoader"
 import { delCurrentClients, getCurrentClients, saveCurrentClients, updateCurrentClient } from "@/services/dataFetch"
 import AddCompanyDialog from "./AddCompanyDialog"
 import { useNavigate } from "react-router-dom"
-
-interface Director {
-    name: string
-    email: string
-    phone: string
-}
-
-interface Shareholder {
-    name: string
-    email: string
-    totalShares: number
-}
-
-interface DesignatedContact {
-    name: string
-    email: string
-    phone: string
-}
-
-interface Company {
-    _id?: string
-    status: string
-    jurisdiction: string
-    comments: string
-    incorporationDate: string
-    companyNameEng: string
-    companyNameChi: string
-    companyType: string
-    brnNo: string
-    noOfShares: number
-    shareCapital: string
-    directors: Director[]
-    shareholders: Shareholder[]
-    designatedContact: DesignatedContact
-    companySecretarialService: string
-    registeredBusinessAddressService: string
-}
+import { cccCompanyData, Company } from "./cccState"
+import { useAtom } from "jotai"
 
 interface GetClientsParams {
     page?: number
@@ -67,7 +32,7 @@ interface GetClientsParams {
 }
 
 export default function CurrentCorpClient() {
-    const [customers, setCustomers] = useState<Company[]>([])
+    const [customers, setCustomers] = useAtom(cccCompanyData)
     const [totalItems, setTotalItems] = useState(0)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [editingCompany, setEditingCompany] = useState<Company | null>(null)
