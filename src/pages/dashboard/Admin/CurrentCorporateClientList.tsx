@@ -1,5 +1,6 @@
 import { companyTableData } from "./types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom"
 import { formatDateTime } from "./utils";
@@ -9,6 +10,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { deleteCompanyRecord } from "@/services/dataFetch";
+import CurrentCorpClient from "@/pages/CurrentClient/CurrentCorpClient";
 
 const CurrentCorporateClientList: React.FC = () => {
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -23,9 +25,9 @@ const CurrentCorporateClientList: React.FC = () => {
     'Waiting for Documents',
     'Waiting for Incorporation'
   ]
-  const [allList,setAllList] = useAtom(allCompListAtom)
+  const [allList, setAllList] = useAtom(allCompListAtom)
   const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { status: string }).status))
-
+  console.log("projectsData", projectsData)
   const navigate = useNavigate()
 
   const handleRowClick = (companyId: string, countryCode: string) => {
@@ -45,24 +47,21 @@ const CurrentCorporateClientList: React.FC = () => {
   };
 
   const confirmDelete = async () => {
-      if (taskToDelete?.companyId) {
-        const result = await deleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode })
-        // console.log("result", result)
-        if (result) {
-          // Filter out the deleted company and update the atom
-          const updatedList = allList.filter(company => company._id !== taskToDelete.companyId);
-          console.log("updatedList", updatedList)
-          setAllList(updatedList);
-        }
+    if (taskToDelete?.companyId) {
+      const result = await deleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode })
+      if (result) {
+        const updatedList = allList.filter(company => company._id !== taskToDelete.companyId);
+        setAllList(updatedList);
       }
-      setDeleteDialogOpen(false);
-      setTaskToDelete(null);
-    };
+    }
+    setDeleteDialogOpen(false);
+    setTaskToDelete(null);
+  };
 
-  return (
-    <div className="rounded-xl border mt-6 mx-2 overflow-x-auto">
-      <Table className="w-full text-sm text-left ">
-        <TableHeader className="">
+  const renderCurrentClientsTable = () => (
+    <div className="rounded-xl border overflow-x-auto">
+      <Table className="w-full text-sm text-left">
+        <TableHeader>
           <TableRow>
             <TableHead className="px-4 py-3 min-w-[180px]">Company Name</TableHead>
             <TableHead className="px-4 py-3 min-w-[150px]">Applicant Name</TableHead>
@@ -145,29 +144,51 @@ const CurrentCorporateClientList: React.FC = () => {
                 </TableCell>
                 {currentUser.role == "master" && <TableCell className="py-2">
                   <button
-                    className="text-red-500 hover:red-blue-700 transition"
+                    className="text-red-500 hover:text-red-700 transition"
                     onClick={(e) => handleDeleteClick(typed._id, typed.country.code, e)}
                   >
                     <Trash2 size={16} />
                   </button>
                 </TableCell>}
               </TableRow>
-
             )
           })}
         </TableBody>
       </Table>
+    </div>
+  );
+
+  return (
+    <div className="mt-6 mx-2">
+      <Tabs defaultValue="current" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsTrigger value="current" className="flex items-center gap-2">
+            <span>Current Corporate Clients</span>           
+          </TabsTrigger>
+          <TabsTrigger value="archived" className="flex items-center gap-2">
+            <span>Excel Sheet Current Corporate Clients</span>
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="current" className="space-y-4">
+          {renderCurrentClientsTable()}
+        </TabsContent>
+        
+        <TabsContent value="archived" className="space-y-4">
+          <CurrentCorpClient />
+        </TabsContent>
+      </Tabs>
+
       <ConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title={"Delete Company"}
-        description={ 'Are you sure you want to delete company?'  }
+        description={'Are you sure you want to delete company?'}
         confirmText="Delete"
         cancelText="Cancel"
         onConfirm={confirmDelete}
       />
     </div>
-
   )
 }
 

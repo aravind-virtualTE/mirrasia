@@ -48,7 +48,7 @@ import ProjectDetail from './pages/dashboard/Admin/Projects/ProjectDetail';
 import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporateClientList';
 import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
 import UsersList1 from './components/userList/uList2';
-import CurrentCorporateClient from './pages/CurrentClient/CurrentCorpClient';
+import CurrentCorpClient from './pages/CurrentClient/CurrentCorpClient';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -118,8 +118,8 @@ const App: React.FC = () => {
                       <Route path="/accounting-support-list" element={<AccountingHkList />} />
                       <Route path="/member-registration" element={<InviteUsaDirShir />} />
                       <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />                      
-                      <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
                       <Route path="/company-details/:id" element={<CompanyDetail />} />
+                      <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
                     </Route>
                   </Route>
 
@@ -132,7 +132,7 @@ const App: React.FC = () => {
                       <Route path="/projects" element={<AdminProject />} />
                       <Route path="/MasterTodo" element={<ToDoList />} />
                       <Route path="/project-detail/:id" element={<ProjectDetail />} />
-                      <Route path="/currentClientDataManager" element={<CurrentCorporateClient />} />
+                      <Route path="/currentClientDataManager" element={<CurrentCorpClient />} />
                       <Route path="/current-corporate-client" element={<CurrentCorporateClientList />} />
                       
                       {/* Add more admin-specific routes here */}

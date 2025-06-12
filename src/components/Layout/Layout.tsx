@@ -112,14 +112,14 @@ const Layout: React.FC = () => {
                 navigate('/messages');
             },
         },
-        {
-            icon: <Briefcase className="w-4 h-4" />,
-            label: 'Current Corporate Client',
-            roles: ['admin', 'master'],
-            onClick: (_, navigate) => {
-                navigate('/currentClientDataManager');
-            },
-        },  
+        // {
+        //     icon: <Briefcase className="w-4 h-4" />,
+        //     label: 'Current Corporate Client',
+        //     roles: ['admin', 'master'],
+        //     onClick: (_, navigate) => {
+        //         navigate('/currentClientDataManager');
+        //     },
+        // },  
     ];
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />

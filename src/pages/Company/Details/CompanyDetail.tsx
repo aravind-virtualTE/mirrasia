@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import HkCompdetail from "./HkCompdetail";
 import UsCompdetail from "./UsCompdetail";
+import OldCCCDetail from "./OldCCCDetail";
 
 const CompanyDetail = () => {
     const { countryCode, id } = useParams();
@@ -14,6 +15,8 @@ const CompanyDetail = () => {
                 return <UsCompdetail id={id ?? ""} />;
             case "HK":
                 return <HkCompdetail id={id ?? ""} />;
+            case "ccc":
+                return <OldCCCDetail id={id ?? ""} />;
             default:
                 return <p> Not Found... </p>
         }
