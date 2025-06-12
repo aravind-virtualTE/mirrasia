@@ -13,43 +13,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Trash2 } from "lucide-react"
+import { Company, DesignatedContact, Director, Shareholder } from "./cccState"
 
-interface Director {
-  name: string
-  email: string
-  phone: string
-}
-
-interface Shareholder {
-  name: string
-  email: string
-  totalShares: number
-}
-
-interface DesignatedContact {
-  name: string
-  email: string
-  phone: string
-}
-
-interface Company {
-  _id?: string
-  status: string
-  jurisdiction: string
-  comments: string
-  incorporationDate: string
-  companyNameEng: string
-  companyNameChi: string
-  companyType: string
-  brnNo: string
-  noOfShares: number
-  shareCapital: string
-  directors: Director[]
-  shareholders: Shareholder[]
-  designatedContact: DesignatedContact
-  companySecretarialService: string
-  registeredBusinessAddressService: string
-}
 
 interface AddCompanyDialogProps {
   isOpen: boolean

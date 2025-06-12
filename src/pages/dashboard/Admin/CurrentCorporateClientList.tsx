@@ -27,7 +27,7 @@ const CurrentCorporateClientList: React.FC = () => {
   ]
   const [allList, setAllList] = useAtom(allCompListAtom)
   const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { status: string }).status))
-  console.log("projectsData", projectsData)
+  // console.log("projectsData", projectsData)
   const navigate = useNavigate()
 
   const handleRowClick = (companyId: string, countryCode: string) => {
@@ -63,6 +63,7 @@ const CurrentCorporateClientList: React.FC = () => {
       <Table className="w-full text-sm text-left">
         <TableHeader>
           <TableRow>
+            <TableHead className="text-center">S.no</TableHead>
             <TableHead className="px-4 py-3 min-w-[180px]">Company Name</TableHead>
             <TableHead className="px-4 py-3 min-w-[150px]">Applicant Name</TableHead>
             <TableHead className="px-4 py-3 min-w-[100px]">Country</TableHead>
@@ -75,7 +76,7 @@ const CurrentCorporateClientList: React.FC = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {projectsData.map((company) => {
+          {projectsData.map((company, idx) => {
             const typed = company as companyTableData
             let date = typed.incorporationDate
             if (date) {
@@ -89,6 +90,8 @@ const CurrentCorporateClientList: React.FC = () => {
                 className="h-12 cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => handleRowClick(typed._id, typed.country.code)}
               >
+                <TableCell className="text-center font-medium">{idx +1}</TableCell>
+
                 <TableCell className="px-4 py-3 font-medium">
                   <span className="hover:underline">
                     {typed.companyName.filter(Boolean).join(", ") || "N/A"}
