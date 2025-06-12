@@ -55,12 +55,16 @@ const UsersList = () => {
     const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
     const navigate = useNavigate();
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
-
+    // console.log("user", user)
     useEffect(() => {
         const fetchUser = async () => {
+            let role = ''
+                if(user && user.role) {
+                    role = user.role
+                }
             const [detailedUsersResponse] = await Promise.all([
-                // fetchUsers(),
-                fetchDetailedUsers(),
+                // fetchUsers(),                
+                fetchDetailedUsers(role)
             ]);
             // console.log("detailed response", detailedUsersResponse);
             setUsers(detailedUsersResponse);

@@ -59,7 +59,7 @@ const Layout: React.FC = () => {
         {
             icon: <Users className="w-4 h-4" />,
             label: t("sideItems.userList"),
-            roles: ["master"],
+            roles: ["master", "admin"],
             onClick: (_role, navigate) => navigate("/userslist"),
         },
         {

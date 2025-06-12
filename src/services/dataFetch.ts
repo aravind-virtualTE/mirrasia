@@ -365,9 +365,9 @@ export const getUserById = async ( id: string) =>{
 }
 
 
-export const fetchDetailedUsers = async () =>{
+export const fetchDetailedUsers = async (role?:string) =>{
   try {
-    const response = await api.get(`user/getDetailedUsers`);
+    const response = await api.get(`user/getDetailedUsers`, { params: { role } });
     return response.data;
   } catch (error) {
     console.error("Error fetching saved data:", error);
