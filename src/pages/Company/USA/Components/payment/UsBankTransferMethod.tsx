@@ -4,6 +4,7 @@ import { Building2, Copy } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 import UsReceiptUpload from "./UsRecieptUpload";
+import { useTranslation } from "react-i18next";
 
 interface BankTransferMethodProps {
     sessionId: string;
@@ -11,6 +12,7 @@ interface BankTransferMethodProps {
 
 export function UsBankTransferMethod({ sessionId }: BankTransferMethodProps) {
   const { toast } = useToast();
+  const {t} = useTranslation()
   const bankDetails = {
     bankName: 'HSBC',
     accountNo: '817 245681 838',
@@ -32,8 +34,8 @@ export function UsBankTransferMethod({ sessionId }: BankTransferMethodProps) {
   return (
     <Tabs defaultValue="details">
       <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="details">Bank Details</TabsTrigger>
-        <TabsTrigger value="upload">Upload Receipt</TabsTrigger>
+        <TabsTrigger value="details">{t('payment.bankDetails')}</TabsTrigger>
+        <TabsTrigger value="upload">{t('payment.uploadReceipt')}</TabsTrigger>
       </TabsList>
       
       <TabsContent value="details">
@@ -69,7 +71,7 @@ export function UsBankTransferMethod({ sessionId }: BankTransferMethodProps) {
             ))}
             
             <p className="text-sm text-muted-foreground mt-4">
-              Note: All bank charges are borne by the remitter
+              {t('payment.pNoteCharges')}
             </p>
           </CardContent>
         </Card>

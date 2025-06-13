@@ -20,8 +20,6 @@ import { TooltipProvider } from './components/ui/tooltip';
 import Unauthorized from './common/Unauthorized';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import CompanyDetail from './pages/Company/Details/CompanyDetail';
-import HkMultiStepForm from './components/company/hongkong/HkMultiStepForm';
-import ShareHolderRegForm from './components/form/ShareHolderRegForm';
 import QuatationForm from './components/form/quatationForm';
 import RenewalRequestForm from './components/form/renewalReqForm';
 import TransferManagementInfo from './components/form/TransferManagementInfo';
@@ -43,7 +41,14 @@ import AccountingHkList from './pages/AccountingForms/AccountingHkList';
 import InviteUsaDirShir from './pages/InviteUsaDirShir/USA/InviteUsaDirShir';
 import ServiceAgreementSignDocs from './components/ServiceAgreementSignDocs/ServiceAgreementSignDocs';
 import {SocketProvider } from '@/hooks/Socket';
-import MessagesPage from './components/chat/AdminChat';
+import ChatInterface from './components/chat/ChatInterface';
+import AdminProject from './pages/dashboard/Admin/Projects/AdminProject';
+import ToDoList from './pages/MasterTodo/Mtodo';
+import ProjectDetail from './pages/dashboard/Admin/Projects/ProjectDetail';
+import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporateClientList';
+import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
+// import UsersList1 from './components/userList/uList2';
+import CurrentCorpClient from './pages/CurrentClient/CurrentCorpClient';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -57,6 +62,7 @@ const queryClient = new QueryClient({
     },
   },
 });
+
 
 const App: React.FC = () => {
   // const [loading, setLoading] = useState<boolean>(true);
@@ -75,19 +81,24 @@ const App: React.FC = () => {
                 <Routes>
                   {/* Public routes */}
                   <Route path="/logout" element={<Logout />} />
+                  
                   <Route element={<PublicRoute />}>
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />
+                    {/* <Route path="/test" element={<UsCorporateShdr />} /> */}
+                    
                   </Route>
                   <Route path="/unauthorized" element={<Unauthorized />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-  
-                  <Route element={<ProtectedRoute allowedRoles={["master"]} />}>
+                  
+                  {/* <Route element={<ProtectedRoute allowedRoles={["master"]} />}>
                     <Route element={<Layout />}>
                       <Route path="/userslist" element={<UsersList />} />
+                      <Route path="/userslist1" element={<UsersList1 />} />
+                      
                     </Route>
-                  </Route>
+                  </Route> */}
 
                   <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master"]} />}>
                     <Route element={<Layout />}>
@@ -95,37 +106,46 @@ const App: React.FC = () => {
                       <Route path="/company-register/:countryCode/:id" element={<CompanyRegistration />} />
                       <Route path="/company-register/:id" element={<CompanyRegistration />} />
                       <Route path="/company-documents" element={<CompanyDocumentManager />} />
+                      <Route path="/company-documents/:countryCode/:id" element={<CompanyDocumentManager />} />
                       <Route path="/pba-forms" element={<BankForms />} />
                       <Route path="/switch-services" element={<SwitchServices />} />
                       <Route path="/switch-services/:countryCode/:id" element={<SwitchServices />} />
                       <Route path="/accounting-services" element={<AccountingForms />} />
+                      <Route path="/accounting-services/:countryCode/:id" element={<AccountingForms />} />
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/hk-bank-account-list" element={<BkFrmList />} />
                       <Route path="/switch-services-list" element={<SwitchServicesList />} />
                       <Route path="/accounting-support-list" element={<AccountingHkList />} />
                       <Route path="/member-registration" element={<InviteUsaDirShir />} />
-                      <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
-                      <Route path="/messages" element={<MessagesPage />} />
+                      <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />                      
+                      <Route path="/company-details/:id" element={<CompanyDetail />} />
+                      <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
                     </Route>
                   </Route>
 
                   {/* Protected routes for Admin */}
                   <Route element={<ProtectedRoute allowedRoles={["admin" , 'master']} />}>
                     <Route element={<Layout />}>
+                      <Route path="/userslist" element={<UsersList />} />
                       <Route path="/compReg" element={<CompanyRegistration2 />} />
-                      <Route path="/admin-dashboard" element={<AdminDashboard />} />                    
-                      <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
-                      <Route path="/company-details/:id" element={<CompanyDetail />} />
+                      <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                      <Route path="/messages" element={<ChatInterface />} />
+                      <Route path="/projects" element={<AdminProject />} />
+                      <Route path="/MasterTodo" element={<ToDoList />} />
+                      <Route path="/project-detail/:id" element={<ProjectDetail />} />
+                      <Route path="/currentClientDataManager" element={<CurrentCorpClient />} />
+                      <Route path="/current-corporate-client" element={<CurrentCorporateClientList />} />
                       
                       {/* Add more admin-specific routes here */}
                     </Route>
                   </Route>
 
-                  <Route element={<ProtectedRoute allowedRoles={["hk_shdr"]} />}>
+                  <Route element={<ProtectedRoute allowedRoles={["hk_shdr", 'us_shdr', 'pa_shdr']} />}>
                     <Route element={<Layout />}>
                       <Route path="/viewboard" element={<ViewBoard />} />
-                      <Route path='/registrationForm' element={<ShareHolderRegForm />} />
-                      <Route path="/registrationForm/:id" element={<ShareHolderRegForm />} />
+                      <Route path='/registrationForm' element={<CountryWiseShareholder />} />
+                      <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
+                      <Route path="/profile" element={<Profile />} />
                     </Route>
                   </Route>
 
@@ -133,8 +153,6 @@ const App: React.FC = () => {
                   <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
                     <Route element={<Layout />}>
                       <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/hkCompanyRegister/" element={<HkMultiStepForm />} />
-                      <Route path="/hkCompanyRegister/:id" element={<HkMultiStepForm />} />
                       {/* Add more user-specific routes here */}
                       <Route path='/QuatationForm' element={<QuatationForm />} />
                       <Route path='/RenewalReqForm' element={<RenewalRequestForm />} />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Menu, Home, Users, FileSignature, Files,
-    RefreshCw, Briefcase, FileCheck, MessageSquare } from 'lucide-react'
+    RefreshCw, Briefcase, FileCheck, MessageSquare} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Navigate, NavigateFunction, Outlet, useNavigate } from 'react-router-dom';
 import {
@@ -10,12 +10,13 @@ import Navbar from './Navbar';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 import { useResetAllForms } from '@/lib/atom';
-// import HelpDesk from '../HelpDesk';
-
+import SocialMediaWidget from '../SocialMedia';
+import { useTranslation } from "react-i18next";
 const Layout: React.FC = () => {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const navigate = useNavigate();
     const resetAllForms = useResetAllForms();
+    const { t } = useTranslation();
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 1024) { // 1024px is Tailwind's 'lg' breakpoint
@@ -42,7 +43,7 @@ const Layout: React.FC = () => {
     const sidebarItems: SidebarItem[] = [
         {
             icon: <Home className="h-5 w-5" />,
-            label: "Home",
+            label:  t("sideItems.Home"),
             roles: ['user', 'admin', 'master', 'hk_shdr', 'us_shdr'],
             onClick: (role, navigate) => {
                 if (['admin', 'master'].includes(role)) {
@@ -57,13 +58,13 @@ const Layout: React.FC = () => {
         },
         {
             icon: <Users className="w-4 h-4" />,
-            label: "Users List",
-            roles: ["master"],
+            label: t("sideItems.userList"),
+            roles: ["master", "admin"],
             onClick: (_role, navigate) => navigate("/userslist"),
         },
         {
             icon: <FileSignature className="w-4 h-4" />,
-            label: "Register Company",
+            label: t("sideItems.regComp"),
             roles: ['user', 'admin', 'master'],
             onClick: (_, navigate) => {
                 localStorage.removeItem('companyRecordId');
@@ -73,7 +74,7 @@ const Layout: React.FC = () => {
         },
         {
             icon: <Files className="h-6 w-6" />,
-            label: "Company Documents",
+            label: t("sideItems.compDocs"),
             roles: ['user', 'admin', 'master'],
             onClick: (_, navigate) => {
                 navigate('/company-documents');
@@ -81,7 +82,7 @@ const Layout: React.FC = () => {
         },
         {
             icon: <RefreshCw className="h-6 w-6" />,
-            label: "Switch Services List",
+            label: t("sideItems.switchServices"),
             roles: ['user', 'admin', 'master'],
             onClick: (_, navigate) => {
                 navigate('/switch-services-list');
@@ -89,7 +90,7 @@ const Layout: React.FC = () => {
         },
         {
             icon: <Briefcase className="h-6 w-6" />,
-            label: "Accounting List",
+            label: t("sideItems.accountList"),
             roles: ['user', 'admin', 'master'],
             onClick: (_, navigate) => {
                 navigate('/accounting-support-list');
@@ -97,7 +98,7 @@ const Layout: React.FC = () => {
         },
         {
             icon: <FileCheck className="w-4 h-4" />,
-            label: "Sign Docs",
+            label: t("sideItems.signDocs"),
             roles: ['user', 'admin', 'master'],
             onClick: (_, navigate) => {
                 navigate('/service-agreement-sign-docs');
@@ -105,20 +106,20 @@ const Layout: React.FC = () => {
         },
         {
             icon: <MessageSquare className="w-4 h-4" />,
-            label: "Messages",
-            roles: ['admin', 'master', 'user'],
+            label: t("sideItems.mirrChat"),
+            roles: ['admin', 'master'],
             onClick: (_, navigate) => {
                 navigate('/messages');
             },
         },
         // {
-        //     icon: <MessageCircle className="w-4 h-4" />,
-        //     label: "Messages2",
-        //     roles: ['user', 'admin', 'master'],
+        //     icon: <Briefcase className="w-4 h-4" />,
+        //     label: 'Current Corporate Client',
+        //     roles: ['admin', 'master'],
         //     onClick: (_, navigate) => {
-        //         navigate('/messages2');
+        //         navigate('/currentClientDataManager');
         //     },
-        // },     
+        // },  
     ];
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
@@ -153,7 +154,7 @@ const Layout: React.FC = () => {
                                             onClick={() => item.onClick(decodedToken.role, navigate)}
                                         >
                                             {item.icon}
-                                            <span className={`ml-2 ${isCollapsed ? 'hidden' : 'inline'}`}>{item.label}</span>
+                                            <span className={` ${isCollapsed ? 'hidden' : 'inline'}`}>{item.label}</span>
                                         </Button>
                                     ))}
                             </nav>
@@ -180,7 +181,7 @@ const Layout: React.FC = () => {
                     </main>
                 </ResizablePanel>
             </ResizablePanelGroup>
-            {/* <HelpDesk /> */}
+            <SocialMediaWidget />
         </div>
     )
 }

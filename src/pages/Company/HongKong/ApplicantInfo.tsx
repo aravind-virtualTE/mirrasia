@@ -42,7 +42,7 @@ const ApplicantInfoForm = () => {
   useEffect(() => {
     if (id) {
       const company = companies.find(c => c._id === id);
-      // console.log(id, 'company', companies);
+      console.log(id, 'company', companies);
       setFormData(company?.applicantInfoForm as FormDataType)
     }
   }, []);
@@ -232,7 +232,7 @@ const ApplicantInfoForm = () => {
 
     handleChange('snsPlatform')(syntheticEvent);
   };
-  // console.log('Form submitted:', formData);
+  console.log('Section1Applicant Info:', formData);
 
   return (
     <Card>
@@ -397,7 +397,7 @@ const ApplicantInfoForm = () => {
                 <SelectContent>
                   {snsPlatforms.map((platform) => (
                     <SelectItem key={platform.id} value={platform.id}>
-                      {platform.name}
+                      {t(platform.name)}
                     </SelectItem>
                   ))}
                 </SelectContent>

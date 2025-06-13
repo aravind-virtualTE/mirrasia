@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom, useSetAtom } from "jotai";
 import { useToast } from "@/hooks/use-toast";
-import { companyIncorporationList } from "@/services/state";
+import { companyIncorporationList, usersData } from "@/services/state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Table,
@@ -13,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SAgrementPdf from "../HongKong/ServiceAgreement/SAgrementPdf";
-import { updateEditValues, getIncorporationListByCompId } from "@/services/dataFetch";
+import { updateEditValues, getIncorporationListByCompId, fetchUsers, getShareHolderDirData } from "@/services/dataFetch";
 import React, { useEffect, useMemo, useState } from "react";
 import { paymentApi } from "@/lib/api/payment";
 import {
@@ -43,7 +44,14 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { updateCompanyIncorporationAtom } from "@/lib/atom";
 import { ShareHolderDirectorController } from "@/types/hongkongForm";
-
+import MemoApp from "./MemosHK";
+import TodoApp from "@/pages/Todo/TodoApp";
+import { useNavigate } from "react-router-dom";
+import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
+import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
+import { hkIncorporationItems, hkRenewalList } from "./detailConstants";
+import DetailShdHk from "@/components/shareholderDirector/detailShddHk";
+import { t } from "i18next";
 export interface SessionData {
     _id: string;
     amount: number;
@@ -52,13 +60,11 @@ export interface SessionData {
     status: string;
     paymentId: string;
 }
-
 interface Country {
     [key: string]: string | undefined;
     code: string | undefined;
     name: string | undefined;
 }
-
 interface ApplicantInfoForm {
     name: string;
     relationships: string[];
@@ -70,7 +76,6 @@ interface ApplicantInfoForm {
     snsPlatform: string;
     chinaCompanyName: string[];
 }
-
 interface BusinessInfoHkCompany {
     [key: string]: string | undefined;
     sanctioned_countries?: string;
@@ -79,13 +84,11 @@ interface BusinessInfoHkCompany {
     russian_business_presence?: string;
     legal_assessment?: string;
 }
-
 interface CompanyBusinessInfo {
     business_product_description: string;
     business_industry: string;
     business_purpose: string[];
 }
-
 interface RegCompanyInfo {
     registerCompanyNameAtom: string;
     registerShareTypeAtom: string[];
@@ -97,8 +100,9 @@ interface RegCompanyInfo {
 
 interface AccountingTaxInfo {
     anySoftwareInUse: string;
+    finYearEnd: string;
+    bookKeepCycle: string;
 }
-
 export interface PaymentDetails {
     paymentData: {
         id: string;
@@ -132,13 +136,12 @@ export interface PaymentDetails {
         status: string;
     };
 }
-
 interface Company {
     incorporationDate: string;
     is_draft: boolean;
-    _id: string; // Changed to string for frontend
-    userId: string; // Changed to string for frontend
-    country: Country;   //Record<string, string | undefined>;
+    _id: string;
+    userId: string;
+    country: Country;
     applicantInfoForm: ApplicantInfoForm;
     businessInfoHkCompany: BusinessInfoHkCompany;
     companyBusinessInfo: CompanyBusinessInfo;
@@ -151,18 +154,20 @@ interface Company {
     sessionId: string;
     isDisabled: boolean;
     receiptUrl: string;
+    assignedTo: string;
     __v: number;
 }
-
 const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
     const { toast } = useToast();
     const [companies] = useAtom(companyIncorporationList);
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     // const [companyData, setCompData] = useAtom(companyIncorporationAtom);
-    const companyDetail = companies.find(
-        (c) => c._id === id
-    ) as unknown as Company;
+    // const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useAtom(usersData);
+    const [adminAssigned, setAdminAssigned] = useState("");
+    const navigate = useNavigate()
+    const companyDetail = companies.find((c) => c._id === id) as unknown as Company;
     const [company, setCompany] = useState(companyDetail);
     const [session, setSession] = useState<SessionData>({
         _id: "",
@@ -173,17 +178,63 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         paymentId: "",
     });
     const [isSheetOpen, setIsSheetOpen] = useState(false)
-
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [selectedData, setSelectedData] = useState<any>(null)
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+    console.log("company",company)
+    const handleFetchShrDir = async (id : string, email: string) =>{
+        const fetchData = await getShareHolderDirData(id, email)
+        console.log("handleFet", fetchData)
+        if(fetchData){
+            setSelectedData(fetchData)
+            setIsDialogOpen(true)
+        }else{
+            toast({
+                description: "No Record Found" 
+            })
+        }
+    }
     const generateSections = (company: Company, session: SessionData) => {
         const sections = [];
         updateCompanyData(company);
-        // console.log("company", company)
-        // Applicant Information Section
         if (company.applicantInfoForm) {
             sections.push({
                 title: "Applicant Information",
                 data: {
-                    "Company Name": company.applicantInfoForm.companyName,
+                    "Company Name": (
+                        <div className="space-y-4">
+                            <div className="grid gap-2">
+                                {company.applicantInfoForm.companyName.slice(0, 3).map((name, index) => (
+                                    <div key={index} className="flex items-center gap-2">
+                                        <div className="flex-1 p-2 border rounded-md bg-background">{name || "N/A"}</div>
+                                        {index > 0 && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => {
+                                                    const newNames = [...company.applicantInfoForm.companyName]
+                                                    // Move this item to the first position
+                                                    const [removed] = newNames.splice(index, 1)
+                                                    newNames.unshift(removed)
+
+                                                    // Update the company state
+                                                    setCompany({
+                                                        ...company,
+                                                        applicantInfoForm: {
+                                                            ...company.applicantInfoForm,
+                                                            companyName: newNames,
+                                                        },
+                                                    })
+                                                }}
+                                            >
+                                                Move to Top
+                                            </Button>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ),
                     "Applicant Name": company.applicantInfoForm.name,
                     Email: company.applicantInfoForm.email,
                     Phone: company.applicantInfoForm.phoneNumber,
@@ -197,10 +248,9 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         // Country Information Section
         if (company.country) {
             sections.push({
-                title: "Country Information",
+                title: "Jurisdiction Information",
                 data: {
                     Country: company.country.name,
-                    "Country Code": company.country.code,
                 },
             });
         }
@@ -208,7 +258,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         // Business Information Section
         if (company.businessInfoHkCompany || company.companyBusinessInfo) {
             sections.push({
-                title: "Business Information",
+                title: "AML/CDD Information",
                 data: {
                     ...(company.businessInfoHkCompany
                         ? {
@@ -224,8 +274,28 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                 company.businessInfoHkCompany.legal_assessment,
                         }
                         : {}),
-                    "Business Description":
-                        company.companyBusinessInfo?.business_product_description || "N/A",
+                },
+            });
+        }
+        if(company.companyBusinessInfo?.business_product_description){
+           sections.push({
+                title: "Company Business Information",
+                data: {
+                    "Business Industry": t(company.companyBusinessInfo?.business_industry) || "N/A",
+                    "Business Description":  company.companyBusinessInfo?.business_product_description || "N/A",
+                },
+            });
+        }
+
+
+        // accounting and Tax Information Section
+        if (company.accountingTaxInfo) {
+            sections.push({
+                title: "Accounting and Tax Information",
+                data: {
+                    "Any Software in Use": company.accountingTaxInfo.anySoftwareInUse || "N/A",
+                    "Financial Year End": company.accountingTaxInfo.finYearEnd || "N/A",
+                    "Bookkeeping Cycle": company.accountingTaxInfo.bookKeepCycle || "N/A",
                 },
             });
         }
@@ -233,7 +303,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
         // Shareholder and Director Information Section
         if (company.shareHolderDirectorController) {
             const shareholderData = company.shareHolderDirectorController;
-            console.log("shareholderData",shareholderData)
             sections.push({
                 title: "Shareholder and Director Information",
                 data: {
@@ -258,7 +327,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             </TableHeader>
                             <TableBody>
                                 {Array.isArray(shareholderData.shareHolders) && shareholderData.shareHolders.map((shareholder, index) => (
-                                    <TableRow key={index}>
+                                    <TableRow className="cursor-pointer" key={index} onClick={() => handleFetchShrDir(company._id, shareholder.email)}>
                                         <TableCell>{shareholder.name}</TableCell>
                                         <TableCell>{shareholder.email}</TableCell>
                                         <TableCell>{shareholder.phone || "N/A"}</TableCell>
@@ -300,7 +369,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
         return sections;
     };
-
     const sections = useMemo(() => {
         if (!company) return [];
         return generateSections(company, session);
@@ -312,20 +380,27 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 if (id) {
                     companyData = await getIncorporationListByCompId(id);
                     // console.log("companyData", companyData);
+                    setAdminAssigned(companyData[0].assignedTo)
                     setCompany(companyData[0])
                 }
-                const session = await paymentApi.getSession(companyData[0].sessionId);
-                // console.log("session", session);
-                const transformedSession: SessionData = {
-                    _id: session._id,
-                    amount: session.amount,
-                    currency: session.currency,
-                    expiresAt: session.expiresAt,
-                    status: session.status,
-                    paymentId: session.paymentId,
-                };
-
-                setSession(transformedSession);
+                if (companyData[0].sessionId) {
+                    const session = await paymentApi.getSession(companyData[0].sessionId);
+                    // console.log("session", session);
+                    const transformedSession: SessionData = {
+                        _id: session._id,
+                        amount: session.amount,
+                        currency: session.currency,
+                        expiresAt: session.expiresAt,
+                        status: session.status,
+                        paymentId: session.paymentId,
+                    };
+                    setSession(transformedSession);
+                }
+                await fetchUsers().then((response) => {
+                    const data = response.filter((e: { role: string; }) => e.role == 'admin' || e.role == 'master')
+                    // console.log("responsedata", data)
+                    setUsers(data);
+                })
             } catch (error) {
                 console.error("Failed to fetch session:", error);
             }
@@ -336,18 +411,15 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     if (!company) {
         return <div>Company not found</div>;
     }
-
     const handleSessionDataChange = (key: keyof SessionData, value: string) => {
         setSession({ ...session, [key]: value });
     };
-
     const handleCompanyDataChange = (
         key: keyof Company,
         value: string | boolean
     ) => {
         setCompany({ ...company, [key]: value });
     };
-
     const IncorporationDateFrag = () => {
         let date = company.incorporationDate
         if (date !== null) {
@@ -358,7 +430,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <React.Fragment>
                 <TableCell className="font-medium">Incorporation Date</TableCell>
                 <TableCell>{date || "Not set"}</TableCell>
-                <TableCell>
+                {user.role !== 'user' && <TableCell>
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="outline">Edit</Button>
@@ -391,7 +463,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             </div>
                         </DialogContent>
                     </Dialog>
-                </TableCell>
+                </TableCell>}
             </React.Fragment>
         );
     };
@@ -401,7 +473,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <React.Fragment>
                 <TableCell className="font-medium">Payment Expire Date</TableCell>
                 <TableCell>{new Date(session.expiresAt).toLocaleString() || "Not set"}</TableCell>
-                <TableCell>
+                {user.role !== 'user' && <TableCell>
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="outline">Edit</Button>
@@ -434,7 +506,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             </div>
                         </DialogContent>
                     </Dialog>
-                </TableCell>
+                </TableCell>}
             </React.Fragment>
         );
     }
@@ -444,7 +516,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <React.Fragment>
                 <TableCell className="font-medium">Payment Status</TableCell>
                 <TableCell>{session.status}</TableCell>
-                <TableCell>
+                {user.role !== 'user' && <TableCell>
                     <Select
                         value={session.status}
                         onValueChange={(value) => handleSessionDataChange("status", value)}
@@ -458,7 +530,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             <SelectItem value="expired">Expired</SelectItem>
                         </SelectContent>
                     </Select>
-                </TableCell>
+                </TableCell>}
             </React.Fragment>
         );
     }
@@ -471,15 +543,15 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             'Waiting for Documents',
             'Waiting for Incorporation',
             'Incorporation Completed',
-            'Good Standing',
+            // 'Good Standing',
             'Renewal Processing',
             'Renewal Completed',
         ];
         return (
             <React.Fragment>
-                <TableCell className="font-medium">InCorporation Status</TableCell>
+                <TableCell className="font-medium">Incorporation Status</TableCell>
                 <TableCell>{company.status}</TableCell>
-                <TableCell>
+                {user.role !== 'user' && <TableCell>
                     <Select
                         value={company.status}
                         onValueChange={(value) => handleCompanyDataChange("status", value)}
@@ -495,7 +567,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             ))}
                         </SelectContent>
                     </Select>
-                </TableCell>
+                </TableCell>}
             </React.Fragment>
         );
     };
@@ -549,78 +621,145 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     )
 
     const handleUpdate = async () => {
-
+        // console.log("company", company)
         const payload = JSON.stringify({
-            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK" },
-            session: { id: session._id, expiresAt: (session.expiresAt), status: session.status }
+            company: { id: company._id, status: company.status, isDisabled: company.isDisabled, incorporationDate: company.incorporationDate, country: "HK", companyName: company.applicantInfoForm.companyName},
+            session: { id: session._id, expiresAt: (session.expiresAt), status: session.status },
+            assignedTo: adminAssigned
         })
-        // {
-        //     id: companyDetail._id,
-        //     value: false,
-        // }
         await updateEditValues(payload);
         toast({ description: "Record updated successfully" });
     };
 
+    const AssignAdmin = () => {
+        const handleAssign = (value: string) => {
+            setAdminAssigned(value)
+        }
+        return (
+            <div className="flex items-center gap-4">
+                <span className="text-sm font-medium">Assign Admin:</span>
+                <Select
+                    onValueChange={handleAssign}
+                    value={adminAssigned}
+                >
+                    <SelectTrigger className="w-60 h-8 text-xs">
+                        <SelectValue placeholder="Assign Admin to..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {users.map((u) => (
+                            <SelectItem key={u._id} value={u.fullName || ""}>
+                                {u.fullName || u.email}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+        )
+    }
+ 
     return (
-        <Tabs defaultValue="details" className="flex flex-col">
-            <TabsList className="flex space-x-4 mb-4">
-                <TabsTrigger value="details" className="px-4 py-2">
-                    Details
+        <Tabs defaultValue="details" className="flex flex-col w-full  mx-auto">
+            <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
+                <TabsTrigger
+                    value="details"
+                    className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                >
+                    Company Details
                 </TabsTrigger>
-                <TabsTrigger value="service-agreement" className="px-4 py-2">
-                    Service Agreement Details
+                <TabsTrigger
+                    value="service-agreement"
+                    className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                >
+                    Record of Documents
+                </TabsTrigger>
+                {user.role !== 'user' && (
+                    <TabsTrigger
+                        value="Memos"
+                        className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                    >
+                        Memo
+                    </TabsTrigger>
+                )}
+                {user.role !== 'user' && (
+                    <TabsTrigger
+                        value="Projects"
+                        className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                    >
+                        Project
+                    </TabsTrigger>
+                )}
+                <TabsTrigger
+                    value="Checklist"
+                    className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                >
+                    Checklist
                 </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="details">
-                <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
-                    <h1 className="text-2xl font-bold mb-6">Company Details</h1>
+            <TabsContent value="details" className="p-6">
+                <div className="space-y-4">
+                    {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
+                    {user.role !== 'user' && <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />}
+                    <div className='flex gap-x-8'>
+                        {user.role !== 'user' && <AssignAdmin />}
+                        <Button onClick={() => navigate(`/company-documents/${company.country.code}/${company._id}`)} size="sm" className="flex items-center gap-2">
+                            Company Docs
+                        </Button>
+                    </div>
                     {sections.map((section) => (
-                        <Card key={section.title} className="mb-6">
-                            <CardHeader>
-                                <CardTitle>{section.title}</CardTitle>
+                        <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
+                            <CardHeader className="bg-muted/50 py-4">
+                                <CardTitle className="text-lg font-medium">{section.title}</CardTitle>
                             </CardHeader>
-                            <CardContent>
+
+                            <CardContent className="p-0">
                                 <Table>
                                     <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="w-1/3">Field</TableHead>
-                                            <TableHead className="w-1/3">Value</TableHead>
-                                            <TableHead className="w-1/5">Action</TableHead>
+                                        <TableRow className="border-b hover:bg-muted/30">
+                                            <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Field</TableHead>
+                                            <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Value</TableHead>
+                                            {user.role !== 'user' && <TableHead className="w-1/5 py-3 px-4 text-sm font-medium">Action</TableHead>}
                                         </TableRow>
                                     </TableHeader>
+
                                     <TableBody>
                                         {Object.entries(section.data).map(([key, value]) => {
                                             if (key == "Incorporation Date")
-                                                return <TableRow key={key}>
-                                                    <IncorporationDateFrag />;
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30">
+                                                    <IncorporationDateFrag />
                                                 </TableRow>
                                             if (key == "Incorporation Status")
-                                                return <TableRow key={key}><CompanyIncorpoStatus />;</TableRow>
-                                            if (key == "Receipt") return <TableRow key={key}><ReceietPaymentFrag /></TableRow>;
-                                            if (key == 'AML/CDD Edit') return <TableRow key={key}><AMLCDDEdit /></TableRow>
-                                            if (key == 'Payment Status') return <TableRow key={key}><PaymentStatus /></TableRow>
-                                            if (key == 'Payment Expire Date') return <TableRow key={key}><ExtendPaymentTimer /></TableRow>
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><CompanyIncorpoStatus /></TableRow>
+                                            if (key == "Receipt")
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><ReceietPaymentFrag /></TableRow>
+                                            if (key == 'AML/CDD Edit' && user.role !== 'user')
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><AMLCDDEdit /></TableRow>
+                                            if (key == 'Payment Status')
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><PaymentStatus /></TableRow>
+                                            if (key == 'Payment Expire Date')
+                                                return <TableRow key={key} className="border-b hover:bg-muted/30"><ExtendPaymentTimer /></TableRow>
+
                                             return (
-                                                <TableRow key={key}>
-                                                    <TableCell className="font-medium">{key}</TableCell>
-                                                    <TableCell>{value as string}</TableCell>
+                                                <TableRow key={key} className="border-b hover:bg-muted/30">
+                                                    <TableCell className="py-3 px-4 font-medium">{key}</TableCell>
+                                                    <TableCell className="py-3 px-4">{value as string}</TableCell>
+                                                    <TableCell></TableCell>
                                                 </TableRow>
                                             );
                                         })}
                                     </TableBody>
                                 </Table>
-                                {section.title === "Status Information" && (
-                                    <div className="flex items-center gap-4 mt-4">
-                                        <span className="text-sm font-medium text-gray-600">
+
+                                {section.title === "Status Information" && user.role !== 'user' && (
+                                    <div className="flex items-center gap-4 p-4 bg-muted/50 border-t">
+                                        <span className="text-sm font-medium">
                                             Click here to Save the Data
                                         </span>
                                         <Button
                                             onClick={handleUpdate}
                                             className="px-4 py-2 text-sm"
                                         >
-                                            Click
+                                            Save
                                         </Button>
                                     </div>
                                 )}
@@ -630,12 +769,26 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 </div>
             </TabsContent>
 
-            <TabsContent value="service-agreement">
-                <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
-                    <h1 className="text-2xl font-bold mb-6">Service Agreement Details</h1>
+            <TabsContent value="service-agreement" className="p-6">
+                <div className="space-y-6">
+                    <h1 className="text-2xl font-bold">Service Agreement Details</h1>
                     {id && <SAgrementPdf id={id} />}
                 </div>
             </TabsContent>
+            <TabsContent value="Memos" className="p-6">
+                <div className="space-y-6">
+                    <MemoApp id={id} />
+                </div>
+            </TabsContent>
+            <TabsContent value="Projects" className="p-6">
+                <div className="space-y-6">
+                    <AdminProject id={id} />
+                </div>
+            </TabsContent>
+            <TabsContent value="Checklist" className="p-6">
+                <ChecklistHistory id={id} items={[hkIncorporationItems, hkRenewalList]} />
+            </TabsContent>
+            <DetailShdHk isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />
         </Tabs>
     )
 }

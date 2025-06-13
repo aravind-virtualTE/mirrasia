@@ -9,11 +9,14 @@ import { PaymentConditions } from "../../payment/PaymentConditions";
 import { PaymentMethods } from "./payment/UsPaymentMethods";
 import { useAtom } from "jotai";
 import { usaFormWithResetAtom, usaPriceAtom } from "../UsState";
+import { useTranslation } from "react-i18next";
 
 
 // const list = ['Card payment (Additional charge of 3.5% card processing fee)', 'Telegraphic transfer']
 
 const PaymentInformation: React.FC = () => {
+      const { t } = useTranslation();
+  
     const [sessionId, setSessionId] = useState<PaymentSession['id']>('');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -89,7 +92,7 @@ const PaymentInformation: React.FC = () => {
         <div className="max-w-4xl mx-auto p-6 space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-primary">Payment Information</CardTitle>
+                    <CardTitle className="text-2xl font-bold text-primary">{t('payment.pInfo')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <PaymentUSATimer sessionId={sessionId} />

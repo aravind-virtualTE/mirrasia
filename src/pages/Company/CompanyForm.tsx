@@ -1,49 +1,53 @@
 import { useEffect, } from 'react';
 import { useParams } from "react-router-dom";
 import { useAtom, useSetAtom } from 'jotai';
-import { countryAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
+import { applicantInfoFormAtom, countryAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
 import { companyIncorporationList } from '@/services/state';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import IncorporationForm from './HongKong/IncorporationForm';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
-import { getIncorporationListByCompId, getIncorporationListByUserId, getUsIncorpoDataById } from '@/services/dataFetch';
+import { getIncorporationListByCompId, getIncorporationListByUserId, getUsIncorpoDataById,getPaIncorpoDataById } from '@/services/dataFetch';
 import IncorporateUSACompany from './USA/IncorporateUSCompany';
 import { Card, CardContent } from '@/components/ui/card';
 import { usaFormWithResetAtom } from './USA/UsState';
-
+import { useTranslation } from "react-i18next";
+import IncorporateSg from './Singapore/IncorporateSg';
+import IncorporatePa from './Panama/PaIncorporation';
+import { paFormWithResetAtom } from './Panama/PaState';
 const CompanyRegistration = () => {
+    const { t } = useTranslation();
     const [countryState, setCountryState] = useAtom(countryAtom);
-    const [companies, setCompaniesList] = useAtom(companyIncorporationList);
+    const [, setCompaniesList] = useAtom(companyIncorporationList);
     const { countryCode, id } = useParams();
     const token = localStorage.getItem('token') as string;
     const decodedToken = jwtDecode<TokenData>(token);
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
-    const [ formData,setFormData] = useAtom(usaFormWithResetAtom);
+    const [ ,setFormData] = useAtom(usaFormWithResetAtom);
+    const [ ,setPAFormData] = useAtom(paFormWithResetAtom);
+    const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
     useEffect(() => {
-        // console.log("companies",companies)
-        // console.log("id-->", id, "countryCode-->", countryCode);
         if (id && countryCode == "HK") {
-            async function fetchData() {
-                const result = await getIncorporationListByUserId(`${decodedToken.userId}`);
-                return result;
-            }
-            fetchData().then((result) => {
-                // console.log("result--->",result)
-                setCompaniesList(result.companies);
-                const company = companies.find(c => c._id === id);
+       
+            if (!id || !decodedToken?.userId) return;
+            (async () => {
+                // Fetch all companies
+                const result = await getIncorporationListByUserId(`${decodedToken.userId}`, `${decodedToken.role}`);
+                setCompaniesList(result.companies.mergedList);
+                // Find the current company from fetched list
+                const company = result.companies.mergedList.find((c: { _id: string; }) => c._id === id);
                 const cntry = company?.country as Record<string, string | undefined>;
                 if (company) setCountryState(cntry);
-            });
-
-            async function fetchCompData() {
-                const result = await getIncorporationListByCompId(`${id}`);
-                return result;
-            }
-            fetchCompData().then((result) => {
-                // console.log("result-->", result);
-                updateCompanyData(result[0]);
-            });
+                // Fetch and update incorporation details for this specific company
+                const compData = await getIncorporationListByCompId(`${id}`);
+                if (compData && compData.length > 0) {
+                    setApplicantHkInfoData(compData[0].applicantInfoForm);
+                    updateCompanyData(compData[0]);
+                  console.log("resultIncorporation--->", compData);
+                } else {
+                  console.warn("No incorporation data found for id:", id);
+                }
+              })();
         }
         else if(id && countryCode == "US") {
 
@@ -58,13 +62,31 @@ const CompanyRegistration = () => {
                 code: 'US', name: 'United States'
              });
         }
+        else if(id && countryCode == "PA") {
+
+            async function getPAData(){
+                return await getPaIncorpoDataById(`${id}`)
+            }
+            getPAData().then((result) => {
+                // console.log("result-->", result);
+                setPAFormData(result)
+            })
+            setCountryState({code: 'PA', name: 'Panama'});
+        }
+        else if (id && countryCode == "SG") {
+            setCountryState({
+                code: 'SG', name: 'Singapore'
+             });
+        }
     }, []);
 
     const countries = [
-        { code: 'HK', name: 'Hong Kong' },
-        { code: 'SG', name: 'Singapore' },
-        { code: 'US', name: 'United States' },
-        { code: 'UK', name: 'United Kingdom' },
+        { code: 'HK', name: t('countrySelection.hk')} ,
+        { code: 'SG', name: t('countrySelection.sg') },
+        { code: 'US', name: t('countrySelection.us') },
+        { code: 'UK', name: t('countrySelection.uk') },
+        { code: 'PA', name: t('countrySelection.pa') },
+        { code: 'PAFN', name: t('countrySelection.pafn') },
         // Add more countries as needed
     ];
 
@@ -75,12 +97,6 @@ const CompanyRegistration = () => {
                 code: selectedCountry.code,
                 name: selectedCountry.name
             });
-        }
-        else if (countryCode == "US") {
-            setCountryState({
-               code: 'US', name: 'United States'
-            });
-            setFormData({...formData, country : { code: 'US', name: 'United States' }});
         }
     };
 
@@ -93,7 +109,9 @@ const CompanyRegistration = () => {
             case 'US':
                 return <IncorporateUSACompany />;
             case 'SG':
-                return <div>Registration form for {countryState.name} is not available yet.</div>;
+                return <IncorporateSg />;
+            case 'PA':
+                return <IncorporatePa />;
             default:
                 return <div>Registration form for {countryState.name} is not available yet.</div>;
         }
@@ -115,7 +133,7 @@ const CompanyRegistration = () => {
                     <Card className="relative z-10 w-[420px] bg-white/90 shadow-xl ">
                         <CardContent className="p-6 space-y-4">
                             <h2 className="text-2xl font-bold text-slate-950 text-center">
-                                Select Country for Registration
+                               {t('countrySelection.title')}
                             </h2>
 
                             <Select onValueChange={(value) => updateCountry(value)}>

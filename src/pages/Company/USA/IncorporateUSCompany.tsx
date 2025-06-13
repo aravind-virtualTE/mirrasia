@@ -2,10 +2,8 @@ import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import ApplicantInformation from "./Components/ApplicantInformation"
 import CompanyInformationUS from "./Components/CompanyInformationUS"
-import Section4 from "./Components/Section4"
-import Section6 from "./Components/Section6"
+import UsServiceSelection from "./Components/UsServiceSelection"
 import AmlCddUS from "./Components/AmlCddUS"
-import Section14 from "./Components/Section14"
 import PaymentInformation from "./Components/Section15"
 // import FormSections from "./Components/Section16"
 import { Button } from "@/components/ui/button";
@@ -19,23 +17,32 @@ import api from "@/services/fetch"
 import { toast } from '@/hooks/use-toast';
 import FinalSection from "./Components/finalSection"
 import InvoiceUs from "./Components/InvoiceUs"
+import ServiceAgreement from "./Components/ServiceAgreement"
+import RegistrationDetails from "./Components/RegistrationDetails"
+import { paymentApi } from "@/lib/api/payment"
+import { useTranslation } from "react-i18next"
 
 const IncorporateUSACompany = () => {
+    const { t } = useTranslation();
     const [currentSection, setCurrentSection] = useState(1);
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const token = localStorage.getItem("token") as string;
     const decodedToken = jwtDecode<TokenData>(token);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const steps = [
-        { number: 1, label: "Applicant information", active: currentSection === 1 },
-        { number: 2, label: "Aml Cdd", active: currentSection === 2 },
-        { number: 3, label: "Company Information", active: currentSection === 3 },
-        { number: 4, label: "Registration Details", active: currentSection === 4 },
-        { number: 5, label: "Service Selection", active: currentSection === 5 },
-        { number: 6, label: "Invoice", active: currentSection === 6 },
-        { number: 7, label: "Consent", active: currentSection === 7 },
-        { number: 8, label: "Payment", active: currentSection === 8 },
-        { number: 9, label: "Incorporation", active: currentSection === 9 },
+        {
+            number: 1,
+            label: t('usa.steps.step1'),
+            active: currentSection === 1,
+        },
+        { number: 2, label: t('usa.steps.step2'), active: currentSection === 2 },
+        { number: 3, label: t('usa.steps.step3'), active: currentSection === 3 },
+        { number: 4, label: t('usa.steps.step4'), active: currentSection === 4 },
+        { number: 5, label: t('usa.steps.step5'), active: currentSection === 5 },
+        { number: 6, label: t('usa.steps.step6'), active: currentSection === 6 },
+        { number: 7, label: t('usa.steps.step7'), active: currentSection === 7 },
+        { number: 8, label: t('usa.steps.step8'), active: currentSection === 8 },
+        { number: 9, label: t('usa.steps.step9'), active: currentSection === 9 },
     ];
 
     const updateDoc = async () => {
@@ -45,12 +52,14 @@ const IncorporateUSACompany = () => {
         setIsSubmitting(true);
         // const docId = localStorage.getItem("companyRecordId");
         formData.userId = `${decodedToken.userId}`
-        const payload = {  ...formData };
+        const payload = { ...formData };
         // console.log("formdata", formData)
         try {
-            const response = await api.post("/company/usa-form",payload);
+            const response = await api.post("/company/usa-form", payload);
             if (response.status === 200) {
                 // console.log("formdata", response.data);
+                localStorage.setItem("companyRecordId", response.data.data._id);
+                setFormData(response.data.data)
                 window.history.pushState(
                     {},
                     "",
@@ -67,9 +76,9 @@ const IncorporateUSACompany = () => {
     }
     const nextSection = async () => {
         switch (currentSection) {
-            case 1:{
+            case 1: {
                 const errors = [];
-                if (!formData.name || formData.name.trim() === "" ) {
+                if (!formData.name || formData.name.trim() === "") {
                     errors.push("Invalid name format or empty name.");
                 }
                 const email = formData.email
@@ -107,7 +116,16 @@ const IncorporateUSACompany = () => {
                     const involved = formData.involvedInRussianEnergyDefense
                     const legalInfo = formData.hasLegalEthicalIssues
                     const annualRenew = formData.annualRenewalTermsAgreement
-                    if (rcActivity == 'no' && rcSanctions == 'no' && bsnsCremia == 'no' && involved == 'no' && legalInfo == 'no' && annualRenew == 'no') {
+                    const values = [rcActivity, rcSanctions, bsnsCremia, involved, legalInfo, annualRenew];
+                    // console.log("values", values)
+                    if (values.some(value => value.value === "")) {
+                        toast({
+                          title: "Incomplete Information",
+                          description: "Please complete all fields before proceeding.",
+                        });
+                        return;
+                      }
+                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && annualRenew.id == 'no') {
                         await updateDoc();
                         setCurrentSection(prev => prev + 1);
                         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -120,13 +138,100 @@ const IncorporateUSACompany = () => {
                     }
                     break;
                 }
+            case 3:
+                {
+                    const emptyNameShareholders = formData.shareHolders.filter(
+                        (shareholder) => !shareholder.name.trim()
+                    );
+                    const state = formData.selectedState
+                    const entity = formData.selectedEntity
+                    const dContact = formData.designatedContact
+                    const industryList = formData.selectedIndustry.length
+                    const descriptionOfProducts = formData.descriptionOfProducts
+                    const descriptionOfBusiness = formData.descriptionOfBusiness
+                    const purpose = formData.purposeOfEstablishmentCompany.length
+                    // const total = emptyNameShareholders.reduce((sum, shareholder) => sum + shareholder.ownershipRate, 0);
+                    // console.log("total",total)
+                    // if(total < 100){
+                    //     toast({
+                    //         title: "Shareholder Count mismatch",
+                    //         description: "Shareholder count should match 100%",
+                    //     });
+                    //     return
+                    // }
+                    
+                    // console.log("industryList",descriptionOfProducts)
+                    if(industryList == 0 || descriptionOfProducts == "" || descriptionOfBusiness == "" || purpose ==0){
+                        toast({
+                            title: "Select the Industry / fill required inputs",
+                            description: "Select the required industry, fill required details",
+                        });
+                        return
+                    }
+                    if (emptyNameShareholders.length > 0 || state == "" || entity== "" || dContact == '') {
+                        toast({
+                            title: "Fill Details (Shareholder(s) / Director(s)), State, designated Contact",
+                            description: "Fill the required fields Shareholder(s) / Director(s)",
+                        });
+                    } else {
+                        await updateDoc();
+                        setCurrentSection(currentSection + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    }                    
+                    break;
+                }
+            case 4:
+                if (formData.serviceAgreementConsent == false) {
+                    toast({
+                        title: "Service Agreement.",
+                        description:
+                            "Please accept the service agreement to proceed.",
+                    });
+                } else {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+                break;
             // case 13:
             //     break;
+            case 7: {
+                const session = await paymentApi.getSession(formData.sessionId)
+                            // console.log("session--->", session)
+                if(session.status === 'completed'){
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }else{
+                    toast({
+                        title: "Payment Pending",
+                        description: "Please complete the payment to proceed",
+                    });
+                }
+                break;
+            }
+            case 8: {            
+                const values = [formData.companyExecutives, formData.localCompanyRegistration, formData.totalCapital, formData.noOfSharesSelected]
+
+                if (values.some(value => value === "")) {
+                    toast({
+                        title: "Please Fill Incorporation Data.",
+                        description:
+                            "Please Fill Incorporation data.",
+                    });
+                } else {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+                break;
+            }
             default:
-                if (currentSection! <= 14) {
+                if (currentSection! <= 9) {
                     await updateDoc();
                     setCurrentSection(prev => prev + 1);
                     window.scrollTo({ top: 0, behavior: "smooth" });
+                    break;
                 } else {
                     console.log("end of the form")
                 }
@@ -139,7 +244,7 @@ const IncorporateUSACompany = () => {
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
-
+    // console.log("currentSection",currentSection)
     return (
         <div className="flex flex-col md:flex-row h-screen">
             {/* Main Content */}
@@ -170,11 +275,11 @@ const IncorporateUSACompany = () => {
                             {currentSection === 1 && <ApplicantInformation />}
                             {currentSection === 2 && <AmlCddUS />}
                             {currentSection === 3 && <CompanyInformationUS />}
-                            {currentSection === 4 && <Section4 />}
-                            {currentSection === 5 && <Section6 />}
+                            {currentSection === 4 && <ServiceAgreement />}
+                            {currentSection === 5 && <UsServiceSelection />}
                             {currentSection === 6 && <InvoiceUs />}
-                            {currentSection === 7 && <Section14 />}
-                            {currentSection === 8 && <PaymentInformation />}
+                            {currentSection === 7 && <PaymentInformation />}
+                            {currentSection === 8 && <RegistrationDetails />}
                             {currentSection === 9 && <FinalSection />}
                         </motion.div>
                     </AnimatePresence>
@@ -182,7 +287,7 @@ const IncorporateUSACompany = () => {
 
                 {/* Navigation buttons - Sticky positioning */}
                 <div className="sticky bottom-0 bg-background border-t p-1 mt-auto"> {/* Sticky positioning */}
-                    <div className="flex justify-between">
+                    {currentSection !== 9 && <div className="flex justify-between">
                         <Button
                             variant="outline"
                             onClick={previousSection}
@@ -197,7 +302,7 @@ const IncorporateUSACompany = () => {
                         >
                             <span>{currentSection === 16 ? "SUBMIT" : "NEXT →"}</span>
                         </Button>
-                    </div>
+                    </div>}
                 </div>
             </div>
 

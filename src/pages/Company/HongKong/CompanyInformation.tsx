@@ -53,7 +53,7 @@ const CompanyInformation: React.FC = () => {
 
 
     const handleCurrencySelect = (item: { code: string; label: string }) => {
-        console.log("Selected currency:", item);
+        // console.log("Selected currency:", item);
         setSelectedValue(item);
         setBusinessInfo((prev) => ({ ...prev, business_industry: item.label }));
     };

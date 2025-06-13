@@ -52,7 +52,6 @@ const AmlCdd: React.FC = () => {
   const { id } = useParams();
   
   useEffect(() => {
-    console.log("cList",cList)
     if (id) {
       const company = cList.find((c) => c._id === id);
       //   console.log('company',company, '\n formData', businessInfoHkCompany);
@@ -139,7 +138,13 @@ const AmlCdd: React.FC = () => {
           setCompIncList([...cList, response.data.data]);
         }
         toast({ description: t("AmlCdd.success_message") });
-        navigate("/dashboard");
+          const user = JSON.parse(localStorage.getItem("user") || "null");
+        const currentUser = user ? { role: user.role } : { role: "" };
+        if (currentUser.role === "admin" || currentUser.role === "master") {
+          navigate("/admin-dashboard");
+        }else{
+          navigate("/dashboard");
+        }
         setDialogOpen(false);
       } else {
         // Handle errors, e.g., display error message to the user

@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { atom } from 'jotai';
-import { Option } from "@/components/MultiSelectInput";
 export interface UsaFormData {
   _id: string;
   email: string;
@@ -10,22 +10,21 @@ export interface UsaFormData {
   name: string;
   establishedRelationshipType: string[];
   phoneNum: string;
-  snsAccountId: {
-    value: string
-    id: string
-  };
+  snsAccountId: {  value: string,  id: string };
   serviceItemsSelected: string[];
-  hasLegalEthicalIssues: string | undefined;
-  annualRenewalTermsAgreement: string | undefined;
-  restrictedCountriesWithActivity: string;
-  sanctionedTiesPresent: string;
-  businessInCrimea: string;
-  involvedInRussianEnergyDefense: string;
-  selectedIndustry: Option[];
+  hasLegalEthicalIssues: { id: string,  value: string };
+  annualRenewalTermsAgreement:{ id: string,  value: string };
+  restrictedCountriesWithActivity: { id: string,  value: string };
+  sanctionedTiesPresent: { id: string,  value: string };
+  businessInCrimea: { id: string,  value: string };
+  involvedInRussianEnergyDefense: { id: string,  value: string };
+  selectedIndustry: string[];
+  otherIndustryText: string;
   descriptionOfProducts: string;
   descriptionOfBusiness: string;
   webAddress: string;
-  purposeOfEstablishmentCompany: Option[];
+  purposeOfEstablishmentCompany: string[];
+  otherCompanyPurposeText: string;
   companyName: string[];
   totalCapital: string | number;
   companyExecutives: string | number;
@@ -34,12 +33,19 @@ export interface UsaFormData {
   noOfShareholders: string;
   noOfOfficers: string;
   shareHolders: {
+    [x: string]: any;
     name: string;
     email: string;
     phone: string;
     ownershipRate: number;
-    isDirector: string
-    isLegalPerson: string
+    isDirector: {
+      value: string,
+      id: string
+    }
+    isLegalPerson: {
+      value: string,
+      id: string
+    }
   }[];
   designatedContact: string | number;
   accountingDataAddress: string;
@@ -58,6 +64,9 @@ export interface UsaFormData {
   paymentId: string
   status: string
   incorporationDate: string
+  serviceAgreementConsent: boolean
+  assignedTo: string
+  isDeleted : boolean
 }
 
 const initialFormState: UsaFormData = {
@@ -70,26 +79,25 @@ const initialFormState: UsaFormData = {
   name: '',
   establishedRelationshipType: [],
   phoneNum: '',
-  country: {
-    code: undefined,
-    name: undefined,
-  },
+  country:{ code: 'US', name: 'United States' },
   snsAccountId:{
     value: '',
     id: ''
   },
   serviceItemsSelected: [],
-  hasLegalEthicalIssues: "",
-  annualRenewalTermsAgreement: "",
-  restrictedCountriesWithActivity: '',
-  sanctionedTiesPresent: '',
-  businessInCrimea: '',
-  involvedInRussianEnergyDefense: '',
+  hasLegalEthicalIssues: { id: '', value: '' },
+  annualRenewalTermsAgreement: { id: '', value: '' },
+  restrictedCountriesWithActivity: { id: '', value: '' },
+  sanctionedTiesPresent: { id: '', value: '' },
+  businessInCrimea: { id: '', value: '' },
+  involvedInRussianEnergyDefense: { id: '', value: '' },
   selectedIndustry: [],
+  otherIndustryText:"",
   descriptionOfProducts: '',
   descriptionOfBusiness: '',
   webAddress: '',
   purposeOfEstablishmentCompany: [],
+  otherCompanyPurposeText: "",
   companyName: ['', '', ''],
   totalCapital: '',
   companyExecutives: '',
@@ -109,8 +117,11 @@ const initialFormState: UsaFormData = {
   receiptUrl : "",
   sessionId: '',
   paymentId: '',
-  status: "pending",
+  status: "Pending",
   incorporationDate:"",
+  serviceAgreementConsent:false,
+  assignedTo : "",
+  isDeleted : false
 };
 
 // Create the base atom

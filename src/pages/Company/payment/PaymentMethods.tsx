@@ -12,6 +12,7 @@ import { ReceiptUpload } from "./RecieptUpload";
 import { BankTransferMethod } from "./methods/BankTransferMethod";
 import { useEffect, useRef, useState } from "react";
 import { paymentApi } from "@/lib/api/payment";
+import { useTranslation } from "react-i18next";
 
 interface PaymentMethodProps {
   sessionId: string;
@@ -66,6 +67,8 @@ const PaymentMethodCard = ({
 export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) { 
    const [clientSecret, setClientSecret] = useState("")
   const hasFetchedRef = useRef(false); 
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (hasFetchedRef.current) return; 
     const fetchClientSecret = async () => {
@@ -83,12 +86,12 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
 
   return (
     <div className="space-y-4">
-      <h3 className="font-semibold text-lg">Payment Methods</h3>
+      <h3 className="font-semibold text-lg">{t('payment.pMethods')}</h3>
       <div className="grid gap-4 md:grid-cols-2">
           <PaymentMethodCard
             icon={CreditCard}
-            title="Card Payment"
-            description={`Stripe Payments (3.5% Processing Fee) ${Math.ceil(amount *1.035)}`}
+            title={t('payment.cardPayment')}
+            description={`${t('payment.cardDesc')} ${Math.ceil(amount *1.035)}`}
             method="card"
             sessionId={sessionId}
             clientSecret={clientSecret}
@@ -96,8 +99,8 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
           />        
         <PaymentMethodCard
           icon={Building2}
-          title="Bank Transfer"
-          description="Direct bank transfer with receipt upload"
+          title={t('payment.bankTransfer')}
+          description={t('payment.bankDesc')}
           method="bank"
           sessionId={sessionId}
           clientSecret={clientSecret}
@@ -105,8 +108,8 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
         />
         <PaymentMethodCard
           icon={Smartphone}
-          title="Fast Payment System (FPS)"
-          description="Direct bank transfer via FPS"
+          title={t('payment.fps')}
+          description={t('payment.fpsDesc')}
           method="fps"
           sessionId={sessionId}
           clientSecret={clientSecret}
@@ -114,8 +117,8 @@ export function PaymentMethods({ sessionId ,amount}: PaymentMethodProps) {
         />
         <PaymentMethodCard
           icon={CircleDollarSign}
-          title="Other Method"
-          description="Other(Cash Payment) with receipt upload"
+          title={t('payment.other')}
+          description={t('payment.otherDesc')}
           method="other"
           sessionId={sessionId}
           clientSecret={clientSecret}

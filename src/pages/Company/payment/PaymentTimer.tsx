@@ -86,6 +86,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAtom } from "jotai";
 import { companyIncorporationAtom } from "@/lib/atom";
+import { useTranslation } from "react-i18next";
 
 interface PaymentTimerProps {
   sessionId: string;
@@ -95,6 +96,7 @@ export function PaymentTimer({ sessionId }: PaymentTimerProps) {
   const { timeLeft, status } = usePaymentSession(sessionId);
   const [showSupportDialog, setShowSupportDialog] = useState(false);
   const [formData] = useAtom(companyIncorporationAtom);
+  const { t } = useTranslation();
   const formatTime = (ms: number) => {
     const hours = Math.floor(ms / (1000 * 60 * 60));
     const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
@@ -118,14 +120,14 @@ export function PaymentTimer({ sessionId }: PaymentTimerProps) {
               <div className="flex items-center space-x-4">
                 <AlertTriangle className="h-6 w-6 text-destructive" />
                 <div>
-                  <p className="font-medium text-destructive">Payment Session Expired</p>
+                  <p className="font-medium text-destructive">{t('payment.psExpired')}</p>
                   <p className="text-sm text-destructive/80">
-                    Please contact support to create a new payment session
+                    {t('payment.psExpiredDesc')}
                   </p>
                 </div>
               </div>
               <Button variant="destructive" onClick={() => setShowSupportDialog(true)}>
-                Contact Support
+              {t('payment.psContactSupport')}
               </Button>
             </div>
           </CardContent>
@@ -137,8 +139,8 @@ export function PaymentTimer({ sessionId }: PaymentTimerProps) {
           <CardContent className="p-4 flex items-center space-x-4">
             <Timer className="h-6 w-6 text-green-600" />
             <div>
-              <p className="font-medium text-green-600">Payment Completed</p>
-              <p className="text-sm text-green-500">Thank you for your payment!</p>
+              <p className="font-medium text-green-600">{t('payment.pCompleted')}</p>
+              <p className="text-sm text-green-500">{t('payment.pMessage')}</p>
             </div>
           </CardContent>
         </Card>
@@ -149,9 +151,9 @@ export function PaymentTimer({ sessionId }: PaymentTimerProps) {
           <CardContent className="p-4 flex items-center space-x-4">
             <Timer className="h-6 w-6 text-primary" />
             <div>
-              <p className="font-medium">Receipt Under Evaluation</p>
+              <p className="font-medium">{t('payment.receiptEval')}</p>
               <Button variant="destructive" onClick={() => setShowSupportDialog(true)}>
-                Contact Support
+                {t('payment.psContactSupport')}
               </Button>
             </div>
           </CardContent>
@@ -163,9 +165,9 @@ export function PaymentTimer({ sessionId }: PaymentTimerProps) {
           <CardContent className="p-4 flex items-center space-x-4">
             <Timer className="h-6 w-6 text-primary" />
             <div>
-              <p className="font-medium">Payment Timer</p>
+              <p className="font-medium">{t('payment.pTimer')}</p>
               <p className="text-sm text-muted-foreground">
-                Time remaining: {time.hours}:{time.minutes}:{time.seconds}
+              {t('payment.pRemaining')}: {time.hours}:{time.minutes}:{time.seconds}
               </p>
             </div>
           </CardContent>
@@ -175,24 +177,32 @@ export function PaymentTimer({ sessionId }: PaymentTimerProps) {
       <Dialog open={showSupportDialog} onOpenChange={setShowSupportDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Need Help? Contact Our Support Team!</DialogTitle>
+            <DialogTitle>{t('payment.pContactSupport')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">
-              Are you experiencing issues with the incorporation procedures on our website?
-              Our dedicated Help Center staff is here to assist you!
+              {t('payment.pContactDesc')}
             </p>
             <div className="space-y-1 text-sm">
-              <p><strong>Email:</strong> cs@mirrasia.com</p>
-              <p><strong>Phone:</strong> (Hong Kong) +852-2187-2428 | (Korea) +82-2-543-6187</p>
-              <p><strong>Kakao Talk:</strong> mirrasia</p>
-              <p><strong>WeChat:</strong> mirrasia_hk</p>
-              <p><strong>Kakao Channel:</strong> <a href="https://pf.kakao.com/_KxmnZT" className="text-primary underline" target="_blank" rel="noopener noreferrer">Click Here</a></p>
-              <p><strong>Website:</strong> <a href="https://www.mirrasia.com" className="text-primary underline" target="_blank" rel="noopener noreferrer">www.mirrasia.com</a></p>
+            <p><strong>{t('ApplicantInfoForm.email')}:</strong> cs@mirrasia.com</p>
+                <p><strong>{t('ApplicantInfoForm.phoneNum')}:</strong> (HK) +852-2187-2428 | (KR) +82-2-543-6187</p>
+                <p><strong>{t('dashboard.kakaoT')}:</strong> mirrasia</p>
+                <p><strong>{t('dashboard.wechat')}:</strong> mirrasia_hk</p>
+                <p>
+                  <strong>{t('dashboard.kakaChannel')}:</strong>{" "}
+                  <a href="https://pf.kakao.com/_KxmnZT" className="text-primary underline" target="_blank" rel="noopener noreferrer">
+                  {t('dashboard.clickHere')}
+                  </a>
+                </p>
+                <p>
+                  <strong>{t('dashboard.Website')}:</strong>{" "}
+                  <a href="https://www.mirrasia.com" className="text-primary underline" target="_blank" rel="noopener noreferrer">
+                    www.mirrasia.com
+                  </a>
+                </p>
             </div>
             <p className="text-sm text-muted-foreground">
-              Our team is on hand during our opening hours to ensure that you have a smooth and enjoyable experience.
-              Don't hesitate to reach out with any questions or concerns. We're here to help!
+            {t('payment.pDescription')}
             </p>
           </div>
         </DialogContent>

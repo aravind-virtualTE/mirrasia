@@ -66,15 +66,52 @@
     // }
   };
   
+  // export const service_list = [
+  //   "Other EMI(Digital Bank) account opening arrangement",
+  //   "US company formation + Company maintenance until the renewal date or anniversary date of its incorporation (standard service)",
+  //   "Airwallex Account opening arrangement",
+  //   "Payoneer Account opening arrangement",
+  //   "Bank account opening application and advice (separate quotation after review of business documents)",
+  //   "US legal opinion (separate quote after review of white paper)",
+  //   "Legal opinion for listing on domestic stock exchanges (separate quote after review of white paper)",
+  //   "Consulting services such as business regulatory confirmation, feasibility review, document preparation and operational advice (separate quotation)"
+  // ];
   export const service_list = [
-    "US company formation + Company maintenance until the renewal date or anniversary date of its incorporation (standard service)",
-    // "EMI (Electronic Money Institution) list provided (free to customers who use Mirr Asia's service)",
-    // "EMI (Electronic Money Institution) account opening application and advice (separate quote after review of business documents)",
-    "Bank account opening application and advice (separate quotation after review of business documents)",
-    "US legal opinion (separate quote after review of white paper)",
-    "Legal opinion for listing on domestic stock exchanges (separate quote after review of white paper)",
-    "Consulting services such as business regulatory confirmation, feasibility review, document preparation and operational advice (separate quotation)"
+    {
+      id: "otherEmi",
+      key: "usa.serviceSelection.otherEmi",
+      price: 400,
+    },
+    {
+      id: "usCompanyFormation",
+      key: "usa.serviceSelection.usCompanyFormation",
+    },
+    {
+      id: "airwallex",
+      key: "usa.serviceSelection.airwallex",
+    },
+    {
+      id: "payoneer",
+      key: "usa.serviceSelection.payoneer",
+    },
+    {
+      id: "bankAdvice",
+      key: "usa.serviceSelection.bankAdvice",
+    },
+    {
+      id: "usLegalOpinion",
+      key: "usa.serviceSelection.usLegalOpinion",
+    },
+    {
+      id: "stockLegalOpinion",
+      key: "usa.serviceSelection.stockLegalOpinion",
+    },
+    {
+      id: "consulting",
+      key: "usa.serviceSelection.consulting",
+    },
   ];
+
   
   export const entity_types = [
     'LLC (limited liability company)',
@@ -98,9 +135,9 @@
     if (typeof entityData === "number") {
       return { price: entityData, note: '' } ;
     } else if (entityData) {
-        console.log("entityData",entityData)
+        // console.log("entityData",entityData)
         if(entityType.includes("Corporation")) {
-            console.log("entered")
+            // console.log("entered")
             return entityData.note 
                 ? { price: entityData.total, note: entityData.note } 
                 : { price: entityData.total };

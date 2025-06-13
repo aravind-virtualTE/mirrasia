@@ -22,7 +22,7 @@ export const paymentApi = {
       id,
       country
     });
-    console.log('response--->', response)
+    // console.log('response--->', response)
     return response.data;
   },
 
@@ -63,12 +63,12 @@ export const paymentApi = {
     // console.log("responsePaymentIntent--->", response)
     return response.data;
   },
-  async updateFinalPaymentStatus(sessionId: string, paymentId: string, id: string, paymentIntent: PaymentIntent) {
+  async updateFinalPaymentStatus(sessionId: string, paymentId: string, id: string, paymentIntent: PaymentIntent, country:string) {
     const response = await api.put(`/payment/update-final-payment-status`, {
       paymentId,
       sessionId,
       id,
-      paymentIntent
+      paymentIntent,country
     });
     return response.data;
   },

@@ -30,8 +30,10 @@ import api from "@/services/fetch";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import { paymentApi } from '@/lib/api/payment';
+import { useTranslation } from "react-i18next";
 
 const IncorporationForm = () => {
+    const { t } = useTranslation();
     const { theme } = useTheme();
     const { toast } = useToast();
     const [currentSection, setCurrentSection] = useState(1);
@@ -51,18 +53,18 @@ const IncorporationForm = () => {
     const steps = [
         {
             number: 1,
-            label: "Applicant\ninformation",
+            label: t("compFormation.appInfo"),
             active: currentSection === 1,
         },
-        { number: 2, label: "AML\nCDD", active: currentSection === 2 },
-        { number: 3, label: "Company\ninformation", active: currentSection === 3 },
-        { number: 4, label: "Service Agreement", active: currentSection === 4 },
-        { number: 5, label: "Services to Select", active: currentSection === 5 },
-        { number: 6, label: "Invoice ", active: currentSection === 6 },
-        { number: 7, label: "Payment", active: currentSection === 7 },
+        { number: 2, label: t("compFormation.amlcd"), active: currentSection === 2 },
+        { number: 3, label: t("compFormation.compInfo"), active: currentSection === 3 },
+        { number: 4, label: t("compFormation.serviceAgrmt"), active: currentSection === 4 },
+        { number: 5, label: t("compFormation.serviceSelect"), active: currentSection === 5 },
+        { number: 6, label: t("compFormation.invoice"), active: currentSection === 6 },
+        { number: 7, label: t("compFormation.payment"), active: currentSection === 7 },
         {
             number: 8,
-            label: "Information For Incorporation",
+            label: t("compFormation.inforIncorpo"),
             active: currentSection === 8,
         },
         // {
@@ -70,7 +72,7 @@ const IncorporationForm = () => {
         //     label: "Signing Incorporation Documents",
         //     active: currentSection === 9,
         // },
-        { number: 9, label: "Incorporation", active: currentSection === 9 },
+        { number: 9, label: t("compFormation.incorpo"), active: currentSection === 9 },
     ];
 
     const addLimitedSuffixConcise = (items: string[]) => {
@@ -99,10 +101,11 @@ const IncorporationForm = () => {
                 if (response.status === 200) {
                     if (response.data && response.data.data._id) {
                         localStorage.setItem("companyRecordId", response.data.data._id);
+                        console.log("response.data.data", response.data.data);
                         updateCompanyData(response.data.data);
                         window.history.pushState(
-                            {}, 
-                            "", 
+                            {},
+                            "",
                             `/company-register/${response.data.data.country.code}/${response.data.data._id}`
                         );
                     }
@@ -159,13 +162,46 @@ const IncorporationForm = () => {
             }
         }
         else if (currentSection === 3) {
+            const businessPd = finalForm.companyBusinessInfo.business_product_description
+            const business_purpose = finalForm.companyBusinessInfo.business_purpose
+            const finYearEnd = finalForm.accountingTaxInfo.finYearEnd
+            const bookKeepCycle = finalForm.accountingTaxInfo.bookKeepCycle
+            const implementSoftware = finalForm.accountingTaxInfo.implementSoftware
+            const anySoftwareInUse = finalForm.accountingTaxInfo.anySoftwareInUse
             const emptyNameShareholders = shareHolderAtom.shareHolders.filter(
                 (shareholder) => !shareholder.name.trim()
             );
-            if (emptyNameShareholders.length > 0) {
+            if (businessPd == '' || business_purpose.length == 0) {
+                toast({
+                    title: "Fill Details.",
+                    description: "Fill the required fields Description, establishment Details",
+                });
+                return
+            }
+            if (emptyNameShareholders.length > 0 || shareHolderAtom.designatedContactPersonAtom == "") {
                 toast({
                     title: "Fill Details (Shareholder(s) / Director(s))",
                     description: "Fill the required fields Shareholder(s) / Director(s)",
+                });
+                return
+            }
+            else if (finYearEnd == '' || bookKeepCycle == undefined || implementSoftware == undefined || anySoftwareInUse == '') {
+                toast({
+                    title: "Fill Details.",
+                    description: "Fill the required fields in Accounting and taxation",
+                });
+                return
+            } else {
+                await updateDoc();
+                setCurrentSection(currentSection + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        }
+        else if (currentSection === 4) {
+            if (finalForm.serviceAgreementConsent == false || finalForm.serviceAgreementConsent == undefined) {
+                toast({
+                    title: "Consent Details",
+                    description: "Please consent to the service agreement",
                 });
             } else {
                 await updateDoc();
@@ -173,19 +209,7 @@ const IncorporationForm = () => {
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }
         }
-        else if (currentSection === 4){
-            if(finalForm.serviceAgreementConsent == false || finalForm.serviceAgreementConsent == undefined){
-                toast({
-                    title: "Consent Details",
-                    description: "Please consent to the service agreement",
-                });
-            }else{
-                await updateDoc();
-                setCurrentSection(currentSection + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-        }
-         else if (
+        else if (
             currentSection === 2 &&
             Object.values(businessInfoHkCompany).every((value) => value === "no")
         ) {
@@ -193,15 +217,15 @@ const IncorporationForm = () => {
             setCurrentSection(currentSection + 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
-        else if (currentSection === 7){
+        else if (currentSection === 7) {
             // console.log("form submission", finalForm);
             const session = await paymentApi.getSession(finalForm.sessionId)
             // console.log("session--->", session)
-            if(session.status === 'completed'){
+            if (session.status === 'completed') {
                 await updateDoc();
                 setCurrentSection(currentSection + 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
-            }else{
+            } else {
                 toast({
                     title: "Payment Pending",
                     description: "Please complete the payment to proceed",
@@ -261,15 +285,13 @@ const IncorporationForm = () => {
                                     className={`font-semibold mb-1 text-sm md:text-base ${theme === "light" ? "text-gray-800" : "text-gray-200"
                                         }`}
                                 >
-                                    Good to know
+                                    {t("ApplicantInfoForm.goodToKnow")}
                                 </h3>
                                 <p
                                     className={`text-xs ${theme === "light" ? "text-gray-600" : "text-gray-400"
                                         }`}
                                 >
-                                    Enter different variations of your company name in order of
-                                    preference. Mirr Asia will help you obtain final confirmation
-                                    prior to incorporation.
+                                    {t("ApplicantInfoForm.goodDesc")}
                                 </p>
                             </div>
                         </CardContent>

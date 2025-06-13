@@ -1,0 +1,154 @@
+export const roleMap = [
+    { key: "maj", value: "shldrOptions.roleMaj" },
+    { key: "gs", value: "shldrOptions.roleGs" },
+    { key: "ns", value: "shldrOptions.roleNs" },
+    { key: "ceo", value: "shldrOptions.roleCeo" },
+    { key: "ged", value: "shldrOptions.roleGen" },
+    { key: "nd", value: "shldrOptions.roleNd" },
+    { key: "dcp", value: "shldrOptions.roleDcp" },
+    { key: "etc", value: "shldrOptions.roleEtc" },
+];
+export const significantControllerMap = [
+    { key: "s1", value: "shldrOptions.sigNiConS1" },
+    { key: "s2", value: "shldrOptions.sigNiConS2" },
+    { key: "s3", value: "shldrOptions.sigNiConS3" },
+    { key: "s4", value: "shldrOptions.sigNiConS4" },
+    { key: "s5", value: "shldrOptions.sigNiConS5" },
+    { key: "s6", value: "shldrOptions.sigNiConS6" },
+    { key: "s7", value: "shldrOptions.sigNiConS7" },
+];
+
+export const correspondenceAddressOptions = [
+    {
+        key: "residential",
+        label: "shldrOptions.coresAddres",
+    },
+    {
+        key: "business",
+        label:
+            "shldrOptions.coresAddres1",
+    },
+    {
+        key: "different",
+        label: "shldrOptions.coresAddress2",
+    },
+    {
+        key: "other",
+        label: "usa.Section2StateOptions.Other",
+    },
+];
+
+export const overseasResidentStatusOptions = [
+    { key: "yes", value: "AmlCdd.options.yes" },
+    { key: "no", value: "AmlCdd.options.no" },
+    { key: "unknown", value: "shldrOptions.dontKnow" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
+];
+
+export const foreignInvestmentReportOptions = [
+    { key: "yesReport", value: "AmlCdd.options.yes" },
+    { key: "noReport", value: "AmlCdd.options.no" },
+    { key: "handleIssue", value: "shldrOptions.handleIssue" },
+    { key: "consultationRequired", value: "shldrOptions.consultationReq" },
+    { key: "otherReport", value: "usa.Section2StateOptions.Other" },
+];
+
+export const foreignInvestmentOptions = [
+    { key: "yes", value: "AmlCdd.options.yes" },
+    { key: "no", value: "AmlCdd.options.no" },
+    { key: "consultation", value: "shldrOptions.consultationReq" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
+];
+
+export const politicallyExposedOptions = [
+    { key: "publicOffice", value: "shldrOptions.pep1" },
+    { key: "seniorManager", value: "shldrOptions.pep2" },
+    { key: "politicalPerson", value: "shldrOptions.pep3" },
+    { key: "none", value: "None" },
+    { key: "unknown", value: "shldrOptions.sigNiConS7" },
+    { key: "consultation", value: "shldrOptions.consultationReq" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
+];
+
+export const legalIssuesOptions = [
+    { key: "yes", value: "AmlCdd.options.yes" },
+    { key: "no", value: "AmlCdd.options.no" },
+    { key: "noInfo", value: "shldrOptions.optionsDoNotProvide" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
+];
+
+export const usResidencyOptions = [
+    { key: "yes", value: "AmlCdd.options.yes" },
+    { key: "no", value: "AmlCdd.options.no" },
+    { key: "other", value: "usa.Section2StateOptions.Other" },
+];
+
+export const natureOfFundsOptions = [
+    {
+        key: "profitsFromBusiness",
+        value: "shldrOptions.natureFunds",
+    },
+    {
+        key: "fundsFromAssetSales",
+        value: "shldrOptions.fundsFromSales",
+    },
+    {
+        key: "ownerInvestmentOrLoan",
+        value: "shldrOptions.ownerInvestLoad",
+    },
+    {
+        key: "groupOrParentInvestment",
+        value: "shldrOptions.groupParentInvestment",
+    },
+    {
+        key: "otherNatureOfFunds",
+        value: "usa.Section2StateOptions.Other",
+    },
+];
+
+export const sourceOfFundsOptions = [
+    {
+        key: "pastBusinessProfits",
+        value:
+            "shldrOptions.sourceFunds",
+    },
+    {
+        key: "assetSaleFunds",
+        value:
+            "shldrOptions.assetSaleFunds",
+    },
+    {
+        key: "borrowedFunds",
+        value:
+            "shldrOptions.borrowedFunds",
+    },
+    {
+        key: "ownerPaidFunds",
+        value:
+            "shldrOptions.ownerPaidFunds",
+    },
+    {
+        key: "earnedIncome",
+        value:
+            "shldrOptions.earnedIncome",
+    },
+    {
+        key: "affiliatedCompanyFunds",
+        value:
+            "shldrOptions.affiliatedCompFunds",
+    },
+    {
+        key: "bankOwnedFunds",
+        value:
+            "shldrOptions.bankOwnedFunds",
+    },
+    {
+        key: "noPlanSmallAmount",
+        value:
+            "shldrOptions.noPlanSmallAmount",
+    },
+    {
+        key: "otherSourceOfFunds",
+        value: "usa.Section2StateOptions.Other",
+    },
+];

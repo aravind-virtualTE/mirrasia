@@ -101,9 +101,6 @@ export default function SwitchServicesList() {
             </Table>
           </div>
         </div>
-        <div className="text-xs text-muted-foreground">
-          Showing {filteredUsers.length} of {usersData.length} list
-        </div>
       </CardContent>
     </Card>
   )

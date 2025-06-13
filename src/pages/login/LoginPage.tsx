@@ -1,17 +1,30 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-// import Logo from '@/common/LogoComponent';
-import { useNavigate } from 'react-router-dom';
-import { authAtom, loginWithEmail, loginWithGoogle } from '@/hooks/useAuth';
-import { Eye, EyeOff } from 'lucide-react';
+// import { useNavigate } from 'react-router-dom'; // Replace with your navigation method
+import { authAtom, loginWithEmail, loginWithGoogle, resetPassword, verify2FaLogin } from '@/hooks/useAuth';
+import { Eye, EyeOff, Shield } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useAtom } from 'jotai';
 import Loader from '@/common/Loader';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import jwtDecode from "jwt-decode"
+import { useNavigate } from 'react-router-dom';
+
+
 const LoginComponent: React.FC = () => {
+  // Replace useNavigate with your navigation method
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -19,28 +32,38 @@ const LoginComponent: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetStatus, setResetStatus] = useState('');
   const [, setAuth] = useAtom(authAtom);
-  const handleLogin = async (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
+
+  // 2FA states
+  const [show2FA, setShow2FA] = useState(false);
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [twoFactorError, setTwoFactorError] = useState('');
+  const [tempUserData, setTempUserData] = useState(null);
+  const [is2FALoading, setIs2FALoading] = useState(false);
+
+  const handleLogin = async () => {
     setError('');
     setIsLoading(true);
 
     try {
-      // localStorage.setItem('isAuthenticated', 'true');
-      const response = await loginWithEmail(email, password);    
+      const response = await loginWithEmail(email, password);
       // console.log("response", response)
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user))
-      setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
-      if(response.user.role === 'admin' || response.user.role === 'master') {
-        navigate('/admin-dashboard');
+      // Check if user has 2FA enabled
+      if (response.requiresTwoFactor) {
+        const decodedToken = jwtDecode<any>(response.tempToken)
+        // console.log("decodedToken", decodedToken)
+        setTempUserData(decodedToken.userId);
+        setShow2FA(true);
+        setIsLoading(false);
+        return;
       }
-      else if(response.user.role === 'hk_shdr'){
-        navigate('/viewboard');
-      }
-      else{
-        navigate('/dashboard');
+      else {
+        // Complete login if no 2FA
+        completeLogin(response);
       }
     } catch (err) {
       console.log("err.response?.data?.message", err)
@@ -50,42 +73,78 @@ const LoginComponent: React.FC = () => {
     }
   };
 
+  const completeLogin = (response: any) => {
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("user", JSON.stringify(response.user));
+    setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
+
+    if (response.user.role === 'admin' || response.user.role === 'master') {
+      navigate('/admin-dashboard');
+    } else if (response.user.role === 'hk_shdr') {
+      navigate('/viewboard');
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
+  const handleTwoFactorVerification = async () => {
+    setTwoFactorError('');
+    setIs2FALoading(true);
+
+    try {
+      if (!tempUserData) {
+        throw new Error('Temporary user data is missing.');
+      }
+      const response = await verify2FaLogin(tempUserData, twoFactorCode.replace(/\s/g, ''))
+
+      if (!response.success) {
+        throw new Error(response.message || 'Verification failed');
+      }
+      console.log("response", response)
+      // 2FA verification successful, complete login
+      completeLogin(response);
+    } catch (err) {
+      console.error('2FA verification error:', err);
+      setTwoFactorError('Invalid verification code. Please try again.');
+    } finally {
+      setIs2FALoading(false);
+    }
+  };
+
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (credentialResponse) => {
-      setIsLoading(true); // Show loader
-      // Handle successful login, e.g., send credentialResponse to your backend
-      // console.log('credentialResponse', credentialResponse);
-      await loginWithGoogle(credentialResponse.access_token)
-        .then((response) => {
-          localStorage.setItem('isAuthenticated', 'true');
-          localStorage.setItem('token', response.token);
-          console.log('response', response);
-          localStorage.setItem("user", JSON.stringify(response.user))
-          setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
-  
-          if (response.user.role === 'admin' || response.user.role === 'master') {
-            navigate('/admin-dashboard');
-          } else {
-            navigate('/dashboard');
-          }
-        })
-        .catch((error) => {
-          console.error('Google login failed:', error);
-          setError('Google sign in failed. Please try again.');
-        })
-        .finally(() => {
-          setIsLoading(false); // Hide loader in all cases
-        });
+      setIsLoading(true);
+
+      try {
+        const response = await loginWithGoogle(credentialResponse.access_token);
+
+        // Check if user has 2FA enabled
+        if (response.requiresTwoFactor) {
+          const decodedToken = jwtDecode<any>(response.tempToken)
+          // console.log("decodedToken", decodedToken)
+          setTempUserData(decodedToken.userId);
+          setShow2FA(true);
+          setIsLoading(false);
+          return;
+        } else {
+          // Complete login if no 2FA
+          completeLogin(response);
+        }
+
+      } catch (error) {
+        console.error('Google login failed:', error);
+        setError('Google sign in failed. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
     },
     onError: (error) => {
-      // Handle errors, e.g., display an error message to the user
       console.log("err", error)
       setError('Google sign in failed. Please try again.');
-      setIsLoading(false); // Hide loader for error case
+      setIsLoading(false);
     },
   });
-
-
 
   const onSignUp = () => {
     navigate('/signup');
@@ -104,33 +163,123 @@ const LoginComponent: React.FC = () => {
     setEmail(e.target.value);
     validateEmail(e.target.value);
   };
+
+  const handlePasswordReset = async () => {
+    setResetStatus('');
+    try {
+      await resetPassword(resetEmail, newPassword);
+      setResetStatus('Password updated successfully.');
+    } catch (err) {
+      console.error('Error resetting password:', err);
+      setResetStatus('Failed to reset password. Please try again.');
+    }
+  };
+
+  const handleTwoFactorCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Allow only numbers and limit to 6 digits
+    const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+    setTwoFactorCode(value);
+    setTwoFactorError('');
+  };
+
+  const cancel2FA = () => {
+    setShow2FA(false);
+    setTwoFactorCode('');
+    setTwoFactorError('');
+    setTempUserData(null);
+  };
+
   if (isLoading) {
-    // Show full-page loader
     return <Loader />;
   }
 
+  // 2FA Verification Screen
+  if (show2FA) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+        <div className="w-full max-w-md space-y-4">
+          <Card className="bg-white shadow-lg">
+            <CardHeader className="space-y-2 text-center">
+              <div className="flex justify-center mb-4">
+                <div className="p-3 bg-blue-100 rounded-full">
+                  <Shield className="w-8 h-8 text-blue-600" />
+                </div>
+              </div>
+              <h2 className="text-2xl font-semibold">Two-Factor Authentication</h2>
+              <p className="text-gray-600 text-sm">
+                Enter the 6-digit code from your authenticator app or use a backup code
+              </p>
+            </CardHeader>
 
+            <CardContent className="space-y-4">
+              {twoFactorError && (
+                <Alert variant="destructive">
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>{twoFactorError}</AlertDescription>
+                </Alert>
+              )}
+
+              <div onSubmit={handleTwoFactorVerification} className="space-y-4">
+                <div className="space-y-2">
+                  <Input
+                    type="text"
+                    placeholder="Enter 6-digit code"
+                    value={twoFactorCode}
+                    onChange={handleTwoFactorCodeChange}
+                    className="w-full px-3 py-2 text-center text-2xl tracking-widest font-mono"
+                    maxLength={6}
+                    autoComplete="one-time-code"
+                    autoFocus
+                    required
+                  />
+                  <p className="text-xs text-gray-500 text-center">
+                    You can also use a backup code if you don't have access to your authenticator app
+                  </p>
+                </div>
+
+                <div className="flex space-x-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1"
+                    onClick={cancel2FA}
+                    disabled={is2FALoading}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleTwoFactorVerification}
+                    className="flex-1"
+                    disabled={is2FALoading || twoFactorCode.length < 6}
+                  >
+                    {is2FALoading ? 'Verifying...' : 'Verify'}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  // Main Login Screen
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <div className="w-full max-w-md space-y-4">
         <Card className="bg-white shadow-lg">
           <CardHeader className="space-y-2 text-center">
             <div className="flex justify-center mb-4">
-              {/* <Logo width={30} height={30} />
-              <h1 className="text-2xl font-bold">
-                MirAsia
-              </h1> */}
-               <img
-                    src= "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
-                    alt="MIRR ASIA"
-                    width={175}
-                    height={25}
-                    srcSet="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
-                    // fetchPriority="high"
-                    style={{ width: '175px', height: '25px', objectFit: 'cover',  }}
-                    className="cursor-pointer"
-                    onClick={() => navigate('/')}
-                />
+              <img
+                src="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
+                alt="MIRR ASIA"
+                width={175}
+                height={25}
+                srcSet="https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
+                style={{ width: '175px', height: '25px', objectFit: 'cover', }}
+                className="cursor-pointer"
+                onClick={() => navigate('/')}
+              />
             </div>
             <h2 className="text-2xl font-semibold">Welcome</h2>
           </CardHeader>
@@ -143,13 +292,12 @@ const LoginComponent: React.FC = () => {
               </Alert>
             )}
 
-            <form onSubmit={handleLogin} className="space-y-4">
+            <div onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Input
                   type="email"
                   placeholder="Email address*"
                   value={email}
-                  // onChange={(e) => setEmail(e.target.value)}
                   onChange={handleEmailChange}
                   className="w-full px-3 py-2"
                   required
@@ -179,13 +327,17 @@ const LoginComponent: React.FC = () => {
               </div>
 
               <div className="text-right">
-                <a href="#" className="text-sm">
+                <button
+                  type="button"
+                  onClick={() => setForgotPasswordOpen(true)}
+                  className="text-sm text-blue-600 underline"
+                >
                   Forgot password?
-                </a>
+                </button>
               </div>
 
               <Button
-                type="submit"
+                onClick={handleLogin}
                 className="w-full"
                 disabled={isLoading}
               >
@@ -213,7 +365,7 @@ const LoginComponent: React.FC = () => {
                 />
                 Continue with Google
               </Button>
-            </form>
+            </div>
           </CardContent>
         </Card>
 
@@ -228,6 +380,38 @@ const LoginComponent: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+
+      <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>New Password</Label>
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
+            {resetStatus && (
+              <div className="text-sm text-center text-red-500">{resetStatus}</div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button onClick={handlePasswordReset}>Reset Password</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

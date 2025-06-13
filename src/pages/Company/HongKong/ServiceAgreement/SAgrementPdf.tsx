@@ -38,6 +38,7 @@ import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 
 const SAgrementPdf: React.FC<{ id: string }> = ({ id }) => {
+    // console.log("component Mounted")
     const [isLoading, setIsLoading] = useState(false);
     const [isSaveLoading, setIsSaveLoading] = useState(false);
     const [serviceAgrementDetails, setServiceAgrement] =  useAtom(serviceAgreement);
@@ -158,8 +159,8 @@ const SAgrementPdf: React.FC<{ id: string }> = ({ id }) => {
             // const response = await getSavedServiceAggrmtData(companyId!);
             // console.log("id",id)
             const response = await getSavedServiceAggrmtData(id);
+            console.log("response-=======->", response);
             setId(response.id);
-            // console.log("response-=======->", response);
             return response;
         } catch (error) {
             console.error("Error fetching saved data:", error);
@@ -298,15 +299,22 @@ const SAgrementPdf: React.FC<{ id: string }> = ({ id }) => {
     useEffect(() => {
         const initializeData = async () => {
             setIsFetching(true);
+           const savedData = await fetchSavedData()
             const preparedCompanyData = prepareCompanyData();
-            const savedData = await fetchSavedData();
             const mergedData = mergeData(preparedCompanyData, savedData);
-            console.log("mergedData======>",mergedData)
+            // console.log("mergedData======>",mergedData)
             setServiceAgrement(mergedData);
             setIsFetching(false);
         };
-
-        initializeData();
+        try{
+            if(id){
+                initializeData()
+            }
+        }catch(error){
+            console.log("Error", error)
+        }finally{
+            console.log("finally")
+        }
     }, [id]);
 
     const componentRefs = useRef([
@@ -443,7 +451,7 @@ const SAgrementPdf: React.FC<{ id: string }> = ({ id }) => {
         current[lastPart] = value;
     
         updatedMembers[index] = memberToUpdate;
-        console.log("updatedMembers====>", updatedMembers)
+        // console.log("updatedMembers====>", updatedMembers)
         setServiceAgrement({ ...serviceAgrementDetails, registeredMembers: updatedMembers });
       };
 
@@ -466,7 +474,7 @@ const SAgrementPdf: React.FC<{ id: string }> = ({ id }) => {
                     <div id="appointmentLetter" className="mb-4">
                         <AppointmentLetter editable={isAdmin} />
                     </div>
-                    <div id="letterOfConsent" className="mb-4">
+                     <div id="letterOfConsent" className="mb-4">
                         <LetterOfConsent editable={isAdmin} />
                     </div>
                     <div id="authorizationDetails" className="mb-4">
@@ -488,7 +496,6 @@ const SAgrementPdf: React.FC<{ id: string }> = ({ id }) => {
                         <RegisterOfDirectors editable={isAdmin} />
                     </div>
                     <div id="registerOfMembers" className="mb-4">
-                        {/* <RegisterOfMembers /> */}
                         {serviceAgrementDetails.registeredMembers?.map((member, index) => (
                             <RegisterOfMembers
                                 key={index}

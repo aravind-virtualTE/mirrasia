@@ -7,7 +7,7 @@ const FileDialog = ({ children, ...props }: DialogProps) => {
       <div className="bg-white p-4 rounded shadow-lg w-[120%] max-w-4xl relative">
         <button
           className="absolute top-2 right-2  text-black-1000"
-          onClick={() => {props.onOpenChange && props.onOpenChange(false)}}
+          onClick={() => props.onOpenChange && props.onOpenChange(false)}
         >
           X
         </button>
