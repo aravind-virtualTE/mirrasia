@@ -82,7 +82,7 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
     // }
     
     // console.log("customers====>", customers)
-    // console.log("company====>", company)
+    console.log("company====>", company)
     const activeDirectors = company?.directors?.filter((director) => director.name.trim() !== "") || [];
     const activeShareholders = company?.shareholders?.filter((shareholder) => shareholder.name.trim() !== "") || [];
     // console.log("activeDirectors", activeDirectors)
@@ -170,7 +170,7 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                 </div>*/}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-xl font-semibold">Applicant Information</CardTitle>
+                        <CardTitle className="text-xl font-semibold">Client Information</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-hidden">
@@ -216,11 +216,11 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                                         <td className="py-3 px-4">{company?.designatedContact.phone}</td>
                                         <td className="py-3 px-4"></td>
                                     </tr>
-                                    <tr>
+                                    {/* <tr>
                                         <td className="py-3 px-4 font-medium">Relationships</td>
                                         <td className="py-3 px-4">Designated Contact</td>
                                         <td className="py-3 px-4"></td>
-                                    </tr>
+                                    </tr> */}
                                     <tr>
                                         <td className="py-3 px-4 font-medium">BRN Number</td>
                                         <td className="py-3 px-4">{company?.brnNo}</td>
@@ -318,7 +318,7 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                                     <tr className="border-b bg-gray-50">
                                         <th className="text-left py-3 px-4 font-medium text-gray-600">Name</th>
                                         <th className="text-left py-3 px-4 font-medium text-gray-600">Email</th>
-                                        <th className="text-left py-3 px-4 font-medium text-gray-600">Total Shares</th>
+                                        <th className="text-left py-3 px-4 font-medium text-gray-600">Total no of Shares</th>
                                         {/* <th className="text-left py-3 px-4 font-medium text-gray-600">Action</th> */}
                                     </tr>
                                 </thead>

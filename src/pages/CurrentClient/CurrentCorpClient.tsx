@@ -416,7 +416,10 @@ export default function CurrentCorpClient() {
                                             variant="ghost"
                                             size="icon"
                                             className="h-8 w-8"
-                                            onClick={() => openEditDialog(company)}
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                openEditDialog(company)
+                                            }}
                                         >
                                             <Pencil className="h-4 w-4" />
                                         </Button>
