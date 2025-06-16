@@ -200,22 +200,7 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                                         <td className="py-3 px-4 font-medium">Company Type</td>
                                         <td className="py-3 px-4">{company?.companyType}</td>
                                         <td className="py-3 px-4"></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="py-3 px-4 font-medium">Applicant Name</td>
-                                        <td className="py-3 px-4">{company?.designatedContact.name}</td>
-                                        <td className="py-3 px-4"></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="py-3 px-4 font-medium">Email</td>
-                                        <td className="py-3 px-4">{company?.designatedContact.email}</td>
-                                        <td className="py-3 px-4"></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="py-3 px-4 font-medium">Phone</td>
-                                        <td className="py-3 px-4">{company?.designatedContact.phone}</td>
-                                        <td className="py-3 px-4"></td>
-                                    </tr>
+                                    </tr>                                    
                                     {/* <tr>
                                         <td className="py-3 px-4 font-medium">Relationships</td>
                                         <td className="py-3 px-4">Designated Contact</td>
@@ -238,6 +223,42 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                                                 {company?.status}
                                             </span>
                                         </td>
+                                        <td className="py-3 px-4"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </CardContent>
+                </Card>
+                {/* dcp */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-xl font-semibold">Designated Contact person</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="overflow-hidden">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b bg-gray-50">
+                                        <th className="text-left py-3 px-4 font-medium text-gray-600">Field</th>
+                                        <th className="text-left py-3 px-4 font-medium text-gray-600">Value</th>
+                                        {/* <th className="text-left py-3 px-4 font-medium text-gray-600">Action</th> */}
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-200">
+                                   <tr>
+                                        <td className="py-3 px-4 font-medium">Applicant Name</td>
+                                        <td className="py-3 px-4">{company?.designatedContact.name}</td>
+                                        <td className="py-3 px-4"></td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-3 px-4 font-medium">Email</td>
+                                        <td className="py-3 px-4">{company?.designatedContact.email}</td>
+                                        <td className="py-3 px-4"></td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-3 px-4 font-medium">Phone</td>
+                                        <td className="py-3 px-4">{company?.designatedContact.phone}</td>
                                         <td className="py-3 px-4"></td>
                                     </tr>
                                 </tbody>

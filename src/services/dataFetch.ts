@@ -482,3 +482,22 @@ export const getCurrentClientsCount = async () => {
     throw error;
   }
 };
+
+export const delProfileDoc = async (id:string, url:string, type: string) => {
+  try {
+    const response = await api.delete(`/user/delteProfileDoc`, {params : {id, url,type}});
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company data:", error);
+    throw error;
+  }
+};
+
+export const updateUserProfileData = async (data: any, id?: string) => {
+  try {
+    const response = await api.put(`user/updateUserStatus/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error saving Data:", error);
+  }
+}
