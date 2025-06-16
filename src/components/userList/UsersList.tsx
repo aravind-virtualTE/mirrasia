@@ -1,4 +1,4 @@
-import { addUser, updateUserRole, fetchDetailedUsers, sendCustomMail, createOutstandingTask } from "@/services/dataFetch"
+import { addUser, updateUserRole, fetchDetailedUsers, sendCustomMail, createOutstandingTask, updateUserProfileData } from "@/services/dataFetch"
 import { useEffect, useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
-import { Building, Clock, Mail, Pencil, Phone, Save, Send, Shield, Trash2, User } from "lucide-react"
+import { Building, Clock, Mail, Pencil, Phone, Save, Send, Trash2, User } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,7 @@ import { Textarea } from "../ui/textarea"
 import CustomLoader from "../ui/customLoader"
 import { Checkbox } from "../ui/checkbox"
 import { ConfirmDialog } from "../shared/ConfirmDialog"
+import UserVerificationCard from "./UserVerificationCard"
 export interface User {
     _id?: string;
     fullName: string;
@@ -26,9 +27,14 @@ export interface User {
     location?: string;
     lastLogin?: string;
     lastAccessIP?: string;
+    twoFactorEnabled? : boolean;
     kycDocuments?: {
         passportUrl?: string;
         addressProofUrl?: string;
+        passportStatus: string,
+        passportComment: string,
+        addressProofStatus: string,
+        addressProofComment: string,
     };
     companies?: {
         companyId: string;
@@ -55,13 +61,13 @@ const UsersList = () => {
     const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
     const navigate = useNavigate();
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
-    // console.log("user", user)
+    // console.log("selectedUser", selectedUser)
     useEffect(() => {
         const fetchUser = async () => {
             let role = ''
-                if(user && user.role) {
-                    role = user.role
-                }
+            if (user && user.role) {
+                role = user.role
+            }
             const [detailedUsersResponse] = await Promise.all([
                 // fetchUsers(),                
                 fetchDetailedUsers(role)
@@ -178,6 +184,36 @@ const UsersList = () => {
     //     setDeleteDialogOpen(false);
     //     setDeleteIndex(null)
     // }
+    // console.log('Review updated:', selectedUser);
+     const handleReviewUpdate = async (review: any) => {
+        try {
+            // Update the user's verification status in your backend/state
+            // Make API call to update the user
+            // await updateUserVerification(selectedUser.id, review);            
+            // Update local state
+            const userData = selectedUser
+            if (userData && userData.kycDocuments) {
+                userData.kycDocuments.passportStatus = review.passportStatus
+                userData.kycDocuments.addressProofStatus = review.addressProofStatus
+                const formData = new FormData();
+                formData.append("passportStatus", review.passportStatus);
+                formData.append("addressStatus", review.addressProofStatus);
+                const result = await updateUserProfileData(formData, userData._id)
+                if(result){
+                    toast({
+                        title: "updated Status",
+                        description: `Status for the item is update for the user ${selectedUser?.fullName || ""}.`,
+                    })
+                }
+                // console.log('Review updated:', result);
+            }
+            setSelectedUser(userData);            
+            // You can show a success toast here
+        } catch (error) {
+            console.error('Failed to update review:', error);
+            // Handle error - show error toast
+        }
+    };
 
     const handleAddTask = () => {
         if (taskLabel.trim() && selectedUser) {
@@ -186,7 +222,6 @@ const UsersList = () => {
                 ...selectedUser,
                 tasks: [...(selectedUser.tasks || []), newTask]
             };
-
             // Update both selectedUser and users array
             setSelectedUser(updatedUser);
             setUsers(prevUsers =>
@@ -206,7 +241,6 @@ const UsersList = () => {
                 ...selectedUser,
                 tasks: updatedTasks
             };
-
             // Update both selectedUser and users array
             setSelectedUser(updatedUser);
             setUsers(prevUsers =>
@@ -476,62 +510,14 @@ const UsersList = () => {
                                     </CardContent>
                                 </Card>
                             </div>
-                            <Card className="w-full">
-                                <CardHeader>
-                                    <CardTitle className="text-lg flex items-center gap-2">
-                                        <Shield className="h-4 w-4" />
-                                        Verification Status
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent className="flex flex-col lg:flex-row gap-4">
-                                    {selectedUser?.kycDocuments?.passportUrl ? (
-                                        <div className="flex-1">
-                                            <Label className="mb-2 block">Passport Document</Label>
-                                            <iframe
-                                                src={selectedUser.kycDocuments.passportUrl}
-                                                className="w-full h-96 border"
-                                                title="Passport Document"
-                                            />
-                                            <Button asChild className="mt-2">
-                                                <a
-                                                    href={selectedUser.kycDocuments.passportUrl}
-                                                    download
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    Download Passport/Govt Id
-                                                </a>
-                                            </Button>
-                                        </div>
-                                    ) : (
-                                        <p className="text-sm text-muted-foreground italic">Passport document not uploaded yet.</p>
-                                    )}
+                            <UserVerificationCard
+                                passportUrl={selectedUser?.kycDocuments?.passportUrl || ""}
+                                addressProofUrl={selectedUser?.kycDocuments?.addressProofUrl || ""}
+                                passportStatus= {selectedUser?.kycDocuments?.passportStatus || "pending"}
+                                addressProofStatus= {selectedUser?.kycDocuments?.addressProofStatus || "pending"}
+                                onReviewUpdate={handleReviewUpdate}
+                            />
 
-                                    {selectedUser?.kycDocuments?.addressProofUrl ? (
-                                        <div className="flex-1">
-                                            <Label className="mb-2 block">Address Proof</Label>
-                                            <iframe
-                                                src={selectedUser.kycDocuments.addressProofUrl}
-                                                className="w-full h-96 border"
-                                                title="Address Proof Document"
-                                            />
-                                            <Button asChild className="mt-2">
-                                                <a
-                                                    href={selectedUser.kycDocuments.addressProofUrl}
-                                                    download
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    Download Address Proof
-                                                </a>
-                                            </Button>
-                                        </div>
-                                    ) : (
-                                        <p className="text-sm text-muted-foreground italic">Address proof not uploaded yet.</p>
-                                    )}
-                                </CardContent>
-
-                            </Card>
                         </TabsContent>
                         <TabsContent value="companies" className="space-y-4">
                             <Card>
