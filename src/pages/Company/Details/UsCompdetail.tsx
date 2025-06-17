@@ -91,7 +91,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
   const generateSections = (formData: UsaFormData, session: SessionData) => {
     const sections = [];
-    console.log("formData", formData);
+    // console.log("formData", formData);
     // Applicant Information Section
     sections.push({
       title: 'Applicant Information',
@@ -518,12 +518,10 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       </TabsList>
       <TabsContent value="details" className="p-6">
         <div className="space-y-4">
-          {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
-          {user.role !== 'user' && (
-            <div className="mb-4">
+          {/* <h1 className="text-2xl font-bold">Company Details</h1> */}    
+           <div className="mb-4">
               <TodoApp id={id} name={formData.companyName[0]} />
             </div>
-          )}
 
           <div className="flex gap-4 mt-auto">
             {user.role !== 'user' && <AssignAdmin />}

@@ -37,7 +37,7 @@ export interface Task {
   };
   userId?: string;
   isProject?: boolean;
-  
+  shareWithClient?: boolean 
 }
 
 export const tasksAtom = atom<Task[]>([]);
@@ -55,6 +55,7 @@ export interface CreateTaskFormState {
   selectedCompany: { id: string ; name: string } | undefined;
   selectedProject: { id: string  ; name: string } | undefined;
   isProject?: boolean;
+  shareWithClient?: boolean
 }
 
 export const defaultFormState: CreateTaskFormState = {
@@ -68,7 +69,7 @@ export const defaultFormState: CreateTaskFormState = {
   selectedCompany: undefined,
   selectedProject: undefined,
   isProject: false,
-  
+  shareWithClient: false
 };
 
 export const createTaskFormAtom = atom<CreateTaskFormState>(defaultFormState);

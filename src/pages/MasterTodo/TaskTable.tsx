@@ -35,6 +35,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
     const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
     const [sortField, setSortField] = useState<'dueDate' | 'priority' | 'assignees' | null>(null);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
 
     const handleEditClick = (task: Task, e: React.MouseEvent) => {
         e.stopPropagation();
@@ -206,7 +207,6 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         if (aStr > bStr) return sortOrder === 'asc' ? 1 : -1;
         return 0;
     });
-    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
 
     // console.log("tasks--->", tasks)
     return (
@@ -315,14 +315,14 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                                 </TableCell>
                                 <TableCell className="py-1" onClick={(e) => e.stopPropagation()}>
                                     <div className="flex space-x-1">
-                                        <Button
+                                        { user.role !== 'user' && <Button
                                             variant="ghost"
                                             size="sm"
                                             className="h-6 w-6 p-0"
                                             onClick={(e) => handleEditClick(task, e)}
                                         >
                                             <Edit className="h-3 w-3" />
-                                        </Button>
+                                        </Button>}
                                         {task.status == 'COMPLETED' && user.role == 'master' && <Button
                                             variant="ghost"
                                             size="sm"
