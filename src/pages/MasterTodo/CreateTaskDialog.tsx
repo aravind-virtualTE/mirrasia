@@ -22,6 +22,7 @@ import { fetchUsers } from '@/services/dataFetch';
 import { projectsAtom } from '../dashboard/Admin/Projects/ProjectAtom';
 import { RichTextEditor } from "@/components/rich-text-editor"
 import CustomLoader from "@/components/ui/customLoader";
+import { Switch } from '@/components/ui/switch';
 
 interface CreateTaskDialogProps {
     open: boolean;
@@ -134,6 +135,7 @@ export const CreateTaskDialog = ({
         setIsLoading(true)
         if (isEditMode && taskToEdit) {
             // Update existing task
+            // console.log("formState",formState)
             const updatedTaskData: Task = {
                 ...taskToEdit,
                 name: formState.taskName,
@@ -144,6 +146,7 @@ export const CreateTaskDialog = ({
                 status: formState.status,
                 company: formState.selectedCompany,
                 project: formState.selectedProject,
+                shareWithClient: formState.shareWithClient,
                 comments: formState.comment
                     ? [
                         ...taskToEdit.comments,
@@ -173,6 +176,7 @@ export const CreateTaskDialog = ({
                 userId,
                 company: formState.selectedCompany,
                 project: formState.selectedProject,
+                shareWithClient: formState.shareWithClient,
                 comments: formState.comment
                     ? [
                         {
@@ -420,6 +424,28 @@ export const CreateTaskDialog = ({
                             </Select>
                         </div>
                     </div>
+                    {/* Share with Client Toggle */}
+                    <div className="flex items-center justify-between p-2 border rounded-lg ">
+                        <div className="flex flex-col">
+                            <label className="text-sm font-medium text-gray-900">
+                                Share with Client
+                            </label>
+                        </div>
+
+                        <Switch
+                            checked={formState.shareWithClient}
+                            onCheckedChange={(value) => {
+                                if (formState.selectedCompany?.id) {
+                                    setFormState({
+                                        ...formState,
+                                        shareWithClient: value,
+                                    });
+                                }
+                            }}
+                            disabled={!formState.selectedCompany?.id}
+                        />
+                    </div>
+
                     {formState.selectedUsers.length > 0 && (
                         <div className="pt-2">
                             <p className="text-sm font-medium mb-2">Assigned to:</p>
@@ -441,18 +467,18 @@ export const CreateTaskDialog = ({
                     )}
                 </div>
                 <DialogFooter className="w-full">
-                   <Button onClick={handleSubmit} type="submit">
-                            {isLoading ? (
-                                <>
-                                    <CustomLoader />
-                                    <span className="ml-2">Saving...</span>
-                                </>
-                            ) : isEditMode ? (
-                                'Update Task'
-                            ) : (
-                                'Create Task'
-                            )}
-                        </Button>
+                    <Button onClick={handleSubmit} type="submit">
+                        {isLoading ? (
+                            <>
+                                <CustomLoader />
+                                <span className="ml-2">Saving...</span>
+                            </>
+                        ) : isEditMode ? (
+                            'Update Task'
+                        ) : (
+                            'Create Task'
+                        )}
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

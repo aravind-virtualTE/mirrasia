@@ -181,10 +181,10 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [selectedData, setSelectedData] = useState<any>(null)
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
-    console.log("company",company)
+    // console.log("company",company)
     const handleFetchShrDir = async (id : string, email: string) =>{
         const fetchData = await getShareHolderDirData(id, email)
-        console.log("handleFet", fetchData)
+        // console.log("handleFet", fetchData)
         if(fetchData){
             setSelectedData(fetchData)
             setIsDialogOpen(true)
@@ -656,7 +656,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             </div>
         )
     }
- 
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full  mx-auto">
             <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -699,7 +698,8 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <TabsContent value="details" className="p-6">
                 <div className="space-y-4">
                     {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
-                    {user.role !== 'user' && <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />}
+                    {/* {user.role !== 'user' && <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />} */}
+                    {company?.applicantInfoForm?.companyName && <TodoApp id={company._id} name={company.applicantInfoForm.companyName[0]} />}
                     <div className='flex gap-x-8'>
                         {user.role !== 'user' && <AssignAdmin />}
                         <Button onClick={() => navigate(`/company-documents/${company.country.code}/${company._id}`)} size="sm" className="flex items-center gap-2">
