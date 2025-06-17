@@ -42,7 +42,7 @@ export default function CurrentCorpClient() {
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [sortConfig, setSortConfig] = useState<{ key: keyof Company; direction: "asc" | "desc" } | null>(null)
     const [currentPage, setCurrentPage] = useState(1)
-    const [itemsPerPage, setItemsPerPage] = useState(10)
+    const [itemsPerPage, setItemsPerPage] = useState(50)
     const { toast } = useToast()
     const navigate = useNavigate()
 
@@ -93,8 +93,9 @@ export default function CurrentCorpClient() {
                     companyNameChi: item["COMPANY NAME (CHI)"] || "",
                     companyType: item["Company Type"] || "",
                     brnNo: item["BRN NO."] || "",
-                    noOfShares: Number(item["No. of shares"]) || 0,
+                    noOfShares: Number(item["noOfShares"]) || 0,
                     shareCapital: item["Share Capital"] || "",
+                    bank: item["Bank"] || "",
                     directors: [
                         { name: item["dirName1"] || "", email: item["dirEmail1"] || "", phone: item["dirPhone1"] || "" },
                         { name: item["dirName2"] || "", email: item["dirEmail2"] || "", phone: item["dirPhone2"] || "" },
@@ -102,10 +103,10 @@ export default function CurrentCorpClient() {
                         { name: item["dirName4"] || "", email: item["dirEmail4"] || "", phone: item["dirPhone4"] || "" },
                     ],
                     shareholders: [
-                        { name: item["shName1"] || "", email: item["shEmail1"] || "", totalShares: Number(item["totalShares1"]) || 0 },
-                        { name: item["shName2"] || "", email: item["shEmail2"] || "", totalShares: Number(item["totalShares2"]) || 0 },
-                        { name: item["shName3"] || "", email: item["shEmail3"] || "", totalShares: Number(item["totalShares3"]) || 0 },
-                        { name: item["shName4"] || "", email: item["shEmail4"] || "", totalShares: Number(item["totalShares4"]) || 0 },
+                        { name: item["shName1"] || "", email: item["shEmail1"] || "", totalShares: Number(item["shShares1"]) || 0 },
+                        { name: item["shName2"] || "", email: item["shEmail2"] || "", totalShares: Number(item["shShares2"]) || 0 },
+                        { name: item["shName3"] || "", email: item["shEmail3"] || "", totalShares: Number(item["shShares3"]) || 0 },
+                        { name: item["shName4"] || "", email: item["shEmail4"] || "", totalShares: Number(item["shShares4"]) || 0 },
                     ],
                     designatedContact: {
                         name: item["Designated contact person's name"] || "",
@@ -115,7 +116,7 @@ export default function CurrentCorpClient() {
                     companySecretarialService: item["Company Secretarial Service"] || "No",
                     registeredBusinessAddressService: item["Registered Business Address Service"] || "No",
                 }))
-
+            console.log("validData",validData)
             setCustomers((prev) => [...prev, ...validData])
             toast({
                 title: "File uploaded successfully",

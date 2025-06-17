@@ -32,6 +32,7 @@ export interface Company {
     designatedContact: DesignatedContact
     companySecretarialService: string
     registeredBusinessAddressService: string
+    bank: string
 }
 
 
