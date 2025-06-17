@@ -26,6 +26,7 @@ interface AddCompanyDialogProps {
 
 const getInitialFormData = (): Company => ({
   status: '',
+  bank:"",
   jurisdiction: "",
   comments: "",
   incorporationDate: "",

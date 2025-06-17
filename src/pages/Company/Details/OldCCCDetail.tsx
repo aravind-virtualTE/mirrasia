@@ -201,11 +201,7 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                                         <td className="py-3 px-4">{company?.companyType}</td>
                                         <td className="py-3 px-4"></td>
                                     </tr>                                    
-                                    {/* <tr>
-                                        <td className="py-3 px-4 font-medium">Relationships</td>
-                                        <td className="py-3 px-4">Designated Contact</td>
-                                        <td className="py-3 px-4"></td>
-                                    </tr> */}
+                                   
                                     <tr>
                                         <td className="py-3 px-4 font-medium">BRN Number</td>
                                         <td className="py-3 px-4">{company?.brnNo}</td>
@@ -214,6 +210,11 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                                     <tr>
                                         <td className="py-3 px-4 font-medium">Incorporation Date</td>
                                         <td className="py-3 px-4">{company?.incorporationDate}</td>
+                                        <td className="py-3 px-4"></td>
+                                    </tr>
+                                     <tr>
+                                        <td className="py-3 px-4 font-medium">Bank</td>
+                                        <td className="py-3 px-4">{company?.bank}</td>
                                         <td className="py-3 px-4"></td>
                                     </tr>
                                     <tr>
