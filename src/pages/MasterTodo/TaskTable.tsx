@@ -158,31 +158,6 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         }
     };
 
-    // const sortedTasks = [...tasks].sort((a, b) => {
-    //     if (!sortField) return 0;
-
-    //     const aVal = a[sortField];
-    //     const bVal = b[sortField];
-
-    //     // Handle undefined or null values
-    //     if (!aVal) return sortOrder === 'asc' ? 1 : -1;
-    //     if (!bVal) return sortOrder === 'asc' ? -1 : 1;
-
-    //     if (sortField === 'dueDate') {
-    //         const aDate = new Date(aVal).getTime();
-    //         const bDate = new Date(bVal).getTime();
-    //         return sortOrder === 'asc' ? aDate - bDate : bDate - aDate;
-    //     }
-
-    //     if (sortField === 'priority') {
-    //         const priorityMap = { Low: 1, Medium: 2, High: 3, Urgent: 4 };
-    //         return sortOrder === 'asc'
-    //             ? priorityMap[aVal as keyof typeof priorityMap] - priorityMap[bVal as keyof typeof priorityMap]
-    //             : (priorityMap[bVal as keyof typeof priorityMap] - priorityMap[aVal as keyof typeof priorityMap]);
-    //     }
-
-    //     return 0;
-    // });
     const sortedTasks = [...tasks].sort((a, b) => {
         if (!sortField) return 0;
 

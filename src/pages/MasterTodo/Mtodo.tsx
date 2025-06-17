@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAtom } from "jotai";
@@ -7,6 +8,7 @@ import { createTaskFormAtom, defaultFormState, getTasks, tasksAtom, viewModeAtom
 import { CreateTaskDialog } from "./CreateTaskDialog";
 import { getIncorporationList } from "@/services/dataFetch";
 import { allCompListAtom } from "@/services/state";
+import SearchBox from "./SearchBox";
 
 const ToDoList = () => {
     const [viewMode, setViewMode] = useAtom(viewModeAtom);
@@ -16,6 +18,8 @@ const ToDoList = () => {
     const [, setAllList] = useAtom(allCompListAtom)
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const userId = user ? user.id : ""
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -35,6 +39,19 @@ const ToDoList = () => {
         setOpenDialog(true)
         setFormState(defaultFormState);
     }
+
+    const handleSearch = async () => {
+        // console.log('Searching for:', searchQuery);
+        let filters: Record<string, any> = {}
+        if (user.role === 'admin') filters = { userId: userId, }
+        if (searchQuery) filters['search'] = searchQuery.trim()
+        await getTasks(filters).then((response) => {
+            // console.log("response--->", response)
+            setListState(response);
+        })
+    };
+
+
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-6">
@@ -42,6 +59,7 @@ const ToDoList = () => {
             </div>
 
             <div className="flex justify-between items-center mb-6">
+                {/* Left-aligned buttons */}
                 <div className="flex space-x-2">
                     <Button
                         variant={viewMode === "grouped" ? "default" : "outline"}
@@ -64,15 +82,24 @@ const ToDoList = () => {
                         onClick={() => setViewMode("completed")}
                         className="h-8 px-3 text-xs"
                     >
-                        {/* <CheckCircle className="mr-2 h-4 w-4" /> */}
                         Deleted
                     </Button>
                 </div>
 
-                <Button onClick={createTaskAction} className="h-8 px-3 text-xs mr-4">
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Create new task
-                </Button>
+                {/* Right-aligned search + button */}
+                <div className="flex items-center gap-4">
+                    <SearchBox
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                        onSearch={handleSearch}
+                        isFocused={isFocused}
+                        setIsFocused={setIsFocused}
+                    />
+                    <Button onClick={createTaskAction} className="h-8 px-3 text-xs">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Create new task
+                    </Button>
+                </div>
             </div>
 
             <TaskList />
