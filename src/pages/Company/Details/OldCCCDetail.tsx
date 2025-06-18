@@ -170,7 +170,7 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                 </div>*/}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-xl font-semibold">Client Information</CardTitle>
+                        <CardTitle className="text-xl font-semibold">Company Information</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-hidden">
@@ -215,6 +215,16 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                                      <tr>
                                         <td className="py-3 px-4 font-medium">Bank</td>
                                         <td className="py-3 px-4">{company?.bank}</td>
+                                        <td className="py-3 px-4"></td>
+                                    </tr>
+                                     <tr>
+                                        <td className="py-3 px-4 font-medium">No Of Shares</td>
+                                        <td className="py-3 px-4">{company?.noOfShares}</td>
+                                        <td className="py-3 px-4"></td>
+                                    </tr>
+                                     <tr>
+                                        <td className="py-3 px-4 font-medium">Share Capital</td>
+                                        <td className="py-3 px-4">{company?.shareCapital}</td>
                                         <td className="py-3 px-4"></td>
                                     </tr>
                                     <tr>
@@ -341,6 +351,7 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                                         <th className="text-left py-3 px-4 font-medium text-gray-600">Name</th>
                                         <th className="text-left py-3 px-4 font-medium text-gray-600">Email</th>
                                         <th className="text-left py-3 px-4 font-medium text-gray-600">Total no of Shares</th>
+                                        <th className="text-left py-3 px-4 font-medium text-gray-600">Percentage(%)</th>
                                         {/* <th className="text-left py-3 px-4 font-medium text-gray-600">Action</th> */}
                                     </tr>
                                 </thead>
@@ -350,6 +361,11 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                                             <td className="py-3 px-4 font-medium">{shareholder.name}</td>
                                             <td className="py-3 px-4">{shareholder.email}</td>
                                             <td className="py-3 px-4">{shareholder.totalShares}</td>
+                                            <td className="py-3 px-4">
+                                                {company?.noOfShares
+                                                    ? ((shareholder.totalShares / company.noOfShares) * 100).toFixed(2)
+                                                    : "N/A"}
+                                            </td>
                                             <td className="py-3 px-4">
 
                                             </td>
