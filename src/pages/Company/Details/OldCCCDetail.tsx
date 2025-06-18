@@ -6,6 +6,7 @@ import { useAtom } from 'jotai';
 import { cccCompanyData } from '@/pages/CurrentClient/cccState';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import TodoApp from '@/pages/Todo/TodoApp';
+import ChecklistHistory from '@/pages/Checklist/ChecklistHistory';
 // import { Button } from '@/components/ui/button';
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 // import { User } from '@/components/userList/UsersList';
@@ -393,8 +394,7 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                 </div>
             </TabsContent>
             <TabsContent value="Checklist" className="p-6">
-                <div>checklist updating soon...</div>
-                {/* <ChecklistHistory id={id} items={[usIncorporationItems, usRenewalList]} /> */}
+                <ChecklistHistory id={id} items={[[], []]} />
             </TabsContent>
         </Tabs>
     )
