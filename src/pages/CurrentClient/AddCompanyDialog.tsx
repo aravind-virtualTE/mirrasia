@@ -144,7 +144,7 @@ export default function AddCompanyDialog({
 
   return (
     <>
-      <Button size="sm" className="px-3" onClick={handleOpen}>
+      <Button size="sm" className="px-2" onClick={handleOpen}>
         <Plus className="h-4 w-4 mr-1" />
         Add Current Corporate Client
       </Button>
