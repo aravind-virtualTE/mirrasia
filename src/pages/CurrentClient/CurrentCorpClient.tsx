@@ -21,6 +21,7 @@ import AddCompanyDialog from "./AddCompanyDialog"
 import { useNavigate } from "react-router-dom"
 import { cccCompanyData, Company } from "./cccState"
 import { useAtom } from "jotai"
+import SearchBox from "../MasterTodo/SearchBox"
 
 interface GetClientsParams {
     page?: number
@@ -29,6 +30,7 @@ interface GetClientsParams {
     sortOrder?: "asc" | "desc"
     status?: string
     jurisdiction?: string
+    searchKey?: string
 }
 
 export default function CurrentCorpClient() {
@@ -43,6 +45,9 @@ export default function CurrentCorpClient() {
     const [sortConfig, setSortConfig] = useState<{ key: keyof Company; direction: "asc" | "desc" } | null>(null)
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(50)
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
+
     const { toast } = useToast()
     const navigate = useNavigate()
 
@@ -116,7 +121,7 @@ export default function CurrentCorpClient() {
                     companySecretarialService: item["Company Secretarial Service"] || "No",
                     registeredBusinessAddressService: item["Registered Business Address Service"] || "No",
                 }))
-            console.log("validData",validData)
+            console.log("validData", validData)
             setCustomers((prev) => [...prev, ...validData])
             toast({
                 title: "File uploaded successfully",
@@ -208,9 +213,9 @@ export default function CurrentCorpClient() {
                 description: "The company record has been updated",
             })
         } else {
-            console.log("Adding new company:", companyData)
+            // console.log("Adding new company:", companyData)
             const result = await saveCurrentClients([companyData])
-            console.log("New company added successfully:", result)
+            // console.log("New company added successfully:", result)
             setCustomers([result[0], ...customers])
             setTotalItems((prev) => prev + 1)
             toast({
@@ -274,10 +279,33 @@ export default function CurrentCorpClient() {
         localStorage.setItem("companyRecordId", companyId)
     }
 
+    const handleSearch = async () => {
+        // console.log('Searching for:', searchQuery);
+        // let filters: Record<string, any> = {}
+        const params: GetClientsParams = {
+            page: currentPage,
+            limit: itemsPerPage,
+            sortField: sortConfig?.key,
+            sortOrder: sortConfig?.direction,
+            searchKey: searchQuery.trim()
+        }
+        const { data, total } = await getCurrentClients(params)
+        if (data) {
+            setCustomers(data)
+            setTotalItems(total)
+        } else {
+            toast({
+                title: "Error fetching data",
+                description: "There was an error fetching the company records",
+                variant: "destructive",
+            })
+        }
+    };
+
     return (
         <div className="container mx-auto p-4">
-            <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                <div className="flex-1">
+            <div className="flex flex-col sm:flex-row items-center gap-4 py-2 my-4">
+                <div className="flex items-center gap-4 w-full sm:w-auto">
                     <Input
                         ref={fileInputRef}
                         type="file"
@@ -286,12 +314,24 @@ export default function CurrentCorpClient() {
                         className="hidden"
                         id="file-upload"
                     />
-                    <Button size="sm" onClick={() => fileInputRef.current?.click()} className="px-3">
+
+                    <Button size="sm" onClick={() => fileInputRef.current?.click()} className="px-3 whitespace-nowrap">
                         <FileUp className="mr-2 h-4 w-4" />
                         Upload File
                     </Button>
+
+                    <SearchBox
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                        onSearch={handleSearch}
+                        isFocused={isFocused}
+                        setIsFocused={setIsFocused}
+                        placeText={"Search With Company Name"}
+                    />
                 </div>
-                <div className="flex gap-2 self-end">
+
+
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:ml-auto">
                     <AddCompanyDialog
                         isOpen={isDialogOpen}
                         onOpenChange={setIsDialogOpen}
@@ -299,8 +339,6 @@ export default function CurrentCorpClient() {
                         editingCompany={editingCompany}
                         onSubmit={handleCompanySubmit}
                     />
-                </div>
-                <div className="flex gap-2 self-end">
                     <Button size="sm" className="px-3" onClick={handleSave} disabled={isLoading}>
                         {isLoading ? (
                             <>
@@ -309,7 +347,7 @@ export default function CurrentCorpClient() {
                             </>
                         ) : (
                             <>
-                                <Save className="h-4 w-4" />
+                                <Save className="mr-2 h-4 w-4" />
                                 Save
                             </>
                         )}
