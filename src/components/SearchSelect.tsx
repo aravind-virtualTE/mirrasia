@@ -58,7 +58,7 @@ export default function SearchSelect({
   };
 
   return (
-    <div className="relative w-[300px]" ref={dropdownRef}>
+    <div className="relative w-[415px]" ref={dropdownRef}>
       {/* Dropdown trigger button */}
       <button
         type="button"

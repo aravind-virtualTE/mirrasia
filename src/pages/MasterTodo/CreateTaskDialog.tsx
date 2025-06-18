@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent,  SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon, Flag, X, Check, ChevronDown } from 'lucide-react';
@@ -23,6 +23,7 @@ import { projectsAtom } from '../dashboard/Admin/Projects/ProjectAtom';
 import { RichTextEditor } from "@/components/rich-text-editor"
 import CustomLoader from "@/components/ui/customLoader";
 import { Switch } from '@/components/ui/switch';
+import SearchSelectNew from '@/components/SearchSelect2';
 
 interface CreateTaskDialogProps {
     open: boolean;
@@ -47,7 +48,8 @@ export const CreateTaskDialog = ({
     const [allList] = useAtom(allCompListAtom);
     const [projects,] = useAtom(projectsAtom);
     const [isLoading, setIsLoading] = useState(false);
-
+    const [selectedValue, setSelectedValue] = useState(formState.selectedCompany || {id : "", name : ""});
+    const [selectedProject, setSelectedProj] = useState(formState.selectedProject || {id : "", name : ""});
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     // State for multi-select dropdown
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -69,7 +71,6 @@ export const CreateTaskDialog = ({
         }
         return [];
     };
-
     const filteredCompanies = getFilteredCompanies();
 
     useEffect(() => {
@@ -196,42 +197,17 @@ export const CreateTaskDialog = ({
         setIsLoading(false)
     };
 
-    const handleCompanyChange = (companyId: string) => {
-        const company = filteredCompanies.find(c => c.id === companyId);
-        if (company) {
-            setFormState({
-                ...formState,
-                selectedCompany: {
-                    id: company.id,
-                    name: company.name
-                }
-            });
-        } else {
-            setFormState({
-                ...formState,
-                selectedCompany: { id: "", name: "" }
-            });
-        }
+
+    const handleCurrencySelect = (item: { id: string; name: string }) => {
+        // console.log("code", item)
+        setSelectedValue(item)
+        setFormState({...formState, selectedCompany: item});
     };
 
-    const handleProjectChange = (projectId: string) => {
-        // This is a placeholder - you would need to implement project filtering
-        // similar to how companies are filtered
-        const project = projects.find(c => c._id === projectId);
-        if (project) {
-            setFormState({
-                ...formState,
-                selectedProject: {
-                    id: project._id,
-                    name: project.projectName
-                }
-            });
-        } else {
-            setFormState({
-                ...formState,
-                selectedProject: { id: "", name: "" }
-            });
-        }
+    const handleProjectySelect = (item: { id: string; name: string }) => {
+        // console.log("code", item)
+        setSelectedProj(item)
+        setFormState({...formState, selectedProject: item});
     };
     const projectsList = projects.map((project) => ({ id: project._id, name: project.projectName }))
     const allowedStatuses = user.role === 'master'
@@ -380,48 +356,24 @@ export const CreateTaskDialog = ({
                     <div className="grid grid-cols-2 gap-4">
                         {/* Company Selection */}
                         <div className="mb-4">
-                            <Select
-                                onValueChange={handleCompanyChange}
-                                value={formState.selectedCompany?.id || ''}
+                            <SearchSelectNew
+                                items={filteredCompanies}
+                                placeholder="Select a Company"
+                                onSelect={handleCurrencySelect}
+                                selectedItem={selectedValue}
                                 disabled={disbleCompany}
-                            >
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder={formState.selectedCompany?.name || "Select a Company"} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>{"Company"}</SelectLabel>
-                                        {filteredCompanies.map((company) => (
-                                            <SelectItem key={company.id} value={company.id}>
-                                                {company.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
+                            />                            
                         </div>
 
                         {/* Project Selection */}
                         <div className="mb-4">
-                            <Select
-                                onValueChange={handleProjectChange}
-                                value={formState.selectedProject?.id || ''}
+                            <SearchSelectNew
+                                items={projectsList}
+                                placeholder="Select a Project"
+                                onSelect={handleProjectySelect}
+                                selectedItem={selectedProject}
                                 disabled={disbleProject}
-                            >
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder={formState.selectedProject?.name || "Select a Project"} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>{"Project"}</SelectLabel>
-                                        {projectsList.map((project) => (
-                                            <SelectItem key={project.id} value={project.id}>
-                                                {project.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
+                            />                            
                         </div>
                     </div>
                     {/* Share with Client Toggle */}
