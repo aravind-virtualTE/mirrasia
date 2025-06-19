@@ -101,8 +101,8 @@ export default function SearchSelectNew({
                                     disabled={disabled}
                                     className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
                                 >
-                                    <span className="font-medium">{item.id}</span>
-                                    <span className="ml-2 text-gray-500">- {t(item.name)}</span>
+                                    {/* <span className="font-medium">{item.id}</span> */}
+                                    <span className="ml-2">{t(item.name)}</span>
                                 </button>
                             ))
                         )}
