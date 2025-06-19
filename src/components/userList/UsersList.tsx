@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { addUser, updateUserRole, fetchDetailedUsers, sendCustomMail, createOutstandingTask, updateUserProfileData } from "@/services/dataFetch"
 import { useEffect, useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -27,7 +28,7 @@ export interface User {
     location?: string;
     lastLogin?: string;
     lastAccessIP?: string;
-    twoFactorEnabled? : boolean;
+    twoFactorEnabled?: boolean;
     kycDocuments?: {
         passportUrl?: string;
         addressProofUrl?: string;
@@ -153,44 +154,14 @@ const UsersList = () => {
                     description: `Your message has been sent to ${selectedUser?.fullName || "the user"}.`,
                 });
             }
-            // console.log("Mail sent result:", result);
-            // setSentMessages((prev) => [...prev, { id: Date.now(), content: message }]);
             setMessage("");
             setIsLoading(false);
         }
     };
 
-    // const handleAddTask = () => {
-    //     if (taskLabel.trim()) {
-    //         setTasks([...tasks, { label: taskLabel.trim(), checked: false, _id: '' }]);
-    //         setTaskLabel("");
-    //     }
-    // };
-    // const toggleTask = (index: number) => {
-    //     const updatedTasks = [...tasks];
-    //     updatedTasks[index].checked = !updatedTasks[index].checked;
-    //     setTasks(updatedTasks);
-    // };
-    // const handleDeleteTask = async () => {
-    //     const sndData = {
-    //         index: index,
-    //         userId: selectedUser?._id || "",
-    //     }
-    //     console.log("Deleting task at index:", sndData);
-    //     const updatedTasks = tasks.filter((_, i) => i !== index);
-    //     const data = await delOutstandingTask(sndData)
-    //     console.log("data", data)
-    //     setTasks(updatedTasks);
-    //     setDeleteDialogOpen(false);
-    //     setDeleteIndex(null)
-    // }
     // console.log('Review updated:', selectedUser);
-     const handleReviewUpdate = async (review: any) => {
+    const handleReviewUpdate = async (review: any) => {
         try {
-            // Update the user's verification status in your backend/state
-            // Make API call to update the user
-            // await updateUserVerification(selectedUser.id, review);            
-            // Update local state
             const userData = selectedUser
             if (userData && userData.kycDocuments) {
                 userData.kycDocuments.passportStatus = review.passportStatus
@@ -199,7 +170,7 @@ const UsersList = () => {
                 formData.append("passportStatus", review.passportStatus);
                 formData.append("addressStatus", review.addressProofStatus);
                 const result = await updateUserProfileData(formData, userData._id)
-                if(result){
+                if (result) {
                     toast({
                         title: "updated Status",
                         description: `Status for the item is update for the user ${selectedUser?.fullName || ""}.`,
@@ -207,7 +178,7 @@ const UsersList = () => {
                 }
                 // console.log('Review updated:', result);
             }
-            setSelectedUser(userData);            
+            setSelectedUser(userData);
             // You can show a success toast here
         } catch (error) {
             console.error('Failed to update review:', error);
@@ -415,6 +386,7 @@ const UsersList = () => {
                                         <SelectItem value="admin">Admin</SelectItem>
                                         <SelectItem value="hk_shdr">SH Dir</SelectItem>
                                         <SelectItem value="master">Master</SelectItem>
+                                        <SelectItem value="dcp">Dcp</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -513,8 +485,8 @@ const UsersList = () => {
                             <UserVerificationCard
                                 passportUrl={selectedUser?.kycDocuments?.passportUrl || ""}
                                 addressProofUrl={selectedUser?.kycDocuments?.addressProofUrl || ""}
-                                passportStatus= {selectedUser?.kycDocuments?.passportStatus || "pending"}
-                                addressProofStatus= {selectedUser?.kycDocuments?.addressProofStatus || "pending"}
+                                passportStatus={selectedUser?.kycDocuments?.passportStatus || "pending"}
+                                addressProofStatus={selectedUser?.kycDocuments?.addressProofStatus || "pending"}
                                 onReviewUpdate={handleReviewUpdate}
                             />
 
