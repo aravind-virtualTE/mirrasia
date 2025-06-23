@@ -36,9 +36,9 @@ const getInitialFormData = (): Company => ({
   brnNo: "",
   noOfShares: 0,
   shareCapital: "",
-  directors: [{ name: "", email: "", phone: "" }, { name: "", email: "", phone: "" }],
-  shareholders: [{ name: "", email: "", totalShares: 0 }, { name: "", email: "", totalShares: 0 }],
-  designatedContact: { name: "", email: "", phone: "" },
+  directors: [{ name: "", email: "", phone: "" }],
+  shareholders: [{ name: "", email: "", totalShares: 0 }],
+  designatedContact: [{ name: "", email: "", phone: "",sns: "" }],
   companySecretarialService: "No",
   registeredBusinessAddressService: "No",
 })
@@ -92,19 +92,20 @@ export default function AddCompanyDialog({
     subField?: keyof Director | keyof Shareholder | keyof DesignatedContact
   ) => {
     if (index !== undefined && subField) {
-      if (field === "directors" || field === "shareholders") {
+      if (field === "directors" || field === "shareholders" || field === "designatedContact") {
         setFormData((prev) => ({
           ...prev,
           [field]: prev[field].map((item: any, i: number) =>
             i === index ? { ...item, [subField]: e.target.value } : item
           ),
         }))
-      } else if (field === "designatedContact") {
-        setFormData((prev) => ({
-          ...prev,
-          designatedContact: { ...prev.designatedContact, [subField]: e.target.value },
-        }))
-      }
+      } 
+      // else if (field === "designatedContact") {
+      //   setFormData((prev) => ({
+      //     ...prev,
+      //     designatedContact: { ...prev.designatedContact, [subField]: e.target.value },
+      //   }))
+      // }
     } else {
       setFormData((prev) => ({ ...prev, [field]: e.target.value }))
     }
@@ -407,8 +408,8 @@ export default function AddCompanyDialog({
               <div className="space-y-1.5">
                 <Label className="text-sm font-medium text-gray-700">Name</Label>
                 <Input
-                  value={formData.designatedContact.name}
-                  onChange={(e) => handleInputChange(e, "designatedContact", undefined, "name")}
+                  value={formData.designatedContact[0].name}
+                  onChange={(e) => handleInputChange(e, "designatedContact", 0, "name")}
                   className="h-9 text-sm"
                   placeholder="Contact name"
                 />
@@ -417,8 +418,8 @@ export default function AddCompanyDialog({
                 <Label className="text-sm font-medium text-gray-700">Email</Label>
                 <Input
                   type="email"
-                  value={formData.designatedContact.email}
-                  onChange={(e) => handleInputChange(e, "designatedContact", undefined, "email")}
+                  value={formData.designatedContact[0].email}
+                  onChange={(e) => handleInputChange(e, "designatedContact", 0, "email")}
                   className="h-9 text-sm"
                   placeholder="Email address"
                 />
@@ -426,8 +427,17 @@ export default function AddCompanyDialog({
               <div className="space-y-1.5">
                 <Label className="text-sm font-medium text-gray-700">Phone</Label>
                 <Input
-                  value={formData.designatedContact.phone}
-                  onChange={(e) => handleInputChange(e, "designatedContact", undefined, "phone")}
+                  value={formData.designatedContact[0].phone}
+                  onChange={(e) => handleInputChange(e, "designatedContact", 0, "phone")}
+                  className="h-9 text-sm"
+                  placeholder="Phone number"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-gray-700">SNS</Label>
+                <Input
+                  value={formData.designatedContact[0].sns}
+                  onChange={(e) => handleInputChange(e, "designatedContact", 0, "sns")}
                   className="h-9 text-sm"
                   placeholder="Phone number"
                 />
