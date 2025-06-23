@@ -24,15 +24,16 @@ export interface FormData {
         tasks: Task[]
       }
     >
+  },
+  miscellaneous: {
+    tasks: Task[]
   }
 }
 
 
 export const formDataAtom = atom<FormData>({
   incorporation: {
-    tasks: [
-    
-    ],
+    tasks: [],
   },
   'companyId': "",
   renewal: {
@@ -43,6 +44,9 @@ export const formDataAtom = atom<FormData>({
         ],
       },
     },
+  },
+   miscellaneous: {
+    tasks: [],
   },
 })
 
