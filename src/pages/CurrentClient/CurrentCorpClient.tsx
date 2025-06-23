@@ -89,38 +89,51 @@ export default function CurrentCorpClient() {
         const processData = (parsedData: any[]) => {
             const validData = parsedData
                 .filter((item) => item["COMPANY NAME (ENG)"])
-                .map((item) => ({
-                    status: item["status"] || "",
-                    jurisdiction: item["Jurisdriction"] || "",
-                    comments: item["comments"] || "",
-                    incorporationDate: item["INCORPORATION DATE"] || "",
-                    companyNameEng: item["COMPANY NAME (ENG)"] || "",
-                    companyNameChi: item["COMPANY NAME (CHI)"] || "",
-                    companyType: item["Company Type"] || "",
-                    brnNo: item["BRN NO."] || "",
-                    noOfShares: Number(item["noOfShares"]) || 0,
-                    shareCapital: item["Share Capital"] || "",
-                    bank: item["Bank"] || "",
-                    directors: [
-                        { name: item["dirName1"] || "", email: item["dirEmail1"] || "", phone: item["dirPhone1"] || "" },
-                        { name: item["dirName2"] || "", email: item["dirEmail2"] || "", phone: item["dirPhone2"] || "" },
-                        { name: item["dirName3"] || "", email: item["dirEmail3"] || "", phone: item["dirPhone3"] || "" },
-                        { name: item["dirName4"] || "", email: item["dirEmail4"] || "", phone: item["dirPhone4"] || "" },
-                    ],
-                    shareholders: [
-                        { name: item["shName1"] || "", email: item["shEmail1"] || "", totalShares: Number(item["shShares1"]) || 0 },
-                        { name: item["shName2"] || "", email: item["shEmail2"] || "", totalShares: Number(item["shShares2"]) || 0 },
-                        { name: item["shName3"] || "", email: item["shEmail3"] || "", totalShares: Number(item["shShares3"]) || 0 },
-                        { name: item["shName4"] || "", email: item["shEmail4"] || "", totalShares: Number(item["shShares4"]) || 0 },
-                    ],
-                    designatedContact: {
-                        name: item["Designated contact person's name"] || "",
-                        email: item["DCP's email address"] || "",
-                        phone: item["DCP's contact number"] || "",
-                    },
-                    companySecretarialService: item["Company Secretarial Service"] || "No",
-                    registeredBusinessAddressService: item["Registered Business Address Service"] || "No",
-                }))
+                .map((item) => {
+                    const extractValidEntries = (
+                        prefix: string,
+                        keys: string[],
+                        maxCount: number
+                    ) => {
+                        return Array.from({ length: maxCount }, (_, i) => {
+                            const index = i + 1;
+                            const entry: any = {};
+                            keys.forEach((key) => {
+                                const field = `${prefix}${key.charAt(0).toUpperCase() + key.slice(1)}${index}`;
+                                entry[key] = key === "totalShares"
+                                    ? Number(item[field]) || 0
+                                    : item[field] || "";
+                            });
+                            return entry;
+                        }).filter((entry) =>
+                            entry.name && ((entry.email && entry.name) || (entry.phone && entry.name) || (entry.totalShares && entry.name))
+                        );
+                    };
+
+                    return {
+                        status: item["status"] || "",
+                        jurisdiction: item["Jurisdriction"] || "",
+                        comments: item["comments"] || "",
+                        incorporationDate: item["INCORPORATION DATE"] || "",
+                        companyNameEng: item["COMPANY NAME (ENG)"] || "",
+                        companyNameChi: item["COMPANY NAME (CHI)"] || "",
+                        companyType: item["Company Type"] || "",
+                        brnNo: item["BRN NO."] || "",
+                        noOfShares: Number(item["noOfShares"]) || 0,
+                        shareCapital: item["Share Capital"] || "",
+                        bank: item["Bank"] || "",
+                        directors: extractValidEntries("dir", ["name", "email", "phone"], 4),
+                        shareholders: extractValidEntries("sh", ["name", "email", "totalShares"], 4),
+                        designatedContact: [{
+                            name: item["dcpName"] || "",
+                            email: item["dcpEmail"] || "",
+                            phone: item["dcpNum"] || "",
+                            sns: item["dcpSns"] || "",
+                        }],
+                        companySecretarialService: item["Company Secretarial Service"] || "No",
+                        registeredBusinessAddressService: item["Registered Business Address Service"] || "No",
+                    };
+                })
             console.log("validData", validData)
             setCustomers((prev) => [...prev, ...validData])
             toast({

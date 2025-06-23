@@ -52,7 +52,7 @@ const CompanyDocumentManager: React.FC = () => {
         const decodedToken = jwtDecode<TokenData>(token)
         const response = await getCompDocs(`${decodedToken.userId}`)
         const data = await response
-        console.log("data", data)
+        // console.log("data", data)
         setCompanies(data)
         if (data.length > 0) {
           if (id !== undefined && id !== "" && countryCode !== undefined && countryCode !== "") {
@@ -77,22 +77,6 @@ const CompanyDocumentManager: React.FC = () => {
     fetchComp()
   }, [])
 
-  // Get documents based on current tab
-  // const getCurrentDocuments = (): Document[] => {
-  //   if (!selectedCompany) return []
-
-  //   switch (activeTab) {
-  //     case "kyc":
-  //       return selectedCompany.kycDocs || []
-  //     case "letters":
-  //       return selectedCompany.letterDocs || []
-  //     case "company":
-  //     default:
-  //       return selectedCompany.companyDocs || []
-  //   }
-  // }
-
-  // Handle company selection
   const handleCompanySelect = (companyId: string): void => {
     const company = companies.find((c) => c.id === companyId)
     if (company) {
@@ -229,7 +213,7 @@ const CompanyDocumentManager: React.FC = () => {
 
     // Send data to backend
     try {
-      console.log("Updated companies:", updatedCompanies)
+      // console.log("Updated companies:", updatedCompanies)
       await uploadCompanyDocs(updatedCompanies)
       toast({
         title: documentToReplace ? "Document replaced" : "Documents added",
@@ -244,12 +228,10 @@ const CompanyDocumentManager: React.FC = () => {
     }
   }
 
-  // Remove uploaded file
   const removeUploadedFile = (index: number): void => {
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index))
   }
 
-  // Toggle document expanded view
   const toggleExpandDocument = (document: Document): void => {
     if (expandedDoc && expandedDoc.id === document.id) {
       setExpandedDoc(null)
@@ -258,15 +240,13 @@ const CompanyDocumentManager: React.FC = () => {
     }
   }
 
-  // Confirm delete document
   const confirmDeleteDocument = (document: Document): void => {
     setDocumentToDelete(document)
   }
 
-  // Delete document handler
   const deleteDocument = async (): Promise<void> => {
     if (!selectedCompany || !documentToDelete) return
-        console.log("documentToDelete",activeTab)
+        // console.log("documentToDelete",activeTab)
     const updatedCompanies = [...companies]
     const companyIndex = updatedCompanies.findIndex((c) => c.id === selectedCompany.id)
     if (companyIndex === -1) return
@@ -323,7 +303,6 @@ const CompanyDocumentManager: React.FC = () => {
       setSelectedCompany(updatedCompanies[companyIndex])
       setDocumentToDelete(null)
 
-      // Send data to backend to delete the document
       try {
         // console.log(docType,"selectedCompany", selectedCompany)
         const payload = JSON.stringify({
@@ -332,7 +311,7 @@ const CompanyDocumentManager: React.FC = () => {
           country: selectedCompany.country,
           ...documentToDelete,
         })
-        console.log("payload",payload)
+        // console.log("payload",payload)
         await deleteCompanyDoc(payload)
         toast({
           title: "Document deleted",

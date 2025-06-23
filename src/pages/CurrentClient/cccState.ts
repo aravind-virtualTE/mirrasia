@@ -14,6 +14,7 @@ export interface DesignatedContact {
     name: string
     email: string
     phone: string
+    sns: string
 }
 export interface Company {
     _id?: string
@@ -29,7 +30,7 @@ export interface Company {
     shareCapital: string
     directors: Director[]
     shareholders: Shareholder[]
-    designatedContact: DesignatedContact
+    designatedContact: DesignatedContact[]
     companySecretarialService: string
     registeredBusinessAddressService: string
     bank: string
