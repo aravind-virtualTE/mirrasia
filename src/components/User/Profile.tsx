@@ -1,24 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
+import Webcam from 'react-webcam';
 import {
-  User,
-  FileText,
-  Upload,
-  CheckCircle,
-  AlertCircle,
-  Clock,
-  X,
-  Shield,
-  Smartphone,
-  Copy,
-  Settings,
+  User, FileText, Upload, CheckCircle, AlertCircle, Clock, X, Shield, Smartphone, Copy, Settings,
+  Camera, RotateCcw
 } from "lucide-react"
 import { delProfileDoc, getUserById, updateProfileData } from "@/services/dataFetch"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -50,6 +42,12 @@ export default function Profile() {
   const [twoFALoading, setTwoFALoading] = useState(false)
   const [showDisable2FADialog, setShowDisable2FADialog] = useState(false)
   const [disableCode, setDisableCode] = useState("")
+
+  const webcamRef = useRef(null);
+  const [capturedImage, setCapturedImage] = useState(null);
+  const [isWebcamReady, setIsWebcamReady] = useState(false);
+  const [error, setError] = useState(null);
+  const [facingMode, setFacingMode] = useState('user');
   // console.log("user",user)
   const [profile, setProfile] = useState({
     _id: user?.id || "",
@@ -62,7 +60,7 @@ export default function Profile() {
     address: user?.address || "",
     status: "pending",
     twoFactorEnabled: false,
-    kycDocuments: { passportUrl: '', addressProofUrl: '', passportStatus: 'pending', addressProofStatus: 'pending' }
+    kycDocuments: { passportUrl: '', addressProofUrl: '', passportStatus: 'pending', addressProofStatus: 'pending', selfieUrl: '', selfieStatus: 'pending' },
   })
   const intialData: { passport: KYCDocument; addressProof: KYCDocument } = {
     passport: {
@@ -74,8 +72,9 @@ export default function Profile() {
       file: null,
       preview: null,
       status: "pending",
-    },
+    }
   }
+
   const [kycDocuments, setKycDocuments] = useState<{
     passport: KYCDocument
     addressProof: KYCDocument
@@ -235,7 +234,7 @@ export default function Profile() {
     reader.readAsDataURL(file)
   }
 
-  const removeDocument = (documentType: "passport" | "addressProof") => {
+  const removeDocument = (documentType: "passport" | "addressProof" | "selfie") => {
     setKycDocuments((prev) => ({
       ...prev,
       [documentType]: {
@@ -263,6 +262,7 @@ export default function Profile() {
       if (kycDocuments.addressProof.file) {
         formData.append("addressProof", kycDocuments.addressProof.file);
       }
+      if (capturedImage) formData.append("selfie", capturedImage);
 
       const result = await updateProfileData(formData, user.id)
       setProfile(result.updatedUser)
@@ -289,7 +289,7 @@ export default function Profile() {
     // Mimic API delay
     const result = await delProfileDoc(id, url, type)
     // console.log("delProfileDoc------------------->", result)
-    if(result){
+    if (result) {
       setProfile(result.result)
       toast({
         title: "Success",
@@ -300,6 +300,43 @@ export default function Profile() {
     // console.log(`Deleting ${url}...`, id, result)
   }
   // console.log("profile", profile)
+  const videoConstraints = {
+    width: 1280,
+    height: 720,
+    facingMode: facingMode
+  };
+
+  const handleWebcamReady = useCallback(() => {
+    setIsWebcamReady(true);
+    setError(null);
+  }, []);
+
+  const handleWebcamError = useCallback((error: any) => {
+    toast({
+      title: "Error",
+      description: 'Failed to access camera. Please check permissions.',
+      variant: "destructive",
+    })
+    console.error('Webcam error:', error);
+  }, []);
+
+  const capture = useCallback(() => {
+    if (webcamRef.current) {
+      const imageSrc = (webcamRef.current as any).getScreenshot();
+      console.log("imageSrc", typeof imageSrc);
+      setCapturedImage(imageSrc);
+    }
+  }, [webcamRef]);
+
+  const retake = () => {
+    setCapturedImage(null);
+  };
+
+  const switchCamera = () => {
+    setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
+    setIsWebcamReady(false);
+  };
+
   return (
     <div className="container max-w-8xl mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -326,7 +363,6 @@ export default function Profile() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Right: Button(s) */}
           {!editing ? (
             <Button
               onClick={() => setEditing(true)}
@@ -351,9 +387,6 @@ export default function Profile() {
             </div>
           )}
         </div>
-
-
-
         <TabsContent value="profile">
           <div className="grid gap-6">
             <Card>
@@ -637,11 +670,110 @@ export default function Profile() {
 
                 <TabsContent value="selfie" className="space-y-6">
                   <div className="space-y-4">
-                    <p>selfie</p>
+                    {profile.kycDocuments.selfieUrl ? (
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <Label className="text-base font-medium">Selfie Status</Label>
+                          <div className="flex items-center space-x-2">
+                            <Badge variant={profile.kycDocuments.selfieStatus === "accepted" ? "default" : "secondary"}>
+                              {profile.kycDocuments.selfieStatus === "accepted" && <CheckCircle className="h-3 w-3 mr-1" />}
+                              {profile.kycDocuments.selfieStatus === "rejected" && <Clock className="h-3 w-3 mr-1" />}
+                              {profile.kycDocuments.selfieStatus === "pending" && <AlertCircle className="h-3 w-3 mr-1" />}
+                              {profile.kycDocuments.selfieStatus.charAt(0).toUpperCase() + profile.kycDocuments.selfieStatus.slice(1)}
+                            </Badge>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              onClick={() => handleDeleteDocument(profile.kycDocuments.selfieUrl, profile._id, 'selfie')}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                        <iframe
+                          src={profile.kycDocuments.selfieUrl}
+                          className="w-full h-96 border"
+                          title="Selfie Document"
+                        />
+                      </div>
+                    ) : (
+                      // Show selfie capture component if no URL exists
+                      <>
+                        <div className="text-center">
+                          <h1 className="text-3xl font-bold text-gray-900 mb-2">Selfie Capture</h1>
+                          <p className="text-gray-600">Take a perfect selfie with camera controls</p>
+                        </div>
+                        <div className="relative mx-auto bg-black rounded-lg overflow-hidden max-w-[600px] w-full aspect-video">
+                          {!capturedImage ? (
+                            <>
+                              <Webcam
+                                ref={webcamRef}
+                                audio={false}
+                                screenshotFormat="image/jpeg"
+                                videoConstraints={videoConstraints}
+                                onLoadedData={handleWebcamReady}
+                                onUserMediaError={handleWebcamError}
+                                className="w-full h-full object-cover"
+                                mirrored={facingMode === 'user'}
+                              />
+
+                              {!isWebcamReady && !error && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-gray-900/80">
+                                  <div className="text-white text-center">
+                                    <Camera size={48} className="mx-auto mb-2 opacity-50" />
+                                    <p>Loading camera...</p>
+                                  </div>
+                                </div>
+                              )}
+                              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
+                                <Button
+                                  onClick={switchCamera}
+                                  variant="secondary"
+                                  size="icon"
+                                  className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30"
+                                >
+                                  <RotateCcw size={20} />
+                                </Button>
+
+                                <Button
+                                  onClick={capture}
+                                  disabled={!isWebcamReady}
+                                  className="rounded-full w-16 h-16 bg-white hover:bg-gray-100 text-gray-900 shadow-lg"
+                                >
+                                  <Camera size={24} />
+                                </Button>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <img
+                                src={capturedImage}
+                                alt="Captured selfie"
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
+                                <Button
+                                  onClick={retake}
+                                  variant="secondary"
+                                  className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30"
+                                >
+                                  <X size={20} className="mr-2" />
+                                  Retake
+                                </Button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <div className="text-center text-sm text-gray-500 space-y-1">
+                          <p>Click the camera button to take a selfie</p>
+                          <p>Use the rotate button to flip view of camera</p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </TabsContent>
               </Tabs>
-
             </CardContent>
           </Card>
         </TabsContent>

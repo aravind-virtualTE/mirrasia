@@ -32,7 +32,9 @@ export interface User {
     kycDocuments?: {
         passportUrl?: string;
         addressProofUrl?: string;
+        selfieUrl?: string;
         passportStatus: string,
+        selfieStatus: string,
         passportComment: string,
         addressProofStatus: string,
         addressProofComment: string,
@@ -169,6 +171,7 @@ const UsersList = () => {
                 const formData = new FormData();
                 formData.append("passportStatus", review.passportStatus);
                 formData.append("addressStatus", review.addressProofStatus);
+                formData.append("selfieStatus", review.selfieStatus);
                 const result = await updateUserProfileData(formData, userData._id)
                 if (result) {
                     toast({
@@ -273,7 +276,6 @@ const UsersList = () => {
             }
         }
     }
-
     return (
         <div className="space-y-4">
             <div className="flex justify-end">
@@ -485,6 +487,8 @@ const UsersList = () => {
                             <UserVerificationCard
                                 passportUrl={selectedUser?.kycDocuments?.passportUrl || ""}
                                 addressProofUrl={selectedUser?.kycDocuments?.addressProofUrl || ""}
+                                selfieUrl={selectedUser?.kycDocuments?.selfieUrl || ""}
+                                selfieStatus={selectedUser?.kycDocuments?.selfieStatus || "pending"}
                                 passportStatus={selectedUser?.kycDocuments?.passportStatus || "pending"}
                                 addressProofStatus={selectedUser?.kycDocuments?.addressProofStatus || "pending"}
                                 onReviewUpdate={handleReviewUpdate}
