@@ -40,7 +40,7 @@ import SwitchServicesList from './pages/SwitchServices/SwitchServicesList';
 import AccountingHkList from './pages/AccountingForms/AccountingHkList';
 import InviteUsaDirShir from './pages/InviteUsaDirShir/USA/InviteUsaDirShir';
 import ServiceAgreementSignDocs from './components/ServiceAgreementSignDocs/ServiceAgreementSignDocs';
-import {SocketProvider } from '@/hooks/Socket';
+import { SocketProvider } from '@/hooks/Socket';
 import ChatInterface from './components/chat/ChatInterface';
 import AdminProject from './pages/dashboard/Admin/Projects/AdminProject';
 import ToDoList from './pages/MasterTodo/Mtodo';
@@ -81,24 +81,23 @@ const App: React.FC = () => {
                 <Routes>
                   {/* Public routes */}
                   <Route path="/logout" element={<Logout />} />
-                  
+
                   <Route element={<PublicRoute />}>
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />
                     {/* <Route path="/test" element={<UsCorporateShdr />} /> */}
-                    
+
                   </Route>
                   <Route path="/unauthorized" element={<Unauthorized />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                  
-                  {/* <Route element={<ProtectedRoute allowedRoles={["master"]} />}>
+
+                
+                  <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master", "hk_shdr", 'us_shdr', 'pa_shdr']} />}>
                     <Route element={<Layout />}>
-                      <Route path="/userslist" element={<UsersList />} />
-                      <Route path="/userslist1" element={<UsersList1 />} />
-                      
+                      <Route path="/profile" element={<Profile />} />
                     </Route>
-                  </Route> */}
+                  </Route>
 
                   <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master"]} />}>
                     <Route element={<Layout />}>
@@ -112,19 +111,18 @@ const App: React.FC = () => {
                       <Route path="/switch-services/:countryCode/:id" element={<SwitchServices />} />
                       <Route path="/accounting-services" element={<AccountingForms />} />
                       <Route path="/accounting-services/:countryCode/:id" element={<AccountingForms />} />
-                      <Route path="/profile" element={<Profile />} />
                       <Route path="/hk-bank-account-list" element={<BkFrmList />} />
                       <Route path="/switch-services-list" element={<SwitchServicesList />} />
                       <Route path="/accounting-support-list" element={<AccountingHkList />} />
                       <Route path="/member-registration" element={<InviteUsaDirShir />} />
-                      <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />                      
+                      <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
                       <Route path="/company-details/:id" element={<CompanyDetail />} />
                       <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
                     </Route>
                   </Route>
 
                   {/* Protected routes for Admin */}
-                  <Route element={<ProtectedRoute allowedRoles={["admin" , 'master']} />}>
+                  <Route element={<ProtectedRoute allowedRoles={["admin", 'master']} />}>
                     <Route element={<Layout />}>
                       <Route path="/userslist" element={<UsersList />} />
                       <Route path="/compReg" element={<CompanyRegistration2 />} />
@@ -135,7 +133,6 @@ const App: React.FC = () => {
                       <Route path="/project-detail/:id" element={<ProjectDetail />} />
                       <Route path="/currentClientDataManager" element={<CurrentCorpClient />} />
                       <Route path="/current-corporate-client" element={<CurrentCorporateClientList />} />
-                      
                       {/* Add more admin-specific routes here */}
                     </Route>
                   </Route>
