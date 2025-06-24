@@ -10,16 +10,19 @@ interface UserVerificationCardProps {
     passportUrl: string;
     addressProofUrl: string;
     passportStatus: string,
+    selfieUrl: string;
+    selfieStatus: string,
     addressProofStatus: string,
-    onReviewUpdate?: (adminReview: { passportStatus: string; addressProofStatus: string }) => void
+    onReviewUpdate?: (adminReview: { passportStatus: string; addressProofStatus: string; selfieStatus: string }) => void
 }
 type VerificationStatus = 'pending' | 'accepted' | 'rejected'
 
 
-const UserVerificationCard: React.FC<UserVerificationCardProps> = ({ passportUrl, addressProofUrl, onReviewUpdate,passportStatus,addressProofStatus }) => {
+const UserVerificationCard: React.FC<UserVerificationCardProps> = ({ passportUrl, addressProofUrl, selfieUrl, onReviewUpdate, passportStatus, addressProofStatus, selfieStatus }) => {
     const [ppStatus, setPassportStatus] = useState<VerificationStatus>(passportStatus as VerificationStatus)
     // const [passportComment, setPassportComment] = useState('')
     const [addressStatus, setAddressStatus] = useState<VerificationStatus>(addressProofStatus as VerificationStatus)
+    const [selfieStatusState, setSelfieStatus] = useState<VerificationStatus>(selfieStatus as VerificationStatus)
     // const [addressComment, setAddressComment] = useState('')
     // const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -29,6 +32,7 @@ const UserVerificationCard: React.FC<UserVerificationCardProps> = ({ passportUrl
         const adminReview = {
             passportStatus: ppStatus,
             addressProofStatus: addressStatus,
+            selfieStatus: selfieStatusState,
             // passportComment: passportComment.trim(),
             // addressComment: addressComment.trim()           
         }
@@ -38,16 +42,13 @@ const UserVerificationCard: React.FC<UserVerificationCardProps> = ({ passportUrl
         }
         // setIsSubmitting(false)
     }
-
     return (
         <Card className="w-full">
             <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                     <Shield className="h-4 w-4" />
                     Verification Status
-
                 </CardTitle>
-
             </CardHeader>
             <CardContent className="flex flex-col lg:flex-row gap-4">
                 {/* {passportUrl!== "" ? (
@@ -200,6 +201,67 @@ const UserVerificationCard: React.FC<UserVerificationCardProps> = ({ passportUrl
                                     value={addressStatus}
                                     onValueChange={(value: VerificationStatus) =>
                                         setAddressStatus(value)
+                                    }
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="pending">Pending</SelectItem>
+                                        <SelectItem value="accepted">Accepted</SelectItem>
+                                        <SelectItem value="rejected">Rejected</SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+                                {/* <Input
+                                    placeholder="Enter review comments for address proof..."
+                                    value={addressComment}
+                                    onChange={(e) => setAddressComment(e.target.value)}
+                                    className="min-h-[80px]"
+                                /> */}
+                            </CardContent>
+                        </Card>
+                    </div>
+                    <div className="w-full lg:w-1/2 space-y-4">
+                        <div>
+                            <Label className="mb-2 block font-medium">Selfie Proof</Label>
+                            {selfieUrl !== "" ? (
+                                <div className="space-y-3">
+                                    <iframe
+                                        src={selfieUrl}
+                                        className="w-full h-80 border rounded-md"
+                                        title="Address Proof Document"
+                                    />
+                                    <Button variant="outline" size="sm">
+                                        <a
+                                            href={selfieUrl}
+                                            download
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Download Selfie Proof
+                                        </a>
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center justify-center h-80 border rounded-md bg-gray-50">
+                                    <p className="text-sm text-muted-foreground italic">
+                                        Selfie proof not uploaded yet.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        <Card className={`border-2 `}>
+                            <CardContent className="pt-4 space-y-3">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="font-medium text-sm">Selfie Proof Review</span>
+                                </div>
+
+                                <Select
+                                    value={selfieStatusState}
+                                    onValueChange={(value: VerificationStatus) =>
+                                        setSelfieStatus(value)
                                     }
                                 >
                                     <SelectTrigger className="w-full">
