@@ -94,7 +94,7 @@ const ToDoList = () => {
                         onSearch={handleSearch}
                         isFocused={isFocused}
                         setIsFocused={setIsFocused}
-                        placeText="Search With Task Name/ Description"
+                        placeText="Search With Task Name/ Description/ Assignee Name"
                     />
                     <Button onClick={createTaskAction} className="h-8 px-3 text-xs">
                         <PlusCircle className="mr-2 h-4 w-4" />
