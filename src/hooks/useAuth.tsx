@@ -177,3 +177,13 @@ export const verify2FaLogin =async (userId: string, disableCode: string) => {
       return { success: false, message: "2FA disabled successfully" }
    }
 }
+
+export const sendResetPasswordCode  =async (email: string) => {
+  const response = await api.post(`/auth/send-reset-password-code`, {email});
+   return response.data;
+}
+
+export const verifyResetPasswordCodeAndReset   =async (email: string, code:string, newPassword: string) => {
+  const response = await api.post(`/auth/verify-reset-password-code`,{ email, code, newPassword });
+   return response.data;
+}

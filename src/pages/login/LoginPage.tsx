@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-// import { useNavigate } from 'react-router-dom'; // Replace with your navigation method
-import { authAtom, loginWithEmail, loginWithGoogle, resetPassword, verify2FaLogin } from '@/hooks/useAuth';
+import { authAtom, loginWithEmail, loginWithGoogle, sendResetPasswordCode, verify2FaLogin, verifyResetPasswordCodeAndReset } from '@/hooks/useAuth';
 import { Eye, EyeOff, Shield } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useGoogleLogin } from '@react-oauth/google';
@@ -15,8 +14,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-  DialogFooter,
+  DialogTitle,  
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import jwtDecode from "jwt-decode"
@@ -37,7 +35,9 @@ const LoginComponent: React.FC = () => {
   const [resetEmail, setResetEmail] = useState('');
   const [resetStatus, setResetStatus] = useState('');
   const [, setAuth] = useAtom(authAtom);
-
+  const [resetStep, setResetStep] = useState<'enterEmail' | 'enterCode'>('enterEmail');
+  const [resetCode, setResetCode] = useState('');
+  const [resetError, setResetError] = useState('');
   // 2FA states
   const [show2FA, setShow2FA] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState('');
@@ -98,10 +98,10 @@ const LoginComponent: React.FC = () => {
       }
       const response = await verify2FaLogin(tempUserData, twoFactorCode.replace(/\s/g, ''))
 
-      if (!response.success) {
-        throw new Error(response.message || 'Verification failed');
+      if (!response || !response.success) {
+        throw new Error((response && response.message) || 'Verification failed');
       }
-      console.log("response", response)
+      // console.log("response", response)
       // 2FA verification successful, complete login
       completeLogin(response);
     } catch (err) {
@@ -164,16 +164,45 @@ const LoginComponent: React.FC = () => {
     validateEmail(e.target.value);
   };
 
-  const handlePasswordReset = async () => {
+  const handleSendResetCode = async () => {
+    setResetError('');
     setResetStatus('');
     try {
-      await resetPassword(resetEmail, newPassword);
-      setResetStatus('Password updated successfully.');
+      const res = await sendResetPasswordCode(resetEmail);
+      setResetStatus(res.message);
+      setResetStep('enterCode');
     } catch (err) {
-      console.error('Error resetting password:', err);
-      setResetStatus('Failed to reset password. Please try again.');
+      console.error(err);
+      setResetError('Failed to send reset code. Please check email.');
     }
   };
+
+  const handleVerifyResetCode = async () => {
+    setResetError('');
+    setResetStatus('');
+    try {
+      const res = await verifyResetPasswordCodeAndReset(resetEmail, resetCode, newPassword);
+      console.log("res", res)
+      setResetStatus('Password reset successful. You can now log in.');
+      setResetStep('enterEmail');
+      setResetCode('');
+      setNewPassword('');
+    } catch (err) {
+      console.error(err);
+      setResetError('Invalid reset code or error resetting password.');
+    }
+  };
+
+  // const handlePasswordReset = async () => {
+  //   setResetStatus('');
+  //   try {
+  //     await resetPassword(resetEmail, newPassword);
+  //     setResetStatus('Password updated successfully.');
+  //   } catch (err) {
+  //     console.error('Error resetting password:', err);
+  //     setResetStatus('Failed to reset password. Please try again.');
+  //   }
+  // };
 
   const handleTwoFactorCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Allow only numbers and limit to 6 digits
@@ -262,6 +291,58 @@ const LoginComponent: React.FC = () => {
       </div>
     );
   }
+
+  const ForgotPasswordDialog = (
+    <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Reset Password</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          {resetStep === 'enterEmail' && (
+            <>
+              <div>
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                />
+              </div>
+              {resetError && <p className="text-red-500">{resetError}</p>}
+              <Button onClick={handleSendResetCode}>Send Reset Code</Button>
+            </>
+          )}
+
+          {resetStep === 'enterCode' && (
+            <>
+              <div>
+                <Label>Reset Code</Label>
+                <Input
+                  type="text"
+                  value={resetCode}
+                  onChange={(e) => setResetCode(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>New Password</Label>
+                <Input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </div>
+              {resetError && <p className="text-red-500">{resetError}</p>}
+              <Button onClick={handleVerifyResetCode}>Reset Password</Button>
+            </>
+          )}
+
+          {resetStatus && <p className="text-green-600">{resetStatus}</p>}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 
   // Main Login Screen
   return (
@@ -381,7 +462,7 @@ const LoginComponent: React.FC = () => {
         </Card>
       </div>
 
-      <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+      {/* <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Reset Password</DialogTitle>
@@ -411,7 +492,8 @@ const LoginComponent: React.FC = () => {
             <Button onClick={handlePasswordReset}>Reset Password</Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+      {ForgotPasswordDialog}
     </div>
   );
 };
