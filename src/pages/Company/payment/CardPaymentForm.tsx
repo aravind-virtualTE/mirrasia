@@ -46,6 +46,9 @@ const cardElementStyle = {
 // Country data with display names and ISO codes
 const countries = [
   { name: "United States", code: "US" },
+  { name: "Hong Kong", code: "HK" },
+  { name: "Singapore", code: "SG" },
+  { name: "South Korea", code: "KR" },
   { name: "Canada", code: "CA" },
   { name: "United Kingdom", code: "GB" },
   { name: "Australia", code: "AU" },
@@ -53,10 +56,7 @@ const countries = [
   { name: "Japan", code: "JP" },
   { name: "Germany", code: "DE" },
   { name: "France", code: "FR" },
-  { name: "India", code: "IN" },
-  { name: "Brazil", code: "BR" },
-  { name: "Hong Kong", code: "HK" },
-  { name: "Singapore", code: "SG" },
+  { name: "India", code: "IN" },  
 ];
 
 export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPaymentFormProps) {
