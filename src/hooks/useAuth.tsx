@@ -172,8 +172,19 @@ export const verify2Fa =async (userId: string, disableCode: string) => {
 export const verify2FaLogin =async (userId: string, disableCode: string) => {
   const response = await api.post(`/auth/verify-2fa-login`, {token: disableCode, userId});
    if(response.data.success) {
-      return response.data;
+      
    }else{
       return { success: false, message: "2FA disabled successfully" }
    }
+}
+
+
+export const sendResetPasswordCode  =async (email: string) => {
+  const response = await api.post(`/auth/send-reset-password-code`, {email});
+   return response.data;
+}
+
+export const verifyResetPasswordCodeAndReset   =async (email: string, code:string, newPassword: string) => {
+  const response = await api.post(`/auth/verify-reset-password-code`,{ email, code, newPassword });
+   return response.data;
 }
