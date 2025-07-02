@@ -124,7 +124,7 @@ const AccountingTaxationInfo: React.FC = () => {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="description" className="text-base font-semibold">
-                            {t('CompanyInformation.doYouUseSoftware')}<span className="text-red-500 font-bold ml-1">*</span>
+                            {t('CompanyInformation.doYouUseSoftware')}
                             </Label>
                             <Input
                                 id="description"

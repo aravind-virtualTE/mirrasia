@@ -167,7 +167,6 @@ const IncorporationForm = () => {
             const finYearEnd = finalForm.accountingTaxInfo.finYearEnd
             const bookKeepCycle = finalForm.accountingTaxInfo.bookKeepCycle
             const implementSoftware = finalForm.accountingTaxInfo.implementSoftware
-            const anySoftwareInUse = finalForm.accountingTaxInfo.anySoftwareInUse
             const emptyNameShareholders = shareHolderAtom.shareHolders.filter(
                 (shareholder) => !shareholder.name.trim()
             );
@@ -185,7 +184,7 @@ const IncorporationForm = () => {
                 });
                 return
             }
-            else if (finYearEnd == '' || bookKeepCycle == undefined || implementSoftware == undefined || anySoftwareInUse == '') {
+            else if (finYearEnd == '' || bookKeepCycle == undefined || implementSoftware == undefined ) {
                 toast({
                     title: "Fill Details.",
                     description: "Fill the required fields in Accounting and taxation",
