@@ -49,6 +49,7 @@ export interface UsaFormData {
     }
   }[];
   designatedContact: string | number;
+  beneficialOwner: string | number;
   accountingDataAddress: string;
   isTermsAndConditionsAccepted: string;
   paymentOption: string;
@@ -108,6 +109,7 @@ const initialFormState: UsaFormData = {
   noOfOfficers: '',
   shareHolders: [],
   designatedContact: '',
+  beneficialOwner:"",
   accountingDataAddress: '',
   isTermsAndConditionsAccepted: '',
   paymentOption: '',
