@@ -96,7 +96,7 @@ const Layout: React.FC = () => {
                 navigate('/accounting-support-list');
             },
         },
-         {
+        {
             icon: <Briefcase className="h-6 w-6" />,
             label: t("sideItems.bankServices"),
             roles: ['admin', 'master'],
