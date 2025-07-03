@@ -989,6 +989,7 @@
         "desgContact":"Designated Contact Person",
         "desgnToolTip":"You must designate a designated contact person to handle company-related communications. This designated contact person will be responsible for all major communications with our company, including inquiries about the company and business matters, progress checks, and registered documents. The designated contact person will have access to your company's information and documents, including mail. The designation of one contact person is free of charge. For two or more persons, there will be a fee of USD 250 per person per year. The designated contact person, designated by your company and separately registered with us, serves to protect your company's information and prevent confusion in business. (The designated contact person must submit a copy of their passport, proof of address, and undergo a verification process, similar to shareholders and officers.)",
         "selectSignificantController":"Select significant Controller",
+        "selectDesignatedContact":"Enter Designated Contact Person",
         "shareholderOfficer":"Shareholder(s) / Officer(s) Name:",
         "ownerShp0":"Ownership is currently 0%. Please assign ownership.",
         "ownerShip100":"Ownership perfectly distributed at 100%"
