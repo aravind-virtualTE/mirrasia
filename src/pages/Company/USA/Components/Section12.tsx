@@ -25,6 +25,11 @@ const Section12 = () => {
         setFormData({ ...formData, designatedContact: value });
 
     };
+     const handleSelectBO = (value: string | number) => {
+        // console.log('Selected Value:', value);
+        setFormData({ ...formData, beneficialOwner: value });
+
+    };
 
     return (
         <div className='flex flex-col md:flex-row w-full p-4'>
@@ -60,6 +65,32 @@ const Section12 = () => {
                         placeholder={t("usa.bInfo.shrldSection.selectDesignatedContact")}
                         onSelect={handleSelect}
                         selectedValue={formData.designatedContact}
+                    />
+                ) : (
+                    "Please Fill Shareholder/Director"
+                )}
+
+                 <div className="space-y-2">
+                    <Label htmlFor="relationbtwauth" className="inline-flex">
+                        {t("usa.bInfo.shrldSection.benificialOwner")} <span className="text-red-500 font-bold ml-1 flex">*
+                            {/* <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-[500px] text-base">
+                                {t("usa.bInfo.shrldSection.desgnToolTip")}
+                                </TooltipContent>
+                            </Tooltip> */}
+                        </span>
+                    </Label>
+                </div>
+                
+                {formData.shareHolders.length > 0 ? (
+                    <DropdownSelect
+                        options={shrDirArr}
+                        placeholder={t("usa.bInfo.shrldSection.selectBenificial")}
+                        onSelect={handleSelectBO}
+                        selectedValue={formData.beneficialOwner}
                     />
                 ) : (
                     "Please Fill Shareholder/Director"
