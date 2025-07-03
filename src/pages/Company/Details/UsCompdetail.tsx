@@ -142,7 +142,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       data: {
         Country: 'United States',
         'Country Code': 'US',
-        State: formData.selectedState,
+        State: formData.selectedState?.name || 'N/A',
         'Entity Type': formData.selectedEntity,
       },
     });
