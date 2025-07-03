@@ -13,6 +13,7 @@
     "regComp": "회사 등록",
     "compDocs": "회사 문서",
     "switchServices": "서비스 전환 목록",
+    "bankServices":"은행 서비스",
     "accountList": "회계 목록",
     "signDocs": "문서 서명",
     "mirrChat": "MirrAsia 채팅"
@@ -41,7 +42,7 @@
     "regComp": "신규 사업체를 빠르고 효율적으로 등록하세요",
     "openComp": "홍콩 개인 은행 계좌 개설",
     "streamlined": "간소화된 홍콩 개인 은행 계좌 개설 절차",
-    "switchServices": "저희 서비스로 전환",
+    "switchServices": "저희 서비스로 전환",    
     "SserDesc": "저희의 포괄적인 비즈니스 솔루션으로 원활하게 전환"
   },
   "dashServices": {
