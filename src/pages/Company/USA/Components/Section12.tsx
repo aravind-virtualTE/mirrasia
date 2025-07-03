@@ -57,7 +57,7 @@ const Section12 = () => {
                 {formData.shareHolders.length > 0 ? (
                     <DropdownSelect
                         options={shrDirArr}
-                        placeholder={t("usa.bInfo.shrldSection.selectSignificantController")}
+                        placeholder={t("usa.bInfo.shrldSection.selectDesignatedContact")}
                         onSelect={handleSelect}
                         selectedValue={formData.designatedContact}
                     />
