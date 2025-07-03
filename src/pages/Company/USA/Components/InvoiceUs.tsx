@@ -14,10 +14,10 @@ const InvoiceUs: React.FC = () => {
   const selectedServices = formData.serviceItemsSelected
   const state = formData.selectedState
   const entity = formData.selectedEntity
-  const basePrice = getEntityBasicPrice(state, entity)
+  const basePrice = getEntityBasicPrice(state?.id ?? "", entity)
 
   const baseFee = {
-    description: `${state} (${entity})`,
+    description: `${state?.name ?? ""} (${entity})`,
     originalPrice: Number(basePrice?.price || 0),
     discountedPrice: Number(basePrice?.price || 0),
     note: basePrice?.note || "",

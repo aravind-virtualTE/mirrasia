@@ -4,7 +4,8 @@ export interface UsaFormData {
   _id: string;
   email: string;
   userId: string;
-  selectedState: string | number;
+  // selectedState: string | number;
+  selectedState: { id: string  ; name: string } | undefined;
   selectedEntity: string;
   noOfSharesSelected: string | number;
   name: string;
@@ -73,7 +74,7 @@ const initialFormState: UsaFormData = {
   _id: '',
   userId: '',
   email: '',
-  selectedState: '',
+  selectedState: undefined,
   selectedEntity: '',
   noOfSharesSelected: '',
   name: '',

@@ -15,18 +15,19 @@ const UsServiceSelection: React.FC = () => {
   const [selectedServices, setSelectedServices] = useState<string[]>(formData.serviceItemsSelected)
   const state = formData.selectedState
   const entity = formData.selectedEntity
-  const basePriceData = getEntityBasicPrice(state, entity)
+  console.log("Selected State:", state);
+  const basePriceData = getEntityBasicPrice(state?.id ?? "", entity)
 
   const baseFees = [
     {
       id: "state",
-      description: `${state} (${entity})`,
+      description: `${state?.name ?? ""} (${entity})`,
       originalPrice: Number(basePriceData?.price || 0),
       discountedPrice: Number(basePriceData?.price || 0),
       note: `${basePriceData?.note || ""}`,
       isHighlight: false,
       isOptional: false,
-      isChecked: false, // Add isChecked property
+      isChecked: false,
     },
   ]
 

@@ -19,6 +19,12 @@ import {
   useEffect,
   // useState 
 } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { getIncorporationListByUserId } from "@/services/dataFetch";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
@@ -103,7 +109,8 @@ const Dashboard = () => {
       })
     }
   }
-  // console.log("users", typeof user.tasks)
+  console.log("users", cList)
+  console.log("allList",allList)
   const tasks = user?.tasks || [];
   return (
     < >
@@ -111,110 +118,139 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="flex-1 p-8">
         <h1 className="text-2xl font-semibold mb-6">{t('dashboard.welcome')}User {t('dashboard.welcome1')}</h1>
-        <h3 className="text-blue-500 font-semibold border-b pb-2">Outstanding Tasks</h3>
-        {tasks.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[50px]">S.No</TableHead>
-                <TableHead>Task Name</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tasks.map((task: { label: string; _id: string }, index: number) => (
-                <TableRow key={task._id || index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{task.label}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        ) : (
-          <p className="text-muted-foreground">No outstanding tasks</p>
-        )}
-        {/* Companies Table */}
-        {cList.length > 0 && <div className="mb-12">
-          <h2 className="text-xl font-semibold mb-4">{t('dashboard.companiesH')}</h2>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="py-2 px-3">S.No</TableHead>
-                  <TableHead className="w-[40%] py-2 px-3">{t('dashboard.tCompName')}</TableHead>
-                  <TableHead className="w-[20%] py-2 px-3">{t('dashboard.tcountry')}</TableHead>
-                  <TableHead className="w-[20%] py-2 px-3">{t('dashboard.status')}</TableHead>
-                  <TableHead className="w-[20%] py-2 px-3">{t('dashboard.incorpoDate')}</TableHead>
-                  <TableHead className="py-2 px-3">Edit</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {allList.map((company, idx) => {
-                  // Type cast each company
-                  const typedCompany = company as {
-                    companyName: string[];
-                    applicantName: string;
-                    country: { code: string; name: string };
-                    status: string;
-                    incorporationDate: string | null;
-                    _id: string;
-                  };
-
-                  // Format incorporation date
-                  let date = typedCompany.incorporationDate;
-                  if (date) {
-                    const [year, month, day] = date.split("T")[0].split("-");
-                    date = `${day}-${month}-${year}`;
-                  }
-
-                  // Filter valid company names
-                  const validCompanyNames = typedCompany.companyName.filter((name) => name.trim() !== "");
-
-                  return (
-                    <TableRow key={typedCompany._id}>
-                      {/* Added padding classes to TableCell */}
-                      <TableCell className="py-2 px-3">{idx + 1}</TableCell>
-                      <TableCell
-                        className={cn(
-                          "font-medium cursor-pointer py-2 px-3" // Combined existing classes with padding
-                        )}
-                        onClick={() => handleRowClick(typedCompany._id, typedCompany.country.code)}
-                      >
-                        {validCompanyNames.length > 0 ? validCompanyNames.join(", ") : ""}
-                      </TableCell>
-
-                      <TableCell className="py-2 px-3">{typedCompany.country.name || "N/A"}</TableCell>
-
-                      <TableCell className="py-2 px-3">
-                        <span
-                          className={cn(
-                            "inline-flex items-center rounded-full text-xs font-medium",
-                            typedCompany.status === "Active"
-                              ? "bg-green-100 text-green-800"
-                              : typedCompany.status === "Pending"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
-                          )}
-                        >
-                          {typedCompany.status}
-                        </span>
-                      </TableCell>
-
-                      <TableCell className="py-2 px-3">{date || "N/A"}</TableCell>
-                      <TableCell className="py-2 px-3">
-                        <button
-                          className="transition"
-                          onClick={() => handleEditClick(typedCompany._id, typedCompany.country.code, typedCompany.status)}
-                        >
-                          <Pencil size={16} />
-                        </button>
-                      </TableCell>
+       <Accordion type="multiple" className="w-full space-y-4" defaultValue={["outstanding-tasks", "companies-list"]}>
+          {/* Outstanding Tasks Accordion */}
+          <AccordionItem value="outstanding-tasks" className="border rounded-lg">
+            <AccordionTrigger className="px-4 py-3 hover:no-underline">
+              <div className="flex items-center justify-between w-full">
+                <h3 className="text-primary font-semibold text-left">
+                  Outstanding Tasks
+                </h3>
+                <span className="text-sm text-muted-foreground mr-4">
+                  {tasks.length > 0 ? `${tasks.length} task${tasks.length > 1 ? 's' : ''}` : 'No tasks'}
+                </span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4">
+              {tasks.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[50px]">S.No</TableHead>
+                      <TableHead>Task Name</TableHead>
                     </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
-        </div>}
+                  </TableHeader>
+                  <TableBody>
+                    {tasks.map((task: { label: string; _id: string }, index: number) => (
+                      <TableRow key={task._id || index}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{task.label}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <p className="text-muted-foreground py-4">No outstanding tasks</p>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* Companies Table Accordion */}
+          {cList.length != 0 && (
+            <AccordionItem value="companies-list" className="border rounded-lg">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <div className="flex items-center justify-between w-full">
+                  <h3 className="text-primary font-semibold text-left">
+                    {t('dashboard.companiesH')}
+                  </h3>
+                  <span className="text-sm text-muted-foreground mr-4">
+                    {allList.length} compan{allList.length > 1 ? 'ies' : 'y'}
+                  </span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="py-2 px-3">S.No</TableHead>
+                        <TableHead className="w-[40%] py-2 px-3">{t('dashboard.tCompName')}</TableHead>
+                        <TableHead className="w-[20%] py-2 px-3">{t('dashboard.tcountry')}</TableHead>
+                        <TableHead className="w-[20%] py-2 px-3">{t('dashboard.status')}</TableHead>
+                        <TableHead className="w-[20%] py-2 px-3">{t('dashboard.incorpoDate')}</TableHead>
+                        <TableHead className="py-2 px-3">Edit</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {allList.map((company, idx) => {
+                        // Type cast each company
+                        const typedCompany = company as {
+                          companyName: string[];
+                          applicantName: string;
+                          country: { code: string; name: string };
+                          status: string;
+                          incorporationDate: string | null;
+                          _id: string;
+                        };
+
+                        // Format incorporation date
+                        let date = typedCompany.incorporationDate;
+                        if (date) {
+                          const [year, month, day] = date.split("T")[0].split("-");
+                          date = `${day}-${month}-${year}`;
+                        }
+
+                        // Filter valid company names
+                        const validCompanyNames = typedCompany.companyName.filter((name) => name.trim() !== "");
+
+                        return (
+                          <TableRow key={typedCompany._id}>
+                            <TableCell className="py-2 px-3">{idx + 1}</TableCell>
+                            <TableCell
+                              className={cn(
+                                "font-medium cursor-pointer py-2 px-3"
+                              )}
+                              onClick={() => handleRowClick(typedCompany._id, typedCompany.country.code)}
+                            >
+                              {validCompanyNames.length > 0 ? validCompanyNames.join(", ") : ""}
+                            </TableCell>
+
+                            <TableCell className="py-2 px-3">{typedCompany.country.name || "N/A"}</TableCell>
+
+                            <TableCell className="py-2 px-3">
+                              <span
+                                className={cn(
+                                  "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium",
+                                  typedCompany.status === "Active"
+                                    ? "bg-green-100 text-green-800"
+                                    : typedCompany.status === "Pending"
+                                      ? "bg-yellow-100 text-yellow-800"
+                                      : "bg-red-100 text-red-800"
+                                )}
+                              >
+                                {typedCompany.status}
+                              </span>
+                            </TableCell>
+
+                            <TableCell className="py-2 px-3">{date || "N/A"}</TableCell>
+                            <TableCell className="py-2 px-3">
+                              <button
+                                className="transition hover:text-blue-600"
+                                onClick={() => handleEditClick(typedCompany._id, typedCompany.country.code, typedCompany.status)}
+                              >
+                                <Pencil size={16} />
+                              </button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          )}
+        </Accordion>
         <MainFunctionalities />
         {/* Partners Section */}
         <div className="mb-12">
@@ -252,7 +288,6 @@ const Dashboard = () => {
                   </p>
                 </div>
               </div>
-
               {/* Support Details */}
               <div className="mt-4 grid gap-2 text-sm">
                 <p><strong>{t('ApplicantInfoForm.email')}:</strong> cs@mirrasia.com</p>

@@ -168,7 +168,7 @@ const IncorporateUSACompany = () => {
                         });
                         return
                     }
-                    if (emptyNameShareholders.length > 0 || state == "" || entity== "" || dContact == '') {
+                    if (emptyNameShareholders.length > 0 || state?.name == "" || entity== "" || dContact == '') {
                         toast({
                             title: "Fill Details (Shareholder(s) / Director(s)), State, designated Contact",
                             description: "Fill the required fields Shareholder(s) / Director(s)",

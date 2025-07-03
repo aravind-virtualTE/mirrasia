@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Label } from "@/components/ui/label"
@@ -16,10 +16,11 @@ import { useAtom } from "jotai";
 import { usaFormWithResetAtom } from "../UsState";
 import { useTheme } from "@/components/theme-provider";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import DropdownSelect from '@/components/DropdownSelect';
+// import DropdownSelect from '@/components/DropdownSelect';
 import Section9 from './Section9';
 import Section12 from './Section12';
 import Section13 from './Section13';
+import SearchSelectNew from '@/components/SearchSelect2';
 
 const list = [
   'LLC (limited liability company)', 'Corporation', 'Consultation required before proceeding'
@@ -30,19 +31,23 @@ export default function CompanyInformationUS() {
   const [formData, setFormData] = useAtom(usaFormWithResetAtom);
   const { theme } = useTheme();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  console.log("formData.selectedState",formData.selectedState)
+  const [selectedCountry, setSelectedCountry] = useState(formData.selectedState || {id : "", name : ""});
   const usaList = [
-    t('usa.Section2StateOptions.Delaware'),
-    t('usa.Section2StateOptions.Wyoming'),
-    t('usa.Section2StateOptions.California'),
-    t('usa.Section2StateOptions.New York'),
-    t('usa.Section2StateOptions.Washington'),
-    t('usa.Section2StateOptions.Washington D.C.'),
-    t('usa.Section2StateOptions.State of Texas'),
-    t('usa.Section2StateOptions.Nevada'),
-    t('usa.Section2StateOptions.Florida'),
-    t('usa.Section2StateOptions.Georgia'),
+    {id : "Delaware", name: t('usa.Section2StateOptions.Delaware')},
+    {id : "Wyoming", name: t('usa.Section2StateOptions.Wyoming')},
+    {id : "California", name: t('usa.Section2StateOptions.California')},
+    {id : "Washington", name: t('usa.Section2StateOptions.Washington')},
+    {id : "New York", name: t('usa.Section2StateOptions.New York')},
+    {id : "Washington D.C.", name: t('usa.Section2StateOptions.Washington D.C.')},
+    {id : "State of Texas", name: t('usa.Section2StateOptions.State of Texas')},
+    {id : "Nevada", name: t('usa.Section2StateOptions.Nevada')},
+    {id : "Florida", name: t('usa.Section2StateOptions.Florida')},
+    {id : "Georgia", name: t('usa.Section2StateOptions.Georgia')},
     // t('usa.Section2StateOptions.Other'),
   ];
+
+  console.log("usaNewList", usaList);
   const handleOptionChange = (value: string) => {
     setFormData({ ...formData, selectedEntity: value });
   };
@@ -55,9 +60,16 @@ export default function CompanyInformationUS() {
     setIsDialogOpen(false);
   };
 
-  const handleStateOptionChange = (value: string | number) => {
-    setFormData({ ...formData, selectedState: value });
-};
+  // const handleStateOptionChange = (value: string | number) => {
+  //   setFormData({ ...formData, selectedState: value });
+  // };
+
+  const handleCountrySelect = (item: { id: string; name: string }) => {
+        // console.log("code", item)
+        setSelectedCountry(item)
+        // setFormState({...formState, selectedCountry: item});
+        setFormData({ ...formData, selectedState: item });
+    };
 
   return (
     <>
@@ -74,7 +86,7 @@ export default function CompanyInformationUS() {
                 className="text-m font-semibold mb-0 cursor-pointer underline"
                 onClick={openDialog}
               >
-                 {t('usa.compInfo.infoHeading')}
+                {t('usa.compInfo.infoHeading')}
                 <span className="text-red-500">*</span>
               </h2>
             </aside>
@@ -108,7 +120,7 @@ export default function CompanyInformationUS() {
                 }`}
             >
               <h2 className="text-m font-semibold mb-0">
-               {t('usa.compInfo.stateSelection')}
+                {t('usa.compInfo.stateSelection')}
               </h2>
             </aside>
             <div className="w-full md:w-3/4 md:ml-4">
@@ -119,11 +131,18 @@ export default function CompanyInformationUS() {
               </div>
 
               <div className="space-y-2">
-                <DropdownSelect
+                {/* <DropdownSelect
                   options={usaList}
                   placeholder="Select..."
                   selectedValue={formData.selectedState}
                   onSelect={handleStateOptionChange}
+                /> */}
+                <SearchSelectNew
+                  items={usaList}
+                  placeholder="Select country"
+                  onSelect={handleCountrySelect}
+                  selectedItem={selectedCountry}
+                  disabled={false}
                 />
               </div>
             </div>
@@ -137,11 +156,11 @@ export default function CompanyInformationUS() {
       <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
         <DialogContent className="max-w-[70%] w-full mx-auto my-auto p-6">
           <DialogHeader className="text-center">
-            <DialogTitle className="text-2xl font-bold mb-2">              
+            <DialogTitle className="text-2xl font-bold mb-2">
               {t('usa.compInfo.corpandLlc')}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground mb-4">
-            {t('usa.compInfo.fundamentalDiff')}              
+              {t('usa.compInfo.fundamentalDiff')}
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[70vh] w-full pr-4">
@@ -171,19 +190,19 @@ const CorporationVsLLC = () => {
         <TableBody>
           <TableRow>
             <TableCell className="font-medium">{t('usa.compInfo.definition')}</TableCell>
-            <TableCell>{t('usa.compInfo.knownAsCorpo')}              
+            <TableCell>{t('usa.compInfo.knownAsCorpo')}
             </TableCell>
             <TableCell>
-            {t('usa.compInfo.llcProprietoryPartner')}             
+              {t('usa.compInfo.llcProprietoryPartner')}
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell className="font-medium"> {t('usa.compInfo.tax')}</TableCell>
             <TableCell>
-            {t('usa.compInfo.corporateTax')}              
+              {t('usa.compInfo.corporateTax')}
             </TableCell>
             <TableCell>
-            {t('usa.compInfo.llcIncome')}
+              {t('usa.compInfo.llcIncome')}
             </TableCell>
           </TableRow>
           <TableRow>
