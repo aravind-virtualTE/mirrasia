@@ -1,22 +1,20 @@
+import React from 'react'
+import { t } from 'i18next';
 import { useTheme } from '@/components/theme-provider';
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import React, { useState } from 'react'
 import { snsPlatforms } from '../../HongKong/constants';
-import { t } from 'i18next';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
+import { sgFormWithResetAtom } from '../SgState';
+import { useAtom } from 'jotai';
 
 const ApplicantInfo: React.FC = () => {
     const { theme } = useTheme();
-    const [selectedRelation, setSelectedRelation] = React.useState<string[]>([]);
-    const [otherTxt, setOtherTxt] = useState<string>("");
-    const [phoneNumber, setPhoneNumber] = useState<string>("");
-    const [snsPlatform, setSnsPlatform] = useState<string>("");
-    const [snsAccountId, setSnsAccountId] = useState<string>("");
+    const [formData, setFormData] = useAtom(sgFormWithResetAtom);
 
     const relationList = [
         {
@@ -41,7 +39,30 @@ const ApplicantInfo: React.FC = () => {
             isOther: true
         }
     ]
-    const isOtherSelected = selectedRelation.includes("other");
+    const isOtherSelected = formData.establishedRelationshipType.includes("other");
+
+    const handleChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        // console.log("name", name)
+        const values = [...formData.companyName];
+        values[index] = e.target.value;
+        setFormData({ ...formData, companyName: values });
+    }
+
+    const handleRelationshipChange = (relationshipId: string, checked: boolean) => {
+        setFormData({ ...formData, establishedRelationshipType: checked ? [...formData.establishedRelationshipType, relationshipId] : formData.establishedRelationshipType.filter((id) => id !== relationshipId) });
+    };
+
+     const handleSelectChange = (value: string) => {
+        // console.log("value", value)
+        setFormData({
+            ...formData,
+            snsAccountId: {
+                ...formData.snsAccountId,
+                id: value
+            }
+        })
+    }
+
     return (
         <Card>
             <CardContent>
@@ -62,13 +83,13 @@ const ApplicantInfo: React.FC = () => {
                             <Label htmlFor="name" className="text-sm font-semibold mb-2">
                                 Name of the applicant <span className="text-red-500">*</span>
                             </Label>
-                            <Input type="text" id="name" className="w-full p-2 border rounded-md" placeholder="Enter your name" required />
+                            <Input type="text" id="name" className="w-full p-2 border rounded-md" placeholder="Enter your name" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
                         </div>
                         <div className="space-y-2 mt-4">
                             <Label htmlFor="email" className="text-sm font-semibold mb-2">
                                 Email Address <span className="text-red-500">*</span>
                             </Label>
-                            <Input type="email" id="email" className="w-full p-2 border rounded-md" placeholder="Enter your email address" required />
+                            <Input type="email" id="email" className="w-full p-2 border rounded-md" placeholder="Enter your email address" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                         </div>
                         <div className="space-y-2 mt-4">
                             <Label htmlFor="companyName" className="text-sm font-semibold mb-2">
@@ -78,14 +99,22 @@ const ApplicantInfo: React.FC = () => {
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                        The company name must be written in basic English, and end with "Pte. Ltd.". If there is a previously established company with the same or similar corporate name, it cannot be accepted. Accordingly, if you enter the three possible company names at the bottom in the order of 1st choice, 2nd choice, 3rd choice, we will check the registration and apply the possible company names to the registered document in the order of your choice.
+                                            The company name must be written in basic English, and end with "Pte. Ltd.". If there is a previously established company with the same or similar corporate name, it cannot be accepted. Accordingly, if you enter the three possible company names at the bottom in the order of 1st choice, 2nd choice, 3rd choice, we will check the registration and apply the possible company names to the registered document in the order of your choice.
                                         </TooltipContent>
                                     </Tooltip>
                                 </span>
                             </Label>
-                            <Input type="companyName" id="companyName" className="w-full p-2 border rounded-md" placeholder="Enter your company name" required />
-                            <Input type="companyName" id="companyName" className="w-full p-2 border rounded-md" placeholder="Enter your company name" required />
-                            <Input type="companyName" id="companyName" className="w-full p-2 border rounded-md" placeholder="Enter your company name" required />
+                            {
+                                formData.companyName.map((name, index) => (
+                                    <Input
+                                        key={index}
+                                        id={`companyName${index}`}
+                                        placeholder={t('usa.AppInfo.namePlaceholder')}
+                                        value={name}
+                                        onChange={handleChange(index)}
+                                        required />
+                                ))
+                            }
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
@@ -95,13 +124,10 @@ const ApplicantInfo: React.FC = () => {
                                 <div key={option.id} className="flex items-start space-x-2">
                                     <Checkbox
                                         id={option.id}
-                                        checked={selectedRelation.includes(option.id)}
-                                        onCheckedChange={(checked) => {
-                                            const updated = checked
-                                                ? [...selectedRelation, option.id]
-                                                : selectedRelation.filter(id => id !== option.id);
-                                            setSelectedRelation(updated);
-                                        }}
+                                        checked={formData.establishedRelationshipType.includes(option.id)}
+                                        onCheckedChange={(checked) =>
+                                            handleRelationshipChange(option.id, checked as boolean)
+                                        }
                                         className={option.isOther ? "mt-2" : ""}
                                     />
                                     {option.isOther ? (
@@ -109,8 +135,8 @@ const ApplicantInfo: React.FC = () => {
                                             <Label htmlFor={option.id} className="font-normal">other</Label>
                                             {isOtherSelected && (
                                                 <Input
-                                                    value={otherTxt}
-                                                    onChange={(e) => setOtherTxt(e.target.value)}
+                                                    value={formData.isOtherRelation}
+                                                    onChange={(e) => setFormData({ ...formData, isOtherRelation: e.target.value })}
                                                     placeholder="Please specify"
                                                     className="w-full"
                                                 />
@@ -129,8 +155,8 @@ const ApplicantInfo: React.FC = () => {
                             <Input
                                 id="phoneNum"
                                 placeholder="Enter phone number"
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                value={formData.phoneNum || ''}
+                                onChange={(e) => setFormData({ ...formData, phoneNum: e.target.value })}
                                 required
                                 className="w-full"
                             />
@@ -141,8 +167,8 @@ const ApplicantInfo: React.FC = () => {
                                     SNS Platform
                                 </Label>
                                 <Select
-                                    value={snsPlatform}
-                                    onValueChange={setSnsPlatform}
+                                    value={formData.snsAccountId.id}
+                                    onValueChange={handleSelectChange}
                                 >
                                     <SelectTrigger id="snsPlatform" className="w-full">
                                         <SelectValue placeholder="Select SNS Platform" />
@@ -155,7 +181,7 @@ const ApplicantInfo: React.FC = () => {
                                         ))}
                                     </SelectContent>
                                 </Select>
-                              
+
                             </div>
                             <div className="col-span-8 space-y-2">
                                 <Label htmlFor="snsAccountId" className="text-sm">
@@ -163,12 +189,18 @@ const ApplicantInfo: React.FC = () => {
                                 </Label>
                                 <Input
                                     id="snsAccountId"
-                                    placeholder={`Enter your ${snsPlatform ? snsPlatforms.find(p => p.id === snsPlatform)?.name : 'SNS'} ID`}
-                                    value={snsAccountId}
-                                    onChange={(e) => setSnsAccountId(e.target.value)}
+                                    // placeholder={`Enter your ${snsPlatform ? snsPlatforms.find(p => p.id === snsPlatform)?.name : 'SNS'} ID`}
+                                    value={formData.snsAccountId.value || ''}
+                                    onChange={(e) => setFormData({
+                                        ...formData,
+                                        snsAccountId: {
+                                            ...formData.snsAccountId,
+                                            value: e.target.value
+                                        }
+                                    })}
                                     className="w-full"
                                 />
-                                
+
                             </div>
                         </div>
                     </div>

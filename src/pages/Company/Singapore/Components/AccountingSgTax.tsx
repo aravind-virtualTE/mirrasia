@@ -1,16 +1,18 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { useTheme } from '@/components/theme-provider';
 import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Input } from '@/components/ui/input';
+import { useAtom } from 'jotai';
+import { sgFormWithResetAtom } from '../SgState';
+import { t } from 'i18next';
 
 
 const AccountingSgTax: FC = () => {
     const { theme } = useTheme();
-    const [servicesSelection, setServicesSelection] = useState("");
-    const [servicesSelection1, setServicesSelection1] = useState("");
+    const [formData, setFormData] = useAtom(sgFormWithResetAtom);
 
     const bookkeepingCycleOptions = [
         { value: 'monthly', label: 'Monthly' },
@@ -25,6 +27,25 @@ const AccountingSgTax: FC = () => {
         { value: 'recommendation', label: 'Recommendation required' },
         { value: 'other', label: 'Other:' },
     ];
+    const finYears = [{id: "dec31",value: t("InformationIncorporation.dec31")}, {id: "mar31", value: t("InformationIncorporation.mar31")}, {id: "other", value: t("InformationIncorporation.paymentOption_other")}];
+
+    const onChangeFinYear = (value:string) => {
+        // console.log("Selected Financial Year End:", value);
+        const selectedItem = finYears.find(item => t(item.value) == t(value));
+        setFormData({ ...formData, finYearEnd:  selectedItem || {id: '', value : ""}  })
+    }
+
+    const onChangeBookKeep = (value:string) => {
+        // console.log("Selected Financial Year End:", value);
+        const selectedItem = bookkeepingCycleOptions.find(item => t(item.value) == t(value));
+        setFormData({ ...formData, bookKeeping:  selectedItem || {label: '', value : ""}  })
+    }
+
+    const onChangeOnlineBooking = (value:string) => {
+        // console.log("Selected Financial Year End:", value);
+        const selectedItem = onlineAccountList.find(item => t(item.value) == t(value));
+        setFormData({ ...formData, onlineBooking:  selectedItem || {label: '', value : ""}  })
+    }
     return (
         <div className='flex w-full p-4'>
             <aside
@@ -53,17 +74,19 @@ const AccountingSgTax: FC = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    <RadioGroup value={servicesSelection} onValueChange={setServicesSelection} className="gap-4">
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="December 31" id="year-yes" />
-                            <Label className="font-normal" htmlFor="year-yes">December 31</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="other" id="year-other" />
-                            <Label className="font-normal" htmlFor="year-other">Other</Label>
-                        </div>
-                        {servicesSelection === "other" && (
-                            <Input placeholder="Please specify" />
+                    <RadioGroup value={formData.finYearEnd?.value} onValueChange={onChangeFinYear} className="gap-4">
+                        {finYears.map((year) => (
+                            <div key={year.id} className="flex items-center space-x-2">
+                                <RadioGroupItem value={year.value} id={`year-${year.id}`} />
+                                <Label className="font-normal" htmlFor={`year-${year.id}`}>
+                                    {year.value}
+                                </Label>
+                            </div>
+                        ))}                       
+                        {formData.finYearEnd?.id === "other" && (
+                            <Input placeholder="Please specify" value={formData.otherFinYrEnd} onChange={
+                                (e) => setFormData({ ...formData, otherFinYrEnd: e.target.value })
+                            } />
                         )}
                     </RadioGroup>
                 </div>
@@ -72,7 +95,7 @@ const AccountingSgTax: FC = () => {
                         Bookkeeping cycle
                         <span className="text-red-500 inline-flex">*</span>
                     </Label>
-                    <RadioGroup value={servicesSelection} onValueChange={setServicesSelection} className="gap-4">
+                    <RadioGroup value={formData.bookKeeping?.value} onValueChange={onChangeBookKeep} className="gap-4">
                         {bookkeepingCycleOptions.map(option => (
                             <div key={option.value} className="flex items-center space-x-2">
                                 <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
@@ -81,8 +104,9 @@ const AccountingSgTax: FC = () => {
                                 </Label>
                             </div>
                         ))}
-                        {servicesSelection === "other" && (
-                            <Input placeholder="Please specify" />
+                        {formData.bookKeeping?.value === "other" && (
+                            <Input placeholder="Please specify" value={formData.otherBookKeep} onChange={
+                                (e) => setFormData({ ...formData, otherBookKeep: e.target.value })}  />
                         )}
                     </RadioGroup>
                 </div>
@@ -91,7 +115,7 @@ const AccountingSgTax: FC = () => {
                     Would you like to implement online accounting software - Xero?
                         <span className="text-red-500 inline-flex">*</span>
                     </Label>
-                    <RadioGroup value={servicesSelection1} onValueChange={setServicesSelection1} className="gap-4">
+                    <RadioGroup value={formData.onlineBooking?.value} onValueChange={onChangeOnlineBooking} className="gap-4">
                         {onlineAccountList.map(option => (
                             <div key={option.value} className="flex items-center space-x-2">
                                 <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
@@ -100,17 +124,17 @@ const AccountingSgTax: FC = () => {
                                 </Label>
                             </div>
                         ))}
-                        {servicesSelection1 === "other" && (
-                            <Input placeholder="Please specify" />
+                        {formData.onlineBooking?.value === "other" && (
+                            <Input placeholder="Please specify" value={formData.otherOnlineBooking} onChange={
+                                (e) => setFormData({ ...formData, otherOnlineBooking: e.target.value })} />
                         )}
                     </RadioGroup>
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
                         Do you currently use or have a separate accounting software you would like to use? (if any)
-                        <span className="text-red-500 inline-flex">*</span>
                     </Label>
-                    <Input placeholder="Please specify" />
+                    <Input placeholder="Please specify" value={formData.otherAccountingSoft} onChange={(e) => setFormData({ ...formData, otherAccountingSoft: e.target.value })}  />
                 </div>
             </div>
         </div>

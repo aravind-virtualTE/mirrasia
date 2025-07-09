@@ -88,7 +88,7 @@ const IncorporatePa: React.FC = () => {
         try {
             const response = await api.post("/company/pa-form", payload);
             if (response.status === 200) {
-                console.log("formdata", response.data);
+                // console.log("formdata", response.data);
                 localStorage.setItem("companyRecordId", response.data.data._id);
                 setFormData(response.data.data)
                 window.history.pushState(

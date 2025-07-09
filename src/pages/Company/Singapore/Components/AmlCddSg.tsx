@@ -1,85 +1,124 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useTheme } from '@/components/theme-provider';
 import { Card, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { HelpCircle } from 'lucide-react';
+// import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+// import { HelpCircle } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { sgFormWithResetAtom } from '../SgState';
+import { useAtom } from 'jotai';
+import { t } from 'i18next';
 
 const AmlCddSg: React.FC = () => {
     const { theme } = useTheme();
-    const [selectedRelation, setSelectedRelation] = useState<string[]>([]);
-    const [selectedEstablishment, setSelectedEstablishment] = useState<string[]>([]);
-    const [selectAccTaxSg, setSelectAccTaxSg] = useState<string[]>([]);
-    const [selectAccTaxExmptn, setSelectAccTaxExmptn] = useState<string[]>([]);
-    const [otherTxt, setOtherTxt] = useState<string>("");
-    const [selectPayTax, setSelectPayTax] = useState<string[]>([]);
-    const [answers, setAnswers] = useState<Record<string, string>>({});
-    const [otherTxt1, setOtherTxt1] = useState<string>("");
+    const [formData, setFormData] = useAtom(sgFormWithResetAtom);
+    const sgAccountingDeclarationIssues = formData.sgAccountingDeclaration
+    const annualRenewalTermsAgreement = formData.annualRenewalTermsAgreement
+    const hasLegalEthicalIssues = formData.hasLegalEthicalIssues
+    // const offshoreTaxExemptionQuestionIsues = formData.offshoreTaxExemptionQuestion
+    // const singaporeTaxFilingMythQuestion = formData.singaporeTaxFilingMythQuestion
 
-    const legalList = [
-        { "id": "yes", "label": "Yes" },
-        { "id": "no", "label": "No" },
-        { "id": "dontKnow", "label": "Do not know" },
-        { "id": "considerLegalHelp", "label": "Consider legal advice" },
-        { "id": "other", "label": "Other", isOther: true }
+    // const sanctionedTiesPresent = formData.sanctionedTiesPresent
+    // const restrictedCountriesWithActivity = formData.restrictedCountriesWithActivity
+    // const businessInCrimea = formData.businessInCrimea
+    // const involvedInRussianEnergyDefense = formData.involvedInRussianEnergyDefense
+
+    // const hasIssues = [
+    //     hasLegalEthicalIssues.id,
+    //     annualRenewalTermsAgreement.id,
+    //     restrictedCountriesWithActivity.id,
+    //     sanctionedTiesPresent.id,
+    //     businessInCrimea.id,
+    //     involvedInRussianEnergyDefense.id
+    // ].some(value => (value) != "no");
+
+    const list = [
+        { id: "yes", value: "AmlCdd.options.yes" }, { id: "no", value: "AmlCdd.options.no" }, { id: "unknown", value: "AmlCdd.options.unknown" }, { id: "heading", value: "SwitchService.Consultation.heading" }
     ]
     const establishList = [
-        { "id": "yes", "label": "Yes" },
-        { "id": "no", "label": "No" },
-        { "id": "handleOwn", "label": "I/We can handle on our own after incorporation" },
-        { "id": "fixedCostEveryYr", "label": "If there is a fixed cost every year after incorporation, I have no intention to establish it." },
-        { "id": "consultationProceeding", "label": "Consultation required before proceeding" },
-    ]
-    const accTaxList = [
-        { "id": "yes", "label": "Yes" },
-        { "id": "no", "label": "No" },
-        { "id": "handleOwn", "label": "I/We can handle on our own after incorporation" },
-        { "id": "consultationRequired", "label": "Consultation required before proceeding" },
-    ]
-    const applyTaxList = [
-        { "id": "yes", "label": "Yes (Able to bear the fees accompanying offshore income claims and handling the inquiry letters from the IRD)" },
-        { "id": "handleOwnAfter", "label": "I/We can handle on our own after incorporation" },
-        { "id": "selfAfterIncorporation", "label": "In-house self-solving after incorporation" },
-        { "id": "consultationRequired", "label": "Consultation required before proceeding" },
-    ]
-    const payTaxesList = [
-        { "id": "yes", "label": "Yes" },
-        { "id": "no", "label": "No" },
-        { "id": "dontKnow", "label": "I/We can handle on our own after incorporation" },
-        { "id": "considerLegalHelp", "label": "I/We have heard about this but I/we have no such a plan to do it." },
-        { "id": "consultationRequired", "label": "Consultation required before proceeding" },
-        { "id": "other", "label": "Other", isOther: true }
-    ]
-    const isOtherSelected = selectedRelation.includes("other");
-    const isOtherSelected1 = selectPayTax.includes("other");
+    { "id": "yes", "value": "AmlCdd.options.yes" },
+    { "id": "no", "value": "AmlCdd.options.no" },
+    { "id": "handleOwnIncorpo", "value": "usa.AppInfo.handleOwnIncorpo" },
+    { "id": "didntIntedEveryYear", "value": "usa.AppInfo.didntIntedEveryYear" },
+    { "id": "consultationRequired", "value": "usa.AppInfo.consultationRequired" }
+]
+
+    // const applyTaxList = [
+    //     { "id": "yes", "value": "Yes (Able to bear the fees accompanying offshore income claims and handling the inquiry letters from the IRD)" },
+    //     { "id": "no", "value": "No (I/We can handle on our own after incorporation)" },
+    //     { "id": "selfAfterIncorporation", "value": "In-house self-solving after incorporation" },
+    //     { "id": "consultationRequired", "value": "Consultation required before proceeding" },
+    // ]
+    // const payTaxesList = [
+    //     { "id": "yes", "value": "Yes" },
+    //     { "id": "no", "value": "No" },
+    //     { "id": "dontKnow", "value": "I/We can handle on our own after incorporation" },
+    //     { "id": "considerLegalHelp", "value": "I/We have heard about this but I/we have no such a plan to do it." },
+    //     { "id": "consultationRequired", "value": "Consultation required before proceeding" },
+    //     // { "id": "other", "label": "Other", isOther: true }
+    // ]
     const questions = [
         {
-            id: "q1",
-            text: "Does the Singapore company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)? *",
+            id: "restrictedCountriesWithActivity",
+            value: "Does the Singapore company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)? *",
         },
         {
-            id: "q2",
-            text: "To the best of your knowledge, does the Singapore company or any of the company’s connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by the following bodies: UN, EU, UKHMT, HKMA, OFAC, as part of local sanctions law? *",
+            id: "sanctionedTiesPresent",
+            value: "To the best of your knowledge, does the Singapore company or any of the company’s connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by the following bodies: UN, EU, UKHMT, HKMA, OFAC, as part of local sanctions law? *",
         },
         {
-            id: "q3",
-            text: "To the best of your knowledge, does the Singapore company have any current or planned business activities connected or other related parties in Crimea/Sevastopol Regions? *",
+            id: "businessInCrimea",
+            value: "To the best of your knowledge, does the Singapore company have any current or planned business activities connected or other related parties in Crimea/Sevastopol Regions? *",
         },
         {
-            id: "q4",
-            text: "To the best of your knowledge, does the Singapore company have any current or planned exposure to Russia in the energy (oil/gas) sector, the military, or defense? *",
+            id: "involvedInRussianEnergyDefense",
+            value: "To the best of your knowledge, does the Singapore company have any current or planned exposure to Russia in the energy (oil/gas) sector, the military, or defense? *",
         },
     ];
     const options = ["Yes", "No", "I/We have no idea"];
-    const handleAnswerChange = (questionId:string, value : string) => {
-        setAnswers((prev) => ({
-            ...prev,
-            [questionId]: value,
-        }));
+    const handleAnswerChange = (question: { id: string, value: string }, value: string) => {
+        // console.log("value", question)
+         setFormData({ ...formData, [question.id]:  value || {id: '', value : ""}  })
+        // setAnswers((prev) => ({
+        //     ...prev,
+        //     [question.id] : value,
+        // }));
     };
+
+    const handleQuestionChange = (value: string) => {
+        const selectedItem = list.find(item => t(item.value) == t(value));
+        setFormData({
+            ...formData,
+            hasLegalEthicalIssues: selectedItem || { id: '', value: "" }
+        })
+    };
+
+    const handleQuestion2Change = (value: string) => {
+        const selectedItem = establishList.find(item => t(item.value) == t(value));
+        setFormData({ ...formData, annualRenewalTermsAgreement:  selectedItem || {id: '', value : ""}  })
+    };
+
+    const handleAccountingDecChange = (value: string) => {
+        const selectedItem = list.find(item => t(item.value) == t(value));
+        setFormData({
+            ...formData,
+            sgAccountingDeclaration: selectedItem || { id: '', value: "" }
+        })
+    };
+
+    // const handleOffShoreChange = (value: string) => {
+    //     const selectedItem = applyTaxList.find(item => t(item.value) == t(value));
+    //     setFormData({
+    //         ...formData,
+    //         offshoreTaxExemptionQuestion: selectedItem || { id: '', value: "" }
+    //     })
+    // };
+
+    // const handleCompAcquitanceChange = (value: string) => {
+    //     const selectedItem = payTaxesList.find(item => t(item.value) == t(value));
+    //     setFormData({ ...formData, singaporeTaxFilingMythQuestion:  selectedItem || {id: '', value : ""}  })
+    // };
+
     return (
         <Card>
             <CardContent>
@@ -96,84 +135,76 @@ const AmlCddSg: React.FC = () => {
                         <p className="text-sm text-gray-600">This section is intended to reduce misunderstandings between each other in the future by identifying the client's business intentions and checking in advance whether they match the services we provide. Please answer the questions accurately and we will offer our services accordingly.</p>
                     </aside>
                     <div className="w-3/4 ml-4">
-                        <div className="space-y-2">
+                        <div className="space-y-2 pb-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                                Are there any legal or ethical issues such as money laundering, gambling, tax evasion, asset concealment, avoidance of illegal business, fraud, etc.?<span className="text-red-500">*</span>
+                                Does the purpose of incorporating a Singapore company raise legal or ethical issues such as money laundering, gambling, tax evasion, asset concealment, evasion of the law for illegal business, fraud, etc.?<span className="text-red-500">*</span>
                             </Label>
-                            {legalList.map((option) => (
-                                <div key={option.id} className="flex items-start space-x-2">
-                                    <Checkbox
-                                        id={option.id}
-                                        checked={selectedRelation.includes(option.id)}
-                                        onCheckedChange={(checked) => {
-                                            const updated = checked
-                                                ? [...selectedRelation, option.id]
-                                                : selectedRelation.filter(id => id !== option.id);
-                                            setSelectedRelation(updated);
-                                        }}
-                                        className={option.isOther ? "mt-2" : ""}
-                                    />
-                                    {option.isOther ? (
-                                        <div className="space-y-1 w-full">
-                                            <Label htmlFor={option.id} className="font-normal">other</Label>
-                                            {isOtherSelected && (
-                                                <Input
-                                                    value={otherTxt}
-                                                    onChange={(e) => setOtherTxt(e.target.value)}
-                                                    placeholder="Please specify"
-                                                    className="w-full"
-                                                />
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
-                                    )}
-                                </div>
-                            ))}
+                            <RadioGroup
+                                value={t(hasLegalEthicalIssues.value || '')}
+                                onValueChange={(value) => handleQuestionChange(value)}
+                                disabled={formData.isDisabled}
+                            >
+                                {
+                                    list.map((item, idx) => {
+                                        return (
+                                            <div className="flex items-center space-x-2" key={`alt${idx}`}>
+                                                <RadioGroupItem value={t(item.value)} id={`legal1234-${item.id}`} />
+                                                <Label htmlFor={`legal1234-${item}`} className="text-sm font-normal">
+                                                    {t(item.value)}
+                                                </Label>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </RadioGroup>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-2 pb-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                                After the establishment of the Singapore company, annual renewal, secretary service renewal, business registration renewal, accounting/tax, etc. will occur every year, and all these tasks are accompanied by an obligation to provide related expenses and documentations. Do you agree with this?<span className="text-red-500">*</span>
+                                After the incorporation of a Singapore corporation, there will be tasks such as annual renewal, secretary service renewal, business renewal, accounting/taxation, etc., and all of these tasks entail related costs and obligations to provide information. Do you agree to this?<span className="text-red-500">*</span>
                             </Label>
-                            {establishList.map((option) => (
-                                <div key={option.id} className="flex items-start space-x-2">
-                                    <Checkbox
-                                        id={option.id}
-                                        checked={selectedEstablishment.includes(option.id)}
-                                        onCheckedChange={(checked) => {
-                                            const updated = checked
-                                                ? [...selectedEstablishment, option.id]
-                                                : selectedEstablishment.filter(id => id !== option.id);
-                                            setSelectedEstablishment(updated);
-                                        }}
-
-                                    />
-                                    <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
-                                </div>
-                            ))}
+                            <RadioGroup
+                                value={t(annualRenewalTermsAgreement.value || '')}
+                                onValueChange={(value) => handleQuestion2Change(value)}
+                                disabled={formData.isDisabled}
+                            >
+                                {
+                                    establishList.map((item, idx) => {
+                                        return (
+                                            <div className="flex items-center space-x-2" key={`use${idx}`}>
+                                                <RadioGroupItem value={t(item.value)} id={`legal123-${item.id}`} />
+                                                <Label htmlFor={`legal123-${item.id}`} className="text-sm font-normal">
+                                                    {t(item.value)}
+                                                </Label>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </RadioGroup>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-2 pb-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                                When conducting accounting and taxation of the Singapore company, all bank statements, purchase data, sales data, expenditure proof data, and salary payment proof data during the accounting period must be submitted without false or distortion. We cannot arbitrarily or falsely write and handle this. Do you agree with this?<span className="text-red-500">*</span>
+                                When conducting accounting/tax affairs for a Singapore corporation, you must submit all bank transaction statements, purchase data, sales data, expenditure evidence, and salary payment evidence for the accounting period without any falsification or distortion. We cannot process these documents arbitrarily or falsily. Do you agree to this?<span className="text-red-500">*</span>
                             </Label>
-                            {accTaxList.map((option) => (
-                                <div key={option.id} className="flex items-start space-x-2">
-                                    <Checkbox
-                                        id={option.id}
-                                        checked={selectAccTaxSg.includes(option.id)}
-                                        onCheckedChange={(checked) => {
-                                            const updated = checked
-                                                ? [...selectAccTaxSg, option.id]
-                                                : selectAccTaxSg.filter(id => id !== option.id);
-                                            setSelectAccTaxSg(updated);
-                                        }}
-
-                                    />
-                                    <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
-                                </div>
-                            ))}
+                            <RadioGroup
+                                value={t(sgAccountingDeclarationIssues.value || '')}
+                                onValueChange={(value) => handleAccountingDecChange(value)}
+                                disabled={formData.isDisabled}
+                            >
+                                {
+                                    list.map((item, idx) => {
+                                        return (
+                                            <div className="flex items-center space-x-2" key={`alt${idx}`}>
+                                                <RadioGroupItem value={t(item.value)} id={`legal1234-${item.id}`} />
+                                                <Label htmlFor={`legal1234-${item}`} className="text-sm font-normal">
+                                                    {t(item.value)}
+                                                </Label>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </RadioGroup>                            
                         </div>
-                        <div className="space-y-2">
+                        {/* <div className="space-y-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
                                 Are you planning to apply for tax exemption through an offshore income claim after incorporating a Singapore company?<span className="text-red-500 inline-flex">*
                                     <Tooltip>
@@ -186,22 +217,24 @@ const AmlCddSg: React.FC = () => {
                                     </Tooltip>
                                 </span>
                             </Label>
-                            {applyTaxList.map((option) => (
-                                <div key={option.id} className="flex items-start space-x-2">
-                                    <Checkbox
-                                        id={option.id}
-                                        checked={selectAccTaxExmptn.includes(option.id)}
-                                        onCheckedChange={(checked) => {
-                                            const updated = checked
-                                                ? [...selectAccTaxExmptn, option.id]
-                                                : selectAccTaxExmptn.filter(id => id !== option.id);
-                                            setSelectAccTaxExmptn(updated);
-                                        }}
-
-                                    />
-                                    <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
-                                </div>
-                            ))}
+                            <RadioGroup
+                                value={t(offshoreTaxExemptionQuestionIsues.value || '')}
+                                onValueChange={(value) => handleOffShoreChange(value)}
+                                disabled={formData.isDisabled}
+                            >
+                                {
+                                    applyTaxList.map((item, idx) => {
+                                        return (
+                                            <div className="flex items-center space-x-2" key={`alt${idx}`}>
+                                                <RadioGroupItem value={t(item.value)} id={`legal1234-${item.id}`} />
+                                                <Label htmlFor={`legal1234-${item}`} className="text-sm font-normal">
+                                                    {t(item.value)}
+                                                </Label>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </RadioGroup>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
@@ -216,37 +249,25 @@ const AmlCddSg: React.FC = () => {
                                     </Tooltip>
                                 </span>
                             </Label>
-                            {payTaxesList.map((option) => (
-                                <div key={option.id} className="flex items-start space-x-2">
-                                    <Checkbox
-                                        id={option.id}
-                                        checked={selectPayTax.includes(option.id)}
-                                        onCheckedChange={(checked) => {
-                                            const updated = checked
-                                                ? [...selectPayTax, option.id]
-                                                : selectPayTax.filter(id => id !== option.id);
-                                            setSelectPayTax(updated);
-                                        }}
-
-                                    />
-                                    {option.isOther ? (
-                                        <div className="space-y-1 w-full">
-                                            <Label htmlFor={option.id} className="font-normal">other</Label>
-                                            {isOtherSelected1 && (
-                                                <Input
-                                                    value={otherTxt1}
-                                                    onChange={(e) => setOtherTxt1(e.target.value)}
-                                                    placeholder="Please specify"
-                                                    className="w-full"
-                                                />
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+                            <RadioGroup
+                                value={t(singaporeTaxFilingMythQuestion.value || '')}
+                                onValueChange={(value) => handleCompAcquitanceChange(value)}
+                                disabled={formData.isDisabled}
+                            >
+                                {
+                                    payTaxesList.map((item, idx) => {
+                                        return (
+                                            <div className="flex items-center space-x-2" key={`use${idx}`}>
+                                                <RadioGroupItem value={t(item.value)} id={`legal123-${item.id}`} />
+                                                <Label htmlFor={`legal123-${item.id}`} className="text-sm font-normal">
+                                                    {t(item.value)}
+                                                </Label>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </RadioGroup>                            
+                        </div> */}
                     </div>
                 </div>
                 <div className='flex w-full p-4'>
@@ -257,35 +278,29 @@ const AmlCddSg: React.FC = () => {
                             }`}
                     >
                         <h2 className="text-lg font-semibold mb-2">
-                           Transaction sanctions
+                            Transaction sanctions
                         </h2>
                         <p className="text-sm text-gray-600">This section is whether your business has transactions with the country(s) subject to sanctions regulated or recommended by FATF, UNGC, OFAC, etc. Please answer questions without distortions or errors.</p>
                     </aside>
                     <div className="w-3/4 ml-4">
                         {questions.map((question) => (
-                            <div className="space-y-2">
+                            <div className="space-y-2 pb-2" key={question.id} >
                                 {/* Question Text */}
                                 <p className="text-sm font-medium text-gray-800 mb-3">
-                                    {question.text}
+                                    {question.value}
                                 </p>
 
                                 {/* Radio Group for Options */}
                                 <RadioGroup
-                                    value={answers[question.id] || ""}
-                                    onValueChange={(value) => handleAnswerChange(question.id, value)}
+                                    value={formData[question.id] || ""}
+                                    onValueChange={(value) => handleAnswerChange(question, value)}
                                     className="space-y-2"
                                 >
                                     {options.map((option) => (
                                         <div key={option} className="flex items-center space-x-2">
                                             <RadioGroupItem
                                                 value={option}
-                                                id={`${question.id}-${option}`}
-                                                className={
-                                                    answers[question.id] === option
-                                                        ? "border-orange-500 text-orange-500"
-                                                        : ""
-                                                }
-                                            />
+                                                id={`${question.id}-${option}`}/>
                                             <Label
                                                 htmlFor={`${question.id}-${option}`}
                                                 className="font-normal"

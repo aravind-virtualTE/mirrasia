@@ -37,7 +37,7 @@ const AppointmentOfDirectors: React.FC = () => {
   useEffect(() => {
     setShrDirList(
       sdcInfo.shareHolders.map((item) =>
-        item.name === "" ? "Enter Value Above and Select Value" : item.name
+        item.name === "" ? "Fill Shareholder/Directors and select" : item.name
       )
     );
   }, [sdcInfo]);

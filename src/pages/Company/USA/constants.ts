@@ -77,39 +77,41 @@
   //   "Consulting services such as business regulatory confirmation, feasibility review, document preparation and operational advice (separate quotation)"
   // ];
   export const service_list = [
-    {
-      id: "otherEmi",
-      key: "usa.serviceSelection.otherEmi",
-      price: 400,
-    },
-    {
-      id: "usCompanyFormation",
-      key: "usa.serviceSelection.usCompanyFormation",
-    },
+    // {
+    //   id: "otherEmi",
+    //   key: "usa.serviceSelection.otherEmi",
+    //   price: 400,
+    // },
+    // {
+    //   id: "usCompanyFormation",
+    //   key: "usa.serviceSelection.usCompanyFormation",
+    // },
     {
       id: "airwallex",
       key: "usa.serviceSelection.airwallex",
+      price: 0,
     },
     {
       id: "payoneer",
       key: "usa.serviceSelection.payoneer",
+      price: 0,
     },
-    {
-      id: "bankAdvice",
-      key: "usa.serviceSelection.bankAdvice",
-    },
-    {
-      id: "usLegalOpinion",
-      key: "usa.serviceSelection.usLegalOpinion",
-    },
-    {
-      id: "stockLegalOpinion",
-      key: "usa.serviceSelection.stockLegalOpinion",
-    },
-    {
-      id: "consulting",
-      key: "usa.serviceSelection.consulting",
-    },
+    // {
+    //   id: "bankAdvice",
+    //   key: "usa.serviceSelection.bankAdvice",
+    // },
+    // {
+    //   id: "usLegalOpinion",
+    //   key: "usa.serviceSelection.usLegalOpinion",
+    // },
+    // {
+    //   id: "stockLegalOpinion",
+    //   key: "usa.serviceSelection.stockLegalOpinion",
+    // },
+    // {
+    //   id: "consulting",
+    //   key: "usa.serviceSelection.consulting",
+    // },
   ];
 
   

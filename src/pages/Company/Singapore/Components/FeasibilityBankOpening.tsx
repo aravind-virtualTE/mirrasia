@@ -5,37 +5,36 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/components/theme-provider";
 
-// Define the questions and their options
+// Define the questions and their options9488743306
 const questions = [
     {
-        id: "q1",
+        id: "sgIndustryType",
         text: "Is the purpose of the operation and account opening of the Singapore company related to the financial industry, precious metals, high-priced goods, oil, crypto-currency, gambling, etc.? *",
         options: ["Yes", "No", "I/We have no idea", "Other"],
     },
     {
-        id: "q2",
+        id: "sgPriorBusiness",
         text: "Is there any business that the director(s) of the Singapore company has established a corporation or business in his/her own or other countries in the past and is currently operating under his/her name? *",
         options: ["Yes", "No", "I/We have no idea"],
     },
     {
-        id: "q3",
+        id: "sgBusinessDuration",
         text: "Has the above business been established for more than 1 year, and are there any transaction records such as sales/purchases and tax payment data? *",
         options: ["Yes", "No", "I/We have no idea", "Other"],
     },
     {
-        id: "q4",
+        id: "sgBusinessSimilarity",
         text: "Is the purpose of operating the Singapore company and opening an account the same or similar to the above (existing) business type/trading items? *",
         options: ["Yes", "No", "Do not know", "Other"],
     },
     {
-        id: "q5",
+        id: "sgLanguageProficiency",
         text: "Can the director of the Singapore company communicate with the bank manager in English or Chinese? *",
         options: ["Yes", "No", "I/We have no idea"],
     },
 ];
 
 const FeasibilityBankOpening = () => {
-    // State to store answers and "Other" input values
     const [answers, setAnswers] = useState<Record<string, string>>({});
     const [otherInputs, setOtherInputs] = useState<Record<string, string>>({});
     const { theme } = useTheme();
