@@ -16,7 +16,7 @@ const Section12 = () => {
     const { theme } = useTheme();
     
     const shrDirArr = formData.shareHolders.map((item) => {
-        if (item.name == "") return "enter value above and select value";
+        if (item.name == "") return "Fill Shareholder/Directors and select";
         return item.name;
     })
 

@@ -30,7 +30,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
   
   const [shrDirList, setShrDirList] = useState(
     sdcInfo.shareHolders.map((item) => {
-      if (item.name == "") return "Enter Value Above and Select Value";
+      if (item.name == "") return "Fill Shareholder/Directors and select";
       return item.name;
     })
   );
@@ -38,7 +38,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
   useEffect(() => {
     setShrDirList(
       sdcInfo.shareHolders.map((item) => {
-        if (item.name == "") return "Enter Value Above and Select Value";
+        if (item.name == "") return "Fill Shareholder/Directors and select";
         return item.name;
       })
     );

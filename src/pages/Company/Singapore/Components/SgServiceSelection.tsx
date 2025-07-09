@@ -24,8 +24,8 @@ const SgServiceSelection: React.FC = () => {
     const optionalFees = service_list.map((service) => ({
         id: service.id,
         description: service.key,
-        originalPrice: 0,
-        discountedPrice: 0,
+        originalPrice: service.price,
+        discountedPrice: service.price,
         isHighlight: false,
         isOptional: true,
         isChecked: false
@@ -47,21 +47,15 @@ const SgServiceSelection: React.FC = () => {
             })
         }
     }
-    // Combine selected optional fees with base fees
-    //   const selectedOptionalFees = optionalFees.filter((fee) =>
-    //     selectedServices.includes(fee.id)
-    //   )
 
     const displayedFees = [...optionalFees.map(fee => ({
         ...fee,
         isChecked: selectedServices.includes(fee.id),
     }))]
 
-    //   const totalOriginal = baseFees.reduce((sum, item) => sum + item.originalPrice, 0)
-    //     + selectedOptionalFees.reduce((sum, item) => sum + item.originalPrice, 0)
+      const totalOriginal = displayedFees.reduce((sum, item) => sum + item.originalPrice, 0)
 
-    //   const totalDiscounted = baseFees.reduce((sum, item) => sum + item.discountedPrice, 0)
-    //     + selectedOptionalFees.reduce((sum, item) => sum + item.discountedPrice, 0)
+      const totalDiscounted = displayedFees.reduce((sum, item) => sum + item.discountedPrice, 0)
 
     return (
 
@@ -105,10 +99,10 @@ const SgServiceSelection: React.FC = () => {
                         <TableRow className="font-bold bg-gray-100">
                             <TableCell>{t('usa.serviceSelection.totalCost')}</TableCell>
                             <TableCell className="text-right line-through text-gray-500">
-                                USD {0} {/* totalOriginal */}
+                               USD {totalOriginal}
                             </TableCell>
                             <TableCell className="text-right text-yellow-600">
-                                USD {0} {/* totalDiscounted */}
+                                USD {totalDiscounted} 
                             </TableCell>
                         </TableRow>
                     </TableBody>

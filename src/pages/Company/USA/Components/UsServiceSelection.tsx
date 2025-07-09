@@ -58,9 +58,9 @@ const UsServiceSelection: React.FC = () => {
     }
   }
   // Combine selected optional fees with base fees
-  const selectedOptionalFees = optionalFees.filter((fee) =>
-    selectedServices.includes(fee.id)
-  )
+  // const selectedOptionalFees = optionalFees.filter((fee) =>
+  //   selectedServices.includes(fee.id)
+  // )
 
   const displayedFees = [...baseFees, ...optionalFees.map(fee => ({
     ...fee,
@@ -68,10 +68,10 @@ const UsServiceSelection: React.FC = () => {
   }))]
 
   const totalOriginal = baseFees.reduce((sum, item) => sum + item.originalPrice, 0)
-    + selectedOptionalFees.reduce((sum, item) => sum + item.originalPrice, 0)
+    // + selectedOptionalFees.reduce((sum, item) => sum + item.originalPrice, 0)
 
   const totalDiscounted = baseFees.reduce((sum, item) => sum + item.discountedPrice, 0)
-    + selectedOptionalFees.reduce((sum, item) => sum + item.discountedPrice, 0)
+    // + selectedOptionalFees.reduce((sum, item) => sum + item.discountedPrice, 0)
 
   return (
     <Card className="w-full max-w-4xl">

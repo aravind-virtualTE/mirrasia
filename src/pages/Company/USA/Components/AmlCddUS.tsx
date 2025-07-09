@@ -51,7 +51,7 @@ const AmlCddUS: React.FC = () => {
     };
     const handleQuestion2Change = (value: string) => {
         // console.log("value", value)
-        const selectedItem = list.find(item => t(item.value) == t(value));
+        const selectedItem = list2.find(item => t(item.value) == t(value));
         setFormData({ ...formData, annualRenewalTermsAgreement:  selectedItem || {id: '', value : ""}  })
     };
 

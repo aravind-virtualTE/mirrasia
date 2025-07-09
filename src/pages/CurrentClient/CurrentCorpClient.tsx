@@ -315,6 +315,37 @@ export default function CurrentCorpClient() {
         }
     };
 
+    const inviteEmail = async () =>{
+        try {
+            const response = await fetch('http://localhost:5000/api/currentclicorp/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // body: JSON.stringify({ customers }),
+            });
+
+            // if (!response.ok) {
+            //     throw new Error('Failed to send invite emails');
+            // }
+
+            const data = await response.json();
+            console.log("Invite emails sent successfully:", data);
+            toast({
+                title: "Emails sent",
+                description: `invite emails sent successfully`,
+            });
+        } catch (error) {
+            console.error("Error sending invite emails:", error);
+            toast({
+                title: "Error",
+                description: "Failed to send invite emails",
+                variant: "destructive",
+            });
+        }
+
+    }
+
     return (
         <div className="container mx-auto p-4">
             <div className="flex flex-col sm:flex-row items-center gap-4 py-2 my-4">
@@ -345,6 +376,9 @@ export default function CurrentCorpClient() {
 
 
                 <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:ml-auto">
+                    <Button onClick={inviteEmail}>
+                        invite
+                    </Button>
                     <AddCompanyDialog
                         isOpen={isDialogOpen}
                         onOpenChange={setIsDialogOpen}

@@ -702,7 +702,7 @@ export default function Profile() {
                       <>
                         <div className="text-center">
                           <h1 className="text-3xl font-bold text-gray-900 mb-2">Selfie Capture</h1>
-                          <p className="text-gray-600">Take a perfect selfie with camera controls</p>
+                          <p className="text-gray-600">Take a perfect selfie holding the passport in hand.</p>
                         </div>
                         <div className="relative mx-auto bg-black rounded-lg overflow-hidden max-w-[600px] w-full aspect-video">
                           {!capturedImage ? (

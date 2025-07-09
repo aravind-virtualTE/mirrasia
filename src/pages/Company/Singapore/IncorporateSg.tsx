@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card } from '@/components/ui/card';
 import ApplicantInfo from './Components/ApplicantInfo';
 import AmlCddSg from './Components/AmlCddSg';
-import FeasibilityBankOpening from './Components/FeasibilityBankOpening';
-import OpeningBank from './Components/OpeningBank';
+// import FeasibilityBankOpening from './Components/FeasibilityBankOpening';
+// import OpeningBank from './Components/OpeningBank';
 import BusinessInfoSg from './Components/BusinessInfoSg';
 import ServiceAgreement from './Components/ServiceAgreement';
 import SgServiceSelection from './Components/SgServiceSelection';
@@ -30,50 +30,50 @@ const IncorporateSg: React.FC = () => {
             label: "Aml/Cdd",
             active: currentSection === 2,
         },
+        // {
+        //     number: 3,
+        //     label: "Feasibility Bank Opening",
+        //     active: currentSection === 3,
+        // },
+        // {
+        //     number: 4,
+        //     label: "Bank Opening",
+        //     active: currentSection === 4,
+        // },
         {
             number: 3,
-            label: "Feasibility Bank Opening",
+            label: "Company Information",
             active: currentSection === 3,
         },
         {
             number: 4,
-            label: "Bank Opening",
+            label: "Service Agreement",
             active: currentSection === 4,
         },
         {
             number: 5,
-            label: "Company Information",
+            label: "Service Selection",
             active: currentSection === 5,
         },
         {
             number: 6,
-            label: "Service Agreement",
+            label: "Invoice",
             active: currentSection === 6,
         },
         {
             number: 7,
-            label: "Service Selection",
+            label: "Payment",
             active: currentSection === 7,
         },
         {
             number: 8,
-            label: "Invoice",
+            label: "Information for Incorporation",
             active: currentSection === 8,
         },
         {
             number: 9,
-            label: "Payment",
-            active: currentSection === 9,
-        },
-        {
-            number: 10,
-            label: "Information for Incorporation",
-            active: currentSection === 10,
-        },
-        {
-            number: 11,
             label: "Incorporation",
-            active: currentSection === 11,
+            active: currentSection === 9,
         },
     ]
 
@@ -118,15 +118,15 @@ const IncorporateSg: React.FC = () => {
                         >
                             {currentSection === 1 && <ApplicantInfo />}
                             {currentSection === 2 && <AmlCddSg />}
-                            {currentSection === 3 && <FeasibilityBankOpening />}
-                            {currentSection === 4 && <OpeningBank />}
-                            {currentSection === 5 && <BusinessInfoSg />}
-                            {currentSection === 6 && <ServiceAgreement />}
-                            {currentSection === 7 && <SgServiceSelection />}
-                            {currentSection === 8 && <InvoiceSg />}
-                            {currentSection === 9 && <PaymentInformation />}
-                            {currentSection === 10 && <InfoForIncorpoSg />}
-                            {currentSection === 11 && <SgFinalSection />}
+                            {/* {currentSection === 3 && <FeasibilityBankOpening />}
+                            {currentSection === 4 && <OpeningBank />} */}
+                            {currentSection === 3 && <BusinessInfoSg />}
+                            {currentSection === 4 && <ServiceAgreement />}
+                            {currentSection === 5 && <SgServiceSelection />}
+                            {currentSection === 6 && <InvoiceSg />}
+                            {currentSection === 7 && <PaymentInformation />}
+                            {currentSection === 8 && <InfoForIncorpoSg />}
+                            {currentSection === 9 && <SgFinalSection />}
                         </motion.div>
                     </AnimatePresence>
                 </div>
