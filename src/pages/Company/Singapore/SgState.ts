@@ -53,7 +53,6 @@ export interface SgFormData {
       id: string
     }
   }[];
-  designatedContact: string | number;
   accountingDataAddress: string;
   serviceItemsSelected: string[];
   isTermsAndConditionsAccepted: string;
@@ -65,27 +64,27 @@ export interface SgFormData {
   incorporationDate: string
   serviceAgreementConsent: boolean
   assignedTo: string
-  shareCapitalPayment?: { value: string, id: string };
+  shareCapitalPayment: { value: string, id: string };
   sgTotalCapPaid: string | number;
   registerAmountAtom: string | number;
-  registerCurrencyAtom?: string;
+  registerCurrencyAtom: string;
   selectedIndustry: string[];
   establishmentPurpose: string[];
   issuedSharesType: string[];
   otherIndustryText?: string
-  productDescription?: string
+  productDescription: string
   otherEstablishmentPurpose?: string
-  significantController?: Option[];
-  designatedContactPerson?: string | number;
-  finYearEnd?: { id: string, value: string };
-  businessAddress?: { id: string, value: string };
+  significantController: Option[];
+  designatedContactPerson: string | number;
+  finYearEnd: { id: string, value: string };
+  businessAddress: { id: string, value: string };
   otherFinYrEnd?: string
   otherBusinessAddress?: string
-  bookKeeping?: { label: string, value: string };
+  bookKeeping: { label: string, value: string };
   otherBookKeep?: string
-  onlineAccountingSoftware?: { label: string, value: string };
-  seperateAccountingSoftware?: string
-  otherAccountingSoftware?: string
+  onlineAccountingSoftware: { label: string, value: string };
+  seperateAccountingSoftware: string
+  otherAccountingSoftware: string
   governanceStructure: { label: string, value: string };
   otherGoveranceStructure?: string
 
@@ -137,7 +136,6 @@ const initialFormState: SgFormData = {
     address: '',
     legalEntity: { id: "No", value: "No" },
   }],
-  designatedContact: '',
   accountingDataAddress: '',
   isTermsAndConditionsAccepted: '',
   serviceItemsSelected: [],
@@ -159,7 +157,7 @@ const initialFormState: SgFormData = {
   otherEstablishmentPurpose: "",
   productDescription: "",
   issuedSharesType: [],
-  significantController: [{ value: "", label: "" }],
+  significantController: [],
   designatedContactPerson: '',
   finYearEnd: { value: '', id: '' },
   businessAddress: { value: '', id: '' },
