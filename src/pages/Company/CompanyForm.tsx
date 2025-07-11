@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import IncorporationForm from './HongKong/IncorporationForm';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
-import { getIncorporationListByCompId, getIncorporationListByUserId, getUsIncorpoDataById,getPaIncorpoDataById } from '@/services/dataFetch';
+import { getIncorporationListByCompId, getIncorporationListByUserId, getUsIncorpoDataById,getPaIncorpoDataById, getSgIncorpoDataById } from '@/services/dataFetch';
 import IncorporateUSACompany from './USA/IncorporateUSCompany';
 import { Card, CardContent } from '@/components/ui/card';
 import { usaFormWithResetAtom } from './USA/UsState';
@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import IncorporateSg from './Singapore/IncorporateSg';
 import IncorporatePa from './Panama/PaIncorporation';
 import { paFormWithResetAtom } from './Panama/PaState';
+import { sgFormWithResetAtom } from './Singapore/SgState';
 const CompanyRegistration = () => {
     const { t } = useTranslation();
     const [countryState, setCountryState] = useAtom(countryAtom);
@@ -25,6 +26,7 @@ const CompanyRegistration = () => {
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     const [ ,setFormData] = useAtom(usaFormWithResetAtom);
     const [ ,setPAFormData] = useAtom(paFormWithResetAtom);
+    const [ ,setSgFormData] = useAtom(sgFormWithResetAtom);
     const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
     useEffect(() => {
         if (id && countryCode == "HK") {
@@ -74,9 +76,14 @@ const CompanyRegistration = () => {
             setCountryState({code: 'PA', name: 'Panama'});
         }
         else if (id && countryCode == "SG") {
-            setCountryState({
-                code: 'SG', name: 'Singapore'
-             });
+            async function getSgData(){
+                return await getSgIncorpoDataById(`${id}`)
+            }
+            getSgData().then((result) => {
+                // console.log("result-->", result);
+                setSgFormData(result)
+            })
+            setCountryState({ code: 'SG', name: 'Singapore'});
         }
     }, []);
 

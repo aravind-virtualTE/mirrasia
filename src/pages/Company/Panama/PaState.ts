@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { atom } from 'jotai';
-export interface UsaFormData {
+export interface PaFormData {
   _id: string;
   userId: string;
   email: string;
@@ -90,7 +90,7 @@ export interface UsaFormData {
 
 }
 
-const initialFormState: UsaFormData = {
+const initialFormState: PaFormData = {
   _id: '',
   userId: '',
   email: '',
@@ -151,12 +151,12 @@ const initialFormState: UsaFormData = {
 };
 
 // Create the base atom
-export const paFormAtom = atom<UsaFormData>(initialFormState);
+export const paFormAtom = atom<PaFormData>(initialFormState);
 
 // Atom with reset functionality
 export const paFormWithResetAtom = atom(
   (get) => get(paFormAtom),
-  (_get, set, update: UsaFormData | 'reset') => {
+  (_get, set, update: PaFormData | 'reset') => {
     if (update === 'reset') {
       set(paFormAtom, initialFormState);
     } else {
