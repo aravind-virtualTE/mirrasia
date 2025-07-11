@@ -22,12 +22,12 @@ const AccountingSgTax: FC = () => {
         { value: 'other', label: 'Other:' },
     ];
     const onlineAccountList = [
-        { value: 'yesSoftware', label: 'Yes (Software cost: estimated as HKD400 per month)' },
+        { value: 'yes', label: 'Yes (Software cost: estimated as HKD400 per month)' },
         { value: 'no', label: 'No' },
         { value: 'recommendation', label: 'Recommendation required' },
         { value: 'other', label: 'Other:' },
     ];
-    const finYears = [{id: "dec31",value: t("InformationIncorporation.dec31")}, {id: "mar31", value: t("InformationIncorporation.mar31")}, {id: "other", value: t("InformationIncorporation.paymentOption_other")}];
+    const finYears = [{id: "dec31",value: t("InformationIncorporation.dec31")}, {id: "other", value: t("InformationIncorporation.paymentOption_other")}];
 
     const onChangeFinYear = (value:string) => {
         // console.log("Selected Financial Year End:", value);
@@ -44,12 +44,12 @@ const AccountingSgTax: FC = () => {
     const onChangeOnlineBooking = (value:string) => {
         // console.log("Selected Financial Year End:", value);
         const selectedItem = onlineAccountList.find(item => t(item.value) == t(value));
-        setFormData({ ...formData, onlineBooking:  selectedItem || {label: '', value : ""}  })
+        setFormData({ ...formData, onlineAccountingSoftware:  selectedItem || {label: '', value : ""}  })
     }
     return (
         <div className='flex w-full p-4'>
             <aside
-                className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
+                className={`w-1/5 p-4 rounded-md shadow-sm ${theme === "light"
                     ? "bg-blue-50 text-gray-800"
                     : "bg-gray-800 text-gray-200"
                     }`}
@@ -59,7 +59,7 @@ const AccountingSgTax: FC = () => {
                 </h2>
                 <p className="text-sm text-gray-600">Please provide information on accounting and tax matters.</p>
             </aside>
-            <div className="w-3/4 ml-4">
+            <div className="w-4/5 ml-4">
                 <div className="space-y-2">
                     <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
                         The financial year end date(FYE) of the Singapore company
@@ -69,7 +69,7 @@ const AccountingSgTax: FC = () => {
                                     <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-[500px] text-base">
-                                    Important timelines for accounting and tax return: 1) Deadline for preparing accounting and audit reports (S201): within 3 months from the FYE(financial year end) 2) Deadline for filing and filing estimated income tax (Estimated Chargeable Income (ECI) Submission to Income Tax (IRAS)) : Report within 3 months from the FYE 3) Annual General Meeting (S175): Held within 6 months from the FYE* 4) Annual renewal ACRA Annual Return (S197): Registration of annual reports within 1 month from the date of the regular general meeting of shareholders 5 ) Corporate Tax Filing IRAS Company Tax Filing (Form C or CS for the last FYE): Tax return by November 30 of each year * The first regular general meeting of shareholders must be held within 18 months from the FYE. ** The interval between the regular general meeting of shareholders should not exceed 15 months.
+                                   Important dates related to accounting and tax reporting: 1) Deadline for preparation of Accounting and Audit Report (S201): Within 3 months from the financial year end 2) Deadline for submission of Estimated Chargeable Income (ECI) Submission to Income Tax (IRAS): Within 3 months from the financial year end 3) Annual General Meeting (S175): To be held within 6 months from the financial year end* 4) ACRA Annual Return (S197): To be registered within 1 month from the AGM date 5) IRAS Company Tax Filing (Form C or CS for the last financial year end): To be filed by 30 November every year * The first AGM must be held within 18 months from the date of incorporation. ** The interval between AGMs should not exceed 15 months.
                                 </TooltipContent>
                             </Tooltip>
                         </span>
@@ -113,9 +113,18 @@ const AccountingSgTax: FC = () => {
                 <div className="space-y-2">
                     <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
                     Would you like to implement online accounting software - Xero?
-                        <span className="text-red-500 inline-flex">*</span>
+                        <span className="text-red-500 inline-flex">*
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-[500px] text-base">
+                                   If you introduce Xero, you can import data created by POS or other software in CSV format to create ledgers and financial statements, and it also supports the creation of cash flow statements. It is also helpful when creating consolidated financial statements between holding companies and subsidiaries, and other functions such as inventory management, cost management, and sales management are also supported.
+                                </TooltipContent>
+                            </Tooltip>
+                        </span>
                     </Label>
-                    <RadioGroup value={formData.onlineBooking?.value} onValueChange={onChangeOnlineBooking} className="gap-4">
+                    <RadioGroup value={formData.onlineAccountingSoftware?.value} onValueChange={onChangeOnlineBooking} className="gap-4">
                         {onlineAccountList.map(option => (
                             <div key={option.value} className="flex items-center space-x-2">
                                 <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
@@ -124,9 +133,9 @@ const AccountingSgTax: FC = () => {
                                 </Label>
                             </div>
                         ))}
-                        {formData.onlineBooking?.value === "other" && (
-                            <Input placeholder="Please specify" value={formData.otherOnlineBooking} onChange={
-                                (e) => setFormData({ ...formData, otherOnlineBooking: e.target.value })} />
+                        {formData.onlineAccountingSoftware?.value === "other" && (
+                            <Input placeholder="Please specify" value={formData.otherAccountingSoftware} onChange={
+                                (e) => setFormData({ ...formData, otherAccountingSoftware: e.target.value })} />
                         )}
                     </RadioGroup>
                 </div>
@@ -134,7 +143,7 @@ const AccountingSgTax: FC = () => {
                     <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
                         Do you currently use or have a separate accounting software you would like to use? (if any)
                     </Label>
-                    <Input placeholder="Please specify" value={formData.otherAccountingSoft} onChange={(e) => setFormData({ ...formData, otherAccountingSoft: e.target.value })}  />
+                    <Input placeholder="Please specify" value={formData.seperateAccountingSoftware} onChange={(e) => setFormData({ ...formData, seperateAccountingSoftware: e.target.value })}  />
                 </div>
             </div>
         </div>

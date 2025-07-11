@@ -7,29 +7,67 @@ import { useTranslation } from 'react-i18next'
 import { toast } from '@/hooks/use-toast'
 import { sgFormWithResetAtom } from '../SgState'
 import { service_list } from './sgConstant'
-import { Label } from '@/components/ui/label'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { Input } from '@/components/ui/input'
-import { HelpCircle } from 'lucide-react'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 const SgServiceSelection: React.FC = () => {
     const { t } = useTranslation();
-    const [servicesSelection, setServicesSelection] = useState("");
-    const [selectedShareholderService, setSelectedShareholderService] = useState('');
     const [formData, setFormData] = useAtom(sgFormWithResetAtom)
     const [selectedServices, setSelectedServices] = useState<string[]>(formData.serviceItemsSelected)
 
-
-    const optionalFees = service_list.map((service) => ({
+    const addressList = formData.businessAddress
+    const shareholderList = formData.shareHolders
+    const directorsList = formData.directors
+    let serviceFees = service_list.map((service) => ({
         id: service.id,
         description: service.key,
         originalPrice: service.price,
         discountedPrice: service.price,
-        isHighlight: false,
-        isOptional: true,
+        isOptional: service.isOptional,
         isChecked: false
     }))
+
+    if (addressList && addressList.id === "mirrasiaAddress") {
+        serviceFees = [
+            ...serviceFees,
+            {
+                id: "registeredBusinessAddress",
+                description:
+                    "Registered business address service for one year",
+                originalPrice: 350,
+                discountedPrice: 350,
+                isOptional: false,
+                isChecked: false,
+            },
+        ];
+    }
+
+      const legalEntityYesCount = shareholderList.filter((item: { legalEntity: { id: string } }) => item.legalEntity?.id === "Yes").length + directorsList.filter((item) => item.legalEntity?.id === "Yes").length;
+
+    if (legalEntityYesCount > 0) {
+        serviceFees = [
+            ...serviceFees,
+            {
+                id: "corporateSecretaryAnnualService",
+                description: `Corporate Secretary annual service (${legalEntityYesCount})`,
+                originalPrice: legalEntityYesCount * 550.0,
+                discountedPrice: legalEntityYesCount * 550.0,
+                isOptional: false,
+                isChecked: false,
+            },
+        ];
+    }
+    if(formData.onlineAccountingSoftware?.value === "yes") {
+        serviceFees = [
+            ...serviceFees,
+            {
+                id: "onlineAccountingSoftware",
+                description: "Accounting package for 6 months (No of transaction is less than 120) - Prepayment",
+                originalPrice: 2000.00,
+                discountedPrice: 2000.00,
+                isOptional: false,
+                isChecked: false,
+            },
+        ];
+    }
 
     const handleCheckboxChange = (id: string) => {
         if (formData.sessionId != "") {
@@ -48,14 +86,14 @@ const SgServiceSelection: React.FC = () => {
         }
     }
 
-    const displayedFees = [...optionalFees.map(fee => ({
+    const displayedFees = [...serviceFees.map(fee => ({
         ...fee,
         isChecked: selectedServices.includes(fee.id),
     }))]
 
-      const totalOriginal = displayedFees.reduce((sum, item) => sum + item.originalPrice, 0)
+    const totalOriginal = displayedFees.reduce((sum, item) => sum + item.originalPrice, 0)
 
-      const totalDiscounted = displayedFees.reduce((sum, item) => sum + item.discountedPrice, 0)
+    const totalDiscounted = displayedFees.reduce((sum, item) => sum + item.discountedPrice, 0)
 
     return (
 
@@ -99,68 +137,14 @@ const SgServiceSelection: React.FC = () => {
                         <TableRow className="font-bold bg-gray-100">
                             <TableCell>{t('usa.serviceSelection.totalCost')}</TableCell>
                             <TableCell className="text-right line-through text-gray-500">
-                               USD {totalOriginal}
+                                USD {totalOriginal}
                             </TableCell>
                             <TableCell className="text-right text-yellow-600">
-                                USD {totalDiscounted} 
+                                USD {totalDiscounted}
                             </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
-                <div className='w-full p-4'>                  
-                    <div className="space-y-2">
-                        <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                            Do you need a shareholder's name service?<span className="text-red-500 inline-flex">*
-                            </span>
-                        </Label>
-                        <RadioGroup value={selectedShareholderService} onValueChange={setSelectedShareholderService} className="gap-4">
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="localShareholderYes" id="shareholder-local-yes" />
-                                <Label className="font-normal" htmlFor="shareholder-local-yes">Yes, the name of the local shareholder</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="offShoreCompanyYes" id="shareholder-offshore-yes" />
-                                <Label className="font-normal" htmlFor="shareholder-offshore-yes">Yes, the name of an offshore company such as Virgin Islands/Seychelles/or other IBC</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="no" id="shareholder-no" />
-                                <Label className="font-normal" htmlFor="shareholder-no">No</Label>
-                            </div>
-                        </RadioGroup>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                            Do you need a director's name service? (At least one local director must be registered.)<span className="text-red-500 inline-flex">*
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                                    </TooltipTrigger>
-                                    <TooltipContent className="max-w-[500px] text-base">
-                                        Singapore requires at least one director to be a local resident under current law. Accordingly, we are listing local residents as directors. However, in the case of a business that falls under a high risk category, such as a financial business or cryptocurrency-related business, depending on the type of industry and business activity, the local director should individually review the availability of the service, and in this case, please confirm in advance.
-                                    </TooltipContent>
-                                </Tooltip>
-                            </span>
-                        </Label>
-                        <RadioGroup value={servicesSelection} onValueChange={setServicesSelection} className="gap-4">
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="yes" id="services-yes" />
-                                <Label className="font-normal" htmlFor="services-yes">Yes</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="no" id="services-no" />
-                                <Label className="font-normal" htmlFor="services-no">No</Label>
-                            </div>
-                        </RadioGroup>
-                    </div>
-                    <div className="space-y-2">
-                        <Label className="font-normal" htmlFor="personService">Please write the name of the person who will sign the service and appointment letter in the name of the director/shareholder.</Label>
-                        <Input id='personService' placeholder="Please specify" />
-                    </div>
-                    <div className="space-y-2">
-                        <Label className="font-normal" htmlFor="personAddress">Please write the address of the person who will sign the service and appointment letter in the name of the director/shareholder.</Label>
-                        <Input id='personAddress' placeholder="Please specify" />
-                    </div>
-                </div>
             </CardContent>
         </Card>
 

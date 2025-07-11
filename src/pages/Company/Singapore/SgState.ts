@@ -17,7 +17,7 @@ export interface SgFormData {
   snsAccountId: { value: string, id: string };
   offshoreTaxExemptionQuestion: { value: string, id: string };
   singaporeTaxFilingMythQuestion: { value: string, id: string };
-  sgAccountingDeclaration :{ id: string, value: string };
+  sgAccountingDeclaration: { id: string, value: string };
   hasLegalEthicalIssues: { id: string, value: string };
   annualRenewalTermsAgreement: { id: string, value: string };
   restrictedCountriesWithActivity: { id: string, value: string };
@@ -26,6 +26,7 @@ export interface SgFormData {
   involvedInRussianEnergyDefense: { id: string, value: string };
   [key: string]: any;
   webAddress: string;
+  sgBusinessList: string;
   companyName: string[];
   noOfShareholders: string;
   noOfOfficers: string;
@@ -35,11 +36,19 @@ export interface SgFormData {
     email: string;
     phone: string;
     ownershipRate: number;
-    isDirector: {
+    address: string;
+    legalEntity: {
       value: string,
       id: string
     }
-    isLegalPerson: {
+  }[];
+  directors: {
+    [x: string]: any;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    legalEntity: {
       value: string,
       id: string
     }
@@ -56,8 +65,8 @@ export interface SgFormData {
   incorporationDate: string
   serviceAgreementConsent: boolean
   assignedTo: string
-  shareCapitalPayment?: {value: string,id: string};
-  sgTotalCapPaid: string;
+  shareCapitalPayment?: { value: string, id: string };
+  sgTotalCapPaid: string | number;
   registerAmountAtom: string | number;
   registerCurrencyAtom?: string;
   selectedIndustry: string[];
@@ -67,14 +76,19 @@ export interface SgFormData {
   productDescription?: string
   otherEstablishmentPurpose?: string
   significantController?: Option[];
-  designatedContactPerson?: string |number;
+  designatedContactPerson?: string | number;
   finYearEnd?: { id: string, value: string };
+  businessAddress?: { id: string, value: string };
   otherFinYrEnd?: string
+  otherBusinessAddress?: string
   bookKeeping?: { label: string, value: string };
   otherBookKeep?: string
-  onlineBooking?: { label: string, value: string };
-  otherOnlineBooking?: string
-  otherAccountingSoft?: string
+  onlineAccountingSoftware?: { label: string, value: string };
+  seperateAccountingSoftware?: string
+  otherAccountingSoftware?: string
+  governanceStructure: { label: string, value: string };
+  otherGoveranceStructure?: string
+
 }
 
 const initialFormState: SgFormData = {
@@ -87,16 +101,16 @@ const initialFormState: SgFormData = {
   isOtherRelation: "",
   phoneNum: '',
   country: {
-    code: undefined,
-    name: undefined,
+    code: 'SG',
+    name: 'Singapore',
   },
   snsAccountId: {
     value: '',
     id: ''
   },
   hasLegalEthicalIssues: { id: '', value: '' },
-  offshoreTaxExemptionQuestion: { id: '', value: '' },  
-  sgAccountingDeclaration : { id: '', value: '' },
+  offshoreTaxExemptionQuestion: { id: '', value: '' },
+  sgAccountingDeclaration: { id: '', value: '' },
   singaporeTaxFilingMythQuestion: { id: '', value: '' },
   annualRenewalTermsAgreement: { id: '', value: '' },
   restrictedCountriesWithActivity: { id: '', value: '' },
@@ -104,10 +118,25 @@ const initialFormState: SgFormData = {
   businessInCrimea: { id: '', value: '' },
   involvedInRussianEnergyDefense: { id: '', value: '' },
   webAddress: '',
+  sgBusinessList : "",
   companyName: ['', '', ''],
   noOfShareholders: '',
   noOfOfficers: '',
-  shareHolders: [],
+  shareHolders: [{
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    ownershipRate: 0,
+    legalEntity: { id: "No", value: "No" },
+  }],
+  directors: [{
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    legalEntity: { id: "No", value: "No" },
+  }],
   designatedContact: '',
   accountingDataAddress: '',
   isTermsAndConditionsAccepted: '',
@@ -120,25 +149,29 @@ const initialFormState: SgFormData = {
   incorporationDate: "",
   serviceAgreementConsent: false,
   assignedTo: "",
-  shareCapitalPayment: {value: '', id: ''},
+  shareCapitalPayment: { value: '', id: '' },
   sgTotalCapPaid: "",
   registerAmountAtom: '',
   registerCurrencyAtom: '',
   selectedIndustry: [],
-  establishmentPurpose : [],
+  establishmentPurpose: [],
   otherIndustryText: "",
   otherEstablishmentPurpose: "",
-  productDescription : "",
+  productDescription: "",
   issuedSharesType: [],
-  significantController : [{value : "", label : ""}],
+  significantController: [{ value: "", label: "" }],
   designatedContactPerson: '',
-  finYearEnd: {value: '', id: ''},
-  otherFinYrEnd : "",
-  bookKeeping: {value: '', label: ''},
-  otherBookKeep : "",
-  onlineBooking: {value: '', label: ''},
-  otherOnlineBooking: "",
-  otherAccountingSoft : ""
+  finYearEnd: { value: '', id: '' },
+  businessAddress: { value: '', id: '' },
+  otherFinYrEnd: "",
+  otherBusinessAddress:"",
+  bookKeeping: { value: '', label: '' },
+  otherBookKeep: "",
+  onlineAccountingSoftware: { value: '', label: '' },
+  governanceStructure: { value: '', label: '' },
+  seperateAccountingSoftware: "",
+  otherAccountingSoftware: "",
+  otherGoveranceStructure: "",
 };
 
 // Create the base atom

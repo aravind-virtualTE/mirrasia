@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { fetchUsers, getUsIncorpoDataById, updateEditValues } from '@/services/dataFetch';
+import { fetchUsers, getSgIncorpoDataById, updateEditValues } from '@/services/dataFetch';
 import { useAtom } from 'jotai';
 import React, { useEffect, useMemo, useState } from 'react';
-import { UsaFormData, usaFormWithResetAtom } from '../USA/UsState';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -30,12 +29,12 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from '@/pages/Checklist/ChecklistHistory';
-import { usIncorporationItems, usRenewalList } from './detailConstants';
+import { sgFormWithResetAtom,SgFormData } from '../Singapore/SgState';
 
 
-const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
+const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const { t } = useTranslation()
-  const [formData, setFormData] = useAtom(usaFormWithResetAtom);
+  const [formData, setFormData] = useAtom(sgFormWithResetAtom);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { toast } = useToast();
   const [users, setUsers] = useState<User[]>([]);
@@ -53,7 +52,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
   useEffect(() => {
     async function getUsData() {
-      const data = await getUsIncorpoDataById(`${id}`);
+      const data = await getSgIncorpoDataById(`${id}`);
       setAdminAssigned(data.assignedTo);
 
       if (data.sessionId !== '') {
@@ -89,7 +88,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     return data || 'N/A';
   };
 
-  const generateSections = (formData: UsaFormData, session: SessionData) => {
+  const generateSections = (formData: SgFormData, session: SessionData) => {
     const sections = [];
     // console.log("formData", formData);
     // Applicant Information Section
@@ -140,10 +139,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     sections.push({
       title: 'Jurisdiction Information',
       data: {
-        Country: 'United States',
-        'Country Code': 'US',
-        State: formData.selectedState?.name || 'N/A',
-        'Entity Type': formData.selectedEntity,
+        Country: 'Singapore',
+        'Country Code': 'SG',
       },
     });
 
@@ -253,7 +250,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     }
   };
 
-  const handleCompanyDataChange = (key: keyof UsaFormData, value: string | boolean) => {
+  const handleCompanyDataChange = (key: keyof SgFormData, value: string | boolean) => {
     setFormData({ ...formData, [key]: value });
   };
 
@@ -266,13 +263,13 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     if (date !== null && date !== undefined && date !== '') {
       const [year, month, day] = date.split('T')[0].split('-');
       date = `${day}-${month}-${year}`;
-    } else {
-      date = 'Not set'
+    }else{
+        date = 'Not set'
     }
     return (
       <React.Fragment>
         <TableCell className="font-medium">Incorporation Date</TableCell>
-        <TableCell>{date}</TableCell>
+        <TableCell>{date }</TableCell>
         {user.role !== 'user' && <TableCell>
           <Dialog>
             <DialogTrigger asChild>
@@ -520,10 +517,10 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       </TabsList>
       <TabsContent value="details" className="p-6">
         <div className="space-y-4">
-          {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
-          <div className="mb-4">
-            <TodoApp id={id} name={formData.companyName[0]} />
-          </div>
+          {/* <h1 className="text-2xl font-bold">Company Details</h1> */}    
+           <div className="mb-4">
+              <TodoApp id={id} name={formData.companyName[0]} />
+            </div>
 
           <div className="flex gap-4 mt-auto">
             {user.role !== 'user' && <AssignAdmin />}
@@ -607,10 +604,10 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         </div>
       </TabsContent>
       <TabsContent value="Checklist" className="p-6">
-        <ChecklistHistory id={id} items={[usIncorporationItems, usRenewalList]} />
+        <ChecklistHistory id={id} items={[[], []]} />
       </TabsContent>
     </Tabs>
   );
 };
 
-export default UsCompdetail;
+export default SgCompdetail;

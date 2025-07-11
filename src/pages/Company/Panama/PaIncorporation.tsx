@@ -129,11 +129,15 @@ const IncorporatePa: React.FC = () => {
                 }
                 break;
             }
-            default:
-                await updateDoc();
-                setCurrentSection(prev => prev + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-                break
+            default:           
+                if (currentSection! < 9) {
+                    await updateDoc();
+                    setCurrentSection(prev => prev + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    break;
+                } else {
+                    console.log("end of the form")
+                }
         }
     };
 

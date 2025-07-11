@@ -12,10 +12,17 @@ import { TokenData } from '@/middleware/ProtectedRoutes';
 import { useResetAllForms } from '@/lib/atom';
 import SocialMediaWidget from '../SocialMedia';
 import { useTranslation } from "react-i18next";
+import { useAtom } from 'jotai';
+import { usaFormWithResetAtom } from '@/pages/Company/USA/UsState';
+import { paFormWithResetAtom } from '@/pages/Company/Panama/PaState';
+import { sgFormWithResetAtom } from '@/pages/Company/Singapore/SgState';
 const Layout: React.FC = () => {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const navigate = useNavigate();
     const resetAllForms = useResetAllForms();
+    const [ ,setFormData] = useAtom(usaFormWithResetAtom);
+    const [ ,setPAFormData] = useAtom(paFormWithResetAtom);
+    const [ ,setSgFormData] = useAtom(sgFormWithResetAtom);
     const { t } = useTranslation();
     useEffect(() => {
         const handleResize = () => {
@@ -46,6 +53,10 @@ const Layout: React.FC = () => {
             label:  t("sideItems.Home"),
             roles: ['user', 'admin', 'master', 'hk_shdr', 'us_shdr'],
             onClick: (role, navigate) => {
+                setFormData('reset')
+                setPAFormData('reset')
+                setSgFormData('reset')
+                resetAllForms()
                 if (['admin', 'master'].includes(role)) {
                     navigate('/admin-dashboard');
                 } else if (role === 'hk_shdr') {
@@ -70,6 +81,9 @@ const Layout: React.FC = () => {
                 localStorage.removeItem('companyRecordId');
                 navigate('/company-register');
                 resetAllForms()
+                setFormData('reset')
+                setPAFormData('reset')
+                setSgFormData('reset')
             },
         },
         {

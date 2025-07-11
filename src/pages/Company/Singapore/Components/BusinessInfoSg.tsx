@@ -15,6 +15,7 @@ import { sgFormWithResetAtom } from "../SgState";
 import MultiSelect from '@/components/MultiSelectInput';
 import { Option } from '@/components/MultiSelectInput';
 import DropdownSelect from '@/components/DropdownSelect';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const BusinessInfoSg: React.FC = () => {
     const { theme } = useTheme();
@@ -66,13 +67,18 @@ const BusinessInfoSg: React.FC = () => {
 
         });
     };
-    console.log("shrDirList",formData.significantController)
+    const addressList = [{ id: "mirrasiaAddress", value: 'Use of Mir Asia’s Singapore Corporation Registration Address Service' }, { id: "ownAddress", value: "Have a separate address to use as your business address in Singapore (does not use Mir Asia's registered address service)" }, { id: "other", value: t("InformationIncorporation.paymentOption_other") }];
+    const onChangeBusinessAddress = (value:string) => {
+        // console.log("Selected Financial Year End:", value);
+        const selectedItem = addressList.find(item => t(item.value) == t(value));
+        setFormData({ ...formData, businessAddress:  selectedItem || {id: '', value : ""}  })
+    }
     return (
         <Card>
             <CardContent>
                 <div className='flex w-full p-4'>
                     <aside
-                        className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
+                        className={`w-1/5 p-4 rounded-md shadow-sm ${theme === "light"
                             ? "bg-blue-50 text-gray-800"
                             : "bg-gray-800 text-gray-200"
                             }`}
@@ -82,7 +88,7 @@ const BusinessInfoSg: React.FC = () => {
                         </h2>
                         <p className="text-sm text-gray-600">In this section, please provide information of the Singapore company and related businesses to be established.</p>
                     </aside>
-                    <div className="w-3/4 ml-4">
+                    <div className="w-4/5 ml-4">
                         <div className="space-y-2">
                             <Label className="text-base font-semibold">
                                 Select Industry <span className="text-red-500">*</span>
@@ -123,6 +129,24 @@ const BusinessInfoSg: React.FC = () => {
                                 placeholder="Your answer"
                                 value={formData.productDescription}
                                 onChange={(e) => setFormData({ ...formData, productDescription: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-2 mt-2">
+                            <Label className="text-base font-semibold flex items-center gap-2">
+                                Please list the Singapore corporation's main and secondary industries.
+                                <span className="text-red-500 flex">* <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-[500px] text-base">
+                                        A Singapore corporation can register up to two types of business.
+                                    </TooltipContent>
+                                </Tooltip></span>
+                            </Label>
+                            <Input
+                                placeholder="Your answer"
+                                value={formData.sgBusinessList}
+                                onChange={(e) => setFormData({ ...formData, sgBusinessList: e.target.value })}
                             />
                         </div>
                         <div className="space-y-2 mt-2">
@@ -168,11 +192,41 @@ const BusinessInfoSg: React.FC = () => {
                                 ))}
                             </div>
                         </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
+                                Business address as registered in Singapore
+                                <span className="text-red-500 inline-flex">*
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-[500px] text-base">
+                                            A Singapore corporation must have a commercial address in Singapore to establish and maintain a corporation. We provide a registered address service, which includes a registered address and mail handling service. (Residential or accommodation addresses cannot be registered as corporate addresses.)
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </span>
+                            </Label>
+                            <RadioGroup value={formData.businessAddress?.value} onValueChange={onChangeBusinessAddress} className="gap-4">
+                                {addressList.map((year) => (
+                                    <div key={year.id} className="flex items-center space-x-2">
+                                        <RadioGroupItem value={year.value} id={`year-${year.id}`} />
+                                        <Label className="font-normal" htmlFor={`year-${year.id}`}>
+                                            {year.value}
+                                        </Label>
+                                    </div>
+                                ))}
+                                {formData.businessAddress?.id === "other" && (
+                                    <Input placeholder="Please specify" value={formData.otherBusinessAddress} onChange={
+                                        (e) => setFormData({ ...formData, otherBusinessAddress: e.target.value })
+                                    } />
+                                )}
+                            </RadioGroup>
+                        </div>
                     </div>
                 </div>
                 <div className='flex w-full p-4'>
                     <aside
-                        className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
+                        className={`w-1/5 p-4 rounded-md shadow-sm ${theme === "light"
                             ? "bg-blue-50 text-gray-800"
                             : "bg-gray-800 text-gray-200"
                             }`}
@@ -182,7 +236,7 @@ const BusinessInfoSg: React.FC = () => {
                         </h2>
 
                     </aside>
-                    <div className="w-3/4 ml-4">
+                    <div className="w-4/5 ml-4">
                         <ShareholderDirectorForm />
                         <div className="space-y-2 mt-2">
                             <Label className="text-base font-semibold flex items-center gap-2">

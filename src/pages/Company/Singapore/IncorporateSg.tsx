@@ -14,10 +14,20 @@ import InvoiceSg from './Components/SgInvoice';
 import PaymentInformation from './Components/SgPaymentInfo';
 import InfoForIncorpoSg from './Components/InfoForIncorpoSg';
 import SgFinalSection from './Components/sgFinalSection';
+import { useAtom } from 'jotai';
+import { sgFormWithResetAtom } from './SgState';
+import { TokenData } from '@/middleware/ProtectedRoutes';
+import jwtDecode from 'jwt-decode';
+import api from "@/services/fetch"
+import { toast } from '@/hooks/use-toast';
+
 
 const IncorporateSg: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
-
+    const [formData, setFormData] = useAtom(sgFormWithResetAtom);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const token = localStorage.getItem("token") as string;
+    const decodedToken = jwtDecode<TokenData>(token);
 
     const steps = [
         {
@@ -30,16 +40,6 @@ const IncorporateSg: React.FC = () => {
             label: "Aml/Cdd",
             active: currentSection === 2,
         },
-        // {
-        //     number: 3,
-        //     label: "Feasibility Bank Opening",
-        //     active: currentSection === 3,
-        // },
-        // {
-        //     number: 4,
-        //     label: "Bank Opening",
-        //     active: currentSection === 4,
-        // },
         {
             number: 3,
             label: "Company Information",
@@ -77,9 +77,121 @@ const IncorporateSg: React.FC = () => {
         },
     ]
 
+    const updateDoc = async () => {
+        // setIsSubmitting(true);
+        if (isSubmitting) {
+            return;
+        }
+        setIsSubmitting(true);
+        formData.userId = `${decodedToken.userId}`
+        const payload = { ...formData };
+        try {
+            console.log("payload", payload)
+            const response = await api.post("/company/sg-form", payload);
+            if (response.status === 200) {
+                // console.log("formdata", response.data);
+                localStorage.setItem("companyRecordId", response.data.data._id);
+                setFormData(response.data.data)
+                window.history.pushState(
+                    {},
+                    "",
+                    `/company-register/SG/${response.data.data._id}`
+                );
+            } else {
+                console.log("error-->", response);
+            }
+        } catch (error) {
+            console.error("Submission error:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
+
     const nextSection = async () => {
-        setCurrentSection(prev => prev + 1);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        switch (currentSection) {
+            case 1:
+                {
+                    const errors = [];
+                    if (!formData.name || formData.name.trim() === "") {
+                        errors.push("Invalid name format or empty name.");
+                    }
+                    const email = formData.email
+                    if (!email || email.trim() === "" || !/^\S+@\S+\.\S+$/.test(email)) {
+                        errors.push("Invalid email format or empty email.");
+                    }
+                    const phoneNumber = formData.phoneNum
+                    if (!phoneNumber || phoneNumber.trim() === "") {
+                        errors.push("Phone number cannot be empty.");
+                    }
+                    if (!Array.isArray(formData.companyName) || formData.companyName.length === 0 || formData.companyName[0].trim() === "") {
+                        errors.push("Company Name cannot be empty.");
+                    }
+                    // establishedRelationshipType
+                    if (!Array.isArray(formData.establishedRelationshipType) || formData.establishedRelationshipType.length === 0 || formData.establishedRelationshipType.some(rel => rel.trim() === "")) {
+                        errors.push("Relationships cannot be empty.");
+                    }
+                    if (errors.length > 0) {
+                        toast({
+                            title: "Fill Details",
+                            description: errors.join("\n"),
+                        })
+                    } else {
+                        await updateDoc();
+                        setCurrentSection(currentSection + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                    break
+                }
+            case 2:
+                {
+                    const rcActivity = formData.restrictedCountriesWithActivity
+                    const rcSanctions = formData.sanctionedTiesPresent
+                    const bsnsCremia = formData.businessInCrimea
+                    const involved = formData.involvedInRussianEnergyDefense
+                    
+                    const legalInfo = formData.hasLegalEthicalIssues
+                    const annualRenew = formData.annualRenewalTermsAgreement
+                    const sgAccntDecl = formData.sgAccountingDeclaration
+                    // console.log('rcActivity',rcActivity , '\n rcSanctions',rcSanctions, '\n bsnsCremia',bsnsCremia, '\n involved',involved, '\n legalInfo',legalInfo, '\n annualRenew',annualRenew,'\n sgAccntDecl',sgAccntDecl)
+                    const values = [rcActivity, rcSanctions, bsnsCremia, involved, legalInfo, annualRenew,sgAccntDecl];
+                    // console.log("values", values)
+                    if (values.some(value => value.value === "")) {
+                        toast({
+                            title: "Incomplete Information",
+                            description: "Please complete all fields before proceeding.",
+                        });
+                        return;
+                    }
+                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && sgAccntDecl.id == 'no' && ['no', 'handleOwnIncorpo'].includes(annualRenew.id) ) {
+                        await updateDoc();
+                        setCurrentSection(prev => prev + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    } else {
+                        await updateDoc();
+                        toast({
+                            title: "Consultation required before proceeding",
+                            description: "It appears that you need to consult before proceeding. We will review the content of your reply and our consultant will contact you shortly. Thank you very much.",
+                        });
+                    }
+                    break;
+                }
+            case 3:
+                {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    break
+                }
+            default:
+                if (currentSection! <= 9) {
+                    await updateDoc();
+                    setCurrentSection(prev => prev + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    break;
+                } else {
+                    console.log("end of the form")
+                }
+        }
     };
 
 
@@ -91,9 +203,7 @@ const IncorporateSg: React.FC = () => {
     };
     return (
         <div className="flex flex-col md:flex-row h-screen">
-            {/* Main Content */}
             <div className="flex-1 flex flex-col h-full">
-                {/* Scrollable Form Container */}
                 <div className="flex-1 overflow-y-auto min-h-0">
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -133,7 +243,7 @@ const IncorporateSg: React.FC = () => {
 
                 {/* Navigation buttons - Sticky positioning */}
                 <div className="sticky bottom-0 bg-background border-t p-1 mt-auto"> {/* Sticky positioning */}
-                    {currentSection !== 12 && <div className="flex justify-between">
+                    {currentSection !== 9 && <div className="flex justify-between">
                         <Button
                             variant="outline"
                             onClick={previousSection}
@@ -146,7 +256,7 @@ const IncorporateSg: React.FC = () => {
                             onClick={nextSection}
                             className="flex items-center space-x-2 bg-primary"
                         >
-                            <span>{currentSection === 12 ? "SUBMIT" : "NEXT →"}</span>
+                            <span>{currentSection === 9 ? "SUBMIT" : "NEXT →"}</span>
                         </Button>
                     </div>}
                 </div>

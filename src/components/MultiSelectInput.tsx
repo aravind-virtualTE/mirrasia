@@ -79,24 +79,27 @@ export default function MultiSelect({
                 className="min-h-[40px] p-2 border rounded-md bg-background cursor-text flex flex-wrap gap-2 items-center"
                 onClick={() => setIsOpen(true)}
             >
-                {selectedItems.map((item) => (
-                    <span
-                        key={item.value}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-md text-sm"
-                    >
-                        {item.label}
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                handleRemove(item)
-                            }}
-                            className="text-primary/50 hover:text-primary"
+                {selectedItems
+                    .filter((item) => item.label && item.label.trim() !== '')
+                    .map((item) => (
+                        <span
+                            key={item.value}
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-md text-sm"
                         >
-                            <X className="h-3 w-3" />
-                        </button>
-                    </span>
-                ))}
+                            {item.label}
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRemove(item);
+                                }}
+                                className="text-primary/50 hover:text-primary"
+                            >
+                                <X className="h-3 w-3" />
+                            </button>
+                        </span>
+                    ))}
+
                 <input
                     type="text"
                     className="flex-1 outline-none min-w-[120px] bg-transparent placeholder:text-muted-foreground"
