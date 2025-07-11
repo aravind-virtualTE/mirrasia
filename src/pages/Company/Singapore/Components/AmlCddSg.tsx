@@ -36,12 +36,12 @@ const AmlCddSg: React.FC = () => {
         { id: "yes", value: "AmlCdd.options.yes" }, { id: "no", value: "AmlCdd.options.no" }, { id: "unknown", value: "AmlCdd.options.unknown" }, { id: "heading", value: "SwitchService.Consultation.heading" }
     ]
     const establishList = [
-    { "id": "yes", "value": "AmlCdd.options.yes" },
-    { "id": "no", "value": "AmlCdd.options.no" },
-    { "id": "handleOwnIncorpo", "value": "usa.AppInfo.handleOwnIncorpo" },
-    { "id": "didntIntedEveryYear", "value": "usa.AppInfo.didntIntedEveryYear" },
-    { "id": "consultationRequired", "value": "usa.AppInfo.consultationRequired" }
-]
+        { "id": "yes", "value": "AmlCdd.options.yes" },
+        { "id": "no", "value": "AmlCdd.options.no" },
+        { "id": "handleOwnIncorpo", "value": "usa.AppInfo.handleOwnIncorpo" },
+        { "id": "didntIntedEveryYear", "value": "usa.AppInfo.didntIntedEveryYear" },
+        { "id": "consultationRequired", "value": "usa.AppInfo.consultationRequired" }
+    ]
 
     // const applyTaxList = [
     //     { "id": "yes", "value": "Yes (Able to bear the fees accompanying offshore income claims and handling the inquiry letters from the IRD)" },
@@ -60,29 +60,40 @@ const AmlCddSg: React.FC = () => {
     const questions = [
         {
             id: "restrictedCountriesWithActivity",
-            value: "Does the Singapore company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)? *",
+            value: "Does the Singapore company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)?",
         },
         {
             id: "sanctionedTiesPresent",
-            value: "To the best of your knowledge, does the Singapore company or any of the company’s connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by the following bodies: UN, EU, UKHMT, HKMA, OFAC, as part of local sanctions law? *",
+            value: "To the best of your knowledge, does the Singapore company or any of the company’s connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by the following bodies: UN, EU, UKHMT, HKMA, OFAC, as part of local sanctions law?",
         },
         {
             id: "businessInCrimea",
-            value: "To the best of your knowledge, does the Singapore company have any current or planned business activities connected or other related parties in Crimea/Sevastopol Regions? *",
+            value: "To the best of your knowledge, does the Singapore company have any current or planned business activities connected or other related parties in Crimea/Sevastopol Regions?*",
         },
         {
             id: "involvedInRussianEnergyDefense",
-            value: "To the best of your knowledge, does the Singapore company have any current or planned exposure to Russia in the energy (oil/gas) sector, the military, or defense? *",
+            value: "To the best of your knowledge, does the Singapore company have any current or planned exposure to Russia in the energy (oil/gas) sector, the military, or defense?",
         },
     ];
-    const options = ["Yes", "No", "I/We have no idea"];
-    const handleAnswerChange = (question: { id: string, value: string }, value: string) => {
-        // console.log("value", question)
-         setFormData({ ...formData, [question.id]:  value || {id: '', value : ""}  })
-        // setAnswers((prev) => ({
-        //     ...prev,
-        //     [question.id] : value,
-        // }));
+
+    const handleAnswerChange = (question: string, value: string) => {
+        console.log("question", question, '/n value', value)
+        const selectedItem = list.find(item => t(item.value) == t(value));
+        let udpateField = ''
+        if (question === "restrictedCountriesWithActivity") {
+            udpateField = 'restrictedCountriesWithActivity';
+        }
+        else if (question === "sanctionedTiesPresent") {
+            udpateField = 'sanctionedTiesPresent';
+        }
+        else if (question === "businessInCrimea") {
+            udpateField = 'businessInCrimea';
+        }
+        else if (question === "involvedInRussianEnergyDefense") {
+            udpateField = 'involvedInRussianEnergyDefense';
+        }
+
+        setFormData({ ...formData, [udpateField]: selectedItem || { id: '', value: "" } })
     };
 
     const handleQuestionChange = (value: string) => {
@@ -95,7 +106,7 @@ const AmlCddSg: React.FC = () => {
 
     const handleQuestion2Change = (value: string) => {
         const selectedItem = establishList.find(item => t(item.value) == t(value));
-        setFormData({ ...formData, annualRenewalTermsAgreement:  selectedItem || {id: '', value : ""}  })
+        setFormData({ ...formData, annualRenewalTermsAgreement: selectedItem || { id: '', value: "" } })
     };
 
     const handleAccountingDecChange = (value: string) => {
@@ -118,13 +129,13 @@ const AmlCddSg: React.FC = () => {
     //     const selectedItem = payTaxesList.find(item => t(item.value) == t(value));
     //     setFormData({ ...formData, singaporeTaxFilingMythQuestion:  selectedItem || {id: '', value : ""}  })
     // };
-
+    console.log("value", formData)
     return (
         <Card>
             <CardContent>
                 <div className='flex w-full p-4'>
                     <aside
-                        className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
+                        className={`w-1/5 p-4 rounded-md shadow-sm ${theme === "light"
                             ? "bg-blue-50 text-gray-800"
                             : "bg-gray-800 text-gray-200"
                             }`}
@@ -134,7 +145,7 @@ const AmlCddSg: React.FC = () => {
                         </h2>
                         <p className="text-sm text-gray-600">This section is intended to reduce misunderstandings between each other in the future by identifying the client's business intentions and checking in advance whether they match the services we provide. Please answer the questions accurately and we will offer our services accordingly.</p>
                     </aside>
-                    <div className="w-3/4 ml-4">
+                    <div className="w-4/5 ml-4">
                         <div className="space-y-2 pb-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
                                 Does the purpose of incorporating a Singapore company raise legal or ethical issues such as money laundering, gambling, tax evasion, asset concealment, evasion of the law for illegal business, fraud, etc.?<span className="text-red-500">*</span>
@@ -202,7 +213,7 @@ const AmlCddSg: React.FC = () => {
                                         )
                                     })
                                 }
-                            </RadioGroup>                            
+                            </RadioGroup>
                         </div>
                         {/* <div className="space-y-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
@@ -272,7 +283,7 @@ const AmlCddSg: React.FC = () => {
                 </div>
                 <div className='flex w-full p-4'>
                     <aside
-                        className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
+                        className={`w-1/5 p-4 rounded-md shadow-sm ${theme === "light"
                             ? "bg-blue-50 text-gray-800"
                             : "bg-gray-800 text-gray-200"
                             }`}
@@ -282,30 +293,23 @@ const AmlCddSg: React.FC = () => {
                         </h2>
                         <p className="text-sm text-gray-600">This section is whether your business has transactions with the country(s) subject to sanctions regulated or recommended by FATF, UNGC, OFAC, etc. Please answer questions without distortions or errors.</p>
                     </aside>
-                    <div className="w-3/4 ml-4">
+                    <div className="w-4/5 ml-4">
                         {questions.map((question) => (
                             <div className="space-y-2 pb-2" key={question.id} >
                                 {/* Question Text */}
                                 <p className="text-sm font-medium text-gray-800 mb-3">
-                                    {question.value}
+                                    {question.value} <span className="text-red-500">*</span>
                                 </p>
-
-                                {/* Radio Group for Options */}
                                 <RadioGroup
-                                    value={formData[question.id] || ""}
-                                    onValueChange={(value) => handleAnswerChange(question, value)}
+                                    value={ t(formData[question.id]?.value || '')}
+                                    onValueChange={(value) => handleAnswerChange(question.id, value)}
                                     className="space-y-2"
                                 >
-                                    {options.map((option) => (
-                                        <div key={option} className="flex items-center space-x-2">
-                                            <RadioGroupItem
-                                                value={option}
-                                                id={`${question.id}-${option}`}/>
-                                            <Label
-                                                htmlFor={`${question.id}-${option}`}
-                                                className="font-normal"
-                                            >
-                                                {option}
+                                    {list.map((item, idx) => (
+                                        <div className="flex items-center space-x-2" key={`alt${idx}`}>
+                                            <RadioGroupItem value={t(item.value)} id={`legal1234-${item.id}`} />
+                                            <Label htmlFor={`legal1234-${item.id}`} className="text-sm font-normal">
+                                                {t(item.value)}
                                             </Label>
                                         </div>
                                     ))}

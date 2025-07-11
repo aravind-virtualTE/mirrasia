@@ -2,42 +2,76 @@ import React, { useEffect } from 'react'
 import { useAtom } from "jotai"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useTranslation } from 'react-i18next'
 import { sgFormWithResetAtom, sgPrice } from '../SgState'
 import { service_list } from './sgConstant'
 
 const InvoiceSg: React.FC = () => {
-  const { t } = useTranslation()
   const [formData] = useAtom(sgFormWithResetAtom)
   const [, setUsPrice] = useAtom(sgPrice)
 
-  const selectedServices = formData.serviceItemsSelected
+  // const selectedServices = formData.serviceItemsSelected
 
-  const baseFee = {
-    description: ``,
-    originalPrice: 0,
-    discountedPrice: 0,
-    note: "",
-    isHighlight: false,
-    isOptional: false,
-  }
+    const addressList = formData.businessAddress
+    const shareholderList = formData.shareHolders
+    const directorsList = formData.directors
 
-  const selectedOptionalFees = service_list
-    .filter(service => selectedServices.includes(service.id))
-    .map(service => ({
-      description: t(service.key),
-      originalPrice: service.price || 0,
-      discountedPrice: service.price || 0,
-      note: "",
-      isHighlight: false,
-      isOptional: true,
+    let serviceFees = service_list.map((service) => ({
+        id: service.id,
+        description: service.key,
+        originalPrice: service.price,
+        discountedPrice: service.price,
+        isHighlight: false,
+        note: ''
     }))
 
-  const fees = [baseFee, ...selectedOptionalFees]
+    if (addressList && addressList.id === "mirrasiaAddress") {
+        serviceFees = [
+            ...serviceFees,
+            {
+                id: "registeredBusinessAddress",
+                description:
+                    "Registered business address service for one year",
+                originalPrice: 350,
+                discountedPrice: 350,
+                isHighlight: false,
+                note: ''
+            },
+        ];
+    }
 
-  const totalOriginal = fees.reduce((sum, item) => sum + Number(item.originalPrice), 0)
-  const totalDiscounted = fees.reduce((sum, item) => sum + Number(item.discountedPrice), 0)
+      const legalEntityYesCount = shareholderList.filter((item: { legalEntity: { id: string } }) => item.legalEntity?.id === "Yes").length + directorsList.filter((item) => item.legalEntity?.id === "Yes").length;
 
+    if (legalEntityYesCount > 0) {
+        serviceFees = [
+            ...serviceFees,
+            {
+                id: "corporateSecretaryAnnualService",
+                description: `Corporate Secretary annual service (${legalEntityYesCount})`,
+                originalPrice: legalEntityYesCount * 550.0,
+                discountedPrice: legalEntityYesCount * 550.0,
+                isHighlight: false,
+                note: ''
+            },
+        ];
+    }
+    if(formData.onlineAccountingSoftware?.value === "yes") {
+        serviceFees = [
+            ...serviceFees,
+            {
+                id: "onlineAccountingSoftware",
+                description: "Accounting package for 6 months (No of transaction is less than 120) - Prepayment",
+                originalPrice: 2000.00,
+                discountedPrice: 2000.00,
+                isHighlight: false,
+                note: ''
+            },
+        ];
+    }
+
+
+  const totalOriginal = serviceFees.reduce((sum, item) => sum + Number(item.originalPrice), 0)
+  const totalDiscounted = serviceFees.reduce((sum, item) => sum + Number(item.discountedPrice), 0)
+  console.log("Total Original Price:", totalOriginal)
   useEffect(() => {
     setUsPrice(totalDiscounted || 0)
   }, [totalDiscounted, setUsPrice])
@@ -59,7 +93,7 @@ const InvoiceSg: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {fees.map((item, index) => (
+              {serviceFees.map((item, index) => (
                 <TableRow key={index}>
                   <TableCell>
                     <div className="flex items-center gap-2">

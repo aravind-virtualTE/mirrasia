@@ -68,7 +68,7 @@ const ApplicantInfo: React.FC = () => {
             <CardContent>
                 <div className='flex w-full p-4'>
                     <aside
-                        className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
+                        className={`w-1/5 p-4 rounded-md shadow-sm ${theme === "light"
                             ? "bg-blue-50 text-gray-800"
                             : "bg-gray-800 text-gray-200"
                             }`}
@@ -78,7 +78,7 @@ const ApplicantInfo: React.FC = () => {
                         </h2>
                         <p className="text-sm text-gray-600">The form must be filled out by the representative of the Singapore company (which will be established later; hereinafter stated as "the Singapore company"), who is the significant controller in establishing the Singapore company or has been commissioned by the representative to enter all information correctly.This form with your answers will be kept in our company as the KYC and Client Due Diligence documents. Therefore, please be careful not to cause any distortion or errors in your answers.</p>
                     </aside>
-                    <div className="w-3/4 ml-4">
+                    <div className="w-4/5 ml-4">
                         <div className="space-y-2">
                             <Label htmlFor="name" className="text-sm font-semibold mb-2">
                                 Name of the applicant <span className="text-red-500">*</span>
@@ -150,7 +150,7 @@ const ApplicantInfo: React.FC = () => {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="phone" className="text-sm">
-                                Phone Number
+                                Phone Number<span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 id="phoneNum"
