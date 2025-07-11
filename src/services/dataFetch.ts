@@ -501,3 +501,13 @@ export const updateUserProfileData = async (data: any, id?: string) => {
     console.error("Error saving Data:", error);
   }
 }
+
+export const getSgIncorpoDataById = async (userId: string) => {
+  try {
+    const response = await api.get(`company/sg-form/${userId}`);
+    // console.log("response-->",response)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company incorporation list by userId:", error);
+  }
+};

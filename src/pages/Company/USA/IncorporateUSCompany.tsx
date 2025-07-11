@@ -125,12 +125,13 @@ const IncorporateUSACompany = () => {
                         });
                         return;
                       }
-                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && annualRenew.id == 'no') {
+                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && ['no', 'handleOwnIncorpo'].includes(annualRenew.id)) {
                         await updateDoc();
                         setCurrentSection(prev => prev + 1);
                         window.scrollTo({ top: 0, behavior: "smooth" });
                     } else {
-                        setFormData({ ...formData, confirmationBusinessIntention: true });
+                        // setFormData({ ...formData, confirmationBusinessIntention: true });
+                        await updateDoc();
                         toast({
                             title: "Consultation required before proceeding",
                             description: "It appears that you need to consult before proceeding. We will review the content of your reply and our consultant will contact you shortly. Thank you very much.",
@@ -300,7 +301,7 @@ const IncorporateUSACompany = () => {
                             onClick={nextSection}
                             className="flex items-center space-x-2 bg-primary"
                         >
-                            <span>{currentSection === 16 ? "SUBMIT" : "NEXT →"}</span>
+                            <span>{currentSection === 9 ? "SUBMIT" : "NEXT →"}</span>
                         </Button>
                     </div>}
                 </div>
