@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTheme } from '@/components/theme-provider';
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox';
@@ -21,13 +21,22 @@ const BusinessInfoSg: React.FC = () => {
     const { theme } = useTheme();
     const [formData, setFormData] = useAtom(sgFormWithResetAtom);
 
-    const [shrDirList,] = useState(
-        formData.shareHolders.map((item) => {
+    const [shrDirList,setShareholders] = useState(
+        [...formData.shareHolders, ...formData.directors].map((item) => {
             if (item.name == "") return "Fill Shareholder/Directors and select";
             return item.name;
         })
     );
+
+    useEffect(() => {
+       setShareholders( [...formData.shareHolders, ...formData.directors].map((item) => {
+            if (item.name == "") return "Fill Shareholder/Directors and select";
+            return item.name;
+        }))
+    }, [formData.shareHolders,formData.directors]);
+
     const shrDirArr = shrDirList.map((item) => ({ value: item, label: item }));
+    console.log("shrDirArr", shrDirArr)
 
     const industries = [
         { id: "trade", value: "Trade" },

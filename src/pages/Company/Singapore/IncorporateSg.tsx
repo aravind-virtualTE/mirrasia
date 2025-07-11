@@ -20,6 +20,7 @@ import { TokenData } from '@/middleware/ProtectedRoutes';
 import jwtDecode from 'jwt-decode';
 import api from "@/services/fetch"
 import { toast } from '@/hooks/use-toast';
+import { paymentApi } from '@/lib/api/payment';
 
 
 const IncorporateSg: React.FC = () => {
@@ -148,12 +149,12 @@ const IncorporateSg: React.FC = () => {
                     const rcSanctions = formData.sanctionedTiesPresent
                     const bsnsCremia = formData.businessInCrimea
                     const involved = formData.involvedInRussianEnergyDefense
-                    
+
                     const legalInfo = formData.hasLegalEthicalIssues
                     const annualRenew = formData.annualRenewalTermsAgreement
                     const sgAccntDecl = formData.sgAccountingDeclaration
                     // console.log('rcActivity',rcActivity , '\n rcSanctions',rcSanctions, '\n bsnsCremia',bsnsCremia, '\n involved',involved, '\n legalInfo',legalInfo, '\n annualRenew',annualRenew,'\n sgAccntDecl',sgAccntDecl)
-                    const values = [rcActivity, rcSanctions, bsnsCremia, involved, legalInfo, annualRenew,sgAccntDecl];
+                    const values = [rcActivity, rcSanctions, bsnsCremia, involved, legalInfo, annualRenew, sgAccntDecl];
                     // console.log("values", values)
                     if (values.some(value => value.value === "")) {
                         toast({
@@ -162,7 +163,7 @@ const IncorporateSg: React.FC = () => {
                         });
                         return;
                     }
-                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && sgAccntDecl.id == 'no' && ['no', 'handleOwnIncorpo'].includes(annualRenew.id) ) {
+                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && sgAccntDecl.id == 'no' && ['no', 'handleOwnIncorpo'].includes(annualRenew.id)) {
                         await updateDoc();
                         setCurrentSection(prev => prev + 1);
                         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -177,11 +178,83 @@ const IncorporateSg: React.FC = () => {
                 }
             case 3:
                 {
+                    const emptyNameShareholders = formData.shareHolders.filter(
+                        (shareholder) => !shareholder.name.trim()
+                    );
+                    const dContact = formData.designatedContactPerson
+                    const industryList = formData.selectedIndustry.length
+                    const issuedSharesType = formData.issuedSharesType.length
+                    const productDescription = formData.productDescription
+                    const sgBusinessList = formData.sgBusinessList
+                    const establishmentPurpose = formData.establishmentPurpose.length
+                    const businessAddress = formData.businessAddress.value
+
+                    const significantController = formData.significantController.length
+                    const finYearEnd = formData.finYearEnd.value
+                    const bookKeeping = formData.bookKeeping.value
+                    const onlineAccountingSoftware = formData.onlineAccountingSoftware.value
+
+                    if (emptyNameShareholders.length > 0 || industryList == 0 || dContact == '' || issuedSharesType == 0 || productDescription.trim() === '' || sgBusinessList.trim() === '' || establishmentPurpose == 0 || businessAddress == '' || significantController == 0 || finYearEnd == '' || bookKeeping == '' || onlineAccountingSoftware == '') {
+                        toast({
+                            title: "Fill Details",
+                            description: "Fill all the required fields before proceeding.",
+                        });
+                    } else {
+                        await updateDoc();
+                        setCurrentSection(currentSection + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                    break
+                }
+            case 4: {
+                if (formData.serviceAgreementConsent == false) {
+                    toast({
+                        title: "Service Agreement.",
+                        description:
+                            "Please accept the service agreement to proceed.",
+                    });
+                } else {
                     await updateDoc();
                     setCurrentSection(currentSection + 1);
                     window.scrollTo({ top: 0, behavior: "smooth" });
-                    break
                 }
+                break
+            }
+            case 7: {
+                const session = await paymentApi.getSession(formData.sessionId)
+                // console.log("session--->", session)
+                if (session.status === 'completed') {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                } else {
+                    toast({
+                        title: "Payment Pending",
+                        description: "Please complete the payment to proceed",
+                    });
+                }
+                break;
+            }
+            case 8: {
+                const shareCapitalPayment = formData.shareCapitalPayment.value
+                const registerCurrencyAtom  = formData.registerCurrencyAtom
+                const registerAmountAtom = formData.registerAmountAtom
+                const sgTotalCapPaid = formData.sgTotalCapPaid
+                const governanceStructure = formData.governanceStructure.value
+
+                if (shareCapitalPayment === '' || registerCurrencyAtom === '' || registerAmountAtom === '' || sgTotalCapPaid === '' || governanceStructure === '') {
+                    toast({
+                        title: "Fill Details",
+                        description: "Please fill all the required fields before proceeding.",
+                    });
+                }
+                else{
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+                break
+            }
             default:
                 if (currentSection! <= 9) {
                     await updateDoc();
