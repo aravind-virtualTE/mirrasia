@@ -21,6 +21,7 @@ import jwtDecode from 'jwt-decode';
 import api from "@/services/fetch"
 import { toast } from '@/hooks/use-toast';
 import { paymentApi } from '@/lib/api/payment';
+import { t } from 'i18next';
 
 
 const IncorporateSg: React.FC = () => {
@@ -33,47 +34,47 @@ const IncorporateSg: React.FC = () => {
     const steps = [
         {
             number: 1,
-            label: "Applicant Information",
+            label: "compFormation.appInfo",
             active: currentSection === 1,
         },
         {
             number: 2,
-            label: "Aml/Cdd",
+            label: "compFormation.amlcd",
             active: currentSection === 2,
         },
         {
             number: 3,
-            label: "Company Information",
+            label:"compFormation.compInfo",
             active: currentSection === 3,
         },
         {
             number: 4,
-            label: "Service Agreement",
+            label: "compFormation.serviceAgrmt",
             active: currentSection === 4,
         },
         {
             number: 5,
-            label: "Service Selection",
+            label: "compFormation.serviceSelect",
             active: currentSection === 5,
         },
         {
             number: 6,
-            label: "Invoice",
+            label: "compFormation.invoice",
             active: currentSection === 6,
         },
         {
             number: 7,
-            label: "Payment",
+            label: "compFormation.payment",
             active: currentSection === 7,
         },
         {
             number: 8,
-            label: "Information for Incorporation",
+            label: "compFormation.inforIncorpo",
             active: currentSection === 8,
         },
         {
             number: 9,
-            label: "Incorporation",
+            label: "compFormation.incorpo",
             active: currentSection === 9,
         },
     ]
@@ -354,7 +355,7 @@ const IncorporateSg: React.FC = () => {
                                     {index + 1}
                                 </div>
                                 <span className="ml-3 text-sm whitespace-pre-wrap">
-                                    {step.label}
+                                    {t(step.label)}
                                 </span>
                             </div>
                         ))}

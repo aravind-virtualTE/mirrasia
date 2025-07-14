@@ -19,23 +19,23 @@ const ApplicantInfo: React.FC = () => {
     const relationList = [
         {
             "id": "directorSgComp",
-            "label": "Director of the Singapore company"
+            "label": "Singapore.rList.r1"
         },
         {
             "id": "delegatedByDirOfSgComp",
-            "label": "Delegated by the director of the Singapore company"
+            "label": "Singapore.rList.r2"
         },
         {
             "id": "shareholderSgComp",
-            "label": "Shareholder of the Singapore company holding majority of the shares"
+            "label": "Singapore.rList.r3"
         },
         {
             "id": "professionalIncorporation",
-            "label": "A professional(e.g. lawyer, accountant) who provides incorporation advice to the Singapore company"
+            "label": "Singapore.rList.r4"
         },
         {
             "id": "other",
-            "label": "Other",
+            "label": "SwitchService.Intenstions.legalIssuesOther",
             isOther: true
         }
     ]
@@ -74,32 +74,32 @@ const ApplicantInfo: React.FC = () => {
                             }`}
                     >
                         <h2 className="text-lg font-semibold mb-2">
-                            Applicant Information
+                           {t("ApplicantInfoForm.heading")}
                         </h2>
-                        <p className="text-sm text-gray-600">The form must be filled out by the representative of the Singapore company (which will be established later; hereinafter stated as "the Singapore company"), who is the significant controller in establishing the Singapore company or has been commissioned by the representative to enter all information correctly.This form with your answers will be kept in our company as the KYC and Client Due Diligence documents. Therefore, please be careful not to cause any distortion or errors in your answers.</p>
+                        <p className="text-sm text-gray-600">{t("Singapore.headingInfor")}</p>
                     </aside>
                     <div className="w-4/5 ml-4">
                         <div className="space-y-2">
                             <Label htmlFor="name" className="text-sm font-semibold mb-2">
-                                Name of the applicant <span className="text-red-500">*</span>
+                                {t("ApplicantInfoForm.applicantName")}<span className="text-red-500">*</span>
                             </Label>
                             <Input type="text" id="name" className="w-full p-2 border rounded-md" placeholder="Enter your name" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
                         </div>
                         <div className="space-y-2 mt-4">
                             <Label htmlFor="email" className="text-sm font-semibold mb-2">
-                                Email Address <span className="text-red-500">*</span>
+                                {t("ApplicantInfoForm.email")} <span className="text-red-500">*</span>
                             </Label>
                             <Input type="email" id="email" className="w-full p-2 border rounded-md" placeholder="Enter your email address" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                         </div>
                         <div className="space-y-2 mt-4">
                             <Label htmlFor="companyName" className="text-sm font-semibold mb-2">
-                                Company Name <span className="text-red-500 inline-flex">*
+                                {t("Singapore.company")}<span className="text-red-500 inline-flex">*
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                            The company name must be written in basic English, and end with "Pte. Ltd.". If there is a previously established company with the same or similar corporate name, it cannot be accepted. Accordingly, if you enter the three possible company names at the bottom in the order of 1st choice, 2nd choice, 3rd choice, we will check the registration and apply the possible company names to the registered document in the order of your choice.
+                                           {t("Singapore.compInfo")}
                                         </TooltipContent>
                                     </Tooltip>
                                 </span>
@@ -118,7 +118,7 @@ const ApplicantInfo: React.FC = () => {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                                Relationship between the above applicant and the Singapore company to be established<span className="text-red-500">*</span>
+                                {t("Singapore.relationBtwcompApplicant")}<span className="text-red-500">*</span>
                             </Label>
                             {relationList.map((option) => (
                                 <div key={option.id} className="flex items-start space-x-2">
@@ -132,7 +132,7 @@ const ApplicantInfo: React.FC = () => {
                                     />
                                     {option.isOther ? (
                                         <div className="space-y-1 w-full">
-                                            <Label htmlFor={option.id} className="font-normal">other</Label>
+                                            <Label htmlFor={option.id} className="font-normal">{t(option.label)}</Label>
                                             {isOtherSelected && (
                                                 <Input
                                                     value={formData.isOtherRelation}
@@ -143,14 +143,14 @@ const ApplicantInfo: React.FC = () => {
                                             )}
                                         </div>
                                     ) : (
-                                        <Label htmlFor={option.id} className="font-normal">{option.label}</Label>
+                                        <Label htmlFor={option.id} className="font-normal">{t(option.label)}</Label>
                                     )}
                                 </div>
                             ))}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="phone" className="text-sm">
-                                Phone Number<span className="text-red-500">*</span>
+                               {t("ApplicantInfoForm.phoneNum")}<span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 id="phoneNum"
@@ -164,7 +164,7 @@ const ApplicantInfo: React.FC = () => {
                         <div className="grid grid-cols-12 gap-4">
                             <div className="col-span-4 space-y-2">
                                 <Label htmlFor="snsPlatform" className="text-sm">
-                                    SNS Platform
+                                    {t("ApplicantInfoForm.snsPlatform")}
                                 </Label>
                                 <Select
                                     value={formData.snsAccountId.id}

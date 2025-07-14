@@ -90,18 +90,18 @@ const AmlCddUS: React.FC = () => {
                             <h2 className="text-lg font-semibold mb-2">
                                 {t('AmlCdd.legal_assessment_title')}
                             </h2>
-                        </aside>
-                        <div className="w-3/4 ml-4">
                             <p className="inline-flex">
                                 {t('SwitchService.Intenstions.heading')}
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                        <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help text-red-500" />
                                     </TooltipTrigger>
-                                    <TooltipContent className="max-w-[500px] text-base">
+                                    <TooltipContent className="max-w-[500px] text-base ">
                                         {t('usa.AppInfo.amlCddPopup')}
                                     </TooltipContent>
                                 </Tooltip></p>
+                        </aside>
+                        <div className="w-3/4 ml-4">                            
                             <div key='legal1234' className="space-y-2">
                                 <Label htmlFor="serviceID" className="text-base font-semibold">
                                     {t('usa.AppInfo.amlLegalThings')}
@@ -117,7 +117,7 @@ const AmlCddUS: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`alt${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal1234-${item.id}`} />
-                                                    <Label htmlFor={`legal1234-${item}`} className="text-sm">
+                                                    <Label htmlFor={`legal1234-${item}`} className="text-sm font-normal">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
@@ -141,7 +141,7 @@ const AmlCddUS: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`use${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal123-${item.id}`} />
-                                                    <Label htmlFor={`legal123-${item.id}`} className="text-sm">
+                                                    <Label htmlFor={`legal123-${item.id}`} className="text-sm font-normal">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
@@ -186,7 +186,7 @@ const AmlCddUS: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`pbs${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal1234-${item.id}`} />
-                                                    <Label htmlFor={`legal1234-${item.id}`} className="text-sm">
+                                                    <Label htmlFor={`legal1234-${item.id}`} className="text-sm font-normal">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
@@ -211,7 +211,7 @@ const AmlCddUS: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`op${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal134-${item}`} />
-                                                    <Label htmlFor={`legal134-${item}`} className="text-sm">
+                                                    <Label htmlFor={`legal134-${item}`} className="text-sm font-normal">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
@@ -237,7 +237,7 @@ const AmlCddUS: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`pbc${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal234-${item.id}`} />
-                                                    <Label htmlFor={`legal234-${item.id}`} className="text-sm">
+                                                    <Label htmlFor={`legal234-${item.id}`} className="text-sm font-normal">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
@@ -262,7 +262,7 @@ const AmlCddUS: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`engp${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal1235-${item.id}`} />
-                                                    <Label htmlFor={`legal1235-${item.id}`} className="text-sm">
+                                                    <Label htmlFor={`legal1235-${item.id}`} className="text-sm font-normal">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
