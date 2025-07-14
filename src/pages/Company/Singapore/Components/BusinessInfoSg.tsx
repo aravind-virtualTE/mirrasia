@@ -36,32 +36,32 @@ const BusinessInfoSg: React.FC = () => {
     }, [formData.shareHolders,formData.directors]);
 
     const shrDirArr = shrDirList.map((item) => ({ value: item, label: item }));
-    console.log("shrDirArr", shrDirArr)
+    // console.log("shrDirArr", shrDirArr)
 
     const industries = [
-        { id: "trade", value: "Trade" },
-        { id: "wholesale", value: "Wholesale/retail distribution business" },
-        { id: "consulting", value: "Consulting" },
-        { id: "manufacturing", value: "Manufacturing" },
-        { id: "investment", value: "Investment and advisory business" },
-        { id: "ecommerce", value: "E-commerce" },
-        { id: "online-purchase", value: "Online direct purchase/shipment/purchase agency" },
-        { id: "it-software", value: "IT and software development" },
-        { id: "crypto", value: "Cryptocurrency related business (ICO, exchange, wallet service, etc.)" },
-        { id: "other", value: "Other" },
+        { id: "trade", value: "Singapore.industries.i1" },
+        { id: "wholesale", value: "Singapore.industries.i2" },
+        { id: "consulting", value: "Singapore.industries.i3" },
+        { id: "manufacturing", value: "Singapore.industries.i4" },
+        { id: "investment", value: "Singapore.industries.i5" },
+        { id: "ecommerce", value: "Singapore.industries.i6" },
+        { id: "online-purchase", value: "Singapore.industries.i7" },
+        { id: "it-software", value: "Singapore.industries.i8" },
+        { id: "crypto", value: "Singapore.industries.i9" },
+        { id: "other", value: "InformationIncorporation.paymentOption_other" },
     ];
 
     const purposes = [
-        { id: "entry-expansion", value: "Business entry and expansion" },
-        { id: "asset-management", value: "Asset management by investing in real estate or financial assets" },
-        { id: "holding-company", value: "Managing through investing in a subsidiary or affiliated company as a holding company" },
-        { id: "proposal", value: "Investor or business counterparty proposed you to establish a Singapore company" },
-        { id: "geographical-benefits", value: "Geographical benefits for international transactions" },
-        { id: "business-diversification", value: "Pursuing diversification of business due to relaxed regulations" },
-        { id: "competitive-advantage", value: "Pursuit of Competitive Advantage through relaxed financial regulations" },
-        { id: "tax-advantage", value: "Increase transactional volume due to low tax rate and non-transactional tax (Non-VAT)" },
-        { id: "capital-gain", value: "Pursuit of investment profit due to No Capital Gain Tax" },
-        { id: "other", value: "Other" },
+        { id: "entry-expansion", value: "Singapore.purpose.p1" },
+        { id: "asset-management", value: "Singapore.purpose.p2" },
+        { id: "holding-company", value: "Singapore.purpose.p3" },
+        { id: "proposal", value: "Singapore.purpose.p4" },
+        { id: "geographical-benefits", value: "Singapore.purpose.p5" },
+        { id: "business-diversification", value: "Singapore.purpose.p6" },
+        { id: "competitive-advantage", value: "Singapore.purpose.p7" },
+        { id: "tax-advantage", value: "Singapore.purpose.p8" },
+        { id: "capital-gain", value:"Singapore.purpose.p9" },
+        { id: "other", value: "InformationIncorporation.paymentOption_other" },
     ];
     const typesOfShares = [
         { id: "ordinaryShare", value: "CompanyInformation.typeOfShare.ordinaryShares" },
@@ -76,7 +76,7 @@ const BusinessInfoSg: React.FC = () => {
 
         });
     };
-    const addressList = [{ id: "mirrasiaAddress", value: 'Use of Mir Asia’s Singapore Corporation Registration Address Service' }, { id: "ownAddress", value: "Have a separate address to use as your business address in Singapore (does not use Mir Asia's registered address service)" }, { id: "other", value: t("InformationIncorporation.paymentOption_other") }];
+    const addressList = [{ id: "mirrasiaAddress", value: 'Singapore.mirraddress' }, { id: "ownAddress", value: 'Singapore.ownAddress' }, { id: "other", value: t("InformationIncorporation.paymentOption_other") }];
     const onChangeBusinessAddress = (value:string) => {
         // console.log("Selected Financial Year End:", value);
         const selectedItem = addressList.find(item => t(item.value) == t(value));
@@ -93,20 +93,20 @@ const BusinessInfoSg: React.FC = () => {
                             }`}
                     >
                         <h2 className="text-lg font-semibold mb-2">
-                            Business information of the Singapore company
+                            {t("Singapore.bInfoSgComp")}
                         </h2>
-                        <p className="text-sm text-gray-600">In this section, please provide information of the Singapore company and related businesses to be established.</p>
+                        <p className="text-sm text-gray-600">{t("Singapore.bInfoPara")}</p>
                     </aside>
                     <div className="w-4/5 ml-4">
                         <div className="space-y-2">
                             <Label className="text-base font-semibold">
-                                Select Industry <span className="text-red-500">*</span>
+                                {t("usa.bInfo.selectIndustryItems")}<span className="text-red-500">*</span>
                             </Label>
                             {industries.map((industry) => (
                                 <div key={industry.id} className="flex flex-col gap-2">
                                     <div className="flex items-start space-x-3">
                                         <Checkbox
-                                            id={industry.id}
+                                            id={`industry-${industry.id}`}
                                             checked={formData.selectedIndustry.includes(industry.id)}
                                             onCheckedChange={(checked: any) => {
                                                 const updated = checked
@@ -114,10 +114,9 @@ const BusinessInfoSg: React.FC = () => {
                                                     : formData.selectedIndustry.filter(id => id !== industry.id);
                                                 setFormData({ ...formData, selectedIndustry: updated });
                                             }}
-                                        // className={industry.isOther ? "mt-2" : ""}
                                         />
                                         <Label className="font-normal" htmlFor={`industry-${industry.id}`} >
-                                            {industry.value}
+                                            {t(industry.value)}
                                         </Label>
                                     </div>
                                     {industry.id === "other" && formData.selectedIndustry.includes("other") && (
@@ -132,7 +131,7 @@ const BusinessInfoSg: React.FC = () => {
                         </div>
                         <div className="space-y-2 mt-2">
                             <Label className="text-base font-semibold">
-                                Description of the product name, product type, service content, service type, etc. to be transacted after incorporation <span className="text-red-500">*</span>
+                               {t("Singapore.bInfoDescProdName")}<span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 placeholder="Your answer"
@@ -142,7 +141,7 @@ const BusinessInfoSg: React.FC = () => {
                         </div>
                         <div className="space-y-2 mt-2">
                             <Label className="text-base font-semibold flex items-center gap-2">
-                                Please list the Singapore corporation's main and secondary industries.
+                               {t("Singapore.bInfoSingSecondIndustries")}
                                 <span className="text-red-500 flex">* <Tooltip>
                                     <TooltipTrigger asChild>
                                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
@@ -160,7 +159,7 @@ const BusinessInfoSg: React.FC = () => {
                         </div>
                         <div className="space-y-2 mt-2">
                             <Label className="text-base font-semibold">
-                                Enter your website address
+                                {t("usa.bInfo.enterWeb")}
                             </Label>
                             <Input
                                 placeholder="Your answer"
@@ -170,7 +169,7 @@ const BusinessInfoSg: React.FC = () => {
                         </div>
                         <div className="space-y-2 mt-2">
                             <Label className="text-base font-semibold">
-                                Purpose of the establishment of the Singapore company and expected effects <span className="text-red-500">*</span>
+                               {t("Singapore.purposeEstablisSingapore")}<span className="text-red-500">*</span>
                             </Label>
                             <div className="space-y-3">
                                 {purposes.map((purpose) => (
@@ -187,7 +186,7 @@ const BusinessInfoSg: React.FC = () => {
                                                 }}
                                             />
                                             <Label htmlFor={`purpose-${purpose.id}`} className="font-normal">
-                                                {purpose.value}
+                                                {t(purpose.value)}
                                             </Label>
                                         </div>
                                         {purpose.id === "other" && formData.establishmentPurpose.includes("other") && (
@@ -203,14 +202,14 @@ const BusinessInfoSg: React.FC = () => {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                                Business address as registered in Singapore
+                                {t("Singapore.bInfoAddressReg")}
                                 <span className="text-red-500 inline-flex">*
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                            A Singapore corporation must have a commercial address in Singapore to establish and maintain a corporation. We provide a registered address service, which includes a registered address and mail handling service. (Residential or accommodation addresses cannot be registered as corporate addresses.)
+                                            {t("Singapore.bInfoAddRegParaInfo")}                                            
                                         </TooltipContent>
                                     </Tooltip>
                                 </span>
@@ -220,7 +219,7 @@ const BusinessInfoSg: React.FC = () => {
                                     <div key={year.id} className="flex items-center space-x-2">
                                         <RadioGroupItem value={year.value} id={`year-${year.id}`} />
                                         <Label className="font-normal" htmlFor={`year-${year.id}`}>
-                                            {year.value}
+                                            {t(year.value)}
                                         </Label>
                                     </div>
                                 ))}
@@ -241,9 +240,8 @@ const BusinessInfoSg: React.FC = () => {
                             }`}
                     >
                         <h2 className="text-lg font-semibold mb-2">
-                            Shareholders/Directors of the Singapore company
+                            {t("Singapore.shareHldrDirec")}
                         </h2>
-
                     </aside>
                     <div className="w-4/5 ml-4">
                         <ShareholderDirectorForm />
@@ -285,13 +283,13 @@ const BusinessInfoSg: React.FC = () => {
                         </div>
                         <div className="space-y-2 mt-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                                Significant Controller<span className="text-red-500 inline-flex">*
+                                {t('CompanyInformation.significantController')}<span className="text-red-500 inline-flex">*
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                            The significant controller is the person who has the final and practical decision-making power of the company.
+                                            {t('Singapore.shrContrlParaInfo')}
                                         </TooltipContent>
                                     </Tooltip>
                                 </span>
@@ -313,14 +311,14 @@ const BusinessInfoSg: React.FC = () => {
                         </div>
                         <div className="space-y-2 mt-2">
                             <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                                Designated Contact Person
+                                {t('shldrOptions.roleDcp')}
                                 <span className="text-red-500 inline-flex">*
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                            You need to delegate a person("designated contact person") who will be in charge of contacting in relation to your company's business, incorporation and renewal of your company, registration of documents, confirmations of the required information, and communications for various matters in respect of our services. Appointment of the designated contact person is free for up to 1 person, and if you would like to delegate 2 or more designated contact persons, an annual fee of USD250 per person will be charged. The designated contact person will be delegated by your company and should be registered separately with us to protect your company's information, reduce business confusion, and prevent identity fraud. (The designated contact person must go through the same procedures as the shareholders/directors by submitting the passport copy, address proof, and personal verification.)
+                                           {t('Singapore.designatedContInfo')}
                                         </TooltipContent>
                                     </Tooltip>
                                 </span>
@@ -332,10 +330,7 @@ const BusinessInfoSg: React.FC = () => {
                                     onSelect={(e) => setFormData({ ...formData, designatedContactPerson: e })}
                                     selectedValue={formData.designatedContactPerson}
                                 />
-                            ) : (
-                                "Please Fill Shareholder/Director"
-                            )}
-                            {/* <Input  placeholder="Your answer" /> */}
+                            ) : t("Singapore.plzFillShrDir")}
                         </div>
                     </div>
                 </div>
