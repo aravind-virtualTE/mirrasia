@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { sgFormWithResetAtom, sgPrice } from '../SgState'
 import { service_list } from './sgConstant'
+import { t } from 'i18next';
 
 const InvoiceSg: React.FC = () => {
   const [formData] = useAtom(sgFormWithResetAtom)
@@ -17,7 +18,7 @@ const InvoiceSg: React.FC = () => {
 
     let serviceFees = service_list.map((service) => ({
         id: service.id,
-        description: service.key,
+        description: t(service.key),
         originalPrice: service.price,
         discountedPrice: service.price,
         isHighlight: false,
@@ -29,8 +30,7 @@ const InvoiceSg: React.FC = () => {
             ...serviceFees,
             {
                 id: "registeredBusinessAddress",
-                description:
-                    "Registered business address service for one year",
+                description:t("Singapore.regBsnsService"),
                 originalPrice: 350,
                 discountedPrice: 350,
                 isHighlight: false,
@@ -46,7 +46,7 @@ const InvoiceSg: React.FC = () => {
             ...serviceFees,
             {
                 id: "corporateSecretaryAnnualService",
-                description: `Corporate Secretary annual service (${legalEntityYesCount})`,
+                description: `${t("Singapore.crpSecAnnualServ")} (${legalEntityYesCount})`,
                 originalPrice: legalEntityYesCount * 550.0,
                 discountedPrice: legalEntityYesCount * 550.0,
                 isHighlight: false,
@@ -59,7 +59,7 @@ const InvoiceSg: React.FC = () => {
             ...serviceFees,
             {
                 id: "onlineAccountingSoftware",
-                description: "Accounting package for 6 months (No of transaction is less than 120) - Prepayment",
+                description: t("Singapore.accPackageSixMonths"),
                 originalPrice: 2000.00,
                 discountedPrice: 2000.00,
                 isHighlight: false,
@@ -71,7 +71,7 @@ const InvoiceSg: React.FC = () => {
 
   const totalOriginal = serviceFees.reduce((sum, item) => sum + Number(item.originalPrice), 0)
   const totalDiscounted = serviceFees.reduce((sum, item) => sum + Number(item.discountedPrice), 0)
-  console.log("Total Original Price:", totalOriginal)
+  // console.log("Total Original Price:", totalOriginal)
   useEffect(() => {
     setUsPrice(totalDiscounted || 0)
   }, [totalDiscounted, setUsPrice])
@@ -80,16 +80,16 @@ const InvoiceSg: React.FC = () => {
     <div className="w-full max-w-4xl mx-auto py-8 px-4">
       <Card className="w-full">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>MIRR ASIA BUSINESS ADVISORY & SECRETARIAL SERVICES LIMITED</CardTitle>
+          <CardTitle>{t("mirrasisaSSL")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Description</TableHead>
-                <TableHead className="text-right">Original Price</TableHead>
-                <TableHead className="text-right">Discounted Price</TableHead>
-                <TableHead className="text-right">Notes</TableHead>
+                <TableHead>{t("invoice.desc")}</TableHead>
+                <TableHead className="text-right">{t("invoice.originalPrice")}</TableHead>
+                <TableHead className="text-right">{t("invoice.discPrice")}</TableHead>
+                <TableHead className="text-right">{t("invoice.notes")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -117,11 +117,11 @@ const InvoiceSg: React.FC = () => {
             <Card className="w-80">
               <CardContent className="pt-4">
                 <div className="flex justify-between mb-2">
-                  <span className="font-xs text-xs line-through text-gray-500">Total (Original):</span>
+                  <span className="font-xs text-xs line-through text-gray-500">{t("invoice.total")}:</span>
                   <span className="font-xs text-xs line-through text-gray-500">USD {totalOriginal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-green-600">
-                  <span className="font-medium">Total (Discounted):</span>
+                  <span className="font-medium">{t("invoice.totalDisc")}:</span>
                   <span className="font-bold">USD {totalDiscounted.toFixed(2)}</span>
                 </div>
               </CardContent>
