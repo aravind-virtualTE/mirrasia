@@ -1343,6 +1343,12 @@
     "mirraddress": "Use of Mir Asia’s Singapore Corporation Registration Address Service",
     "ownAddress": "Have a separate address to use as your business address in Singapore (does not use Mir Asia's registered address service)",
     "fyEndSgComp":"The financial year end date(FYE) of the Singapore company",
-    "fyEndSgCompInfo": "Important dates related to accounting and tax reporting: 1) Deadline for preparation of Accounting and Audit Report (S201): Within 3 months from the financial year end 2) Deadline for submission of Estimated Chargeable Income (ECI) Submission to Income Tax (IRAS): Within 3 months from the financial year end 3) Annual General Meeting (S175): To be held within 6 months from the financial year end* 4) ACRA Annual Return (S197): To be registered within 1 month from the AGM date 5) IRAS Company Tax Filing (Form C or CS for the last financial year end): To be filed by 30 November every year * The first AGM must be held within 18 months from the date of incorporation. ** The interval between AGMs should not exceed 15 months."
-  }
+    "fyEndSgCompInfo": "Important dates related to accounting and tax reporting: 1) Deadline for preparation of Accounting and Audit Report (S201): Within 3 months from the financial year end 2) Deadline for submission of Estimated Chargeable Income (ECI) Submission to Income Tax (IRAS): Within 3 months from the financial year end 3) Annual General Meeting (S175): To be held within 6 months from the financial year end* 4) ACRA Annual Return (S197): To be registered within 1 month from the AGM date 5) IRAS Company Tax Filing (Form C or CS for the last financial year end): To be filed by 30 November every year * The first AGM must be held within 18 months from the date of incorporation. ** The interval between AGMs should not exceed 15 months.",
+    "regBsnsService":"Registered business address service for one year",
+    "crpSecAnnualServ":"Corporate Secretary annual service",
+    "accPackageSixMonths":"Accounting package for 6 months (No of transaction is less than 120) - Prepayment",
+    "sgCompIncorporation":"Singapore company incorporation",
+    "nomineeDirectorService":"Nominee director annual service(Renewed every year *Registration of local directors required)"
+  },
+  "mirrasisaSSL":"MIRR ASIA BUSINESS ADVISORY & SECRETARIAL SERVICES LIMITED"
 }

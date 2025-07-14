@@ -3,13 +3,12 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
 import { useAtom } from "jotai"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Checkbox } from '@/components/ui/checkbox'
-import { useTranslation } from 'react-i18next'
 import { toast } from '@/hooks/use-toast'
 import { sgFormWithResetAtom } from '../SgState'
 import { service_list } from './sgConstant'
+import { t } from 'i18next';
 
 const SgServiceSelection: React.FC = () => {
-    const { t } = useTranslation();
     const [formData, setFormData] = useAtom(sgFormWithResetAtom)
     const [selectedServices, setSelectedServices] = useState<string[]>(formData.serviceItemsSelected)
 
@@ -18,7 +17,7 @@ const SgServiceSelection: React.FC = () => {
     const directorsList = formData.directors
     let serviceFees = service_list.map((service) => ({
         id: service.id,
-        description: service.key,
+        description: t(service.key),
         originalPrice: service.price,
         discountedPrice: service.price,
         isOptional: service.isOptional,
@@ -30,8 +29,7 @@ const SgServiceSelection: React.FC = () => {
             ...serviceFees,
             {
                 id: "registeredBusinessAddress",
-                description:
-                    "Registered business address service for one year",
+                description: t("Singapore.regBsnsService"),
                 originalPrice: 350,
                 discountedPrice: 350,
                 isOptional: false,
@@ -47,7 +45,7 @@ const SgServiceSelection: React.FC = () => {
             ...serviceFees,
             {
                 id: "corporateSecretaryAnnualService",
-                description: `Corporate Secretary annual service (${legalEntityYesCount})`,
+                description: `${t("Singapore.crpSecAnnualServ")} (${legalEntityYesCount})`,
                 originalPrice: legalEntityYesCount * 550.0,
                 discountedPrice: legalEntityYesCount * 550.0,
                 isOptional: false,
@@ -60,7 +58,7 @@ const SgServiceSelection: React.FC = () => {
             ...serviceFees,
             {
                 id: "onlineAccountingSoftware",
-                description: "Accounting package for 6 months (No of transaction is less than 120) - Prepayment",
+                description: t("Singapore.accPackageSixMonths"),
                 originalPrice: 2000.00,
                 discountedPrice: 2000.00,
                 isOptional: false,

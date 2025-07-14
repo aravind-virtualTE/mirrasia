@@ -1,13 +1,13 @@
 export const service_list = [
     {
       id: "companyIncorporation",
-      key: "Singapore company incorporation",
+      key: "Singapore.sgCompIncorporation",
       price: 500,
       isOptional: false,
     },
     {
       id: "nomineeDirector",
-      key: "Nominee director annual service(Renewed every year *Registration of local directors required)",
+      key: "Singapore.nomineeDirectorService",
       price: 2000,
       isOptional: false,
     },
