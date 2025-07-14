@@ -15,17 +15,17 @@ const AccountingSgTax: FC = () => {
     const [formData, setFormData] = useAtom(sgFormWithResetAtom);
 
     const bookkeepingCycleOptions = [
-        { value: 'monthly', label: 'Monthly' },
-        { value: 'quarterly', label: 'Quarterly' },
-        { value: 'half-annually', label: 'Half-annually (every 6 months)' },
-        { value: 'annually', label: 'Annually (every 12 months) *the lowest cost' },
-        { value: 'other', label: 'Other:' },
+        { value: 'monthly', label: 'InformationIncorporation.bookCycle1' },
+        { value: 'quarterly', label: 'InformationIncorporation.bookCycle2' },
+        { value: 'half-annually', label: 'InformationIncorporation.bookCycle3' },
+        { value: 'annually', label: 'InformationIncorporation.bookCycle4' },
+        { value: 'other', label: "InformationIncorporation.paymentOption_other" },
     ];
     const onlineAccountList = [
-        { value: 'yes', label: 'Yes (Software cost: estimated as HKD400 per month)' },
-        { value: 'no', label: 'No' },
-        { value: 'recommendation', label: 'Recommendation required' },
-        { value: 'other', label: 'Other:' },
+        { value: 'yes', label: 'InformationIncorporation.accSoftwareCharge' },
+        { value: 'no', label: 'AmlCdd.options.no' },
+        { value: 'recommendation', label: 'InformationIncorporation.recRequired' },
+        { value: 'other', label: "InformationIncorporation.paymentOption_other" },
     ];
     const finYears = [{id: "dec31",value: t("InformationIncorporation.dec31")}, {id: "other", value: t("InformationIncorporation.paymentOption_other")}];
 
@@ -55,21 +55,21 @@ const AccountingSgTax: FC = () => {
                     }`}
             >
                 <h2 className="text-lg font-semibold mb-2">
-                    Accounting and taxation
+                    {t("CompanyInformation.accountHeading")}
                 </h2>
-                <p className="text-sm text-gray-600">Please provide information on accounting and tax matters.</p>
+                <p className="text-sm text-gray-600">{t("CompanyInformation.accountingPara")}</p>
             </aside>
             <div className="w-4/5 ml-4">
                 <div className="space-y-2">
                     <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                        The financial year end date(FYE) of the Singapore company
+                        {t("Singapore.fyEndSgComp")}
                         <span className="text-red-500 inline-flex">*
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-[500px] text-base">
-                                   Important dates related to accounting and tax reporting: 1) Deadline for preparation of Accounting and Audit Report (S201): Within 3 months from the financial year end 2) Deadline for submission of Estimated Chargeable Income (ECI) Submission to Income Tax (IRAS): Within 3 months from the financial year end 3) Annual General Meeting (S175): To be held within 6 months from the financial year end* 4) ACRA Annual Return (S197): To be registered within 1 month from the AGM date 5) IRAS Company Tax Filing (Form C or CS for the last financial year end): To be filed by 30 November every year * The first AGM must be held within 18 months from the date of incorporation. ** The interval between AGMs should not exceed 15 months.
+                                   {t("Singapore.fyEndSgCompInfo")}
                                 </TooltipContent>
                             </Tooltip>
                         </span>
@@ -92,7 +92,7 @@ const AccountingSgTax: FC = () => {
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                        Bookkeeping cycle
+                        {t("CompanyInformation.bookCycle")}
                         <span className="text-red-500 inline-flex">*</span>
                     </Label>
                     <RadioGroup value={formData.bookKeeping?.value} onValueChange={onChangeBookKeep} className="gap-4">
@@ -100,7 +100,7 @@ const AccountingSgTax: FC = () => {
                             <div key={option.value} className="flex items-center space-x-2">
                                 <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
                                 <Label className="font-normal" htmlFor={`bookkeeping-${option.value}`}>
-                                    {option.label}
+                                    {t(option.label)}
                                 </Label>
                             </div>
                         ))}
@@ -112,14 +112,14 @@ const AccountingSgTax: FC = () => {
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                    Would you like to implement online accounting software - Xero?
+                    {t("CompanyInformation.implementSoftware")}
                         <span className="text-red-500 inline-flex">*
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-[500px] text-base">
-                                   If you introduce Xero, you can import data created by POS or other software in CSV format to create ledgers and financial statements, and it also supports the creation of cash flow statements. It is also helpful when creating consolidated financial statements between holding companies and subsidiaries, and other functions such as inventory management, cost management, and sales management are also supported.
+                                   {t("CompanyInformation.implementSoftwaretTip")}
                                 </TooltipContent>
                             </Tooltip>
                         </span>
@@ -129,7 +129,7 @@ const AccountingSgTax: FC = () => {
                             <div key={option.value} className="flex items-center space-x-2">
                                 <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
                                 <Label className="font-normal" htmlFor={`bookkeeping-${option.value}`}>
-                                    {option.label}
+                                    {t(option.label)}
                                 </Label>
                             </div>
                         ))}
@@ -141,7 +141,7 @@ const AccountingSgTax: FC = () => {
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                        Do you currently use or have a separate accounting software you would like to use? (if any)
+                        {t("CompanyInformation.doYouUseSoftware")}
                     </Label>
                     <Input placeholder="Please specify" value={formData.seperateAccountingSoftware} onChange={(e) => setFormData({ ...formData, seperateAccountingSoftware: e.target.value })}  />
                 </div>

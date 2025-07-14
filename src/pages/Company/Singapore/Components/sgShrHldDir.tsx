@@ -537,7 +537,7 @@ const ShareholderDirectorForm: React.FC = () => {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-lg">Shareholders</CardTitle>
+            <CardTitle className="text-lg">{t("CompanyInformation.shareholders")}</CardTitle>
             <div className="flex items-center gap-4">
               <div className={`text-sm font-medium ${totalOwnership === 100 ? 'text-green-600' :
                 totalOwnership > 100 ? 'text-red-500' : 'text-orange-500'
@@ -547,7 +547,7 @@ const ShareholderDirectorForm: React.FC = () => {
               </div>
               <Button onClick={addShareholder} size="sm" className="h-8">
                 <Plus className="w-4 h-4 mr-1" />
-                Add
+                {t("Singapore.add")}
               </Button>
             </div>
           </div>
@@ -556,13 +556,13 @@ const ShareholderDirectorForm: React.FC = () => {
           <div className="border rounded-lg overflow-hidden">
             {/* Header */}
             <div className="grid grid-cols-12 bg-gray-50 border-b text-xs font-medium text-gray-700">
-              <div className="col-span-2 p-1 border-r">Name</div>
-              <div className="col-span-2 p-1 border-r">Email</div>
-              <div className="col-span-2 p-1 border-r">Phone</div>
-              <div className="col-span-3 p-1 border-r">Address</div>
-              <div className="col-span-1 p-1 border-r">Ownership %</div>
-              <div className="col-span-1 p-1 border-r break-words">Legal Entity Company/ Foundation?</div>
-              <div className="col-span-1 p-1 text-center">Actions</div>
+              <div className="col-span-2 p-1 border-r">{t("shldr_viewboard.fullName")}</div>
+              <div className="col-span-2 p-1 border-r">{t("ApplicantInfoForm.email")}</div>
+              <div className="col-span-2 p-1 border-r">{t("ApplicantInfoForm.phoneNum")}</div>
+              <div className="col-span-3 p-1 border-r">{t("ApplicantInfoForm.address")}</div>
+              <div className="col-span-1 p-1 border-r">{t("CompanyInformation.ownerShpRte")}</div>
+              <div className="col-span-1 p-1 border-r break-words">{t("Singapore.legalEntityF")}</div>
+              <div className="col-span-1 p-1 text-center">{t("Singapore.actions")}</div>
             </div>
 
             {/* Rows */}
@@ -655,10 +655,10 @@ const ShareholderDirectorForm: React.FC = () => {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-lg">Directors</CardTitle>
+            <CardTitle className="text-lg">{t("CompanyInformation.directors")}</CardTitle>
             <Button onClick={addDirector} size="sm" className="h-8">
               <Plus className="w-4 h-4 mr-1" />
-              Add
+              {t("Singapore.add")}
             </Button>
           </div>
         </CardHeader>
@@ -666,14 +666,13 @@ const ShareholderDirectorForm: React.FC = () => {
           <div className="border rounded-lg overflow-hidden">
             {/* Header */}
             <div className="grid grid-cols-11 bg-gray-50 border-b text-xs font-medium text-gray-700">
-              <div className="col-span-2 p-1 border-r">Name</div>
-              <div className="col-span-2 p-1 border-r">Email</div>
-              <div className="col-span-2 p-1 border-r">Phone</div>
-              <div className="col-span-3 p-1 border-r">Address</div>
-              <div className="col-span-1 p-1 border-r break-words">Legal Entity Company/ Foundation?</div>
-              <div className="col-span-1 p-1 text-center">Actions</div>
+              <div className="col-span-2 p-1 border-r">{t("shldr_viewboard.fullName")}</div>
+              <div className="col-span-2 p-1 border-r">{t("ApplicantInfoForm.email")}</div>
+              <div className="col-span-2 p-1 border-r">{t("ApplicantInfoForm.phoneNum")}</div>
+              <div className="col-span-3 p-1 border-r">{t("ApplicantInfoForm.address")}</div>
+              <div className="col-span-1 p-1 border-r break-words">{t("Singapore.legalEntityF")}</div>
+              <div className="col-span-1 p-1 text-center">{t("Singapore.actions")}</div>
             </div>
-
             {/* Rows */}
             {formData.directors.map((director, index) => (
               <div key={index} className="grid grid-cols-11 border-b hover:bg-gray-50">
