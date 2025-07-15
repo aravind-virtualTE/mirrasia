@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { atom, useAtom } from 'jotai';
 import { PlusCircle, Pencil, Trash2 } from 'lucide-react';
@@ -19,11 +20,12 @@ import { allCompListAtom } from '@/services/state';
 import ProjectFormDialog from './ProjectFormDialog';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
+import SearchBox from '@/pages/MasterTodo/SearchBox';
 
 const isEditingAtom = atom<boolean>(false);
 const isOpenAtom = atom<boolean>(false);
 
-const AdminProject: React.FC<{id?: string}> = ({id}) => {
+const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
   const [projects, setProjects] = useAtom(projectsAtom);
   const [currentProject, setCurrentProject] = useAtom(currentProjectAtom);
   const [isEditing, setIsEditing] = useAtom(isEditingAtom);
@@ -31,7 +33,9 @@ const AdminProject: React.FC<{id?: string}> = ({id}) => {
   const [allList] = useAtom(allCompListAtom);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteProj, setDeleteProj] = useState('');
-  
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -151,34 +155,69 @@ const AdminProject: React.FC<{id?: string}> = ({id}) => {
       console.error('Failed to delete project', error);
     }
   };
+  const loadProjects1 = async (filters: any) => {
+    try {
+      const { id, searchParam } = filters || {};
+      const data = await fetchProjects(id, searchParam);
+      setProjects(data);
+    } catch (error) {
+      console.error('Failed to fetch projects', error);
+    }
+  };
+
+  const handleSearch = async () => {
+    const filters: { searchParam?: string; id?: string } = {};
+    if (searchQuery) {
+      filters.searchParam = searchQuery.trim();
+    }
+    filters.id = id;
+    // console.log('filters', filters);
+    loadProjects1(filters);
+  };
 
   return (
     <div className="container py-4">
-      <div className="flex justify-between items-center mb-2 ">
+      <div className="flex justify-between items-center mb-2">
         <h3 className="text-2xl font-bold ml-2">Project Management</h3>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => {
-              setCurrentProject(initialProject);
-              setIsEditing(false);
-            }} className="h-8 px-3 text-xs mr-4">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add Project
-            </Button>
-          </DialogTrigger>
-          <ProjectFormDialog
-            isEditing={isEditing}
-            currentProject={currentProject}
-            handleInputChange={handleInputChange}
-            handleSelectChange={handleSelectChange}
-            handleCompanyChange={handleCompanyChange}
-            handleSubmit={handleSubmit}
-            handleCancel={handleCancel}
-            filteredCompanies={filteredCompanies}
+
+        <div className="flex items-center space-x-2 mr-4">
+          <SearchBox
+            value={searchQuery}
+            onChange={setSearchQuery}
+            onSearch={handleSearch}
+            isFocused={isFocused}
+            setIsFocused={setIsFocused}
+            placeText="Search With Project Name/ Email"
           />
-        </Dialog>
+
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button
+                onClick={() => {
+                  setCurrentProject(initialProject);
+                  setIsEditing(false);
+                }}
+                className="h-8 px-3 text-xs"
+              >
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Project
+              </Button>
+            </DialogTrigger>
+            <ProjectFormDialog
+              isEditing={isEditing}
+              currentProject={currentProject}
+              handleInputChange={handleInputChange}
+              handleSelectChange={handleSelectChange}
+              handleCompanyChange={handleCompanyChange}
+              handleSubmit={handleSubmit}
+              handleCancel={handleCancel}
+              filteredCompanies={filteredCompanies}
+            />
+          </Dialog>
+        </div>
       </div>
-      
+
+
       {projects.length === 0 ? (
         <div className="text-center py-10 text-muted-foreground">
           No projects added yet. Click "Add Project" to get started.

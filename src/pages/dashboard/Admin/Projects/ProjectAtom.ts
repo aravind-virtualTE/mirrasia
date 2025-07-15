@@ -38,10 +38,15 @@ export interface Project {
   export const currentProjectAtom = atom<Project>(initialProject);
 
 
-  export const fetchProjects = async (id?: string) => {
-    const { data } = await api.get('/projects/', { params: { id } });
-    return data;
-  };
+ export const fetchProjects = async (id?: string, searchParam?: string) => {
+  const { data } = await api.get('/projects/', { 
+    params: { 
+      id, 
+      searchParam
+    } 
+  });
+  return data;
+};
 
   export const createProject = async (project: Omit<Project, 'id'>) => {
     const { data } = await api.post('/projects', project);
