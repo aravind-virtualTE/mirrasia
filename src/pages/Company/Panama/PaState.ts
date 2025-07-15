@@ -77,7 +77,7 @@ export interface PaFormData {
   };
   paTotalCapPaid: string;
   totalAmountCap: string | number;
-  registerCurrencyAtom?: { code: string, label: string };
+  registerCurrencyAtom: { code: string, label: string };
   selectedIndustry: string[];
   otherIndustryText: string;
   tradeAfterIncorporation: string;
