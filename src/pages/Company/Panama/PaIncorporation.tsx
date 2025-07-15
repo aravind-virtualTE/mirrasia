@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from '@/components/ui/card';
 import ApplicantInfo from './Components/ApplicantInfo';
-import PanamaEntity from './Components/PanamaEntity';
+import AmlCddPA from './Components/AmlcddPa';
 import BusinessInfoPa from './Components/BusinessInfoPa';
 import PaServiceAgreement from './Components/PaServiceAgrmt';
 import PaymentInformation from './Components/PaPaymentInfo';
@@ -20,6 +20,7 @@ import { paFormWithResetAtom } from './PaState';
 import { useAtom } from 'jotai';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
+import { t } from 'i18next';
 
 const IncorporatePa: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
@@ -32,22 +33,22 @@ const IncorporatePa: React.FC = () => {
     const steps = [
         {
             number: 1,
-            label: "Applicant Information",
+            label: "compFormation.appInfo",
             active: currentSection === 1,
         },
         {
             number: 2,
-            label: "Panama Entity",
+            label: "compFormation.amlcd",
             active: currentSection === 2,
         },
         {
             number: 3,
-            label: "Company Information",
+            label: "compFormation.compInfo",
             active: currentSection === 3,
         },
         {
             number: 4,
-            label: "Service Agreement",
+            label: "compFormation.serviceAgrmt",
             active: currentSection === 4,
         },
         // {
@@ -57,22 +58,22 @@ const IncorporatePa: React.FC = () => {
         // },
         {
             number: 5,
-            label: "Invoice",
+            label: "compFormation.invoice",
             active: currentSection === 5,
         },
         {
             number: 6,
-            label: "Payment",
+            label:  "compFormation.payment",
             active: currentSection === 6,
         },
         {
             number: 7,
-            label: "Information for Incorporation",
+            label: "compFormation.inforIncorpo",
             active: currentSection === 7,
         },
         {
             number: 8,
-            label: "Incorporation",
+            label: "compFormation.incorpo",
             active: currentSection === 8,
         },
     ]
@@ -176,7 +177,7 @@ const IncorporatePa: React.FC = () => {
                             className="h-full w-auto"
                         >
                             {currentSection === 1 && <ApplicantInfo />}
-                            {currentSection === 2 && <PanamaEntity />}
+                            {currentSection === 2 && <AmlCddPA />}
                             {currentSection === 3 && <BusinessInfoPa />}
                             {currentSection === 4 && <PaServiceAgreement />}
                             {/* {currentSection === 5 && <PaServiceSelection />} */}
@@ -229,7 +230,7 @@ const IncorporatePa: React.FC = () => {
                                     {index + 1}
                                 </div>
                                 <span className="ml-3 text-sm whitespace-pre-wrap">
-                                    {step.label}
+                                    {t(step.label)}
                                 </span>
                             </div>
                         ))}

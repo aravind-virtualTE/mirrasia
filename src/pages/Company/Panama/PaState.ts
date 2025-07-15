@@ -77,7 +77,7 @@ export interface PaFormData {
   };
   paTotalCapPaid: string;
   totalAmountCap: string | number;
-  registerCurrencyAtom?: {code:string, label: string};
+  registerCurrencyAtom?: { code: string, label: string };
   selectedIndustry: string[];
   otherIndustryText: string;
   tradeAfterIncorporation: string;
@@ -87,7 +87,14 @@ export interface PaFormData {
   sourceFunding: string[],
   otherSourceFund: string
   specificProvisions: string
+  restrictedCountriesWithActivity: { id: string, value: string };
+  sanctionedTiesPresent: { id: string, value: string };
+  businessInCrimea: { id: string, value: string };
+  involvedInRussianEnergyDefense: { id: string, value: string };
+  hasLegalEthicalIssues: { id: string, value: string };
+  annualRenewalTermsAgreement: { id: string, value: string };
 
+  [key: string]: any;
 }
 
 const initialFormState: PaFormData = {
@@ -119,7 +126,7 @@ const initialFormState: PaFormData = {
   legalDirectors: [],
   // designatedContact: '',
   accountingDataAddress: '',
-  otherAccountingAddress:'',
+  otherAccountingAddress: '',
   isTermsAndConditionsAccepted: '',
   serviceItemsSelected: [],
   typeOfShare: '',
@@ -137,7 +144,7 @@ const initialFormState: PaFormData = {
   },
   paTotalCapPaid: "",
   totalAmountCap: '',
-  registerCurrencyAtom: {code:'', label: ''},
+  registerCurrencyAtom: { code: '', label: '' },
   selectedIndustry: [],
   otherIndustryText: "",
   tradeAfterIncorporation: "",
@@ -146,7 +153,14 @@ const initialFormState: PaFormData = {
   listCountry: '',
   sourceFunding: [],
   otherSourceFund: '',
-  specificProvisions : ''
+  specificProvisions: '',
+  restrictedCountriesWithActivity: { id: '', value: '' },
+  sanctionedTiesPresent: { id: '', value: '' },
+  businessInCrimea: { id: '', value: '' },
+  involvedInRussianEnergyDefense: { id: '', value: '' },
+  annualRenewalTermsAgreement: { id: '', value: '' },
+  hasLegalEthicalIssues: { id: '', value: '' },
+
 
 };
 
