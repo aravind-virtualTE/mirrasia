@@ -234,7 +234,7 @@ const AmlCddSg: React.FC = () => {
                             <div className="space-y-2 pb-2" key={question.id} >
                                 {/* Question Text */}
                                 <p className="text-sm font-medium text-gray-800 mb-3">
-                                    {question.value} <span className="text-red-500">*</span>
+                                    {t(question.value)} <span className="text-red-500">*</span>
                                 </p>
                                 <RadioGroup
                                     value={ t(formData[question.id]?.value || '')}
