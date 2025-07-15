@@ -13,6 +13,7 @@ import { typesOfSharesObj } from '../../HongKong/constants';
 import { t } from 'i18next';
 import { paFormWithResetAtom } from '../PaState';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import PanamaEntity from './PanamaEntity';
 
 const BusinessInfoPa: React.FC = () => {
     const { theme } = useTheme();
@@ -76,6 +77,7 @@ const BusinessInfoPa: React.FC = () => {
     return (
         <Card>
             <CardContent>
+                <PanamaEntity />
                 <div className='flex w-full p-4'>
                     <aside
                         className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
