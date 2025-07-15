@@ -117,7 +117,7 @@ const AmlCddPA: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`alt${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal1234-${item.id}`} />
-                                                    <Label htmlFor={`legal1234-${item}`} className="text-sm font-normal">
+                                                    <Label htmlFor={`legal1234-${item}`} className="text-sm font-normal cursor-pointer">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
@@ -141,7 +141,7 @@ const AmlCddPA: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`use${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal123-${item.id}`} />
-                                                    <Label htmlFor={`legal123-${item.id}`} className="text-sm font-normal">
+                                                    <Label htmlFor={`legal123-${item.id}`} className="text-sm font-normal cursor-pointer">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
@@ -184,7 +184,7 @@ const AmlCddPA: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`pbs${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal1234-${item.id}`} />
-                                                    <Label htmlFor={`legal1234-${item.id}`} className="text-sm font-normal">
+                                                    <Label htmlFor={`legal1234-${item.id}`} className="text-sm font-normal cursor-pointer">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
@@ -209,7 +209,7 @@ const AmlCddPA: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`op${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal134-${item}`} />
-                                                    <Label htmlFor={`legal134-${item}`} className="text-sm font-normal">
+                                                    <Label htmlFor={`legal134-${item}`} className="text-sm font-normal cursor-pointer">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
@@ -235,7 +235,7 @@ const AmlCddPA: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`pbc${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal234-${item.id}`} />
-                                                    <Label htmlFor={`legal234-${item.id}`} className="text-sm font-normal">
+                                                    <Label htmlFor={`legal234-${item.id}`} className="text-sm font-normal cursor-pointer">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>
@@ -260,7 +260,7 @@ const AmlCddPA: React.FC = () => {
                                             return (
                                                 <div className="flex items-center space-x-2" key={`engp${idx}`}>
                                                     <RadioGroupItem value={t(item.value)} id={`legal1235-${item.id}`} />
-                                                    <Label htmlFor={`legal1235-${item.id}`} className="text-sm font-normal">
+                                                    <Label htmlFor={`legal1235-${item.id}`} className="text-sm font-normal cursor-pointer">
                                                         {t(item.value)}
                                                     </Label>
                                                 </div>

@@ -63,7 +63,7 @@ const IncorporatePa: React.FC = () => {
         },
         {
             number: 6,
-            label:  "compFormation.payment",
+            label: "compFormation.payment",
             active: currentSection === 6,
         },
         {
@@ -111,10 +111,111 @@ const IncorporatePa: React.FC = () => {
     const nextSection = async () => {
         switch (currentSection) {
             case 1:
-                await updateDoc();
-                setCurrentSection(prev => prev + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                {
+                    const errors = [];
+                    if (!formData.name || formData.name.trim() === "") {
+                        errors.push("Invalid name format or empty name.");
+                    }
+                    const email = formData.email
+                    if (!email || email.trim() === "" || !/^\S+@\S+\.\S+$/.test(email)) {
+                        errors.push("Invalid email format or empty email.");
+                    }
+                    // const phoneNumber = formData.phoneNum
+                    // if (!phoneNumber || phoneNumber.trim() === "") {
+                    //     errors.push("Phone number cannot be empty.");
+                    // }
+                    if (!Array.isArray(formData.companyName) || formData.companyName.length === 0 || formData.companyName[0].trim() === "") {
+                        errors.push("Company Name cannot be empty.");
+                    }
+                    const legalEntity = formData.legalEntity
+                    if (!legalEntity || legalEntity.trim() === "") {
+                        errors.push("Legal cannot be empty.");
+                    }
+                    const address = formData.address
+                    if (!address || address.trim() === "") {
+                        errors.push("Address cannot be empty.");
+                    }
+
+                    if (errors.length > 0) {
+                        toast({
+                            title: "Fill Details",
+                            description: errors.join("\n"),
+                        })
+                    } else {
+                        await updateDoc();
+                        setCurrentSection(currentSection + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                    break
+                }
+            case 2:
+                {
+                    const rcActivity = formData.restrictedCountriesWithActivity
+                    const rcSanctions = formData.sanctionedTiesPresent
+                    const bsnsCremia = formData.businessInCrimea
+                    const involved = formData.involvedInRussianEnergyDefense
+                    const legalInfo = formData.hasLegalEthicalIssues
+                    const annualRenew = formData.annualRenewalTermsAgreement
+                    // console.log('rcActivity',rcActivity , '\n rcSanctions',rcSanctions, '\n bsnsCremia',bsnsCremia, '\n involved',involved, '\n legalInfo',legalInfo, '\n annualRenew',annualRenew,'\n sgAccntDecl',sgAccntDecl)
+                    const values = [rcActivity, rcSanctions, bsnsCremia, involved, legalInfo, annualRenew];
+                    // console.log("values", values)
+                    if (values.some(value => value.value === "")) {
+                        toast({
+                            title: "Incomplete Information",
+                            description: "Please complete all fields before proceeding.",
+                        });
+                        return;
+                    }
+                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && ['no', 'handleOwnIncorpo'].includes(annualRenew.id)) {
+                        await updateDoc();
+                        setCurrentSection(prev => prev + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    } else {
+                        await updateDoc();
+                        toast({
+                            title: "Consultation required before proceeding",
+                            description: "It appears that you need to consult before proceeding. We will review the content of your reply and our consultant will contact you shortly. Thank you very much.",
+                        });
+                    }
+                    break;
+                }
+            case 3: {
+                // const panamaEntity = formData.panamaEntity
+                const selectedIndustry = formData.selectedIndustry.length
+                const purposePaCompany = formData.purposePaCompany.length
+                const sourceFunding = formData.sourceFunding.length
+                const shareHolders = formData.shareHolders.length
+                const legalDirectors = formData.legalDirectors.length
+                const description = formData.tradeAfterIncorporation
+                const listCountry = formData.listCountry
+                const typeOfShare = formData.typeOfShare
+
+                if (selectedIndustry == 0 || purposePaCompany == 0 || sourceFunding == 0 || shareHolders == 0 || legalDirectors == 0 || description == '' || listCountry == '' || typeOfShare == "") {
+                    toast({
+                        title: "Fill Details",
+                        description: "Fill all the required fields before proceeding.",
+                    });
+                } else {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
                 break
+            }
+            case 4: {
+                if (formData.serviceAgreementConsent == false) {
+                    toast({
+                        title: "Service Agreement.",
+                        description:
+                            "Please accept the service agreement to proceed.",
+                    });
+                } else {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+                break
+            }
             case 6: {
                 const session = await paymentApi.getSession(formData.sessionId)
                 // console.log("session--->", session)
@@ -130,7 +231,28 @@ const IncorporatePa: React.FC = () => {
                 }
                 break;
             }
-            default:           
+            case 7: {
+                const registerCurrencyAtom = formData.registerCurrencyAtom.label
+                const totalAmountCap = formData.totalAmountCap
+                const noOfSharesIssued = formData.noOfSharesIssued
+                const specificProvisions = formData.specificProvisions
+                const accountingDataAddress = formData.accountingDataAddress
+
+                if (registerCurrencyAtom == '' || totalAmountCap == '' || noOfSharesIssued == '' || specificProvisions == '' || accountingDataAddress == '') {
+                    toast({
+                        title: "Fill the Details.",
+                        description:
+                            "Please fill the details please.",
+                    });
+                } else {
+                    await updateDoc();
+                    setCurrentSection(currentSection + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+
+                break;
+            }
+            default:
                 if (currentSection! < 9) {
                     await updateDoc();
                     setCurrentSection(prev => prev + 1);

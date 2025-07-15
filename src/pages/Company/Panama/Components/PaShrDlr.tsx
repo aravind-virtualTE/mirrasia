@@ -117,7 +117,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
         <Card className="mb-4 pt-4">
             <CardContent className="grid grid-cols-3 gap-4">
                 <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-                    <Label className="font-medium">{t('CompanyInformation.shareDirName')}</Label>
+                    <Label className="font-medium">Shareholder(s)</Label>
                     <Input
                         type="text"
                         className="input col-span-2"
@@ -171,9 +171,8 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                     </div>
                 </div>
 
-                <div className="col-span-3 grid grid-cols-[2fr_2fr_2fr_auto] gap-4 items-center">
-                    {/* Role Select */}
-                    <div>
+                <div className="col-span-3 flex gap-4 items-end">
+                    <div className="flex-1">
                         <Label className="font-medium">Role</Label>
                         <Select
                             value={role?.id || ''}
@@ -184,7 +183,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                                 }
                             }}
                         >
-                            <SelectTrigger className="input">
+                            <SelectTrigger className="input w-full">
                                 <SelectValue placeholder="Select role">
                                     {role ? t(role.value) : ''}
                                 </SelectValue>
@@ -199,33 +198,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                         </Select>
                     </div>
 
-                    {/* Is Director */}
-                    {/* <div>
-                        <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
-                        <Select
-                            value={isDirector.id}
-                            onValueChange={(selectedId) => {
-                                const selectedOption = yesNoOptions.find(opt => opt.id === selectedId);
-                                if (selectedOption) {
-                                    onUpdate({ isDirector: selectedOption });
-                                }
-                            }}
-                        >
-                            <SelectTrigger className="input">
-                                <SelectValue>{t(isDirector.value)}</SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                                {yesNoOptions.map((option) => (
-                                    <SelectItem key={option.id} value={option.id}>
-                                        {t(option.value)}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div> */}
-
-                    {/* Is Legal Person */}
-                    <div>
+                    <div className="flex-1">
                         <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
                         <Select
                             value={isLegalPerson.id}
@@ -236,7 +209,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                                 }
                             }}
                         >
-                            <SelectTrigger className="input">
+                            <SelectTrigger className="input w-full">
                                 <SelectValue>{t(isLegalPerson.value)}</SelectValue>
                             </SelectTrigger>
                             <SelectContent>
@@ -249,18 +222,19 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                         </Select>
                     </div>
 
-                    {/* Trash icon */}
                     {isRemovable && (
-                        <div className="flex justify-end pt-6">
+                        <div className="flex items-end">
                             <button
-                                className="btn btn-icon text-red-500 hover:text-red-700"
+                                className="text-red-500 hover:text-red-700 p-2"
                                 onClick={onDelete}
                             >
-                                <Trash2 />
+                                <Trash2 className="h-5 w-5" />
                             </button>
                         </div>
                     )}
                 </div>
+
+
 
             </CardContent>
         </Card>
@@ -402,15 +376,15 @@ const ShareholderDirectorFormPa: React.FC = () => {
         },
     ]);
     const [legalDirectors, setLegalDirectors] = useState<LegalDirectorProps[]>([
-        // {
-        //     ownershipRate: 0,
-        //     isDirector: { id: "no", value: t("AmlCdd.options.no") },
-        //     isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
-        //     role: { id: '', value: '' },
-        //     onDelete: () => { },
-        //     onUpdate: () => { },
-        //     isRemovable: false,
-        // },
+         {        
+            ownershipRate: 0,
+            role: { id: '', value: '' },
+            // isDirector: { id: "no", value: t("AmlCdd.options.no") },
+            isLegalPerson: { id: "no", value: t("AmlCdd.options.no") },
+            onDelete: () => { },
+            onUpdate: () => { },
+            isRemovable: false,
+        },
     ]);
     const [totalOwnership, setTotalOwnership] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -428,7 +402,7 @@ const ShareholderDirectorFormPa: React.FC = () => {
             setShareholders(hydratedShareholders);
         }
         if (formData.legalDirectors && formData.legalDirectors.length > 0) {
-            const hydratedShareholders = formData.legalDirectors.map((shareholder, ) => ({
+            const hydratedShareholders = formData.legalDirectors.map((shareholder,) => ({
                 ...shareholder,
                 onDelete: () => { },
                 onUpdate: () => { },
@@ -639,11 +613,11 @@ const ShareholderDirectorFormPa: React.FC = () => {
                 </span>
                 </Label>
                 <Button
-                        className="btn btn-primary text-xs m-2"
-                        onClick={addLegalDirector}
-                    >
-                        Add Legal Director
-                    </Button>
+                    className="btn btn-primary text-xs m-2"
+                    onClick={addLegalDirector}
+                >
+                    Add Legal Director
+                </Button>
             </div>
             <div className="relative mt-2">
                 {/* <div className="absolute top-0 right-0 mt-2 mr-2">
