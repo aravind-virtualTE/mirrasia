@@ -137,14 +137,14 @@ const App: React.FC = () => {
                     </Route>
                   </Route>
 
-                  <Route element={<ProtectedRoute allowedRoles={["hk_shdr", 'us_shdr', 'pa_shdr']} />}>
+                  {/* <Route element={<ProtectedRoute allowedRoles={["hk_shdr", 'us_shdr', 'pa_shdr']} />}>
                     <Route element={<Layout />}>
                       <Route path="/viewboard" element={<ViewBoard />} />
                       <Route path='/registrationForm' element={<CountryWiseShareholder />} />
                       <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
                       <Route path="/profile" element={<Profile />} />
                     </Route>
-                  </Route>
+                  </Route> */}
 
                   {/* Protected routes for User */}
                   <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
@@ -155,6 +155,9 @@ const App: React.FC = () => {
                       <Route path='/RenewalReqForm' element={<RenewalRequestForm />} />
                       <Route path='/TransferManagementInfo' element={<TransferManagementInfo />} />
                       <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm />} />
+                      <Route path="/viewboard" element={<ViewBoard />} />
+                      <Route path='/registrationForm' element={<CountryWiseShareholder />} />
+                      <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
                     </Route>
                     <Route path="/docslayout" element={<DocsLayout />} />
                   </Route>

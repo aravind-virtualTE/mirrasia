@@ -33,6 +33,7 @@ import MainFunctionalities from "./MainFunctionalities";
 import { useTranslation } from "react-i18next";
 import { usaFormWithResetAtom } from "../Company/USA/UsState";
 import { toast } from "@/hooks/use-toast";
+import ViewBoard from "@/components/shareholderDirector/ViewBoard";
 // import { Label } from "@/components/ui/label";
 // import { ReferralPromptDialog } from "@/components/userList/ReferralPromptDialog";
 
@@ -109,8 +110,8 @@ const Dashboard = () => {
       })
     }
   }
-  console.log("users", cList)
-  console.log("allList",allList)
+  // console.log("users", cList)
+  // console.log("allList",allList)
   const tasks = user?.tasks || [];
   return (
     < >
@@ -251,6 +252,7 @@ const Dashboard = () => {
             </AccordionItem>
           )}
         </Accordion>
+        <ViewBoard />
         <MainFunctionalities />
         {/* Partners Section */}
         <div className="mb-12">
