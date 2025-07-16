@@ -49,6 +49,7 @@ import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporate
 import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
 // import UsersList1 from './components/userList/uList2';
 import CurrentCorpClient from './pages/CurrentClient/CurrentCorpClient';
+import QuestionFlow from './components/ShrDirForm/SampleQuestionWorkFlow';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -86,8 +87,7 @@ const App: React.FC = () => {
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />
-                    {/* <Route path="/test" element={<UsCorporateShdr />} /> */}
-
+                    {/* <Route path="/test" element={<UsCorporateShdr />} /> */}                    
                   </Route>
                   <Route path="/unauthorized" element={<Unauthorized />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -101,6 +101,7 @@ const App: React.FC = () => {
 
                   <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master"]} />}>
                     <Route element={<Layout />}>
+                    <Route path="/sample-question-flow" element={<QuestionFlow />} />
                       <Route path="/company-register/" element={<CompanyRegistration />} />
                       <Route path="/company-register/:countryCode/:id" element={<CompanyRegistration />} />
                       <Route path="/company-register/:id" element={<CompanyRegistration />} />
@@ -118,6 +119,7 @@ const App: React.FC = () => {
                       <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
                       <Route path="/company-details/:id" element={<CompanyDetail />} />
                       <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
+                      
                     </Route>
                   </Route>
 
