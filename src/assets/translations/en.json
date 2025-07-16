@@ -974,12 +974,12 @@
         "2": "Development of IT, blockchain, software, etc.",
         "3": "Cryptocurrency-based investment-related business",
         "4": "Cryptocurrency-based games",
-        "5": "foreign exchange trading",
+        "5": "Foreign exchange trading",
         "6": "Finance, investment, advisory, loan business, etc.",
-        "7": "trade industry",
+        "7": "Trade industry",
         "8": "Wholesale/retail distribution industry",
-        "9": "consulting",
-        "10": "manufacturing",
+        "9": "Consulting",
+        "10": "Manufacturing",
         "11": "Online service industry (e-commerce)",
         "12": "Online direct purchase/delivery/purchase agency"
       },
@@ -1376,5 +1376,12 @@
     "otherPresence": "To the best of your knowledge, does the proposed company or any of the company's connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by sanctions administered by the following bodies: UN, EU, UKHMT, HKMA, OFAC, or as part of local sanctions law?",
     "planBusinesInCrimea": " To the best of your knowledge, does the proposed company or any of its connected or other related parties have any current or planned business activities in Crimea/Sevastopol Regions?",
     "energyPresence": "To the best of your knowledge, does the proposed company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
+  },
+  "panama":{
+    "headInfo" : "This application must be completed or authorised by the principal of the company (being formed) who is the primary controller of the company to ensure that all information is entered correctly. This application will be prepared as a separate application form document when the company is being formed and signed by the principal of the company.This application form and the subsequent application form documents to be signed will be kept on file with us as statutory documents for the purpose of conducting KYC and due diligence on you in accordance with the TCSP Licence and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act; Cap. 615 AMLO) guidelines, so please ensure that there are no distortions or errors in the information provided.",
+    "compNameInfo":"The name must end with the words 'Sociedad Anonima', 'Corporation', 'Incorporated' or their abbreviations 'S.A.', 'Corp.', 'Inc.' and if there is an existing company with the same or similar name, it will not be possible to incorporate. Accordingly, please list three possible company names in the order of your first, second and third choice and we will use the possible company names in the order of your choice on the registered documents.",
+    "applicantLegalEntity" : "Applicant's current legal entity, if any",
+    "residencalAddress" : "Applicant's residential address"
+
   }
 }
