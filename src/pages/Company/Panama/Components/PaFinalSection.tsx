@@ -32,7 +32,7 @@ const PaFinalSection = () => {
         </CardHeader>
         <CardContent className="space-y-4 text-center">
           <p className="text-700">
-          Thank you for completing the Panama company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.
+          {t("panama.finalMsg")}
           </p>
           <p>{t('SwitchService.Consultation.thanks')}</p>
         

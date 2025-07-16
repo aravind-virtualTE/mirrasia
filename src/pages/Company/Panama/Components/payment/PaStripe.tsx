@@ -18,6 +18,7 @@ import { useAtom, useSetAtom } from 'jotai';
 import { updateCompanyIncorporationAtom } from '@/lib/atom';
 import { statusHkAtom } from '@/store/hkForm';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { t } from 'i18next';
 
 interface CardPaymentFormProps {
   sessionId: string;
@@ -58,6 +59,7 @@ const countries = [
   { name: "Brazil", code: "BR" },
   { name: "Hong Kong", code: "HK" },
   { name: "Singapore", code: "SG" },
+  { name: "Panama", code: "PA" },
 ];
 
 export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPaymentFormProps) {
@@ -76,7 +78,7 @@ export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPayment
     defaultValues: {
       email: "",
       cardHolder: "",
-      country: "SG", // Default to US using the country code
+      country: "PA",
       zipCode: "",
     },
   });
@@ -137,7 +139,7 @@ export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPayment
           updateCompanyData(sessionData.updatedData);
           setPaymentStatus({
             type: 'success',
-            message: 'Payment successful! Thank you for your purchase.'
+            message: t("payment.successPayment")
           });
         }
       }
@@ -186,13 +188,13 @@ export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPayment
             {amount && (
               <Alert variant="default" className="bg-green-50">
                 <CheckCircle className="h-4 w-4 stroke-green-600" />
-                <AlertTitle className="text-green-800">Payment Amount Calculation</AlertTitle>
+                <AlertTitle className="text-green-800">{t("payment.paymentCalc")}</AlertTitle>
                 <AlertDescription className="text-green-700">
-                  Original Price: ${amount.toFixed(2)}
+                  {t("invoice.originalPrice")}: ${amount.toFixed(2)}
                   <br />
-                  Includes a 3.5% Stripe credit card processing fee.
+                  {t("payment.processCreditFee")}
                   <br />
-                  Final Amount Charged: ${Math.ceil(amount * 1.035)}
+                  {t("payment.fnlAmtCharged")}: ${Math.ceil(amount * 1.035)}
                 </AlertDescription>
               </Alert>
             )}
@@ -339,9 +341,9 @@ export function PaStripePaymentForm({ sessionId, clientSecret, amount }: CardPay
       {status === "completed" && (
         <Alert variant="default" className="bg-green-50">
           <CheckCircle className="h-4 w-4 stroke-green-600" />
-          <AlertTitle className="text-green-800">Payment Completed</AlertTitle>
+          <AlertTitle className="text-green-800">{t("payment.pCompleted")}</AlertTitle>
           <AlertDescription className="text-green-700">
-            Thank you for your payment!
+            {t("payment.pMessage")}
           </AlertDescription>
         </Alert>
       )}

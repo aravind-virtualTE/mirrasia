@@ -26,7 +26,7 @@ const PaymentInformation: React.FC = () => {
         const initializePaymentSession = async () => {
           try {
             setIsLoading(true);
-            console.log("formData",formData)
+            // console.log("formData",formData)
             // const docId = localStorage.getItem('companyRecordId');
             const sessionData = await paymentApi.createSession(panamaPrice, 'USD', `${formData._id}`, 'PA');
             const session = sessionData.session._id;

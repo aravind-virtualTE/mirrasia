@@ -829,6 +829,10 @@
     "ZAR": "南非兰特"
   },
   "payment": {
+    "paymentCalc": "付款金額計算",
+    "processCreditFee": "包含 3.5% 的 Stripe 信用卡處理費",
+    "fnlAmtCharged": "最終收取金額",
+    "successPayment": "付款成功！感謝您的購買。",
     "cardDesc": "Stripe Payments（3.5% 手續費）",
     "bankDesc": "直接銀行轉帳並上傳收據",
     "fpsDesc": "透過 FPS 直接銀行轉帳",
@@ -1446,6 +1450,15 @@
     "unitPrice": "單價",
     "discount": "折扣",
     "amtUsd": "金額 (美元)",
-    "ttlUsd": "總計 (美元)"
+    "ttlUsd": "總計 (美元)",
+    "incorpoHeading": "關於您正在設立的巴拿馬公司的註冊資訊",
+    "totalAmountCap": "總股本金額（美元）",
+    "totalOtherCap": "如果您的股本為其他貨幣，請填寫「其他」欄位。",
+    "thereAnyProvision": "如果公司章程中需要包含任何有關實體運營的特定條款、要求、細則等，請說明。",
+    "regAddress": "公司的註冊地址",
+    "panamaRegInfo": "巴拿馬公司必須在巴拿馬擁有一個註冊營業地址才能成立和維持運營。我們提供註冊地址服務，包括註冊地址和郵件服務。（住宅或酒店地址不作為公司地址註冊。）根據巴拿馬公司法，董事和股東名單、決議等公司文件必須保存在註冊營業地址。",
+    "useRegMirProide": "使用 Mirr Asia 提供的註冊地址服務",
+    "haveSepAddress": "我在巴拿馬有單獨的地址作為公司地址使用（不使用 Mirr Asia 的註冊地址服務）",
+    "finalMsg": "感謝您與我們一起完成了巴拿馬公司的註冊程序。我們將審閱您的回覆內容，我們的顧問會盡快與您聯繫。"
   }
 }
