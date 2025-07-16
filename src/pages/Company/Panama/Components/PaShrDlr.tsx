@@ -10,9 +10,9 @@ import CustomLoader from '@/components/ui/customLoader';
 import { sendInviteToShDir } from '@/services/dataFetch';
 import { isValidEmail } from '@/middleware';
 import { useToast } from "@/hooks/use-toast"
-import { useTranslation } from "react-i18next";
 import { paFormWithResetAtom } from '../PaState';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { t } from 'i18next';
 
 interface ShareholderDirectorProps {
     name: string;
@@ -55,15 +55,15 @@ interface LegalDirectorProps {
 }
 
 const roleOptions = [
-    { id: 'representative', value: 'Representative' },
-    { id: 'financial_officer', value: 'Financial Officer' },
-    { id: 'secretary', value: 'Secretary' },
+    { id: 'representative', value: 'panama.rOptions.1' },
+    { id: 'financial_officer', value: 'panama.rOptions.2' },
+    { id: 'secretary', value: 'panama.rOptions.3' },
 ];
 
 const roleOptions1 = [
-    { id: 'president', value: 'President' },
-    { id: 'treasurer', value: 'Treasurer' },
-    { id: 'secretary', value: 'Secretary' },
+    { id: 'president', value: 'panama.rOptions.4'  },
+    { id: 'treasurer', value: 'panama.rOptions.5'  },
+    { id: 'secretary', value: 'panama.rOptions.3'  },
 ];
 
 const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
@@ -80,7 +80,6 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
 }) => {
     const [emailError, setEmailError] = useState('');
     const [phoneError, setPhoneError] = useState('');
-    const { t } = useTranslation();
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email) {
@@ -112,12 +111,12 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
         { id: "yes", value: "AmlCdd.options.yes" },
         { id: "no", value: "AmlCdd.options.no" },
     ];
-
+    console.log("role",role)
     return (
         <Card className="mb-4 pt-4">
             <CardContent className="grid grid-cols-3 gap-4">
                 <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-                    <Label className="font-medium">Shareholder(s)</Label>
+                    <Label className="font-medium">{t("panama.sharehldrs")}</Label>
                     <Input
                         type="text"
                         className="input col-span-2"
@@ -173,9 +172,9 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
 
                 <div className="col-span-3 flex gap-4 items-end">
                     <div className="flex-1">
-                        <Label className="font-medium">Role</Label>
+                        <Label className="font-medium">{t("panama.role")}</Label>
                         <Select
-                            value={role?.id || ''}
+                            value={role.id}
                             onValueChange={(selectedId) => {
                                 const selectedRole = roleOptions.find(role => role.id === selectedId);
                                 if (selectedRole) {
@@ -189,9 +188,9 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                                 </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
-                                {roleOptions.map(role => (
-                                    <SelectItem key={role.id} value={role.id}>
-                                        {t(role.value)}
+                                {roleOptions.map(option => (
+                                    <SelectItem key={option.id} value={option.id}>
+                                        {t(option.value)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -233,9 +232,6 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                         </div>
                     )}
                 </div>
-
-
-
             </CardContent>
         </Card>
     );
@@ -250,8 +246,6 @@ const LegalDirectorList: React.FC<LegalDirectorProps> = ({
     onUpdate,
     isRemovable,
 }) => {
-    const { t } = useTranslation();
-
     const yesNoOptions = [
         { id: "yes", value: "AmlCdd.options.yes" },
         { id: "no", value: "AmlCdd.options.no" },
@@ -261,7 +255,7 @@ const LegalDirectorList: React.FC<LegalDirectorProps> = ({
         <Card className="mb-4">
             <CardContent className="grid grid-cols-[2fr_2fr_2fr_2fr_auto] gap-4 items-end py-4">
                 <div>
-                    <Label className="font-medium">Role</Label>
+                    <Label className="font-medium">{t("panama.role")}</Label>
                     <Select
                         value={role?.id || ''}
                         onValueChange={(selectedId) => {
@@ -359,7 +353,6 @@ const LegalDirectorList: React.FC<LegalDirectorProps> = ({
 };
 
 const ShareholderDirectorFormPa: React.FC = () => {
-    const { t } = useTranslation()
     const [formData, setFormData] = useAtom(paFormWithResetAtom);
     const [shareholders, setShareholders] = useState<ShareholderDirectorProps[]>([
         {
@@ -594,20 +587,13 @@ const ShareholderDirectorFormPa: React.FC = () => {
                 </Button>
             </div>
             <div className='flex flex-row justify-between'>
-                <Label className="flex items-center gap-2 mt-2">If you would like to use a local nominee service, please select<span className="text-red-500 font-bold ml-1 flex">*
+                <Label className="flex items-center gap-2 mt-2">{t("panama.localNominee")}<span className="text-red-500 font-bold ml-1 flex">*
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-[500px] text-base">
-                            Mandatory members (3 persons): President, Secretary, Treasurer
-                            Minimum nominee service period: 1 year
-
-                            Panama does provide a local nominee service to protect publicly available registry information. However, this is primarily for the purpose of protecting publicly available information and does not involve or represent the local nominee in all or any part of the foundation's operations. In addition, in accordance with KYC/CDD regulations, you must inform us, the virtual asset exchange or financial institution, etc. the information of the actual operator and UBO(Ultimate Beneficial Owner).
-
-                            In general, it is common to provide the services of two nominee directors in addition to the name of one client, as it can be generally interpreted that the foundation does not have any scam or impure purpose and is operated under the supervision of one representative.
-                            Cost of nominee director service (1 year):
-                            USD1,200 for 1 nominee / USD1,700 for 2 nominees / USD2,200 for 3 nominees
+                           {t("panama.lNInfo")}
                         </TooltipContent>
                     </Tooltip>
                 </span>
@@ -616,7 +602,7 @@ const ShareholderDirectorFormPa: React.FC = () => {
                     className="btn btn-primary text-xs m-2"
                     onClick={addLegalDirector}
                 >
-                    Add Legal Director
+                    {t("panama.addLegalD")}
                 </Button>
             </div>
             <div className="relative mt-2">
