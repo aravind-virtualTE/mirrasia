@@ -18,7 +18,7 @@ import { useAtom } from 'jotai';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
 
-const IncorporatePa: React.FC = () => {
+const IncorporatePaF: React.FC = () => {
     const [currentSection, setCurrentSection] = useState(1);
     const [formData,] = useAtom(paFormWithResetAtom);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -206,4 +206,4 @@ const IncorporatePa: React.FC = () => {
     )
 }
 
-export default IncorporatePa
+export default IncorporatePaF

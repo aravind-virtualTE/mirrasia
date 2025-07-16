@@ -1,0 +1,183 @@
+{
+  "questions": [
+    {
+      "id": "name",
+      "type": "text",
+      "question": "What is your full name?",
+      "placeholder": "Enter your full name",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "pattern": "^[a-zA-Z\\s]+$",
+        "message": "Please enter a valid name"
+      }
+    },
+    {
+      "id": "email",
+      "type": "email",
+      "question": "What is your email address?",
+      "placeholder": "Enter your email address",
+      "required": true,
+      "validation": {
+        "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+        "message": "Please enter a valid email address"
+      }
+    },
+    {
+      "id": "nameChanged",
+      "type": "select",
+      "question": "Have you ever changed your name?",
+      "options": [
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "yes",
+          "label": "Yes"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "previousName",
+      "type": "text",
+      "question": "What was your previous name?",
+      "placeholder": "Enter your previous name",
+      "required": true,
+      "showIf": {
+        "questionId": "nameChanged",
+        "value": "yes"
+      },
+      "validation": {
+        "minLength": 2,
+        "pattern": "^[a-zA-Z\\s]+$",
+        "message": "Please enter a valid name"
+      }
+    },
+    {
+      "id": "birthdate",
+      "type": "date",
+      "question": "What is your date of birth?",
+      "required": true,
+      "validation": {
+        "message": "Please enter a valid date"
+      }
+    },
+    {
+      "id": "maritalStatus",
+      "type": "select",
+      "question": "What is your marital status?",
+      "options": [
+        {
+          "value": "single",
+          "label": "Single"
+        },
+        {
+          "value": "married",
+          "label": "Married"
+        },
+        {
+          "value": "divorced",
+          "label": "Divorced"
+        },
+        {
+          "value": "widowed",
+          "label": "Widowed"
+        },
+        {
+          "value": "separated",
+          "label": "Separated"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "nationality",
+      "type": "text",
+      "question": "What is your nationality?",
+      "placeholder": "Enter your nationality",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "message": "Please enter a valid nationality"
+      }
+    },
+    {
+      "id": "passport",
+      "type": "text",
+      "question": "What is your passport number?",
+      "placeholder": "Enter your passport number",
+      "required": true,
+      "validation": {
+        "minLength": 6,
+        "message": "Please enter a valid passport number"
+      }
+    },
+    {
+      "id": "job",
+      "type": "text",
+      "question": "What is your occupation?",
+      "placeholder": "Enter your job title/occupation",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "message": "Please enter a valid occupation"
+      }
+    },
+    {
+      "id": "residenceAddress",
+      "type": "textarea",
+      "question": "What is your residential address?",
+      "placeholder": "Enter your full residential address",
+      "required": true,
+      "validation": {
+        "minLength": 10,
+        "message": "Please enter a complete address"
+      }
+    },
+    {
+      "id": "postalAddressSame",
+      "type": "select",
+      "question": "Is your postal address the same as your residential address?",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes, it's the same"
+        },
+        {
+          "value": "no",
+          "label": "No, it's different"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "postalAddress",
+      "type": "textarea",
+      "question": "What is your postal address?",
+      "placeholder": "Enter your postal address",
+      "required": true,
+      "showIf": {
+        "questionId": "postalAddressSame",
+        "value": "no"
+      },
+      "validation": {
+        "minLength": 10,
+        "message": "Please enter a complete postal address"
+      }
+    },
+    {
+      "id": "phone",
+      "type": "tel",
+      "question": "What is your contactable mobile phone number?",
+      "placeholder": "Enter your mobile phone number",
+      "required": true,
+      "validation": {
+        "pattern": "^[+]?[0-9\\s\\-\\(\\)]+$",
+        "minLength": 10,
+        "message": "Please enter a valid phone number"
+      }
+    }
+  ]
+}
