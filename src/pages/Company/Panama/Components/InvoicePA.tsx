@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useAtom } from "jotai";
 import React, { useEffect, useMemo } from "react";
 import { paFormWithResetAtom, paPriceAtom } from "../PaState";
+import { t } from "i18next";
 
 type InvoiceItem = {
   id: number;
@@ -38,7 +39,7 @@ export default function InvoicePA() {
     if (directorPrice > 0) {
       nomineeServices.push({
         id: 100,
-        description: `NOMINEE DIRECTOR SERVICE (${directorCount} PERSON${directorCount > 1 ? "S" : ""})`,
+        description: ("panama.nomineDir"),
         quantity: 1,
         unitPrice: directorPrice,
         amountUSD: directorPrice,
@@ -48,7 +49,7 @@ export default function InvoicePA() {
     if (ownerOnlyPrice > 0) {
       nomineeServices.push({
         id: 101,
-        description: `NOMINEE SHAREHOLDER WITH OWNERSHIP (${ownerOnly.length} PERSON${ownerOnly.length > 1 ? "S" : ""})`,
+        description: (`panama.shldrNominee`),
         quantity: 1,
         unitPrice: ownerOnlyPrice,
         amountUSD: ownerOnlyPrice,
@@ -58,71 +59,71 @@ export default function InvoicePA() {
     const baseInvoice: InvoiceItem[] = [
       {
         id: 1,
-        description: "PANAMA CORPORATION FORMATION AND FIRST-YEAR CORPORATE SERVICES",
+        description: (`panama.panam1stYrDesc`),
         details: [
           {
             key: "registration_fees",
-            value: "All applicable Registration and Government Fees (Registro Publico)",
+            value:(`panama.details.1`),
           },
           {
             key: "incorporation_deed",
-            value: "Preparing the Incorporation Deed and Articles of Incorporation (Spanish)",
+            value:(`panama.details.2`),
           },
           {
             key: "first_subscriber",
-            value: "Acting as the First Subscriber and executing the Incorporation Deed before Notary",
+            value: (`panama.details.3`),
           },
           {
             key: "notary_fees",
-            value: "All applicable Notary Fees",
+            value: (`panama.details.4`),
           },
           {
             key: "filing_deed",
-            value: "Filing the Incorporation's Notarial Deed with the Commercial Register",
+            value: (`panama.details.5`),
           },
           {
             key: "subscribers_resolution",
-            value: "Preparing Subscriber's Resolution for the Appointment of Directors and Resignation of Subscriber's Rights",
+            value: (`panama.details.6`),
           },
           {
             key: "company_bylaws",
-            value: "Preparing the Company Bylaws",
+            value: (`panama.details.7`),
           },
           {
             key: "juristic_certificate",
-            value: "Providing the Certificate of Juristic Person, and Company Extract issued by the Registro Publico",
+            value: (`panama.details.8`),
           },
           {
             key: "english_translation",
-            value: "Providing a Certified English Translation of the Corporate Documents",
+            value: (`panama.details.9`),
           },
           {
             key: "board_minutes",
-            value: "Preparing the First Board Meeting Minutes for the allotment of Shares, the Appointment of Directors, Registered Agent and office, and other related matters",
+            value: (`panama.details.10`),
           },
           {
             key: "share_register",
-            value: "Preparing the Share Register Book",
+            value:(`panama.details.11`),
           },
           {
             key: "share_certificates",
-            value: "Preparing the Share Certificates",
+            value: (`panama.details.12`),
           },
           {
             key: "incumbency_certificate",
-            value: "Preparing and executing a Certificate of Incumbency",
+            value: (`panama.details.13`),
           },
           {
             key: "registered_office",
-            value: "Providing Registered Office Services, including business address, for one year",
+            value: (`panama.details.14`),
           },
           {
             key: "registered_agent",
-            value: "Providing Registered Agent Services for one year",
+            value: (`panama.details.15`),
           },
           {
             key: "apostilled_docs",
-            value: "Providing Notarized and Apostilled copies of the Corporate Documents",
+            value:(`panama.details.16`),
           },
         ],
         quantity: 1.0,
@@ -144,17 +145,17 @@ export default function InvoicePA() {
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED</CardTitle>
+        <CardTitle>{t("panama.mirrBsnsAdvcmpLtd")}</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Description</TableHead>
-              <TableHead>Quantity</TableHead>
-              <TableHead>Unit Price</TableHead>
-              <TableHead>Discount</TableHead>
-              <TableHead>Amount USD</TableHead>
+              <TableHead>{t("invoice.desc")}</TableHead>
+              <TableHead>{t("panama.qty")}</TableHead>
+              <TableHead>{t("panama.unitPrice")}</TableHead>
+              <TableHead>{t("panama.discount")}</TableHead>
+              <TableHead>{t("panama.amtUsd")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -162,11 +163,11 @@ export default function InvoicePA() {
               <React.Fragment key={item.id}>
                 <TableRow>
                   <TableCell>
-                    <div className="font-medium">{item.description}</div>
+                    <div className="font-medium">{t(item.description)}</div>
                     {item.details && (
                       <ul className="list-none pl-0 mt-1 mb-0 text-xs leading-tight">
                         {item.details.map((detail, index) => (
-                          <li key={index} className="py-0.5">- {detail.value}</li>
+                          <li key={index} className="py-0.5">- {t(detail.value)}</li>
                         ))}
                       </ul>
                     )}
@@ -185,7 +186,7 @@ export default function InvoicePA() {
           <Card className="w-64">
             <CardContent className="pt-4">
               <div className="flex justify-between">
-                <span className="text-green-600">Total USD:</span>
+                <span className="text-green-600">{t("panama.ttlUsd")}:</span>
                 <span className="font-bold text-green-600">{totalAmount}</span>
               </div>
             </CardContent>
