@@ -11,6 +11,7 @@ import DropdownSelect from "@/components/DropdownSelect"
 import { amountOptions, currencies } from "../../HongKong/constants"
 import { Input } from "@/components/ui/input"
 import { paFormWithResetAtom } from "../PaState"
+import { t } from "i18next"
 const InfoForIncorpoPA = () => {
     const { theme } = useTheme();
     const [formData,setFormData] = useAtom(paFormWithResetAtom);
@@ -26,28 +27,28 @@ const InfoForIncorpoPA = () => {
     // console.log("formData",formData)
     const amountList = [...amountOptions, '50,000',]
 
-    const bookkeepingCycleOptions = [{ value: '100oIndvi', label: 'Use the Registered Address Service that Mirr Asia provides' }, { value: '100OHldComp', label: "I have a separate address in Panama to use as the company's address (not using Mirr Asia's registered address service)" }, { value: 'other', label: 'Other' }]
+    const bookkeepingCycleOptions = [{ value: '100oIndvi', label: t("panama.useRegMirProide") }, { value: '100OHldComp', label:  t("panama.haveSepAddress") }, { value: 'other', label: t("InformationIncorporation.paymentOption_other") }]
     return (
         <div className="flex w-full p-4">
             <aside className={`w-1/4 p-4 rounded-md shadow-sm ${theme === 'light'
                 ? 'bg-blue-50 text-gray-800'
                 : 'bg-gray-800 text-gray-200'
                 }`}>
-                <h2 className="text-lg font-semibold mb-2">Information on the registry of your Panama company</h2>
+                <h2 className="text-lg font-semibold mb-2">{t("panama.incorpoHeading")}</h2>
             </aside>
             <div className="w-3/4 ml-4">
                 <Card>
                     <CardContent className="space-y-6">
                         <div>
                             <Label className="text-base font-semibold flex items-center gap-2">
-                                The base currency of the share capital
+                               {t("InformationIncorporation.baseCurrency")}
                                 <span className="text-red-500 font-bold ml-1 flex">*
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                            It is recommended that the currency of the share capital be the same as the functional currency to be used for accounting purposes. For example, if you trade both purchases and sales in USD, setting the share capital in USD is convenient for accounting. If this is not the case, all currencies of translations must be converted to the base currency for accounting. Please note that the currency of the share capital cannot be changed to another currency after the incorporation.  (Example: Share Capital issued in HKD cannot be changed to USD)
+                                          {t("InfoIncorpo.baseCurrencytTip")}
                                         </TooltipContent>
                                     </Tooltip>
                                 </span>
@@ -61,13 +62,13 @@ const InfoForIncorpoPA = () => {
                         </div>
                         <div>
                             <Label className="text-base font-semibold flex items-center gap-2">
-                                Total amount of capital (in USD)
+                                {t("panama.totalAmountCap")}
                                 <span className="text-red-500 font-bold ml-1 flex">*<Tooltip>
                                     <TooltipTrigger asChild>
                                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                     </TooltipTrigger>
                                     <TooltipContent className="max-w-[500px] text-base">
-                                        If your capital is in another currency, please fill in the Other field.
+                                       {t("panama.totalOtherCap")}
                                     </TooltipContent>
                                 </Tooltip></span>
                             </Label>
@@ -80,7 +81,7 @@ const InfoForIncorpoPA = () => {
                         </div>
                         <div>
                             <Label className="text-base font-semibold flex items-center gap-2">
-                                Total number of shares to be issued (minimum 1 share)
+                                {t("InfoIncorpo.numShares")}
                                 <span className="text-red-500 font-bold ml-1 flex">*
                                 </span>
                             </Label>
@@ -91,7 +92,7 @@ const InfoForIncorpoPA = () => {
 
                         <div className="space-y-2">
                             <Label htmlFor="specificProvisions" className="text-sm font-semibold mb-2">
-                                If there are any specific provisions, requirements, by-laws, etc. that need to be included in the articles of association regarding the operation of the entity, please describe them.
+                               {t("panama.thereAnyProvision")}
                                 <span className="text-red-500 inline-flex">*</span>
                             </Label>
                             <Input
@@ -101,13 +102,13 @@ const InfoForIncorpoPA = () => {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="regAddress" className="text-sm font-semibold mb-2">
-                                Registered address of the company
+                              {t("panama.regAddress")}
                                 <span className="text-red-500 inline-flex">*<Tooltip>
                                     <TooltipTrigger asChild>
                                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                     </TooltipTrigger>
                                     <TooltipContent className="max-w-[500px] text-base">
-                                        A Panamanian company must have a registered business address in Panama to be incorporated and maintained. We offer a registered address service, which includes a registered address and mailing services. (Residential or hotel addresses are not registered as corporate addresses.) Under the Panama Companies Act, corporate documents such as directors‘ and shareholders’ lists and resolutions must be kept at the registered business address.
+                                        {t("panama.panamaRegInfo")}
                                     </TooltipContent>
                                 </Tooltip></span>
                             </Label>
