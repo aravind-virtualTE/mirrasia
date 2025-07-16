@@ -5,13 +5,14 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useAtom } from 'jotai';
 import React from 'react'
 import { paFormWithResetAtom } from '../PaState';
+import { t } from 'i18next';
 
 const PanamaEntity: React.FC = () => {
     const { theme } = useTheme();
     const [formData, setFormData] = useAtom(paFormWithResetAtom)
 
-    const entityOptions = [{ value: 'Yes', id: 'yes' },
-    { value: 'No', id: 'no' }, { value: 'Other', id: 'other' }]
+    const entityOptions = [{ id: 'Yes', value: t('AmlCdd.options.yes') },
+    { id: 'No', value: t('AmlCdd.options.no') }, { id: 'Other', value: t('InformationIncorporation.paymentOption_other') }]
 
     // console.log("formData",formData)
 
@@ -25,12 +26,12 @@ const PanamaEntity: React.FC = () => {
                 ? "bg-blue-50 text-gray-800"
                 : "bg-gray-800 text-gray-200"
                 }`}>
-                <h2 className="text-m font-semibold mb-0"> The relationship between the Panama entity you are establishing and your group companies</h2>
+                <h2 className="text-m font-semibold mb-0">{t("panama.relPanamaEntity")}</h2>
             </aside>
             <div className="w-3/4 ml-4">
                 <div className="space-y-2">
                     <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
-                        Is the Panama entity you are forming part of a group or will you be buying or selling entities or assets in connection with the group?
+                       {t("panama.panamaEntity")}
                         <span className="text-red-500 inline-flex">*</span>
                     </Label>
                     <RadioGroup value={formData.panamaEntity.value} onValueChange={(e) => handlePanamaEntity(e)} className="gap-4">
@@ -49,7 +50,7 @@ const PanamaEntity: React.FC = () => {
                 </div>
                 {formData.panamaEntity.id === 'yes' && <div className="space-y-2">
                     <Label htmlFor="entity" className="inline-flex">
-                        Describe how the Panamanian entity you are establishing and the group company (or related companies) are connected in business (outsourcing, simple foreign affiliation, etc.) <span className="text-red-500 font-bold ml-1 flex">*</span>
+                        {t("panama.descPanamaEntity")} <span className="text-red-500 font-bold ml-1 flex">*</span>
                     </Label>
                     <Input id="entity" placeholder="Descibe entity" className="w-full" value={formData.pEntityInfo} onChange={(e) => setFormData({ ...formData, pEntityInfo: e.target.value })} />
                 </div>}

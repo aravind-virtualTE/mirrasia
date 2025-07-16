@@ -1381,7 +1381,48 @@
     "headInfo" : "This application must be completed or authorised by the principal of the company (being formed) who is the primary controller of the company to ensure that all information is entered correctly. This application will be prepared as a separate application form document when the company is being formed and signed by the principal of the company.This application form and the subsequent application form documents to be signed will be kept on file with us as statutory documents for the purpose of conducting KYC and due diligence on you in accordance with the TCSP Licence and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act; Cap. 615 AMLO) guidelines, so please ensure that there are no distortions or errors in the information provided.",
     "compNameInfo":"The name must end with the words 'Sociedad Anonima', 'Corporation', 'Incorporated' or their abbreviations 'S.A.', 'Corp.', 'Inc.' and if there is an existing company with the same or similar name, it will not be possible to incorporate. Accordingly, please list three possible company names in the order of your first, second and third choice and we will use the possible company names in the order of your choice on the registered documents.",
     "applicantLegalEntity" : "Applicant's current legal entity, if any",
-    "residencalAddress" : "Applicant's residential address"
-
+    "residencalAddress" : "Applicant's residential address",
+    "businessInfoHeader":"Business information about the Panama company you are setting up",
+    "tradeafterDesc":" A description of what you will be trading after incorporation, including the name of the goods, type of goods, content of the service, and form of service.",
+    "purposeSetting" : "Purpose of setting up a Panama company and what you can expect to get out of it",
+    "businessTransactions":"Please list the countries where your business transactions will take place after incorporation in Panama.",
+    "btInfo":" Please list the countries where your business transactions will take place after incorporation in Panama.",
+    "sourceOfFund":"Please select the source of funding for your Panama incorporated business from the following",
+    "sofInfo": "Please select details of the source of funding for the Ultimate Beneficial Owner (UBO), who is the principal or beneficial (direct or indirect) owner of the entity, and the source of funding that will be used to start the company.",
+    "shldrsPanama":"Shareholders of the Panama company",
+    "localNominee": "If you would like to use a local nominee service, please select",
+    "lNInfo": " Mandatory members (3 persons): President, Secretary, Treasurer Minimum nominee service period: 1 year Panama does provide a local nominee service to protect publicly available registry information. However, this is primarily for the purpose of protecting publicly available information and does not involve or represent the local nominee in all or any part of the foundation's operations. In addition, in accordance with KYC/CDD regulations, you must inform us, the virtual asset exchange or financial institution, etc. the information of the actual operator and UBO(Ultimate Beneficial Owner). In general, it is common to provide the services of two nominee directors in addition to the name of one client, as it can be generally interpreted that the foundation does not have any scam or impure purpose and is operated under the supervision of one representative. Cost of nominee director service (1 year): USD1,200 for 1 nominee / USD1,700 for 2 nominees / USD2,200 for 3 nominees",
+    "addLegalD": "Add Legal Director",
+    "relPanamaEntity":"The relationship between the Panama entity you are establishing and your group companies",
+    "panamaEntity":"Is the Panama entity you are forming part of a group or will you be buying or selling entities or assets in connection with the group?",
+    "descPanamaEntity" : "Describe how the Panamanian entity you are establishing and the group company (or related companies) are connected in business (outsourcing, simple foreign affiliation, etc.)",
+    "purposeLis":{
+      "1":"Expanding into the Americas and Europe",
+      "2":"Invest in and operate real estate or financial assets",
+      "3":"To invest in and manage subsidiaries or affiliated companies as a holding company",
+      "4":"An investor or business partner suggests incorporating in Panama",
+      "5":"For international transactions",
+      "6": "Diversify your business as regulations loosen",
+      "7":"Increase trading volume due to lower tax rates",
+      "8":"Pursuing investment gains with No Capital Gain Tax"
+    },
+    "sourceList":{
+      "1": "Income from labour",
+      "2":"Deposits, savings",
+      "3" : "Income from stocks or other investment property",
+      "4":"Loans",
+      "5":"Proceeds from the sale of a company or shareholding",
+      "6": "Business income/dividends",
+      "7":"Inheritance"
+    },
+    "sharehldrs":"Shareholder(s)",
+    "role":"Role",
+    "rOptions":{
+      "1":"Representative",
+      "2":"Financial Officer",
+      "3":"Secretary",
+      "4":"President",
+      "5":"Treasurer"
+    }
   }
 }
