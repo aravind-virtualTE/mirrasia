@@ -57,7 +57,7 @@ const CurrentCorporateClientList: React.FC = () => {
     setDeleteDialogOpen(false);
     setTaskToDelete(null);
   };
-
+  console.log("projectsData", projectsData)
   const renderCurrentClientsTable = () => (
     <div className="rounded-xl border overflow-x-auto">
       <Table className="w-full text-sm text-left">
@@ -90,13 +90,17 @@ const CurrentCorporateClientList: React.FC = () => {
                 className="h-12 cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => handleRowClick(typed._id, typed.country.code)}
               >
-                <TableCell className="text-center font-medium">{idx +1}</TableCell>
+                <TableCell className="text-center font-medium">{idx + 1}</TableCell>
 
-                <TableCell className="px-4 py-3 font-medium">
+                {typed.status == "Incorporation Completed" ? (<TableCell className="px-4 py-3 font-medium">
+                  <span className="hover:underline">
+                    {typed.companyName[0] || "N/A"}
+                  </span>
+                </TableCell>) : <TableCell className="px-4 py-3 font-medium">
                   <span className="hover:underline">
                     {typed.companyName.filter(Boolean).join(", ") || "N/A"}
                   </span>
-                </TableCell>
+                </TableCell>}
                 <TableCell className="px-4 py-3">{typed.applicantName}</TableCell>
                 <TableCell className="px-4 py-3">{typed.country.name}</TableCell>
                 <TableCell className="px-4 py-3">
@@ -166,17 +170,17 @@ const CurrentCorporateClientList: React.FC = () => {
       <Tabs defaultValue="current" className="w-full">
         <TabsList className="grid w-full grid-cols-2 mb-6">
           <TabsTrigger value="current" className="flex items-center gap-2">
-            <span>Current Corporate Clients</span>           
+            <span>Current Corporate Clients</span>
           </TabsTrigger>
           <TabsTrigger value="archived" className="flex items-center gap-2">
             <span>Excel Sheet Current Corporate Clients</span>
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="current" className="space-y-4">
           {renderCurrentClientsTable()}
         </TabsContent>
-        
+
         <TabsContent value="archived" className="space-y-4">
           <CurrentCorpClient />
         </TabsContent>
