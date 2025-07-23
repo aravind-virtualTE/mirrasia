@@ -104,7 +104,7 @@ const HkShareHldrDir = () => {
 
   useEffect(() => {
     if (id) {
-      console.log('id--->', id)
+      // console.log('id--->', id)
       async function fetchData(id: string) {
         const data = await getShrDirRegData(id);
         // console.log("data", data)

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import HkShareHldrDir from './HkShareHldrDir'
 import UsShdr from './us/UsShdr'
 import UsCorporateShdr from './us/UsCorporateShdr'
+import PanamaShdInvite from './pa/PanamaShareholderInvite'
 
 const CountryWiseShareholder:React.FC = () => {
     const [country, setCountry] = useState("HK")
@@ -14,6 +15,7 @@ const CountryWiseShareholder:React.FC = () => {
     if(country == 'HK') return <HkShareHldrDir />
     if(country == 'US_Individual') return <UsShdr />
     if(country == 'US_Corporate') return <UsCorporateShdr />
+    if(country == 'PA') return <PanamaShdInvite />
 
     return (
       <div>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=La+Belle+Aurore&family=Dancing+Script&family=Pacifico&family=Great+Vibes&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=La+Belle+Aurore&family=Dancing+Script&family=Pacifico&family=Great+Vibes&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,7 +8,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 
 @layer base {
   :root {
@@ -37,6 +36,11 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --question: 340 81% 50%;
+    --question-foreground: 0 0% 100%;
+    --shadow-warm: 0 10px 30px -10px hsl(217 91% 60% / 0.3);
+    --shadow-glow: 0 0 40px hsl(217 91% 70% / 0.4);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* sidebar */
     --sidebar-background: 0 0% 98%;
@@ -87,7 +91,6 @@
   }
 }
 
-
 @layer base {
   * {
     @apply border-border;
@@ -97,25 +100,80 @@
   }
 }
 
-
 @layer components {
   .service-card {
-    @apply relative bg-card text-card-foreground rounded-lg border p-4 transition-all duration-300 overflow-hidden;
+    @apply p-4 rounded-lg bg-card border border-border hover:shadow-md transition-smooth;
   }
-  
+
   .service-card:hover {
     @apply shadow-lg transform translate-y-[-5px];
   }
-  
+
+  .shadow-warm {
+    box-shadow: var(--shadow-warm);
+  }
+
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+
+  .summary-title {
+    @apply text-2xl font-bold text-foreground mb-4;
+  }
+
+
+  .question-title {
+    @apply font-medium text-sm;
+  }
+
+  .question-card {
+    @apply p-6 shadow-warm backdrop-blur-sm bg-card/95 border border-border/20;
+  }
+
+  .decorative-heading {
+    @apply text-2xl md:text-4xl font-bold text-foreground mb-2;
+  }
+
   .service-card:hover .service-icon {
     @apply transform scale-110;
   }
-  
-  .service-icon {
+
+  /* .service-icon {
     @apply p-2 rounded-full bg-primary/10 text-primary transition-all duration-300;
+  } */
+
+  .bg-question {
+    background-color: hsl(var(--question));
   }
-  
+
+  .text-question-foreground {
+    color: hsl(var(--question-foreground));
+  }
+
+  .service-icon {
+    @apply w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center;
+  }
+
+  .option-button {
+    @apply transition-smooth hover:shadow-md active:scale-95;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
   .card-badge {
     @apply inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-primary/10 text-primary mb-2;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
