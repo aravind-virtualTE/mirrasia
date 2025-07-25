@@ -486,20 +486,20 @@ const ShareholderDirectorForm: React.FC = () => {
   const sendMailFunction = async () => {
     try {
       setIsLoading(true);
-      const extractedData = formData.shareHolders.filter(item => item.name && item.email).map((item: { name: any; email: any; }) => {
-        const { name, email } = item;
+      const extractedData = formData.shareHolders.filter(item => item.name && item.email).map((item: { name: any; email: any; legalEntity: any }) => {
+        const { name, email,legalEntity } = item;
         // console.log("item", item)
         if (!isValidEmail(email)) {
           alert(`Invalid email format for ${name}: ${email}`);
         }
-        return { name, email };
+        return { name, email, corporation:legalEntity.id };
       });
       const dirExtdata = formData.directors.filter(item => item.name && item.email).map(item => {
-        const { name, email } = item;     
+        const { name, email, legalEntity } = item;     
         if (!isValidEmail(email)) {
           alert(`Invalid email format for ${name}: ${email}`);
         }
-        return { name, email };
+        return { name, email, corporation:legalEntity.id };
       }); // Filter out empty entries
       // console.log("dirExtdata",dirExtdata  )
       extractedData.push(...dirExtdata);
