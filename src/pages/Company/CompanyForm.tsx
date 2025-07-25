@@ -91,7 +91,7 @@ const CompanyRegistration = () => {
         { code: 'HK', name: t('countrySelection.hk')} ,
         { code: 'SG', name: t('countrySelection.sg') },
         { code: 'US', name: t('countrySelection.us') },
-        { code: 'UK', name: t('countrySelection.uk') },
+        // { code: 'UK', name: t('countrySelection.uk') },
         { code: 'PA', name: t('countrySelection.pa') },
         { code: 'PAFN', name: t('countrySelection.pafn') },
         // Add more countries as needed

@@ -291,7 +291,7 @@ const ShareholderDirectorForm: React.FC = () => {
         return { name, email };
       });
       const docId = localStorage.getItem('companyRecordId');
-      console.log("formData",formData)
+      // console.log("formData",formData)
       let country  = "US_Individual"
       if(formData.selectedEntity == "Corporation") {
         country = "US_Corporate"

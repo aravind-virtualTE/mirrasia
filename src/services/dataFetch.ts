@@ -58,6 +58,7 @@ export const getPdfDoc = async (id: string) => {
 interface InviteData {
   name: string;
   email: string;
+  legalEntity?: string | boolean
 }
 interface SendInviteData {
   _id: string | null;

@@ -81,7 +81,7 @@ const PanamaShareholderInvite: React.FC = () => {
   const saveFormData = async () => {
     try {
 
-       await saveShrPanamaInviteData(formData)
+       await saveShrPanamaInviteData(formData, id)
       // console.log("result", result)const result =
 
       toast({

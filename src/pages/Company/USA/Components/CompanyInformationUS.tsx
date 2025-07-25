@@ -31,7 +31,7 @@ export default function CompanyInformationUS() {
   const [formData, setFormData] = useAtom(usaFormWithResetAtom);
   const { theme } = useTheme();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  console.log("formData.selectedState",formData.selectedState)
+  // console.log("formData.selectedState",formData.selectedState)
   const [selectedCountry, setSelectedCountry] = useState(formData.selectedState || {id : "", name : ""});
   const usaList = [
     {id : "Delaware", name: t('usa.Section2StateOptions.Delaware')},
@@ -47,7 +47,7 @@ export default function CompanyInformationUS() {
     // t('usa.Section2StateOptions.Other'),
   ];
 
-  console.log("usaNewList", usaList);
+  // console.log("usaNewList", usaList);
   const handleOptionChange = (value: string) => {
     setFormData({ ...formData, selectedEntity: value });
   };
