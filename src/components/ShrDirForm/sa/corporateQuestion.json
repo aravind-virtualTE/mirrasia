@@ -169,19 +169,23 @@
             "id": "companyRelation",
             "type": "checkbox",
             "question": "Relationship with Singapore Company to be established",
-            "infoText": "You need to delegate a person('Designated contact person') who will be in charge of contacting in relation to your company's business, incorporation and renewal of your company, registration of documents, confirmations of the required information, and communications for various matters in respect of our services. Appointment of the designated contact person is free for up to 1 person, and if you would like to delegate 2 or more designated contact persons, an annual fee of USD250 per person will be charged. The designated contact person will be delegated by your company and should be registered separately with us to protect your company's information, reduce business confusion, and prevent identity fraud. (The Designated Contact Person must provide a scanned copy of the front and back of the ID.)",
+            "infoText": "You must designate a designated contact person to be in charge of the company's business contacts. The designated contact person will be in charge of major business contacts with our company, and their duties include contacting you regarding company and business-related inquiries, checking progress, and contacting you regarding registered documents, etc. The designated contact person can access your company's information and documents, and can also access your mail. Designating one contact person is free of charge, and for two or more, an annual fee of USD 250 will be charged per person. The designated contact person is designated by your company and registered separately with our company to protect your company's information and reduce confusion in business. (The designated contact person must submit a copy of their passport, proof of address, and go through the identity verification process in the same way as shareholders/executives.) **Note: If there is a change in the designated contact person, you must immediately contact us to update it, and fill out this form individually and submit the required documents.",
             "options": [
                 {
                     "value": "shareholder",
                     "label": "Shareholder"
                 },
                 {
-                    "value": "director",
-                    "label": "Director"
+                    "value": "officer",
+                    "label": "Officer"
+                },
+                {
+                    "value": "keyController",
+                    "label": "Key controller (applicable if you directly or indirectly own more than 25% of the shares)"
                 },
                 {
                     "value": "designatedContactPerson",
-                    "label": "Designated Contact Person (can also be acted as a director)"
+                    "label": "Designated Contact Person *May concurrently serve as an executive officer"
                 },
                 {
                     "value": "officialPartner",
@@ -196,14 +200,14 @@
             "required": true
         },
         {
-            "id": "amountContributed",
+            "id": "percentSharesHeld",
             "type": "text",
-            "question": "Amount contributed to Singapore Company (usd)",
-            "placeholder": "Enter Amount",
+            "question": "Percentage of shares held in the Singapore corporation to be established (%)",
+            "placeholder": "Enter Percentage",
             "required": true,
             "validation": {
                 "minLength": 2,
-                "message": "Please enter Amount"
+                "message": "Please enter Percentage"
             }
         },
         {
@@ -214,12 +218,12 @@
             "infoText": "You may need proof of the source of the funds, so please check it accordingly.",
             "options": [
                 {
-                    "value": "employedIncome",
-                    "label": "Employment income"
+                    "value": "earnedIncome",
+                    "label": "Earned income"
                 },
                 {
                     "value": "despositSavings",
-                    "label": "Deposit/Fixed deposit"
+                    "label": "Deposits, savings"
                 },
                 {
                     "value": "realEstateIncome",
@@ -238,12 +242,12 @@
                     "label": "Business Income / Dividends"
                 },
                 {
-                    "value": "inheritance",
-                    "label": "Inheritance"
+                    "value": "succession",
+                    "label": "Succession"
                 },
                 {
                     "value": "parentCompanyInvested",
-                    "label": "Contributing by the parent company"
+                    "label": "Parent company invested"
                 },
                 {
                     "value": "other",
@@ -256,9 +260,9 @@
             }
         },
         {
-            "id": "originFundInvestFromCountry",
+            "id": "countryOriginFund",
             "type": "text",
-            "question": "Countries in which funds flow into the above items (all applicable countries)",
+            "question": "Country of origin of funds for the above items (list all relevant countries)",
             "placeholder": "Enter Countries",
             "required": false,
             "validation": {
@@ -269,13 +273,17 @@
         {
             "id": "fundGenerated",
             "type": "checkbox",
-            "question": "Sources of funds that are expected to be generated or introduced by Singapore Company in the future",
-            "infoText": "Documents proving the source of funds may be required in the future, so please check accordingly.",
+            "question": "Sources of funds expected to be generated or incurred by the Singapore corporation in the future",
+            "infoText": "Please check the appropriate box as documentation proving the source of funds may be required in the future.",
             "required": true,
             "options": [
                 {
                     "value": "businessIncome",
-                    "label": "Business income"
+                    "label": "Business income and distribution"
+                },
+                {
+                    "value": "earnedIncome",
+                    "label": "Earned income"
                 },
                 {
                     "value": "intrestIncome",
@@ -286,16 +294,21 @@
                     "label": "Income from real estate, stocks, and other investment assets"
                 },
                 {
-                    "value": "companyShareSale",
-                    "label": "Amount of Company or Share Sale Held"
+                    "value": "saleOfCompanyShares",
+                    "label": "Proceeds from the sale of a company or shares"
                 },
                 {
-                    "value": "inheritanceEndowment",
-                    "label": "Inheritance/Endowment"
+                    "value": "inheritanceGift",
+                    "label": "Inheritance/Gift"
                 },
                 {
                     "value": "borrowingTrustDeposit",
                     "label": "Borrowing/trusting/depositing, etc."
+                },
+                {
+                    "value": "other",
+                    "label": "Other",
+                    "allowOther": true
                 }
             ],
             "validation": {
@@ -305,12 +318,24 @@
         {
             "id": "originFundGenerateCountry",
             "type": "text",
-            "question": "Countries in which funds flow into the above items ",
+            "question": "Country of origin of funds for the above items (list all relevant countries)",
             "placeholder": "Enter Countries",
             "required": true,
             "validation": {
                 "minLength": 2,
                 "message": "Please enter Countries"
+            }
+        },
+        {
+            "id": "netAssetValue",
+            "type": "text",
+            "question": "The current net asset value is stated in USD",
+            "infoText": "This question applies to Singapore shareholders and we may request you to provide supporting documentation at a later date.",
+            "placeholder": "Enter Value",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "Please enter Value"
             }
         },
         {
@@ -383,17 +408,49 @@
             }
         },
         {
+            "id": "passportId",
+            "type": "file",
+            "question": "Please upload a copy of your passport and a passport copy certificate (issued by the district office).",
+            "infoText": "You can apply for a passport copy certificate at your local district office. The document title is Certificate of Passport Copy.",
+            "placeholder": "Choose passport image file",
+            "required": true,
+            "validation": {
+                "message": "Please upload a valid image file (JPG, PNG, PDF)"
+            }
+        },
+        {
+            "id": "addressProof",
+            "type": "file",
+            "question": "Please upload a copy of your address proof document (English copy)",
+            "infoText": "Please obtain it at a nearby community center, an unmanned issuance machine, or online and submit it.",
+            "placeholder": "Choose Address Proof image file",
+            "required": true,
+            "validation": {
+                "message": "Please upload a valid image file (JPG, PNG, PDF)"
+            }
+        },
+        {
+            "id": "engResume",
+            "type": "file",
+            "question": "Please upload your English resume.",
+            "placeholder": "Choose Resume image file",
+            "required": true,
+            "validation": {
+                "message": "Please upload a valid image file (JPG, PNG, PDF)"
+            }
+        },
+        {
             "id": "isCrimeConvitted",
             "type": "radio",
             "question": "Have you ever been arrested or convicted of a crime against the law?",
             "options": [
                 {
-                    "value": "no",
-                    "label": "No"
-                },
-                {
                     "value": "yes",
                     "label": "Yes"
+                },
+                {
+                    "value": "no",
+                    "label": "No"
                 }
             ],
             "required": true
@@ -404,12 +461,12 @@
             "question": "Have you ever been investigated by law enforcement agencies (police, prosecutors) or tax authorities?",
             "options": [
                 {
-                    "value": "no",
-                    "label": "No"
-                },
-                {
                     "value": "yes",
                     "label": "Yes"
+                },
+                {
+                    "value": "no",
+                    "label": "No"
                 }
             ],
             "required": true

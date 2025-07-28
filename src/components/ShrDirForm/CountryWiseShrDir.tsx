@@ -4,6 +4,7 @@ import UsShdr from './us/UsShdr'
 import UsCorporateShdr from './us/UsCorporateShdr'
 import PanamaShdInvite from './pa/PanamaShareholderInvite'
 import SaIndividualRegForm from './sa/SaShareholder'
+import SaCompRegistrationForm from './sa/SaCorporate'
 
 const CountryWiseShareholder:React.FC = () => {
     const [country, setCountry] = useState("HK")
@@ -17,8 +18,8 @@ const CountryWiseShareholder:React.FC = () => {
     if(country == 'US_Individual') return <UsShdr />
     if(country == 'US_Corporate') return <UsCorporateShdr />
     if(country == 'PA_Individual') return <PanamaShdInvite />
-    if(country == 'SA_Corporate') return <p>In Progress</p>
-    if(country == 'SA_Individual') return <SaIndividualRegForm />
+    if(country == 'SG_Corporate') return <SaCompRegistrationForm />
+    if(country == 'SG_Individual') return <SaIndividualRegForm />
 
     return (
       <div>

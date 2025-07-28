@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { Button } from '@/components/ui/button';
@@ -7,14 +6,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { CheckCircle, ArrowRight, ArrowLeft, Edit3, Info, Eye, Download, FileText } from 'lucide-react';
-import questionsData from './questions.json';
+import questionsData from './corporateQuestion.json';
 import { useToast } from '@/hooks/use-toast';
-import { formDataAtom, type Question,saveShrSgInviteData,getSgShareHlderData } from './SaShrAtom';
-import { useParams } from 'react-router-dom';
+import {
+    SaCompDefaultAtom,
+    type Question,
+    saveSgCompanyShldrInviteData, getSgCompanyShareHlderData
+} from './SaShrAtom';
 import { multiShrDirResetAtom } from '@/components/shareholderDirector/constants';
+import { useParams } from 'react-router-dom';
 
-const SaIndividualRegForm: React.FC = () => {
-    const [formData, setFormData] = useAtom(formDataAtom);
+const SaCompRegistrationForm: React.FC = () => {
+    const [formData, setFormData] = useAtom(SaCompDefaultAtom);
+
+    // Component-level state
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [currentAnswer, setCurrentAnswer] = useState('');
     const [currentFile, setCurrentFile] = useState<File | null>(null);
@@ -24,6 +29,7 @@ const SaIndividualRegForm: React.FC = () => {
     const [otherInputValues, setOtherInputValues] = useState<Record<string, string>>({});
     const [multiData,] = useAtom<any>(multiShrDirResetAtom)
     const { id } = useParams();
+
     const { toast } = useToast();
 
     // Derived values
@@ -32,34 +38,34 @@ const SaIndividualRegForm: React.FC = () => {
 
     useEffect(() => {
         if (id) {
-          async function fetchData(id: string) {
-            // console.log('id--->', id)
-            const data = await getSgShareHlderData(id);
-            // console.log("data", data)
-            const normalizedBirthdate = data.birthdate
-              ? data.birthdate.split("T")[0]
-              : "";
-            setFormData(prev => ({
-              ...prev,
-              ...data,
-              birthdate: normalizedBirthdate,
-              fundSource: data.fundSource ?? prev.fundSource,
-              fundGenerated: data.fundGenerated ?? prev.fundGenerated,
-              otherInputs: data.otherInputs ?? prev.otherInputs,
-            }));
-            setIsCompleted(true)
-          }
-          fetchData(id)
+            async function fetchData(id: string) {
+                // console.log('id--->', id)
+                const data = await getSgCompanyShareHlderData(id);
+                // console.log("data", data)
+                const normalizedBirthdate = data.birthdate
+                    ? data.birthdate.split("T")[0]
+                    : "";
+                setFormData(prev => ({
+                    ...prev,
+                    ...data,
+                    birthdate: normalizedBirthdate,
+                    fundSource: data.fundSource ?? prev.fundSource,
+                    fundGenerated: data.fundGenerated ?? prev.fundGenerated,
+                    otherInputs: data.otherInputs ?? prev.otherInputs,
+                }));
+                setIsCompleted(true)
+            }
+            fetchData(id)
         }
         const multiShId = localStorage.getItem("shdrItem")
         const findData = multiData.length > 0
-          ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
-          : null;
+            ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
+            : null;
         if (findData) {
-          setFormData({ ...formData, email: findData.email, companyName: findData.companyName })
+            setFormData({ ...formData, email: findData.email,companyName: findData.companyName })
         }
         // console.log("multiShId",findData)
-      }, [])
+    }, [])
 
     const getFieldValue = (questionId: string): string | string[] => {
         const value = (formData as any)[questionId];
@@ -67,15 +73,18 @@ const SaIndividualRegForm: React.FC = () => {
         return value;
     };
 
-
     const setFieldValue = (questionId: string, value: string | string[] | File) => {
         setFormData(prev => ({ ...prev, [questionId]: value }));
     };
 
+    // API functions for data persistence
     const saveFormData = async () => {
         try {
-         
-            await saveShrSgInviteData(formData, id);
+
+            // console.log('Saving form data:', formData);
+            const result = await saveSgCompanyShldrInviteData(formData, id)
+            console.log("result-->", result);
+
             toast({
                 title: "Data saved",
                 description: "Your form data has been saved successfully",
@@ -113,7 +122,7 @@ const SaIndividualRegForm: React.FC = () => {
     //   };
 
     const handleSubmit = async () => {
-        console.log('Form submitted with data:', formData);
+        // console.log('Form submitted with data:', formData);
         await saveFormData();
     };
 
@@ -125,6 +134,7 @@ const SaIndividualRegForm: React.FC = () => {
             nameChanged: '',
             previousName: '',
             birthdate: '',
+            companyName:"",
             nationality: '',
             passport: '',
             residenceAddress: '',
@@ -133,13 +143,13 @@ const SaIndividualRegForm: React.FC = () => {
             phone: '',
             kakaoId: '',
             otherSNSIds: '',
-            companyName: '',
-            companyRelation: '',
-            amountContributed: '',
+            companyRelation: [],
+            percentSharesHeld: '',
             fundSource: [],
-            originFundInvestFromCountry: '',
+            countryOriginFund: '',
             fundGenerated: [],
             originFundGenerateCountry: '',
+            netAssetValue: '',
             usTaxStatus: '',
             usTIN: '',
             isPoliticallyProminentFig: '',
@@ -151,6 +161,9 @@ const SaIndividualRegForm: React.FC = () => {
             isInvolvedBankRuptedOfficer: '',
             describeIfInvolvedBankRupted: '',
             declarationAgreement: '',
+            passportId: '',
+            addressProof: '',
+            engResume: '',
             otherInputs: {}
         });
         setCurrentQuestionIndex(0);
@@ -258,7 +271,6 @@ const SaIndividualRegForm: React.FC = () => {
         if (!validateAnswer(currentQuestion, currentAnswer)) {
             return;
         }
-
         // Update field value based on question type
         let valueToSave: string | string[] = currentAnswer;
 
@@ -267,15 +279,12 @@ const SaIndividualRegForm: React.FC = () => {
             valueToSave = currentAnswer ? currentAnswer.split(',') : [];
             setFieldValue(currentQuestion.id, valueToSave);
         } else if (currentQuestion.type === 'file' && currentFile) {
-            // For files, store the file name or URL
-            setFieldValue(currentQuestion.id, currentFile.name);
+            setFieldValue(currentQuestion.id, currentFile);
         } else {
             setFieldValue(currentQuestion.id, currentAnswer);
         }
-
         // Update other inputs for this question
         const newOtherInputs = { ...formData.otherInputs };
-
         // Remove existing other inputs for this question
         Object.keys(newOtherInputs).forEach(key => {
             if (key.startsWith(`${currentQuestion.id}-`)) {
@@ -646,6 +655,32 @@ const SaIndividualRegForm: React.FC = () => {
 
         return (
             <div className="space-y-4">
+
+                <div className="space-y-3">
+                    {answeredQuestions.map((question) => (
+                        <div
+                            key={question.id}
+                            className="service-card cursor-pointer group"
+                            onClick={() => goBackToQuestion(question.id)}
+                        >
+                            <div className="flex items-start justify-between">
+                                <div className="flex-1">
+                                    <div className="text-sm text-muted-foreground mb-1">
+                                        {question.question}
+                                    </div>
+                                    <div className="font-medium">
+                                        {getDisplayValue(question.id, question)}
+                                    </div>
+                                    {question.type === 'file' && getFieldValue(question.id) && (
+                                        renderFilePreview(getFieldValue(question.id) as string)
+                                    )}
+                                </div>
+                                <Edit3 className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
                 <div className="text-center mb-6">
                     <div className="flex items-center justify-center gap-2 text-primary mb-4">
                         <CheckCircle className="h-5 w-5" />
@@ -674,31 +709,6 @@ const SaIndividualRegForm: React.FC = () => {
                             Clear All Data
                         </Button>
                     </div>
-                </div>
-
-                <div className="space-y-3">
-                    {answeredQuestions.map((question) => (
-                        <div
-                            key={question.id}
-                            className="service-card cursor-pointer group"
-                            onClick={() => goBackToQuestion(question.id)}
-                        >
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <div className="text-sm text-muted-foreground mb-1">
-                                        {question.question}
-                                    </div>
-                                    <div className="font-medium">
-                                        {getDisplayValue(question.id, question)}
-                                    </div>
-                                    {question.type === 'file' && getFieldValue(question.id) && (
-                                        renderFilePreview(getFieldValue(question.id) as string)
-                                    )}
-                                </div>
-                                <Edit3 className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </div>
-                        </div>
-                    ))}
                 </div>
             </div>
         );
@@ -745,7 +755,7 @@ const SaIndividualRegForm: React.FC = () => {
             <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
                 <div className="max-w-6xl w-full space-y-6">
                     <div className="text-center">
-                        <h1 className="decorative-heading">Singapore Company shareholder/director registration application form</h1>
+                        <h1 className="decorative-heading">Singapore company member form</h1>
                         <div className="w-full h-1 bg-primary mx-auto rounded-full"></div>
                     </div>
 
@@ -761,7 +771,7 @@ const SaIndividualRegForm: React.FC = () => {
         <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
             <div className="max-w-6xl w-full space-y-6">
                 <div className="text-center">
-                    <h1 className="decorative-heading">Singapore Company shareholder/director registration application form</h1>
+                    <h1 className="decorative-heading">Singapore company member form</h1>
                     <div className="w-full h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
 
@@ -782,12 +792,13 @@ const SaIndividualRegForm: React.FC = () => {
                                                 {currentQuestion.infoText && (
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
-                                                            <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                                                            <Info className="h-4 w-4 cursor-help" />
                                                         </TooltipTrigger>
                                                         <TooltipContent side="right" className="max-w-sm p-4">
                                                             <p className="text-sm whitespace-pre-wrap">{currentQuestion.infoText}</p>
                                                         </TooltipContent>
                                                     </Tooltip>
+
                                                 )}
                                             </div>
                                         </div>
@@ -847,4 +858,4 @@ const SaIndividualRegForm: React.FC = () => {
     );
 };
 
-export default SaIndividualRegForm;
+export default SaCompRegistrationForm;
