@@ -1382,6 +1382,8 @@
     "energyPresence": "To the best of your knowledge, does the proposed company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
   },
   "panama": {
+    "rolesWarning":"Invalid Roles",
+    "rolesWarningInfo":"Please ensure that the roles of President, Treasurer, and Secretary are assigned correctly.",
     "headInfo": "This application must be completed or authorised by the principal of the company (being formed) who is the primary controller of the company to ensure that all information is entered correctly. This application will be prepared as a separate application form document when the company is being formed and signed by the principal of the company.This application form and the subsequent application form documents to be signed will be kept on file with us as statutory documents for the purpose of conducting KYC and due diligence on you in accordance with the TCSP Licence and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act; Cap. 615 AMLO) guidelines, so please ensure that there are no distortions or errors in the information provided.",
     "compNameInfo": "The name must end with the words 'Sociedad Anonima', 'Corporation', 'Incorporated' or their abbreviations 'S.A.', 'Corp.', 'Inc.' and if there is an existing company with the same or similar name, it will not be possible to incorporate. Accordingly, please list three possible company names in the order of your first, second and third choice and we will use the possible company names in the order of your choice on the registered documents.",
     "applicantLegalEntity": "Applicant's current legal entity, if any",
@@ -1396,7 +1398,7 @@
     "shldrsPanama": "Shareholders of the Panama company",
     "localNominee": "If you would like to use a local nominee service, please select",
     "lNInfo": " Mandatory members (3 persons): President, Secretary, Treasurer Minimum nominee service period: 1 year Panama does provide a local nominee service to protect publicly available registry information. However, this is primarily for the purpose of protecting publicly available information and does not involve or represent the local nominee in all or any part of the foundation's operations. In addition, in accordance with KYC/CDD regulations, you must inform us, the virtual asset exchange or financial institution, etc. the information of the actual operator and UBO(Ultimate Beneficial Owner). In general, it is common to provide the services of two nominee directors in addition to the name of one client, as it can be generally interpreted that the foundation does not have any scam or impure purpose and is operated under the supervision of one representative. Cost of nominee director service (1 year): USD1,200 for 1 nominee / USD1,700 for 2 nominees / USD2,200 for 3 nominees",
-    "addLegalD": "Add Legal Director",
+    "addLegalD": "Add local Nominee",
     "relPanamaEntity": "The relationship between the Panama entity you are establishing and your group companies",
     "panamaEntity": "Is the Panama entity you are forming part of a group or will you be buying or selling entities or assets in connection with the group?",
     "descPanamaEntity": "Describe how the Panamanian entity you are establishing and the group company (or related companies) are connected in business (outsourcing, simple foreign affiliation, etc.)",

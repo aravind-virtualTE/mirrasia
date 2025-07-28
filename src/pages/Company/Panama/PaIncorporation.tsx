@@ -108,6 +108,16 @@ const IncorporatePa: React.FC = () => {
 
     }
 
+    const validateRoles = (shareholders:any, legalNominees:any) => {
+        const combined = [...shareholders, ...legalNominees];
+        const required = ['president', 'treasurer', 'secretary'];
+
+        if (combined.length < 3) return false;
+
+        const rolesPresent = new Set(combined.map(p => p.role.id));
+        return required.every(r => rolesPresent.has(r));
+    }
+
     const nextSection = async () => {
         switch (currentSection) {
             case 1:
@@ -184,13 +194,21 @@ const IncorporatePa: React.FC = () => {
                 const selectedIndustry = formData.selectedIndustry.length
                 const purposePaCompany = formData.purposePaCompany.length
                 const sourceFunding = formData.sourceFunding.length
-                const shareHolders = formData.shareHolders.length
-                const legalDirectors = formData.legalDirectors.length
+                const shareHolders = formData.shareHolders
+                const legalDirectors = formData.legalDirectors
                 const description = formData.tradeAfterIncorporation
                 const listCountry = formData.listCountry
                 const typeOfShare = formData.typeOfShare
-
-                if (selectedIndustry == 0 || purposePaCompany == 0 || sourceFunding == 0 || shareHolders == 0 || legalDirectors == 0 || description == '' || listCountry == '' || typeOfShare == "") {
+                const checkRoles = validateRoles(shareHolders, legalDirectors);
+                // console.log("shareHolders", checkRoles)
+                if(!checkRoles) {
+                    toast({
+                        title: "Invalid Roles",
+                        description: "Please ensure that the roles of President, Treasurer, and Secretary are assigned correctly.",
+                    });
+                    break;
+                }
+                else if (selectedIndustry == 0 || purposePaCompany == 0 || sourceFunding == 0 || shareHolders.length == 0 || legalDirectors.length == 0 || description == '' || listCountry == '' || typeOfShare == "") {
                     toast({
                         title: "Fill Details",
                         description: "Fill all the required fields before proceeding.",

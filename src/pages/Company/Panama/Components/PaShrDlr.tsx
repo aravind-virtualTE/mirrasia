@@ -54,11 +54,11 @@ interface LegalDirectorProps {
     isRemovable: boolean;
 }
 
-const roleOptions = [
-    { id: 'representative', value: 'panama.rOptions.1' },
-    { id: 'financial_officer', value: 'panama.rOptions.2' },
-    { id: 'secretary', value: 'panama.rOptions.3' },
-];
+// const roleOptions = [
+//     { id: 'representative', value: 'panama.rOptions.1' },
+//     { id: 'financial_officer', value: 'panama.rOptions.2' },
+//     { id: 'secretary', value: 'panama.rOptions.3' },
+// ];
 
 const roleOptions1 = [
     { id: 'president', value: 'panama.rOptions.4'  },
@@ -111,7 +111,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
         { id: "yes", value: "AmlCdd.options.yes" },
         { id: "no", value: "AmlCdd.options.no" },
     ];
-    console.log("role",role)
+    // console.log("role",role)
     return (
         <Card className="mb-4 pt-4">
             <CardContent className="grid grid-cols-3 gap-4">
@@ -176,7 +176,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                         <Select
                             value={role.id}
                             onValueChange={(selectedId) => {
-                                const selectedRole = roleOptions.find(role => role.id === selectedId);
+                                const selectedRole = roleOptions1.find(role => role.id === selectedId);
                                 if (selectedRole) {
                                     onUpdate({ role: selectedRole });
                                 }
@@ -188,7 +188,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                                 </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
-                                {roleOptions.map(option => (
+                                {roleOptions1.map(option => (
                                     <SelectItem key={option.id} value={option.id}>
                                         {t(option.value)}
                                     </SelectItem>
