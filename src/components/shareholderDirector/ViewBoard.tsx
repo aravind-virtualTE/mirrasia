@@ -63,12 +63,12 @@ export default function ViewBoard() {
 
   const handleShowClick = (company: any) => {
     const country = multiData.find((item: { shrDirId: any; }) => item.shrDirId == company._id).country
-    console.log("company",company)
+    // console.log("company",company)
     setsSelectedData(company)
     setIsDialogOpen(true)
     setCountry(country)
   }
-  console.log('multiData', multiData)
+  // console.log('multiData', multiData)
   return (
     <div className="flex-1 py-4">
       {/* defaultValue={["registration-table", "associated-companies"]} */}

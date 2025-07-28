@@ -125,7 +125,7 @@ const IncorporateUSACompany = () => {
                         });
                         return;
                       }
-                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && ['no', 'handleOwnIncorpo'].includes(annualRenew.id)) {
+                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && ['yes', 'handleOwnIncorpo'].includes(annualRenew.id)) {
                         await updateDoc();
                         setCurrentSection(prev => prev + 1);
                         window.scrollTo({ top: 0, behavior: "smooth" });
