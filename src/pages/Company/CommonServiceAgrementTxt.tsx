@@ -141,9 +141,7 @@ const CommonServiceAgrementTxt: React.FC = () => {
 
             <section>
                 <h2 className="font-bold text-lg mb-3">{t("serviceAgreement.independentContractor")}</h2>
-                <p className="mb-4">
-                    {t("serviceAgreement.indepMirrasiaContract")}
-                </p>
+                <p className="mb-4">{t("serviceAgreement.zindipendentMirrasiaContract")}</p>
             </section>
 
             <section>
