@@ -24,10 +24,11 @@ export default function InvoicePA() {
 
   const invoiceData: InvoiceItem[] = useMemo(() => {
     const ownerOnly = nomineeList.filter((n) => n.ownershipRate > 0);
-
+    const nomineeDirectors = nomineeList.filter((n) => n.role && n.role.id !== '');
     // Determine price for nominee directors
     let directorPrice = 0;
-    const directorCount = nomineeList.length;
+    const directorCount = nomineeDirectors.length;
+    // console.log("directorCount", nomineeDirectors);
     if (directorCount === 1) directorPrice = 1200;
     else if (directorCount === 2) directorPrice = 1700;
     else if (directorCount === 3) directorPrice = 2200;
