@@ -5,21 +5,18 @@ import { Upload } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { paymentApi } from '@/lib/api/payment';
 import { useAtom } from 'jotai';
-// import { companyIncorporationAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
-import { usePaymentSession } from '@/hooks/usePaymentSession';
 import { useTranslation } from 'react-i18next';
 import { sgFormWithResetAtom } from '../../SgState';
 
-interface ReceiptUploadProps {sessionId: string;}
+interface ReceiptUploadProps { sessionId: string; }
 
 export default function SgReceiptUpload({ sessionId }: ReceiptUploadProps) {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   // const [formData] = useAtom(companyIncorporationAtom);
   const [formData, setFormData] = useAtom(sgFormWithResetAtom);
   // const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
-  const { status } = usePaymentSession(sessionId);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) setFile(selectedFile);
@@ -34,9 +31,9 @@ export default function SgReceiptUpload({ sessionId }: ReceiptUploadProps) {
     }
 
     setUploadStatus('uploading');
-    const output = await paymentApi.uploadReceipt(sessionId, formData._id, file, 'us');
+    const output = await paymentApi.uploadReceipt(sessionId, formData._id, file, 'sg');
     // console.log("data---->", output)
-    if (output.message == "Receipt uploaded successfully"){
+    if (output.message == "Receipt uploaded successfully") {
       setFormData(output.result)
     }
     setTimeout(() => {
@@ -59,7 +56,7 @@ export default function SgReceiptUpload({ sessionId }: ReceiptUploadProps) {
             />
           </div>
         )}
-        {status !== "completed" && (<div className="border-2 border-dashed border-gray-200 rounded-lg p-6">
+        {formData.receiptUrl == "" && (<div className="border-2 border-dashed border-gray-200 rounded-lg p-6">
           <Input
             type="file"
             accept="image/*,.pdf"
@@ -83,11 +80,13 @@ export default function SgReceiptUpload({ sessionId }: ReceiptUploadProps) {
           <Button
             onClick={handleUpload}
             className="w-full"
-            disabled={uploadStatus === 'uploading'}
+            disabled={uploadStatus === 'uploading' || uploadStatus === 'success'}
           >
-            {uploadStatus === 'uploading' ? 'Uploading...' :
-              uploadStatus === 'success' ? 'Upload Successful' :
-                'Submit Receipt'}
+            {uploadStatus === 'uploading'
+              ? 'Uploading...'
+              : uploadStatus === 'success'
+                ? 'Upload Successful'
+                : 'Submit Receipt'}
           </Button>
         )}
 

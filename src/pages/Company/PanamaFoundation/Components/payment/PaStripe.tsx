@@ -58,6 +58,7 @@ const countries = [
   { name: "Brazil", code: "BR" },
   { name: "Hong Kong", code: "HK" },
   { name: "Singapore", code: "SG" },
+  { name: "Panama", code: "PA" },
 ];
 
 export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPaymentFormProps) {
@@ -76,7 +77,7 @@ export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPayment
     defaultValues: {
       email: "",
       cardHolder: "",
-      country: "SG", // Default to US using the country code
+      country: "PAF", // Default to US using the country code
       zipCode: "",
     },
   });
@@ -133,7 +134,7 @@ export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPayment
           setStatus("completed");
           const docId = localStorage.getItem('companyRecordId');
           // Notice "SG" is kept unchanged from the original code
-          const sessionData = await paymentApi.updateFinalPaymentStatus(sessionId, paymentId, docId!, paymentIntent, "SG");
+          const sessionData = await paymentApi.updateFinalPaymentStatus(sessionId, paymentId, docId!, paymentIntent, "PAF");
           updateCompanyData(sessionData.updatedData);
           setPaymentStatus({
             type: 'success',

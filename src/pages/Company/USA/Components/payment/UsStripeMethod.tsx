@@ -58,6 +58,7 @@ const countries = [
   { name: "Brazil", code: "BR" },
   { name: "Hong Kong", code: "HK" },
   { name: "Singapore", code: "SG" },
+  { name: "Panama", code: "PA" },
 ];
 
 export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPaymentFormProps) {

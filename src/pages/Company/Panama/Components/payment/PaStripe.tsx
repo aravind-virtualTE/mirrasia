@@ -135,7 +135,7 @@ export function CardPaymentForm({ sessionId, clientSecret, amount }: CardPayment
           setStatus("completed");
           const docId = localStorage.getItem('companyRecordId');
           // Notice "SG" is kept unchanged from the original code
-          const sessionData = await paymentApi.updateFinalPaymentStatus(sessionId, paymentId, docId!, paymentIntent, "SG");
+          const sessionData = await paymentApi.updateFinalPaymentStatus(sessionId, paymentId, docId!, paymentIntent, "PA");
           updateCompanyData(sessionData.updatedData);
           setPaymentStatus({
             type: 'success',

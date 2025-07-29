@@ -75,7 +75,7 @@ const AmlCddPA: React.FC = () => {
         const selectedItem = list.find(item => t(item.value) == t(value));
         setFormData({ ...formData,  involvedInRussianEnergyDefense: selectedItem || {id: '', value : ""} })
     }
-    console.log("formData",formData)
+    // console.log("formData",formData)
     return (
         <>
             <Card>
