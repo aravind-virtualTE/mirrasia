@@ -7,7 +7,7 @@ import { paymentApi, type PaymentSession } from "@/lib/api/payment";
 import { PaymentConditions } from "../../payment/PaymentConditions";
 import { useAtom } from "jotai";
 import { useTranslation } from "react-i18next";
-import PaymentPaTimer from "./payment/PaymentTimerSg";
+import PaymentPaTimer from "./payment/PaymentTimerPa";
 import PaPaymentMethods from "./payment/PaPaymentMethods";
 import { paFormWithResetAtom ,paPriceAtom} from "../PaState";
 
@@ -51,7 +51,9 @@ const PaymentInformation: React.FC = () => {
             setIsLoading(false);
           }
         }
+        // console.log("formData.sessionId",formData.sessionId)
         if (formData.sessionId == "") {
+          console.log("Entered Executed initializePaymentSession")
           initializePaymentSession();
         }
         else {
