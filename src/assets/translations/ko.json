@@ -105,6 +105,7 @@
     "compChinaName": "아래에 회사의 중국어 이름을 선택적으로 입력할 수 있습니다.",
     "contactInfo": "상기 신청인의 연락처",
     "phoneNum": "전화번호",
+    "phoneNumInfo": "국가 번호를 포함한 전화번호를 입력하세요.",
     "address": "주소",
     "email": "이메일",
     "snsId": "SNS 계정 ID",

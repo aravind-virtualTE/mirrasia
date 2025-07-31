@@ -110,6 +110,7 @@
     "compChinaName": "You Can Enter Optional Chinese names for your company below",
     "contactInfo": "Contact information of the above applicant",
     "phoneNum": "Phone Number",
+    "phoneNumInfo":"Enter phone number with country code",
     "address": "Address",
     "email": "Email",
     "snsId": "SNS Account ID",
