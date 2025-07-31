@@ -93,6 +93,8 @@ export interface PaFormData {
   involvedInRussianEnergyDefense: { id: string, value: string };
   hasLegalEthicalIssues: { id: string, value: string };
   annualRenewalTermsAgreement: { id: string, value: string };
+  mobileOtpVerified?: boolean;
+  emailOtpVerified?: boolean;
 
   [key: string]: any;
 }
@@ -160,7 +162,8 @@ const initialFormState: PaFormData = {
   involvedInRussianEnergyDefense: { id: '', value: '' },
   annualRenewalTermsAgreement: { id: '', value: '' },
   hasLegalEthicalIssues: { id: '', value: '' },
-
+  mobileOtpVerified: false,
+  emailOtpVerified: false,
 
 };
 

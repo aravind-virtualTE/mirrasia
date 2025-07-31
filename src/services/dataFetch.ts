@@ -512,3 +512,23 @@ export const getSgIncorpoDataById = async (userId: string) => {
     console.error("Error fetching company incorporation list by userId:", error);
   }
 };
+
+export const getOtpforVerification = async (data:any) => {
+  try {
+    const response = await api.post(`auth/generate_otp`, data);
+    // console.log("response-->",response)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company incorporation list by userId:", error);
+  }
+};
+
+export const validateOtpforVerification = async (data:any) => {
+  try {
+    const response = await api.post(`auth/validate_otp`, data);
+    // console.log("response-->",response)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company incorporation list by userId:", error);
+  }
+};

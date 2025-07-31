@@ -104,6 +104,7 @@
     "compName": "您要註冊的香港公司名稱",
     "contactInfo": "申請人的聯絡資訊",
     "phoneNum": "電話號碼",
+    "phoneNumInfo": "請輸入含國家碼的電話號碼。",
     "address": "地址",
     "email": "電子郵件",
     "snsId": "社交媒體帳戶ID",
