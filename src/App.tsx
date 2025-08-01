@@ -49,6 +49,7 @@ import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporate
 import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
 // import UsersList1 from './components/userList/uList2';
 import CurrentCorpClient from './pages/CurrentClient/CurrentCorpClient';
+import SMSTracker from './components/smsManager/SmsManager';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -133,6 +134,7 @@ const App: React.FC = () => {
                       <Route path="/project-detail/:id" element={<ProjectDetail />} />
                       <Route path="/currentClientDataManager" element={<CurrentCorpClient />} />
                       <Route path="/current-corporate-client" element={<CurrentCorporateClientList />} />
+                      <Route path="/sms-management" element={<SMSTracker />} />
                       {/* Add more admin-specific routes here */}
                     </Route>
                   </Route>
