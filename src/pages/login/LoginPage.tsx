@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -44,6 +44,13 @@ const LoginComponent: React.FC = () => {
   const [twoFactorError, setTwoFactorError] = useState('');
   const [tempUserData, setTempUserData] = useState(null);
   const [is2FALoading, setIs2FALoading] = useState(false);
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("refreshed")) {
+      sessionStorage.setItem("refreshed", "true");
+      window.location.reload();
+    }
+  }, []);
 
   const handleLogin = async () => {
     setError('');
