@@ -94,9 +94,10 @@ const ApplicantInfo: React.FC = () => {
                 variant: "default"
             })
         } else {
+            console.log("testing send otp")
             toast({
                 title: "Error",
-                description: result.message,
+                description: "Failed to send OTP. Please enter proper phonenumber along with country code.",
                 variant: "destructive"
             })
         }

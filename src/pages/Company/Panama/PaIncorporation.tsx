@@ -134,6 +134,10 @@ const IncorporatePa: React.FC = () => {
                     // if (!phoneNumber || phoneNumber.trim() === "") {
                     //     errors.push("Phone number cannot be empty.");
                     // }
+                    const mobileOtpVerified = formData.mobileOtpVerified
+                    if (mobileOtpVerified == false) {
+                        errors.push("Mobile OTP verification is required.");
+                    }
                     if (!Array.isArray(formData.companyName) || formData.companyName.length === 0 || formData.companyName[0].trim() === "") {
                         errors.push("Company Name cannot be empty.");
                     }
