@@ -260,7 +260,7 @@ const ApplicantInfo: React.FC = () => {
                                 </>
                             ) : (
                                 <div className="text-green-600 text-sm flex items-center">
-                                    Phone number verified ✔️
+                                    {formData.phoneNum } Phone number verified ✔️
                                 </div>
                             )}
                         </div>

@@ -212,7 +212,7 @@ const IncorporatePa: React.FC = () => {
                     });
                     break;
                 }
-                else if (selectedIndustry == 0 || purposePaCompany == 0 || sourceFunding == 0 || shareHolders.length == 0 || legalDirectors.length == 0 || description == '' || listCountry == '' || typeOfShare == "") {
+                else if (selectedIndustry == 0 || purposePaCompany == 0 || sourceFunding == 0 || shareHolders.length == 0 || description == '' || listCountry == '' || typeOfShare == "") {
                     toast({
                         title: "Fill Details",
                         description: "Fill all the required fields before proceeding.",
