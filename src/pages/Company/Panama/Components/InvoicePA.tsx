@@ -41,7 +41,7 @@ export default function InvoicePA() {
       nomineeServices.push({
         id: 100,
         description: ("panama.nomineDir"),
-        quantity: 1,
+        quantity: directorCount,
         unitPrice: directorPrice,
         amountUSD: directorPrice,
       });
@@ -51,7 +51,7 @@ export default function InvoicePA() {
       nomineeServices.push({
         id: 101,
         description: (`panama.shldrNominee`),
-        quantity: 1,
+        quantity: ownerOnly.length,
         unitPrice: ownerOnlyPrice,
         amountUSD: ownerOnlyPrice,
       });
