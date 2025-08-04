@@ -214,3 +214,33 @@ export const getPanamaShareHlderData = async (id: string) => {
   const response = await api.get(`/company/pa-shareholder-form/${id}`);
   return response.data;
 };
+
+
+
+export const saveShrCorporatePanamaInviteData = async (data: any, id?: string) => {
+  // const form = new FormData();
+  // console.log("data",data)
+  // append answers (string values and File objects)
+  // data.answers.forEach((answer: { value: string | Blob; questionId: string; }) => {
+  //   if (answer.value instanceof File) {
+  //     form.append(answer.questionId, answer.value);
+  //   } else {
+  //     form.append(answer.questionId, answer.value);
+  //   }
+  // });
+
+  // append any “otherInputs” (text)
+  // Object.entries(data.otherInputs).forEach(([key, value]) => {
+  //   form.append(key, String(value));
+  // });
+
+  const response = await api.post(`/company/pa-corp-shareholder-form/${id}`,data,
+     { headers: { 'Content-Type': 'multipart/form-data' } });
+  return response.data;
+};
+
+
+export const getCorporatePanamaShareHlderData = async (id: string) => {
+  const response = await api.get(`/company/pa-corp-shareholder-form/${id}`);
+  return response.data;
+};

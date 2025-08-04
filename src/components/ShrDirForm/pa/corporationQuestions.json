@@ -116,7 +116,7 @@
         },
         {
             "id": "kakaoTalkId",
-            "type": "textarea",
+            "type": "text",
             "question": "Representative KakaoTalk ID (if available)",
             "placeholder": "Enter Details",
             "required": false,
@@ -127,7 +127,7 @@
         },
         {
             "id": "otherSnsId",
-            "type": "textarea",
+            "type": "text",
             "question": "Representative Telegram, WeChat, or other SNS ID (if available)",
             "placeholder": "Enter Details",
             "required": false,

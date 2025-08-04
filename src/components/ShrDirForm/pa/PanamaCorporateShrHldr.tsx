@@ -7,13 +7,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { CheckCircle, ArrowRight, ArrowLeft, Edit3, Info, Eye, Download, FileText } from 'lucide-react';
-import questionsData from './questions.json';
+import questionsData from './corporationQuestions.json';
 import { useToast } from '@/hooks/use-toast';
 import {
     panamaCorporateFormAtom,
     type Question,
-    saveShrPanamaInviteData,
-    getPanamaShareHlderData
+    saveShrCorporatePanamaInviteData,
+    getCorporatePanamaShareHlderData
 } from './PanamaShratoms';
 import { multiShrDirResetAtom } from '@/components/shareholderDirector/constants';
 import { useParams } from 'react-router-dom';
@@ -38,7 +38,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
         if (id) {
             async function fetchData(id: string) {
                 // console.log('id--->', id)
-                const data = await getPanamaShareHlderData(id);
+                const data = await getCorporatePanamaShareHlderData(id);
                 // console.log("data", data)
                 const normalizedBirthdate = data.birthdate
                     ? data.birthdate.split("T")[0]
@@ -78,8 +78,8 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
 
     const saveFormData = async () => {
         try {
-
-            await saveShrPanamaInviteData(formData, id)
+            console.log("formData", formData)
+            await saveShrCorporatePanamaInviteData(formData, id)
             // console.log("result", result)const result =
 
             toast({
