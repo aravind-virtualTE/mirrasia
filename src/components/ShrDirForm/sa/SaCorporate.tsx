@@ -704,40 +704,10 @@ const SaCompRegistrationForm: React.FC = () => {
     };
 
     const renderCompletedAnswers = () => {
-        const answeredQuestions = filteredQuestions.filter(q => {
-            const value = getFieldValue(q.id);
-            return value !== '' && value !== undefined && value !== null;
-        });
-
         return (
             <div className="space-y-4">
-
-                <div className="space-y-3">
-                    {answeredQuestions.map((question) => (
-                        <div
-                            key={question.id}
-                            className="service-card cursor-pointer group"
-                            onClick={() => goBackToQuestion(question.id)}
-                        >
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <div className="text-sm text-muted-foreground mb-1">
-                                        {question.question}
-                                    </div>
-                                    <div className="font-medium">
-                                        {getDisplayValue(question.id, question)}
-                                    </div>
-                                    {question.type === 'file' && getFieldValue(question.id) && (
-                                        renderFilePreview(getFieldValue(question.id) as string)
-                                    )}
-                                </div>
-                                <Edit3 className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
                 <div className="text-center mb-6">
+                    <h2 className="summary-title">Your Information</h2>
                     <div className="flex items-center justify-center gap-2 text-primary mb-4">
                         <CheckCircle className="h-5 w-5" />
                         <span className="font-medium">Form Completed Successfully!</span>
@@ -766,6 +736,38 @@ const SaCompRegistrationForm: React.FC = () => {
                         </Button>
                     </div>
                 </div>
+
+                <div className="space-y-3">
+                    {filteredQuestions.map((question) => {
+                        const value = getFieldValue(question.id);
+                        const hasAnswer = value !== '' && value !== undefined && value !== null;
+
+                        return (
+                            <div
+                                key={question.id}
+                                className={`service-card cursor-pointer group ${!hasAnswer ? 'opacity-70 border-dashed' : ''}`}
+                                onClick={() => goBackToQuestion(question.id)}
+                            >
+                                <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                        <div className="text-sm text-muted-foreground mb-1">
+                                            {question.question}
+                                            {!question.required && <span className="text-xs ml-1">(Optional)</span>}
+                                        </div>
+                                        <div className="font-medium">
+                                            {hasAnswer ? getDisplayValue(question.id, question) :
+                                                <span className="text-muted-foreground italic">Not answered</span>}
+                                        </div>
+                                        {question.type === 'file' && value && (
+                                            renderFilePreview(value as string)
+                                        )}
+                                    </div>
+                                    <Edit3 className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
         );
     };
@@ -777,21 +779,23 @@ const SaCompRegistrationForm: React.FC = () => {
             <div className="space-y-3 mb-6">
                 {visibleQuestions.map((question) => {
                     const value = getFieldValue(question.id);
-                    if (!value) return null;
+                    const hasAnswer = value !== '' && value !== undefined && value !== null;
 
                     return (
                         <div
                             key={question.id}
-                            className="service-card cursor-pointer group animate-fade-in"
+                            className={`service-card cursor-pointer group animate-fade-in ${!hasAnswer ? 'opacity-70 border-dashed' : ''}`}
                             onClick={() => goBackToQuestion(question.id)}
                         >
                             <div className="flex items-start justify-between">
                                 <div className="flex-1">
                                     <div className="text-sm text-muted-foreground mb-1">
                                         {question.question}
+                                        {!question.required && <span className="text-xs ml-1">(Optional)</span>}
                                     </div>
                                     <div className="font-medium">
-                                        {getDisplayValue(question.id, question)}
+                                        {hasAnswer ? getDisplayValue(question.id, question) :
+                                            <span className="text-muted-foreground italic">Not answered</span>}
                                     </div>
                                     {question.type === 'file' && value && (
                                         renderFilePreview(value as string)
@@ -805,6 +809,7 @@ const SaCompRegistrationForm: React.FC = () => {
             </div>
         );
     };
+
 
     if (isCompleted) {
         return (
