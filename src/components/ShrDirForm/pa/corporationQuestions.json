@@ -1,0 +1,442 @@
+{
+    "questions": [
+        {
+            "id": "name",
+            "type": "text",
+            "question": "Representative name",
+            "placeholder": "Enter your full name",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "pattern": "^[a-zA-Z\\s]+$",
+                "message": "Please enter a valid name"
+            }
+        },
+        {
+            "id": "email",
+            "type": "email",
+            "question": "What is your email address?",
+            "placeholder": "Enter your email address",
+            "required": true,
+            "validation": {
+                "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+                "message": "Please enter a valid email address"
+            }
+        },
+        {
+            "id": "companyName",
+            "type": "text",
+            "question": "Name of the Company applying for establishment",
+            "placeholder": "Enter Name",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "Please enter Company Name"
+            }
+        },
+        {
+            "id": "dateOfEstablishment",
+            "type": "date",
+            "question": "Date of establishment",
+            "required": true,
+            "validation": {
+                "message": "Please enter a valid date"
+            }
+        },
+        {
+            "id": "establishmentCountry",
+            "type": "text",
+            "question": "Country of establishment",
+            "placeholder": "Enter country",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "Please enter a valid country"
+            }
+        },
+        {
+            "id": "brnNumber",
+            "type": "text",
+            "question": "Corporate registration number or business registration number",
+            "required": true,
+            "validation": {
+                "message": "Please enter value"
+            }
+        },
+        {
+            "id": "listedOnStockExchange",
+            "type": "select",
+            "question": "Whether listed on a stock exchange",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "Yes"
+                },
+                {
+                    "value": "no",
+                    "label": "No"
+                },
+                {
+                    "value": "other",
+                    "label": "Other",
+                    "allowOther": true
+                }
+            ],
+            "required": false
+        },
+        {
+            "id": "namesOfShareholders",
+            "type": "text",
+            "question": "English names of shareholders/directors and shares held",
+            "infoText": "Please also include your zip code and the length of time you have resided in your country of residence.",
+            "placeholder": "Enter your Details",
+            "required": true
+        },
+        {
+            "id": "businessAddress",
+            "type": "text",
+            "question": "Business address?",
+            "placeholder": "Enter your Address",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "Please enter a valid address"
+            }
+        },
+        {
+            "id": "phoneNumber",
+            "type": "text",
+            "question": "Contactable representative mobile phone number",
+            "placeholder": "Enter your mobile phone number",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "Please enter a valid mobile phone number"
+            }
+        },
+        {
+            "id": "kakaoTalkId",
+            "type": "text",
+            "question": "Representative KakaoTalk ID (if available)",
+            "placeholder": "Enter Details",
+            "required": false,
+            "validation": {
+                "minLength": 10,
+                "message": "Please enter a if avilable"
+            }
+        },
+        {
+            "id": "otherSnsId",
+            "type": "text",
+            "question": "Representative Telegram, WeChat, or other SNS ID (if available)",
+            "placeholder": "Enter Details",
+            "required": false,
+            "validation": {
+                "minLength": 10,
+                "message": "Please enter a if avilable"
+            }
+        },
+        {
+            "id": "corporationRelationship",
+            "type": "checkbox",
+            "question": "Relationship with the Panamanian corporation to be established",
+            "required":true,
+            "options": [
+                {
+                    "value": "shareholder",
+                    "label": "Shareholder"
+                },
+                {
+                    "value": "trustee",
+                    "label": "trustee"
+                },
+                {
+                    "value": "director",
+                    "label": "Director"
+                },
+                {
+                    "value": "designatedContact",
+                    "label": "Designated contact person (a representative who will communicate with us on behalf of the new company)"
+                },
+                {
+                    "value": "other",
+                    "label": "Other",
+                    "allowOther": true
+                }
+            ],
+            "validation": {
+                "message": "Please select at least one relationship type"
+            }
+        },
+        {
+            "id": "investedAmount",
+            "type": "text",
+            "question": "Amount of equity to be invested in the Panamanian corporation to be established (USD)",
+            "placeholder": "Enter Amount",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "Please enter Amount"
+            }
+        },        
+        {
+            "id": "sourceInvestmentFunds",
+            "type": "checkbox",
+            "question": "Source of investment funds",
+            "required": true,
+            "infoText": "Please check the appropriate box as documentation proving the source of funds may be required in the future.",
+            "options": [
+                {
+                    "value": "shareholderCapitalLoans",
+                    "label": "Shareholders' capital or loans"
+                },
+                {
+                    "value": "businessIncome",
+                    "label": "Business income/dividends"
+                },
+                {
+                    "value": "despositSavings",
+                    "label": "Deposits, savings"
+                },
+                {
+                    "value": "realEstateIncome",
+                    "label": "Income from real estate, stocks, and other investment assets"
+                },
+                {
+                    "value": "loan",
+                    "label": "Loan"
+                },
+                {
+                    "value": "companyShareSale",
+                    "label": "Proceeds from the sale of a company or shares"
+                },               
+                {
+                    "value": "shareholderDirectorFund",
+                    "label": "Inheritance funds of shareholders/directors or special persons"
+                },
+                {
+                    "value": "other",
+                    "label": "Other",
+                    "allowOther": true
+                }
+            ],
+            "validation": {
+                "message": "Please select at least one relationship type"
+            }
+        },
+        {
+            "id": "countryReceivingFunds",
+            "type": "text",
+            "question": "Countries receiving funds for the above items (list all countries)",
+            "placeholder": "Enter Countries",
+            "required": false,
+            "validation": {
+                "minLength": 2,
+                "message": "Please enter Countries"
+            }
+        },
+        {
+            "id": "fundGenerated",
+            "type": "checkbox",
+            "question": "Sources of funds expected to be generated or received by the Panama Corporation in the future",
+            "required": true,
+            "options": [
+                {
+                    "value": "businessIncome",
+                    "label": "Business income"
+                },
+                {
+                    "value": "intrestIncome",
+                    "label": "Interest income"
+                },
+                {
+                    "value": "realEstateIncome",
+                    "label": "Income from real estate, stocks, and other investment assets"
+                },
+                {
+                    "value": "companyShareSale",
+                    "label": "Proceeds from the sale of a company or shares"
+                },
+                {
+                    "value": "inheritanceGift",
+                    "label": "Inheritance/Gift"
+                },
+                {
+                    "value": "borrowingTrustDeposit",
+                    "label": "Borrowing/trusting/depositing, etc."
+                },
+                {
+                    "value": "other",
+                    "label": "Other",
+                    "allowOther": true
+                }
+            ],
+            "validation": {
+                "message": "Please select at least one relationship type"
+            }
+        },
+        {
+            "id": "countriesReceivingFunds",
+            "type": "text",
+            "question": "Countries receiving funds for the above items (list all countries)",
+            "placeholder": "Enter Countries",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "Please enter Countries"
+            }
+        },
+        {
+            "id": "usCorporateUnderTaxLaw",
+            "type": "radio",
+            "question": "Is your company under U.S. jurisdiction for legal purposes or a U.S. permanent establishment for tax purposes?",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "Yes"
+                },
+                {
+                    "value": "no",
+                    "label": "No"
+                },
+                {
+                    "value": "other",
+                    "label": "Other",
+                    "allowOther": true
+                }
+            ],
+            "required": true          
+        },
+        {
+            "id": "tinNumber",
+            "type": "text",
+            "question": "If you are under U.S. jurisdiction for legal purposes or have a U.S. permanent establishment for tax purposes, please provide your IRS U.S. Tax Identification Number (TIN).",
+            "placeholder": "Enter TIN Number",
+            "required": false,
+            "validation": {
+                "minLength": 2,
+                "message": "Please enter TIN Number"
+            }
+        },
+                {
+            "id": "isPoliticallyProminentFig",
+            "type": "select",
+            "question": "Are you a politically prominent figure who fits the description above, or do you have an immediate family member or close acquaintance who holds a high-ranking public office, is a politician, government official, military or international organization official, or is a politically prominent figure?",
+            "infoText": "Politically Exposed Person (Source: FATF Guidance: Politically Exposed Persons (Rec 12 and 22)) 1. A foreign politically exposed person means a person who currently or has had political or social influence in a foreign country. For example, a senior official in the executive, judicial, defense, or other government agencies of a foreign government, a senior official in a major foreign political party, or a manager in a foreign state-owned enterprise. 2. A domestic politically exposed person means a person who currently or has had political or social influence in a domestic country. (For example, a senior official in the executive, judicial, defense, or other government agencies of a domestic government, a senior official in a major domestic political party, or a manager in a foreign state-owned enterprise.) 3. A politically exposed person of an international organization means a person who has influence in an international organization, for example, a director, officer, member of the board of directors, senior management, or a person with equivalent authority. 4. A politically exposed person in a family relationship means a parent, sibling, spouse, child, or relative by blood or marriage. 5. A close politically important person refers to a person who has a close social or business relationship with a politically important person.",
+            "options": [
+                {
+                    "value": "no",
+                    "label": "No"
+                },
+                {
+                    "value": "yes",
+                    "label": "Yes"
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "descPoliticImpRel",
+            "type": "text",
+            "question": "Please describe in detail whether you are a politically important figure or your relationship with such a person.",
+            "placeholder": "Enter Description",
+            "required": false,
+            "showIf": {
+                "questionId": "isPoliticallyProminentFig",
+                "value": "yes"
+            },
+            "validation": {
+                "minLength": 2,
+                "pattern": "^[a-zA-Z\\s]+$",
+                "message": "Please enter Description"
+            }
+        },       
+        {
+            "id": "anyOneInvestigatedByLawEnforcement",
+            "type": "select",
+            "question": "Has anyone from your company ever been investigated by law enforcement (police, prosecutors) or tax authorities?",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "Yes"
+                },
+                {
+                    "value": "no",
+                    "label": "No"
+                }                
+            ],
+            "required": true
+        },
+        {
+            "id": "employeeIllicitActivity",
+            "type": "select",
+            "question": "Are any of your company's employees involved in criminal activity, money laundering, bribery, or terrorist activity, or have any other illicit activities related to business or personal funds?",
+            "options": [
+                 {
+                    "value": "yes",
+                    "label": "Yes"
+                },
+                {
+                    "value": "no",
+                    "label": "No"
+                } 
+            ],
+            "required": true
+        },       
+        {
+            "id": "isAnyBankRupted",
+            "type": "select",
+            "question": "Has anyone from your company ever been personally involved in or involved in bankruptcy or liquidation?",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "Yes"
+                },
+                {
+                    "value": "no",
+                    "label": "No"
+                } 
+            ],
+            "required": true
+        },
+        {
+            "id": "isAnyInvolvedBankRuptedOfficer",
+            "type": "select",
+            "question": "Has anyone from your company ever been involved in or involved in bankruptcy or liquidation as an executive of the company?",
+            "options": [
+                 {
+                    "value": "yes",
+                    "label": "Yes"
+                },
+                {
+                    "value": "no",
+                    "label": "No"
+                } 
+            ],
+            "required": true
+        },
+         {
+            "id": "criminalDescriptionIfYes",
+            "type": "text",
+            "question": "If you selected 'Yes' to any of the declaration sections, please provide specific details.",
+            "placeholder": "Enter Details",
+            "required": false
+        },    
+        {
+            "id": "declarationAgreement",
+            "type": "select",
+            "question": "To the best of my knowledge, the assets, net worth, income or activities of the Foundation are not in any way connected with illegal weapons, money laundering, illegal narcotics or other illegal controlled substances or any activity that I know to be illegal in my country of citizenship, residence and/or incorporation.I do not intend to obstruct, delay or defraud my creditors or to do anything illegal with respect to creditors or any other party, and I do not intend to use the services of the Corporate Service Provider to facilitate or otherwise engage in any such activity.I agree to provide the necessary documentation and information in connection with this Service and that such information may be provided to agencies, authorities and companies necessary to provide the Service.I fully release the Corporate Service Provider and any of its associates from any and all liability of any kind whatsoever arising from reliance on any fact or statement contained in this Declaration that may later be found to be untrue or materially inaccurate.Do you have read and agree to the above?",
+            "options": [
+                 {
+                    "value": "yes",
+                    "label": "Yes"
+                },
+                {
+                    "value": "no",
+                    "label": "No"
+                } 
+            ],
+            "required": true
+        }
+    ]
+}
