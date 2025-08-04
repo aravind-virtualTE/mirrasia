@@ -1,25 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { CheckCircle, ArrowRight, ArrowLeft, Edit3, Info, Eye, Download, FileText } from 'lucide-react';
-import questionsData from './corporateQuestion.json';
+import questionsData from './questions.json';
 import { useToast } from '@/hooks/use-toast';
 import {
-    SaCompDefaultAtom,
+    panamaCorporateFormAtom,
     type Question,
-    saveSgCompanyShldrInviteData, getSgCompanyShareHlderData
-} from './SaShrAtom';
+    saveShrPanamaInviteData,
+    getPanamaShareHlderData
+} from './PanamaShratoms';
 import { multiShrDirResetAtom } from '@/components/shareholderDirector/constants';
 import { useParams } from 'react-router-dom';
 
-const SaCompRegistrationForm: React.FC = () => {
-    const [formData, setFormData] = useAtom(SaCompDefaultAtom);
-
-    // Component-level state
+const PanamaCorporateShareholderInvite: React.FC = () => {
+    const [formData, setFormData] = useAtom(panamaCorporateFormAtom);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [currentAnswer, setCurrentAnswer] = useState('');
     const [currentFile, setCurrentFile] = useState<File | null>(null);
@@ -27,20 +27,18 @@ const SaCompRegistrationForm: React.FC = () => {
     const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
     const [isEditing, setIsEditing] = useState(false);
     const [otherInputValues, setOtherInputValues] = useState<Record<string, string>>({});
+    const { toast } = useToast();
+    const currentQuestion = filteredQuestions[currentQuestionIndex] || null;
+    const isLastQuestion = currentQuestionIndex === filteredQuestions.length - 1;
     const [multiData,] = useAtom<any>(multiShrDirResetAtom)
     const { id } = useParams();
 
-    const { toast } = useToast();
-
-    // Derived values
-    const currentQuestion = filteredQuestions[currentQuestionIndex] || null;
-    const isLastQuestion = currentQuestionIndex === filteredQuestions.length - 1;
 
     useEffect(() => {
         if (id) {
             async function fetchData(id: string) {
                 // console.log('id--->', id)
-                const data = await getSgCompanyShareHlderData(id);
+                const data = await getPanamaShareHlderData(id);
                 // console.log("data", data)
                 const normalizedBirthdate = data.birthdate
                     ? data.birthdate.split("T")[0]
@@ -49,7 +47,7 @@ const SaCompRegistrationForm: React.FC = () => {
                     ...prev,
                     ...data,
                     birthdate: normalizedBirthdate,
-                    fundSource: data.fundSource ?? prev.fundSource,
+                    corporationRelationship: data.corporationRelationship ?? prev.corporationRelationship,
                     fundGenerated: data.fundGenerated ?? prev.fundGenerated,
                     otherInputs: data.otherInputs ?? prev.otherInputs,
                 }));
@@ -70,20 +68,19 @@ const SaCompRegistrationForm: React.FC = () => {
     const getFieldValue = (questionId: string): string | string[] => {
         const value = (formData as any)[questionId];
         if (value === undefined || value === null) return '';
-        return value;
+        return value
     };
 
     const setFieldValue = (questionId: string, value: string | string[] | File) => {
+        // console.log("value----->",value)
         setFormData(prev => ({ ...prev, [questionId]: value }));
     };
 
-    // API functions for data persistence
     const saveFormData = async () => {
         try {
 
-            // console.log('Saving form data:', formData);
-            const result = await saveSgCompanyShldrInviteData(formData, id)
-            console.log("result-->", result);
+            await saveShrPanamaInviteData(formData, id)
+            // console.log("result", result)const result =
 
             toast({
                 title: "Data saved",
@@ -99,28 +96,6 @@ const SaCompRegistrationForm: React.FC = () => {
         }
     };
 
-    //   const loadFormData = async (userId: string) => {
-    //     try {
-    //       const response = await fetch(`/api/form-data/${userId}`);
-    //       if (!response.ok) throw new Error('Failed to load');
-
-    //       const data = await response.json();
-    //       setFormData(data);
-
-    //       toast({
-    //         title: "Data loaded",
-    //         description: "Your saved form data has been loaded",
-    //       });
-    //     } catch (error) {
-    //       console.error('Error loading form data:', error);
-    //       toast({
-    //         title: "Load failed",
-    //         description: "Failed to load your saved form data",
-    //         variant: "destructive",
-    //       });
-    //     }
-    //   };
-
     const handleSubmit = async () => {
         // console.log('Form submitted with data:', formData);
         await saveFormData();
@@ -128,43 +103,35 @@ const SaCompRegistrationForm: React.FC = () => {
 
     const clearFormData = () => {
         setFormData({
-            userId: '',
-            email: '',
-            name: '',
-            nameChanged: '',
-            previousName: '',
-            birthdate: '',
+            name: "",
+            email: "",
             companyName: "",
-            nationality: '',
-            passport: '',
-            residenceAddress: '',
-            postalAddressSame: '',
-            postalAddress: '',
-            phone: '',
-            kakaoId: '',
-            otherSNSIds: '',
-            companyRelation: [],
-            percentSharesHeld: '',
-            fundSource: [],
-            countryOriginFund: '',
+            dateOfEstablishment: "",
+            establishmentCountry: "",
+            brnNumber: "",
+            listedOnStockExchange: "",
+            namesOfShareholders: "",
+            businessAddress: "",
+            phoneNumber: "",
+            kakaoTalkId: "",
+            otherSnsId: "",
+            corporationRelationship: [],
+            investedAmount: "",
+            sourceInvestmentFunds: [],
+            countryReceivingFunds: "",
             fundGenerated: [],
-            originFundGenerateCountry: '',
-            netAssetValue: '',
-            usTaxStatus: '',
-            usTIN: '',
-            isPoliticallyProminentFig: '',
-            descPoliticImpRel: '',
-            isCrimeConvitted: '',
-            lawEnforced: '',
-            isMoneyLaundered: '',
-            isBankRupted: '',
-            isInvolvedBankRuptedOfficer: '',
-            describeIfInvolvedBankRupted: '',
-            declarationAgreement: '',
-            passportId: '',
-            addressProof: '',
-            engResume: '',
-            otherInputs: {}
+            countriesReceivingFunds: "",
+            usCorporateUnderTaxLaw: "",
+            tinNumber: "",
+            isPoliticallyProminentFig: "",
+            descPoliticImpRel: "",
+            anyOneInvestigatedByLawEnforcement: "",
+            employeeIllicitActivity: "",
+            isAnyBankRupted: "",
+            isAnyInvolvedBankRuptedOfficer: "",
+            criminalDescriptionIfYes: "",
+            declarationAgreement: "",
+            otherInputs: {},
         });
         setCurrentQuestionIndex(0);
         setCurrentAnswer('');
@@ -174,7 +141,6 @@ const SaCompRegistrationForm: React.FC = () => {
     };
 
     useEffect(() => {
-        // Filter questions based on conditional logic
         const filtered = (questionsData.questions as Question[]).filter((question: Question) => {
             if (!question.showIf) return true;
 
@@ -287,11 +253,13 @@ const SaCompRegistrationForm: React.FC = () => {
     };
 
     const handleNext = () => {
+        // console.log("currentFile-->",currentFile)
         if (!currentQuestion) return;
 
         if (!validateAnswer(currentQuestion, currentAnswer)) {
             return;
         }
+
         // Update field value based on question type
         let valueToSave: string | string[] = currentAnswer;
 
@@ -300,12 +268,16 @@ const SaCompRegistrationForm: React.FC = () => {
             valueToSave = currentAnswer ? currentAnswer.split(',') : [];
             setFieldValue(currentQuestion.id, valueToSave);
         } else if (currentQuestion.type === 'file' && currentFile) {
+            // For files, store the file name or URL
+
             setFieldValue(currentQuestion.id, currentFile);
         } else {
             setFieldValue(currentQuestion.id, currentAnswer);
         }
+
         // Update other inputs for this question
         const newOtherInputs = { ...formData.otherInputs };
+
         // Remove existing other inputs for this question
         Object.keys(newOtherInputs).forEach(key => {
             if (key.startsWith(`${currentQuestion.id}-`)) {
@@ -357,7 +329,7 @@ const SaCompRegistrationForm: React.FC = () => {
 
     const getDisplayValue = (questionId: string, question?: Question): string => {
         const value = getFieldValue(questionId);
-
+        // console.log("value",value)
         if (question?.type === 'checkbox' && Array.isArray(value)) {
             return value.map(val => {
                 const option = question.options?.find(opt => opt.value === val);
@@ -382,6 +354,7 @@ const SaCompRegistrationForm: React.FC = () => {
     };
 
     const renderFilePreview = (fileValue: File | string) => {
+        // console.log("fileValue====>", fileValue)
         const isFile = fileValue instanceof File;
         const isUrl = typeof fileValue === 'string' && fileValue.startsWith('http');
 
@@ -569,7 +542,7 @@ const SaCompRegistrationForm: React.FC = () => {
                                 </Button>
                             )}
                             {!currentQuestion.required && !currentAnswer && (
-                                <Button onClick={handleSkip} className="flex-1 option-button">
+                               <Button onClick={handleSkip} className="flex-1 option-button">
                                     Continue <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
@@ -736,8 +709,8 @@ const SaCompRegistrationForm: React.FC = () => {
                         </div>
                     ))}
                 </div>
-
                 <div className="text-center mb-6">
+                    <h2 className="summary-title">Your Information</h2>
                     <div className="flex items-center justify-center gap-2 text-primary mb-4">
                         <CheckCircle className="h-5 w-5" />
                         <span className="font-medium">Form Completed Successfully!</span>
@@ -772,7 +745,7 @@ const SaCompRegistrationForm: React.FC = () => {
 
     const renderPreviousAnswers = () => {
         const visibleQuestions = filteredQuestions.slice(0, currentQuestionIndex);
-
+        // console.log("visibleQuestions",visibleQuestions)
         return (
             <div className="space-y-3 mb-6">
                 {visibleQuestions.map((question) => {
@@ -811,8 +784,8 @@ const SaCompRegistrationForm: React.FC = () => {
             <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
                 <div className="max-w-6xl w-full space-y-6">
                     <div className="text-center">
-                        <h1 className="decorative-heading">Singapore company member form</h1>
-                        <div className="w-full h-1 bg-primary mx-auto rounded-full"></div>
+                        <h1 className="decorative-heading">Panama member and controller registration form</h1>
+                        <div className="w-3/4 h-1 bg-primary mx-auto rounded-full"></div>
                     </div>
 
                     <Card className="p-8 shadow-warm">
@@ -827,8 +800,8 @@ const SaCompRegistrationForm: React.FC = () => {
         <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
             <div className="max-w-6xl w-full space-y-6">
                 <div className="text-center">
-                    <h1 className="decorative-heading">Singapore company member form</h1>
-                    <div className="w-full h-1 bg-primary mx-auto rounded-full"></div>
+                    <h1 className="decorative-heading">Panama member and controller registration form</h1>
+                    <div className="w-3/4 h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
 
                 <div className="space-y-4">
@@ -846,15 +819,16 @@ const SaCompRegistrationForm: React.FC = () => {
                                             <div className="flex items-center gap-2">
                                                 <p className="question-title">{currentQuestion.question}</p>
                                                 {currentQuestion.infoText && (
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <Info className="h-4 w-4 cursor-help" />
-                                                        </TooltipTrigger>
-                                                        <TooltipContent side="right" className="max-w-sm p-4">
-                                                            <p className="text-sm whitespace-pre-wrap">{currentQuestion.infoText}</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                                                            </TooltipTrigger>
+                                                            <TooltipContent side="right" className="max-w-sm p-4">
+                                                                <p className="text-sm whitespace-pre-wrap">{currentQuestion.infoText}</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                 )}
                                             </div>
                                         </div>
@@ -914,4 +888,4 @@ const SaCompRegistrationForm: React.FC = () => {
     );
 };
 
-export default SaCompRegistrationForm;
+export default PanamaCorporateShareholderInvite;

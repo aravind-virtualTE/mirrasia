@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { CheckCircle, ArrowRight, ArrowLeft, Edit3, Info, Eye, Download, FileText } from 'lucide-react';
 import questionsData from './questions.json';
 import { useToast } from '@/hooks/use-toast';
-import { formDataAtom, type Question,saveShrSgInviteData,getSgShareHlderData } from './SaShrAtom';
+import { formDataAtom, type Question, saveShrSgInviteData, getSgShareHlderData } from './SaShrAtom';
 import { useParams } from 'react-router-dom';
 import { multiShrDirResetAtom } from '@/components/shareholderDirector/constants';
 
@@ -32,34 +32,34 @@ const SaIndividualRegForm: React.FC = () => {
 
     useEffect(() => {
         if (id) {
-          async function fetchData(id: string) {
-            // console.log('id--->', id)
-            const data = await getSgShareHlderData(id);
-            // console.log("data", data)
-            const normalizedBirthdate = data.birthdate
-              ? data.birthdate.split("T")[0]
-              : "";
-            setFormData(prev => ({
-              ...prev,
-              ...data,
-              birthdate: normalizedBirthdate,
-              fundSource: data.fundSource ?? prev.fundSource,
-              fundGenerated: data.fundGenerated ?? prev.fundGenerated,
-              otherInputs: data.otherInputs ?? prev.otherInputs,
-            }));
-            setIsCompleted(true)
-          }
-          fetchData(id)
+            async function fetchData(id: string) {
+                // console.log('id--->', id)
+                const data = await getSgShareHlderData(id);
+                // console.log("data", data)
+                const normalizedBirthdate = data.birthdate
+                    ? data.birthdate.split("T")[0]
+                    : "";
+                setFormData(prev => ({
+                    ...prev,
+                    ...data,
+                    birthdate: normalizedBirthdate,
+                    fundSource: data.fundSource ?? prev.fundSource,
+                    fundGenerated: data.fundGenerated ?? prev.fundGenerated,
+                    otherInputs: data.otherInputs ?? prev.otherInputs,
+                }));
+                setIsCompleted(true)
+            }
+            fetchData(id)
         }
         const multiShId = localStorage.getItem("shdrItem")
         const findData = multiData.length > 0
-          ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
-          : null;
+            ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
+            : null;
         if (findData) {
-          setFormData({ ...formData, email: findData.email, companyName: findData.companyName })
+            setFormData({ ...formData, email: findData.email, companyName: findData.companyName })
         }
         // console.log("multiShId",findData)
-      }, [])
+    }, [])
 
     const getFieldValue = (questionId: string): string | string[] => {
         const value = (formData as any)[questionId];
@@ -74,7 +74,7 @@ const SaIndividualRegForm: React.FC = () => {
 
     const saveFormData = async () => {
         try {
-         
+
             await saveShrSgInviteData(formData, id);
             toast({
                 title: "Data saved",
@@ -250,6 +250,27 @@ const SaIndividualRegForm: React.FC = () => {
         }
 
         return true;
+    };
+
+    const handleSkip = () => {
+        if (!currentQuestion || currentQuestion.required) return;
+
+        // Save empty value for optional field
+        setFieldValue(currentQuestion.id, '');
+
+        setCurrentAnswer('');
+        setIsEditing(false);
+        setOtherInputValues({});
+
+        if (isLastQuestion) {
+            setIsCompleted(true);
+            toast({
+                title: "Form completed!",
+                description: "Thank you for providing all the information.",
+            });
+        } else {
+            setCurrentQuestionIndex(prev => prev + 1);
+        }
     };
 
     const handleNext = () => {
@@ -467,11 +488,18 @@ const SaIndividualRegForm: React.FC = () => {
                             placeholder={currentQuestion.placeholder}
                             className="min-h-[100px] resize-none"
                         />
-                        {currentAnswer && (
-                            <Button onClick={handleNext} className="w-full option-button">
-                                Continue <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                        )}
+                        <div className="flex gap-2">
+                            {currentAnswer && (
+                                <Button onClick={handleNext} className="flex-1 option-button">
+                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            )}
+                            {!currentQuestion.required && !currentAnswer && (
+                                <Button onClick={handleSkip} className="flex-1 option-button">
+                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 );
 
@@ -525,11 +553,18 @@ const SaIndividualRegForm: React.FC = () => {
                                 </div>
                             );
                         })}
-                        {currentAnswer && (
-                            <Button onClick={handleNext} className="w-full option-button mt-4">
-                                Continue <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                        )}
+                        <div className="flex gap-2 mt-4">
+                            {currentAnswer && (
+                                <Button onClick={handleNext} className="flex-1 option-button">
+                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            )}
+                            {!currentQuestion.required && !currentAnswer && (
+                                <Button onClick={handleSkip} className="flex-1 option-button">
+                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 );
 
@@ -572,11 +607,18 @@ const SaIndividualRegForm: React.FC = () => {
                                 </div>
                             );
                         })}
-                        {currentAnswer && (
-                            <Button onClick={handleNext} className="w-full option-button mt-4">
-                                Continue <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                        )}
+                        <div className="flex gap-2 mt-4">
+                            {currentAnswer && (
+                                <Button onClick={handleNext} className="flex-1 option-button">
+                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            )}
+                            {!currentQuestion.required && !currentAnswer && (
+                                <Button onClick={handleSkip} className="flex-1 option-button">
+                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 );
 
@@ -610,11 +652,18 @@ const SaIndividualRegForm: React.FC = () => {
                             </label>
                         </div>
                         {currentFile && renderFilePreview(currentFile)}
-                        {currentAnswer && (
-                            <Button onClick={handleNext} className="w-full option-button">
-                                Continue <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                        )}
+                        <div className="flex gap-2">
+                            {currentAnswer && (
+                                <Button onClick={handleNext} className="flex-1 option-button">
+                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            )}
+                            {!currentQuestion.required && !currentAnswer && (
+                                <Button onClick={handleSkip} className="flex-1 option-button">
+                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 );
 
@@ -628,11 +677,18 @@ const SaIndividualRegForm: React.FC = () => {
                             placeholder={currentQuestion.placeholder}
                             className="w-full"
                         />
-                        {currentAnswer && (
-                            <Button onClick={handleNext} className="w-full option-button">
-                                Continue <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                        )}
+                        <div className="flex gap-2">
+                            {currentAnswer && (
+                                <Button onClick={handleNext} className="flex-1 option-button">
+                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            )}
+                            {!currentQuestion.required && !currentAnswer && (
+                                <Button onClick={handleSkip} className="flex-1 option-button">
+                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 );
         }

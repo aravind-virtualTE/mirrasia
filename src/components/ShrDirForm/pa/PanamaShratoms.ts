@@ -5,7 +5,7 @@ import api from '@/services/fetch'
 
 export interface Question {
   id: string;
-  type: 'text' | 'email' | 'tel' | 'date' | 'select' | 'textarea' | 'file' | 'checkbox';
+  type: 'text' | 'email' | 'tel' | 'date' | 'select' | 'textarea' | 'file' | 'checkbox' | 'radio';
   question: string;
   placeholder?: string;
   required: boolean;
@@ -32,17 +32,6 @@ export interface Answer {
   value: string | File;
   otherValue?: string; 
 }
-
-// export interface FormData {
-//   answers: Answer[];
-//   otherInputs: Record<string, string>; 
-// }
-
-
-// export const formDataAtom = atom<FormData>({
-//   answers: [],
-//   otherInputs: {}
-// });
 
 export interface PaShrFormData {
   _id?: string;
@@ -134,6 +123,69 @@ export const formDataAtom = atom<PaShrFormData>({
   otherInputs: {}
 });
 
+export interface PanamaEstFormData {
+  name: string;
+  email: string;
+  companyName: string;
+  dateOfEstablishment: string;
+  establishmentCountry: string;
+  brnNumber: string;
+  listedOnStockExchange: string;
+  namesOfShareholders: string;
+  businessAddress: string;
+  phoneNumber: string;
+  kakaoTalkId: string;
+  otherSnsId: string;
+  corporationRelationship: string[];
+  investedAmount: string;
+  sourceInvestmentFunds: string[];
+  countryReceivingFunds: string;
+  fundGenerated: string[];
+  countriesReceivingFunds: string;
+  usCorporateUnderTaxLaw: string;
+  tinNumber: string;
+  isPoliticallyProminentFig: string;
+  descPoliticImpRel: string;
+  anyOneInvestigatedByLawEnforcement: string;
+  employeeIllicitActivity: string;
+  isAnyBankRupted: string;
+  isAnyInvolvedBankRuptedOfficer: string;
+  criminalDescriptionIfYes: string;
+  declarationAgreement: string;
+  otherInputs: Record<string, string>; // (optional, for dynamic extra fields if needed)
+}
+
+export const panamaCorporateFormAtom = atom<PanamaEstFormData>({
+  name: "",
+  email: "",
+  companyName: "",
+  dateOfEstablishment: "",
+  establishmentCountry: "",
+  brnNumber: "",
+  listedOnStockExchange: "",
+  namesOfShareholders: "",
+  businessAddress: "",
+  phoneNumber: "",
+  kakaoTalkId: "",
+  otherSnsId: "",
+  corporationRelationship: [],
+  investedAmount: "",
+  sourceInvestmentFunds: [],
+  countryReceivingFunds: "",
+  fundGenerated: [],
+  countriesReceivingFunds: "",
+  usCorporateUnderTaxLaw: "",
+  tinNumber: "",
+  isPoliticallyProminentFig: "",
+  descPoliticImpRel: "", 
+  anyOneInvestigatedByLawEnforcement: "",
+  employeeIllicitActivity: "",
+  isAnyBankRupted: "",
+  isAnyInvolvedBankRuptedOfficer: "",
+  criminalDescriptionIfYes: "",
+  declarationAgreement: "",
+  otherInputs: {}
+});
 
 export const saveShrPanamaInviteData = async (data: any, id?: string) => {
   // const form = new FormData();

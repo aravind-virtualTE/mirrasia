@@ -472,12 +472,12 @@ const ShareholderDirectorFormPa: React.FC = () => {
         try {
             setIsLoading(true);
             const extractedData = shareholders.map(item => {
-                const { name, email } = item;
+                const { name, email,isLegalPerson } = item;
 
                 if (!isValidEmail(email)) {
                     alert(`Invalid email format for ${name}: ${email}`);
                 }
-                return { name, email };
+                return { name, email,corporation:isLegalPerson.id };
             });
             const docId = localStorage.getItem('companyRecordId');
             const payload = { _id: docId, inviteData: extractedData, country: 'PA' };

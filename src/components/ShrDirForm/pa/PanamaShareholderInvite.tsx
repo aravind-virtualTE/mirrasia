@@ -81,7 +81,7 @@ const PanamaShareholderInvite: React.FC = () => {
   const saveFormData = async () => {
     try {
 
-       await saveShrPanamaInviteData(formData, id)
+      await saveShrPanamaInviteData(formData, id)
       // console.log("result", result)const result =
 
       toast({
@@ -265,6 +265,27 @@ const PanamaShareholderInvite: React.FC = () => {
     }
 
     return true;
+  };
+
+  const handleSkip = () => {
+    if (!currentQuestion || currentQuestion.required) return;
+
+    // Save empty value for optional field
+    setFieldValue(currentQuestion.id, '');
+
+    setCurrentAnswer('');
+    setIsEditing(false);
+    setOtherInputValues({});
+
+    if (isLastQuestion) {
+      setIsCompleted(true);
+      toast({
+        title: "Form completed!",
+        description: "Thank you for providing all the information.",
+      });
+    } else {
+      setCurrentQuestionIndex(prev => prev + 1);
+    }
   };
 
   const handleNext = () => {
@@ -485,11 +506,18 @@ const PanamaShareholderInvite: React.FC = () => {
               placeholder={currentQuestion.placeholder}
               className="min-h-[100px] resize-none"
             />
-            {currentAnswer && (
-              <Button onClick={handleNext} className="w-full option-button">
-                Continue <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {currentAnswer && (
+                <Button onClick={handleNext} className="flex-1 option-button">
+                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+              {!currentQuestion.required && !currentAnswer && (
+                <Button onClick={handleSkip} className="flex-1 option-button">
+                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
         );
 
@@ -543,11 +571,72 @@ const PanamaShareholderInvite: React.FC = () => {
                 </div>
               );
             })}
-            {currentAnswer && (
-              <Button onClick={handleNext} className="w-full option-button mt-4">
-                Continue <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            )}
+            <div className="flex gap-2 mt-4">
+              {currentAnswer && (
+                <Button onClick={handleNext} className="flex-1 option-button">
+                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+              {!currentQuestion.required && !currentAnswer && (
+                <Button onClick={handleSkip} className="flex-1 option-button">
+                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+        );
+
+      case 'radio':
+        return (
+          <div className="space-y-3">
+            {currentQuestion.options?.map((option) => {
+              const isSelected = currentAnswer === option.value;
+
+              return (
+                <div key={option.value} className="space-y-2">
+                  <Button
+                    variant={isSelected ? "default" : "outline"}
+                    className="w-full justify-start h-auto p-4 text-left option-button"
+                    onClick={() => setCurrentAnswer(option.value)}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className={`w-4 h-4 border-2 rounded-full flex items-center justify-center mt-0.5 ${isSelected ? 'bg-primary border-primary' : 'border-muted-foreground'
+                        }`}>
+                        {isSelected && <div className="w-2 h-2 bg-primary-foreground rounded-full" />}
+                      </div>
+                      <div>
+                        <div>{option.label}</div>
+                        {option.description && (
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {option.description}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Button>
+                  {option.allowOther && isSelected && (
+                    <Input
+                      value={otherInputValues[option.value] || ''}
+                      onChange={(e) => handleOtherInputChange(option.value, e.target.value)}
+                      placeholder="Please specify..."
+                      className="ml-8"
+                    />
+                  )}
+                </div>
+              );
+            })}
+            <div className="flex gap-2 mt-4">
+              {currentAnswer && (
+                <Button onClick={handleNext} className="flex-1 option-button">
+                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+              {!currentQuestion.required && !currentAnswer && (
+                <Button onClick={handleSkip} className="flex-1 option-button">
+                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
         );
 
@@ -581,11 +670,18 @@ const PanamaShareholderInvite: React.FC = () => {
               </label>
             </div>
             {currentFile && renderFilePreview(currentFile)}
-            {currentAnswer && (
-              <Button onClick={handleNext} className="w-full option-button">
-                Continue <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {currentAnswer && (
+                <Button onClick={handleNext} className="flex-1 option-button">
+                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+              {!currentQuestion.required && !currentAnswer && (
+                <Button onClick={handleSkip} className="flex-1 option-button">
+                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
         );
 
@@ -599,11 +695,18 @@ const PanamaShareholderInvite: React.FC = () => {
               placeholder={currentQuestion.placeholder}
               className="w-full"
             />
-            {currentAnswer && (
-              <Button onClick={handleNext} className="w-full option-button">
-                Continue <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {currentAnswer && (
+                <Button onClick={handleNext} className="flex-1 option-button">
+                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+              {!currentQuestion.required && !currentAnswer && (
+                <Button onClick={handleSkip} className="flex-1 option-button">
+                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
         );
     }
