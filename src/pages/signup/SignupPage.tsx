@@ -83,7 +83,7 @@ const SignupPage = () => {
       // console.log("response==>", token, user);
       // Save the token to localStorage
       localStorage.setItem("token", token);
-      localStorage.setItem("user", user)
+      localStorage.setItem("user", JSON.stringify(user))
       setAuth({ user, isAuthenticated: true, loading: false, error: null });
       localStorage.setItem("isAuthenticated", "true");
       if (user.role === "admin") {
