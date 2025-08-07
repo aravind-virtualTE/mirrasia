@@ -1,4 +1,5 @@
-import { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCallback, useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -7,38 +8,22 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-// import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  MessageSquare, 
-  Mail, 
-  CreditCard, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Send, 
-  Calendar, 
-  Building, 
+import {
+  MessageSquare,
+  Mail,
+  CreditCard,
+  Plus,
+  Edit,
+  Trash2,
+  Send,
+  Calendar,
+  Building,
   Users,
-  Phone,
-  CheckCircle
 } from 'lucide-react';
-
-// Dummy data
-const dummyCredits = {
-  sms: 2450,
-  email: 8950
-};
-
-const dummyContacts = [
-  { id: '1', name: 'John Doe', phone: '+1234567890', email: 'john@company.com' },
-  { id: '2', name: 'Jane Smith', phone: '+1987654321', email: 'jane@company.com' },
-  { id: '3', name: 'Mike Johnson', phone: '+1122334455', email: 'mike@company.com' },
-  { id: '4', name: 'Sarah Wilson', phone: '+1555666777', email: 'sarah@company.com' },
-  { id: '5', name: 'David Brown', phone: '+1999888777', email: 'david@company.com' }
-];
+import { getBrevoCreditsData } from './smsManagement';
+import ManualSMSComponent from './manualSms';
 
 const defaultAutomaticSettings = [
   {
@@ -75,13 +60,20 @@ const defaultAutomaticSettings = [
   }
 ];
 
+type BrevoCredit = {
+  type: string;
+  credits?: number;
+  startDate?: string;
+  endDate?: string;
+  [key: string]: any;
+};
+
 export default function SMSTracker() {
   const [automaticSettings, setAutomaticSettings] = useState(defaultAutomaticSettings);
-  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
-  const [customMessage, setCustomMessage] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingSetting, setEditingSetting] = useState<any>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [brevoCredits, setBrevoCredits] = useState<BrevoCredit[]>([]);
   const [newSetting, setNewSetting] = useState({
     name: '',
     trigger: '',
@@ -90,9 +82,25 @@ export default function SMSTracker() {
   });
   const { toast } = useToast();
 
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await getBrevoCreditsData();
+      setBrevoCredits(response);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchDataAsync = async () => {
+      await fetchData();
+    };
+    fetchDataAsync();
+  }, [])
+
   const handleToggleSetting = (id: string) => {
-    setAutomaticSettings(prev => 
-      prev.map(setting => 
+    setAutomaticSettings(prev =>
+      prev.map(setting =>
         setting.id === id ? { ...setting, enabled: !setting.enabled } : setting
       )
     );
@@ -121,7 +129,7 @@ export default function SMSTracker() {
     setAutomaticSettings(prev => [...prev, setting]);
     setNewSetting({ name: '', trigger: '', message: '', enabled: true });
     setIsAddDialogOpen(false);
-    
+
     toast({
       title: "Setting Added",
       description: "New automatic SMS setting has been created successfully.",
@@ -143,14 +151,14 @@ export default function SMSTracker() {
       return;
     }
 
-    setAutomaticSettings(prev => 
-      prev.map(setting => 
+    setAutomaticSettings(prev =>
+      prev.map(setting =>
         setting.id === editingSetting.id ? editingSetting : setting
       )
     );
     setEditingSetting(null);
     setIsEditDialogOpen(false);
-    
+
     toast({
       title: "Setting Updated",
       description: "Automatic SMS setting has been updated successfully.",
@@ -165,66 +173,82 @@ export default function SMSTracker() {
     });
   };
 
-  const handleSendManualSMS = () => {
-    if (!customMessage.trim() || selectedContacts.length === 0) {
-      toast({
-        title: "Missing Information",
-        description: "Please enter a message and select at least one contact.",
-        variant: "destructive"
-      });
-      return;
-    }
 
-    // Simulate API call
-    toast({
-      title: "SMS Sent Successfully",
-      description: `Message sent to ${selectedContacts.length} contact(s). ${selectedContacts.length} SMS credits used.`,
-    });
-    
-    setCustomMessage('');
-    setSelectedContacts([]);
-  };
 
-  const handleContactSelection = (contactId: string) => {
-    setSelectedContacts(prev => 
-      prev.includes(contactId) 
-        ? prev.filter(id => id !== contactId)
-        : [...prev, contactId]
-    );
-  };
+  const emailData = brevoCredits.find(item => item.type === 'subscription') || { type: 'subscription', credits: 0 };
+  const smsData = brevoCredits.find(item => item.type === 'sms') || { type: 'sms', credits: 0 };
 
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* Header with Credits */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="border-2 border-success/20 bg-gradient-to-br from-card to-success/5">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-success" />
-                SMS Credits
-              </CardTitle>
-              <Phone className="h-4 w-4 text-muted-foreground" />
+          <Card className="border-2 border-success/25 bg-gradient-to-br from-card via-success/5 to-transparent rounded-lg">
+            <CardHeader className="flex items-center justify-between px-4 py-3">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-success" />
+                  <CardTitle className="text-base font-semibold">SMS Credits</CardTitle>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-bold text-success">
+                    {smsData.credits?.toLocaleString() ?? 0}
+                  </span>
+                  <span className="text-sm text-muted-foreground">credits left</span>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-success">{dummyCredits.sms.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">Credits remaining</p>
+            <CardContent className="px-4 pb-4">
+              <div className="grid grid-cols-2 text-sm mb-2">
+                <span className="text-muted-foreground">Start&nbsp;date</span>
+                <span className="text-right">{smsData.startDate ?? "N/A"}</span>
+                <span className="text-muted-foreground">End&nbsp;date</span>
+                <span className="text-right">{smsData.endDate ?? "N/A"}</span>
+              </div>
+              <a
+                href="https://app.brevo.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center text-info underline text-sm font-medium"
+              >
+                Visit Brevo account
+              </a>
             </CardContent>
           </Card>
 
-          <Card className="border-2 border-info/20 bg-gradient-to-br from-card to-info/5">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Mail className="h-4 w-4 text-info" />
-                Email Credits
-              </CardTitle>
-              <Mail className="h-4 w-4 text-muted-foreground" />
+
+          <Card className="border-2 border-info/25 bg-gradient-to-br from-card via-info/5 to-transparent rounded-lg">
+            <CardHeader className="flex items-center justify-between px-4 py-3">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <Mail className="h-5 w-5 text-info" />
+                  <CardTitle className="text-base font-semibold">Email Credits</CardTitle>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-bold text-info">
+                    {emailData.credits?.toLocaleString() ?? 0}
+                  </span>
+                  <span className="text-sm text-muted-foreground">credits left</span>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-info">{dummyCredits.email.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">Credits remaining</p>
+            <CardContent className="px-4 pb-4">
+              <div className="grid grid-cols-2 text-sm mb-2">
+                <span className="text-muted-foreground">Start date</span>
+                <span className="text-right">{emailData.startDate ?? "N/A"}</span>
+                <span className="text-muted-foreground">End date</span>
+                <span className="text-right">{emailData.endDate ?? "N/A"}</span>
+              </div>
+              <a
+                href="https://app.brevo.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center text-info underline text-sm font-medium"
+              >
+                Visit Brevo account
+              </a>
             </CardContent>
           </Card>
+
         </div>
 
         {/* Main SMS Management Interface */}
@@ -239,17 +263,22 @@ export default function SMSTracker() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="automatic" className="space-y-4">
+            <Tabs defaultValue="manual" className="space-y-4">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="automatic" className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Automatic Settings
-                </TabsTrigger>
                 <TabsTrigger value="manual" className="flex items-center gap-2">
                   <Send className="h-4 w-4" />
                   Manual Messaging
                 </TabsTrigger>
+                <TabsTrigger value="automatic" className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Automatic Settings
+                </TabsTrigger>
               </TabsList>
+
+              {/* Manual Messaging Tab */}
+              <TabsContent value="manual" className="space-y-4">
+                <ManualSMSComponent onSmsSent={fetchData} />
+              </TabsContent>
 
               {/* Automatic Settings Tab */}
               <TabsContent value="automatic" className="space-y-4">
@@ -388,16 +417,16 @@ export default function SMSTracker() {
                                 checked={setting.enabled}
                                 onCheckedChange={() => handleToggleSetting(setting.id)}
                               />
-                              <Button 
-                                variant="ghost" 
+                              <Button
+                                variant="ghost"
                                 size="sm"
                                 onClick={() => handleEditSetting(setting)}
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
+                              <Button
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => handleDeleteSetting(setting.id)}
                                 className="text-destructive hover:text-destructive"
                               >
@@ -409,105 +438,6 @@ export default function SMSTracker() {
                       </Card>
                     );
                   })}
-                </div>
-              </TabsContent>
-
-              {/* Manual Messaging Tab */}
-              <TabsContent value="manual" className="space-y-4">
-                <div className="grid gap-6">
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Send Custom SMS</h3>
-                    
-                    <div className="grid gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="recipients">Select Recipients</Label>
-                        <Select 
-                          value={selectedContacts.length > 0 ? "selected" : ""} 
-                          onValueChange={() => {}}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder={
-                              selectedContacts.length > 0 
-                                ? `${selectedContacts.length} contact(s) selected`
-                                : "Choose recipients..."
-                            } />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {dummyContacts.map((contact) => (
-                              <SelectItem 
-                                key={contact.id} 
-                                value={contact.id}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleContactSelection(contact.id);
-                                }}
-                                className="cursor-pointer"
-                              >
-                                <div className="flex items-center gap-3 w-full">
-                                  <div className={`p-1 rounded-full ${selectedContacts.includes(contact.id) ? 'bg-primary' : 'bg-muted'}`}>
-                                    <Users className={`h-3 w-3 ${selectedContacts.includes(contact.id) ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
-                                  </div>
-                                  <div className="flex-1">
-                                    <p className="font-medium text-sm">{contact.name}</p>
-                                    <p className="text-xs text-muted-foreground">{contact.phone}</p>
-                                  </div>
-                                  {selectedContacts.includes(contact.id) && (
-                                    <CheckCircle className="h-4 w-4 text-primary" />
-                                  )}
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        
-                        {selectedContacts.length > 0 && (
-                          <div className="bg-primary/10 p-3 rounded-lg">
-                            <p className="text-sm font-medium text-primary">
-                              {selectedContacts.length} contact(s) selected
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              This will use {selectedContacts.length} SMS credit(s)
-                            </p>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="custom-message">Message Content</Label>
-                        <Textarea
-                          id="custom-message"
-                          value={customMessage}
-                          onChange={(e) => setCustomMessage(e.target.value)}
-                          placeholder="Type your custom SMS message here..."
-                          rows={4}
-                          className="resize-none"
-                        />
-                        <p className="text-xs text-muted-foreground">
-                          {customMessage.length}/160 characters
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button 
-                      onClick={handleSendManualSMS}
-                      disabled={!customMessage.trim() || selectedContacts.length === 0}
-                      className="flex items-center gap-2"
-                    >
-                      <Send className="h-4 w-4" />
-                      Send SMS ({selectedContacts.length} recipients)
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        setCustomMessage('');
-                        setSelectedContacts([]);
-                      }}
-                    >
-                      Clear All
-                    </Button>
-                  </div>
                 </div>
               </TabsContent>
             </Tabs>

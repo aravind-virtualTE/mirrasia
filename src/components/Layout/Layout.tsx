@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Menu, Home, Users, FileSignature, Files,
-    RefreshCw, Briefcase, FileCheck, MessageSquare} from 'lucide-react'
+    RefreshCw, Briefcase, FileCheck, MessageSquare,Send} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Navigate, NavigateFunction, Outlet, useNavigate } from 'react-router-dom';
 import {
@@ -134,14 +134,14 @@ const Layout: React.FC = () => {
                 navigate('/messages');
             },
         },
-        // {
-        //     icon: <Briefcase className="w-4 h-4" />,
-        //     label: 'Current Corporate Client',
-        //     roles: ['admin', 'master'],
-        //     onClick: (_, navigate) => {
-        //         navigate('/currentClientDataManager');
-        //     },
-        // },  
+        {
+            icon: <Send className="w-4 h-4" />,
+            label: 'SMS Manager',
+            roles: ['admin', 'master'],
+            onClick: (_, navigate) => {
+                navigate('/sms-management');
+            },
+        },  
     ];
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
