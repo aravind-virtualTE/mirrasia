@@ -26,7 +26,7 @@ const LandingPage = () => {
   const accountingRef = useRef<HTMLDivElement>(null)
   const pricingRef = useRef<HTMLDivElement>(null)
   const homeRef = useRef<HTMLDivElement>(null)
-  
+
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: "smooth" })
@@ -36,88 +36,72 @@ const LandingPage = () => {
     <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Navigation Bar */}
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-6 md:gap-8 lg:gap-10">
-            <img
-              src={
-                theme === "light"
-                  ? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
-                  : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"
-              }
-              alt="MIRRASIA"
-              width={175}
-              height={25}
-              style={{
-                width: "175px",
-                height: "25px",
-                objectFit: "cover",
-              }}
-              className="cursor-pointer"
-              onClick={() => scrollToSection(homeRef)}
-            />
+        {/* Top Row: Logo + (Desktop Nav & Auth OR Mobile Hamburger) */}
+        <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+          {/* Logo always visible */}
+          <img
+            src={
+              theme === "light"
+                ? "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+black+text+(420+%C3%97+60px).png"
+                : "https://mirrasia-assets.s3.ap-southeast-1.amazonaws.com/logo+white+text+(420+%C3%97+60px).png"
+            }
+            alt="MIRRASIA"
+            width={175}
+            height={25}
+            className="cursor-pointer"
+            style={{ objectFit: "cover" }}
+            onClick={() => scrollToSection(homeRef)}
+          />
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2">
-              <Button
-                variant="ghost"
-                className="text-foreground/70 hover:text-foreground"
-                onClick={() => scrollToSection(incorporationRef)}
-              >
-                Incorporation
-              </Button>
-              <Button
-                variant="ghost"
-                className="text-foreground/70 hover:text-foreground"
-                onClick={() => scrollToSection(accountingRef)}
-              >
-                Accounting & Taxation
-              </Button>
-              <Button
-                variant="ghost"
-                className="text-foreground/70 hover:text-foreground"
-                onClick={() => scrollToSection(pricingRef)}
-              >
-                Pricing
-              </Button>
+          {/* Desktop Nav + Auth (md+) */}
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
+            {/* Nav Links */}
+            <nav className="flex items-center gap-2">
+              <Button variant="ghost" className="text-foreground/70 hover:text-foreground" onClick={() => scrollToSection(incorporationRef)}>Incorporation</Button>
+              <Button variant="ghost" className="text-foreground/70 hover:text-foreground" onClick={() => scrollToSection(accountingRef)}>Accounting & Taxation</Button>
+              <Button variant="ghost" className="text-foreground/70 hover:text-foreground" onClick={() => scrollToSection(pricingRef)}>Pricing</Button>
             </nav>
-          </div>
 
-          {/* Auth Buttons */}
-          <div className="flex items-center gap-2">
+            {/* Spacer */}
+            <div className="w-px h-6 bg-gray-300" />
+
+            {/* Language + Auth */}
             <LanguageSwitcher />
-            <Button variant="ghost" asChild>
-              <Link to="/login">Log in</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/signup">Get started</Link>
-            </Button>
-
-            {/* Mobile Menu */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right">
-                <nav className="flex flex-col gap-4 mt-8">
-                  <Button variant="ghost" className="justify-start" onClick={() => scrollToSection(incorporationRef)}>
-                    Incorporation
-                  </Button>
-                  <Button variant="ghost" className="justify-start" onClick={() => scrollToSection(accountingRef)}>
-                    Accounting & Taxation
-                  </Button>
-                  <Button variant="ghost" className="justify-start" onClick={() => scrollToSection(pricingRef)}>
-                    Pricing
-                  </Button>
-                </nav>
-              </SheetContent>
-            </Sheet>
+            <Button variant="ghost" asChild><Link to="/login">Log in</Link></Button>
+            <Button asChild><Link to="/signup">Get started</Link></Button>
           </div>
+
+          {/* Mobile Hamburger (below md) */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <nav className="flex flex-col gap-4 mt-8">
+                <Button variant="ghost" className="justify-start" onClick={() => scrollToSection(incorporationRef)}>Incorporation</Button>
+                <Button variant="ghost" className="justify-start" onClick={() => scrollToSection(accountingRef)}>Accounting & Taxation</Button>
+                <Button variant="ghost" className="justify-start" onClick={() => scrollToSection(pricingRef)}>Pricing</Button>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
+
+        {/* Mobile Breadcrumb (below md only) */}
+        <nav
+          aria-label="breadcrumb"
+          className="flex items-center space-x-2 px-4 pb-2 text-xs text-foreground/70 md:hidden"
+        >
+          <LanguageSwitcher />
+          <span>/</span>
+          <Link to="/login" className="hover:text-foreground">Log in</Link>
+          <span>/</span>
+          <Link to="/signup" className="font-semibold hover:text-foreground">Get started</Link>
+        </nav>
       </header>
+
 
       {/* Hero Section */}
       <section ref={homeRef} id="home" className="bg-gradient-to-b from-white to-gray-50 py-16 md:py-24">
@@ -136,11 +120,11 @@ const LandingPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
-                  size="lg"                  
+                  size="lg"
                   // onClick={() => navigate("/signup")}
                   className=" text-white font-medium transition-colors"
                 >
-                  <Link to="/signup">{t("landingPage.registerNow")}</Link>                  
+                  <Link to="/signup">{t("landingPage.registerNow")}</Link>
                 </Button>
                 <Button
                   variant="outline"
@@ -193,63 +177,63 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Why Choose Us?</h2>
-              <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                We provide comprehensive business solutions to help you succeed
-              </p>
-            </div>
-          </div>
+      <section className="py-12 sm:py-16 md:py-20 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-0 sm:px-4 lg:px-8 text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+            Why Choose Us?
+          </h2>
+          <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
+            We provide comprehensive business solutions to help you succeed
+          </p>
+        </div>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-0 sm:px-4 lg:px-8">
+          {/* Card 1 */}
+          <Card className="h-full">
+            <CardHeader>
+              <BookOpen className="h-10 w-10 text-primary mb-2" />
+              <CardTitle>Fast & Easy Company Registration</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
+                <li>Start your business without the stress</li>
+                <li>Quick, paperless business registration</li>
+                <li>Expert help with choosing the right entity</li>
+                <li>Government filing is handled for you</li>
+              </ul>
+            </CardContent>
+          </Card>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="h-full">
-              <CardHeader>
-                <BookOpen className="h-10 w-10 text-primary mb-2" />
-                <CardTitle>Fast & Easy Company Registration</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
-                  <li>Start your business without the stress</li>
-                  <li>Quick, paperless business registration</li>
-                  <li>Expert help with choosing the right entity</li>
-                  <li>Government filing is handled for you</li>
-                </ul>
-              </CardContent>
-            </Card>
+          {/* Card 2 */}
+          <Card className="h-full">
+            <CardHeader>
+              <Calculator className="h-10 w-10 text-primary mb-2" />
+              <CardTitle>Smart Accounting & Tax Services</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
+                <li>Run your business; we'll manage your books</li>
+                <li>Bookkeeping, payroll, and tax filing</li>
+                <li>Real-time reporting and compliance updates</li>
+                <li>Affordable plans tailored to your business size</li>
+              </ul>
+            </CardContent>
+          </Card>
 
-            <Card className="h-full">
-              <CardHeader>
-                <Calculator className="h-10 w-10 text-primary mb-2" />
-                <CardTitle>Smart Accounting & Tax Services</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
-                  <li>Run your business; we'll manage your books</li>
-                  <li>Bookkeeping, payroll, and tax filing</li>
-                  <li>Real-time reporting and compliance updates</li>
-                  <li>Affordable plans tailored to your business size</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="h-full sm:col-span-2 lg:col-span-1">
-              <CardHeader>
-                <Users className="h-10 w-10 text-primary mb-2" />
-                <CardTitle>Ongoing Expert Support</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
-                  <li>We're with you beyond registration</li>
-                  <li>Corporate secretary and compliance management</li>
-                  <li>Deadline tracking and documentation reminders</li>
-                  <li>Your dedicated team of company registration experts</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Card 3 */}
+          <Card className="h-full sm:col-span-2 lg:col-span-1">
+            <CardHeader>
+              <Users className="h-10 w-10 text-primary mb-2" />
+              <CardTitle>Ongoing Expert Support</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
+                <li>We're with you beyond registration</li>
+                <li>Corporate secretary and compliance management</li>
+                <li>Deadline tracking and documentation reminders</li>
+                <li>Your dedicated team of company registration experts</li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
