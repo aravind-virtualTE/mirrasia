@@ -38,11 +38,12 @@ export interface Task {
   userId?: string;
   isProject?: boolean;
   shareWithClient?: boolean 
+  createdAt:Date
 }
 
 export const tasksAtom = atom<Task[]>([]);
 
-export const viewModeAtom = atom<'expanded' | 'grouped' | 'completed'>('expanded');
+export const viewModeAtom = atom<'expanded' | 'grouped' | 'completed' | 'ganttChart'>('expanded');
 
 export interface CreateTaskFormState {
   taskName: string;

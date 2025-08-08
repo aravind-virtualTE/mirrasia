@@ -11,7 +11,7 @@ import { HelpCircle } from 'lucide-react';
 import { useAtom } from 'jotai';
 import { paFormWithResetAtom } from '../PaState';
 import { Button } from '@/components/ui/button';
-import { getOtpforVerification, validateOtpforVerification } from '@/services/dataFetch';
+import { sendMobileOtpforVerification, validateOtpforVerification } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 
 
@@ -82,7 +82,7 @@ const ApplicantInfo: React.FC = () => {
             return
         }
 
-        const result = await getOtpforVerification(data)
+        const result = await sendMobileOtpforVerification(data)
         // console.log("result", result);
         if (result.success) {
             setOtpSent(true);
@@ -94,7 +94,10 @@ const ApplicantInfo: React.FC = () => {
                 variant: "default"
             })
         } else {
-            console.log("testing send otp")
+            // console.log("testing send otp")
+            setOtpSent(false);
+            setResendTimer(0);
+            setOtpId(null)
             toast({
                 title: "Error",
                 description: "Failed to send OTP. Please enter proper phonenumber along with country code.",

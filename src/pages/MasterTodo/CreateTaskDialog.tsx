@@ -178,6 +178,7 @@ export const CreateTaskDialog = ({
                 company: formState.selectedCompany,
                 project: formState.selectedProject,
                 shareWithClient: formState.shareWithClient,
+                createdAt: new Date(),
                 comments: formState.comment
                     ? [
                         {
