@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/components/ui/accordion';
 import TaskDetailPopup from './TaskDetailPopup';
 import TaskTable from './TaskTable';
+import GanttChart from './GanttChart';
 
 
 const GroupedTasks = ({ tasks }: { tasks: Task[] }) => {
@@ -50,6 +51,8 @@ export const TaskList = () => {
             return <TaskTable tasks={normalTasks} />; 
         case 'completed':
             return <TaskTable tasks={completedTasks} />;
+        case 'ganttChart':
+            return <GanttChart tasks={tasks} />;
         default:
             return <GroupedTasks tasks={tasks} />;
     }

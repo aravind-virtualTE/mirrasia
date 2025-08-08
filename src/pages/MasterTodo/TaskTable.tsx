@@ -208,7 +208,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         return 0;
     });
 
-    // console.log("tasks--->", tasks)
+    console.log("tasks--->", sortedTasks)
     return (
         <>
             <div className="mt-2 rounded-md border">

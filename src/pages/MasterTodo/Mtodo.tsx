@@ -84,6 +84,13 @@ const ToDoList = () => {
                     >
                         Deleted
                     </Button>
+                    <Button
+                        variant={viewMode === "ganttChart" ? "default" : "outline"}
+                        onClick={() => setViewMode("ganttChart")}
+                        className="h-8 px-3 text-xs"
+                    >
+                        Gantt Chart
+                    </Button>
                 </div>
 
                 {/* Right-aligned search + button */}
