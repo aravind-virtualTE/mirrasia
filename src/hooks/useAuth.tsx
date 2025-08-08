@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '@/services/fetch';
 import { atom } from 'jotai';
 // Define Jotai atoms for user and authentication state
@@ -39,9 +40,10 @@ export const signupWithEmail = async (
   fullName: string,
   email: string,
   password: string,
+  phone: string | null = null,
 ) => {
   try {
-    const response = await api.post('auth/signup', { fullName, email, password });
+    const response = await api.post('auth/signup', { fullName, email, password, phone });
     return response.data;
   } catch (error) {
     console.log(error);
@@ -187,3 +189,33 @@ export const verifyResetPasswordCodeAndReset   =async (email: string, code:strin
   const response = await api.post(`/auth/verify-reset-password-code`,{ email, code, newPassword });
    return response.data;
 }
+
+export const sendMobileOtpforVerification = async (data:any) => {
+  try {
+    const response = await api.post(`auth/generate_otp`, data);
+    // console.log("response-->",response)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company incorporation list by userId:", error);
+  }
+};
+
+export const sendEmailOtpforVerification = async (data:any) => {
+  try {
+    const response = await api.post(`auth/generate_mail_otp`, data);
+    // console.log("response-->",response)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company incorporation list by userId:", error);
+  }
+};
+
+export const validateOtpforVerification = async (data:any) => {
+  try {
+    const response = await api.post(`auth/validate_otp`, data);
+    // console.log("response-->",response)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching company incorporation list by userId:", error);
+  }
+};
