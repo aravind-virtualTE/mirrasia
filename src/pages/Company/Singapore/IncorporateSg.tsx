@@ -154,7 +154,6 @@ const IncorporateSg: React.FC = () => {
                     const legalInfo = formData.hasLegalEthicalIssues
                     const annualRenew = formData.annualRenewalTermsAgreement
                     const sgAccntDecl = formData.sgAccountingDeclaration
-                    const sgAccountingDeclarationIssues = formData.singaporeTaxFilingMythQuestion
                     // console.log('rcActivity',rcActivity , '\n rcSanctions',rcSanctions, '\n bsnsCremia',bsnsCremia, '\n involved',involved, '\n legalInfo',legalInfo, '\n annualRenew',annualRenew,'\n sgAccntDecl',sgAccntDecl)
                     const values = [rcActivity, rcSanctions, bsnsCremia, involved, legalInfo, annualRenew, sgAccntDecl];
                     // console.log("values", values)
@@ -165,7 +164,7 @@ const IncorporateSg: React.FC = () => {
                         });
                         return;
                     }
-                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && sgAccntDecl.id == 'no' && ['yes', 'handleOwnIncorpo'].includes(annualRenew.id) && ['yes', 'handleOwnIncorpo'].includes(sgAccountingDeclarationIssues.id)) {
+                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && ['yes', 'handleOwnIncorpo'].includes(annualRenew.id) && ['yes', 'handleOwnIncorpo'].includes(sgAccntDecl.id)) {
                         await updateDoc();
                         setCurrentSection(prev => prev + 1);
                         window.scrollTo({ top: 0, behavior: "smooth" });
