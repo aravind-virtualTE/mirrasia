@@ -86,7 +86,9 @@ export interface SgFormData {
   seperateAccountingSoftware: string
   otherAccountingSoftware: string
   governanceStructure: { label: string, value: string };
-  otherGoveranceStructure?: string
+  otherGoveranceStructure?: string,
+  mobileOtpVerified?: boolean;
+  emailOtpVerified?: boolean;
 
 }
 
@@ -117,7 +119,7 @@ const initialFormState: SgFormData = {
   businessInCrimea: { id: '', value: '' },
   involvedInRussianEnergyDefense: { id: '', value: '' },
   webAddress: '',
-  sgBusinessList : "",
+  sgBusinessList: "",
   companyName: ['', '', ''],
   noOfShareholders: '',
   noOfOfficers: '',
@@ -162,7 +164,7 @@ const initialFormState: SgFormData = {
   finYearEnd: { value: '', id: '' },
   businessAddress: { value: '', id: '' },
   otherFinYrEnd: "",
-  otherBusinessAddress:"",
+  otherBusinessAddress: "",
   bookKeeping: { value: '', label: '' },
   otherBookKeep: "",
   onlineAccountingSoftware: { value: '', label: '' },
@@ -170,6 +172,8 @@ const initialFormState: SgFormData = {
   seperateAccountingSoftware: "",
   otherAccountingSoftware: "",
   otherGoveranceStructure: "",
+  mobileOtpVerified: false,
+  emailOtpVerified: false,
 };
 
 // Create the base atom

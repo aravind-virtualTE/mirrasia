@@ -117,7 +117,7 @@ const IncorporationForm = () => {
             console.error("Error updating document:", error);
         }
     };
-    // console.log("finalForm",finalForm)
+    console.log("finalForm",finalForm)
 
     const nextSection = async () => {
         if (
@@ -143,6 +143,11 @@ const IncorporationForm = () => {
             }
             if (!formData.phoneNumber || formData.phoneNumber.trim() === "") {
                 errors.push("Phone number cannot be empty.");
+            }
+            const mobileOtpVerified = formData.mobileOtpVerified
+            console.log('mobileOtpVerified',mobileOtpVerified)
+            if (mobileOtpVerified == false) {
+                errors.push("Mobile OTP verification is required.");
             }
             if (!formData.email || formData.email.trim() === "" || !/^\S+@\S+\.\S+$/.test(formData.email)) {
                 errors.push("Invalid email format or empty email.");
@@ -184,7 +189,7 @@ const IncorporationForm = () => {
                 });
                 return
             }
-            else if (finYearEnd == '' || bookKeepCycle == undefined || implementSoftware == undefined ) {
+            else if (finYearEnd == '' || bookKeepCycle == undefined || implementSoftware == undefined) {
                 toast({
                     title: "Fill Details.",
                     description: "Fill the required fields in Accounting and taxation",
@@ -238,7 +243,7 @@ const IncorporationForm = () => {
         } else if (currentSection === 10) {
             console.log("form Needs submission", finalForm);
         } else {
-            setAcknowledgementDialouge(true);
+            setAcknowledgementDialouge(true);   
         }
     };
 

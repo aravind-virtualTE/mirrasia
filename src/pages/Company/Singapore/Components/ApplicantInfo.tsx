@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { t } from 'i18next';
 import { useTheme } from '@/components/theme-provider';
 import { Card, CardContent } from '@/components/ui/card'
@@ -11,10 +11,17 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { HelpCircle } from 'lucide-react';
 import { sgFormWithResetAtom } from '../SgState';
 import { useAtom } from 'jotai';
+import { sendMobileOtpforVerification, validateOtpforVerification } from '@/hooks/useAuth';
+import { toast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 const ApplicantInfo: React.FC = () => {
     const { theme } = useTheme();
     const [formData, setFormData] = useAtom(sgFormWithResetAtom);
+    const [otp, setOtp] = useState("");
+    const [otpSent, setOtpSent] = useState(false);
+    const [resendTimer, setResendTimer] = useState(0);
+    const [otpId, setOtpId] = useState(null)
 
     const relationList = [
         {
@@ -39,6 +46,14 @@ const ApplicantInfo: React.FC = () => {
             isOther: true
         }
     ]
+
+    useEffect(() => {
+        if (resendTimer <= 0) return;
+        const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+        return () => clearTimeout(timer);
+    }, [resendTimer]);
+
+
     const isOtherSelected = formData.establishedRelationshipType.includes("other");
 
     const handleChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +67,7 @@ const ApplicantInfo: React.FC = () => {
         setFormData({ ...formData, establishedRelationshipType: checked ? [...formData.establishedRelationshipType, relationshipId] : formData.establishedRelationshipType.filter((id) => id !== relationshipId) });
     };
 
-     const handleSelectChange = (value: string) => {
+    const handleSelectChange = (value: string) => {
         // console.log("value", value)
         setFormData({
             ...formData,
@@ -62,6 +77,79 @@ const ApplicantInfo: React.FC = () => {
             }
         })
     }
+
+    const handleSendOtp = async () => {
+        if (!formData.phoneNum) {
+            toast({
+                title: "Missing Number",
+                description: "Phone Number is required",
+                variant: "default"
+            })
+            return;
+        }
+        const data = {
+            phoneNum: formData.phoneNum,
+            otpId,
+        }
+        if (otpId != null) {
+            toast({
+                title: "Error",
+                description: "Verify the otp sent already",
+                variant: "destructive"
+            })
+            return
+        }
+
+        const result = await sendMobileOtpforVerification(data)
+        // console.log("result", result);
+        if (result.success) {
+            setOtpSent(true);
+            setResendTimer(60);
+            setOtpId(result.id)
+            toast({
+                title: "Success",
+                description: "OTP sent successfully",
+                variant: "default"
+            })
+        } else {
+            // console.log("testing send otp")
+            setOtpSent(false);
+            setResendTimer(0);
+            setOtpId(null)
+            toast({
+                title: "Error",
+                description: "Failed to send OTP. Please enter proper phonenumber along with country code.",
+                variant: "destructive"
+            })
+        }
+    };
+
+    const handleVerifyOtp = async () => {
+        if (!otp.trim()) {
+            toast({
+                title: "Error",
+                description: "Please enter OTP",
+                variant: "destructive"
+            })
+            return;
+        }
+        const data = {
+            otp,
+            id: otpId
+        }
+        const result = await validateOtpforVerification(data)
+        // console.log("result", result);
+        if (result.success) {
+            setFormData({ ...formData, mobileOtpVerified: true })
+            setOtpId(null)
+        } else {
+            toast({
+                title: "Error",
+                description: "Invalid OTP",
+                variant: "destructive"
+            })
+        }
+    };
 
     return (
         <Card>
@@ -74,7 +162,7 @@ const ApplicantInfo: React.FC = () => {
                             }`}
                     >
                         <h2 className="text-lg font-semibold mb-2">
-                           {t("ApplicantInfoForm.heading")}
+                            {t("ApplicantInfoForm.heading")}
                         </h2>
                         <p className="text-sm text-gray-600">{t("Singapore.headingInfor")}</p>
                     </aside>
@@ -99,7 +187,7 @@ const ApplicantInfo: React.FC = () => {
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                           {t("Singapore.compInfo")}
+                                            {t("Singapore.compInfo")}
                                         </TooltipContent>
                                     </Tooltip>
                                 </span>
@@ -149,17 +237,63 @@ const ApplicantInfo: React.FC = () => {
                             ))}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="phone" className="text-sm">
-                               {t("ApplicantInfoForm.phoneNum")}<span className="text-red-500">*</span>
-                            </Label>
-                            <Input
-                                id="phoneNum"
-                                placeholder="Enter phone number"
-                                value={formData.phoneNum || ''}
-                                onChange={(e) => setFormData({ ...formData, phoneNum: e.target.value })}
-                                required
-                                className="w-full"
-                            />
+                            {!formData.mobileOtpVerified ? (
+                                <>
+                                    {/* Phone + Send OTP */}
+                                    <div className="flex items-end space-x-2">
+                                        <div className="flex-1 space-y-1">
+                                            <Label htmlFor="phoneNum" className="flex items-center gap-2">
+                                                {t("ApplicantInfoForm.phoneNum")}
+                                                <span className="text-red-500 font-bold ml-1 flex">*
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                                        </TooltipTrigger>
+                                                        <TooltipContent className="max-w-[500px] text-base">
+                                                            {t("ApplicantInfoForm.phoneNumInfo")}
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </span>
+                                            </Label>
+                                            <Input
+                                                id="phoneNum"
+                                                placeholder={t("ApplicantInfoForm.phoneNumInfo")}
+                                                value={formData.phoneNum}
+                                                onChange={(e) => setFormData({ ...formData, phoneNum: e.target.value })}
+                                                required
+                                                disabled={formData.mobileOtpVerified}
+                                            />
+                                        </div>
+                                        <Button
+                                            size="sm"
+                                            type="button"
+                                            onClick={handleSendOtp}
+                                            disabled={resendTimer > 0}
+                                        >
+                                            {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Send OTP"}
+                                        </Button>
+                                    </div>
+                                    {/* OTP field */}
+                                    {otpSent && (
+                                        <div className="flex items-center space-x-2">
+                                            <Input
+                                                id="otp"
+                                                placeholder="OTP"
+                                                value={otp}
+                                                onChange={e => setOtp(e.target.value)}
+                                                className="w-24"
+                                            />
+                                            <Button size="sm" type="button" onClick={handleVerifyOtp}>
+                                                Verify
+                                            </Button>
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <div className="text-green-600 text-sm flex items-center">
+                                    {formData.phoneNum} Phone number verified ✔️
+                                </div>
+                            )}
                         </div>
                         <div className="grid grid-cols-12 gap-4">
                             <div className="col-span-4 space-y-2">

@@ -13,6 +13,9 @@ import { snsPlatforms } from "./constants";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { companyIncorporationList } from "@/services/state";
 import { useParams } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
+import { sendMobileOtpforVerification, validateOtpforVerification } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 type RelationshipType = {
   id: string;
   label: string;
@@ -37,13 +40,29 @@ const ApplicantInfoForm = () => {
     companyNames: ["", "", ""],
     chinaCompanyName: ["", "", ""],
   });
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  const [otpId, setOtpId] = useState(null)
   const [companies] = useAtom(companyIncorporationList);
   const { id } = useParams();
+
   useEffect(() => {
-    if (id) {
-      const company = companies.find(c => c._id === id);
-      console.log(id, 'company', companies);
-      setFormData(company?.applicantInfoForm as FormDataType)
+    if (resendTimer <= 0) return;
+    const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [resendTimer]);
+  // console.log("companies---->",companies)
+  useEffect(() => {
+    if (!id) return;
+    // if (id) {
+    //   const company = companies.find(c => c._id === id);
+    //   console.log(id, 'company', companies);
+    //   setFormData(company?.applicantInfoForm as FormDataType)
+    // }
+    const company = companies.find(c => c._id === id);
+    if (company?.applicantInfoForm && Object.keys(company.applicantInfoForm).length > 0) {
+      setFormData(company.applicantInfoForm as FormDataType);
     }
   }, []);
 
@@ -188,7 +207,7 @@ const ApplicantInfoForm = () => {
 
           const error = validateField(field, value, index);
           const updatedErrors = [...errors.companyNames];
-          if(index == 0) updatedErrors[index] = error;
+          if (index == 0) updatedErrors[index] = error;
 
           setErrors((prev) => ({
             ...prev,
@@ -197,22 +216,22 @@ const ApplicantInfoForm = () => {
         }
         else if (field === 'chinaCompanyName' && index !== undefined) {
           // const regex = /^[\u4e00-\u9fa5]+$/;
-            const updatedCompanyNames = [...formData.chinaCompanyName];
-            updatedCompanyNames[index] = value;
+          const updatedCompanyNames = [...formData.chinaCompanyName];
+          updatedCompanyNames[index] = value;
 
-            setFormData((prev) => ({
-              ...prev,
-              chinaCompanyName: updatedCompanyNames,
-            }));
+          setFormData((prev) => ({
+            ...prev,
+            chinaCompanyName: updatedCompanyNames,
+          }));
 
-            const error = validateField(field, value, index);
-            const updatedErrors = [...errors.chinaCompanyName];
-            updatedErrors[index] = error;
+          const error = validateField(field, value, index);
+          const updatedErrors = [...errors.chinaCompanyName];
+          updatedErrors[index] = error;
 
-            setErrors((prev) => ({
-              ...prev,
-              chinaCompanyName: updatedErrors,
-            }));
+          setErrors((prev) => ({
+            ...prev,
+            chinaCompanyName: updatedErrors,
+          }));
         }
         else {
           setFormData((prev) => ({ ...prev, [field]: value }));
@@ -232,7 +251,80 @@ const ApplicantInfoForm = () => {
 
     handleChange('snsPlatform')(syntheticEvent);
   };
-  // console.log('Section1Applicant Info:', formData);
+  console.log('Section1Applicant Info:', formData);
+
+  const handleSendOtp = async () => {
+    if (!formData.phoneNumber) {
+      toast({
+        title: "Missing Number",
+        description: "Phone Number is required",
+        variant: "default"
+      })
+      return;
+    }
+    const data = {
+      phoneNum: formData.phoneNumber,
+      otpId,
+    }
+    if (otpId != null) {
+      toast({
+        title: "Error",
+        description: "Verify the otp sent already",
+        variant: "destructive"
+      })
+      return
+    }
+
+    const result = await sendMobileOtpforVerification(data)
+    // console.log("result", result);
+    if (result.success) {
+      setOtpSent(true);
+      setResendTimer(60);
+      setOtpId(result.id)
+      toast({
+        title: "Success",
+        description: "OTP sent successfully",
+        variant: "default"
+      })
+    } else {
+      // console.log("testing send otp")
+      setOtpSent(false);
+      setResendTimer(0);
+      setOtpId(null)
+      toast({
+        title: "Error",
+        description: "Failed to send OTP. Please enter proper phonenumber along with country code.",
+        variant: "destructive"
+      })
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter OTP",
+        variant: "destructive"
+      })
+      return;
+    }
+    const data = {
+      otp,
+      id: otpId
+    }
+    const result = await validateOtpforVerification(data)
+    // console.log("result", result);
+    if (result.success) {
+      setFormData({ ...formData, mobileOtpVerified: true })
+      setOtpId(null)
+    } else {
+      toast({
+        title: "Error",
+        description: "Invalid OTP",
+        variant: "destructive"
+      })
+    }
+  };
 
   return (
     <Card>
@@ -347,7 +439,7 @@ const ApplicantInfoForm = () => {
             {t('ApplicantInfoForm.contactInfo')} <span className="text-red-500">*</span>
           </Label>
 
-          <div className="space-y-1">
+          {/* <div className="space-y-1">
             <Label htmlFor="phone" className="text-sm">
               {t('ApplicantInfoForm.phoneNum')}
             </Label>
@@ -362,6 +454,68 @@ const ApplicantInfoForm = () => {
             />
             {errors.phoneNumber && (
               <Alert variant="destructive"><AlertDescription>{errors.phoneNumber}</AlertDescription></Alert>
+            )}
+          </div> */}
+          <div className="space-y-1">
+            {!formData.mobileOtpVerified ? (
+              <>
+                {/* Phone + Send OTP */}
+                <div className="flex items-end space-x-2">
+                  <div className="flex-1 space-y-1">
+                    <Label htmlFor="phoneNum" className="flex items-center gap-2">
+                      {t("ApplicantInfoForm.phoneNum")}
+                      <span className="text-red-500 font-bold ml-1 flex">*
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-[500px] text-base">
+                            {t("ApplicantInfoForm.phoneNumInfo")}
+                          </TooltipContent>
+                        </Tooltip>
+                      </span>
+                    </Label>
+                    <Input
+                      id="phoneNum"
+                      placeholder={t("ApplicantInfoForm.phoneNumInfo")}
+                      value={formData.phoneNumber}
+                      onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                      required
+                      disabled={formData.mobileOtpVerified}
+                    />
+                    {errors.phoneNumber && (
+                      <Alert variant="destructive"><AlertDescription>{errors.phoneNumber}</AlertDescription></Alert>
+                    )}
+                  </div>
+                  <Button
+                    size="sm"
+                    type="button"
+                    onClick={handleSendOtp}
+                    disabled={resendTimer > 0}
+                  >
+                    {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Send OTP"}
+                  </Button>
+                </div>
+                {/* OTP field */}
+                {otpSent && (
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      id="otp"
+                      placeholder="OTP"
+                      value={otp}
+                      onChange={e => setOtp(e.target.value)}
+                      className="w-24"
+                    />
+                    <Button size="sm" type="button" onClick={handleVerifyOtp}>
+                      Verify
+                    </Button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-green-600 text-sm flex items-center">
+                {formData.phoneNumber} Phone number verified ✔️
+              </div>
             )}
           </div>
 

@@ -88,7 +88,7 @@ const IncorporateSg: React.FC = () => {
         formData.userId = `${decodedToken.userId}`
         const payload = { ...formData };
         try {
-            console.log("payload", payload)
+            // console.log("payload", payload)
             const response = await api.post("/company/sg-form", payload);
             if (response.status === 200) {
                 // console.log("formdata", response.data);
@@ -121,9 +121,9 @@ const IncorporateSg: React.FC = () => {
                     if (!email || email.trim() === "" || !/^\S+@\S+\.\S+$/.test(email)) {
                         errors.push("Invalid email format or empty email.");
                     }
-                    const phoneNumber = formData.phoneNum
-                    if (!phoneNumber || phoneNumber.trim() === "") {
-                        errors.push("Phone number cannot be empty.");
+                    const mobileOtpVerified = formData.mobileOtpVerified
+                    if (mobileOtpVerified == false) {
+                        errors.push("Mobile OTP verification is required.");
                     }
                     if (!Array.isArray(formData.companyName) || formData.companyName.length === 0 || formData.companyName[0].trim() === "") {
                         errors.push("Company Name cannot be empty.");

@@ -9,14 +9,11 @@ const IncorporateCompany = () => {
     const decodedToken = jwtDecode<TokenData>(token);
 
   const navigateRoute = () => {
+    localStorage.removeItem('companyRecordId');
     if (decodedToken.role === 'admin') {
         navigate('/admin-dashboard');
-    }
-    else if (decodedToken.role === 'hk_shdr') {
-        navigate('/viewboard');
-    }
+    }   
     else {
-        localStorage.removeItem('companyRecordId');
         navigate('/dashboard');
     }
 }
