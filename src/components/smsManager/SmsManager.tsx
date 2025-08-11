@@ -36,9 +36,9 @@ const defaultAutomaticSettings = [
   },
   {
     id: '2',
-    name: 'License Renewal',
+    name: 'Company Renewal',
     trigger: 'renewal',
-    message: 'Reminder: Your business license renewal is due in 30 days. Please contact us for assistance.',
+    message: 'Reminder: Your business company renewal is due in 30 days. Please contact us for assistance.',
     enabled: true,
     icon: Calendar
   },
