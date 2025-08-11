@@ -21,8 +21,10 @@ export type FormDataType = {
   snsPlatform: string;
   email: string;
   phoneNumber: string;
+  mobileOtpVerified?: boolean;
+  emailOtpVerified?: boolean;
   companyName: string[];
-  chinaCompanyName : string[]
+  chinaCompanyName: string[]
 };
 // corporate incorporation applicant info (section 1)
 export const applicantInfoFormAtom = atomWithReset<FormDataType>({
@@ -33,6 +35,8 @@ export const applicantInfoFormAtom = atomWithReset<FormDataType>({
   snsPlatform: '',
   phoneNumber: '',
   email: '',
+  mobileOtpVerified: false,
+  emailOtpVerified: false,
   companyName: ["", "", ""],
   chinaCompanyName: ["", "", ""],
 });
@@ -104,7 +108,7 @@ export const shareHolderDirectorControllerAtom = atomWithReset<ShareHolderDirect
   numShareHoldersAtom: undefined,
   numDirectorsAtom: undefined,
   shareHolderDirectorNameSharesNumAtom: '',
-  significantControllerAtom: [{value : "", label : ""}],
+  significantControllerAtom: [{ value: "", label: "" }],
   designatedContactPersonAtom: '',
   shareHolders: [{
     "name": "",
@@ -162,7 +166,7 @@ export const companyIncorporationAtom = atom((get) => ({
   userId: '',
   status: 'Pending',
   is_draft: false,
-  isDisabled : get(isDisabled),
+  isDisabled: get(isDisabled),
   country: get(countryAtom),
   applicantInfoForm: get(applicantInfoFormAtom),
   businessInfoHkCompany: get(businessInfoHkCompanyAtom),
@@ -194,15 +198,15 @@ export const useResetAllForms = () => {
   const resetCountry = useResetAtom(countryAtom);
   const resetSessionPayment = useResetAtom(PaymentSessionId);
   const resetPaymentID = useResetAtom(paymentId);
-  const resetisDisabled= useResetAtom(isDisabled);
+  const resetisDisabled = useResetAtom(isDisabled);
   const resetcompPaymentDetails = useResetAtom(serviceSelectionStateAtom);
   const reseticorporationDoc = useResetAtom(icorporationDoc)
   const resetCompanyDocManager = useResetAtom(companyDocManager)
   const resetReceiptUrl = useResetAtom(receiptUrl)
   const resetAssignedTo = useResetAtom(assignedTo)
   const resetIsDeleted = useResetAtom(isDeleted)
-  
-  
+
+
 
   const resetAll = () => {
     resetApplicantInfo();
@@ -244,7 +248,7 @@ export const updateCompanyIncorporationAtom = atom(
       serviceAgreementConsent: boolean;
       sessionId: string;
       paymentId: string;
-      isDisabled : boolean;
+      isDisabled: boolean;
       serviceSelectionState: typeof serviceSelectionStateAtom['init'];
       icorporationDoc: typeof icorporationDoc['init']
       companyDocs: typeof companyDocManager['init']
@@ -267,7 +271,7 @@ export const updateCompanyIncorporationAtom = atom(
     }
     if (updates.isDeleted) {
       set(isDeleted, updates.isDeleted);
-    }    
+    }
     if (updates.companyDocs) {
       set(companyDocManager, updates.companyDocs);
     }

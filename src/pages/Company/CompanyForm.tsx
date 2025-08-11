@@ -45,7 +45,7 @@ const CompanyRegistration = () => {
                 if (compData && compData.length > 0) {
                     setApplicantHkInfoData(compData[0].applicantInfoForm);
                     updateCompanyData(compData[0]);
-                  console.log("resultIncorporation--->", compData);
+                //   console.log("resultIncorporation--->", compData);
                 } else {
                   console.warn("No incorporation data found for id:", id);
                 }
