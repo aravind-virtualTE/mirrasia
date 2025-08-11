@@ -51,6 +51,16 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+      /* Status colors for Gantt */
+    --status-todo: 210 20% 88%;
+    --status-inprogress: 217 91% 60%;
+    --status-inreview: 45 93% 47%;
+    --status-completed: 142 71% 45%;
+
+    /* Timeline colors */
+    --timeline-grid: 214.3 31.8% 91.4%;
+    --timeline-tick: 215.4 16.3% 46.9%;
   }
 
   .dark {
@@ -88,6 +98,16 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+     /* Status colors for Gantt (dark) */
+    --status-todo: 217.2 32.6% 22%;
+    --status-inprogress: 224.3 76.3% 48%;
+    --status-inreview: 45 90% 45%;
+    --status-completed: 142 70% 40%;
+
+    /* Timeline colors (dark) */
+    --timeline-grid: 240 3.7% 15.9%;
+    --timeline-tick: 215 20.2% 65.1%;
   }
 }
 

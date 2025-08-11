@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom } from 'jotai';
 import { Task, tasksAtom, TaskStatus, viewModeAtom,  statusColors, } from './mTodoStore';
 import { useState } from 'react';
@@ -52,7 +53,7 @@ export const TaskList = () => {
         case 'completed':
             return <TaskTable tasks={completedTasks} />;
         case 'ganttChart':
-            return <GanttChart tasks={tasks} />;
+            return <GanttChart items={tasks  as any} />;
         default:
             return <GroupedTasks tasks={tasks} />;
     }
