@@ -52,7 +52,7 @@ export function GanttChart({ items, cellWidth = 24, rowHeight = 32 }: GanttTimel
     });
   }, [items]);
 
-  const { minDate, maxDate, days } = useMemo(() => {
+  const { minDate, days } = useMemo(() => {
     const min = tasks.reduce((acc, t) => (t.start < acc ? t.start : acc), tasks[0]?.start ?? new Date());
     const max = tasks.reduce((acc, t) => (t.end > acc ? t.end : acc), tasks[0]?.end ?? new Date());
 
