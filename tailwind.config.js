@@ -60,6 +60,16 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // status: {
+				// 	'todo': 'hsl(var(--status-todo))',
+				// 	'inprogress': 'hsl(var(--status-inprogress))',
+				// 	'inreview': 'hsl(var(--status-inreview))',
+				// 	'completed': 'hsl(var(--status-completed))'
+				// },
+				// timeline: {
+				// 	grid: 'hsl(var(--timeline-grid))',
+				// 	tick: 'hsl(var(--timeline-tick))'
+				// }
       },
       keyframes: {
         "accordion-down": {
