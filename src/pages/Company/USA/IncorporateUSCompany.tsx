@@ -85,6 +85,10 @@ const IncorporateUSACompany = () => {
                 if (!email || email.trim() === "" || !/^\S+@\S+\.\S+$/.test(email)) {
                     errors.push("Invalid email format or empty email.");
                 }
+                  const emailOtpVerified = formData.emailOtpVerified
+                    if (emailOtpVerified == false) {
+                        errors.push("Email OTP verification is required.");
+                    }
                 const phoneNumber = formData.phoneNum
                 if (!phoneNumber || phoneNumber.trim() === "") {
                     errors.push("Phone number cannot be empty.");

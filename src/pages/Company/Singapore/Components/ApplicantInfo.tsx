@@ -21,8 +21,8 @@ const ApplicantInfo: React.FC = () => {
     const [otp, setOtp] = useState("");
     const [otpSent, setOtpSent] = useState(false);
     const [resendTimer, setResendTimer] = useState(0);
-    const [otpId, setOtpId] = useState(null)
-
+    type OtpSession = { sms: string | null; email: string | null };
+    const [otpSession, setOtpSession] = useState<OtpSession>({ sms: null, email: null });
     const [emailOtp, setEmailOtp] = useState("");
     const [emailOtpSent, setEmailOtpSent] = useState(false);
     const [emailResendTimer, setEmailResendTimer] = useState(0);
@@ -100,9 +100,8 @@ const ApplicantInfo: React.FC = () => {
         }
         const data = {
             phoneNum: formData.phoneNum,
-            otpId,
         }
-        if (otpId != null) {
+        if (otpSession.sms != null) {
             toast({
                 title: "Error",
                 description: "Verify the otp sent already",
@@ -116,7 +115,7 @@ const ApplicantInfo: React.FC = () => {
         if (result.success) {
             setOtpSent(true);
             setResendTimer(60);
-            setOtpId(result.id)
+            setOtpSession((s) => ({ ...s, sms: result.id }));
             toast({
                 title: "Success",
                 description: "OTP sent successfully",
@@ -126,7 +125,7 @@ const ApplicantInfo: React.FC = () => {
             // console.log("testing send otp")
             setOtpSent(false);
             setResendTimer(0);
-            setOtpId(null)
+            setOtpSession((s) => ({ ...s, sms: null }));
             toast({
                 title: "Error",
                 description: "Failed to send OTP. Please enter proper phonenumber along with country code.",
@@ -146,13 +145,13 @@ const ApplicantInfo: React.FC = () => {
         }
         const data = {
             otp,
-            id: otpId
+            id: otpSession.sms
         }
         const result = await validateOtpforVerification(data)
         // console.log("result", result);
         if (result.success) {
             setFormData({ ...formData, mobileOtpVerified: true })
-            setOtpId(null)
+            setOtpSession((s) => ({ ...s, sms: null }));
         } else {
             toast({
                 title: "Error",
@@ -168,9 +167,8 @@ const ApplicantInfo: React.FC = () => {
         const data = {
             email: formData.email,
             name: formData.name,
-            otpId
         }
-        if (otpId != null) {
+        if (otpSession.email != null) {
             toast({
                 title: "Error",
                 description: "Verify the otp sent already",
@@ -184,7 +182,7 @@ const ApplicantInfo: React.FC = () => {
         if (result.success) {
             setEmailOtpSent(true);
             setEmailResendTimer(60);
-            setOtpId(result.id)
+            setOtpSession((s) => ({ ...s, email: result.id }));
             toast({
                 title: "Success",
                 description: "OTP sent successfully",
@@ -192,9 +190,9 @@ const ApplicantInfo: React.FC = () => {
             })
         } else {
             // console.log("testing send otp")
-            setOtpSent(false);
-            setResendTimer(0);
-            setOtpId(null)
+            setEmailOtpSent(false);
+            setEmailResendTimer(0);
+            setOtpSession((s) => ({ ...s, sms: null }));
             toast({
                 title: "Error",
                 description: "Failed to send OTP. Please Try Later.",
@@ -215,12 +213,12 @@ const ApplicantInfo: React.FC = () => {
         }
         const data = {
             otp: emailOtp,
-            id: otpId
+            id: otpSession.email
         }
         const result = await validateOtpforVerification(data)
         if (result.success) {
             setFormData({ ...formData, emailOtpVerified: true })
-            setOtpId(null)
+            setOtpSession((s) => ({ ...s, sms: null }));
         } else {
             toast({
                 title: "Error",
