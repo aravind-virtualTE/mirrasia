@@ -107,6 +107,7 @@
     "phoneNumInfo": "請輸入含國家碼的電話號碼。",
     "address": "地址",
     "email": "電子郵件",
+    "emailInfo": "請輸入您的有效電子郵件以接收OTP。",
     "snsId": "社交媒體帳戶ID",
     "snsPlatform": "社群網路平台",
     "compChinaName": "您可以在下方輸入您公司的可選中文名稱",

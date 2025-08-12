@@ -121,6 +121,10 @@ const IncorporateSg: React.FC = () => {
                     if (!email || email.trim() === "" || !/^\S+@\S+\.\S+$/.test(email)) {
                         errors.push("Invalid email format or empty email.");
                     }
+                     const emailOtpVerified = formData.emailOtpVerified
+                    if (emailOtpVerified == false) {
+                        errors.push("Email OTP verification is required.");
+                    }
                     const mobileOtpVerified = formData.mobileOtpVerified
                     if (mobileOtpVerified == false) {
                         errors.push("Mobile OTP verification is required.");
