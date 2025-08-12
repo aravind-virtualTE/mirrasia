@@ -28,10 +28,10 @@ export default function SocialMediaWidget() {
   const WeChatIcon = () => (
     <img
       src="https://img.freepik.com/premium-vector/wechat-icon_578229-193.jpg"
-      alt="weChat"
+      alt="WeChat"
       className="h-5 w-5"
     />
-  )
+  );
 
   const KakaoTalkIcon = () => (
     <img
@@ -39,14 +39,23 @@ export default function SocialMediaWidget() {
       alt="KakaoTalk"
       className="h-5 w-5"
     />
-  )
+  );
+
   const KakaoChannelIcon = () => (
     <img
       src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8uGdjTLsA62BeCGg2Yezs_nQYx9KoM5O3Uw&s"
       alt="KakaoChannel"
       className="h-5 w-5"
     />
-  )
+  );
+
+  const WhatsAppIcon = () => (
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+      alt="WhatsApp"
+      className="h-5 w-5"
+    />
+  );
 
   // Social media links with icons and navigation URLs
   const socialMediaLinks: SocialMediaLink[] = [
@@ -65,6 +74,12 @@ export default function SocialMediaWidget() {
       icon: <KakaoChannelIcon />,
       id: "Click Here",
       url: "https://pf.kakao.com/_KxmnZT",
+    },
+    {
+      name: "WhatsApp",
+      icon: <WhatsAppIcon />,
+      id: "Chat Now",
+      url: "https://wa.me/message/NCJZUHC4TEPSG1",
     },
   ];
 
@@ -114,9 +129,7 @@ export default function SocialMediaWidget() {
     if (link.url) {
       window.open(link.url, "_blank", "noopener,noreferrer");
     } else {
-      // For platforms without URLs (e.g., WeChat, Kakao Talk), you could add custom logic
       console.log(`Clicked ${link.name} with ID: ${link.id}`);
-      // Example: Open an app or show a QR code in a modal
     }
   };
 
