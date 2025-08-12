@@ -5,20 +5,20 @@ export interface UsaFormData {
   email: string;
   userId: string;
   // selectedState: string | number;
-  selectedState: { id: string  ; name: string } | undefined;
+  selectedState: { id: string; name: string } | undefined;
   selectedEntity: string;
   noOfSharesSelected: string | number;
   name: string;
   establishedRelationshipType: string[];
   phoneNum: string;
-  snsAccountId: {  value: string,  id: string };
+  snsAccountId: { value: string, id: string };
   serviceItemsSelected: string[];
-  hasLegalEthicalIssues: { id: string,  value: string };
-  annualRenewalTermsAgreement:{ id: string,  value: string };
-  restrictedCountriesWithActivity: { id: string,  value: string };
-  sanctionedTiesPresent: { id: string,  value: string };
-  businessInCrimea: { id: string,  value: string };
-  involvedInRussianEnergyDefense: { id: string,  value: string };
+  hasLegalEthicalIssues: { id: string, value: string };
+  annualRenewalTermsAgreement: { id: string, value: string };
+  restrictedCountriesWithActivity: { id: string, value: string };
+  sanctionedTiesPresent: { id: string, value: string };
+  businessInCrimea: { id: string, value: string };
+  involvedInRussianEnergyDefense: { id: string, value: string };
   selectedIndustry: string[];
   otherIndustryText: string;
   descriptionOfProducts: string;
@@ -60,7 +60,7 @@ export interface UsaFormData {
   }
   confirmationBusinessIntention: boolean
   transactionIntention: boolean
-  isDisabled : boolean
+  isDisabled: boolean
   receiptUrl: string
   sessionId: string
   paymentId: string
@@ -68,7 +68,10 @@ export interface UsaFormData {
   incorporationDate: string
   serviceAgreementConsent: boolean
   assignedTo: string
-  isDeleted : boolean
+  isDeleted: boolean
+  mobileOtpVerified?: boolean;
+  emailOtpVerified?: boolean;
+
 }
 
 const initialFormState: UsaFormData = {
@@ -81,8 +84,8 @@ const initialFormState: UsaFormData = {
   name: '',
   establishedRelationshipType: [],
   phoneNum: '',
-  country:{ code: 'US', name: 'United States' },
-  snsAccountId:{
+  country: { code: 'US', name: 'United States' },
+  snsAccountId: {
     value: '',
     id: ''
   },
@@ -94,7 +97,7 @@ const initialFormState: UsaFormData = {
   businessInCrimea: { id: '', value: '' },
   involvedInRussianEnergyDefense: { id: '', value: '' },
   selectedIndustry: [],
-  otherIndustryText:"",
+  otherIndustryText: "",
   descriptionOfProducts: '',
   descriptionOfBusiness: '',
   webAddress: '',
@@ -109,22 +112,25 @@ const initialFormState: UsaFormData = {
   noOfOfficers: '',
   shareHolders: [],
   designatedContact: '',
-  beneficialOwner:"",
+  beneficialOwner: "",
   accountingDataAddress: '',
   isTermsAndConditionsAccepted: '',
   paymentOption: '',
   postIncorporationCapabilities: '',
   confirmationBusinessIntention: false,
   transactionIntention: false,
-  isDisabled : false,
-  receiptUrl : "",
+  isDisabled: false,
+  receiptUrl: "",
   sessionId: '',
   paymentId: '',
   status: "Pending",
-  incorporationDate:"",
-  serviceAgreementConsent:false,
-  assignedTo : "",
-  isDeleted : false
+  incorporationDate: "",
+  serviceAgreementConsent: false,
+  assignedTo: "",
+  isDeleted: false,
+  mobileOtpVerified: false,
+  emailOtpVerified: false,
+
 };
 
 // Create the base atom
@@ -148,7 +154,7 @@ export const usaPriceAtom = atom(
   (_get, set, update: number | 'reset') => {
     if (update === 'reset') {
       set(usPrice, 0);
-    }else{
+    } else {
       set(usPrice, update);
     }
   }

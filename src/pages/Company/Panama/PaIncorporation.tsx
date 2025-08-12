@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -130,10 +131,14 @@ const IncorporatePa: React.FC = () => {
                     if (!email || email.trim() === "" || !/^\S+@\S+\.\S+$/.test(email)) {
                         errors.push("Invalid email format or empty email.");
                     }
-                    // const phoneNumber = formData.phoneNum
-                    // if (!phoneNumber || phoneNumber.trim() === "") {
-                    //     errors.push("Phone number cannot be empty.");
-                    // }
+                    const phoneNumber = formData.phoneNum
+                    if (!phoneNumber || phoneNumber.trim() === "") {
+                        errors.push("Phone number cannot be empty.");
+                    }
+                     const emailOtpVerified = formData.emailOtpVerified
+                    if (emailOtpVerified == false) {
+                        errors.push("Email OTP verification is required.");
+                    }
                     const mobileOtpVerified = formData.mobileOtpVerified
                     if (mobileOtpVerified == false) {
                         errors.push("Mobile OTP verification is required.");

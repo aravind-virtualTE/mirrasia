@@ -144,9 +144,13 @@ const IncorporationForm = () => {
             if (!formData.phoneNumber || formData.phoneNumber.trim() === "") {
                 errors.push("Phone number cannot be empty.");
             }
+            
+             const emailOtpVerified = formData.emailOtpVerified
+            if (emailOtpVerified != true) {
+                errors.push("Email OTP verification is required.");
+            }
             const mobileOtpVerified = formData.mobileOtpVerified
-            console.log('mobileOtpVerified',mobileOtpVerified)
-            if (mobileOtpVerified == false) {
+            if (mobileOtpVerified  != true) {
                 errors.push("Mobile OTP verification is required.");
             }
             if (!formData.email || formData.email.trim() === "" || !/^\S+@\S+\.\S+$/.test(formData.email)) {
