@@ -10,13 +10,16 @@ import { Label } from "@/components/ui/label"
 import Webcam from 'react-webcam';
 import {
   User, FileText, Upload, CheckCircle, AlertCircle, Clock, X, Shield, Smartphone, Copy, Settings,
-  Camera, RotateCcw
+  Camera, RotateCcw,
+  HelpCircle
 } from "lucide-react"
 import { delProfileDoc, getUserById, updateProfileData } from "@/services/dataFetch"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { enable2FA, verify2FA, disable2FA } from "@/hooks/useAuth"
+import { enable2FA, verify2FA, disable2FA, validateOtpforVerification, sendMobileOtpforVerification } from "@/hooks/useAuth"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { toast } from "@/hooks/use-toast"
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
+import { t } from "i18next"
 
 interface KYCDocument {
   file: File | null
@@ -58,10 +61,18 @@ export default function Profile() {
     phone: user?.phone || "",
     dateOfBirth: user?.dateOfBirth || "",
     address: user?.address || "",
+    mobileOtpVerified: user?.mobileOtpVerified || false,
     status: "pending",
     twoFactorEnabled: false,
     kycDocuments: { passportUrl: '', addressProofUrl: '', passportStatus: 'pending', addressProofStatus: 'pending', selfieUrl: '', selfieStatus: 'pending' },
   })
+
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  type OtpSession = { sms: string | null; email: string | null };
+  const [otpSession, setOtpSession] = useState<OtpSession>({ sms: null, email: null });
+
   const intialData: { passport: KYCDocument; addressProof: KYCDocument } = {
     passport: {
       file: null,
@@ -79,7 +90,11 @@ export default function Profile() {
     passport: KYCDocument
     addressProof: KYCDocument
   }>(intialData)
-
+  useEffect(() => {
+    if (resendTimer <= 0) return;
+    const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [resendTimer]);
   useEffect(() => {
     const fetchdata = async () => {
       const data = await getUserById(user?.id || "")
@@ -255,6 +270,7 @@ export default function Profile() {
       formData.append("dateOfBirth", profile.dateOfBirth);
       formData.append("address", profile.address);
       formData.append("phone", profile.phone);
+      formData.append("mobileOtpVerified", profile.mobileOtpVerified);
 
       if (kycDocuments.passport.file) {
         formData.append("passport", kycDocuments.passport.file);
@@ -337,6 +353,78 @@ export default function Profile() {
     setIsWebcamReady(false);
   };
 
+  const handleSendOtp = async () => {
+    if (!profile.phone) {
+      toast({
+        title: "Missing Number",
+        description: "Phone Number is required",
+        variant: "default"
+      })
+      return;
+    }
+    const data = {
+      phoneNum: profile.phone,
+    }
+    if (otpSession.sms != null) {
+      toast({
+        title: "Error",
+        description: "Verify the otp sent already",
+        variant: "destructive"
+      })
+      return
+    }
+
+    const result = await sendMobileOtpforVerification(data)
+    // console.log("result", result);
+    if (result.success) {
+      setOtpSent(true);
+      setResendTimer(60);
+      setOtpSession((s) => ({ ...s, sms: result.id }));
+      toast({
+        title: "Success",
+        description: "OTP sent successfully",
+        variant: "default"
+      })
+    } else {
+      // console.log("testing send otp")
+      setOtpSent(false);
+      setResendTimer(0);
+      setOtpSession((s) => ({ ...s, sms: null }));
+      toast({
+        title: "Error",
+        description: "Failed to send OTP. Please enter proper phonenumber along with country code.",
+        variant: "destructive"
+      })
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter OTP",
+        variant: "destructive"
+      })
+      return;
+    }
+    const data = {
+      otp,
+      id: otpSession.sms
+    }
+    const result = await validateOtpforVerification(data)
+    // console.log("result", result);
+    if (result.success) {
+      setProfile({ ...profile, mobileOtpVerified: true })
+      setOtpSession((s) => ({ ...s, sms: null }));
+    } else {
+      toast({
+        title: "Error",
+        description: "Invalid OTP",
+        variant: "destructive"
+      })
+    }
+  };
+
   return (
     <div className="container max-w-8xl mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -414,8 +502,9 @@ export default function Profile() {
                 </div>
 
                 {editing ? (
-                  <form className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <form className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Full name */}
                       <div>
                         <Label htmlFor="fullName">Full Name</Label>
                         <Input
@@ -425,15 +514,8 @@ export default function Profile() {
                           required
                         />
                       </div>
-                      <div>
-                        <Label htmlFor="phone">Phone Number</Label>
-                        <Input
-                          id="phone"
-                          type="tel"
-                          value={profile.phone}
-                          onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                        />
-                      </div>
+
+                      {/* Date of birth */}
                       <div>
                         <Label htmlFor="dateOfBirth">Date of Birth</Label>
                         <Input
@@ -443,24 +525,120 @@ export default function Profile() {
                           onChange={(e) => setProfile({ ...profile, dateOfBirth: e.target.value })}
                         />
                       </div>
+
+                      {/* Email */}
                       <div>
                         <Label htmlFor="email">Email</Label>
                         <Input id="email" type="email" value={profile.email} disabled className="bg-gray-50" />
                       </div>
+
+                      {/* Address */}
+                      <div>
+                        <Label htmlFor="address">Address</Label>
+                        <Input
+                          id="address"
+                          value={profile.address}
+                          onChange={(e) => setProfile({ ...profile, address: e.target.value })}
+                          placeholder="Enter your full address"
+                        />
+                      </div>
+
+                      {/* Phone + OTP block (full width to avoid grid misalignment when OTP opens) */}
+                      <div className="md:col-span-2">
+                        <div className="flex flex-col gap-2">
+                          <Label htmlFor="phoneNum" className="flex items-center gap-2">
+                            {t("ApplicantInfoForm.phoneNum")}
+                            <span className="text-red-500 font-bold ml-1 flex">
+                              *
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-[500px] text-base">
+                                  {t("ApplicantInfoForm.phoneNumInfo")}
+                                </TooltipContent>
+                              </Tooltip>
+                            </span>
+                          </Label>
+
+                          {/* Phone + Send OTP button (responsive: inline on md+, stacked on mobile) */}
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <Input
+                              id="phoneNum"
+                              placeholder={t("ApplicantInfoForm.phoneNumInfo")}
+                              value={profile.phone}
+                              onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                              required
+                              disabled={profile.mobileOtpVerified}
+                              className="sm:flex-1"
+                            />
+                            {!profile.mobileOtpVerified && (
+                              <Button
+                                size="sm"
+                                type="button"
+                                onClick={handleSendOtp}
+                                disabled={resendTimer > 0 || !profile.phone}
+                                aria-live="polite"
+                              >
+                                {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Send OTP"}
+                              </Button>
+                            )}
+                          </div>
+
+                          {/* Verified state */}
+                          {profile.mobileOtpVerified && (
+                            <div className="text-green-700 text-sm flex items-center gap-2">
+                              <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 font-medium ring-1 ring-inset ring-green-600/20">
+                                {profile.phone} • Verified
+                              </span>
+                              <span aria-hidden>✔️</span>
+                            </div>
+                          )}
+
+                          {/* OTP section (collapsible, no layout jump for the rest of the grid) */}
+                          {!profile.mobileOtpVerified && otpSent && (
+                            <div
+                              className="overflow-hidden transition-all duration-300 ease-out"
+                            >
+                              <div className="mt-2 grid gap-2 sm:flex sm:items-center">
+                                <Input
+                                  id="otp"
+                                  placeholder="OTP"
+                                  value={otp}
+                                  onChange={e => setOtp(e.target.value)}
+                                  className="w-24"
+                                />
+
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    size="sm"
+                                    type="button"
+                                    onClick={handleVerifyOtp}
+                                    // disabled={!otp || otp.length < 6}
+                                  >
+                                    Verify
+                                  </Button>
+                                  <button
+                                    type="button"
+                                    onClick={handleSendOtp}
+                                    disabled={resendTimer > 0}
+                                    className="text-sm underline disabled:no-underline disabled:text-muted-foreground"
+                                  >
+                                    {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend code"}
+                                  </button>
+                                </div>
+                              </div>
+
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Enter the 6-digit code we sent to <span className="font-medium">{profile.phone}</span>.
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
-
-                    <div>
-                      <Label htmlFor="address">Address</Label>
-                      <Input
-                        id="address"
-                        value={profile.address}
-                        onChange={(e) => setProfile({ ...profile, address: e.target.value })}
-                        placeholder="Enter your full address"
-                      />
-                    </div>
-
-
                   </form>
+
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
