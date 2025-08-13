@@ -10,7 +10,7 @@ import { sgFormWithResetAtom } from '../SgState';
 import { t } from 'i18next';
 
 
-const AccountingSgTax: FC = () => {
+const AccountingSgTax: FC<{ canEdit: boolean }> = ({ canEdit }) => {
     const { theme } = useTheme();
     const [formData, setFormData] = useAtom(sgFormWithResetAtom);
 
@@ -74,7 +74,7 @@ const AccountingSgTax: FC = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    <RadioGroup value={formData.finYearEnd?.value} onValueChange={onChangeFinYear} className="gap-4">
+                    <RadioGroup value={formData.finYearEnd?.value} onValueChange={onChangeFinYear} className="gap-4" aria-disabled={!canEdit} disabled={!canEdit}>
                         {finYears.map((year) => (
                             <div key={year.id} className="flex items-center space-x-2">
                                 <RadioGroupItem value={year.value} id={`year-${year.id}`} />
@@ -95,7 +95,7 @@ const AccountingSgTax: FC = () => {
                         {t("CompanyInformation.bookCycle")}
                         <span className="text-red-500 inline-flex">*</span>
                     </Label>
-                    <RadioGroup value={formData.bookKeeping?.value} onValueChange={onChangeBookKeep} className="gap-4">
+                    <RadioGroup value={formData.bookKeeping?.value} onValueChange={onChangeBookKeep} className="gap-4" aria-disabled={!canEdit} disabled={!canEdit}>
                         {bookkeepingCycleOptions.map(option => (
                             <div key={option.value} className="flex items-center space-x-2">
                                 <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
@@ -106,7 +106,7 @@ const AccountingSgTax: FC = () => {
                         ))}
                         {formData.bookKeeping?.value === "other" && (
                             <Input placeholder="Please specify" value={formData.otherBookKeep} onChange={
-                                (e) => setFormData({ ...formData, otherBookKeep: e.target.value })}  />
+                                (e) => setFormData({ ...formData, otherBookKeep: e.target.value })} disabled={!canEdit}  />
                         )}
                     </RadioGroup>
                 </div>
@@ -124,7 +124,7 @@ const AccountingSgTax: FC = () => {
                             </Tooltip>
                         </span>
                     </Label>
-                    <RadioGroup value={formData.onlineAccountingSoftware?.value} onValueChange={onChangeOnlineBooking} className="gap-4">
+                    <RadioGroup value={formData.onlineAccountingSoftware?.value} onValueChange={onChangeOnlineBooking} className="gap-4" aria-disabled={!canEdit} disabled={!canEdit}>
                         {onlineAccountList.map(option => (
                             <div key={option.value} className="flex items-center space-x-2">
                                 <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
@@ -135,7 +135,7 @@ const AccountingSgTax: FC = () => {
                         ))}
                         {formData.onlineAccountingSoftware?.value === "other" && (
                             <Input placeholder="Please specify" value={formData.otherAccountingSoftware} onChange={
-                                (e) => setFormData({ ...formData, otherAccountingSoftware: e.target.value })} />
+                                (e) => setFormData({ ...formData, otherAccountingSoftware: e.target.value })} disabled={!canEdit} />
                         )}
                     </RadioGroup>
                 </div>
@@ -143,7 +143,7 @@ const AccountingSgTax: FC = () => {
                     <Label htmlFor="Relation" className="text-sm font-semibold mb-2">
                         {t("CompanyInformation.doYouUseSoftware")}
                     </Label>
-                    <Input placeholder="Please specify" value={formData.seperateAccountingSoftware} onChange={(e) => setFormData({ ...formData, seperateAccountingSoftware: e.target.value })}  />
+                    <Input placeholder="Please specify" value={formData.seperateAccountingSoftware} onChange={(e) => setFormData({ ...formData, seperateAccountingSoftware: e.target.value })} disabled={!canEdit} />
                 </div>
             </div>
         </div>

@@ -30,7 +30,7 @@ const IncorporateSg: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const token = localStorage.getItem("token") as string;
     const decodedToken = jwtDecode<TokenData>(token);
-
+    // console.log("decodedToken",decodedToken)
     const steps = [
         {
             number: 1,
@@ -78,6 +78,8 @@ const IncorporateSg: React.FC = () => {
             active: currentSection === 9,
         },
     ]
+    const canEdit = decodedToken.userId === formData.userId
+    // console.log("canEdit",canEdit)
 
     const updateDoc = async () => {
         // setIsSubmitting(true);
@@ -304,16 +306,16 @@ const IncorporateSg: React.FC = () => {
                             }}
                             className="h-full w-auto"
                         >
-                            {currentSection === 1 && <ApplicantInfo />}
-                            {currentSection === 2 && <AmlCddSg />}
+                            {currentSection === 1 && <ApplicantInfo canEdit={canEdit} />}
+                            {currentSection === 2 && <AmlCddSg canEdit={canEdit} />}
                             {/* {currentSection === 3 && <FeasibilityBankOpening />}
                             {currentSection === 4 && <OpeningBank />} */}
-                            {currentSection === 3 && <BusinessInfoSg />}
+                            {currentSection === 3 && <BusinessInfoSg canEdit={canEdit} />}
                             {currentSection === 4 && <ServiceAgreement />}
                             {currentSection === 5 && <SgServiceSelection />}
                             {currentSection === 6 && <InvoiceSg />}
                             {currentSection === 7 && <PaymentInformation />}
-                            {currentSection === 8 && <InfoForIncorpoSg />}
+                            {currentSection === 8 && <InfoForIncorpoSg canEdit={canEdit} />}
                             {currentSection === 9 && <SgFinalSection />}
                         </motion.div>
                     </AnimatePresence>

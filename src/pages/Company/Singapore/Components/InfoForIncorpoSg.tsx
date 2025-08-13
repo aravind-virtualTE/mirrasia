@@ -13,7 +13,7 @@ import { amountOptions, currencies } from "../../HongKong/constants"
 import { Input } from "@/components/ui/input"
 import { t } from "i18next"
 
-const InfoForIncorpoSg = () => {
+const InfoForIncorpoSg: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
     const { theme } = useTheme();
     const [comapnyInfo, setCompanyInfo] = useAtom(sgFormWithResetAtom);
 
@@ -80,6 +80,7 @@ const InfoForIncorpoSg = () => {
                             <RadioGroup className="mt-4 space-y-3"
                                 value={comapnyInfo.shareCapitalPayment?.value || ""}
                                 onValueChange={handlePaymentOptionChange}
+                                aria-disabled={!canEdit} disabled={!canEdit}
                             >
                                 {paymentOptions.map((purpose) => (
                                     <div key={purpose.id} className="flex items-center space-x-3">
@@ -111,6 +112,7 @@ const InfoForIncorpoSg = () => {
                                 placeholder="Select currency..."
                                 selectedItem={currenc}
                                 onSelect={handleCurrencySelect}
+                                disabled={!canEdit}
                             />
                         </div>
                         <div>
@@ -132,6 +134,7 @@ const InfoForIncorpoSg = () => {
                                 placeholder="Enter custom price"
                                 selectedValue={comapnyInfo.registerAmountAtom}
                                 onSelect={handlePriceSelect}
+                                disabled={!canEdit}
                             />
                         </div>
                         <div>
@@ -153,6 +156,7 @@ const InfoForIncorpoSg = () => {
                                 placeholder="Select Issued Share price"
                                 selectedValue={comapnyInfo.sgTotalCapPaid}
                                 onSelect={handleNumShareIssueOptionChange}
+                                disabled={!canEdit}
                             />
                         </div>
                         <div className="space-y-2">
@@ -169,7 +173,10 @@ const InfoForIncorpoSg = () => {
                                     </Tooltip>
                                 </span>
                             </Label>
-                            <RadioGroup value={t(comapnyInfo.governanceStructure.value) || ''} onValueChange={onChangeGovernStructure} className="gap-4">
+                            <RadioGroup 
+                            value={t(comapnyInfo.governanceStructure.value) || ''} 
+                            onValueChange={onChangeGovernStructure} className="gap-4"
+                            aria-disabled={!canEdit} disabled={!canEdit}>
                                 {bookkeepingCycleOptions.map(option => (
                                     <div key={option.value} className="flex items-center space-x-2">
                                         <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
