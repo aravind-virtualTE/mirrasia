@@ -405,7 +405,7 @@ interface Shareholder extends PersonBase {
 }
 
 
-const ShareholderDirectorForm: React.FC = () => {
+const ShareholderDirectorForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
   const [formData, setFormData] = useAtom(sgFormWithResetAtom);
   const [totalOwnership, setTotalOwnership] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -545,7 +545,7 @@ const ShareholderDirectorForm: React.FC = () => {
                 Total: {totalOwnership.toFixed(2)}%
                 {totalOwnership === 100 && ' ✅'}
               </div>
-              <Button onClick={addShareholder} size="sm" className="h-8">
+              <Button onClick={addShareholder} size="sm" className="h-8" disabled={!canEdit}>
                 <Plus className="w-4 h-4 mr-1" />
                 {t("Singapore.add")}
               </Button>
@@ -574,6 +574,7 @@ const ShareholderDirectorForm: React.FC = () => {
                     onChange={(e) => updateShareholder(index, 'name', e.target.value)}
                     className="h-8 text-xs border-0 focus:ring-1 focus:ring-blue-500 rounded-none"
                     placeholder="Full name"
+                    disabled={!canEdit}
                   />
                 </div>
                 <div className="col-span-2 p-1 border-r">
@@ -583,6 +584,7 @@ const ShareholderDirectorForm: React.FC = () => {
                     className={`h-8 text-xs border-0 focus:ring-1 rounded-none ${shareholder.email && !validateEmail(shareholder.email) ? 'focus:ring-red-500 bg-red-50' : 'focus:ring-blue-500'
                       }`}
                     placeholder="email@example.com"
+                    disabled={!canEdit}
                   />
                 </div>
                 <div className="col-span-2 p-1 border-r">
@@ -592,6 +594,7 @@ const ShareholderDirectorForm: React.FC = () => {
                     className={`h-8 text-xs border-0 focus:ring-1 rounded-none ${shareholder.phone && !validatePhone(shareholder.phone) ? 'focus:ring-red-500 bg-red-50' : 'focus:ring-blue-500'
                       }`}
                     placeholder="+1234567890"
+                    disabled={!canEdit}
                   />
                 </div>
                 <div className="col-span-3 p-1 border-r">
@@ -600,6 +603,7 @@ const ShareholderDirectorForm: React.FC = () => {
                     onChange={(e) => updateShareholder(index, 'address', e.target.value)}
                     className="h-8 text-xs border-0 focus:ring-1 focus:ring-blue-500 rounded-none"
                     placeholder="Full address"
+                    disabled={!canEdit}
                   />
                 </div>
                 <div className="col-span-1 p-1 border-r">
@@ -611,11 +615,13 @@ const ShareholderDirectorForm: React.FC = () => {
                     min={0}
                     max={100}
                     step={0.01}
+                    disabled={!canEdit}
                   />
                 </div>
                 <div className="col-span-1 p-1 border-r">
                   <Select
                     value={shareholder.legalEntity.id}
+                    disabled={!canEdit}
                     onValueChange={(selectedId) => {
                       const selectedOption = legalEntityOptions.find(opt => opt.id === selectedId);
                       if (selectedOption) {
@@ -639,6 +645,7 @@ const ShareholderDirectorForm: React.FC = () => {
                   {formData.shareHolders.length > 1 && (
                     <button
                       onClick={() => deleteShareholder(index)}
+                      disabled={!canEdit}
                       className="text-red-500 hover:text-red-700 p-1"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -682,6 +689,7 @@ const ShareholderDirectorForm: React.FC = () => {
                     onChange={(e) => updateDirector(index, 'name', e.target.value)}
                     className="h-8 text-xs border-0 focus:ring-1 focus:ring-blue-500 rounded-none"
                     placeholder="Full name"
+                    disabled={!canEdit}
                   />
                 </div>
                 <div className="col-span-2 p-1 border-r">
@@ -691,6 +699,7 @@ const ShareholderDirectorForm: React.FC = () => {
                     className={`h-8 text-xs border-0 focus:ring-1 rounded-none ${director.email && !validateEmail(director.email) ? 'focus:ring-red-500 bg-red-50' : 'focus:ring-blue-500'
                       }`}
                     placeholder="email@example.com"
+                    disabled={!canEdit}
                   />
                 </div>
                 <div className="col-span-2 p-1 border-r">
@@ -699,7 +708,8 @@ const ShareholderDirectorForm: React.FC = () => {
                     onChange={(e) => updateDirector(index, 'phone', e.target.value)}
                     className={`h-8 text-xs border-0 focus:ring-1 rounded-none ${director.phone && !validatePhone(director.phone) ? 'focus:ring-red-500 bg-red-50' : 'focus:ring-blue-500'
                       }`}
-                    placeholder="+1234567890"
+                    placeholder="+123456789012"
+                    disabled={!canEdit}
                   />
                 </div>
                 <div className="col-span-3 p-1 border-r">
@@ -708,6 +718,7 @@ const ShareholderDirectorForm: React.FC = () => {
                     onChange={(e) => updateDirector(index, 'address', e.target.value)}
                     className="h-8 text-xs border-0 focus:ring-1 focus:ring-blue-500 rounded-none"
                     placeholder="Full address"
+                    disabled={!canEdit}
                   />
                 </div>
                 <div className="col-span-1 p-1 border-r">
@@ -719,6 +730,7 @@ const ShareholderDirectorForm: React.FC = () => {
                         updateDirector(index, 'legalEntity', selectedOption);
                       }
                     }}
+                    disabled={!canEdit}
                   >
                     <SelectTrigger className="h-8 text-xs border-0 focus:ring-1 focus:ring-blue-500 rounded-none">
                       <SelectValue />
@@ -737,6 +749,7 @@ const ShareholderDirectorForm: React.FC = () => {
                     <button
                       onClick={() => deleteDirector(index)}
                       className="text-red-500 hover:text-red-700 p-1"
+                      disabled={!canEdit}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -754,7 +767,7 @@ const ShareholderDirectorForm: React.FC = () => {
           disabled={isLoading}
           className="flex items-center"
           aria-busy={isLoading}
-          aria-live="polite"
+          aria-live="polite"          
         >{isLoading ? (
           <>
             <CustomLoader />

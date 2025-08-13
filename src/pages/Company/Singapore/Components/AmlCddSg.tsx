@@ -9,7 +9,7 @@ import { sgFormWithResetAtom } from '../SgState';
 import { useAtom } from 'jotai';
 import { t } from 'i18next';
 
-const AmlCddSg: React.FC = () => {
+const AmlCddSg: React.FC<{canEdit: boolean}> = ({ canEdit }) => {
     const { theme } = useTheme();
     const [formData, setFormData] = useAtom(sgFormWithResetAtom);
     const sgAccountingDeclarationIssues = formData.sgAccountingDeclaration
@@ -153,7 +153,7 @@ const AmlCddSg: React.FC = () => {
                             <RadioGroup
                                 value={t(hasLegalEthicalIssues.value || '')}
                                 onValueChange={(value) => handleQuestionChange(value)}
-                                disabled={formData.isDisabled}
+                                disabled={formData.isDisabled || !canEdit}
                             >
                                 {
                                     list.map((item, idx) => {
@@ -176,7 +176,7 @@ const AmlCddSg: React.FC = () => {
                             <RadioGroup
                                 value={t(annualRenewalTermsAgreement.value || '')}
                                 onValueChange={(value) => handleQuestion2Change(value)}
-                                disabled={formData.isDisabled}
+                                disabled={formData.isDisabled || !canEdit}
                             >
                                 {
                                     establishList.map((item, idx) => {
@@ -199,7 +199,7 @@ const AmlCddSg: React.FC = () => {
                             <RadioGroup
                                 value={t(sgAccountingDeclarationIssues.value || '')}
                                 onValueChange={(value) => handleAccountingDecChange(value)}
-                                disabled={formData.isDisabled}
+                                disabled={formData.isDisabled || !canEdit}
                             >
                                 {
                                     list.map((item, idx) => {
@@ -240,6 +240,7 @@ const AmlCddSg: React.FC = () => {
                                     value={ t(formData[question.id]?.value || '')}
                                     onValueChange={(value) => handleAnswerChange(question.id, value)}
                                     className="space-y-2"
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {list.map((item, idx) => (
                                         <div className="flex items-center space-x-2" key={`alt${idx}`}>

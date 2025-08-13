@@ -17,11 +17,11 @@ import { Option } from '@/components/MultiSelectInput';
 import DropdownSelect from '@/components/DropdownSelect';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-const BusinessInfoSg: React.FC = () => {
+const BusinessInfoSg: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
     const { theme } = useTheme();
     const [formData, setFormData] = useAtom(sgFormWithResetAtom);
 
-    const [shrDirList,setShareholders] = useState(
+    const [shrDirList, setShareholders] = useState(
         [...formData.shareHolders, ...formData.directors].map((item) => {
             if (item.name == "") return "Fill Shareholder/Directors and select";
             return item.name;
@@ -29,11 +29,11 @@ const BusinessInfoSg: React.FC = () => {
     );
 
     useEffect(() => {
-       setShareholders( [...formData.shareHolders, ...formData.directors].map((item) => {
+        setShareholders([...formData.shareHolders, ...formData.directors].map((item) => {
             if (item.name == "") return "Fill Shareholder/Directors and select";
             return item.name;
         }))
-    }, [formData.shareHolders,formData.directors]);
+    }, [formData.shareHolders, formData.directors]);
 
     const shrDirArr = shrDirList.map((item) => ({ value: item, label: item }));
     // console.log("shrDirArr", shrDirArr)
@@ -60,7 +60,7 @@ const BusinessInfoSg: React.FC = () => {
         { id: "business-diversification", value: "Singapore.purpose.p6" },
         { id: "competitive-advantage", value: "Singapore.purpose.p7" },
         { id: "tax-advantage", value: "Singapore.purpose.p8" },
-        { id: "capital-gain", value:"Singapore.purpose.p9" },
+        { id: "capital-gain", value: "Singapore.purpose.p9" },
         { id: "other", value: "InformationIncorporation.paymentOption_other" },
     ];
     const typesOfShares = [
@@ -77,10 +77,10 @@ const BusinessInfoSg: React.FC = () => {
         });
     };
     const addressList = [{ id: "mirrasiaAddress", value: 'Singapore.mirraddress' }, { id: "ownAddress", value: 'Singapore.ownAddress' }, { id: "other", value: t("InformationIncorporation.paymentOption_other") }];
-    const onChangeBusinessAddress = (value:string) => {
+    const onChangeBusinessAddress = (value: string) => {
         // console.log("Selected Financial Year End:", value);
         const selectedItem = addressList.find(item => t(item.value) == t(value));
-        setFormData({ ...formData, businessAddress:  selectedItem || {id: '', value : ""}  })
+        setFormData({ ...formData, businessAddress: selectedItem || { id: '', value: "" } })
     }
     return (
         <Card>
@@ -114,6 +114,7 @@ const BusinessInfoSg: React.FC = () => {
                                                     : formData.selectedIndustry.filter(id => id !== industry.id);
                                                 setFormData({ ...formData, selectedIndustry: updated });
                                             }}
+                                            disabled={!canEdit}
                                         />
                                         <Label className="font-normal" htmlFor={`industry-${industry.id}`} >
                                             {t(industry.value)}
@@ -124,6 +125,7 @@ const BusinessInfoSg: React.FC = () => {
                                             placeholder="Please specify"
                                             value={formData.otherIndustryText}
                                             onChange={(e) => setFormData({ ...formData, otherIndustryText: e.target.value })}
+                                            disabled={!canEdit}
                                         />
                                     )}
                                 </div>
@@ -131,17 +133,18 @@ const BusinessInfoSg: React.FC = () => {
                         </div>
                         <div className="space-y-2 mt-2">
                             <Label className="text-base font-semibold">
-                               {t("Singapore.bInfoDescProdName")}<span className="text-red-500">*</span>
+                                {t("Singapore.bInfoDescProdName")}<span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 placeholder="Your answer"
                                 value={formData.productDescription}
                                 onChange={(e) => setFormData({ ...formData, productDescription: e.target.value })}
+                                disabled={!canEdit}
                             />
                         </div>
                         <div className="space-y-2 mt-2">
                             <Label className="text-base font-semibold flex items-center gap-2">
-                               {t("Singapore.bInfoSingSecondIndustries")}
+                                {t("Singapore.bInfoSingSecondIndustries")}
                                 <span className="text-red-500 flex">* <Tooltip>
                                     <TooltipTrigger asChild>
                                         <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
@@ -155,6 +158,7 @@ const BusinessInfoSg: React.FC = () => {
                                 placeholder="Your answer"
                                 value={formData.sgBusinessList}
                                 onChange={(e) => setFormData({ ...formData, sgBusinessList: e.target.value })}
+                                disabled={!canEdit}
                             />
                         </div>
                         <div className="space-y-2 mt-2">
@@ -165,11 +169,12 @@ const BusinessInfoSg: React.FC = () => {
                                 placeholder="Your answer"
                                 value={formData.webAddress}
                                 onChange={(e) => setFormData({ ...formData, webAddress: e.target.value })}
+                                disabled={!canEdit}
                             />
                         </div>
                         <div className="space-y-2 mt-2">
                             <Label className="text-base font-semibold">
-                               {t("Singapore.purposeEstablisSingapore")}<span className="text-red-500">*</span>
+                                {t("Singapore.purposeEstablisSingapore")}<span className="text-red-500">*</span>
                             </Label>
                             <div className="space-y-3">
                                 {purposes.map((purpose) => (
@@ -184,6 +189,7 @@ const BusinessInfoSg: React.FC = () => {
                                                         : formData.establishmentPurpose.filter(id => id !== purpose.id);
                                                     setFormData({ ...formData, establishmentPurpose: updated });
                                                 }}
+                                                disabled={!canEdit}
                                             />
                                             <Label htmlFor={`purpose-${purpose.id}`} className="font-normal">
                                                 {t(purpose.value)}
@@ -194,6 +200,7 @@ const BusinessInfoSg: React.FC = () => {
                                                 placeholder="Please specify"
                                                 value={formData.otherEstablishmentPurpose}
                                                 onChange={(e) => setFormData({ ...formData, otherEstablishmentPurpose: e.target.value })}
+                                                disabled={!canEdit}
                                             />
                                         )}
                                     </div>
@@ -209,12 +216,17 @@ const BusinessInfoSg: React.FC = () => {
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                            {t("Singapore.bInfoAddRegParaInfo")}                                            
+                                            {t("Singapore.bInfoAddRegParaInfo")}
                                         </TooltipContent>
                                     </Tooltip>
                                 </span>
                             </Label>
-                            <RadioGroup value={formData.businessAddress?.value} onValueChange={onChangeBusinessAddress} className="gap-4">
+                            <RadioGroup
+                                value={formData.businessAddress?.value}
+                                onValueChange={onChangeBusinessAddress} 
+                                className="gap-4"
+                                disabled={!canEdit}
+                            >
                                 {addressList.map((year) => (
                                     <div key={year.id} className="flex items-center space-x-2">
                                         <RadioGroupItem value={year.value} id={`year-${year.id}`} />
@@ -244,7 +256,7 @@ const BusinessInfoSg: React.FC = () => {
                         </h2>
                     </aside>
                     <div className="w-4/5 ml-4">
-                        <ShareholderDirectorForm />
+                        <ShareholderDirectorForm canEdit={canEdit} />
                         <div className="space-y-2 mt-2">
                             <Label className="text-base font-semibold flex items-center gap-2">
                                 {t('CompanyInformation.typeOfShares')}{" "}
@@ -271,6 +283,7 @@ const BusinessInfoSg: React.FC = () => {
                                                 : formData.issuedSharesType.filter(id => id !== purpose.id);
                                             setFormData({ ...formData, issuedSharesType: updated });
                                         }}
+                                        disabled={!canEdit}
                                     />
                                     <Label
                                         htmlFor={t(purpose.id)}
@@ -302,6 +315,7 @@ const BusinessInfoSg: React.FC = () => {
                                         placeholder="Select Significant Controller..."
                                         selectedItems={formData.significantController}
                                         onSelectionChange={handleSelectionChange}
+                                        disabled={!canEdit}
                                     />
                                 </>
                             ) : (
@@ -318,7 +332,7 @@ const BusinessInfoSg: React.FC = () => {
                                             <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                         </TooltipTrigger>
                                         <TooltipContent className="max-w-[500px] text-base">
-                                           {t('Singapore.designatedContInfo')}
+                                            {t('Singapore.designatedContInfo')}
                                         </TooltipContent>
                                     </Tooltip>
                                 </span>
@@ -329,12 +343,13 @@ const BusinessInfoSg: React.FC = () => {
                                     placeholder="Select significant Controller"
                                     onSelect={(e) => setFormData({ ...formData, designatedContactPerson: e })}
                                     selectedValue={formData.designatedContactPerson}
+                                    disabled={!canEdit}
                                 />
                             ) : t("Singapore.plzFillShrDir")}
                         </div>
                     </div>
                 </div>
-                <AccountingSgTax />
+                <AccountingSgTax canEdit={canEdit}  />
             </CardContent>
         </Card>
     )

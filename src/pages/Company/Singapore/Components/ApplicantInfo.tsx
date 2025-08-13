@@ -15,7 +15,8 @@ import { sendMobileOtpforVerification, validateOtpforVerification, sendEmailOtpf
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 
-const ApplicantInfo: React.FC = () => {
+
+const ApplicantInfo: React.FC<{canEdit: boolean}> = ({ canEdit }) => {
     const { theme } = useTheme();
     const [formData, setFormData] = useAtom(sgFormWithResetAtom);
     const [otp, setOtp] = useState("");
@@ -26,7 +27,6 @@ const ApplicantInfo: React.FC = () => {
     const [emailOtp, setEmailOtp] = useState("");
     const [emailOtpSent, setEmailOtpSent] = useState(false);
     const [emailResendTimer, setEmailResendTimer] = useState(0);
-
 
     const relationList = [
         {
@@ -249,7 +249,7 @@ const ApplicantInfo: React.FC = () => {
                             <Label htmlFor="name" className="text-sm font-semibold mb-2">
                                 {t("ApplicantInfoForm.applicantName")}<span className="text-red-500">*</span>
                             </Label>
-                            <Input type="text" id="name" className="w-full p-2 border rounded-md" placeholder="Enter your name" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                            <Input type="text" id="name" className="w-full p-2 border rounded-md" placeholder="Enter your name" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} disabled={!canEdit} />
                         </div>
                         {/* <div className="space-y-2 mt-4">
                             <Label htmlFor="email" className="text-sm font-semibold mb-2">
@@ -283,7 +283,7 @@ const ApplicantInfo: React.FC = () => {
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                             required
-                                            disabled={formData.emailOtpVerified}
+                                            disabled={formData.emailOtpVerified || !canEdit}
                                         />
                                     </div>
 
@@ -339,6 +339,7 @@ const ApplicantInfo: React.FC = () => {
                                         placeholder={t('usa.AppInfo.namePlaceholder')}
                                         value={name}
                                         onChange={handleChange(index)}
+                                        disabled={!canEdit}
                                         required />
                                 ))
                             }
@@ -356,6 +357,7 @@ const ApplicantInfo: React.FC = () => {
                                             handleRelationshipChange(option.id, checked as boolean)
                                         }
                                         className={option.isOther ? "mt-2" : ""}
+                                        disabled={!canEdit}
                                     />
                                     {option.isOther ? (
                                         <div className="space-y-1 w-full">
@@ -366,6 +368,7 @@ const ApplicantInfo: React.FC = () => {
                                                     onChange={(e) => setFormData({ ...formData, isOtherRelation: e.target.value })}
                                                     placeholder="Please specify"
                                                     className="w-full"
+                                                    disabled={!canEdit}
                                                 />
                                             )}
                                         </div>
@@ -400,7 +403,7 @@ const ApplicantInfo: React.FC = () => {
                                                 value={formData.phoneNum}
                                                 onChange={(e) => setFormData({ ...formData, phoneNum: e.target.value })}
                                                 required
-                                                disabled={formData.mobileOtpVerified}
+                                                disabled={formData.mobileOtpVerified || !canEdit}
                                             />
                                         </div>
                                         <Button
@@ -442,6 +445,7 @@ const ApplicantInfo: React.FC = () => {
                                 <Select
                                     value={formData.snsAccountId.id}
                                     onValueChange={handleSelectChange}
+                                    disabled={!canEdit}
                                 >
                                     <SelectTrigger id="snsPlatform" className="w-full">
                                         <SelectValue placeholder="Select SNS Platform" />
@@ -472,6 +476,7 @@ const ApplicantInfo: React.FC = () => {
                                         }
                                     })}
                                     className="w-full"
+                                    disabled={!canEdit}
                                 />
 
                             </div>
