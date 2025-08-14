@@ -14,7 +14,7 @@ interface DropdownSelectProps {
   placeholder?: string;
   selectedValue?: string | number;
   onSelect: (selectedValue: string | number) => void;
-  disabled?: boolean; // NEW (defaults to false)
+  disabled?: boolean;
 }
 
 const DropdownSelect: React.FC<DropdownSelectProps> = ({
@@ -22,7 +22,7 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({
   placeholder = 'Enter custom value',
   selectedValue: initialSelectedValue = '',
   onSelect,
-  disabled = false, // NEW
+  disabled = false,
 }) => {
   const [selectedValue, setSelectedValue] = useState<string | number>(initialSelectedValue);
   const [customValue, setCustomValue] = useState<string>('');

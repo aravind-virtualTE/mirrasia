@@ -11,7 +11,7 @@ interface MultiSelectProps {
   placeholder?: string;
   selectedItems?: Option[];
   onSelectionChange?: (selections: Option[]) => void;
-  disabled?: boolean; // NEW
+  disabled?: boolean;
 }
 
 export default function MultiSelect({

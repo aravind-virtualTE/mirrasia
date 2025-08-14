@@ -43,7 +43,7 @@ interface Errors {
   chinaCompanyName: string[];
 }
 
-const ApplicantInfoForm = () => {
+const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
   const { t } = useTranslation();
   const [formData, setFormData] = useAtom(applicantInfoFormAtom);
   const [errors, setErrors] = useState<Errors>({
@@ -71,10 +71,10 @@ const ApplicantInfoForm = () => {
     return () => clearTimeout(timer);
   }, [resendTimer]);
   useEffect(() => {
-  if (emailResendTimer <= 0) return;
-  const t = setTimeout(() => setEmailResendTimer(emailResendTimer - 1), 1000);
-  return () => clearTimeout(t);
-}, [emailResendTimer]);
+    if (emailResendTimer <= 0) return;
+    const t = setTimeout(() => setEmailResendTimer(emailResendTimer - 1), 1000);
+    return () => clearTimeout(t);
+  }, [emailResendTimer]);
   // console.log("companies---->",companies)
   useEffect(() => {
     if (!id) return;
@@ -301,7 +301,7 @@ const ApplicantInfoForm = () => {
       });
       return;
     }
-    const result = await sendMobileOtpforVerification({phoneNum: formData.phoneNumber});
+    const result = await sendMobileOtpforVerification({ phoneNum: formData.phoneNumber });
     // console.log("result", result);
     if (result.success) {
       setOtpSent(true);
@@ -344,7 +344,7 @@ const ApplicantInfoForm = () => {
     // console.log("result", result);
     if (result.success) {
       setFormData({ ...formData, mobileOtpVerified: true });
-      setOtpSession((s) => ({ ...s, sms: null }));    
+      setOtpSession((s) => ({ ...s, sms: null }));
     } else {
       toast({
         title: "Error",
@@ -445,6 +445,7 @@ const ApplicantInfoForm = () => {
               }
               required
               className="w-full"
+              disabled={!canEdit}
             />
           </div>
 
@@ -471,6 +472,7 @@ const ApplicantInfoForm = () => {
                         checked as boolean
                       )
                     }
+                    disabled={!canEdit}
                   />
                   <Label
                     htmlFor={relationship.id}
@@ -513,6 +515,7 @@ const ApplicantInfoForm = () => {
                   required
                   className={`w-full ${errors.companyNames[index] ? "border-red-500" : ""
                     }`}
+                  disabled={!canEdit}
                 />
                 {errors.companyNames[index] && (
                   <Alert variant="destructive">
@@ -542,6 +545,7 @@ const ApplicantInfoForm = () => {
                   required
                   className={`w-full ${errors.chinaCompanyName[index] ? "border-red-500" : ""
                     }`}
+                  disabled={!canEdit}
                 />
                 {errors.chinaCompanyName[index] && (
                   <Alert variant="destructive">
@@ -607,7 +611,7 @@ const ApplicantInfoForm = () => {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       required
-                      disabled={formData.emailOtpVerified}
+                      disabled={formData.emailOtpVerified || !canEdit}                      
                     />
                   </div>
 
@@ -615,7 +619,7 @@ const ApplicantInfoForm = () => {
                     size="sm"
                     type="button"
                     onClick={handleSendEmailOtp}
-                    disabled={emailResendTimer > 0 || !formData.email}
+                    disabled={emailResendTimer > 0 || !formData.email || !canEdit}
                   >
                     {emailResendTimer > 0
                       ? `Resend in ${emailResendTimer}s`
@@ -682,7 +686,7 @@ const ApplicantInfoForm = () => {
                           })
                         }
                         required
-                        disabled={formData.mobileOtpVerified}
+                        disabled={formData.mobileOtpVerified || !canEdit}
                       />
                       {errors.phoneNumber && (
                         <Alert variant="destructive">
@@ -752,6 +756,7 @@ const ApplicantInfoForm = () => {
                 <Select
                   value={formData.snsPlatform}
                   onValueChange={handleSelectChange}
+                  disabled={!canEdit}
                 >
                   <SelectTrigger id="snsPlatform" className="w-full">
                     <SelectValue placeholder="Select SNS Platform" />
@@ -777,13 +782,14 @@ const ApplicantInfoForm = () => {
                 <Input
                   id="snsAccountId"
                   placeholder={`Enter your ${formData.snsPlatform
-                      ? snsPlatforms.find((p) => p.id === formData.snsPlatform)
-                        ?.name
-                      : "SNS"
+                    ? snsPlatforms.find((p) => p.id === formData.snsPlatform)
+                      ?.name
+                    : "SNS"
                     } ID`}
                   value={formData.snsAccountId}
                   onChange={handleChange("snsAccountId")}
                   className="w-full"
+                  disabled={!canEdit}
                 />
                 {errors.snsAccountId && (
                   <Alert variant="destructive">

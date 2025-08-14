@@ -14,7 +14,7 @@ import AccountingTaxationInfo from "./AccountingTaxationInfo";
 import SearchSelect from "@/components/SearchSelect";
 
 
-const CompanyInformation: React.FC = () => {
+const CompanyInformation: React.FC<{ canEdit: boolean }> = ({ canEdit })=> {
     const { t } = useTranslation();
     const [businessInfo, setBusinessInfo] = useAtom(companyBusinessInfoAtom);
     const [selectedValue, setSelectedValue] = useState({code : "", label : ""});
@@ -78,6 +78,7 @@ const CompanyInformation: React.FC = () => {
                                     placeholder="Select a business Industry"
                                     onSelect={handleCurrencySelect}
                                     selectedItem={selectedValue}
+                                    disabled={!canEdit}
                                 />
                             </div>
 
@@ -91,6 +92,7 @@ const CompanyInformation: React.FC = () => {
                                     placeholder="Enter description..."
                                     value={businessInfo.business_product_description}
                                     onChange={(e) => handleDescriptionChange(e.target.value)}
+                                    disabled={!canEdit}
                                 />
                             </div>
 
@@ -105,6 +107,7 @@ const CompanyInformation: React.FC = () => {
                                             id={t(purpose)}
                                             checked={businessInfo.business_purpose.includes(t(purpose))}
                                             onCheckedChange={(checked) => handlePurposeChange(checked as boolean, t(purpose))}
+                                            disabled={!canEdit}
                                         />
                                         <Label
                                             htmlFor={t(purpose)}
@@ -119,8 +122,8 @@ const CompanyInformation: React.FC = () => {
                     </Card>
                 </div>
             </div>
-            <ShareholdersDirectorsDetails />
-            <AccountingTaxationInfo />
+            <ShareholdersDirectorsDetails canEdit={canEdit} />
+            <AccountingTaxationInfo canEdit={canEdit} />
         </>
     );
 };

@@ -11,7 +11,7 @@ import { HelpCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import DropdownSelect from '@/components/DropdownSelect';
 
-const AccountingTaxationInfo: React.FC = () => {
+const AccountingTaxationInfo: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
     const [accTaxInfo, setTaxAccountInfo] = useAtom(accountingTaxInfoAtom);
     const { t } = useTranslation();
 
@@ -66,6 +66,7 @@ const AccountingTaxationInfo: React.FC = () => {
                                 placeholder="Please enter the preferred financial year end date"
                                 onSelect={handleItemSelect}
                                 selectedValue={accTaxInfo.finYearEnd}
+                                disabled={!canEdit}
                             />
                             {/* <RadioGroup className="mt-4 space-y-3"
                                 value={accTaxInfo.finYearEnd}
@@ -86,6 +87,7 @@ const AccountingTaxationInfo: React.FC = () => {
                             <RadioGroup className="mt-4 space-y-3"
                                 value={accTaxInfo.bookKeepCycle}
                                 onValueChange={handleBookCycleChange}
+                                disabled={!canEdit}
                             >
                                 {boobkCycleCount.map((noOfDirector) => (
                                     <div key={noOfDirector} className="flex items-center space-x-3">
@@ -111,6 +113,7 @@ const AccountingTaxationInfo: React.FC = () => {
                             <RadioGroup className="mt-4 space-y-3"
                                 value={accTaxInfo.implementSoftware}
                                 onValueChange={handleAccSoftwareChange}
+                                disabled={!canEdit}
                             >
                                 {accoutingSoftware.map((accSoft) => (
                                     <div key={accSoft} className="flex items-center space-x-3">
@@ -132,7 +135,9 @@ const AccountingTaxationInfo: React.FC = () => {
                                 className="w-full"
                                 value={accTaxInfo.anySoftwareInUse}
                                 onChange={(e) => setTaxAccountInfo(prev => ({ ...prev, anySoftwareInUse: e.target.value }))}
-                                placeholder="Enter data if any..." />
+                                placeholder="Enter data if any..."
+                                disabled={!canEdit}
+                                 />
                         </div>
                     </CardContent>
                 </Card>

@@ -17,7 +17,7 @@ import SearchSelect from "@/components/SearchSelect"
 import DropdownSelect from "@/components/DropdownSelect"
 import { useTranslation } from "react-i18next";
 
-const InformationIncorporation = () => {
+const InformationIncorporation: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const [comapnyInfo, setCompanyInfo] = useAtom(regCompanyInfoAtom);
@@ -67,6 +67,7 @@ const InformationIncorporation = () => {
               <RadioGroup className="mt-4 space-y-3"
                 value={comapnyInfo.registerPaymentShare}
                 onValueChange={handlePaymentOptionChange}
+                disabled={!canEdit}
               >
                 {paymentOptions.map((purpose) => (
                   <div key={purpose} className="flex items-center space-x-3">
@@ -97,6 +98,7 @@ const InformationIncorporation = () => {
                 placeholder="Select currency..."
                 selectedItem={currenc}
                 onSelect={handleCurrencySelect}
+                disabled={!canEdit}
               />
             </div>
             <div>
@@ -115,6 +117,7 @@ const InformationIncorporation = () => {
                   placeholder="Enter custom price"
                   selectedValue={comapnyInfo.registerAmountAtom}
                   onSelect={handlePriceSelect}
+                  disabled={!canEdit}
                 />        
             </div>
             <div>
@@ -136,6 +139,7 @@ const InformationIncorporation = () => {
                   placeholder="Select Issued Share price"
                   selectedValue={comapnyInfo.registerNumSharesAtom}
                   onSelect={handleNumShareIssueOptionChange}
+                  disabled={!canEdit}
                 />   
             </div>            
           </CardContent>

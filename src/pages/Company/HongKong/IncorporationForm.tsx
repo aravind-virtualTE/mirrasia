@@ -49,7 +49,8 @@ const IncorporationForm = () => {
     const [countryState] = useAtom(countryAtom);
 
     const decodedToken = jwtDecode<TokenData>(token);
-
+    const canEdit = decodedToken.userId === finalForm.userId
+    // console.log("canEdit",finalForm)
     const steps = [
         {
             number: 1,
@@ -117,7 +118,7 @@ const IncorporationForm = () => {
             console.error("Error updating document:", error);
         }
     };
-    console.log("finalForm",finalForm)
+    // console.log("finalForm",finalForm)
 
     const nextSection = async () => {
         if (
@@ -329,14 +330,14 @@ const IncorporationForm = () => {
                             }}
                             className="h-full w-auto"
                         >
-                            {currentSection === 1 && <ApplicantInfoForm />}
-                            {currentSection === 2 && <AmlCdd />}
-                            {currentSection === 3 && <CompanyInformation />}
+                            {currentSection === 1 && <ApplicantInfoForm canEdit={canEdit} />}
+                            {currentSection === 2 && <AmlCdd canEdit={canEdit} />}
+                            {currentSection === 3 && <CompanyInformation canEdit={canEdit} />}
                             {currentSection === 4 && <ServiceAgreement />}
-                            {currentSection === 5 && <ServiceSelection />}
+                            {currentSection === 5 && <ServiceSelection canEdit={canEdit}  />}
                             {currentSection === 6 && <Invoice />}
                             {currentSection === 7 && <PaymentInformation />}
-                            {currentSection === 8 && <InformationIncorporation />}
+                            {currentSection === 8 && <InformationIncorporation canEdit={canEdit} />}
                             {/* {currentSection === 9 && <SAgrementPdf />} */}
                             {currentSection === 9 && <IncorporateCompany />}
                         </motion.div>
