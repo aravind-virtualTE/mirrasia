@@ -12,7 +12,7 @@ import { amountOptions, currencies } from "../../HongKong/constants"
 import { Input } from "@/components/ui/input"
 import { paFormWithResetAtom } from "../PaState"
 import { t } from "i18next"
-const InfoForIncorpoPA = () => {
+const InfoForIncorpoPA: React.FC<{canEdit: boolean}> = ({ canEdit }) =>{
     const { theme } = useTheme();
     const [formData,setFormData] = useAtom(paFormWithResetAtom);
 
@@ -58,6 +58,7 @@ const InfoForIncorpoPA = () => {
                                 placeholder="Select currency..."
                                 selectedItem={formData.registerCurrencyAtom}
                                 onSelect={handleCurrencySelect}
+                                disabled={!canEdit}
                             />
                         </div>
                         <div>
@@ -77,6 +78,7 @@ const InfoForIncorpoPA = () => {
                                 placeholder="Enter custom price"
                                 selectedValue={formData.totalAmountCap}
                                 onSelect={handlePriceSelect}
+                                disabled={!canEdit}
                             />
                         </div>
                         <div>
@@ -87,6 +89,7 @@ const InfoForIncorpoPA = () => {
                             </Label>
                             <Input
                                 placeholder="Please specify" value={formData.noOfSharesIssued} onChange={(e) => setFormData({ ...formData, noOfSharesIssued: e.target.value })}
+                                disabled={!canEdit}
                             />
                         </div>
 
@@ -98,6 +101,7 @@ const InfoForIncorpoPA = () => {
                             <Input
                                 placeholder="Please specify" id="specificProvisions"
                                 value={formData.specificProvisions} onChange={(e) => setFormData({ ...formData, specificProvisions: e.target.value })}
+                                disabled={!canEdit}
                             />
                         </div>
                         <div className="space-y-2">
@@ -115,7 +119,7 @@ const InfoForIncorpoPA = () => {
                             <RadioGroup id="regAddress"  value={formData.accountingDataAddress}
                                 onValueChange={(value) =>
                                     setFormData({ ...formData, accountingDataAddress: value })
-                                } className="gap-4">
+                                } className="gap-4" disabled={!canEdit}>
                                 {bookkeepingCycleOptions.map(option => (
                                     <div key={option.value} className="flex items-center space-x-2">
                                         <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
@@ -125,7 +129,7 @@ const InfoForIncorpoPA = () => {
                                     </div>
                                 ))}
                                 {formData.accountingDataAddress === "other" && (
-                                    <Input placeholder="Please specify" value={formData.otherAccountingAddress} onChange={(e) => setFormData({ ...formData, otherAccountingAddress: e.target.value })}  />
+                                    <Input placeholder="Please specify" value={formData.otherAccountingAddress} onChange={(e) => setFormData({ ...formData, otherAccountingAddress: e.target.value })} disabled={!canEdit}  />
                                 )}
                             </RadioGroup>
                         </div>

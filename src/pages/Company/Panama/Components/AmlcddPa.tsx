@@ -22,7 +22,7 @@ const list2 = [
     { "id": "didntIntedEveryYear", "value": "usa.AppInfo.didntIntedEveryYear" },
     { "id": "consultationRequired", "value": "usa.AppInfo.consultationRequired" }
 ]
-const AmlCddPA: React.FC = () => {
+const AmlCddPA: React.FC<{canEdit: boolean}> = ({ canEdit }) => {
     const { t } = useTranslation();
     const [formData, setFormData] = useAtom(paFormWithResetAtom);
     const { theme } = useTheme();
@@ -42,7 +42,7 @@ const AmlCddPA: React.FC = () => {
     //     involvedInRussianEnergyDefense.id
     // ].some(value => (value) != "no");
 
-    const [initialDialogOpen, setInitialDialogOpen] = useState(false);
+    const [initialDialogOpen, setInitialDialogOpen] = useState(true);
     const handleQuestionChange = (value: string) => {
         const selectedItem = list.find(item => t(item.value) == t(value));
         setFormData({ 
@@ -110,7 +110,7 @@ const AmlCddPA: React.FC = () => {
                                 <RadioGroup
                                     value={t(hasLegalEthicalIssues.value || '')}
                                     onValueChange={(value) => handleQuestionChange(value)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list.map((item, idx) => {
@@ -134,7 +134,7 @@ const AmlCddPA: React.FC = () => {
                                 <RadioGroup
                                     value={t(annualRenewalTermsAgreement.value || '')}
                                     onValueChange={(value) => handleQuestion2Change(value)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list2.map((item, idx) => {
@@ -177,7 +177,7 @@ const AmlCddPA: React.FC = () => {
                                 <RadioGroup
                                     value={t(restrictedCountriesWithActivity.value || '') }
                                     onValueChange={(e) => handleBusinessActivity(e)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list.map((item, idx) => {
@@ -202,7 +202,7 @@ const AmlCddPA: React.FC = () => {
                                 <RadioGroup
                                     value={t(sanctionedTiesPresent.value || '') }
                                     onValueChange={(e) => handleOtherPresence(e)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list.map((item, idx) => {
@@ -228,7 +228,7 @@ const AmlCddPA: React.FC = () => {
                                 <RadioGroup
                                     value={t(businessInCrimea.value || '')}
                                     onValueChange={(e) => handleBusinessCremia(e)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list.map((item, idx) => {
@@ -253,7 +253,7 @@ const AmlCddPA: React.FC = () => {
                                 <RadioGroup
                                     value={t(involvedInRussianEnergyDefense.value || '') }
                                     onValueChange={(e) => handleEnergyPresence(e)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list.map((item, idx) => {

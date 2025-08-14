@@ -19,7 +19,7 @@ interface InvoiceItem {
 }
 
 
-const ServiceSelection: React.FC = () => { 
+const ServiceSelection: React.FC<{ canEdit: boolean }> = ({ canEdit }) => { 
   const [shareHolderAtom] = useAtom(shareHolderDirectorControllerAtom);
   const [, setCorpoInvoiceAtom] = useAtom(companyIncorporateInvoiceAtom);
   const [serviceSelectionState, setServiceSelectionState] = useAtom(serviceSelectionStateAtom);
@@ -254,6 +254,7 @@ const ServiceSelection: React.FC = () => {
                       <Checkbox
                         checked={selectedServices.includes(fee.description)}
                         onCheckedChange={() => handleCheckboxChange(fee.description)}
+                        disabled={!canEdit}
                       />
                     )}
                     {fee.description}

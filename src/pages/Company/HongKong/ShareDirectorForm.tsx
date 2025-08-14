@@ -23,6 +23,7 @@ interface ShareholderDirectorProps {
   onDelete: () => void;
   onUpdate: (updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => void;
   isRemovable: boolean;
+  canEdit?: boolean;
 }
 
 const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
@@ -35,6 +36,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
   onDelete,
   onUpdate,
   isRemovable,
+  canEdit
 }) => {
   // Validation states
   const [emailError, setEmailError] = useState('');
@@ -81,6 +83,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             placeholder="Name on passport/official documents"
             value={name}
             onChange={(e) => onUpdate({ name: e.target.value })}
+            disabled={!canEdit}
           />
           <Label className="font-medium">{t('CompanyInformation.ownerShpRte')}</Label>
           <Input
@@ -91,6 +94,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             step={0.01}
             value={ownershipRate}
             onChange={(e) => onUpdate({ ownershipRate: parseFloat(e.target.value) })}
+            disabled={!canEdit}
           />
         </div>
 
@@ -107,6 +111,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                 validateEmail(newEmail);
                 onUpdate({ email: newEmail });
               }}
+              disabled={!canEdit}
             />
             {emailError && <span className="text-red-500 text-sm">{emailError}</span>}
           </div>
@@ -123,6 +128,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                 validatePhone(newPhone);
                 onUpdate({ phone: newPhone });
               }}
+              disabled={!canEdit}
             />
             {phoneError && <span className="text-red-500 text-sm">{phoneError}</span>}
           </div>
@@ -140,6 +146,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                 // ...(newIsDirector ? { isLegalPerson: false } : {})
               });
             }}
+            disabled={!canEdit}
           >
             <SelectTrigger className="input">
               <SelectValue>{isDirector ? 'Yes' : 'No'}</SelectValue>
@@ -154,7 +161,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
           <Select
             value={isLegalPerson.toString()}
             onValueChange={(value) => onUpdate({ isLegalPerson: value === 'true' })}
-          // disabled={isDirector}
+          disabled={!canEdit}
           >
             <SelectTrigger className="input">
               <SelectValue>{isLegalPerson ? 'Yes' : 'No'}</SelectValue>
@@ -169,6 +176,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             <button
               className="btn btn-icon text-red-500 hover:text-red-700"
               onClick={onDelete}
+              disabled={!canEdit}
             >
               <Trash2 />
             </button>
@@ -179,7 +187,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
   );
 };
 
-const ShareholderDirectorForm: React.FC = () => {
+const ShareholderDirectorForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
   const [atomShareHolderState, setShareDirControllerInfo] = useAtom(shareHolderDirectorControllerAtom);
   const [shareholders, setShareholders] = useState<ShareholderDirectorProps[]>([
     {
@@ -332,6 +340,7 @@ const ShareholderDirectorForm: React.FC = () => {
             {...shareholder}
             onDelete={() => deleteShareholder(index)}
             onUpdate={(updates) => updateShareholder(index, updates)}
+            canEdit={canEdit}
           />
         ))}
       </div>
@@ -350,7 +359,7 @@ const ShareholderDirectorForm: React.FC = () => {
         <Button
           className="btn btn-primary w-fit"
           onClick={addShareholder}
-        // disabled={totalOwnership >= 100}
+         disabled={totalOwnership >= 100 || !canEdit}
         >
           {t('CompanyInformation.addShldrDir')}
         </Button>

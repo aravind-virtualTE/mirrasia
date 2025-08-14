@@ -22,7 +22,7 @@ import DropdownSelect from "@/components/DropdownSelect";
 import MultiSelect, { Option } from "@/components/MultiSelectInput";
 import { useTranslation } from "react-i18next";
 
-const ShareholdersDirectorsDetails: React.FC = () => {
+const ShareholdersDirectorsDetails: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
   const [sdcInfo, setShareDirControllerInfo] = useAtom(
     shareHolderDirectorControllerAtom
   );
@@ -103,7 +103,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
       <div className="w-3/4 ml-4">
         <Card>
           <CardContent className="space-y-6">
-            <ShareholderDirectorForm />
+            <ShareholderDirectorForm canEdit={canEdit} />
 
             <div>
               <Label className="text-base font-semibold flex items-center gap-2">
@@ -130,6 +130,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                     onCheckedChange={(checked) =>
                       handleSharesChange(checked as boolean, t(purpose))
                     }
+                    disabled={!canEdit}
                   />
                   <Label
                     htmlFor={t(purpose)}
@@ -177,6 +178,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                     placeholder="Select Significant Controller..."
                     selectedItems={sdcInfo.significantControllerAtom}
                     onSelectionChange={handleSelectionChange}
+                    disabled={!canEdit}
                   />
                 </>
               ) : (
@@ -208,6 +210,7 @@ const ShareholdersDirectorsDetails: React.FC = () => {
                   placeholder="Select significant Controller"
                   onSelect={handleSelect}
                   selectedValue={sdcInfo.designatedContactPersonAtom}
+                  disabled={!canEdit}
                 />
               ) : (
                 "Please Fill Shareholder/Director"

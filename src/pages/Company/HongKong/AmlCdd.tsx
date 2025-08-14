@@ -31,7 +31,7 @@ type QuestionnaireItem = {
   question: string;
 };
 
-const AmlCdd: React.FC = () => {
+const AmlCdd: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [authUser] = useAtom(authAtom);
@@ -188,7 +188,7 @@ const AmlCdd: React.FC = () => {
                 onValueChange={(value) =>
                   handleQuestionChange("legal_assessment", value)
                 }
-                disabled={isDiabled}
+                disabled={isDiabled || !canEdit}
               >
                 {options.map((option) => (
                   <div
@@ -233,7 +233,7 @@ const AmlCdd: React.FC = () => {
                   <RadioGroup
                     value={businessInfoHkCompany[q.id]}
                     onValueChange={(value) => handleQuestionChange(q.id, value)}
-                    disabled={isDiabled}
+                    disabled={isDiabled || !canEdit}
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="yes" id={`${q.id}-yes`} />

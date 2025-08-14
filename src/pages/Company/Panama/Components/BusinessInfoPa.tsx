@@ -15,7 +15,7 @@ import { paFormWithResetAtom } from '../PaState';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import PanamaEntity from './PanamaEntity';
 
-const BusinessInfoPa: React.FC = () => {
+const BusinessInfoPa: React.FC<{canEdit: boolean}> = ({ canEdit }) => {
     const { theme } = useTheme();
     const [formData, setFormData] = useAtom(paFormWithResetAtom);
 
@@ -77,7 +77,7 @@ const BusinessInfoPa: React.FC = () => {
     return (
         <Card>
             <CardContent>
-                <PanamaEntity />
+                <PanamaEntity canEdit={canEdit} />
                 <div className='flex w-full p-4'>
                     <aside
                         className={`w-1/4 p-4 rounded-md shadow-sm ${theme === "light"
@@ -107,6 +107,7 @@ const BusinessInfoPa: React.FC = () => {
                                                     : formData.selectedIndustry.filter(id => id !== industry.id);
                                                 setFormData({ ...formData, selectedIndustry: updated });
                                             }}
+                                            disabled={!canEdit}
                                         />
                                         <Label className="font-normal" htmlFor={`industry-${industry.id}`} >
                                             {industry.value}
@@ -117,6 +118,7 @@ const BusinessInfoPa: React.FC = () => {
                                             placeholder="Please specify"
                                             value={formData.otherIndustryText}
                                             onChange={(e) => setFormData({ ...formData, otherIndustryText: e.target.value })}
+                                            disabled={!canEdit}
                                         />
                                     )}
                                 </div>
@@ -127,7 +129,7 @@ const BusinessInfoPa: React.FC = () => {
                                {t("panama.tradeafterDesc")}<span className="text-red-500">*</span>
                             </Label>
                             <Input type="text" id="descWhat" className="w-full p-2 border rounded-md" placeholder="Please be as specific as possible." value={formData.tradeAfterIncorporation}
-                                onChange={(e) => setFormData({ ...formData, tradeAfterIncorporation: e.target.value })} />
+                                onChange={(e) => setFormData({ ...formData, tradeAfterIncorporation: e.target.value })} disabled={!canEdit} />
                         </div>
                         <div className="space-y-2">
                             <Label className="text-base font-semibold">
@@ -139,13 +141,13 @@ const BusinessInfoPa: React.FC = () => {
                                         <Checkbox
                                             id={`industry-${industry.id}`}
                                             checked={formData.purposePaCompany.includes(industry.id)}
-
                                             onCheckedChange={(checked: any) => {
                                                 const updated = checked
                                                     ? [...formData.purposePaCompany, industry.id]
                                                     : formData.purposePaCompany.filter(id => id !== industry.id);
                                                 setFormData({ ...formData, purposePaCompany: updated });
                                             }}
+                                            disabled={!canEdit}
                                         />
                                         <Label className="font-normal" htmlFor={`industry-${industry.id}`} >
                                             {industry.value}
@@ -156,6 +158,7 @@ const BusinessInfoPa: React.FC = () => {
                                             placeholder="Please specify"
                                             value={formData.otherPurposePaCompany}
                                             onChange={(e) => setFormData({ ...formData, otherPurposePaCompany: e.target.value })}
+                                            disabled={!canEdit}
                                         />
                                     )}
                                 </div>
@@ -174,7 +177,7 @@ const BusinessInfoPa: React.FC = () => {
                             </span>
                             </Label>
                             <Input id="listCountry" placeholder="Enter Country.." className="w-full" value={formData.listCountry}
-                                onChange={(e) => setFormData({ ...formData, listCountry: e.target.value })} />
+                                onChange={(e) => setFormData({ ...formData, listCountry: e.target.value })} disabled={!canEdit} />
                         </div>
                         <div className="space-y-2">
                             <Label className="text-base font-semibold">{t("panama.sourceOfFund")}<span className="text-red-500 font-bold ml-1 flex">*
@@ -194,13 +197,13 @@ const BusinessInfoPa: React.FC = () => {
                                         <Checkbox
                                             id={`industry-${industry.id}`}
                                             checked={formData.sourceFunding.includes(industry.id)}
-
                                             onCheckedChange={(checked: any) => {
                                                 const updated = checked
                                                     ? [...formData.sourceFunding, industry.id]
                                                     : formData.sourceFunding.filter(id => id !== industry.id);
                                                 setFormData({ ...formData, sourceFunding: updated });
                                             }}
+                                            disabled={!canEdit}
                                         />
                                         <Label className="font-normal" htmlFor={`industry-${industry.id}`} >
                                             {industry.value}
@@ -211,6 +214,7 @@ const BusinessInfoPa: React.FC = () => {
                                             placeholder="Please specify"
                                             value={formData.otherSourceFund}
                                             onChange={(e) => setFormData({ ...formData, otherSourceFund: e.target.value })}
+                                            disabled={!canEdit}
                                         />
                                     )}
                                 </div>
@@ -230,7 +234,7 @@ const BusinessInfoPa: React.FC = () => {
                         </h2>
                     </aside>
                     <div className="w-3/4 ml-4">
-                        <ShareholderDirectorFormPa />
+                        <ShareholderDirectorFormPa canEdit={canEdit} />
                         <div className="space-y-2">
                             <Label className="text-base font-semibold flex items-center gap-2">
                                 {t('CompanyInformation.typeOfShares')}{" "}
@@ -251,6 +255,7 @@ const BusinessInfoPa: React.FC = () => {
                                 onValueChange={(value) =>
                                     setFormData({ ...formData, typeOfShare: value })
                                 }
+                                disabled={!canEdit}
                             >
                                 <div className="space-y-2 mt-2">
                                     {typesOfSharesObj.map((option) => (

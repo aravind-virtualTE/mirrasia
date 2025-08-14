@@ -161,10 +161,12 @@ export const serviceSelectionStateAtom = atomWithReset<ServiceSelectionState | n
 export const receiptUrl = atomWithReset("");
 export const assignedTo = atomWithReset("");
 export const isDeleted = atomWithReset(false);
+export const companyUserIdAtom = atomWithReset<string>('');
+export const companyStatusAtom = atomWithReset<string>('Pending');
 // hong kong company incorporation Atom for state management
 export const companyIncorporationAtom = atom((get) => ({
-  userId: '',
-  status: 'Pending',
+  userId: get(companyUserIdAtom),          // was: ''
+  status: get(companyStatusAtom),
   is_draft: false,
   isDisabled: get(isDisabled),
   country: get(countryAtom),
@@ -238,6 +240,8 @@ export const updateCompanyIncorporationAtom = atom(
     _get,
     set,
     updates: Partial<{
+      userId: typeof companyUserIdAtom['init']; 
+      status: typeof companyStatusAtom['init']; 
       country: Record<string, string | undefined>;
       applicantInfoForm: typeof applicantInfoFormAtom['init'];
       businessInfoHkCompany: typeof businessInfoHkCompanyAtom['init'];
@@ -257,6 +261,12 @@ export const updateCompanyIncorporationAtom = atom(
       isDeleted: boolean
     }>
   ) => {
+    if ('userId' in updates) {
+      set(companyUserIdAtom, updates.userId as string);
+    }
+    if ('status' in updates) {
+      set(companyStatusAtom, updates.status as string);
+    }
     if (updates.country) {
       set(countryAtom, updates.country);
     }
