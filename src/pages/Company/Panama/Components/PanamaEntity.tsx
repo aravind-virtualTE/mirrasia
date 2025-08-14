@@ -7,7 +7,7 @@ import React from 'react'
 import { paFormWithResetAtom } from '../PaState';
 import { t } from 'i18next';
 
-const PanamaEntity: React.FC = () => {
+const PanamaEntity: React.FC <{canEdit: boolean}> = ({ canEdit }) => {
     const { theme } = useTheme();
     const [formData, setFormData] = useAtom(paFormWithResetAtom)
 
@@ -34,7 +34,7 @@ const PanamaEntity: React.FC = () => {
                        {t("panama.panamaEntity")}
                         <span className="text-red-500 inline-flex">*</span>
                     </Label>
-                    <RadioGroup value={formData.panamaEntity.value} onValueChange={(e) => handlePanamaEntity(e)} className="gap-4">
+                    <RadioGroup value={formData.panamaEntity.value} onValueChange={(e) => handlePanamaEntity(e)} className="gap-4" disabled={!canEdit}>
                         {entityOptions.map(option => (
                             <div key={option.value} className="flex items-center space-x-2">
                                 <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
@@ -52,7 +52,7 @@ const PanamaEntity: React.FC = () => {
                     <Label htmlFor="entity" className="inline-flex">
                         {t("panama.descPanamaEntity")} <span className="text-red-500 font-bold ml-1 flex">*</span>
                     </Label>
-                    <Input id="entity" placeholder="Descibe entity" className="w-full" value={formData.pEntityInfo} onChange={(e) => setFormData({ ...formData, pEntityInfo: e.target.value })} />
+                    <Input id="entity" placeholder="Descibe entity" className="w-full" value={formData.pEntityInfo} onChange={(e) => setFormData({ ...formData, pEntityInfo: e.target.value })} disabled={!canEdit} />
                 </div>}
             </div>
         </div>

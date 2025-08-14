@@ -30,6 +30,8 @@ const IncorporatePa: React.FC = () => {
     const token = localStorage.getItem("token") as string;
     const decodedToken = jwtDecode<TokenData>(token);
 
+    const canEdit = decodedToken.userId === formData.userId
+
 
     const steps = [
         {
@@ -325,14 +327,14 @@ const IncorporatePa: React.FC = () => {
                             }}
                             className="h-full w-auto"
                         >
-                            {currentSection === 1 && <ApplicantInfo />}
-                            {currentSection === 2 && <AmlCddPA />}
-                            {currentSection === 3 && <BusinessInfoPa />}
+                            {currentSection === 1 && <ApplicantInfo canEdit={canEdit} />}
+                            {currentSection === 2 && <AmlCddPA canEdit={canEdit} />}
+                            {currentSection === 3 && <BusinessInfoPa canEdit={canEdit} />}
                             {currentSection === 4 && <PaServiceAgreement />}
                             {/* {currentSection === 5 && <PaServiceSelection />} */}
                             {currentSection === 5 && <InvoicePA />}
                             {currentSection === 6 && <PaymentInformation />}
-                            {currentSection === 7 && <InfoForIncorpoPA />}
+                            {currentSection === 7 && <InfoForIncorpoPA canEdit={canEdit} />}
                             {currentSection === 8 && <PaFinalSection />}
 
                         </motion.div>
