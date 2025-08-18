@@ -186,7 +186,7 @@ const Layout: React.FC = () => {
         {
           icon: <Receipt className="w-5 h-5 flex-shrink-0" />,
           label: 'Invoice Management',
-          roles: ['user', 'admin', 'master'],
+          roles: ['admin', 'master'],
           onClick: (_, navigate) => {
             navigate('/invoice-management');
             setIsMobileMenuOpen(false);
