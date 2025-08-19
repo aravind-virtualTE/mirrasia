@@ -51,10 +51,10 @@ const IncorporationForm = () => {
     const decodedToken = jwtDecode<TokenData>(token);
     // console.log("finalForm",finalForm)
     let canEdit = true
-    if(finalForm.userId !== ""){
-        if(decodedToken.userId === finalForm.userId){
+    if (finalForm.userId !== "") {
+        if (decodedToken.userId === finalForm.userId) {
             canEdit = true
-        }else{
+        } else {
             canEdit = false
         }
     }
@@ -153,13 +153,13 @@ const IncorporationForm = () => {
             if (!formData.phoneNumber || formData.phoneNumber.trim() === "") {
                 errors.push("Phone number cannot be empty.");
             }
-            
-             const emailOtpVerified = formData.emailOtpVerified
+
+            const emailOtpVerified = formData.emailOtpVerified
             if (emailOtpVerified != true) {
                 errors.push("Email OTP verification is required.");
             }
             const mobileOtpVerified = formData.mobileOtpVerified
-            if (mobileOtpVerified  != true) {
+            if (mobileOtpVerified != true) {
                 errors.push("Mobile OTP verification is required.");
             }
             if (!formData.email || formData.email.trim() === "" || !/^\S+@\S+\.\S+$/.test(formData.email)) {
@@ -256,7 +256,7 @@ const IncorporationForm = () => {
         } else if (currentSection === 10) {
             console.log("form Needs submission", finalForm);
         } else {
-            setAcknowledgementDialouge(true);   
+            setAcknowledgementDialouge(true);
         }
     };
 
@@ -342,7 +342,7 @@ const IncorporationForm = () => {
                             {currentSection === 2 && <AmlCdd canEdit={canEdit} />}
                             {currentSection === 3 && <CompanyInformation canEdit={canEdit} />}
                             {currentSection === 4 && <ServiceAgreement />}
-                            {currentSection === 5 && <ServiceSelection canEdit={canEdit}  />}
+                            {currentSection === 5 && <ServiceSelection canEdit={canEdit} />}
                             {currentSection === 6 && <Invoice />}
                             {currentSection === 7 && <PaymentInformation />}
                             {currentSection === 8 && <InformationIncorporation canEdit={canEdit} />}
@@ -353,7 +353,7 @@ const IncorporationForm = () => {
                 </div>
 
                 {/* Navigation buttons - Sticky positioning */}
-                <div className="sticky bottom-0 bg-background border-t p-1 mt-auto"> {/* Sticky positioning */}
+                <div className="sticky bottom-0 h-2 border-spacing-1 px-2 py-2">
                     <div className="flex justify-between">
                         <Button
                             variant="outline"
@@ -371,6 +371,7 @@ const IncorporationForm = () => {
                         </Button>
                     </div>
                 </div>
+
             </div>
 
             {/* Progress indicator - Fixed (hidden on mobile, visible on md and larger screens) */}

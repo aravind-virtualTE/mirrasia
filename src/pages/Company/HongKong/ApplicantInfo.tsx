@@ -700,7 +700,7 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
                       size="sm"
                       type="button"
                       onClick={handleSendOtp}
-                      disabled={resendTimer > 0}
+                      disabled={resendTimer > 0 || !formData.phoneNumber || !canEdit}
                     >
                       {resendTimer > 0
                         ? `Resend in ${resendTimer}s`
