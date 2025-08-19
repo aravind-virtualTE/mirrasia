@@ -78,7 +78,14 @@ const IncorporateSg: React.FC = () => {
             active: currentSection === 9,
         },
     ]
-    const canEdit = decodedToken.userId === formData.userId
+    let canEdit = true
+    if(formData.userId !== ""){
+        if(decodedToken.userId === formData.userId){
+            canEdit = true
+        }else{
+            canEdit = false
+        }
+    }
     // console.log("canEdit",canEdit)
 
     const updateDoc = async () => {
