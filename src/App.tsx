@@ -51,6 +51,8 @@ import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
 import CurrentCorpClient from './pages/CurrentClient/CurrentCorpClient';
 import SMSTracker from './components/smsManager/SmsManager';
 import InvoiceManager from './components/InvoiceManager/InvoiceManager';
+import QuoteBuilder from './components/InvoiceManager/InvoiceQuotation';
+import HKAccountingEstimator from './components/InvoiceManager/AccTaxEstimator';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -86,6 +88,10 @@ const App: React.FC = () => {
 
                   <Route element={<PublicRoute />}>
                     <Route path="/" element={<LandingPage />} />
+                    <Route path="/quotation" element={<QuoteBuilder />} />
+                    <Route path="/estimator" element={<HKAccountingEstimator />} />
+                    
+                    
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />
                     {/* <Route path="/test" element={<UsCorporateShdr />} /> */}
