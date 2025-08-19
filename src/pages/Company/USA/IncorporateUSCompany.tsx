@@ -45,6 +45,14 @@ const IncorporateUSACompany = () => {
         { number: 9, label: t('usa.steps.step9'), active: currentSection === 9 },
     ];
 
+    // let canEdit = true
+    // if(formData.userId !== ""){
+    //     if(decodedToken.userId === formData.userId){
+    //         canEdit = true
+    //     }else{
+    //         canEdit = false
+    //     }
+    // }
     const updateDoc = async () => {
         if (isSubmitting) {
             return;

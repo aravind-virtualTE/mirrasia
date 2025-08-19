@@ -207,6 +207,8 @@ export const useResetAllForms = () => {
   const resetReceiptUrl = useResetAtom(receiptUrl)
   const resetAssignedTo = useResetAtom(assignedTo)
   const resetIsDeleted = useResetAtom(isDeleted)
+  const resetcompanyUserIdAtom = useResetAtom(companyUserIdAtom)
+  const resetcompanyStatusAtom = useResetAtom(companyStatusAtom)
 
 
 
@@ -228,6 +230,8 @@ export const useResetAllForms = () => {
     resetReceiptUrl()
     resetAssignedTo()
     resetIsDeleted()
+    resetcompanyUserIdAtom()
+    resetcompanyStatusAtom()
   };
 
   return resetAll;

@@ -49,7 +49,15 @@ const IncorporationForm = () => {
     const [countryState] = useAtom(countryAtom);
 
     const decodedToken = jwtDecode<TokenData>(token);
-    const canEdit = decodedToken.userId === finalForm.userId
+    // console.log("finalForm",finalForm)
+    let canEdit = true
+    if(finalForm.userId !== ""){
+        if(decodedToken.userId === finalForm.userId){
+            canEdit = true
+        }else{
+            canEdit = false
+        }
+    }
     // console.log("canEdit",finalForm)
     const steps = [
         {

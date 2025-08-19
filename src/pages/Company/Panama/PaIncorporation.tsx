@@ -30,7 +30,15 @@ const IncorporatePa: React.FC = () => {
     const token = localStorage.getItem("token") as string;
     const decodedToken = jwtDecode<TokenData>(token);
 
-    const canEdit = decodedToken.userId === formData.userId
+
+     let canEdit = true
+    if(formData.userId !== ""){
+        if(decodedToken.userId === formData.userId){
+            canEdit = true
+        }else{
+            canEdit = false
+        }
+    }
 
 
     const steps = [
