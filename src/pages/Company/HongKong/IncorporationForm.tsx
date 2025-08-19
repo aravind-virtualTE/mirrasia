@@ -243,9 +243,12 @@ const IncorporationForm = () => {
                 setCurrentSection(currentSection + 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
             } else {
+                const receiptUrl = finalForm.receiptUrl
+                let paymentDescription = "Please complete the payment to proceed"
+                if(receiptUrl !== '')paymentDescription = "Uploaded Receipt is being confirmed"
                 toast({
                     title: "Payment Pending",
-                    description: "Please complete the payment to proceed",
+                    description: paymentDescription,
                 });
             }
         }
