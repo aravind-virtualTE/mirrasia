@@ -15,9 +15,26 @@ import pricing from "@/assets/images/pricing.jpg";
 
 import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 import { useTheme } from "@/components/theme-provider";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import FAQs from "./FAQs";
+
+// NEW: dropdown + dialog
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import HKAccountingEstimator from "@/components/InvoiceManager/AccTaxEstimator";
+import QuoteBuilder from "@/components/InvoiceManager/InvoiceQuotation";
+
 
 const LandingPage = () => {
   const { theme } = useTheme();
@@ -27,6 +44,14 @@ const LandingPage = () => {
   const pricingRef = useRef<HTMLDivElement>(null)
   const homeRef = useRef<HTMLDivElement>(null)
 
+  const [serviceDialogOpen, setServiceDialogOpen] = useState(false);
+  const [selectedService, setSelectedService] =
+    useState<"quotation" | "tax-fee" | null>(null);
+
+  const openService = (svc: "quotation" | "tax-fee") => {
+    setSelectedService(svc);
+    setServiceDialogOpen(true);
+  };
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: "smooth" })
@@ -60,6 +85,23 @@ const LandingPage = () => {
               <Button variant="ghost" className="text-foreground/70 hover:text-foreground" onClick={() => scrollToSection(incorporationRef)}>Incorporation</Button>
               <Button variant="ghost" className="text-foreground/70 hover:text-foreground" onClick={() => scrollToSection(accountingRef)}>Accounting & Taxation</Button>
               <Button variant="ghost" className="text-foreground/70 hover:text-foreground" onClick={() => scrollToSection(pricingRef)}>Pricing</Button>
+
+              {/* NEW: Services dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="text-foreground/70 hover:text-foreground">
+                    Services
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuItem onClick={() => openService("quotation")}>
+                    Quotation Request
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => openService("tax-fee")}>
+                    Tax‑Fee Estimator
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </nav>
 
             {/* Spacer */}
@@ -84,6 +126,14 @@ const LandingPage = () => {
                 <Button variant="ghost" className="justify-start" onClick={() => scrollToSection(incorporationRef)}>Incorporation</Button>
                 <Button variant="ghost" className="justify-start" onClick={() => scrollToSection(accountingRef)}>Accounting & Taxation</Button>
                 <Button variant="ghost" className="justify-start" onClick={() => scrollToSection(pricingRef)}>Pricing</Button>
+
+                {/* NEW: Services buttons in mobile */}
+                <Button variant="ghost" className="justify-start" onClick={() => openService("quotation")}>
+                  Quotation Request
+                </Button>
+                <Button variant="ghost" className="justify-start" onClick={() => openService("tax-fee")}>
+                  Tax‑Fee Estimator
+                </Button>
               </nav>
             </SheetContent>
           </Sheet>
@@ -102,6 +152,38 @@ const LandingPage = () => {
         </nav>
       </header>
 
+      {/* NEW: Services Popup Dialog */}
+      <Dialog open={serviceDialogOpen} onOpenChange={setServiceDialogOpen}>
+        <DialogContent
+          className="w-[98vw] sm:w-[95vw]  h-[90vh] sm:h-[80vh] max-w-full p-0 overflow-hidden ">
+          {/* Let children be flexed WITHOUT forcing content height bigger than container */}
+          <div className="flex h-full min-h-0 flex-col">
+            <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-2 border-b shrink-0">
+              <DialogTitle className="text-base sm:text-lg">
+                {selectedService === "quotation"
+                  ? "Quotation Request"
+                  : selectedService === "tax-fee"
+                    ? "Tax‑Fee Estimator"
+                    : "Service"}
+              </DialogTitle>
+            </DialogHeader>
+
+            {/* This is the ONLY scroller inside the dialog */}
+            <div className="flex-1 min-h-0 overflow-auto">
+              {selectedService === "quotation" ? (
+                // Provide modest padding here; invoice width stays locked, so this container scrolls
+                <div className="h-full p-3 sm:p-4">
+                  <QuoteBuilder lockInvoiceWidth />
+                </div>
+              ) : selectedService === "tax-fee" ? (
+                <div className="p-4 sm:p-6">
+                  <HKAccountingEstimator />
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Hero Section */}
       <section ref={homeRef} id="home" className="bg-gradient-to-b from-white to-gray-50 py-16 md:py-24">
@@ -121,7 +203,6 @@ const LandingPage = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   size="lg"
-                  // onClick={() => navigate("/signup")}
                   className=" text-white font-medium transition-colors"
                 >
                   <Link to="/signup">{t("landingPage.registerNow")}</Link>
@@ -288,7 +369,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* Third Row - pricing */}
+          {/* Third Row - pricing (ORIGINAL KEPT) */}
           <div ref={pricingRef} id="pricing" className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center md:mt-12">
             <div className="order-0 md:order-0 bg-white p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 transform hover:-translate-y-1">
               <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-gray-800 tracking-tight">

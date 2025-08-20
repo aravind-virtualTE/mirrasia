@@ -64,7 +64,7 @@ function bucketTxn(count: number): TxnIndex {
 export default function HKAccountingEstimator() {
   const [revenue, setRevenue] = useState<string>("2000000");
   const [txns, setTxns] = useState<string>("60");
-  const [showTable, setShowTable] = useState<boolean>(false);
+//   const [showTable, setShowTable] = useState<boolean>(false);
 
   const result = useMemo(() => {
     const revHKD = Number(revenue || 0);
@@ -134,17 +134,17 @@ export default function HKAccountingEstimator() {
               Based on <span className="font-medium">{result.revLabel}</span> revenue and <span className="font-medium">{result.txnLabel}</span> transactions.
             </div>
           </div>
-          <button
+          {/* <button
             onClick={() => setShowTable((s) => !s)}
             className="rounded-xl border px-4 py-2 text-sm hover:bg-gray-50"
           >
             {showTable ? "Hide full matrix" : "Show full matrix"}
-          </button>
+          </button> */}
         </div>
       </div>
 
       {/* Matrix */}
-      {showTable && (
+      {/* {showTable && (
         <div className="rounded-2xl border overflow-x-auto shadow-sm">
           <table className="w-full text-sm">
             <thead>
@@ -169,7 +169,7 @@ export default function HKAccountingEstimator() {
             </tbody>
           </table>
         </div>
-      )}
+      )} */}
 
       {/* Disclaimers */}
       <div className="rounded-2xl border p-4 text-xs leading-relaxed text-muted-foreground bg-white">
