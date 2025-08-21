@@ -309,7 +309,7 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     "Designated Contact Person": shareholderData.designatedContactPersonAtom,
                     "Significant Controllers": Array.isArray(shareholderData.significantControllerAtom)
                         ? shareholderData.significantControllerAtom
-                            .map((controller: { label: string }) => controller.label)
+                            .map((controller: { label: string }) => controller.label).filter((label: string) => label !== "")
                             .join(", ")
                         : "N/A",
 

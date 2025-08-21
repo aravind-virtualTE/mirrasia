@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Menu, Home, Users, FileSignature, Files, RefreshCw, Briefcase, FileCheck, MessageSquare, Send, ChevronDown, ChevronRight, Receipt } from 'lucide-react'
+import { Menu, Home, Users, FileSignature, Files, RefreshCw, Briefcase, FileCheck, MessageSquare, Send, ChevronDown, ChevronRight, Receipt ,UserPlus} from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Navigate, NavigateFunction, Outlet, useNavigate } from 'react-router-dom';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup, } from "@/components/ui/resizable"
@@ -192,6 +192,15 @@ const Layout: React.FC = () => {
             setIsMobileMenuOpen(false);
           },
         },
+        {
+          icon: <UserPlus className="w-5 h-5 flex-shrink-0" />,
+          label: 'Member/Director Management',
+          roles: ['user','admin', 'master'],
+          onClick: (_, navigate) => {
+            navigate('/directormember-management');
+            setIsMobileMenuOpen(false);
+          },
+        },
       ]
     }
   ];
@@ -252,12 +261,12 @@ const Layout: React.FC = () => {
                 <Button
                   variant="ghost"
                   className={`w-full justify-start text-left ${
-                    isCollapsed && !isMobile ? 'px-2' : 'px-3'
+                    isCollapsed && !isMobile ? 'px-1' : 'px-2'
                   } h-10`}
                   onClick={() => toggleMenu(group.id)}
                 >
                   {group.icon}
-                  <span className={`ml-3 truncate flex-1 ${
+                  <span className={`ml-2 truncate flex-1 ${
                     isCollapsed && !isMobile ? 'hidden' : 'inline'
                   }`}>
                     {group.label}
