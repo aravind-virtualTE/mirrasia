@@ -26,7 +26,7 @@ const list = [
   'LLC (limited liability company)', 'Corporation', 'Consultation required before proceeding'
 ]
 
-export default function CompanyInformationUS() {
+const CompanyInformationUS = ({ canEdit }: { canEdit: boolean }) =>{
   const { t } = useTranslation();
   const [formData, setFormData] = useAtom(usaFormWithResetAtom);
   const { theme } = useTheme();
@@ -97,7 +97,7 @@ export default function CompanyInformationUS() {
                 </Label>
               </div>
               <div className="space-y-2">
-                <Select onValueChange={handleOptionChange} value={formData.selectedEntity}>
+                <Select onValueChange={handleOptionChange} value={formData.selectedEntity} disabled={!canEdit}>
                   <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
@@ -142,14 +142,14 @@ export default function CompanyInformationUS() {
                   placeholder="Select country"
                   onSelect={handleCountrySelect}
                   selectedItem={selectedCountry}
-                  disabled={false}
+                  disabled={!canEdit}
                 />
               </div>
             </div>
           </div>
-          <Section9 />
-          <Section12 />
-          <Section13 />
+          <Section9 canEdit={canEdit} />
+          <Section12 canEdit={canEdit} />
+          <Section13 canEdit={canEdit} />
         </CardContent>
       </Card>
 
@@ -174,7 +174,7 @@ export default function CompanyInformationUS() {
     </>
   )
 }
-
+export default CompanyInformationUS
 const CorporationVsLLC = () => {
   const { t } = useTranslation();
   return (

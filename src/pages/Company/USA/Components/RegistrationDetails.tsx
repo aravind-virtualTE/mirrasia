@@ -29,7 +29,7 @@ const list3 = [
 const noShareList = [
   'Total capital divided by $1 (1 share price = $1; universal method)', '1 share (minimum) (1 share price = total capital)', '100', '1,000', '10,000'
 ]
-const RegistrationDetails = () => {
+const RegistrationDetails = ({canEdit}: {canEdit: boolean}) => {
   const {t} = useTranslation()
   const { theme } = useTheme();
   const [formData, setFormData] = useAtom(usaFormWithResetAtom);
@@ -99,6 +99,7 @@ const RegistrationDetails = () => {
                   placeholder="Enter custom price or select"
                   selectedValue={formData.totalCapital}
                   onSelect={handlePriceSelect}
+                  disabled={!canEdit}
                 />
               </div>
               <div className="space-y-2">
@@ -122,6 +123,7 @@ const RegistrationDetails = () => {
                   placeholder="Select..."
                   selectedValue={formData.companyExecutives}
                   onSelect={handleOptionChange}
+                  disabled={!canEdit}
                 />
               </div>
               <div className="space-y-2">
@@ -143,6 +145,7 @@ const RegistrationDetails = () => {
                 <Select
                   onValueChange={handleAddressChange}
                   value={formData.localCompanyRegistration}
+                  disabled={!canEdit}
                 >
                   <SelectTrigger className="w-full md:w-80">
                     <SelectValue />
@@ -173,6 +176,7 @@ const RegistrationDetails = () => {
                           businessAddress: e.target.value,
                         })
                       }
+                      disabled={!canEdit}
                     />
                   </div>
                 )}
@@ -198,6 +202,7 @@ const RegistrationDetails = () => {
                   placeholder="Select..."
                   selectedValue={formData.noOfSharesSelected}
                   onSelect={handleShareChange}
+                  disabled={!canEdit}
                 />
               </div>
             </div>

@@ -29,6 +29,7 @@ interface ShareholderDirectorProps {
   onDelete: () => void;
   onUpdate: (updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => void;
   isRemovable: boolean;
+  canEdit?: boolean
 }
 
 const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
@@ -41,6 +42,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
   onDelete,
   onUpdate,
   isRemovable,
+  canEdit
 }) => {
   // Validation states
   const [emailError, setEmailError] = useState('');
@@ -92,6 +94,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             placeholder="Name on passport/official documents"
             value={name}
             onChange={(e) => onUpdate({ name: e.target.value })}
+            disabled={!canEdit}
           />
           <Label className="font-medium">{t('CompanyInformation.ownerShpRte')}</Label>
           <Input
@@ -102,6 +105,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             step={0.01}
             value={ownershipRate}
             onChange={(e) => onUpdate({ ownershipRate: parseFloat(e.target.value) })}
+            disabled={!canEdit}
           />
         </div>
 
@@ -118,6 +122,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                 validateEmail(newEmail);
                 onUpdate({ email: newEmail });
               }}
+              disabled={!canEdit}
             />
             {emailError && <span className="text-red-500 text-sm">{emailError}</span>}
           </div>
@@ -134,6 +139,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                 validatePhone(newPhone);
                 onUpdate({ phone: newPhone });
               }}
+              disabled={!canEdit}
             />
             {phoneError && <span className="text-red-500 text-sm">{phoneError}</span>}
           </div>
@@ -149,6 +155,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                 onUpdate({ isDirector: selectedOption });
               }
             }}
+            disabled={!canEdit}
           >
             <SelectTrigger className="input">
               <SelectValue>{t(isDirector.value)}</SelectValue>
@@ -171,6 +178,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                 onUpdate({ isLegalPerson: selectedOption });
               }
             }}
+            disabled={!canEdit}
           >
             <SelectTrigger className="input">
               <SelectValue>{t(isLegalPerson.value)}</SelectValue>
@@ -198,7 +206,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
   );
 };
 
-const ShareholderDirectorForm: React.FC = () => {
+const ShareholderDirectorForm = ({ canEdit }: { canEdit: boolean }) => {
   const { t } = useTranslation()
   const [formData, setFormData] = useAtom(usaFormWithResetAtom);
   const [shareholders, setShareholders] = useState<ShareholderDirectorProps[]>([
@@ -292,8 +300,8 @@ const ShareholderDirectorForm: React.FC = () => {
       });
       const docId = localStorage.getItem('companyRecordId');
       // console.log("formData",formData)
-      let country  = "US_Individual"
-      if(formData.selectedEntity == "Corporation") {
+      let country = "US_Individual"
+      if (formData.selectedEntity == "Corporation") {
         country = "US_Corporate"
       }
       const payload = { _id: docId, inviteData: extractedData, country };
@@ -351,6 +359,7 @@ const ShareholderDirectorForm: React.FC = () => {
             {...shareholder}
             onDelete={() => deleteShareholder(index)}
             onUpdate={(updates) => updateShareholder(index, updates)}
+            canEdit={canEdit}
           />
         ))}
       </div>
@@ -369,7 +378,7 @@ const ShareholderDirectorForm: React.FC = () => {
         <Button
           className="btn btn-primary w-fit"
           onClick={addShareholder}
-        // disabled={totalOwnership >= 100}
+          disabled={totalOwnership >= 100 || !canEdit}
         >
           {t('CompanyInformation.addShldrDir')}
         </Button>

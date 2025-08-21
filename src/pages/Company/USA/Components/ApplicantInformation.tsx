@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { sendEmailOtpforVerification, validateOtpforVerification } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-const Section1: React.FC = () => {
+const Section1: React.FC <{canEdit: boolean}> = ({ canEdit })  => {
     const { t } = useTranslation();
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     type OtpSession = { sms: string | null; email: string | null };
@@ -116,7 +116,7 @@ const Section1: React.FC = () => {
                             <Label htmlFor="name" className="inline-flex">
                                 {t('usa.AppInfo.nameOfApplicant')}<span className="text-destructive">*</span>
                             </Label>
-                            <Input id="name" placeholder={t('usa.AppInfo.namePlaceholder')} required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                            <Input id="name" placeholder={t('usa.AppInfo.namePlaceholder')} required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} disabled={!canEdit} />
                         </div>
                         {/* <div className="space-y-2">
                             <Label htmlFor="email" className="text-base">
@@ -150,7 +150,7 @@ const Section1: React.FC = () => {
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                             required
-                                            disabled={formData.emailOtpVerified}
+                                            disabled={formData.emailOtpVerified || !canEdit}
                                         />
                                     </div>
 
@@ -209,13 +209,14 @@ const Section1: React.FC = () => {
                                     placeholder={t('usa.AppInfo.namePlaceholder')}
                                     value={name}
                                     onChange={handleChange(index)}
+                                    disabled={!canEdit}
                                     required />
                             ))
                         }
                     </div>
                 </CardContent>
             </Card>
-            <ApplicantInformation />
+            <ApplicantInformation canEdit={canEdit}/>
         </>
     )
 }

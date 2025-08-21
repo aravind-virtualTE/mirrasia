@@ -45,6 +45,15 @@ const IncorporateUSACompany = () => {
         { number: 9, label: t('usa.steps.step9'), active: currentSection === 9 },
     ];
 
+     let canEdit = true
+    if(formData.userId !== ""){
+        if(decodedToken.userId === formData.userId){
+            canEdit = true
+        }else{
+            canEdit = false
+        }
+    }
+
     // let canEdit = true
     // if(formData.userId !== ""){
     //     if(decodedToken.userId === formData.userId){
@@ -57,6 +66,7 @@ const IncorporateUSACompany = () => {
         if (isSubmitting) {
             return;
         }
+        if (currentSection === 2) formData.isDisabled = true;
         setIsSubmitting(true);
         // const docId = localStorage.getItem("companyRecordId");
         formData.userId = `${decodedToken.userId}`
@@ -285,14 +295,14 @@ const IncorporateUSACompany = () => {
                             }}
                             className="h-full w-auto"
                         >
-                            {currentSection === 1 && <ApplicantInformation />}
-                            {currentSection === 2 && <AmlCddUS />}
-                            {currentSection === 3 && <CompanyInformationUS />}
+                            {currentSection === 1 && <ApplicantInformation canEdit={canEdit} />}
+                            {currentSection === 2 && <AmlCddUS canEdit={canEdit} />}
+                            {currentSection === 3 && <CompanyInformationUS canEdit={canEdit} />}
                             {currentSection === 4 && <ServiceAgreement />}
                             {currentSection === 5 && <UsServiceSelection />}
                             {currentSection === 6 && <InvoiceUs />}
                             {currentSection === 7 && <PaymentInformation />}
-                            {currentSection === 8 && <RegistrationDetails />}
+                            {currentSection === 8 && <RegistrationDetails canEdit={canEdit}  />}
                             {currentSection === 9 && <FinalSection />}
                         </motion.div>
                     </AnimatePresence>

@@ -7,7 +7,7 @@ import { useTheme } from "@/components/theme-provider";
 import { Checkbox } from "@/components/ui/checkbox"
 import { useTranslation } from "react-i18next";
 
-const Section9 = () => {
+const Section9 =  ({ canEdit }: { canEdit: boolean }) => {
     const { t } = useTranslation();
   
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
@@ -137,6 +137,7 @@ const Section9 = () => {
                                         setFormData({ ...formData, selectedIndustry: updated });
                                 }}
                                 className={option.isOther ? "mt-2" : ""}
+                                disabled={!canEdit}
                             />
                             {option.isOther ? (
                                 <div className="space-y-1 w-full">
@@ -159,7 +160,7 @@ const Section9 = () => {
                       //  className="inline-flex"
                        > {t("usa.bInfo.descProductName")} <span className="text-destructive">*</span>
                     </Label>
-                    <Input id="prodDesc" placeholder="Your answer" required value={formData.descriptionOfProducts} onChange={(e) => setFormData({ ...formData, descriptionOfProducts: e.target.value })} />
+                    <Input id="prodDesc" placeholder="Your answer" required value={formData.descriptionOfProducts} onChange={(e) => setFormData({ ...formData, descriptionOfProducts: e.target.value })} disabled={!canEdit} />
                 </div>
 
                 {/* descBusiness Field */}
@@ -167,13 +168,13 @@ const Section9 = () => {
                     <Label htmlFor="descBusiness" className="inline-flex">
                     {t("usa.bInfo.descBusinessInfo")} <span className="text-destructive">*</span>
                     </Label>
-                    <Input id="descBusiness" placeholder="Your answer" required value={formData.descriptionOfBusiness} onChange={(e) => setFormData({ ...formData, descriptionOfBusiness: e.target.value })} />
+                    <Input id="descBusiness" placeholder="Your answer" required value={formData.descriptionOfBusiness} onChange={(e) => setFormData({ ...formData, descriptionOfBusiness: e.target.value })} disabled={!canEdit} />
                 </div>
 
                 {/* website Field */}
                 <div className="space-y-2">
                     <Label htmlFor="website" className="inline-flex"> {t("usa.bInfo.enterWeb")} </Label>
-                    <Input id="website" placeholder="Your answer" required value={formData.webAddress} onChange={(e) => setFormData({ ...formData, webAddress: e.target.value })} />
+                    <Input id="website" placeholder="Your answer" required value={formData.webAddress} onChange={(e) => setFormData({ ...formData, webAddress: e.target.value })} disabled={!canEdit} />
                 </div>
 
                 <div className="space-y-2">
@@ -192,6 +193,7 @@ const Section9 = () => {
                                         setFormData({ ...formData, purposeOfEstablishmentCompany: updated });
                                 }}
                                 className={option.isOther ? "mt-2" : ""}
+                                disabled={!canEdit}
                             />
                             {option.isOther ? (
                                 <div className="space-y-1 w-full">

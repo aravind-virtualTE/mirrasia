@@ -22,7 +22,7 @@ const list2 = [
     { "id": "didntIntedEveryYear", "value": "usa.AppInfo.didntIntedEveryYear" },
     { "id": "consultationRequired", "value": "usa.AppInfo.consultationRequired" }
 ]
-const AmlCddUS: React.FC = () => {
+const AmlCddUS: React.FC <{canEdit: boolean}> = ({ canEdit })=> {
     const { t } = useTranslation();
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const { theme } = useTheme();
@@ -75,7 +75,7 @@ const AmlCddUS: React.FC = () => {
         const selectedItem = list.find(item => t(item.value) == t(value));
         setFormData({ ...formData,  involvedInRussianEnergyDefense: selectedItem || {id: '', value : ""} })
     }
-
+    // console.log("formData.isDisabled || !canEdit",formData.isDisabled , !canEdit)
     return (
         <>
             <Card>
@@ -110,7 +110,7 @@ const AmlCddUS: React.FC = () => {
                                 <RadioGroup
                                     value={t(hasLegalEthicalIssues.value || '')}
                                     onValueChange={(value) => handleQuestionChange(value)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list.map((item, idx) => {
@@ -134,7 +134,7 @@ const AmlCddUS: React.FC = () => {
                                 <RadioGroup
                                     value={t(annualRenewalTermsAgreement.value || '')}
                                     onValueChange={(value) => handleQuestion2Change(value)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list2.map((item, idx) => {
@@ -179,7 +179,7 @@ const AmlCddUS: React.FC = () => {
                                 <RadioGroup
                                     value={t(restrictedCountriesWithActivity.value || '') }
                                     onValueChange={(e) => handleBusinessActivity(e)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list.map((item, idx) => {
@@ -204,7 +204,7 @@ const AmlCddUS: React.FC = () => {
                                 <RadioGroup
                                     value={t(sanctionedTiesPresent.value || '') }
                                     onValueChange={(e) => handleOtherPresence(e)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list.map((item, idx) => {
@@ -230,7 +230,7 @@ const AmlCddUS: React.FC = () => {
                                 <RadioGroup
                                     value={t(businessInCrimea.value || '')}
                                     onValueChange={(e) => handleBusinessCremia(e)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list.map((item, idx) => {
@@ -255,7 +255,7 @@ const AmlCddUS: React.FC = () => {
                                 <RadioGroup
                                     value={t(involvedInRussianEnergyDefense.value || '') }
                                     onValueChange={(e) => handleEnergyPresence(e)}
-                                    disabled={formData.isDisabled}
+                                    disabled={formData.isDisabled || !canEdit}
                                 >
                                     {
                                         list.map((item, idx) => {
