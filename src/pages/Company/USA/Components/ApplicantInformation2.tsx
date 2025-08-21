@@ -30,7 +30,7 @@ const checkList =[
     }
   ]
 
-const ApplicantInformation = () => {
+const ApplicantInformation: React.FC <{canEdit: boolean}> = ({ canEdit }) => {
     const { t } = useTranslation();
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const handleRelationshipChange = (relationshipId: string, checked: boolean) => {
@@ -88,6 +88,7 @@ const ApplicantInformation = () => {
                                     onCheckedChange={(checked) =>
                                         handleRelationshipChange(relationship.id, checked as boolean)
                                     }
+                                    disabled={!canEdit}
                                 />
                                 <Label htmlFor={relationship.id} className="text-sm font-normal">
                                     {t(relationship.value)}
@@ -100,7 +101,7 @@ const ApplicantInformation = () => {
                     <Label htmlFor="phoneNum" className="inline-flex">
                         {t('SwitchService.ApplicantInfoForm.phoneNum')} <span className="text-destructive">*</span>
                     </Label>
-                    <Input id="phoneNum" placeholder="Your answer" required value={formData.phoneNum || ''} onChange={(e) => setFormData({ ...formData, phoneNum: e.target.value })} />
+                    <Input id="phoneNum" placeholder="Your answer" required value={formData.phoneNum || ''} onChange={(e) => setFormData({ ...formData, phoneNum: e.target.value })} disabled={!canEdit} />
                 </div>
                 <div className="grid grid-cols-12 gap-4">
                     <div className="col-span-4 space-y-2">
@@ -110,6 +111,7 @@ const ApplicantInformation = () => {
                         <Select
                             value={formData.snsAccountId.id}
                             onValueChange={handleSelectChange}
+                            disabled={!canEdit}
                         >
                             <SelectTrigger id="snsPlatform" className="w-full">
                                 <SelectValue placeholder="Select SNS Platform" />
@@ -133,6 +135,7 @@ const ApplicantInformation = () => {
                             value={formData.snsAccountId.value || ''}
                             onChange={handleChange}
                             className="w-full"
+                            disabled={!canEdit}
                         />
                     </div>
                 </div>

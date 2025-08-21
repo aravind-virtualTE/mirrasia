@@ -5,7 +5,7 @@ import { usaFormWithResetAtom } from '../UsState';
 import { useTheme } from "@/components/theme-provider";
 import { useTranslation } from "react-i18next";
 
-const Section13 = () => {
+const Section13 =  ({ canEdit }: { canEdit: boolean }) => {
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const { theme } = useTheme();
     const { t } = useTranslation();
@@ -24,7 +24,7 @@ const Section13 = () => {
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">{t("usa.bInfo.enterAddress")}
                     </Label>
-                    <Input id="descBusiness" placeholder={t("usa.AppInfo.namePlaceholder")}required value={formData.accountingDataAddress} onChange={(e) => setFormData({ ...formData, accountingDataAddress: e.target.value })} />
+                    <Input id="descBusiness" placeholder={t("usa.AppInfo.namePlaceholder")}required value={formData.accountingDataAddress} onChange={(e) => setFormData({ ...formData, accountingDataAddress: e.target.value })} disabled={!canEdit} />
                 </div>
             </div>
         </div>

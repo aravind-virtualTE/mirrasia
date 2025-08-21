@@ -10,7 +10,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useTranslation } from "react-i18next";
 
 
-const Section12 = () => {
+const Section12 = ({ canEdit }: { canEdit: boolean }) => {
     const { t } = useTranslation();
     const [formData, setFormData] = useAtom(usaFormWithResetAtom);
     const { theme } = useTheme();
@@ -43,7 +43,7 @@ const Section12 = () => {
                 <p className="text-sm text-gray-600">{t("usa.bInfo.shrldSection.para")}</p>
             </aside>
             <div className="w-3/4 ml-4">
-                <ShareholderDirectorForm />
+                <ShareholderDirectorForm canEdit={canEdit} />
                 {/* select Industry */}
                 <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
@@ -65,6 +65,7 @@ const Section12 = () => {
                         placeholder={t("usa.bInfo.shrldSection.selectDesignatedContact")}
                         onSelect={handleSelect}
                         selectedValue={formData.designatedContact}
+                        disabled={!canEdit}
                     />
                 ) : (
                     "Please Fill Shareholder/Director"
@@ -91,6 +92,7 @@ const Section12 = () => {
                         placeholder={t("usa.bInfo.shrldSection.selectBenificial")}
                         onSelect={handleSelectBO}
                         selectedValue={formData.beneficialOwner}
+                        disabled={!canEdit}
                     />
                 ) : (
                     "Please Fill Shareholder/Director"
