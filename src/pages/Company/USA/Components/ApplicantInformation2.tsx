@@ -1,8 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { HelpCircle } from "lucide-react"
+// import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+// import { HelpCircle } from "lucide-react"
 import { useAtom } from "jotai"
 import { usaFormWithResetAtom } from "../UsState"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -66,14 +66,15 @@ const ApplicantInformation = () => {
                     <Label className="text-base flex items-center font-semibold gap-2">
                     {t('usa.AppInfo.relationBtw')} 
                         <span className="text-red-500 flex font-bold ml-1">
-                            <Tooltip>
+                            {/* <Tooltip>
                                 <TooltipTrigger asChild>
                                     <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-[500px] text-base">
                                 {t('usa.AppInfo.otherInputPopUp')}                                   
                                 </TooltipContent>
-                            </Tooltip>*
+                            </Tooltip> */}
+                            *
                         </span>
                     </Label>
                     <p className="text-sm text-gray-500">{t('usa.AppInfo.PlzSelectAllApply')}</p>

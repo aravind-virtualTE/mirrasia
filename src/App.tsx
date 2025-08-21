@@ -53,6 +53,7 @@ import SMSTracker from './components/smsManager/SmsManager';
 import InvoiceManager from './components/InvoiceManager/InvoiceManager';
 import QuoteBuilder from './components/InvoiceManager/InvoiceQuotation';
 import HKAccountingEstimator from './components/InvoiceManager/AccTaxEstimator';
+import MemberDirectorManager from './components/memDirManager/MemberDirectorManager';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -125,7 +126,7 @@ const App: React.FC = () => {
                       <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
                       <Route path="/company-details/:id" element={<CompanyDetail />} />
                       <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
-
+                      <Route path="/directormember-management" element={<MemberDirectorManager />} />
                     </Route>
                   </Route>
 
