@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   Table,
@@ -12,46 +13,40 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 
-type BreakdownLine = {
-  label: string;
-  qty: number;
-  unit: number;
-  amount: number;
-};
+type Line = { label: string; qty: number; unit: number; amount: number };
 
 const ceilPairs = (n: number) => (n <= 0 ? 0 : Math.ceil(n / 2));
-
 const USD = (v: number) =>
   v.toLocaleString(undefined, { style: "currency", currency: "USD" });
 
-export default function MemberDirectorManager() {
-  const [indivSHAdd, setIndivSHAdd] = React.useState<number>(1);
-  const [corpSHAdd, setCorpSHAdd] = React.useState<number>(1);
-  const [indivDirAdd, setIndivDirAdd] = React.useState<number>(0);
-  const [corpDirAdd, setCorpDirAdd] = React.useState<number>(0);
-  const [indivDirRemove, setIndivDirRemove] = React.useState<number>(0);
-  const [corpDirRemove, setCorpDirRemove] = React.useState<number>(0);
+export default function MemberDirectorManager({
+  className = "",
+}: {
+  className?: string;
+}) {
+  // Inputs
+  const [indivSHAdd, setIndivSHAdd] = React.useState(1);
+  const [corpSHAdd, setCorpSHAdd] = React.useState(1);
+  const [indivDirAdd, setIndivDirAdd] = React.useState(0);
+  const [corpDirAdd, setCorpDirAdd] = React.useState(0);
+  const [indivDirRemove, setIndivDirRemove] = React.useState(0);
+  const [corpDirRemove, setCorpDirRemove] = React.useState(0);
 
-  // RATES (from your table)
+  // Rates
   const R = {
-    // Adding – shareholders
     indivShKycPer2: 65,
     indivShHandlingPer2: 260,
     corpShKycPer1: 130,
     corpShHandlingPer1: 260,
-    // Adding – directors (KYC only)
     indivDirKycPer2: 75,
     corpDirKycPer1: 130,
-    // Removing – directors (flat handling)
     indivDirRemovePer2: 55,
     corpDirRemovePer1: 100,
   };
 
-  const lines: BreakdownLine[] = [];
-
-  // Add individual shareholders
+  // Build lines
+  const lines: Line[] = [];
   const shIndivPairs = ceilPairs(indivSHAdd);
   if (shIndivPairs > 0) {
     lines.push({
@@ -61,14 +56,12 @@ export default function MemberDirectorManager() {
       amount: shIndivPairs * R.indivShKycPer2,
     });
     lines.push({
-      label: "Handling fee — new individual shareholder(s) (per 2)",
+      label: "Handling — new individual shareholder(s) (per 2)",
       qty: shIndivPairs,
       unit: R.indivShHandlingPer2,
       amount: shIndivPairs * R.indivShHandlingPer2,
     });
   }
-
-  // Add corporate shareholders
   if (corpSHAdd > 0) {
     lines.push({
       label: "KYC — new corporate shareholder(s) (per 1)",
@@ -77,14 +70,12 @@ export default function MemberDirectorManager() {
       amount: corpSHAdd * R.corpShKycPer1,
     });
     lines.push({
-      label: "Handling fee — new corporate shareholder(s) (per 1)",
+      label: "Handling — new corporate shareholder(s) (per 1)",
       qty: corpSHAdd,
       unit: R.corpShHandlingPer1,
       amount: corpSHAdd * R.corpShHandlingPer1,
     });
   }
-
-  // Add directors (KYC only)
   const dirIndivPairs = ceilPairs(indivDirAdd);
   if (dirIndivPairs > 0) {
     lines.push({
@@ -102,12 +93,10 @@ export default function MemberDirectorManager() {
       amount: corpDirAdd * R.corpDirKycPer1,
     });
   }
-
-  // Remove directors
   const dirRmIndivPairs = ceilPairs(indivDirRemove);
   if (dirRmIndivPairs > 0) {
     lines.push({
-      label: "Handling fee — remove individual director(s) (per 2)",
+      label: "Handling — remove individual director(s) (per 2)",
       qty: dirRmIndivPairs,
       unit: R.indivDirRemovePer2,
       amount: dirRmIndivPairs * R.indivDirRemovePer2,
@@ -115,7 +104,7 @@ export default function MemberDirectorManager() {
   }
   if (corpDirRemove > 0) {
     lines.push({
-      label: "Handling fee — remove corporate director(s) (per 1)",
+      label: "Handling — remove corporate director(s) (per 1)",
       qty: corpDirRemove,
       unit: R.corpDirRemovePer1,
       amount: corpDirRemove * R.corpDirRemovePer1,
@@ -123,6 +112,12 @@ export default function MemberDirectorManager() {
   }
 
   const total = lines.reduce((s, l) => s + l.amount, 0);
+
+  // Helpers
+  const setNum =
+    (setter: (v: number) => void) =>
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setter(Math.max(0, parseInt(e.target.value || "0")));
 
   const reset = () => {
     setIndivSHAdd(0);
@@ -133,282 +128,231 @@ export default function MemberDirectorManager() {
     setCorpDirRemove(0);
   };
 
-  // Quick scenario helpers (mirroring the screenshot ideas)
-  const applyScenario = (s: number) => {
-    // Define a few handy presets
-    if (s === 1) {
-      // Appoint 2 individual shareholder-directors
-      setIndivSHAdd(2);
-      setCorpSHAdd(0);
-      setIndivDirAdd(2);
-      setCorpDirAdd(0);
-      setIndivDirRemove(0);
-      setCorpDirRemove(0);
-    } else if (s === 2) {
-      // Appoint 1 corporate shareholder
-      setIndivSHAdd(0);
-      setCorpSHAdd(1);
-      setIndivDirAdd(0);
-      setCorpDirAdd(0);
-      setIndivDirRemove(0);
-      setCorpDirRemove(0);
-    } else if (s === 3) {
-      // Add 2 individual shareholder-directors & remove 2 individual directors
-      setIndivSHAdd(2);
-      setCorpSHAdd(0);
-      setIndivDirAdd(2);
-      setCorpDirAdd(0);
-      setIndivDirRemove(2);
-      setCorpDirRemove(0);
-    } else if (s === 4) {
-      // Add 2 individual SH+DIR + 1 corporate SH, remove 2 individual DIR
-      setIndivSHAdd(2);
-      setCorpSHAdd(1);
-      setIndivDirAdd(2);
-      setCorpDirAdd(0);
-      setIndivDirRemove(2);
-      setCorpDirRemove(0);
-    }
-  };
-
-  const NumberBox = ({
+  const Field = ({
     id,
     label,
     value,
-    setValue,
+    onChange,
     hint,
   }: {
     id: string;
     label: string;
     value: number;
-    setValue: (v: number) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     hint?: string;
   }) => (
-    <div className="space-y-1.5">
-      <Label htmlFor={id} className="text-sm">
-        {label}
-      </Label>
+    <div className="grid gap-1">
+      <div className="flex items-center justify-between">
+        <Label htmlFor={id} className="text-xs leading-none">
+          {label}
+        </Label>
+        {hint ? (
+          <span className="text-[11px] text-muted-foreground">{hint}</span>
+        ) : null}
+      </div>
       <Input
         id={id}
         type="number"
         min={0}
-        inputMode="numeric"
         value={isNaN(value) ? 0 : value}
-        onChange={(e) => setValue(Math.max(0, parseInt(e.target.value || "0")))}
-        className="bg-white/70 border-slate-200 focus-visible:ring-sky-300"
+        onChange={onChange}
+        className="h-8 px-2 text-sm"
       />
-      {hint ? (
-        <p className="text-xs text-slate-500">{hint}</p>
-      ) : null}
     </div>
   );
 
   return (
-    <div className="w-full mx-auto max-w-5xl p-3 md:p-6">
-      {/* Header */}
-      <Card className="border-sky-100 bg-sky-50/60">
-        <CardHeader className="p-4">
-          <CardTitle className="text-lg md:text-xl">
-            Hong Kong — Shareholder / Director Changes
-          </CardTitle>
-          <p className="text-xs text-slate-600 mt-1">
-            Individuals are charged per every <strong>2 persons</strong>;
-            corporates per every <strong>1 entity</strong>. If a person becomes
-            both shareholder and director, count them in both sections.
-          </p>
-        </CardHeader>
-      </Card>
-
-      {/* Inputs */}
-      <div className="grid grid-cols-1 gap-4 md:gap-6 mt-4">
-        <Card className="border-slate-200 bg-white">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Inputs</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="rounded-xl bg-sky-50/70 p-4 border border-sky-100">
-                <p className="font-medium mb-3">Add Shareholders</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <NumberBox
-                    id="add-indiv-sh"
-                    label="Individuals to add (shareholder — individual)"
-                    value={indivSHAdd}
-                    setValue={setIndivSHAdd}
-                    hint="Charged per 2 individuals"
-                  />
-                  <NumberBox
-                    id="add-corp-sh"
-                    label="Corporates to add (shareholder — corporate)"
-                    value={corpSHAdd}
-                    setValue={setCorpSHAdd}
-                    hint="Charged per 1 corporate"
-                  />
-                </div>
-              </div>
-
-              <div className="rounded-xl bg-emerald-50/70 p-4 border border-emerald-100">
-                <p className="font-medium mb-3">Add Directors</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <NumberBox
-                    id="add-indiv-dir"
-                    label="Individuals to add (director — individual)"
-                    value={indivDirAdd}
-                    setValue={setIndivDirAdd}
-                    hint="KYC only, per 2 individuals"
-                  />
-                  <NumberBox
-                    id="add-corp-dir"
-                    label="Corporates to add (director — corporate)"
-                    value={corpDirAdd}
-                    setValue={setCorpDirAdd}
-                    hint="KYC only, per 1 corporate"
-                  />
-                </div>
-              </div>
-
-              <div className="rounded-xl bg-amber-50/70 p-4 border border-amber-100 md:col-span-2">
-                <p className="font-medium mb-3">Remove Directors</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <NumberBox
-                    id="rm-indiv-dir"
-                    label="Individuals to remove (director — individual)"
-                    value={indivDirRemove}
-                    setValue={setIndivDirRemove}
-                    hint="Handling fee per 2 individuals"
-                  />
-                  <NumberBox
-                    id="rm-corp-dir"
-                    label="Corporates to remove (director — corporate)"
-                    value={corpDirRemove}
-                    setValue={setCorpDirRemove}
-                    hint="Handling fee per 1 corporate"
-                  />
-                </div>
-              </div>
-            </div>
-
+    <div
+      className={[
+        // container sizing with minimal outer gap on large screens
+        "w-full mx-auto",
+        "px-2 sm:px-3 lg:px-4", // gentle, compact gutters
+        "max-w-screen-2xl", // fills wide screens without giant margins
+        className,
+      ].join(" ")}
+    >
+      <Card className="border shadow-sm">
+        {/* Toolbar-like header (compact) */}
+        <CardHeader className="p-2 sm:p-3">
+          <div className="flex items-center gap-2 justify-between">
             <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                onClick={reset}
-                className="border border-slate-200"
-              >
+              <CardTitle className="text-sm sm:text-base">
+                Hong Kong — Shareholder / Director Changes
+              </CardTitle>
+              <Badge variant="outline" className="h-5 px-2 text-[11px]">
+                USD
+              </Badge>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button size="sm" variant="secondary" onClick={reset}>
                 Reset
               </Button>
-              <Button
-                onClick={() => window.print()}
-                className="bg-sky-600 hover:bg-sky-700"
-              >
+              <Button size="sm" onClick={() => window.print()}>
                 Print / Save PDF
               </Button>
-              <div className="ml-auto">
-                <Badge className="bg-sky-100 text-sky-800 hover:bg-sky-100">
-                  USD
-                </Badge>
+            </div>
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-1">
+            Individuals billed per <b>2</b>; corporates per <b>1</b>. Count the same
+            person in both sections if they are both shareholder and director.
+          </p>
+        </CardHeader>
+
+        <CardContent className="p-2 sm:p-3">
+          {/* Inputs Grid – dense, 12-col responsive like spreadsheets */}
+          <div className="grid grid-cols-12 gap-2">
+            {/* Add Shareholders */}
+            <section className="col-span-12 lg:col-span-6 rounded-md border p-2">
+              <div className="text-sm font-medium mb-2">Add Shareholders</div>
+              <div className="grid grid-cols-2 gap-2">
+                <Field
+                  id="add-indiv-sh"
+                  label="Individuals to add"
+                  hint="per 2"
+                  value={indivSHAdd}
+                  onChange={setNum(setIndivSHAdd)}
+                />
+                <Field
+                  id="add-corp-sh"
+                  label="Corporates to add"
+                  hint="per 1"
+                  value={corpSHAdd}
+                  onChange={setNum(setCorpSHAdd)}
+                />
               </div>
-            </div>
-          </CardContent>
-        </Card>       
+            </section>
 
-        {/* Invoice Breakdown */}
-        <Card className="border-slate-200 bg-white">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">Invoice Breakdown</CardTitle>
-            <p className="text-xs text-slate-500 mt-1">
-              Individuals billed per 2; corporates billed per 1.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-xl overflow-hidden border border-slate-200">
-              <Table>
-                <TableHeader className="bg-slate-50">
-                  <TableRow>
-                    <TableHead className="w-[55%]">Description</TableHead>
-                    <TableHead className="text-right w-[10%]">Qty</TableHead>
-                    <TableHead className="text-right w-[15%]">Unit</TableHead>
-                    <TableHead className="text-right w-[20%]">
-                      Amount (USD)
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {lines.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={4} className="text-center py-8">
-                        No items yet. Enter quantities above or use a quick
-                        scenario.
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    lines.map((l, i) => (
-                      <TableRow key={i}>
-                        <TableCell className="text-slate-700">{l.label}</TableCell>
-                        <TableCell className="text-right">{l.qty}</TableCell>
-                        <TableCell className="text-right">{USD(l.unit)}</TableCell>
-                        <TableCell className="text-right font-medium">
-                          {USD(l.amount)}
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+            {/* Add Directors */}
+            <section className="col-span-12 lg:col-span-6 rounded-md border p-2">
+              <div className="text-sm font-medium mb-2">Add Directors</div>
+              <div className="grid grid-cols-2 gap-2">
+                <Field
+                  id="add-indiv-dir"
+                  label="Individuals to add"
+                  hint="KYC • per 2"
+                  value={indivDirAdd}
+                  onChange={setNum(setIndivDirAdd)}
+                />
+                <Field
+                  id="add-corp-dir"
+                  label="Corporates to add"
+                  hint="KYC • per 1"
+                  value={corpDirAdd}
+                  onChange={setNum(setCorpDirAdd)}
+                />
+              </div>
+            </section>
 
-            <Separator className="my-4" />
-            <div className="flex items-center justify-end">
-              <div className="text-right">
-                <div className="text-sm text-slate-500">Total</div>
-                <div className="text-2xl font-semibold text-slate-900">
-                  {USD(total)}
+            {/* Remove Directors */}
+            <section className="col-span-12 rounded-md border p-2">
+              <div className="text-sm font-medium mb-2">Remove Directors</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <Field
+                  id="rm-indiv-dir"
+                  label="Individuals to remove"
+                  hint="Handling • per 2"
+                  value={indivDirRemove}
+                  onChange={setNum(setIndivDirRemove)}
+                />
+                <Field
+                  id="rm-corp-dir"
+                  label="Corporates to remove"
+                  hint="Handling • per 1"
+                  value={corpDirRemove}
+                  onChange={setNum(setCorpDirRemove)}
+                />
+                {/* Quick presets on larger screens sit inline; stack on mobile */}
+                <div className="col-span-2 flex flex-wrap items-end gap-2 justify-end">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setIndivSHAdd(2);
+                      setCorpSHAdd(0);
+                      setIndivDirAdd(2);
+                      setCorpDirAdd(0);
+                      setIndivDirRemove(0);
+                      setCorpDirRemove(0);
+                    }}
+                  >
+                    +2 indiv SH+DIR
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setIndivSHAdd(0);
+                      setCorpSHAdd(1);
+                      setIndivDirAdd(0);
+                      setCorpDirAdd(0);
+                      setIndivDirRemove(0);
+                      setCorpDirRemove(0);
+                    }}
+                  >
+                    +1 corp SH
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setIndivSHAdd(2);
+                      setCorpSHAdd(0);
+                      setIndivDirAdd(2);
+                      setCorpDirAdd(0);
+                      setIndivDirRemove(2);
+                      setCorpDirRemove(0);
+                    }}
+                  >
+                    +2 indiv SH+DIR / −2 indiv DIR
+                  </Button>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </section>
+          </div>
 
-         {/* Quick Scenarios */}
-        <Card className="border-slate-200 bg-white">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Quick scenarios</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" onClick={() => applyScenario(1)}>
-                Scenario 1
-              </Button>
-              <Button variant="outline" onClick={() => applyScenario(2)}>
-                Scenario 2
-              </Button>
-              <Button variant="outline" onClick={() => applyScenario(3)}>
-                Scenario 3
-              </Button>
-              <Button variant="outline" onClick={() => applyScenario(4)}>
-                Scenario 4
-              </Button>
-            </div>
-            <ul className="list-disc pl-5 text-sm text-slate-600 space-y-1.5">
-              <li>
-                <strong>Scenario 1:</strong> Appoint 2 individual
-                shareholder‑directors.
-              </li>
-              <li>
-                <strong>Scenario 2:</strong> Appoint 1 corporate shareholder.
-              </li>
-              <li>
-                <strong>Scenario 3:</strong> Appoint 2 individual
-                shareholder‑directors and remove 2 individual directors.
-              </li>
-              <li>
-                <strong>Scenario 4:</strong> Appoint 2 individual
-                shareholder‑directors + 1 corporate shareholder, and remove 2
-                individual directors.
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
+          <Separator className="my-3" />
+
+          {/* Invoice – compact, responsive, with sticky total */}
+          <div className="rounded-md border overflow-hidden">
+            <Table className="text-sm">
+              <TableHeader>
+                <TableRow className="h-9">
+                  <TableHead className="w-[55%]">Description</TableHead>
+                  <TableHead className="text-right w-[10%]">Qty</TableHead>
+                  <TableHead className="text-right w-[15%]">Unit</TableHead>
+                  <TableHead className="text-right w-[20%]">Amount</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {lines.length === 0 ? (
+                  <TableRow className="h-10">
+                    <TableCell colSpan={4} className="text-center text-muted-foreground">
+                      Enter quantities above or use a preset.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  lines.map((l, i) => (
+                    <TableRow key={i} className="h-8">
+                      <TableCell className="py-1">{l.label}</TableCell>
+                      <TableCell className="py-1 text-right">{l.qty}</TableCell>
+                      <TableCell className="py-1 text-right">{USD(l.unit)}</TableCell>
+                      <TableCell className="py-1 text-right font-medium">
+                        {USD(l.amount)}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+                <TableRow className="h-12 font-semibold sticky bottom-0 bg-background">
+                  <TableCell colSpan={3} className="text-right">
+                    Total
+                  </TableCell>
+                  <TableCell className="text-right">{USD(total)}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
