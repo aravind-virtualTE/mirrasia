@@ -31,6 +31,7 @@ import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import { paymentApi } from '@/lib/api/payment';
 import { useTranslation } from "react-i18next";
+import ShareholderCalculator from "../ShareholderCalculator";
 
 const IncorporationForm = () => {
     const { t } = useTranslation();
@@ -110,7 +111,7 @@ const IncorporationForm = () => {
                 if (response.status === 200) {
                     if (response.data && response.data.data._id) {
                         localStorage.setItem("companyRecordId", response.data.data._id);
-                        console.log("response.data.data", response.data.data);
+                        // console.log("response.data.data", response.data.data);
                         updateCompanyData(response.data.data);
                         window.history.pushState(
                             {},
@@ -403,6 +404,7 @@ const IncorporationForm = () => {
                     </div>
                 </div>
             </Card>
+            <ShareholderCalculator show={currentSection === 3} />
         </div>
     );
 };
