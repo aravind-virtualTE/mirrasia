@@ -24,7 +24,14 @@ const IncorporatePaF: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const token = localStorage.getItem("token") as string;
     const decodedToken = jwtDecode<TokenData>(token);
-
+let canEdit = true
+    if(formData.userId !== ""){
+        if(decodedToken.userId === formData.userId){
+            canEdit = true
+        }else{
+            canEdit = false
+        }
+    }
 
     const steps = [
         {
@@ -141,7 +148,7 @@ const IncorporatePaF: React.FC = () => {
                             }}
                             className="h-full w-auto"
                         >
-                            {currentSection === 1 && <ApplicantInfo />}
+                            {currentSection === 1 && <ApplicantInfo  canEdit={canEdit}/>}
                             {currentSection === 2 && <PanamaEntity />}
                             {currentSection === 3 && <BusinessInfoPa />}
                             {currentSection === 4 && <PaServiceAgreement />}
