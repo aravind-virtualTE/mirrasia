@@ -1,7 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '@/services/fetch';
 import { PaymentIntent } from '@stripe/stripe-js';
 // import { useSetAtom } from 'jotai';
 // import { updateCompanyIncorporationAtom } from '../atom';
+
+export const cartFingerprint = (input: unknown) => {
+  const s = JSON.stringify(input);
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = (h << 5) - h + s.charCodeAt(i);
+    h |= 0;
+  }
+  return String(h >>> 0);
+};
 
 export interface PaymentSession {
   _id: string;
@@ -74,4 +85,68 @@ export const paymentApi = {
   },
 };
 
-// mirrasia-receipts
+
+
+export type PaymentLine = {
+  label: string;
+  qty: number;
+  unit: number;
+  amount: number;
+};
+
+export type CreatePaymentIntentBody = {
+  amount: number;               // in smallest currency unit (e.g., cents)
+  currency?: string;            // default "usd"
+  metadata?: Record<string, any>;
+  description?: string;
+};
+
+export type CreatePaymentIntentResponse = {
+  clientSecret: string;
+  id: string;
+  currency: string;
+  amount: number;
+  status: string;
+};
+export const createInvoicePaymentIntent = async ( body: CreatePaymentIntentBody, idempotencyKey?: string): Promise<CreatePaymentIntentResponse> => {
+  try {
+    const response = await api.post<CreatePaymentIntentResponse>(
+      "/payment/invoice-intent",
+      body,
+      idempotencyKey
+        ? { headers: { "Idempotency-Key": idempotencyKey } }
+        : undefined
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error creating payment intent:", error);
+    throw error;
+  }
+};
+
+export type PaymentSuccessPayload = {
+  paymentIntentId: string;
+  amount: number;                // smallest unit (cents)
+  currency: string;              // "usd"
+  companyId: string | number;
+  companyName: string;
+  description: string;           // your summary
+  lines: Array<{ label: string; qty: number; unit: number; amount: number }>;
+};
+
+export const notifyPaymentSuccess = async (payload: PaymentSuccessPayload) => {
+  try {
+    const res = await api.post("/payment/confirm-invoicePayment", payload);
+    return res.data; // e.g. { ok: true, receiptUrl, paymentIntentStatus }
+  } catch (err) {
+    console.error("notifyPaymentSuccess error:", err);
+    throw err;
+  }
+};
+
+export const updateInvoicePaymentIntent = (intentId: string, body: any) =>
+  api.patch(`/payment/invoice-intent/${intentId}`, body).then(r => r.data);
+
+// optional tidy-up
+export const cancelPaymentIntent = (intentId: string) =>
+  api.post(`/payment/cancel-invoice-intent/${intentId}/cancel`).then(r => r.data);

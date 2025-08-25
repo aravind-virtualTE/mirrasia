@@ -12,7 +12,7 @@ import { useAtom } from 'jotai';
 import { paFormWithResetAtom } from '../PaState';
 
 
-const ApplicantInfo: React.FC = () => {
+const ApplicantInfo = ({ canEdit }: { canEdit: boolean }) => {
     const { theme } = useTheme();
     const [formData, setFormData] = useAtom(paFormWithResetAtom)
 
@@ -44,7 +44,7 @@ const ApplicantInfo: React.FC = () => {
                 }
             })
         }
-
+    console.log("canEdit",canEdit)
     return (
         <Card>
             <CardContent>

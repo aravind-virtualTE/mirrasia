@@ -512,4 +512,3 @@ export const getSgIncorpoDataById = async (userId: string) => {
     console.error("Error fetching company incorporation list by userId:", error);
   }
 };
-
