@@ -158,12 +158,9 @@ interface Company {
     __v: number;
 }
 const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
-
     const { toast } = useToast();
     const [companies] = useAtom(companyIncorporationList);
     const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
-    // const [companyData, setCompData] = useAtom(companyIncorporationAtom);
-    // const [users, setUsers] = useState<User[]>([]);
     const [users, setUsers] = useAtom(usersData);
     const [adminAssigned, setAdminAssigned] = useState("");
     const navigate = useNavigate()
@@ -216,7 +213,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                     // Move this item to the first position
                                                     const [removed] = newNames.splice(index, 1)
                                                     newNames.unshift(removed)
-
                                                     // Update the company state
                                                     setCompany({
                                                         ...company,
@@ -244,7 +240,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 },
             });
         }
-
         // Country Information Section
         if (company.country) {
             sections.push({
@@ -254,7 +249,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 },
             });
         }
-
         // Business Information Section
         if (company.businessInfoHkCompany || company.companyBusinessInfo) {
             sections.push({
@@ -286,8 +280,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 },
             });
         }
-
-
         // accounting and Tax Information Section
         if (company.accountingTaxInfo) {
             sections.push({
@@ -299,7 +291,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 },
             });
         }
-
         // Shareholder and Director Information Section
         if (company.shareHolderDirectorController) {
             const shareholderData = company.shareHolderDirectorController;
@@ -312,7 +303,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             .map((controller: { label: string }) => controller.label).filter((label: string) => label !== "")
                             .join(", ")
                         : "N/A",
-
                     "Shareholders and Directors": (
                         <Table>
                             <TableHeader>
@@ -356,7 +346,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 },
             });
         }
-
         // Status Information Section
         sections.push({
             title: "Status Information",
@@ -366,7 +355,6 @@ const HkCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 "AML/CDD Edit": company.isDisabled ? "No" : "Yes",
             },
         });
-
         return sections;
     };
     const sections = useMemo(() => {
