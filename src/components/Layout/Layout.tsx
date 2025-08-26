@@ -79,8 +79,6 @@ const Layout: React.FC = () => {
         resetAllForms()
         if (['admin', 'master'].includes(role)) {
           navigate('/admin-dashboard');
-        } else if (role === 'hk_shdr') {
-          navigate('/viewboard');
         } else {
           localStorage.removeItem('companyRecordId');
           navigate('/dashboard');
@@ -197,7 +195,7 @@ const Layout: React.FC = () => {
           label: 'Member/Director Management',
           roles: ['user','admin', 'master'],
           onClick: (_, navigate) => {
-            navigate('/directormember-management');
+            navigate('/member-director-change');
             setIsMobileMenuOpen(false);
           },
         },

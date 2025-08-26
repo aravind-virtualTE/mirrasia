@@ -517,7 +517,7 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
         <CardHeader className="p-2 sm:p-3">
           <div className="flex items-center gap-2 justify-between">
             <div className="flex items-center gap-2">
-              <CardTitle className="text-sm sm:text-base">Hong Kong — Shareholder / Director Changes</CardTitle>
+              <CardTitle className="text-sm sm:text-base">Hong Kong — Change of Member/Shareholder & Director</CardTitle>
               <Badge variant="outline" className="h-5 px-2 text-[11px]">USD</Badge>
             </div>
             <div className="flex items-center gap-2">

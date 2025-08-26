@@ -126,7 +126,7 @@ const App: React.FC = () => {
                       <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
                       <Route path="/company-details/:id" element={<CompanyDetail />} />
                       <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
-                      <Route path="/directormember-management" element={<MemberDirectorManager />} />
+                      <Route path="/member-director-change" element={<MemberDirectorManager />} />
                     </Route>
                   </Route>
 
