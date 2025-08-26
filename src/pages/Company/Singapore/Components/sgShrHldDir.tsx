@@ -304,7 +304,7 @@
 //       if (response.summary.alreadyExists > 0) {
 //         toast({
 //           title: 'Success',
-//           description: `Some Users Already Exist`,
+//           description: `Invite sent to member/director`,
 //         })
 //       }
 //       if (response.summary.failed > 0) {
@@ -516,7 +516,7 @@ const ShareholderDirectorForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) =>
       if (response.summary.alreadyExists > 0) {
         toast({
           title: 'Success',
-          description: `Some Users Already Exist`,
+          description: `Invite sent to member/director`,
         })
       }
       if (response.summary.failed > 0) {

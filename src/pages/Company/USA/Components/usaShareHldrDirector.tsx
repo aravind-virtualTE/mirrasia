@@ -315,7 +315,7 @@ const ShareholderDirectorForm = ({ canEdit }: { canEdit: boolean }) => {
       if (response.summary.alreadyExists > 0) {
         toast({
           title: 'Success',
-          description: `Some Users Already Exist`,
+          description: `Invite sent to member/director`,
         })
       }
       if (response.summary.failed > 0) {
