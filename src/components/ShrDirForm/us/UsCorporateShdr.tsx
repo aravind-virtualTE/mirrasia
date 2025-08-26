@@ -144,7 +144,7 @@ const UsCorporateShdr: React.FC = () => {
             const result = await usCorporateShareholderData(formState, id);
             console.log('Success', result);
             // initiate your API call here
-            navigate("/viewboard")
+            navigate("/dashboard")
         }
     };
 

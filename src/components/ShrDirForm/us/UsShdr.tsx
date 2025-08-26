@@ -61,33 +61,7 @@ const UsShdr: React.FC = () => {
         declaration: "",
         otherDeclaration: ""
     })
-    const [errors, setErrors] = useState({
-        email: "",
-        name: "",
-        birthdate: "",
-        nationality: "",
-        passportNum: "",
-        addressResidence: "",
-        mailingAdress: "",
-        mobileNumber: "",
-        companyName: "",
-        relationWithUs: "",
-        sourceOfFunds: '',
-        sourceReceivedUs: "",
-        sourceWithDrawUs: "",
-        usResidenceTaxPurpose: "",
-        isPoliticalFigure: "",
-        passPortCopy: "",
-        proofOfAddress: "",
-        driverLicense: "",
-        isArrested: "",
-        investigation: "",
-        criminalActivity: "",
-        personalBankruptcy: "",
-        companyBankruptcy: "",
-        declaration: ""
-
-    })
+    const [errors, setErrors] = useState<Record<string, string>>({});
     const [fileSource, setFileSource] = useState<any>('');
     const [openFile, setOpenFile] = useState(false);
 
@@ -169,27 +143,45 @@ const UsShdr: React.FC = () => {
     const handleSubmit = async () => {
         const newErrors = { ...errors };
         let hasError = false;
-        const excludedFields = ["mailingAdress", "kakaoTalkId", "weChatId", "tinNumber", "passPortCopy", "proofOfAddress", "driverLicense", "countryOriginFunds", "otherName", "countryWithDrawFunds", "percentShares", 'otherDeclaration', "otherResidenceTaxPurpose", "otherSourceFund", "otherRelation"];
-        const formKeys = Object.keys(formState) as (keyof typeof formState)[];
 
-        formKeys.forEach((field) => {
-            if (excludedFields.includes(field)) {
-                return;
-            } else {
-                setErrors({ ...errors, [field]: `Please fill ${field} value` })
-            }
-            const value = formState[field as keyof typeof formState];
-            console.log("field", field, "value", value)
+        // Explicit required fields
+        const requiredFields: (keyof typeof formState)[] = [
+            "email",
+            "name",
+            "birthdate",
+            "nationality",
+            "passportNum",
+            "addressResidence",
+            "mobileNumber",
+            "relationWithUs",
+            "sourceOfFunds",
+            "sourceReceivedUs",
+            "sourceWithDrawUs",
+            "usResidenceTaxPurpose",
+            "isPoliticalFigure",
+            "passPortCopy",
+            "proofOfAddress",
+            "driverLicense",
+            "isArrested",
+            "investigation",
+            "criminalActivity",
+            "personalBankruptcy",
+            "companyBankruptcy",
+            "declaration"
+        ];
+
+        requiredFields.forEach((field) => {
+            const value = formState[field];
             const isEmpty =
                 value === "" ||
                 value === null ||
                 (Array.isArray(value) && value.length === 0);
 
             if (isEmpty) {
-                newErrors[field as keyof typeof newErrors] = "This field is required";
+                newErrors[field] = "This field is required";
                 hasError = true;
             } else {
-                newErrors[field as keyof typeof newErrors] = "";
+                newErrors[field] = "";
             }
         });
 
@@ -199,67 +191,64 @@ const UsShdr: React.FC = () => {
             console.warn("Form submission blocked due to validation errors.", newErrors);
             toast({
                 title: "Enter Missing Items",
-                description: "PLease enter all required items"
-            })
+                description: "Please enter all required items",
+            });
             return;
-        } else {
-            // console.log("Submitting form data:", formState);
-            const result = await usIndividualShareholderData(formState, id);
-            // console.log("Form result-->", result);
-            if (result.success == true) {
-                localStorage.removeItem('shdrItem')
-                setFormState(result.registeredData)
-                navigate("/viewboard")
-                toast({
-                    title: "Details submitted",
-                    description: "Saved successfully"
-                });
-            }
-
         }
 
-    };
+        try {
+            console.log(id, "Submitting form data:", formState);
+            const result = await usIndividualShareholderData(formState, id);
 
+            if (result.success === true) {
+                localStorage.removeItem("shdrItem");
+                setFormState(result.registeredData);
+                navigate("/dashboard");
+                toast({
+                    title: "Details submitted",
+                    description: "Saved successfully",
+                });
+            }
+        } catch (error) {
+            console.error("Submission failed:", error);
+            toast({
+                title: "Submission Failed",
+                description: "Something went wrong. Please try again.",
+            });
+        }
+    };
+    console.log("formState", formState)
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>
+        <Card className="shadow-sm">
+            <CardHeader >
+                <CardTitle className="text-base md:text-lg tracking-tight">
                     Application for Member Registration of U.S. Company
                 </CardTitle>
             </CardHeader>
             <CardContent>
                 <>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm leading-relaxed">
                         This application form is written in the form of a questionnaire regarding the information absolutely necessary to proceed with the registration of members of a US company (LLC - limited liability company / Corp - joint stock company). All individuals who are members are requested to individually complete this application form.
                     </p>
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-sm leading-relaxed">
                         This application form and the application form documents to be signed later will be kept by our company as legal procedures for performing KYC (Know Your Customer) and Client's Due Diligence (due diligence and verification of customers) in accordance with the TCSP license and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act) and as future legal records (Statutory Documents). Therefore, please be careful to avoid any distortion or errors in the content you write.
                     </p>
-
-                    <p className="text-sm font-bold mt-4">{t("SwitchService.Consultation.thanks")}</p>
-                    <div className="mt-4">
-                        <p className="text-sm">
-                            Mirr Asia<br />
-                            (Hong Kong) +852-2187-2428<br />
-                            (Korea) +82-2-543-6187<br />
-                            {t("dashboard.kakaoT")}: mirrasia<br />
-                            {t("dashboard.wechat")}: mirrasia_hk<br />
-                            {t("dashboard.Website")}:{" "}
-                            <a
-                                href="https://www.mirrasia.com"
-                                className="text-blue-500 underline"
-                            >
-                                www.mirrasia.com
-                            </a>
-                            <br />
-                            {t("dashboard.kakaChannel")}:{" "}
-                            <a
-                                href="https://pf.kakao.com/_KxmnZT"
-                                className="text-blue-500 underline"
-                            >
-                                https://pf.kakao.com/_KxmnZT
-                            </a>
-                        </p>
+                    <p className="text-sm font-bold mt-4">{t("SwitchService.Consultation.thanks")}</p>                    
+                    <div className="rounded-md border bg-muted/30 p-3">
+                        <p className="text-sm font-medium">{t("SwitchService.Consultation.thanks")}</p>
+                        <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs">
+                            <p>
+                                Mirr Asia<br />
+                                (Hong Kong) +852-2187-2428<br />
+                                (Korea) +82-2-543-6187
+                            </p>
+                            <p>
+                                {t("dashboard.kakaoT")}: mirrasia<br />
+                                {t("dashboard.wechat")}: mirrasia_hk<br />
+                                {t("dashboard.Website")}:<a href="https://www.mirrasia.com" className="underline underline-offset-2">mirrasia.com</a><br />
+                                {t("dashboard.kakaChannel")}: <a href="https://pf.kakao.com/_KxmnZT" className="underline underline-offset-2">pf.kakao.com/_KxmnZT</a>
+                            </p>
+                        </div>
                     </div>
                 </>
                 <div className="mt-2">
@@ -797,7 +786,7 @@ const UsShdr: React.FC = () => {
                         </p>
                     </div>
                     <Label className="block text-sm font-bold text-gray-700">
-                        Are you a prominent political figure described above, or is your immediate family or close acquaintance a prominent political figure, such as a high-ranking government official, political official, government official, or military or international entity official?
+                        Are you a prominent political figure described above, or is your immediate family or close acquaintance a prominent Political figure, such as a high-ranking government official, political official, government official, or military or international entity official?
                     </Label>
 
                     <RadioGroup

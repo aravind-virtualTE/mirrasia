@@ -14,10 +14,7 @@ const SgFinalSection = () => {
     // console.log(`decodedToken`,decodedToken)
     if (decodedToken.role === 'admin'|| decodedToken.role === "master") {
         navigate('/admin-dashboard');
-    }
-    else if (decodedToken.role === 'hk_shdr') {
-        navigate('/viewboard');
-    }
+    }   
     else {
         localStorage.removeItem('companyRecordId');
         navigate('/dashboard');

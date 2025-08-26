@@ -245,7 +245,7 @@ const HkShareHldrDir = () => {
       localStorage.removeItem('shdrItem')
       if (result.success == true) {
         setFormState(result.registeredData)
-        navigate("/viewboard")
+        navigate("/dashboard")
         toast({
           title: "Details submitted",
           description: "Saved successfully"

@@ -72,7 +72,7 @@ export default function ViewBoard() {
   return (
     <div className="flex-1 py-4">
       {/* defaultValue={["registration-table", "associated-companies"]} */}
-      <Accordion type="multiple" className="w-full space-y-4" >
+      <Accordion type="multiple" className="w-full space-y-4"  defaultValue={["registration-table", "associated-companies"]}>
         <AccordionItem value="registration-table" className="border rounded-lg">
           <AccordionTrigger className="px-4 py-3 hover:no-underline">
             <div className="flex items-center justify-between w-full">
