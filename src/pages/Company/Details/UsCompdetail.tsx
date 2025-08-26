@@ -187,7 +187,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       <TableCell>{shareholder.name}</TableCell>
                       <TableCell>{shareholder.email}</TableCell>
                       <TableCell>{shareholder.phone || 'N/A'}</TableCell>
-                      <TableCell>{shareholder.ownerShipRate}%</TableCell>
+                      <TableCell>{shareholder.ownershipRate}%</TableCell>
                       <TableCell>{t(renderValue(shareholder.isDirector))}</TableCell>
                       <TableCell>{t(renderValue(shareholder.isLegalPerson))}</TableCell>
                     </TableRow>
