@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import {
   Card,
@@ -55,22 +56,36 @@ const USD = (v: number) => v.toLocaleString(undefined, { style: "currency", curr
 const STRIPE_CLIENT_ID = import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
 
 const stripePromise = loadStripe(STRIPE_CLIENT_ID);
+// Card fee rate (3.5%)
+const CARD_FEE_RATE = 0.035;
 
 // ----------------- Payment Form -----------------
 
 function PaymentForm({
-  amount,
+  amount,          // final amount to be charged (subtotal + fee)
+  baseAmount,      // original subtotal (before fee)
+  feeCents,        // fee in cents (for exact display)
+  feeRate = CARD_FEE_RATE,
   company,
   lines,
   description,
   clientSecret,
   onClose,
-  onSuccess,   // <-- new
+  onSuccess,
+  userEmail,
+  userId,
+  userName,
 }: {
   amount: number;
+  baseAmount: number;
+  feeCents: number;
+  feeRate?: number;
   company: Company;
   lines: Line[];
   description: string;
+  userName: string;
+  userId: string;
+  userEmail: string;
   clientSecret: string | null;
   onClose: () => void;
   onSuccess?: (info: { paymentIntentId: string; receiptUrl?: string }) => void;
@@ -87,7 +102,6 @@ function PaymentForm({
     const result = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Optional redirect page if Stripe requires it later
         return_url: typeof window !== "undefined" ? `${window.location.origin}/billing/success` : undefined,
         payment_method_data: {
           billing_details: { name: company?.companyName || "Company" },
@@ -102,39 +116,73 @@ function PaymentForm({
       console.error(result.error.message);
       return;
     }
-    console.log("PaymentResult:", result);
+
     const pi = result.paymentIntent;
     if (pi?.status === "succeeded") {
-      // Tell your backend so it can persist + send email
       try {
-        const data = await notifyPaymentSuccess({
+        await notifyPaymentSuccess({
           paymentIntentId: pi.id,
-          amount: amount * 100 === Math.round(amount * 100) ? amount : Math.round(amount), // if you passed cents earlier, adjust accordingly
+          amount: Math.round(amount * 100),  // cents (final amount)
           currency: "usd",
           companyId: String(company.id),
           companyName: company.companyName,
+          userEmail: userEmail || "N/A",
+          userName: userName || "N/A",
+          userId: userId || "N/A",
           description,
           lines,
+          // Optional extra metadata your backend may store:
+          // extras: {
+          //   base_total_cents: Math.round(baseAmount * 100),
+          //   card_fee_cents: feeCents,
+          //   card_fee_rate: feeRate,
+          // },
         });
-        // optional fields from backend (e.g., receiptUrl)
-        onSuccess?.({ paymentIntentId: pi.id, receiptUrl: data?.receiptUrl });
+        onSuccess?.({ paymentIntentId: pi.id, receiptUrl: (pi as any)?.charges?.data?.[0]?.receipt_url });
       } catch (e) {
-        // If backend notify fails, still close; but you may want to show a warning/toast.
         console.warn("Payment succeeded but backend notify failed.", e);
       }
-
-      onClose(); // close the payment dialog
+      onClose();
     }
   };
+
+  // const baseCents = Math.round(baseAmount * 100);
+  const finalCents = Math.round(amount * 100);
 
   return (
     <div className="space-y-4">
       <div className="rounded-md border p-3">
-        <div className="text-sm text-muted-foreground">You are paying</div>
+        <div className="text-sm text-foreground/80">You are paying</div>
         <div className="text-2xl font-semibold">{USD(amount)}</div>
-        <div className="text-xs text-muted-foreground mt-1">{company?.companyName}</div>
+        <div className="text-xs text-foreground/80 mt-1">{company?.companyName}</div>
       </div>
+
+      {/* Elegant breakdown */}
+      <div className="rounded-md border bg-muted/30 p-3">
+        <div className="grid grid-cols-1 gap-1 text-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-foreground/80">Original Price</span>
+            <span className="font-medium">{USD(baseAmount)}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-foreground/80">
+              Stripe credit card processing fee ({(feeRate * 100).toFixed(1)}%)
+            </span>
+            <span className="font-medium">{USD(feeCents / 100)}</span>
+          </div>
+          <Separator className="my-1" />
+          <div className="flex items-center justify-between">
+            <span className="font-semibold">Final Amount Charged</span>
+            <span className="font-semibold">{USD(finalCents / 100)}</span>
+          </div>
+        </div>
+        <p className="mt-2 text-xs text-foreground/80">
+          Includes a {(feeRate * 100).toFixed(1)}% Stripe credit card processing fee.
+        </p>
+      </div>
+
       <PaymentElement />
+
       <div className="flex items-center justify-end gap-2">
         <Button variant="outline" onClick={onClose}>Cancel</Button>
         <Button disabled={disabled || submitting} onClick={handlePay}>
@@ -173,7 +221,8 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
   const [receiptUrl, setReceiptUrl] = React.useState<string | undefined>();
   const [pi, setPi] = React.useState<{ id: string; clientSecret: string; amount: number; status: string; fp: string } | null>(null);
 
-
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  // console.log("user--->", user);
   // Fetch companies
   const fetchComp = React.useCallback(async () => {
     try {
@@ -291,12 +340,26 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
 
   const total = React.useMemo(() => lines.reduce((s, l) => s + l.amount, 0), [lines]);
 
+  // Derived amounts for card fee
+  const totals = React.useMemo(() => {
+    const subtotalCents = Math.round(total * 100);
+    const feeCents = Math.round(subtotalCents * CARD_FEE_RATE);
+    const finalCents = subtotalCents + feeCents;
+    return {
+      subtotalCents,
+      feeCents,
+      finalCents,
+      subtotal: subtotalCents / 100,
+      fee: feeCents / 100,
+      final: finalCents / 100,
+    };
+  }, [total]);
+
   const currentFP = React.useMemo(() => cartFingerprint({
     companyId: selectedCompany?.id ?? null,
     totalCents: Math.round(total * 100),
-    lines, // ok; if huge, pass a reduced projection (label + qty + unit)
+    lines,
   }), [selectedCompany?.id, total, lines]);
-
 
   // Helpers
   const setNum = (setter: (v: number) => void) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -315,7 +378,7 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
     <div className="grid gap-1">
       <div className="flex items-center justify-between">
         <Label htmlFor={id} className="text-xs leading-none">{label}</Label>
-        {hint ? <span className="text-[11px] text-muted-foreground">{hint}</span> : null}
+        {hint ? <span className="text-[11px] text-foreground/80">{hint}</span> : null}
       </div>
       <Input id={id} type="number" min={0} value={isNaN(value) ? 0 : value} onChange={onChange} className="h-8 px-2 text-sm" inputMode="numeric" aria-label={label} />
     </div>
@@ -350,71 +413,46 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
 
   const canProceed = !!selectedCompany && total > 0;
 
-  // Create PaymentIntent on demand
-  // const createPI = React.useCallback(async (): Promise<string | null> => {
-  //   try {
-  //     if (!selectedCompany) {
-  //       console.warn("No company selected");
-  //       return null;
-  //     }
-  //     if (total <= 0) {
-  //       console.warn("Total must be greater than zero");
-  //       return null;
-  //     }
-
-  //     const idempotencyKey = `pay-${selectedCompany.id}-${total}-${Date.now()}`;
-
-  //     const resp = await createInvoicePaymentIntent(
-  //       {
-  //         amount: Math.round(total * 100), // cents
-  //         currency: "usd",
-  //         metadata: {
-  //           companyId: selectedCompany.id,
-  //           companyName: selectedCompany.companyName,
-  //           description: summary,
-  //           lines: JSON.stringify(lines),
-  //         },
-  //         description: summary,
-  //       },
-  //       idempotencyKey
-  //     );
-
-  //     return resp.clientSecret ?? null;
-  //   } catch (err) {
-  //     console.error("createPI error:", err);
-  //     return null;
-  //   }
-  // }, [selectedCompany, total, summary, lines]);
+  // Create/Update PaymentIntent to charge FINAL amount (subtotal + card fee)
   const ensurePI = React.useCallback(async (): Promise<{ clientSecret: string; id: string } | null> => {
     if (!selectedCompany || total <= 0) return null;
 
-    // 1) Reuse (same cart) — open dialog without API calls
+    // Reuse if same cart/fingerprint
     if (pi && pi.fp === currentFP && (pi.status === "requires_payment_method" || pi.status === "requires_confirmation")) {
       return { clientSecret: pi.clientSecret, id: pi.id };
     }
 
-    const totalCents = Math.round(total * 100);
+    // Recompute amounts in cents
+    const subtotalCents = Math.round(total * 100);
+    const feeCents = Math.round(subtotalCents * CARD_FEE_RATE);
+    const amountCents = subtotalCents + feeCents;
 
     const minimalMeta = {
       companyId: String(selectedCompany.id),
-      companyName: (selectedCompany.companyName || "").slice(0, 120), // keep short
+      companyName: (selectedCompany.companyName || "").slice(0, 120),
       cart_fp: currentFP,
       item_count: String(lines.length),
-      total_cents: String(totalCents),
+      subtotal_cents: String(subtotalCents),
+      card_fee_cents: String(feeCents),
+      card_fee_rate: String(CARD_FEE_RATE),
+      total_cents: String(amountCents),
     };
 
     const body = {
-      amount: totalCents,
+      amount: amountCents,
       currency: "usd",
-      metadata: minimalMeta,                    
-      description: summary.slice(0, 180),       
-      internal: {                             
-        lines,    
+      metadata: minimalMeta,
+      description: summary.slice(0, 180),
+      internal: {
+        lines,
         summary,
+        subtotal_cents: subtotalCents,
+        card_fee_cents: feeCents,
+        card_fee_rate: CARD_FEE_RATE,
+        total_cents: amountCents,
       },
     };
 
-    // 2) If we already have a PI but cart changed, try update (if still updatable)
     if (pi && (pi.status === "requires_payment_method" || pi.status === "requires_confirmation")) {
       const updated = await updateInvoicePaymentIntent(pi.id, body);
       const next = {
@@ -428,7 +466,6 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
       return { clientSecret: next.clientSecret, id: next.id };
     }
 
-    // 3) Otherwise, create with a STABLE idempotency key
     const idemKey = `pi-${currentFP}-${selectedCompany.id}`;
     const created = await createInvoicePaymentIntent(body, idemKey);
     const next = {
@@ -484,7 +521,7 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
               <Button size="sm" variant="outline" className="ml-2" onClick={fetchComp}>Retry</Button>
             </div>
           ) : companies.length === 0 ? (
-            <div className="rounded-md bg-muted text-muted-foreground p-2 text-sm">No companies found</div>
+            <div className="rounded-md bg-muted text-foreground/80 p-2 text-sm">No companies found</div>
           ) : (
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <div className="flex-1 min-w-[220px] max-w-[480px]">
@@ -503,7 +540,7 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
                 </Select>
               </div>
               {selectedCompany ? (
-                <div className="text-xs sm:text-sm text-muted-foreground">
+                <div className="text-xs sm:text-sm text-foreground/80">
                   Selected: <span className="font-medium">{selectedCompany.companyName}</span>
                 </div>
               ) : null}
@@ -525,7 +562,7 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
               <Button size="sm" onClick={() => window.print()}><Printer className="mr-1 h-3.5 w-3.5" /> Print / Save PDF</Button>
             </div>
           </div>
-          <p className="text-[11px] text-muted-foreground mt-1">
+          <p className="text-[11px] text-foreground/80 mt-1">
             Individuals billed per <b>2</b>; corporates per <b>1</b>. Count the same person in both sections if they are both shareholder and director.
           </p>
         </CardHeader>
@@ -567,7 +604,7 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm font-medium">Description</div>
-                <p className="text-sm text-muted-foreground mt-1">{summary}</p>
+                <p className="text-sm text-foreground/80 mt-1">{summary}</p>
               </div>
               <StatusBadge variant="secondary" className="whitespace-nowrap">{selectedCompany ? "Company selected" : "No company"}</StatusBadge>
             </div>
@@ -587,7 +624,7 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
               <TableBody>
                 {lines.length === 0 ? (
                   <TableRow className="h-10">
-                    <TableCell colSpan={4} className="text-center text-muted-foreground">Enter quantities above.</TableCell>
+                    <TableCell colSpan={4} className="text-center text-foreground/80">Enter quantities above.</TableCell>
                   </TableRow>
                 ) : (
                   lines.map((l, i) => (
@@ -599,9 +636,20 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
                     </TableRow>
                   ))
                 )}
+                {/* Totals: Subtotal, Fee, Final */}
+                <TableRow className="h-10">
+                  <TableCell colSpan={3} className="text-right">Subtotal</TableCell>
+                  <TableCell className="text-right">{USD(totals.subtotal)}</TableCell>
+                </TableRow>
+                <TableRow className="h-10">
+                  <TableCell colSpan={3} className="text-right text-foreground/80">
+                    Stripe credit card processing fee ({(CARD_FEE_RATE * 100).toFixed(1)}%)
+                  </TableCell>
+                  <TableCell className="text-right text-foreground/80">{USD(totals.fee)}</TableCell>
+                </TableRow>
                 <TableRow className="h-12 font-semibold sticky bottom-0 bg-background">
-                  <TableCell colSpan={3} className="text-right">Total</TableCell>
-                  <TableCell className="text-right">{USD(total)}</TableCell>
+                  <TableCell colSpan={3} className="text-right">Final Amount (Card)</TableCell>
+                  <TableCell className="text-right">{USD(totals.final)}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -609,6 +657,9 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
 
           {/* Actions */}
           <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 justify-end">
+            <div className="text-xs text-foreground/80 sm:mr-auto">
+              Paying by card via Stripe adds a {(CARD_FEE_RATE * 100).toFixed(1)}% processing fee.
+            </div>
             <Button variant="outline" onClick={() => setShowSummary(true)}>Preview Summary</Button>
             <Button disabled={!canProceed} onClick={handleOpenPayment}>
               <CreditCard className="mr-2 h-4 w-4" /> Proceed to Payment
@@ -626,11 +677,11 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
           <div className="mt-4 space-y-3">
             <div className="rounded-md border p-3">
               <div className="text-sm font-medium">Company</div>
-              <div className="text-sm text-muted-foreground">{selectedCompany ? selectedCompany.companyName : "—"}</div>
+              <div className="text-sm text-foreground/80">{selectedCompany ? selectedCompany.companyName : "—"}</div>
             </div>
             <div className="rounded-md border p-3">
               <div className="text-sm font-medium">Requested Changes</div>
-              <div className="text-sm text-muted-foreground mt-1">{summary}</div>
+              <div className="text-sm text-foreground/80 mt-1">{summary}</div>
             </div>
             <div className="rounded-md border overflow-hidden">
               <Table className="text-sm">
@@ -645,7 +696,7 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
                 <TableBody>
                   {lines.length === 0 ? (
                     <TableRow className="h-10">
-                      <TableCell colSpan={4} className="text-center text-muted-foreground">No items</TableCell>
+                      <TableCell colSpan={4} className="text-center text-foreground/80">No items</TableCell>
                     </TableRow>
                   ) : (
                     lines.map((l, i) => (
@@ -657,13 +708,26 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
                       </TableRow>
                     ))
                   )}
+                  <TableRow className="h-10">
+                    <TableCell colSpan={3} className="text-right">Subtotal</TableCell>
+                    <TableCell className="text-right">{USD(totals.subtotal)}</TableCell>
+                  </TableRow>
+                  <TableRow className="h-10">
+                    <TableCell colSpan={3} className="text-right text-foreground/80">
+                      Stripe credit card processing fee ({(CARD_FEE_RATE * 100).toFixed(1)}%)
+                    </TableCell>
+                    <TableCell className="text-right text-foreground/80">{USD(totals.fee)}</TableCell>
+                  </TableRow>
                   <TableRow className="h-12 font-semibold">
-                    <TableCell colSpan={3} className="text-right">Total</TableCell>
-                    <TableCell className="text-right">{USD(total)}</TableCell>
+                    <TableCell colSpan={3} className="text-right">Final Amount (Card)</TableCell>
+                    <TableCell className="text-right">{USD(totals.final)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </div>
+            <p className="text-xs text-foreground/80">
+              Original Price: {USD(totals.subtotal)} · Includes a {(CARD_FEE_RATE * 100).toFixed(1)}% Stripe credit card processing fee · Final Amount Charged: {USD(totals.final)}
+            </p>
           </div>
         </SheetContent>
       </Sheet>
@@ -677,7 +741,10 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
           {clientSecret && selectedCompany ? (
             <Elements stripe={stripePromise} options={{ clientSecret, appearance: { labels: "floating" } }}>
               <PaymentForm
-                amount={total}
+                amount={totals.final}
+                baseAmount={totals.subtotal}
+                feeCents={totals.feeCents}
+                feeRate={CARD_FEE_RATE}
                 company={selectedCompany}
                 lines={lines}
                 description={summary}
@@ -687,10 +754,13 @@ export default function MemberDirectorManagerPro({ className = "" }: { className
                   setSuccessMsg(`Payment successful. Reference: ${paymentIntentId}`);
                   setReceiptUrl(receiptUrl);
                 }}
+                userEmail={user?.email}
+                userId={user?.id}
+                userName={user?.fullName}
               />
             </Elements>
           ) : (
-            <div className="text-sm text-muted-foreground">Initializing payment…</div>
+            <div className="text-sm text-foreground/80">Initializing payment…</div>
           )}
         </DialogContent>
       </Dialog>
