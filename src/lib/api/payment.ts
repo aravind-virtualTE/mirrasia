@@ -131,6 +131,9 @@ export type PaymentSuccessPayload = {
   companyId: string | number;
   companyName: string;
   description: string;           // your summary
+  userEmail: string;
+  userName: string;
+  userId: string;
   lines: Array<{ label: string; qty: number; unit: number; amount: number }>;
 };
 
