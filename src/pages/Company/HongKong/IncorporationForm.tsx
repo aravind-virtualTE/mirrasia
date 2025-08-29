@@ -155,14 +155,14 @@ const IncorporationForm = () => {
                 errors.push("Phone number cannot be empty.");
             }
 
-            const emailOtpVerified = formData.emailOtpVerified
-            if (emailOtpVerified != true) {
-                errors.push("Email OTP verification is required.");
-            }
-            const mobileOtpVerified = formData.mobileOtpVerified
-            if (mobileOtpVerified != true) {
-                errors.push("Mobile OTP verification is required.");
-            }
+            // const emailOtpVerified = formData.emailOtpVerified
+            // if (emailOtpVerified != true) {
+            //     errors.push("Email OTP verification is required.");
+            // }
+            // const mobileOtpVerified = formData.mobileOtpVerified
+            // if (mobileOtpVerified != true) {
+            //     errors.push("Mobile OTP verification is required.");
+            // }
             if (!formData.email || formData.email.trim() === "" || !/^\S+@\S+\.\S+$/.test(formData.email)) {
                 errors.push("Invalid email format or empty email.");
             }

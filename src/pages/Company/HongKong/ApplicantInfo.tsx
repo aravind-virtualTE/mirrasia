@@ -615,7 +615,7 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
                     />
                   </div>
 
-                  <Button
+                  {/* <Button
                     size="sm"
                     type="button"
                     onClick={handleSendEmailOtp}
@@ -624,7 +624,7 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
                     {emailResendTimer > 0
                       ? `Resend in ${emailResendTimer}s`
                       : "Send OTP"}
-                  </Button>
+                  </Button> */}
                 </div>
 
                 {/* OTP field */}
@@ -696,7 +696,7 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
                         </Alert>
                       )}
                     </div>
-                    <Button
+                    {/* <Button
                       size="sm"
                       type="button"
                       onClick={handleSendOtp}
@@ -705,7 +705,7 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
                       {resendTimer > 0
                         ? `Resend in ${resendTimer}s`
                         : "Send OTP"}
-                    </Button>
+                    </Button> */}
                   </div>
                   {/* OTP field */}
                   {otpSent && (
