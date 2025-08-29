@@ -25,8 +25,8 @@ import { companyIncorporationList } from "@/services/state";
 import { useParams } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import {
-  sendEmailOtpforVerification,
-  sendMobileOtpforVerification,
+  // sendEmailOtpforVerification,
+  // sendMobileOtpforVerification,
   validateOtpforVerification,
 } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -55,14 +55,14 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
     chinaCompanyName: ["", "", ""],
   });
   const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
+  const [otpSent, ] = useState(false); //setOtpSent
   const [resendTimer, setResendTimer] = useState(0);
   type OtpSession = { sms: string | null; email: string | null };
   const [otpSession, setOtpSession] = useState<OtpSession>({ sms: null, email: null });
   const [companies] = useAtom(companyIncorporationList);
   const { id } = useParams();
   const [emailOtp, setEmailOtp] = useState("");
-  const [emailOtpSent, setEmailOtpSent] = useState(false);
+  const [emailOtpSent, ] = useState(false); //setEmailOtpSent
   const [emailResendTimer, setEmailResendTimer] = useState(0);
 
   useEffect(() => {
@@ -284,48 +284,48 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
   };
   // console.log('Section1Applicant Info:', formData);
 
-  const handleSendOtp = async () => {
-    if (!formData.phoneNumber) {
-      toast({
-        title: "Missing Number",
-        description: "Phone Number is required",
-        variant: "default",
-      });
-      return;
-    }
-    if (otpSession.sms != null) {
-      toast({
-        title: "Error",
-        description: "Verify the otp sent already",
-        variant: "destructive",
-      });
-      return;
-    }
-    const result = await sendMobileOtpforVerification({ phoneNum: formData.phoneNumber });
-    // console.log("result", result);
-    if (result.success) {
-      setOtpSent(true);
-      setResendTimer(60);
-      // setOtpId(result.id);
-      setOtpSession((s) => ({ ...s, sms: result.id }));
-      toast({
-        title: "Success",
-        description: "OTP sent successfully",
-        variant: "default",
-      });
-    } else {
-      // console.log("testing send otp")
-      setOtpSent(false);
-      setResendTimer(0);
-      setOtpSession((s) => ({ ...s, sms: null }));
-      toast({
-        title: "Error",
-        description:
-          "Failed to send OTP. Please enter proper phonenumber along with country code.",
-        variant: "destructive",
-      });
-    }
-  };
+  // const handleSendOtp = async () => {
+  //   if (!formData.phoneNumber) {
+  //     toast({
+  //       title: "Missing Number",
+  //       description: "Phone Number is required",
+  //       variant: "default",
+  //     });
+  //     return;
+  //   }
+  //   if (otpSession.sms != null) {
+  //     toast({
+  //       title: "Error",
+  //       description: "Verify the otp sent already",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
+  //   const result = await sendMobileOtpforVerification({ phoneNum: formData.phoneNumber });
+  //   // console.log("result", result);
+  //   if (result.success) {
+  //     setOtpSent(true);
+  //     setResendTimer(60);
+  //     // setOtpId(result.id);
+  //     setOtpSession((s) => ({ ...s, sms: result.id }));
+  //     toast({
+  //       title: "Success",
+  //       description: "OTP sent successfully",
+  //       variant: "default",
+  //     });
+  //   } else {
+  //     // console.log("testing send otp")
+  //     setOtpSent(false);
+  //     setResendTimer(0);
+  //     setOtpSession((s) => ({ ...s, sms: null }));
+  //     toast({
+  //       title: "Error",
+  //       description:
+  //         "Failed to send OTP. Please enter proper phonenumber along with country code.",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
 
   const handleVerifyOtp = async () => {
     if (!otp.trim()) {
@@ -354,44 +354,44 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
     }
   };
 
-  const handleSendEmailOtp = async () => {
-    if (!formData.email) return;
+  // const handleSendEmailOtp = async () => {
+  //   if (!formData.email) return;
 
-    if (otpSession.email != null) {
-      toast({
-        title: "Error",
-        description: "Verify the otp sent already",
-        variant: "destructive",
-      });
-      return;
-    }
+  //   if (otpSession.email != null) {
+  //     toast({
+  //       title: "Error",
+  //       description: "Verify the otp sent already",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
 
-    const result = await sendEmailOtpforVerification({ email: formData.email, name: formData.name });
+  //   const result = await sendEmailOtpforVerification({ email: formData.email, name: formData.name });
 
-    if (result.success) {
-      setEmailOtpSent(true);
-      setEmailResendTimer(60);
-      // setOtpId(result.id);
-      setOtpSession((s) => ({ ...s, email: result.id }));
-      toast({
-        title: "Success",
-        description: "OTP sent successfully",
-        variant: "default",
-      });
-    } else {
-      // console.log("testing send otp")
-      setOtpSent(false);
-      setResendTimer(0);
-      // setOtpId(null);
-      setOtpSession((s) => ({ ...s, email: null }));
+  //   if (result.success) {
+  //     setEmailOtpSent(true);
+  //     setEmailResendTimer(60);
+  //     // setOtpId(result.id);
+  //     setOtpSession((s) => ({ ...s, email: result.id }));
+  //     toast({
+  //       title: "Success",
+  //       description: "OTP sent successfully",
+  //       variant: "default",
+  //     });
+  //   } else {
+  //     // console.log("testing send otp")
+  //     setOtpSent(false);
+  //     setResendTimer(0);
+  //     // setOtpId(null);
+  //     setOtpSession((s) => ({ ...s, email: null }));
 
-      toast({
-        title: "Error",
-        description: "Failed to send OTP. Please Try Later.",
-        variant: "destructive",
-      });
-    }
-  };
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to send OTP. Please Try Later.",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
 
   const handleVerifyEmailOtp = async () => {
     if (!emailOtp.trim()) {
@@ -615,7 +615,7 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
                     />
                   </div>
 
-                  <Button
+                  {/* <Button
                     size="sm"
                     type="button"
                     onClick={handleSendEmailOtp}
@@ -624,7 +624,7 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
                     {emailResendTimer > 0
                       ? `Resend in ${emailResendTimer}s`
                       : "Send OTP"}
-                  </Button>
+                  </Button> */}
                 </div>
 
                 {/* OTP field */}
@@ -696,7 +696,7 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
                         </Alert>
                       )}
                     </div>
-                    <Button
+                    {/* <Button
                       size="sm"
                       type="button"
                       onClick={handleSendOtp}
@@ -705,7 +705,7 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
                       {resendTimer > 0
                         ? `Resend in ${resendTimer}s`
                         : "Send OTP"}
-                    </Button>
+                    </Button> */}
                   </div>
                   {/* OTP field */}
                   {otpSent && (
