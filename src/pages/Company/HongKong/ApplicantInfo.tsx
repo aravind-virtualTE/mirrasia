@@ -55,14 +55,14 @@ const ApplicantInfoForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
     chinaCompanyName: ["", "", ""],
   });
   const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
+  const [otpSent, ] = useState(false); //setOtpSent
   const [resendTimer, setResendTimer] = useState(0);
   type OtpSession = { sms: string | null; email: string | null };
   const [otpSession, setOtpSession] = useState<OtpSession>({ sms: null, email: null });
   const [companies] = useAtom(companyIncorporationList);
   const { id } = useParams();
   const [emailOtp, setEmailOtp] = useState("");
-  const [emailOtpSent, setEmailOtpSent] = useState(false);
+  const [emailOtpSent, ] = useState(false); //setEmailOtpSent
   const [emailResendTimer, setEmailResendTimer] = useState(0);
 
   useEffect(() => {
