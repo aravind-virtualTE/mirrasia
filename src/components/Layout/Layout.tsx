@@ -394,19 +394,28 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Outlet, NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
-  Briefcase, ChevronDown, ChevronRight, FileCheck, FileSignature, Files, Home, Menu,
-  MessageSquare, Receipt, RefreshCw, Send, Users, UserPlus, type LucideIcon
+  Briefcase,
+  ChevronDown,
+  ChevronRight,
+  FileCheck,
+  FileSignature,
+  Files,
+  Home,
+  Menu,
+  MessageSquare,
+  Receipt,
+  RefreshCw,
+  Send,
+  Users,
+  UserPlus,
+  type LucideIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "react-i18next";
 import { useAtom } from "jotai";
 import jwtDecode from "jwt-decode";
-import { cn } from "@/lib/utils"; // shadcn helper
-
-// your atoms/hooks
-import { TokenData } from "@/middleware/ProtectedRoutes";
+import { cn } from "@/lib/utils";
 import { useResetAllForms } from "@/lib/atom";
 import { usaFormWithResetAtom } from "@/pages/Company/USA/UsState";
 import { paFormWithResetAtom } from "@/pages/Company/Panama/PaState";
@@ -415,10 +424,11 @@ import SocialMediaWidget from "../SocialMedia";
 import TopNav from "./Navbar";
 
 type Role = "user" | "admin" | "master" | "hk_shdr" | "us_shdr";
+type DecodedToken = { role?: Role };
 
 interface SidebarItemCfg {
   id: string;
-  icon: LucideIcon;           // <— Icon component (not node) for consistent sizing
+  icon: LucideIcon;
   label: string;
   roles: Role[];
   onClick?: () => void;
@@ -433,24 +443,10 @@ interface SidebarGroupCfg {
   children: SidebarItemCfg[];
 }
 
-function useMediaQuery(query: string) {
-  const [matches, setMatches] = useState<boolean>(() =>
-    typeof window !== "undefined" ? window.matchMedia(query).matches : false
-  );
-  useEffect(() => {
-    const mql = window.matchMedia(query);
-    const onChange = () => setMatches(mql.matches);
-    onChange();
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
-  }, [query]);
-  return matches;
-}
-
 function useLocalStorage<T>(key: string, initial: T) {
   const [value, setValue] = useState<T>(() => {
     try {
-      const raw = localStorage.getItem(key);
+      const raw = typeof window !== "undefined" ? localStorage.getItem(key) : null;
       return raw ? (JSON.parse(raw) as T) : initial;
     } catch {
       return initial;
@@ -459,12 +455,13 @@ function useLocalStorage<T>(key: string, initial: T) {
   useEffect(() => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
-    } catch { }
+    } catch {
+      /* no-op */
+    }
   }, [key, value]);
   return [value, setValue] as const;
 }
 
-/** Reusable row to guarantee identical icon/text spacing & font everywhere */
 const SidebarRow: React.FC<{
   Icon: LucideIcon;
   label: string;
@@ -473,11 +470,17 @@ const SidebarRow: React.FC<{
 }> = ({ Icon, label, collapsed, chevron = null }) => {
   return (
     <span className="flex w-full items-center gap-2.5">
-      <Icon className="shrink-0 h-5 w-5" />
-      <span className={cn("truncate", collapsed && "sr-only")}>{label}</span>
+      <Icon className="shrink-0 h-5 w-5 text-gray-700 dark:text-gray-200" />
+      <span className={cn("truncate", collapsed && "sr-only", "text-gray-900 dark:text-gray-100")}>
+        {label}
+      </span>
       {chevron && !collapsed && (
         <span className="ml-auto shrink-0">
-          {chevron === "down" ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          {chevron === "down" ? (
+            <ChevronDown className="h-4 w-4 text-gray-700 dark:text-gray-200" />
+          ) : (
+            <ChevronRight className="h-4 w-4 text-gray-700 dark:text-gray-200" />
+          )}
         </span>
       )}
     </span>
@@ -488,23 +491,21 @@ const Layout: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  // const isMobile = useMediaQuery("(max-width: 1023px)");
-
   const [collapsed, setCollapsed] = useLocalStorage<boolean>("sidebar:collapsed", false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [expandedGroups, setExpandedGroups] = useLocalStorage<string[]>("sidebar:expandedGroups", []);
-
   const resetAllForms = useResetAllForms();
   const [, setUS] = useAtom(usaFormWithResetAtom);
   const [, setPA] = useAtom(paFormWithResetAtom);
   const [, setSG] = useAtom(sgFormWithResetAtom);
 
-  // auth
-  const token = localStorage.getItem("token") as string | null;
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   if (!token) return <Navigate to="/" replace />;
+
   let role: Role = "user";
   try {
-    role = jwtDecode<TokenData>(token).role as Role;
+    const decoded = jwtDecode<DecodedToken>(token);
+    role = decoded.role ?? "user";
   } catch {
     return <Navigate to="/" replace />;
   }
@@ -518,142 +519,147 @@ const Layout: React.FC = () => {
     setUS("reset");
     setPA("reset");
     setSG("reset");
-    localStorage.removeItem("companyRecordId");
+    try {
+      localStorage.removeItem("companyRecordId");
+    } catch {
+      /* no-op */
+    }
   }, [resetAllForms, setUS, setPA, setSG]);
 
-  // Base item classes (single source of truth)
-  const baseItem = "w-full inline-flex items-center h-10 rounded-md px-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
-  const baseItemChild = "w-full inline-flex items-center h-9 rounded-md px-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+  const baseItem =
+    "w-full inline-flex items-center h-10 rounded-md px-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400";
+  const baseItemChild =
+    "w-full inline-flex items-center h-9 rounded-md px-2 text-sm text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400";
 
-  const singleItems: SidebarItemCfg[] = useMemo(() => [
-    {
-      id: "home",
-      icon: Home,
-      label: t("sideItems.Home"),
-      roles: ["user", "admin", "master", "hk_shdr", "us_shdr"],
-      onClick: () => {
-        hardReset();
-        if (["admin", "master"].includes(role)) navigate("/admin-dashboard");
-        else navigate("/dashboard");
+  const singleItems: SidebarItemCfg[] = useMemo(
+    () => [
+      {
+        id: "home",
+        icon: Home,
+        label: t("sideItems.Home"),
+        roles: ["user", "admin", "master", "hk_shdr", "us_shdr"],
+        onClick: () => {
+          hardReset();
+          if (["admin", "master"].includes(role)) navigate("/admin-dashboard");
+          else navigate("/dashboard");
+        },
       },
-    },
-    {
-      id: "users",
-      icon: Users,
-      label: t("sideItems.userList"),
-      roles: ["master", "admin"],
-      to: "/userslist",
-    },
-    {
-      id: "register-company",
-      icon: FileSignature,
-      label: t("sideItems.regComp"),
-      roles: ["user", "admin", "master"],
-      onClick: () => {
-        hardReset();
-        navigate("/company-register");
+      {
+        id: "users",
+        icon: Users,
+        label: t("sideItems.userList"),
+        roles: ["master", "admin"],
+        to: "/userslist",
       },
-    },
-    {
-      id: "documents",
-      icon: Files,
-      label: t("sideItems.compDocs"),
-      roles: ["user", "admin", "master"],
-      to: "/company-documents",
-    },
-    {
-      id: "chat",
-      icon: MessageSquare,
-      label: t("sideItems.mirrChat"),
-      roles: ["admin", "master"],
-      to: "/messages",
-    },
-    {
-      id: "sms",
-      icon: Send,
-      label: "SMS Manager",
-      roles: ["admin", "master"],
-      to: "/sms-management",
-    },
-  ], [t, role, navigate, hardReset]);
+      {
+        id: "register-company",
+        icon: FileSignature,
+        label: t("sideItems.regComp"),
+        roles: ["user", "admin", "master"],
+        onClick: () => {
+          hardReset();
+          navigate("/company-register");
+        },
+      },
+      {
+        id: "documents",
+        icon: Files,
+        label: t("sideItems.compDocs"),
+        roles: ["user", "admin", "master"],
+        to: "/company-documents",
+      },
+      {
+        id: "chat",
+        icon: MessageSquare,
+        label: t("sideItems.mirrChat"),
+        roles: ["admin", "master"],
+        to: "/messages",
+      },
+      {
+        id: "sms",
+        icon: Send,
+        label: "SMS Manager",
+        roles: ["admin", "master"],
+        to: "/sms-management",
+      },
+    ],
+    [t, role, navigate, hardReset]
+  );
 
-  const grouped: SidebarGroupCfg[] = useMemo(() => [
-    {
-      id: "services",
-      icon: Briefcase,
-      label: "Services",
-      roles: ["user", "admin", "master"],
-      children: [
-        {
-          id: "switch-services",
-          icon: RefreshCw,
-          label: t("sideItems.switchServices"),
-          roles: ["user", "admin", "master"],
-          to: "/switch-services-list",
-        },
-        {
-          id: "accounting-support",
-          icon: Briefcase,
-          label: t("sideItems.accountList"),
-          roles: ["user", "admin", "master"],
-          to: "/accounting-support-list",
-        },
-        {
-          id: "bank-services",
-          icon: Briefcase,
-          label: t("sideItems.bankServices"),
-          roles: ["admin", "master"],
-          to: "/pba-forms",
-        },
-        {
-          id: "sign-docs",
-          icon: FileCheck,
-          label: t("sideItems.signDocs"),
-          roles: ["user", "admin", "master"],
-          to: "/service-agreement-sign-docs",
-        },
-        {
-          id: "invoice-mgmt",
-          icon: Receipt,
-          label: "Invoice Management",
-          roles: ["admin", "master"],
-          to: "/invoice-management",
-        },
-        {
-          id: "member-director",
-          icon: UserPlus,
-          label: "Member/Director Management",
-          roles: ["user", "admin", "master"],
-          to: "/member-director-change",
-        },
-      ],
-    },
-  ], [t]);
+  const grouped: SidebarGroupCfg[] = useMemo(
+    () => [
+      {
+        id: "services",
+        icon: Briefcase,
+        label: "Services",
+        roles: ["user", "admin", "master"],
+        children: [
+          {
+            id: "switch-services",
+            icon: RefreshCw,
+            label: t("sideItems.switchServices"),
+            roles: ["user", "admin", "master"],
+            to: "/switch-services-list",
+          },
+          {
+            id: "accounting-support",
+            icon: Briefcase,
+            label: t("sideItems.accountList"),
+            roles: ["user", "admin", "master"],
+            to: "/accounting-support-list",
+          },
+          {
+            id: "bank-services",
+            icon: Briefcase,
+            label: t("sideItems.bankServices"),
+            roles: ["admin", "master"],
+            to: "/pba-forms",
+          },
+          {
+            id: "sign-docs",
+            icon: FileCheck,
+            label: t("sideItems.signDocs"),
+            roles: ["user", "admin", "master"],
+            to: "/service-agreement-sign-docs",
+          },
+          {
+            id: "invoice-mgmt",
+            icon: Receipt,
+            label: "Invoice Management",
+            roles: ["admin", "master"],
+            to: "/invoice-management",
+          },
+          {
+            id: "member-director",
+            icon: UserPlus,
+            label: "Member/Director Management",
+            roles: ["user", "admin", "master"],
+            to: "/member-director-change",
+          },
+        ],
+      },
+    ],
+    [t]
+  );
 
-  const filteredSingles = singleItems.filter(i => i.roles.includes(role));
+  const filteredSingles = singleItems.filter((i) => i.roles.includes(role));
   const filteredGroups = grouped
-    .map(g => ({ ...g, children: g.children.filter(c => c.roles.includes(role)) }))
-    .filter(g => g.roles.includes(role) && g.children.length > 0);
+    .map((g) => ({ ...g, children: g.children.filter((c) => c.roles.includes(role)) }))
+    .filter((g) => g.roles.includes(role) && g.children.length > 0);
 
   const toggleGroup = (id: string) => {
-    setExpandedGroups(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+    setExpandedGroups((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
   const SidebarBody = (
-    <div className="flex h-full flex-col font-sans">
+    <div className="flex h-full flex-col font-sans bg-white dark:bg-gray-900">
       <ScrollArea className="flex-1">
         <nav className="p-2 space-y-1">
-          {/* Singles */}
-          {filteredSingles.map(item => {
+          {filteredSingles.map((item) => {
             const Row = <SidebarRow Icon={item.icon} label={item.label} collapsed={collapsed} />;
             if (item.onClick) {
               return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={item.onClick}
-                  className={baseItem}
-                >
+                <button key={item.id} type="button" onClick={item.onClick} className={baseItem}>
                   {Row}
                 </button>
               );
@@ -663,15 +669,16 @@ const Layout: React.FC = () => {
                 key={item.id}
                 to={item.to!}
                 end
-                className={({ isActive }) => cn(baseItem, isActive && "bg-accent text-accent-foreground")}
+                className={({ isActive }) =>
+                  cn(baseItem, isActive && "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200")
+                }
               >
                 {Row}
               </NavLink>
             );
           })}
 
-          {/* Groups */}
-          {filteredGroups.map(group => {
+          {filteredGroups.map((group) => {
             const open = expandedGroups.includes(group.id);
             return (
               <div key={group.id} className="space-y-1">
@@ -692,16 +699,11 @@ const Layout: React.FC = () => {
 
                 {open && !collapsed && (
                   <div id={`group-${group.id}`} className="space-y-1 pl-7">
-                    {group.children.map(child => {
+                    {group.children.map((child) => {
                       const Row = <SidebarRow Icon={child.icon} label={child.label} />;
                       if (child.onClick) {
                         return (
-                          <button
-                            key={child.id}
-                            type="button"
-                            onClick={child.onClick}
-                            className={baseItemChild}
-                          >
+                          <button key={child.id} type="button" onClick={child.onClick} className={baseItemChild}>
                             {Row}
                           </button>
                         );
@@ -711,7 +713,9 @@ const Layout: React.FC = () => {
                           key={child.id}
                           to={child.to!}
                           end
-                          className={({ isActive }) => cn(baseItemChild, isActive && "bg-accent text-accent-foreground")}
+                          className={({ isActive }) =>
+                            cn(baseItemChild, isActive && "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200")
+                          }
                         >
                           {Row}
                         </NavLink>
@@ -725,12 +729,11 @@ const Layout: React.FC = () => {
         </nav>
       </ScrollArea>
 
-      {/* Footer */}
-      <div className="p-2 border-t">
+      <div className="p-2 border-t border-gray-200 dark:border-gray-700">
         <button
           type="button"
           className={cn(baseItem, "justify-start")}
-          onClick={() => setCollapsed(c => !c)}
+          onClick={() => setCollapsed((c) => !c)}
           aria-pressed={collapsed}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
@@ -741,13 +744,12 @@ const Layout: React.FC = () => {
   );
 
   return (
-    <div className="grid h-screen grid-rows-[auto,1fr] bg-background">
+    <div className="grid h-screen grid-rows-[auto,1fr] bg-white dark:bg-gray-900">
       <TopNav onMenuToggle={() => setMobileOpen(true)} isMobileMenuOpen={mobileOpen} />
       <div className="grid grid-cols-1 lg:grid-cols-[auto,1fr] min-h-0">
-        {/* Desktop Sidebar */}
         <aside
           className={cn(
-            "hidden lg:block border-r min-h-0 transition-[width] duration-200 ease-in-out",
+            "hidden lg:block border-r border-gray-200 dark:border-gray-700 min-h-0 transition-[width] duration-200 ease-in-out",
             collapsed ? "w-[72px]" : "w-[280px]"
           )}
           aria-label="App navigation"
@@ -755,18 +757,16 @@ const Layout: React.FC = () => {
           {SidebarBody}
         </aside>
 
-        {/* Mobile Drawer */}
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetContent side="left" className="p-0 w-[80%] sm:w-[360px]">
-            <SheetHeader className="p-4 border-b">
-              <SheetTitle className="text-left">Menu</SheetTitle>
+          <SheetContent side="left" className="p-0 w-[80%] sm:w-[360px] bg-white dark:bg-gray-900">
+            <SheetHeader className="p-4 border-b border-gray-200 dark:border-gray-700">
+              <SheetTitle className="text-left text-gray-900 dark:text-gray-100">Menu</SheetTitle>
             </SheetHeader>
             {SidebarBody}
           </SheetContent>
         </Sheet>
 
-        {/* Main */}
-        <main className="min-w-0 min-h-0 overflow-hidden">
+        <main className="min-w-0 min-h-0 overflow-hidden bg-white dark:bg-gray-900">
           <div className="h-full overflow-y-auto p-4 sm:p-6">
             <Outlet />
           </div>
@@ -779,4 +779,3 @@ const Layout: React.FC = () => {
 };
 
 export default Layout;
-
