@@ -173,7 +173,7 @@ export const relationMap = [
     { key: "other", value: "Other" },
 ]
 export const investmentOptionsMap = [
-    { key: "shareHld", value: "Shareholders' capital or loans" },
+    { key: "shareHldCptloan", value: "Shareholders' capital or loans" },
     { key: "businessIncome", value: "Business income" },
     { key: "divident", value: "Dividend" },
     { key: "depositSaving", value: "Deposits, savings" },

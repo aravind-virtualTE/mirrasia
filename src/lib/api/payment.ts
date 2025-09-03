@@ -5,6 +5,7 @@ import { PaymentIntent } from '@stripe/stripe-js';
 // import { updateCompanyIncorporationAtom } from '../atom';
 
 export const cartFingerprint = (input: unknown) => {
+  // Detect changes in complex data (like objects/arrays) by turning them into a comparable string or number. 
   const s = JSON.stringify(input);
   let h = 0;
   for (let i = 0; i < s.length; i++) {
@@ -108,14 +109,11 @@ export type CreatePaymentIntentResponse = {
   amount: number;
   status: string;
 };
-export const createInvoicePaymentIntent = async ( body: CreatePaymentIntentBody, idempotencyKey?: string): Promise<CreatePaymentIntentResponse> => {
+export const createInvoicePaymentIntent = async ( body: CreatePaymentIntentBody): Promise<CreatePaymentIntentResponse> => {
   try {
     const response = await api.post<CreatePaymentIntentResponse>(
       "/payment/invoice-intent",
       body,
-      idempotencyKey
-        ? { headers: { "Idempotency-Key": idempotencyKey } }
-        : undefined
     );
     return response.data;
   } catch (error) {
@@ -135,6 +133,7 @@ export type PaymentSuccessPayload = {
   userName: string;
   userId: string;
   lines: Array<{ label: string; qty: number; unit: number; amount: number }>;
+  orderId:string | null;
 };
 
 export const notifyPaymentSuccess = async (payload: PaymentSuccessPayload) => {
@@ -153,3 +152,29 @@ export const updateInvoicePaymentIntent = (intentId: string, body: any) =>
 // optional tidy-up
 export const cancelPaymentIntent = (intentId: string) =>
   api.post(`/payment/cancel-invoice-intent/${intentId}/cancel`).then(r => r.data);
+
+
+export const getInvoiceOrder = (id: string) =>
+  api.get(`/payment/invoice-orders/${id}`).then(r => r.data);
+
+export const orderResume = (companyId: string, fp: string) =>
+  api.get(`/payment/invoice-order/resume`, {
+    params: { companyId, fp }
+  }).then(r => r.data);
+
+export const createDraftOrder = (data: any) =>
+  api.post("/payment/invoice-order", data).then(r => r.data);
+
+export const uploadBankProof = async (docId: string, file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const r = await api.post(`/payment/invoice-order/${docId}/bank-proof`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return r.data;
+}
+
+export const updatePayMethod = (id: string, method: string) =>
+  api.patch(`/payment/invoice-order/${id}/pay-method`, { method }).then(r => r.data);
