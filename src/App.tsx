@@ -54,6 +54,7 @@ import InvoiceManager from './components/InvoiceManager/InvoiceManager';
 import QuoteBuilder from './components/InvoiceManager/InvoiceQuotation';
 import HKAccountingEstimator from './components/InvoiceManager/AccTaxEstimator';
 import MemberDirectorManager from './components/memDirManager/MemberDirectorManager';
+import ConfigDrivenHKFormDemo from './pages/Company/NewFormLayout';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -127,6 +128,8 @@ const App: React.FC = () => {
                       <Route path="/company-details/:id" element={<CompanyDetail />} />
                       <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
                       <Route path="/member-director-change" element={<MemberDirectorManager />} />
+                      <Route path="/new-form-layout" element={<ConfigDrivenHKFormDemo />} />
+                      
                     </Route>
                   </Route>
 
