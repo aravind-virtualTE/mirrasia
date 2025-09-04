@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { addUser, updateUserRole, fetchDetailedUsers, sendCustomMail, createOutstandingTask, updateUserProfileData } from "@/services/dataFetch"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -49,7 +49,7 @@ export interface User {
         checked: boolean;
     }[]
 }
-
+type SortKey = "fullName" | "email" | "role";
 const UsersList = () => {
     const [users, setUsers] = useState<User[]>([{ _id: "", fullName: "", email: "", role: "", picture: "" }])
     const [newUser, setNewUser] = useState({ fullName: "", email: "", role: "user" })
@@ -64,6 +64,8 @@ const UsersList = () => {
     const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
     const navigate = useNavigate();
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+    const [sortBy, setSortBy] = useState<SortKey>("fullName");
+    const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
     // console.log("selectedUser", selectedUser)
     useEffect(() => {
         const fetchUser = async () => {
@@ -276,6 +278,35 @@ const UsersList = () => {
             }
         }
     }
+
+    const handleSort = (key: SortKey) => {
+        if (sortBy === key) {
+            setSortDir(prev => (prev === "asc" ? "desc" : "asc"));
+        } else {
+            setSortBy(key);
+            setSortDir("asc");
+        }
+    };
+
+    const ariaSort = (key: SortKey) =>
+        sortBy === key ? (sortDir === "asc" ? "ascending" : "descending") : "none";
+
+    const getVal = (u: User, key: SortKey): string => {
+        if (key === "fullName") return u.fullName || "";
+        if (key === "email") return u.email || "";
+        return u.role || "";
+    };
+
+    const sortedUsers = useMemo(() => {
+        const collator = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
+        const list = [...users];
+        list.sort((a, b) => {
+            const cmp = collator.compare(getVal(a, sortBy), getVal(b, sortBy));
+            return sortDir === "asc" ? cmp : -cmp;
+        });
+        return list;
+    }, [users, sortBy, sortDir]);
+
     return (
         <div className="space-y-4">
             <div className="flex justify-end">
@@ -333,14 +364,54 @@ const UsersList = () => {
                 <Table>
                     <TableHeader>
                         <TableRow className="bg-muted hover:bg-muted">
-                            <TableHead className="h-8 px-2 text-xs w-1/4">Name</TableHead>
-                            <TableHead className="h-8 px-2 text-xs w-1/4">Email</TableHead>
-                            <TableHead className="h-8 px-2 text-xs w-1/4">Role</TableHead>
+                            <TableHead
+                                className="h-8 px-2 text-xs w-1/4 cursor-pointer select-none"
+                                onClick={() => handleSort("fullName")}
+                                aria-sort={ariaSort("fullName")}
+                                title="Sort by name"
+                            >
+                                <span className="inline-flex items-center gap-1">
+                                    Name
+                                    <span className="text-[10px] opacity-70">
+                                        {sortBy === "fullName" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+                                    </span>
+                                </span>
+                            </TableHead>
+
+                            <TableHead
+                                className="h-8 px-2 text-xs w-1/4 cursor-pointer select-none"
+                                onClick={() => handleSort("email")}
+                                aria-sort={ariaSort("email")}
+                                title="Sort by email"
+                            >
+                                <span className="inline-flex items-center gap-1">
+                                    Email
+                                    <span className="text-[10px] opacity-70">
+                                        {sortBy === "email" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+                                    </span>
+                                </span>
+                            </TableHead>
+
+                            <TableHead
+                                className="h-8 px-2 text-xs w-1/4 cursor-pointer select-none"
+                                onClick={() => handleSort("role")}
+                                aria-sort={ariaSort("role")}
+                                title="Sort by role"
+                            >
+                                <span className="inline-flex items-center gap-1">
+                                    Role
+                                    <span className="text-[10px] opacity-70">
+                                        {sortBy === "role" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+                                    </span>
+                                </span>
+                            </TableHead>
+
                             <TableHead className="h-8 px-2 text-xs w-1/4">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
+
                     <TableBody>
-                        {users.map((user) => (
+                        {sortedUsers.map((user) => (
                             <TableRow key={user._id} onClick={() => openUserDetails(user)} className="hover:bg-muted/50">
                                 <TableCell className="p-2 text-sm">{user.fullName}</TableCell>
                                 <TableCell className="p-2 text-sm">{user.email}</TableCell>
@@ -349,7 +420,10 @@ const UsersList = () => {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => openEditRoleDialog(user)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            openEditRoleDialog(user);
+                                        }}
                                     >
                                         <Pencil className="h-4 w-4" />
                                     </Button>
