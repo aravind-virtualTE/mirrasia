@@ -37,7 +37,7 @@ const ToDoList = () => {
 
   // centralize fetch with current filters
   const fetchTasks = async (opts?: { reset?: boolean }) => {
-    let filters: Record<string, any> = {};
+    const filters: Record<string, any> = {};
     if (user?.role === "admin") filters.userId = userId;
 
     if (!opts?.reset) {
