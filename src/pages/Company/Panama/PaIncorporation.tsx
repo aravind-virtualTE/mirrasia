@@ -33,7 +33,7 @@ const IncorporatePa: React.FC = () => {
 
      let canEdit = true
     if(formData.userId !== ""){
-        if(decodedToken.userId === formData.userId){
+        if(decodedToken.userId === formData.userId || decodedToken.role === 'master'){
             canEdit = true
         }else{
             canEdit = false

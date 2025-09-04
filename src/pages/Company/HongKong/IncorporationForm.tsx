@@ -53,7 +53,7 @@ const IncorporationForm = () => {
     // console.log("finalForm",finalForm)
     let canEdit = true
     if (finalForm.userId !== "") {
-        if (decodedToken.userId === finalForm.userId) {
+        if (decodedToken.userId === finalForm.userId || decodedToken.role === 'master') {
             canEdit = true
         } else {
             canEdit = false
