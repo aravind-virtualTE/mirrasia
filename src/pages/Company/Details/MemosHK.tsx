@@ -300,7 +300,7 @@ export default function MemoApp({ id }: { id: string }) {
 
   return (
     <div className="max-w-full mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Memo</h1>
+      <h1 className="text-2xl font-bold mb-4">Memo (Internal Use)</h1>
 
       <div className="mb-4 border rounded p-4 bg-gray-100 max-h-[400px] overflow-y-auto">
         {messages.length === 0 ? (
