@@ -240,14 +240,6 @@ export default function HongKongMemberDirectorChanges() {
   const [bankInit, setBankInit] = React.useState(false);
   const [bankMsg, setBankMsg] = React.useState<string | null>(null);
 
-  // const [pi, setPi] = React.useState<{
-  //   id: string;
-  //   clientSecret: string;
-  //   amount: number;
-  //   status: string;
-  //   fp: string;
-  // } | null>(null);
-
   const user = JSON.parse(localStorage.getItem("user") || "null");
   // Fetch companies
   const fetchComp = React.useCallback(async () => {
