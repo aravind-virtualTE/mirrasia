@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 import { toast } from "@/hooks/use-toast";
 import UserSearchComboBox, { User } from "./SearchCombo";
 import { sendSms } from "./smsManagement";
+import { getSMSLengthInfo } from "@/lib/utils";
 
 interface ManualSMSComponentProps {
   onSmsSent?: () => void;
@@ -26,6 +27,7 @@ const ManualSMSComponent: React.FC<ManualSMSComponentProps> = ({ onSmsSent }) =>
 
   const [recipientMode, setRecipientMode] = useState<RecipientMode>("contact");
   const [customPhone, setCustomPhone] = useState("");
+  const [smsInfo, setSmsInfo] = useState({ isGsm: true, maxChars: 160, segments: 1, remaining: 160 });
 
   useEffect(() => {
     const load = async () => {
@@ -40,6 +42,10 @@ const ManualSMSComponent: React.FC<ManualSMSComponentProps> = ({ onSmsSent }) =>
     };
     load();
   }, []);
+
+  useEffect(() => {
+    setSmsInfo(getSMSLengthInfo(customMessage));
+  }, [customMessage]);
 
   const effectivePhone = useMemo(() => {
     return recipientMode === "contact" ? selectedUser?.phone ?? "" : customPhone.trim();
@@ -90,7 +96,7 @@ const ManualSMSComponent: React.FC<ManualSMSComponentProps> = ({ onSmsSent }) =>
 
     try {
       // eslint-disable-next-line no-console
-    //   console.log("Sending SMS to:", phoneToUse, "Message:", customMessage);
+      //   console.log("Sending SMS to:", phoneToUse, "Message:", customMessage);
       const result = await sendSms(phoneToUse, customMessage);
       // eslint-disable-next-line no-console
       console.log("result===>", result);
@@ -186,11 +192,10 @@ const ManualSMSComponent: React.FC<ManualSMSComponentProps> = ({ onSmsSent }) =>
               inputMode="tel"
             />
             <p
-              className={`text-xs ${
-                customPhone && !phoneIsValid
-                  ? "text-red-500"
-                  : "text-muted-foreground"
-              }`}
+              className={`text-xs ${customPhone && !phoneIsValid
+                ? "text-red-500"
+                : "text-muted-foreground"
+                }`}
             >
               {customPhone && !phoneIsValid
                 ? "Invalid phone number. Use international format (E.164) starting with your country code."
@@ -205,14 +210,28 @@ const ManualSMSComponent: React.FC<ManualSMSComponentProps> = ({ onSmsSent }) =>
           <Textarea
             id="custom-message"
             value={customMessage}
-            onChange={(e) => setCustomMessage(e.target.value)}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              const { maxChars } = getSMSLengthInfo(newValue);
+              if (newValue.length <= maxChars) {
+                setCustomMessage(newValue);
+              }
+              // else: silently ignore (or you can beep/notify)
+            }}
             placeholder="Type your custom SMS message here..."
             rows={4}
             maxLength={160}
             className="resize-none"
           />
           <p className="text-xs text-muted-foreground">
-            {customMessage.length}/160 characters
+            {/* {customMessage.length}/160 characters */}
+            {smsInfo.segments > 1 ? (
+              <span className="text-red-500">
+                ⚠️ {smsInfo.segments} SMS segments ({smsInfo.remaining} chars left in current segment)
+              </span>
+            ) : (
+              <span>{smsInfo.remaining} characters remaining</span>
+            )}
           </p>
         </div>
       </div>
