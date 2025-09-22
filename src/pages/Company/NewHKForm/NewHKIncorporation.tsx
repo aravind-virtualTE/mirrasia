@@ -16,10 +16,19 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Info } from "lucide-react";
 import { FPSForm } from "../payment/FPSForm";
-import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveInvoiceBillableData, Step, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof } from "./hkIncorpo";
+import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, } from "./hkIncorpo";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { t } from "i18next";
+import { toast } from "@/hooks/use-toast";
+import { sendInviteToShDir } from "@/services/dataFetch";
+import { isValidEmail } from "@/middleware";
+import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
+import { TokenData } from "@/middleware/ProtectedRoutes";
+import { businessNatureList } from "../HongKong/constants";
+import SearchSelect from "@/components/SearchSelect";
 
 const STRIPE_CLIENT_ID =
   import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
@@ -129,6 +138,9 @@ function makeInitialAppDoc(
 
   const base: AppDoc = {
     stepIdx: existing?.stepIdx ?? 0,
+    userId: existing?.userId || extras.userId || "",
+    paymentStatus: existing?.paymentStatus || "unpaid",
+    expiresAt: existing?.expiresAt || "",
     form: mergedForm,
     parties: initialParties,
     optionalFeeIds: existing?.optionalFeeIds ?? [],
@@ -258,15 +270,9 @@ const computeGrandTotal = (app: AppDoc) => {
   return Number((base + surcharge).toFixed(2));
 };
 
-// ---------- Generic Field Renderer (operates on app.form)
-function Field({
-  field,
-  form,
-  setForm,
-}: {
+function Field({ field, form, setForm, }: {
   field: FieldBase;
-  form: any;
-  setForm: (fn: (prev: any) => any) => void;
+  form: any; setForm: (fn: (prev: any) => any) => void;
 }) {
   const visible = field.condition ? field.condition(form) : true;
   if (!visible) return null;
@@ -279,7 +285,7 @@ function Field({
         {field.label}
       </Label>
       {field.tooltip && (
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
               <Info className="size-4 text-muted-foreground" />
@@ -338,7 +344,7 @@ function Field({
             <SelectContent>
               {(field.options || []).map((o) => (
                 <SelectItem key={o.value} value={o.value}>
-                  {o.label}
+                  {t(o.label)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -347,6 +353,30 @@ function Field({
         </div>
       );
     }
+    case "search-select": {
+      // Expect field.options to be [{ code, label }]
+      const selectedItem = form[field.name]
+        ? field.items?.find((o: any) => o.code === form[field.name]) || null
+        : null;
+
+      const handleSelect = (item: { code: string; label: string }) => {
+        set(field.name, item.code);
+      };
+
+      return (
+        <div className={classNames("grid gap-2", spanClass)}>
+          {labelEl}
+          <SearchSelect
+            items={field.items || []}
+            placeholder={field.placeholder || "Select"}
+            onSelect={handleSelect}
+            selectedItem={selectedItem}
+          />
+          {hintEl}
+        </div>
+      );
+    }
+
     case "checkbox": {
       return (
         <div className={classNames("flex items-center gap-2", spanClass)}>
@@ -477,6 +507,49 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
 
   const assigned = app.parties.reduce((s, p) => s + (Number(p.shares) || 0), 0);
   const equal = totalShares > 0 && assigned === totalShares;
+  const sendMailFunction = async () => {
+    const extractedData = app.parties.map(item => {
+      const { name, email } = item;
+      if (!isValidEmail(email)) {
+        toast({ title: "Error", description: `Invalid email format for ${name}: ${email}` });
+      }
+      return { name, email };
+    });
+
+    const payload = { _id: app._id || '', inviteData: extractedData, country: 'HK' };
+    const response = await sendInviteToShDir(payload);
+    console.log("response", response)
+    if (response.summary.successful > 0) {
+      setApp(prev => {
+        const updated = prev.parties.map(p => {
+          return { ...p, invited: true }
+        });
+        return { ...prev, parties: updated };
+      });
+
+      toast({
+        title: 'Success',
+        description: `Successfully sent invitation mail to ${response.summary.successful} people`,
+      });
+    }
+
+    if (response.summary.alreadyExists > 0) {
+      toast({
+        title: 'Success',
+        description: `Invite sent to member/director`,
+      });
+    }
+
+    if (response.summary.failed > 0) {
+      toast({
+        title: 'Failed',
+        description: `Some Invitations Failed`,
+      });
+    }
+
+    console.log("send mail response", response);
+  };
+
 
   return (
     <div className="space-y-3">
@@ -490,7 +563,6 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
           ? "All good — total number of shares allocated equals the company’s issued shares."
           : "Error: The total allocated shares must equal the company’s total number of shares. Please revise entries."}
       </div>
-
       {app.parties.map((p, i) => {
         const pct = totalShares ? ((Number(p.shares) || 0) / totalShares) * 100 : 0;
         return (
@@ -554,7 +626,6 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
                   <Label>Shareholding % (auto)</Label>
                   <Input readOnly value={`${pct.toFixed(2)}%`} />
                 </div>
-
                 {/* Per-party Type of Shares (id only) */}
                 <div className="grid gap-2 md:col-span-2">
                   <Label>Type of shares</Label>
@@ -573,18 +644,10 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
                   </RadioGroup>
                 </div>
               </div>
-
               <div className="flex items-center justify-between mt-4">
                 <Button variant="ghost" onClick={() => del(i)}>
                   Remove
                 </Button>
-                {p.invited ? (
-                  <span className="text-sm text-muted-foreground">Invitation sent</span>
-                ) : (
-                  <Button variant="outline" onClick={() => upd(i, "invited", true)}>
-                    Send Invitation
-                  </Button>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -598,6 +661,9 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
         <div className="text-sm text-muted-foreground">
           Total shares: {totalShares.toLocaleString()} • Assigned: {assigned.toLocaleString()}
         </div>
+        <Button variant="outline" onClick={sendMailFunction}>
+          Send Invitation
+        </Button>
       </div>
     </div>
   );
@@ -695,9 +761,17 @@ function InvoicePreview({ app }: { app: AppDoc }) {
     </div>
   );
 }
+type StripeSuccessInfo = {
+  receiptUrl?: string;
+  amount?: number;
+  currency?: string;
+  paymentIntentStatus?: string;
+};
 
-function StripePaymentForm({app,onSuccess, onClose,}: { app: AppDoc;
-  onSuccess: () => void; onClose: () => void;}) {
+function StripePaymentForm({ app, onSuccess, onClose }: {
+  app: AppDoc;
+  onSuccess: (info: StripeSuccessInfo) => void; onClose: () => void;
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const [submitting, setSubmitting] = React.useState(false);
@@ -737,7 +811,6 @@ function StripePaymentForm({app,onSuccess, onClose,}: { app: AppDoc;
 
       const status = paymentIntent?.status;
 
-      // Call backend to finalize and fetch receipt (when we can)
       const notifyBackend = async () => {
         try {
           const result = await updateCorporateInvoicePaymentIntent({
@@ -746,33 +819,29 @@ function StripePaymentForm({app,onSuccess, onClose,}: { app: AppDoc;
             companyName: app.form.name1 || app.form.name2 || app.form.name3 || "Company (TBD)",
             userEmail: app.form.email,
           });
-
-          // Expected shape:
-          // { ok: true, paymentIntentStatus: "succeeded", amount, currency, receiptUrl }
           if (result?.ok) {
+            const payload: StripeSuccessInfo = {
+              receiptUrl: result?.receiptUrl,
+              amount: result?.amount,
+              currency: result?.currency,
+              paymentIntentStatus: result?.paymentIntentStatus,
+            };
             if (result?.paymentIntentStatus === "succeeded") {
-              setSuccessPayload({
-                receiptUrl: result?.receiptUrl,
-                amount: result?.amount,
-                currency: result?.currency,
-                paymentIntentStatus: result?.paymentIntentStatus,
-              });
-              onSuccess(); // let parent update state/advance step if it wants
+              setSuccessPayload(payload);
+              onSuccess(payload);
               setSubmitting(false);
               return;
             }
-
             // Processing or not final yet
             if (result?.paymentIntentStatus === "processing" || result?.paymentIntentStatus === "requires_capture") {
               setProcessingMsg(
                 "Your payment is processing. You’ll receive a receipt once the Transaction gets confirmed."
               );
-              onSuccess();
+              onSuccess(payload);
               setSubmitting(false);
               return;
             }
           }
-
           // Backend returned non-ok or unexpected
           setError(
             "Payment confirmed, but we couldn’t retrieve the receipt from the server. Please contact support if you didn’t receive an email."
@@ -790,7 +859,6 @@ function StripePaymentForm({app,onSuccess, onClose,}: { app: AppDoc;
       if (status === "succeeded") {
         await notifyBackend();
       } else if (status === "processing" || status === "requires_capture") {
-        // We still notify backend so it can record state even if not final
         await notifyBackend();
       } else {
         setError(`Payment status: ${status ?? "unknown"}. If this persists, contact support.`);
@@ -803,8 +871,6 @@ function StripePaymentForm({app,onSuccess, onClose,}: { app: AppDoc;
     }
   };
 
-  // --- UI ---
-  // Success view (shows receipt link)
   if (successPayload) {
     const amt = typeof successPayload.amount === "number" ? successPayload.amount : undefined;
     const currency =
@@ -846,7 +912,6 @@ function StripePaymentForm({app,onSuccess, onClose,}: { app: AppDoc;
       </div>
     );
   }
-
   // Processing view (no receipt yet)
   if (processingMsg) {
     return (
@@ -861,7 +926,6 @@ function StripePaymentForm({app,onSuccess, onClose,}: { app: AppDoc;
       </div>
     );
   }
-
   // Default payment form
   return (
     <div className="space-y-4">
@@ -883,20 +947,13 @@ function StripePaymentForm({app,onSuccess, onClose,}: { app: AppDoc;
   );
 }
 
-function StripeCardDrawer({
-  open,
-  onOpenChange,
-  clientSecret,
-  amountUSD,
-  app,
-  onSuccess,
-}: {
+function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, onSuccess, }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   clientSecret: string;
   amountUSD: number;
   app: AppDoc;
-  onSuccess: () => void;
+  onSuccess: (info: StripeSuccessInfo) => void;
 }) {
   const options = React.useMemo(
     () => ({
@@ -935,20 +992,81 @@ function StripeCardDrawer({
   );
 }
 
-function PaymentStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React.SetStateAction<AppDoc>> }) {
+function PaymentStep({
+  app,
+  setApp,
+}: {
+  app: AppDoc;
+  setApp: React.Dispatch<React.SetStateAction<AppDoc>>;
+}) {
   const grand = computeGrandTotal(app);
   const setForm = (updater: (prev: any) => any) =>
     setApp((prev) => ({ ...prev, form: updater(prev.form) }));
 
+  // ----- PAID? (from persisted state) -----
+  const isPaid =
+    app.paymentStatus === "paid" ||
+    app.form?.stripeLastStatus === "succeeded" ||
+    app.form?.stripePaymentStatus === "succeeded";
+
+  // ----- Expiry (only if NOT paid) -----
+  React.useEffect(() => {
+    if (isPaid) return; // don't set/modify when already paid
+    const now = Date.now();
+    const current = app.expiresAt ? new Date(app.expiresAt).getTime() : 0;
+    if (!current || current <= now) {
+      const twoDaysMs = 2 * 24 * 60 * 60 * 1000;
+      const expiryISO = new Date(now + twoDaysMs).toISOString();
+      setApp((prev) => ({ ...prev, expiresAt: expiryISO, updatedAt: new Date().toISOString() }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPaid]);
+
+  // Countdown only when not paid
+  const [nowTs, setNowTs] = React.useState(() => Date.now());
+  React.useEffect(() => {
+    if (isPaid) return; // stop timer entirely when paid
+    const id = window.setInterval(() => setNowTs(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [isPaid]);
+
+  const expiresTs = app.expiresAt ? new Date(app.expiresAt).getTime() : 0;
+  const remainingMs = Math.max(0, expiresTs - nowTs);
+  const isExpired = !isPaid && (!expiresTs || remainingMs <= 0);
+
+  const formatRemaining = (ms: number) => {
+    const s = Math.floor(ms / 1000);
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return d > 0
+      ? `${d}d ${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
+      : `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+  };
+
+  // ----- Local UI state for Stripe drawer (only used when not paid & not expired) -----
   const [creatingPI, setCreatingPI] = React.useState(false);
   const [uploading, setUploading] = React.useState(false);
   const [bankFile, setBankFile] = React.useState<File | null>(null);
-
-  // Stripe client secret + drawer state
   const [clientSecret, setClientSecret] = React.useState<string | null>(null);
   const [cardDrawerOpen, setCardDrawerOpen] = React.useState(false);
 
+  const guard = (msg: string) => {
+    if (isPaid) {
+      alert("Payment already completed.");
+      return true;
+    }
+    if (isExpired) {
+      alert(msg);
+      return true;
+    }
+    return false;
+  };
+
+  // ----- Bank/Other upload handlers -----
   const handleBankProofSubmit = async () => {
+    if (guard("Payment window expired. Please contact support to re-enable payment.")) return;
     if (!bankFile) return;
     setUploading(true);
     try {
@@ -959,8 +1077,16 @@ function PaymentStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Reac
     }
   };
 
+  const handleDeleteBankProof = async () => {
+    if (guard("Payment window expired. Please contact support to re-enable payment.")) return;
+    await deleteIncorpoPaymentBankProof(app?._id || "", "hk");
+    setForm((p: any) => ({ ...p, uploadReceiptUrl: undefined }));
+  };
+
+  // ----- Card payment flow (only when not paid & not expired) -----
   const handleProceedCard = async () => {
-    // If we already have a PI + clientSecret, just reopen the drawer
+    if (guard("Payment window expired. Please contact support to re-enable payment.")) return;
+
     if (clientSecret && app.form.paymentIntentId) {
       setCardDrawerOpen(true);
       return;
@@ -973,8 +1099,6 @@ function PaymentStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Reac
         totalCents: Math.round(grand * 100),
         country: "HK",
       };
-
-      // Create a PI on your backend; expects { id, clientSecret }
       const result = await createInvoicePaymentIntent(currentFP);
       if (result?.clientSecret && result?.id) {
         setClientSecret(result.clientSecret);
@@ -991,13 +1115,60 @@ function PaymentStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Reac
     }
   };
 
-  const handleDeleteBankProof = async () => {
-    await deleteIncorpoPaymentBankProof(app?._id || "", "hk");
-    setForm((p: any) => ({ ...p, uploadReceiptUrl: undefined }));
-  };
-
   return (
     <>
+      {/* Success block (visible also on revisit) */}
+      {isPaid && (
+        <div className="mb-4 border rounded-md p-3 text-sm bg-emerald-50 border-emerald-200 text-emerald-900">
+          <div className="font-semibold mb-1">Payment successful</div>
+          <div className="space-y-1">
+            {/* Amount is optional; render if saved */}
+            {typeof app.form?.stripeAmountCents === "number" && app.form?.stripeCurrency ? (
+              <div>
+                Amount:{" "}
+                <b>
+                  {app.form.stripeCurrency.toUpperCase()} {(app.form.stripeAmountCents / 100).toFixed(2)}
+                </b>
+              </div>
+            ) : null}
+            <div>
+              Receipt:&nbsp;
+              {app.form?.stripeReceiptUrl ? (
+                <a
+                  href={app.form.stripeReceiptUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2"
+                >
+                  View Stripe receipt
+                </a>
+              ) : (
+                <span className="text-emerald-900/80">will be emailed to you shortly.</span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Expiry banner (hidden when paid) */}
+      {!isPaid && (
+        <div
+          className={[
+            "mb-4 rounded-md border p-3 text-sm",
+            isExpired ? "border-red-200 bg-red-50 text-red-900" : "border-amber-200 bg-amber-50 text-amber-900",
+          ].join(" ")}
+        >
+          {isExpired ? (
+            <div className="font-medium">Payment window expired. Please contact support to re-enable payment.</div>
+          ) : (
+            <div className="flex items-center justify-between gap-2">
+              <div className="font-medium">Payment window active</div>
+              <div className="text-base font-bold tabular-nums">{formatRemaining(remainingMs)}</div>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="grid md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="pt-6 space-y-2">
@@ -1015,15 +1186,21 @@ function PaymentStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Reac
                   value={o.v}
                   checked={app.form.payMethod === o.v}
                   onChange={() => setForm((p) => ({ ...p, payMethod: o.v }))}
+                  disabled={isPaid || isExpired}
                 />
-                <span>{o.label}</span>
-                {o.tip && (
+                <span className={isPaid || isExpired ? "text-muted-foreground" : ""}>{o.label}</span>
+                {o.tip && !(isPaid || isExpired) && (
                   <span className="inline-flex ml-1">
                     <Tip text={o.tip} />
                   </span>
                 )}
               </label>
             ))}
+            {(isPaid || isExpired) && (
+              <div className="mt-2 text-xs text-muted-foreground">
+                {isPaid ? "Payment completed." : "Payment is disabled because the window has expired."}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -1043,6 +1220,7 @@ function PaymentStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Reac
                     placeholder="e.g., HSBC TT reference"
                     value={app.form.bankRef || ""}
                     onChange={(e) => setForm((p) => ({ ...p, bankRef: e.target.value }))}
+                    disabled={isPaid || isExpired}
                   />
                 </div>
 
@@ -1055,8 +1233,9 @@ function PaymentStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Reac
                       const f = e.target.files?.[0] || null;
                       setBankFile(f);
                     }}
+                    disabled={isPaid || isExpired}
                   />
-                  <Button onClick={handleBankProofSubmit} disabled={creatingPI || uploading}>
+                  <Button onClick={handleBankProofSubmit} disabled={isPaid || isExpired || creatingPI || uploading}>
                     {uploading ? "Uploading…" : "Submit"}
                   </Button>
                 </div>
@@ -1066,20 +1245,12 @@ function PaymentStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Reac
                     <div className="flex items-center justify-between">
                       <div className="text-sm font-medium">Payment proof preview</div>
                       <div className="flex items-center gap-2">
-                        <Button asChild variant="outline" size="sm">
-                          <a
-                            href={app.form.uploadReceiptUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
+                        <Button asChild variant="outline" size="sm" disabled={isPaid || isExpired}>
+                          <a href={app.form.uploadReceiptUrl} target="_blank" rel="noopener noreferrer">
                             Open in new tab
                           </a>
                         </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={handleDeleteBankProof}
-                        >
+                        <Button variant="destructive" size="sm" onClick={handleDeleteBankProof} disabled={isPaid || isExpired}>
                           Delete
                         </Button>
                       </div>
@@ -1101,13 +1272,13 @@ function PaymentStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Reac
               </div>
             )}
 
-            {app.form.payMethod === "card" && (
+            {app.form.payMethod === "card" && !isPaid && (
               <div className="mt-3">
-                <Button onClick={handleProceedCard} disabled={creatingPI}>
+                <Button onClick={handleProceedCard} disabled={isPaid || isExpired || creatingPI}>
                   {creatingPI ? "Preparing…" : "Proceed Card Payment"}
                 </Button>
                 <div className="text-xs text-muted-foreground mt-2">
-                  A secure Stripe card drawer will open to complete your payment.
+                  {isExpired ? "Payment disabled — window expired." : "A secure Stripe card drawer will open to complete your payment."}
                 </div>
               </div>
             )}
@@ -1119,18 +1290,30 @@ function PaymentStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Reac
         </Card>
       </div>
 
-      {/* Stripe Drawer */}
-      {clientSecret ? (
+      {/* Only mount Stripe drawer when NOT paid and NOT expired */}
+      {clientSecret && !isPaid && !isExpired ? (
         <StripeCardDrawer
           open={cardDrawerOpen}
           onOpenChange={setCardDrawerOpen}
           clientSecret={clientSecret}
           amountUSD={grand}
           app={app}
-          onSuccess={() => {
-            // Optional: advance to next step automatically after success
-            // (You can also set a flag on app to indicate payment completed)
-            console.log("Payment confirmed for PI:", app.form.paymentIntentId);
+          onSuccess={(info) => {
+            // Persist success in local state so on revisit we show success w/o opening Elements
+            setApp((prev) => ({
+              ...prev,
+              paymentStatus: info?.paymentIntentStatus === "succeeded" ? "paid" : prev.paymentStatus,
+              form: {
+                ...prev.form,
+                stripeLastStatus: info?.paymentIntentStatus ?? prev.form.stripeLastStatus,
+                stripeReceiptUrl: info?.receiptUrl ?? prev.form.stripeReceiptUrl,
+                stripeAmountCents:
+                  typeof info?.amount === "number" ? info.amount : prev.form.stripeAmountCents,
+                stripeCurrency: info?.currency ?? prev.form.stripeCurrency,
+              },
+              updatedAt: new Date().toISOString(),
+            }));
+            setCardDrawerOpen(false);
           }}
         />
       ) : null}
@@ -1270,6 +1453,14 @@ function ReviewStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React
 }
 
 function CongratsStep({ app }: { app: AppDoc }) {
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token') as string;
+  const decodedToken = jwtDecode<any>(token);
+  const navigateRoute = () => {
+    localStorage.removeItem('companyRecordId');
+    if (decodedToken.role === 'admin') navigate('/admin-dashboard');
+    else navigate('/dashboard');
+  }
   return (
     <div className="grid place-items-center gap-4 text-center py-6">
       <h2 className="text-xl font-extrabold">Congratulations!</h2>
@@ -1307,7 +1498,7 @@ function CongratsStep({ app }: { app: AppDoc }) {
         <Button variant="outline" onClick={() => window.print()}>
           Print / Save Summary as PDF
         </Button>
-        <Button>Go to Dashboard</Button>
+        <Button onClick={navigateRoute}>Go to Dashboard</Button>
       </div>
     </div>
   );
@@ -1324,6 +1515,24 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
     taxNeutral: "Tax neutrality (no capital gains tax)",
   };
 
+  const contactOptions = React.useMemo(
+    () =>
+      Array.from(
+        new Set(
+          (app.parties || [])
+            .map((p) => (p?.name || "").trim())
+            .filter(Boolean)
+        )
+      ),
+    [app.parties]
+  );
+
+  React.useEffect(() => {
+    if (form.dcp && !contactOptions.includes(form.dcp)) {
+      setForm((p) => ({ ...p, dcp: "" }));
+    }
+  }, [contactOptions]);
+
   return (
     <div className="space-y-4">
       <Card>
@@ -1332,18 +1541,12 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Field
               field={{
-                type: "select",
+                type: "search-select",
                 name: "industry",
                 label: "Business Industry",
                 required: true,
                 placeholder: "Select an industry",
-                options: [
-                  { label: "001 — Crop & animal production", value: "001 — Crop and animal production" },
-                  { label: "462 — Wholesale trade (non-specialized)", value: "462 — Wholesale trade (non-specialized)" },
-                  { label: "620 — IT consulting / software", value: "620 — IT consulting / software" },
-                  { label: "631 — E-commerce / online retail", value: "631 — E-commerce / online retail" },
-                  { label: "681 — Real estate holding / investment", value: "681 — Real estate holding / investment" },
-                ],
+                items: businessNatureList
               }}
               form={form}
               setForm={setForm}
@@ -1489,11 +1692,21 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
           <PartiesManager app={app} setApp={setApp} />
           {/* No global 'Type of shares' here — handled per-party */}
           <div className="grid gap-2 mt-4">
-            <Label>Designated Contact Person</Label>
-            <Input
-              placeholder="e.g., Jane Doe"
-              value={form.dcp || ""}
-              onChange={(e) => setForm((p) => ({ ...p, dcp: e.target.value }))}
+            <Field
+              field={{
+                type: "select",
+                name: "dcp",
+                label: "Designated Contact Person",
+                placeholder: "Select a contact person",
+                options: (app.parties || [])
+                  .map((p) => ({
+                    label: p?.name || "",
+                    value: p?.name || "",
+                  }))
+                  .filter((o) => o.value.trim() !== ""),
+              }}
+              form={form}
+              setForm={setForm}
             />
           </div>
         </CardContent>
@@ -1552,7 +1765,61 @@ function TopBar({ title, totalSteps, idx }: { title: string; totalSteps: number;
   );
 }
 
-function Sidebar({ steps, idx, goto }: { steps: Step[]; idx: number; goto: (i: number) => void }) {
+function Sidebar({
+  steps,
+  idx,
+  goto,
+  canProceedFromCurrent,
+  paymentStatus = "unpaid",
+}: {
+  steps: Step[];
+  idx: number;
+  goto: (i: number) => void;
+  canProceedFromCurrent: boolean; // derived from requiredMissing => canNext
+  paymentStatus?: string;         // "paid" or anything else
+}) {
+  const canJumpTo = (target: number) => {
+    if (target === idx) return true;    // current step
+    if (target < idx) return true;      // always allow going back
+
+    // Moving forward: block if current step incomplete
+    if (!canProceedFromCurrent) return false;
+
+    // Payment gate: block navigating to any step AFTER payment (index 7) unless paid
+    if (paymentStatus !== "paid" && target > 7) return false;
+
+    return true;
+  };
+
+  const onTryGoto = (target: number) => {
+    if (target === idx) return;
+
+    // If going backward, always allow
+    if (target < idx) {
+      goto(target);
+      return;
+    }
+
+    // Forward navigation checks
+    if (!canProceedFromCurrent) {
+      toast({
+        title: "Complete this step",
+        description: "Please fill all required fields before continuing.",
+      });
+      return;
+    }
+
+    if (paymentStatus !== "paid" && target > 7) {
+      toast({
+        title: "Payment required",
+        description: "Please complete the payment before proceeding to later steps.",
+      });
+      return;
+    }
+
+    goto(target);
+  };
+
   return (
     <aside className="space-y-4 sticky top-0 h-[calc(100vh-2rem)] overflow-auto p-0 lg:block">
       <div className="flex items-center gap-2 mb-1">
@@ -1561,6 +1828,7 @@ function Sidebar({ steps, idx, goto }: { steps: Step[]; idx: number; goto: (i: n
           MIRR ASIA — Incorporation
         </div>
       </div>
+
       <div className="text-xs text-muted-foreground">
         <div className="flex flex-wrap gap-1">
           <span className="inline-flex items-center gap-1 border rounded-full px-2 py-1 text-[10px] sm:text-xs">
@@ -1574,29 +1842,35 @@ function Sidebar({ steps, idx, goto }: { steps: Step[]; idx: number; goto: (i: n
           </span>
         </div>
       </div>
+
       <div className="space-y-1 mt-3">
-        {steps.map((s, i) => (
-          <button
-            key={s.id}
-            onClick={() => goto(i)}
-            className={classNames(
-              "w-full text-left rounded-lg border p-2 sm:p-3 hover:bg-accent/10 transition touch-manipulation",
-              i === idx && "border-primary bg-accent/10"
-            )}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <div className="font-semibold text-xs sm:text-sm truncate">
-                {i + 1}. {s.title}
+        {steps.map((s, i) => {
+          const enabled = canJumpTo(i);
+          return (
+            <button
+              key={s.id}
+              onClick={() => onTryGoto(i)}
+              disabled={!enabled}
+              className={classNames(
+                "w-full text-left rounded-lg border p-2 sm:p-3 transition touch-manipulation",
+                i === idx ? "border-primary bg-accent/10" : "hover:bg-accent/10",
+                !enabled && "opacity-60 cursor-not-allowed"
+              )}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="font-semibold text-xs sm:text-sm truncate">
+                  {i + 1}. {s.title}
+                </div>
+                {i < idx && <Badge variant="secondary" className="shrink-0 text-xs">Done</Badge>}
               </div>
-              {i < idx && <Badge variant="secondary" className="shrink-0 text-xs">Done</Badge>}
-            </div>
-          </button>
-        ))}
+            </button>
+          );
+        })}
         <p className="text-xs text-muted-foreground mt-2">
           Need help?{" "}
           <button
             className="text-sky-600 touch-manipulation"
-            onClick={() => alert("For demo only — hook to chat/support.")}
+            onClick={() => toast({ title: "Contact us", description: "Updating soon." })}
           >
             MirrAsia Chat
           </button>
@@ -1605,15 +1879,17 @@ function Sidebar({ steps, idx, goto }: { steps: Step[]; idx: number; goto: (i: n
     </aside>
   );
 }
-/** UPDATED: returns ok + _id; rejects on error example */
+
 async function saveDraft(doc: AppDoc): Promise<{ ok: boolean; _id?: string }> {
-  console.log("Save draft", doc);
-  const result = await saveInvoiceBillableData(doc);
+  const result = await saveIncorporationData(doc);
+  if (result) {
+    window.history.pushState({}, "", `/company-register/HK/${result._id}`);
+  }
   result.ok = true
   console.log("result", result);
   return result;
 }
-// ---------- Main (single global atom, no hook)
+
 function ConfigForm({ config, existing }: { config: FormConfig; existing?: Partial<AppDoc> }) {
   const [app, setApp] = useAtom(hkAppAtom);
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
@@ -1623,7 +1899,6 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
       setApp((prev) => ({ ...prev!, form: updater(prev!.form), updatedAt: new Date().toISOString() })),
     [setApp]
   );
-  // init once when empty
   const existingKey = React.useMemo(() => JSON.stringify(existing ?? {}), [existing]);
   React.useEffect(() => {
     if (!app) setApp(makeInitialAppDoc(config, {}, existing));
@@ -1637,7 +1912,6 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
   const step = config.steps[stepIdx];
 
   const form = app.form;
-  // Mutators
   const goto = (i: number) => {
     setApp((prev) => ({
       ...prev!,
@@ -1649,12 +1923,18 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
   };
   const missing = step.fields ? requiredMissing(form, step) : [];
   const canNext = missing.length === 0;
-  /** NEW: Next now autosaves draft and advances only on success */
+
   const handleNext = async () => {
     if (stepIdx >= config.steps.length - 1) return;
+    if (stepIdx === 7 && app.paymentStatus !== "paid") {
+      toast({ title: "Payment required", description: "Please complete the payment to continue." });
+      return;
+    }
     if (step.fields && !canNext) return; // should already be disabled, guard anyway
     try {
       setSavingNext(true);
+      const grand = computeGrandTotal(app);
+      app.form.finalAmount = grand
       const payload: AppDoc = { ...app, stepIdx: Math.min(stepIdx + 1, config.steps.length - 1) };
       console.log("stepIdx", stepIdx);
       if (stepIdx == 8) {
@@ -1665,10 +1945,14 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
           !!f.compliancePreconditionAcknowledgment &&
           String(f.eSign || "").trim().length >= 3;
         if (!ok) {
-          alert("Please confirm all declarations and enter your electronic signature (full legal name).");
+          toast({ title: "Incomplete", description: "Please confirm all declarations and enter your electronic signature (full legal name)." });
           return;
         }
       }
+      const token = localStorage.getItem("token") as string;
+      const decodedToken = jwtDecode<TokenData>(token);
+      payload.userId = decodedToken.userId;
+
       const res = await saveDraft(payload);
       console.log("saveDraft res", res);
       if (res?.ok) {
@@ -1677,20 +1961,19 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
         }
         goto(stepIdx + 1);
       } else {
-        alert("Could not save draft. Please try again.");
+        toast({ title: "Error", description: "Could not save draft. Please try again." });
       }
     } catch (err) {
       console.error(err);
-      alert("Save failed. Please try again.");
+      toast({ title: "Error", description: "Could not save draft. Please try again." });
     } finally {
       setSavingNext(false);
     }
   };
-
+  console.log("stepIdx", stepIdx)
   return (
     <div className="max-w-6xl mx-auto p-3 sm:p-4 md:p-6 space-y-4">
       <TopBar title={config.title} totalSteps={config.steps.length} idx={stepIdx} />
-
       {/* Mobile sidebar toggle */}
       <div className="lg:hidden">
         <Button
@@ -1725,14 +2008,26 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
                   ✕
                 </Button>
               </div>
-              <Sidebar steps={config.steps} idx={stepIdx} goto={goto} />
+              <Sidebar
+                steps={config.steps}
+                idx={stepIdx}
+                goto={goto}
+                canProceedFromCurrent={canNext}
+                paymentStatus={app.paymentStatus || "unpaid"}
+              />
             </div>
           </div>
         )}
 
         {/* Desktop sidebar */}
         <div className="hidden lg:block">
-          <Sidebar steps={config.steps} idx={stepIdx} goto={goto} />
+          <Sidebar
+            steps={config.steps}
+            idx={stepIdx}
+            goto={goto}
+            canProceedFromCurrent={canNext}
+            paymentStatus={app.paymentStatus || "unpaid"}
+          />
         </div>
 
         {/* Main content */}
@@ -1774,15 +2069,17 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
                   ← Back
                 </Button>
               </div>
-              <div className="w-full sm:w-auto">
-                <Button
-                  onClick={handleNext}
-                  disabled={step.fields ? !canNext || savingNext : savingNext}
-                  className="w-full sm:w-auto touch-manipulation"
-                >
-                  {savingNext ? "Saving…" : "Next →"}
-                </Button>
-              </div>
+              {stepIdx !== 9 && (
+                <div className="w-full sm:w-auto">
+                  <Button
+                    onClick={handleNext}
+                    disabled={step.fields ? !canNext || savingNext : savingNext}
+                    className="w-full sm:w-auto touch-manipulation"
+                  >
+                    {savingNext ? "Saving…" : "Next →"}
+                  </Button>
+                </div>
+              )}
             </CardFooter>
           </Card>
         </div>
@@ -1790,8 +2087,6 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
     </div>
   );
 }
-
-// ---------- App config (same steps)
 const hkIncorpConfig: FormConfig = {
   title: "Company Incorporation — Hong Kong",
   steps: [
@@ -2004,8 +2299,7 @@ const hkIncorpConfig: FormConfig = {
   ],
 };
 
-// ---------- Default Export: Demo page (drop-in)
-export default function ConfigDrivenHKFormDemo() {
+export default function ConfigDrivenHKForm() {
   React.useEffect(() => {
     document.title = "Company Incorporation - Mirr Asia";
   }, []);

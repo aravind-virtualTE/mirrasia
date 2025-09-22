@@ -1,13 +1,20 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, } from 'react';
 import { useParams } from "react-router-dom";
-import { useAtom, useSetAtom } from 'jotai';
-import { applicantInfoFormAtom, countryAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
-import { companyIncorporationList } from '@/services/state';
+import { useAtom, 
+    // useSetAtom 
+} from 'jotai';
+import {countryAtom,
+    //  applicantInfoFormAtom,  updateCompanyIncorporationAtom
+     } from '@/lib/atom';
+// import { companyIncorporationList } from '@/services/state';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import IncorporationForm from './HongKong/IncorporationForm';
+// import IncorporationForm from './HongKong/IncorporationForm';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
-import { getIncorporationListByCompId, getIncorporationListByUserId, getUsIncorpoDataById,getPaIncorpoDataById, getSgIncorpoDataById } from '@/services/dataFetch';
+import { 
+    // getIncorporationListByCompId, getIncorporationListByUserId, 
+    getUsIncorpoDataById,getPaIncorpoDataById, getSgIncorpoDataById } from '@/services/dataFetch';
 import IncorporateUSACompany from './USA/IncorporateUSCompany';
 import { Card, CardContent } from '@/components/ui/card';
 import { usaFormWithResetAtom } from './USA/UsState';
@@ -16,40 +23,48 @@ import IncorporateSg from './Singapore/IncorporateSg';
 import IncorporatePa from './Panama/PaIncorporation';
 import { paFormWithResetAtom } from './Panama/PaState';
 import { sgFormWithResetAtom } from './Singapore/SgState';
+import ConfigDrivenHKForm from './NewHKForm/NewHKIncorporation';
+import {getHkIncorpoData, hkAppAtom} from './NewHKForm/hkIncorpo';
+
 const CompanyRegistration = () => {
     const { t } = useTranslation();
     const [countryState, setCountryState] = useAtom(countryAtom);
-    const [, setCompaniesList] = useAtom(companyIncorporationList);
     const { countryCode, id } = useParams();
     const token = localStorage.getItem('token') as string;
     const decodedToken = jwtDecode<TokenData>(token);
-    const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
+    // const [, setCompaniesList] = useAtom(companyIncorporationList);
+    // const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
+    // const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
     const [ ,setFormData] = useAtom(usaFormWithResetAtom);
     const [ ,setPAFormData] = useAtom(paFormWithResetAtom);
     const [ ,setSgFormData] = useAtom(sgFormWithResetAtom);
-    const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
+    const [, setHkInfoData] = useAtom(hkAppAtom);
     useEffect(() => {
         if (id && countryCode == "HK") {
        
             if (!id || !decodedToken?.userId) return;
             (async () => {
                 // Fetch all companies
-                const result = await getIncorporationListByUserId(`${decodedToken.userId}`, `${decodedToken.role}`);
-                setCompaniesList(result.companies.mergedList);
-                // Find the current company from fetched list
-                const company = result.companies.mergedList.find((c: { _id: string; }) => c._id === id);
-                const cntry = company?.country as Record<string, string | undefined>;
-                if (company) setCountryState(cntry);
-                // Fetch and update incorporation details for this specific company
-                const compData = await getIncorporationListByCompId(`${id}`);
-                if (compData && compData.length > 0) {
-                    setApplicantHkInfoData(compData[0].applicantInfoForm);
-                    updateCompanyData(compData[0]);
-                //   console.log("resultIncorporation--->", compData);
-                } else {
-                  console.warn("No incorporation data found for id:", id);
-                }
-              })();
+                // const result = await getIncorporationListByUserId(`${decodedToken.userId}`, `${decodedToken.role}`);
+                // setCompaniesList(result.companies.mergedList);
+                // // Find the current company from fetched list
+                // const company = result.companies.mergedList.find((c: { _id: string; }) => c._id === id);
+                // const cntry = company?.country as Record<string, string | undefined>;
+                // if (company) setCountryState(cntry);
+                // // Fetch and update incorporation details for this specific company
+                // const compData = await getIncorporationListByCompId(`${id}`);
+                // if (compData && compData.length > 0) {
+                //     setApplicantHkInfoData(compData[0].applicantInfoForm);
+                //     updateCompanyData(compData[0]);
+                // //   console.log("resultIncorporation--->", compData);
+                // } else {
+                //   console.warn("No incorporation data found for id:", id);
+                // }
+                const result = await getHkIncorpoData(id)
+                console.log("result-->", result);
+                setHkInfoData(result)
+                setCountryState({ code: 'HK', name: 'Hong Kong'});
+            })();
         }
         else if(id && countryCode == "US") {
 
@@ -112,7 +127,8 @@ const CompanyRegistration = () => {
 
         switch (countryState.code) {
             case 'HK':
-                return <IncorporationForm />;
+                // return <IncorporationForm />;
+                return <ConfigDrivenHKForm />;
             case 'US':
                 return <IncorporateUSACompany />;
             case 'SG':

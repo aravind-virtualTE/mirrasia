@@ -54,8 +54,8 @@ import InvoiceManager from './components/InvoiceManager/InvoiceManager';
 import QuoteBuilder from './components/InvoiceManager/InvoiceQuotation';
 import HKAccountingEstimator from './components/InvoiceManager/AccTaxEstimator';
 import MemberDirectorManager from './components/memDirManager/MemberDirectorManager';
-import ConfigDrivenHKFormDemo from './pages/Company/NewHKForm/NewFormLayout';
-import MirrSummary from './pages/Company/Details/NewCompDetail';
+import ConfigDrivenHKForm from './pages/Company/NewHKForm/NewHKIncorporation';
+import HKCompDetailSummary from './pages/Company/Details/NewCompDetail';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -129,8 +129,8 @@ const App: React.FC = () => {
                       <Route path="/company-details/:id" element={<CompanyDetail />} />
                       <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
                       <Route path="/member-director-change" element={<MemberDirectorManager />} />
-                      <Route path="/new-form-layout" element={<ConfigDrivenHKFormDemo />} />
-                      <Route path="/new-company-detail" element={<MirrSummary />} />
+                      <Route path="/new-form-layout" element={<ConfigDrivenHKForm />} />
+                      <Route path="/new-company-detail" element={<HKCompDetailSummary id='68bedb5ee164e67b5fd3afa8' />} />
                       
                     </Route>
                   </Route>
