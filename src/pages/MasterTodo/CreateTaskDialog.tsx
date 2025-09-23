@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent,  SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon, Flag, X, Check, ChevronDown } from 'lucide-react';
@@ -48,8 +48,8 @@ export const CreateTaskDialog = ({
     const [allList] = useAtom(allCompListAtom);
     const [projects,] = useAtom(projectsAtom);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedValue, setSelectedValue] = useState(formState.selectedCompany || {id : "", name : ""});
-    const [selectedProject, setSelectedProj] = useState(formState.selectedProject || {id : "", name : ""});
+    const [selectedValue, setSelectedValue] = useState(formState.selectedCompany || { id: "", name: "" });
+    const [selectedProject, setSelectedProj] = useState(formState.selectedProject || { id: "", name: "" });
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     // State for multi-select dropdown
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -59,15 +59,24 @@ export const CreateTaskDialog = ({
     // Get filtered companies from allList
     const getFilteredCompanies = () => {
         if (allList.length > 0) {
-            return allList.map((company) => {
-                if (typeof company._id === 'string' && Array.isArray(company.companyName) && typeof company.companyName[0] === 'string') {
-                    return {
-                        id: company._id,
-                        name: company.companyName[0],
-                    };
-                }
-                return { id: '', name: '' };
-            }).filter(company => company.id !== '');
+            return allList
+                .map((company) => {
+                    if (typeof company._id === 'string') {
+                        // Handle companyName as string or array
+                        const name = typeof company.companyName === 'string'
+                            ? company.companyName
+                            : Array.isArray(company.companyName) && typeof company.companyName[0] === 'string'
+                                ? company.companyName[0]
+                                : '';
+
+                        return {
+                            id: company._id,
+                            name: name,
+                        };
+                    }
+                    return { id: '', name: '' };
+                })
+                .filter(company => company.id !== '');
         }
         return [];
     };
@@ -202,13 +211,13 @@ export const CreateTaskDialog = ({
     const handleCurrencySelect = (item: { id: string; name: string }) => {
         // console.log("code", item)
         setSelectedValue(item)
-        setFormState({...formState, selectedCompany: item});
+        setFormState({ ...formState, selectedCompany: item });
     };
 
     const handleProjectySelect = (item: { id: string; name: string }) => {
         // console.log("code", item)
         setSelectedProj(item)
-        setFormState({...formState, selectedProject: item});
+        setFormState({ ...formState, selectedProject: item });
     };
     const projectsList = projects.map((project) => ({ id: project._id, name: project.projectName }))
     const allowedStatuses = user.role === 'master'
@@ -363,7 +372,7 @@ export const CreateTaskDialog = ({
                                 onSelect={handleCurrencySelect}
                                 selectedItem={selectedValue}
                                 disabled={disbleCompany}
-                            />                            
+                            />
                         </div>
 
                         {/* Project Selection */}
@@ -374,7 +383,7 @@ export const CreateTaskDialog = ({
                                 onSelect={handleProjectySelect}
                                 selectedItem={selectedProject}
                                 disabled={disbleProject}
-                            />                            
+                            />
                         </div>
                     </div>
                     {/* Share with Client Toggle */}
