@@ -2233,13 +2233,13 @@ const hkIncorpConfig: FormConfig = {
     {
       id: "fees",
       title: "Incorporation Package & Optional Add-ons",
-      description: "Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.",
+      // description: "Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.",
       render: ({ app, setApp }) => <FeesEstimator app={app} setApp={setApp} />,
     },
     {
       id: "invoice",
       title: "Invoice — Preview",
-      description: "Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.",
+      // description: "Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.",
       render: ({ app }) => <InvoicePreview app={app} />,
     },
     {

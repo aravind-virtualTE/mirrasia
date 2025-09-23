@@ -346,9 +346,7 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
                         <CardTitle className="text-base md:text-xl tracking-tight">
                             MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED
                         </CardTitle>
-                        <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
-                            <span>Generated:</span>
-                            <span className="font-medium">{new Date().toLocaleDateString()}</span>
+                        <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">                           
                             <Badge variant="outline" className="ml-2">USD</Badge>
                         </div>
                     </div>
