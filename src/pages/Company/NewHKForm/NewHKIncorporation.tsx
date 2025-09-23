@@ -887,21 +887,19 @@ function StripePaymentForm({ app, onSuccess, onClose }: {
               </div>
             ) : null}
             <div>
-              Receipt:&nbsp;
               {successPayload.receiptUrl ? (
-                <a
-                  href={successPayload.receiptUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2"
-                >
-                  View Stripe receipt
-                </a>
-              ) : (
-                <span className="text-emerald-900/80">
-                  will be emailed to you shortly.
-                </span>
-              )}
+                <>
+                  Receipt:&nbsp;
+                  <a
+                    href={successPayload.receiptUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2"
+                  >
+                    View Stripe receipt
+                  </a>
+                </>
+              ) : null}
             </div>
           </div>
         </div>
@@ -1132,18 +1130,21 @@ function PaymentStep({
               </div>
             ) : null}
             <div>
-              Receipt:&nbsp;
+
               {app.form?.stripeReceiptUrl ? (
-                <a
-                  href={app.form.stripeReceiptUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2"
-                >
-                  View Stripe receipt
-                </a>
+                <>
+                  Receipt:&nbsp;
+                  <a
+                    href={app.form.stripeReceiptUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2"
+                  >
+                    View Stripe receipt
+                  </a>
+                </>
               ) : (
-                <span className="text-emerald-900/80">will be emailed to you shortly.</span>
+                null
               )}
             </div>
           </div>
@@ -1390,13 +1391,13 @@ function ReviewStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React
           <div>
             <div className="font-semibold">Accounting Preferences</div>
             <div>
-              finYrEnd: {form.finYrEnd || ""}, Bookkeeping: {acctCycle || "-"}, Software:{" "}
+              Financial year-end : {form.finYrEnd || ""}, Bookkeeping: {acctCycle || "-"}, Software:{" "}
               {form.xero || "Recommendation required"}
               {form.softNote ? ` • Prefers: ${form.softNote}` : ""}
             </div>
           </div>
           <div>
-            <div className="font-semibold">Estimated Total</div>
+            <div className="font-semibold">Total Amount</div>
             <div>
               Base: USD {base.toFixed(2)} • Payment: {(form.payMethod || "card").toUpperCase()} • Grand:{" "}
               <b>USD {grand.toFixed(2)}</b>

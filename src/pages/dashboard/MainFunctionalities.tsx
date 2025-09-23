@@ -7,12 +7,19 @@ import { useAtom } from 'jotai';
 import { usaFormWithResetAtom } from '../Company/USA/UsState';
 import { allCompListAtom } from '@/services/state';
 import { useTranslation } from "react-i18next";
+import { hkAppAtom } from '../Company/NewHKForm/hkIncorpo';
+import { paFormWithResetAtom } from '../Company/Panama/PaState';
+import { sgFormWithResetAtom } from '../Company/Singapore/SgState';
 
 const MainFunctionalities: React.FC = () => {
     const resetAllForms = useResetAllForms();
     const navigate = useNavigate();
     const [, setAllList] = useAtom(allCompListAtom)
     const [, setUSForm] = useAtom(usaFormWithResetAtom)
+    const [,setHK] = useAtom(hkAppAtom)
+    const [, setPA] = useAtom(paFormWithResetAtom);
+    const [, setSG] = useAtom(sgFormWithResetAtom);
+    
     const { t } = useTranslation();
 
     const handleComapanyCard = () => {
@@ -24,15 +31,27 @@ const MainFunctionalities: React.FC = () => {
     };
     const handleBankingCard = () => {
         resetAllForms();
+        setHK(null)
+        setUSForm('reset')
+        setPA("reset");
+        setSG("reset");
         navigate('/pba-forms');
     };
     const handleServicesCard = () => {
         resetAllForms();
+        setHK(null)
+        setUSForm('reset')
+        setPA("reset");
+        setSG("reset");
         navigate('/switch-services');
     };
 
     const handleProjectCard = () => {
         resetAllForms();
+        setHK(null)
+        setUSForm('reset')
+        setPA("reset");
+        setSG("reset");
         navigate('/accounting-services');
     }
 

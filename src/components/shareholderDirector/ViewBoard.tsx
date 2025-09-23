@@ -22,6 +22,7 @@ export default function ViewBoard() {
   const [selectedData, setsSelectedData] = useState<any>(null)
   const [country, setCountry] = useState<string>('HK')
   const [multiData, setMultiData] = useAtom<any>(multiShrDirResetAtom)
+  
   const [fState, setFState] = useState([{
     companyName: "" as string, fullName: "" as string, significantController: "" as string, _id: "" as string
   }])
