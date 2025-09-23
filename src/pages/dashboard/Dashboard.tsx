@@ -321,7 +321,6 @@ const Dashboard = () => {
 
                         const validCompanyNames =
                           resolveCompanyName(typedCompany)
-                        console.log("validCompanyNames",validCompanyNames)
                         return (
                           <TableRow key={typedCompany._id}>
                             <TableCell className="py-2 px-3">
