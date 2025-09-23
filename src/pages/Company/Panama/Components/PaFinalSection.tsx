@@ -12,7 +12,7 @@ const PaFinalSection = () => {
 
   const navigateRoute = () => {
     // console.log(`decodedToken`,decodedToken)
-    if (decodedToken.role === 'admin'|| decodedToken.role === "master") {
+    if (['admin', 'master'].includes(decodedToken.role)) {
         navigate('/admin-dashboard');
     }   
     else {
