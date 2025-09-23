@@ -422,6 +422,7 @@ import { paFormWithResetAtom } from "@/pages/Company/Panama/PaState";
 import { sgFormWithResetAtom } from "@/pages/Company/Singapore/SgState";
 import SocialMediaWidget from "../SocialMedia";
 import TopNav from "./Navbar";
+import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
 
 type Role = "user" | "admin" | "master" | "hk_shdr" | "us_shdr";
 type DecodedToken = { role?: Role };
@@ -498,17 +499,9 @@ const Layout: React.FC = () => {
   const [, setUS] = useAtom(usaFormWithResetAtom);
   const [, setPA] = useAtom(paFormWithResetAtom);
   const [, setSG] = useAtom(sgFormWithResetAtom);
+  const [,setHK] = useAtom(hkAppAtom)
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  if (!token) return <Navigate to="/" replace />;
 
-  let role: Role = "user";
-  try {
-    const decoded = jwtDecode<DecodedToken>(token);
-    role = decoded.role ?? "user";
-  } catch {
-    return <Navigate to="/" replace />;
-  }
 
   useEffect(() => {
     setMobileOpen(false);
@@ -519,6 +512,7 @@ const Layout: React.FC = () => {
     setUS("reset");
     setPA("reset");
     setSG("reset");
+    setHK(null)
     try {
       localStorage.removeItem("companyRecordId");
     } catch {
@@ -530,63 +524,7 @@ const Layout: React.FC = () => {
     "w-full inline-flex items-center h-10 rounded-md px-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400";
   const baseItemChild =
     "w-full inline-flex items-center h-9 rounded-md px-2 text-sm text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400";
-
-  const singleItems: SidebarItemCfg[] = useMemo(
-    () => [
-      {
-        id: "home",
-        icon: Home,
-        label: t("sideItems.Home"),
-        roles: ["user", "admin", "master", "hk_shdr", "us_shdr"],
-        onClick: () => {
-          hardReset();
-          if (["admin", "master"].includes(role)) navigate("/admin-dashboard");
-          else navigate("/dashboard");
-        },
-      },
-      {
-        id: "users",
-        icon: Users,
-        label: t("sideItems.userList"),
-        roles: ["master", "admin"],
-        to: "/userslist",
-      },
-      {
-        id: "register-company",
-        icon: FileSignature,
-        label: t("sideItems.regComp"),
-        roles: ["user", "admin", "master"],
-        onClick: () => {
-          hardReset();
-          navigate("/company-register");
-        },
-      },
-      {
-        id: "documents",
-        icon: Files,
-        label: t("sideItems.compDocs"),
-        roles: ["user", "admin", "master"],
-        to: "/company-documents",
-      },
-      {
-        id: "chat",
-        icon: MessageSquare,
-        label: t("sideItems.mirrChat"),
-        roles: ["admin", "master"],
-        to: "/messages",
-      },
-      {
-        id: "sms",
-        icon: Send,
-        label: "SMS Manager",
-        roles: ["admin", "master"],
-        to: "/sms-management",
-      },
-    ],
-    [t, role, navigate, hardReset]
-  );
-
-  const grouped: SidebarGroupCfg[] = useMemo(
+ const grouped: SidebarGroupCfg[] = useMemo(
     () => [
       {
         id: "services",
@@ -641,7 +579,71 @@ const Layout: React.FC = () => {
     ],
     [t]
   );
+ 
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  if (!token) return <Navigate to="/" replace />;
 
+  let role: Role = "user";
+  try {
+    const decoded = jwtDecode<DecodedToken>(token);
+    role = decoded.role ?? "user";
+  } catch {
+    return <Navigate to="/" replace />;
+  }
+   const singleItems: SidebarItemCfg[] = useMemo(
+    () => [
+      {
+        id: "home",
+        icon: Home,
+        label: t("sideItems.Home"),
+        roles: ["user", "admin", "master", "hk_shdr", "us_shdr"],
+        onClick: () => {
+          hardReset();
+          if (["admin", "master"].includes(role)) navigate("/admin-dashboard");
+          else navigate("/dashboard");
+        },
+      },
+      {
+        id: "users",
+        icon: Users,
+        label: t("sideItems.userList"),
+        roles: ["master", "admin"],
+        to: "/userslist",
+      },
+      {
+        id: "register-company",
+        icon: FileSignature,
+        label: t("sideItems.regComp"),
+        roles: ["user", "admin", "master"],
+        onClick: () => {
+          hardReset();
+          navigate("/company-register");
+        },
+      },
+      {
+        id: "documents",
+        icon: Files,
+        label: t("sideItems.compDocs"),
+        roles: ["user", "admin", "master"],
+        to: "/company-documents",
+      },
+      {
+        id: "chat",
+        icon: MessageSquare,
+        label: t("sideItems.mirrChat"),
+        roles: ["admin", "master"],
+        to: "/messages",
+      },
+      {
+        id: "sms",
+        icon: Send,
+        label: "SMS Manager",
+        roles: ["admin", "master"],
+        to: "/sms-management",
+      },
+    ],
+    [t, role, navigate, hardReset]
+  );
   const filteredSingles = singleItems.filter((i) => i.roles.includes(role));
   const filteredGroups = grouped
     .map((g) => ({ ...g, children: g.children.filter((c) => c.roles.includes(role)) }))

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
@@ -33,6 +34,9 @@ import { toast } from "@/hooks/use-toast";
 import ServiceCarousel from "./ServiceCarousel";
 import MainFunctionalities from "./MainFunctionalities";
 import ViewBoard from "@/components/shareholderDirector/ViewBoard";
+import { hkAppAtom } from "../Company/NewHKForm/hkIncorpo";
+import { paFormWithResetAtom } from "../Company/Panama/PaState";
+import { sgFormWithResetAtom } from "../Company/Singapore/SgState";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -43,6 +47,9 @@ const Dashboard = () => {
   const [allList, setAllList] = useAtom(allCompListAtom);
   const [, setUsaReset] = useAtom(usaFormWithResetAtom);
   const resetAllForms = useResetAllForms();
+  const [,setHK] = useAtom(hkAppAtom)
+  const [, setPA] = useAtom(paFormWithResetAtom);
+  const [, setSG] = useAtom(sgFormWithResetAtom);
 
 
   const token = useMemo(
@@ -66,6 +73,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     resetAllForms();
+    setHK(null)
+    setPA("reset");
+    setSG("reset");
     setUsaReset("reset");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -79,11 +89,7 @@ const Dashboard = () => {
 
     (async () => {
       try {
-        const result = await getIncorporationListByUserId(
-          `${userId}`,
-          `${role}`
-          // If your API supports signal: , { signal: controller.signal }
-        );
+        const result = await getIncorporationListByUserId(`${userId}`,`${role}`);
 
         if (!isActive) return;
 
@@ -141,6 +147,21 @@ const Dashboard = () => {
       return [];
     }
   })();
+
+   const resolveCompanyName = (company: any): string => {
+    const cn = company?.companyName;
+    if (typeof cn === "string") {
+      const s = cn.trim();
+      return s || "N/A";
+    }
+    if (Array.isArray(cn)) {
+      const joined = cn
+        .filter((v) => typeof v === "string" && v.trim())
+        .join(", ");
+      return joined || "N/A";
+    }
+    return "N/A";
+  };
 
   return (
     <>
@@ -299,10 +320,8 @@ const Dashboard = () => {
                         }
 
                         const validCompanyNames =
-                          typedCompany.companyName.filter(
-                            (name) => name.trim() !== ""
-                          );
-
+                          resolveCompanyName(typedCompany)
+                        console.log("validCompanyNames",validCompanyNames)
                         return (
                           <TableRow key={typedCompany._id}>
                             <TableCell className="py-2 px-3">
@@ -319,9 +338,7 @@ const Dashboard = () => {
                                 )
                               }
                             >
-                              {validCompanyNames.length > 0
-                                ? validCompanyNames.join(", ")
-                                : ""}
+                              {validCompanyNames}
                             </TableCell>
 
                             <TableCell className="py-2 px-3">

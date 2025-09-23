@@ -18,6 +18,9 @@ import { allCompListAtom } from "@/services/state";
 import { useAtom } from "jotai";
 import { usaFormWithResetAtom } from "@/pages/Company/USA/UsState";
 import AdminNotification from "./AdminNotification";
+import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
+import { paFormWithResetAtom } from "@/pages/Company/Panama/PaState";
+import { sgFormWithResetAtom } from "@/pages/Company/Singapore/SgState";
 
 interface NavbarProps {
     onMenuToggle: () => void;
@@ -29,7 +32,9 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
     const { theme } = useTheme();
     const [, setAllList] = useAtom(allCompListAtom)
     const [, setUSForm] = useAtom(usaFormWithResetAtom)
-
+    const [,setHK] = useAtom(hkAppAtom)
+    const [, setPA] = useAtom(paFormWithResetAtom);
+    const [, setSG] = useAtom(sgFormWithResetAtom);
     const resetAllForms = useResetAllForms();
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
@@ -49,6 +54,9 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
     // console.log("user", user)
     const navigateRoute = () => {
         resetAllForms()
+        setHK(null)
+        setPA('reset')
+        setSG('reset')
         setUSForm('reset')
         if (['admin', 'master'].includes(decodedToken.role)) {
             navigate('/admin-dashboard');
