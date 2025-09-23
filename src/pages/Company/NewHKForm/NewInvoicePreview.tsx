@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { HelpCircle } from "lucide-react";
 import { AppDoc } from "./hkIncorpo";
+// import { t } from "i18next";
 
 // ---- Types
 interface InvoiceItem {
@@ -329,11 +330,6 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
     const svc = sum(svcItems);
     const grand = { original: gov.original + svc.original, discounted: gov.discounted + svc.discounted };
 
-    // Surcharge view (card only)
-    const surcharge = app.form?.payMethod === "card" ? grand.discounted * 0.035 : 0;
-    const grandWithSurcharge = grand.discounted + surcharge;
-
-    // Hint state for (i) buttons
     const [hintOpen, setHintOpen] = React.useState<Record<string, boolean>>({});
     const toggleHint = (key: string) => setHintOpen((s) => ({ ...s, [key]: !s[key] }));
 
@@ -346,7 +342,7 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
                         <CardTitle className="text-base md:text-xl tracking-tight">
                             MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED
                         </CardTitle>
-                        <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">                           
+                        <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
                             <Badge variant="outline" className="ml-2">USD</Badge>
                         </div>
                     </div>
@@ -496,8 +492,7 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
                 </div>
 
                 <p className="mt-3 text-[11px] text-muted-foreground">
-                    Prices are in USD for convenience. Government fees may change based on official notices.
-                    Selected add-ons are shown; others are not included here.
+                    Prices are in USD for convenience. Government fees may change based on official notices. Optional items can be added/removed before payment. Accounting/taxation services are not included here.
                 </p>
             </SectionCard>
 
@@ -505,25 +500,11 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
             <Card>
                 <CardContent className="pt-4 text-sm">
                     <div className="flex items-center justify-end gap-6 flex-wrap">
-                        <div className="text-right">
-                            <div className="text-muted-foreground">Selected total</div>
-                            <div className="font-semibold">{fmt(grand.discounted)}</div>
-                        </div>
-                        {app.form?.payMethod === "card" && (
-                            <>
-                                <div className="text-right">
-                                    <div className="text-muted-foreground">Card processing fee (3.5%)</div>
-                                    <div className="font-semibold">{fmt(surcharge)}</div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="font-bold">Grand Total</div>
-                                    <div className="text-base font-extrabold">{fmt(grandWithSurcharge)}</div>
-                                    <div className="text-[11px] text-muted-foreground mt-1">
-                                        Includes 3.5% card processing surcharge.
-                                    </div>
-                                </div>
-                            </>
-                        )}
+                        <>
+                            <div className="text-right">
+                                <div className="text-base font-bold">Card processing fee (3.5%)</div>
+                            </div>
+                        </>
                     </div>
                 </CardContent>
             </Card>

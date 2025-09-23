@@ -449,7 +449,7 @@ function Field({ field, form, setForm, }: {
   }
 }
 
-function Tip({ text }: { text: string }) {
+function Tip({ text, content }: { text?: string; content?: React.ReactNode }) {
   return (
     <TooltipProvider>
       <Tooltip delayDuration={0}>
@@ -458,7 +458,9 @@ function Tip({ text }: { text: string }) {
             i
           </span>
         </TooltipTrigger>
-        <TooltipContent className="max-w-sm whitespace-pre-wrap">{text}</TooltipContent>
+        <TooltipContent className="max-w-sm text-sm">
+          {content ? content : <div className="whitespace-pre-wrap">{text}</div>}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
@@ -681,23 +683,78 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
     });
   };
 
-  const Row = ({ item }: { item: any }) => (
-    <TableRow>
-      <TableCell className="font-medium flex items-center gap-2">
-        {item.label}
-        <Tip text={item.info} />
-      </TableCell>
-      <TableCell>{item.original ? `USD ${item.original.toFixed(2)}` : "—"}</TableCell>
-      <TableCell>{`USD ${item.amount.toFixed(2)}`}</TableCell>
-      <TableCell className="w-[90px]">
-        <Checkbox
-          checked={item.mandatory || app.optionalFeeIds.includes(item.id)}
-          disabled={item.mandatory}
-          onCheckedChange={() => toggle(item.id)}
-        />
-      </TableCell>
-    </TableRow>
-  );
+  function getRichTipContent(id: string): React.ReactNode | undefined {
+    if (id === "reg_office") {
+      return (
+        <div className="space-y-2">
+          <div className="font-semibold">Registered Office Address</div>
+          <p>
+            <span className="font-semibold">Mandatory:</span> Every Hong Kong company must have a registered office
+            address in Hong Kong.
+          </p>
+          <div>
+            <div className="font-semibold">Purpose:</div>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>This is the official legal address kept at the Companies Registry.</li>
+              <li>
+                All official government correspondence (e.g. Companies Registry, Inland Revenue Department, courts) is
+                served to this address.
+              </li>
+              <li>Must be a physical address in Hong Kong (not a PO Box).</li>
+            </ul>
+          </div>
+        </div>
+      );
+    }
+
+    if (id === "corr_addr") {
+      return (
+        <div className="space-y-2">
+          <div className="font-semibold">Correspondence Address</div>
+          <p>
+            This is an alternative mailing address for the directors, company secretary, or designated representatives.
+          </p>
+          <p>
+            It is used when someone does not want their residential address made public in the Companies Registry records.
+          </p>
+          <p>
+            Since 2018, Hong Kong allows directors to file a “correspondence address” instead of disclosing their full
+            usual residential address on the public register.
+          </p>
+          <p className="text-sm">
+            The residential address is still filed with the Companies Registry, but kept in a “protected” part of the
+            register (only accessible to regulators and certain professionals).
+          </p>
+          <p>On the public records, only the correspondence address appears.</p>
+        </div>
+      );
+    }
+
+    return undefined;
+  }
+
+  // 3) Row using rich content for specific ids, fallback to plain info
+  const Row = ({ item }: { item: any }) => {
+    const richTip = getRichTipContent(item.id);
+
+    return (
+      <TableRow>
+        <TableCell className="font-medium flex items-center gap-2">
+          {item.label}
+          <Tip content={richTip} text={!richTip ? item.info : undefined} />
+        </TableCell>
+        <TableCell>{item.original ? `USD ${item.original.toFixed(2)}` : "—"}</TableCell>
+        <TableCell>{`USD ${item.amount.toFixed(2)}`}</TableCell>
+        <TableCell className="w-[90px]">
+          <Checkbox
+            checked={item.mandatory || app.optionalFeeIds.includes(item.id)}
+            disabled={item.mandatory}
+            onCheckedChange={() => toggle(item.id)}
+          />
+        </TableCell>
+      </TableRow>
+    );
+  };
 
   return (
     <div className="space-y-3">
