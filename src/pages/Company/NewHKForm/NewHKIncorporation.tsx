@@ -29,6 +29,7 @@ import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import { businessNatureList } from "../HongKong/constants";
 import SearchSelect from "@/components/SearchSelect";
+import InvoicePreview from "./NewInvoicePreview";
 
 const STRIPE_CLIENT_ID =
   import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
@@ -722,45 +723,7 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
     </div>
   );
 }
-function InvoicePreview({ app }: { app: AppDoc }) {
-  const grand = computeGrandTotal(app);
-  const chosenGov = feesConfig.government; // always mandatory
-  const chosenSvc = feesConfig.service.filter((x) => x.mandatory || app.optionalFeeIds.includes(x.id));
 
-  const TableMini = ({ list }: { list: any[] }) => (
-    <Table>
-      <TableBody>
-        {list.map((x) => (
-          <TableRow key={x.id}>
-            <TableCell className="font-medium">{x.label}</TableCell>
-            <TableCell className="w-36">USD {x.amount.toFixed(2)}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-
-  return (
-    <div className="grid gap-3">
-      <Card>
-        <CardContent className="pt-6">
-          <h1 className="font-bold">MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED</h1>
-          <div className="mt-4 font-bold">Government Fees</div>
-          <TableMini list={chosenGov} />
-          <div className="mt-4 font-bold">Our Service Fees</div>
-          <TableMini list={chosenSvc} />
-          <div className="text-right mt-3 text-base font-bold">Grand Total: USD {grand.toFixed(2)}</div>
-          <div className="text-xs text-muted-foreground mt-1">
-            Prices are in USD for convenience. Government fees may change based on official notices.
-          </div>
-          {app.form.payMethod === "card" && (
-            <div className="text-xs text-muted-foreground mt-2">Includes 3.5% card processing surcharge.</div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
 type StripeSuccessInfo = {
   receiptUrl?: string;
   amount?: number;
@@ -1163,8 +1126,8 @@ function PaymentStep({
             <div className="font-medium">Payment window expired. Please contact support to re-enable payment.</div>
           ) : (
             <div className="flex items-center justify-between gap-2">
-              <div className="font-medium">Payment window active</div>
-              <div className="text-base font-bold tabular-nums">{formatRemaining(remainingMs)}</div>
+              <div className="font-medium">Payment Timer</div>
+              <div className="text-base font-bold tabular-nums">Time remaining: {formatRemaining(remainingMs)}</div>
             </div>
           )}
         </div>
@@ -1265,9 +1228,6 @@ function PaymentStep({
                         className="w-full h-[420px]"
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      If the preview doesn’t load, click “Open in new tab.” Some hosts block embedding via X-Frame-Options.
-                    </p>
                   </div>
                 ) : null}
               </div>
@@ -1386,7 +1346,7 @@ function ReviewStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React
           </div>
           <div>
             <div className="font-semibold">Owners</div>
-            <pre className="whitespace-pre-wrap text-xs mt-1">{owners || "—"}</pre>
+            <div className="whitespace-pre-wrap mt-1">{owners || "—"}</div>
           </div>
           <div>
             <div className="font-semibold">Accounting Preferences</div>
@@ -1459,7 +1419,7 @@ function CongratsStep({ app }: { app: AppDoc }) {
   const decodedToken = jwtDecode<any>(token);
   const navigateRoute = () => {
     localStorage.removeItem('companyRecordId');
-    if (decodedToken.role === 'admin') navigate('/admin-dashboard');
+    if (['admin', 'master'].includes(decodedToken.role)) navigate('/admin-dashboard');
     else navigate('/dashboard');
   }
   return (

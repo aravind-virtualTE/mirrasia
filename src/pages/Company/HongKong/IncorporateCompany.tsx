@@ -10,7 +10,7 @@ const IncorporateCompany = () => {
 
   const navigateRoute = () => {
     localStorage.removeItem('companyRecordId');
-    if (decodedToken.role === 'admin') {
+    if (['admin', 'master'].includes(decodedToken.role)) {
         navigate('/admin-dashboard');
     }   
     else {
