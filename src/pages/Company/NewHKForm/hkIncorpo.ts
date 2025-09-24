@@ -120,11 +120,13 @@ export const createInvoicePaymentIntent = async (data: any) => {
   }
 }
 
-export const uploadIncorpoPaymentBankProof = async (docId: string,country:string, file: File) => {
+export const uploadIncorpoPaymentBankProof = async (docId: string,country:string, file: File, paymethod:string, expiresAt:string) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('id', docId);
   formData.append('country', country);
+  formData.append('paymethod', paymethod);
+  formData.append('expiresAt', expiresAt);
   const r = await api.post(`/incorporation/payment/${docId}/bank-proof`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
