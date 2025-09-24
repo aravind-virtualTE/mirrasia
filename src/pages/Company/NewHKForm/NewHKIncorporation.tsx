@@ -30,6 +30,7 @@ import { TokenData } from "@/middleware/ProtectedRoutes";
 import { businessNatureList } from "../HongKong/constants";
 import SearchSelect from "@/components/SearchSelect";
 import InvoicePreview from "./NewInvoicePreview";
+import { Trans } from "react-i18next";
 
 const STRIPE_CLIENT_ID =
   import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
@@ -38,8 +39,8 @@ const stripePromise = loadStripe(STRIPE_CLIENT_ID);
 // ---------- Types
 // ---- Share types registry
 const SHARE_TYPES = [
-  { id: "ordinary", label: "Ordinary Shares" },
-  { id: "preference", label: "Preference Shares" },
+  { id: "ordinary", label: "CompanyInformation.typeOfShare.ordinaryShares" },
+  { id: "preference", label: "CompanyInformation.typeOfShare.preferenceShares" },
 ] as const;
 type ShareTypeId = typeof SHARE_TYPES[number]["id"];
 const DEFAULT_SHARE_ID: ShareTypeId = "ordinary";
@@ -271,34 +272,47 @@ const computeGrandTotal = (app: AppDoc) => {
   return Number((base + surcharge).toFixed(2));
 };
 
+
 function Field({ field, form, setForm, }: {
-  field: FieldBase;
-  form: any; setForm: (fn: (prev: any) => any) => void;
+  field: FieldBase; form: any; setForm: (fn: (prev: any) => any) => void;
 }) {
   const visible = field.condition ? field.condition(form) : true;
   if (!visible) return null;
 
-  const set = (name: string, value: any) => setForm((prev) => ({ ...prev, [name]: value }));
+  const set = (name: string, value: any) =>
+    setForm((prev) => ({ ...prev, [name]: value }));
+
+  const labelText = t(field.label as any, field.label);
+  const tooltipText = field.tooltip ? t(field.tooltip as any, field.tooltip) : undefined;
+  const placeholderText = field.placeholder
+    ? t(field.placeholder as any, field.placeholder)
+    : undefined;
+  const hintText = field.hint ? t(field.hint as any, field.hint) : undefined;
 
   const labelEl = (
     <div className="flex items-center gap-2">
       <Label htmlFor={field.name} className="font-semibold">
-        {field.label}
+        {labelText}
       </Label>
-      {field.tooltip && (
+      {tooltipText && (
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
               <Info className="size-4 text-muted-foreground" />
             </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-sm">{field.tooltip}</TooltipContent>
+            <TooltipContent className="max-w-xs text-sm">
+              {tooltipText}
+            </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       )}
     </div>
   );
 
-  const hintEl = field.hint ? <p className="text-xs text-muted-foreground mt-1">{field.hint}</p> : null;
+  const hintEl = hintText ? (
+    <p className="text-xs text-muted-foreground mt-1">{hintText}</p>
+  ) : null;
+
   const spanClass = field.colSpan === 2 ? "md:col-span-2" : "";
 
   switch (field.type) {
@@ -311,7 +325,7 @@ function Field({ field, form, setForm, }: {
           <Input
             id={field.name}
             type={field.type === "number" ? "number" : field.type}
-            placeholder={field.placeholder}
+            placeholder={placeholderText}
             value={form[field.name] ?? ""}
             onChange={(e) => set(field.name, e.target.value)}
           />
@@ -326,7 +340,7 @@ function Field({ field, form, setForm, }: {
           <Textarea
             id={field.name}
             rows={field.rows ?? 4}
-            placeholder={field.placeholder}
+            placeholder={placeholderText}
             value={form[field.name] ?? ""}
             onChange={(e) => set(field.name, e.target.value)}
           />
@@ -335,17 +349,26 @@ function Field({ field, form, setForm, }: {
       );
     }
     case "select": {
+      const options = (field.options || []).map((o) => ({
+        ...o,
+        _label: t(o.label as any, o.label),
+      }));
       return (
         <div className={classNames("grid gap-2", spanClass)}>
           {labelEl}
-          <Select value={String(form[field.name] ?? "")} onValueChange={(v) => set(field.name, v)}>
+          <Select
+            value={String(form[field.name] ?? "")}
+            onValueChange={(v) => set(field.name, v)}
+          >
             <SelectTrigger id={field.name}>
-              <SelectValue placeholder={field.placeholder || "Select"} />
+              <SelectValue
+                placeholder={placeholderText || t("common.select", "Select")}
+              />
             </SelectTrigger>
             <SelectContent>
-              {(field.options || []).map((o) => (
+              {options.map((o) => (
                 <SelectItem key={o.value} value={o.value}>
-                  {t(o.label)}
+                  {o._label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -355,7 +378,7 @@ function Field({ field, form, setForm, }: {
       );
     }
     case "search-select": {
-      // Expect field.options to be [{ code, label }]
+      // Expect field.items to be [{ code, label }]
       const selectedItem = form[field.name]
         ? field.items?.find((o: any) => o.code === form[field.name]) || null
         : null;
@@ -364,24 +387,36 @@ function Field({ field, form, setForm, }: {
         set(field.name, item.code);
       };
 
+      const items = (field.items || []).map((it: any) => ({
+        ...it,
+        label: t(it.label as any, it.label),
+      }));
+
       return (
         <div className={classNames("grid gap-2", spanClass)}>
           {labelEl}
           <SearchSelect
-            items={field.items || []}
-            placeholder={field.placeholder || "Select"}
+            items={items}
+            placeholder={placeholderText || t("common.select", "Select")}
             onSelect={handleSelect}
-            selectedItem={selectedItem}
+            selectedItem={
+              selectedItem
+                ? { ...selectedItem, label: t(selectedItem.label as any, selectedItem.label) }
+                : null
+            }
           />
           {hintEl}
         </div>
       );
     }
-
     case "checkbox": {
       return (
         <div className={classNames("flex items-center gap-2", spanClass)}>
-          <Checkbox id={field.name} checked={!!form[field.name]} onCheckedChange={(v) => set(field.name, !!v)} />
+          <Checkbox
+            id={field.name}
+            checked={!!form[field.name]}
+            onCheckedChange={(v) => set(field.name, !!v)}
+          />
           {labelEl}
           {hintEl}
         </div>
@@ -395,14 +430,21 @@ function Field({ field, form, setForm, }: {
         else next.delete(val);
         set(field.name, Array.from(next));
       };
+      const options = (field.options || []).map((o) => ({
+        ...o,
+        _label: t(o.label as any, o.label),
+      }));
       return (
         <div className={classNames("grid gap-2", spanClass)}>
           {labelEl}
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
-            {(field.options || []).map((o) => (
+            {options.map((o) => (
               <label key={o.value} className="flex items-center gap-2 rounded-md border p-2">
-                <Checkbox checked={arr.includes(o.value)} onCheckedChange={(v) => toggle(o.value, !!v)} />
-                <span className="text-sm">{o.label}</span>
+                <Checkbox
+                  checked={arr.includes(o.value)}
+                  onCheckedChange={(v) => toggle(o.value, !!v)}
+                />
+                <span className="text-sm">{o._label}</span>
               </label>
             ))}
           </div>
@@ -411,6 +453,10 @@ function Field({ field, form, setForm, }: {
       );
     }
     case "radio-group": {
+      const options = (field.options || []).map((o) => ({
+        ...o,
+        _label: t(o.label as any, o.label),
+      }));
       return (
         <div className="flex flex-col gap-3">
           {labelEl}
@@ -419,19 +465,20 @@ function Field({ field, form, setForm, }: {
             onValueChange={(v) => set(field.name, v)}
             className="flex flex-col gap-3"
           >
-            {(field.options || []).map((o) => (
-              <label key={o.value} className="flex items-start gap-3 text-sm text-gray-700 cursor-pointer">
+            {options.map((o) => (
+              <label
+                key={o.value}
+                className="flex items-start gap-3 text-sm text-gray-700 cursor-pointer"
+              >
                 <RadioGroupItem
                   value={o.value}
                   id={`${field.name}-${o.value}`}
                   className="w-4 h-4 border-gray-300 focus:ring-primary mt-0.5 shrink-0"
                 />
-                <span className="leading-relaxed">{o.label}</span>
+                <span className="leading-relaxed">{o._label}</span>
               </label>
             ))}
           </RadioGroup>
-
-          {/* Optional hint */}
           {hintEl}
         </div>
       );
@@ -448,6 +495,7 @@ function Field({ field, form, setForm, }: {
     }
   }
 }
+
 
 function Tip({ text, content }: { text?: string; content?: React.ReactNode }) {
   return (
@@ -472,6 +520,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 // ---------- Parties Manager (per-party typeOfShare = id only)
 function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React.SetStateAction<AppDoc>> }) {
   const form = app.form;
+
   const totalShares = React.useMemo(
     () => (form.shareCount === "other" ? Number(form.shareOther || 0) : Number(form.shareCount || 0)) || 0,
     [form.shareCount, form.shareOther]
@@ -484,11 +533,13 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
       return { ...prev, parties, updatedAt: new Date().toISOString() };
     });
   };
+
   const del = (i: number) =>
     setApp((prev) => {
       const parties = prev.parties.filter((_, idx) => idx !== i);
       return { ...prev, parties, updatedAt: new Date().toISOString() };
     });
+
   const add = () =>
     setApp((prev) => ({
       ...prev,
@@ -502,57 +553,57 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
           isDirector: false,
           shares: 0,
           invited: false,
-          typeOfShare: DEFAULT_SHARE_ID, // default
-        },
+          typeOfShare: DEFAULT_SHARE_ID
+        }
       ],
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }));
 
   const assigned = app.parties.reduce((s, p) => s + (Number(p.shares) || 0), 0);
   const equal = totalShares > 0 && assigned === totalShares;
+
   const sendMailFunction = async () => {
-    const extractedData = app.parties.map(item => {
+    const extractedData = app.parties.map((item) => {
       const { name, email } = item;
       if (!isValidEmail(email)) {
-        toast({ title: "Error", description: `Invalid email format for ${name}: ${email}` });
+        toast({
+          title: t("newHk.parties.toasts.invalidEmail.title"),
+          description: t("newHk.parties.toasts.invalidEmail.desc", { name, email })
+        });
       }
       return { name, email };
     });
 
-    const payload = { _id: app._id || '', inviteData: extractedData, country: 'HK' };
+    const payload = { _id: app._id || "", inviteData: extractedData, country: "HK" };
     const response = await sendInviteToShDir(payload);
-    console.log("response", response)
+
     if (response.summary.successful > 0) {
-      setApp(prev => {
-        const updated = prev.parties.map(p => {
-          return { ...p, invited: true }
-        });
+      setApp((prev) => {
+        const updated = prev.parties.map((p) => ({ ...p, invited: true }));
         return { ...prev, parties: updated };
       });
-
       toast({
-        title: 'Success',
-        description: `Successfully sent invitation mail to ${response.summary.successful} people`,
+        title: t("newHk.parties.toasts.invite.success.title"),
+        description: t("newHk.parties.toasts.invite.success.desc", {
+          count: response.summary.successful
+        })
       });
     }
 
     if (response.summary.alreadyExists > 0) {
       toast({
-        title: 'Success',
-        description: `Invite sent to member/director`,
+        title: t("newHk.parties.toasts.invite.exists.title"),
+        description: t("newHk.parties.toasts.invite.exists.desc")
       });
     }
 
     if (response.summary.failed > 0) {
       toast({
-        title: 'Failed',
-        description: `Some Invitations Failed`,
+        title: t("newHk.parties.toasts.invite.failed.title"),
+        description: t("newHk.parties.toasts.invite.failed.desc")
       });
     }
-
-    console.log("send mail response", response);
   };
-
 
   return (
     <div className="space-y-3">
@@ -562,10 +613,9 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
           equal ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-red-200 bg-rose-50 text-rose-900"
         )}
       >
-        {equal
-          ? "All good — total number of shares allocated equals the company’s issued shares."
-          : "Error: The total allocated shares must equal the company’s total number of shares. Please revise entries."}
+        {equal ? t("newHk.parties.banner.ok") : t("newHk.parties.banner.err")}
       </div>
+
       {app.parties.map((p, i) => {
         const pct = totalShares ? ((Number(p.shares) || 0) / totalShares) * 100 : 0;
         return (
@@ -573,83 +623,95 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
             <CardContent className="pt-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label>Full name / Entity name</Label>
+                  <Label>{t("newHk.parties.fields.name.label")}</Label>
                   <Input value={p.name} onChange={(e) => upd(i, "name", e.target.value)} />
-                  <p className="text-xs text-muted-foreground">
-                    Examples: <b>Jane Doe</b> (individual) or <b>ABC Holdings Limited</b> (corporate shareholder).
-                  </p>
+                  <p
+                    className="text-xs text-muted-foreground"
+                    // if you render as raw HTML elsewhere; otherwise keep plain text
+                    dangerouslySetInnerHTML={{ __html: t("newHk.parties.fields.name.example") }}
+                  />
                 </div>
+
                 <div className="grid gap-2">
-                  <Label>Email</Label>
+                  <Label>{t("newHk.parties.fields.email.label")}</Label>
                   <Input type="email" value={p.email} onChange={(e) => upd(i, "email", e.target.value)} />
                 </div>
+
                 <div className="grid gap-2">
-                  <Label>Phone</Label>
+                  <Label>{t("newHk.parties.fields.phone.label")}</Label>
                   <Input value={p.phone} onChange={(e) => upd(i, "phone", e.target.value)} />
                 </div>
+
                 <div className="grid gap-2">
                   <Label>
-                    Is this shareholder a corporate entity?{" "}
-                    <Tip text="Select ‘Yes’ if the shareholder is a company (corporate shareholder). Select ‘No’ for an individual." />
+                    {t("newHk.parties.fields.isCorp.label")}{" "}
+                    <Tip text={t("newHk.parties.fields.isCorp.tip")} />
                   </Label>
                   <Select value={String(p.isCorp)} onValueChange={(v) => upd(i, "isCorp", v === "true")}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="false">No — Individual</SelectItem>
-                      <SelectItem value="true">Yes — Corporate shareholder</SelectItem>
+                      <SelectItem value="false">{t("newHk.parties.fields.isCorp.options.no")}</SelectItem>
+                      <SelectItem value="true">{t("newHk.parties.fields.isCorp.options.yes")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="grid gap-2">
                   <Label>
-                    Will this person also serve as a director?{" "}
-                    <Tip text="Directors manage the company and sign statutory filings. At least one individual director is required by law." />
+                    {t("newHk.parties.fields.isDirector.label")}{" "}
+                    <Tip text={t("newHk.parties.fields.isDirector.tip")} />
                   </Label>
                   <Select value={String(p.isDirector)} onValueChange={(v) => upd(i, "isDirector", v === "true")}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="true">Yes</SelectItem>
-                      <SelectItem value="false">No</SelectItem>
+                      <SelectItem value="true">{t("newHk.parties.fields.isDirector.options.yes")}</SelectItem>
+                      <SelectItem value="false">{t("newHk.parties.fields.isDirector.options.no")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="grid gap-2">
-                  <Label>Number of shares</Label>
+                  <Label>{t("newHk.parties.fields.shares.label")}</Label>
                   <Input
                     type="number"
                     value={String(p.shares)}
                     onChange={(e) => upd(i, "shares", Number(e.target.value || 0))}
                   />
                 </div>
+
                 <div className="grid gap-2">
-                  <Label>Shareholding % (auto)</Label>
+                  <Label>{t("newHk.parties.fields.pct.label")}</Label>
                   <Input readOnly value={`${pct.toFixed(2)}%`} />
                 </div>
-                {/* Per-party Type of Shares (id only) */}
+
+                {/* Per-party Type of Shares */}
                 <div className="grid gap-2 md:col-span-2">
-                  <Label>Type of shares</Label>
+                  <Label>{t("newHk.parties.fields.type.label")}</Label>
                   <RadioGroup
                     value={p.typeOfShare ?? DEFAULT_SHARE_ID}
                     onValueChange={(v) => upd(i, "typeOfShare", (v as ShareTypeId) || DEFAULT_SHARE_ID)}
                   >
                     <div className="flex items-center gap-4 text-sm">
-                      {SHARE_TYPES.map((t) => (
-                        <label key={t.id} className="flex items-center gap-2">
-                          <RadioGroupItem id={`stype-${t.id}-${i}`} value={t.id} />
-                          {t.label}
-                        </label>
-                      ))}
+                      {SHARE_TYPES.map((tdef) => {                       
+                        return (
+                          <label key={tdef.id} className="flex items-center gap-2">
+                            <RadioGroupItem id={`stype-${tdef.id}-${i}`} value={tdef.id} />
+                            {t(tdef.label)}
+                          </label>
+                        );
+                      })}
                     </div>
                   </RadioGroup>
                 </div>
               </div>
+
               <div className="flex items-center justify-between mt-4">
                 <Button variant="ghost" onClick={() => del(i)}>
-                  Remove
+                  {t("newHk.parties.buttons.remove")}
                 </Button>
               </div>
             </CardContent>
@@ -659,13 +721,16 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
 
       <div className="flex items-center gap-2">
         <Button variant="outline" onClick={add}>
-          + Add shareholder / director
+          {t("newHk.parties.buttons.add")}
         </Button>
         <div className="text-sm text-muted-foreground">
-          Total shares: {totalShares.toLocaleString()} • Assigned: {assigned.toLocaleString()}
+          {t("newHk.parties.totals", {
+            total: totalShares.toLocaleString(),
+            assigned: assigned.toLocaleString()
+          })}
         </div>
         <Button variant="outline" onClick={sendMailFunction}>
-          Send Invitation
+          {t("newHk.parties.buttons.invite")}
         </Button>
       </div>
     </div>
@@ -687,20 +752,23 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
     if (id === "reg_office") {
       return (
         <div className="space-y-2">
-          <div className="font-semibold">Registered Office Address</div>
+          <div className="font-semibold">
+            {t("newHk.fees.richTips.reg_office.title")}
+          </div>
           <p>
-            <span className="font-semibold">Mandatory:</span> Every Hong Kong company must have a registered office
-            address in Hong Kong.
+            <span className="font-semibold">
+              {t("newHk.fees.richTips.reg_office.mandatoryTitle")}
+            </span>{" "}
+            {t("newHk.fees.richTips.reg_office.mandatoryText")}
           </p>
           <div>
-            <div className="font-semibold">Purpose:</div>
+            <div className="font-semibold">
+              {t("newHk.fees.richTips.reg_office.purposeTitle")}
+            </div>
             <ul className="list-disc pl-5 space-y-1">
-              <li>This is the official legal address kept at the Companies Registry.</li>
-              <li>
-                All official government correspondence (e.g. Companies Registry, Inland Revenue Department, courts) is
-                served to this address.
-              </li>
-              <li>Must be a physical address in Hong Kong (not a PO Box).</li>
+              <li>{t("newHk.fees.richTips.reg_office.bullets.0")}</li>
+              <li>{t("newHk.fees.richTips.reg_office.bullets.1")}</li>
+              <li>{t("newHk.fees.richTips.reg_office.bullets.2")}</li>
             </ul>
           </div>
         </div>
@@ -710,22 +778,14 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
     if (id === "corr_addr") {
       return (
         <div className="space-y-2">
-          <div className="font-semibold">Correspondence Address</div>
-          <p>
-            This is an alternative mailing address for the directors, company secretary, or designated representatives.
-          </p>
-          <p>
-            It is used when someone does not want their residential address made public in the Companies Registry records.
-          </p>
-          <p>
-            Since 2018, Hong Kong allows directors to file a “correspondence address” instead of disclosing their full
-            usual residential address on the public register.
-          </p>
-          <p className="text-sm">
-            The residential address is still filed with the Companies Registry, but kept in a “protected” part of the
-            register (only accessible to regulators and certain professionals).
-          </p>
-          <p>On the public records, only the correspondence address appears.</p>
+          <div className="font-semibold">
+            {t("newHk.fees.richTips.corr_addr.title")}
+          </div>
+          <p>{t("newHk.fees.richTips.corr_addr.p1")}</p>
+          <p>{t("newHk.fees.richTips.corr_addr.p2")}</p>
+          <p>{t("newHk.fees.richTips.corr_addr.p3")}</p>
+          <p className="text-sm">{t("newHk.fees.richTips.corr_addr.p4")}</p>
+          <p>{t("newHk.fees.richTips.corr_addr.p5")}</p>
         </div>
       );
     }
@@ -733,17 +793,20 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
     return undefined;
   }
 
-  // 3) Row using rich content for specific ids, fallback to plain info
   const Row = ({ item }: { item: any }) => {
+    const itemKey = `newHk.fees.items.${item.id}`;
+    const label = t(`${itemKey}.label`, item.label);
+    const info = t(`${itemKey}.info`, item.info);
     const richTip = getRichTipContent(item.id);
-
     return (
       <TableRow>
         <TableCell className="font-medium flex items-center gap-2">
-          {item.label}
-          <Tip content={richTip} text={!richTip ? item.info : undefined} />
+          {String(label)}
+          <Tip content={richTip} text={!richTip ? String(info) : undefined} />
         </TableCell>
-        <TableCell>{item.original ? `USD ${item.original.toFixed(2)}` : "—"}</TableCell>
+        <TableCell>
+          {item.original ? `USD ${item.original.toFixed(2)}` : "—"}
+        </TableCell>
         <TableCell>{`USD ${item.amount.toFixed(2)}`}</TableCell>
         <TableCell className="w-[90px]">
           <Checkbox
@@ -761,10 +824,12 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Service Description</TableHead>
-            <TableHead>Original</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead className="w-[90px]">Select</TableHead>
+            <TableHead>{t("newHk.fees.table.headers.description")}</TableHead>
+            <TableHead>{t("newHk.fees.table.headers.original")}</TableHead>
+            <TableHead>{t("newHk.fees.table.headers.amount")}</TableHead>
+            <TableHead className="w-[90px]">
+              {t("newHk.fees.table.headers.select")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -773,9 +838,14 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
           ))}
         </TableBody>
       </Table>
-      <div className="text-right font-bold">Total: USD {baseTotal.toFixed(2)}</div>
+      <div className="text-right font-bold">
+        {t("newHk.fees.table.totalLabel", { amount: baseTotal.toFixed(2) })}
+      </div>
       <p className="text-sm text-muted-foreground">
-        Government fees are statutory and payable by all companies. Optional items can be toggled before payment.
+        <Trans i18nKey="newHk.fees.table.note">
+          Government fees are statutory and payable by all companies. Optional
+          items can be toggled before payment.
+        </Trans>
       </p>
     </div>
   );
@@ -1010,12 +1080,8 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
   );
 }
 
-function PaymentStep({
-  app,
-  setApp,
-}: {
-  app: AppDoc;
-  setApp: React.Dispatch<React.SetStateAction<AppDoc>>;
+function PaymentStep({ app, setApp, }: {
+  app: AppDoc; setApp: React.Dispatch<React.SetStateAction<AppDoc>>;
 }) {
   const grand = computeGrandTotal(app);
   const setForm = (updater: (prev: any) => any) =>
@@ -1072,7 +1138,7 @@ function PaymentStep({
 
   const guard = (msg: string) => {
     if (isPaid) {
-      alert("Payment already completed.");
+      alert(t("newHk.payment.alerts.alreadyPaid"));
       return true;
     }
     if (isExpired) {
@@ -1084,30 +1150,30 @@ function PaymentStep({
 
   // ----- Bank/Other upload handlers -----
   const handleBankProofSubmit = async () => {
-    if (guard("Payment window expired. Please contact support to re-enable payment.")) return;
+    if (guard(t("newHk.payment.alerts.expiredGuard"))) return;
     if (!bankFile) return;
     setUploading(true);
     // console.log("Uploading bank proof...", app);
     const method = app.form.payMethod
     const expiresAt = app.expiresAt || ''
     try {
-      const result = await uploadIncorpoPaymentBankProof(app?._id || "", "hk", bankFile,method, expiresAt);
+      const result = await uploadIncorpoPaymentBankProof(app?._id || "", "hk", bankFile, method, expiresAt);
 
-      if (result) setForm((p) => ({ ...p, uploadReceiptUrl: result?.url,  }));
+      if (result) setForm((p) => ({ ...p, uploadReceiptUrl: result?.url, }));
     } finally {
       setUploading(false);
     }
   };
 
   const handleDeleteBankProof = async () => {
-    if (guard("Payment window expired. Please contact support to re-enable payment.")) return;
+    if (guard(t("newHk.payment.alerts.expiredGuard"))) return;
     await deleteIncorpoPaymentBankProof(app?._id || "", "hk");
     setForm((p: any) => ({ ...p, uploadReceiptUrl: undefined }));
   };
 
   // ----- Card payment flow (only when not paid & not expired) -----
   const handleProceedCard = async () => {
-    if (guard("Payment window expired. Please contact support to re-enable payment.")) return;
+    if (guard(t("newHk.payment.alerts.expiredGuard"))) return;
 
     if (clientSecret && app.form.paymentIntentId) {
       setCardDrawerOpen(true);
@@ -1131,7 +1197,7 @@ function PaymentStep({
       }
     } catch (e) {
       console.error("PI creation failed:", e);
-      alert("Failed to prepare payment. Please try again.");
+      alert(t("newHk.payment.alerts.prepareFailedDesc"));
     } finally {
       setCreatingPI(false);
     }
@@ -1142,34 +1208,34 @@ function PaymentStep({
       {/* Success block (visible also on revisit) */}
       {isPaid && (
         <div className="mb-4 border rounded-md p-3 text-sm bg-emerald-50 border-emerald-200 text-emerald-900">
-          <div className="font-semibold mb-1">Payment successful</div>
+          <div className="font-semibold mb-1">
+            {t("newHk.payment.success.title")}
+          </div>
           <div className="space-y-1">
-            {/* Amount is optional; render if saved */}
-            {typeof app.form?.stripeAmountCents === "number" && app.form?.stripeCurrency ? (
+            {typeof app.form?.stripeAmountCents === "number" &&
+              app.form?.stripeCurrency ? (
               <div>
-                Amount:{" "}
+                {t("newHk.payment.success.amountLabel")}{" "}
                 <b>
-                  {app.form.stripeCurrency.toUpperCase()} {(app.form.stripeAmountCents / 100).toFixed(2)}
+                  {app.form.stripeCurrency.toUpperCase()}{" "}
+                  {(app.form.stripeAmountCents / 100).toFixed(2)}
                 </b>
               </div>
             ) : null}
             <div>
-
               {app.form?.stripeReceiptUrl ? (
                 <>
-                  Receipt:&nbsp;
+                  {t("newHk.payment.success.receiptLabel")}&nbsp;
                   <a
                     href={app.form.stripeReceiptUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline underline-offset-2"
                   >
-                    View Stripe receipt
+                    {t("newHk.payment.success.viewStripeReceipt")}
                   </a>
                 </>
-              ) : (
-                null
-              )}
+              ) : null}
             </div>
           </div>
         </div>
@@ -1180,15 +1246,25 @@ function PaymentStep({
         <div
           className={[
             "mb-4 rounded-md border p-3 text-sm",
-            isExpired ? "border-red-200 bg-red-50 text-red-900" : "border-amber-200 bg-amber-50 text-amber-900",
+            isExpired
+              ? "border-red-200 bg-red-50 text-red-900"
+              : "border-amber-200 bg-amber-50 text-amber-900",
           ].join(" ")}
         >
           {isExpired ? (
-            <div className="font-medium">Payment window expired. Please contact support to re-enable payment.</div>
+            <div className="font-medium">
+              {t("newHk.payment.expiryBanner.expiredMessage")}
+            </div>
           ) : (
             <div className="flex items-center justify-between gap-2">
-              <div className="font-medium">Payment Timer</div>
-              <div className="text-base font-bold tabular-nums">Time remaining: {formatRemaining(remainingMs)}</div>
+              <div className="font-medium">
+                {t("newHk.payment.expiryBanner.timerTitle")}
+              </div>
+              <div className="text-base font-bold tabular-nums">
+                {t("newHk.payment.expiryBanner.timeRemaining", {
+                  time: formatRemaining(remainingMs),
+                })}
+              </div>
             </div>
           )}
         </div>
@@ -1197,12 +1273,27 @@ function PaymentStep({
       <div className="grid md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="pt-6 space-y-2">
-            <div className="font-bold">Payment Methods</div>
+            <div className="font-bold">
+              {t("newHk.payment.methods.title")}
+            </div>
             {[
-              { v: "card", label: "Card Payment — Stripe (3.5% processing fee)", tip: "Convenient for international cards. A processing fee is added to the invoice." },
-              { v: "fps", label: "Fast Payment System (FPS) — Recommended (no extra fee)" },
-              { v: "bank", label: "Bank Transfer — direct transfer with receipt upload" },
-              { v: "other", label: "Other (cash) — with receipt upload" },
+              {
+                v: "card",
+                label: t("newHk.payment.methods.options.card.label"),
+                tip: t("newHk.payment.methods.options.card.tip"),
+              },
+              {
+                v: "fps",
+                label: t("newHk.payment.methods.options.fps.label"),
+              },
+              {
+                v: "bank",
+                label: t("newHk.payment.methods.options.bank.label"),
+              },
+              {
+                v: "other",
+                label: t("newHk.payment.methods.options.other.label"),
+              },
             ].map((o) => (
               <label key={o.v} className="block space-x-2">
                 <input
@@ -1213,7 +1304,9 @@ function PaymentStep({
                   onChange={() => setForm((p) => ({ ...p, payMethod: o.v }))}
                   disabled={isPaid || isExpired}
                 />
-                <span className={isPaid || isExpired ? "text-muted-foreground" : ""}>{o.label}</span>
+                <span className={isPaid || isExpired ? "text-muted-foreground" : ""}>
+                  {o.label}
+                </span>
                 {o.tip && !(isPaid || isExpired) && (
                   <span className="inline-flex ml-1">
                     <Tip text={o.tip} />
@@ -1223,7 +1316,9 @@ function PaymentStep({
             ))}
             {(isPaid || isExpired) && (
               <div className="mt-2 text-xs text-muted-foreground">
-                {isPaid ? "Payment completed." : "Payment is disabled because the window has expired."}
+                {isPaid
+                  ? t("newHk.payment.methods.statusNote.paid")
+                  : t("newHk.payment.methods.statusNote.expired")}
               </div>
             )}
           </CardContent>
@@ -1231,26 +1326,34 @@ function PaymentStep({
 
         <Card>
           <CardContent className="pt-6 space-y-2">
-            <div className="font-bold">Payment Conditions</div>
-            <p>
-              100% advance payment. All payments are <b>non-refundable</b>. The remitter bears all bank charges (including
-              intermediary bank fees).
+            <div className="font-bold">
+              {t("newHk.payment.conditions.title")}
+            </div>
+            <p className="text-sm">
+              <Trans i18nKey="newHk.payment.conditions.text">
+                100% advance payment. All payments are non-refundable.The
+                remitter bears all bank charges (including intermediary bank fees).
+              </Trans>
             </p>
 
             {["bank", "other"].includes(app.form.payMethod) && (
               <div className="mt-4 grid gap-3">
                 <div className="grid gap-2">
-                  <Label>Upload transfer reference</Label>
+                  <Label>{t("newHk.payment.bankUpload.refLabel")}</Label>
                   <Input
-                    placeholder="e.g., HSBC TT reference"
+                    placeholder={t(
+                      "newHk.payment.bankUpload.refPlaceholder"
+                    )}
                     value={app.form.bankRef || ""}
-                    onChange={(e) => setForm((p) => ({ ...p, bankRef: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((p) => ({ ...p, bankRef: e.target.value }))
+                    }
                     disabled={isPaid || isExpired}
                   />
                 </div>
 
                 <div className="grid gap-2">
-                  <Label>Upload payment proof (PDF/JPG/PNG)</Label>
+                  <Label>{t("newHk.payment.bankUpload.proofLabel")}</Label>
                   <Input
                     type="file"
                     accept="image/*,.pdf"
@@ -1260,23 +1363,39 @@ function PaymentStep({
                     }}
                     disabled={isPaid || isExpired}
                   />
-                  <Button onClick={handleBankProofSubmit} disabled={isPaid || isExpired || creatingPI || uploading}>
-                    {uploading ? "Uploading…" : "Submit"}
+                  <Button
+                    onClick={handleBankProofSubmit}
+                    disabled={isPaid || isExpired || creatingPI || uploading}
+                  >
+                    {uploading
+                      ? t("newHk.payment.bankUpload.uploading")
+                      : t("newHk.payment.bankUpload.submit")}
                   </Button>
                 </div>
 
                 {app.form.uploadReceiptUrl ? (
                   <div className="mt-2 space-y-2">
                     <div className="flex items-center justify-between">
-                      <div className="text-sm font-medium">Payment proof preview</div>
+                      <div className="text-sm font-medium">
+                        {t("newHk.payment.bankUpload.previewTitle")}
+                      </div>
                       <div className="flex items-center gap-2">
                         <Button asChild variant="outline" size="sm" disabled={isPaid || isExpired}>
-                          <a href={app.form.uploadReceiptUrl} target="_blank" rel="noopener noreferrer">
-                            Open in new tab
+                          <a
+                            href={app.form.uploadReceiptUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t("newHk.payment.bankUpload.openInNewTab")}
                           </a>
                         </Button>
-                        <Button variant="destructive" size="sm" onClick={handleDeleteBankProof} disabled={isPaid || isExpired}>
-                          Delete
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={handleDeleteBankProof}
+                          disabled={isPaid || isExpired}
+                        >
+                          {t("newHk.payment.bankUpload.delete")}
                         </Button>
                       </div>
                     </div>
@@ -1296,18 +1415,29 @@ function PaymentStep({
 
             {app.form.payMethod === "card" && !isPaid && (
               <div className="mt-3">
-                <Button onClick={handleProceedCard} disabled={isPaid || isExpired || creatingPI}>
-                  {creatingPI ? "Preparing…" : "Proceed Card Payment"}
+                <Button
+                  onClick={handleProceedCard}
+                  disabled={isPaid || isExpired || creatingPI}
+                >
+                  {creatingPI
+                    ? t("newHk.payment.card.preparing")
+                    : t("newHk.payment.card.proceed")}
                 </Button>
                 <div className="text-xs text-muted-foreground mt-2">
-                  {isExpired ? "Payment disabled — window expired." : "A secure Stripe card drawer will open to complete your payment."}
+                  {isExpired
+                    ? t("newHk.payment.card.disabledExpired")
+                    : t("newHk.payment.card.drawerNote")}
                 </div>
               </div>
             )}
 
             {app.form.payMethod === "fps" ? <FPSForm /> : null}
 
-            <div className="text-right font-bold mt-4">Grand Total: USD {grand.toFixed(2)}</div>
+            <div className="text-right font-bold mt-4">
+              {t("newHk.payment.totals.grandTotal", {
+                amount: grand.toFixed(2),
+              })}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -1321,16 +1451,22 @@ function PaymentStep({
           amountUSD={grand}
           app={app}
           onSuccess={(info) => {
-            // Persist success in local state so on revisit we show success w/o opening Elements
             setApp((prev) => ({
               ...prev,
-              paymentStatus: info?.paymentIntentStatus === "succeeded" ? "paid" : prev.paymentStatus,
+              paymentStatus:
+                info?.paymentIntentStatus === "succeeded"
+                  ? "paid"
+                  : prev.paymentStatus,
               form: {
                 ...prev.form,
-                stripeLastStatus: info?.paymentIntentStatus ?? prev.form.stripeLastStatus,
-                stripeReceiptUrl: info?.receiptUrl ?? prev.form.stripeReceiptUrl,
+                stripeLastStatus:
+                  info?.paymentIntentStatus ?? prev.form.stripeLastStatus,
+                stripeReceiptUrl:
+                  info?.receiptUrl ?? prev.form.stripeReceiptUrl,
                 stripeAmountCents:
-                  typeof info?.amount === "number" ? info.amount : prev.form.stripeAmountCents,
+                  typeof info?.amount === "number"
+                    ? info.amount
+                    : prev.form.stripeAmountCents,
                 stripeCurrency: info?.currency ?? prev.form.stripeCurrency,
               },
               updatedAt: new Date().toISOString(),
@@ -1351,17 +1487,28 @@ function ReviewStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React
   const setForm = (updater: (prev: any) => any) =>
     setApp((prev) => ({ ...prev, form: updater(prev.form), updatedAt: new Date().toISOString() }));
 
-  const names = [form.name1 || "(TBD)", form.name2, form.name3].filter(Boolean).join(" / ");
+  const tbd = t("newHk.review.placeholders.tbd", "(TBD)");
+  const notProvided = t("newHk.review.placeholders.notProvided", "(not provided)");
+  const dash = t("newHk.review.placeholders.dash", "-");
+  const defaultCcy = t("newHk.review.currency.default", "HKD");
+  const usd = t("newHk.review.currency.usd", "USD");
+
+  const names = [form.name1 || tbd, form.name2, form.name3].filter(Boolean).join(" / ");
   const chinese = [form.cname1, form.cname2].filter(Boolean).join(" / ");
+
   const owners = app.parties
-    .map(
-      (p) =>
-        `${p.name || "Unknown"} — ${p.shares || 0} ${shareLabel(p.typeOfShare)}${p.isDirector ? " (Director)" : ""}${p.isCorp ? " (Corporate)" : ""
-        }`
-    )
+    .map((p) => {
+      const unknown = t("newHk.review.placeholders.unknownParty", "Unknown");
+      const dirTag = p.isDirector ? t("newHk.review.tags.director", " (Director)") : "";
+      const corpTag = p.isCorp ? t("newHk.review.tags.corporate", " (Corporate)") : "";
+      return `${p.name || unknown} — ${p.shares || 0} ${shareLabel(p.typeOfShare)}${dirTag}${corpTag}`;
+    })
     .join("\n");
-  const shareCount = form.shareCount === "other" ? Number(form.shareOther || 0) : Number(form.shareCount || 0);
-  const capTotal = form.capAmount === "other" ? Number(form.capOther || 0) : Number(form.capAmount || 0);
+
+  const shareCount =
+    form.shareCount === "other" ? Number(form.shareOther || 0) : Number(form.shareCount || 0);
+  const capTotal =
+    form.capAmount === "other" ? Number(form.capOther || 0) : Number(form.capAmount || 0);
   const acctCycle = form.bookKeepingCycle || "";
 
   return (
@@ -1369,59 +1516,69 @@ function ReviewStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React
       <Card>
         <CardContent className="pt-6 space-y-3 text-sm">
           <div>
-            <div className="font-semibold">Applicant</div>
+            <div className="font-semibold">{t("newHk.review.labels.applicant")}</div>
             <div>
-              {form.applicantName || "(not provided)"} — {form.email || ""}
+              {form.applicantName || notProvided} — {form.email || ""}
             </div>
           </div>
+
           <div>
-            <div className="font-semibold">Proposed Names</div>
+            <div className="font-semibold">{t("newHk.review.labels.proposedNames")}</div>
             <div>
               {names}
               {chinese ? (
                 <>
                   <br />
-                  Chinese: {chinese}
+                  {t("newHk.review.labels.chinesePrefix")} {chinese}
                 </>
               ) : null}
             </div>
           </div>
+
           <div>
-            <div className="font-semibold">Industry</div>
-            <div>{form.industry || "(not provided)"}</div>
+            <div className="font-semibold">{t("newHk.review.labels.industry")}</div>
+            <div>{form.industry || notProvided}</div>
           </div>
+
           <div>
-            <div className="font-semibold">Description</div>
-            <div>{form.bizdesc || "(not provided)"}</div>
+            <div className="font-semibold">{t("newHk.review.labels.description")}</div>
+            <div>{form.bizdesc || notProvided}</div>
           </div>
+
           <div>
-            <div className="font-semibold">Share Capital</div>
+            <div className="font-semibold">{t("newHk.review.labels.shareCapital")}</div>
             <div>
-              {form.currency || "HKD"} {capTotal.toLocaleString()} • Shares: {shareCount.toLocaleString()} • Par:{" "}
+              {(form.currency || defaultCcy)} {capTotal.toLocaleString()} • {t("newHk.review.labels.shares", "Shares:")}{" "}
+              {shareCount.toLocaleString()} • {t("newHk.review.labels.par", "Par:")}{" "}
               {(() => {
                 const shares = shareCount || 1;
                 const pv = capTotal && shares ? capTotal / shares : 0;
-                return `${form.currency || "HKD"} ${pv.toFixed(2)}`;
+                return `${form.currency || defaultCcy} ${pv.toFixed(2)}`;
               })()}
             </div>
           </div>
+
           <div>
-            <div className="font-semibold">Owners</div>
+            <div className="font-semibold">{t("newHk.review.labels.owners")}</div>
             <div className="whitespace-pre-wrap mt-1">{owners || "—"}</div>
           </div>
+
           <div>
-            <div className="font-semibold">Accounting Preferences</div>
+            <div className="font-semibold">{t("newHk.review.labels.acctPrefs")}</div>
             <div>
-              Financial year-end : {form.finYrEnd || ""}, Bookkeeping: {acctCycle || "-"}, Software:{" "}
-              {form.xero || "Recommendation required"}
-              {form.softNote ? ` • Prefers: ${form.softNote}` : ""}
+              {t("newHk.review.labels.fyEnd")} {form.finYrEnd || ""}, {t("newHk.review.labels.bookkeeping")}{" "}
+              {acctCycle || dash}, {t("newHk.review.labels.software")} {form.xero || t("newHk.steps.acct.fields.xero.options.Recommendation required", "Recommendation required")}
+              {form.softNote ? ` • ${t("newHk.review.labels.prefers")} ${form.softNote}` : ""}
             </div>
           </div>
+
           <div>
-            <div className="font-semibold">Total Amount</div>
+            <div className="font-semibold">{t("newHk.review.labels.totalAmount")}</div>
             <div>
-              Base: USD {base.toFixed(2)} • Payment: {(form.payMethod || "card").toUpperCase()} • Grand:{" "}
-              <b>USD {grand.toFixed(2)}</b>
+              {t("newHk.review.labels.base")} {usd} {base.toFixed(2)} • {t("newHk.review.labels.payment")} {(form.payMethod || "card").toUpperCase()} • {t("newHk.review.labels.grand")}{" "}
+              <b>
+                {usd} {grand.toFixed(2)}
+              </b>
             </div>
           </div>
         </CardContent>
@@ -1429,7 +1586,8 @@ function ReviewStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React
 
       <Card>
         <CardContent className="pt-6 space-y-2 text-sm">
-          <div className="font-semibold">Declarations & Agreement</div>
+          <div className="font-semibold">{t("newHk.review.declarations.title")}</div>
+
           <div>
             <label className="flex items-center gap-2">
               <Checkbox
@@ -1437,35 +1595,38 @@ function ReviewStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React
                 checked={!!form.truthfulnessDeclaration}
                 onCheckedChange={(v) => setForm((p) => ({ ...p, truthfulnessDeclaration: !!v }))}
               />{" "}
-              I confirm that the information provided is true, complete, and accurate.
+              {t("newHk.review.declarations.truth")}
             </label>
+
             <label className="flex items-center gap-2 mt-2">
               <Checkbox
                 id="legalTermsAcknowledgment"
                 checked={!!form.legalTermsAcknowledgment}
                 onCheckedChange={(v) => setForm((p) => ({ ...p, legalTermsAcknowledgment: !!v }))}
               />{" "}
-              I have read and agree to the Engagement Terms & Registered Address terms.
+              {t("newHk.review.declarations.terms")}
             </label>
+
             <label className="flex items-center gap-2 mt-2">
               <Checkbox
                 id="compliancePreconditionAcknowledgment"
                 checked={!!form.compliancePreconditionAcknowledgment}
                 onCheckedChange={(v) => setForm((p) => ({ ...p, compliancePreconditionAcknowledgment: !!v }))}
               />{" "}
-              I understand that incorporation is subject to successful compliance review (KYC/CDD and sanctions checks).
+              {t("newHk.review.declarations.compliance")}
             </label>
           </div>
+
           <div className="grid gap-2 mt-2">
-            <Label>Electronic signature</Label>
+            <Label>{t("newHk.review.esign.label")}</Label>
             <Input
               id="eSign"
-              placeholder="Type your full legal name here (e.g., JANE DOE)"
+              placeholder={t("newHk.review.placeholders.signaturePlaceholder")}
               value={form.eSign || ""}
               onChange={(e) => setForm((p) => ({ ...p, eSign: e.target.value }))}
             />
             <div className="text-xs text-muted-foreground">
-              Your typed name will be recorded as an electronic signature with timestamp.
+              {t("newHk.review.esign.helper")}
             </div>
           </div>
         </CardContent>
@@ -1476,36 +1637,33 @@ function ReviewStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React
 
 function CongratsStep({ app }: { app: AppDoc }) {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token') as string;
+  const token = localStorage.getItem("token") as string;
   const decodedToken = jwtDecode<any>(token);
+
   const navigateRoute = () => {
-    localStorage.removeItem('companyRecordId');
-    if (['admin', 'master'].includes(decodedToken.role)) navigate('/admin-dashboard');
-    else navigate('/dashboard');
-  }
+    localStorage.removeItem("companyRecordId");
+    if (["admin", "master"].includes(decodedToken.role)) navigate("/admin-dashboard");
+    else navigate("/dashboard");
+  };
+
+  const namePart = app.form.applicantName
+    ? t("newHk.congrats.thankYouName", { applicantName: app.form.applicantName })
+    : "";
+
+  const steps = [1, 2, 3, 4].map((i) => ({
+    t: t(`newHk.congrats.steps.${i}.t`),
+    s: t(`newHk.congrats.steps.${i}.s`),
+  }));
+
   return (
     <div className="grid place-items-center gap-4 text-center py-6">
-      <h2 className="text-xl font-extrabold">Congratulations!</h2>
+      <h2 className="text-xl font-extrabold">{t("newHk.congrats.title")}</h2>
       <p className="text-sm">
-        Thank you{app.form.applicantName ? `, ${app.form.applicantName}` : ""}! Your application has been successfully
-        submitted.
+        {t("newHk.congrats.thankYou", { name: namePart })}
       </p>
+
       <div className="grid gap-3 w-full max-w-3xl text-left">
-        {[
-          {
-            t: "Step 1 — Compliance review",
-            s: "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1–2 business days.",
-          },
-          {
-            t: "Step 2 — Filing with Companies Registry",
-            s: "We will file the incorporation documents (NNC1, Articles, etc.).",
-          },
-          {
-            t: "Step 3 — Registration certificates",
-            s: "Expected: Certificate of Incorporation & Business Registration within ~5 business days.",
-          },
-          { t: "Step 4 — Bank/EMI account", s: "If selected, we arrange an account opening with your preferred bank/EMI." },
-        ].map((x, i) => (
+        {steps.map((x, i) => (
           <div key={i} className="grid grid-cols-[12px_1fr] gap-3 text-sm">
             <div className="mt-2 w-3 h-3 rounded-full bg-sky-500" />
             <div>
@@ -1516,11 +1674,12 @@ function CongratsStep({ app }: { app: AppDoc }) {
           </div>
         ))}
       </div>
+
       <div className="flex items-center gap-2 justify-center">
         <Button variant="outline" onClick={() => window.print()}>
-          Print / Save Summary as PDF
+          {t("newHk.congrats.buttons.print")}
         </Button>
-        <Button onClick={navigateRoute}>Go to Dashboard</Button>
+        <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>
       </div>
     </div>
   );
@@ -1529,22 +1688,14 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
   const form = app.form;
   const setForm = (updater: (prev: any) => any) =>
     setApp((prev) => ({ ...prev, form: updater(prev.form), updatedAt: new Date().toISOString() }));
-  const incorporationPurposes = {
-    operateHK: "Operate business in Hong Kong & Greater China",
-    assetMgmt: "Asset management / investment",
-    holdingCo: "Holding company for subsidiaries",
-    crossBorder: "Cross-border trade advantages",
-    taxNeutral: "Tax neutrality (no capital gains tax)",
-  };
+
+  // keys are stored in form; labels come from i18n when rendering
+  const incorporationPurposeKeys = ["operateHK", "assetMgmt", "holdingCo", "crossBorder", "taxNeutral"] as const;
 
   const contactOptions = React.useMemo(
     () =>
       Array.from(
-        new Set(
-          (app.parties || [])
-            .map((p) => (p?.name || "").trim())
-            .filter(Boolean)
-        )
+        new Set((app.parties || []).map((p) => (p?.name || "").trim()).filter(Boolean))
       ),
     [app.parties]
   );
@@ -1553,55 +1704,63 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
     if (form.dcp && !contactOptions.includes(form.dcp)) {
       setForm((p) => ({ ...p, dcp: "" }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactOptions]);
 
   return (
     <div className="space-y-4">
       <Card>
         <CardContent className="pt-6">
-          <SectionTitle>A. Business Details</SectionTitle>
+          <SectionTitle>{t("newHk.company.sections.a")}</SectionTitle>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Field
               field={{
                 type: "search-select",
                 name: "industry",
-                label: "Business Industry",
+                label: "newHk.company.fields.industry.label",
                 required: true,
-                placeholder: "Select an industry",
-                items: businessNatureList
+                placeholder: "newHk.company.fields.industry.placeholder",
+                items: businessNatureList // assumed list; labels can be keys or plain strings
               }}
               form={form}
               setForm={setForm}
             />
+
             <div className="grid gap-2">
-              <Label>Purpose of Incorporation</Label>
+              <Label>{t("newHk.company.fields.purpose.label")}</Label>
               <div className="grid gap-2">
-                {Object.entries(incorporationPurposes).map(([key, txt]) => (
-                  <label key={key} className="flex items-center gap-2">
-                    <Checkbox
-                      checked={Array.isArray(form.purpose) && form.purpose.includes(key)}
-                      onCheckedChange={(v) => {
-                        const cur = new Set<string>(Array.isArray(form.purpose) ? form.purpose : []);
-                        if (v) cur.add(key);
-                        else cur.delete(key);
-                        setForm((p) => ({ ...p, purpose: Array.from(cur) }));
-                      }}
-                    />{" "}
-                    <span className="text-sm">{txt}</span>
-                  </label>
-                ))}
+                {incorporationPurposeKeys.map((key) => {
+                  const checked = Array.isArray(form.purpose) && form.purpose.includes(key);
+                  return (
+                    <label key={key} className="flex items-center gap-2">
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={(v) => {
+                          const cur = new Set<string>(Array.isArray(form.purpose) ? form.purpose : []);
+                          if (v) cur.add(key);
+                          else cur.delete(key);
+                          setForm((p) => ({ ...p, purpose: Array.from(cur) }));
+                        }}
+                      />
+                      <span className="text-sm">
+                        {t(`newHk.company.fields.purpose.options.${key}`)}
+                      </span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
+
             <Field
               field={{
                 type: "textarea",
                 name: "bizdesc",
-                label: "Description",
-                placeholder: "Short description of the product/service and planned activities",
+                label: "newHk.company.fields.bizdesc.label",
+                placeholder: "newHk.company.fields.bizdesc.placeholder",
                 colSpan: 2,
                 rows: 4,
-                tooltip:
-                  "Describe the product name, service type, and main activities after incorporation. Example: B2B IT consulting for ERP integration; secondary: SaaS subscription.",
+                tooltip: "newHk.company.fields.bizdesc.tooltip"
               }}
               form={form}
               setForm={setForm}
@@ -1612,85 +1771,91 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
 
       <Card>
         <CardContent className="pt-6">
-          <SectionTitle>B. Share Capital</SectionTitle>
+          <SectionTitle>{t("newHk.company.sections.b")}</SectionTitle>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Field
               field={{
                 type: "select",
                 name: "currency",
-                label: "Base currency",
+                label: "newHk.company.fields.currency.label",
                 required: true,
                 defaultValue: "HKD",
                 options: [
-                  { label: "HKD", value: "HKD" },
-                  { label: "USD", value: "USD" },
-                  { label: "CNY", value: "CNY" },
-                ],
+                  { label: "newHk.company.fields.currency.options.HKD", value: "HKD" },
+                  { label: "newHk.company.fields.currency.options.USD", value: "USD" },
+                  { label: "newHk.company.fields.currency.options.CNY", value: "CNY" }
+                ]
               }}
               form={form}
               setForm={setForm}
             />
+
             <Field
               field={{
                 type: "select",
                 name: "capAmount",
-                label: "Total share capital",
+                label: "newHk.company.fields.capAmount.label",
                 required: true,
                 defaultValue: "10000",
                 options: [
-                  { label: "1,000", value: "1000" },
-                  { label: "10,000", value: "10000" },
-                  { label: "100,000", value: "100000" },
-                  { label: "Other (enter amount)", value: "other" },
-                ],
+                  { label: "newHk.company.fields.capAmount.options.1000", value: "1000" },
+                  { label: "newHk.company.fields.capAmount.options.10000", value: "10000" },
+                  { label: "newHk.company.fields.capAmount.options.100000", value: "100000" },
+                  { label: "newHk.company.fields.capAmount.options.other", value: "other" }
+                ]
               }}
               form={form}
               setForm={setForm}
             />
+
             <Field
               field={{
                 type: "number",
                 name: "capOther",
-                label: "Enter total capital",
-                placeholder: "e.g., 25000",
-                condition: (f) => f.capAmount === "other",
+                label: "newHk.company.fields.capOther.label",
+                placeholder: "newHk.company.fields.capOther.placeholder",
+                condition: (f) => f.capAmount === "other"
               }}
               form={form}
               setForm={setForm}
             />
+
             <Field
               field={{
                 type: "select",
                 name: "shareCount",
-                label: "Total number of shares (min 1)",
+                label: "newHk.company.fields.shareCount.label",
                 required: true,
                 defaultValue: "10000",
                 options: [
-                  { label: "1", value: "1" },
-                  { label: "10", value: "10" },
-                  { label: "10,000", value: "10000" },
-                  { label: "Other (enter quantity)", value: "other" },
-                ],
+                  { label: "newHk.company.fields.shareCount.options.1", value: "1" },
+                  { label: "newHk.company.fields.shareCount.options.10", value: "10" },
+                  { label: "newHk.company.fields.shareCount.options.10000", value: "10000" },
+                  { label: "newHk.company.fields.shareCount.options.other", value: "other" }
+                ]
               }}
               form={form}
               setForm={setForm}
             />
+
             <Field
               field={{
                 type: "number",
                 name: "shareOther",
-                label: "Enter number of shares",
-                placeholder: "e.g., 5000",
-                condition: (f) => f.shareCount === "other",
+                label: "newHk.company.fields.shareOther.label",
+                placeholder: "newHk.company.fields.shareOther.placeholder",
+                condition: (f) => f.shareCount === "other"
               }}
               form={form}
               setForm={setForm}
             />
+
             <Field
               field={{
                 type: "derived",
                 name: "parValue",
-                label: "Calculated par value (read-only)",
+                label: "newHk.company.fields.parValue.label",
                 compute: (f) => {
                   const currency = f.currency || "HKD";
                   const total = f.capAmount === "other" ? Number(f.capOther || 0) : Number(f.capAmount || 0);
@@ -1699,7 +1864,7 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
                   const pv = total / shares;
                   return `${currency} ${pv.toFixed(2)}`;
                 },
-                hint: "Par value = total share capital ÷ number of shares.",
+                hint: "newHk.company.fields.parValue.hint"
               }}
               form={form}
               setForm={setForm}
@@ -1710,22 +1875,23 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
 
       <Card>
         <CardContent className="pt-6">
-          <SectionTitle>C. Shareholders / Directors</SectionTitle>
+          <SectionTitle>{t("newHk.company.sections.c")}</SectionTitle>
+
           <PartiesManager app={app} setApp={setApp} />
-          {/* No global 'Type of shares' here — handled per-party */}
+
           <div className="grid gap-2 mt-4">
             <Field
               field={{
                 type: "select",
                 name: "dcp",
-                label: "Designated Contact Person",
-                placeholder: "Select a contact person",
+                label: "newHk.company.fields.dcp.label",
+                placeholder: "newHk.company.fields.dcp.placeholder",
                 options: (app.parties || [])
                   .map((p) => ({
                     label: p?.name || "",
-                    value: p?.name || "",
+                    value: p?.name || ""
                   }))
-                  .filter((o) => o.value.trim() !== ""),
+                  .filter((o) => o.value.trim() !== "")
               }}
               form={form}
               setForm={setForm}
@@ -1737,28 +1903,35 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
   );
 }
 const EngagementTerms = () => {
-  const terms = [
-    { t: "1. Purpose of this Agreement", c: "The purpose of this agreement is to prevent misunderstandings about the scope and limitations of services provided by MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED (\"Mirr Asia\") to the client company to be incorporated in the HKSAR (the \"Client\")." },
-    { t: "2. Role of Hong Kong Company Secretary & Limitation of Liability", c: "Mirr Asia will be appointed as company secretary in accordance with the Companies Ordinance (Cap 622) and the Client’s Articles of Association. Secretarial services are statutory in nature and differ from the role of an employed administrative secretary." },
-    { t: "3. Registered Address & Limitations", c: "The Client may use Mirr Asia’s registered address in Hong Kong for statutory registration. Changes require written notice. The registered address is for registration and mail handling only; it is not a physical office. The Client must not use the address for unlawful purposes or misrepresent it as a place of business." },
-    { t: "4. Scope of Services (Year 1)", c: "Company secretary registration and maintenance of statutory records; filings; registers; minutes; BRC at registered office; brief business/operational advice (non-legal)." },
-    { t: "5. Fees & Exclusions", c: "Fees exclude accounting, audit, tax filings, bank account opening advice, and third-party charges (e.g., bank charges, government fees, taxes, courier)." },
-    { t: "6. Assignment & Subcontractors", c: "Neither party may assign or transfer its rights/obligations without prior written consent of the other." },
-    { t: "7. Confidentiality", c: "Both parties will keep confidential any non-public business or technical information obtained under this Agreement, except where disclosure is required by law or the information is already public." },
-    { t: "8. Entire Agreement", c: "This Agreement is the complete understanding between the parties and supersedes prior communications." },
-    { t: "9. Severability", c: "If any provision is invalid or unenforceable, the remainder remains in force." },
-    { t: "10. No Third-party Beneficiaries", c: "No rights are created for third parties unless authorized in writing by Mirr Asia." },
-    { t: "11. Governing Law & Dispute Resolution", c: "Hong Kong law governs this Agreement. Disputes will be referred to binding arbitration in Hong Kong." },
-    { t: "12. Costs & Attorney’s Fees", c: "The prevailing party in any dispute may recover reasonable costs and attorney’s fees." },
-    { t: "13. Client Confirmation & Declaration", c: "The Client confirms lawful use of services and accuracy of information; Mirr Asia may discontinue services if illegal activity is suspected." },
-  ];
+  // const terms = [
+  //   { t: "1. Purpose of this Agreement", c: "The purpose of this agreement is to prevent misunderstandings about the scope and limitations of services provided by MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED (\"Mirr Asia\") to the client company to be incorporated in the HKSAR (the \"Client\")." },
+  //   { t: "2. Role of Hong Kong Company Secretary & Limitation of Liability", c: "Mirr Asia will be appointed as company secretary in accordance with the Companies Ordinance (Cap 622) and the Client’s Articles of Association. Secretarial services are statutory in nature and differ from the role of an employed administrative secretary." },
+  //   { t: "3. Registered Address & Limitations", c: "The Client may use Mirr Asia’s registered address in Hong Kong for statutory registration. Changes require written notice. The registered address is for registration and mail handling only; it is not a physical office. The Client must not use the address for unlawful purposes or misrepresent it as a place of business." },
+  //   { t: "4. Scope of Services (Year 1)", c: "Company secretary registration and maintenance of statutory records; filings; registers; minutes; BRC at registered office; brief business/operational advice (non-legal)." },
+  //   { t: "5. Fees & Exclusions", c: "Fees exclude accounting, audit, tax filings, bank account opening advice, and third-party charges (e.g., bank charges, government fees, taxes, courier)." },
+  //   { t: "6. Assignment & Subcontractors", c: "Neither party may assign or transfer its rights/obligations without prior written consent of the other." },
+  //   { t: "7. Confidentiality", c: "Both parties will keep confidential any non-public business or technical information obtained under this Agreement, except where disclosure is required by law or the information is already public." },
+  //   { t: "8. Entire Agreement", c: "This Agreement is the complete understanding between the parties and supersedes prior communications." },
+  //   { t: "9. Severability", c: "If any provision is invalid or unenforceable, the remainder remains in force." },
+  //   { t: "10. No Third-party Beneficiaries", c: "No rights are created for third parties unless authorized in writing by Mirr Asia." },
+  //   { t: "11. Governing Law & Dispute Resolution", c: "Hong Kong law governs this Agreement. Disputes will be referred to binding arbitration in Hong Kong." },
+  //   { t: "12. Costs & Attorney’s Fees", c: "The prevailing party in any dispute may recover reasonable costs and attorney’s fees." },
+  //   { t: "13. Client Confirmation & Declaration", c: "The Client confirms lawful use of services and accuracy of information; Mirr Asia may discontinue services if illegal activity is suspected." },
+  // ];
 
+  const items = Array.from({ length: 13 }).map((_, idx) => {
+    const k = String(idx + 1);
+    return {
+      t: t(`newHk.terms.items.${k}.t`, ""),
+      c: t(`newHk.terms.items.${k}.c`, "")
+    };
+  });
   return (
     <div className="space-y-3 text-sm">
       <div className="border border-dashed rounded-lg p-3 bg-muted/20">
-        Please review the terms below. You will confirm acceptance at the Review & e-Sign step.
+        {t("newHk.terms.intro", "Please review the terms below. You will confirm acceptance at the Review & e-Sign step.")}
       </div>
-      {terms.map((x, i) => (
+      {items.map((x, i) => (
         <details key={i} className="border rounded-lg p-3">
           <summary className="font-semibold">{x.t}</summary>
           <p className="mt-2 text-muted-foreground">{x.c}</p>
@@ -1772,15 +1945,15 @@ function TopBar({ title, totalSteps, idx }: { title: string; totalSteps: number;
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
       <div className="min-w-0 flex-1">
-        <div className="text-lg sm:text-xl font-extrabold truncate">{title}</div>
+        <div className="text-lg sm:text-xl font-extrabold truncate">{t(title, "Company Incorporation — Hong Kong")}</div>
         <div className="text-xs sm:text-sm text-muted-foreground">
-          Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.
+          {t('newHk.infoHelpIcon', "Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.")}
         </div>
       </div>
       <div className="w-full sm:w-72 shrink-0">
         <Progress value={pct} />
         <div className="text-right text-xs text-muted-foreground mt-1">
-          Step {idx + 1} of {totalSteps}
+          {t("newHk.topbar.stepOf", { current: idx + 1, total: totalSteps })}
         </div>
       </div>
     </div>
@@ -1825,16 +1998,16 @@ function Sidebar({
     // Forward navigation checks
     if (!canProceedFromCurrent) {
       toast({
-        title: "Complete this step",
-        description: "Please fill all required fields before continuing.",
+        title: t("newHk.sidebar.toasts.completeStepTitle"),
+        description: t("newHk.sidebar.toasts.completeStepDesc")
       });
       return;
     }
 
     if (paymentStatus !== "paid" && target > 7) {
       toast({
-        title: "Payment required",
-        description: "Please complete the payment before proceeding to later steps, if you upload receipt wait for confirmation.",
+        title: t("newHk.sidebar.toasts.paymentReqTitle"),
+        description: t("newHk.sidebar.toasts.paymentReqDesc")
       });
       return;
     }
@@ -1847,20 +2020,20 @@ function Sidebar({
       <div className="flex items-center gap-2 mb-1">
         <div className="w-5 h-5 rounded bg-red-600 shrink-0" />
         <div className="text-[11px] sm:text-[13px] tracking-wide font-semibold truncate">
-          MIRR ASIA — Incorporation
+          {t("newHk.sidebar.brand")}
         </div>
       </div>
 
       <div className="text-xs text-muted-foreground">
         <div className="flex flex-wrap gap-1">
           <span className="inline-flex items-center gap-1 border rounded-full px-2 py-1 text-[10px] sm:text-xs">
-            🔒 SSL Secured
+            {t("newHk.sidebar.badges.ssl")}
           </span>
           <span className="inline-flex items-center gap-1 border rounded-full px-2 py-1 text-[10px] sm:text-xs">
-            🏛️ Registry Compliant
+            {t("newHk.sidebar.badges.registry")}
           </span>
           <span className="inline-flex items-center gap-1 border rounded-full px-2 py-1 text-[10px] sm:text-xs">
-            🧑‍⚖️ AML/CFT Ready
+            {t("newHk.sidebar.badges.aml")}
           </span>
         </div>
       </div>
@@ -1881,20 +2054,20 @@ function Sidebar({
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="font-semibold text-xs sm:text-sm truncate">
-                  {i + 1}. {s.title}
+                  {i + 1}. {t(s.title as string, s.title as string)}
                 </div>
-                {i < idx && <Badge variant="secondary" className="shrink-0 text-xs">Done</Badge>}
+                {i < idx && <Badge variant="secondary" className="shrink-0 text-xs">{t("newHk.sidebar.done", "Done")}</Badge>}
               </div>
             </button>
           );
         })}
         <p className="text-xs text-muted-foreground mt-2">
-          Need help?{" "}
+          {t("newHk.sidebar.needHelp")}
           <button
             className="text-sky-600 touch-manipulation"
             onClick={() => toast({ title: "Contact us", description: "Updating soon." })}
           >
-            MirrAsia Chat
+            {t("newHk.sidebar.chatCta")}
           </button>
         </p>
       </div>
@@ -1976,7 +2149,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
       payload.userId = decodedToken.userId;
 
       const res = await saveDraft(payload);
-      console.log("saveDraft res", res);
+      // console.log("saveDraft res", res);
       if (res?.ok) {
         if (res._id && !app._id) {
           setApp((prev) => ({ ...prev!, _id: res._id }));
@@ -1992,7 +2165,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
       setSavingNext(false);
     }
   };
-  console.log("stepIdx", stepIdx)
+  // console.log("stepIdx", stepIdx)
   return (
     <div className="max-w-6xl mx-auto p-3 sm:p-4 md:p-6 space-y-4">
       <TopBar title={config.title} totalSteps={config.steps.length} idx={stepIdx} />
@@ -2003,9 +2176,9 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="w-full justify-between touch-manipulation"
         >
-          <span>Steps Menu</span>
+          <span>{t("newHk.buttons.stepsMenu", "Steps Menu")}</span>
           <span className="text-xs">
-            Step {stepIdx + 1}/{config.steps.length}
+            {t("newHk.topbar.stepOf", { current: stepIdx + 1, total: config.steps.length })}
           </span>
         </Button>
       </div>
@@ -2020,14 +2193,14 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
             />
             <div className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-background border-r p-4 overflow-auto">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-semibold">Steps</h2>
+                <h2 className="font-semibold">{t("newHk.sidebar.stepsMenu", "Steps")}</h2>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setSidebarOpen(false)}
                   className="h-8 w-8 p-0"
                 >
-                  ✕
+                  {t("newHk.sidebar.close", "✕")}
                 </Button>
               </div>
               <Sidebar
@@ -2057,17 +2230,16 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
           <Card>
             <CardHeader className="pb-4 sm:pb-6">
               <CardTitle className="text-lg sm:text-xl">
-                {stepIdx + 1}. {step.title}
+                {stepIdx + 1}. {t(step.title as string, step.title as string)}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 px-4 sm:px-6">
               {step.description && (
                 <div className="border border-dashed rounded-lg p-3 bg-muted/20 text-xs sm:text-sm">
-                  {step.description}
+                  {t(step.description as string, step.description as string)}
                 </div>
               )}
               {step.render ? (
-                // setApp is guaranteed non-null here; cast for child props
                 step.render({ app, setApp: setApp as React.Dispatch<React.SetStateAction<AppDoc>>, form, setForm })
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
@@ -2076,7 +2248,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
               )}
               {missing.length > 0 && (
                 <div className="text-xs sm:text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-3">
-                  <strong>Required fields:</strong> {missing.join(", ")}
+                  <strong>{t("newHk.validation.requiredFieldsPrefix", "Required fields:")}</strong> {missing.join(", ")}
                 </div>
               )}
             </CardContent>
@@ -2088,7 +2260,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
                   onClick={() => goto(stepIdx - 1)}
                   className="flex-1 sm:flex-none touch-manipulation"
                 >
-                  ← Back
+                  {t("newHk.buttons.back", "← Back")}
                 </Button>
               </div>
               {stepIdx !== 9 && (
@@ -2098,7 +2270,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
                     disabled={step.fields ? !canNext || savingNext : savingNext}
                     className="w-full sm:w-auto touch-manipulation"
                   >
-                    {savingNext ? "Saving…" : "Next →"}
+                    {savingNext ? t("newHk.buttons.saving", "Saving…") : t("newHk.buttons.next", "Next →")}
                   </Button>
                 </div>
               )}
@@ -2110,215 +2282,170 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
   );
 }
 const hkIncorpConfig: FormConfig = {
-  title: "Company Incorporation — Hong Kong",
+  title: "newHk.hkTitle",
   steps: [
     {
       id: "applicant",
-      title: "Applicant & Proposed Company Names",
-      description: "Provide your contact details and propose up to three English names (and optional Chinese names) in order of preference. This helps us obtain quick name pre‑screening before filing.",
+      title: "newHk.steps.applicant.title",
+      description: "newHk.steps.applicant.description",
       fields: [
         {
           type: "text",
           name: "applicantName",
-          label: "Applicant's Full Name",
-          placeholder: "e.g., Jane Doe",
+          label: "newHk.steps.applicant.fields.applicantName.label",
+          placeholder: "newHk.steps.applicant.fields.applicantName.placeholder",
           required: true,
-          tooltip: "The person responsible for this application. Must be authorized to submit KYC and CDD documents.",
+          tooltip: "newHk.steps.applicant.fields.applicantName.tooltip"
         },
-        { type: "email", name: "email", label: "Email", placeholder: "Primary Email (verification required)", required: true },
-        { type: "text", name: "phone", label: "Mobile (with country code)", placeholder: "+852 1234 5678" },
-        { type: "text", name: "name1", label: "Proposed English Name — 1st", required: true, colSpan: 2 },
-        { type: "text", name: "name2", label: "Proposed English Name — 2nd", colSpan: 2 },
-        { type: "text", name: "name3", label: "Proposed English Name — 3rd", colSpan: 2 },
-        { type: "text", name: "cname1", label: "Chinese Name — 1st (optional)" },
-        { type: "text", name: "cname2", label: "Chinese Name — 2nd (optional)" },
+        { type: "email", name: "email", label: "newHk.steps.applicant.fields.email.label", placeholder: "newHk.steps.applicant.fields.email.placeholder", required: true },
+        { type: "text", name: "phone", label: "newHk.steps.applicant.fields.phone.label", placeholder: "newHk.steps.applicant.fields.phone.placeholder" },
+        { type: "text", name: "name1", label: "newHk.steps.applicant.fields.name1.label", required: true, colSpan: 2 },
+        { type: "text", name: "name2", label: "newHk.steps.applicant.fields.name2.label", colSpan: 2 },
+        { type: "text", name: "name3", label: "newHk.steps.applicant.fields.name3.label", colSpan: 2 },
+        { type: "text", name: "cname1", label: "newHk.steps.applicant.fields.cname1.label" },
+        { type: "text", name: "cname2", label: "newHk.steps.applicant.fields.cname2.label" },
         {
           type: "checkbox-group",
           name: "roles",
-          label: "Role in the Company",
-          tooltip: "Multiple choices allowed.",
+          label: "newHk.steps.applicant.fields.roles.label",
+          tooltip: "newHk.steps.applicant.fields.roles.tooltip",
           options: [
-            { label: "Director", value: "Director" },
-            { label: "Shareholder", value: "Shareholder" },
-            { label: "Authorized Representative", value: "Authorized" },
-            { label: "Professional Advisor", value: "Professional" },
-            { label: "Other", value: "Other" },
+            { label: "newHk.steps.applicant.fields.roles.options.Director", value: "Director" },
+            { label: "newHk.steps.applicant.fields.roles.options.Shareholder", value: "Shareholder" },
+            { label: "newHk.steps.applicant.fields.roles.options.Authorized", value: "Authorized" },
+            { label: "newHk.steps.applicant.fields.roles.options.Professional", value: "Professional" },
+            { label: "newHk.steps.applicant.fields.roles.options.Other", value: "Other" }
           ],
-          colSpan: 2,
+          colSpan: 2
         },
         {
           type: "select",
           name: "sns",
-          label: "SNS Platform (optional)",
-          placeholder: "Select SNS Platform",
+          label: "newHk.steps.applicant.fields.sns.label",
+          placeholder: "newHk.steps.applicant.fields.sns.placeholder",
           options: [
-            { label: "WhatsApp", value: "WhatsApp" },
-            { label: "WeChat", value: "WeChat" },
-            { label: "Line", value: "Line" },
-            { label: "KakaoTalk", value: "KakaoTalk" },
-            { label: "Telegram", value: "Telegram" },
+            { label: "newHk.steps.applicant.fields.sns.options.WhatsApp", value: "WhatsApp" },
+            { label: "newHk.steps.applicant.fields.sns.options.WeChat", value: "WeChat" },
+            { label: "newHk.steps.applicant.fields.sns.options.Line", value: "Line" },
+            { label: "newHk.steps.applicant.fields.sns.options.KakaoTalk", value: "KakaoTalk" },
+            { label: "newHk.steps.applicant.fields.sns.options.Telegram", value: "Telegram" }
           ],
-          colSpan: 1,
+          colSpan: 1
         },
-        { type: "text", name: "snsId", label: "SNS Account ID", placeholder: "e.g., wechat_id", condition: (f) => !!f.sns },
-      ],
+        { type: "text", name: "snsId", label: "newHk.steps.applicant.fields.snsId.label", placeholder: "newHk.steps.applicant.fields.snsId.placeholder", condition: (f) => !!f.sns }
+      ]
     },
     {
       id: "compliance",
-      title: "Compliance & Ethical Assessment (AML / CDD)",
-      description: "Answer accurately based on your current knowledge. Select ‘Unsure’ if you need help.",
+      title: "newHk.steps.compliance.title",
+      description: "newHk.steps.compliance.description",
       fields: [
         {
           type: "radio-group",
           name: "legalAndEthicalConcern",
-          label:
-            "Are there any legal or ethical concerns related to the business (e.g., money laundering, gambling, tax evasion, asset concealment, fraud)?",
+          label: "newHk.steps.compliance.questions.legalAndEthicalConcern",
           required: true,
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No — to the best of my knowledge", value: "no" },
-            { label: "Unsure — request assistance", value: "unsure" },
+            { label: "newHk.steps.compliance.options.yes", value: "yes" },
+            { label: "newHk.steps.compliance.options.no", value: "no" },
+            { label: "newHk.steps.compliance.options.unsure", value: "unsure" }
           ],
-          colSpan: 2,
+          colSpan: 2
         },
         {
           type: "radio-group",
           name: "q_country",
-          label:
-            "Does the Hong Kong company have any current or planned business activity in the following countries/regions: Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus, or Zimbabwe?",
+          label: "newHk.steps.compliance.questions.q_country",
           required: true,
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No — to the best of my knowledge", value: "no" },
-            { label: "Unsure — request assistance", value: "unsure" },
+            { label: "newHk.steps.compliance.options.yes", value: "yes" },
+            { label: "newHk.steps.compliance.options.no", value: "no" },
+            { label: "newHk.steps.compliance.options.unsure", value: "unsure" }
           ],
-          colSpan: 2,
+          colSpan: 2
         },
         {
           type: "radio-group",
           name: "sanctionsExposureDeclaration",
-          label:
-            "Sanctions exposure: Do the company or any connected parties have a presence in, dealings with, or ownership ties to sanctioned persons or entities under UN, EU, UK HMT, HKMA, OFAC (US) or local sanctions law?",
+          label: "newHk.steps.compliance.questions.sanctionsExposureDeclaration",
           required: true,
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No — to the best of my knowledge", value: "no" },
-            { label: "Unsure — request assistance", value: "unsure" },
+            { label: "newHk.steps.compliance.options.yes", value: "yes" },
+            { label: "newHk.steps.compliance.options.no", value: "no" },
+            { label: "newHk.steps.compliance.options.unsure", value: "unsure" }
           ],
-          colSpan: 2,
+          colSpan: 2
         },
         {
           type: "radio-group",
           name: "crimeaSevastapolPresence",
-          label: "Any current or planned business in Crimea/Sevastopol Regions?",
+          label: "newHk.steps.compliance.questions.crimeaSevastapolPresence",
           required: true,
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No — to the best of my knowledge", value: "no" },
-            { label: "Unsure — request assistance", value: "unsure" },
+            { label: "newHk.steps.compliance.options.yes", value: "yes" },
+            { label: "newHk.steps.compliance.options.no", value: "no" },
+            { label: "newHk.steps.compliance.options.unsure", value: "unsure" }
           ],
-          colSpan: 2,
+          colSpan: 2
         },
         {
           type: "radio-group",
           name: "russianEnergyPresence",
-          label: "Any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?",
+          label: "newHk.steps.compliance.questions.russianEnergyPresence",
           required: true,
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No — to the best of my knowledge", value: "no" },
-            { label: "Unsure — request assistance", value: "unsure" },
+            { label: "newHk.steps.compliance.options.yes", value: "yes" },
+            { label: "newHk.steps.compliance.options.no", value: "no" },
+            { label: "newHk.steps.compliance.options.unsure", value: "unsure" }
           ],
-          colSpan: 2,
-        },
-      ],
+          colSpan: 2
+        }
+      ]
     },
-    {
-      id: "company",
-      title: "Company Information",
-      render: ({ app, setApp }) => <CompanyInfoStep app={app} setApp={setApp} />,
-    },
+    { id: "company", title: "newHk.steps.company.title", render: ({ app, setApp }) => <CompanyInfoStep app={app} setApp={setApp} /> },
     {
       id: "acct",
-      title: "Accounting & Taxation",
+      title: "newHk.steps.acct.title",
       fields: [
         {
-          type: "select",
-          name: "finYrEnd",
-          label: "Financial year-end date of the Hong Kong company",
+          type: "select", name: "finYrEnd", label: "newHk.steps.acct.fields.finYrEnd.label",
           options: [
-            { label: "December 31", value: "December 31" },
-            { label: "March 31", value: "March 31" },
-            { label: "June 30", value: "June 30" },
-            { label: "September 30", value: "September 30" },
-          ],
+            { label: "newHk.steps.acct.fields.finYrEnd.options.December 31", value: "December 31" },
+            { label: "newHk.steps.acct.fields.finYrEnd.options.March 31", value: "March 31" },
+            { label: "newHk.steps.acct.fields.finYrEnd.options.June 30", value: "June 30" },
+            { label: "newHk.steps.acct.fields.finYrEnd.options.September 30", value: "September 30" }
+          ]
         },
         {
-          type: "radio-group",
-          name: "bookKeepingCycle",
-          label: "Bookkeeping cycle",
+          type: "radio-group", name: "bookKeepingCycle", label: "newHk.steps.acct.fields.bookKeepingCycle.label",
           options: [
-            { label: "Monthly (recommended for > ~50 txns/mo)", value: "Monthly" },
-            { label: "Quarterly", value: "Quarterly" },
-            { label: "Half-annually (every 6 months)", value: "Half-annually" },
-            { label: "Annually (every 12 months) — lowest cost", value: "Annually" },
+            { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Monthly", value: "Monthly" },
+            { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Quarterly", value: "Quarterly" },
+            { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Half-annually", value: "Half-annually" },
+            { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Annually", value: "Annually" }
           ],
-          colSpan: 2,
+          colSpan: 2
         },
         {
-          type: "radio-group",
-          name: "xero",
-          label: "Would you like to implement online accounting software (e.g., Xero)?",
+          type: "radio-group", name: "xero", label: "newHk.steps.acct.fields.xero.label",
           options: [
-            { label: "Yes (≈HKD 400/mo)", value: "Yes" },
-            { label: "No", value: "No" },
-            { label: "Recommendation required — we will suggest based on industry & volume", value: "Recommendation required" },
-            { label: "Other", value: "Other" },
+            { label: "newHk.steps.acct.fields.xero.options.Yes", value: "Yes" },
+            { label: "newHk.steps.acct.fields.xero.options.No", value: "No" },
+            { label: "newHk.steps.acct.fields.xero.options.Recommendation required", value: "Recommendation required" },
+            { label: "newHk.steps.acct.fields.xero.options.Other", value: "Other" }
           ],
-          colSpan: 2,
+          colSpan: 2
         },
-        {
-          type: "text",
-          name: "softNote",
-          label: "Do you currently use/prefer another accounting software? (optional)",
-          placeholder: "e.g., QuickBooks Online, Wave, or leave blank",
-          colSpan: 2,
-        },
-      ],
+        { type: "text", name: "softNote", label: "newHk.steps.acct.fields.softNote.label", placeholder: "newHk.steps.acct.fields.softNote.placeholder", colSpan: 2 }
+      ]
     },
-    {
-      id: "terms",
-      title: "Engagement Terms & Service Agreement",
-      render: () => <EngagementTerms />,
-    },
-    {
-      id: "fees",
-      title: "Incorporation Package & Optional Add-ons",
-      // description: "Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.",
-      render: ({ app, setApp }) => <FeesEstimator app={app} setApp={setApp} />,
-    },
-    {
-      id: "invoice",
-      title: "Invoice — Preview",
-      // description: "Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.",
-      render: ({ app }) => <InvoicePreview app={app} />,
-    },
-    {
-      id: "payment",
-      title: "Payment",
-      render: ({ app, setApp }) => <PaymentStep app={app} setApp={setApp} />,
-    },
-    {
-      id: "review",
-      title: "Review & e-Sign",
-      render: ({ app, setApp }) => <ReviewStep app={app} setApp={setApp} />,
-    },
-    {
-      id: "congrats",
-      title: "Confirmation",
-      render: ({ app }) => <CongratsStep app={app} />,
-    },
-  ],
+    { id: "terms", title: "newHk.steps.termsStep.title", render: () => <EngagementTerms /> },
+    { id: "fees", title: "newHk.steps.fees.title", render: ({ app, setApp }) => <FeesEstimator app={app} setApp={setApp} /> },
+    { id: "invoice", title: "newHk.steps.invoice.title", render: ({ app }) => <InvoicePreview app={app} /> },
+    { id: "payment", title: "newHk.steps.payment.title", render: ({ app, setApp }) => <PaymentStep app={app} setApp={setApp} /> },
+    { id: "review", title: "newHk.steps.review.title", render: ({ app, setApp }) => <ReviewStep app={app} setApp={setApp} /> },
+    { id: "congrats", title: "newHk.steps.congrats.title", render: ({ app }) => <CongratsStep app={app} /> }
+  ]
 };
 
 export default function ConfigDrivenHKForm() {

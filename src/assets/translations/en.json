@@ -110,10 +110,10 @@
     "compChinaName": "You Can Enter Optional Chinese names for your company below",
     "contactInfo": "Contact information of the above applicant",
     "phoneNum": "Phone Number",
-    "phoneNumInfo":"Enter phone number with country code",
+    "phoneNumInfo": "Enter phone number with country code",
     "address": "Address",
     "email": "Email",
-    "emailInfo":"Enter your active email to receive OTP.",
+    "emailInfo": "Enter your active email to receive OTP.",
     "snsId": "SNS Account ID",
     "snsPlatform": "SNS Platform",
     "compNameInfo": "The company name must be in English as a minimum requirement, and can also be in Chinese(traditional Chinese only; simplified Chinese is not allowed). However, a combination of English and Chinese (except for English abbreviations such as HK) is not allowed, and must be written as Limited in full at the end of the English name, and must be written as 有限公司 at the end of the Chinese name. The company name can be a combination of uppercase letters/lowercase letters/numbers/periods/commas/parentheses, and other special characters are not allowed. International can be abbreviated as Int'l. The company name cannot be registered if there is a company previously registered under the same or similar company name. Accordingly, if you enter the three different company names you wish to register in the order of 1st / 2nd / 3rd preference, we will check the names and register in the order of your preferences."
@@ -1384,8 +1384,8 @@
     "energyPresence": "To the best of your knowledge, does the proposed company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
   },
   "panama": {
-    "rolesWarning":"Invalid Roles",
-    "rolesWarningInfo":"Please ensure that the roles of President, Treasurer, and Secretary are assigned correctly.",
+    "rolesWarning": "Invalid Roles",
+    "rolesWarningInfo": "Please ensure that the roles of President, Treasurer, and Secretary are assigned correctly.",
     "headInfo": "This application must be completed or authorised by the principal of the company (being formed) who is the primary controller of the company to ensure that all information is entered correctly. This application will be prepared as a separate application form document when the company is being formed and signed by the principal of the company.This application form and the subsequent application form documents to be signed will be kept on file with us as statutory documents for the purpose of conducting KYC and due diligence on you in accordance with the TCSP Licence and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act; Cap. 615 AMLO) guidelines, so please ensure that there are no distortions or errors in the information provided.",
     "compNameInfo": "The name must end with the words 'Sociedad Anonima', 'Corporation', 'Incorporated' or their abbreviations 'S.A.', 'Corp.', 'Inc.' and if there is an existing company with the same or similar name, it will not be possible to incorporate. Accordingly, please list three possible company names in the order of your first, second and third choice and we will use the possible company names in the order of your choice on the registered documents.",
     "applicantLegalEntity": "Applicant's current legal entity, if any",
@@ -1468,5 +1468,656 @@
     "useRegMirProide": "Use the Registered Address Service that Mirr Asia provides",
     "haveSepAddress": "I have a separate address in Panama to use as the company's address (not using Mirr Asia's registered address service)",
     "finalMsg": "Thank you for completing the Panama company incorporation process with us. We will review the content of your response and our consultant will contact you shortly."
+  },
+  "newHk": {
+    "hkTitle": "Company Incorporation — Hong Kong",
+    "infoHelpIcon": "Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.",
+    "topbar": {
+      "stepOf": "Step {{current}} of {{total}}"
+    },
+    "sidebar": {
+      "brand": "MIRR ASIA — Incorporation",
+      "badges": {
+        "ssl": "🔒 SSL Secured",
+        "registry": "🏛️ Registry Compliant",
+        "aml": "🧑‍⚖️ AML/CFT Ready"
+      },
+      "done": "Done",
+      "needHelp": "Need help?",
+      "chatCta": "MirrAsia Chat",
+      "toasts": {
+        "completeStepTitle": "Complete this step",
+        "completeStepDesc": "Please fill all required fields before continuing.",
+        "paymentReqTitle": "Payment required",
+        "paymentReqDesc": "Please complete the payment before proceeding to later steps, if you upload receipt wait for confirmation."
+      },
+      "stepsMenu": "Steps",
+      "close": "✕"
+    },
+    "buttons": {
+      "stepsMenu": "Steps Menu",
+      "back": "← Back",
+      "next": "Next →",
+      "saving": "Saving…"
+    },
+    "toasts": {
+      "paymentRequiredTitle": "Payment required",
+      "paymentRequiredDesc": "Please complete the payment to continue.",
+      "incompleteTitle": "Incomplete",
+      "incompleteDesc": "Please confirm all declarations and enter your electronic signature (full legal name).",
+      "errorTitle": "Error",
+      "errorSaveDesc": "Could not save draft. Please try again.",
+      "contactTitle": "Contact us",
+      "contactDesc": "Updating soon."
+    },
+    "terms": {
+      "intro": "Please review the terms below. You will confirm acceptance at the Review & e-Sign step.",
+      "items": {
+        "1": {
+          "t": "1. Purpose of this Agreement",
+          "c": "The purpose of this agreement is to prevent misunderstandings about the scope and limitations of services provided by MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED (\"Mirr Asia\") to the client company to be incorporated in the HKSAR (the \"Client\")."
+        },
+        "2": {
+          "t": "2. Role of Hong Kong Company Secretary & Limitation of Liability",
+          "c": "Mirr Asia will be appointed as company secretary in accordance with the Companies Ordinance (Cap 622) and the Client’s Articles of Association. Secretarial services are statutory in nature and differ from the role of an employed administrative secretary."
+        },
+        "3": {
+          "t": "3. Registered Address & Limitations",
+          "c": "The Client may use Mirr Asia’s registered address in Hong Kong for statutory registration. Changes require written notice. The registered address is for registration and mail handling only; it is not a physical office. The Client must not use the address for unlawful purposes or misrepresent it as a place of business. Incoming mail may be opened and scanned under the Letter of Consent and forwarded by email. If the Client has more than two directors, at least two directors (per quorum) shall sign relevant documents. Parcels and goods should not be sent to the registered address without prior consent; unapproved deliveries may be returned."
+        },
+        "4": {
+          "t": "4. Scope of Services (Year 1)",
+          "c": "Company secretary registration and maintenance of statutory records. Business Registration and Companies Registry filings (as applicable). Handling Employer’s Return for the first two employees (postage surcharge may apply). Handling the mandatory Survey of Company Information. Preparation and filing of Annual Return; keeping copies of renewal forms. Maintaining the Significant Controllers Register. Maintaining Registers of Members/Directors/Secretary and Organisation Chart. Maintaining AGM minutes templates and related records. Maintaining the Business Registration Certificate at the registered office (if applicable). Brief business/operational advice (non-legal, best-effort only). Client cooperation: The Client will provide all information/documents required. Mirr Asia is not obliged to assist with unlawful matters."
+        },
+        "5": {
+          "t": "5. Fees & Exclusions",
+          "c": "The Client shall pay the amount shown in the payment section. Fees exclude accounting, audit, tax filings, bank account opening advice, and third-party charges (e.g., bank charges, government fees, taxes, courier)."
+        },
+        "6": {
+          "t": "6. Assignment & Subcontractors",
+          "c": "Neither party may assign or transfer its rights/obligations without prior written consent of the other."
+        },
+        "7": {
+          "t": "7. Confidentiality",
+          "c": "Both parties will keep confidential any non-public business or technical information obtained under this Agreement, except where disclosure is required by law or the information is already public."
+        },
+        "8": {
+          "t": "8. Entire Agreement",
+          "c": "This Agreement is the complete understanding between the parties and supersedes prior communications. It prevails over pre-printed terms in POs or other documents."
+        },
+        "9": {
+          "t": "9. Severability",
+          "c": "If any provision is invalid or unenforceable, the remainder remains in force. The parties will attempt in good faith to replace invalid provisions with valid ones reflecting the original intent."
+        },
+        "10": {
+          "t": "10. No Third-party Beneficiaries",
+          "c": "No rights are created for third parties unless authorized in writing by Mirr Asia."
+        },
+        "11": {
+          "t": "11. Governing Law & Dispute Resolution",
+          "c": "Hong Kong law governs this Agreement. Disputes will be referred to binding arbitration under the rules of a recognized Hong Kong arbitration institution."
+        },
+        "12": {
+          "t": "12. Costs & Attorney’s Fees",
+          "c": "The prevailing party in any dispute (mediation, arbitration, or litigation) may recover reasonable costs and attorney’s fees. The Client will also pay Mirr Asia’s reasonable costs of responding to lawful demands for information or documents."
+        },
+        "13": {
+          "t": "13. Client Confirmation & Declaration",
+          "c": "The Client confirms that services will not be used for unlawful purposes and that all provided information is true and correct. The Client will promptly notify Mirr Asia of any changes. Mirr Asia may discontinue services if illegal activity is suspected."
+        }
+      }
+    },
+    "steps": {
+      "applicant": {
+        "title": "Applicant & Proposed Company Names",
+        "description": "Provide your contact details and propose up to three English names (and optional Chinese names) in order of preference. This helps us obtain quick name pre-screening before filing.",
+        "fields": {
+          "applicantName": {
+            "label": "Applicant's Full Name",
+            "placeholder": "e.g., Jane Doe",
+            "tooltip": "The person responsible for this application. Must be authorized to submit KYC and CDD documents."
+          },
+          "email": {
+            "label": "Email",
+            "placeholder": "Primary Email (verification required)"
+          },
+          "phone": {
+            "label": "Mobile (with country code)",
+            "placeholder": "+852 1234 5678"
+          },
+          "name1": {
+            "label": "Proposed English Name — 1st"
+          },
+          "name2": {
+            "label": "Proposed English Name — 2nd"
+          },
+          "name3": {
+            "label": "Proposed English Name — 3rd"
+          },
+          "cname1": {
+            "label": "Chinese Name — 1st (optional)"
+          },
+          "cname2": {
+            "label": "Chinese Name — 2nd (optional)"
+          },
+          "roles": {
+            "label": "Role in the Company",
+            "tooltip": "Multiple choices allowed.",
+            "options": {
+              "Director": "Director",
+              "Shareholder": "Shareholder",
+              "Authorized": "Authorized Representative",
+              "Professional": "Professional Advisor",
+              "Other": "Other"
+            }
+          },
+          "sns": {
+            "label": "SNS Platform (optional)",
+            "placeholder": "Select SNS Platform",
+            "options": {
+              "WhatsApp": "WhatsApp",
+              "WeChat": "WeChat",
+              "Line": "Line",
+              "KakaoTalk": "KakaoTalk",
+              "Telegram": "Telegram"
+            }
+          },
+          "snsId": {
+            "label": "SNS Account ID",
+            "placeholder": "e.g., wechat_id"
+          }
+        }
+      },
+      "compliance": {
+        "title": "Compliance & Ethical Assessment (AML / CDD)",
+        "description": "Answer accurately based on your current knowledge. Select ‘Unsure’ if you need help.",
+        "options": {
+          "yes": "Yes",
+          "no": "No — to the best of my knowledge",
+          "unsure": "Unsure — request assistance"
+        },
+        "questions": {
+          "legalAndEthicalConcern": "Are there any legal or ethical concerns related to the business (e.g., money laundering, gambling, tax evasion, asset concealment, fraud)?",
+          "q_country": "Does the Hong Kong company have any current or planned business activity in the following countries/regions: Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus, or Zimbabwe?",
+          "sanctionsExposureDeclaration": "Sanctions exposure: Do the company or any connected parties have a presence in, dealings with, or ownership ties to sanctioned persons or entities under UN, EU, UK HMT, HKMA, OFAC (US) or local sanctions law?",
+          "crimeaSevastapolPresence": "Any current or planned business in Crimea/Sevastopol Regions?",
+          "russianEnergyPresence": "Any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
+        }
+      },
+      "company": {
+        "title": "Company Information"
+      },
+      "acct": {
+        "title": "Accounting & Taxation",
+        "fields": {
+          "finYrEnd": {
+            "label": "Financial year-end date of the Hong Kong company",
+            "options": {
+              "December 31": "December 31",
+              "March 31": "March 31",
+              "June 30": "June 30",
+              "September 30": "September 30"
+            }
+          },
+          "bookKeepingCycle": {
+            "label": "Bookkeeping cycle",
+            "options": {
+              "Monthly": "Monthly (recommended for > ~50 txns/mo)",
+              "Quarterly": "Quarterly",
+              "Half-annually": "Half-annually (every 6 months)",
+              "Annually": "Annually (every 12 months) — lowest cost"
+            }
+          },
+          "xero": {
+            "label": "Would you like to implement online accounting software (e.g., Xero)?",
+            "options": {
+              "Yes": "Yes (≈HKD 400/mo)",
+              "No": "No",
+              "Recommendation required": "Recommendation required — we will suggest based on industry & volume",
+              "Other": "Other"
+            }
+          },
+          "softNote": {
+            "label": "Do you currently use/prefer another accounting software? (optional)",
+            "placeholder": "e.g., QuickBooks Online, Wave, or leave blank"
+          }
+        }
+      },
+      "termsStep": {
+        "title": "Engagement Terms & Service Agreement"
+      },
+      "fees": {
+        "title": "Incorporation Package & Optional Add-ons"
+      },
+      "invoice": {
+        "title": "Invoice — Preview"
+      },
+      "payment": {
+        "title": "Payment"
+      },
+      "review": {
+        "title": "Review & e-Sign"
+      },
+      "congrats": {
+        "title": "Confirmation"
+      }
+    },
+    "validation": {
+      "requiredFieldsPrefix": "Required fields:"
+    },
+    "payment": {
+      "alerts": {
+        "alreadyPaid": "Payment already completed.",
+        "expiredGuard": "Payment window expired. Please contact support to re-enable payment.",
+        "initFailedTitle": "Error",
+        "initFailedDesc": "Could not initialize card payment. Please try again.",
+        "prepareFailedDesc": "Failed to prepare payment. Please try again."
+      },
+      "success": {
+        "title": "Payment successful",
+        "amountLabel": "Amount:",
+        "receiptLabel": "Receipt:",
+        "viewStripeReceipt": "View Stripe receipt"
+      },
+      "expiryBanner": {
+        "expiredMessage": "Payment window expired. Please contact support to re-enable payment.",
+        "timerTitle": "Payment Timer",
+        "timeRemaining": "Time remaining: {{time}}"
+      },
+      "methods": {
+        "title": "Payment Methods",
+        "options": {
+          "card": {
+            "label": "Card Payment — Stripe (3.5% processing fee)",
+            "tip": "Convenient for international cards. A processing fee is added to the invoice."
+          },
+          "fps": {
+            "label": "Fast Payment System (FPS) — Recommended (no extra fee)"
+          },
+          "bank": {
+            "label": "Bank Transfer — direct transfer with receipt upload"
+          },
+          "other": {
+            "label": "Other (cash) — with receipt upload"
+          }
+        },
+        "statusNote": {
+          "paid": "Payment completed.",
+          "expired": "Payment is disabled because the window has expired."
+        }
+      },
+      "conditions": {
+        "title": "Payment Conditions",
+        "text": "100% advance payment. All payments are non-refundable. The remitter bears all bank charges (including intermediary bank fees)."
+      },
+      "bankUpload": {
+        "refLabel": "Upload transfer reference",
+        "refPlaceholder": "e.g., HSBC TT reference",
+        "proofLabel": "Upload payment proof (PDF/JPG/PNG)",
+        "submit": "Submit",
+        "uploading": "Uploading…",
+        "previewTitle": "Payment proof preview",
+        "openInNewTab": "Open in new tab",
+        "delete": "Delete"
+      },
+      "card": {
+        "proceed": "Proceed Card Payment",
+        "preparing": "Preparing…",
+        "drawerNote": "A secure Stripe card drawer will open to complete your payment.",
+        "disabledExpired": "Payment disabled — window expired."
+      },
+      "fps": {
+        "title": "FPS Payment"
+      },
+      "totals": {
+        "grandTotal": "Grand Total: USD {{amount}}"
+      }
+    },
+    "common": {
+      "select": "Select"
+    },
+    "fees": {
+      "table": {
+        "headers": {
+          "description": "Service Description",
+          "original": "Original",
+          "amount": "Amount",
+          "select": "Select"
+        },
+        "totalLabel": "Total: USD {{amount}}",
+        "note": "Government fees are statutory and payable by all companies. Optional items can be toggled before payment."
+      },
+      "items": {
+        "cr_fee": {
+          "label": "HK Company Incorporation Government Fee to Companies Registry",
+          "info": "Statutory filing fee payable to the Companies Registry."
+        },
+        "br_fee": {
+          "label": "Business Registration (government) fee",
+          "info": "Annual Business Registration levy."
+        },
+        "inc_service": {
+          "label": "Hong Kong Company Incorporation — service fee (discounted)",
+          "info": "Mirr Asia incorporation service — fully discounted in the package."
+        },
+        "sec_annual": {
+          "label": "Company Secretary Annual Service Charge",
+          "info": "Includes statutory record keeping and filings."
+        },
+        "kyc": {
+          "label": "KYC / Due Diligence fee (1st year)",
+          "info": "Included for the first year."
+        },
+        "reg_office": {
+          "label": "Registered Office Address (annual, optional)",
+          "info": "50% off for the first year."
+        },
+        "bank_arr": {
+          "label": "Bank/EMI Account Opening Arrangement (optional)",
+          "info": "Introduction and scheduling support."
+        },
+        "kit": {
+          "label": "Company Kit Producing cost (optional)",
+          "info": "Company chop, share certificates, etc."
+        },
+        "corr_addr": {
+          "label": "Correspondence Address Annual Service (optional)",
+          "info": "Mail handling for directors/shareholders."
+        }
+      },
+      "richTips": {
+        "reg_office": {
+          "title": "Registered Office Address",
+          "mandatoryTitle": "Mandatory:",
+          "mandatoryText": "Every Hong Kong company must have a registered office address in Hong Kong.",
+          "purposeTitle": "Purpose:",
+          "bullets": [
+            "This is the official legal address kept at the Companies Registry.",
+            "All official government correspondence (e.g. Companies Registry, Inland Revenue Department, courts) is served to this address.",
+            "Must be a physical address in Hong Kong (not a PO Box)."
+          ]
+        },
+        "corr_addr": {
+          "title": "Correspondence Address",
+          "p1": "This is an alternative mailing address for the directors, company secretary, or designated representatives.",
+          "p2": "It is used when someone does not want their residential address made public in the Companies Registry records.",
+          "p3": "Since 2018, Hong Kong allows directors to file a “correspondence address” instead of disclosing their full usual residential address on the public register.",
+          "p4": "The residential address is still filed with the Companies Registry, but kept in a “protected” part of the register (only accessible to regulators and certain professionals).",
+          "p5": "On the public records, only the correspondence address appears."
+        }
+      }
+    },
+    "invoice": {
+      "currencyBadge": "USD",
+      "aria": {
+        "moreInfo": "More info"
+      },
+      "compact": {
+        "qty": "Qty",
+        "original": "Original",
+        "youPay": "You pay",
+        "free": "FREE",
+        "lineTotal": "Line total"
+      },
+      "sections": {
+        "government": {
+          "title": "Government Fees",
+          "badge": "Mandatory",
+          "description": "These are statutory fees collected by the authorities and payable by all companies.",
+          "subtotal": "Government Fees Subtotal"
+        },
+        "service": {
+          "title": "Our Service Fees",
+          "badge": "company incorporation package + 1st year services",
+          "description": "Core compliance services are required by law; selected add-ons are shown below.",
+          "subtotal": "Service Fees Subtotal"
+        },
+        "grandTotal": "Total Cost"
+      },
+      "table": {
+        "headers": {
+          "serviceDescription": "Service Description",
+          "qty": "Qty",
+          "original": "Original",
+          "amount": "Amount",
+          "total": "Total"
+        }
+      },
+      "footnote": "Prices are in USD for convenience. Government fees may change based on official notices. Optional items can be added/removed before payment. Accounting/taxation services are not included here.",
+      "surcharge": {
+        "cardFee": "Card processing fee (3.5%)"
+      },
+      "info": {
+        "cr_fee": "Mandatory filing fee to the Companies Registry when establishing a new company.",
+        "br_fee": "Annual Business Registration fee payable to the Inland Revenue Department (valid for 1 year).",
+        "inc_service": "Preparation of incorporation documents, name check, filing and liaison with Companies Registry until formation.",
+        "sec_annual": "We act as your company secretary: maintain registers, prepare & file annual returns, and manage routine filings.",
+        "kyc": "Mandatory KYC/AML checks for shareholders and directors in line with regulations and our obligations.",
+        "reg_office": "Registered office address for statutory records and official correspondence.",
+        "bank_arr": "Introduction and scheduling support with the selected bank/EMI.",
+        "kit": "Company chop, share certificates, and related items.",
+        "corr_addr": "Mail handling for directors/shareholders."
+      },
+      "common": {
+        "subtotal": "Subtotal"
+      }
+    },
+    "review": {
+      "labels": {
+        "applicant": "Applicant",
+        "proposedNames": "Proposed Names",
+        "chinesePrefix": "Chinese:",
+        "industry": "Industry",
+        "description": "Description",
+        "shareCapital": "Share Capital",
+        "owners": "Owners",
+        "acctPrefs": "Accounting Preferences",
+        "totalAmount": "Total Amount",
+        "fyEnd": "Financial year-end:",
+        "bookkeeping": "Bookkeeping:",
+        "software": "Software:",
+        "prefers": "Prefers:",
+        "base": "Base:",
+        "payment": "Payment:",
+        "grand": "Grand:"
+      },
+      "placeholders": {
+        "tbd": "(TBD)",
+        "notProvided": "(not provided)",
+        "dash": "-",
+        "unknownParty": "Unknown",
+        "signaturePlaceholder": "Type your full legal name here (e.g., JANE DOE)"
+      },
+      "currency": {
+        "default": "HKD",
+        "usd": "USD"
+      },
+      "tags": {
+        "director": " (Director)",
+        "corporate": " (Corporate)"
+      },
+      "declarations": {
+        "title": "Declarations & Agreement",
+        "truth": "I confirm that the information provided is true, complete, and accurate.",
+        "terms": "I have read and agree to the Engagement Terms & Registered Address terms.",
+        "compliance": "I understand that incorporation is subject to successful compliance review (KYC/CDD and sanctions checks)."
+      },
+      "esign": {
+        "label": "Electronic signature",
+        "helper": "Your typed name will be recorded as an electronic signature with timestamp."
+      }
+    },
+    "congrats": {
+      "title": "Congratulations!",
+      "thankYou": "Thank you{{name}}! Your application has been successfully submitted.",
+      "thankYouName": ", {{applicantName}}",
+      "steps": {
+        "1": {
+          "t": "Step 1 — Compliance review",
+          "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1–2 business days."
+        },
+        "2": {
+          "t": "Step 2 — Filing with Companies Registry",
+          "s": "We will file the incorporation documents (NNC1, Articles, etc.)."
+        },
+        "3": {
+          "t": "Step 3 — Registration certificates",
+          "s": "Expected: Certificate of Incorporation & Business Registration within ~5 business days."
+        },
+        "4": {
+          "t": "Step 4 — Bank/EMI account",
+          "s": "If selected, we arrange an account opening with your preferred bank/EMI."
+        }
+      },
+      "buttons": {
+        "print": "Print / Save Summary as PDF",
+        "dashboard": "Go to Dashboard"
+      }
+    },
+    "company": {
+      "sections": {
+        "a": "A. Business Details",
+        "b": "B. Share Capital",
+        "c": "C. Shareholders / Directors"
+      },
+      "fields": {
+        "industry": {
+          "label": "Business Industry",
+          "placeholder": "Select an industry"
+        },
+        "purpose": {
+          "label": "Purpose of Incorporation",
+          "options": {
+            "operateHK": "Operate business in Hong Kong & Greater China",
+            "assetMgmt": "Asset management / investment",
+            "holdingCo": "Holding company for subsidiaries",
+            "crossBorder": "Cross-border trade advantages",
+            "taxNeutral": "Tax neutrality (no capital gains tax)"
+          }
+        },
+        "bizdesc": {
+          "label": "Description",
+          "placeholder": "Short description of the product/service and planned activities",
+          "tooltip": "Describe the product name, service type, and main activities after incorporation. Example: B2B IT consulting for ERP integration; secondary: SaaS subscription."
+        },
+        "currency": {
+          "label": "Base currency",
+          "options": {
+            "HKD": "HKD",
+            "USD": "USD",
+            "CNY": "CNY"
+          }
+        },
+        "capAmount": {
+          "label": "Total share capital",
+          "options": {
+            "1000": "1,000",
+            "10000": "10,000",
+            "100000": "100,000",
+            "other": "Other (enter amount)"
+          }
+        },
+        "capOther": {
+          "label": "Enter total capital",
+          "placeholder": "e.g., 25000"
+        },
+        "shareCount": {
+          "label": "Total number of shares (min 1)",
+          "options": {
+            "1": "1",
+            "10": "10",
+            "10000": "10,000",
+            "other": "Other (enter quantity)"
+          }
+        },
+        "shareOther": {
+          "label": "Enter number of shares",
+          "placeholder": "e.g., 5000"
+        },
+        "parValue": {
+          "label": "Calculated par value (read-only)",
+          "hint": "Par value = total share capital ÷ number of shares."
+        },
+        "dcp": {
+          "label": "Designated Contact Person",
+          "placeholder": "Select a contact person"
+        }
+      }
+    },
+    "parties": {
+      "banner": {
+        "ok": "All good — total number of shares allocated equals the company’s issued shares.",
+        "err": "Error: The total allocated shares must equal the company’s total number of shares. Please revise entries."
+      },
+      "fields": {
+        "name": {
+          "label": "Full name / Entity name",
+          "example": "Examples: <b>Jane Doe</b> (individual) or <b>ABC Holdings Limited</b> (corporate shareholder)."
+        },
+        "email": {
+          "label": "Email"
+        },
+        "phone": {
+          "label": "Phone"
+        },
+        "isCorp": {
+          "label": "Is this shareholder a corporate entity?",
+          "tip": "Select ‘Yes’ if the shareholder is a company (corporate shareholder). Select ‘No’ for an individual.",
+          "options": {
+            "no": "No — Individual",
+            "yes": "Yes — Corporate shareholder"
+          }
+        },
+        "isDirector": {
+          "label": "Will this person also serve as a director?",
+          "tip": "Directors manage the company and sign statutory filings. At least one individual director is required by law.",
+          "options": {
+            "yes": "Yes",
+            "no": "No"
+          }
+        },
+        "shares": {
+          "label": "Number of shares"
+        },
+        "pct": {
+          "label": "Shareholding % (auto)"
+        },
+        "type": {
+          "label": "Type of shares"
+        }
+      },
+      "shareTypes": {
+        "ORD": "Ordinary",
+        "PREF": "Preference",
+        "NONVOT": "Non-voting",
+        "REDEEM": "Redeemable"
+      },
+      "buttons": {
+        "remove": "Remove",
+        "add": "+ Add shareholder / director",
+        "invite": "Send Invitation"
+      },
+      "totals": "Total shares: {{total}} • Assigned: {{assigned}}",
+      "toasts": {
+        "invalidEmail": {
+          "title": "Error",
+          "desc": "Invalid email format for {{name}}: {{email}}"
+        },
+        "invite": {
+          "success": {
+            "title": "Success",
+            "desc": "Successfully sent invitation mail to {{count}} people"
+          },
+          "exists": {
+            "title": "Success",
+            "desc": "Invite sent to member/director"
+          },
+          "failed": {
+            "title": "Failed",
+            "desc": "Some Invitations Failed"
+          }
+        }
+      }
+    }
   }
 }

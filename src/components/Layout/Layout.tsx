@@ -599,8 +599,7 @@ const Layout: React.FC = () => {
         roles: ["user", "admin", "master", "hk_shdr", "us_shdr"],
         onClick: () => {
           hardReset();
-          if (["admin", "master"].includes(role)) navigate("/admin-dashboard");
-          else navigate("/dashboard");
+          navigate(["admin", "master"].includes(role) ? "/admin-dashboard" : "/dashboard");
         },
       },
       {

@@ -1464,5 +1464,654 @@
     "useRegMirProide": "使用 Mirr Asia 提供的註冊地址服務",
     "haveSepAddress": "我在巴拿馬有單獨的地址作為公司地址使用（不使用 Mirr Asia 的註冊地址服務）",
     "finalMsg": "感謝您與我們一起完成了巴拿馬公司的註冊程序。我們將審閱您的回覆內容，我們的顧問會盡快與您聯繫。"
+  },
+  "newHk": {
+    "hkTitle": "公司註冊成立 — 香港",
+    "infoHelpIcon": "請完成每個步驟。當術語可能不清楚時，會出現實用提示（ⓘ）。",
+    "topbar": {
+      "stepOf": "步驟 {{current}} / {{total}}"
+    },
+    "sidebar": {
+      "brand": "MIRR ASIA — 註冊成立",
+      "badges": {
+        "ssl": "🔒 SSL 安全",
+        "registry": "🏛️ 註冊處合規",
+        "aml": "🧑‍⚖️ 準備好反洗錢/反恐融資"
+      },
+      "done": "完成",
+      "needHelp": "需要幫助嗎？",
+      "chatCta": "MirrAsia 在線聊天",
+      "toasts": {
+        "completeStepTitle": "完成此步驟",
+        "completeStepDesc": "在繼續之前，請填寫所有必填欄位。",
+        "paymentReqTitle": "需要付款",
+        "paymentReqDesc": "在繼續進行後續步驟之前，請完成付款；如果您上傳了收據，請等待確認。"
+      },
+      "stepsMenu": "步驟",
+      "close": "✕"
+    },
+    "buttons": {
+      "stepsMenu": "步驟選單",
+      "back": "← 返回",
+      "next": "下一頁 →",
+      "saving": "正在儲存…"
+    },
+    "toasts": {
+      "paymentRequiredTitle": "需要付款",
+      "paymentRequiredDesc": "請完成付款以繼續。",
+      "incompleteTitle": "未完成",
+      "incompleteDesc": "請確認所有聲明並輸入您的電子簽名（完整法定姓名）。",
+      "errorTitle": "錯誤",
+      "errorSaveDesc": "無法儲存草稿。請重試。",
+      "contactTitle": "聯繫我們",
+      "contactDesc": "即將更新。"
+    },
+    "terms": {
+      "intro": "請審閱以下條款。您將在「審閱及電子簽名」步驟確認接受。",
+      "items": {
+        "1": {
+          "t": "1. 本協議之目的",
+          "c": "本協議之目的為防止 MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED（下稱「Mirr Asia」）與將於香港特別行政區註冊成立之客戶公司（下稱「客戶」）之間，對服務範圍及限制產生誤解。"
+        },
+        "2": {
+          "t": "2. 香港公司秘書之角色及責任限制",
+          "c": "Mirr Asia 將根據《公司條例》（香港法例第622章）及客戶之組織章程細則被任命為公司秘書。秘書服務具有法定性質，與受僱行政秘書之角色不同。"
+        },
+        "3": {
+          "t": "3. 註冊地址及限制",
+          "c": "客戶可使用 Mirr Asia 在香港的註冊地址作為法定註冊地址。地址變更須以書面通知。註冊地址僅供註冊及郵件處理之用；並非實際辦公室。客戶不得將此地址用於非法目的或虛報為營業地點。根據《同意書》，收到的郵件可能會被拆開、掃描並透過電子郵件轉發。如客戶有兩名以上董事，至少兩名董事（符合法定人數）須簽署相關文件。未經事先同意，不得將包裹及貨物寄至註冊地址；未經批准的寄件可能會被退回。"
+        },
+        "4": {
+          "t": "4. 服務範圍（第一年）",
+          "c": "公司秘書註冊及維護法定紀錄。商業登記及公司註冊處文件存檔（如適用）。處理首兩名僱員之僱主報稅表（可能需支付郵費附加費）。處理強制性的公司資料調查。準備及提交年度申報表；保存續期表格副本。維護重要控制人登記冊。維護成員/董事/秘書登記冊及組織架構圖。維護年度股東大會會議記錄範本及相關記錄。將商業登記證保存在註冊辦事處（如適用）。簡要的業務/營運諮詢（非法律性質，僅作最大努力）。客戶合作：客戶將提供所有所需的資訊/文件。Mirr Asia 沒有義務協助處理非法事務。"
+        },
+        "5": {
+          "t": "5. 費用及不包括項目",
+          "c": "客戶應支付付款部分所示之金額。費用不包括會計、審計、報稅、銀行開戶諮詢及第三方費用（例如銀行手續費、政府費用、稅金、快遞費）。"
+        },
+        "6": {
+          "t": "6. 轉讓及分包商",
+          "c": "任何一方未經另一方事先書面同意，不得轉讓或轉移其權利/義務。"
+        },
+        "7": {
+          "t": "7. 保密性",
+          "c": "除非法律要求披露或資訊已公開，否則雙方應對在本協議下獲得的任何非公開業務或技術資訊保密。"
+        },
+        "8": {
+          "t": "8. 完整協議",
+          "c": "本協議是雙方之間的完整理解，並取代所有先前的溝通內容。本協議優於採購訂單或其他文件中的預印條款。"
+        },
+        "9": {
+          "t": "9. 可分割性",
+          "c": "如果任何條款無效或無法執行，其餘條款仍有效。雙方將本著誠信原則，用反映原始意圖的有效條款替換無效條款。"
+        },
+        "10": {
+          "t": "10. 無第三方受益人",
+          "c": "除非經 Mirr Asia 書面授權，否則不為第三方創設任何權利。"
+        },
+        "11": {
+          "t": "11. 管轄法律及爭議解決",
+          "c": "本協議受香港法律管轄。爭議將根據公認的香港仲裁機構規則提交具約束力的仲裁。"
+        },
+        "12": {
+          "t": "12. 費用及律師費",
+          "c": "在任何爭議（調解、仲裁或訴訟）中勝訴的一方可收回合理的費用及律師費。客戶亦應支付 Mirr Asia 應對合法資訊或文件要求所產生的合理費用。"
+        },
+        "13": {
+          "t": "13. 客戶確認及聲明",
+          "c": "客戶確認服務不會被用於非法目的，並確認所提供的所有資訊真實且準確。客戶將及時通知 Mirr Asia 任何變更。如果懷疑有非法活動，Mirr Asia 可中止服務。"
+        }
+      }
+    },
+    "steps": {
+      "applicant": {
+        "title": "申請人及擬議公司名稱",
+        "description": "請提供您的聯絡方式並按偏好順序提出最多三個英文名稱（及可選的中文名稱）。這有助於我們在提交申請前進行快速的名稱預先審查。",
+        "fields": {
+          "applicantName": {
+            "label": "申請人全名",
+            "placeholder": "例如：Jane Doe",
+            "tooltip": "負責此申請的人。必須獲得授權以提交 KYC 和 CDD 文件。"
+          },
+          "email": {
+            "label": "電子郵件",
+            "placeholder": "主要電子郵件（需要驗證）"
+          },
+          "phone": {
+            "label": "手機（含國家碼）",
+            "placeholder": "+852 1234 5678"
+          },
+          "name1": {
+            "label": "擬議英文名稱 — 第一選擇"
+          },
+          "name2": {
+            "label": "擬議英文名稱 — 第二選擇"
+          },
+          "name3": {
+            "label": "擬議英文名稱 — 第三選擇"
+          },
+          "cname1": {
+            "label": "中文名稱 — 第一選擇（可選）"
+          },
+          "cname2": {
+            "label": "中文名稱 — 第二選擇（可選）"
+          },
+          "roles": {
+            "label": "在公司的角色",
+            "tooltip": "可多選。",
+            "options": {
+              "Director": "董事",
+              "Shareholder": "股東",
+              "Authorized": "授權代表",
+              "Professional": "專業顧問",
+              "Other": "其他"
+            }
+          },
+          "sns": {
+            "label": "社群平台（可選）",
+            "placeholder": "選擇社群平台",
+            "options": {
+              "WhatsApp": "WhatsApp",
+              "WeChat": "WeChat",
+              "Line": "Line",
+              "KakaoTalk": "KakaoTalk",
+              "Telegram": "Telegram"
+            }
+          },
+          "snsId": {
+            "label": "社群帳號 ID",
+            "placeholder": "例如：wechat_id"
+          }
+        }
+      },
+      "compliance": {
+        "title": "合規與道德評估（反洗錢 / 客戶盡職調查）",
+        "description": "請根據您目前所知準確回答。如果需要協助，請選擇「不確定」。",
+        "options": {
+          "yes": "是",
+          "no": "否 — 據我所知",
+          "unsure": "不確定 — 請求協助"
+        },
+        "questions": {
+          "legalAndEthicalConcern": "公司業務是否存在任何法律或道德上的顧慮（例如：洗錢、賭博、逃稅、隱匿資產、詐騙）？",
+          "q_country": "該香港公司在以下國家/地區（伊朗、蘇丹、北韓、敘利亞、古巴、南蘇丹、白俄羅斯或辛巴威）是否有任何現有或計劃中的商業活動？",
+          "sanctionsExposureDeclaration": "制裁風險：該公司或任何關聯方是否在聯合國、歐盟、英國財政部、香港金融管理局、美國財政部外國資產控制辦公室（美國）或當地制裁法律的制裁對象或實體中設有業務、往來或所有權關係？",
+          "crimeaSevastapolPresence": "在克里米亞/塞瓦斯托波爾地區是否有任何現有或計劃中的業務？",
+          "russianEnergyPresence": "在俄羅斯的能源/石油/天然氣、軍事或國防領域是否有任何現有或計劃中的業務往來？"
+        }
+      },
+      "company": {
+        "title": "公司資訊"
+      },
+      "acct": {
+        "title": "會計與稅務",
+        "fields": {
+          "finYrEnd": {
+            "label": "香港公司的財政年度結束日期",
+            "options": {
+              "December 31": "12月31日",
+              "March 31": "3月31日",
+              "June 30": "6月30日",
+              "September 30": "9月30日"
+            }
+          },
+          "bookKeepingCycle": {
+            "label": "記帳週期",
+            "options": {
+              "Monthly": "每月（建議每月交易量 > 約50筆）",
+              "Quarterly": "每季",
+              "Half-annually": "每半年（每6個月）",
+              "Annually": "每年（每12個月）— 成本最低"
+            }
+          },
+          "xero": {
+            "label": "您想使用線上會計軟體（例如 Xero）嗎？",
+            "options": {
+              "Yes": "是（約 HKD 400/月）",
+              "No": "否",
+              "Recommendation required": "需要推薦 — 我們將根據行業和交易量提供建議",
+              "Other": "其他"
+            }
+          },
+          "softNote": {
+            "label": "您目前是否使用/偏好其他會計軟體？（可選）",
+            "placeholder": "例如：QuickBooks Online、Wave，或留空"
+          }
+        }
+      },
+      "termsStep": {
+        "title": "服務條款與協議"
+      },
+      "fees": {
+        "title": "註冊成立套餐與可選附加服務"
+      },
+      "invoice": {
+        "title": "發票 — 預覽"
+      },
+      "payment": {
+        "title": "付款"
+      },
+      "review": {
+        "title": "審閱及電子簽名"
+      },
+      "congrats": {
+        "title": "確認"
+      }
+    },
+    "validation": {
+      "requiredFieldsPrefix": "必填欄位："
+    },
+    "payment": {
+      "alerts": {
+        "alreadyPaid": "付款已完成。",
+        "expiredGuard": "付款時間已過期。請聯繫客服重新啟用付款。",
+        "initFailedTitle": "錯誤",
+        "initFailedDesc": "無法初始化卡片付款。請重試。",
+        "prepareFailedDesc": "準備付款失敗。請重試。"
+      },
+      "success": {
+        "title": "付款成功",
+        "amountLabel": "金額：",
+        "receiptLabel": "收據：",
+        "viewStripeReceipt": "查看 Stripe 收據"
+      },
+      "expiryBanner": {
+        "expiredMessage": "付款時間已過期。請聯繫客服重新啟用付款。",
+        "timerTitle": "付款倒數",
+        "timeRemaining": "剩餘時間：{{time}}"
+      },
+      "methods": {
+        "title": "付款方式",
+        "options": {
+          "card": {
+            "label": "信用卡付款 — Stripe（3.5% 處理費）",
+            "tip": "適用於國際卡片。處理費將會加入發票中。"
+          },
+          "fps": {
+            "label": "轉數快（FPS）— 推薦（無額外費用）"
+          },
+          "bank": {
+            "label": "銀行轉帳 — 直接轉帳並上傳收據",
+            "other": "其他（現金）— 上傳收據"
+          }
+        },
+        "statusNote": {
+          "paid": "付款已完成。",
+          "expired": "因時間已過期，付款已停用。"
+        }
+      },
+      "conditions": {
+        "title": "付款條款",
+        "text": "100% 預付款。所有付款均 不予退還。匯款人需承擔所有銀行費用（包括中間銀行費用）。"
+      },
+      "bankUpload": {
+        "refLabel": "上傳轉帳參考編號",
+        "refPlaceholder": "例如：匯豐銀行電匯參考編號",
+        "proofLabel": "上傳付款證明（PDF/JPG/PNG）",
+        "submit": "提交",
+        "uploading": "正在上傳…",
+        "previewTitle": "付款證明預覽",
+        "openInNewTab": "在新分頁中打開",
+        "delete": "刪除"
+      },
+      "card": {
+        "proceed": "進行信用卡付款",
+        "preparing": "正在準備…",
+        "drawerNote": "將會打開安全的 Stripe 信用卡抽屜，以完成您的付款。",
+        "disabledExpired": "付款已停用 — 時間已過期。"
+      },
+      "fps": {
+        "title": "轉數快（FPS）付款"
+      },
+      "totals": {
+        "grandTotal": "總計：美元 {{amount}}"
+      }
+    },
+    "common": {
+      "select": "選擇"
+    },
+    "fees": {
+      "table": {
+        "headers": {
+          "description": "服務說明",
+          "original": "原價",
+          "amount": "金額",
+          "select": "選擇"
+        },
+        "totalLabel": "總計：美元 {{amount}}",
+        "note": "政府費用是法定的，所有公司均需支付。可選項目可在付款前切換。"
+      },
+      "items": {
+        "cr_fee": {
+          "label": "香港公司註冊處政府公司註冊成立費用",
+          "info": "須向公司註冊處支付的法定登記費。"
+        },
+        "br_fee": {
+          "label": "商業登記（政府）費用",
+          "info": "年度商業登記徵費。"
+        },
+        "inc_service": {
+          "label": "香港公司註冊成立 — 服務費（折扣價）",
+          "info": "Mirr Asia 註冊成立服務 — 在套裝中已完全折扣。"
+        },
+        "sec_annual": {
+          "label": "公司秘書年度服務費",
+          "info": "包括法定紀錄保存和文件提交。"
+        },
+        "kyc": {
+          "label": "KYC / 盡職調查費（第一年）",
+          "info": "第一年已包含在內。"
+        },
+        "reg_office": {
+          "label": "註冊辦事處地址（年度，可選）",
+          "info": "第一年享五折優惠。"
+        },
+        "bank_arr": {
+          "label": "銀行/電子貨幣發行機構帳戶開戶安排（可選）",
+          "info": "介紹和預約支援。"
+        },
+        "kit": {
+          "label": "公司套件製作成本（可選）",
+          "info": "公司印章、股票證書等。"
+        },
+        "corr_addr": {
+          "label": "通訊地址年度服務（可選）",
+          "info": "董事/股東的郵件處理。"
+        }
+      },
+      "richTips": {
+        "reg_office": {
+          "title": "註冊辦事處地址",
+          "mandatoryTitle": "強制性：",
+          "mandatoryText": "每家香港公司都必須在香港設有註冊辦事處地址。",
+          "purposeTitle": "目的：",
+          "bullets": [
+            "這是保存在公司註冊處的官方法定地址。",
+            "所有官方政府信件（例如公司註冊處、稅務局、法院）都會寄送至此地址。",
+            "必須是香港的實際地址（不可是郵政信箱）。"
+          ]
+        },
+        "corr_addr": {
+          "title": "通訊地址",
+          "p1": "這是董事、公司秘書或指定代表的備用郵寄地址。",
+          "p2": "當有人不希望其住宅地址在公司註冊處的公開紀錄中公開時使用。",
+          "p3": "自 2018 年起，香港允許董事提交「通訊地址」，而非在公開登記冊上披露其完整的通常居住地址。",
+          "p4": "住宅地址仍需向公司註冊處備案，但會保存在登記冊的「受保護」部分（僅監管機構和特定專業人士可存取）。",
+          "p5": "在公開紀錄上，只會顯示通訊地址。"
+        }
+      }
+    },
+    "invoice": {
+      "currencyBadge": "美元",
+      "aria": {
+        "moreInfo": "更多資訊"
+      },
+      "compact": {
+        "qty": "數量",
+        "original": "原價",
+        "youPay": "您支付",
+        "free": "免費",
+        "lineTotal": "項目總計"
+      },
+      "sections": {
+        "government": {
+          "title": "政府費用",
+          "badge": "強制性",
+          "description": "這些是當局收取的法定費用，所有公司都必須支付。",
+          "subtotal": "政府費用小計"
+        },
+        "service": {
+          "title": "我們的服務費",
+          "badge": "公司註冊套餐 + 首年服務",
+          "description": "核心合規服務為法律要求；您選擇的附加服務顯示在下方。",
+          "subtotal": "服務費小計"
+        },
+        "grandTotal": "總計費用"
+      },
+      "table": {
+        "headers": {
+          "serviceDescription": "服務說明",
+          "qty": "數量",
+          "original": "原價",
+          "amount": "金額",
+          "total": "總計"
+        }
+      },
+      "footnote": "為方便起見，價格以美元計價。政府費用可能隨官方公告變動。可選項目可在付款前增減。此處不包含會計/稅務服務。",
+      "surcharge": {
+        "cardFee": "信用卡處理費（3.5%）"
+      },
+      "info": {
+        "cr_fee": "新公司成立時，必須向公司註冊處支付的法定登記費。",
+        "br_fee": "需向稅務局支付的年度商業登記費（有效期為一年）。",
+        "inc_service": "準備註冊成立文件、名稱查核、提交申請以及在公司成立前與公司註冊處聯絡。",
+        "sec_annual": "我們將擔任您的公司秘書：維護登記冊、準備與提交年度申報表，並處理日常文件。",
+        "kyc": "根據法規和我們的義務，對股東和董事進行強制性的 KYC/AML 檢查。",
+        "reg_office": "用於法定記錄和官方信函的註冊辦事處地址。",
+        "bank_arr": "提供與所選銀行/電子貨幣發行機構的介紹和預約支援。",
+        "kit": "公司印章、股票證書及相關物品。",
+        "corr_addr": "為董事/股東處理郵件。"
+      },
+      "common": {
+        "subtotal": "小計"
+      }
+    },
+    "review": {
+      "labels": {
+        "applicant": "申請人",
+        "proposedNames": "擬議名稱",
+        "chinesePrefix": "中文：",
+        "industry": "行業",
+        "description": "說明",
+        "shareCapital": "股本",
+        "owners": "所有者",
+        "acctPrefs": "會計偏好",
+        "totalAmount": "總金額",
+        "fyEnd": "財政年度結束日：",
+        "bookkeeping": "記帳：",
+        "software": "軟體：",
+        "prefers": "偏好：",
+        "base": "基準：",
+        "payment": "付款：",
+        "grand": "總計："
+      },
+      "placeholders": {
+        "tbd": "(待定)",
+        "notProvided": "(未提供)",
+        "dash": "-",
+        "unknownParty": "未知",
+        "signaturePlaceholder": "在此輸入您的完整法定姓名（例如：JANE DOE）"
+      },
+      "currency": {
+        "default": "HKD",
+        "usd": "USD"
+      },
+      "tags": {
+        "director": "（董事）",
+        "corporate": "（公司）"
+      },
+      "declarations": {
+        "title": "聲明及協議",
+        "truth": "我確認所提供的資訊真實、完整且準確。",
+        "terms": "我已閱讀並同意服務條款及註冊地址條款。",
+        "compliance": "我理解公司註冊成立需成功通過合規審查（KYC/CDD和制裁檢查）。"
+      },
+      "esign": {
+        "label": "電子簽名",
+        "helper": "您輸入的姓名將附帶時間戳記作為電子簽名記錄。"
+      }
+    },
+    "congrats": {
+      "title": "恭喜您！",
+      "thankYou": "謝謝您{{name}}！您的申請已成功提交。",
+      "thankYouName": "，{{applicantName}}",
+      "steps": {
+        "1": {
+          "t": "第一步 — 合規審查",
+          "s": "我們的合規專員將審查您的 KYC/CDD 和股權資訊。預計時間：1-2個工作日。"
+        },
+        "2": {
+          "t": "第二步 — 向公司註冊處提交文件",
+          "s": "我們將提交公司註冊成立文件（NNC1、章程等）。"
+        },
+        "3": {
+          "t": "第三步 — 註冊證書",
+          "s": "預計：公司註冊證書和商業登記證將在約5個工作日內發出。"
+        },
+        "4": {
+          "t": "第四步 — 銀行/電子貨幣發行機構帳戶",
+          "s": "如果選擇此服務，我們將為您安排與首選銀行/電子貨幣發行機構的開戶事宜。"
+        }
+      },
+      "buttons": {
+        "print": "列印 / 另存為 PDF 摘要",
+        "dashboard": "前往儀表板"
+      }
+    },
+    "company": {
+      "sections": {
+        "a": "A. 業務詳情",
+        "b": "B. 股本",
+        "c": "C. 股東 / 董事"
+      },
+      "fields": {
+        "industry": {
+          "label": "業務行業",
+          "placeholder": "選擇行業"
+        },
+        "purpose": {
+          "label": "註冊成立目的",
+          "options": {
+            "operateHK": "在香港及大中華區營運業務",
+            "assetMgmt": "資產管理 / 投資",
+            "holdingCo": "子公司之控股公司",
+            "crossBorder": "跨境貿易優勢",
+            "taxNeutral": "稅務中立（無資本增值稅）"
+          }
+        },
+        "bizdesc": {
+          "label": "說明",
+          "placeholder": "簡短說明產品/服務及計劃中的活動",
+          "tooltip": "描述公司註冊成立後的產品名稱、服務類型和主要活動。範例：用於 ERP 整合的 B2B IT 顧問服務；次要業務：SaaS 訂閱。"
+        },
+        "currency": {
+          "label": "基礎貨幣",
+          "options": {
+            "HKD": "港元",
+            "USD": "美元",
+            "CNY": "人民幣"
+          }
+        },
+        "capAmount": {
+          "label": "總股本",
+          "options": {
+            "1000": "1,000",
+            "10000": "10,000",
+            "100000": "100,000",
+            "other": "其他（輸入金額）"
+          }
+        },
+        "capOther": {
+          "label": "輸入總股本",
+          "placeholder": "例如：25000"
+        },
+        "shareCount": {
+          "label": "總股數（最少1股）",
+          "options": {
+            "1": "1",
+            "10": "10",
+            "10000": "10,000",
+            "other": "其他（輸入數量）"
+          }
+        },
+        "shareOther": {
+          "label": "輸入股數",
+          "placeholder": "例如：5000"
+        },
+        "parValue": {
+          "label": "計算所得面值（唯讀）",
+          "hint": "面值 = 總股本 ÷ 總股數。"
+        },
+        "dcp": {
+          "label": "指定聯絡人",
+          "placeholder": "選擇聯絡人"
+        }
+      }
+    },
+    "parties": {
+      "banner": {
+        "ok": "一切正常 — 已分配的總股數與公司已發行的股數相等。",
+        "err": "錯誤：已分配的總股數必須等於公司的總股數。請修改輸入。"
+      },
+      "fields": {
+        "name": {
+          "label": "完整姓名 / 實體名稱",
+          "example": "範例：<b>Jane Doe</b>（個人）或 <b>ABC Holdings Limited</b>（公司股東）。"
+        },
+        "email": {
+          "label": "電子郵件"
+        },
+        "phone": {
+          "label": "電話"
+        },
+        "isCorp": {
+          "label": "這位股東是公司實體嗎？",
+          "tip": "如果股東是公司（公司股東），請選擇「是」。如果是個人，請選擇「否」。",
+          "options": {
+            "no": "否 — 個人",
+            "yes": "是 — 公司股東"
+          }
+        },
+        "isDirector": {
+          "label": "此人是否同時擔任董事？",
+          "tip": "董事負責管理公司並簽署法定文件。法律要求至少有一名個人董事。",
+          "options": {
+            "yes": "是",
+            "no": "否"
+          }
+        },
+        "shares": {
+          "label": "股數"
+        },
+        "pct": {
+          "label": "持股百分比 %（自動計算）"
+        },
+        "type": {
+          "label": "股份類別"
+        }
+      },
+      "shareTypes": {
+        "ORD": "普通股",
+        "PREF": "優先股",
+        "NONVOT": "無表決權股",
+        "REDEEM": "可贖回股"
+      },
+      "buttons": {
+        "remove": "移除",
+        "add": "+ 新增股東 / 董事",
+        "invite": "發送邀請"
+      },
+      "totals": "總股數：{{total}} • 已分配：{{assigned}}",
+      "toasts": {
+        "invalidEmail": {
+          "title": "錯誤",
+          "desc": "{{name}} 的電子郵件格式無效：{{email}}"
+        },
+        "invite": {
+          "success": {
+            "title": "成功",
+            "desc": "已成功向 {{count}} 人發送邀請郵件"
+          },
+          "exists": {
+            "title": "成功",
+            "desc": "已向成員/董事發送邀請"
+          },
+          "failed": {
+            "title": "失敗",
+            "desc": "部分邀請失敗"
+          }
+        }
+      }
+    }
   }
 }
