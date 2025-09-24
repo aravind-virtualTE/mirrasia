@@ -1087,9 +1087,13 @@ function PaymentStep({
     if (guard("Payment window expired. Please contact support to re-enable payment.")) return;
     if (!bankFile) return;
     setUploading(true);
+    // console.log("Uploading bank proof...", app);
+    const method = app.form.payMethod
+    const expiresAt = app.expiresAt || ''
     try {
-      const result = await uploadIncorpoPaymentBankProof(app?._id || "", "hk", bankFile);
-      if (result) setForm((p) => ({ ...p, uploadReceiptUrl: result?.url }));
+      const result = await uploadIncorpoPaymentBankProof(app?._id || "", "hk", bankFile,method, expiresAt);
+
+      if (result) setForm((p) => ({ ...p, uploadReceiptUrl: result?.url,  }));
     } finally {
       setUploading(false);
     }
@@ -1830,7 +1834,7 @@ function Sidebar({
     if (paymentStatus !== "paid" && target > 7) {
       toast({
         title: "Payment required",
-        description: "Please complete the payment before proceeding to later steps.",
+        description: "Please complete the payment before proceeding to later steps, if you upload receipt wait for confirmation.",
       });
       return;
     }
@@ -1954,7 +1958,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
       const grand = computeGrandTotal(app);
       app.form.finalAmount = grand
       const payload: AppDoc = { ...app, stepIdx: Math.min(stepIdx + 1, config.steps.length - 1) };
-      console.log("stepIdx", stepIdx);
+      // console.log("stepIdx", stepIdx);
       if (stepIdx == 8) {
         const f = app.form;
         const ok =
