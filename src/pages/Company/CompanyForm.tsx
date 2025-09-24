@@ -25,6 +25,7 @@ import { paFormWithResetAtom } from './Panama/PaState';
 import { sgFormWithResetAtom } from './Singapore/SgState';
 import ConfigDrivenHKForm from './NewHKForm/NewHKIncorporation';
 import {getHkIncorpoData, hkAppAtom} from './NewHKForm/hkIncorpo';
+import PanamaFoundation from './PanamaFoundation/PaIncorporation';
 
 const CompanyRegistration = () => {
     const { t } = useTranslation();
@@ -135,6 +136,8 @@ const CompanyRegistration = () => {
                 return <IncorporateSg />;
             case 'PA':
                 return <IncorporatePa />;
+            case 'PAFN':
+                return <PanamaFoundation />
             default:
                 return <div>Registration form for {countryState.name} is not available yet.</div>;
         }
