@@ -21,6 +21,7 @@ import AdminNotification from "./AdminNotification";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { paFormWithResetAtom } from "@/pages/Company/Panama/PaState";
 import { sgFormWithResetAtom } from "@/pages/Company/Singapore/SgState";
+import { pifFormWithResetAtom } from "@/pages/Company/PanamaFoundation/PaState";
 
 interface NavbarProps {
     onMenuToggle: () => void;
@@ -34,6 +35,8 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
     const [, setUSForm] = useAtom(usaFormWithResetAtom)
     const [,setHK] = useAtom(hkAppAtom)
     const [, setPA] = useAtom(paFormWithResetAtom);
+    const [, setPAF] = useAtom(pifFormWithResetAtom);
+    
     const [, setSG] = useAtom(sgFormWithResetAtom);
     const resetAllForms = useResetAllForms();
     const token = localStorage.getItem('token') as string;
@@ -56,6 +59,7 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
         resetAllForms()
         setHK(null)
         setPA('reset')
+        setPAF('reset')
         setSG('reset')
         setUSForm('reset')
         if (['admin', 'master'].includes(decodedToken.role)) {
@@ -79,6 +83,10 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
         setAllList('reset')
         setUSForm('reset')
         navigate('/');
+        setHK(null)
+        setPA('reset')
+        setPAF('reset')
+        setSG('reset')
     };
 
     return (

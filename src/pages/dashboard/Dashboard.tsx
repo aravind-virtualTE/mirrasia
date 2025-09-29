@@ -37,6 +37,7 @@ import ViewBoard from "@/components/shareholderDirector/ViewBoard";
 import { hkAppAtom } from "../Company/NewHKForm/hkIncorpo";
 import { paFormWithResetAtom } from "../Company/Panama/PaState";
 import { sgFormWithResetAtom } from "../Company/Singapore/SgState";
+import { pifFormWithResetAtom } from "../Company/PanamaFoundation/PaState";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ const Dashboard = () => {
   const resetAllForms = useResetAllForms();
   const [,setHK] = useAtom(hkAppAtom)
   const [, setPA] = useAtom(paFormWithResetAtom);
+  const [,setPAF] = useAtom(pifFormWithResetAtom);
   const [, setSG] = useAtom(sgFormWithResetAtom);
 
 
@@ -75,6 +77,7 @@ const Dashboard = () => {
     resetAllForms();
     setHK(null)
     setPA("reset");
+    setPAF("reset");
     setSG("reset");
     setUsaReset("reset");
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -696,7 +696,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
                     onValueChange={(v) => upd(i, "typeOfShare", (v as ShareTypeId) || DEFAULT_SHARE_ID)}
                   >
                     <div className="flex items-center gap-4 text-sm">
-                      {SHARE_TYPES.map((tdef) => {                       
+                      {SHARE_TYPES.map((tdef) => {
                         return (
                           <label key={tdef.id} className="flex items-center gap-2">
                             <RadioGroupItem id={`stype-${tdef.id}-${i}`} value={tdef.id} />
@@ -851,7 +851,7 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
   );
 }
 
-type StripeSuccessInfo = {
+export type StripeSuccessInfo = {
   receiptUrl?: string;
   amount?: number;
   currency?: string;
@@ -887,7 +887,6 @@ function StripePaymentForm({ app, onSuccess, onClose }: {
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          // Good practice to include a return_url for 3DS/redirect flows:
           return_url: typeof window !== "undefined" ? window.location.href : "",
         },
         redirect: "if_required",
@@ -1341,9 +1340,7 @@ function PaymentStep({ app, setApp, }: {
                 <div className="grid gap-2">
                   <Label>{t("newHk.payment.bankUpload.refLabel")}</Label>
                   <Input
-                    placeholder={t(
-                      "newHk.payment.bankUpload.refPlaceholder"
-                    )}
+                    placeholder={t("newHk.payment.bankUpload.refPlaceholder")}
                     value={app.form.bankRef || ""}
                     onChange={(e) =>
                       setForm((p) => ({ ...p, bankRef: e.target.value }))
@@ -1675,10 +1672,7 @@ function CongratsStep({ app }: { app: AppDoc }) {
         ))}
       </div>
 
-      <div className="flex items-center gap-2 justify-center">
-        <Button variant="outline" onClick={() => window.print()}>
-          {t("newHk.congrats.buttons.print")}
-        </Button>
+      <div className="flex items-center gap-2 justify-center">        
         <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>
       </div>
     </div>
@@ -1768,7 +1762,6 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
           </div>
         </CardContent>
       </Card>
-
       <Card>
         <CardContent className="pt-6">
           <SectionTitle>{t("newHk.company.sections.b")}</SectionTitle>

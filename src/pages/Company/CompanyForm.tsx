@@ -1,20 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, } from 'react';
 import { useParams } from "react-router-dom";
-import { useAtom, 
+import {
+    useAtom,
     // useSetAtom 
 } from 'jotai';
-import {countryAtom,
+import {
+    countryAtom,
     //  applicantInfoFormAtom,  updateCompanyIncorporationAtom
-     } from '@/lib/atom';
+} from '@/lib/atom';
 // import { companyIncorporationList } from '@/services/state';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 // import IncorporationForm from './HongKong/IncorporationForm';
 import jwtDecode from 'jwt-decode';
 import { TokenData } from '@/middleware/ProtectedRoutes';
-import { 
+import {
     // getIncorporationListByCompId, getIncorporationListByUserId, 
-    getUsIncorpoDataById,getPaIncorpoDataById, getSgIncorpoDataById } from '@/services/dataFetch';
+    getUsIncorpoDataById, getPaIncorpoDataById, getSgIncorpoDataById
+} from '@/services/dataFetch';
 import IncorporateUSACompany from './USA/IncorporateUSCompany';
 import { Card, CardContent } from '@/components/ui/card';
 import { usaFormWithResetAtom } from './USA/UsState';
@@ -24,8 +27,9 @@ import IncorporatePa from './Panama/PaIncorporation';
 import { paFormWithResetAtom } from './Panama/PaState';
 import { sgFormWithResetAtom } from './Singapore/SgState';
 import ConfigDrivenHKForm from './NewHKForm/NewHKIncorporation';
-import {getHkIncorpoData, hkAppAtom} from './NewHKForm/hkIncorpo';
+import { getHkIncorpoData, hkAppAtom } from './NewHKForm/hkIncorpo';
 import PanamaFoundation from './PanamaFoundation/PaFIncorporation';
+import { getPaFIncorpoData, pifFormWithResetAtom } from './PanamaFoundation/PaState';
 
 const CompanyRegistration = () => {
     const { t } = useTranslation();
@@ -36,13 +40,14 @@ const CompanyRegistration = () => {
     // const [, setCompaniesList] = useAtom(companyIncorporationList);
     // const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     // const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
-    const [ ,setFormData] = useAtom(usaFormWithResetAtom);
-    const [ ,setPAFormData] = useAtom(paFormWithResetAtom);
-    const [ ,setSgFormData] = useAtom(sgFormWithResetAtom);
+    const [, setFormData] = useAtom(usaFormWithResetAtom);
+    const [, setPAFormData] = useAtom(paFormWithResetAtom);
+    const [, setSgFormData] = useAtom(sgFormWithResetAtom);
     const [, setHkInfoData] = useAtom(hkAppAtom);
+    const [, setPpiF] = useAtom(pifFormWithResetAtom);
     useEffect(() => {
         if (id && countryCode == "HK") {
-       
+
             if (!id || !decodedToken?.userId) return;
             (async () => {
                 // Fetch all companies
@@ -64,12 +69,12 @@ const CompanyRegistration = () => {
                 const result = await getHkIncorpoData(id)
                 console.log("result-->", result);
                 setHkInfoData(result)
-                setCountryState({ code: 'HK', name: 'Hong Kong'});
+                setCountryState({ code: 'HK', name: 'Hong Kong' });
             })();
         }
-        else if(id && countryCode == "US") {
+        else if (id && countryCode == "US") {
 
-            async function getUsData(){
+            async function getUsData() {
                 return await getUsIncorpoDataById(`${id}`)
             }
             getUsData().then((result) => {
@@ -78,38 +83,46 @@ const CompanyRegistration = () => {
             })
             setCountryState({
                 code: 'US', name: 'United States'
-             });
+            });
         }
-        else if(id && countryCode == "PA") {
+        else if (id && countryCode == "PA") {
 
-            async function getPAData(){
+            async function getPAData() {
                 return await getPaIncorpoDataById(`${id}`)
             }
             getPAData().then((result) => {
                 // console.log("result-->", result);
                 setPAFormData(result)
             })
-            setCountryState({code: 'PA', name: 'Panama'});
+            setCountryState({ code: 'PA', name: 'Panama' });
         }
         else if (id && countryCode == "SG") {
-            async function getSgData(){
+            async function getSgData() {
                 return await getSgIncorpoDataById(`${id}`)
             }
             getSgData().then((result) => {
                 // console.log("result-->", result);
                 setSgFormData(result)
             })
-            setCountryState({ code: 'SG', name: 'Singapore'});
+            setCountryState({ code: 'SG', name: 'Singapore' });
+        }
+        else if (id && countryCode == "PPIF") {
+            (async () => {
+                const result = await getPaFIncorpoData(id)
+                console.log("result-->", result);
+                setPpiF(result)
+                setCountryState({ code: 'PPIF', name: 'Panama Foundation' });
+            })();
         }
     }, []);
 
     const countries = [
-        { code: 'HK', name: t('countrySelection.hk')} ,
+        { code: 'HK', name: t('countrySelection.hk') },
         { code: 'SG', name: t('countrySelection.sg') },
         { code: 'US', name: t('countrySelection.us') },
         // { code: 'UK', name: t('countrySelection.uk') },
         { code: 'PA', name: t('countrySelection.pa') },
-        { code: 'PAFN', name: t('countrySelection.pafn') },
+        { code: 'PPIF', name: t('countrySelection.pafn') },
         // Add more countries as needed
     ];
 
@@ -136,7 +149,7 @@ const CompanyRegistration = () => {
                 return <IncorporateSg />;
             case 'PA':
                 return <IncorporatePa />;
-            case 'PAFN':
+            case 'PPIF':
                 return <PanamaFoundation />
             default:
                 return <div>Registration form for {countryState.name} is not available yet.</div>;
@@ -159,7 +172,7 @@ const CompanyRegistration = () => {
                     <Card className="relative z-10 w-[420px] bg-white/90 shadow-xl ">
                         <CardContent className="p-6 space-y-4">
                             <h2 className="text-2xl font-bold text-slate-950 text-center">
-                               {t('countrySelection.title')}
+                                {t('countrySelection.title')}
                             </h2>
 
                             <Select onValueChange={(value) => updateCountry(value)}>
