@@ -14,11 +14,25 @@ import { toast } from "@/hooks/use-toast"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { t } from "i18next"
-import { FieldBase, FieldOption, FormConfig, initialPIF, PanamaPIFForm, pifFormAtom, StepConfig } from "./PaState"
-import { computePIFSetupTotal, money } from "./PaConstants"
+import { createOrUpdatePaFIncorpo, FieldBase, FieldOption, FormConfig, initialPIF, PanamaPIFForm, pifFormAtom, StepConfig } from "./PaState"
+import { computePIFGrandTotal, computePIFSetupTotal, money } from "./PaConstants"
 import { Separator } from "@/components/ui/separator"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof } from "../NewHKForm/hkIncorpo"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
+import { StripeSuccessInfo } from "../NewHKForm/NewHKIncorporation"
+import { loadStripe } from "@stripe/stripe-js";
+import jwtDecode from "jwt-decode"
+import { TokenData } from "@/middleware/ProtectedRoutes"
+import { useNavigate } from "react-router-dom"
+import { Trans } from "react-i18next"
+import { FPSForm } from "../payment/FPSForm"
 
+const STRIPE_CLIENT_ID =
+  import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
+
+const stripePromise = loadStripe(STRIPE_CLIENT_ID);
 
 
 function TopBar({ title, totalSteps, idx }: { title: string; totalSteps: number; idx: number }) {
@@ -1533,20 +1547,14 @@ function InvoicePIF() {
   }
 
   React.useEffect(() => {
-    const total = computePIFSetupTotal(pricing)
-    if (total !== pricing.total) {
-      setForm({ ...form, pricing: { ...pricing, total } })
+    const setupTotal = computePIFSetupTotal(pricing)
+    if (setupTotal !== pricing.total) {
+      setForm({ ...form, pricing: { ...pricing, total: setupTotal } })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const line = (label: React.ReactNode, value: React.ReactNode) => (
-    <div className="flex items-start justify-between gap-3 py-1">
-      <span className="text-sm">{label}</span>
-      <span className="text-sm font-medium">{value}</span>
-    </div>
-  )
-
+  const base = pricing.total
   return (
     <Card>
       <CardHeader>
@@ -1557,7 +1565,6 @@ function InvoicePIF() {
           <h3 className="font-semibold mb-3">Setup (Year 1)</h3>
           <div className="flex items-start justify-between gap-3 py-1">
             <div className="text-sm flex items-center gap-2">
-              {/* Keep IDs/data-* exactly like your HTML */}
               <span id="entity-label">
                 Mirr Asia setup fee + first-year services
                 <span
@@ -1582,20 +1589,12 @@ function InvoicePIF() {
                 </TooltipContent>
               </Tooltip>
             </div>
-
-            <span className="text-sm font-medium">
-              {money(pricing.setupBase)}{/* shows $3,800 when setupBase=3800 */}
-            </span>
+            <span className="text-sm font-medium">{money(pricing.setupBase)}</span>
           </div>
-
-
           <div className="space-y-3 mt-3">
             <div className="space-y-1.5">
               <Label>Nominee Director(s) — setup</Label>
-              <Select
-                value={String(pricing.ndSetup)}
-                onValueChange={(v) => updatePricing("ndSetup", Number(v) as any)}
-              >
+              <Select value={String(pricing.ndSetup)} onValueChange={(v) => updatePricing("ndSetup", Number(v) as any)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
@@ -1607,7 +1606,6 @@ function InvoicePIF() {
                 </SelectContent>
               </Select>
             </div>
-
             {pricing.ndSetup === 3 && (
               <div className="space-y-1.5">
                 <Label className="text-xs">Reason for selecting 3 nominee directors (setup)</Label>
@@ -1619,7 +1617,6 @@ function InvoicePIF() {
                 <p className="text-[12px] text-muted-foreground">* We recommend providing a reason when selecting 3.</p>
               </div>
             )}
-
             <div className="flex items-center gap-2">
               <Checkbox
                 checked={pricing.nsSetup}
@@ -1628,9 +1625,7 @@ function InvoicePIF() {
               />
               <Label htmlFor="ns-setup">Nominee Shareholder (setup) (+{money(1300)})</Label>
             </div>
-
             <Separator />
-
             <h4 className="font-medium">Optional services (setup)</h4>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -1658,14 +1653,13 @@ function InvoicePIF() {
                 <Label htmlFor="opt-cbi">Puerto Rico CBI account opening (+{money(3880)})</Label>
               </div>
             </div>
-
             <Separator className="my-2" />
-
-            {line(<span className="font-medium">Setup total</span>, <span>{money(pricing.total)}</span>)}
+            <div className="flex items-start justify-between gap-3 py-1">
+              <span className="text-sm font-medium">Setup (Year 1) total</span>
+              <span className="text-sm font-medium">{money(base)}</span>
+            </div>
           </div>
         </div>
-
-        {/* Setup package includes (PIF) — 14 items */}
         <div className="rounded-lg border bg-muted/20 p-4 text-sm">
           <b>Setup package includes (PIF):</b>
           <ol className="list-decimal pl-5 mt-2 space-y-1">
@@ -1689,17 +1683,620 @@ function InvoicePIF() {
           </div>
         </div>
       </CardContent>
-
-      <CardFooter className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-        <div className="text-sm">
-          <span className="font-medium">Payable Now (estimate):</span> {money(pricing.total)}
-        </div>
-      </CardFooter>
     </Card>
   )
 }
 
-/* ---------- Config ---------- */
+function StripePaymentForm({ app, onSuccess, onClose }: {
+  app: PanamaPIFForm;
+  onSuccess: (info: StripeSuccessInfo) => void; onClose: () => void;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [submitting, setSubmitting] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [successPayload, setSuccessPayload] = React.useState<{
+    receiptUrl?: string;
+    amount?: number;
+    currency?: string;
+    paymentIntentStatus?: string;
+  } | null>(null);
+  const [processingMsg, setProcessingMsg] = React.useState<string | null>(null);
+
+  const handleConfirm = async () => {
+    if (!stripe || !elements) return;
+    setSubmitting(true);
+    setError(null);
+    setSuccessPayload(null);
+    setProcessingMsg(null);
+
+    try {
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: typeof window !== "undefined" ? window.location.href : "",
+        },
+        redirect: "if_required",
+      });
+
+      if (error) {
+        setError(error.message ?? "Payment failed. Please try again.");
+        setSubmitting(false);
+        return;
+      }
+
+      const status = paymentIntent?.status;
+
+      const notifyBackend = async () => {
+        try {
+          const result = await updateCorporateInvoicePaymentIntent({
+            paymentIntentId: app.paymentIntentId,
+            companyId: app._id,
+            companyName: app.foundationNameEn || app.foundationNameEs || "Company (TBD)",
+            userEmail: app.email,
+            country: "pif"
+          });
+          if (result?.ok) {
+            const payload: StripeSuccessInfo = {
+              receiptUrl: result?.receiptUrl,
+              amount: result?.amount,
+              currency: result?.currency,
+              paymentIntentStatus: result?.paymentIntentStatus,
+            };
+            if (result?.paymentIntentStatus === "succeeded") {
+              setSuccessPayload(payload);
+              onSuccess(payload);
+              setSubmitting(false);
+              return;
+            }
+            // Processing or not final yet
+            if (result?.paymentIntentStatus === "processing" || result?.paymentIntentStatus === "requires_capture") {
+              setProcessingMsg(
+                "Your payment is processing. You’ll receive a receipt once the Transaction gets confirmed."
+              );
+              onSuccess(payload);
+              setSubmitting(false);
+              return;
+            }
+          }
+          // Backend returned non-ok or unexpected
+          setError(
+            "Payment confirmed, but we couldn’t retrieve the receipt from the server. Please contact support if you didn’t receive an email."
+          );
+          setSubmitting(false);
+        } catch (e) {
+          console.error("Failed to notify backend about PI update:", e);
+          setError(
+            "Payment confirmed, but saving the payment on the server failed. We’ll email your receipt soon or contact support."
+          );
+          setSubmitting(false);
+        }
+      };
+
+      if (status === "succeeded") {
+        await notifyBackend();
+      } else if (status === "processing" || status === "requires_capture") {
+        await notifyBackend();
+      } else {
+        setError(`Payment status: ${status ?? "unknown"}. If this persists, contact support.`);
+        setSubmitting(false);
+      }
+    } catch (e: any) {
+      console.error(e);
+      setError(e?.message || "Something went wrong while confirming payment.");
+      setSubmitting(false);
+    }
+  };
+
+  if (successPayload) {
+    const amt = typeof successPayload.amount === "number" ? successPayload.amount : undefined;
+    const currency =
+      typeof successPayload.currency === "string" ? successPayload.currency.toUpperCase() : undefined;
+
+    return (
+      <div className="space-y-4">
+        <div className="border rounded-md p-3 text-sm bg-emerald-50 border-emerald-200 text-emerald-900">
+          <div className="font-semibold mb-1">Payment successful</div>
+          <div className="space-y-1">
+            {amt != null && currency ? (
+              <div>
+                Amount: <b>{currency} {(amt / 100).toFixed(2)}</b>
+              </div>
+            ) : null}
+            <div>
+              {successPayload.receiptUrl ? (
+                <>
+                  Receipt:&nbsp;
+                  <a
+                    href={successPayload.receiptUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2"
+                  >
+                    View Stripe receipt
+                  </a>
+                </>
+              ) : null}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end">
+          <Button onClick={onClose}>Done</Button>
+        </div>
+      </div>
+    );
+  }
+  // Processing view (no receipt yet)
+  if (processingMsg) {
+    return (
+      <div className="space-y-4">
+        <div className="border rounded-md p-3 text-sm bg-amber-50 border-amber-200 text-amber-900">
+          <div className="font-semibold mb-1">Payment is processing</div>
+          <div>{processingMsg}</div>
+        </div>
+        <div className="flex items-center justify-end">
+          <Button onClick={onClose}>Close</Button>
+        </div>
+      </div>
+    );
+  }
+  // Default payment form
+  return (
+    <div className="space-y-4">
+      <PaymentElement />
+      {error ? (
+        <div className="text-xs text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2">
+          {error}
+        </div>
+      ) : null}
+      <div className="flex items-center justify-end gap-2">
+        <Button variant="outline" onClick={onClose} disabled={submitting}>
+          Cancel
+        </Button>
+        <Button onClick={handleConfirm} disabled={!stripe || !elements || submitting}>
+          {submitting ? "Processing…" : "Pay now"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, onSuccess, }: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  clientSecret: string;
+  amountUSD: number;
+  app: PanamaPIFForm;
+  onSuccess: (info: StripeSuccessInfo) => void;
+}) {
+  const options = React.useMemo(
+    () => ({
+      clientSecret,
+      appearance: { theme: "stripe" as const },
+    }),
+    [clientSecret]
+  );
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="w-full sm:max-w-md">
+        <SheetHeader>
+          <SheetTitle>Stripe Card Payment</SheetTitle>
+          <SheetDescription>
+            Grand Total: <b>USD {amountUSD.toFixed(2)}</b> {app.payMethod === "card" ? "(incl. 3.5% card fee)" : ""}
+          </SheetDescription>
+        </SheetHeader>
+
+        {/* Mount Elements only when we have a clientSecret */}
+        {clientSecret ? (
+          <div className="mt-4">
+            <Elements stripe={stripePromise} options={options}>
+              <StripePaymentForm
+                app={app}
+                onSuccess={onSuccess}
+                onClose={() => onOpenChange(false)}
+              />
+            </Elements>
+          </div>
+        ) : (
+          <div className="mt-4 text-sm text-muted-foreground">Preparing secure payment…</div>
+        )}
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function Tip({ text, content }: { text?: string; content?: React.ReactNode }) {
+  return (
+    <TooltipProvider>
+      <Tooltip delayDuration={0}>
+        <TooltipTrigger asChild>
+          <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-muted/60 text-foreground/80 text-[10px] font-bold cursor-help">
+            i
+          </span>
+        </TooltipTrigger>
+        <TooltipContent className="max-w-sm text-sm">
+          {content ? content : <div className="whitespace-pre-wrap">{text}</div>}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
+function PaymentStepPIF() {
+  const [form, setForm] = useAtom(pifFormAtom)
+
+  const isPaid =
+    form.paymentStatus === "paid" ||
+    form.stripeLastStatus === "succeeded" ||
+    form.stripePaymentStatus === "succeeded"
+
+  React.useEffect(() => {
+    if (isPaid) return
+    const now = Date.now()
+    const current = form.expiresAt ? new Date(form.expiresAt).getTime() : 0
+    if (!current || current <= now) {
+      const twoDaysMs = 2 * 24 * 60 * 60 * 1000
+      const expiryISO = new Date(now + twoDaysMs).toISOString()
+      setForm((prev) => ({ ...prev, expiresAt: expiryISO }))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPaid])
+
+  const [nowTs, setNowTs] = React.useState(() => Date.now())
+  React.useEffect(() => {
+    if (isPaid) return
+    const id = window.setInterval(() => setNowTs(Date.now()), 1000)
+    return () => window.clearInterval(id)
+  }, [isPaid])
+
+  const expiresTs = form.expiresAt ? new Date(form.expiresAt).getTime() : 0
+  const remainingMs = Math.max(0, expiresTs - nowTs)
+  const isExpired = !isPaid && (!expiresTs || remainingMs <= 0)
+  const formatRemaining = (ms: number) => {
+    const s = Math.floor(ms / 1000)
+    const d = Math.floor(s / 86400)
+    const h = Math.floor((s % 86400) / 3600)
+    const m = Math.floor((s % 3600) / 60)
+    const sec = s % 60
+    return d > 0
+      ? `${d}d ${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
+      : `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
+  }
+
+  const guard = (msg: string) => {
+    if (isPaid) {
+      alert("Already paid.")
+      return true
+    }
+    if (isExpired) {
+      alert(msg)
+      return true
+    }
+    return false
+  }
+
+  const grand = computePIFGrandTotal(form)
+
+  // placeholders for your future integrations:
+  const [creatingPI, setCreatingPI] = React.useState(false)
+  const [uploading, setUploading] = React.useState(false)
+  const [bankFile, setBankFile] = React.useState<File | null>(null)
+  const [clientSecret, setClientSecret] = React.useState<string | null>(null);
+  const [cardDrawerOpen, setCardDrawerOpen] = React.useState(false);
+
+  const handleProceedCard = async () => {
+    if (guard("This quote expired. Please refresh or contact us.")) return
+    if (clientSecret && form.paymentIntentId) {
+      setCardDrawerOpen(true);
+      return;
+    }
+    setCreatingPI(true)
+    try {
+      const currentFP = {
+        companyId: form?._id ?? null,
+        totalCents: Math.round(grand * 100),
+        country: "PIF",
+      };
+      const result = await createInvoicePaymentIntent(currentFP);
+      if (result?.clientSecret && result?.id) {
+        setClientSecret(result.clientSecret);
+        setForm((p) => ({ ...p, paymentIntentId: result.id, payMethod: "card" }));
+        setCardDrawerOpen(true);
+      } else {
+        alert("Could not initialize card payment. Please try again.");
+      }
+    } finally {
+      setCreatingPI(false)
+    }
+  }
+
+  const handleBankProofSubmit = async () => {
+    if (guard("This quote expired. Please refresh or contact us.")) return
+    if (!bankFile) return
+    setUploading(true)
+    const method = form.payMethod || 'card'
+    const expiresAt = form.expiresAt || ''
+    try {
+      // TODO: integrate your upload API here
+      console.log("Upload bank proof (Panama):", { bankFile, payMethod: form.payMethod })
+      const result = await uploadIncorpoPaymentBankProof(form?._id || "", "pif", bankFile, method, expiresAt);
+
+      if (result) setForm((p) => ({ ...p, uploadReceiptUrl: result?.url, }));
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleDeleteBankProof = async () => {
+    if (guard(t("newHk.payment.alerts.expiredGuard"))) return;
+    await deleteIncorpoPaymentBankProof(form?._id || "", "pif");
+    setForm((p: any) => ({ ...p, uploadReceiptUrl: undefined }));
+  };
+
+  return (
+    <>
+      {isPaid && (
+        <div className="mb-4 border rounded-md p-3 text-sm bg-emerald-50 border-emerald-200 text-emerald-900">
+          <div className="font-semibold mb-1">Payment received</div>
+          {typeof form.stripeAmountCents === "number" && form.stripeCurrency ? (
+            <div>
+              Amount: <b>{form.stripeCurrency.toUpperCase()} {(form.stripeAmountCents / 100).toFixed(2)}</b>
+            </div>
+          ) : null}
+          {form.stripeReceiptUrl ? (
+            <div>
+              Receipt:{" "}
+              <a className="underline underline-offset-2" href={form.stripeReceiptUrl} target="_blank" rel="noreferrer">View</a>
+            </div>
+          ) : null}
+        </div>
+      )}
+      {!isPaid && (
+        <div className={`mb-4 rounded-md border p-3 text-sm ${isExpired ? "border-red-200 bg-red-50 text-red-900" : "border-amber-200 bg-amber-50 text-amber-900"}`}>
+          {isExpired ? (
+            <div className="font-medium">This quote has expired.</div>
+          ) : (
+            <div className="flex items-center justify-between gap-2">
+              <div className="font-medium">Payment window</div>
+              <div className="text-base font-bold tabular-nums">{formatRemaining(remainingMs)}</div>
+            </div>
+          )}
+        </div>
+      )}
+
+      <>
+        <div className="grid md:grid-cols-2 gap-4">
+          <Card>
+            <CardContent className="pt-6 space-y-2">
+              <div className="font-bold">
+                {t("newHk.payment.methods.title")}
+              </div>
+              {[
+                {
+                  v: "card",
+                  label: t("newHk.payment.methods.options.card.label"),
+                  tip: t("newHk.payment.methods.options.card.tip"),
+                },
+                {
+                  v: "fps",
+                  label: t("newHk.payment.methods.options.fps.label"),
+                },
+                {
+                  v: "bank",
+                  label: t("newHk.payment.methods.options.bank.label"),
+                },
+                {
+                  v: "other",
+                  label: t("newHk.payment.methods.options.other.label"),
+                },
+              ].map((o) => (
+                <label key={o.v} className="block space-x-2">
+                  <input
+                    type="radio"
+                    name="pay"
+                    value={o.v}
+                    checked={form.payMethod === o.v}
+                    onChange={() => setForm((p) => ({ ...p, payMethod: o.v as PanamaPIFForm["payMethod"] }))}
+                    disabled={isPaid || isExpired}
+                  />
+                  <span className={isPaid || isExpired ? "text-muted-foreground" : ""}>
+                    {o.label}
+                  </span>
+                  {o.tip && !(isPaid || isExpired) && (
+                    <span className="inline-flex ml-1">
+                      <Tip text={o.tip} />
+                    </span>
+                  )}
+                </label>
+              ))}
+              {(isPaid || isExpired) && (
+                <div className="mt-2 text-xs text-muted-foreground">
+                  {isPaid
+                    ? t("newHk.payment.methods.statusNote.paid")
+                    : t("newHk.payment.methods.statusNote.expired")}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6 space-y-2">
+              <div className="font-bold">
+                {t("newHk.payment.conditions.title")}
+              </div>
+              <p className="text-sm">
+                <Trans i18nKey="newHk.payment.conditions.text">
+                  100% advance payment. All payments are non-refundable.The
+                  remitter bears all bank charges (including intermediary bank fees).
+                </Trans>
+              </p>
+
+              {["bank", "other"].includes(form.payMethod ?? "") && (
+                <div className="mt-4 grid gap-3">
+                  <div className="grid gap-2">
+                    <Label>{t("newHk.payment.bankUpload.refLabel")}</Label>
+                    <Input
+                      placeholder={t("newHk.payment.bankUpload.refPlaceholder")}
+                      value={form.bankRef || ""}
+                      onChange={(e) =>
+                        setForm((p) => ({ ...p, bankRef: e.target.value }))
+                      }
+                      disabled={isPaid || isExpired}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label>{t("newHk.payment.bankUpload.proofLabel")}</Label>
+                    <Input
+                      type="file"
+                      accept="image/*,.pdf"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0] || null;
+                        setBankFile(f);
+                      }}
+                      disabled={isPaid || isExpired}
+                    />
+                    <Button
+                      onClick={handleBankProofSubmit}
+                      disabled={isPaid || isExpired || creatingPI || uploading}
+                    >
+                      {uploading
+                        ? t("newHk.payment.bankUpload.uploading")
+                        : t("newHk.payment.bankUpload.submit")}
+                    </Button>
+                  </div>
+
+                  {form.uploadReceiptUrl ? (
+                    <div className="mt-2 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-medium">
+                          {t("newHk.payment.bankUpload.previewTitle")}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button asChild variant="outline" size="sm" disabled={isPaid || isExpired}>
+                            <a
+                              href={form.uploadReceiptUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {t("newHk.payment.bankUpload.openInNewTab")}
+                            </a>
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={handleDeleteBankProof}
+                            disabled={isPaid || isExpired}
+                          >
+                            {t("newHk.payment.bankUpload.delete")}
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="rounded-lg border overflow-hidden">
+                        <iframe
+                          key={form.uploadReceiptUrl}
+                          src={form.uploadReceiptUrl}
+                          title="Payment Proof"
+                          className="w-full h-[420px]"
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              )}
+
+              {form.payMethod === "card" && !isPaid && (
+                <div className="mt-3">
+                  <Button
+                    onClick={handleProceedCard}
+                    disabled={isPaid || isExpired || creatingPI}
+                  >
+                    {creatingPI
+                      ? t("newHk.payment.card.preparing")
+                      : t("newHk.payment.card.proceed")}
+                  </Button>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    {isExpired
+                      ? t("newHk.payment.card.disabledExpired")
+                      : t("newHk.payment.card.drawerNote")}
+                  </div>
+                </div>
+              )}
+              {form.payMethod === "fps" ? <FPSForm /> : null}
+              <div className="text-right font-bold mt-4">
+                {t("newHk.payment.totals.grandTotal", {
+                  amount: grand.toFixed(2),
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        {clientSecret && !isPaid && !isExpired ? (
+          <StripeCardDrawer
+            open={cardDrawerOpen}
+            onOpenChange={setCardDrawerOpen}
+            clientSecret={clientSecret}
+            amountUSD={grand}
+            app={form}
+            onSuccess={(info) => {
+              setForm((prev) => ({
+                ...prev,
+                paymentStatus:
+                  info?.paymentIntentStatus === "succeeded"
+                    ? "paid"
+                    : prev.paymentStatus,
+                stripeLastStatus:
+                  info?.paymentIntentStatus ?? prev.stripeLastStatus,
+                stripeReceiptUrl:
+                  info?.receiptUrl ?? prev.stripeReceiptUrl,
+                stripeAmountCents:
+                  typeof info?.amount === "number"
+                    ? info.amount
+                    : prev.stripeAmountCents,
+                stripeCurrency: info?.currency ?? prev.stripeCurrency,
+              }));
+              setCardDrawerOpen(false);
+            }}
+          />
+        ) : null}
+      </>
+    </>
+  )
+}
+
+function CongratsStep() {
+  const [app] = useAtom(pifFormAtom);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token") as string;
+  const decodedToken = jwtDecode<any>(token);
+
+  const navigateRoute = () => {
+    localStorage.removeItem("companyRecordId");
+    if (["admin", "master"].includes(decodedToken.role)) navigate("/admin-dashboard");
+    else navigate("/dashboard");
+  };
+
+  const namePart = app.contactName
+    ? t("newHk.congrats.thankYouName", { applicantName: app.contactName })
+    : "";
+
+
+  return (
+    <div className="grid place-items-center gap-4 text-center py-6">
+      <h2 className="text-xl font-extrabold">{t("newHk.congrats.title")}</h2>
+      <p className="text-sm">
+        {t("newHk.congrats.thankYou", { name: namePart })}
+      </p>
+      <div className="flex items-center gap-2 justify-center">
+        <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>
+      </div>
+    </div>
+  );
+}
+
 const panamaPIFConfig: FormConfig = {
   title: "Panama Private Interest Foundation (PIF) — Application",
   steps: [
@@ -1752,98 +2349,186 @@ const panamaPIFConfig: FormConfig = {
     { id: "deliverables", title: "L. Post-Incorporation Deliverables & Shipping", render: DeliverablesStep },
     { id: "accounting", title: "M. Accounting Record Storage & Responsible Person", render: AccountingRecordsStep },
     { id: "invoice", title: "N. Invoice & Quote", render: InvoicePIF },
-    { id: "declarations", title: "O. Declarations & e-Sign", render: DeclarationsStep },
+    { id: "payment", title: "O. Payment", render: PaymentStepPIF },
+    { id: "declarations", title: "P. Declarations & e-Sign", render: DeclarationsStep },
+    { id: "congrats", title: "Congratulations", render: CongratsStep },
+
   ],
 }
 
-/* ---------- Per-step requiredMissing (HK-like gating) ---------- */
 function requiredMissingForStep(form: PanamaPIFForm, step: StepConfig): string[] {
-  const id = (step as any).id as string
-  const miss: string[] = []
-  const need = (v?: string) => !v || v === ""
+  const id = (step as any).id as string;
+  const miss: string[] = [];
+  const need = (v?: string | null) => !v || String(v).trim() === "";
 
   switch (id) {
-    case "applicant":
-      if (!form.email || !emailOk(form.email)) miss.push("Valid Email")
-      if (!form.contactName?.trim()) miss.push("Contact Person (Full Name)")
-      if (form.phone && !phoneOk(form.phone)) miss.push("Phone (format)")
-      break
-
-    case "profile":
-      if (!form.foundationNameEn?.trim()) miss.push("Foundation Name (English)")
-      if (!form.purposeSummary?.trim()) miss.push("Purpose Summary")
-      break
-
-    case "founders":
-      form.founders.forEach((x, i) => {
-        if (!x.type) miss.push(`Founder #${i + 1}: Type`)
-        if (!x.name?.trim()) miss.push(`Founder #${i + 1}: Name`)
-        if (!x.id?.trim()) miss.push(`Founder #${i + 1}: Passport/Reg. No.`)
-        if (x.email && !emailOk(x.email)) miss.push(`Founder #${i + 1}: Email format`)
-        if (x.tel && !phoneOk(x.tel!)) miss.push(`Founder #${i + 1}: Phone format`)
-      })
-      break
-
+    /* A. Applicant */
+    case "applicant": {
+      if (!form.email || !emailOk(form.email)) miss.push("Valid Email");
+      if (need(form.contactName)) miss.push("Contact Person (Full Name)");
+      if (form.phone && !phoneOk(form.phone)) miss.push("Phone (format)");
+      break;
+    }
+    /* B. Foundation Profile */
+    case "profile": {
+      // Name choices
+      if (need(form.foundationNameEn)) miss.push("1st Choice (English)");
+      if (need(form.altName1)) miss.push("2nd Choice (English)");
+      if (need(form.altName2)) miss.push("3rd Choice (English)");
+      // Purpose
+      if (need(form.purposeSummary)) miss.push("Purpose of Establishment");
+      // Source of funds
+      if (!form.sourceOfFunds) miss.push("Source of Funds");
+      if (form.sourceOfFunds === "other" && need(form.sourceOfFundsOther)) {
+        miss.push("Source of Funds (Other) – please specify");
+      }
+      // Endowment payer
+      if (need(form.endowmentPayer)) miss.push("Payer of Initial Endowment (Name/Entity)");
+      // Registered address selection + details if own
+      if (!form.registeredAddressMode) {
+        miss.push("Registered Address (Panama)");
+      } else if (form.registeredAddressMode === "own" && need(form.ownRegisteredAddress)) {
+        miss.push("Separate Registered Address (English)");
+      }
+      break;
+    }
+    /* C. Founder(s) */
+    case "founders": {
+      if (!Array.isArray(form.founders) || form.founders.length === 0) {
+        miss.push("At least 1 Founder");
+      }
+      (form.founders || []).forEach((x, i) => {
+        if (!x.type) miss.push(`Founder #${i + 1}: Type`);
+        if (need(x.name)) miss.push(`Founder #${i + 1}: Name`);
+        if (need(x.id)) miss.push(`Founder #${i + 1}: Passport/Reg. No.`);
+        if (x.email && !emailOk(x.email)) miss.push(`Founder #${i + 1}: Email format`);
+        if (x.tel && !phoneOk(x.tel)) miss.push(`Founder #${i + 1}: Phone format`);
+      });
+      break;
+    }
+    /* D. Foundation Council — Composition */
     case "council": {
       if (!form.councilMode) miss.push("Choose Council composition");
-
       if (form.councilMode === "ind3") {
-        // validate 3 individual members
-        form.councilIndividuals.forEach((m, i) => {
-          if (!m.name?.trim()) miss.push(`Council Member #${i + 1}: Name`);
-          if (!m.id?.trim()) miss.push(`Council Member #${i + 1}: Passport/Reg. No.`);
+        (form.councilIndividuals || []).forEach((m, i) => {
+          if (need(m.name)) miss.push(`Council Member #${i + 1}: Name`);
+          if (need(m.id)) miss.push(`Council Member #${i + 1}: Passport/ID No.`);
           if (m.email && !emailOk(m.email)) miss.push(`Council Member #${i + 1}: Email format`);
           if (m.tel && !phoneOk(m.tel)) miss.push(`Council Member #${i + 1}: Phone format`);
         });
-        // nominee service is optional; no hard requirement on nomineePersons
+        if (form.useNomineeDirector && !form.nomineePersons) {
+          miss.push("Nominee Director — Number of Persons");
+        }
       }
-
       if (form.councilMode === "corp1") {
-        if (!form.councilCorporate.corpMain?.trim())
+        if (need(form.councilCorporate?.corpMain))
           miss.push("Council (Corporate): Entity Name / Reg. No. / Jurisdiction");
-        if (!form.councilCorporate.addrRep?.trim())
+        if (need(form.councilCorporate?.addrRep))
           miss.push("Council (Corporate): Registered Address / Representative");
-        if (form.councilCorporate.email && !emailOk(form.councilCorporate.email))
+        if (form.councilCorporate?.email && !emailOk(form.councilCorporate.email))
           miss.push("Council (Corporate): Email format");
       }
       break;
     }
-
-    case "banking":
-      if (!form.bankingNeed) miss.push("Select whether you need to open an account")
-      break
-
-    case "deliverables":
-      if (!form.shippingRecipientCompany?.trim()) miss.push("Recipient Company")
-      if (!form.shippingContactPerson?.trim()) miss.push("Contact Person")
-      if (!form.shippingPhone?.trim()) miss.push("Phone")
-      if (!form.shippingPostalCode?.trim()) miss.push("Postal Code")
-      if (!form.shippingAddress?.trim()) miss.push("Address")
-      break
-
-    case "accounting":
-      if (need(form.recordStorageAddress)) miss.push("Accounting Record Storage Address")
-      if (need(form.recordStorageResponsiblePerson)) miss.push("Responsible Person (English Full Name)")
-      // recordStorageUseMirr is optional; no miss push
-      break
-
-    case "declarations":
-      if (!form.taxOk) miss.push("Tax compliance confirmation")
-      if (!form.truthOk) miss.push("Accuracy/completeness confirmation")
-      if (!form.privacyOk) miss.push("Privacy/KYC consent")
-      if (!form.signName?.trim()) miss.push("Signature (type your name) cx")
-      if (!form.signDate?.trim()) miss.push("Date")
-      break
-    case "aml":
-      if (need(form.legalAndEthicalConcern)) miss.push("AML Q1")
-      if (need(form.q_country)) miss.push("AML Q2")
-      if (need(form.sanctionsExposureDeclaration)) miss.push("AML Q3")
-      if (need(form.crimeaSevastapolPresence)) miss.push("AML Q4")
-      if (need(form.russianEnergyPresence)) miss.push("AML Q5")
-      break
+    /* E. Protector (optional) */
+    case "protectors": {
+      if (form.protectorsEnabled) {
+        const list = form.protectors || [];
+        if (list.length === 0) miss.push("At least 1 Protector");
+        list.forEach((p, i) => {
+          if (need(p.name)) miss.push(`Protector #${i + 1}: Name/Corporate/Class`);
+        });
+      }
+      break;
+    }
+    /* F. Beneficiaries */
+    case "beneficiaries": {
+      if (!form.beneficiariesMode) miss.push("Beneficiaries: Mode");
+      if (form.beneficiariesMode === "fixed" || form.beneficiariesMode === "mixed") {
+        const list = form.beneficiaries || [];
+        if (list.length === 0) miss.push("At least 1 Beneficiary");
+        list.forEach((b, i) => {
+          if (need(b.name)) miss.push(`Beneficiary #${i + 1}: Name/Corporate/Class`);
+        });
+      }
+      // mode "class": free-form via Letter of Wishes; no hard requirement
+      break;
+    }
+    /* G. By-Laws */
+    case "bylaws": {
+      if (!form.bylawsMode) miss.push("By-Laws: Select Standard or Custom");
+      if (form.bylawsMode === "custom") {
+        if (need(form.bylawsPowers) && need(form.bylawsAdmin)) {
+          miss.push("By-Laws (Custom): Provide Powers and/or Admin details");
+        }
+      }
+      break;
+    }
+    /* H. Economic Substance (informational only) */
+    case "es": {
+      break;
+    }
+    /* I. Banking */
+    case "banking": {
+      if (!form.bankingNeed) miss.push("Select whether you need to open an account");
+      break;
+    }
+    /* J. PEP */
+    case "pep": {
+      // Field exists with default "no"; still ensure it is set to a valid value.
+      if (form.pepAny !== "yes" && form.pepAny !== "no") miss.push("PEP confirmation (Yes/No)");
+      break;
+    }
+    /* K. AML & Sanctions */
+    case "aml": {
+      if (need(form.legalAndEthicalConcern)) miss.push("AML Q1");
+      if (need(form.q_country)) miss.push("AML Q2");
+      if (need(form.sanctionsExposureDeclaration)) miss.push("AML Q3");
+      if (need(form.crimeaSevastapolPresence)) miss.push("AML Q4");
+      if (need(form.russianEnergyPresence)) miss.push("AML Q5");
+      break;
+    }
+    /* L. Post-Incorporation Deliverables & Shipping */
+    case "deliverables": {
+      if (need(form.shippingRecipientCompany)) miss.push("Recipient Company");
+      if (need(form.shippingContactPerson)) miss.push("Contact Person");
+      if (need(form.shippingPhone)) miss.push("Phone");
+      if (form.shippingPhone && !phoneOk(form.shippingPhone)) miss.push("Phone (format)");
+      if (need(form.shippingPostalCode)) miss.push("Postal Code");
+      if (need(form.shippingAddress)) miss.push("Address");
+      break;
+    }
+    /* M. Accounting Record Storage */
+    case "accounting": {
+      if (need(form.recordStorageAddress)) miss.push("Accounting Record Storage Address");
+      if (need(form.recordStorageResponsiblePerson))
+        miss.push("Responsible Person (English Full Name)");
+      break;
+    }
+    /* N. Invoice — no required fields */
+    case "invoice": {
+      break;
+    }
+    /* O. Payment — not enforced */
+    case "payment": {
+      break;
+    }
+    /* P. Declarations & e-Sign */
+    case "declarations": {
+      if (!form.taxOk) miss.push("Tax compliance confirmation");
+      if (!form.truthOk) miss.push("Accuracy/completeness confirmation");
+      if (!form.privacyOk) miss.push("Privacy/KYC consent");
+      if (need(form.signName)) miss.push("Signature (type your name)");
+      if (need(form.signDate)) miss.push("Date");
+      // signTitle optional
+      break;
+    }
+    default:
+      break;
   }
-  return miss
+  return miss;
 }
+
 
 export default function PanamaPIFWizard() {
   const [form, setForm] = useAtom(pifFormAtom)
@@ -1870,47 +2555,57 @@ export default function PanamaPIFWizard() {
 
   const saveAll = async () => {
     try {
-      console.log("Submitting Panama PIF to backend:", form)
-      // if (result && (result as any).ok) {
-      //   toast({ title: "Saved", description: "Your application data has been saved." })
-      //   return true
-      // }
-      toast({ variant: "destructive", title: "Error", description: "Failed to save application. Please try again." })
-      return false
+      const token = localStorage.getItem("token") as string;
+      const decodedToken = jwtDecode<TokenData>(token);
+
+      const payload = {
+        ...form,
+        userId: decodedToken?.userId ?? form.userId ?? "",
+        updatedAt: new Date().toISOString(),
+      };
+
+      const result = await createOrUpdatePaFIncorpo(payload);
+      if (result) {
+        toast({ title: "Saved", description: "Your application data has been saved." });
+        return true;
+      }
+      toast({ variant: "destructive", title: "Error", description: "Failed to save application. Please try again." });
+      return false;
     } catch (e) {
-      console.log("e", e)
-      toast({ variant: "destructive", title: "Error", description: "Failed to save application. Please try again." })
-      return false
+      console.error("saveAll error", e);
+      toast({ variant: "destructive", title: "Error", description: "Failed to save application. Please try again." });
+      return false;
     }
-  }
+  };
+
 
   const handleNext = async () => {
-    if (stepIdx >= config.steps.length - 1) return
-    if (!canNext) return
-    try {
-      setSavingNext(true)
-      // If next is final step index, just proceed
-      if ((config.steps[stepIdx + 1] as any)?.id === "declarations") {
-        goto(stepIdx + 1)
-      } else if ((step as any).id === "declarations") {
-        // on finishing declarations, save all and then go next (or finish)
-        const ok = await saveAll()
-        if (!ok) return
-        goto(stepIdx + 1)
-      } else {
-        goto(stepIdx + 1)
-      }
-    } finally {
-      setSavingNext(false)
+    if (stepIdx >= config.steps.length - 1) return;
+    if (missing.length > 0) {
+      toast({
+        variant: "destructive",
+        title: "Please complete required fields",
+        description: missing.join(", "),
+      });     
+      return;
     }
-  }
+    try {
+      setSavingNext(true);
+      const ok = await saveAll();
+      if (!ok) return;
+      // proceed to next step
+      goto(stepIdx + 1);
+      // reset the tried flag for the new step
+    } finally {
+      setSavingNext(false);
+    }
+  };
 
   const handleBack = () => goto(stepIdx - 1)
 
   return (
     <div className="max-w-6xl mx-auto p-3 sm:p-4 md:p-6 space-y-4">
       <TopBar title={config.title} totalSteps={config.steps.length} idx={stepIdx} />
-
       {/* Mobile sidebar toggle */}
       <div className="lg:hidden">
         <Button
@@ -1941,8 +2636,7 @@ export default function PanamaPIFWizard() {
                 steps={config.steps as any}
                 idx={stepIdx}
                 goto={goto}
-                // canProceedFromCurrent={canNext}
-                canProceedFromCurrent={true}
+                canProceedFromCurrent={canNext}
               />
             </div>
           </div>
@@ -1954,8 +2648,7 @@ export default function PanamaPIFWizard() {
             steps={config.steps as any}
             idx={stepIdx}
             goto={goto}
-            // canProceedFromCurrent={canNext}
-            canProceedFromCurrent={true}
+            canProceedFromCurrent={canNext}
           />
         </div>
 
@@ -2008,7 +2701,7 @@ export default function PanamaPIFWizard() {
                 <div className="w-full sm:w-auto">
                   <Button
                     onClick={handleNext}
-                    disabled={!canNext || savingNext}
+                    disabled={savingNext}
                     className="w-full sm:w-auto touch-manipulation"
                   >
                     {savingNext ? t("newHk.buttons.saving", "Saving…") : t("newHk.buttons.next", "Next →")}

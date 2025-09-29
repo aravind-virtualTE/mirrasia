@@ -6,76 +6,55 @@ export type NdCount = 0 | 1 | 2 | 3
 export interface PIFPricing {
   currency: "USD"
   entityType: "pif" | "corp"
-  // setup only
-  setupBase: number            // PIF: 3800
+  setupBase: number         // PIF: 3800
   ndSetup: NdCount
   nsSetup: boolean
   optEmi: boolean
   optBank: boolean
   optCbi: boolean
   nd3ReasonSetup?: string
-  // computed
-  total: number                // setup total only
+  total: number             // setup total only (computed)
 }
 
 export interface PanamaPIFForm {
-  _id: string;
+  _id?: string;
+  userId:string
   email: string;
   contactName: string;
   phone?: string;
   contactPref?: string;
   // --- Profile / Names ---
-  foundationNameEn: string;          // 1st choice (required)
-  foundationNameEs?: string;         // Spanish name (optional)
-  altName1?: string;                 // 2nd choice (required)
-  altName2?: string;                 // 3rd choice (required)
+  foundationNameEn: string;
+  foundationNameEs?: string;
+  altName1?: string;
+  altName2?: string;
   // --- Profile / Purpose & Endowment ---
-  purposeSummary: string;            // Purpose (required)
+  purposeSummary: string;
   duration?: "" | "perpetual" | "fixed";
   baseCurrency?: string;
   initialEndowment?: string;
-  // NEW: profile fields to match HTML
   sourceOfFunds?: "" |
-    "Employment Income" |
-    "Savings/Deposits" |
-    "Investment Income (stocks/bonds/funds)" |
-    "Loan" |
-    "Proceeds from Sale of Company/Shares" |
-    "Business Income/Dividends" |
-    "Inheritance/Gift" |
-    "other";
+  "Employment Income" |
+  "Savings/Deposits" |
+  "Investment Income (stocks/bonds/funds)" |
+  "Loan" |
+  "Proceeds from Sale of Company/Shares" |
+  "Business Income/Dividends" |
+  "Inheritance/Gift" |
+  "other";
   sourceOfFundsOther?: string;
-  endowmentPayer?: string;           // required
-  // Registered address choice
-  registeredAddressMode?: "" | "mirr" | "own"; // required
-  ownRegisteredAddress?: string; 
-  // Business / Activities
-  industries?: string[];             // e.g. ["trading","consulting",...]
+  endowmentPayer?: string;
+  registeredAddressMode?: "" | "mirr" | "own";
+  ownRegisteredAddress?: string;
+  industries?: string[];
   geoCountries?: string;
   bizDesc?: string;
-  councilMode?: "" | "ind3" | "corp1";   // selected composition
-  nomineePersons?: "" | "1" | "2" | "3"; // nominee director headcount
+  councilMode?: "" | "ind3" | "corp1";
+  nomineePersons?: "" | "1" | "2" | "3";
   // --- Founders / Council ---
-  founders: Array<{
-    type: "individual" | "corporate" | "";
-    name: string;
-    id: string;
-    email?: string;
-    tel?: string;
-  }>;
-  councilIndividuals: Array<{
-    type: "individual" | "corporate" | "";
-    name: string;
-    id: string;
-    email?: string;
-    tel?: string;
-  }>;
-  councilCorporate: {
-    corpMain: string;
-    addrRep: string;
-    signatory?: string;
-    email?: string;
-  };
+  founders: Array<{ type: "individual" | "corporate" | ""; name: string; id: string; email?: string; tel?: string }>;
+  councilIndividuals: Array<{ type: "individual" | "corporate" | ""; name: string; id: string; email?: string; tel?: string }>;
+  councilCorporate: { corpMain: string; addrRep: string; signatory?: string; email?: string };
   // --- Options / Roles ---
   useNomineeDirector: boolean;
   nomineeType?: "" | "individual" | "corporate";
@@ -91,7 +70,7 @@ export interface PanamaPIFForm {
   // --- Banking ---
   bankingNeed?: "need" | "none" | "later" | "";
   bankingBizType?: "" | "consulting" | "ecommerce" | "investment" | "crypto" | "manufacturing";
-  // --- AML (single-value flags) ---
+  // --- AML flags ---
   legalAndEthicalConcern?: "yes" | "no" | "";
   q_country?: "yes" | "no" | "";
   sanctionsExposureDeclaration?: "yes" | "no" | "";
@@ -111,18 +90,38 @@ export interface PanamaPIFForm {
   shippingPhone?: string;
   shippingPostalCode?: string;
   shippingAddress?: string;
-  // --- Record storage (you already had) ---
+  // --- Record storage ---
   recordStorageAddress?: string;
   recordStorageResponsiblePerson?: string;
   recordStorageUseMirr?: boolean;
   // --- Status ---
   incorporationStatus: string;
-  letterOfWishes:string
-  pricing: PIFPricing
+  letterOfWishes: string;
+  // --- Pricing ---
+  pricing: PIFPricing;
+  // --- Payment (new) ---
+  payMethod?: "card" | "bank" | "other" | "fps";      // default card
+  paymentStatus?: "unpaid" | "paid" | "failed" | "pending";
+  expiresAt?: string;                                  // ISO
+  updatedAt?: string;                                  // ISO
+  // Stripe / uploads (optional fields mirrored from HK flow)
+  paymentIntentId?: string;
+  stripeLastStatus?: string;
+  stripePaymentStatus?: string;
+  stripeReceiptUrl?: string;
+  stripeAmountCents?: number;
+  stripeCurrency?: string;
+  bankRef?: string;
+  uploadReceiptUrl?: string;
+  receiptUrl?: string;
+  amount?: string;
+  currency?: string;
+  paymentIntentStatus?: string;
 }
 
 export const initialPIF: PanamaPIFForm = {
   _id: "",
+  userId: "",
   email: "",
   contactName: "",
   phone: "",
@@ -137,13 +136,12 @@ export const initialPIF: PanamaPIFForm = {
   duration: "",
   baseCurrency: "",
   initialEndowment: "",
-  // NEW: profile defaults
   sourceOfFunds: undefined,
   sourceOfFundsOther: "",
   endowmentPayer: "",
-  registeredAddressMode: "",     // "mirr" | "own"
+  registeredAddressMode: "",
   ownRegisteredAddress: "",
-  industries: [],                // e.g. ["trading","consulting"]
+  industries: [],
   geoCountries: "",
   bizDesc: "",
   councilMode: "ind3",
@@ -197,11 +195,12 @@ export const initialPIF: PanamaPIFForm = {
   recordStorageUseMirr: false,
   // Status
   incorporationStatus: "Pending",
-  letterOfWishes:"",
+  letterOfWishes: "",
+  // Pricing
   pricing: {
     currency: "USD",
     entityType: "pif",
-    setupBase: 3800, 
+    setupBase: 3800,
     ndSetup: 0,
     nsSetup: false,
     optEmi: false,
@@ -210,8 +209,24 @@ export const initialPIF: PanamaPIFForm = {
     nd3ReasonSetup: "",
     total: 3800,
   },
-};
-
+  // Payment defaults
+  payMethod: "card",
+  paymentStatus: "unpaid",
+  expiresAt: "",       // set by component on mount
+  updatedAt: "",
+  paymentIntentId: undefined,
+  stripeLastStatus: undefined,
+  stripePaymentStatus: undefined,
+  stripeReceiptUrl: undefined,
+  stripeAmountCents: undefined,
+  stripeCurrency: "usd",
+  bankRef: "",
+  uploadReceiptUrl: undefined,
+  receiptUrl: '',
+  amount: '',        // cents
+  currency: '',    // e.g., "usd"
+  paymentIntentStatus: ''
+}
 
 export const pifFormAtom = atom<PanamaPIFForm>(initialPIF)
 export const pifFormWithResetAtom = atom(
@@ -257,7 +272,7 @@ export const getPaFIncorpoData = async (id: string) => {
   }
 };
 
-export const createOrUpdatePaFIncorpo = async (data: PanamaPIFForm) => {
+export const createOrUpdatePaFIncorpo = async (data: any) => {
   try {
     const response = await api.post('/incorporation/paif/', data);
     return response.data;

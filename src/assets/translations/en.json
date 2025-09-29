@@ -1732,7 +1732,7 @@
             "tip": "Convenient for international cards. A processing fee is added to the invoice."
           },
           "fps": {
-            "label": "Fast Payment System (FPS) — Recommended (no extra fee)"
+            "label": "Fast Payment System (FPS)"
           },
           "bank": {
             "label": "Bank Transfer — direct transfer with receipt upload"

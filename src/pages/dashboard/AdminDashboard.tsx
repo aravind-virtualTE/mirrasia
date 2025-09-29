@@ -34,6 +34,10 @@ import CurrentCorporateClient from "./Admin/CurrentCorporateClients"
 import AdminTodo from "./Admin/AdminTodoCard"
 import { toast } from "@/hooks/use-toast"
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
+import { hkAppAtom } from "../Company/NewHKForm/hkIncorpo"
+import { paFormWithResetAtom } from "../Company/Panama/PaState"
+import { pifFormWithResetAtom } from "../Company/PanamaFoundation/PaState"
+import { sgFormWithResetAtom } from "../Company/Singapore/SgState"
 
 
 const AdminDashboard = () => {
@@ -41,6 +45,10 @@ const AdminDashboard = () => {
   const [allList, setAllList] = useAtom(allCompListAtom)
   const navigate = useNavigate()
   const [, setUsaReset] = useAtom(usaFormWithResetAtom)
+  const [, setHK] = useAtom(hkAppAtom)
+  const [, setPA] = useAtom(paFormWithResetAtom);
+  const [, setPAF] = useAtom(pifFormWithResetAtom);
+  const [, setSG] = useAtom(sgFormWithResetAtom);
   const resetAllForms = useResetAllForms();
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: "ascending" | "descending" } | null>(null)
   const [taskToDelete, setTaskToDelete] = useState<{ companyId: string, countryCode: string } | null>(null);
@@ -53,6 +61,11 @@ const AdminDashboard = () => {
   useEffect(() => {
     setUsaReset('reset')
     resetAllForms()
+    setHK(null)
+    setPA('reset')
+    setPAF('reset')
+    setSG('reset')
+
     async function fetchData() {
       const [result, count] = await Promise.all([
         getIncorporationList(),
@@ -153,7 +166,7 @@ const AdminDashboard = () => {
     }
     return "N/A";
   };
-  
+
   const getSortedData = () => {
     const initialFilter = allList.filter(
       company => activeTab === "active" ? !company.isDeleted : company.isDeleted
@@ -240,7 +253,7 @@ const AdminDashboard = () => {
   );
   console.log("paginatedData", paginatedData)
 
-  
+
 
   return (
     <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
