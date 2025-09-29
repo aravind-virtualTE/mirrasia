@@ -25,7 +25,7 @@ import { paFormWithResetAtom } from './Panama/PaState';
 import { sgFormWithResetAtom } from './Singapore/SgState';
 import ConfigDrivenHKForm from './NewHKForm/NewHKIncorporation';
 import {getHkIncorpoData, hkAppAtom} from './NewHKForm/hkIncorpo';
-import PanamaFoundation from './PanamaFoundation/PaIncorporation';
+import PanamaFoundation from './PanamaFoundation/PaFIncorporation';
 
 const CompanyRegistration = () => {
     const { t } = useTranslation();
