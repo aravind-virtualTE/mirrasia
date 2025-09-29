@@ -390,7 +390,7 @@ const AdminDashboard = () => {
                   }
 
                   let date = typedCompany.incorporationDate
-                  if (date !== null && date !== '') {
+                  if (date !== null && date !== '' && date !== undefined) {
                     const [year, month, day] = date.split("T")[0].split("-")
                     date = `${day}-${month}-${year}`
                   }
