@@ -2,6 +2,22 @@
 import { atom } from "jotai"
 import api from '@/services/fetch';
 
+export type NdCount = 0 | 1 | 2 | 3
+export interface PIFPricing {
+  currency: "USD"
+  entityType: "pif" | "corp"
+  // setup only
+  setupBase: number            // PIF: 3800
+  ndSetup: NdCount
+  nsSetup: boolean
+  optEmi: boolean
+  optBank: boolean
+  optCbi: boolean
+  nd3ReasonSetup?: string
+  // computed
+  total: number                // setup total only
+}
+
 export interface PanamaPIFForm {
   _id: string;
   email: string;
@@ -102,6 +118,7 @@ export interface PanamaPIFForm {
   // --- Status ---
   incorporationStatus: string;
   letterOfWishes:string
+  pricing: PIFPricing
 }
 
 export const initialPIF: PanamaPIFForm = {
@@ -180,7 +197,19 @@ export const initialPIF: PanamaPIFForm = {
   recordStorageUseMirr: false,
   // Status
   incorporationStatus: "Pending",
-  letterOfWishes:""
+  letterOfWishes:"",
+  pricing: {
+    currency: "USD",
+    entityType: "pif",
+    setupBase: 3800, 
+    ndSetup: 0,
+    nsSetup: false,
+    optEmi: false,
+    optBank: false,
+    optCbi: false,
+    nd3ReasonSetup: "",
+    total: 3800,
+  },
 };
 
 

@@ -15,6 +15,9 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { t } from "i18next"
 import { FieldBase, FieldOption, FormConfig, initialPIF, PanamaPIFForm, pifFormAtom, StepConfig } from "./PaState"
+import { computePIFSetupTotal, money } from "./PaConstants"
+import { Separator } from "@/components/ui/separator"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 
 
@@ -392,7 +395,7 @@ function FoundersManager() {
     setForm({ ...form, founders: next })
   }
 
-  const inviteFounderMembers = async () =>{
+  const inviteFounderMembers = async () => {
     console.log("Invite Founder Members clicked");
   }
 
@@ -418,159 +421,6 @@ function FoundersManager() {
     </div>
   )
 }
-
-// function CouncilIndividualsStep() {
-//   const [form, setForm] = useAtom(pifFormAtom)
-//   const update = (idx: number, patch: Partial<(typeof form)["councilIndividuals"][number]>) => {
-//     const next = [...form.councilIndividuals]
-//     next[idx] = { ...next[idx], ...patch }
-//     setForm({ ...form, councilIndividuals: next })
-//   }
-//   return (
-//     <div className="space-y-3">
-//       <div className="rounded-md border border-border p-2.5 text-[13px] bg-muted/30">
-//         Under Panamanian law, the council may consist of <b>at least three individuals</b> or <b>one corporate</b>. This section is for three individuals. (Each council member will complete a separate Member Onboarding Form.)
-//       </div>
-
-//       {form.councilIndividuals.map((m, i) => (
-//         <Card key={i} className="border border-dashed border-border">
-//           <CardHeader className="py-2.5">
-//             <CardTitle className="text-sm">Council Member #{i + 1} – Quick Info</CardTitle>
-//           </CardHeader>
-//           <CardContent className="grid md:grid-cols-2 gap-3">
-//             <div className="grid gap-1.5">
-//               <Label className={labelSm}>
-//                 Type<span className="text-destructive">*</span>
-//               </Label>
-//               <RadioGroup value={m.type} onValueChange={(v: any) => update(i, { type: v })} className="flex gap-4">
-//                 <label className="flex items-center gap-2 text-sm">
-//                   <RadioGroupItem value="individual" id={`c-type-i-${i}`} /> Individual
-//                 </label>
-//                 <label className="flex items-center gap-2 text-sm">
-//                   <RadioGroupItem value="corporate" id={`c-type-c-${i}`} /> Corporate
-//                 </label>
-//               </RadioGroup>
-//             </div>
-//             <div className="grid gap-1.5">
-//               <Label className={labelSm}>
-//                 Full Name / Corporate Name<span className="text-destructive">*</span>
-//               </Label>
-//               <Input className={inputSm} value={m.name} onChange={(e) => update(i, { name: e.target.value })} />
-//             </div>
-//             <div className="grid gap-1.5">
-//               <Label className={labelSm}>
-//                 Passport / Reg. No.<span className="text-destructive">*</span>
-//               </Label>
-//               <Input className={inputSm} value={m.id} onChange={(e) => update(i, { id: e.target.value })} />
-//             </div>
-//             <div className="grid gap-1.5">
-//               <Label className={labelSm}>Email</Label>
-//               <Input className={inputSm} type="email" value={m.email || ""} onChange={(e) => update(i, { email: e.target.value })} />
-//             </div>
-//             <div className="grid gap-1.5">
-//               <Label className={labelSm}>Phone</Label>
-//               <Input className={inputSm} value={m.tel || ""} onChange={(e) => update(i, { tel: e.target.value })} />
-//             </div>
-//           </CardContent>
-//         </Card>
-//       ))}
-
-//       <div className="grid md:grid-cols-2 gap-3">
-//         <div className="flex items-center gap-2">
-//           <Checkbox
-//             id="useNomineeDirector"
-//             checked={form.useNomineeDirector}
-//             onCheckedChange={(v) => setForm({ ...form, useNomineeDirector: Boolean(v) })}
-//           />
-//           <Label htmlFor="useNomineeDirector" className={labelSm}>
-//             Use Nominee Director service
-//           </Label>
-//         </div>
-
-//         {form.useNomineeDirector && (
-//           <>
-//             <div className="md:col-span-2">
-//               <InfoBox>
-//                 <b>Local Director (Nominee) Service Notes</b>
-//                 <br />
-//                 1) The nominee service protects your identity from public registers; it <u>does not exercise control or claim ownership</u>.
-//                 <br />
-//                 2) For banking/exchange relationships, <b>UBO &amp; Significant Controller</b> verification is performed by the client (nominee does not perform verification).
-//                 <br />
-//                 3) We will conduct face-to-face/video KYC of UBO/key controllers and retain records per AML rules.
-//                 <br />
-//                 4) <b>Annual Fees</b>: Local director — 1 person USD 1,200 / 2 persons USD 1,700 / 3 persons USD 2,200 · Nominee shareholder USD 1,300.
-//               </InfoBox>
-//             </div>
-
-//             <div className="grid md:grid-cols-2 gap-3 md:col-span-2">
-//               <div className="grid gap-1.5">
-//                 <Label className={labelSm}>Nominee Director Type</Label>
-//                 <Select value={form.nomineeType} onValueChange={(v) => setForm({ ...form, nomineeType: v as any })}>
-//                   <SelectTrigger className={inputSm}>
-//                     <SelectValue placeholder="Select" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="individual">Individual</SelectItem>
-//                     <SelectItem value="corporate">Corporate</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               </div>
-//               <div className="grid gap-1.5">
-//                 <Label className={labelSm}>Director's Role</Label>
-//                 <Select value={form.nomineeRole} onValueChange={(v) => setForm({ ...form, nomineeRole: v as any })}>
-//                   <SelectTrigger className={inputSm}>
-//                     <SelectValue placeholder="Select" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="President">President</SelectItem>
-//                     <SelectItem value="Treasurer">Treasurer</SelectItem>
-//                     <SelectItem value="Secretary">Secretary</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               </div>
-//             </div>
-//           </>
-//         )}
-//       </div>
-//     </div>
-//   )
-// }
-
-// function CouncilCorporateStep() {
-//   const [form, setForm] = useAtom(pifFormAtom)
-//   const c = form.councilCorporate
-//   const update = (patch: Partial<typeof c>) => setForm({ ...form, councilCorporate: { ...c, ...patch } })
-//   return (
-//     <div className="space-y-3">
-//       <div className="rounded-md border border-border p-2.5 text-[13px] bg-muted/30">
-//         If a corporate acts as the council (rarer structure), fill in the basics below. Authorized signatory (individual) will require separate KYC.
-//       </div>
-//       <div className="grid md:grid-cols-2 gap-3">
-//         <div className="grid gap-1.5">
-//           <Label className={labelSm}>
-//             Corporate Name / Reg. No. / Jurisdiction<span className="text-destructive">*</span>
-//           </Label>
-//           <Input className={inputSm} value={c.corpMain} onChange={(e) => update({ corpMain: e.target.value })} />
-//         </div>
-//         <div className="grid gap-1.5">
-//           <Label className={labelSm}>
-//             Registered Address / Representative<span className="text-destructive">*</span>
-//           </Label>
-//           <Input className={inputSm} value={c.addrRep} onChange={(e) => update({ addrRep: e.target.value })} />
-//         </div>
-//         <div className="grid gap-1.5">
-//           <Label className={labelSm}>Authorized Signatory (optional)</Label>
-//           <Input className={inputSm} value={c.signatory || ""} onChange={(e) => update({ signatory: e.target.value })} />
-//         </div>
-//         <div className="grid gap-1.5">
-//           <Label className={labelSm}>Email</Label>
-//           <Input className={inputSm} type="email" value={c.email || ""} onChange={(e) => update({ email: e.target.value })} />
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
 
 function CouncilStep() {
   const [form, setForm] = useAtom(pifFormAtom);
@@ -602,7 +452,7 @@ function CouncilStep() {
 
   const showIndividuals = form.councilMode !== "corp1";
   const showCorporate = form.councilMode === "corp1";
-  const inviteCouncilMembers = async () =>{
+  const inviteCouncilMembers = async () => {
     console.log("Invite sent council members ");
     toast({
       title: "Invite Sent",
@@ -806,7 +656,7 @@ function CouncilStep() {
   );
 }
 
-function SimpleRepeater({ title, items, onUpdate, onRemove,}: {
+function SimpleRepeater({ title, items, onUpdate, onRemove, }: {
   title: string
   items: Array<{ name: string; contact: string }>
   onUpdate: (idx: number, patch: Partial<{ name: string; contact: string }>) => void
@@ -846,7 +696,7 @@ function SimpleRepeater({ title, items, onUpdate, onRemove,}: {
             </div>
           </CardContent>
         </Card>
-      ))}      
+      ))}
     </div>
   )
 }
@@ -863,7 +713,7 @@ function ProtectorsManager() {
     const next = form.protectors.filter((_, i) => i !== idx)
     setForm({ ...form, protectors: next.length ? next : [{ name: "", contact: "" }] })
   }
-    const inviteProtectors = async () =>{
+  const inviteProtectors = async () => {
     console.log("Invite Protector clicked");
   }
 
@@ -896,7 +746,7 @@ function ProtectorsManager() {
       {form.protectorsEnabled ? (
         <SimpleRepeater title="Protector" items={form.protectors} onUpdate={update} onRemove={remove} />
       ) : null}
-       <div className="flex justify-end pt-2">
+      <div className="flex justify-end pt-2">
         <Button onClick={inviteProtectors} >
           Invite Protector
         </Button>
@@ -924,7 +774,7 @@ function BeneficiariesManager() {
     const next = form.beneficiaries.filter((_, i) => i !== idx)
     setForm({ ...form, beneficiaries: next.length ? next : [{ name: "", contact: "" }] })
   }
-  const inviteBeneficiaries = async () =>{
+  const inviteBeneficiaries = async () => {
     console.log("Invite Beneficiaries clicked");
   }
 
@@ -958,7 +808,6 @@ function BeneficiariesManager() {
 
         <Button variant="outline" onClick={add} id="addBen">+ Add Beneficiary</Button>
       </div>
-
       {/* Beneficiaries list */}
       <SimpleRepeater
         title="Beneficiary"
@@ -977,7 +826,7 @@ function BeneficiariesManager() {
           onChange={(e) => setForm({ ...form, letterOfWishes: e.target.value })}
         />
       </div>
-        <div className="flex justify-end pt-2">
+      <div className="flex justify-end pt-2">
         <Button onClick={inviteBeneficiaries} >
           Invite Beneficiaries
         </Button>
@@ -985,7 +834,6 @@ function BeneficiariesManager() {
     </section>
   )
 }
-
 
 function BylawsStep() {
   const [form, setForm] = useAtom(pifFormAtom)
@@ -1674,6 +1522,183 @@ function ProfileStepPanama() {
   )
 }
 
+function InvoicePIF() {
+  const [form, setForm] = useAtom(pifFormAtom)
+  const { pricing } = form
+
+  const updatePricing = <K extends keyof typeof pricing>(key: K, value: (typeof pricing)[K]) => {
+    const next = { ...pricing, [key]: value }
+    next.total = computePIFSetupTotal(next)
+    setForm({ ...form, pricing: next })
+  }
+
+  React.useEffect(() => {
+    const total = computePIFSetupTotal(pricing)
+    if (total !== pricing.total) {
+      setForm({ ...form, pricing: { ...pricing, total } })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const line = (label: React.ReactNode, value: React.ReactNode) => (
+    <div className="flex items-start justify-between gap-3 py-1">
+      <span className="text-sm">{label}</span>
+      <span className="text-sm font-medium">{value}</span>
+    </div>
+  )
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg sm:text-xl">Invoice & Quote — Panama PIF (Setup Only)</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="border rounded-xl p-4">
+          <h3 className="font-semibold mb-3">Setup (Year 1)</h3>
+          <div className="flex items-start justify-between gap-3 py-1">
+            <div className="text-sm flex items-center gap-2">
+              {/* Keep IDs/data-* exactly like your HTML */}
+              <span id="entity-label">
+                Mirr Asia setup fee + first-year services
+                <span
+                  className="help sr-only"
+                  data-title="Setup package (all-in)"
+                  data-body="Includes government fees (corporation USD 300 / PIF separate), Resident Agent, and Registered Office."
+                />
+              </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label="Setup package (all-in) details"
+                    className="inline-flex h-5 w-5 items-center justify-center rounded-full border text-muted-foreground"
+                  >
+                    <Info className="h-3.5 w-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs text-xs">
+                  <div className="font-medium mb-1">Setup package (all-in)</div>
+                  <div>Includes government fees (corporation USD 300 / PIF separate), Resident Agent, and Registered Office.</div>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+
+            <span className="text-sm font-medium">
+              {money(pricing.setupBase)}{/* shows $3,800 when setupBase=3800 */}
+            </span>
+          </div>
+
+
+          <div className="space-y-3 mt-3">
+            <div className="space-y-1.5">
+              <Label>Nominee Director(s) — setup</Label>
+              <Select
+                value={String(pricing.ndSetup)}
+                onValueChange={(v) => updatePricing("ndSetup", Number(v) as any)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">None (0)</SelectItem>
+                  <SelectItem value="1">1 person (+{money(1200)})</SelectItem>
+                  <SelectItem value="2">2 people (+{money(1700)})</SelectItem>
+                  <SelectItem value="3">3 people (+{money(2200)})</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {pricing.ndSetup === 3 && (
+              <div className="space-y-1.5">
+                <Label className="text-xs">Reason for selecting 3 nominee directors (setup)</Label>
+                <Textarea
+                  placeholder="Please state why 3 nominee directors are needed."
+                  value={pricing.nd3ReasonSetup ?? ""}
+                  onChange={(e) => updatePricing("nd3ReasonSetup", e.target.value)}
+                />
+                <p className="text-[12px] text-muted-foreground">* We recommend providing a reason when selecting 3.</p>
+              </div>
+            )}
+
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={pricing.nsSetup}
+                onCheckedChange={(c) => updatePricing("nsSetup", Boolean(c))}
+                id="ns-setup"
+              />
+              <Label htmlFor="ns-setup">Nominee Shareholder (setup) (+{money(1300)})</Label>
+            </div>
+
+            <Separator />
+
+            <h4 className="font-medium">Optional services (setup)</h4>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  checked={pricing.optEmi}
+                  onCheckedChange={(c) => updatePricing("optEmi", Boolean(c))}
+                  id="opt-emi"
+                />
+                <Label htmlFor="opt-emi">EMI account opening (+{money(400)})</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  checked={pricing.optBank}
+                  onCheckedChange={(c) => updatePricing("optBank", Boolean(c))}
+                  id="opt-bank"
+                />
+                <Label htmlFor="opt-bank">Panama local bank account opening (+{money(2000)})</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  checked={pricing.optCbi}
+                  onCheckedChange={(c) => updatePricing("optCbi", Boolean(c))}
+                  id="opt-cbi"
+                />
+                <Label htmlFor="opt-cbi">Puerto Rico CBI account opening (+{money(3880)})</Label>
+              </div>
+            </div>
+
+            <Separator className="my-2" />
+
+            {line(<span className="font-medium">Setup total</span>, <span>{money(pricing.total)}</span>)}
+          </div>
+        </div>
+
+        {/* Setup package includes (PIF) — 14 items */}
+        <div className="rounded-lg border bg-muted/20 p-4 text-sm">
+          <b>Setup package includes (PIF):</b>
+          <ol className="list-decimal pl-5 mt-2 space-y-1">
+            <li>Draft foundation charter (EN/ES)</li>
+            <li>Founder nomination</li>
+            <li>Notarization and registration of the charter</li>
+            <li>Incorporation fees and registry taxes</li>
+            <li>Certificate of Establishment</li>
+            <li>Resolution organizing the foundation council</li>
+            <li>Resolutions appointing Protector/beneficiaries</li>
+            <li>Drafting of regulations</li>
+            <li>Notarized translations</li>
+            <li>Certificate of Incumbency</li>
+            <li>Registered office (1 year)</li>
+            <li>Registered agent/secretary (1 year)</li>
+            <li>KYC/Due Diligence</li>
+            <li>International courier</li>
+          </ol>
+          <div className="mt-2 text-[12px] text-muted-foreground">
+            <strong>Note:</strong> Accounting fees are not included; bookkeeping/audit/tax filings are quoted separately.
+          </div>
+        </div>
+      </CardContent>
+
+      <CardFooter className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+        <div className="text-sm">
+          <span className="font-medium">Payable Now (estimate):</span> {money(pricing.total)}
+        </div>
+      </CardFooter>
+    </Card>
+  )
+}
+
 /* ---------- Config ---------- */
 const panamaPIFConfig: FormConfig = {
   title: "Panama Private Interest Foundation (PIF) — Application",
@@ -1689,30 +1714,12 @@ const panamaPIFConfig: FormConfig = {
         { type: "text", name: "contactPref", label: "Preferred Contact Time / Method", placeholder: "e.g., Weekdays 10:00–18:00, email preferred" },
       ],
     },
-    // {
-    //   id: "profile",
-    //   title: "B. Foundation Profile",
-    //   description:
-    //     "Naming Guidelines — The name must contain “Foundation” or “Fundación”. Identical or confusingly similar names cannot be registered. Please provide 1st/2nd/3rd choices; we will check availability.",
-    //   fields: [
-    //     { type: "text", name: "foundationNameEn", label: "Foundation Name (English)", placeholder: "EX: MIRR ASIA FOUNDATION", required: true },        
-    //     { type: "text", name: "altName1", label: "Alternative Name (2nd Choice)" },
-    //     { type: "text", name: "altName2", label: "Alternative Name (3rd Choice)" },
-    //     { type: "text", name: "foundationNameEs", label: "Foundation Name (Spanish, optional)", placeholder: "Fundación" },
-    //     { type: "textarea", name: "purposeSummary", label: "Purpose Summary", placeholder: "e.g., asset protection, succession planning, philanthropy, investment income management", colSpan: 2, required: true },
-    //     { type: "select", name: "duration", label: "Duration", options: [{ label: "Perpetual", value: "perpetual" }, { label: "Fixed Term", value: "fixed" }] },
-    //     { type: "text", name: "baseCurrency", label: "Base Currency", placeholder: "e.g., USD" },
-    //     { type: "number", name: "initialEndowment", label: "Initial Endowment", placeholder: "e.g., 10000" },
-    //   ],
-    // },
     {
       id: "profile",
       title: "B. Foundation Profile",
       render: ProfileStepPanama,
     },
     { id: "founders", title: "C. Founder(s)", render: FoundersManager },
-    // { id: "council-individuals", title: "D-1. Foundation Council: 3 Individuals", render: CouncilIndividualsStep },
-    // { id: "council-corporate", title: "D-2. Foundation Council: 1 Corporate", render: CouncilCorporateStep },
     { id: "council", title: "D. Foundation Council — Composition", render: CouncilStep },
     { id: "protectors", title: "E. Protector (optional)", render: ProtectorsManager },
     { id: "beneficiaries", title: "F. Beneficiaries", render: BeneficiariesManager },
@@ -1741,14 +1748,11 @@ const panamaPIFConfig: FormConfig = {
         },
       ],
     },
-    // { id: "deliverables", title: "K. Post-Incorporation Deliverables & Shipping", render: DeliverablesStep },
-    // { id: "declarations", title: "L. AML & Sanctions", render: AMLStep },
-    // { id: "declarations", title: "M. Declarations & e-Sign", render: DeclarationsStep },
     { id: "aml", title: "K. AML & Sanctions", render: AMLStep },
     { id: "deliverables", title: "L. Post-Incorporation Deliverables & Shipping", render: DeliverablesStep },
     { id: "accounting", title: "M. Accounting Record Storage & Responsible Person", render: AccountingRecordsStep },
-    
-    { id: "declarations", title: "N. Declarations & e-Sign", render: DeclarationsStep },
+    { id: "invoice", title: "N. Invoice & Quote", render: InvoicePIF },
+    { id: "declarations", title: "O. Declarations & e-Sign", render: DeclarationsStep },
   ],
 }
 
