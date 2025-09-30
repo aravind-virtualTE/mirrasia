@@ -28,6 +28,7 @@ import { TokenData } from "@/middleware/ProtectedRoutes"
 import { useNavigate } from "react-router-dom"
 import { Trans } from "react-i18next"
 import { FPSForm } from "../payment/FPSForm"
+import { sendInviteToShDir } from "@/services/dataFetch"
 
 const STRIPE_CLIENT_ID =
   import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
@@ -410,7 +411,30 @@ function FoundersManager() {
   }
 
   const inviteFounderMembers = async () => {
-    console.log("Invite Founder Members clicked");
+    // console.log("Invite Founder Members clicked", form.founders);
+    const extractedData = form.founders.map(f => ({ name: f.name, email: f.email ? f.email : "" }));
+    const payload = { _id: form._id || "", inviteData: extractedData, country: "pif" };
+    const response = await sendInviteToShDir(payload);
+    if (response.summary.successful > 0) {
+      toast({
+        title: t("newHk.parties.toasts.invite.success.title"),
+        description: t("newHk.parties.toasts.invite.success.desc", {
+          count: response.summary.successful
+        })
+      });
+    }
+    else if(response.summary.alreadyExists > 0){
+      toast({
+        title: "invitations sent",
+        description: `${response.summary.alreadyExists} invitation(s) sent to the email address.`
+      })
+    }
+    else{
+      toast({
+        title: "No invitations sent",
+        description: "Please ensure founders have valid email addresses."
+      })
+    }
   }
 
   return (
@@ -467,15 +491,36 @@ function CouncilStep() {
   const showIndividuals = form.councilMode !== "corp1";
   const showCorporate = form.councilMode === "corp1";
   const inviteCouncilMembers = async () => {
-    console.log("Invite sent council members ");
-    toast({
-      title: "Invite Sent",
-      description: "Council members have been invited to complete their onboarding forms.",
-    });
+    // console.log("Invite sent council members ",form.councilMode,form.councilIndividuals,form.councilCorporate);
+    let payload = { _id: form._id || "", inviteData: [{ email: form.councilCorporate.email ?? "", name: form.councilCorporate.corpMain }], country: "pif" };
+
+    if (form.councilMode == "ind3" && form.councilIndividuals) {
+      const extractedData = form.councilIndividuals.map(f => ({ name: f.name ?? "", email: f.email ?? "" }));
+      payload = { _id: form._id || "", inviteData: extractedData, country: "pif" }
+    }
+    // console.log("payload for council invite ",payload);
+    const response = await sendInviteToShDir(payload);
+    if (response.summary.successful > 0) {
+      toast({
+        title: t("newHk.parties.toasts.invite.success.title"),
+        description: "Council members have been invited to complete their onboarding forms.",
+      });
+    }
+    else if(response.summary.alreadyExists > 0){
+      toast({
+        title: "Invitations sent",
+        description: `${response.summary.alreadyExists} invitation(s) sent to the email address.`
+      })
+    }else{
+      toast({
+        title: "No invitations sent",
+        description: "Please ensure council members have valid email addresses."
+      })
+    }
+
   }
   return (
     <div className="space-y-4">
-      {/* D. Foundation Council — Composition (preselect) */}
       <Card className="border">
         <CardHeader className="py-3">
           <CardTitle className="text-sm">D. Foundation Council — Composition</CardTitle>
@@ -491,7 +536,6 @@ function CouncilStep() {
                 <RadioGroupItem value="ind3" id="c-mode-ind3" />
                 <Label htmlFor="c-mode-ind3" className="cursor-pointer">Three Individuals</Label>
               </div>
-
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="corp1" id="c-mode-corp1" />
                 <Label htmlFor="c-mode-corp1" className="cursor-pointer">One Corporate</Label>
@@ -705,7 +749,7 @@ function SimpleRepeater({ title, items, onUpdate, onRemove, }: {
               <Input className={inputSm} value={it.name} onChange={(e) => onUpdate(i, { name: e.target.value })} />
             </div>
             <div className="grid gap-1.5">
-              <Label className={labelSm}>Contact (optional)</Label>
+              <Label className={labelSm}>Email</Label>
               <Input className={inputSm} value={it.contact} onChange={(e) => onUpdate(i, { contact: e.target.value })} />
             </div>
           </CardContent>
@@ -728,7 +772,28 @@ function ProtectorsManager() {
     setForm({ ...form, protectors: next.length ? next : [{ name: "", contact: "" }] })
   }
   const inviteProtectors = async () => {
-    console.log("Invite Protector clicked");
+    // console.log("Invite Protector clicked",form.protectors);
+    const extractedData = form.protectors.map(f => ({ name: f.name, email: f.contact ? f.contact : "" }));
+    const payload = { _id: form._id || "", inviteData: extractedData, country: "pif" };
+    const response = await sendInviteToShDir(payload);
+    if (response.summary.successful > 0) {
+      toast({
+        title: t("newHk.parties.toasts.invite.success.title"),
+        description: t("newHk.parties.toasts.invite.success.desc", {
+          count: response.summary.successful
+        })
+      });
+    }else if(response.summary.alreadyExists > 0){
+      toast({
+        title: "Invitations sent",
+        description: `${response.summary.alreadyExists} invitation(s) sent to the email address.`
+      })
+    }else{
+      toast({
+        title: "No invitations sent",
+        description: "Please ensure protectors have valid email addresses."
+      })
+    }
   }
 
   return (
@@ -789,7 +854,28 @@ function BeneficiariesManager() {
     setForm({ ...form, beneficiaries: next.length ? next : [{ name: "", contact: "" }] })
   }
   const inviteBeneficiaries = async () => {
-    console.log("Invite Beneficiaries clicked");
+    // console.log("Invite Beneficiaries clicked");
+    const extractedData = form.beneficiaries.map(f => ({ name: f.name, email: f.contact ? f.contact : "" }));
+    const payload = { _id: form._id || "", inviteData: extractedData, country: "pif" };
+    const response = await sendInviteToShDir(payload);
+    if (response.summary.successful > 0) {
+      toast({
+        title: t("newHk.parties.toasts.invite.success.title"),
+        description: t("newHk.parties.toasts.invite.success.desc", {
+          count: response.summary.successful
+        })
+      });
+    }else if(response.summary.alreadyExists > 0){
+      toast({
+        title: "Invitations sent",
+        description: `${response.summary.alreadyExists} invitation(s) sent to the email address.`
+      })
+    }else{
+      toast({
+        title: "No invitations sent",
+        description: "Please ensure beneficiaries have valid email addresses."
+      });
+    }
   }
 
   return (
@@ -2560,12 +2646,13 @@ export default function PanamaPIFWizard() {
 
       const payload = {
         ...form,
-        userId: decodedToken?.userId ?? form.userId ?? "",
+        userId: decodedToken?.userId ?? "",
         updatedAt: new Date().toISOString(),
       };
 
       const result = await createOrUpdatePaFIncorpo(payload);
       if (result) {
+        setForm({...form, _id: result._id,});
         toast({ title: "Saved", description: "Your application data has been saved." });
         return true;
       }
@@ -2586,7 +2673,7 @@ export default function PanamaPIFWizard() {
         variant: "destructive",
         title: "Please complete required fields",
         description: missing.join(", "),
-      });     
+      });
       return;
     }
     try {

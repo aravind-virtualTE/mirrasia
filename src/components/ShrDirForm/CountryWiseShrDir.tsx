@@ -6,6 +6,7 @@ import PanamaShdInvite from './pa/PanamaShareholderInvite'
 import SaIndividualRegForm from './sa/SaShareholder'
 import SaCompRegistrationForm from './sa/SaCorporate'
 import PanamaCorporateShareholderInvite from './pa/PanamaCorporateShrHldr'
+import PanamaFoundationInvite from './ppif/PanamaFoundationInvite'
 
 const CountryWiseShareholder:React.FC = () => {
     const [country, setCountry] = useState("HK")
@@ -22,6 +23,7 @@ const CountryWiseShareholder:React.FC = () => {
     if(country == 'PA_Corporate') return <PanamaCorporateShareholderInvite />
     if(country == 'SG_Corporate') return <SaCompRegistrationForm />
     if(country == 'SG_Individual') return <SaIndividualRegForm />
+    if(country == 'PPIF') return <PanamaFoundationInvite />
 
     return (
       <div>

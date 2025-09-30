@@ -104,7 +104,7 @@ const Dashboard = () => {
         }
       }
     })();
-
+    console.log("allList",allList)
     return () => {
       isActive = false;
       controller.abort();
@@ -165,7 +165,7 @@ const Dashboard = () => {
     }
     return "N/A";
   };
-
+  console.log("allList",allList)
   return (
     <>
       <div className="flex-1 p-8">
