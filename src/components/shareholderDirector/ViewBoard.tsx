@@ -38,6 +38,9 @@ export default function ViewBoard() {
   const [saState, setSaShrState] = useState([{
     companyName: "" as string, name: "" as string, sharesAcquired: "" as string, _id: "" as string, corporation: "" as string
   }])
+  const [pifState, setPifState] = useState([{
+    companyName: "" as string, name: "" as string, sharesAcquired: "" as string, _id: "" as string, corporation: "" as string
+  }])
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
   useEffect(() => {
@@ -48,12 +51,13 @@ export default function ViewBoard() {
           getShrDirSavedData(`${decodedToken.userId}`),
           getMultiShrDirData(`${decodedToken.userId}`)
         ])
-        // console.log("data", data)
+        console.log("multiData----->", multiData)
         setFState(data.regData)
         setUsState(data.usRegData)
         setCorpUsState(data.usCorpData)
         setPaShrState(data.paShrData)
         setSaShrState(data.saShrData)
+        setPifState(data.pifShrData)
         setMultiData(multiData)
       } catch (error) {
         console.error("Error fetching data:", error)
@@ -69,7 +73,7 @@ export default function ViewBoard() {
     setIsDialogOpen(true)
     setCountry(country)
   }
-  // console.log('multiData', multiData)
+  console.log('pifState', pifState)
   return (
     <div className="flex-1 py-4">
       {/* defaultValue={["registration-table", "associated-companies"]} */}
@@ -373,6 +377,7 @@ export default function ViewBoard() {
                   </div>
                 </div>
               )}
+              
             </div>
           </AccordionContent>
         </AccordionItem>

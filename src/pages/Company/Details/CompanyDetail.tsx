@@ -5,6 +5,7 @@ import OldCCCDetail from "./OldCCCDetail";
 import SgCompdetail from "./SgCompDetail";
 import PaCompdetail from "./PaCompDetail";
 import HKCompDetailSummary from "./NewCompDetail";
+import PPifCompDetail from "./PPifCompDetail";
 
 const CompanyDetail = () => {
     const { countryCode, id } = useParams();
@@ -25,6 +26,8 @@ const CompanyDetail = () => {
                 return <SgCompdetail id={id ?? ""} />;
             case "PA":
                 return <PaCompdetail id={id ?? ""} />;
+            case "PPIF":
+                return <PPifCompDetail id={id ?? ""} />;
             default:
                 return <p> Not Found... </p>
         }
