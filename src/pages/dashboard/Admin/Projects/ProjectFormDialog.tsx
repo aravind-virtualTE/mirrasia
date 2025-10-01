@@ -8,19 +8,24 @@ import {
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel } from '@/components/ui/select';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, 
+  // SelectGroup, SelectLabel 
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Project } from './ProjectAtom';
+import SearchSelectNew from '@/components/SearchSelect2';
 
 interface ProjectFormDialogProps {
   isEditing: boolean;
   currentProject: Project;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSelectChange: (value: string) => void;
-  handleCompanyChange: (companyId: string) => void;
+  // handleCompanyChange: (companyId: string) => void;
   handleSubmit: (e: React.FormEvent) => void;
   handleCancel: () => void;
   filteredCompanies: { id: string; name: string }[];
+  handleCompanySelect: (item: { id: string; name: string }) => void;
+  selectedValue: { id: string; name: string } | null;
 }
 
 const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
@@ -28,11 +33,16 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
   currentProject,
   handleInputChange,
   handleSelectChange,
-  handleCompanyChange,
+  // handleCompanyChange,
   handleSubmit,
   handleCancel,
   filteredCompanies,
+  handleCompanySelect,
+  selectedValue
 }) => {
+
+  const filteredCompanies1 = filteredCompanies.map((company) => ({ id: company.id, name: company.name }))
+ 
   return (
     <DialogContent className="max-h-[90vh] w-[95%] sm:w-[70%] max-w-[1800px] overflow-y-auto">
       <DialogHeader>
@@ -94,7 +104,14 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
             </div>
             <div className="space-y-1">
               <Label htmlFor="snsPlatform" className="text-xs">Select Company</Label>
-              <Select
+              <SearchSelectNew
+                items={filteredCompanies1}
+                placeholder="Select a Company"
+                onSelect={handleCompanySelect}
+                selectedItem={selectedValue}
+                disabled={false}
+              />
+              {/* <Select
                 onValueChange={handleCompanyChange}
                 value={currentProject.company?.id || ''}
               >
@@ -111,7 +128,8 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
                     ))}
                   </SelectGroup>
                 </SelectContent>
-              </Select>
+              </Select> */}
+
             </div>
           </div>
 

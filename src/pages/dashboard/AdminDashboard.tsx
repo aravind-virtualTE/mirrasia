@@ -251,10 +251,7 @@ const AdminDashboard = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-  console.log("paginatedData", paginatedData)
-
-
-
+  // console.log("paginatedData", paginatedData)
   return (
     <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
       {/* Stats Cards */}
