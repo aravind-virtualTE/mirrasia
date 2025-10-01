@@ -1,6 +1,6 @@
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -10,6 +10,7 @@ import jwtDecode from "jwt-decode"
 import type { TokenData } from "@/middleware/ProtectedRoutes"
 import { useParams } from "react-router-dom"
 import { deleteCompanyDoc, getCompDocs, uploadCompanyDocs } from "@/services/dataFetch" // Import getCompDocs function
+import SearchSelectNew from "../SearchSelect2"
 
 // Define types
 interface Document {
@@ -45,7 +46,12 @@ const CompanyDocumentManager: React.FC = () => {
   const [activeTab, setActiveTab] = useState<DocumentType>("company")
   const [currentDocumentType, setCurrentDocumentType] = useState<DocumentType>("company")
   const token = localStorage.getItem("token") as string
-
+  const [selectedValue, setSelectedValue] = useState(
+    selectedCompany
+      ? { id: selectedCompany.id, name: selectedCompany.companyName }
+      : { id: "", name: "" }
+  );
+  // console.log("selectedCompany", selectedCompany)
   useEffect(() => {
     const fetchComp = async () => {
       try {
@@ -62,12 +68,14 @@ const CompanyDocumentManager: React.FC = () => {
             setDocumentToReplace(null)
             setExpandedDoc(null)
             setShowUploadSection(false)
+            setSelectedValue(result ? { id: result.id, name: result.companyName } : { id: "", name: "" })
           } else {
             setSelectedCompany(data[0])
             setUploadedFiles([])
             setDocumentToReplace(null)
             setExpandedDoc(null)
             setShowUploadSection(false)
+            setSelectedValue(data[0] ? { id: data[0].id, name: data[0].companyName } : { id: "", name: "" })
           }
         }
       } catch (error) {
@@ -77,16 +85,16 @@ const CompanyDocumentManager: React.FC = () => {
     fetchComp()
   }, [])
 
-  const handleCompanySelect = (companyId: string): void => {
-    const company = companies.find((c) => c.id === companyId)
-    if (company) {
-      setSelectedCompany(company)
-      setUploadedFiles([])
-      setDocumentToReplace(null)
-      setExpandedDoc(null)
-      setShowUploadSection(false)
-    }
-  }
+  // const handleCompanySelect = (companyId: string): void => {
+  //   const company = companies.find((c) => c.id === companyId)
+  //   if (company) {
+  //     setSelectedCompany(company)
+  //     setUploadedFiles([])
+  //     setDocumentToReplace(null)
+  //     setExpandedDoc(null)
+  //     setShowUploadSection(false)
+  //   }
+  // }
 
   // Handle file drop
   const handleDrop = (e: React.DragEvent<HTMLDivElement>): void => {
@@ -246,7 +254,7 @@ const CompanyDocumentManager: React.FC = () => {
 
   const deleteDocument = async (): Promise<void> => {
     if (!selectedCompany || !documentToDelete) return
-        // console.log("documentToDelete",activeTab)
+    // console.log("documentToDelete",activeTab)
     const updatedCompanies = [...companies]
     const companyIndex = updatedCompanies.findIndex((c) => c.id === selectedCompany.id)
     if (companyIndex === -1) return
@@ -350,7 +358,21 @@ const CompanyDocumentManager: React.FC = () => {
         return "Company Docs"
     }
   }
-
+   const handleCurrencySelect = (item: { id: string; name: string }) => {
+        // console.log("code", item)
+        setSelectedValue(item)
+         const company = companies.find((c) => c.id === item.id)
+    if (company) {
+      setSelectedCompany(company)
+      setUploadedFiles([])
+      setDocumentToReplace(null)
+      setExpandedDoc(null)
+      setShowUploadSection(false)
+    }
+        // setFormState({ ...formState, selectedCompany: item });
+    };
+  const filteredCompanies = companies.map((company) => ({ id: company.id, name: company.companyName }))
+  // console.log("companies", companies)
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -359,7 +381,7 @@ const CompanyDocumentManager: React.FC = () => {
           {companies.length === 0 && (
             <div className="rounded-md bg-muted text-muted-foreground p-2 text-sm">No companies found</div>
           )}
-          <Select onValueChange={handleCompanySelect} value={selectedCompany?.id}>
+          {/* <Select onValueChange={handleCompanySelect} value={selectedCompany?.id}>
             <SelectTrigger className="w-full md:w-80">
               <SelectValue placeholder="Select a company" />
             </SelectTrigger>
@@ -370,7 +392,14 @@ const CompanyDocumentManager: React.FC = () => {
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
+          <SearchSelectNew
+            items={filteredCompanies}
+            placeholder="Select a Company"
+            onSelect={handleCurrencySelect}
+            selectedItem={selectedValue}
+            disabled={false}
+          />
         </div>
       </div>
 
@@ -466,9 +495,8 @@ const CompanyDocumentManager: React.FC = () => {
           {showUploadSection && (
             <>
               <div
-                className={`border-2 border-dashed rounded-lg p-6 mb-4 text-center mt-6 ${
-                  dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
-                }`}
+                className={`border-2 border-dashed rounded-lg p-6 mb-4 text-center mt-6 ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+                  }`}
                 onDragEnter={handleDrag}
                 onDragOver={handleDrag}
                 onDragLeave={handleDrag}
@@ -578,9 +606,8 @@ const DocumentGrid: React.FC<DocumentGridProps> = ({
       {documents.map((document, idx) => (
         <Card
           key={`${idx}-${document.id}`}
-          className={`transition-all ${
-            documentToReplace && documentToReplace.id === document.id ? "ring-2 ring-blue-500" : ""
-          }`}
+          className={`transition-all ${documentToReplace && documentToReplace.id === document.id ? "ring-2 ring-blue-500" : ""
+            }`}
         >
           <CardContent className="p-4">
             <div className="relative">

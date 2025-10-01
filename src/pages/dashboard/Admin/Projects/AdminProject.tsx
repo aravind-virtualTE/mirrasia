@@ -35,7 +35,11 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
   const [deleteProj, setDeleteProj] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-
+  const [selectedValue, setSelectedValue] = useState(
+    currentProject
+      ? { id: currentProject.company?.id, name: currentProject.company?.name }
+      : { id: "", name: "" }
+  );
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -51,6 +55,15 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
     loadProjects();
   }, []);
 
+   useEffect(() => {
+    const cp = currentProject?.company;
+    // only update if it actually differs to avoid useless re-renders
+    setSelectedValue((prev) => {
+      const next = { id: cp?.id || "", name: cp?.name || "" };
+      return prev.id === next.id && prev.name === next.name ? prev : next;
+    });
+  }, [currentProject?.company?.id, currentProject?.company?.name]);
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setCurrentProject({
@@ -116,23 +129,23 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
 
   const filteredCompanies = getFilteredCompanies();
 
-  const handleCompanyChange = (companyId: string) => {
-    const company = filteredCompanies.find(c => c.id === companyId);
-    if (company) {
-      setCurrentProject({
-        ...currentProject,
-        company: {
-          id: company.id,
-          name: company.name
-        }
-      });
-    } else {
-      setCurrentProject({
-        ...currentProject,
-        company: { id: "", name: "" }
-      });
-    }
-  };
+  // const handleCompanyChange = (companyId: string) => {
+  //   const company = filteredCompanies.find(c => c.id === companyId);
+  //   if (company) {
+  //     setCurrentProject({
+  //       ...currentProject,
+  //       company: {
+  //         id: company.id,
+  //         name: company.name
+  //       }
+  //     });
+  //   } else {
+  //     setCurrentProject({
+  //       ...currentProject,
+  //       company: { id: "", name: "" }
+  //     });
+  //   }
+  // };
 
   const handleNavigate = (project: Project) => {
     // console.log("project--->", project)
@@ -175,6 +188,27 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
     loadProjects1(filters);
   };
 
+  const handleCompanySelect = (item: { id: string; name: string }): void => {
+    const company = filteredCompanies.find((c) => c.id === item.id);
+
+     if (company) {
+      setCurrentProject({
+        ...currentProject,
+        company: {
+          id: company.id,
+          name: company.name
+        }
+      });
+    } else {
+      setCurrentProject({
+        ...currentProject,
+        company: { id: "", name: "" }
+      });
+    }
+    setSelectedValue(item);
+  }
+console.log("filteredCompanies", filteredCompanies)
+ console.log('selectedValue',selectedValue)
   return (
     <div className="container py-4">
       <div className="flex justify-between items-center mb-2">
@@ -208,10 +242,12 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
               currentProject={currentProject}
               handleInputChange={handleInputChange}
               handleSelectChange={handleSelectChange}
-              handleCompanyChange={handleCompanyChange}
+              // handleCompanyChange={handleCompanyChange}
               handleSubmit={handleSubmit}
               handleCancel={handleCancel}
               filteredCompanies={filteredCompanies}
+              handleCompanySelect={handleCompanySelect}
+              selectedValue={selectedValue}
             />
           </Dialog>
         </div>
