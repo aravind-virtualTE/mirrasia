@@ -2647,7 +2647,7 @@ export default function PanamaPIFWizard() {
       const payload = {
         ...form,
         userId: decodedToken?.userId ?? "",
-        updatedAt: new Date().toISOString(),
+        stepIdx,
       };
 
       const result = await createOrUpdatePaFIncorpo(payload);
