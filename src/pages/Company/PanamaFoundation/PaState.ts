@@ -19,6 +19,7 @@ export interface PIFPricing {
 export interface PanamaPIFForm {
   _id?: string;
   userId:string
+  stepIdx: number;
   email: string;
   contactName: string;
   phone?: string;
@@ -117,11 +118,13 @@ export interface PanamaPIFForm {
   amount?: string;
   currency?: string;
   paymentIntentStatus?: string;
+  createdAt ? : string;
 }
 
 export const initialPIF: PanamaPIFForm = {
   _id: "",
   userId: "",
+  stepIdx: 0,
   email: "",
   contactName: "",
   phone: "",
@@ -225,7 +228,8 @@ export const initialPIF: PanamaPIFForm = {
   receiptUrl: '',
   amount: '',        // cents
   currency: '',    // e.g., "usd"
-  paymentIntentStatus: ''
+  paymentIntentStatus: '',
+  createdAt: ""
 }
 
 export const pifFormAtom = atom<PanamaPIFForm>(initialPIF)
