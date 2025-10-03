@@ -138,12 +138,20 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
 
   const toggleStatus = (s: TaskStatus) => {
     const next = new Set(statusFilter);
-    next.has(s) ? next.delete(s) : next.add(s);
+    if (next.has(s)) {
+      next.delete(s);
+    } else {
+      next.add(s);
+    }
     setStatusFilter(next);
   };
   const togglePriority = (p: Task["priority"]) => {
     const next = new Set(priorityFilter);
-    next.has(p) ? next.delete(p) : next.add(p);
+    if (next.has(p)) {
+      next.delete(p);
+    } else {
+      next.add(p);
+    }
     setPriorityFilter(next);
   };
 

@@ -10,7 +10,7 @@ import PanamaFoundationInvite from './ppif/PanamaFoundationInvite'
 
 const CountryWiseShareholder:React.FC = () => {
     const [country, setCountry] = useState("HK")
-    console.log("CountryWiseShareholder", country)
+    // console.log("CountryWiseShareholder", country)
     useEffect(() =>{
       const country = localStorage.getItem('country')
       setCountry(country ?? "HK")

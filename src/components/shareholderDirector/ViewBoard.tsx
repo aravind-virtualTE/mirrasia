@@ -22,7 +22,7 @@ export default function ViewBoard() {
   const [selectedData, setsSelectedData] = useState<any>(null)
   const [country, setCountry] = useState<string>('HK')
   const [multiData, setMultiData] = useAtom<any>(multiShrDirResetAtom)
-  
+
   const [fState, setFState] = useState([{
     companyName: "" as string, fullName: "" as string, significantController: "" as string, _id: "" as string
   }])
@@ -39,7 +39,7 @@ export default function ViewBoard() {
     companyName: "" as string, name: "" as string, sharesAcquired: "" as string, _id: "" as string, corporation: "" as string
   }])
   const [pifState, setPifState] = useState([{
-    companyName: "" as string, name: "" as string, sharesAcquired: "" as string, _id: "" as string, corporation: "" as string
+    companyName: "" as string, name: "" as string, contribution: "" as string, _id: "" as string, corporation: "" as string
   }])
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
@@ -52,6 +52,7 @@ export default function ViewBoard() {
           getMultiShrDirData(`${decodedToken.userId}`)
         ])
         console.log("multiData----->", multiData)
+        console.log("data----->", data)
         setFState(data.regData)
         setUsState(data.usRegData)
         setCorpUsState(data.usCorpData)
@@ -77,7 +78,7 @@ export default function ViewBoard() {
   return (
     <div className="flex-1 py-4">
       {/* defaultValue={["registration-table", "associated-companies"]} */}
-      <Accordion type="multiple" className="w-full space-y-4"  defaultValue={["registration-table", "associated-companies"]}>
+      <Accordion type="multiple" className="w-full space-y-4" defaultValue={["registration-table", "associated-companies"]}>
         <AccordionItem value="registration-table" className="border rounded-lg">
           <AccordionTrigger className="px-4 py-3 hover:no-underline">
             <div className="flex items-center justify-between w-full">
@@ -293,7 +294,7 @@ export default function ViewBoard() {
                 <div>
                   <h4 className="font-semibold mb-3 text-primary">Panama Shareholder member</h4>
                   <div className="rounded-md border">
-                  <Table>
+                    <Table>
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-10">S.No</TableHead>
@@ -337,7 +338,7 @@ export default function ViewBoard() {
                 <div>
                   <h4 className="font-semibold mb-3 text-primary">Singapore Shareholder member</h4>
                   <div className="rounded-md border">
-                  <Table>
+                    <Table>
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-10">S.No</TableHead>
@@ -377,7 +378,49 @@ export default function ViewBoard() {
                   </div>
                 </div>
               )}
-              
+              {pifState.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3 text-primary">PPIF member</h4>
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-10">S.No</TableHead>
+                          <TableHead className="w-48">{t("company.name")}</TableHead>
+                          <TableHead className="w-48">{t("shldr_viewboard.fullName")}</TableHead>
+                          <TableHead className="min-w-[300px]">Amount Invested & Shares</TableHead>
+                          <TableHead className="w-16 text-center">{t("shldr_viewboard.edit")}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {pifState.map((company, index) => (
+                          <TableRow
+                            key={`${index}-${company.companyName}-${index}`}
+                            onClick={() => handleShowClick(company)}
+                            className="cursor-pointer"
+                          >
+                            <TableCell className="font-medium">{index + 1}</TableCell>
+                            <TableCell className="font-medium">{company.companyName}</TableCell>
+                            <TableCell>{company.name}</TableCell>
+                            <TableCell className="whitespace-normal">{company.contribution}</TableCell>
+                            <TableCell className="text-center">
+                              <button onClick={(e) => {
+                                e.stopPropagation()
+                                const shrId = multiData.find((item: { shrDirId: string; }) => item.shrDirId == company._id)
+                                localStorage.setItem('shdrItem', shrId._id)
+                                localStorage.setItem('country', 'PPIF')
+                                navigate(`/registrationForm/${company._id}`)
+                              }}>
+                                <Pencil size={16} />
+                              </button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              )}
             </div>
           </AccordionContent>
         </AccordionItem>
