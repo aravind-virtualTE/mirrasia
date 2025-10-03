@@ -389,7 +389,7 @@ const Dashboard = () => {
             </AccordionItem>
           )}
         </Accordion>
-
+          {/*shareholder member invite data */}
         <ViewBoard />
         <MainFunctionalities />
 

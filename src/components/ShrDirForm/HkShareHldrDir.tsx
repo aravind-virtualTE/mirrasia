@@ -290,6 +290,9 @@ const HkShareHldrDir = () => {
     value: typeof formState[T]
   ) => setFormState((prev) => ({ ...prev, [field]: value }));
 
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null
+
+
   const handleSubmit = async () => {
     const newErrors = { ...errors };
     Object.keys(newErrors).forEach((k) => ((newErrors as any)[k] = ""));
@@ -349,15 +352,15 @@ const HkShareHldrDir = () => {
     if (!formState.agreementDeclaration.trim()) {
       newErrors.agreementDeclaration = "You must agree or disagree with the declaration.";
     }
-    console.log("newErrors",newErrors)
-    console.log("formState",formState)
+    // console.log("newErrors",newErrors)
+    // console.log("formState",formState)
     setErrors(newErrors);
     if (Object.values(newErrors).every((e) => e === "")) {
       const result = await saveShrDirRegData(formState, id);
       localStorage.removeItem("shdrItem");
       if (result.success == true) {
         setFormState(result.registeredData);
-        navigate("/dashboard");
+        navigate(user.role === "admin" ? "/admin-dashboard" : "/dashboard");
         toast({ title: "Details submitted", description: "Saved successfully" });
         setShowSuccess(true);
       }
