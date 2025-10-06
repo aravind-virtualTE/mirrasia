@@ -234,7 +234,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 status: formData.status,
                 isDisabled: formData.isDisabled,
                 incorporationDate: formData.incorporationDate,
-                country: 'US',
+                country: 'PA',
                 companyName: formData.companyName
             },
             session: {

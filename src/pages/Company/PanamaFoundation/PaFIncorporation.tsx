@@ -41,9 +41,11 @@ function TopBar({ title, totalSteps, idx }: { title: string; totalSteps: number;
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
       <div className="min-w-0 flex-1">
-        <div className="text-lg sm:text-xl font-extrabold truncate">{t(title, "Company Incorporation — Panama Private Interest Foundation")}</div>
+        <div className="text-lg sm:text-xl font-extrabold truncate">
+          {t(title) || t("ppif.topbar.defaultTitle")}
+        </div>
         <div className="text-xs sm:text-sm text-muted-foreground">
-          {t('newHk.infoHelpIcon', "Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.")}
+          {t("newHk.infoHelpIcon")}
         </div>
       </div>
       <div className="w-full sm:w-72 shrink-0">
@@ -68,7 +70,7 @@ function SidebarPanama({ steps, idx, goto, canProceedFromCurrent, }: {
   const canJumpTo = (target: number) => {
     if (target === idx) return true
     if (target < idx) return true
-    return canProceedFromCurrent               // forward only if current step valid
+    return canProceedFromCurrent
   }
 
   const onTryGoto = (target: number) => {
@@ -79,38 +81,37 @@ function SidebarPanama({ steps, idx, goto, canProceedFromCurrent, }: {
     }
     if (!canProceedFromCurrent) {
       toast({
-        title: t("newHk.sidebar.toasts.completeStepTitle", "Please complete this step"),
-        description: t(
-          "newHk.sidebar.toasts.completeStepDesc",
-          "Fill the required fields before moving forward."
-        ),
+        title: t("newHk.sidebar.toasts.completeStepTitle"),
+        description: t("newHk.sidebar.toasts.completeStepDesc"),
       })
       return
     }
     goto(target)
   }
+
   return (
     <aside className="space-y-4 sticky top-0 h-[calc(100vh-2rem)] overflow-auto p-0">
-      {/* Brand / badges like HK */}
+      {/* Brand / badges */}
       <div className="flex items-center gap-2 mb-1">
         <div className="w-5 h-5 rounded bg-red-600 shrink-0" />
         <div className="text-[11px] sm:text-[13px] tracking-wide font-semibold truncate">
-          {t("newHk.sidebar.brand", "MIRR ASIA · PANAMA")}
+          {t("newHk.sidebar.brand")}
         </div>
       </div>
       <div className="text-xs text-muted-foreground">
         <div className="flex flex-wrap gap-1">
           <span className="inline-flex items-center gap-1 border rounded-full px-2 py-1 text-[10px] sm:text-xs">
-            {t("newHk.sidebar.badges.ssl", "SSL Secured")}
+            {t("newHk.sidebar.badges.ssl")}
           </span>
           <span className="inline-flex items-center gap-1 border rounded-full px-2 py-1 text-[10px] sm:text-xs">
-            {t("newHk.sidebar.badges.registry", "Registrar-ready")}
+            {t("newHk.sidebar.badges.registry")}
           </span>
           <span className="inline-flex items-center gap-1 border rounded-full px-2 py-1 text-[10px] sm:text-xs">
-            {t("newHk.sidebar.badges.aml", "KYC/AML")}
+            {t("newHk.sidebar.badges.aml")}
           </span>
         </div>
       </div>
+
       {/* Steps */}
       <div className="space-y-1 mt-3">
         {steps.map((s, i) => {
@@ -130,12 +131,12 @@ function SidebarPanama({ steps, idx, goto, canProceedFromCurrent, }: {
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="font-semibold text-xs sm:text-sm truncate">
-                  {i + 1}. {t(s.title as string, s.title as string)}
+                  {i + 1}. {t(s.title as string)}
                 </div>
                 <div className="shrink-0 flex items-center gap-1">
                   {isDone && (
                     <Badge variant="secondary" className="text-[10px] sm:text-xs flex items-center gap-1">
-                      <CheckCircle2 className="h-3.5 w-3.5" /> {t("newHk.sidebar.done", "Done")}
+                      <CheckCircle2 className="h-3.5 w-3.5" /> {t("newHk.sidebar.done")}
                     </Badge>
                   )}
                   {!enabled && !isDone && (
@@ -149,12 +150,12 @@ function SidebarPanama({ steps, idx, goto, canProceedFromCurrent, }: {
           )
         })}
         <p className="text-xs text-muted-foreground mt-2">
-          {t("newHk.sidebar.needHelp", "Need help? ")}
+          {t("newHk.sidebar.needHelp")}
           <button
             className="text-sky-600 underline-offset-2 hover:underline touch-manipulation"
-            onClick={() => toast({ title: "Contact us", description: "We’ll follow up shortly." })}
+            onClick={() => toast({ title: t("ppif.sidebar.contactToastTitle"), description: t("ppif.sidebar.contactToastDesc") })}
           >
-            {t("newHk.sidebar.chatCta", "Chat with us")}
+            {t("newHk.sidebar.chatCta")}
           </button>
         </p>
       </div>
@@ -196,11 +197,11 @@ function Field({ field }: { field: FieldBase }) {
   const labelEl = (
     <div className="flex items-center gap-2">
       <Label htmlFor={id} className={labelSm}>
-        {field.label}
+        {typeof field.label === "string" ? t(field.label) : field.label}
       </Label>
       {field.required ? <span className="text-destructive">*</span> : null}
       {field.tooltip ? (
-        <span title={field.tooltip} className="text-muted-foreground/80">
+        <span title={field.tooltip as string} className="text-muted-foreground/80">
           <Info className="h-4 w-4" />
         </span>
       ) : null}
@@ -219,7 +220,7 @@ function Field({ field }: { field: FieldBase }) {
             id={id}
             className={inputSm}
             type={field.type === "number" ? "number" : field.type}
-            placeholder={field.placeholder}
+            placeholder={typeof field.placeholder === "string" ? t(field.placeholder) : field.placeholder}
             value={(form as any)[id] ?? ""}
             onChange={(e) => set(id, e.target.value)}
           />
@@ -233,7 +234,7 @@ function Field({ field }: { field: FieldBase }) {
           <Textarea
             id={id}
             rows={field.rows ?? 4}
-            placeholder={field.placeholder}
+            placeholder={typeof field.placeholder === "string" ? t(field.placeholder) : field.placeholder}
             value={(form as any)[id] ?? ""}
             onChange={(e) => set(id, e.target.value)}
             className="text-sm resize-y"
@@ -247,7 +248,7 @@ function Field({ field }: { field: FieldBase }) {
           {labelEl}
           <Select value={String((form as any)[id] ?? "")} onValueChange={(v) => set(id, v)}>
             <SelectTrigger id={id} className={inputSm}>
-              <SelectValue placeholder={field.placeholder || "Select"} />
+              <SelectValue placeholder={t("ppif.placeholders.select")} />
             </SelectTrigger>
             <SelectContent>
               {sanitizeOptions(field.options).map((o) => (
@@ -266,7 +267,7 @@ function Field({ field }: { field: FieldBase }) {
           <Checkbox id={id} checked={Boolean((form as any)[id])} onCheckedChange={(v) => set(id, Boolean(v))} />
           <div className="grid gap-1">
             <Label htmlFor={id} className={`${labelSm} leading-relaxed cursor-pointer`}>
-              {field.label}
+              {typeof field.label === "string" ? t(field.label) : field.label}
             </Label>
             {hintEl}
           </div>
@@ -280,7 +281,9 @@ function Field({ field }: { field: FieldBase }) {
             {(field.options || []).map((o) => (
               <label key={o.value} className="flex items-start gap-2 text-sm cursor-pointer group">
                 <RadioGroupItem value={o.value} id={`${id}-${o.value}`} />
-                <span className="leading-relaxed text-foreground group-hover:opacity-90 transition-opacity">{o.label}</span>
+                <span className="leading-relaxed text-foreground group-hover:opacity-90 transition-opacity">
+                  {typeof o.label === "string" ? t(o.label) : o.label}
+                </span>
               </label>
             ))}
           </RadioGroup>
@@ -304,13 +307,14 @@ function FounderCard({ idx, onRemove, canRemove, }: {
   onRemove: (idx: number) => void
   canRemove: boolean
 }) {
-  const [form, setForm] = useAtom(pifFormAtom)
-  const f = form.founders[idx]
+  const [form, setForm] = useAtom(pifFormAtom);
+
+  const f = form.founders[idx];
   const update = (patch: Partial<(typeof form)["founders"][number]>) => {
-    const next = [...form.founders]
-    next[idx] = { ...next[idx], ...patch }
-    setForm({ ...form, founders: next })
-  }
+    const next = [...form.founders];
+    next[idx] = { ...next[idx], ...patch };
+    setForm({ ...form, founders: next });
+  };
 
   return (
     <Card className="border">
@@ -318,146 +322,193 @@ function FounderCard({ idx, onRemove, canRemove, }: {
         <CardTitle className="text-base font-semibold flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-primary" />
-            <span>Founder #{idx + 1}</span>
+            <span>{t("ppif.founders.title", { n: idx + 1 })}</span>
           </div>
+
           {canRemove ? (
             <Button
               variant="ghost"
               size="icon"
               onClick={() => onRemove(idx)}
               className="text-muted-foreground hover:text-destructive"
-              aria-label={`Remove founder #${idx + 1}`}
-              title="Remove"
+              aria-label={t("ppif.founders.removeAria", { n: idx + 1 })}
+              title={t("ppif.founders.removeTitle")}
             >
               <Trash className="h-4 w-4" />
             </Button>
           ) : null}
         </CardTitle>
       </CardHeader>
+
       <CardContent className="grid md:grid-cols-2 gap-3">
+        {/* Founder Type */}
         <div className="grid gap-1.5">
           <Label className={labelSm}>
-            Founder Type<span className="text-destructive">*</span>
+            {t("ppif.founders.type.label")}
+            <span className="text-destructive">
+              {t("ppif.validation.requiredAsterisk")}
+            </span>
           </Label>
-          <RadioGroup value={f.type} onValueChange={(v: any) => update({ type: v })} className="flex gap-6">
+
+          <RadioGroup
+            value={f.type}
+            onValueChange={(v: "individual" | "corporate") => update({ type: v })}
+            className="flex gap-6"
+          >
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <RadioGroupItem value="individual" id={`f-type-i-${idx}`} />
-              Individual
+              {t("ppif.founders.type.options.individual")}
             </label>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <RadioGroupItem value="corporate" id={`f-type-c-${idx}`} />
-              Corporate
+              {t("ppif.founders.type.options.corporate")}
             </label>
           </RadioGroup>
         </div>
+
+        {/* Name */}
         <div className="grid gap-1.5">
           <Label className={labelSm}>
-            Full Name / Corporate Name<span className="text-destructive">*</span>
+            {t("ppif.founders.name.label")}
+            <span className="text-destructive">
+              {t("ppif.validation.requiredAsterisk")}
+            </span>
           </Label>
           <Input
             className={inputSm}
             value={f.name}
             onChange={(e) => update({ name: e.target.value })}
-            placeholder="Enter full or corporate name"
+            placeholder={t("ppif.founders.name.placeholder")}
           />
         </div>
+
+        {/* ID */}
         <div className="grid gap-1.5">
           <Label className={labelSm}>
-            Passport / Reg. No.<span className="text-destructive">*</span>
+            {t("ppif.founders.id.label")}
+            <span className="text-destructive">
+              {t("ppif.validation.requiredAsterisk")}
+            </span>
           </Label>
           <Input
             className={inputSm}
             value={f.id}
             onChange={(e) => update({ id: e.target.value })}
-            placeholder="Enter passport or registration number"
+            placeholder={t("ppif.founders.id.placeholder")}
           />
         </div>
+
+        {/* Email */}
         <div className="grid gap-1.5">
-          <Label className={labelSm}>Email</Label>
+          <Label className={labelSm}>{t("ppif.founders.email.label")}</Label>
           <Input
             className={inputSm}
             type="email"
             value={f.email || ""}
             onChange={(e) => update({ email: e.target.value })}
-            placeholder="email@example.com"
+            placeholder={t("ppif.founders.email.placeholder")}
           />
         </div>
+
+        {/* Phone */}
         <div className="grid gap-1.5">
-          <Label className={labelSm}>Phone</Label>
+          <Label className={labelSm}>{t("ppif.founders.phone.label")}</Label>
           <Input
             className={inputSm}
             value={f.tel || ""}
             onChange={(e) => update({ tel: e.target.value })}
-            placeholder="Enter phone number"
+            placeholder={t("ppif.founders.phone.placeholder")}
           />
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 function FoundersManager() {
-  const [form, setForm] = useAtom(pifFormAtom)
+  const [form, setForm] = useAtom(pifFormAtom);
+
   const add = () =>
     setForm({
       ...form,
       founders: [...form.founders, { type: "", name: "", id: "", email: "", tel: "" }],
-    })
+    });
 
   const removeAt = (idx: number) => {
-    if (form.founders.length <= 1) return
-    const next = form.founders.filter((_, i) => i !== idx)
-    setForm({ ...form, founders: next })
-  }
+    if (form.founders.length <= 1) return;
+    const next = form.founders.filter((_, i) => i !== idx);
+    setForm({ ...form, founders: next });
+  };
 
   const inviteFounderMembers = async () => {
-    // console.log("Invite Founder Members clicked", form.founders);
-    const extractedData = form.founders.map(f => ({ name: f.name, email: f.email ? f.email : "" }));
+    const extractedData = (form.founders || []).map((f) => ({
+      name: f.name,
+      email: f.email ? f.email : "",
+    }));
     const payload = { _id: form._id || "", inviteData: extractedData, country: "pif" };
-    const response = await sendInviteToShDir(payload);
-    if (response.summary.successful > 0) {
+
+    try {
+      const response = await sendInviteToShDir(payload);
+      const successful = response?.summary?.successful ?? 0;
+      const alreadyExists = response?.summary?.alreadyExists ?? 0;
+
+      if (successful > 0) {
+        toast({
+          title: t("ppif.founders.toasts.invite.success.title"),
+          description: t("ppif.founders.toasts.invite.success.desc", { count: successful }),
+        });
+      } else if (alreadyExists > 0) {
+        toast({
+          title: t("ppif.founders.toasts.invite.alreadyExists.title"),
+          description: t("ppif.founders.toasts.invite.alreadyExists.desc", { count: alreadyExists }),
+        });
+      } else {
+        toast({
+          title: t("ppif.founders.toasts.invite.none.title"),
+          description: t("ppif.founders.toasts.invite.none.desc"),
+          variant: "destructive",
+        });
+      }
+    } catch (e) {
+      // Fallback to the "none" message on error
       toast({
-        title: t("newHk.parties.toasts.invite.success.title"),
-        description: t("newHk.parties.toasts.invite.success.desc", {
-          count: response.summary.successful
-        })
+        title: t("ppif.founders.toasts.invite.none.title"),
+        description: t("ppif.founders.toasts.invite.none.desc"),
+        variant: "destructive",
       });
+      console.error("inviteFounderMembers error", e);
     }
-    else if(response.summary.alreadyExists > 0){
-      toast({
-        title: "invitations sent",
-        description: `${response.summary.alreadyExists} invitation(s) sent to the email address.`
-      })
-    }
-    else{
-      toast({
-        title: "No invitations sent",
-        description: "Please ensure founders have valid email addresses."
-      })
-    }
-  }
+  };
 
   return (
     <div className="space-y-3">
       <InfoBox>
-        <strong>Number of Founders</strong>: A Panama PIF can be founded by one or more persons (individual or corporate). Add required members.
+        <strong>{t("ppif.founders.info.title")}</strong>: {t("ppif.founders.info.body")}
       </InfoBox>
+
       <div className="flex items-center gap-3">
         <Button variant="outline" onClick={add}>
           <Users className="h-4 w-4 mr-2" />
-          Add Founder
+          {t("ppif.founders.buttons.addFounder")}
         </Button>
       </div>
-      {form.founders.map((_, i) => (
-        <FounderCard key={i} idx={i} onRemove={removeAt} canRemove={form.founders.length > 1} />
+
+      {(form.founders || []).map((_, i) => (
+        <FounderCard
+          key={i}
+          idx={i}
+          onRemove={removeAt}
+          canRemove={(form.founders || []).length > 1}
+        />
       ))}
+
       <div className="flex justify-end pt-2">
-        <Button onClick={inviteFounderMembers} >
-          Invite Founder Members
+        <Button onClick={inviteFounderMembers}>
+          {t("ppif.founders.buttons.invite")}
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
 function CouncilStep() {
@@ -471,7 +522,7 @@ function CouncilStep() {
         councilIndividuals: [
           form.councilIndividuals?.[0] ?? { type: "individual", name: "", id: "", email: "", tel: "" },
           form.councilIndividuals?.[1] ?? { type: "individual", name: "", id: "", email: "", tel: "" },
-          form.councilIndividuals?.[2] ?? { type: "individual", name: "", id: "", email: "", tel: "" },
+          form.councilIndividuals?.[2] ?? { type: "individual", name: "", id: "", email: "", tel: "" }
         ]
       });
     }
@@ -484,46 +535,62 @@ function CouncilStep() {
     set({ councilIndividuals: next });
   };
 
-  const c = form.councilCorporate;
-  const updateCorp = (patch: Partial<typeof c>) =>
-    set({ councilCorporate: { ...c, ...patch } });
+  const c = form.councilCorporate || { corpMain: "", addrRep: "", signatory: "", email: "" };
+  const updateCorp = (patch: Partial<typeof c>) => set({ councilCorporate: { ...c, ...patch } });
 
   const showIndividuals = form.councilMode !== "corp1";
   const showCorporate = form.councilMode === "corp1";
+
   const inviteCouncilMembers = async () => {
-    // console.log("Invite sent council members ",form.councilMode,form.councilIndividuals,form.councilCorporate);
-    let payload = { _id: form._id || "", inviteData: [{ email: form.councilCorporate.email ?? "", name: form.councilCorporate.corpMain }], country: "pif" };
+    let payload = {
+      _id: form._id || "",
+      inviteData: [{ email: c.email ?? "", name: c.corpMain }],
+      country: "pif"
+    };
 
-    if (form.councilMode == "ind3" && form.councilIndividuals) {
-      const extractedData = form.councilIndividuals.map(f => ({ name: f.name ?? "", email: f.email ?? "" }));
-      payload = { _id: form._id || "", inviteData: extractedData, country: "pif" }
+    if (form.councilMode === "ind3" && form.councilIndividuals) {
+      const extractedData = form.councilIndividuals.map((m) => ({ name: m.name ?? "", email: m.email ?? "" }));
+      payload = { _id: form._id || "", inviteData: extractedData, country: "pif" };
     }
-    // console.log("payload for council invite ",payload);
-    const response = await sendInviteToShDir(payload);
-    if (response.summary.successful > 0) {
+
+    try {
+      const response = await sendInviteToShDir(payload);
+      const successful = response?.summary?.successful ?? 0;
+      const alreadyExists = response?.summary?.alreadyExists ?? 0;
+
+      if (successful > 0) {
+        toast({
+          title: t("ppif.council.toasts.invite.success.title"),
+          description: t("ppif.council.toasts.invite.success.desc")
+        });
+      } else if (alreadyExists > 0) {
+        toast({
+          title: t("ppif.council.toasts.invite.alreadyExists.title"),
+          description: t("ppif.council.toasts.invite.alreadyExists.desc", { count: alreadyExists })
+        });
+      } else {
+        toast({
+          title: t("ppif.council.toasts.invite.none.title"),
+          description: t("ppif.council.toasts.invite.none.desc"),
+          variant: "destructive"
+        });
+      }
+    } catch (e) {
       toast({
-        title: t("newHk.parties.toasts.invite.success.title"),
-        description: "Council members have been invited to complete their onboarding forms.",
+        title: t("ppif.council.toasts.invite.none.title"),
+        description: t("ppif.council.toasts.invite.none.desc"),
+        variant: "destructive"
       });
+      console.error("inviteCouncilMembers error", e);
     }
-    else if(response.summary.alreadyExists > 0){
-      toast({
-        title: "Invitations sent",
-        description: `${response.summary.alreadyExists} invitation(s) sent to the email address.`
-      })
-    }else{
-      toast({
-        title: "No invitations sent",
-        description: "Please ensure council members have valid email addresses."
-      })
-    }
+  };
 
-  }
   return (
     <div className="space-y-4">
+      {/* Composition */}
       <Card className="border">
         <CardHeader className="py-3">
-          <CardTitle className="text-sm">D. Foundation Council — Composition</CardTitle>
+          <CardTitle className="text-sm">{t("ppif.council.composition.title")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <div className="inline-flex flex-wrap gap-6 text-sm">
@@ -534,37 +601,44 @@ function CouncilStep() {
             >
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="ind3" id="c-mode-ind3" />
-                <Label htmlFor="c-mode-ind3" className="cursor-pointer">Three Individuals</Label>
+                <Label htmlFor="c-mode-ind3" className="cursor-pointer">
+                  {t("ppif.council.composition.modes.ind3")}
+                </Label>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="corp1" id="c-mode-corp1" />
-                <Label htmlFor="c-mode-corp1" className="cursor-pointer">One Corporate</Label>
+                <Label htmlFor="c-mode-corp1" className="cursor-pointer">
+                  {t("ppif.council.composition.modes.corp1")}
+                </Label>
               </div>
             </RadioGroup>
           </div>
         </CardContent>
       </Card>
 
-      {/* D-1. Council: Individuals + nominee block */}
+      {/* Individuals */}
       {showIndividuals && (
         <Card className="border">
           <CardHeader className="py-3">
-            <CardTitle className="text-sm">D-1. Three Individual Council Members</CardTitle>
+            <CardTitle className="text-sm">{t("ppif.council.individuals.title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="rounded-md border border-border p-2.5 text-[13px] bg-muted/30">
-              Each member files a separate <b>Member Registration Form</b>. <b>Nominee Director</b> service is available if needed.
+              {t("ppif.council.individuals.note")}
             </div>
 
             {form.councilIndividuals.map((m, i) => (
               <Card key={i} className="border border-dashed">
                 <CardHeader className="py-2.5">
-                  <CardTitle className="text-sm">Council Member #{i + 1} – Quick Info</CardTitle>
+                  <CardTitle className="text-sm">
+                    {t("ppif.council.individuals.memberCardTitle", { n: i + 1 })}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="grid md:grid-cols-2 gap-3">
                   <div className="grid gap-1.5">
                     <Label className={labelSm}>
-                      Full Name<span className="text-destructive">*</span>
+                      {t("ppif.council.individuals.fields.name.label")}
+                      <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
                     </Label>
                     <Input
                       className={inputSm}
@@ -572,9 +646,11 @@ function CouncilStep() {
                       onChange={(e) => updateInd(i, { name: e.target.value })}
                     />
                   </div>
+
                   <div className="grid gap-1.5">
                     <Label className={labelSm}>
-                      Passport / ID No.<span className="text-destructive">*</span>
+                      {t("ppif.council.individuals.fields.id.label")}
+                      <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
                     </Label>
                     <Input
                       className={inputSm}
@@ -582,8 +658,11 @@ function CouncilStep() {
                       onChange={(e) => updateInd(i, { id: e.target.value })}
                     />
                   </div>
+
                   <div className="grid gap-1.5">
-                    <Label className={labelSm}>Email</Label>
+                    <Label className={labelSm}>
+                      {t("ppif.council.individuals.fields.email.label")}
+                    </Label>
                     <Input
                       className={inputSm}
                       type="email"
@@ -591,8 +670,11 @@ function CouncilStep() {
                       onChange={(e) => updateInd(i, { email: e.target.value })}
                     />
                   </div>
+
                   <div className="grid gap-1.5">
-                    <Label className={labelSm}>Phone</Label>
+                    <Label className={labelSm}>
+                      {t("ppif.council.individuals.fields.phone.label")}
+                    </Label>
                     <Input
                       className={inputSm}
                       value={m.tel || ""}
@@ -605,41 +687,41 @@ function CouncilStep() {
 
             <div className="hr h-px bg-border" />
 
-            <Label className={labelSm}>Use Nominee Director Service?</Label>
+            <Label className={labelSm}>{t("ppif.council.individuals.nominee.askLabel")}</Label>
             <div className="flex items-center gap-2">
               <Checkbox
                 id="useNominee"
                 checked={form.useNomineeDirector}
                 onCheckedChange={(v) => set({ useNomineeDirector: Boolean(v) })}
               />
-              <Label htmlFor="useNominee" className={labelSm}>Use Nominee Director Service</Label>
+              <Label htmlFor="useNominee" className={labelSm}>
+                {t("ppif.council.individuals.nominee.checkboxLabel")}
+              </Label>
             </div>
 
             {form.useNomineeDirector && (
               <div id="nomineeBlock" className="space-y-3">
                 <InfoBox>
-                  <b>Nominee Director — Details</b><br />
-                  Officer details are viewable at the public registry; we can list nominees if needed.
-                  Nominees <u>do not exercise control/management</u> nor claim ownership. UBO/significant
-                  controller verification is still required for banks/exchanges. We perform in-person/video KYC
-                  and keep records per AML laws. Fees (annual): 1 person <b>USD 1,200</b>, 2 persons <b>USD 1,700</b>,
-                  3 persons <b>USD 2,200</b> (justification recommended). Nominee shareholder: <b>USD 1,300</b>.
+                  <b>{t("ppif.council.individuals.nominee.infoTitle")}</b>
+                  <br />
+                  {t("ppif.council.individuals.nominee.infoBody")}
                 </InfoBox>
 
                 <div className="grid md:grid-cols-2 gap-3">
                   <div className="grid gap-1.5">
-                    <Label className={labelSm}>Nominee Director — Number of Persons</Label>
+                    <Label className={labelSm}>{t("ppif.council.individuals.nominee.countLabel")}</Label>
                     <Select
                       value={form.nomineePersons || undefined}
                       onValueChange={(v: "1" | "2" | "3") => set({ nomineePersons: v })}
                     >
                       <SelectTrigger className={inputSm}>
-                        <SelectValue placeholder="Select" />
+                        {/* reuse global Select placeholder from earlier JSON */}
+                        <SelectValue placeholder={t("ppif.profile.sourceOfFunds.placeholder")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="1">1 person (USD 1,200)</SelectItem>
-                        <SelectItem value="2">2 persons (USD 1,700)</SelectItem>
-                        <SelectItem value="3">3 persons (USD 2,200) — justification recommended</SelectItem>
+                        <SelectItem value="1">{t("ppif.council.individuals.nominee.options.1")}</SelectItem>
+                        <SelectItem value="2">{t("ppif.council.individuals.nominee.options.2")}</SelectItem>
+                        <SelectItem value="3">{t("ppif.council.individuals.nominee.options.3")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -650,31 +732,35 @@ function CouncilStep() {
         </Card>
       )}
 
-      {/* D-2. Council: Corporate */}
+      {/* Corporate */}
       {showCorporate && (
         <Card className="border">
           <CardHeader className="py-3">
-            <CardTitle className="text-sm">D-2. Council via One Corporate — Basic Info</CardTitle>
+            <CardTitle className="text-sm">{t("ppif.council.corporate.title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="rounded-md border border-border p-2.5 text-[13px] bg-muted/30">
-              Uncommon structure. Even if a corporate acts as Council, KYC of human signatory(ies) is still required.
+              {t("ppif.council.corporate.note")}
             </div>
+
             <div className="grid md:grid-cols-2 gap-3">
               <div className="grid gap-1.5">
                 <Label className={labelSm}>
-                  Entity Name / Reg. No. / Jurisdiction<span className="text-destructive">*</span>
+                  {t("ppif.council.corporate.fields.corpMain.label")}
+                  <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
                 </Label>
                 <Input
                   className={inputSm}
                   value={c.corpMain}
                   onChange={(e) => updateCorp({ corpMain: e.target.value })}
-                  placeholder="EX: ABC TRUSTEES LTD / 123456 / PA"
+                  placeholder={t("ppif.council.corporate.fields.corpMain.placeholder")}
                 />
               </div>
+
               <div className="grid gap-1.5">
                 <Label className={labelSm}>
-                  Registered Address / Representative<span className="text-destructive">*</span>
+                  {t("ppif.council.corporate.fields.addrRep.label")}
+                  <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
                 </Label>
                 <Input
                   className={inputSm}
@@ -682,17 +768,23 @@ function CouncilStep() {
                   onChange={(e) => updateCorp({ addrRep: e.target.value })}
                 />
               </div>
+
               <div className="grid gap-1.5">
-                <Label className={labelSm}>Authorized Signatory (Optional)</Label>
+                <Label className={labelSm}>
+                  {t("ppif.council.corporate.fields.signatory.label")}
+                </Label>
                 <Input
                   className={inputSm}
                   value={c.signatory || ""}
                   onChange={(e) => updateCorp({ signatory: e.target.value })}
-                  placeholder="Name · Title · Contact"
+                  placeholder={t("ppif.council.corporate.fields.signatory.placeholder")}
                 />
               </div>
+
               <div className="grid gap-1.5">
-                <Label className={labelSm}>Contact Email</Label>
+                <Label className={labelSm}>
+                  {t("ppif.council.corporate.fields.email.label")}
+                </Label>
                 <Input
                   className={inputSm}
                   type="email"
@@ -706,8 +798,8 @@ function CouncilStep() {
       )}
 
       <div className="flex justify-end pt-2">
-        <Button onClick={inviteCouncilMembers} >
-          Invite Council Members
+        <Button onClick={inviteCouncilMembers}>
+          {t("ppif.council.buttons.invite")}
         </Button>
       </div>
     </div>
@@ -727,7 +819,7 @@ function SimpleRepeater({ title, items, onUpdate, onRemove, }: {
           <CardHeader className="py-2.5">
             <CardTitle className="text-sm flex items-center justify-between">
               <span>
-                {title} #{i + 1}
+                {t("ppif.shared.repeater.title", { title, n: i + 1 })}
               </span>
               {onRemove ? (
                 <Button
@@ -735,73 +827,113 @@ function SimpleRepeater({ title, items, onUpdate, onRemove, }: {
                   size="icon"
                   onClick={() => onRemove(i)}
                   className="text-muted-foreground hover:text-destructive"
-                  aria-label={`Remove ${title.toLowerCase()} #${i + 1}`}
-                  title="Remove"
+                  aria-label={t("ppif.shared.repeater.removeAria", { title, n: i + 1 })}
+                  title={t("ppif.shared.repeater.removeTitle")}
                 >
                   <Trash className="h-4 w-4" />
                 </Button>
               ) : null}
             </CardTitle>
           </CardHeader>
+
           <CardContent className="grid md:grid-cols-2 gap-3">
             <div className="grid gap-1.5">
-              <Label className={labelSm}>Name / Corporate / Class</Label>
-              <Input className={inputSm} value={it.name} onChange={(e) => onUpdate(i, { name: e.target.value })} />
+              <Label className={labelSm}>
+                {t("ppif.shared.repeater.fields.name.label")}
+              </Label>
+              <Input
+                className={inputSm}
+                value={it.name}
+                onChange={(e) => onUpdate(i, { name: e.target.value })}
+              />
             </div>
+
             <div className="grid gap-1.5">
-              <Label className={labelSm}>Email</Label>
-              <Input className={inputSm} value={it.contact} onChange={(e) => onUpdate(i, { contact: e.target.value })} />
+              <Label className={labelSm}>
+                {t("ppif.shared.repeater.fields.contact.label")}
+              </Label>
+              <Input
+                className={inputSm}
+                value={it.contact}
+                placeholder={t("ppif.shared.repeater.fields.contact.placeholder")}
+                onChange={(e) => onUpdate(i, { contact: e.target.value })}
+              />
             </div>
           </CardContent>
         </Card>
       ))}
     </div>
-  )
+  );
 }
 
 function ProtectorsManager() {
-  const [form, setForm] = useAtom(pifFormAtom)
-  const add = () => setForm({ ...form, protectors: [...form.protectors, { name: "", contact: "" }] })
+  const [form, setForm] = useAtom(pifFormAtom);
+
+  const add = () =>
+    setForm({ ...form, protectors: [...form.protectors, { name: "", contact: "" }] });
+
   const update = (idx: number, patch: Partial<{ name: string; contact: string }>) => {
-    const next = [...form.protectors]
-    next[idx] = { ...next[idx], ...patch } as any
-    setForm({ ...form, protectors: next })
-  }
+    const next = [...form.protectors];
+    next[idx] = { ...next[idx], ...patch } as any;
+    setForm({ ...form, protectors: next });
+  };
+
   const remove = (idx: number) => {
-    const next = form.protectors.filter((_, i) => i !== idx)
-    setForm({ ...form, protectors: next.length ? next : [{ name: "", contact: "" }] })
-  }
+    const next = form.protectors.filter((_, i) => i !== idx);
+    setForm({ ...form, protectors: next.length ? next : [{ name: "", contact: "" }] });
+  };
+
   const inviteProtectors = async () => {
-    // console.log("Invite Protector clicked",form.protectors);
-    const extractedData = form.protectors.map(f => ({ name: f.name, email: f.contact ? f.contact : "" }));
+    const extractedData = (form.protectors || []).map((p) => ({
+      name: p.name,
+      email: p.contact ? p.contact : "",
+    }));
     const payload = { _id: form._id || "", inviteData: extractedData, country: "pif" };
-    const response = await sendInviteToShDir(payload);
-    if (response.summary.successful > 0) {
+
+    try {
+      const response = await sendInviteToShDir(payload);
+      const successful = response?.summary?.successful ?? 0;
+      const alreadyExists = response?.summary?.alreadyExists ?? 0;
+
+      if (successful > 0) {
+        toast({
+          title: t("ppif.protectors.toasts.invite.success.title"),
+          description: t("ppif.protectors.toasts.invite.success.desc", {
+            count: successful,
+          }),
+        });
+      } else if (alreadyExists > 0) {
+        toast({
+          title: t("ppif.protectors.toasts.invite.alreadyExists.title"),
+          description: t("ppif.protectors.toasts.invite.alreadyExists.desc", {
+            count: alreadyExists,
+          }),
+        });
+      } else {
+        toast({
+          title: t("ppif.protectors.toasts.invite.none.title"),
+          description: t("ppif.protectors.toasts.invite.none.desc"),
+          variant: "destructive",
+        });
+      }
+    } catch (e) {
       toast({
-        title: t("newHk.parties.toasts.invite.success.title"),
-        description: t("newHk.parties.toasts.invite.success.desc", {
-          count: response.summary.successful
-        })
+        title: t("ppif.protectors.toasts.invite.none.title"),
+        description: t("ppif.protectors.toasts.invite.none.desc"),
+        variant: "destructive",
       });
-    }else if(response.summary.alreadyExists > 0){
-      toast({
-        title: "Invitations sent",
-        description: `${response.summary.alreadyExists} invitation(s) sent to the email address.`
-      })
-    }else{
-      toast({
-        title: "No invitations sent",
-        description: "Please ensure protectors have valid email addresses."
-      })
+      console.error("inviteProtectors error", e);
     }
-  }
+  };
 
   return (
     <div className="space-y-3">
       <InfoBox>
-        A <b>Protector</b> does not run daily operations but <u>approves/oversees</u> major decisions.
+        <span>
+          <b>Protector</b> — {t("ppif.protectors.info.body")}
+        </span>
         <br />
-        Examples: approval for appointment/removal of council members, approval of by-laws changes, consent to certain distribution guidelines, etc. Multiple protectors may be appointed.
+        <span>{t("ppif.protectors.info.examples")}</span>
       </InfoBox>
 
       <div className="flex flex-wrap items-center gap-4">
@@ -811,81 +943,105 @@ function ProtectorsManager() {
           className="flex gap-6"
         >
           <label className="flex items-center gap-2 text-sm">
-            <RadioGroupItem value="yes" /> Appoint
+            <RadioGroupItem value="yes" /> {t("ppif.protectors.controls.appoint")}
           </label>
           <label className="flex items-center gap-2 text-sm">
-            <RadioGroupItem value="no" /> Do not appoint
+            <RadioGroupItem value="no" /> {t("ppif.protectors.controls.doNotAppoint")}
           </label>
         </RadioGroup>
+
         {form.protectorsEnabled && (
-          <Button variant="outline" onClick={add}>+ Add</Button>
+          <Button variant="outline" onClick={add}>
+            {t("ppif.protectors.controls.add")}
+          </Button>
         )}
       </div>
 
       {form.protectorsEnabled ? (
-        <SimpleRepeater title="Protector" items={form.protectors} onUpdate={update} onRemove={remove} />
+        <SimpleRepeater
+          title={t("ppif.protectors.itemTitle")}
+          items={form.protectors}
+          onUpdate={update}
+          onRemove={remove}
+        />
       ) : null}
+
       <div className="flex justify-end pt-2">
-        <Button onClick={inviteProtectors} >
-          Invite Protector
+        <Button onClick={inviteProtectors}>
+          {t("ppif.protectors.buttons.invite")}
         </Button>
       </div>
     </div>
-  )
+  );
 }
-
 function BeneficiariesManager() {
-  const [form, setForm] = useAtom(pifFormAtom)
+  const [form, setForm] = useAtom(pifFormAtom);
 
   const add = () =>
     setForm({
       ...form,
-      beneficiaries: [...form.beneficiaries, { name: "", contact: "" }],
-    })
+      beneficiaries: [...form.beneficiaries, { name: "", contact: "" }]
+    });
 
   const update = (idx: number, patch: Partial<{ name: string; contact: string }>) => {
-    const next = [...form.beneficiaries]
-    next[idx] = { ...next[idx], ...patch } as any
-    setForm({ ...form, beneficiaries: next })
-  }
+    const next = [...form.beneficiaries];
+    next[idx] = { ...next[idx], ...patch } as any;
+    setForm({ ...form, beneficiaries: next });
+  };
 
   const remove = (idx: number) => {
-    const next = form.beneficiaries.filter((_, i) => i !== idx)
-    setForm({ ...form, beneficiaries: next.length ? next : [{ name: "", contact: "" }] })
-  }
+    const next = form.beneficiaries.filter((_, i) => i !== idx);
+    setForm({ ...form, beneficiaries: next.length ? next : [{ name: "", contact: "" }] });
+  };
+
   const inviteBeneficiaries = async () => {
-    // console.log("Invite Beneficiaries clicked");
-    const extractedData = form.beneficiaries.map(f => ({ name: f.name, email: f.contact ? f.contact : "" }));
+    const extractedData = (form.beneficiaries || []).map((f) => ({
+      name: f.name,
+      email: f.contact ? f.contact : ""
+    }));
     const payload = { _id: form._id || "", inviteData: extractedData, country: "pif" };
-    const response = await sendInviteToShDir(payload);
-    if (response.summary.successful > 0) {
+
+    try {
+      const response = await sendInviteToShDir(payload);
+      const successful = response?.summary?.successful ?? 0;
+      const alreadyExists = response?.summary?.alreadyExists ?? 0;
+
+      if (successful > 0) {
+        toast({
+          title: t("ppif.beneficiaries.toasts.invite.success.title"),
+          description: t("ppif.beneficiaries.toasts.invite.success.desc", { count: successful })
+        });
+      } else if (alreadyExists > 0) {
+        toast({
+          title: t("ppif.beneficiaries.toasts.invite.alreadyExists.title"),
+          description: t("ppif.beneficiaries.toasts.invite.alreadyExists.desc", { count: alreadyExists })
+        });
+      } else {
+        toast({
+          title: t("ppif.beneficiaries.toasts.invite.none.title"),
+          description: t("ppif.beneficiaries.toasts.invite.none.desc"),
+          variant: "destructive"
+        });
+      }
+    } catch (e) {
       toast({
-        title: t("newHk.parties.toasts.invite.success.title"),
-        description: t("newHk.parties.toasts.invite.success.desc", {
-          count: response.summary.successful
-        })
+        title: t("ppif.beneficiaries.toasts.invite.none.title"),
+        description: t("ppif.beneficiaries.toasts.invite.none.desc"),
+        variant: "destructive"
       });
-    }else if(response.summary.alreadyExists > 0){
-      toast({
-        title: "Invitations sent",
-        description: `${response.summary.alreadyExists} invitation(s) sent to the email address.`
-      })
-    }else{
-      toast({
-        title: "No invitations sent",
-        description: "Please ensure beneficiaries have valid email addresses."
-      });
+      console.error("inviteBeneficiaries error", e);
     }
-  }
+  };
 
   return (
     <section className="space-y-3">
       <InfoBox>
-        <b>Design</b>: ① Fixed list (named) ② By class (spouse/descendants/guardians, etc.) ③ Hybrid. For privacy/flexibility, <u>class-based</u> is common.
-        A <b>Letter of Wishes</b> gives testamentary guidance (who/when/how much) and is relied on in practice.
+        <b>{t("ppif.beneficiaries.info.designTitle")}</b>: {t("ppif.beneficiaries.info.designBody")}
+        <br />
+        <b>{t("ppif.beneficiaries.info.lowTitle")}</b> — {t("ppif.beneficiaries.info.lowBody")}
       </InfoBox>
 
-      {/* Mode + Add button (inline row like the HTML) */}
+      {/* Mode + Add button */}
       <div className="flex flex-wrap items-center gap-4">
         <RadioGroup
           value={form.beneficiariesMode}
@@ -894,79 +1050,101 @@ function BeneficiariesManager() {
         >
           <div className="flex items-center gap-2 text-sm">
             <RadioGroupItem value="fixed" id="ben-mode-fixed" />
-            <Label htmlFor="ben-mode-fixed" className="cursor-pointer">Fixed List</Label>
+            <Label htmlFor="ben-mode-fixed" className="cursor-pointer">
+              {t("ppif.beneficiaries.modes.fixed")}
+            </Label>
           </div>
+
           <div className="flex items-center gap-2 text-sm">
             <RadioGroupItem value="class" id="ben-mode-class" />
-            <Label htmlFor="ben-mode-class" className="cursor-pointer">By Class</Label>
+            <Label htmlFor="ben-mode-class" className="cursor-pointer">
+              {t("ppif.beneficiaries.modes.class")}
+            </Label>
           </div>
+
           <div className="flex items-center gap-2 text-sm">
             <RadioGroupItem value="mixed" id="ben-mode-mixed" />
-            <Label htmlFor="ben-mode-mixed" className="cursor-pointer">Hybrid</Label>
+            <Label htmlFor="ben-mode-mixed" className="cursor-pointer">
+              {t("ppif.beneficiaries.modes.mixed")}
+            </Label>
           </div>
         </RadioGroup>
 
-        <Button variant="outline" onClick={add} id="addBen">+ Add Beneficiary</Button>
+        <Button variant="outline" onClick={add} id="addBen">
+          {t("ppif.beneficiaries.controls.add")}
+        </Button>
       </div>
+
       {/* Beneficiaries list */}
       <SimpleRepeater
-        title="Beneficiary"
+        title={t("ppif.beneficiaries.itemTitle")}
         items={form.beneficiaries}
         onUpdate={update}
         onRemove={remove}
       />
-      {/* Letter of Wishes textarea */}
+
+      {/* Letter of Wishes */}
       <div className="grid gap-1.5">
-        <Label className={labelSm}>Letter of Wishes</Label>
+        <Label className={labelSm}>{t("ppif.beneficiaries.letterOfWishes.label")}</Label>
         <Textarea
           className="text-sm"
           rows={4}
-          placeholder="(Optional) Testamentary guidance for distributions, priorities, timing, etc."
+          placeholder={t("ppif.beneficiaries.letterOfWishes.placeholder")}
           value={form.letterOfWishes || ""}
           onChange={(e) => setForm({ ...form, letterOfWishes: e.target.value })}
         />
       </div>
+
       <div className="flex justify-end pt-2">
-        <Button onClick={inviteBeneficiaries} >
-          Invite Beneficiaries
+        <Button onClick={inviteBeneficiaries}>
+          {t("ppif.beneficiaries.buttons.invite")}
         </Button>
       </div>
     </section>
-  )
+  );
 }
 
 function BylawsStep() {
-  const [form, setForm] = useAtom(pifFormAtom)
+  const [form, setForm] = useAtom(pifFormAtom);
+
   return (
     <div className="space-y-3">
       <RadioGroup
         value={form.bylawsMode}
-        onValueChange={(v: any) => setForm({ ...form, bylawsMode: v })}
+        onValueChange={(v: "standard" | "custom") => setForm({ ...form, bylawsMode: v })}
         className="flex gap-6"
       >
-        <label className="flex items-center gap-2 text-sm">
-          <RadioGroupItem value="standard" /> Apply Standard Template
+        <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <RadioGroupItem value="standard" id="bylaws-standard" />
+          <Label htmlFor="bylaws-standard" className="cursor-pointer">
+            {t("ppif.bylaws.modes.standard")}
+          </Label>
         </label>
-        <label className="flex items-center gap-2 text-sm">
-          <RadioGroupItem value="custom" /> Write Custom Details
+        <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <RadioGroupItem value="custom" id="bylaws-custom" />
+          <Label htmlFor="bylaws-custom" className="cursor-pointer">
+            {t("ppif.bylaws.modes.custom")}
+          </Label>
         </label>
       </RadioGroup>
+
       {form.bylawsMode === "custom" && (
         <div className="grid md:grid-cols-2 gap-3">
           <div className="grid gap-1.5">
-            <Label className={labelSm}>Allocation of Powers (Council vs Protector)</Label>
+            <Label className={labelSm}>{t("ppif.bylaws.fields.powers.label")}</Label>
             <Textarea
               className="text-sm"
-              placeholder="Signing authority / approval rights / removal powers, etc."
+              placeholder={t("ppif.bylaws.fields.powers.placeholder")}
               value={form.bylawsPowers}
               onChange={(e) => setForm({ ...form, bylawsPowers: e.target.value })}
             />
           </div>
+
           <div className="grid gap-1.5">
-            <Label className={labelSm}>Recordkeeping / Audit / Reporting · Dissolution Conditions</Label>
+            <Label className={labelSm}>{t("ppif.bylaws.fields.admin.label")}</Label>
             <Textarea
               className="text-sm"
-              placeholder="Retention periods, audit cycles, reporting lines / specific events & voting requirements, etc."
+              placeholder={t("ppif.bylaws.fields.admin.placeholder")}
               value={form.bylawsAdmin}
               onChange={(e) => setForm({ ...form, bylawsAdmin: e.target.value })}
             />
@@ -974,378 +1152,455 @@ function BylawsStep() {
         </div>
       )}
     </div>
-  )
-}
-
-const bankingHints: Record<string, string> = {
-  consulting:
-    "General consulting/holding: mid risk. Expect clarity on revenue/contracts/organization & UBO. Remote onboarding limited.",
-  ecommerce:
-    "Online service/e-commerce: payment flows, customer countries, refund policy required. Consider PSP/EMI alongside bank account.",
-  investment:
-    "Investment/equity holding: if largely passive, banks may be less keen. Consider brokerage/custody accounts.",
-  crypto:
-    "Virtual assets: many banks restrict. Consider crypto-friendly banks (e.g., Towerbank) or VASP/EMI combinations.",
-  manufacturing:
-    "Manufacturing/trade: require substance docs (supply agreements, shipping docs). Trade finance assessed separately.",
+  );
 }
 
 function BankingStep() {
-  const [form, setForm] = useAtom(pifFormAtom)
-  const showGuide = form.bankingNeed === "need"
+  const [form, setForm] = useAtom(pifFormAtom);
+  const showGuide = form.bankingNeed === "need";
+
   return (
     <div className="space-y-3">
       <div className="grid md:grid-cols-2 gap-3">
+        {/* Need to open an account */}
         <div className="grid gap-1.5">
           <Label className={labelSm}>
-            Need to open an account?<span className="text-destructive">*</span>
+            {t("ppif.banking.need.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
           </Label>
+
           <RadioGroup
             value={form.bankingNeed}
-            onValueChange={(v: any) => setForm({ ...form, bankingNeed: v })}
+            onValueChange={(v: "need" | "none" | "later") => setForm({ ...form, bankingNeed: v })}
             className="flex gap-6"
           >
-            <label className="flex items-center gap-2 text-sm">
-              <RadioGroupItem value="need" /> Yes
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <RadioGroupItem value="need" id="bank-need-yes" />
+              <span>{t("ppif.banking.need.options.need")}</span>
             </label>
-            <label className="flex items-center gap-2 text-sm">
-              <RadioGroupItem value="none" /> No
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <RadioGroupItem value="none" id="bank-need-no" />
+              <span>{t("ppif.banking.need.options.none")}</span>
             </label>
-            <label className="flex items-center gap-2 text-sm">
-              <RadioGroupItem value="later" /> Decide Later
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <RadioGroupItem value="later" id="bank-need-later" />
+              <span>{t("ppif.banking.need.options.later")}</span>
             </label>
           </RadioGroup>
         </div>
+
+        {/* Business activity type */}
         <div className="grid gap-1.5">
-          <Label className={labelSm}>Business Activity Type (for guidance)</Label>
-          <Select value={form.bankingBizType} onValueChange={(v) => setForm({ ...form, bankingBizType: v as any })}>
+          <Label className={labelSm}>{t("ppif.banking.bizType.label")}</Label>
+
+          <Select
+            value={form.bankingBizType || undefined}
+            onValueChange={(v) => setForm({ ...form, bankingBizType: v as any })}
+          >
             <SelectTrigger className={inputSm}>
-              <SelectValue placeholder="Select" />
+              {/* reuse shared Select placeholder from profile */}
+              <SelectValue placeholder={t("ppif.profile.sourceOfFunds.placeholder")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="consulting">General Consulting / Holding</SelectItem>
-              <SelectItem value="ecommerce">Online Service / E-commerce</SelectItem>
-              <SelectItem value="investment">Investment / Equity Holding</SelectItem>
-              <SelectItem value="crypto">Virtual Assets Related</SelectItem>
-              <SelectItem value="manufacturing">Manufacturing / Trade</SelectItem>
+              <SelectItem value="consulting">{t("ppif.banking.bizType.options.consulting")}</SelectItem>
+              <SelectItem value="ecommerce">{t("ppif.banking.bizType.options.ecommerce")}</SelectItem>
+              <SelectItem value="investment">{t("ppif.banking.bizType.options.investment")}</SelectItem>
+              <SelectItem value="crypto">{t("ppif.banking.bizType.options.crypto")}</SelectItem>
+              <SelectItem value="manufacturing">{t("ppif.banking.bizType.options.manufacturing")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
+
+      {/* Guidance box */}
       {showGuide && (
         <div className="space-y-2">
           <div className="rounded-md border border-border p-2.5 text-[13px] bg-muted/30">
-            <b>Banks / EMIs (for reference)</b>
+            <b>{t("ppif.banking.guide.title")}</b>
             <ul className="list-disc ml-6 mt-1.5 space-y-1">
-              <li>Panama local banks often require in-person interview &amp; UBO evidence for non-resident/foundation accounts.</li>
-              <li>
-                <b>Crypto-friendly</b>: Towerbank (subject to policies &amp; risk appetite).
-              </li>
-              <li>EMI/foreign acceptance of “Foundation” varies — pre-check required.</li>
+              <li>{t("ppif.banking.guide.list.panama")}</li>
+              <li><b>{t("ppif.banking.bizType.options.crypto")}</b>: {t("ppif.banking.guide.list.crypto")}</li>
+              <li>{t("ppif.banking.guide.list.emi")}</li>
             </ul>
           </div>
+
           {form.bankingBizType && (
             <div className="text-[13px] text-muted-foreground">
-              Activity guidance: {bankingHints[form.bankingBizType]}
+              {t("ppif.banking.guide.activityLabel")} {t(`ppif.banking.hints.${form.bankingBizType}`)}
             </div>
           )}
+
           <div className="text-[12px] text-muted-foreground">
-            Indicative documents: Foundation charter/registration, council register &amp; acceptances, UBO chart,
-            founders'/directors' passport &amp; address proof, source of funds, business description/contracts, tax
-            ID/residence proof, references, interview, etc.
+            {t("ppif.banking.guide.docsNote")}
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
 
 function DeliverablesStep() {
-  const [form, setForm] = useAtom(pifFormAtom)
-  const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch })
+  const [form, setForm] = useAtom(pifFormAtom);
+  const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch });
+
+  const items: Array<string> = [
+    "publicDeed",
+    "publicDeedTranslation",
+    "registryCert",
+    "registryCertTranslation",
+    "foundationCert",
+    "foundationCertTranslation",
+    "councilRegister",
+    "councilAcceptance",
+    "bylaws",
+    "boardMeeting",
+    "incumbencyCert",
+    "nomineeAgreement",
+    "companyChop"
+  ];
 
   return (
     <div className="grid md:grid-cols-2 gap-3">
       {/* Left: Deliverables list with collapsibles */}
       <div className="space-y-2">
-        <div className="font-medium text-foreground">Deliverables (click to expand)</div>
+        <div className="font-medium text-foreground">
+          {t("ppif.deliverables.left.title")}
+        </div>
+
         <div className="rounded-md border p-2.5 text-[13px] text-muted-foreground dl-list">
-          <details className="mb-1.5"><summary className="cursor-pointer">Public Deed</summary><div>Notarized deed for formation; includes purpose, council, registered agent, etc.</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Public Deed Translation</summary><div>Translation (for requests/submissions).</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Certificate of Public Registry</summary><div>Certificate issued by the Public Registry (legal existence).</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Certificate of Public Registry Translation</summary><div>Translation of the registry certificate.</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Foundation Certificate</summary><div>Certificate summarizing the foundation.</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Foundation Certificate Translation</summary><div>Translation of the certificate.</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Register of Council Members</summary><div>List of council members (3 individuals / 1 corporate).</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Council’s Acceptance Letter</summary><div>Acceptance of office.</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Regulations (By-Laws)</summary><div>Private internal regulations: powers, procedures, distribution, records, dissolution, etc.</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Meeting of the Board</summary><div>Sample resolutions/minutes.</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Certificate of Incumbency</summary><div>Certificate of current officers.</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Nominee Agreement (if applicable)</summary><div>Agreement for nominee services.</div></details>
-          <details className="mb-1.5"><summary className="cursor-pointer">Company Chop</summary><div>Official seal.</div></details>
+          {items.map((k) => (
+            <details className="mb-1.5" key={k}>
+              <summary className="cursor-pointer">
+                {t(`ppif.deliverables.left.items.${k}.title`)}
+              </summary>
+              <div>
+                {t(`ppif.deliverables.left.items.${k}.desc`)}
+              </div>
+            </details>
+          ))}
         </div>
       </div>
 
       {/* Right: Original Shipping Details */}
       <div className="space-y-3">
         <div className="text-[13px] text-muted-foreground">
-          <span className="font-medium text-foreground">Original Shipping Details</span>{" "}
-          <span className="text-xs">(If Korean address, please write in Korean)</span>
+          <span className="font-medium text-foreground">
+            {t("ppif.deliverables.right.title")}
+          </span>{" "}
+          <span className="text-xs">
+            {t("ppif.deliverables.right.note")}
+          </span>
         </div>
 
         <div className="grid md:grid-cols-2 gap-3">
           <div className="grid gap-1.5">
             <Label className={labelSm}>
-              Recipient Company<span className="text-destructive">*</span>
+              {t("ppif.deliverables.right.fields.recipientCompany.label")}
+              <span className="text-destructive">
+                {t("ppif.validation.requiredAsterisk")}
+              </span>
             </Label>
             <Input
               className={inputSm}
               value={form.shippingRecipientCompany || ""}
               onChange={(e) => set({ shippingRecipientCompany: e.target.value })}
-              placeholder="Company / Foundation name"
+              placeholder={t("ppif.deliverables.right.fields.recipientCompany.placeholder")}
             />
           </div>
 
           <div className="grid gap-1.5">
             <Label className={labelSm}>
-              Contact Person<span className="text-destructive">*</span>
+              {t("ppif.deliverables.right.fields.contactPerson.label")}
+              <span className="text-destructive">
+                {t("ppif.validation.requiredAsterisk")}
+              </span>
             </Label>
             <Input
               className={inputSm}
               value={form.shippingContactPerson || ""}
               onChange={(e) => set({ shippingContactPerson: e.target.value })}
-              placeholder="Full name"
+              placeholder={t("ppif.deliverables.right.fields.contactPerson.placeholder")}
             />
           </div>
 
           <div className="grid gap-1.5">
             <Label className={labelSm}>
-              Phone<span className="text-destructive">*</span>
+              {t("ppif.deliverables.right.fields.phone.label")}
+              <span className="text-destructive">
+                {t("ppif.validation.requiredAsterisk")}
+              </span>
             </Label>
             <Input
               className={inputSm}
               type="tel"
               value={form.shippingPhone || ""}
               onChange={(e) => set({ shippingPhone: e.target.value })}
-              placeholder="+82 ..."
+              placeholder={t("ppif.deliverables.right.fields.phone.placeholder")}
             />
           </div>
 
           <div className="grid gap-1.5">
             <Label className={labelSm}>
-              Postal Code<span className="text-destructive">*</span>
+              {t("ppif.deliverables.right.fields.postalCode.label")}
+              <span className="text-destructive">
+                {t("ppif.validation.requiredAsterisk")}
+              </span>
             </Label>
             <Input
               className={inputSm}
               value={form.shippingPostalCode || ""}
               onChange={(e) => set({ shippingPostalCode: e.target.value })}
-              placeholder="e.g., 12345"
+              placeholder={t("ppif.deliverables.right.fields.postalCode.placeholder")}
             />
           </div>
         </div>
 
         <div className="grid gap-1.5">
           <Label className={labelSm}>
-            Address<span className="text-destructive">*</span>
+            {t("ppif.deliverables.right.fields.address.label")}
+            <span className="text-destructive">
+              {t("ppif.validation.requiredAsterisk")}
+            </span>
           </Label>
           <Textarea
             className="text-sm"
             rows={4}
-            placeholder="Street / Building / Unit, etc."
+            placeholder={t("ppif.deliverables.right.fields.address.placeholder")}
             value={form.shippingAddress || ""}
             onChange={(e) => set({ shippingAddress: e.target.value })}
           />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
+
 function DeclarationsStep() {
-  const [form, setForm] = useAtom(pifFormAtom)
-  const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch })
+  const [form, setForm] = useAtom(pifFormAtom);
+  const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch });
+
   return (
     <div className="space-y-3">
       <div className="flex items-start gap-3">
         <Checkbox checked={form.taxOk} onCheckedChange={(v) => set({ taxOk: Boolean(v) })} />
         <span className="text-sm">
-          I confirm compliance with applicable tax obligations and that the PIF is not intended for unlawful/sanctioned
-          purposes.<span className="text-destructive">*</span>
+          {t("ppif.declarations.checks.taxOk")}
+          <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
         </span>
       </div>
+
       <div className="flex items-start gap-3">
         <Checkbox checked={form.truthOk} onCheckedChange={(v) => set({ truthOk: Boolean(v) })} />
         <span className="text-sm">
-          I confirm the accuracy and completeness of the information provided.<span className="text-destructive">*</span>
+          {t("ppif.declarations.checks.truthOk")}
+          <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
         </span>
       </div>
+
       <div className="flex items-start gap-3">
         <Checkbox checked={form.privacyOk} onCheckedChange={(v) => set({ privacyOk: Boolean(v) })} />
         <span className="text-sm">
-          I consent to the processing of personal data for KYC/sanctions screening and service delivery.
-          <span className="text-destructive">*</span>
+          {t("ppif.declarations.checks.privacyOk")}
+          <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
         </span>
       </div>
+
       <div className="grid md:grid-cols-2 gap-3 mt-2">
         <div className="grid gap-1.5">
           <Label className={labelSm}>
-            Signature (type your name)<span className="text-destructive">*</span>
+            {t("ppif.declarations.fields.signName.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
           </Label>
-          <Input className={inputSm} value={form.signName} onChange={(e) => set({ signName: e.target.value })} />
+          <Input
+            className={inputSm}
+            value={form.signName}
+            onChange={(e) => set({ signName: e.target.value })}
+            placeholder={t("ppif.declarations.fields.signName.placeholder")}
+          />
         </div>
+
         <div className="grid gap-1.5">
           <Label className={labelSm}>
-            Date<span className="text-destructive">*</span>
+            {t("ppif.declarations.fields.signDate.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
           </Label>
-          <Input className={inputSm} type="date" value={form.signDate} onChange={(e) => set({ signDate: e.target.value })} />
+          <Input
+            className={inputSm}
+            type="date"
+            value={form.signDate}
+            onChange={(e) => set({ signDate: e.target.value })}
+          />
         </div>
+
         <div className="grid gap-1.5 md:col-span-2">
-          <Label className={labelSm}>Title / Capacity</Label>
-          <Input className={inputSm} value={form.signTitle || ""} onChange={(e) => set({ signTitle: e.target.value })} />
+          <Label className={labelSm}>{t("ppif.declarations.fields.signTitle.label")}</Label>
+          <Input
+            className={inputSm}
+            value={form.signTitle || ""}
+            onChange={(e) => set({ signTitle: e.target.value })}
+            placeholder={t("ppif.declarations.fields.signTitle.placeholder")}
+          />
         </div>
+
         <div className="text-[12px] text-muted-foreground md:col-span-2">
-          ※ This form is for preliminary information gathering for review/quotation/KYC and does not constitute legal or tax advice.
+          {t("ppif.declarations.footnote")}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function AMLStep() {
-  const [form, setForm] = useAtom(pifFormAtom)
-  const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch })
+  const [form, setForm] = useAtom(pifFormAtom);
+  const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch });
+
+  const yesLabel = t("ppif.pep.options.yes");
+  const noLabel = t("ppif.pep.options.no");
 
   return (
     <div className="space-y-4">
-      <InfoBox>
-        In line with FATF, UN, EU, OFAC, UK HMT, HKMA, etc., confirm any dealings with
-        <b> sanctioned countries/persons</b>.
-      </InfoBox>
-
+      <InfoBox>{t("ppif.aml.info")}</InfoBox>
       {/* 1) legalAndEthicalConcern */}
       <div className="rounded-lg border p-3 space-y-2">
         <div className="text-sm">
-          <b>1)</b> Operate now / plan to operate with
-          <u> Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, Zimbabwe, Russia</u> or
-          areas in <u>Ukraine outside government control</u>?
+          <b>1)</b> {t("ppif.aml.q1.label")}
         </div>
         <RadioGroup
           className="flex gap-6"
           value={form.legalAndEthicalConcern || ""}
           onValueChange={(v: "yes" | "no" | "") => set({ legalAndEthicalConcern: v })}
         >
-          <label className="flex items-center gap-2 text-sm"><RadioGroupItem value="yes" /> Yes</label>
-          <label className="flex items-center gap-2 text-sm"><RadioGroupItem value="no" /> No</label>
+          <label className="flex items-center gap-2 text-sm">
+            <RadioGroupItem value="yes" /> {yesLabel}
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <RadioGroupItem value="no" /> {noLabel}
+          </label>
         </RadioGroup>
       </div>
 
       {/* 2) q_country */}
       <div className="rounded-lg border p-3 space-y-2">
         <div className="text-sm">
-          <b>2)</b> Any related persons reside in those countries or in a country sanctioned by
-          <u> UN, EU, UK HMT, HKMA, OFAC</u> (or Ukrainian areas outside gov’t control)?
+          <b>2)</b> {t("ppif.aml.q2.label")}
         </div>
         <RadioGroup
           className="flex gap-6"
           value={form.q_country || ""}
           onValueChange={(v: "yes" | "no" | "") => set({ q_country: v })}
         >
-          <label className="flex items-center gap-2 text-sm"><RadioGroupItem value="yes" /> Yes</label>
-          <label className="flex items-center gap-2 text-sm"><RadioGroupItem value="no" /> No</label>
+          <label className="flex items-center gap-2 text-sm">
+            <RadioGroupItem value="yes" /> {yesLabel}
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <RadioGroupItem value="no" /> {noLabel}
+          </label>
         </RadioGroup>
       </div>
 
       {/* 3) sanctionsExposureDeclaration */}
       <div className="rounded-lg border p-3 space-y-2">
         <div className="text-sm">
-          <b>3)</b> Is/will the PIF be <u>owned/controlled/acting for</u> sanctioned persons/entities or
-          persons in <u>Afghanistan, Belarus, Cuba, Iran, North Korea, Russia, Syria, or Ukrainian areas outside gov’t control</u>?
+          <b>3)</b> {t("ppif.aml.q3.label")}
         </div>
         <RadioGroup
           className="flex gap-6"
           value={form.sanctionsExposureDeclaration || ""}
           onValueChange={(v: "yes" | "no" | "") => set({ sanctionsExposureDeclaration: v })}
         >
-          <label className="flex items-center gap-2 text-sm"><RadioGroupItem value="yes" /> Yes</label>
-          <label className="flex items-center gap-2 text-sm"><RadioGroupItem value="no" /> No</label>
+          <label className="flex items-center gap-2 text-sm">
+            <RadioGroupItem value="yes" /> {yesLabel}
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <RadioGroupItem value="no" /> {noLabel}
+          </label>
         </RadioGroup>
       </div>
 
       {/* 4) crimeaSevastapolPresence */}
       <div className="rounded-lg border p-3 space-y-2">
         <div className="text-sm">
-          <b>4)</b> Any related persons currently operate or plan to operate in <u>Crimea</u> or <u>Sevastopol</u>?
+          <b>4)</b> {t("ppif.aml.q4.label")}
         </div>
         <RadioGroup
           className="flex gap-6"
           value={form.crimeaSevastapolPresence || ""}
           onValueChange={(v: "yes" | "no" | "") => set({ crimeaSevastapolPresence: v })}
         >
-          <label className="flex items-center gap-2 text-sm"><RadioGroupItem value="yes" /> Yes</label>
-          <label className="flex items-center gap-2 text-sm"><RadioGroupItem value="no" /> No</label>
+          <label className="flex items-center gap-2 text-sm">
+            <RadioGroupItem value="yes" /> {yesLabel}
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <RadioGroupItem value="no" /> {noLabel}
+          </label>
         </RadioGroup>
       </div>
 
       {/* 5) russianEnergyPresence */}
       <div className="rounded-lg border p-3 space-y-2">
         <div className="text-sm">
-          <b>5)</b> Do the PIF/holding/group/affiliates operate now or plan to operate in
-          <u> oil, gas, energy, military, defense</u> sectors (incl. critical goods)?
+          <b>5)</b> {t("ppif.aml.q5.label")}
         </div>
         <div className="text-xs text-muted-foreground">
-          Examples: explosives, lubricants, sensors, micro-electronics, comms modules, passive components, navigation,
-          electrical parts, PCB production/QC tools, CNC machines/parts.
+          {t("ppif.aml.q5.examples")}
         </div>
         <RadioGroup
           className="flex gap-6 mt-1"
           value={form.russianEnergyPresence || ""}
           onValueChange={(v: "yes" | "no" | "") => set({ russianEnergyPresence: v })}
         >
-          <label className="flex items-center gap-2 text-sm"><RadioGroupItem value="yes" /> Yes</label>
-          <label className="flex items-center gap-2 text-sm"><RadioGroupItem value="no" /> No</label>
+          <label className="flex items-center gap-2 text-sm">
+            <RadioGroupItem value="yes" /> {yesLabel}
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <RadioGroupItem value="no" /> {noLabel}
+          </label>
         </RadioGroup>
       </div>
     </div>
-  )
+  );
 }
 
 function AccountingRecordsStep() {
-  const [form, setForm] = useAtom(pifFormAtom)
-  const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch })
+  const [form, setForm] = useAtom(pifFormAtom);
+  const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch });
+
   return (
     <div className="space-y-3">
-      <InfoBox>
-        Regulations require disclosing the <b>address where accounting records are stored</b>. You may provide an
-        office or residential address. If you use our address, <b>USD 350 per year</b> applies; records must be
-        provided to us periodically.
-      </InfoBox>
+      <InfoBox>{t("ppif.accounting.info")}</InfoBox>
 
       <div className="grid md:grid-cols-2 gap-3">
+        {/* Address */}
         <div className="md:col-span-2 grid gap-1.5">
           <Label className={labelSm}>
-            Accounting Record Storage Address (English)<span className="text-destructive">*</span>
+            {t("ppif.accounting.fields.address.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
           </Label>
           <Textarea
             className="text-sm"
             rows={4}
-            placeholder="Full address in English"
+            placeholder={t("ppif.accounting.fields.address.placeholder")}
             value={form.recordStorageAddress || ""}
             onChange={(e) => set({ recordStorageAddress: e.target.value })}
           />
         </div>
 
+        {/* Responsible person */}
         <div className="grid gap-1.5">
           <Label className={labelSm}>
-            Responsible Person (English Full Name)<span className="text-destructive">*</span>
+            {t("ppif.accounting.fields.responsible.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
           </Label>
           <Input
             className={inputSm}
-            placeholder="e.g., John Smith"
+            placeholder={t("ppif.accounting.fields.responsible.placeholder")}
             value={form.recordStorageResponsiblePerson || ""}
             onChange={(e) => set({ recordStorageResponsiblePerson: e.target.value })}
           />
         </div>
 
+        {/* Use Mirr checkbox */}
         <div className="flex items-start gap-3">
           <Checkbox
             id="recordStorageUseMirr"
@@ -1353,12 +1608,12 @@ function AccountingRecordsStep() {
             onCheckedChange={(v) => set({ recordStorageUseMirr: Boolean(v) })}
           />
           <Label htmlFor="recordStorageUseMirr" className={`${labelSm} leading-relaxed cursor-pointer`}>
-            Use Mirr Asia record-storage address (USD 350/yr)
+            {t("ppif.accounting.fields.useMirr.label")}
           </Label>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function ProfileStepPanama() {
@@ -1366,7 +1621,7 @@ function ProfileStepPanama() {
   const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch })
 
   // Helpers
-  const sofOpts = [
+  const sofKeys = [
     "Employment Income",
     "Savings/Deposits",
     "Investment Income (stocks/bonds/funds)",
@@ -1377,7 +1632,7 @@ function ProfileStepPanama() {
     "other",
   ] as const
 
-  const industryMap = [
+  const industryKeys = [
     ["trading", "Trading"],
     ["wholesale", "Wholesale/Retail/Distribution"],
     ["consulting", "Consulting"],
@@ -1396,6 +1651,16 @@ function ProfileStepPanama() {
     set({ industries: Array.from(list) })
   }
 
+  const chipKeys = [
+    "Asset Protection",
+    "Succession Planning",
+    "Hold & Manage Investment Interests",
+    "Dividend & Interest Income Management",
+    "Charitable Purposes",
+    "Family-Trust Structure",
+    "Blockchain Token-Related"
+  ] as const;
+
   // Purpose chips
   const addPurposeText = (txt: string) => {
     const cur = form.purposeSummary || ""
@@ -1408,63 +1673,72 @@ function ProfileStepPanama() {
     <div className="space-y-4">
       {/* Naming Guidelines */}
       <InfoBox>
-        <b>Naming Guidelines</b> — The name must contain <u>“Foundation”</u> or <u>“Fundación”</u>. Identical or
-        confusingly similar names cannot be registered. <span className="text-xs">Please provide 1st/2nd/3rd choices; we will check availability.</span>
+        <b>{t("ppif.profile.namingGuidelines.title")}</b> — {t("ppif.profile.namingGuidelines.body")}
       </InfoBox>
 
-      {/* Name choices (1st/2nd/3rd + Spanish) */}
+      {/* Name choices */}
       <div className="grid md:grid-cols-2 gap-3">
         <div className="grid gap-1.5">
-          <Label className={labelSm}>1st Choice<span className="text-destructive">*</span></Label>
+          <Label className={labelSm}>
+            {t("ppif.profile.nameChoices.first.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
+          </Label>
           <Input
             className={inputSm}
-            placeholder="e.g., MIRR ASIA FOUNDATION"
+            placeholder={t("ppif.profile.nameChoices.first.placeholder")}
             value={form.foundationNameEn}
             onChange={(e) => set({ foundationNameEn: e.target.value })}
           />
         </div>
+
         <div className="grid gap-1.5">
-          <Label className={labelSm}>2nd Choice<span className="text-destructive">*</span></Label>
+          <Label className={labelSm}>
+            {t("ppif.profile.nameChoices.second.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
+          </Label>
           <Input
             className={inputSm}
             value={form.altName1 || ""}
             onChange={(e) => set({ altName1: e.target.value })}
           />
         </div>
+
         <div className="grid gap-1.5">
-          <Label className={labelSm}>3rd Choice<span className="text-destructive">*</span></Label>
+          <Label className={labelSm}>
+            {t("ppif.profile.nameChoices.third.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
+          </Label>
           <Input
             className={inputSm}
             value={form.altName2 || ""}
             onChange={(e) => set({ altName2: e.target.value })}
           />
         </div>
+
         <div className="grid gap-1.5">
-          <Label className={labelSm}>Spanish Name (Optional)</Label>
+          <Label className={labelSm}>{t("ppif.profile.nameChoices.spanish.label")}</Label>
           <Input
             className={inputSm}
-            placeholder="Fundación …"
+            placeholder={t("ppif.profile.nameChoices.spanish.placeholder")}
             value={form.foundationNameEs || ""}
             onChange={(e) => set({ foundationNameEs: e.target.value })}
           />
         </div>
       </div>
 
-      {/* Initial Endowment + Source of Funds */}
+      {/* Initial Endowment + SOF */}
       <InfoBox>
-        <b>Initial Endowment</b> — Often recorded as “Initial Capital / Endowment”. <u>Nominal minimum is USD 10,000 and
-          there is no immediate funding obligation</u> (it is recorded in the Charter as a commitment and can be
-        funded/adjusted later).
+        <b>{t("ppif.profile.endowmentInfo.title")}</b> — {t("ppif.profile.endowmentInfo.body")}
       </InfoBox>
 
       <div className="grid md:grid-cols-2 gap-3">
         <div className="grid gap-1.5">
-          <Label className={labelSm}>Initial Endowment (USD)</Label>
+          <Label className={labelSm}>{t("ppif.profile.endowmentFields.amount.label")}</Label>
           <Input
             className={inputSm}
             type="number"
             inputMode="decimal"
-            placeholder="e.g., 10000"
+            placeholder={t("ppif.profile.endowmentFields.amount.placeholder")}
             value={form.initialEndowment || ""}
             onChange={(e) => set({ initialEndowment: e.target.value })}
           />
@@ -1472,35 +1746,39 @@ function ProfileStepPanama() {
 
         <div className="grid gap-1.5">
           <Label className={labelSm}>
-            Source of Funds<span className="text-destructive">*</span>
+            {t("ppif.profile.sourceOfFunds.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
           </Label>
           <Select
             value={form.sourceOfFunds || "__none"}
             onValueChange={(v) =>
               set({
                 sourceOfFunds: v === "__none" ? undefined : (v as PanamaPIFForm["sourceOfFunds"]),
-                sourceOfFundsOther: v === "other" ? (form.sourceOfFundsOther || "") : "",
+                sourceOfFundsOther: v === "other" ? (form.sourceOfFundsOther || "") : ""
               })
             }
           >
             <SelectTrigger className={inputSm}>
-              <SelectValue placeholder="Select" />
+              <SelectValue placeholder={t("ppif.profile.sourceOfFunds.placeholder")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="__none">Select</SelectItem>
-              {sofOpts.map((opt) => (
-                <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+              <SelectItem value="__none">{t("ppif.profile.sourceOfFunds.placeholder")}</SelectItem>
+              {sofKeys.map((k) => (
+                <SelectItem key={k} value={k}>
+                  {t(`ppif.profile.sourceOfFunds.options.${k}`)}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
-
         </div>
-
       </div>
 
       <div className="grid md:grid-cols-2 gap-3">
         <div className="grid gap-1.5">
-          <Label className={labelSm}>Payer of Initial Endowment (Name/Entity)<span className="text-destructive">*</span></Label>
+          <Label className={labelSm}>
+            {t("ppif.profile.endowmentFields.payer.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
+          </Label>
           <Input
             className={inputSm}
             value={form.endowmentPayer || ""}
@@ -1508,9 +1786,12 @@ function ProfileStepPanama() {
           />
         </div>
 
-        {/* Registered Address (Panama) */}
+        {/* Registered Address */}
         <div className="grid gap-1.5">
-          <Label className={labelSm}>Registered Address (Panama)<span className="text-destructive">*</span></Label>
+          <Label className={labelSm}>
+            {t("ppif.profile.registeredAddress.label")}
+            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
+          </Label>
           <RadioGroup
             value={form.registeredAddressMode || ""}
             onValueChange={(v: "mirr" | "own") => set({ registeredAddressMode: v })}
@@ -1518,11 +1799,11 @@ function ProfileStepPanama() {
           >
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <RadioGroupItem value="mirr" id="ra-mirr" />
-              Use Mirr Asia registered address (no extra charge)
+              {t("ppif.profile.registeredAddress.options.mirr")}
             </label>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <RadioGroupItem value="own" id="ra-own" />
-              I have my own registered address (provide below)
+              {t("ppif.profile.registeredAddress.options.own")}
             </label>
           </RadioGroup>
         </div>
@@ -1530,32 +1811,33 @@ function ProfileStepPanama() {
 
       {form.registeredAddressMode === "own" && (
         <div className="grid gap-1.5">
-          <Label className={labelSm}>Separate Registered Address (English)</Label>
+          <Label className={labelSm}>{t("ppif.profile.registeredAddress.own.label")}</Label>
           <Textarea
             className="text-sm"
-            placeholder="Addressee / Contact / Address / Postal Code (English recommended)"
+            placeholder={t("ppif.profile.registeredAddress.own.placeholder")}
             value={form.ownRegisteredAddress || ""}
             onChange={(e) => set({ ownRegisteredAddress: e.target.value })}
           />
         </div>
       )}
 
-      {/* Purpose box with chips + counter */}
+      {/* Purpose box */}
       <div className="space-y-2">
-        <Label className={labelSm}>Purpose of Establishment<span className="text-destructive">*</span></Label>
+        <Label className={labelSm}>
+          {t("ppif.profile.purpose.label")}
+          <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
+        </Label>
 
         <div className="flex flex-wrap gap-2">
-          {[
-            ["Asset Protection", "Hold real estate, financial assets, equities, and digital assets; establish asset protection via a foundation"],
-            ["Succession Planning", "Hold and operate assets through the foundation and plan intergenerational succession"],
-            ["Hold & Manage Investment Interests", "Hold and manage investment interests"],
-            ["Dividend & Interest Income Management", "Manage dividend and interest income"],
-            ["Charitable Purposes", "Operate funds for charitable or religious purposes"],
-            ["Family-Trust Structure", "Structure and operate as a family-trust style vehicle"],
-            ["Blockchain Token-Related", "Issue tokens to support a blockchain ecosystem"],
-          ].map(([label, val]) => (
-            <Button key={label} type="button" variant="outline" size="sm" onClick={() => addPurposeText(val as string)}>
-              {label}
+          {chipKeys.map((ck) => (
+            <Button
+              key={ck}
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => addPurposeText(ck)}
+            >
+              {t(`ppif.profile.purpose.chips.${ck}.label`)}
             </Button>
           ))}
         </div>
@@ -1564,13 +1846,15 @@ function ProfileStepPanama() {
           id="purpose"
           required
           rows={4}
-          placeholder="e.g., Asset protection, succession and charitable allocation, overseas shareholding and dividend management, etc."
+          placeholder={t("ppif.profile.purpose.placeholder")}
           className="text-sm"
           value={form.purposeSummary || ""}
           onChange={(e) => set({ purposeSummary: e.target.value.slice(0, 280) })}
         />
         <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">Combine the keywords or write freely.</span>
+          <span className="text-xs text-muted-foreground">
+            {t("ppif.profile.purpose.helper")}
+          </span>
           <span className="text-xs">{purposeLen}/280</span>
         </div>
       </div>
@@ -1579,29 +1863,31 @@ function ProfileStepPanama() {
 
       {/* Business / Activities */}
       <div className="space-y-2">
-        <div className="text-xs text-muted-foreground font-medium">Business / Activities</div>
+        <div className="text-xs text-muted-foreground font-medium">
+          {t("ppif.profile.businessActivities.sectionLabel")}
+        </div>
 
         <div className="grid md:grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <Label className={labelSm}>Main Industries (multi-select)</Label>
+            <Label className={labelSm}>{t("ppif.profile.businessActivities.industries.label")}</Label>
             <div className="flex flex-col gap-1.5 text-sm">
-              {industryMap.map(([key, label]) => (
-                <label key={key} className="flex items-center gap-2 cursor-pointer">
+              {industryKeys.map(([industryKey]) => (
+                <label key={industryKey} className="flex items-center gap-2 cursor-pointer">
                   <Checkbox
-                    checked={(form.industries || []).includes(key)}
-                    onCheckedChange={() => toggleIndustry(key)}
+                    checked={(form.industries || []).includes(industryKey)}
+                    onCheckedChange={() => toggleIndustry(industryKey)}
                   />
-                  {label}
+                  {t(`ppif.profile.businessActivities.industries.options.${industryKey}`)}
                 </label>
               ))}
             </div>
           </div>
 
           <div className="grid gap-1.5">
-            <Label className={labelSm}>Countries of Activity (planned)</Label>
+            <Label className={labelSm}>{t("ppif.profile.businessActivities.countries.label")}</Label>
             <Input
               className={inputSm}
-              placeholder="e.g., PA, US, EU, HK, KR ..."
+              placeholder={t("ppif.profile.businessActivities.countries.placeholder")}
               value={form.geoCountries || ""}
               onChange={(e) => set({ geoCountries: e.target.value })}
             />
@@ -1609,110 +1895,149 @@ function ProfileStepPanama() {
         </div>
 
         <div className="grid gap-1.5">
-          <Label className={labelSm}>Key Post-Incorporation Activities & Description</Label>
+          <Label className={labelSm}>{t("ppif.profile.businessActivities.description.label")}</Label>
           <Textarea
             className="text-sm"
-            placeholder="e.g., Hold foreign equity and receive dividends, operate online services and payment processing, allocate charitable funds, etc."
+            placeholder={t("ppif.profile.businessActivities.description.placeholder")}
             value={form.bizDesc || ""}
             onChange={(e) => set({ bizDesc: e.target.value })}
           />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function InvoicePIF() {
-  const [form, setForm] = useAtom(pifFormAtom)
-  const { pricing } = form
+  const [form, setForm] = useAtom(pifFormAtom);
+  const { pricing } = form;
 
   const updatePricing = <K extends keyof typeof pricing>(key: K, value: (typeof pricing)[K]) => {
-    const next = { ...pricing, [key]: value }
-    next.total = computePIFSetupTotal(next)
-    setForm({ ...form, pricing: next })
-  }
+    const next = { ...pricing, [key]: value };
+    next.total = computePIFSetupTotal(next);
+    setForm({ ...form, pricing: next });
+  };
 
   React.useEffect(() => {
-    const setupTotal = computePIFSetupTotal(pricing)
+    const setupTotal = computePIFSetupTotal(pricing);
     if (setupTotal !== pricing.total) {
-      setForm({ ...form, pricing: { ...pricing, total: setupTotal } })
+      setForm({ ...form, pricing: { ...pricing, total: setupTotal } });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
-  const base = pricing.total
+  const base = pricing.total;
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg sm:text-xl">Invoice & Quote — Panama PIF (Setup Only)</CardTitle>
+        <CardTitle className="text-lg sm:text-xl">
+          {t("ppif.invoice.title")}
+        </CardTitle>
       </CardHeader>
+
       <CardContent className="space-y-6">
         <div className="border rounded-xl p-4">
-          <h3 className="font-semibold mb-3">Setup (Year 1)</h3>
+          <h3 className="font-semibold mb-3">{t("ppif.invoice.setup.title")}</h3>
+
+          {/* Entity/setup fee row with tooltip */}
           <div className="flex items-start justify-between gap-3 py-1">
             <div className="text-sm flex items-center gap-2">
               <span id="entity-label">
-                Mirr Asia setup fee + first-year services
+                {t("ppif.invoice.setup.entity.label")}
                 <span
                   className="help sr-only"
-                  data-title="Setup package (all-in)"
-                  data-body="Includes government fees (corporation USD 300 / PIF separate), Resident Agent, and Registered Office."
+                  data-title={t("ppif.invoice.setup.entity.tooltip.title")}
+                  data-body={t("ppif.invoice.setup.entity.tooltip.body")}
                 />
               </span>
+
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
                     type="button"
-                    aria-label="Setup package (all-in) details"
+                    aria-label={t("ppif.invoice.setup.entity.tooltip.aria")}
                     className="inline-flex h-5 w-5 items-center justify-center rounded-full border text-muted-foreground"
                   >
                     <Info className="h-3.5 w-3.5" />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs text-xs">
-                  <div className="font-medium mb-1">Setup package (all-in)</div>
-                  <div>Includes government fees (corporation USD 300 / PIF separate), Resident Agent, and Registered Office.</div>
+                  <div className="font-medium mb-1">
+                    {t("ppif.invoice.setup.entity.tooltip.title")}
+                  </div>
+                  <div>{t("ppif.invoice.setup.entity.tooltip.body")}</div>
                 </TooltipContent>
               </Tooltip>
             </div>
+
             <span className="text-sm font-medium">{money(pricing.setupBase)}</span>
           </div>
+
+          {/* Selects & options */}
           <div className="space-y-3 mt-3">
+            {/* Nominee director(s) setup */}
             <div className="space-y-1.5">
-              <Label>Nominee Director(s) — setup</Label>
-              <Select value={String(pricing.ndSetup)} onValueChange={(v) => updatePricing("ndSetup", Number(v) as any)}>
+              <Label className={labelSm}>
+                {t("ppif.invoice.setup.ndSetup.label")}
+              </Label>
+              <Select
+                value={String(pricing.ndSetup)}
+                onValueChange={(v) => updatePricing("ndSetup", Number(v) as any)}
+              >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
+                  <SelectValue placeholder={t("ppif.profile.sourceOfFunds.placeholder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="0">None (0)</SelectItem>
-                  <SelectItem value="1">1 person (+{money(1200)})</SelectItem>
-                  <SelectItem value="2">2 people (+{money(1700)})</SelectItem>
-                  <SelectItem value="3">3 people (+{money(2200)})</SelectItem>
+                  <SelectItem value="0">
+                    {t("ppif.invoice.setup.ndSetup.options.0")}
+                  </SelectItem>
+                  <SelectItem value="1">
+                    {t("ppif.invoice.setup.ndSetup.options.1", { price: money(1200) })}
+                  </SelectItem>
+                  <SelectItem value="2">
+                    {t("ppif.invoice.setup.ndSetup.options.2", { price: money(1700) })}
+                  </SelectItem>
+                  <SelectItem value="3">
+                    {t("ppif.invoice.setup.ndSetup.options.3", { price: money(2200) })}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Reason for 3 ND (setup) */}
             {pricing.ndSetup === 3 && (
               <div className="space-y-1.5">
-                <Label className="text-xs">Reason for selecting 3 nominee directors (setup)</Label>
+                <Label className="text-xs">
+                  {t("ppif.invoice.setup.ndSetup.reason.label")}
+                </Label>
                 <Textarea
-                  placeholder="Please state why 3 nominee directors are needed."
+                  placeholder={t("ppif.invoice.setup.ndSetup.reason.placeholder")}
                   value={pricing.nd3ReasonSetup ?? ""}
                   onChange={(e) => updatePricing("nd3ReasonSetup", e.target.value)}
                 />
-                <p className="text-[12px] text-muted-foreground">* We recommend providing a reason when selecting 3.</p>
+                <p className="text-[12px] text-muted-foreground">
+                  {t("ppif.invoice.setup.ndSetup.reason.hint")}
+                </p>
               </div>
             )}
+
+            {/* Nominee shareholder (setup) */}
             <div className="flex items-center gap-2">
               <Checkbox
                 checked={pricing.nsSetup}
                 onCheckedChange={(c) => updatePricing("nsSetup", Boolean(c))}
                 id="ns-setup"
               />
-              <Label htmlFor="ns-setup">Nominee Shareholder (setup) (+{money(1300)})</Label>
+              <Label htmlFor="ns-setup">
+                {t("ppif.invoice.setup.nsSetup.label", { price: money(1300) })}
+              </Label>
             </div>
+
             <Separator />
-            <h4 className="font-medium">Optional services (setup)</h4>
+
+            {/* Optional services */}
+            <h4 className="font-medium">{t("ppif.invoice.setup.optional.title")}</h4>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Checkbox
@@ -1720,62 +2045,78 @@ function InvoicePIF() {
                   onCheckedChange={(c) => updatePricing("optEmi", Boolean(c))}
                   id="opt-emi"
                 />
-                <Label htmlFor="opt-emi">EMI account opening (+{money(400)})</Label>
+                <Label htmlFor="opt-emi">
+                  {t("ppif.invoice.setup.optional.emi", { price: money(400) })}
+                </Label>
               </div>
+
               <div className="flex items-center gap-2">
                 <Checkbox
                   checked={pricing.optBank}
                   onCheckedChange={(c) => updatePricing("optBank", Boolean(c))}
                   id="opt-bank"
                 />
-                <Label htmlFor="opt-bank">Panama local bank account opening (+{money(2000)})</Label>
+                <Label htmlFor="opt-bank">
+                  {t("ppif.invoice.setup.optional.bank", { price: money(2000) })}
+                </Label>
               </div>
+
               <div className="flex items-center gap-2">
                 <Checkbox
                   checked={pricing.optCbi}
                   onCheckedChange={(c) => updatePricing("optCbi", Boolean(c))}
                   id="opt-cbi"
                 />
-                <Label htmlFor="opt-cbi">Puerto Rico CBI account opening (+{money(3880)})</Label>
+                <Label htmlFor="opt-cbi">
+                  {t("ppif.invoice.setup.optional.cbi", { price: money(3880) })}
+                </Label>
               </div>
             </div>
+
             <Separator className="my-2" />
+
+            {/* Totals */}
             <div className="flex items-start justify-between gap-3 py-1">
-              <span className="text-sm font-medium">Setup (Year 1) total</span>
+              <span className="text-sm font-medium">
+                {t("ppif.invoice.setup.totals.setupY1")}
+              </span>
               <span className="text-sm font-medium">{money(base)}</span>
             </div>
           </div>
         </div>
+
+        {/* Includes */}
         <div className="rounded-lg border bg-muted/20 p-4 text-sm">
-          <b>Setup package includes (PIF):</b>
+          <b>{t("ppif.invoice.includes.title")}</b>
           <ol className="list-decimal pl-5 mt-2 space-y-1">
-            <li>Draft foundation charter (EN/ES)</li>
-            <li>Founder nomination</li>
-            <li>Notarization and registration of the charter</li>
-            <li>Incorporation fees and registry taxes</li>
-            <li>Certificate of Establishment</li>
-            <li>Resolution organizing the foundation council</li>
-            <li>Resolutions appointing Protector/beneficiaries</li>
-            <li>Drafting of regulations</li>
-            <li>Notarized translations</li>
-            <li>Certificate of Incumbency</li>
-            <li>Registered office (1 year)</li>
-            <li>Registered agent/secretary (1 year)</li>
-            <li>KYC/Due Diligence</li>
-            <li>International courier</li>
+            <li>{t("ppif.invoice.includes.items.i1")}</li>
+            <li>{t("ppif.invoice.includes.items.i2")}</li>
+            <li>{t("ppif.invoice.includes.items.i3")}</li>
+            <li>{t("ppif.invoice.includes.items.i4")}</li>
+            <li>{t("ppif.invoice.includes.items.i5")}</li>
+            <li>{t("ppif.invoice.includes.items.i6")}</li>
+            <li>{t("ppif.invoice.includes.items.i7")}</li>
+            <li>{t("ppif.invoice.includes.items.i8")}</li>
+            <li>{t("ppif.invoice.includes.items.i9")}</li>
+            <li>{t("ppif.invoice.includes.items.i10")}</li>
+            <li>{t("ppif.invoice.includes.items.i11")}</li>
+            <li>{t("ppif.invoice.includes.items.i12")}</li>
+            <li>{t("ppif.invoice.includes.items.i13")}</li>
+            <li>{t("ppif.invoice.includes.items.i14")}</li>
           </ol>
           <div className="mt-2 text-[12px] text-muted-foreground">
-            <strong>Note:</strong> Accounting fees are not included; bookkeeping/audit/tax filings are quoted separately.
+            <strong>Note:</strong> {t("ppif.invoice.includes.note")}
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
-function StripePaymentForm({ app, onSuccess, onClose }: {
+function StripePaymentForm({app,onSuccess,onClose}: {
   app: PanamaPIFForm;
-  onSuccess: (info: StripeSuccessInfo) => void; onClose: () => void;
+  onSuccess: (info: StripeSuccessInfo) => void;
+  onClose: () => void;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -1797,16 +2138,16 @@ function StripePaymentForm({ app, onSuccess, onClose }: {
     setProcessingMsg(null);
 
     try {
-      const { error, paymentIntent } = await stripe.confirmPayment({
+      const { error: stripeErr, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: typeof window !== "undefined" ? window.location.href : "",
+          return_url: typeof window !== "undefined" ? window.location.href : ""
         },
-        redirect: "if_required",
+        redirect: "if_required"
       });
 
-      if (error) {
-        setError(error.message ?? "Payment failed. Please try again.");
+      if (stripeErr) {
+        setError(stripeErr.message ?? t("ppif.payment.stripe.form.errors.failedGeneric"));
         setSubmitting(false);
         return;
       }
@@ -1822,58 +2163,55 @@ function StripePaymentForm({ app, onSuccess, onClose }: {
             userEmail: app.email,
             country: "pif"
           });
+
           if (result?.ok) {
             const payload: StripeSuccessInfo = {
               receiptUrl: result?.receiptUrl,
               amount: result?.amount,
               currency: result?.currency,
-              paymentIntentStatus: result?.paymentIntentStatus,
+              paymentIntentStatus: result?.paymentIntentStatus
             };
+
             if (result?.paymentIntentStatus === "succeeded") {
               setSuccessPayload(payload);
               onSuccess(payload);
               setSubmitting(false);
               return;
             }
-            // Processing or not final yet
+
             if (result?.paymentIntentStatus === "processing" || result?.paymentIntentStatus === "requires_capture") {
-              setProcessingMsg(
-                "Your payment is processing. You’ll receive a receipt once the Transaction gets confirmed."
-              );
+              setProcessingMsg(t("ppif.payment.stripe.form.processing.msg"));
               onSuccess(payload);
               setSubmitting(false);
               return;
             }
           }
-          // Backend returned non-ok or unexpected
-          setError(
-            "Payment confirmed, but we couldn’t retrieve the receipt from the server. Please contact support if you didn’t receive an email."
-          );
+
+          setError(t("ppif.payment.stripe.form.errors.backendReceiptMissing"));
           setSubmitting(false);
         } catch (e) {
           console.error("Failed to notify backend about PI update:", e);
-          setError(
-            "Payment confirmed, but saving the payment on the server failed. We’ll email your receipt soon or contact support."
-          );
+          setError(t("ppif.payment.stripe.form.errors.backendSaveFailed"));
           setSubmitting(false);
         }
       };
 
-      if (status === "succeeded") {
-        await notifyBackend();
-      } else if (status === "processing" || status === "requires_capture") {
+      if (status === "succeeded" || status === "processing" || status === "requires_capture") {
         await notifyBackend();
       } else {
-        setError(`Payment status: ${status ?? "unknown"}. If this persists, contact support.`);
+        setError(
+          t("ppif.payment.stripe.form.errors.statusPrefix", { status: status ?? "unknown" })
+        );
         setSubmitting(false);
       }
     } catch (e: any) {
       console.error(e);
-      setError(e?.message || "Something went wrong while confirming payment.");
+      setError(e?.message || t("ppif.payment.stripe.form.errors.confirmGeneric"));
       setSubmitting(false);
     }
   };
 
+  // Success view
   if (successPayload) {
     const amt = typeof successPayload.amount === "number" ? successPayload.amount : undefined;
     const currency =
@@ -1882,24 +2220,29 @@ function StripePaymentForm({ app, onSuccess, onClose }: {
     return (
       <div className="space-y-4">
         <div className="border rounded-md p-3 text-sm bg-emerald-50 border-emerald-200 text-emerald-900">
-          <div className="font-semibold mb-1">Payment successful</div>
+          <div className="font-semibold mb-1">
+            {t("ppif.payment.stripe.form.success.title")}
+          </div>
           <div className="space-y-1">
             {amt != null && currency ? (
               <div>
-                Amount: <b>{currency} {(amt / 100).toFixed(2)}</b>
+                {t("ppif.payment.stripe.form.success.amountLabel")}{" "}
+                <b>
+                  {currency} {(amt / 100).toFixed(2)}
+                </b>
               </div>
             ) : null}
             <div>
               {successPayload.receiptUrl ? (
                 <>
-                  Receipt:&nbsp;
+                  {t("ppif.payment.stripe.form.success.receiptLabel")}&nbsp;
                   <a
                     href={successPayload.receiptUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline underline-offset-2"
                   >
-                    View Stripe receipt
+                    {t("ppif.payment.stripe.form.success.viewReceipt")}
                   </a>
                 </>
               ) : null}
@@ -1908,25 +2251,29 @@ function StripePaymentForm({ app, onSuccess, onClose }: {
         </div>
 
         <div className="flex items-center justify-end">
-          <Button onClick={onClose}>Done</Button>
+          <Button onClick={onClose}>{t("ppif.payment.stripe.form.success.doneBtn")}</Button>
         </div>
       </div>
     );
   }
+
   // Processing view (no receipt yet)
   if (processingMsg) {
     return (
       <div className="space-y-4">
         <div className="border rounded-md p-3 text-sm bg-amber-50 border-amber-200 text-amber-900">
-          <div className="font-semibold mb-1">Payment is processing</div>
+          <div className="font-semibold mb-1">
+            {t("ppif.payment.stripe.form.processing.title")}
+          </div>
           <div>{processingMsg}</div>
         </div>
         <div className="flex items-center justify-end">
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={onClose}>{t("ppif.payment.stripe.form.processing.closeBtn")}</Button>
         </div>
       </div>
     );
   }
+
   // Default payment form
   return (
     <div className="space-y-4">
@@ -1938,17 +2285,18 @@ function StripePaymentForm({ app, onSuccess, onClose }: {
       ) : null}
       <div className="flex items-center justify-end gap-2">
         <Button variant="outline" onClick={onClose} disabled={submitting}>
-          Cancel
+          {t("ppif.payment.stripe.form.controls.cancel")}
         </Button>
         <Button onClick={handleConfirm} disabled={!stripe || !elements || submitting}>
-          {submitting ? "Processing…" : "Pay now"}
+          {submitting ? t("ppif.payment.stripe.form.controls.processing") : t("ppif.payment.stripe.form.controls.payNow")}
         </Button>
       </div>
     </div>
   );
 }
 
-function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, onSuccess, }: {
+function StripeCardDrawer({open,onOpenChange,clientSecret,amountUSD,app,onSuccess
+}: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   clientSecret: string;
@@ -1959,34 +2307,36 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
   const options = React.useMemo(
     () => ({
       clientSecret,
-      appearance: { theme: "stripe" as const },
+      appearance: { theme: "stripe" as const }
     }),
     [clientSecret]
   );
+
+  const note = app.payMethod === "card" ? t("ppif.payment.stripe.drawer.cardFeeNote") : "";
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>Stripe Card Payment</SheetTitle>
+          <SheetTitle>{t("ppif.payment.stripe.drawer.title")}</SheetTitle>
           <SheetDescription>
-            Grand Total: <b>USD {amountUSD.toFixed(2)}</b> {app.payMethod === "card" ? "(incl. 3.5% card fee)" : ""}
+            {t("ppif.payment.stripe.drawer.description", {
+              amount: `USD ${amountUSD.toFixed(2)}`,
+              note
+            })}
           </SheetDescription>
         </SheetHeader>
 
-        {/* Mount Elements only when we have a clientSecret */}
         {clientSecret ? (
           <div className="mt-4">
             <Elements stripe={stripePromise} options={options}>
-              <StripePaymentForm
-                app={app}
-                onSuccess={onSuccess}
-                onClose={() => onOpenChange(false)}
-              />
+              <StripePaymentForm app={app} onSuccess={onSuccess} onClose={() => onOpenChange(false)} />
             </Elements>
           </div>
         ) : (
-          <div className="mt-4 text-sm text-muted-foreground">Preparing secure payment…</div>
+          <div className="mt-4 text-sm text-muted-foreground">
+            {t("ppif.payment.stripe.drawer.preparing")}
+          </div>
         )}
       </SheetContent>
     </Sheet>
@@ -2011,79 +2361,80 @@ function Tip({ text, content }: { text?: string; content?: React.ReactNode }) {
 }
 
 function PaymentStepPIF() {
-  const [form, setForm] = useAtom(pifFormAtom)
+  const [form, setForm] = useAtom(pifFormAtom);
 
   const isPaid =
     form.paymentStatus === "paid" ||
     form.stripeLastStatus === "succeeded" ||
-    form.stripePaymentStatus === "succeeded"
+    form.stripePaymentStatus === "succeeded";
 
   React.useEffect(() => {
-    if (isPaid) return
-    const now = Date.now()
-    const current = form.expiresAt ? new Date(form.expiresAt).getTime() : 0
+    if (isPaid) return;
+    const now = Date.now();
+    const current = form.expiresAt ? new Date(form.expiresAt).getTime() : 0;
     if (!current || current <= now) {
-      const twoDaysMs = 2 * 24 * 60 * 60 * 1000
-      const expiryISO = new Date(now + twoDaysMs).toISOString()
-      setForm((prev) => ({ ...prev, expiresAt: expiryISO }))
+      const twoDaysMs = 2 * 24 * 60 * 60 * 1000;
+      const expiryISO = new Date(now + twoDaysMs).toISOString();
+      setForm((prev) => ({ ...prev, expiresAt: expiryISO }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPaid])
+  }, [isPaid]);
 
-  const [nowTs, setNowTs] = React.useState(() => Date.now())
+  const [nowTs, setNowTs] = React.useState(() => Date.now());
   React.useEffect(() => {
-    if (isPaid) return
-    const id = window.setInterval(() => setNowTs(Date.now()), 1000)
-    return () => window.clearInterval(id)
-  }, [isPaid])
+    if (isPaid) return;
+    const id = window.setInterval(() => setNowTs(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [isPaid]);
 
-  const expiresTs = form.expiresAt ? new Date(form.expiresAt).getTime() : 0
-  const remainingMs = Math.max(0, expiresTs - nowTs)
-  const isExpired = !isPaid && (!expiresTs || remainingMs <= 0)
+  const expiresTs = form.expiresAt ? new Date(form.expiresAt).getTime() : 0;
+  const remainingMs = Math.max(0, expiresTs - nowTs);
+  const isExpired = !isPaid && (!expiresTs || remainingMs <= 0);
+
   const formatRemaining = (ms: number) => {
-    const s = Math.floor(ms / 1000)
-    const d = Math.floor(s / 86400)
-    const h = Math.floor((s % 86400) / 3600)
-    const m = Math.floor((s % 3600) / 60)
-    const sec = s % 60
+    const s = Math.floor(ms / 1000);
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
     return d > 0
       ? `${d}d ${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
-      : `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
-  }
+      : `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+  };
 
   const guard = (msg: string) => {
     if (isPaid) {
-      alert("Already paid.")
-      return true
+      alert(t("ppif.payment.step.alerts.alreadyPaid"));
+      return true;
     }
     if (isExpired) {
-      alert(msg)
-      return true
+      alert(msg);
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
-  const grand = computePIFGrandTotal(form)
+  const grand = computePIFGrandTotal(form);
 
-  // placeholders for your future integrations:
-  const [creatingPI, setCreatingPI] = React.useState(false)
-  const [uploading, setUploading] = React.useState(false)
-  const [bankFile, setBankFile] = React.useState<File | null>(null)
+  // UI state
+  const [creatingPI, setCreatingPI] = React.useState(false);
+  const [uploading, setUploading] = React.useState(false);
+  const [bankFile, setBankFile] = React.useState<File | null>(null);
   const [clientSecret, setClientSecret] = React.useState<string | null>(null);
   const [cardDrawerOpen, setCardDrawerOpen] = React.useState(false);
 
   const handleProceedCard = async () => {
-    if (guard("This quote expired. Please refresh or contact us.")) return
+    if (guard(t("ppif.payment.step.alerts.expiredGuard"))) return;
     if (clientSecret && form.paymentIntentId) {
       setCardDrawerOpen(true);
       return;
     }
-    setCreatingPI(true)
+    setCreatingPI(true);
     try {
       const currentFP = {
         companyId: form?._id ?? null,
         totalCents: Math.round(grand * 100),
-        country: "PIF",
+        country: "PIF"
       };
       const result = await createInvoicePaymentIntent(currentFP);
       if (result?.clientSecret && result?.id) {
@@ -2091,92 +2442,97 @@ function PaymentStepPIF() {
         setForm((p) => ({ ...p, paymentIntentId: result.id, payMethod: "card" }));
         setCardDrawerOpen(true);
       } else {
-        alert("Could not initialize card payment. Please try again.");
+        alert(t("ppif.payment.step.alerts.cardInitError"));
       }
     } finally {
-      setCreatingPI(false)
+      setCreatingPI(false);
     }
-  }
+  };
 
   const handleBankProofSubmit = async () => {
-    if (guard("This quote expired. Please refresh or contact us.")) return
-    if (!bankFile) return
-    setUploading(true)
-    const method = form.payMethod || 'card'
-    const expiresAt = form.expiresAt || ''
+    if (guard(t("ppif.payment.step.alerts.expiredGuard"))) return;
+    if (!bankFile) return;
+    setUploading(true);
+    const method = form.payMethod || "card";
+    const expiresAt = form.expiresAt || "";
     try {
-      // TODO: integrate your upload API here
-      console.log("Upload bank proof (Panama):", { bankFile, payMethod: form.payMethod })
       const result = await uploadIncorpoPaymentBankProof(form?._id || "", "pif", bankFile, method, expiresAt);
-
-      if (result) setForm((p) => ({ ...p, uploadReceiptUrl: result?.url, }));
+      if (result) setForm((p) => ({ ...p, uploadReceiptUrl: result?.url }));
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   const handleDeleteBankProof = async () => {
-    if (guard(t("newHk.payment.alerts.expiredGuard"))) return;
+    if (guard(t("ppif.payment.step.alerts.expiredGuard"))) return;
     await deleteIncorpoPaymentBankProof(form?._id || "", "pif");
     setForm((p: any) => ({ ...p, uploadReceiptUrl: undefined }));
   };
 
   return (
     <>
+      {/* Banner: Paid */}
       {isPaid && (
         <div className="mb-4 border rounded-md p-3 text-sm bg-emerald-50 border-emerald-200 text-emerald-900">
-          <div className="font-semibold mb-1">Payment received</div>
+          <div className="font-semibold mb-1">{t("ppif.payment.step.banners.received.title")}</div>
           {typeof form.stripeAmountCents === "number" && form.stripeCurrency ? (
             <div>
-              Amount: <b>{form.stripeCurrency.toUpperCase()} {(form.stripeAmountCents / 100).toFixed(2)}</b>
+              {t("ppif.payment.step.banners.received.amountLabel")}{" "}
+              <b>
+                {form.stripeCurrency.toUpperCase()} {(form.stripeAmountCents / 100).toFixed(2)}
+              </b>
             </div>
           ) : null}
           {form.stripeReceiptUrl ? (
             <div>
-              Receipt:{" "}
-              <a className="underline underline-offset-2" href={form.stripeReceiptUrl} target="_blank" rel="noreferrer">View</a>
+              {t("ppif.payment.step.banners.received.receiptLabel")}{" "}
+              <a
+                className="underline underline-offset-2"
+                href={form.stripeReceiptUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {t("ppif.payment.step.banners.received.view")}
+              </a>
             </div>
           ) : null}
         </div>
       )}
+
+      {/* Banner: Countdown / Expired */}
       {!isPaid && (
-        <div className={`mb-4 rounded-md border p-3 text-sm ${isExpired ? "border-red-200 bg-red-50 text-red-900" : "border-amber-200 bg-amber-50 text-amber-900"}`}>
+        <div
+          className={`mb-4 rounded-md border p-3 text-sm ${
+            isExpired ? "border-red-200 bg-red-50 text-red-900" : "border-amber-200 bg-amber-50 text-amber-900"
+          }`}
+        >
           {isExpired ? (
-            <div className="font-medium">This quote has expired.</div>
+            <div className="font-medium">{t("ppif.payment.step.banners.expiredBox.expiredTitle")}</div>
           ) : (
             <div className="flex items-center justify-between gap-2">
-              <div className="font-medium">Payment window</div>
+              <div className="font-medium">{t("ppif.payment.step.banners.expiredBox.windowTitle")}</div>
               <div className="text-base font-bold tabular-nums">{formatRemaining(remainingMs)}</div>
             </div>
           )}
         </div>
       )}
 
+      {/* Main grid */}
       <>
         <div className="grid md:grid-cols-2 gap-4">
+          {/* Methods */}
           <Card>
             <CardContent className="pt-6 space-y-2">
-              <div className="font-bold">
-                {t("newHk.payment.methods.title")}
-              </div>
+              <div className="font-bold">{t("newHk.payment.methods.title")}</div>
               {[
                 {
                   v: "card",
                   label: t("newHk.payment.methods.options.card.label"),
-                  tip: t("newHk.payment.methods.options.card.tip"),
+                  tip: t("newHk.payment.methods.options.card.tip")
                 },
-                {
-                  v: "fps",
-                  label: t("newHk.payment.methods.options.fps.label"),
-                },
-                {
-                  v: "bank",
-                  label: t("newHk.payment.methods.options.bank.label"),
-                },
-                {
-                  v: "other",
-                  label: t("newHk.payment.methods.options.other.label"),
-                },
+                { v: "fps", label: t("newHk.payment.methods.options.fps.label") },
+                { v: "bank", label: t("newHk.payment.methods.options.bank.label") },
+                { v: "other", label: t("newHk.payment.methods.options.other.label") }
               ].map((o) => (
                 <label key={o.v} className="block space-x-2">
                   <input
@@ -2187,9 +2543,7 @@ function PaymentStepPIF() {
                     onChange={() => setForm((p) => ({ ...p, payMethod: o.v as PanamaPIFForm["payMethod"] }))}
                     disabled={isPaid || isExpired}
                   />
-                  <span className={isPaid || isExpired ? "text-muted-foreground" : ""}>
-                    {o.label}
-                  </span>
+                  <span className={isPaid || isExpired ? "text-muted-foreground" : ""}>{o.label}</span>
                   {o.tip && !(isPaid || isExpired) && (
                     <span className="inline-flex ml-1">
                       <Tip text={o.tip} />
@@ -2199,26 +2553,23 @@ function PaymentStepPIF() {
               ))}
               {(isPaid || isExpired) && (
                 <div className="mt-2 text-xs text-muted-foreground">
-                  {isPaid
-                    ? t("newHk.payment.methods.statusNote.paid")
-                    : t("newHk.payment.methods.statusNote.expired")}
+                  {isPaid ? t("newHk.payment.methods.statusNote.paid") : t("newHk.payment.methods.statusNote.expired")}
                 </div>
               )}
             </CardContent>
           </Card>
-
+          {/* Conditions + uploads + card action */}
           <Card>
             <CardContent className="pt-6 space-y-2">
-              <div className="font-bold">
-                {t("newHk.payment.conditions.title")}
-              </div>
+              <div className="font-bold">{t("newHk.payment.conditions.title")}</div>
               <p className="text-sm">
                 <Trans i18nKey="newHk.payment.conditions.text">
-                  100% advance payment. All payments are non-refundable.The
-                  remitter bears all bank charges (including intermediary bank fees).
+                  100% advance payment. All payments are non-refundable.The remitter bears all bank charges (including
+                  intermediary bank fees).
                 </Trans>
               </p>
 
+              {/* Bank/Other uploads */}
               {["bank", "other"].includes(form.payMethod ?? "") && (
                 <div className="mt-4 grid gap-3">
                   <div className="grid gap-2">
@@ -2226,9 +2577,7 @@ function PaymentStepPIF() {
                     <Input
                       placeholder={t("newHk.payment.bankUpload.refPlaceholder")}
                       value={form.bankRef || ""}
-                      onChange={(e) =>
-                        setForm((p) => ({ ...p, bankRef: e.target.value }))
-                      }
+                      onChange={(e) => setForm((p) => ({ ...p, bankRef: e.target.value }))}
                       disabled={isPaid || isExpired}
                     />
                   </div>
@@ -2244,29 +2593,18 @@ function PaymentStepPIF() {
                       }}
                       disabled={isPaid || isExpired}
                     />
-                    <Button
-                      onClick={handleBankProofSubmit}
-                      disabled={isPaid || isExpired || creatingPI || uploading}
-                    >
-                      {uploading
-                        ? t("newHk.payment.bankUpload.uploading")
-                        : t("newHk.payment.bankUpload.submit")}
+                    <Button onClick={handleBankProofSubmit} disabled={isPaid || isExpired || creatingPI || uploading}>
+                      {uploading ? t("newHk.payment.bankUpload.uploading") : t("newHk.payment.bankUpload.submit")}
                     </Button>
                   </div>
 
                   {form.uploadReceiptUrl ? (
                     <div className="mt-2 space-y-2">
                       <div className="flex items-center justify-between">
-                        <div className="text-sm font-medium">
-                          {t("newHk.payment.bankUpload.previewTitle")}
-                        </div>
+                        <div className="text-sm font-medium">{t("newHk.payment.bankUpload.previewTitle")}</div>
                         <div className="flex items-center gap-2">
                           <Button asChild variant="outline" size="sm" disabled={isPaid || isExpired}>
-                            <a
-                              href={form.uploadReceiptUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
+                            <a href={form.uploadReceiptUrl} target="_blank" rel="noopener noreferrer">
                               {t("newHk.payment.bankUpload.openInNewTab")}
                             </a>
                           </Button>
@@ -2285,7 +2623,7 @@ function PaymentStepPIF() {
                         <iframe
                           key={form.uploadReceiptUrl}
                           src={form.uploadReceiptUrl}
-                          title="Payment Proof"
+                          title={t("ppif.payment.step.iframe.paymentProofTitle")}
                           className="w-full h-[420px]"
                         />
                       </div>
@@ -2294,32 +2632,29 @@ function PaymentStepPIF() {
                 </div>
               )}
 
+              {/* Card flow */}
               {form.payMethod === "card" && !isPaid && (
                 <div className="mt-3">
-                  <Button
-                    onClick={handleProceedCard}
-                    disabled={isPaid || isExpired || creatingPI}
-                  >
-                    {creatingPI
-                      ? t("newHk.payment.card.preparing")
-                      : t("newHk.payment.card.proceed")}
+                  <Button onClick={handleProceedCard} disabled={isPaid || isExpired || creatingPI}>
+                    {creatingPI ? t("newHk.payment.card.preparing") : t("newHk.payment.card.proceed")}
                   </Button>
                   <div className="text-xs text-muted-foreground mt-2">
-                    {isExpired
-                      ? t("newHk.payment.card.disabledExpired")
-                      : t("newHk.payment.card.drawerNote")}
+                    {isExpired ? t("newHk.payment.card.disabledExpired") : t("newHk.payment.card.drawerNote")}
                   </div>
                 </div>
               )}
+
               {form.payMethod === "fps" ? <FPSForm /> : null}
+
+              {/* Grand total */}
               <div className="text-right font-bold mt-4">
-                {t("newHk.payment.totals.grandTotal", {
-                  amount: grand.toFixed(2),
-                })}
+                {t("newHk.payment.totals.grandTotal", { amount: grand.toFixed(2) })}
               </div>
             </CardContent>
           </Card>
         </div>
+
+        {/* Stripe drawer */}
         {clientSecret && !isPaid && !isExpired ? (
           <StripeCardDrawer
             open={cardDrawerOpen}
@@ -2330,19 +2665,11 @@ function PaymentStepPIF() {
             onSuccess={(info) => {
               setForm((prev) => ({
                 ...prev,
-                paymentStatus:
-                  info?.paymentIntentStatus === "succeeded"
-                    ? "paid"
-                    : prev.paymentStatus,
-                stripeLastStatus:
-                  info?.paymentIntentStatus ?? prev.stripeLastStatus,
-                stripeReceiptUrl:
-                  info?.receiptUrl ?? prev.stripeReceiptUrl,
-                stripeAmountCents:
-                  typeof info?.amount === "number"
-                    ? info.amount
-                    : prev.stripeAmountCents,
-                stripeCurrency: info?.currency ?? prev.stripeCurrency,
+                paymentStatus: info?.paymentIntentStatus === "succeeded" ? "paid" : prev.paymentStatus,
+                stripeLastStatus: info?.paymentIntentStatus ?? prev.stripeLastStatus,
+                stripeReceiptUrl: info?.receiptUrl ?? prev.stripeReceiptUrl,
+                stripeAmountCents: typeof info?.amount === "number" ? info.amount : prev.stripeAmountCents,
+                stripeCurrency: info?.currency ?? prev.stripeCurrency
               }));
               setCardDrawerOpen(false);
             }}
@@ -2350,7 +2677,7 @@ function PaymentStepPIF() {
         ) : null}
       </>
     </>
-  )
+  );
 }
 
 function CongratsStep() {
@@ -2384,62 +2711,81 @@ function CongratsStep() {
 }
 
 const panamaPIFConfig: FormConfig = {
-  title: "Panama Private Interest Foundation (PIF) — Application",
+  title: "ppif.heading",
   steps: [
     {
       id: "applicant",
-      title: "A. Applicant Details",
-      description: "We’ll send documents, invoices, and status updates to the email below.",
+      title: "ppif.section1",
+      description: "ppif.applicant.description",
       fields: [
-        { type: "email", name: "email", label: "Email", placeholder: "you@example.com", required: true },
-        { type: "text", name: "contactName", label: "Contact Person (Full Name)", placeholder: "John Smith", required: true },
-        { type: "text", name: "phone", label: "Phone / Messenger", placeholder: "+82 ..." },
-        { type: "text", name: "contactPref", label: "Preferred Contact Time / Method", placeholder: "e.g., Weekdays 10:00–18:00, email preferred" },
-      ],
+        {
+          type: "email",
+          name: "email",
+          label: "ppif.applicant.fields.email.label",
+          placeholder: "ppif.applicant.fields.email.placeholder",
+          required: true
+        },
+        {
+          type: "text",
+          name: "contactName",
+          label: "ppif.applicant.fields.contactName.label",
+          placeholder: "ppif.applicant.fields.contactName.placeholder",
+          required: true
+        },
+        {
+          type: "text",
+          name: "phone",
+          label: "ppif.applicant.fields.phone.label",
+          placeholder: "ppif.applicant.fields.phone.placeholder"
+        },
+        {
+          type: "text",
+          name: "contactPref",
+          label: "ppif.applicant.fields.contactPref.label",
+          placeholder: "ppif.applicant.fields.contactPref.placeholder"
+        }
+      ]
     },
     {
       id: "profile",
-      title: "B. Foundation Profile",
-      render: ProfileStepPanama,
+      title: "ppif.section2",
+      render: ProfileStepPanama
     },
-    { id: "founders", title: "C. Founder(s)", render: FoundersManager },
-    { id: "council", title: "D. Foundation Council — Composition", render: CouncilStep },
-    { id: "protectors", title: "E. Protector (optional)", render: ProtectorsManager },
-    { id: "beneficiaries", title: "F. Beneficiaries", render: BeneficiariesManager },
-    { id: "bylaws", title: "G. By-Laws", render: BylawsStep },
+    { id: "founders", title: "ppif.section3", render: FoundersManager },
+    { id: "council", title: "ppif.section4", render: CouncilStep },
+    { id: "protectors", title: "ppif.section5", render: ProtectorsManager },
+    { id: "beneficiaries", title: "ppif.section6", render: BeneficiariesManager },
+    { id: "bylaws", title: "ppif.section7", render: BylawsStep },
     {
       id: "es",
-      title: "H. Economic Substance (ES) Check",
-      description:
-        "Panama has not implemented a general ES regime; ES applies mainly to certain special regimes (e.g., Multinational Headquarters SEM). In practice, General PIFs are not directly subject to ES requirements (tax/reporting obligations should be reviewed separately).※ Tax residence & activity in other countries may trigger taxation/CRS impacts — review case-by-case.",
-      fields: [],
+      title: "ppif.section8",
+      description: "ppif.es.description",
+      fields: []
     },
-    { id: "banking", title: "I. Banking", render: BankingStep },
+    { id: "banking", title: "ppif.section9", render: BankingStep },
     {
       id: "pep",
-      title: "J. Politically Exposed Person (PEP)",
+      title: "ppif.section10",
       fields: [
         {
           type: "radio-group",
           name: "pepAny",
-          label:
-            "A PEP is a current/former senior public official and their family/close associates. Here we only confirm whether any PIF participant is a PEP. Detailed checks are performed in the individual onboarding forms.",
+          label: "ppif.pep.label",
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-          ],
-        },
-      ],
+            { label: "ppif.pep.options.yes", value: "yes" },
+            { label: "ppif.pep.options.no", value: "no" }
+          ]
+        }
+      ]
     },
-    { id: "aml", title: "K. AML & Sanctions", render: AMLStep },
-    { id: "deliverables", title: "L. Post-Incorporation Deliverables & Shipping", render: DeliverablesStep },
-    { id: "accounting", title: "M. Accounting Record Storage & Responsible Person", render: AccountingRecordsStep },
-    { id: "invoice", title: "N. Invoice & Quote", render: InvoicePIF },
-    { id: "payment", title: "O. Payment", render: PaymentStepPIF },
-    { id: "declarations", title: "P. Declarations & e-Sign", render: DeclarationsStep },
-    { id: "congrats", title: "Congratulations", render: CongratsStep },
-
-  ],
+    { id: "aml", title: "ppif.section11", render: AMLStep },
+    { id: "deliverables", title: "ppif.section12", render: DeliverablesStep },
+    { id: "accounting", title: "ppif.section13", render: AccountingRecordsStep },
+    { id: "invoice", title: "ppif.section14", render: InvoicePIF },
+    { id: "payment", title: "ppif.section15", render: PaymentStepPIF },
+    { id: "declarations", title: "ppif.section16", render: DeclarationsStep },
+    { id: "congrats", title: "ppif.congrats", render: CongratsStep }
+  ]
 }
 
 function requiredMissingForStep(form: PanamaPIFForm, step: StepConfig): string[] {
@@ -2625,6 +2971,7 @@ export default function PanamaPIFWizard() {
   const [stepIdx, setStepIdx] = React.useState(0)
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
   const [savingNext, setSavingNext] = React.useState(false)
+
   React.useEffect(() => {
     if (!form) setForm(initialPIF)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -2652,27 +2999,26 @@ export default function PanamaPIFWizard() {
 
       const result = await createOrUpdatePaFIncorpo(payload);
       if (result) {
-        setForm({...form, _id: result._id,});
-        toast({ title: "Saved", description: "Your application data has been saved." });
+        setForm({ ...form, _id: result._id });
+        toast({ title: t("ppif.save.successTitle"), description: t("ppif.save.successDesc") });
         return true;
       }
-      toast({ variant: "destructive", title: "Error", description: "Failed to save application. Please try again." });
+      toast({ variant: "destructive", title: t("ppif.save.errorTitle"), description: t("ppif.save.errorDesc") });
       return false;
     } catch (e) {
       console.error("saveAll error", e);
-      toast({ variant: "destructive", title: "Error", description: "Failed to save application. Please try again." });
+      toast({ variant: "destructive", title: t("ppif.save.errorTitle"), description: t("ppif.save.errorDesc") });
       return false;
     }
   };
-
-
+  // console.log("missing0", missing)
   const handleNext = async () => {
     if (stepIdx >= config.steps.length - 1) return;
     if (missing.length > 0) {
       toast({
         variant: "destructive",
-        title: "Please complete required fields",
-        description: missing.join(", "),
+        title: t("newHk.sidebar.toasts.completeStepTitle"),
+        description: `${t("ppif.validation.requiredFieldsPrefix")} ${missing.map((k) => t(k, k)).join(", ")}`
       });
       return;
     }
@@ -2680,9 +3026,7 @@ export default function PanamaPIFWizard() {
       setSavingNext(true);
       const ok = await saveAll();
       if (!ok) return;
-      // proceed to next step
       goto(stepIdx + 1);
-      // reset the tried flag for the new step
     } finally {
       setSavingNext(false);
     }
@@ -2693,6 +3037,7 @@ export default function PanamaPIFWizard() {
   return (
     <div className="max-w-6xl mx-auto p-3 sm:p-4 md:p-6 space-y-4">
       <TopBar title={config.title} totalSteps={config.steps.length} idx={stepIdx} />
+
       {/* Mobile sidebar toggle */}
       <div className="lg:hidden">
         <Button
@@ -2700,7 +3045,7 @@ export default function PanamaPIFWizard() {
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="w-full justify-between touch-manipulation"
         >
-          <span>{t("newHk.buttons.stepsMenu", "Steps Menu")}</span>
+          <span>{t("newHk.buttons.stepsMenu")}</span>
           <span className="text-xs">
             {t("newHk.topbar.stepOf", { current: stepIdx + 1, total: config.steps.length })}
           </span>
@@ -2714,9 +3059,9 @@ export default function PanamaPIFWizard() {
             <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
             <div className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-background border-r p-4 overflow-auto">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-semibold">{t("newHk.sidebar.stepsMenu", "Steps")}</h2>
+                <h2 className="font-semibold">{t("newHk.sidebar.stepsMenu")}</h2>
                 <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)} className="h-8 w-8 p-0">
-                  {t("newHk.sidebar.close", "✕")}
+                  {t("newHk.sidebar.close")}
                 </Button>
               </div>
               <SidebarPanama
@@ -2744,20 +3089,20 @@ export default function PanamaPIFWizard() {
           <Card>
             <CardHeader className="pb-4 sm:pb-6">
               <CardTitle className="text-lg sm:text-xl">
-                {stepIdx + 1}. {(step as any).title}
+                {stepIdx + 1}. {t((step as any).title)}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 px-4 sm:px-6">
               {"description" in step && step.description ? (
                 <div className="border border-dashed rounded-lg p-3 bg-muted/20 text-xs sm:text-sm">
-                  {step.description}
+                  {t(step.description)}
                 </div>
               ) : null}
 
-              {"fields" in step && step.fields?.length ? (
+              {"fields" in step && (step as any).fields?.length ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-                  {step.fields.map((f, i) => (
-                    <Field key={(f as any).name ?? i} field={f as FieldBase} />
+                  {(step as any).fields.map((f: any, i: number) => (
+                    <Field key={f.name ?? i} field={f as FieldBase} />
                   ))}
                 </div>
               ) : (step as any).render ? (
@@ -2766,8 +3111,8 @@ export default function PanamaPIFWizard() {
 
               {missing.length > 0 && (
                 <div className="text-xs sm:text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-3">
-                  <strong>{t("newHk.validation.requiredFieldsPrefix", "Required fields:")}</strong>{" "}
-                  {missing.join(", ")}
+                  <strong>{t("ppif.validation.requiredFieldsPrefix")}</strong>{" "}
+                  {missing.map((k) => t(k, k)).join(", ")}
                 </div>
               )}
             </CardContent>
@@ -2780,7 +3125,7 @@ export default function PanamaPIFWizard() {
                   onClick={handleBack}
                   className="flex-1 sm:flex-none touch-manipulation"
                 >
-                  {t("newHk.buttons.back", "← Back")}
+                  {t("newHk.buttons.back")}
                 </Button>
               </div>
 
@@ -2791,7 +3136,7 @@ export default function PanamaPIFWizard() {
                     disabled={savingNext}
                     className="w-full sm:w-auto touch-manipulation"
                   >
-                    {savingNext ? t("newHk.buttons.saving", "Saving…") : t("newHk.buttons.next", "Next →")}
+                    {savingNext ? t("newHk.buttons.saving") : t("newHk.buttons.next")}
                   </Button>
                 </div>
               )}
@@ -2800,9 +3145,10 @@ export default function PanamaPIFWizard() {
 
           {/* Footer Actions */}
           <div className="flex items-center justify-between pt-4 print:hidden">
-            <div className="text-[12px] text-muted-foreground">© Mirr Asia · Panama PIF – Information & Intake Form</div>
-            <div className="flex gap-2">
+            <div className="text-[12px] text-muted-foreground">
+              {t("ppif.footer.copyright")}
             </div>
+            <div className="flex gap-2" />
           </div>
         </div>
       </div>
