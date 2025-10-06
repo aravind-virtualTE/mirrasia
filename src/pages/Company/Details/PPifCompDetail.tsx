@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Banknote, Building2, ShieldCheck, ReceiptText, Mail, Phone, CheckCircle2, Circle, Save } from "lucide-react";
-import { getPaFIncorpoData } from "../PanamaFoundation/PaState";
+import { createOrUpdatePaFIncorpo, getPaFIncorpoData } from "../PanamaFoundation/PaState";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MemoApp from "./MemosHK";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchUsers } from "@/services/dataFetch";
 import { useAtom } from "jotai";
 import { usersData } from "@/services/state";
+import { toast } from "@/hooks/use-toast";
 
 // ----------------- Types -----------------
 export type PIFRecord = {
@@ -217,9 +218,16 @@ export default function PPifCompDetail({ id }: { id: string }) {
 
     const onSave = async () => {
         setIsSaving(true);
-        // simulate save delay
-        await new Promise(res => setTimeout(res, 500));
-        setIsSaving(false);
+        // console.log("data",data)
+        const result = await createOrUpdatePaFIncorpo(data)
+        if (result) {
+            setIsSaving(false);
+            toast({ title: "Success", description: "Company details saved." });
+            return true;
+        }else{
+            toast({ title: "Error", description: "Failed to save company details.", variant: "destructive" });
+        }
+
     };
 
     const AssignAdmin = () => {
