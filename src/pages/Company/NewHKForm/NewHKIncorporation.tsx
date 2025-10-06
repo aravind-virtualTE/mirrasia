@@ -1672,7 +1672,7 @@ function CongratsStep({ app }: { app: AppDoc }) {
         ))}
       </div>
 
-      <div className="flex items-center gap-2 justify-center">        
+      <div className="flex items-center gap-2 justify-center">
         <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>
       </div>
     </div>
@@ -2241,7 +2241,8 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
               )}
               {missing.length > 0 && (
                 <div className="text-xs sm:text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-3">
-                  <strong>{t("newHk.validation.requiredFieldsPrefix", "Required fields:")}</strong> {missing.join(", ")}
+                  <strong>{t("newHk.validation.requiredFieldsPrefix")}</strong>{" "}
+                  {missing.map((k) => t(k, k)).join(", ")}
                 </div>
               )}
             </CardContent>
