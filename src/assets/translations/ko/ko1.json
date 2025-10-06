@@ -1,0 +1,728 @@
+{
+    "ppif": {
+        "heading": "파나마 사적 이익 재단(PIF) — 신청",
+        "section1": "A. 신청자 세부 정보",
+        "section2": "B. 재단 프로필",
+        "section3": "C. 설립자",
+        "section4": "D. 재단 이사회 — 구성",
+        "section5": "E. 보호자 (선택 사항)",
+        "section6": "F. 수혜자",
+        "section7": "G. 정관",
+        "section8": "H. 실질 경제 활동 (ES) 확인",
+        "section9": "I. 은행",
+        "section10": "J. 정치적 주요 인물 (PEP)",
+        "section11": "K. AML 및 제재",
+        "section12": "L. 설립 후 인도 물품 및 배송",
+        "section13": "M. 회계 기록 보관 및 책임자",
+        "section14": "N. 인보이스 및 견적",
+        "section15": "O. 결제",
+        "section16": "P. 선언 및 전자 서명",
+        "congrats": "축하합니다",
+        "topbar": {
+            "defaultTitle": "회사 설립 — 파나마 사적 이익 재단"
+        },
+        "applicant": {
+            "description": "아래 이메일로 문서, 인보이스, 진행 상황 업데이트를 보내드립니다.",
+            "fields": {
+                "email": {
+                    "label": "이메일",
+                    "placeholder": "you@example.com"
+                },
+                "contactName": {
+                    "label": "연락 담당자 (전체 이름)",
+                    "placeholder": "John Smith"
+                },
+                "phone": {
+                    "label": "전화 / 메신저",
+                    "placeholder": "+82 ..."
+                },
+                "contactPref": {
+                    "label": "선호하는 연락 시간 / 방법",
+                    "placeholder": "예: 주중 10:00–18:00, 이메일 선호"
+                }
+            }
+        },
+        "es": {
+            "description": "파나마는 일반적인 ES 제도를 시행하지 않았습니다. ES는 주로 특정 특별 제도(예: 다국적 본부 SEM)에 적용됩니다. 실제로 일반 PIF는 ES 요구 사항을 직접적으로 따르지 않습니다 (세금/보고 의무는 별도로 검토해야 합니다). ※ 다른 국가의 세금 거주지 및 활동은 과세/CRS 영향을 유발할 수 있습니다 — 개별 사례별로 검토하십시오."
+        },
+        "pep": {
+            "title": "J. 정치적 주요 인물 (PEP)",
+            "label": "PEP는 현직/전직 고위 공무원 및 그들의 가족/측근을 의미합니다. 여기서는 PIF 참가자 중 PEP가 있는지 여부만 확인합니다. 자세한 확인은 개별 온보딩 양식에서 수행됩니다.",
+            "options": {
+                "yes": "예",
+                "no": "아니요"
+            }
+        },
+        "placeholders": {
+            "select": "선택"
+        },
+        "save": {
+            "successTitle": "저장됨",
+            "successDesc": "신청 데이터가 저장되었습니다.",
+            "errorTitle": "오류",
+            "errorDesc": "신청서 저장에 실패했습니다. 다시 시도해 주십시오."
+        },
+        "footer": {
+            "copyright": "© Mirr Asia · 파나마 PIF – 정보 및 접수 양식"
+        },
+        "validation": {
+            "requiredFieldsPrefix": "필수 입력란:"
+        },
+        "profile": {
+            "namingGuidelines": {
+                "title": "명명 지침",
+                "body": "재단 이름에는 반드시 **“Foundation”** 또는 **“Fundación”**이 포함되어야 합니다. 동일하거나 혼동을 줄 수 있는 유사한 이름은 등록할 수 없습니다. 1순위/2순위/3순위 선택안을 제공해 주시면 사용 가능 여부를 확인하겠습니다.",
+                "smallNote": "1순위/2순위/3순위 선택안을 제공해 주시면 사용 가능 여부를 확인하겠습니다."
+            },
+            "nameChoices": {
+                "first": {
+                    "label": "1순위 선택",
+                    "placeholder": "예: MIRR ASIA FOUNDATION"
+                },
+                "second": {
+                    "label": "2순위 선택"
+                },
+                "third": {
+                    "label": "3순위 선택"
+                },
+                "spanish": {
+                    "label": "스페인어 이름 (선택 사항)",
+                    "placeholder": "Fundación …"
+                }
+            },
+            "endowmentInfo": {
+                "title": "초기 기금",
+                "body": "종종 '초기 자본 / 기금'으로 기록됩니다. 명목상 최소 금액은 **USD 10,000**이며 즉각적인 자금 조달 의무는 없습니다 (헌장에 약정으로 기록되며 나중에 자금을 조달/조정할 수 있습니다)."
+            },
+            "endowmentFields": {
+                "amount": {
+                    "label": "초기 기금 (USD)",
+                    "placeholder": "예: 10000"
+                },
+                "payer": {
+                    "label": "초기 기금 납입자 (이름/법인)"
+                }
+            },
+            "sourceOfFunds": {
+                "label": "자금 출처",
+                "placeholder": "선택",
+                "options": {
+                    "Employment Income": "근로 소득",
+                    "Savings/Deposits": "저축/예금",
+                    "Investment Income (stocks/bonds/funds)": "투자 소득 (주식/채권/펀드)",
+                    "Loan": "대출",
+                    "Proceeds from Sale of Company/Shares": "회사/주식 매각 대금",
+                    "Business Income/Dividends": "사업 소득/배당금",
+                    "Inheritance/Gift": "상속/증여",
+                    "other": "기타"
+                }
+            },
+            "registeredAddress": {
+                "label": "등록 주소 (파나마)",
+                "options": {
+                    "mirr": "Mirr Asia 등록 주소 사용 (추가 요금 없음)",
+                    "own": "자체 등록 주소 사용 (아래 제공)"
+                },
+                "own": {
+                    "label": "별도의 등록 주소 (영어)",
+                    "placeholder": "수신인 / 연락처 / 주소 / 우편 번호 (영어로 권장)"
+                }
+            },
+            "purpose": {
+                "label": "설립 목적",
+                "placeholder": "예: 자산 보호, 승계 및 자선 할당, 해외 주식 보유 및 배당금 관리 등",
+                "helper": "키워드를 조합하거나 자유롭게 작성하십시오.",
+                "chips": {
+                    "Asset Protection": {
+                        "label": "자산 보호",
+                        "text": "부동산, 금융 자산, 주식 및 디지털 자산 보유; 재단을 통한 자산 보호 구축"
+                    },
+                    "Succession Planning": {
+                        "label": "승계 계획",
+                        "text": "재단을 통해 자산을 보유 및 운영하고 세대 간 승계 계획"
+                    },
+                    "Hold & Manage Investment Interests": {
+                        "label": "투자 지분 보유 및 관리",
+                        "text": "투자 지분 보유 및 관리"
+                    },
+                    "Dividend & Interest Income Management": {
+                        "label": "배당금 및 이자 소득 관리",
+                        "text": "배당금 및 이자 소득 관리"
+                    },
+                    "Charitable Purposes": {
+                        "label": "자선 목적",
+                        "text": "자선 또는 종교적 목적을 위한 기금 운영"
+                    },
+                    "Family-Trust Structure": {
+                        "label": "가족 신탁 구조",
+                        "text": "가족 신탁 방식의 구조로 구성 및 운영"
+                    },
+                    "Blockchain Token-Related": {
+                        "label": "블록체인 토큰 관련",
+                        "text": "블록체인 생태계를 지원하기 위한 토큰 발행"
+                    }
+                }
+            },
+            "businessActivities": {
+                "sectionLabel": "사업 / 활동",
+                "industries": {
+                    "label": "주요 산업 (다중 선택)",
+                    "options": {
+                        "trading": "무역",
+                        "wholesale": "도매/소매/유통",
+                        "consulting": "컨설팅",
+                        "manufacturing": "제조",
+                        "finance": "금융/투자/자문",
+                        "online": "온라인 서비스/전자 상거래",
+                        "it": "IT/소프트웨어/블록체인",
+                        "crypto": "디지털 자산",
+                        "other": "기타"
+                    }
+                },
+                "countries": {
+                    "label": "활동 국가 (계획)",
+                    "placeholder": "예: PA, US, EU, HK, KR ..."
+                },
+                "description": {
+                    "label": "주요 설립 후 활동 및 설명",
+                    "placeholder": "예: 해외 주식 보유 및 배당금 수령, 온라인 서비스 운영 및 결제 처리, 자선 기금 할당 등"
+                }
+            }
+        },
+        "founders": {
+            "title": "설립자 #{{n}}",
+            "removeAria": "설립자 #{{n}} 삭제",
+            "removeTitle": "삭제",
+            "type": {
+                "label": "설립자 유형",
+                "options": {
+                    "individual": "개인",
+                    "corporate": "법인"
+                }
+            },
+            "name": {
+                "label": "전체 이름 / 법인명",
+                "placeholder": "전체 이름 또는 법인명 입력"
+            },
+            "id": {
+                "label": "여권 / 등록 번호",
+                "placeholder": "여권 또는 등록 번호 입력"
+            },
+            "email": {
+                "label": "이메일",
+                "placeholder": "email@example.com"
+            },
+            "phone": {
+                "label": "전화번호",
+                "placeholder": "전화번호 입력"
+            },
+            "info": {
+                "title": "설립자 수",
+                "body": "파나마 PIF(사적 이익 재단)는 한 명 이상의 개인 또는 법인에 의해 설립될 수 있습니다. 필요한 멤버를 추가하십시오."
+            },
+            "buttons": {
+                "addFounder": "설립자 추가",
+                "invite": "설립자 멤버 초대"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "초대장 발송됨",
+                        "desc": "{{count}}개의 초대장이 성공적으로 발송되었습니다."
+                    },
+                    "alreadyExists": {
+                        "title": "초대장 발송됨",
+                        "desc": "{{count}}개의 초대장이 이메일 주소로 발송되었습니다."
+                    },
+                    "none": {
+                        "title": "초대장이 발송되지 않음",
+                        "desc": "설립자의 이메일 주소가 유효한지 확인하십시오."
+                    }
+                }
+            }
+        },
+        "council": {
+            "composition": {
+                "title": "D. 재단 이사회 — 구성",
+                "modes": {
+                    "ind3": "개인 3명",
+                    "corp1": "법인 1개"
+                }
+            },
+            "individuals": {
+                "title": "D-1. 개인 이사회 위원 3명",
+                "note": "각 위원은 별도의 **위원 등록 양식**을 제출합니다. 필요한 경우 명의 이사 서비스 이용이 가능합니다.",
+                "memberCardTitle": "이사회 위원 #{{n}} – 요약 정보",
+                "fields": {
+                    "name": {
+                        "label": "전체 이름"
+                    },
+                    "id": {
+                        "label": "여권 / 신분증 번호"
+                    },
+                    "email": {
+                        "label": "이메일"
+                    },
+                    "phone": {
+                        "label": "전화번호"
+                    }
+                },
+                "nominee": {
+                    "askLabel": "명의 이사 서비스 이용?",
+                    "checkboxLabel": "명의 이사 서비스 이용",
+                    "infoTitle": "명의 이사 — 세부 정보",
+                    "infoBody": "임원 정보는 공개 등기소에서 볼 수 있습니다. 필요한 경우 명의인을 등재할 수 있습니다. 명의인은 통제/경영권을 행사하거나 소유권을 주장하지 않습니다. 은행/거래소에서는 여전히 **실소유자(UBO)/중요 통제자 확인**이 필요합니다. 당사는 AML 법률에 따라 대면/화상 KYC를 수행하고 기록을 보관합니다. 수수료 (연간): 1명 USD 1,200, 2명 USD 1,700, 3명 USD 2,200 (정당화 사유 권장). 명의 주주: USD 1,300.",
+                    "countLabel": "명의 이사 — 인원 수",
+                    "options": {
+                        "1": "1명 (USD 1,200)",
+                        "2": "2명 (USD 1,700)",
+                        "3": "3명 (USD 2,200) — 정당화 사유 권장"
+                    }
+                }
+            },
+            "corporate": {
+                "title": "D-2. 1개 법인을 통한 이사회 — 기본 정보",
+                "note": "흔하지 않은 구조입니다. 법인이 이사회 역할을 하더라도 인간 서명자에 대한 KYC가 여전히 필요합니다.",
+                "fields": {
+                    "corpMain": {
+                        "label": "법인명 / 등록 번호 / 관할 구역",
+                        "placeholder": "예: ABC TRUSTEES LTD / 123456 / PA"
+                    },
+                    "addrRep": {
+                        "label": "등록 주소 / 대표자"
+                    },
+                    "signatory": {
+                        "label": "권한 있는 서명자 (선택 사항)",
+                        "placeholder": "이름 · 직함 · 연락처"
+                    },
+                    "email": {
+                        "label": "연락처 이메일"
+                    }
+                }
+            },
+            "buttons": {
+                "invite": "이사회 위원 초대"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "초대장 발송됨",
+                        "desc": "이사회 위원들에게 온보딩 양식을 작성하도록 초대했습니다."
+                    },
+                    "alreadyExists": {
+                        "title": "초대장 발송됨",
+                        "desc": "이 이메일 주소로 {{count}}개의 초대장이 발송되었습니다."
+                    },
+                    "none": {
+                        "title": "초대장이 발송되지 않음",
+                        "desc": "이사회 위원의 이메일 주소가 유효한지 확인하십시오."
+                    }
+                }
+            }
+        },
+        "shared": {
+            "repeater": {
+                "title": "{{title}} #{{n}}",
+                "removeAria": "{{title}} #{{n}} 삭제",
+                "removeTitle": "삭제",
+                "fields": {
+                    "name": {
+                        "label": "이름 / 법인명 / 분류"
+                    },
+                    "contact": {
+                        "label": "이메일",
+                        "placeholder": "email@example.com"
+                    }
+                }
+            }
+        },
+        "protectors": {
+            "info": {
+                "body": "보호자는 일상적인 운영을 수행하지 않지만 주요 결정을 승인/감독합니다.",
+                "examples": "예시: 이사회 구성원의 임명/해임 승인, 내부 규정 변경 승인, 특정 분배 지침에 대한 동의 등. 여러 명의 보호자를 임명할 수 있습니다."
+            },
+            "controls": {
+                "appoint": "임명",
+                "doNotAppoint": "임명하지 않음",
+                "add": "+ 추가"
+            },
+            "itemTitle": "보호자",
+            "buttons": {
+                "invite": "보호자 초대"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "초대장 발송됨",
+                        "desc": "{{count}}개의 초대장이 성공적으로 발송되었습니다."
+                    },
+                    "alreadyExists": {
+                        "title": "초대장 발송됨",
+                        "desc": "이 이메일 주소로 {{count}}개의 초대장이 발송되었습니다."
+                    },
+                    "none": {
+                        "title": "초대장이 발송되지 않음",
+                        "desc": "보호자의 이메일 주소가 유효한지 확인하십시오."
+                    }
+                }
+            }
+        },
+        "beneficiaries": {
+            "info": {
+                "designTitle": "지정 방식",
+                "designBody": "① 고정 목록 (지명) ② 분류별 (배우자/직계 비속/보호자 등) ③ 혼합 방식. 개인 정보 보호 및 유연성을 위해 분류별 방식이 일반적입니다.",
+                "lowTitle": "희망 사항 서한 (Letter of Wishes)",
+                "lowBody": "희망 사항 서한은 유언적 지침(누구에게/언제/얼마나)을 제공하며 실제적으로 의존합니다."
+            },
+            "modes": {
+                "fixed": "고정 목록",
+                "class": "분류별",
+                "mixed": "혼합 방식"
+            },
+            "controls": {
+                "add": "+ 수혜자 추가"
+            },
+            "itemTitle": "수혜자",
+            "letterOfWishes": {
+                "label": "희망 사항 서한",
+                "placeholder": "(선택 사항) 분배, 우선 순위, 시기 등에 대한 유언적 지침"
+            },
+            "buttons": {
+                "invite": "수혜자 초대"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "초대장 발송됨",
+                        "desc": "{{count}}개의 초대장이 성공적으로 발송되었습니다."
+                    },
+                    "alreadyExists": {
+                        "title": "초대장 발송됨",
+                        "desc": "이 이메일 주소로 {{count}}개의 초대장이 발송되었습니다."
+                    },
+                    "none": {
+                        "title": "초대장이 발송되지 않음",
+                        "desc": "수혜자의 이메일 주소가 유효한지 확인하십시오."
+                    }
+                }
+            }
+        },
+        "bylaws": {
+            "modes": {
+                "standard": "표준 템플릿 적용",
+                "custom": "맞춤 세부 정보 작성"
+            },
+            "fields": {
+                "powers": {
+                    "label": "권한 배분 (이사회 vs 보호자)",
+                    "placeholder": "서명 권한 / 승인 권한 / 해임 권한 등"
+                },
+                "admin": {
+                    "label": "기록 보관 / 감사 / 보고 · 해산 조건",
+                    "placeholder": "보존 기간, 감사 주기, 보고 체계 / 특정 사건 및 투표 요건 등"
+                }
+            }
+        },
+        "banking": {
+            "need": {
+                "label": "계좌 개설 필요?",
+                "options": {
+                    "need": "예",
+                    "none": "아니요",
+                    "later": "나중에 결정"
+                }
+            },
+            "bizType": {
+                "label": "사업 활동 유형 (안내용)",
+                "options": {
+                    "consulting": "일반 컨설팅 / 지주",
+                    "ecommerce": "온라인 서비스 / 전자 상거래",
+                    "investment": "투자 / 주식 보유",
+                    "crypto": "가상 자산 관련",
+                    "manufacturing": "제조 / 무역"
+                }
+            },
+            "guide": {
+                "title": "은행 / EMI (참고용)",
+                "list": {
+                    "panama": "파나마 현지 은행은 비거주자/재단 계좌에 대해 종종 대면 인터뷰 및 UBO 증빙을 요구합니다.",
+                    "crypto": "암호화폐 친화적: Towerbank (정책 및 위험 수용도에 따름).",
+                    "emi": "EMI/해외 기관의 '재단(Foundation)' 수용 여부는 다양함 — 사전 확인 필요."
+                },
+                "activityLabel": "활동 안내:",
+                "docsNote": "예시 서류: 재단 헌장/등록, 이사회 등록부 및 수락서, UBO 차트, 설립자/이사 여권 및 주소 증명, 자금 출처, 사업 설명/계약서, 세금 ID/거주 증명, 추천서, 인터뷰 등."
+            },
+            "hints": {
+                "consulting": "일반 컨설팅/지주: 중간 위험. 수익/계약/조직 및 UBO에 대한 명확성 요구됨. 원격 온보딩 제한적.",
+                "ecommerce": "온라인 서비스/전자 상거래: 결제 흐름, 고객 국가, 환불 정책 요구됨. 은행 계좌와 함께 PSP/EMI 고려.",
+                "investment": "투자/주식 보유: 주로 수동적일 경우, 은행이 덜 선호할 수 있음. 중개/수탁 계좌 고려.",
+                "crypto": "가상 자산: 많은 은행이 제한함. 암호화폐 친화적 은행(예: Towerbank) 또는 VASP/EMI 조합 고려.",
+                "manufacturing": "제조/무역: 실질 증명 서류 (공급 계약, 선적 서류) 요구됨. 무역 금융은 별도 심사."
+            }
+        },
+        "aml": {
+            "info": "FATF, UN, EU, OFAC, UK HMT, HKMA 등과 연계하여 제재 대상 국가/개인과의 거래 여부를 확인하십시오.",
+            "q1": {
+                "label": "1) 이란, 수단, 남수단, 북한, 시리아, 쿠바, 벨라루스, 짐바브웨, 러시아 또는 정부 통제 밖의 우크라이나 지역과 현재 거래 중이거나 거래할 계획입니까?",
+                "field": "legalAndEthicalConcern"
+            },
+            "q2": {
+                "label": "2) 관련자 중 UN, EU, UK HMT, HKMA, 또는 OFAC의 제재 대상 국가(또는 정부 통제 밖의 우크라이나 지역)에 거주하는 사람이 있습니까?",
+                "field": "q_country"
+            },
+            "q3": {
+                "label": "3) PIF가 제재 대상 개인/법인 또는 아프가니스탄, 벨라루스, 쿠바, 이란, 북한, 러시아, 시리아, 또는 정부 통제 밖의 우크라이나 지역의 개인을 소유하거나 통제하거나 이들을 위해 활동하고 있거나 그럴 예정입니까?",
+                "field": "sanctionsExposureDeclaration"
+            },
+            "q4": {
+                "label": "4) 관련자 중 현재 크림반도 또는 세바스토폴에서 활동 중이거나 활동할 계획인 사람이 있습니까?",
+                "field": "crimeaSevastapolPresence"
+            },
+            "q5": {
+                "label": "5) PIF/지주회사/그룹/계열사가 석유, 가스, 에너지, 군사 또는 방위 부문(핵심 물품 포함)에서 현재 활동 중이거나 활동할 계획입니까?",
+                "examples": "예시: 폭발물, 윤활유, 센서, 마이크로 전자 부품, 통신 모듈, 수동 부품, 내비게이션, 전기 부품, PCB 생산/QC 도구, CNC 기계/부품.",
+                "field": "russianEnergyPresence"
+            }
+        },
+        "deliverables": {
+            "left": {
+                "title": "인도 물품 (클릭하여 확장)",
+                "items": {
+                    "publicDeed": {
+                        "title": "공개 증서",
+                        "desc": "설립에 대한 공증된 증서; 목적, 이사회, 등록 대리인 등이 포함됩니다."
+                    },
+                    "publicDeedTranslation": {
+                        "title": "공개 증서 번역본",
+                        "desc": "번역본 (요청/제출용)."
+                    },
+                    "registryCert": {
+                        "title": "공공 등기소 증명서",
+                        "desc": "공공 등기소에서 발행한 증명서 (법적 존재)."
+                    },
+                    "registryCertTranslation": {
+                        "title": "공공 등기소 증명서 번역본",
+                        "desc": "등기 증명서 번역본."
+                    },
+                    "foundationCert": {
+                        "title": "재단 증명서",
+                        "desc": "재단을 요약한 증명서."
+                    },
+                    "foundationCertTranslation": {
+                        "title": "재단 증명서 번역본",
+                        "desc": "증명서 번역본."
+                    },
+                    "councilRegister": {
+                        "title": "이사회 위원 등록부",
+                        "desc": "이사회 위원 목록 (개인 3명 / 법인 1개)."
+                    },
+                    "councilAcceptance": {
+                        "title": "이사회 수락서",
+                        "desc": "직위 수락."
+                    },
+                    "bylaws": {
+                        "title": "규정 (내부 규정)",
+                        "desc": "사적 내부 규정: 권한, 절차, 분배, 기록, 해산 등."
+                    },
+                    "boardMeeting": {
+                        "title": "이사회 회의",
+                        "desc": "결의/의사록 샘플."
+                    },
+                    "incumbencyCert": {
+                        "title": "재직 증명서",
+                        "desc": "현 임원 증명서."
+                    },
+                    "nomineeAgreement": {
+                        "title": "명의인 계약 (해당 시)",
+                        "desc": "명의인 서비스에 대한 계약."
+                    },
+                    "companyChop": {
+                        "title": "회사 인장",
+                        "desc": "공식 인장."
+                    }
+                }
+            },
+            "right": {
+                "title": "원본 배송 세부 정보",
+                "note": "(한국 주소인 경우, 한국어로 작성하십시오)",
+                "fields": {
+                    "recipientCompany": {
+                        "label": "수령 회사",
+                        "placeholder": "회사 / 재단 이름"
+                    },
+                    "contactPerson": {
+                        "label": "연락 담당자",
+                        "placeholder": "전체 이름"
+                    },
+                    "phone": {
+                        "label": "전화번호",
+                        "placeholder": "+82 ..."
+                    },
+                    "postalCode": {
+                        "label": "우편 번호",
+                        "placeholder": "예: 12345"
+                    },
+                    "address": {
+                        "label": "주소",
+                        "placeholder": "거리 / 건물 / 호수 등"
+                    }
+                }
+            }
+        },
+        "accounting": {
+            "info": "규정에 따라 회계 장부가 보관되는 주소를 공개해야 합니다. 사무실 또는 주거용 주소를 제공할 수 있습니다. 당사의 주소를 사용하시면 연간 **USD 350**의 비용이 적용되며, 장부를 당사에 주기적으로 제공해야 합니다.",
+            "fields": {
+                "address": {
+                    "label": "회계 장부 보관 주소 (영어)",
+                    "placeholder": "전체 주소를 영어로 입력"
+                },
+                "responsible": {
+                    "label": "책임자 (영문 전체 이름)",
+                    "placeholder": "예: John Smith"
+                },
+                "useMirr": {
+                    "label": "Mirr Asia 장부 보관 주소 사용 (연간 USD 350)"
+                }
+            }
+        },
+        "invoice": {
+            "title": "청구서 및 견적 — 파나마 PIF (설립 비용만 해당)",
+            "setup": {
+                "title": "설립 (1년차)",
+                "entity": {
+                    "label": "Mirr Asia 설립 수수료 + 첫 해 서비스",
+                    "tooltip": {
+                        "aria": "설립 패키지 (모두 포함) 세부 정보",
+                        "title": "설립 패키지 (모두 포함)",
+                        "body": "정부 수수료 (법인 USD 300 / PIF 별도), 거주 대리인, 등록 사무소 포함."
+                    }
+                },
+                "ndSetup": {
+                    "label": "명의 이사 — 설립",
+                    "options": {
+                        "0": "없음 (0)",
+                        "1": "1명 (+{{price}})",
+                        "2": "2명 (+{{price}})",
+                        "3": "3명 (+{{price}})"
+                    },
+                    "reason": {
+                        "label": "명의 이사 3명을 선택한 이유 (설립)",
+                        "placeholder": "명의 이사 3명이 필요한 이유를 명시하십시오.",
+                        "hint": "* 3명을 선택할 경우 사유를 제공하는 것을 권장합니다."
+                    }
+                },
+                "nsSetup": {
+                    "label": "명의 주주 (설립) (+{{price}})"
+                },
+                "optional": {
+                    "title": "선택적 서비스 (설립)",
+                    "emi": "EMI 계좌 개설 (+{{price}})",
+                    "bank": "파나마 현지 은행 계좌 개설 (+{{price}})",
+                    "cbi": "푸에르토리코 CBI 계좌 개설 (+{{price}})"
+                },
+                "totals": {
+                    "setupY1": "설립 (1년차) 총액"
+                }
+            },
+            "includes": {
+                "title": "설립 패키지 포함 내용 (PIF):",
+                "items": {
+                    "i1": "재단 헌장 초안 (영어/스페인어)",
+                    "i2": "설립자 지명",
+                    "i3": "헌장 공증 및 등록",
+                    "i4": "설립 수수료 및 등록세",
+                    "i5": "설립 증명서",
+                    "i6": "재단 이사회 조직 결의",
+                    "i7": "보호자/수혜자 임명 결의",
+                    "i8": "규정 초안 작성",
+                    "i9": "공증된 번역본",
+                    "i10": "재직 증명서",
+                    "i11": "등록 사무소 (1년)",
+                    "i12": "등록 대리인/비서 (1년)",
+                    "i13": "KYC/실사",
+                    "i14": "국제 택배"
+                },
+                "note": "참고: 회계 수수료는 포함되지 않습니다. 장부 작성/감사/세금 신고는 별도로 견적됩니다."
+            }
+        },
+        "payment": {
+            "stripe": {
+                "form": {
+                    "success": {
+                        "title": "결제 성공",
+                        "amountLabel": "금액:",
+                        "receiptLabel": "영수증:",
+                        "viewReceipt": "Stripe 영수증 보기",
+                        "doneBtn": "완료"
+                    },
+                    "processing": {
+                        "title": "결제 처리 중",
+                        "msg": "결제가 처리 중입니다. 거래가 확인되면 영수증을 받게 됩니다.",
+                        "closeBtn": "닫기"
+                    },
+                    "errors": {
+                        "confirmGeneric": "결제 확인 중 문제가 발생했습니다.",
+                        "failedGeneric": "결제가 실패했습니다. 다시 시도해 주십시오.",
+                        "backendReceiptMissing": "결제가 확인되었으나, 서버에서 영수증을 가져올 수 없었습니다. 이메일을 받지 못한 경우 지원팀에 문의하십시오.",
+                        "backendSaveFailed": "결제가 확인되었으나, 서버에 결제 정보를 저장하는 데 실패했습니다. 곧 영수증을 이메일로 보내드리거나 지원팀에 문의하십시오.",
+                        "statusPrefix": "결제 상태: {{status}}. 이 문제가 지속되면 지원팀에 문의하십시오."
+                    },
+                    "controls": {
+                        "cancel": "취소",
+                        "payNow": "지금 결제",
+                        "processing": "처리 중…"
+                    }
+                },
+                "drawer": {
+                    "title": "Stripe 카드 결제",
+                    "description": "총액: {{amount}} {{note}}",
+                    "cardFeeNote": "(카드 수수료 3.5% 포함)",
+                    "preparing": "보안 결제 준비 중…"
+                }
+            },
+            "step": {
+                "banners": {
+                    "received": {
+                        "title": "결제 완료",
+                        "amountLabel": "금액:",
+                        "receiptLabel": "영수증:",
+                        "view": "보기"
+                    },
+                    "expiredBox": {
+                        "expiredTitle": "이 견적은 만료되었습니다.",
+                        "windowTitle": "결제 기간"
+                    }
+                },
+                "alerts": {
+                    "alreadyPaid": "이미 결제되었습니다.",
+                    "expiredGuard": "이 견적이 만료되었습니다. 새로 고침하거나 저희에게 문의하십시오.",
+                    "cardInitError": "카드 결제를 초기화할 수 없었습니다. 다시 시도하십시오."
+                },
+                "iframe": {
+                    "paymentProofTitle": "결제 증명"
+                }
+            }
+        },
+        "declarations": {
+            "checks": {
+                "taxOk": "저는 적용되는 세금 의무를 준수하며 PIF가 불법/제재 목적이 아님을 확인합니다.",
+                "truthOk": "저는 제공된 정보의 정확성과 완전성을 확인합니다.",
+                "privacyOk": "저는 KYC/제재 심사 및 서비스 제공을 위한 개인 데이터 처리에 동의합니다."
+            },
+            "fields": {
+                "signName": {
+                    "label": "서명 (이름 입력)",
+                    "placeholder": "전체 이름 입력"
+                },
+                "signDate": {
+                    "label": "날짜"
+                },
+                "signTitle": {
+                    "label": "직함 / 자격",
+                    "placeholder": "예: 설립자, 공인 대리인"
+                }
+            },
+            "footnote": "※ 이 양식은 검토/견적/KYC를 위한 예비 정보 수집용이며 법률 또는 세무 자문을 구성하지 않습니다."
+        }
+    }
+}
