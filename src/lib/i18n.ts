@@ -19,7 +19,7 @@ const resources = {
     common: ko,
     incorporation: ko1,
   },
-  "zhTW": {
+  zhTW: {
     common: zhTW,
     incorporation: zhTW1,
   },
@@ -32,13 +32,12 @@ i18n
     lng: 'en', // Default language
     supportedLngs: ['en', 'ko', 'zhTW'],
     fallbackLng: 'en',
-    defaultNS: ["common","incorporation",],
+    ns: ["common", "incorporation",],
+    defaultNS: "common",
+    fallbackNS: ["incorporation"],
     nonExplicitSupportedLngs: true,
     load: 'currentOnly',
-    ns: ["common","incorporation",],
-    interpolation: {
-      escapeValue: false,
-    },
+    interpolation: {escapeValue: false,},
   });
 
 export default i18n;

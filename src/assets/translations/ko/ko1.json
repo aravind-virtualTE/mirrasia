@@ -724,5 +724,251 @@
             },
             "footnote": "※ 이 양식은 검토/견적/KYC를 위한 예비 정보 수집용이며 법률 또는 세무 자문을 구성하지 않습니다."
         }
+    },
+    "ppifMember": {
+        "header": {
+            "title": "파나마 사익 재단 – 구성원 등록 양식",
+            "intro": "이 양식은 PIF 참여자(설립자, 이사회, 보호자, 수혜자 등)의 개인 등록에 필요한 정보를 수집합니다. 개인은 이 양식을 사용하며, 법인에 대해서는 별도의 양식이 적용됩니다.",
+            "note": "※ 이는 KYC/AML 및 규정 준수를 위한 기본 정보입니다. 모든 필수 필드를 정확하게 작성해 주십시오."
+        },
+        "toolbar": {
+            "save": "저장"
+        },
+        "toasts": {
+            "save": {
+                "successTitle": "성공",
+                "successDesc": "구성원 정보가 성공적으로 저장되었습니다.",
+                "errorTitle": "오류",
+                "errorDesc": "나중에 다시 시도해 주십시오."
+            },
+            "fetch": {
+                "errorTitle": "오류",
+                "errorDesc": "데이터를 가져오는 동안 예기치 않은 오류가 발생했습니다."
+            },
+            "validate": {
+                "title": "필수 필드가 누락되었습니다",
+                "descPrefix": "다음을 완료해 주십시오:"
+            }
+        },
+        "common": {
+            "select": "선택",
+            "yes": "예",
+            "no": "아니요",
+            "requiredAsterisk": "*"
+        },
+        "sections": {
+            "basic": {
+                "title": "1) 기본 정보",
+                "fields": {
+                    "email": {
+                        "label": "이메일 주소 (초대장을 받은 이메일과 동일하게 사용)",
+                        "placeholder": "you@example.com"
+                    },
+                    "fullName": {
+                        "label": "전체 이름",
+                        "placeholder": "홍길동 (예: John Smith)"
+                    },
+                    "renamed": {
+                        "label": "이름 변경 (법적 이름을 변경한 적이 있습니까?)",
+                        "hint": "예인 경우, 아래 비고란에 이전 영문 전체 이름을 추가해 주십시오."
+                    },
+                    "dob": {
+                        "label": "생년월일"
+                    },
+                    "pob": {
+                        "label": "출생지",
+                        "placeholder": "예: Seoul, Republic of Korea"
+                    },
+                    "maritalStatus": {
+                        "label": "결혼 여부",
+                        "options": {
+                            "Married": "기혼",
+                            "Single": "미혼",
+                            "Other": "기타"
+                        }
+                    },
+                    "nationality": {
+                        "label": "국적",
+                        "placeholder": "예: Republic of Korea"
+                    },
+                    "passport": {
+                        "label": "여권 번호"
+                    },
+                    "occupation": {
+                        "label": "직업",
+                        "placeholder": "예: 변호사 / 기업가"
+                    },
+                    "mobile": {
+                        "label": "휴대폰 번호 (연락 가능한)",
+                        "placeholder": "+82 ..."
+                    },
+                    "residentialAddress": {
+                        "label": "거주지 주소",
+                        "placeholder": "영문 주소 선호"
+                    },
+                    "postalAddress": {
+                        "label": "우편 주소 (다른 경우)"
+                    }
+                }
+            },
+            "founder": {
+                "title": "2) 설립자 상태 및 기여금",
+                "isFounder": {
+                    "label": "설립될 PIF의 설립자입니까?"
+                },
+                "contribution": {
+                    "label": "(설립자인 경우) 기여금 금액 (USD)",
+                    "placeholder": "예: 10000",
+                    "note": "※ 파나마 관행에서는 '초기 기부금(Initial Endowment)'으로 표시됩니다. 법적 최소 금액은 USD 10,000입니다 (의무적인 자금 조달은 요구되지 않음)."
+                },
+                "sof": {
+                    "label": "기여금 자금 출처 (해당하는 모든 항목을 선택)",
+                    "otherLabel": "기타 – 세부 정보",
+                    "otherPlaceholder": "기타 자금 출처를 구체적으로 명시하십시오",
+                    "chips": {
+                        "salary": "근로 소득||급여, 상여금 등",
+                        "savings": "저축 / 예금||장기 개인 저축",
+                        "invest": "투자 소득||부동산, 주식, 채권, 펀드",
+                        "loan": "대출||금융 기관으로부터의 차입금",
+                        "disposal": "사업/주식 처분||사업 또는 주식 판매 수익",
+                        "bizdiv": "사업 소득 / 배당금||영업 이익, 배당금 수입",
+                        "inherit": "상속 / 증여||유산, 생전 증여",
+                        "other": "기타||아래에 구체적으로 명시하십시오"
+                    }
+                },
+                "inflowCountries": {
+                    "label": "자금 유입 국가(들)",
+                    "placeholder": "예: KR, HK, SG"
+                },
+                "remarks": {
+                    "label": "비고 (이전 영문 이름 / 추가 참고 사항)",
+                    "placeholder": "선택 사항"
+                }
+            },
+            "tax": {
+                "title": "3) 세금 정보",
+                "fields": {
+                    "taxResidence": {
+                        "label": "납세 거주국",
+                        "placeholder": "예: Republic of Korea"
+                    },
+                    "tin": {
+                        "label": "납세자 식별 번호 (TIN)",
+                        "placeholder": "사용할 수 없는 경우, 현지 등가물 제공"
+                    }
+                },
+                "note": "※ '납세 거주지'는 일반적으로 1년에 183일 이상 거주하거나 달리 소득세 납부 의무가 있는 관할 구역을 의미합니다."
+            },
+            "roles": {
+                "title": "4) 재단 내 역할(들) (해당하는 모든 항목을 선택)",
+                "chips": {
+                    "president": "이사장 (이사회)",
+                    "secretary": "총무 (이사회)",
+                    "treasurer": "재무 (이사회)",
+                    "protector": "보호자",
+                    "beneficiary": "수혜자",
+                    "nominee": "명의인 / 대리인",
+                    "dcp": "지정된 연락 담당자"
+                },
+                "note": "<b>보호자</b>: 감독/승인 권한을 가질 수 있습니다 (예: 이사회 임명/해임, 내부 규정 개정).<br /><b>수혜자</b>: 경제적 혜택을 받습니다. 개인 정보 보호를 위해 수혜자 세부 정보는 내부 규정 / 희망 사항 서한을 통해 구성될 수 있습니다."
+            },
+            "futureFunds": {
+                "title": "5) PIF로의 향후 자금 유입/발생",
+                "chips": {
+                    "pif_income": "PIF에서 발생하는 소득",
+                    "addl_contrib": "PIF에 대한 추가 기여금",
+                    "interest": "이자 소득",
+                    "investment": "투자 소득",
+                    "disposal": "사업/주식 처분 수익",
+                    "inheritance": "상속/증여",
+                    "loans": "대출/에스크로/예금",
+                    "other": "기타"
+                }
+            },
+            "pep": {
+                "title": "6) 정치적 주요 인물 (PEP) 확인",
+                "note": "<b>PEP</b>: 현직/전직 고위 공무원, 고위 정당 관계자, 국영 기업 임원, 국제 기구 고위 관계자, 그리고 그들의 <u>가족 구성원 및 가까운 동료</u>를 포함합니다 (FATF 지침에 따름).",
+                "detailLabel": "예인 경우, 설명해 주십시오",
+                "detailPlaceholder": "전체 이름 / 직위 / 관계 / 기간 등"
+            },
+            "docs": {
+                "title": "7) 필수 서류 체크리스트",
+                "note": "모든 서류는 **최근 3개월 이내에 발급**되어야 합니다. 영어가 아닌 서류는 공인 번역이 필요할 수 있습니다. 공인된 여권 사본은 현지 기관에서 얻을 수 있습니다.",
+                "items": {
+                    "doc_passport": "여권 사본 + 여권 사본 증명서 (공증/인증)",
+                    "doc_bank": "최근 12개월 은행 거래 명세서 또는 은행 추천서",
+                    "doc_address": "주소 증명 (예: 주민등록 등본 / 공과금 청구서)",
+                    "doc_profref": "전문가 추천서 (변호사/회계사/은행가; 2년 이상의 관계)",
+                    "doc_cv": "이력서 (영문)",
+                    "doc_other": "기타 (해당 시): 추가 증빙 서류"
+                }
+            },
+            "bo": {
+                "title": "8) 최종 수익 소유자 (BO) 확인",
+                "note": "<b>요약 정의</b>: 법적 장치를 궁극적으로 **소유하거나 통제**하는 **자연인**(FATF/OECD).",
+                "fields": {
+                    "lastIncome": {
+                        "label": "작년 소득 (USD)"
+                    },
+                    "netWorth": {
+                        "label": "현재 순자산 (USD)"
+                    }
+                },
+                "bands": {
+                    "under25": "25,000 미만",
+                    "25_39": "25,000 - 39,999",
+                    "40_49": "40,000 - 49,999",
+                    "50_64": "50,000 - 64,999",
+                    "65_124": "65,000 - 124,999",
+                    "125_499": "125,000 - 499,999",
+                    "500_999": "500,000 - 999,999",
+                    "over1m": "1백만 초과"
+                }
+            },
+            "decls": {
+                "title": "9) 선언 및 동의",
+                "textHtml": "저는 다음 사항을 확인하고 동의합니다:<br /><br />① 여기에 명시된 자금은 **제 소유**이며 PIF로 이전할 **완전한 권한**이 있습니다.<br />② PIF의 자산, 순자산, 소득 또는 활동은 불법 무기/대량 살상 무기, 자금 세탁, 불법 마약 또는 **불법**으로 간주되는 어떠한 활동과도 **연관되지 않습니다**.<br />③ 저는 이 신청 이전에 **적절한 법률 및/또는 세무 자문**을 얻었거나 접근할 수 있었습니다.<br />④ 저는 **연간 수수료 지불 의무**를 인정하며 통지 및 확인을 위한 **전자 통신**에 동의합니다.",
+                "agree": "위의 모든 내용을 읽고 동의합니다."
+            }
+        },
+        "radios": {
+            "renamed": {
+                "yes": "예",
+                "no": "아니요"
+            },
+            "is_founder": {
+                "yes": "예",
+                "no": "아니요"
+            },
+            "pep": {
+                "yes": "예",
+                "no": "아니요"
+            },
+            "is_bo": {
+                "yes": "예",
+                "no": "아니요"
+            }
+        },
+        "requiredLabels": {
+            "email": "이메일 주소",
+            "fullName": "전체 이름",
+            "renamed": "이름 변경",
+            "dob": "생년월일",
+            "pob": "출생지",
+            "maritalStatus": "결혼 여부",
+            "nationality": "국적",
+            "passport": "여권 번호",
+            "occupation": "직업",
+            "mobile": "휴대폰 번호 (연락 가능한)",
+            "residentialAddress": "거주지 주소",
+            "inflowCountries": "자금 유입 국가(들)",
+            "taxResidence": "납세 거주국",
+            "tin": "납세자 식별 번호 (TIN)",
+            "pep": "PEP",
+            "is_bo": "최종 수익 소유자 (BO) 확인",
+            "agreeAll": "선언 및 동의",
+            "pepDetail": "PEP 세부 정보",
+            "contribution": "기여금 금액 (USD)"
+        }
     }
 }

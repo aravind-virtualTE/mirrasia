@@ -34,6 +34,8 @@ export interface Company {
     companySecretarialService: string
     registeredBusinessAddressService: string
     bank: string
+    isActiveUser?: boolean
+    lastLogin?: string
 }
 
 
