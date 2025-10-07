@@ -724,5 +724,251 @@
             },
             "footnote": "※ 此表格僅用於審查/報價/KYC 的初步資訊收集，不構成法律或稅務建議。"
         }
+    },
+    "ppifMember": {
+        "header": {
+            "title": "巴拿馬私人利益基金會 – 成員註冊表",
+            "intro": "此表格用於收集 PIF 參與者（創辦人、委員會、保護人、受益人等）的個人註冊所需資訊。個人使用此表格；法人實體需使用單獨的表格。",
+            "note": "※ 這是 KYC/AML 和法規遵循的基礎資訊。請準確填寫所有必填欄位。"
+        },
+        "toolbar": {
+            "save": "儲存"
+        },
+        "toasts": {
+            "save": {
+                "successTitle": "成功",
+                "successDesc": "成員資訊已成功儲存。",
+                "errorTitle": "錯誤",
+                "errorDesc": "請稍後再試。"
+            },
+            "fetch": {
+                "errorTitle": "錯誤",
+                "errorDesc": "擷取數據時發生意外錯誤。"
+            },
+            "validate": {
+                "title": "缺少必填欄位",
+                "descPrefix": "請完成填寫："
+            }
+        },
+        "common": {
+            "select": "選擇",
+            "yes": "是",
+            "no": "否",
+            "requiredAsterisk": "*"
+        },
+        "sections": {
+            "basic": {
+                "title": "1) 基本資訊",
+                "fields": {
+                    "email": {
+                        "label": "電子郵件地址（使用您收到邀請函的同一電子郵件）",
+                        "placeholder": "you@example.com"
+                    },
+                    "fullName": {
+                        "label": "全名",
+                        "placeholder": "John Smith"
+                    },
+                    "renamed": {
+                        "label": "姓名變更（是否曾更改您的法定姓名？）",
+                        "hint": "如果「是」，請在下方備註欄中加入您以前的英文全名。"
+                    },
+                    "dob": {
+                        "label": "出生日期"
+                    },
+                    "pob": {
+                        "label": "出生地",
+                        "placeholder": "例如：Seoul, Republic of Korea"
+                    },
+                    "maritalStatus": {
+                        "label": "婚姻狀況",
+                        "options": {
+                            "Married": "已婚",
+                            "Single": "單身",
+                            "Other": "其他"
+                        }
+                    },
+                    "nationality": {
+                        "label": "國籍",
+                        "placeholder": "例如：Republic of Korea"
+                    },
+                    "passport": {
+                        "label": "護照號碼"
+                    },
+                    "occupation": {
+                        "label": "職業",
+                        "placeholder": "例如：律師 / 企業家"
+                    },
+                    "mobile": {
+                        "label": "手機號碼（可聯繫）",
+                        "placeholder": "+82 ..."
+                    },
+                    "residentialAddress": {
+                        "label": "居住地址",
+                        "placeholder": "首選英文地址"
+                    },
+                    "postalAddress": {
+                        "label": "郵寄地址（如不同）"
+                    }
+                }
+            },
+            "founder": {
+                "title": "2) 創辦人身份與出資",
+                "isFounder": {
+                    "label": "您是將要成立的 PIF 的創辦人嗎？"
+                },
+                "contribution": {
+                    "label": "（如果為創辦人）出資金額（美元）",
+                    "placeholder": "例如：10000",
+                    "note": "※ 在巴拿馬慣例中顯示為「初始捐贈 (Initial Endowment)」。法定最低金額為 USD 10,000（不強制要求提供資金）。"
+                },
+                "sof": {
+                    "label": "出資資金來源（選擇所有適用項）",
+                    "otherLabel": "其他 – 詳情",
+                    "otherPlaceholder": "請指明其他資金來源",
+                    "chips": {
+                        "salary": "僱傭收入||薪水、獎金等",
+                        "savings": "儲蓄 / 存款||長期個人儲蓄",
+                        "invest": "投資收入||房地產、股票、債券、基金",
+                        "loan": "貸款||向金融機構借款",
+                        "disposal": "業務/股份處置||出售業務或股份的收益",
+                        "bizdiv": "業務收入 / 股息||營運利潤、股息收入",
+                        "inherit": "繼承 / 贈與||遺贈、生前贈與",
+                        "other": "其他||請在下方具體說明"
+                    }
+                },
+                "inflowCountries": {
+                    "label": "資金流入國家/地區",
+                    "placeholder": "例如：KR, HK, SG"
+                },
+                "remarks": {
+                    "label": "備註（以前的英文姓名 / 補充說明）",
+                    "placeholder": "可選"
+                }
+            },
+            "tax": {
+                "title": "3) 稅務資訊",
+                "fields": {
+                    "taxResidence": {
+                        "label": "稅務居住國家/地區",
+                        "placeholder": "例如：Republic of Korea"
+                    },
+                    "tin": {
+                        "label": "納稅人識別號碼 (TIN)",
+                        "placeholder": "如果沒有，請提供當地同等號碼"
+                    }
+                },
+                "note": "※ 「稅務居住地」通常指您每年在該司法管轄區居住 ≥183 天或負有其他所得稅責任的地方。"
+            },
+            "roles": {
+                "title": "4) 在基金會中的角色（選擇所有適用項）",
+                "chips": {
+                    "president": "主席 (委員會)",
+                    "secretary": "秘書 (委員會)",
+                    "treasurer": "財務 (委員會)",
+                    "protector": "保護人",
+                    "beneficiary": "受益人",
+                    "nominee": "名義人 / 代表",
+                    "dcp": "指定聯絡人"
+                },
+                "note": "<b>保護人</b>：可能擁有監督/批准權（例如：委員會成員的任命/罷免、內部規章修訂）。<br /><b>受益人</b>：獲得經濟利益。為保護隱私，受益人詳情可透過內部規章 / 意願書安排。"
+            },
+            "futureFunds": {
+                "title": "5) 未來流入/產生至 PIF 的資金",
+                "chips": {
+                    "pif_income": "PIF 產生的收入",
+                    "addl_contrib": "對 PIF 的額外出資",
+                    "interest": "利息收入",
+                    "investment": "投資收入",
+                    "disposal": "業務/股份處置收益",
+                    "inheritance": "繼承/贈與",
+                    "loans": "貸款/託管/存款",
+                    "other": "其他"
+                }
+            },
+            "pep": {
+                "title": "6) 政治公眾人物 (PEP) 檢查",
+                "note": "<b>PEP</b>：包括現任/前任高級公職人員、高級政黨官員、國有企業高管和國際組織高級官員，以及他們的<u>家庭成員和密切夥伴</u>（根據 FATF 指引）。",
+                "detailLabel": "如果「是」，請描述詳情",
+                "detailPlaceholder": "全名 / 職位 / 關係 / 期間等"
+            },
+            "docs": {
+                "title": "7) 所需文件清單",
+                "note": "所有文件應為**最近 3 個月內簽發**。非英文文件可能需要經認證的翻譯。經認證的護照副本可向當地機關索取。",
+                "items": {
+                    "doc_passport": "護照副本 + 護照副本證明書（公證/認證）",
+                    "doc_bank": "最近 12 個月的銀行對帳單或銀行推薦信",
+                    "doc_address": "地址證明（例如：居民登記摘錄 / 公用事業帳單）",
+                    "doc_profref": "專業推薦信（律師/會計師/銀行家；關係 ≥2 年）",
+                    "doc_cv": "履歷表（英文）",
+                    "doc_other": "其他（如適用）：額外證明文件"
+                }
+            },
+            "bo": {
+                "title": "8) 實益擁有人 (BO) 確認",
+                "note": "<b>定義摘要</b>：最終**擁有或控制**該法律安排的**自然人**（FATF/OECD）。",
+                "fields": {
+                    "lastIncome": {
+                        "label": "去年收入（美元）"
+                    },
+                    "netWorth": {
+                        "label": "目前淨資產（美元）"
+                    }
+                },
+                "bands": {
+                    "under25": "低於 25,000",
+                    "25_39": "25,000 - 39,999",
+                    "40_49": "40,000 - 49,999",
+                    "50_64": "50,000 - 64,999",
+                    "65_124": "65,000 - 124,999",
+                    "125_499": "125,000 - 499,999",
+                    "500_999": "500,000 - 999,999",
+                    "over1m": "超過 100 萬"
+                }
+            },
+            "decls": {
+                "title": "9) 聲明與同意",
+                "textHtml": "本人特此確認並同意以下事項：<br /><br />① 此處所述的資金**為本人所有**，且本人擁有將其轉移至 PIF 的**全部權力**。<br />② PIF 的資產、淨資產、收入或活動**與**非法武器/大規模殺傷性武器、洗錢、非法麻醉品或任何被視為**非法**的活動**無關**。<br />③ 本人在本次申請之前已獲得或有機會獲得**適當的法律和/或稅務建議**。<br />④ 本人確認**有義務支付年費**，並同意使用**電子通訊**接收通知和確認。",
+                "agree": "我已閱讀並同意以上所有內容。"
+            }
+        },
+        "radios": {
+            "renamed": {
+                "yes": "是",
+                "no": "否"
+            },
+            "is_founder": {
+                "yes": "是",
+                "no": "否"
+            },
+            "pep": {
+                "yes": "是",
+                "no": "否"
+            },
+            "is_bo": {
+                "yes": "是",
+                "no": "否"
+            }
+        },
+        "requiredLabels": {
+            "email": "電子郵件地址",
+            "fullName": "全名",
+            "renamed": "姓名變更",
+            "dob": "出生日期",
+            "pob": "出生地",
+            "maritalStatus": "婚姻狀況",
+            "nationality": "國籍",
+            "passport": "護照號碼",
+            "occupation": "職業",
+            "mobile": "手機號碼（可聯繫）",
+            "residentialAddress": "居住地址",
+            "inflowCountries": "資金流入國家/地區",
+            "taxResidence": "稅務居住國家/地區",
+            "tin": "納稅人識別號碼 (TIN)",
+            "pep": "政治公眾人物 (PEP)",
+            "is_bo": "實益擁有人 (BO) 確認",
+            "agreeAll": "聲明與同意",
+            "pepDetail": "政治公眾人物 (PEP) 詳情",
+            "contribution": "出資金額（美元）"
+        }
     }
 }

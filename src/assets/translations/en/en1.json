@@ -725,5 +725,251 @@
             },
             "footnote": "※ This form is for preliminary information gathering for review/quotation/KYC and does not constitute legal or tax advice."
         }
+    },
+    "ppifMember": {
+        "header": {
+            "title": "Panama Private Interest Foundation – Member Registration Form",
+            "intro": "This form collects required information for the individual registration of PIF participants (Founder, Council, Protector, Beneficiary, etc.). Individuals use this form; a separate form applies to corporates.",
+            "note": "※ This is baseline information for KYC/AML and regulatory compliance. Please complete all required fields accurately."
+        },
+        "toolbar": {
+            "save": "Save"
+        },
+        "toasts": {
+            "save": {
+                "successTitle": "Success",
+                "successDesc": "Member information saved successfully.",
+                "errorTitle": "Error",
+                "errorDesc": "Please try again later."
+            },
+            "fetch": {
+                "errorTitle": "Error",
+                "errorDesc": "An unexpected error occurred while fetching data."
+            },
+            "validate": {
+                "title": "Missing required fields",
+                "descPrefix": "Please complete:"
+            }
+        },
+        "common": {
+            "select": "Select",
+            "yes": "Yes",
+            "no": "No",
+            "requiredAsterisk": "*"
+        },
+        "sections": {
+            "basic": {
+                "title": "1) Basic Information",
+                "fields": {
+                    "email": {
+                        "label": "Email Address (use the same email where you receieved invite)",
+                        "placeholder": "you@example.com"
+                    },
+                    "fullName": {
+                        "label": "Full Name",
+                        "placeholder": "John Smith"
+                    },
+                    "renamed": {
+                        "label": "Name Change (ever changed your legal name?)",
+                        "hint": "If yes, please add your former English full name in the remarks below."
+                    },
+                    "dob": {
+                        "label": "Date of Birth"
+                    },
+                    "pob": {
+                        "label": "Place of Birth",
+                        "placeholder": "e.g., Seoul, Republic of Korea"
+                    },
+                    "maritalStatus": {
+                        "label": "Marital Status",
+                        "options": {
+                            "Married": "Married",
+                            "Single": "Single",
+                            "Other": "Other"
+                        }
+                    },
+                    "nationality": {
+                        "label": "Nationality",
+                        "placeholder": "e.g., Republic of Korea"
+                    },
+                    "passport": {
+                        "label": "Passport Number"
+                    },
+                    "occupation": {
+                        "label": "Occupation",
+                        "placeholder": "e.g., Attorney / Entrepreneur"
+                    },
+                    "mobile": {
+                        "label": "Mobile Phone (reachable)",
+                        "placeholder": "+82 ..."
+                    },
+                    "residentialAddress": {
+                        "label": "Residential Address",
+                        "placeholder": "English address preferred"
+                    },
+                    "postalAddress": {
+                        "label": "Postal Address (if different)"
+                    }
+                }
+            },
+            "founder": {
+                "title": "2) Founder Status & Contribution",
+                "isFounder": {
+                    "label": "Are you a Founder of the PIF to be established?"
+                },
+                "contribution": {
+                    "label": "(If Founder) Contribution Amount (USD)",
+                    "placeholder": "e.g., 10000",
+                    "note": "※ In Panamanian practice it is shown as “Initial Endowment”. Lawful minimum USD 10,000 (no mandatory funding required)."
+                },
+                "sof": {
+                    "label": "Source of Funds for Contribution (select all that apply)",
+                    "otherLabel": "Other – details",
+                    "otherPlaceholder": "Please specify the other source of funds",
+                    "chips": {
+                        "salary": "Employment Income||Salary, bonus, etc.",
+                        "savings": "Savings / Deposits||Long-term personal savings",
+                        "invest": "Investment Income||Real estate, equities, bonds, funds",
+                        "loan": "Loans||Borrowings from financial institutions",
+                        "disposal": "Business/Share Disposal||Proceeds from sale of business or shares",
+                        "bizdiv": "Business Income / Dividends||Operating profits, dividend income",
+                        "inherit": "Inheritance / Gift||Bequests, inter vivos gifts",
+                        "other": "Other||Please specify below"
+                    }
+                },
+                "inflowCountries": {
+                    "label": "Country(ies) of Funds Inflow",
+                    "placeholder": "e.g., KR, HK, SG"
+                },
+                "remarks": {
+                    "label": "Remarks (former English name / additional notes)",
+                    "placeholder": "Optional"
+                }
+            },
+            "tax": {
+                "title": "3) Tax Information",
+                "fields": {
+                    "taxResidence": {
+                        "label": "Tax Residence Country",
+                        "placeholder": "e.g., Republic of Korea"
+                    },
+                    "tin": {
+                        "label": "Taxpayer Identification Number (TIN)",
+                        "placeholder": "If unavailable, provide local equivalent"
+                    }
+                },
+                "note": "※ “Tax residence” generally refers to the jurisdiction where you spend ≥183 days/year or are otherwise liable to income tax."
+            },
+            "roles": {
+                "title": "4) Role(s) in the Foundation (select all that apply)",
+                "chips": {
+                    "president": "President (Council)",
+                    "secretary": "Secretary (Council)",
+                    "treasurer": "Treasurer (Council)",
+                    "protector": "Protector",
+                    "beneficiary": "Beneficiary",
+                    "nominee": "Nominee / Representative",
+                    "dcp": "Designated Contact Person"
+                },
+                "note": "<b>Protector</b>: may hold oversight/approval rights (e.g., appointment/removal of council, by-laws amendments).<br /><b>Beneficiary</b>: receives economic benefits. For privacy, beneficiary details can be structured via By-Laws / Letter of Wishes."
+            },
+            "futureFunds": {
+                "title": "5) Future Funds Inflow/Generation to the PIF",
+                "chips": {
+                    "pif_income": "Income generated by the PIF",
+                    "addl_contrib": "Additional contributions to the PIF",
+                    "interest": "Interest income",
+                    "investment": "Investment income",
+                    "disposal": "Business/share disposal proceeds",
+                    "inheritance": "Inheritance/gifts",
+                    "loans": "Loans/escrow/deposits",
+                    "other": "Other"
+                }
+            },
+            "pep": {
+                "title": "6) Politically Exposed Person (PEP) Check",
+                "note": "<b>PEP</b>: includes current/former senior public officials, senior political party officials, SOE executives, and senior officials of international organizations, as well as their <u>family members and close associates</u> (per FATF guidance).",
+                "detailLabel": "If Yes, please describe",
+                "detailPlaceholder": "Full name / position / relationship / period, etc."
+            },
+            "docs": {
+                "title": "7) Required Documents Checklist",
+                "note": "All documents should be <b>issued within the last 3 months</b>. Non-English documents may require certified translation. Certified passport copies can be obtained from local authorities.",
+                "items": {
+                    "doc_passport": "Passport copy + Certificate of Passport Copy (notarized/certified)",
+                    "doc_bank": "Bank statement(s) for the last 12 months or a Bank Reference Letter",
+                    "doc_address": "Proof of address (e.g., resident register extract / utility bill)",
+                    "doc_profref": "Professional reference (lawyer/accountant/banker; ≥2 years relationship)",
+                    "doc_cv": "Curriculum Vitae (English)",
+                    "doc_other": "Others (if applicable): additional supporting documents"
+                }
+            },
+            "bo": {
+                "title": "8) Beneficial Owner (BO) Confirmation",
+                "note": "<b>Summary Definition</b>: the <u>natural person(s)</u> who ultimately <u>owns or controls</u> the legal arrangement (FATF/OECD).",
+                "fields": {
+                    "lastIncome": {
+                        "label": "Last Year’s Income (USD)"
+                    },
+                    "netWorth": {
+                        "label": "Current Net Worth (USD)"
+                    }
+                },
+                "bands": {
+                    "under25": "Under 25,000",
+                    "25_39": "25,000 - 39,999",
+                    "40_49": "40,000 - 49,999",
+                    "50_64": "50,000 - 64,999",
+                    "65_124": "65,000 - 124,999",
+                    "125_499": "125,000 - 499,999",
+                    "500_999": "500,000 - 999,999",
+                    "over1m": "Over 1 Million"
+                }
+            },
+            "decls": {
+                "title": "9) Declarations & Consents",
+                "textHtml": "I hereby confirm and agree to the following:<br /><br />① The funds stated herein are <b>owned by me</b> and I have <b>full authority</b> to transfer them to the PIF.<br />② The assets, net worth, income, or activities of the PIF are <b>not connected</b> to illicit weapons/WMD, money laundering, illegal narcotics, or any activity deemed <b>unlawful</b>.<br />③ I have obtained, or had access to, <b>appropriate legal and/or tax advice</b> prior to this application.<br />④ I acknowledge the <b>obligation to pay annual fees</b> and consent to <b>electronic communications</b> for notices and confirmations.",
+                "agree": "I have read and agree to all of the above."
+            }
+        },
+        "radios": {
+            "renamed": {
+                "yes": "Yes",
+                "no": "No"
+            },
+            "is_founder": {
+                "yes": "Yes",
+                "no": "No"
+            },
+            "pep": {
+                "yes": "Yes",
+                "no": "No"
+            },
+            "is_bo": {
+                "yes": "Yes",
+                "no": "No"
+            }
+        },
+        "requiredLabels": {
+            "email": "Email Address",
+            "fullName": "Full Name",
+            "renamed": "Name Change",
+            "dob": "Date of Birth",
+            "pob": "Place of Birth",
+            "maritalStatus": "Marital Status",
+            "nationality": "Nationality",
+            "passport": "Passport Number",
+            "occupation": "Occupation",
+            "mobile": "Mobile Phone (reachable)",
+            "residentialAddress": "Residential Address",
+            "inflowCountries": "Country(ies) of Funds Inflow",
+            "taxResidence": "Tax Residence Country",
+            "tin": "Taxpayer Identification Number (TIN)",
+            "pep": "PEP",
+            "is_bo": "Beneficial Owner (BO) Confirmation",
+            "agreeAll": "Declarations & Consents",
+            "pepDetail": "PEP Details",
+            "contribution": "Contribution Amount (USD)"
+        }
     }
 }

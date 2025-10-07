@@ -12,7 +12,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { FileUp, Pencil, Trash2, Save, ChevronUp, ChevronDown } from "lucide-react"
+import { FileUp, Pencil, Trash2, Save, ChevronUp, ChevronDown, CheckCircle2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
 import CustomLoader from "@/components/ui/customLoader"
@@ -287,6 +287,8 @@ export default function CurrentCorpClient() {
 
     const totalPages = Math.ceil(totalItems / itemsPerPage)
 
+    const fmt = (v?: string) => (v ? new Date(v).toLocaleString() : "—");
+
     const handleRowClick = (companyId: string, countryCode: string) => {
         navigate(`/company-details/${countryCode}/${companyId}`)
         localStorage.setItem("companyRecordId", companyId)
@@ -315,36 +317,36 @@ export default function CurrentCorpClient() {
         }
     };
 
-    const inviteEmail = async () =>{
-        try {
-            const response = await fetch('http://localhost:5000/api/currentclicorp/send-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                // body: JSON.stringify({ customers }),
-            });
+    // const inviteEmail = async () =>{
+    //     try {
+    //         const response = await fetch('http://localhost:5000/api/currentclicorp/send-email', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             // body: JSON.stringify({ customers }),
+    //         });
 
-            // if (!response.ok) {
-            //     throw new Error('Failed to send invite emails');
-            // }
+    //         // if (!response.ok) {
+    //         //     throw new Error('Failed to send invite emails');
+    //         // }
 
-            const data = await response.json();
-            console.log("Invite emails sent successfully:", data);
-            toast({
-                title: "Emails sent",
-                description: `invite emails sent successfully`,
-            });
-        } catch (error) {
-            console.error("Error sending invite emails:", error);
-            toast({
-                title: "Error",
-                description: "Failed to send invite emails",
-                variant: "destructive",
-            });
-        }
+    //         const data = await response.json();
+    //         console.log("Invite emails sent successfully:", data);
+    //         toast({
+    //             title: "Emails sent",
+    //             description: `invite emails sent successfully`,
+    //         });
+    //     } catch (error) {
+    //         console.error("Error sending invite emails:", error);
+    //         toast({
+    //             title: "Error",
+    //             description: "Failed to send invite emails",
+    //             variant: "destructive",
+    //         });
+    //     }
 
-    }
+    // }
 
     return (
         <div className="container mx-auto p-4">
@@ -373,12 +375,10 @@ export default function CurrentCorpClient() {
                         placeText={"Search With Company Name"}
                     />
                 </div>
-
-
                 <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:ml-auto">
-                    <Button onClick={inviteEmail}>
+                    {/* <Button onClick={inviteEmail}>
                         invite
-                    </Button>
+                    </Button> */}
                     <AddCompanyDialog
                         isOpen={isDialogOpen}
                         onOpenChange={setIsDialogOpen}
@@ -407,86 +407,94 @@ export default function CurrentCorpClient() {
                     <TableHeader className="bg-gray-50">
                         <TableRow>
                             <TableHead className="text-center">S.No</TableHead>
-                            <TableHead
-                                onClick={() => handleSort("status")}
-                                className="cursor-pointer hover:bg-gray-100"
-                            >
+
+                            <TableHead onClick={() => handleSort("status")} className="cursor-pointer hover:bg-gray-100">
                                 <div className="flex items-center">
                                     <span>Status</span>
                                     {sortConfig?.key === "status" &&
                                         (sortConfig.direction === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />)}
                                 </div>
                             </TableHead>
-                            <TableHead
-                                onClick={() => handleSort("companyNameEng")}
-                                className="cursor-pointer hover:bg-gray-100"
-                            >
+
+                            <TableHead onClick={() => handleSort("companyNameEng")} className="cursor-pointer hover:bg-gray-100">
                                 <div className="flex items-center">
                                     <span>Company Name (ENG)</span>
                                     {sortConfig?.key === "companyNameEng" &&
                                         (sortConfig.direction === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />)}
                                 </div>
                             </TableHead>
-                            <TableHead
-                                onClick={() => handleSort("jurisdiction")}
-                                className="cursor-pointer hover:bg-gray-100"
-                            >
+
+                            <TableHead onClick={() => handleSort("jurisdiction")} className="cursor-pointer hover:bg-gray-100">
                                 <div className="flex items-center">
-                                    <span>Jurisdiction</span>
+                                    <span>Country</span>
                                     {sortConfig?.key === "jurisdiction" &&
                                         (sortConfig.direction === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />)}
                                 </div>
                             </TableHead>
-                            <TableHead
-                                onClick={() => handleSort("incorporationDate")}
-                                className="cursor-pointer hover:bg-gray-100"
-                            >
+
+                            <TableHead onClick={() => handleSort("incorporationDate")} className="cursor-pointer hover:bg-gray-100">
                                 <div className="flex items-center">
                                     <span>Incorporation Date</span>
                                     {sortConfig?.key === "incorporationDate" &&
                                         (sortConfig.direction === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />)}
                                 </div>
                             </TableHead>
-                            <TableHead
-                                onClick={() => handleSort("companyType")}
-                                className="cursor-pointer hover:bg-gray-100"
-                            >
+
+                            <TableHead onClick={() => handleSort("companyType")} className="cursor-pointer hover:bg-gray-100">
                                 <div className="flex items-center">
                                     <span>Company Type</span>
                                     {sortConfig?.key === "companyType" &&
                                         (sortConfig.direction === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />)}
                                 </div>
                             </TableHead>
-                            <TableHead
-                                onClick={() => handleSort("brnNo")}
-                                className="cursor-pointer hover:bg-gray-100"
-                            >
+
+                            <TableHead onClick={() => handleSort("brnNo")} className="cursor-pointer hover:bg-gray-100">
                                 <div className="flex items-center">
                                     <span>BRN No.</span>
                                     {sortConfig?.key === "brnNo" &&
                                         (sortConfig.direction === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />)}
                                 </div>
                             </TableHead>
+
+                            <TableHead onClick={() => handleSort("isActiveUser")} className="cursor-pointer hover:bg-gray-100">
+                                <div className="flex items-center">
+                                    <span>Is Active User</span>
+                                    {sortConfig?.key === "isActiveUser" &&
+                                        (sortConfig.direction === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />)}
+                                </div>
+                            </TableHead>
+
+                            <TableHead onClick={() => handleSort("lastLogin")} className="cursor-pointer hover:bg-gray-100">
+                                <div className="flex items-center">
+                                    <span>Last Login</span>
+                                    {sortConfig?.key === "lastLogin" &&
+                                        (sortConfig.direction === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />)}
+                                </div>
+                            </TableHead>
+
                             <TableHead className="text-center">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
+
                     <TableBody>
                         {isLoading ? (
                             <TableRow>
-                                <TableCell colSpan={8} className="text-center">
+                                <TableCell colSpan={10} className="text-center">
                                     <CustomLoader />
                                 </TableCell>
                             </TableRow>
                         ) : customers.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={8} className="text-center">
+                                <TableCell colSpan={10} className="text-center">
                                     No data available
                                 </TableCell>
                             </TableRow>
                         ) : (
                             customers.map((company, idx) => (
-                                <TableRow key={`company--${idx}`} className="hover:bg-muted transition-colors cursor-pointer"
-                                    onClick={() => handleRowClick(company._id ?? '', 'ccc')}
+                                <TableRow
+                                    key={`company--${idx}`}
+                                    className="hover:bg-muted transition-colors cursor-pointer"
+                                    onClick={() => handleRowClick(company._id ?? "", "ccc")}
                                 >
                                     <TableCell className="text-center font-medium">
                                         {(currentPage - 1) * itemsPerPage + idx + 1}
@@ -497,14 +505,31 @@ export default function CurrentCorpClient() {
                                     <TableCell>{company.incorporationDate}</TableCell>
                                     <TableCell>{company.companyType}</TableCell>
                                     <TableCell>{company.brnNo}</TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            {company.isActiveUser ? (
+                                                <>
+                                                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                    <span>Yes</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span>No</span>
+                                                </>
+                                            )}
+                                        </div>
+                                    </TableCell>
+
+                                    <TableCell>{fmt(company.lastLogin)}</TableCell>
+
                                     <TableCell className="flex items-center justify-center gap-2">
                                         <Button
                                             variant="ghost"
                                             size="icon"
                                             className="h-8 w-8"
                                             onClick={(e) => {
-                                                e.stopPropagation()
-                                                openEditDialog(company)
+                                                e.stopPropagation();
+                                                openEditDialog(company);
                                             }}
                                         >
                                             <Pencil className="h-4 w-4" />
@@ -513,16 +538,16 @@ export default function CurrentCorpClient() {
                                             variant="ghost"
                                             size="icon"
                                             className="h-8 w-8"
-
                                             onClick={(e) => {
-                                                e.stopPropagation()
-                                                handleDelete(company._id)
+                                                e.stopPropagation();
+                                                handleDelete(company._id);
                                             }}
                                         >
                                             <Trash2 className="h-4 w-4 text-destructive" />
                                         </Button>
                                     </TableCell>
                                 </TableRow>
+
                             ))
                         )}
                     </TableBody>

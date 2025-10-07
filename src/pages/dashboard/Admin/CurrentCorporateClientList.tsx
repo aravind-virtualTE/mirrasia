@@ -1,6 +1,6 @@
 import { companyTableData } from "./types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom"
 import { formatDateTime } from "./utils";
@@ -11,6 +11,7 @@ import { useState } from "react";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { deleteCompanyRecord } from "@/services/dataFetch";
 import CurrentCorpClient from "@/pages/CurrentClient/CurrentCorpClient";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const CurrentCorporateClientList: React.FC = () => {
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -166,36 +167,62 @@ const CurrentCorporateClientList: React.FC = () => {
   );
 
   return (
-    <div className="mt-6 mx-2">
-      <Tabs defaultValue="current" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-6">
-          <TabsTrigger value="current" className="flex items-center gap-2">
-            <span>Current Corporate Clients</span>
-          </TabsTrigger>
-          <TabsTrigger value="archived" className="flex items-center gap-2">
-            <span>Excel Sheet Current Corporate Clients</span>
-          </TabsTrigger>
-        </TabsList>
+    // <div className="mt-6 mx-2">
+    //   <Tabs defaultValue="current" className="w-full">
+    //     <TabsList className="grid w-full grid-cols-2 mb-6">
+    //       <TabsTrigger value="current" className="flex items-center gap-2">
+    //         <span>Current Corporate Clients</span>
+    //       </TabsTrigger>
+    //       <TabsTrigger value="archived" className="flex items-center gap-2">
+    //         <span>Excel Sheet Current Corporate Clients</span>
+    //       </TabsTrigger>
+    //     </TabsList>
 
-        <TabsContent value="current" className="space-y-4">
-          {renderCurrentClientsTable()}
-        </TabsContent>
+    //     <TabsContent value="current" className="space-y-4">
+    //       {renderCurrentClientsTable()}
+    //     </TabsContent>
 
-        <TabsContent value="archived" className="space-y-4">
-          <CurrentCorpClient />
-        </TabsContent>
-      </Tabs>
+    //     <TabsContent value="archived" className="space-y-4">
+    //       <CurrentCorpClient />
+    //     </TabsContent>
+    //   </Tabs>
+
+    //   <ConfirmDialog
+    //     open={deleteDialogOpen}
+    //     onOpenChange={setDeleteDialogOpen}
+    //     title={"Delete Company"}
+    //     description={'Are you sure you want to delete company?'}
+    //     confirmText="Delete"
+    //     cancelText="Cancel"
+    //     onConfirm={confirmDelete}
+    //   />
+    // </div>
+     <div className="mt-6 mx-2">
+      <Accordion type="single" collapsible className="w-full space-y-4">
+        <AccordionItem value="current">
+          <AccordionTrigger className="text-base font-medium">Current Corporate Clients</AccordionTrigger>
+          <AccordionContent>{renderCurrentClientsTable()}</AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="archived">
+          <AccordionTrigger className="text-base font-medium">Excel Sheet Current Corporate Clients</AccordionTrigger>
+          <AccordionContent>
+            <CurrentCorpClient />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       <ConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        title={"Delete Company"}
-        description={'Are you sure you want to delete company?'}
+        title="Delete Company"
+        description="Are you sure you want to delete company?"
         confirmText="Delete"
         cancelText="Cancel"
         onConfirm={confirmDelete}
       />
     </div>
+  
   )
 }
 
