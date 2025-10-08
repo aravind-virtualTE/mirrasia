@@ -366,14 +366,17 @@ export const getUserById = async ( id: string) =>{
 }
 
 
-export const fetchDetailedUsers = async (role?:string) =>{
+export const fetchDetailedUsers = async (role?: string, q?: string) => {
   try {
-    const response = await api.get(`user/getDetailedUsers`, { params: { role } });
+    const response = await api.get(`user/getDetailedUsers`, {
+      params: { role, q },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching saved data:", error);
+    throw error;
   }
-}
+};
 
 export const sendCustomMail = async (data: any,) =>{
   try {
