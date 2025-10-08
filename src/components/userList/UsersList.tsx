@@ -17,6 +17,7 @@ import CustomLoader from "../ui/customLoader"
 import { Checkbox } from "../ui/checkbox"
 import { ConfirmDialog } from "../shared/ConfirmDialog"
 import UserVerificationCard from "./UserVerificationCard"
+import SearchBox from "@/pages/MasterTodo/SearchBox"
 export interface User {
     _id?: string;
     fullName: string;
@@ -63,26 +64,45 @@ const UsersList = () => {
     const [taskLabel, setTaskLabel] = useState("");
     const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
     const navigate = useNavigate();
-    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const [sortBy, setSortBy] = useState<SortKey>("fullName");
     const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+    const defaultRole = user?.role || "";
     // console.log("selectedUser", selectedUser)
     useEffect(() => {
-        const fetchUser = async () => {
-            let role = ''
-            if (user && user.role) {
-                role = user.role
+        const load = async () => {
+            try {
+                const detailedUsers = await fetchDetailedUsers(defaultRole);
+                setUsers(detailedUsers);
+            } catch (e) {
+                toast({
+                    title: "Error",
+                    description: "Failed to load users.",
+                    variant: "destructive",
+                });
             }
-            const [detailedUsersResponse] = await Promise.all([
-                // fetchUsers(),                
-                fetchDetailedUsers(role)
-            ]);
-            // console.log("detailed response", detailedUsersResponse);
-            setUsers(detailedUsersResponse);
-            //   setDetailedUsers(detailedUsersResponse);
-        }
-        fetchUser()
-    }, [])
+        };
+        load();
+    }, []);
+    // const debounceRef = useRef<number | null>(null);
+    // useEffect(() => {
+    //     if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    //     debounceRef.current = window.setTimeout(async () => {
+    //         try {
+    //             const q = searchQuery.trim() || undefined;
+    //             const data = await fetchDetailedUsers(defaultRole, q);
+    //             setUsers(data);
+    //         } catch (e) {
+    //             // optional: silent fail or toast
+    //             console.log("Search error", e)
+    //         }
+    //     }, 300);
+    //     return () => {
+    //         if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    //     };
+    // }, [searchQuery]);
 
     const handleRoleChange = async (userId: string, newRole: string) => {
         try {
@@ -226,6 +246,7 @@ const UsersList = () => {
             );
         }
     };
+
     const handleDeleteTask = async () => {
         if (selectedUser && selectedUser.tasks) {
             const sndData = {
@@ -307,9 +328,31 @@ const UsersList = () => {
         return list;
     }, [users, sortBy, sortDir]);
 
+    const handleSearch = async () => {
+        try {
+            const q = searchQuery.trim() || undefined;
+            const data = await fetchDetailedUsers(defaultRole, q);
+            setUsers(data);
+        } catch (e) {
+            toast({
+                title: "Error",
+                description: "Search failed.",
+                variant: "destructive",
+            });
+        }
+    };
+
     return (
         <div className="space-y-4">
-            <div className="flex justify-end">
+            <div className="flex justify-end space-x-2 mr-4">
+                <SearchBox
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    onSearch={handleSearch}
+                    isFocused={isFocused}
+                    setIsFocused={setIsFocused}
+                    placeText="Search With User Name/ Email"
+                />
                 <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
                     <DialogTrigger asChild>
                         <Button>Add User</Button>
