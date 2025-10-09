@@ -177,11 +177,13 @@ const IncorporateSg: React.FC = () => {
                         });
                         return;
                     }
-                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && ['yes', 'handleOwnIncorpo'].includes(annualRenew.id) && ['yes', 'handleOwnIncorpo'].includes(sgAccntDecl.id)) {
+                    if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && ['yes', 'handleOwnIncorpo'].includes(annualRenew.id) && ['yes'].includes(sgAccntDecl.id)) {
+                        
                         await updateDoc();
                         setCurrentSection(prev => prev + 1);
                         window.scrollTo({ top: 0, behavior: "smooth" });
                     } else {
+                        console.log("entered")
                         await updateDoc();
                         toast({
                             title: "Consultation required before proceeding",
