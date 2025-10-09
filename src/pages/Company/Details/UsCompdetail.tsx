@@ -870,7 +870,6 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
                     <Building2 className="h-5 w-5 text-primary" />
                   </div>
-
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
