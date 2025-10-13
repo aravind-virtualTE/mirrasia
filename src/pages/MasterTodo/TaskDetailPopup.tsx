@@ -60,9 +60,7 @@ const CompanyBadge: React.FC<{ name?: string }> = ({ name }) => {
   );
 };
 
-const AssigneeGroup: React.FC<{ names: { id?: string; name: string }[] }> = ({
-  names,
-}) => {
+const AssigneeGroup: React.FC<{ names: { id?: string; name: string }[] }> = ({ names }) => {
   if (!names?.length) return null;
   if (names.length <= 2)
     return (
@@ -98,8 +96,7 @@ const AssigneeGroup: React.FC<{ names: { id?: string; name: string }[] }> = ({
   );
 };
 
-const clamp = (v: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, v));
+const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
 /* --------------------------------- component --------------------------------- */
 
@@ -128,12 +125,15 @@ const TaskDetailPopup = ({
   const [leftWidth, setLeftWidth] = useState(420); // px
   const [resizing, setResizing] = useState(false);
 
+  // comments scroller refs
+  const commentsScrollRef = useRef<HTMLDivElement | null>(null);
+  const bottomAnchorRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       if (!resizing || !containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left;
-      // keep reasonable bounds so neither side collapses
       const minLeft = 300;
       const minRight = 360;
       const maxLeft = rect.width - minRight;
@@ -147,6 +147,14 @@ const TaskDetailPopup = ({
       window.removeEventListener("mouseup", onUp);
     };
   }, [resizing]);
+
+  // scroll to bottom on open and when comments change
+  useEffect(() => {
+    bottomAnchorRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
+  }, [taskId]);
+  useEffect(() => {
+    bottomAnchorRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [task?.comments?.length]);
 
   const isOverdue = useMemo(() => {
     if (!task?.dueDate || task.status === "COMPLETED") return false;
@@ -173,6 +181,10 @@ const TaskDetailPopup = ({
       console.error("Failed to submit comment", e);
     } finally {
       setIsLoading(false);
+      // ensure scroll after state update completes
+      setTimeout(() => {
+        bottomAnchorRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+      }, 0);
     }
   };
 
@@ -186,61 +198,45 @@ const TaskDetailPopup = ({
             : { ...tk, comments: tk.comments.filter((c: any) => c._id !== cId) }
         )
       );
+      setTimeout(() => {
+        bottomAnchorRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
+      }, 0);
     }
   };
 
   if (!task) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/30" />
       <div
         ref={containerRef}
-        className="relative z-10 flex h-full w-full max-w-[1600px] flex-col overflow-hidden rounded-lg bg-white shadow-xl md:h-[96%] md:w-[96%]"
+        className="relative z-10 flex h-full w-full max-w-[1600px] min-h-0 flex-col overflow-hidden rounded-lg bg-white shadow-xl md:h-[96%] md:w-[96%]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Sticky Header (compact) */}
         <div className="sticky top-0 z-10 flex items-center gap-2 border-b bg-white/90 px-3 py-2 backdrop-blur">
-          <Badge
-            variant="outline"
-            className={`px-1.5 py-0.5 text-[10px] ${statusColors[task.status]}`}
-          >
+          <Badge variant="outline" className={`px-1.5 py-0.5 text-[10px] ${statusColors[task.status]}`}>
             {task.status}
           </Badge>
 
           {isOverdue && (
-            <Badge
-              variant="outline"
-              className="px-1.5 py-0.5 text-[10px] border-red-300 bg-red-50 text-red-900"
-            >
+            <Badge variant="outline" className="px-1.5 py-0.5 text-[10px] border-red-300 bg-red-50 text-red-900">
               Overdue
             </Badge>
           )}
 
           <div className="min-w-0 flex-1">
-            <div
-              className="truncate text-[13px] font-semibold md:text-sm"
-              title={task.name}
-            >
+            <div className="truncate text-[13px] font-semibold md:text-sm" title={task.name}>
               {task.name}
             </div>
             <div className="flex items-center gap-2 text-[11px] text-gray-500">
               {task.company?.name && <CompanyBadge name={task.company.name} />}
-              {task.project?.name && (
-                <span className="truncate">• {task.project.name}</span>
-              )}
+              {task.project?.name && <span className="truncate">• {task.project.name}</span>}
             </div>
           </div>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 p-0 hover:border hover:border-red-500"
-            onClick={onClose}
-          >
+          <Button variant="ghost" size="icon" className="h-8 w-8 p-0 hover:border hover:border-red-500" onClick={onClose}>
             <X className="h-6 w-6" />
           </Button>
         </div>
@@ -250,9 +246,7 @@ const TaskDetailPopup = ({
           <button
             onClick={() => setMobileTab("details")}
             className={`flex-1 rounded-full border px-3 py-1.5 text-xs font-medium ${
-              mobileTab === "details"
-                ? "bg-gray-900 text-white"
-                : "bg-gray-50 text-gray-700"
+              mobileTab === "details" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-700"
             }`}
           >
             Details
@@ -260,9 +254,7 @@ const TaskDetailPopup = ({
           <button
             onClick={() => setMobileTab("comments")}
             className={`flex-1 rounded-full border px-3 py-1.5 text-xs font-medium ${
-              mobileTab === "comments"
-                ? "bg-gray-900 text-white"
-                : "bg-gray-50 text-gray-700"
+              mobileTab === "comments" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-700"
             }`}
           >
             Comments ({task.comments?.length || 0})
@@ -271,15 +263,11 @@ const TaskDetailPopup = ({
 
         {/* Desktop split-view (resizable) */}
         <div
-          className="hidden h-full md:grid"
-          style={
-            {
-              gridTemplateColumns: `${leftWidth}px 6px 1fr`, // left | handle | right
-            } as React.CSSProperties
-          }
+          className="hidden h-full min-h-0 md:grid"
+          style={{ gridTemplateColumns: `${leftWidth}px 6px 1fr` } as React.CSSProperties}
         >
           {/* Left: Details */}
-          <div className="overscroll-contain h-full overflow-y-auto px-4 py-3">
+          <div className="h-full min-h-0 overflow-y-auto px-4 py-3">
             {/* Key/Value grid - ultra compact */}
             <div className="grid grid-cols-[92px_1fr] items-start gap-x-2 gap-y-1 text-[12px]">
               <span className="font-medium">Title</span>
@@ -289,10 +277,7 @@ const TaskDetailPopup = ({
 
               <span className="font-medium">Priority</span>
               <div className="flex items-center gap-1">
-                <Flag
-                  className={`h-3.5 w-3.5 ${priorityColors[task.priority]}`}
-                  fill="currentColor"
-                />
+                <Flag className={`h-3.5 w-3.5 ${priorityColors[task.priority]}`} fill="currentColor" />
                 <span>{task.priority}</span>
               </div>
 
@@ -300,9 +285,7 @@ const TaskDetailPopup = ({
               <div>{task.status}</div>
 
               <span className="font-medium">Due</span>
-              <div>
-                {task.dueDate ? format(new Date(task.dueDate), "dd MMM yyyy") : "—"}
-              </div>
+              <div>{task.dueDate ? format(new Date(task.dueDate), "dd MMM yyyy") : "—"}</div>
 
               <span className="font-medium">Created</span>
               <div>{task.userId ? createdUser?.fullName : "N/A"}</div>
@@ -333,11 +316,7 @@ const TaskDetailPopup = ({
             <Separator className="my-3" />
             <div className="text-[12px]">
               <div className="mb-1 font-medium">Description</div>
-              <div
-                className={`relative rounded-md bg-gray-50 p-2 ${
-                  descExpanded ? "max-h-none" : "max-h-56 overflow-hidden"
-                }`}
-              >
+              <div className={`relative rounded-md bg-gray-50 p-2 ${descExpanded ? "max-h-none" : "max-h-56 overflow-hidden"}`}>
                 <RichTextViewer content={task.description || ""} />
                 {!descExpanded && (
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-gray-50" />
@@ -354,9 +333,7 @@ const TaskDetailPopup = ({
 
           {/* Resize handle */}
           <div
-            className={`relative h-full cursor-col-resize bg-transparent hover:bg-gray-200 ${
-              resizing ? "bg-gray-200" : ""
-            }`}
+            className={`relative h-full cursor-col-resize bg-transparent hover:bg-gray-200 ${resizing ? "bg-gray-200" : ""}`}
             onMouseDown={() => setResizing(true)}
             title="Drag to resize"
           >
@@ -364,24 +341,20 @@ const TaskDetailPopup = ({
           </div>
 
           {/* Right: Comments */}
-          <div className="flex h-full flex-col">
+          <div className="flex h-full min-h-0 flex-col">
             <div className="sticky top-0 z-10 border-b bg-white px-4 py-2">
               <h4 className="text-sm font-semibold">Comments</h4>
             </div>
 
-            <div className="overscroll-contain flex-1 overflow-y-auto px-4 py-3">
+            {/* SCROLL REGION */}
+            <div ref={commentsScrollRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-3">
               {task.comments?.length ? (
                 <div className="space-y-3">
                   {task.comments.map((comment: any, index: number) => (
-                    <div
-                      key={index}
-                      className="relative rounded-lg border bg-gray-50 p-2"
-                    >
+                    <div key={comment._id || comment.timestamp || index} className="relative rounded-lg border bg-gray-50 p-2">
                       <div className="mb-1 flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="text-[12px] leading-snug break-words">
-                            {comment.text}
-                          </p>
+                          <p className="break-words text-[12px] leading-snug">{comment.text}</p>
                           <div className="mt-0.5 flex flex-wrap gap-2 text-[11px] text-gray-500">
                             <span className="truncate">{comment.author}</span>
                             <span>{format(new Date(comment.timestamp), "PPpp")}</span>
@@ -414,11 +387,7 @@ const TaskDetailPopup = ({
                       {comment.fileUrl && (
                         <div className="mt-2 overflow-hidden rounded border">
                           <iframe
-                            src={
-                              typeof comment.fileUrl === "string"
-                                ? comment.fileUrl
-                                : URL.createObjectURL(comment.fileUrl)
-                            }
+                            src={typeof comment.fileUrl === "string" ? comment.fileUrl : URL.createObjectURL(comment.fileUrl)}
                             className="h-56 w-full"
                             title={`Attachment ${index}`}
                           />
@@ -426,6 +395,7 @@ const TaskDetailPopup = ({
                       )}
                     </div>
                   ))}
+                  <div ref={bottomAnchorRef} />
                 </div>
               ) : (
                 <div className="py-8 text-center text-gray-500">
@@ -442,7 +412,7 @@ const TaskDetailPopup = ({
           </div>
         </div>
 
-        {/* Mobile panes (unchanged, but benefits from compact spacing) */}
+        {/* Mobile panes */}
         <div className="md:hidden">
           {mobileTab === "details" ? (
             <div className="h-[calc(100vh-140px)] overflow-y-auto px-3 pb-4">
@@ -454,10 +424,7 @@ const TaskDetailPopup = ({
 
                 <span className="font-medium">Priority</span>
                 <div className="flex items-center gap-1">
-                  <Flag
-                    className={`h-3.5 w-3.5 ${priorityColors[task.priority]}`}
-                    fill="currentColor"
-                  />
+                  <Flag className={`h-3.5 w-3.5 ${priorityColors[task.priority]}`} fill="currentColor" />
                   <span>{task.priority}</span>
                 </div>
 
@@ -465,9 +432,7 @@ const TaskDetailPopup = ({
                 <div>{task.status}</div>
 
                 <span className="font-medium">Due</span>
-                <div>
-                  {task.dueDate ? format(new Date(task.dueDate), "dd MMM yyyy") : "—"}
-                </div>
+                <div>{task.dueDate ? format(new Date(task.dueDate), "dd MMM yyyy") : "—"}</div>
 
                 <span className="font-medium">Created</span>
                 <div>{task.userId ? createdUser?.fullName : "N/A"}</div>
@@ -497,11 +462,7 @@ const TaskDetailPopup = ({
               <Separator className="my-3" />
               <div className="text-[12px]">
                 <div className="mb-1 font-medium">Description</div>
-                <div
-                  className={`relative rounded-md bg-gray-50 p-2 ${
-                    descExpanded ? "max-h-none" : "max-h-56 overflow-hidden"
-                  }`}
-                >
+                <div className={`relative rounded-md bg-gray-50 p-2 ${descExpanded ? "max-h-none" : "max-h-56 overflow-hidden"}`}>
                   <RichTextViewer content={task.description || ""} />
                   {!descExpanded && (
                     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-gray-50" />
@@ -517,16 +478,14 @@ const TaskDetailPopup = ({
             </div>
           ) : (
             <div className="flex h-[calc(100vh-140px)] flex-col">
-              <div className="flex-1 overflow-y-auto px-3 py-2">
+              <div className="flex-1 min-h-0 overflow-y-auto px-3 py-2">
                 {task.comments?.length ? (
                   <div className="space-y-3">
                     {task.comments.map((comment: any, index: number) => (
-                      <div key={index} className="rounded-lg border bg-gray-50 p-2">
+                      <div key={comment._id || comment.timestamp || index} className="rounded-lg border bg-gray-50 p-2">
                         <div className="mb-1 flex items-start justify-between gap-2">
                           <div className="min-w-0">
-                            <p className="text-[12px] leading-snug break-words">
-                              {comment.text}
-                            </p>
+                            <p className="break-words text-[12px] leading-snug">{comment.text}</p>
                             <div className="mt-0.5 flex flex-wrap gap-2 text-[11px] text-gray-500">
                               <span className="truncate">{comment.author}</span>
                               <span>{format(new Date(comment.timestamp), "PPpp")}</span>
@@ -543,7 +502,20 @@ const TaskDetailPopup = ({
                                 <DropdownMenuItem
                                   onClick={() => {
                                     if (task._id && comment._id) {
-                                      handleDeleteComment(task._id, comment._id);
+                                      deleteTodoTaskComment(task._id, comment._id).then((result) => {
+                                        if (result.message === "Comment deleted successfully") {
+                                          setTasks((prev) =>
+                                            prev.map((tk) =>
+                                              tk._id !== task._id
+                                                ? tk
+                                                : {
+                                                    ...tk,
+                                                    comments: tk.comments.filter((c: any) => c._id !== comment._id),
+                                                  }
+                                            )
+                                          );
+                                        }
+                                      });
                                     }
                                   }}
                                 >
@@ -558,11 +530,7 @@ const TaskDetailPopup = ({
                         {comment.fileUrl && (
                           <div className="mt-2 overflow-hidden rounded border">
                             <iframe
-                              src={
-                                typeof comment.fileUrl === "string"
-                                  ? comment.fileUrl
-                                  : URL.createObjectURL(comment.fileUrl)
-                              }
+                              src={typeof comment.fileUrl === "string" ? comment.fileUrl : URL.createObjectURL(comment.fileUrl)}
                               className="h-48 w-full"
                               title={`Attachment ${index}`}
                             />
