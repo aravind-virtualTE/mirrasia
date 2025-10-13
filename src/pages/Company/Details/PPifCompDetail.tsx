@@ -3,7 +3,6 @@ import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -52,12 +51,12 @@ export type PIFRecord = {
     signDate?: string;
 
     // Payment
-    payMethod?: string;              // "card" | "bank" | etc.
+    payMethod?: string;
     paymentStatus?: "paid" | "unpaid" | "rejected" | string;
     bankRef?: string;
-    expiresAt?: string;              // ISO
+    expiresAt?: string;
     pricing?: { currency?: string; total?: number } | null;
-    stripeLastStatus?: string;       // "succeeded" etc.
+    stripeLastStatus?: string;
     stripeReceiptUrl?: string;
     uploadReceiptUrl?: string;
 
@@ -156,6 +155,7 @@ function StepRail({ stepIdx }: { stepIdx: number }) {
         </div>
     );
 }
+
 export default function PPifCompDetail({ id }: { id: string }) {
     const [data, setData] = React.useState<PIFRecord | null>(null);
     const [isEditing, setIsEditing] = React.useState(false);
@@ -164,7 +164,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
     const navigate = useNavigate();
     const [users, setUsers] = useAtom(usersData);
     const [adminAssigned, setAdminAssigned] = React.useState("");
-
 
     const f = React.useMemo(() => ({
         applicantName: data?.contactName || "",
@@ -177,57 +176,48 @@ export default function PPifCompDetail({ id }: { id: string }) {
         industry: data?.industries?.join(", ") || "",
         purpose: data?.purposeSummary ? [data?.purposeSummary] : [],
         bizdesc: data?.bizDesc || "",
-
         currency: data?.pricing?.currency,
         finalAmount: data?.pricing?.total,
-
         payMethod: data?.payMethod || "",
         bankRef: data?.bankRef || "",
         stripeLastStatus: data?.stripeLastStatus || "",
         stripeReceiptUrl: data?.stripeReceiptUrl || "",
         uploadReceiptUrl: (data as any)?.uploadReceiptUrl || "",
-
         truthfulnessDeclaration: !!data?.truthOk,
         legalTermsAcknowledgment: !!data?.privacyOk,
         compliancePreconditionAcknowledgment: !!data?.taxOk,
-
         legalAndEthicalConcern: data?.legalAndEthicalConcern || "",
         q_country: data?.q_country || "",
         sanctionsExposureDeclaration: data?.sanctionsExposureDeclaration || "",
         crimeaSevastapolPresence: data?.crimeaSevastapolPresence || "",
         russianEnergyPresence: data?.russianEnergyPresence || "",
-
         eSign: data?.signName ? `${data.signName} • ${fmtDate(data?.signDate)}` : "",
     }), [data]);
 
-
     React.useEffect(() => {
         const fetchData = async () => {
-            const result = await getPaFIncorpoData(id)
+            const result = await getPaFIncorpoData(id);
             console.log("result-->", result);
-            if (result) setData(result)
+            if (result) setData(result);
             const usersResponse = await fetchUsers();
             const adminUsers = usersResponse.filter((e: { role: string }) => e.role === "admin" || e.role === "master");
             setUsers(adminUsers);
-        }
-        fetchData()
-    }, [])
+        };
+        fetchData();
+    }, []);
 
-    // Local patch helper for interactive fields
     const patchCompany = (key: keyof PIFRecord, value: any) => setData(prev => ({ ...prev, [key]: value }));
 
     const onSave = async () => {
         setIsSaving(true);
-        // console.log("data",data)
-        const result = await createOrUpdatePaFIncorpo(data)
+        const result = await createOrUpdatePaFIncorpo(data);
         if (result) {
             setIsSaving(false);
             toast({ title: "Success", description: "Company details saved." });
             return true;
-        }else{
+        } else {
             toast({ title: "Error", description: "Failed to save company details.", variant: "destructive" });
         }
-
     };
 
     const AssignAdmin = () => {
@@ -250,6 +240,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
             </div>
         );
     };
+
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
             <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -337,7 +328,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {/* Edit toggle */}
                                                 <div className="flex shrink-0 items-center gap-2">
                                                     {!isEditing ? (
                                                         <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>Edit</Button>
@@ -352,8 +342,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
 
                                 <CardContent className="grid gap-5">
                                     <StepRail stepIdx={data?.stepIdx ?? 0} />
-
-                                    {/* Basic info (editable) */}
                                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         <LabelValue label="Applicant">
                                             <div className="flex items-center gap-2">
@@ -361,7 +349,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 <span className="font-medium">{f.applicantName || "—"}</span>
                                             </div>
                                         </LabelValue>
-
                                         <LabelValue label="Contact">
                                             <div className="grid gap-2">
                                                 <div className="flex items-center gap-2">
@@ -452,28 +439,36 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">B. Founders</div>
                                         {Array.isArray((data as any)?.founders) && (data as any).founders.length ? (
-                                            <div className="grid gap-3">
-                                                {(data as any).founders.map((fnd: any, i: number) => (
-                                                    <div key={(fnd?.name || "founder") + i} className="rounded-md border p-3 grid md:grid-cols-4 gap-2">
-                                                        <LabelValue label="Type">{fnd?.type || "—"}</LabelValue>
-                                                        <LabelValue label="Name">{fnd?.name || "—"}</LabelValue>
-                                                        <LabelValue label="ID / Reg No.">{fnd?.id || "—"}</LabelValue>
-                                                        <div className="grid md:grid-cols-2 gap-2">
-                                                            <LabelValue label="Email">{fnd?.email || "—"}</LabelValue>
-                                                            <LabelValue label="Phone">{fnd?.tel || "—"}</LabelValue>
-                                                        </div>
+                                            <div className="overflow-x-auto rounded-md border overflow-hidden"> 
+                                                <div className="">
+                                                    <div className="grid gap-3 min-w-[600px] p-3"> 
+                                                        {(data as any).founders.map((fnd: any, i: number) => (
+                                                            <div
+                                                                key={(fnd?.name || "founder") + i}
+                                                                className="grid md:grid-cols-4 gap-2 p-3"
+                                                            >
+                                                                <LabelValue label="Type">{fnd?.type || "—"}</LabelValue>
+                                                                <LabelValue label="Name">{fnd?.name || "—"}</LabelValue>
+                                                                <LabelValue label="ID / Reg No.">{fnd?.id || "—"}</LabelValue>
+                                                                <div className="grid md:grid-cols-[2fr_1fr] gap-2">
+                                                                    <LabelValue label="Email">{fnd?.email || "—"}</LabelValue>
+                                                                    <LabelValue label="Phone">{fnd?.tel || "—"}</LabelValue>
+                                                                </div>
+                                                            </div>
+                                                        ))}
                                                     </div>
-                                                ))}
+                                                </div>
                                             </div>
                                         ) : (
                                             <div className="text-sm text-muted-foreground">No founders provided.</div>
                                         )}
                                     </div>
+
                                     <Separator />
+
                                     {/* --- C. Foundation Council — Composition --- */}
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">C. Foundation Council — Composition</div>
-
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <LabelValue label="Council Mode">{(data as any)?.councilMode || "—"}</LabelValue>
                                             <LabelValue label="Nominee Directors">{(data as any)?.nomineePersons || "—"}</LabelValue>
@@ -481,34 +476,43 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 <BoolPill value={!!(data as any)?.useNomineeDirector} />
                                             </LabelValue>
                                         </div>
-                                        {/* Individuals (ind3) */}
-                                        {(data as any)?.councilMode === "ind3" && Array.isArray((data as any)?.councilIndividuals) && (
-                                            <div className="grid gap-2">
-                                                {(data as any).councilIndividuals.map((m: any, i: number) => (
-                                                    <div key={"ind-" + i} className="rounded-md border p-3 grid md:grid-cols-4 gap-2">
-                                                        <LabelValue label="Type">{m?.type || "individual"}</LabelValue>
-                                                        <LabelValue label="Name">{m?.name || "—"}</LabelValue>
-                                                        <LabelValue label="ID">{m?.id || "—"}</LabelValue>
-                                                        <div className="grid md:grid-cols-2 gap-2">
-                                                            <LabelValue label="Email">{m?.email || "—"}</LabelValue>
-                                                            <LabelValue label="Phone">{m?.tel || "—"}</LabelValue>
+
+                                        {(data as any)?.councilMode === "ind3" &&
+                                            Array.isArray((data as any)?.councilIndividuals) && (
+                                                <div className="rounded-md border overflow-hidden">
+                                                    <div className="overflow-x-auto">
+                                                        <div className="grid gap-2 min-w-[600px] p-3">
+                                                            {(data as any).councilIndividuals.map((m: any, i: number) => (
+                                                                <div key={"ind-" + i} className="grid md:grid-cols-4 gap-2 p-3">
+                                                                    <LabelValue label="Type">{m?.type || "individual"}</LabelValue>
+                                                                    <LabelValue label="Name">{m?.name || "—"}</LabelValue>
+                                                                    <LabelValue label="ID">{m?.id || "—"}</LabelValue>
+                                                                    <div className="grid md:grid-cols-[2fr_1fr] gap-2">
+                                                                        <LabelValue label="Email">{m?.email || "—"}</LabelValue>
+                                                                        <LabelValue label="Phone">{m?.tel || "—"}</LabelValue>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
                                                         </div>
                                                     </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                        {/* Corporate (corp1) */}
+                                                </div>
+                                            )}
+
                                         {(data as any)?.councilMode === "corp1" && (data as any)?.councilCorporate && (
-                                            <div className="rounded-md border p-3 grid md:grid-cols-4 gap-2">
-                                                <LabelValue label="Corporate Main">{(data as any).councilCorporate?.corpMain || "—"}</LabelValue>
-                                                <LabelValue label="Address / Representative">{(data as any).councilCorporate?.addrRep || "—"}</LabelValue>
-                                                <LabelValue label="Signatory">{(data as any).councilCorporate?.signatory || "—"}</LabelValue>
-                                                <LabelValue label="Email">{(data as any).councilCorporate?.email || "—"}</LabelValue>
+                                            <div className="overflow-x-auto rounded-md border overflow-hidden">
+                                                <div className="">
+                                                    <div className="grid md:grid-cols-4 gap-2 min-w-[600px] p-3">
+                                                        <LabelValue label="Corporate Main">{(data as any).councilCorporate?.corpMain || "—"}</LabelValue>
+                                                        <LabelValue label="Address / Representative">{(data as any).councilCorporate?.addrRep || "—"}</LabelValue>
+                                                        <LabelValue label="Signatory">{(data as any).councilCorporate?.signatory || "—"}</LabelValue>
+                                                        <LabelValue label="Email">{(data as any).councilCorporate?.email || "—"}</LabelValue>
+                                                    </div>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
+
                                     <Separator />
-                                    {/* --- E. Protector (optional) --- */}
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">E. Protector (optional)</div>
                                         <div className="flex items-center gap-2">
@@ -527,7 +531,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         ) : null}
                                     </div>
                                     <Separator />
-                                    {/* --- F. Beneficiaries --- */}
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">F. Beneficiaries</div>
                                         <LabelValue label="Mode">{(data as any)?.beneficiariesMode || "—"}</LabelValue>
@@ -545,7 +548,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         )}
                                     </div>
                                     <Separator />
-                                    {/* --- G. By-Laws --- */}
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">G. By-Laws</div>
                                         <div className="grid md:grid-cols-3 gap-4">
@@ -559,7 +561,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         </div>
                                     </div>
                                     <Separator />
-                                    {/* --- H. Shipping / Delivery --- */}
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">H. Shipping / Delivery</div>
                                         <div className="grid md:grid-cols-3 gap-4">
@@ -567,15 +568,12 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                             <LabelValue label="Contact Person">{(data as any)?.shippingContactPerson || "—"}</LabelValue>
                                             <LabelValue label="Contact Phone">{(data as any)?.shippingPhone || "—"}</LabelValue>
                                             <LabelValue label="Postal Code">{(data as any)?.shippingPostalCode || "—"}</LabelValue>
-                                            <LabelValue label="Address" >
-                                                {(data as any)?.shippingAddress || "—"}
-                                            </LabelValue>
+                                            <LabelValue label="Address">{(data as any)?.shippingAddress || "—"}</LabelValue>
                                         </div>
                                     </div>
                                     <Separator />
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">I. Banking</div>
-                                        {/* Pretty header row with a status pill derived from the radio selection */}
                                         <div className="rounded-md border p-3 grid gap-3">
                                             <div className="flex flex-wrap items-center justify-between gap-2">
                                                 <div className="text-sm text-muted-foreground">Bank Account Requirement</div>
@@ -593,8 +591,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                     return <Badge variant="outline" className="text-muted-foreground">—</Badge>;
                                                 })()}
                                             </div>
-
-                                            {/* Key details */}
                                             <div className="grid md:grid-cols-3 gap-4">
                                                 <LabelValue label="Need">
                                                     {(() => {
@@ -605,7 +601,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                                     : "—";
                                                     })()}
                                                 </LabelValue>
-
                                                 <LabelValue label="Business Activity Type">
                                                     {(() => {
                                                         const v = (data as any)?.bankingBizType as
@@ -626,11 +621,9 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                     })()}
                                                 </LabelValue>
                                             </div>
-
                                         </div>
                                     </div>
                                     <Separator />
-                                    {/* --- J. Politically Exposed Person (PEP) --- */}
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">J. PEP</div>
                                         <LabelValue label="Any PEP Declared">
@@ -639,10 +632,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                             </Badge>
                                         </LabelValue>
                                     </div>
-
                                     <Separator />
-
-                                    {/* --- K. Accounting Record Storage & Responsible Person --- */}
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">K. Accounting Record Storage & Responsible Person</div>
                                         <div className="grid md:grid-cols-2 gap-4">
@@ -650,10 +640,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                             <LabelValue label="Responsible Person">{(data as any)?.recordStorageResponsiblePerson || "—"}</LabelValue>
                                         </div>
                                     </div>
-
                                     <Separator />
-
-                                    {/* --- L. Pricing & Options --- */}
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">L. Pricing & Options</div>
                                         <div className="grid md:grid-cols-4 gap-4">
@@ -671,8 +658,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                             </LabelValue>
                                         </div>
                                     </div>
-
-
                                     <Separator />
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <LabelValue label="Created">{fmtDate(data?.createdAt)}</LabelValue>
@@ -681,10 +666,8 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                 </CardContent>
                             </Card>
                         </div>
-
                         {/* RIGHT */}
                         <div className="grid gap-6">
-                            {/* Payment */}
                             <Card>
                                 <CardHeader className="pb-2">
                                     <div className="flex items-start gap-3">
@@ -706,13 +689,9 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         </div>
                                     </div>
                                 </CardHeader>
-
                                 <CardContent className="grid gap-4">
-                                    {/* Receipt / Proof */}
                                     <div className="grid gap-2">
                                         <div className="text-xs text-muted-foreground">Receipt / Proof</div>
-
-                                        {/* (A) Stripe success → green box w/ receipt link */}
                                         {data?.paymentStatus === "paid" && f.stripeLastStatus === "succeeded" && f.stripeReceiptUrl ? (
                                             <div className="rounded-md border bg-emerald-50 p-4 text-emerald-800">
                                                 <div className="text-sm font-medium">Payment successful via Stripe.</div>
@@ -721,12 +700,10 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 </a>
                                             </div>
                                         ) : f.uploadReceiptUrl ? (
-                                            // (B) Bank transfer or other → show uploaded proof image + admin status control
                                             <div className="space-y-3">
                                                 <a href={f.uploadReceiptUrl} target="_blank" rel="noreferrer" className="group relative block overflow-hidden rounded-md border">
                                                     <img src={f.uploadReceiptUrl} alt="Payment receipt" className="h-44 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]" />
                                                 </a>
-
                                                 {user.role !== "user" && (
                                                     <div className="flex items-center gap-3">
                                                         <Label className="text-sm font-medium">Payment Status:</Label>
@@ -747,8 +724,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                             <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No file uploaded</div>
                                         )}
                                     </div>
-
-                                    {/* Session details incl. editable expiresAt */}
                                     <div className="grid gap-4 py-4">
                                         <div className="grid grid-cols-4 items-center gap-4">
                                             <Label className="text-right">Amount</Label>
@@ -769,8 +744,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     </div>
                                 </CardContent>
                             </Card>
-
-                            {/* Compliance & Declarations */}
                             <Card>
                                 <CardHeader>
                                     <div className="flex items-start gap-3">
@@ -789,9 +762,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         <LabelValue label="Compliance Precondition"><BoolPill value={!!f.compliancePreconditionAcknowledgment} /></LabelValue>
                                         <LabelValue label="e-Sign">{f.eSign || "—"}</LabelValue>
                                     </div>
-
                                     <Separator />
-
                                     <div className="grid grid-cols-1 gap-3">
                                         <div className="text-xs text-muted-foreground">Sanctions / Restrictions</div>
                                         <div className="grid grid-cols-1 gap-2 text-sm">
@@ -817,8 +788,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                 </CardContent>
                             </Card>
                         </div>
-
-                        {/* Sticky save bar */}
                         <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                             <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 p-3">
                                 <div className="text-xs text-muted-foreground">
@@ -826,7 +795,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Button onClick={onSave}>
-                                        <Save className="mr-1 h-4 w-4" />  {isSaving ? "Saving..." : "Save"}
+                                        <Save className="mr-1 h-4 w-4" /> {isSaving ? "Saving..." : "Save"}
                                     </Button>
                                 </div>
                             </div>
@@ -839,21 +808,18 @@ export default function PPifCompDetail({ id }: { id: string }) {
                     <h1 className="text-2xl font-bold">Service Agreement Details</h1>
                 </div>
             </TabsContent>
-
             <TabsContent value="Memos" className="p-6">
                 <div className="space-y-6">
                     <MemoApp id={id} />
                 </div>
             </TabsContent>
-
             <TabsContent value="Projects" className="p-6">
                 <div className="space-y-6">
                     <AdminProject id={id} />
                 </div>
             </TabsContent>
-
             <TabsContent value="Checklist" className="p-6">
-                <h1>To Be Updated Soon. </h1>
+                <h1>To Be Updated Soon.</h1>
             </TabsContent>
         </Tabs>
     );
