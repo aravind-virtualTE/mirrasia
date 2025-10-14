@@ -309,7 +309,7 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                     </Button>
                 </div>
 
-                <div className="mx-auto max-w-7xl p-2 pb-24">
+                <div className="mx-auto max-width p-2 pb-24">
                     {/* LEFT — now full width */}
                     <div className="grid gap-6">
                         {/* Company header card */}
@@ -578,7 +578,7 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
 
                     {/* Sticky save bar */}
                     <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 p-3">
+                        <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
                             <div className="text-xs text-muted-foreground">
                                 Status: <strong>{comp?.status || "Pending"}</strong>
                             </div>

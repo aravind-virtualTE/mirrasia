@@ -2160,7 +2160,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
   };
   // console.log("stepIdx", stepIdx)
   return (
-    <div className="max-w-6xl mx-auto p-3 sm:p-4 md:p-6 space-y-4">
+    <div className="max-width mx-auto p-3 sm:p-4 md:p-6 space-y-4">
       <TopBar title={config.title} totalSteps={config.steps.length} idx={stepIdx} />
       {/* Mobile sidebar toggle */}
       <div className="lg:hidden">

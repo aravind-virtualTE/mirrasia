@@ -91,7 +91,7 @@ const ToDoList = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto max-width">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">To-do List</h1>
       </div>
@@ -181,13 +181,9 @@ const ToDoList = () => {
               Clear All
             </Button>
           </div>
-        </div>
-
-        
+        </div>        
       </div>
-
       <TaskList />
-
       <CreateTaskDialog open={openDialog} onOpenChange={setOpenDialog} />
     </div>
   );

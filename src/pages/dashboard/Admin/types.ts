@@ -18,7 +18,7 @@ export interface StatsCardProps {
 
   export type companyTableData = {
     country: { name: string; code: string }
-    companyName: string[]
+    companyName: string | string[];
     applicantName: string
     assignedTo: string
     status: string

@@ -374,7 +374,7 @@ const CompanyDocumentManager: React.FC = () => {
   const filteredCompanies = companies.map((company) => ({ id: company.id, name: company.companyName }))
   // console.log("companies", companies)
   return (
-    <div className="w-full max-w-6xl mx-auto p-6">
+    <div className="w-full max-width mx-auto p-6">
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h1 className="text-2xl font-bold mb-4">Company Document Manager</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

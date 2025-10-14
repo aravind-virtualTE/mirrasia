@@ -361,7 +361,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
             </Button>
           </div>
 
-          <div className="mx-auto grid max-w-7xl gap-6 p-4 lg:grid-cols-3 pb-24">
+          <div className="mx-auto grid max-width gap-6 p-4 lg:grid-cols-3 pb-24">
             {/* LEFT */}
             <div className="lg:col-span-2 grid gap-6">
               <Card>
@@ -392,7 +392,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                               <span className="text-xs text-muted-foreground">Incorporation Status</span>
                               {user.role !== "user" ? (
                                 <Select
-                                  value={data?.incorporationStatus || ""}
+                                  value={data?.incorporationStatus || "Pending"}
                                   onValueChange={(val) => patchCompany("incorporationStatus", val)}
                                 >
                                   <SelectTrigger className="h-7 w-[220px]">
@@ -702,9 +702,9 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                     <div className="text-xs text-muted-foreground">Sanctions / Restrictions</div>
                     <div className="grid grid-cols-1 gap-2 text-sm">
                       {[
-                        ["Legal or Ethical Concern", "legalAndEthicalConcern"],
-                        ["Questioned Country", "q_country"],
-                        ["Sanctions Exposure", "sanctionsExposureDeclaration"],
+                        ["Legal or Ethical Concern(money laundering etc)", "legalAndEthicalConcern"],
+                        ["Sanctioned Countries Activity (iran, sudan, NK, syria, cuba,belarus, zimbabwe", "q_country"],
+                        ["Sanctions Exposure (involved in above countries or under sanctions by  UN, EU, UKHMT, HKMA, OFAC,)", "sanctionsExposureDeclaration"],
                         ["Crimea/Sevastopol Presence", "crimeaSevastapolPresence"],
                         ["Russian Energy Presence", "russianEnergyPresence"],
                       ].map(([label, key]) => (
@@ -733,7 +733,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
             {/* Sticky save bar */}
             <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-              <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 p-3">
+              <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
                 <div className="text-xs text-muted-foreground">
                   Status: <strong>{data?.incorporationStatus || "Pending"}</strong>
                 </div>

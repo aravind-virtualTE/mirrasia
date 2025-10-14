@@ -285,7 +285,7 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
   const toggleHint = (key: string) => setHintOpen((s) => ({ ...s, [key]: !s[key] }));
 
   return (
-    <div className="w-full mx-auto max-w-6xl space-y-4 md:space-y-6">
+    <div className="w-full mx-auto max-width space-y-4 md:space-y-6">
       {/* Header */}
       <Card className="border bg-background">
         <CardHeader className="py-2">

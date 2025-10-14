@@ -20,6 +20,7 @@ import { fetchUsers } from "@/services/dataFetch";
 import { useAtom } from "jotai";
 import { usersData } from "@/services/state";
 import { toast } from "@/hooks/use-toast";
+import { t } from "i18next";
 
 // ----------------- Types -----------------
 export type PIFRecord = {
@@ -61,7 +62,7 @@ export type PIFRecord = {
     uploadReceiptUrl?: string;
 
     // System fields
-    incorporationStatus?: string;
+    status?: string;
 };
 
 // ----------------- Constants & helpers -----------------
@@ -278,7 +279,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                             Company Docs
                         </Button>
                     </div>
-                    <div className="mx-auto grid max-w-7xl gap-6 p-4 lg:grid-cols-3 pb-24">
+                    <div className="mx-auto grid max-width gap-6 p-4 lg:grid-cols-3 pb-24">
                         {/* LEFT */}
                         <div className="lg:col-span-2 grid gap-6">
                             <Card>
@@ -308,8 +309,8 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                             <span className="text-xs text-muted-foreground">Incorporation Status</span>
                                                             {user.role !== "user" ? (
                                                                 <Select
-                                                                    value={data?.incorporationStatus || ""}
-                                                                    onValueChange={(val) => patchCompany("incorporationStatus", val)}
+                                                                    value={data?.status || ""}
+                                                                    onValueChange={(val) => patchCompany("status", val)}
                                                                 >
                                                                     <SelectTrigger className="h-7 w-[220px]">
                                                                         <SelectValue placeholder="Select status" />
@@ -323,7 +324,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                                     </SelectContent>
                                                                 </Select>
                                                             ) : (
-                                                                <Badge variant="default">{data?.incorporationStatus || "Pending"}</Badge>
+                                                                <Badge variant="default">{data?.status || "Pending"}</Badge>
                                                             )}
                                                         </div>
                                                     </div>
@@ -439,9 +440,9 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">B. Founders</div>
                                         {Array.isArray((data as any)?.founders) && (data as any).founders.length ? (
-                                            <div className="overflow-x-auto rounded-md border overflow-hidden"> 
+                                            <div className="overflow-x-auto rounded-md border overflow-hidden">
                                                 <div className="">
-                                                    <div className="grid gap-3 min-w-[600px] p-3"> 
+                                                    <div className="grid gap-3 min-w-[600px] p-3">
                                                         {(data as any).founders.map((fnd: any, i: number) => (
                                                             <div
                                                                 key={(fnd?.name || "founder") + i}
@@ -635,10 +636,28 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     <Separator />
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">K. Accounting Record Storage & Responsible Person</div>
-                                        <div className="grid md:grid-cols-2 gap-4">
-                                            <LabelValue label="Storage Address">{(data as any)?.recordStorageAddress || "—"}</LabelValue>
-                                            <LabelValue label="Responsible Person">{(data as any)?.recordStorageResponsiblePerson || "—"}</LabelValue>
-                                        </div>
+                                        {(data as any)?.recordStorageUseMirr ? (
+                                            <div className="grid md:grid-cols-2 gap-4">
+                                                <div className="md:col-span-2">
+                                                    <LabelValue label="Address Chosen">
+                                                        {t(
+                                                            "ppif.accounting.summary.useMirrNote",
+                                                            "User opted to use Mirr Asia address."
+                                                        )}
+                                                    </LabelValue>
+                                                </div>
+
+                                            </div>
+                                        ) : (
+                                            <div className="grid md:grid-cols-2 gap-4">
+                                                <LabelValue label="Storage Address">
+                                                    {(data as any)?.recordStorageAddress || "—"}
+                                                </LabelValue>
+                                                <LabelValue label="Responsible Person">
+                                                    {(data as any)?.recordStorageResponsiblePerson || "—"}
+                                                </LabelValue>
+                                            </div>
+                                        )}
                                     </div>
                                     <Separator />
                                     <div className="grid gap-3">
@@ -646,14 +665,14 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         <div className="grid md:grid-cols-4 gap-4">
                                             <LabelValue label="Currency">{(data as any)?.pricing?.currency || "—"}</LabelValue>
                                             <LabelValue label="Base Total">{typeof (data as any)?.pricing?.total === "number" ? `${(data as any).pricing.total} ${(data as any)?.pricing?.currency || "USD"}` : "—"}</LabelValue>
-                                            <LabelValue label="Nominee Director Setup (ndSetup)">{(data as any)?.pricing?.ndSetup ?? "—"}</LabelValue>
+                                            <LabelValue label="Nominee Director Setup">{(data as any)?.pricing?.ndSetup ?? "—"}</LabelValue>
                                             <LabelValue label="EMI Account Opening (+$400)">
                                                 <BoolPill value={!!(data as any)?.pricing?.optEmi} />
                                             </LabelValue>
-                                            <LabelValue label="Panama Local Bank Account (optBank)">
+                                            <LabelValue label="Panama Local Bank Account">
                                                 <BoolPill value={!!(data as any)?.pricing?.optBank} />
                                             </LabelValue>
-                                            <LabelValue label="Puerto Rico CBI Account (optCbi)">
+                                            <LabelValue label="Puerto Rico CBI Account">
                                                 <BoolPill value={!!(data as any)?.pricing?.optCbi} />
                                             </LabelValue>
                                         </div>
@@ -745,53 +764,84 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                 </CardContent>
                             </Card>
                             <Card>
+                                <CardContent className="grid gap-4">
+                                    {/* Row 1: AML & Sanctions */}
+                                    <div className="grid grid-cols-1 gap-3">
+                                        <CardHeader>
+                                            <div className="flex items-start gap-3">
+
+                                                <div className="flex-1">
+                                                    <CardTitle className="text-base">AML &amp; Sanctions</CardTitle>
+                                                </div>
+                                            </div>
+                                        </CardHeader>
+                                        <div className="grid grid-cols-1 gap-2 text-sm">
+                                            {([
+                                                ["Legal or Ethical Concern (money laundering etc)", "legalAndEthicalConcern"],
+                                                ["Sanctioned Countries Activity (Iran, Sudan, NK, Syria, Cuba, Belarus, Zimbabwe)", "q_country"],
+                                                ["Sanctions Exposure (UN, EU, UKHMT, HKMA, OFAC, etc.)", "sanctionsExposureDeclaration"],
+                                                ["Crimea/Sevastopol Presence", "crimeaSevastapolPresence"],
+                                                ["Russian Energy Presence", "russianEnergyPresence"],
+                                            ] as const).map(([label, key]) => {
+                                                const raw = (f as any)[key];
+                                                const val = raw ? String(raw).toLowerCase() : "";
+                                                const isYes = val === "yes";
+                                                return (
+                                                    <div key={key} className="flex items-center justify-between gap-3">
+                                                        <span>{label}</span>
+                                                        <Badge
+                                                            variant={isYes ? "destructive" : "default"}
+                                                            className={
+                                                                isYes
+                                                                    ? ""
+                                                                    : "bg-green-100 text-green-800 border border-green-200 hover:bg-green-100"
+                                                            }
+                                                        >
+                                                            {raw ? String(raw).toUpperCase() : "—"}
+                                                        </Badge>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </CardContent>
+                                <Separator />
                                 <CardHeader>
                                     <div className="flex items-start gap-3">
                                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
                                             <ShieldCheck className="h-5 w-5 text-primary" />
                                         </div>
                                         <div className="flex-1">
-                                            <CardTitle className="text-base">Compliance & Declarations</CardTitle>
+                                            <CardTitle className="text-base">Declarations & e-Sign</CardTitle>
                                         </div>
                                     </div>
                                 </CardHeader>
-                                <CardContent className="grid gap-4">
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <LabelValue label="Truthfulness"><BoolPill value={!!f.truthfulnessDeclaration} /></LabelValue>
-                                        <LabelValue label="Legal Terms"><BoolPill value={!!f.legalTermsAcknowledgment} /></LabelValue>
-                                        <LabelValue label="Compliance Precondition"><BoolPill value={!!f.compliancePreconditionAcknowledgment} /></LabelValue>
-                                        <LabelValue label="e-Sign">{f.eSign || "—"}</LabelValue>
-                                    </div>
-                                    <Separator />
+                                <CardContent>
+                                    {/* Row 2: Declarations (only these belong to declarations) */}
                                     <div className="grid grid-cols-1 gap-3">
-                                        <div className="text-xs text-muted-foreground">Sanctions / Restrictions</div>
-                                        <div className="grid grid-cols-1 gap-2 text-sm">
-                                            {([
-                                                ["Legal or Ethical Concern", "legalAndEthicalConcern"],
-                                                ["Questioned Country", "q_country"],
-                                                ["Sanctions Exposure", "sanctionsExposureDeclaration"],
-                                                ["Crimea/Sevastopol Presence", "crimeaSevastapolPresence"],
-                                                ["Russian Energy Presence", "russianEnergyPresence"],
-                                            ] as const).map(([label, key]) => (
-                                                <div key={key} className="flex items-center justify-between gap-3">
-                                                    <span>{label}</span>
-                                                    <Badge
-                                                        variant={(f as any)[key] === "yes" ? "destructive" : "outline"}
-                                                        className={(f as any)[key] === "yes" ? "" : "text-muted-foreground"}
-                                                    >
-                                                        {(f as any)[key]?.toUpperCase() || "—"}
-                                                    </Badge>
-                                                </div>
-                                            ))}
+                                        <div className="text-xs text-muted-foreground">Declarations</div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <LabelValue label="Truthfulness">
+                                                <BoolPill value={!!f.truthfulnessDeclaration} />
+                                            </LabelValue>
+                                            <LabelValue label="Legal Terms">
+                                                <BoolPill value={!!f.legalTermsAcknowledgment} />
+                                            </LabelValue>
+                                            <LabelValue label="Compliance Precondition">
+                                                <BoolPill value={!!f.compliancePreconditionAcknowledgment} />
+                                            </LabelValue>
+                                            <LabelValue label="e-Sign">
+                                                {f.eSign || "—"}
+                                            </LabelValue>
                                         </div>
                                     </div>
                                 </CardContent>
                             </Card>
                         </div>
                         <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                            <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 p-3">
+                            <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
                                 <div className="text-xs text-muted-foreground">
-                                    Status: <strong>{data?.incorporationStatus || "Pending"}</strong>
+                                    Status: <strong>{data?.status || "Pending"}</strong>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Button onClick={onSave}>
