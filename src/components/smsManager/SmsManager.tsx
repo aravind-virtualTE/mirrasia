@@ -180,7 +180,7 @@ export default function SMSTracker() {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-width mx-auto space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card className="border-2 border-success/25 bg-gradient-to-br from-card via-success/5 to-transparent rounded-lg">
             <CardHeader className="flex items-center justify-between px-4 py-3">

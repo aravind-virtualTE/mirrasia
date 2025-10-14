@@ -563,7 +563,7 @@ const Layout: React.FC = () => {
           {
             id: "invoice-mgmt",
             icon: Receipt,
-            label: "Invoice Management",
+            label: "Billable Items",
             roles: ["admin", "master"],
             to: "/invoice-management",
           },

@@ -58,7 +58,7 @@ const CurrentCorporateClientList: React.FC = () => {
     setDeleteDialogOpen(false);
     setTaskToDelete(null);
   };
-  console.log("projectsData", projectsData)
+  // console.log("projectsData", projectsData)
   const renderCurrentClientsTable = () => (
     <div className="rounded-xl border overflow-x-auto">
       <Table className="w-full text-sm text-left">
@@ -79,12 +79,21 @@ const CurrentCorporateClientList: React.FC = () => {
         <TableBody>
           {projectsData.map((company, idx) => {
             const typed = company as companyTableData
-            let date = typed.incorporationDate
+            const names: string[] = Array.isArray(typed.companyName)
+              ? typed.companyName
+              : typed.companyName
+                ? [typed.companyName]
+                : [];
+            let date = typed.incorporationDate;
             if (date) {
-              const [y, m, d] = date.split("T")[0].split("-")
-              date = `${d}-${m}-${y}`
+              try {
+                const iso = String(date).split("T")[0]; // "YYYY-MM-DD"
+                const [y, m, d] = iso.split("-");
+                if (y && m && d) date = `${d}-${m}-${y}`;
+              } catch {
+                /* fallback silently */
+              }
             }
-
             return (
               <TableRow
                 key={typed._id}
@@ -92,16 +101,15 @@ const CurrentCorporateClientList: React.FC = () => {
                 onClick={() => handleRowClick(typed._id, typed.country.code)}
               >
                 <TableCell className="text-center font-medium">{idx + 1}</TableCell>
-
-                {typed.status == "Incorporation Completed" ? (<TableCell className="px-4 py-3 font-medium">
-                  <span className="hover:underline">
-                    {typed.companyName[0] || "N/A"}
-                  </span>
-                </TableCell>) : <TableCell className="px-4 py-3 font-medium">
-                  <span className="hover:underline">
-                    {typed.companyName.filter(Boolean).join(", ") || "N/A"}
-                  </span>
-                </TableCell>}
+                {typed.status === "Incorporation Completed" ? (
+                  <TableCell className="px-4 py-3 font-medium">
+                    <span className="hover:underline">{names[0] || "N/A"}</span>
+                  </TableCell>
+                ) : (
+                  <TableCell className="px-4 py-3 font-medium">
+                    <span className="hover:underline">{names.filter(Boolean).join(", ") || "N/A"}</span>
+                  </TableCell>
+                )}
                 <TableCell className="px-4 py-3">{typed.applicantName}</TableCell>
                 <TableCell className="px-4 py-3">{typed.country.name}</TableCell>
                 <TableCell className="px-4 py-3">
@@ -197,13 +205,12 @@ const CurrentCorporateClientList: React.FC = () => {
     //     onConfirm={confirmDelete}
     //   />
     // </div>
-     <div className="mt-6 mx-2">
+    <div className="mt-6 mx-2">
       <Accordion type="single" collapsible className="w-full space-y-4">
         <AccordionItem value="current">
           <AccordionTrigger className="text-base font-medium">Current Corporate Clients</AccordionTrigger>
           <AccordionContent>{renderCurrentClientsTable()}</AccordionContent>
         </AccordionItem>
-
         <AccordionItem value="archived">
           <AccordionTrigger className="text-base font-medium">Excel Sheet Current Corporate Clients</AccordionTrigger>
           <AccordionContent>
@@ -222,7 +229,7 @@ const CurrentCorporateClientList: React.FC = () => {
         onConfirm={confirmDelete}
       />
     </div>
-  
+
   )
 }
 

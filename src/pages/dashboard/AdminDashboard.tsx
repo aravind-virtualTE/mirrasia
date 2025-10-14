@@ -253,7 +253,7 @@ const AdminDashboard = () => {
   );
   // console.log("paginatedData", paginatedData)
   return (
-    <div className="p-6 space-y-6 w-full max-w-6xl mx-auto">
+    <div className="p-6 space-y-6 w-full max-width mx-auto">
       {/* Stats Cards */}
       <StatsCard stats={calculateStats()} />
       <Separator className="my-6" />
@@ -344,6 +344,7 @@ const AdminDashboard = () => {
                         ))}
                     </div>
                   </TableHead>
+                  
                   <TableHead>Edit</TableHead>
                   <TableHead
                     className="cursor-pointer hover:bg-muted/50"
@@ -370,6 +371,20 @@ const AdminDashboard = () => {
                         ))}
                     </div>
                   </TableHead>
+                  <TableHead
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => requestSort("createdAt")}
+                  >
+                    <div className="flex items-center">
+                      Created At
+                      {sortConfig?.key === "createdAt" &&
+                        (sortConfig.direction === "ascending" ? (
+                          <ChevronUp className="ml-1 h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="ml-1 h-4 w-4" />
+                        ))}
+                    </div>
+                  </TableHead>
                   {currentUser.role == "master" && <TableHead>Delete</TableHead>}
                 </TableRow>
               </TableHeader>
@@ -383,6 +398,7 @@ const AdminDashboard = () => {
                     status: string
                     incorporationDate: string | null
                     lastLogin: string | null
+                    createdAt: string | null
                     _id: string
                   }
 
@@ -390,6 +406,11 @@ const AdminDashboard = () => {
                   if (date !== null && date !== '' && date !== undefined) {
                     const [year, month, day] = date.split("T")[0].split("-")
                     date = `${day}-${month}-${year}`
+                  }
+                  let created = typedCompany.createdAt
+                  if (created !== null && created !== '' && created !== undefined) {
+                    const [cy, cm, cd] = created.split("T")[0].split("-")
+                    created = `${cd}-${cm}-${cy}`
                   }
 
                   return (
@@ -433,9 +454,11 @@ const AdminDashboard = () => {
                       <TableCell className="py-2">
                         {typedCompany.assignedTo ? typedCompany.assignedTo : "N/A"}
                       </TableCell>
+                      
                       <TableCell className="py-2">
                         {typedCompany.lastLogin ? formatDateTime(typedCompany.lastLogin) : "N/A"}
                       </TableCell>
+                      <TableCell className="py-2">{created || "N/A"}</TableCell>
                       {currentUser.role == "master" && <TableCell className="py-2">
                         <button
                           className="text-red-500 hover:red-blue-700 transition"

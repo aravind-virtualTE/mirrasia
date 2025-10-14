@@ -190,7 +190,7 @@ function InfoBox({ children }: { children: React.ReactNode }) {
 /* ---------- Field Renderer (compact) ---------- */
 function Field({ field }: { field: FieldBase }) {
   const [form, setForm] = useAtom(pifFormAtom)
-  const span = field.colSpan === 2 ? "md:col-span-2" : ""
+  const span = field.colSpan === 2 ? "lg:col-span-2" : ""
   const id = String(field.name)
   const set = (name: string, value: any) => setForm({ ...form, [name]: value })
 
@@ -275,11 +275,15 @@ function Field({ field }: { field: FieldBase }) {
       )
     case "radio-group":
       return (
-        <div className={`grid gap-3 ${span}`}>
+        <div className={`grid gap-3 ${span} w-full`}>
           {labelEl}
-          <RadioGroup value={String((form as any)[id] ?? "")} onValueChange={(v) => set(id, v)} className="flex flex-col gap-2.5">
+          <RadioGroup
+            value={String((form as any)[id] ?? "")}
+            onValueChange={(v) => set(id, v)}
+            className="flex flex-col gap-2.5 w-full"
+          >
             {(field.options || []).map((o) => (
-              <label key={o.value} className="flex items-start gap-2 text-sm cursor-pointer group">
+              <label key={o.value} className="flex items-start gap-2 text-sm cursor-pointer group w-full">
                 <RadioGroupItem value={o.value} id={`${id}-${o.value}`} />
                 <span className="leading-relaxed text-foreground group-hover:opacity-90 transition-opacity">
                   {typeof o.label === "string" ? t(o.label) : o.label}
@@ -1566,6 +1570,22 @@ function AccountingRecordsStep() {
   const [form, setForm] = useAtom(pifFormAtom);
   const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch });
 
+  const usingMirr = Boolean(form.recordStorageUseMirr);
+
+  const handleUseMirrToggle = (v: boolean | "indeterminate") => {
+    const next = Boolean(v);
+    // When using Mirr, clear manual fields to avoid stale values
+    set({
+      recordStorageUseMirr: next,
+      ...(next
+        ? {
+          recordStorageAddress: "",
+          recordStorageResponsiblePerson: "",
+        }
+        : {}), // keep as-is when unchecking
+    });
+  };
+
   return (
     <div className="space-y-3">
       <InfoBox>{t("ppif.accounting.info")}</InfoBox>
@@ -1575,14 +1595,20 @@ function AccountingRecordsStep() {
         <div className="md:col-span-2 grid gap-1.5">
           <Label className={labelSm}>
             {t("ppif.accounting.fields.address.label")}
-            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
+            {!usingMirr && (
+              <span className="text-destructive">
+                {t("ppif.validation.requiredAsterisk")}
+              </span>
+            )}
           </Label>
           <Textarea
-            className="text-sm"
+            className={`text-sm ${usingMirr ? "opacity-60 cursor-not-allowed" : ""}`}
             rows={4}
             placeholder={t("ppif.accounting.fields.address.placeholder")}
             value={form.recordStorageAddress || ""}
             onChange={(e) => set({ recordStorageAddress: e.target.value })}
+            disabled={usingMirr}
+            aria-disabled={usingMirr}
           />
         </div>
 
@@ -1590,13 +1616,19 @@ function AccountingRecordsStep() {
         <div className="grid gap-1.5">
           <Label className={labelSm}>
             {t("ppif.accounting.fields.responsible.label")}
-            <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
+            {!usingMirr && (
+              <span className="text-destructive">
+                {t("ppif.validation.requiredAsterisk")}
+              </span>
+            )}
           </Label>
           <Input
-            className={inputSm}
+            className={`${inputSm} ${usingMirr ? "opacity-60 cursor-not-allowed" : ""}`}
             placeholder={t("ppif.accounting.fields.responsible.placeholder")}
             value={form.recordStorageResponsiblePerson || ""}
             onChange={(e) => set({ recordStorageResponsiblePerson: e.target.value })}
+            disabled={usingMirr}
+            aria-disabled={usingMirr}
           />
         </div>
 
@@ -1604,11 +1636,19 @@ function AccountingRecordsStep() {
         <div className="flex items-start gap-3">
           <Checkbox
             id="recordStorageUseMirr"
-            checked={Boolean(form.recordStorageUseMirr)}
-            onCheckedChange={(v) => set({ recordStorageUseMirr: Boolean(v) })}
+            checked={usingMirr}
+            onCheckedChange={handleUseMirrToggle}
           />
-          <Label htmlFor="recordStorageUseMirr" className={`${labelSm} leading-relaxed cursor-pointer`}>
+          <Label
+            htmlFor="recordStorageUseMirr"
+            className={`${labelSm} leading-relaxed cursor-pointer`}
+          >
             {t("ppif.accounting.fields.useMirr.label")}
+            {usingMirr && (
+              <div className="text-xs text-muted-foreground mt-1">
+                {t("ppif.accounting.fields.useMirr.helper", "We'll store records at our registered office and handle the responsible officer.")}
+              </div>
+            )}
           </Label>
         </div>
       </div>
@@ -2113,7 +2153,7 @@ function InvoicePIF() {
   );
 }
 
-function StripePaymentForm({app,onSuccess,onClose}: {
+function StripePaymentForm({ app, onSuccess, onClose }: {
   app: PanamaPIFForm;
   onSuccess: (info: StripeSuccessInfo) => void;
   onClose: () => void;
@@ -2295,7 +2335,7 @@ function StripePaymentForm({app,onSuccess,onClose}: {
   );
 }
 
-function StripeCardDrawer({open,onOpenChange,clientSecret,amountUSD,app,onSuccess
+function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, onSuccess
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -2502,9 +2542,8 @@ function PaymentStepPIF() {
       {/* Banner: Countdown / Expired */}
       {!isPaid && (
         <div
-          className={`mb-4 rounded-md border p-3 text-sm ${
-            isExpired ? "border-red-200 bg-red-50 text-red-900" : "border-amber-200 bg-amber-50 text-amber-900"
-          }`}
+          className={`mb-4 rounded-md border p-3 text-sm ${isExpired ? "border-red-200 bg-red-50 text-red-900" : "border-amber-200 bg-amber-50 text-amber-900"
+            }`}
         >
           {isExpired ? (
             <div className="font-medium">{t("ppif.payment.step.banners.expiredBox.expiredTitle")}</div>
@@ -2771,6 +2810,7 @@ const panamaPIFConfig: FormConfig = {
           type: "radio-group",
           name: "pepAny",
           label: "ppif.pep.label",
+          colSpan: 2,
           options: [
             { label: "ppif.pep.options.yes", value: "yes" },
             { label: "ppif.pep.options.no", value: "no" }
@@ -2932,9 +2972,11 @@ function requiredMissingForStep(form: PanamaPIFForm, step: StepConfig): string[]
     }
     /* M. Accounting Record Storage */
     case "accounting": {
-      if (need(form.recordStorageAddress)) miss.push("Accounting Record Storage Address");
-      if (need(form.recordStorageResponsiblePerson))
-        miss.push("Responsible Person (English Full Name)");
+      const usingMirr = Boolean(form.recordStorageUseMirr);
+      if (!usingMirr) {
+        if (need(form.recordStorageAddress)) miss.push("Accounting Record Storage Address");
+        if (need(form.recordStorageResponsiblePerson)) miss.push("Responsible Person (English Full Name)");
+      }
       break;
     }
     /* N. Invoice — no required fields */
@@ -3035,7 +3077,7 @@ export default function PanamaPIFWizard() {
   const handleBack = () => goto(stepIdx - 1)
 
   return (
-    <div className="max-w-6xl mx-auto p-3 sm:p-4 md:p-6 space-y-4">
+    <div className="max-width mx-auto p-3 sm:p-4 md:p-6 space-y-4">
       <TopBar title={config.title} totalSteps={config.steps.length} idx={stepIdx} />
 
       {/* Mobile sidebar toggle */}

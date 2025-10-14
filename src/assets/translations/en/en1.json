@@ -1,22 +1,22 @@
 {
     "ppif": {
         "heading": "Panama Private Interest Foundation (PIF) — Application",
-        "section1": "A. Applicant Details",
-        "section2": "B. Foundation Profile",
-        "section3": "C. Founder(s)",
-        "section4": "D. Foundation Council — Composition",
-        "section5": "E. Protector (optional)",
-        "section6": "F. Beneficiaries",
-        "section7": "G. By-Laws",
-        "section8": "H. Economic Substance (ES) Check",
-        "section9": "I. Banking",
-        "section10": "J. Politically Exposed Person (PEP)",
-        "section11": "K. AML & Sanctions",
-        "section12": "L. Post-Incorporation Deliverables & Shipping",
-        "section13": "M. Accounting Record Storage & Responsible Person",
-        "section14": "N. Invoice & Quote",
-        "section15": "O. Payment",
-        "section16": "P. Declarations & e-Sign",
+        "section1": "Applicant Details",
+        "section2": "Foundation Profile",
+        "section3": "Founder(s)",
+        "section4": "Foundation Council — Composition",
+        "section5": "Protector (optional)",
+        "section6": "Beneficiaries",
+        "section7": "By-Laws",
+        "section8": "Economic Substance (ES) Check",
+        "section9": "Banking",
+        "section10": "Politically Exposed Person (PEP)",
+        "section11": "AML & Sanctions",
+        "section12": "Post-Incorporation Deliverables & Shipping",
+        "section13": "Accounting Record Storage & Responsible Person",
+        "section14": "Invoice & Quote",
+        "section15": "Payment",
+        "section16": "Declarations & e-Sign",
         "congrats": "Congratulations",
         "topbar": {
             "defaultTitle": "Company Incorporation — Panama Private Interest Foundation"
@@ -464,23 +464,23 @@
         "aml": {
             "info": "In line with FATF, UN, EU, OFAC, UK HMT, HKMA, etc., confirm any dealings with sanctioned countries/persons.",
             "q1": {
-                "label": "1) Operate now / plan to operate with Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, Zimbabwe, Russia, or areas in Ukraine outside government control?",
+                "label": "Operate now / plan to operate with Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, Zimbabwe, Russia, or areas in Ukraine outside government control?",
                 "field": "legalAndEthicalConcern"
             },
             "q2": {
-                "label": "2) Any related persons reside in those countries or in a country sanctioned by UN, EU, UK HMT, HKMA, or OFAC (or Ukrainian areas outside government control)?",
+                "label": "Any related persons reside in those countries or in a country sanctioned by UN, EU, UK HMT, HKMA, or OFAC (or Ukrainian areas outside government control)?",
                 "field": "q_country"
             },
             "q3": {
-                "label": "3) Is / will the PIF be owned, controlled, or acting for sanctioned persons/entities or persons in Afghanistan, Belarus, Cuba, Iran, North Korea, Russia, Syria, or Ukrainian areas outside government control?",
+                "label": "Is / will the PIF be owned, controlled, or acting for sanctioned persons/entities or persons in Afghanistan, Belarus, Cuba, Iran, North Korea, Russia, Syria, or Ukrainian areas outside government control?",
                 "field": "sanctionsExposureDeclaration"
             },
             "q4": {
-                "label": "4) Any related persons currently operate or plan to operate in Crimea or Sevastopol?",
+                "label": "Any related persons currently operate or plan to operate in Crimea or Sevastopol?",
                 "field": "crimeaSevastapolPresence"
             },
             "q5": {
-                "label": "5) Do the PIF/holding/group/affiliates operate now or plan to operate in oil, gas, energy, military, or defense sectors (including critical goods)?",
+                "label": "Do the PIF/holding/group/affiliates operate now or plan to operate in oil, gas, energy, military, or defense sectors (including critical goods)?",
                 "examples": "Examples: explosives, lubricants, sensors, micro-electronics, communications modules, passive components, navigation, electrical parts, PCB production/QC tools, CNC machines/parts.",
                 "field": "russianEnergyPresence"
             }

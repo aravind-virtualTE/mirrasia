@@ -804,7 +804,7 @@ const SaIndividualRegForm: React.FC = () => {
     if (isCompleted) {
         return (
             <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
-                <div className="max-w-6xl w-full space-y-6">
+                <div className="max-width w-full space-y-6">
                     <div className="text-center">
                         <h1 className="decorative-heading">Singapore Company shareholder/director registration application form</h1>
                         <div className="w-full h-1 bg-primary mx-auto rounded-full"></div>
@@ -820,7 +820,7 @@ const SaIndividualRegForm: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
-            <div className="max-w-6xl w-full space-y-6">
+            <div className="max-width w-full space-y-6">
                 <div className="text-center">
                     <h1 className="decorative-heading">Singapore Company shareholder/director registration application form</h1>
                     <div className="w-full h-1 bg-primary mx-auto rounded-full"></div>

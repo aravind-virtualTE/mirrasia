@@ -515,7 +515,7 @@ const UsersList = () => {
                 </DialogContent>
             </Dialog>
             <Dialog open={isUserDetailsOpen} onOpenChange={setIsUserDetailsOpen}>
-                <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-width max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
                             <User className="h-5 w-5" />

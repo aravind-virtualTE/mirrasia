@@ -787,7 +787,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
     if (isCompleted) {
         return (
             <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
-                <div className="max-w-6xl w-full space-y-6">
+                <div className="max-width w-full space-y-6">
                     <div className="text-center">
                         <h1 className="decorative-heading">Panama member and controller registration form</h1>
                         <div className="w-3/4 h-1 bg-primary mx-auto rounded-full"></div>
@@ -803,7 +803,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
-            <div className="max-w-6xl w-full space-y-6">
+            <div className="max-width w-full space-y-6">
                 <div className="text-center">
                     <h1 className="decorative-heading">Panama member and controller registration form</h1>
                     <div className="w-3/4 h-1 bg-primary mx-auto rounded-full"></div>

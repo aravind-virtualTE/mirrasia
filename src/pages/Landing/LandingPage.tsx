@@ -187,7 +187,7 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <section ref={homeRef} id="home" className="bg-gradient-to-b from-white to-gray-50 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-width mx-auto px-4 sm:px-6 lg:px-8">
           {/* First Row - Business Women */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center mb-16 md:mb-24">
             <div className="bg-white p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 transform hover:-translate-y-1">
@@ -259,7 +259,7 @@ const LandingPage = () => {
 
       {/* Features Section */}
       <section className="py-12 sm:py-16 md:py-20 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-0 sm:px-4 lg:px-8 text-center mb-12">
+        <div className="max-width mx-auto px-0 sm:px-4 lg:px-8 text-center mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             Why Choose Us?
           </h2>
@@ -267,7 +267,7 @@ const LandingPage = () => {
             We provide comprehensive business solutions to help you succeed
           </p>
         </div>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-0 sm:px-4 lg:px-8">
+        <div className="max-width mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-0 sm:px-4 lg:px-8">
           {/* Card 1 */}
           <Card className="h-full">
             <CardHeader>
@@ -319,7 +319,7 @@ const LandingPage = () => {
       </section>
 
       <section className="bg-gradient-to-b from-white to-gray-50 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-width mx-auto px-4 sm:px-6 lg:px-8">
           {/* First Row - Incorporation */}
           <div ref={incorporationRef} id="incorporation" className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center mb-16 md:mb-24">
             <div className="bg-white p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 transform hover:-translate-y-1">
@@ -399,7 +399,7 @@ const LandingPage = () => {
       <FAQs />
 
       <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-width mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div>
               <h3 className="text-lg font-bold mb-4">HONG KONG OFFICE</h3>

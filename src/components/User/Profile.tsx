@@ -72,6 +72,8 @@ export default function Profile() {
   const [resendTimer, setResendTimer] = useState(0);
   type OtpSession = { sms: string | null; email: string | null };
   const [otpSession, setOtpSession] = useState<OtpSession>({ sms: null, email: null });
+  const [nameError, setNameError] = useState<string>("");
+  const [phoneError, setPhoneError] = useState<string>("");
 
   const intialData: { passport: KYCDocument; addressProof: KYCDocument } = {
     passport: {
@@ -424,6 +426,32 @@ export default function Profile() {
       })
     }
   };
+  const isEnglishName = (val: string) => {
+    // Letters, spaces, period, apostrophe, hyphen; ASCII only
+    // At least 2 letters overall
+    if (!val) return false;
+    if (!/^[A-Za-z .'-]+$/.test(val)) return false;
+    // require at least 2 letters to avoid "." etc.
+    const letters = val.replace(/[^A-Za-z]/g, "");
+    return letters.length >= 2;
+  };
+
+  const isValidIntlPhone = (val: string) => {
+    if (!val) return false;
+    // quick normalize
+    const cleaned = val.replace(/\s|-/g, "");
+    // if starts with +, next digit cannot be 0
+    if (/^\+0/.test(cleaned)) return false;
+    // if no +, first digit cannot be 0
+    if (!cleaned.startsWith("+") && cleaned.startsWith("0")) return false;
+
+    // Accept +<country><number> where first numeric char is 1-9
+    // and total digits (without +) between 8 and 15 (typical E.164 range)
+    const digitsOnly = cleaned.replace(/^\+/, "");
+    if (!/^[1-9][0-9]{7,14}$/.test(digitsOnly)) return false;
+
+    return true;
+  };
 
   return (
     <div className="container max-w-8xl mx-auto p-6 space-y-6">
@@ -510,9 +538,31 @@ export default function Profile() {
                         <Input
                           id="fullName"
                           value={profile.fullName}
-                          onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
+                          onChange={(e) => {
+                            const next = e.target.value;
+                            setProfile({ ...profile, fullName: next });
+                            if (!isEnglishName(next)) {
+                              setNameError("Please enter your name in English letters only (A–Z, space, . ' -).");
+                            } else {
+                              setNameError("");
+                            }
+                          }}
+                          onBlur={(e) => {
+                            const next = e.target.value.trim();
+                            if (!isEnglishName(next)) {
+                              setNameError("Please enter your name in English letters only (A–Z, space, . ' -).");
+                            } else {
+                              setNameError("");
+                            }
+                          }}
+                          inputMode="text"
+                          aria-invalid={!!nameError}
+                          aria-describedby="fullName-error"
                           required
                         />
+                        {nameError ? (
+                          <p id="fullName-error" className="text-sm text-red-600 mt-1">{nameError}</p>
+                        ) : null}
                       </div>
 
                       {/* Date of birth */}
@@ -567,11 +617,35 @@ export default function Profile() {
                               id="phoneNum"
                               placeholder={t("ApplicantInfoForm.phoneNumInfo")}
                               value={profile.phone}
-                              onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                              onChange={(e) => {
+                                // strip spaces and dashes for cleanliness as user types
+                                const raw = e.target.value.replace(/[\s-]+/g, "");
+                                setProfile({ ...profile, phone: raw });
+
+                                if (!isValidIntlPhone(raw)) {
+                                  setPhoneError("Enter a valid international number. It must not start with 0 (e.g., +85212345678).");
+                                } else {
+                                  setPhoneError("");
+                                }
+                              }}
+                              onBlur={(e) => {
+                                const raw = e.target.value.replace(/[\s-]+/g, "");
+                                if (!isValidIntlPhone(raw)) {
+                                  setPhoneError("Enter a valid international number. It must not start with 0 (e.g., +85212345678).");
+                                } else {
+                                  setPhoneError("");
+                                }
+                              }}
                               required
                               disabled={profile.mobileOtpVerified}
                               className="sm:flex-1"
+                              inputMode="tel"
+                              aria-invalid={!!phoneError}
+                              aria-describedby="phone-error"
                             />
+                            {phoneError ? (
+                              <p id="phone-error" className="text-sm text-red-600 mt-1">{phoneError}</p>
+                            ) : null}
                             {!profile.mobileOtpVerified && (
                               <Button
                                 size="sm"
@@ -614,7 +688,7 @@ export default function Profile() {
                                     size="sm"
                                     type="button"
                                     onClick={handleVerifyOtp}
-                                    // disabled={!otp || otp.length < 6}
+                                  // disabled={!otp || otp.length < 6}
                                   >
                                     Verify
                                   </Button>

@@ -917,7 +917,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         </Button>
                     </div>
 
-                    <div className="mx-auto grid max-w-7xl gap-6 p-4 lg:grid-cols-3 pb-24">
+                    <div className="mx-auto grid max-width gap-6 p-4 lg:grid-cols-3 pb-24">
                         {/* LEFT */}
                         <div className="lg:col-span-2 grid gap-6">
                             <Card>
@@ -1317,7 +1317,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                         {/* Sticky save bar */}
                         <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                            <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 p-3">
+                            <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
                                 <div className="text-xs text-muted-foreground">
                                     Status: <strong>{formData?.status || "Pending"}</strong>
                                 </div>

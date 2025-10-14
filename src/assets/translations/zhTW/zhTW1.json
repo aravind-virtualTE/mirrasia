@@ -1,22 +1,22 @@
 {
     "ppif": {
         "heading": "巴拿馬私人利益基金會 (PIF) — 申請",
-        "section1": "A. 申請人詳情",
-        "section2": "B. 基金會概況",
-        "section3": "C. 創辦人",
-        "section4": "D. 基金會委員會 — 組成",
-        "section5": "E. 保護人（可選）",
-        "section6": "F. 受益人",
-        "section7": "G. 內部規章",
-        "section8": "H. 經濟實質 (ES) 檢查",
-        "section9": "I. 銀行業務",
-        "section10": "J. 政治公眾人物 (PEP)",
-        "section11": "K. 反洗錢 (AML) 及制裁",
-        "section12": "L. 註冊後交付文件與運送",
-        "section13": "M. 會計記錄儲存及負責人",
-        "section14": "N. 發票及報價",
-        "section15": "O. 付款",
-        "section16": "P. 聲明及電子簽署",
+        "section1": "申請人詳情",
+        "section2": "基金會概況",
+        "section3": "創辦人",
+        "section4": "基金會委員會 — 組成",
+        "section5": "保護人（可選）",
+        "section6": "受益人",
+        "section7": "內部規章",
+        "section8": "經濟實質 (ES) 檢查",
+        "section9": "銀行業務",
+        "section10": "政治公眾人物 (PEP)",
+        "section11": "反洗錢 (AML) 及制裁",
+        "section12": "註冊後交付文件與運送",
+        "section13": "會計記錄儲存及負責人",
+        "section14": "發票及報價",
+        "section15": "付款",
+        "section16": "聲明及電子簽署",
         "congrats": "恭喜",
         "topbar": {
             "defaultTitle": "公司註冊成立 — 巴拿馬私人利益基金會"
@@ -463,23 +463,23 @@
         "aml": {
             "info": "請依據 FATF、UN、EU、OFAC、UK HMT、HKMA 等機構的規範，確認是否有與受制裁國家/人士進行交易。",
             "q1": {
-                "label": "1) 目前或計劃與伊朗、蘇丹、南蘇丹、北韓、敘利亞、古巴、白俄羅斯、辛巴威、俄羅斯或烏克蘭政府控制區以外的地區進行業務往來嗎？",
+                "label": "目前或計劃與伊朗、蘇丹、南蘇丹、北韓、敘利亞、古巴、白俄羅斯、辛巴威、俄羅斯或烏克蘭政府控制區以外的地區進行業務往來嗎？",
                 "field": "legalAndEthicalConcern"
             },
             "q2": {
-                "label": "2) 任何相關人士居住在上述國家或受到 UN、EU、UK HMT、HKMA 或 OFAC 制裁的國家（或烏克蘭政府控制區以外的地區）嗎？",
+                "label": "任何相關人士居住在上述國家或受到 UN、EU、UK HMT、HKMA 或 OFAC 制裁的國家（或烏克蘭政府控制區以外的地區）嗎？",
                 "field": "q_country"
             },
             "q3": {
-                "label": "3) 該 PIF 是否或將會由受制裁人士/實體或位於阿富汗、白俄羅斯、古巴、伊朗、北韓、俄羅斯、敘利亞或烏克蘭政府控制區以外地區的人士擁有、控制或為其服務？",
+                "label": "該 PIF 是否或將會由受制裁人士/實體或位於阿富汗、白俄羅斯、古巴、伊朗、北韓、俄羅斯、敘利亞或烏克蘭政府控制區以外地區的人士擁有、控制或為其服務？",
                 "field": "sanctionsExposureDeclaration"
             },
             "q4": {
-                "label": "4) 任何相關人士目前或計劃在克里米亞或塞瓦斯托波爾營運嗎？",
+                "label": "任何相關人士目前或計劃在克里米亞或塞瓦斯托波爾營運嗎？",
                 "field": "crimeaSevastapolPresence"
             },
             "q5": {
-                "label": "5) 該 PIF/控股公司/集團/附屬公司目前或計劃在石油、天然氣、能源、軍事或國防部門（包括關鍵貨物）營運嗎？",
+                "label": "該 PIF/控股公司/集團/附屬公司目前或計劃在石油、天然氣、能源、軍事或國防部門（包括關鍵貨物）營運嗎？",
                 "examples": "範例：爆炸物、潤滑劑、感測器、微電子產品、通訊模組、被動元件、導航、電氣零件、PCB 生產/品管工具、CNC 機床/零件。",
                 "field": "russianEnergyPresence"
             }
