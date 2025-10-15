@@ -47,7 +47,7 @@ type Density = "compact" | "ultra";
 
 const DENSITY_STYLES: Record<Density, { row: string; cellPadY: string; text: string }> = {
   ultra: { row: "h-10", cellPadY: "py-1", text: "text-[13px]" },
-   compact:   { row: "h-9",  cellPadY: "py-0.5", text: "text-[12px]" },
+  compact: { row: "h-9", cellPadY: "py-0.5", text: "text-[12px]" },
 };
 
 const priorityOrder = { Low: 1, Medium: 2, High: 3, Urgent: 4 } as const;
@@ -120,8 +120,9 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
   const [popupTask, setPopupTask] = useState<Task | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
-  const [sortField, setSortField] =
-    useState<"dueDate" | "priority" | "assignees" | null>(null);
+
+  type SortField = "dueDate" | "priority" | "assignees" | "createdAt";
+  const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [density, setDensity] = useState<Density>("ultra");
 
@@ -255,7 +256,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
       : parts[0].substring(0, 2).toUpperCase();
   };
 
-  const handleSort = (field: "dueDate" | "priority" | "assignees") => {
+  const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
@@ -289,7 +290,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
       if (!aVal) return sortOrder === "asc" ? 1 : -1;
       if (!bVal) return sortOrder === "asc" ? -1 : 1;
 
-      if (sortField === "dueDate") {
+      if (sortField === "dueDate" || sortField === "createdAt") {
         const aDate = aVal instanceof Date ? aVal.getTime() : new Date(aVal).getTime();
         const bDate = bVal instanceof Date ? bVal.getTime() : new Date(bVal).getTime();
         return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
@@ -297,9 +298,9 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
       if (sortField === "priority") {
         return sortOrder === "asc"
           ? priorityOrder[aVal as keyof typeof priorityOrder] -
-              priorityOrder[bVal as keyof typeof priorityOrder]
+            priorityOrder[bVal as keyof typeof priorityOrder]
           : priorityOrder[bVal as keyof typeof priorityOrder] -
-              priorityOrder[aVal as keyof typeof priorityOrder];
+            priorityOrder[aVal as keyof typeof priorityOrder];
       }
       if (sortField === "assignees") {
         const first = (t: Task) =>
@@ -363,7 +364,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
             (s) => (
               <FilterChip
                 key={s}
-                label={s.replace("IN ", "")} // shorter label
+                label={s.replace("IN ", "")}
                 active={statusFilter.has(s)}
                 onClick={() => toggleStatus(s)}
                 pastelClass={statusPastels[s]}
@@ -459,6 +460,23 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                 </div>
               </TableHead>
 
+              {/* NEW: Created column, placed beside Actions (to its left) */}
+              <TableHead
+                className="w-[136px] cursor-pointer"
+                onClick={() => handleSort("createdAt")}
+                title="Sort by created date"
+              >
+                <div className="flex items-center">
+                  Created At{" "}
+                  {sortField === "createdAt" &&
+                    (sortOrder === "asc" ? (
+                      <ChevronUp className="ml-1 h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="ml-1 h-4 w-4" />
+                    ))}
+                </div>
+              </TableHead>
+
               <TableHead className="w-[88px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -514,6 +532,17 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                     />
                     <span>{task.priority}</span>
                   </div>
+                </TableCell>
+
+                {/* NEW: Created cell */}
+                <TableCell className={`${d.cellPadY}`}>
+                  {task.createdAt ? (
+                    <span title={new Date(task.createdAt as any).toLocaleString()}>
+                      {format(new Date(task.createdAt as any), "dd MMM yyyy")}
+                    </span>
+                  ) : (
+                    "-"
+                  )}
                 </TableCell>
 
                 <TableCell

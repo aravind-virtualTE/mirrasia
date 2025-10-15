@@ -545,7 +545,7 @@
             },
             "right": {
                 "title": "Original Shipping Details",
-                "note": "(If Korean address, please write in Korean)",
+                "note": "(If the address is written in a language other than English, please also provide it in the local language.)",
                 "fields": {
                     "recipientCompany": {
                         "label": "Recipient Company",

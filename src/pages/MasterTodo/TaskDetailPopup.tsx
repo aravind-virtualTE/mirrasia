@@ -205,7 +205,7 @@ const TaskDetailPopup = ({
   };
 
   if (!task) return null;
-
+  console.log("task", task)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/30" />
@@ -245,17 +245,15 @@ const TaskDetailPopup = ({
         <div className="flex gap-1 p-2 md:hidden">
           <button
             onClick={() => setMobileTab("details")}
-            className={`flex-1 rounded-full border px-3 py-1.5 text-xs font-medium ${
-              mobileTab === "details" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-700"
-            }`}
+            className={`flex-1 rounded-full border px-3 py-1.5 text-xs font-medium ${mobileTab === "details" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-700"
+              }`}
           >
             Details
           </button>
           <button
             onClick={() => setMobileTab("comments")}
-            className={`flex-1 rounded-full border px-3 py-1.5 text-xs font-medium ${
-              mobileTab === "comments" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-700"
-            }`}
+            className={`flex-1 rounded-full border px-3 py-1.5 text-xs font-medium ${mobileTab === "comments" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-700"
+              }`}
           >
             Comments ({task.comments?.length || 0})
           </button>
@@ -287,7 +285,12 @@ const TaskDetailPopup = ({
               <span className="font-medium">Due</span>
               <div>{task.dueDate ? format(new Date(task.dueDate), "dd MMM yyyy") : "—"}</div>
 
-              <span className="font-medium">Created</span>
+              <span className="font-medium">Created At</span>
+              {task.createdAt
+                ? format(new Date(task.createdAt), "dd MMM yyyy, HH:mm")   // 24h
+                : "—"}
+
+              <span className="font-medium">Created By</span>
               <div>{task.userId ? createdUser?.fullName : "N/A"}</div>
 
               {task.company && (
@@ -434,7 +437,10 @@ const TaskDetailPopup = ({
                 <span className="font-medium">Due</span>
                 <div>{task.dueDate ? format(new Date(task.dueDate), "dd MMM yyyy") : "—"}</div>
 
-                <span className="font-medium">Created</span>
+                <span className="font-medium">Created At</span>
+                <div>{task.createdAt ? format(new Date(task.createdAt), "dd MMM yyyy") : "—"}</div>
+
+                <span className="font-medium">Created By</span>
                 <div>{task.userId ? createdUser?.fullName : "N/A"}</div>
 
                 {task.company && (
@@ -509,9 +515,9 @@ const TaskDetailPopup = ({
                                               tk._id !== task._id
                                                 ? tk
                                                 : {
-                                                    ...tk,
-                                                    comments: tk.comments.filter((c: any) => c._id !== comment._id),
-                                                  }
+                                                  ...tk,
+                                                  comments: tk.comments.filter((c: any) => c._id !== comment._id),
+                                                }
                                             )
                                           );
                                         }
