@@ -1383,7 +1383,21 @@ function DeliverablesStep() {
 function DeclarationsStep() {
   const [form, setForm] = useAtom(pifFormAtom);
   const set = (patch: Partial<PanamaPIFForm>) => setForm({ ...form, ...patch });
+  const EN_NAME_PATTERN = "^[A-Za-z][A-Za-z .'-]*[A-Za-z]$";
+  const sanitizeEnglishName = (v: string) =>
+    v
+      .replace(/[^A-Za-z .'-]/g, "")     // strip non-English chars
+      .replace(/\s+/g, " ")              // collapse spaces
+      .replace(/^\s+|\s+$/g, "");
 
+  const signName = form.signName ?? "";
+  const signNameClean = sanitizeEnglishName(signName);
+  const isSignNameValid =
+    !signNameClean || new RegExp(EN_NAME_PATTERN).test(signNameClean);
+  const signNameError =
+    signName && !isSignNameValid
+      ? "English letters only (A–Z, spaces, '.', ''', '-')."
+      : "";
   return (
     <div className="space-y-3">
       <div className="flex items-start gap-3">
@@ -1418,10 +1432,20 @@ function DeclarationsStep() {
           </Label>
           <Input
             className={inputSm}
-            value={form.signName}
-            onChange={(e) => set({ signName: e.target.value })}
+            required
+            value={signName}
+            onChange={(e) => set({ signName: sanitizeEnglishName(e.target.value) })}
             placeholder={t("ppif.declarations.fields.signName.placeholder")}
+            inputMode="text"
+            autoComplete="name"
+            // native validation (also helps on form submit)
+            pattern={EN_NAME_PATTERN}
+            title="English letters only (A–Z, spaces, ., ', -)"
+            aria-invalid={!!signNameError}
           />
+          {signNameError && (
+            <span className="text-[12px] text-destructive">{signNameError}</span>
+          )}
         </div>
 
         <div className="grid gap-1.5">
@@ -1700,14 +1724,36 @@ function ProfileStepPanama() {
     "Family-Trust Structure",
     "Blockchain Token-Related"
   ] as const;
+  const parsePurposes = (str: string) =>
+    str
+      .split(",")
+      .map(s => s.trim())
+      .filter(Boolean);
 
+  const uniqueJoin = (arr: string[]) =>
+    Array.from(new Set(arr.map(s => s.trim()))).join(", ");
   // Purpose chips
   const addPurposeText = (txt: string) => {
-    const cur = form.purposeSummary || ""
-    const next = (cur ? cur + (cur.endsWith(" ") ? "" : " ") : "") + txt
-    set({ purposeSummary: next.slice(0, 280) })
+    const current = parsePurposes(form.purposeSummary || "");
+    // Add (or toggle) — choose ONE behavior:
+    // A) Append only if not present:
+    if (!current.includes(txt)) current.push(txt);
+
+    // B) Toggle on/off (uncomment to enable toggle):
+    // const idx = current.indexOf(txt);
+    // if (idx === -1) current.push(txt); else current.splice(idx, 1);
+
+    const next = uniqueJoin(current).slice(0, 280);
+    set({ purposeSummary: next });
   }
-  const purposeLen = (form.purposeSummary || "").length
+  const handleFreeEdit = (raw: string) => {
+    // Normalize user-typed commas/spaces into a clean list
+    const next = uniqueJoin(parsePurposes(raw)).slice(0, 280);
+    set({ purposeSummary: next });
+  };
+
+  const selectedSet = new Set(parsePurposes(form.purposeSummary || ""));
+  const purposeLen = (form.purposeSummary || "").length;
 
   return (
     <div className="space-y-4">
@@ -1869,17 +1915,20 @@ function ProfileStepPanama() {
         </Label>
 
         <div className="flex flex-wrap gap-2">
-          {chipKeys.map((ck) => (
-            <Button
-              key={ck}
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => addPurposeText(ck)}
-            >
-              {t(`ppif.profile.purpose.chips.${ck}.label`)}
-            </Button>
-          ))}
+          {chipKeys.map((ck) => {
+            const isSelected = selectedSet.has(ck);
+            return (
+              <Button
+                key={ck}
+                type="button"
+                variant={isSelected ? "default" : "outline"} // highlight selected
+                size="sm"
+                onClick={() => addPurposeText(ck)}
+              >
+                {t(`ppif.profile.purpose.chips.${ck}.label`)}
+              </Button>
+            );
+          })}
         </div>
 
         <Textarea
@@ -1889,7 +1938,7 @@ function ProfileStepPanama() {
           placeholder={t("ppif.profile.purpose.placeholder")}
           className="text-sm"
           value={form.purposeSummary || ""}
-          onChange={(e) => set({ purposeSummary: e.target.value.slice(0, 280) })}
+          onChange={(e) => handleFreeEdit(e.target.value)}
         />
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground">
@@ -1898,6 +1947,7 @@ function ProfileStepPanama() {
           <span className="text-xs">{purposeLen}/280</span>
         </div>
       </div>
+
 
       <div className="border-t my-2" />
 

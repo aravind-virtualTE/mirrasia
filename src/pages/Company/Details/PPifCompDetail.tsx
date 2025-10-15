@@ -116,7 +116,7 @@ function LabelValue({ label, children }: React.PropsWithChildren<{ label: string
             <div className="text-sm font-medium break-words">{children || "—"}</div>
         </div>
     );
-}
+}   
 
 function BoolPill({ value, trueText = "Yes", falseText = "No" }: { value?: boolean; trueText?: string; falseText?: string }) {
     const isTrue = !!value;
@@ -404,7 +404,12 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 {(data as any)?.sourceOfFunds || (data as any)?.sourceOfFundsOther || "—"}
                                             </LabelValue>
                                             <LabelValue label="Registered Address Mode">
-                                                {(data as any)?.registeredAddressMode?.toUpperCase?.() || "—"}
+                                                 {(() => {
+                                                        const need = (data as any)?.registeredAddressMode;
+                                                        return need == "mirr" ? "opted for MIRRASIA address"
+                                                            : need === "own" ? "Manage own address"
+                                                                : "—";                                                                    
+                                                    })()}
                                             </LabelValue>
                                             {(data as any)?.registeredAddressMode === "own" && (
                                                 <LabelValue label="Registered Address">
@@ -517,8 +522,8 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">E. Protector (optional)</div>
                                         <div className="flex items-center gap-2">
-                                            <BoolPill value={!!(data as any)?.protectorsEnabled} />
-                                            <span className="text-sm text-muted-foreground">Enabled</span>
+                                            <BoolPill value={!!(data as any)?.protectorsEnabled} trueText="Appoint protector." falseText="Appointment not needed." />
+                                            {/* <span className="text-sm text-muted-foreground">Enabled</span> */}
                                         </div>
                                         {((data as any)?.protectorsEnabled && Array.isArray((data as any)?.protectors)) ? (
                                             <div className="grid gap-2">
@@ -576,28 +581,13 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">I. Banking</div>
                                         <div className="rounded-md border p-3 grid gap-3">
-                                            <div className="flex flex-wrap items-center justify-between gap-2">
-                                                <div className="text-sm text-muted-foreground">Bank Account Requirement</div>
-                                                {(() => {
-                                                    const need = (data as any)?.bankingNeed as "need" | "none" | "later" | undefined;
-                                                    if (need === "need") {
-                                                        return <Badge className="bg-emerald-600 hover:bg-emerald-600">Required</Badge>;
-                                                    }
-                                                    if (need === "later") {
-                                                        return <Badge variant="secondary">Decide Later</Badge>;
-                                                    }
-                                                    if (need === "none") {
-                                                        return <Badge variant="outline" className="text-muted-foreground">Not Needed</Badge>;
-                                                    }
-                                                    return <Badge variant="outline" className="text-muted-foreground">—</Badge>;
-                                                })()}
-                                            </div>
+                                          
                                             <div className="grid md:grid-cols-3 gap-4">
-                                                <LabelValue label="Need">
+                                                <LabelValue label="Required any bank account?">
                                                     {(() => {
                                                         const need = (data as any)?.bankingNeed;
-                                                        return need === "need" ? "Yes"
-                                                            : need === "none" ? "No"
+                                                        return need === "need" ? "Required"
+                                                            : need === "none" ? "Not Needed"
                                                                 : need === "later" ? "Decide Later"
                                                                     : "—";
                                                     })()}
@@ -627,7 +617,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     <Separator />
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">J. PEP</div>
-                                        <LabelValue label="Any PEP Declared">
+                                        <LabelValue label="Politically Exposed Person (PEP)?">
                                             <Badge variant={(data as any)?.pepAny === "yes" ? "destructive" : "outline"} className={(data as any)?.pepAny === "yes" ? "" : "text-muted-foreground"}>
                                                 {((data as any)?.pepAny || "—").toUpperCase?.() || "—"}
                                             </Badge>
