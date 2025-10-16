@@ -8,11 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   priorityColors,
-  statusColors,
+  // statusColors,
   tasksAtom,
   updateTask,
   usersAtom,
-  deleteTodoTaskComment,
+  deleteTodoTaskComment, statuses,
+  TaskStatus
 } from "./mTodoStore";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { RichTextViewer } from "@/components/rich-text-viewer";
@@ -23,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ChatInput from "@/common/ChatInput";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 /* --------------------------- small helpers / UI --------------------------- */
 
@@ -204,8 +206,24 @@ const TaskDetailPopup = ({
     }
   };
 
+  const handleStatusChange = async (value: TaskStatus) => {
+    if (!task?._id) return;
+    // if (value === "COMPLETED" && userRole !== "master") return;
+    //  const oldTask = task;
+    const nextTask = { ...task, status: value };
+    setTasks((prev) => prev.map((t) => (t._id === task._id ? nextTask : t)));
+    setIsLoading(true);
+    try {
+      await updateTask(task._id, { ...task, status: value });
+      
+    } finally {
+      setIsLoading(false);
+      // setTasks((prev) => prev.map((t) => (t._id === oldTask._id ? oldTask : t)));
+    }
+  };
+
   if (!task) return null;
-  console.log("task", task)
+  // console.log("task", task)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/30" />
@@ -216,9 +234,32 @@ const TaskDetailPopup = ({
       >
         {/* Sticky Header (compact) */}
         <div className="sticky top-0 z-10 flex items-center gap-2 border-b bg-white/90 px-3 py-2 backdrop-blur">
-          <Badge variant="outline" className={`px-1.5 py-0.5 text-[10px] ${statusColors[task.status]}`}>
+          {/* <Badge variant="outline" className={`px-1.5 py-0.5 text-[10px] ${statusColors[task.status]}`}>
             {task.status}
-          </Badge>
+          </Badge> */}
+          <Select
+            value={task.status}
+            onValueChange={(v) => handleStatusChange(v as TaskStatus)}
+          >
+            <SelectTrigger
+              id="status-inline"
+              className="h-7 w-[140px] text-[12px] px-2"
+              aria-label="Change status"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent align="end" className="text-[12px]">
+              {statuses.map((s) => (
+                <SelectItem
+                  key={s.label}
+                  value={s.label}
+                // disabled={s.label === "COMPLETED" && userRole !== "master"}
+                >
+                  {s.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           {isOverdue && (
             <Badge variant="outline" className="px-1.5 py-0.5 text-[10px] border-red-300 bg-red-50 text-red-900">

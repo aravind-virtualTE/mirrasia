@@ -273,9 +273,7 @@ const computeGrandTotal = (app: AppDoc) => {
 };
 
 
-function Field({ field, form, setForm, }: {
-  field: FieldBase; form: any; setForm: (fn: (prev: any) => any) => void;
-}) {
+function Field({ field, form, setForm, }: { field: FieldBase; form: any; setForm: (fn: (prev: any) => any) => void; }) {
   const visible = field.condition ? field.condition(form) : true;
   if (!visible) return null;
 
