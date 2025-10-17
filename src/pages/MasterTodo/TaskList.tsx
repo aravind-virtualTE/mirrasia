@@ -43,14 +43,14 @@ const GroupedTasks = ({ tasks }: { tasks: Task[] }) => {
 export const TaskList = () => {
     const [tasks] = useAtom(tasksAtom);
     const [viewMode] = useAtom(viewModeAtom);
-    // const completedTasks = tasks.filter((task) => task.status == 'COMPLETED');
-    // const normalTasks = tasks.filter((task) => task.status !== 'COMPLETED');
+    const completedTasks = tasks.filter((task) => task.status == 'COMPLETED');
+    const normalTasks = tasks.filter((task) => task.status !== 'COMPLETED');
 
     switch (viewMode) {
         case 'expanded':
-            return <TaskTable tasks={tasks} />; 
+            return <TaskTable tasks={normalTasks} />; 
         case 'completed':
-            return <TaskTable tasks={tasks} />;
+            return <TaskTable tasks={completedTasks} />;
         case 'ganttChart':
             return <GanttChart items={tasks  as any} />;
         default:

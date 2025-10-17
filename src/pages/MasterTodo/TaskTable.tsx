@@ -95,22 +95,27 @@ const CompanyBadge: React.FC<{ name?: string }> = ({ name }) => {
   );
 };
 
-const FilterChip: React.FC<{
-  label: string;
-  active?: boolean;
-  onClick: () => void;
-  pastelClass: string;
-}> = ({ label, active, onClick, pastelClass }) => (
+const FilterChip: React.FC<{ label: string; active?: boolean; muted?: boolean; onClick: () => void; pastelClass: string; }> = ({ label, active, muted, onClick, pastelClass }) => (
   <button
+    type="button"
+    aria-pressed={!!active}
     onClick={onClick}
-    className={`rounded-full border px-2.5 py-1 text-xs font-medium transition
-      ${pastelClass} ${active ? "ring-2 ring-offset-0 ring-black/10" : ""}`}
+    className={[
+      // base
+      "rounded-full border px-2.5 py-1 text-xs font-medium transition",
+      "focus:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-1",
+      pastelClass,
+      // visual states
+      active
+        ? // Heavier border + color-matched ring; uses the chip's text color via `currentColor`
+        "border-2 border-current ring-2 ring-current/40 ring-offset-1 shadow-sm"
+        : "border-transparent hover:border-current/40",
+      muted ? "opacity-55" : "",
+    ].join(" ")}
   >
     {label}
   </button>
 );
-
-/* ------------------------------ main table ------------------------------ */
 
 const TaskTable = ({ tasks }: { tasks: Task[] }) => {
   const [, setFormState] = useAtom(createTaskFormAtom);
@@ -275,8 +280,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
       const overduePass = !overdueOnly
         ? true
         : !!t.dueDate &&
-          isBefore(new Date(t.dueDate), todayStart) &&
-          t.status !== "COMPLETED";
+        isBefore(new Date(t.dueDate), todayStart) &&
+        t.status !== "COMPLETED";
       return statusPass && priorityPass && overduePass;
     });
   }, [tasks, statusFilter, priorityFilter, overdueOnly]);
@@ -298,9 +303,9 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
       if (sortField === "priority") {
         return sortOrder === "asc"
           ? priorityOrder[aVal as keyof typeof priorityOrder] -
-            priorityOrder[bVal as keyof typeof priorityOrder]
+          priorityOrder[bVal as keyof typeof priorityOrder]
           : priorityOrder[bVal as keyof typeof priorityOrder] -
-            priorityOrder[aVal as keyof typeof priorityOrder];
+          priorityOrder[aVal as keyof typeof priorityOrder];
       }
       if (sortField === "assignees") {
         const first = (t: Task) =>
@@ -327,10 +332,10 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
 
   /* ------------------------------ UI: chips ------------------------------ */
   const statusPastels: Record<TaskStatus, string> = {
-    "TO DO": "bg-sky-50 text-sky-900 border-sky-200",
-    "IN PROGRESS": "bg-amber-50 text-amber-900 border-amber-200",
-    "IN REVIEW": "bg-indigo-50 text-indigo-900 border-indigo-200",
-    COMPLETED: "bg-emerald-50 text-emerald-900 border-emerald-200",
+    "TO DO": "bg-blue-100 text-blue-900 border-blue-200",
+    "IN PROGRESS": "bg-green-100 text-green-900 border-green-200",
+    "IN REVIEW": "bg-orange-100 text-orange-900 border-orange-200",
+    COMPLETED: "bg-purple-100 text-purple-900 border-purple-200",
   };
 
   const priorityPastels: Record<Task["priority"], string> = {
@@ -360,7 +365,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
       <div className="mb-2 flex flex-wrap items-center gap-2">
         {/* Status chips */}
         <div className="flex flex-wrap items-center gap-1.5">
-          {(["TO DO", "IN PROGRESS", "IN REVIEW", "COMPLETED"] as TaskStatus[]).map(
+          {(["TO DO", "IN PROGRESS", "IN REVIEW",] as TaskStatus[]).map(
             (s) => (
               <FilterChip
                 key={s}
