@@ -1,26 +1,35 @@
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
+// import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { PlusCircle, Upload, FileText, X, Maximize2, Minimize2, Trash, Shield, Mail, Building } from "lucide-react"
+import { PlusCircle, Upload, FileText, X, Minimize2, Trash, Shield, Mail, Building, Maximize2, Loader2 } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 import jwtDecode from "jwt-decode"
 import type { TokenData } from "@/middleware/ProtectedRoutes"
 import { useParams } from "react-router-dom"
-import { deleteCompanyDoc, getCompDocs, uploadCompanyDocs } from "@/services/dataFetch" // Import getCompDocs function
+import { deleteCompanyDoc, getCompDocs, uploadCompanyDocs } from "@/services/dataFetch"
 import SearchSelectNew from "../SearchSelect2"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table"
 
-// Define types
+// -------------------- Types --------------------
 interface Document {
+  _id?: string
   id: string
   docName: string
   docUrl: string
   file?: File
+  createdAt?: string
+  uploadedBy?: string
   type?: "kyc" | "letters" | "company"
 }
-
 export interface Company {
   id: string
   companyName: string
@@ -29,9 +38,9 @@ export interface Company {
   letterDocs?: Document[]
   country: { code: string; name: string }
 }
-
 type DocumentType = "kyc" | "letters" | "company"
 
+// -------------------- Main Component --------------------
 const CompanyDocumentManager: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { countryCode, id } = useParams()
@@ -45,216 +54,245 @@ const CompanyDocumentManager: React.FC = () => {
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(null)
   const [activeTab, setActiveTab] = useState<DocumentType>("company")
   const [currentDocumentType, setCurrentDocumentType] = useState<DocumentType>("company")
-  const token = localStorage.getItem("token") as string
+  const [isUpdating, setIsUpdating] = useState(false) // NEW loader state
+
+  const token = (typeof window !== "undefined" ? localStorage.getItem("token") : null) as string
   const [selectedValue, setSelectedValue] = useState(
     selectedCompany
       ? { id: selectedCompany.id, name: selectedCompany.companyName }
       : { id: "", name: "" }
-  );
-  // console.log("selectedCompany", selectedCompany)
+  )
+
   useEffect(() => {
     const fetchComp = async () => {
       try {
         const decodedToken = jwtDecode<TokenData>(token)
         const response = await getCompDocs(`${decodedToken.userId}`)
         const data = await response
-        // console.log("data", data)
         setCompanies(data)
         if (data.length > 0) {
-          if (id !== undefined && id !== "" && countryCode !== undefined && countryCode !== "") {
+          if (id && countryCode) {
             const result = data.find((company: { id: string }) => company.id === id)
-            setSelectedCompany(result)
-            setUploadedFiles([])
-            setDocumentToReplace(null)
-            setExpandedDoc(null)
-            setShowUploadSection(false)
-            setSelectedValue(result ? { id: result.id, name: result.companyName } : { id: "", name: "" })
+            setSelectedCompany(result || data[0])
+            setSelectedValue(result ? { id: result.id, name: result.companyName } : { id: data[0].id, name: data[0].companyName })
           } else {
             setSelectedCompany(data[0])
-            setUploadedFiles([])
-            setDocumentToReplace(null)
-            setExpandedDoc(null)
-            setShowUploadSection(false)
-            setSelectedValue(data[0] ? { id: data[0].id, name: data[0].companyName } : { id: "", name: "" })
+            setSelectedValue({ id: data[0].id, name: data[0].companyName })
           }
+          setUploadedFiles([])
+          setDocumentToReplace(null)
+          setExpandedDoc(null)
+          setShowUploadSection(false)
         }
       } catch (error) {
         console.error("Error fetching companies:", error)
       }
     }
-    fetchComp()
+    if (token) fetchComp()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // const handleCompanySelect = (companyId: string): void => {
-  //   const company = companies.find((c) => c.id === companyId)
-  //   if (company) {
-  //     setSelectedCompany(company)
-  //     setUploadedFiles([])
-  //     setDocumentToReplace(null)
-  //     setExpandedDoc(null)
-  //     setShowUploadSection(false)
-  //   }
-  // }
-
-  // Handle file drop
+  // -------------------- Drag & Drop --------------------
   const handleDrop = (e: React.DragEvent<HTMLDivElement>): void => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const filesArray = Array.from(e.dataTransfer.files)
       setUploadedFiles(filesArray)
-      toast({
-        title: "Files ready for upload",
-        description: `${filesArray.length} file(s) added successfully.`,
-      })
+      toast({ title: "Files ready for upload", description: `${filesArray.length} file(s) added successfully.` })
     }
   }
-
-  // Handle drag events
   const handleDrag = (e: React.DragEvent<HTMLDivElement>): void => {
     e.preventDefault()
     e.stopPropagation()
-
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true)
-    } else if (e.type === "dragleave") {
-      setDragActive(false)
-    }
+    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true)
+    else if (e.type === "dragleave") setDragActive(false)
   }
-
-  // Handle file input change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (e.target.files && e.target.files.length > 0) {
       const filesArray = Array.from(e.target.files)
       setUploadedFiles(filesArray)
-      toast({
-        title: "Files selected",
-        description: `${filesArray.length} file(s) selected successfully.`,
-      })
+      toast({ title: "Files selected", description: `${filesArray.length} file(s) selected successfully.` })
     }
   }
-
-  // Open file browser
   const openFileBrowser = (): void => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click()
-    }
+    if (fileInputRef.current) fileInputRef.current.click()
   }
 
-  // Add new document handler
+  // -------------------- Add/Replace --------------------
   const handleAddNewDocument = (): void => {
     setDocumentToReplace(null)
     setCurrentDocumentType(activeTab)
     setShowUploadSection(true)
   }
 
-  // Save uploaded documents
-  const saveDocuments = async (): Promise<void> => {
-    if (!selectedCompany) return
+// ---- helpers (put near your other helpers/types) ----
+const buildSlimCompanyPayload = (company: Company, type: DocumentType): Company => {
+  // only include the changed doc group; others as empty arrays
+  const base = {
+    id: company.id,
+    companyName: company.companyName,
+    country: company.country,
+    companyDocs: [] as Document[],
+    kycDocs: [] as Document[],
+    letterDocs: [] as Document[],
+  };
 
-    const updatedCompanies = [...companies]
-    const companyIndex = updatedCompanies.findIndex((c) => c.id === selectedCompany.id)
-    if (companyIndex === -1) return
+  if (type === "company") base.companyDocs = (company.companyDocs ?? []);
+  if (type === "kyc") base.kycDocs = (company.kycDocs ?? []);
+  if (type === "letters") base.letterDocs = (company.letterDocs ?? []);
 
-    const getDocumentArray = (type: DocumentType) => {
-      switch (type) {
-        case "kyc":
-          return updatedCompanies[companyIndex].kycDocs || []
-        case "letters":
-          return updatedCompanies[companyIndex].letterDocs || []
-        case "company":
-        default:
-          return updatedCompanies[companyIndex].companyDocs || []
-      }
+  return base;
+};
+
+const mergeByDocName = (oldDocs: Document[] = [], addedOrUpdated: Document[] = []) => {
+  if (!addedOrUpdated.length) return oldDocs;
+  const serverByName = new Map(addedOrUpdated.map(d => [d.docName, d]));
+  // update if server returned same docName; keep others as is
+  const updated = oldDocs.map(d => (serverByName.has(d.docName) ? { ...d, ...serverByName.get(d.docName)! } : d));
+
+  // if server returned a doc that wasn't in the list (edge case), append it
+  const existingNames = new Set(oldDocs.map(d => d.docName));
+  const newOnes = addedOrUpdated.filter(d => !existingNames.has(d.docName));
+  return [...updated, ...newOnes];
+};
+
+// ---- the refactored saveDocuments ----
+const saveDocuments = async (): Promise<void> => {
+  if (!selectedCompany) return;
+
+  // 1) Prepare an optimistic update snapshot
+  const prevCompanies = companies; // for rollback
+  const companyIndex = companies.findIndex(c => c.id === selectedCompany.id);
+  if (companyIndex === -1) return;
+
+  // helper to read/write arrays for the active company
+  const readDocs = (c: Company, t: DocumentType) =>
+    t === "kyc" ? (c.kycDocs ?? []) : t === "letters" ? (c.letterDocs ?? []) : (c.companyDocs ?? []);
+
+  const writeDocs = (c: Company, t: DocumentType, docs: Document[]) => {
+    if (t === "kyc") c.kycDocs = docs;
+    else if (t === "letters") c.letterDocs = docs;
+    else c.companyDocs = docs;
+  };
+
+  // 2) Build the optimistic documents (either replace one or add many)
+  const optimisticCompanies = structuredClone(companies);
+  const optimisticCompany = optimisticCompanies[companyIndex];
+  const currentDocs = readDocs(optimisticCompany, currentDocumentType);
+
+  let optimisticDocs: Document[] = currentDocs;
+
+  if (documentToReplace) {
+    const idx = currentDocs.findIndex(d => d.id === documentToReplace.id);
+    if (idx !== -1 && uploadedFiles.length > 0) {
+      const file = uploadedFiles[0];
+      optimisticDocs = currentDocs.map((d, i) =>
+        i === idx
+          ? {
+              ...d,
+              // keep same id so row stays stable
+              docName: file.name,
+              file,
+              docUrl: "", // will be filled by server merge
+              type: currentDocumentType,
+            }
+          : d
+      );
     }
-
-    const setDocumentArray = (type: DocumentType, docs: Document[]) => {
-      switch (type) {
-        case "kyc":
-          updatedCompanies[companyIndex].kycDocs = docs
-          break
-        case "letters":
-          updatedCompanies[companyIndex].letterDocs = docs
-          break
-        case "company":
-        default:
-          updatedCompanies[companyIndex].companyDocs = docs
-          break
-      }
-    }
-
-    if (documentToReplace) {
-      // Replace existing document
-      const currentDocs = getDocumentArray(currentDocumentType)
-      const docIndex = currentDocs.findIndex((doc) => doc.id === documentToReplace.id)
-      if (docIndex !== -1 && uploadedFiles.length > 0) {
-        currentDocs[docIndex] = {
-          ...documentToReplace,
-          docName: uploadedFiles[0].name,
-          file: uploadedFiles[0],
-          docUrl: "",
-          type: currentDocumentType,
-        }
-        setDocumentArray(currentDocumentType, currentDocs)
-      }
-    } else {
-      // Add new documents
-      const newDocuments: Document[] = uploadedFiles.map((file, index) => ({
-        id: `${Date.now()}-${index}`,
-        docName: file.name,
-        file: file,
-        docUrl: "",
-        type: currentDocumentType,
-      }))
-
-      const currentDocs = getDocumentArray(currentDocumentType)
-      setDocumentArray(currentDocumentType, [...currentDocs, ...newDocuments])
-    }
-
-    setCompanies(updatedCompanies)
-    setSelectedCompany(updatedCompanies[companyIndex])
-    setUploadedFiles([])
-    setDocumentToReplace(null)
-    setShowUploadSection(false)
-
-    // Send data to backend
-    try {
-      // console.log("Updated companies:", updatedCompanies)
-      await uploadCompanyDocs(updatedCompanies)
-      toast({
-        title: documentToReplace ? "Document replaced" : "Documents added",
-        description: `Successfully ${documentToReplace ? "replaced document" : "added new documents"} to ${selectedCompany.companyName}.`,
-      })
-    } catch (error) {
-      console.error("Error uploading documents:", error)
-      toast({
-        title: "Error",
-        description: "Failed to upload documents. Please try again.",
-      })
-    }
+  } else {
+    const newDocs: Document[] = uploadedFiles.map((file, i) => ({
+      id: `${Date.now()}-${i}`, // temp id for UI stability
+      docName: file.name,
+      file,
+      docUrl: "", // will be filled by server
+      type: currentDocumentType,
+    }));
+    optimisticDocs = [...currentDocs, ...newDocs];
   }
 
+  writeDocs(optimisticCompany, currentDocumentType, optimisticDocs);
+
+  // 3) Commit optimistic UI
+  setCompanies(optimisticCompanies);
+  setSelectedCompany(optimisticCompany);
+  setUploadedFiles([]);
+  setDocumentToReplace(null);
+  setShowUploadSection(false);
+
+  // 4) Send slim payload (only active company + changed group)
+  try {
+    setIsUpdating(true);
+
+    // NOTE: uploadCompanyDocs expects files to be present on the objects in state.
+    // We already inserted `file` into the optimistic docs above, so build from `optimisticCompany`.
+    const slimPayload = buildSlimCompanyPayload(optimisticCompany, currentDocumentType);
+
+    // Keep API contract the same (array), but only include the one company
+    const res: Array<{
+      id: string;
+      companyName: string;
+      country: Company["country"];
+      companyDocs?: Document[];
+      kycDocs?: Document[];
+      letterDocs?: Document[];
+    }> = await uploadCompanyDocs([slimPayload]);
+
+    // 5) Merge server response back into state so URLs appear without refresh
+    if (Array.isArray(res) && res.length > 0) {
+      const serverItem = res.find(r => r.id === optimisticCompany.id) ?? res[0];
+
+      const patchCompany = (c: Company): Company => {
+        if (c.id !== serverItem.id) return c;
+
+        const next = { ...c };
+        if (currentDocumentType === "company") {
+          next.companyDocs = mergeByDocName(c.companyDocs ?? [], serverItem.companyDocs ?? []);
+        } else if (currentDocumentType === "kyc") {
+          next.kycDocs = mergeByDocName(c.kycDocs ?? [], serverItem.kycDocs ?? []);
+        } else {
+          next.letterDocs = mergeByDocName(c.letterDocs ?? [], serverItem.letterDocs ?? []);
+        }
+        return next;
+      };
+
+      setCompanies(prev => prev.map(patchCompany));
+      setSelectedCompany(prev => (prev ? patchCompany(prev) : prev));
+    }
+
+    toast({
+      title: documentToReplace ? "Document replaced" : "Documents added",
+      description: `Successfully ${documentToReplace ? "replaced document" : "added new documents"} to ${optimisticCompany.companyName}.`,
+    });
+  } catch (err) {
+    // 6) Roll back optimistic UI on error
+    console.error("Error uploading documents:", err);
+    setCompanies(prevCompanies);
+    setSelectedCompany(prevCompanies[companyIndex]);
+    toast({ title: "Error", description: "Failed to upload documents. Please try again." });
+  } finally {
+    setIsUpdating(false);
+  }
+};
+
+
+
+  // -------------------- Misc handlers --------------------
   const removeUploadedFile = (index: number): void => {
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index))
   }
-
   const toggleExpandDocument = (document: Document): void => {
-    if (expandedDoc && expandedDoc.id === document.id) {
-      setExpandedDoc(null)
-    } else {
-      setExpandedDoc(document)
-    }
+    if (expandedDoc && expandedDoc.id === document.id) setExpandedDoc(null)
+    else setExpandedDoc(document)
   }
-
   const confirmDeleteDocument = (document: Document): void => {
     setDocumentToDelete(document)
   }
 
+  // -------------------- Delete --------------------
   const deleteDocument = async (): Promise<void> => {
     if (!selectedCompany || !documentToDelete) return
-    // console.log("documentToDelete",activeTab)
     const updatedCompanies = [...companies]
     const companyIndex = updatedCompanies.findIndex((c) => c.id === selectedCompany.id)
     if (companyIndex === -1) return
@@ -263,105 +301,79 @@ const CompanyDocumentManager: React.FC = () => {
 
     const getDocumentArray = (type: DocumentType) => {
       switch (type) {
-        case "kyc":
-          return updatedCompanies[companyIndex].kycDocs || []
-        case "letters":
-          return updatedCompanies[companyIndex].letterDocs || []
+        case "kyc": return updatedCompanies[companyIndex].kycDocs || []
+        case "letters": return updatedCompanies[companyIndex].letterDocs || []
         case "company":
-        default:
-          return updatedCompanies[companyIndex].companyDocs || []
+        default: return updatedCompanies[companyIndex].companyDocs || []
       }
     }
-
     const getDocumentType = (type: DocumentType) => {
       switch (type) {
-        case "kyc":
-          return "kycDocs"
-        case "letters":
-          return "letterDocs"
+        case "kyc": return "kycDocs"
+        case "letters": return "letterDocs"
         case "company":
-        default:
-          return "companyDocs"
+        default: return "companyDocs"
       }
     }
-
     const setDocumentArray = (type: DocumentType, docs: Document[]) => {
       switch (type) {
-        case "kyc":
-          updatedCompanies[companyIndex].kycDocs = docs
-          break
-        case "letters":
-          updatedCompanies[companyIndex].letterDocs = docs
-          break
+        case "kyc": updatedCompanies[companyIndex].kycDocs = docs; break
+        case "letters": updatedCompanies[companyIndex].letterDocs = docs; break
         case "company":
-        default:
-          updatedCompanies[companyIndex].companyDocs = docs
-          break
+        default: updatedCompanies[companyIndex].companyDocs = docs; break
       }
     }
 
     const currentDocs = getDocumentArray(docType)
     const docIndex = currentDocs.findIndex((doc) => doc.id === documentToDelete.id)
-
     if (docIndex !== -1) {
       const updatedDocs = currentDocs.filter((_, index) => index !== docIndex)
       setDocumentArray(docType, updatedDocs)
-
       setCompanies(updatedCompanies)
       setSelectedCompany(updatedCompanies[companyIndex])
       setDocumentToDelete(null)
 
       try {
-        // console.log(docType,"selectedCompany", selectedCompany)
+        setIsUpdating(true) // start loader
         const payload = JSON.stringify({
           docType: getDocumentType(docType),
           docId: selectedCompany.id,
           country: selectedCompany.country,
           ...documentToDelete,
         })
-        // console.log("payload",payload)
         await deleteCompanyDoc(payload)
-        toast({
-          title: "Document deleted",
-          description: `Successfully deleted document from ${selectedCompany.companyName}.`,
-        })
+        toast({ title: "Document deleted", description: `Successfully deleted document from ${selectedCompany.companyName}.` })
       } catch (error) {
         console.error("Error deleting document:", error)
-        toast({
-          title: "Error",
-          description: "Failed to delete document. Please try again.",
-        })
+        toast({ title: "Error", description: "Failed to delete document. Please try again." })
+      } finally {
+        setIsUpdating(false) // stop loader
       }
     }
   }
 
+  // -------------------- Tabs helpers --------------------
   const getTabIcon = (tab: DocumentType) => {
     switch (tab) {
-      case "kyc":
-        return <Shield className="h-4 w-4" />
-      case "letters":
-        return <Mail className="h-4 w-4" />
+      case "kyc": return <Shield className="h-4 w-4" />
+      case "letters": return <Mail className="h-4 w-4" />
       case "company":
-      default:
-        return <Building className="h-4 w-4" />
+      default: return <Building className="h-4 w-4" />
+    }
+  }
+  const getTabLabel = (tab: DocumentType) => {
+    switch (tab) {
+      case "kyc": return "KYC/CDD"
+      case "letters": return "Letters"
+      case "company":
+      default: return "Company Docs"
     }
   }
 
-  const getTabLabel = (tab: DocumentType) => {
-    switch (tab) {
-      case "kyc":
-        return "KYC/CDD"
-      case "letters":
-        return "Letters"
-      case "company":
-      default:
-        return "Company Docs"
-    }
-  }
-   const handleCurrencySelect = (item: { id: string; name: string }) => {
-        // console.log("code", item)
-        setSelectedValue(item)
-         const company = companies.find((c) => c.id === item.id)
+  // -------------------- Company select --------------------
+  const handleCurrencySelect = (item: { id: string; name: string }) => {
+    setSelectedValue(item)
+    const company = companies.find((c) => c.id === item.id)
     if (company) {
       setSelectedCompany(company)
       setUploadedFiles([])
@@ -369,10 +381,10 @@ const CompanyDocumentManager: React.FC = () => {
       setExpandedDoc(null)
       setShowUploadSection(false)
     }
-        // setFormState({ ...formState, selectedCompany: item });
-    };
+  }
   const filteredCompanies = companies.map((company) => ({ id: company.id, name: company.companyName }))
-  // console.log("companies", companies)
+
+  // -------------------- Render --------------------
   return (
     <div className="w-full max-width mx-auto p-6">
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -381,18 +393,6 @@ const CompanyDocumentManager: React.FC = () => {
           {companies.length === 0 && (
             <div className="rounded-md bg-muted text-muted-foreground p-2 text-sm">No companies found</div>
           )}
-          {/* <Select onValueChange={handleCompanySelect} value={selectedCompany?.id}>
-            <SelectTrigger className="w-full md:w-80">
-              <SelectValue placeholder="Select a company" />
-            </SelectTrigger>
-            <SelectContent>
-              {companies.map((company) => (
-                <SelectItem key={company.id} value={company.id.toString()}>
-                  {company.companyName}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select> */}
           <SearchSelectNew
             items={filteredCompanies}
             placeholder="Select a Company"
@@ -408,7 +408,7 @@ const CompanyDocumentManager: React.FC = () => {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Documents for {selectedCompany.companyName}</h2>
             {!expandedDoc && (
-              <Button onClick={handleAddNewDocument} variant="outline" className="flex items-center gap-2">
+              <Button onClick={handleAddNewDocument} variant="outline" className="flex items-center gap-2" disabled={isUpdating}>
                 <PlusCircle className="h-4 w-4" />
                 Add New Document
               </Button>
@@ -432,42 +432,38 @@ const CompanyDocumentManager: React.FC = () => {
             </TabsList>
 
             <TabsContent value="company" className="mt-6">
-              <DocumentGrid
+              <DocumentTable
                 documents={selectedCompany.companyDocs || []}
                 expandedDoc={expandedDoc}
-                documentToReplace={documentToReplace}
                 onToggleExpand={toggleExpandDocument}
                 onConfirmDelete={confirmDeleteDocument}
-                onAddNew={handleAddNewDocument}
+                isUpdating={isUpdating}
               />
             </TabsContent>
 
             <TabsContent value="kyc" className="mt-6">
-              <DocumentGrid
+              <DocumentTable
                 documents={selectedCompany.kycDocs || []}
                 expandedDoc={expandedDoc}
-                documentToReplace={documentToReplace}
                 onToggleExpand={toggleExpandDocument}
                 onConfirmDelete={confirmDeleteDocument}
-                onAddNew={handleAddNewDocument}
+                isUpdating={isUpdating}
               />
             </TabsContent>
 
             <TabsContent value="letters" className="mt-6">
-              <DocumentGrid
+              <DocumentTable
                 documents={selectedCompany.letterDocs || []}
                 expandedDoc={expandedDoc}
-                documentToReplace={documentToReplace}
                 onToggleExpand={toggleExpandDocument}
                 onConfirmDelete={confirmDeleteDocument}
-                onAddNew={handleAddNewDocument}
+                isUpdating={isUpdating}
               />
             </TabsContent>
           </Tabs>
 
-          {/* Expanded view for a single document */}
           {expandedDoc && (
-            <div className="mb-8 mt-6">
+            <div className="mb-8 mt-6 flex flex-col">
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
@@ -485,18 +481,20 @@ const CompanyDocumentManager: React.FC = () => {
                   </Button>
                 </div>
               </div>
-              <div className="flex justify-center bg-gray-100 p-4 rounded-lg">
-                <iframe src={expandedDoc.docUrl} title={expandedDoc.docName} className="w-full h-96 border-none" />
+              <div className="flex justify-center bg-gray-100 p-4 rounded-lg flex-grow">
+                <iframe
+                  src={expandedDoc.docUrl}
+                  title={expandedDoc.docName}
+                  className="w-full h-[calc(100vh-120px)] border-none"
+                />
               </div>
             </div>
           )}
 
-          {/* Upload section - conditionally rendered */}
           {showUploadSection && (
             <>
               <div
-                className={`border-2 border-dashed rounded-lg p-6 mb-4 text-center mt-6 ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
-                  }`}
+                className={`border-2 border-dashed rounded-lg p-6 mb-4 text-center mt-6 ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}
                 onDragEnter={handleDrag}
                 onDragOver={handleDrag}
                 onDragLeave={handleDrag}
@@ -504,12 +502,9 @@ const CompanyDocumentManager: React.FC = () => {
               >
                 <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
                 <h3 className="text-lg font-medium mb-2">
-                  {documentToReplace
-                    ? `Replace "${documentToReplace.docName}"`
-                    : `Upload New ${getTabLabel(currentDocumentType)}`}
+                  {documentToReplace ? `Replace "${documentToReplace.docName}"` : `Upload New ${getTabLabel(currentDocumentType)}`}
                 </h3>
                 <p className="text-sm text-gray-500 mb-4">Drag and drop files here or click to browse</p>
-                {/* Hidden file input */}
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -518,7 +513,7 @@ const CompanyDocumentManager: React.FC = () => {
                   onChange={handleFileChange}
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jpg,.jpeg,.png"
                 />
-                <Button variant="outline" className="cursor-pointer" type="button" onClick={openFileBrowser}>
+                <Button variant="outline" className="cursor-pointer" type="button" onClick={openFileBrowser} disabled={isUpdating}>
                   Browse Files
                 </Button>
               </div>
@@ -532,25 +527,21 @@ const CompanyDocumentManager: React.FC = () => {
                           <FileText className="h-4 w-4 mr-2" />
                           <span className="text-sm">{file.name}</span>
                         </div>
-                        <Button variant="ghost" size="sm" onClick={() => removeUploadedFile(index)} type="button">
+                        <Button variant="ghost" size="sm" onClick={() => removeUploadedFile(index)} type="button" disabled={isUpdating}>
                           <X className="h-4 w-4" />
                         </Button>
                       </div>
                     ))}
                   </div>
-                  {/* Save button */}
                   <div className="flex gap-2 mt-4">
-                    <Button onClick={saveDocuments} type="button">
-                      {documentToReplace ? "Replace Document" : "Save New Documents"}
+                    <Button onClick={saveDocuments} type="button" disabled={isUpdating}>
+                      {isUpdating ? (<span className="inline-flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" />Saving…</span>) : (documentToReplace ? "Replace Document" : "Save New Documents")}
                     </Button>
                     <Button
                       variant="outline"
-                      onClick={() => {
-                        setShowUploadSection(false)
-                        setUploadedFiles([])
-                        setDocumentToReplace(null)
-                      }}
+                      onClick={() => { setShowUploadSection(false); setUploadedFiles([]); setDocumentToReplace(null) }}
                       type="button"
+                      disabled={isUpdating}
                     >
                       Cancel
                     </Button>
@@ -561,6 +552,7 @@ const CompanyDocumentManager: React.FC = () => {
           )}
         </>
       )}
+
       {/* Delete confirmation modal */}
       {documentToDelete && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -570,114 +562,142 @@ const CompanyDocumentManager: React.FC = () => {
               Are you sure you want to delete "{documentToDelete.docName}"? This action cannot be undone.
             </p>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setDocumentToDelete(null)}>
+              <Button variant="outline" onClick={() => setDocumentToDelete(null)} disabled={isUpdating}>
                 Cancel
               </Button>
-              <Button variant="destructive" onClick={deleteDocument}>
-                Delete
+              <Button variant="destructive" onClick={deleteDocument} disabled={isUpdating}>
+                {isUpdating ? (<span className="inline-flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" />Deleting…</span>) : "Delete"}
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Global loader overlay */}
+      {isUpdating && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
+          <div className="flex items-center gap-3 rounded-lg bg-white px-4 py-3 shadow-lg">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <span className="text-sm font-medium">Updating documents…</span>
           </div>
         </div>
       )}
     </div>
   )
 }
-interface DocumentGridProps {
+
+// -------------------- Table Component --------------------
+interface DocumentTableProps {
   documents: Document[]
   expandedDoc: Document | null
-  documentToReplace: Document | null
   onToggleExpand: (doc: Document) => void
   onConfirmDelete: (doc: Document) => void
-  onAddNew: () => void
+  isUpdating: boolean
 }
-const DocumentGrid: React.FC<DocumentGridProps> = ({
+
+const formatDate = (iso?: string) => {
+  if (!iso) return "N/A"
+  const d = new Date(iso)
+  return isNaN(d.getTime()) ? "N/A" : d.toLocaleString()
+}
+
+const DocumentTable: React.FC<DocumentTableProps> = ({
   documents,
   expandedDoc,
-  documentToReplace,
   onToggleExpand,
   onConfirmDelete,
-  onAddNew,
+  isUpdating,
 }) => {
   if (expandedDoc) return null
+  const getSafeId = (doc: Document) => doc.id || doc?._id || "unknown-id"
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {documents.map((document, idx) => (
-        <Card
-          key={`${idx}-${document.id}`}
-          className={`transition-all ${documentToReplace && documentToReplace.id === document.id ? "ring-2 ring-blue-500" : ""
-            }`}
-        >
-          <CardContent className="p-4">
-            <div className="relative">
-              <div
-                className="w-full h-48 flex items-center justify-center bg-gray-100 mb-2 cursor-pointer rounded-lg"
-                onClick={() => onToggleExpand(document)}
-              >
-                {document.docUrl.includes("placeholder.svg") ? (
-                  <FileText className="h-12 w-12 text-gray-400" />
-                ) : (
-                  <img
-                    src={document.docUrl || "/placeholder.svg"}
-                    alt={document.docName}
-                    className="w-full h-full object-cover rounded-lg"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      target.style.display = "none"
-                      target.nextElementSibling?.classList.remove("hidden")
-                    }}
-                  />
-                )}
-                <FileText className="h-12 w-12 text-gray-400 hidden" />
-              </div>
-              {documentToReplace && documentToReplace.id === document.id && (
-                <div className="absolute inset-0 bg-blue-500 bg-opacity-20 flex items-center justify-center rounded-lg">
-                  <span className="text-sm font-medium text-white bg-blue-600 px-2 py-1 rounded">
-                    Selected to Replace
-                  </span>
-                </div>
-              )}
-              <div className="absolute top-2 right-2 flex gap-1">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="h-6 w-6 p-0 rounded-full opacity-70 hover:opacity-100"
-                  onClick={() => onToggleExpand(document)}
-                >
-                  <Maximize2 className="h-3 w-3" />
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="h-6 w-6 p-0 rounded-full opacity-70 hover:opacity-100"
-                  onClick={() => onConfirmDelete(document)}
-                >
-                  <Trash className="h-3 w-3" />
-                </Button>
-              </div>
-            </div>
-            <div className="flex items-start">
-              <FileText className="h-4 w-4 mr-2 mt-1 flex-shrink-0" />
-              <p className="text-sm truncate" title={document.docName}>
-                {document.docName}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="rounded-md border">
+      <Table className={`compact-table w-full table-fixed`}>
+        <TableHeader className="bg-gray-50">
+          <TableRow>
+            <TableHead className="w-[34%] cursor-pointer">Document Name</TableHead>
+            <TableHead className="w-[18%] cursor-pointer">Uploaded By</TableHead>  {/* NEW */}
+            <TableHead className="w-[18%] cursor-pointer">Created At</TableHead>
+            <TableHead className="w-[15%] text-center cursor-pointer">View Large</TableHead>
+            <TableHead className="w-[15%] text-center cursor-pointer">Delete</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {documents.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
+                No documents found.
+              </TableCell>
+            </TableRow>
+          ) : (
+            documents.map((document) => (
+              <TableRow key={getSafeId(document)}>
+                <TableCell className="py-3">
+                  <div className="flex items-start gap-2">
+                    <FileText className="h-4 w-4 mt-0.5 shrink-0" />
+                    <div className="min-w-0">
+                      <div className="font-medium truncate" title={document.docName}>
+                        {document.docName}
+                      </div>
+                      {document.docUrl && (
+                        <a
+                          href={document.docUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs underline text-muted-foreground"
+                        >
+                          Open in new tab
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </TableCell>
 
-      {/* Add new document card */}
-      <Card
-        className="cursor-pointer border-dashed border-2 hover:border-blue-500 hover:bg-blue-50 transition-colors"
-        onClick={onAddNew}
-      >
-        <CardContent className="p-4 h-full flex flex-col items-center justify-center">
-          <PlusCircle className="h-8 w-8 text-gray-400 mb-2" />
-          <p className="text-sm text-gray-500">Add New Document</p>
-        </CardContent>
-      </Card>
+                {/* Uploaded By */}
+                <TableCell className="py-3 align-middle">
+                  {document.uploadedBy?.trim() ? document.uploadedBy : "N/A"}
+                </TableCell>
+
+                {/* Created At */}
+                <TableCell className="py-3 align-middle">
+                  {formatDate(document.createdAt)}
+                </TableCell>
+
+                {/* View */}
+                <TableCell className="text-center">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => onToggleExpand(document)}
+                    className="inline-flex items-center gap-1"
+                    disabled={isUpdating}
+                  >
+                    <Maximize2 className="h-3.5 w-3.5" />
+                    View
+                  </Button>
+                </TableCell>
+
+                {/* Delete */}
+                <TableCell className="text-center">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onConfirmDelete(document)}
+                    className="inline-flex items-center gap-1"
+                    disabled={isUpdating}
+                  >
+                    <Trash className="h-3.5 w-3.5" />
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   )
 }
+
 export default CompanyDocumentManager

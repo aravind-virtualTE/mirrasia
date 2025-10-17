@@ -206,9 +206,11 @@ const TaskDetailPopup = ({
     }
   };
 
+  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+
   const handleStatusChange = async (value: TaskStatus) => {
     if (!task?._id) return;
-    // if (value === "COMPLETED" && userRole !== "master") return;
+    if (value === "COMPLETED" && user.role !== "master") return;
     //  const oldTask = task;
     const nextTask = { ...task, status: value };
     setTasks((prev) => prev.map((t) => (t._id === task._id ? nextTask : t)));
@@ -222,8 +224,12 @@ const TaskDetailPopup = ({
     }
   };
 
-  if (!task) return null;
+  if (!task) return null; 
+
   // console.log("task", task)
+  const allowedStatuses = user.role === 'master'
+          ? statuses
+          : statuses.filter((s) => s.label !== 'COMPLETED');
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/30" />
@@ -249,7 +255,7 @@ const TaskDetailPopup = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent align="end" className="text-[12px]">
-              {statuses.map((s) => (
+              {allowedStatuses.map((s) => (
                 <SelectItem
                   key={s.label}
                   value={s.label}
