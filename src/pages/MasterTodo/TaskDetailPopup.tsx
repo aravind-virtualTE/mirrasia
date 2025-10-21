@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom } from "jotai";
-import { format, startOfDay, isBefore } from "date-fns";
+import { format, endOfDay, isBefore } from "date-fns"; //startOfDay
 import { Flag, X, MoreHorizontal, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ChatInput from "@/common/ChatInput";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatToDDMMYYYY } from "@/middleware";
 
 /* --------------------------- small helpers / UI --------------------------- */
 
@@ -160,7 +161,7 @@ const TaskDetailPopup = ({
 
   const isOverdue = useMemo(() => {
     if (!task?.dueDate || task.status === "COMPLETED") return false;
-    return isBefore(new Date(task.dueDate), startOfDay(new Date()));
+    return isBefore(new Date(task.dueDate), endOfDay(new Date()));
   }, [task]);
 
   const handleMessageSubmit = async (submissionData: any) => {
@@ -329,12 +330,12 @@ const TaskDetailPopup = ({
               <span className="font-medium">Status</span>
               <div>{task.status}</div>
 
-              <span className="font-medium">Due</span>
-              <div>{task.dueDate ? format(new Date(task.dueDate), "dd MMM yyyy") : "—"}</div>
+              <span className="font-medium">Due Date</span>
+              <div>{task.dueDate ? formatToDDMMYYYY(task.dueDate) : "—"}</div>
 
-              <span className="font-medium">Created At</span>
+              <span className="font-medium">Created On</span>
               {task.createdAt
-                ? format(new Date(task.createdAt), "dd MMM yyyy, HH:mm")   // 24h
+                ? formatToDDMMYYYY(task.createdAt)   // 24h
                 : "—"}
 
               <span className="font-medium">Created By</span>
