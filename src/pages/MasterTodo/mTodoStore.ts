@@ -23,7 +23,7 @@ export interface Task {
     id?: string;
     name: string;
   }[];
-  dueDate: Date | undefined;
+  dueDate: Date | undefined ;
   priority: TaskPriority;
   status: TaskStatus;
   comments: Comment[];

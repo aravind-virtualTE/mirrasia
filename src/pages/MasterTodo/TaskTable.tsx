@@ -19,7 +19,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { format, isBefore, startOfDay } from "date-fns";
+import { isBefore, startOfDay } from "date-fns";
 import { useMemo, useState } from "react";
 import { CreateTaskDialog } from "./CreateTaskDialog";
 import {
@@ -40,6 +40,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import TaskDetailPopup from "./TaskDetailPopup";
+import { formatToDDMMYYYY } from "@/middleware";
 
 /* ----------------------------- helpers / UI ----------------------------- */
 
@@ -526,7 +527,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                 </TableCell>
 
                 <TableCell className={`${d.cellPadY}`}>
-                  {task.dueDate ? format(new Date(task.dueDate), "dd MMM yyyy") : "-"}
+                  {task.dueDate ? formatToDDMMYYYY(task.dueDate) : "-"}
                 </TableCell>
 
                 <TableCell className={`${d.cellPadY}`}>
@@ -542,9 +543,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
                 {/* NEW: Created cell */}
                 <TableCell className={`${d.cellPadY}`}>
                   {task.createdAt ? (
-                    <span title={new Date(task.createdAt as any).toLocaleString()}>
-                      {format(new Date(task.createdAt as any), "dd MMM yyyy")}
-                    </span>
+                   formatToDDMMYYYY(task.createdAt)
                   ) : (
                     "-"
                   )}
