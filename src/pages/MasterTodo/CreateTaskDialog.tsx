@@ -13,7 +13,7 @@ import {
     updateTask,
     createTask,
 } from './mTodoStore';
-import { format, startOfDay, endOfDay,} from 'date-fns';
+import { format, startOfDay, } from 'date-fns'; //endOfDay,
 import { toZonedTime, fromZonedTime } from 'date-fns-tz';
 import { cn } from '@/lib/utils';
 import {
@@ -176,14 +176,14 @@ export const CreateTaskDialog = ({
     const handleSubmit = async () => {
         if (!formState.taskName) return;
 
-        const today = endOfDay(new Date());
-        const picked = formState.dueDate ? startOfDay(formState.dueDate) : null;
+        // const today = endOfDay(new Date());
+        // const picked = formState.dueDate ? startOfDay(formState.dueDate) : null;
 
-        if (!picked || picked.getTime() <= today.getTime()) {
-            setDateError('Due date must be after today.');
-            window.alert('Please select a due date after today.');
-            return;
-        }
+        // if (!picked || picked.getTime() <= today.getTime()) {
+        //     setDateError('Due date must be after today.');
+        //     window.alert('Please select a due date after today.');
+        //     return;
+        // }
 
         setIsLoading(true);
         try {
