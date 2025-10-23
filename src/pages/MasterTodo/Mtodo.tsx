@@ -6,8 +6,8 @@ import { Layers, PlusCircle } from "lucide-react";
 import { TaskList } from "./TaskList";
 import { createTaskFormAtom, defaultFormState, getTasks, tasksAtom, viewModeAtom } from "./mTodoStore";
 import { CreateTaskDialog } from "./CreateTaskDialog";
-import { getIncorporationList } from "@/services/dataFetch";
-import { allCompListAtom } from "@/services/state";
+import { getAllCompanyNames } from "@/services/dataFetch";
+import { allCompNameAtom } from "@/services/state";
 import SearchBox from "./SearchBox";
 
 /** ---------------- utils ------------------ */
@@ -115,7 +115,7 @@ const ToDoList = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [, setFormState] = useAtom(createTaskFormAtom);
   const [, setListState] = useAtom(tasksAtom);
-  const [, setAllList] = useAtom(allCompListAtom);
+  const [, setAllList] = useAtom(allCompNameAtom);
 
   const user = useMemo(
     () => (localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null),
@@ -160,8 +160,9 @@ const ToDoList = () => {
   useEffect(() => {
     const bootstrap = async () => {
       await fetchTasks();
-      const result = await getIncorporationList();
-      setAllList(result.allCompanies);
+      const result = await getAllCompanyNames();
+      // console.log("result",result)
+      setAllList(result);
     };
     bootstrap();
     // eslint-disable-next-line react-hooks/exhaustive-deps

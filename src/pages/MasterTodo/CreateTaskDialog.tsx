@@ -29,7 +29,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Flag, X, Check, ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect, forwardRef } from 'react';
-import { allCompListAtom } from '@/services/state';
+import { allCompNameAtom } from '@/services/state';
 import { fetchUsers } from '@/services/dataFetch';
 import { projectsAtom } from '../dashboard/Admin/Projects/ProjectAtom';
 import { RichTextEditor } from '@/components/rich-text-editor';
@@ -60,7 +60,7 @@ export const CreateTaskDialog = ({
     const [tasks, setTasks] = useAtom(tasksAtom);
     const [formState, setFormState] = useAtom(createTaskFormAtom);
     const [users, setUsers] = useAtom(usersAtom);
-    const [allList] = useAtom(allCompListAtom);
+    const [allList] = useAtom(allCompNameAtom);
     const [projects] = useAtom(projectsAtom);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedValue, setSelectedValue] = useState(formState.selectedCompany || { id: '', name: '' });
@@ -74,32 +74,54 @@ export const CreateTaskDialog = ({
 
     // Due date error
     const [dateError, setDateError] = useState<string>('');
-
+    // console.log("allList",allList)
     // Get filtered companies
+    // const getFilteredCompanies = () => {
+    //     if (allList.length > 0) {
+    //         return allList
+    //             .map((company) => {
+    //                 if (typeof company._id === 'string') {
+    //                     const name =
+    //                         typeof company.companyName === 'string'
+    //                             ? company.companyName
+    //                             : Array.isArray(company.companyName) && typeof company.companyName[0] === 'string'
+    //                                 ? company.companyName[0]
+    //                                 : '';
+    //                     return {
+    //                         id: company._id,
+    //                         name,
+    //                     };
+    //                 }
+    //                 return { id: '', name: '' };
+    //             })
+    //             .filter((company) => company.id !== '');
+    //     }
+    //     return [];
+    // };
     const getFilteredCompanies = () => {
-        if (allList.length > 0) {
-            return allList
-                .map((company) => {
-                    if (typeof company._id === 'string') {
-                        const name =
-                            typeof company.companyName === 'string'
-                                ? company.companyName
-                                : Array.isArray(company.companyName) && typeof company.companyName[0] === 'string'
-                                    ? company.companyName[0]
-                                    : '';
-                        return {
-                            id: company._id,
-                            name,
-                        };
-                    }
-                    return { id: '', name: '' };
-                })
-                .filter((company) => company.id !== '');
-        }
-        return [];
-    };
-    const filteredCompanies = getFilteredCompanies();
+  if (!Array.isArray(allList) || allList.length === 0) return [];
 
+  return allList
+    .map((company: any) => {
+      const id =
+        typeof company.id === 'string' ? company.id :
+        typeof company._id === 'string' ? company._id :
+        '';
+
+      const rawName = Array.isArray(company.companyName)
+        ? company.companyName.find((n: any) => typeof n === 'string') ?? ''
+        : company.companyName ?? '';
+
+      const name = typeof rawName === 'string'
+        ? rawName.replace(/\s+/g, ' ').trim()
+        : '';
+
+      return { id, name };
+    })
+    .filter((c) => c.id !== '' && c.name !== '');
+};
+    const filteredCompanies = getFilteredCompanies();
+    // console.log("filteredCompanies" ,filteredCompanies)
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -268,7 +290,6 @@ export const CreateTaskDialog = ({
     const normalizedDueDate = formState.dueDate
         ? startOfDay(toZonedTime(new Date(formState.dueDate), 'UTC'))
         : undefined;
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-[900px]">
