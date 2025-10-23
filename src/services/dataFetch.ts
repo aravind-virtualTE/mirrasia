@@ -45,6 +45,16 @@ export const getIncorporationList = async () => { // country, companyStatus
   }
 };
 
+export const getAllCompanyNames = async () =>{
+  try{
+    const response = await api.get(`company/getAllCompanyNames`);
+    return response.data;
+  }catch(e){
+    console.error("Error fetching company names:", e);
+
+  }
+}
+
 export const getPdfDoc = async (id: string) => {
   try {
     const response = await api.get(`pdf/generate-pdf?docId=${id}`);

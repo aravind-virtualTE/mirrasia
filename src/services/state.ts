@@ -20,4 +20,15 @@ export const dashboardCompaniesAtom = atom<AnyObject[]>([]);
     }
   );
 
+  export const allCompNameAtom = atom(
+    (get) => get(dashboardCompaniesAtom),
+    (_get, set, update: AnyObject[] | 'reset') => {
+      if (update === 'reset') {
+        set(dashboardCompaniesAtom, []);
+      } else {
+        set(dashboardCompaniesAtom, update);
+      }
+    }
+  );
+
   export const usersData = atom<User[]>([]);
