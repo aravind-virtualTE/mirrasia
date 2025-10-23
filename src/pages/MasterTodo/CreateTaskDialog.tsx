@@ -99,27 +99,26 @@ export const CreateTaskDialog = ({
     //     return [];
     // };
     const getFilteredCompanies = () => {
-  if (!Array.isArray(allList) || allList.length === 0) return [];
+        if (!Array.isArray(allList) || allList.length === 0) return [];
+        return allList
+            .map((company: any) => {
+                const id =
+                    typeof company.id === 'string' ? company.id :
+                        typeof company._id === 'string' ? company._id :
+                            '';
 
-  return allList
-    .map((company: any) => {
-      const id =
-        typeof company.id === 'string' ? company.id :
-        typeof company._id === 'string' ? company._id :
-        '';
+                const rawName = Array.isArray(company.companyName)
+                    ? company.companyName.find((n: any) => typeof n === 'string') ?? ''
+                    : company.companyName ?? '';
 
-      const rawName = Array.isArray(company.companyName)
-        ? company.companyName.find((n: any) => typeof n === 'string') ?? ''
-        : company.companyName ?? '';
+                const name = typeof rawName === 'string'
+                    ? rawName.replace(/\s+/g, ' ').trim()
+                    : '';
 
-      const name = typeof rawName === 'string'
-        ? rawName.replace(/\s+/g, ' ').trim()
-        : '';
-
-      return { id, name };
-    })
-    .filter((c) => c.id !== '' && c.name !== '');
-};
+                return { id, name };
+            })
+            .filter((c) => c.id !== '' && c.name !== '');
+    };
     const filteredCompanies = getFilteredCompanies();
     // console.log("filteredCompanies" ,filteredCompanies)
     useEffect(() => {

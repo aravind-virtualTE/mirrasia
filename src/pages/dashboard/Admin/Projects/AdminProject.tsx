@@ -16,11 +16,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createProject, currentProjectAtom, deleteProject, fetchProjects, initialProject, Project, projectsAtom, updateProject } from './ProjectAtom';
-import { allCompListAtom } from '@/services/state';
+import { allCompNameAtom } from '@/services/state';
 import ProjectFormDialog from './ProjectFormDialog';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import SearchBox from '@/pages/MasterTodo/SearchBox';
+import { getAllCompanyNames } from '@/services/dataFetch';
 
 const isEditingAtom = atom<boolean>(false);
 const isOpenAtom = atom<boolean>(false);
@@ -30,7 +31,7 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
   const [currentProject, setCurrentProject] = useAtom(currentProjectAtom);
   const [isEditing, setIsEditing] = useAtom(isEditingAtom);
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
-  const [allList] = useAtom(allCompListAtom);
+  const [allList,setAllList] = useAtom(allCompNameAtom);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteProj, setDeleteProj] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,11 +48,12 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
       try {
         const data = await fetchProjects(id);
         setProjects(data);
+        const result = await getAllCompanyNames();
+        setAllList(result);
       } catch (error) {
         console.error('Failed to fetch projects', error);
       }
     };
-
     loadProjects();
   }, []);
 
@@ -112,40 +114,43 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
     setIsOpen(false);
   };
 
+  // const getFilteredCompanies = () => {
+  //   if (allList.length > 0) {
+  //     return allList.map((company) => {
+  //       if (typeof company._id === 'string' && Array.isArray(company.companyName) && typeof company.companyName[0] === 'string') {
+  //         return {
+  //           id: company._id,
+  //           name: company.companyName[0],
+  //         };
+  //       }
+  //       return { id: '', name: '' };
+  //     }).filter(company => company.id !== '');
+  //   }
+  //   return [];
+  // };
   const getFilteredCompanies = () => {
-    if (allList.length > 0) {
-      return allList.map((company) => {
-        if (typeof company._id === 'string' && Array.isArray(company.companyName) && typeof company.companyName[0] === 'string') {
-          return {
-            id: company._id,
-            name: company.companyName[0],
-          };
-        }
-        return { id: '', name: '' };
-      }).filter(company => company.id !== '');
-    }
-    return [];
-  };
+        if (!Array.isArray(allList) || allList.length === 0) return [];
+        return allList
+            .map((company: any) => {
+                const id =
+                    typeof company.id === 'string' ? company.id :
+                        typeof company._id === 'string' ? company._id :
+                            '';
+
+                const rawName = Array.isArray(company.companyName)
+                    ? company.companyName.find((n: any) => typeof n === 'string') ?? ''
+                    : company.companyName ?? '';
+
+                const name = typeof rawName === 'string'
+                    ? rawName.replace(/\s+/g, ' ').trim()
+                    : '';
+
+                return { id, name };
+            })
+            .filter((c) => c.id !== '' && c.name !== '');
+    };
 
   const filteredCompanies = getFilteredCompanies();
-
-  // const handleCompanyChange = (companyId: string) => {
-  //   const company = filteredCompanies.find(c => c.id === companyId);
-  //   if (company) {
-  //     setCurrentProject({
-  //       ...currentProject,
-  //       company: {
-  //         id: company.id,
-  //         name: company.name
-  //       }
-  //     });
-  //   } else {
-  //     setCurrentProject({
-  //       ...currentProject,
-  //       company: { id: "", name: "" }
-  //     });
-  //   }
-  // };
 
   const handleNavigate = (project: Project) => {
     // console.log("project--->", project)
@@ -207,8 +212,8 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
     }
     setSelectedValue(item);
   }
-console.log("filteredCompanies", filteredCompanies)
- console.log('selectedValue',selectedValue)
+// console.log("filteredCompanies", filteredCompanies)
+//  console.log('selectedValue',selectedValue)
   return (
     <div className="container py-4">
       <div className="flex justify-between items-center mb-2">
