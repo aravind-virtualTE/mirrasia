@@ -15,7 +15,7 @@ export type FieldBase = {
   | "checkbox"
   | "checkbox-group"
   | "radio-group"
-  | "derived";
+  | "derived" | "search-select-new" | "select-custom";
   name: string;
   label: string;
   placeholder?: string;

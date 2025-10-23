@@ -1893,22 +1893,7 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
     </div>
   );
 }
-const EngagementTerms = () => {
-  // const terms = [
-  //   { t: "1. Purpose of this Agreement", c: "The purpose of this agreement is to prevent misunderstandings about the scope and limitations of services provided by MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED (\"Mirr Asia\") to the client company to be incorporated in the HKSAR (the \"Client\")." },
-  //   { t: "2. Role of Hong Kong Company Secretary & Limitation of Liability", c: "Mirr Asia will be appointed as company secretary in accordance with the Companies Ordinance (Cap 622) and the Client’s Articles of Association. Secretarial services are statutory in nature and differ from the role of an employed administrative secretary." },
-  //   { t: "3. Registered Address & Limitations", c: "The Client may use Mirr Asia’s registered address in Hong Kong for statutory registration. Changes require written notice. The registered address is for registration and mail handling only; it is not a physical office. The Client must not use the address for unlawful purposes or misrepresent it as a place of business." },
-  //   { t: "4. Scope of Services (Year 1)", c: "Company secretary registration and maintenance of statutory records; filings; registers; minutes; BRC at registered office; brief business/operational advice (non-legal)." },
-  //   { t: "5. Fees & Exclusions", c: "Fees exclude accounting, audit, tax filings, bank account opening advice, and third-party charges (e.g., bank charges, government fees, taxes, courier)." },
-  //   { t: "6. Assignment & Subcontractors", c: "Neither party may assign or transfer its rights/obligations without prior written consent of the other." },
-  //   { t: "7. Confidentiality", c: "Both parties will keep confidential any non-public business or technical information obtained under this Agreement, except where disclosure is required by law or the information is already public." },
-  //   { t: "8. Entire Agreement", c: "This Agreement is the complete understanding between the parties and supersedes prior communications." },
-  //   { t: "9. Severability", c: "If any provision is invalid or unenforceable, the remainder remains in force." },
-  //   { t: "10. No Third-party Beneficiaries", c: "No rights are created for third parties unless authorized in writing by Mirr Asia." },
-  //   { t: "11. Governing Law & Dispute Resolution", c: "Hong Kong law governs this Agreement. Disputes will be referred to binding arbitration in Hong Kong." },
-  //   { t: "12. Costs & Attorney’s Fees", c: "The prevailing party in any dispute may recover reasonable costs and attorney’s fees." },
-  //   { t: "13. Client Confirmation & Declaration", c: "The Client confirms lawful use of services and accuracy of information; Mirr Asia may discontinue services if illegal activity is suspected." },
-  // ];
+export const EngagementTerms = () => {
 
   const items = Array.from({ length: 13 }).map((_, idx) => {
     const k = String(idx + 1);
