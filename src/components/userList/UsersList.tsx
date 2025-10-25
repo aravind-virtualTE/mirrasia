@@ -18,6 +18,7 @@ import { Checkbox } from "../ui/checkbox"
 import { ConfirmDialog } from "../shared/ConfirmDialog"
 import UserVerificationCard from "./UserVerificationCard"
 import SearchBox from "@/pages/MasterTodo/SearchBox"
+
 export interface User {
     _id?: string;
     fullName: string;
@@ -50,7 +51,9 @@ export interface User {
         checked: boolean;
     }[]
 }
+
 type SortKey = "fullName" | "email" | "role";
+
 const UsersList = () => {
     const [users, setUsers] = useState<User[]>([{ _id: "", fullName: "", email: "", role: "", picture: "" }])
     const [newUser, setNewUser] = useState({ fullName: "", email: "", role: "user" })
@@ -68,15 +71,19 @@ const UsersList = () => {
     const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
     const [searchQuery, setSearchQuery] = useState('');
     const [isFocused, setIsFocused] = useState(false);
+
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const defaultRole = user?.role || "";
+
     // console.log("selectedUser", selectedUser)
+
     useEffect(() => {
         const load = async () => {
             try {
                 const detailedUsers = await fetchDetailedUsers(defaultRole);
                 setUsers(detailedUsers);
             } catch (e) {
+                console.log("error", e)
                 toast({
                     title: "Error",
                     description: "Failed to load users.",
@@ -86,6 +93,7 @@ const UsersList = () => {
         };
         load();
     }, []);
+
     // const debounceRef = useRef<number | null>(null);
     // useEffect(() => {
     //     if (debounceRef.current) window.clearTimeout(debounceRef.current);
@@ -107,8 +115,14 @@ const UsersList = () => {
     const handleRoleChange = async (userId: string, newRole: string) => {
         try {
             await updateUserRole(userId, newRole);
-            setUsers((prevUsers) => prevUsers.map((user) => (user._id === userId ? { ...user, role: newRole } : user)))
-            setSelectedUser((prevUser) => (prevUser ? { ...prevUser, role: newRole } : null))
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user._id === userId ? { ...user, role: newRole } : user
+                )
+            )
+            setSelectedUser((prevUser) =>
+                (prevUser ? { ...prevUser, role: newRole } : null)
+            )
             toast({
                 title: "Role updated",
                 description: `Updated user ${userId} role to ${newRole}`,
@@ -154,7 +168,9 @@ const UsersList = () => {
         setIsUserDetailsOpen(true)
         // setTasks(user.tasks || []);
     }
+
     // console.log(selectedUser)
+
     const handleSendMail = async () => {
         if (message.trim()) {
             setIsLoading(true);
@@ -334,6 +350,7 @@ const UsersList = () => {
             const data = await fetchDetailedUsers(defaultRole, q);
             setUsers(data);
         } catch (e) {
+            console.log("error", e)
             toast({
                 title: "Error",
                 description: "Search failed.",
@@ -403,6 +420,7 @@ const UsersList = () => {
                     </DialogContent>
                 </Dialog>
             </div>
+
             <div className="border rounded-md">
                 <Table>
                     <TableHeader>
@@ -455,7 +473,11 @@ const UsersList = () => {
 
                     <TableBody>
                         {sortedUsers.map((user) => (
-                            <TableRow key={user._id} onClick={() => openUserDetails(user)} className="hover:bg-muted/50">
+                            <TableRow
+                                key={user._id}
+                                onClick={() => openUserDetails(user)}
+                                className="hover:bg-muted/50"
+                            >
                                 <TableCell className="p-2 text-sm">{user.fullName}</TableCell>
                                 <TableCell className="p-2 text-sm">{user.email}</TableCell>
                                 <TableCell className="p-2 text-sm">{user.role}</TableCell>
@@ -476,6 +498,7 @@ const UsersList = () => {
                     </TableBody>
                 </Table>
             </div>
+
             <Dialog open={isEditRoleOpen} onOpenChange={setIsEditRoleOpen}>
                 <DialogContent>
                     <DialogHeader>
@@ -514,14 +537,27 @@ const UsersList = () => {
                     )}
                 </DialogContent>
             </Dialog>
+
+            {/* USER DETAILS DIALOG */}
             <Dialog open={isUserDetailsOpen} onOpenChange={setIsUserDetailsOpen}>
-                <DialogContent className="max-width max-h-[90vh] overflow-y-auto">
+                <DialogContent
+                    className="
+                        w-full
+                        max-w-[95vw]
+                        lg:max-w-[90vw]
+                        xl:max-w-[90vw]
+                        2xl:max-w-[90vw]
+                        max-h-[90vh]
+                        overflow-y-auto
+                    "
+                >
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
                             <User className="h-5 w-5" />
                             {selectedUser?.fullName} - User Details
                         </DialogTitle>
-                    </DialogHeader>Name - User Details
+                    </DialogHeader>
+                    Name - User Details
                     <Tabs defaultValue="overview" className="w-full">
                         <TabsList className="grid w-full grid-cols-4">
                             <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -601,6 +637,7 @@ const UsersList = () => {
                                     </CardContent>
                                 </Card>
                             </div>
+
                             <UserVerificationCard
                                 passportUrl={selectedUser?.kycDocuments?.passportUrl || ""}
                                 addressProofUrl={selectedUser?.kycDocuments?.addressProofUrl || ""}
@@ -610,8 +647,8 @@ const UsersList = () => {
                                 addressProofStatus={selectedUser?.kycDocuments?.addressProofStatus || "pending"}
                                 onReviewUpdate={handleReviewUpdate}
                             />
-
                         </TabsContent>
+
                         <TabsContent value="companies" className="space-y-4">
                             <Card>
                                 <CardHeader>
@@ -633,8 +670,13 @@ const UsersList = () => {
                                             <TableBody>
                                                 {selectedUser?.companies?.map((company, idx) => {
                                                     return (
-                                                        <TableRow key={company.companyId} onClick={() =>
-                                                            navigate(`/company-details/${company.type}/${company.companyId}`)} className="hover:bg-muted/50 cursor-pointer">
+                                                        <TableRow
+                                                            key={company.companyId}
+                                                            onClick={() =>
+                                                                navigate(`/company-details/${company.type}/${company.companyId}`)
+                                                            }
+                                                            className="hover:bg-muted/50 cursor-pointer"
+                                                        >
                                                             <TableCell className="px-4 py-2 border-b">{idx + 1}</TableCell>
                                                             <TableCell className="px-4 py-2 border-b">{company.companyName[0]}</TableCell>
                                                             <TableCell className="px-4 py-2 border-b">{company.type}</TableCell>
@@ -647,36 +689,37 @@ const UsersList = () => {
                                 </CardContent>
                             </Card>
                         </TabsContent>
+
                         <TabsContent value="tasks" className="space-y-4">
                             <Card>
                                 <CardHeader>
                                     <div className="flex justify-between items-center mb-4">
                                         <div>
-
                                             <CardTitle>Outstanding Tasks</CardTitle>
                                             <CardDescription>
                                                 Tasks assigned to this user that are pending or in progress
                                             </CardDescription>
                                         </div>
-                                        {user.role !== 'user' && (<div className="flex items-center gap-2">
-                                            <Button size="sm" className="px-3" onClick={handleSave}>
-                                                {isLoading ? (
-                                                    <>
-                                                        <CustomLoader />
-                                                        <span className="ml-2">Saving...</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Save className="h-4 w-4 mr-1" />
-                                                        Save
-                                                    </>
-                                                )}
-                                            </Button>
-                                        </div>)}
+                                        {user.role !== 'user' && (
+                                            <div className="flex items-center gap-2">
+                                                <Button size="sm" className="px-3" onClick={handleSave}>
+                                                    {isLoading ? (
+                                                        <>
+                                                            <CustomLoader />
+                                                            <span className="ml-2">Saving...</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Save className="h-4 w-4 mr-1" />
+                                                            Save
+                                                        </>
+                                                    )}
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-
                                     <div className="flex items-center space-x-2">
                                         <Input
                                             placeholder="Enter task"
@@ -704,8 +747,11 @@ const UsersList = () => {
                                                         />
                                                         <label
                                                             htmlFor={`task-${index}`}
-                                                            className={`${task.checked ? "line-through text-muted-foreground" : ""
-                                                                }`}
+                                                            className={`${
+                                                                task.checked
+                                                                    ? "line-through text-muted-foreground"
+                                                                    : ""
+                                                            }`}
                                                         >
                                                             {task.label}
                                                         </label>
@@ -727,6 +773,7 @@ const UsersList = () => {
                                 </CardContent>
                             </Card>
                         </TabsContent>
+
                         <TabsContent value="actions" className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                                 <Card>
@@ -777,6 +824,7 @@ const UsersList = () => {
                     </Tabs>
                 </DialogContent>
             </Dialog>
+
             <ConfirmDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}

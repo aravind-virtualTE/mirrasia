@@ -36,7 +36,6 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
     const [,setHK] = useAtom(hkAppAtom)
     const [, setPA] = useAtom(paFormWithResetAtom);
     const [, setPAF] = useAtom(pifFormWithResetAtom);
-    
     const [, setSG] = useAtom(sgFormWithResetAtom);
     const resetAllForms = useResetAllForms();
     const token = localStorage.getItem('token') as string;
