@@ -51,8 +51,8 @@ export default function ViewBoard() {
           getShrDirSavedData(`${decodedToken.userId}`),
           getMultiShrDirData(`${decodedToken.userId}`)
         ])
-        console.log("multiData----->", multiData)
-        console.log("data----->", data)
+        // console.log("multiData----->", multiData)
+        // console.log("data----->", data)
         setFState(data.regData)
         setUsState(data.usRegData)
         setCorpUsState(data.usCorpData)
