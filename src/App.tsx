@@ -57,7 +57,6 @@ import MemberDirectorManager from './components/memDirManager/MemberDirectorMana
 import ConfigDrivenHKForm from './pages/Company/NewHKForm/NewHKIncorporation';
 import HKCompDetailSummary from './pages/Company/Details/NewCompDetail';
 import ConfigDrivenUSAForm from './pages/Company/USA/UsIncorporation';
-import AdminCompanies from './pages/dashboard/AdminCompanies';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -153,7 +152,7 @@ const App: React.FC = () => {
                       <Route path="/current-corporate-client" element={<CurrentCorporateClientList />} />
                       <Route path="/sms-management" element={<SMSTracker />} />
                       <Route path="/invoice-management" element={<InvoiceManager />} />
-                      <Route path="/admin-companies-list" element={<AdminCompanies />} /> 
+                      <Route path="/admin-companies-list" element={<ViewBoard />} /> 
                       {/* Add more admin-specific routes here */}
                       
                     </Route>

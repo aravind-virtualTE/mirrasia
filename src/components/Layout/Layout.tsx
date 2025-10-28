@@ -251,7 +251,7 @@ const Layout: React.FC = () => {
       {
         id: "yourCompanies",
         icon: Building2,
-        label: "Your Companies",
+        label: "Associated Companies",
         roles: ["admin", "master"],
         to: "/admin-companies-list",
       },
