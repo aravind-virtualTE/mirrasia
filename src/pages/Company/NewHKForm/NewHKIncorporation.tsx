@@ -495,7 +495,7 @@ function Field({ field, form, setForm, }: { field: FieldBase; form: any; setForm
 }
 
 
-function Tip({ text, content }: { text?: string; content?: React.ReactNode }) {
+export function Tip({ text, content }: { text?: string; content?: React.ReactNode }) {
   return (
     <TooltipProvider>
       <Tooltip delayDuration={0}>

@@ -1044,6 +1044,7 @@ export default function PanamaFoundationInvite() {
           });
         }
       } else {
+        setReset("reset");
         setForm((prevForm) => ({
           ...prevForm,
           userId: user?.id || "",

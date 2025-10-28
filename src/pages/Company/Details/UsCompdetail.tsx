@@ -1,619 +1,3 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { fetchUsers, getUsIncorpoDataById, updateEditValues } from '@/services/dataFetch';
-// import { useAtom } from 'jotai';
-// import React, { useEffect, useMemo, useState } from 'react';
-// import { UsaFormData, usaFormWithResetAtom } from '../USA/UsState';
-// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from '@/components/ui/table';
-// import { Button } from '@/components/ui/button';
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-// import { SessionData } from './HkCompdetail';
-// import { paymentApi } from '@/lib/api/payment';
-// import { Label } from '@/components/ui/label';
-// import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-// import { Input } from '@/components/ui/input';
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-// import { Switch } from '@/components/ui/switch';
-// import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-// import { useToast } from '@/hooks/use-toast';
-// import MemoApp from './MemosHK';
-// import TodoApp from '@/pages/Todo/TodoApp';
-// import { User } from '@/components/userList/UsersList';
-// import { useNavigate } from 'react-router-dom';
-// import { useTranslation } from 'react-i18next';
-// import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
-// import ChecklistHistory from '@/pages/Checklist/ChecklistHistory';
-// import { usIncorporationItems, usRenewalList } from './detailConstants';
-
-
-// const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
-//   const { t } = useTranslation()
-//   const [formData, setFormData] = useAtom(usaFormWithResetAtom);
-//   const [isSheetOpen, setIsSheetOpen] = useState(false);
-//   const { toast } = useToast();
-//   const [users, setUsers] = useState<User[]>([]);
-//   const [adminAssigned, setAdminAssigned] = useState('');
-//   const [session, setSession] = useState<SessionData>({
-//     _id: '',
-//     amount: 0,
-//     currency: '',
-//     expiresAt: '',
-//     status: '',
-//     paymentId: '',
-//   });
-//   const navigate = useNavigate();
-//   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
-
-//   useEffect(() => {
-//     async function getUsData() {
-//       const data = await getUsIncorpoDataById(`${id}`);
-//       setAdminAssigned(data.assignedTo);
-
-//       if (data.sessionId !== '') {
-//         const session = await paymentApi.getSession(data.sessionId);
-//         const transformedSession: SessionData = {
-//           _id: session._id,
-//           amount: session.amount,
-//           currency: session.currency,
-//           expiresAt: session.expiresAt,
-//           status: session.status,
-//           paymentId: session.paymentId,
-//         };
-//         setSession(transformedSession);
-//       }
-
-//       const response = await fetchUsers();
-//       const filteredUsers = response.filter((e: { role: string }) => e.role === 'admin' || e.role === 'master');
-//       setUsers(filteredUsers);
-
-//       return data;
-//     }
-
-//     getUsData().then((result) => {
-//       setFormData(result);
-//     });
-//   }, []);
-
-//   // Helper function to render object values
-//   const renderValue = (data: any): string => {
-//     if (typeof data === 'object' && data !== null) {
-//       return data.value || data.id || 'N/A';
-//     }
-//     return data || 'N/A';
-//   };
-
-//   const generateSections = (formData: UsaFormData, session: SessionData) => {
-//     const sections = [];
-//     // console.log("formData", formData);
-//     // Applicant Information Section
-//     sections.push({
-//       title: 'Applicant Information',
-//       data: {
-//         'Company Name': (
-//           <div className="space-y-4">
-//             <div className="grid gap-2">
-//               {formData.companyName.slice(0, 3).map((name, index) => (
-//                 <div key={index} className="flex items-center gap-2">
-//                   <div className="flex-1 p-2 border rounded-md bg-background">{name || "N/A"}</div>
-//                   {index > 0 && (
-//                     <Button
-//                       variant="outline"
-//                       size="sm"
-//                       onClick={() => {
-//                         const newNames = [...formData.companyName]
-//                         // Move this item to the first position
-//                         const [removed] = newNames.splice(index, 1)
-//                         newNames.unshift(removed)
-
-//                         // Update the company state
-//                         setFormData({
-//                           ...formData,
-//                           companyName: newNames,
-//                         })
-//                       }}
-//                     >
-//                       Move to Top
-//                     </Button>
-//                   )}
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-//         ),
-//         'Applicant Name': formData.name,
-//         Email: formData.email,
-//         Phone: formData.phoneNum,
-//         Relationships: formData.establishedRelationshipType?.join(', ') || 'N/A',
-//         'SNS Account ID': renderValue(formData.snsAccountId.id),
-//         'SNS Account Number': renderValue(formData.snsAccountId.value),
-//       },
-//     });
-
-//     // Country Information Section
-//     sections.push({
-//       title: 'Jurisdiction Information',
-//       data: {
-//         Country: 'United States',
-//         'Country Code': 'US',
-//         State: formData.selectedState?.name || 'N/A',
-//         'Entity Type': formData.selectedEntity,
-//       },
-//     });
-
-//     // Business Information Section
-//     sections.push({
-//       title: 'AML/CDD Information',
-//       data: {
-//         'Sanctioned Countries': t(renderValue(formData.restrictedCountriesWithActivity)),
-//         'Sanctions Presence': t(renderValue(formData.sanctionedTiesPresent)),
-//         'Crimea Presence': t(renderValue(formData.businessInCrimea)),
-//         'Russian Business Presence': t(renderValue(formData.involvedInRussianEnergyDefense)),
-//         'Legal Assessment': t(renderValue(formData.hasLegalEthicalIssues)),
-//         'Annual Renewal Terms': t(renderValue(formData.annualRenewalTermsAgreement)),
-//       },
-//     })
-
-//     // Shareholder and Director Information Section
-//     if (formData.shareHolders) {
-//       const shareholderData = formData.shareHolders;
-//       // console.log("shareholderDat", shareholderData)
-//       sections.push({
-//         title: 'Shareholder and Director Information',
-//         data: {
-//           'Designated Contact Person': formData.designatedContact,
-//           'Shareholders and Directors': (
-//             <Table>
-//               <TableHeader>
-//                 <TableRow>
-//                   <TableHead>Name</TableHead>
-//                   <TableHead>Email</TableHead>
-//                   <TableHead>Phone</TableHead>
-//                   <TableHead>Ownership Rate</TableHead>
-//                   <TableHead>Is Director</TableHead>
-//                   <TableHead>Is Legal Person</TableHead>
-//                 </TableRow>
-//               </TableHeader>
-//               <TableBody>
-//                 {Array.isArray(shareholderData) &&
-//                   shareholderData.map((shareholder, index) => (
-//                     <TableRow key={index}>
-//                       <TableCell>{shareholder.name}</TableCell>
-//                       <TableCell>{shareholder.email}</TableCell>
-//                       <TableCell>{shareholder.phone || 'N/A'}</TableCell>
-//                       <TableCell>{shareholder.ownershipRate}%</TableCell>
-//                       <TableCell>{t(renderValue(shareholder.isDirector))}</TableCell>
-//                       <TableCell>{t(renderValue(shareholder.isLegalPerson))}</TableCell>
-//                     </TableRow>
-//                   ))}
-//               </TableBody>
-//             </Table>
-//           ),
-//         },
-//       });
-//     }
-
-//     // Payment Information Section
-//     if (formData.sessionId && session) {
-//       sections.push({
-//         title: 'Payment Information',
-//         data: {
-//           Amount: session.amount,
-//           'Payment Status': session.status,
-//           'Payment Expire Date': new Date(session.expiresAt).toLocaleString(),
-//           Receipt: formData.receiptUrl ? 'Available' : 'Not available',
-//         },
-//       });
-//     }
-
-//     // Status Information Section
-//     sections.push({
-//       title: 'Status Information',
-//       data: {
-//         'Incorporation Status': formData.status,
-//         'Incorporation Date': formData.incorporationDate || 'N/A',
-//         'AML/CDD Edit': formData.isDisabled ? 'No' : 'Yes',
-//       },
-//     });
-//     return sections;
-//   };
-
-//   const sections = useMemo(() => {
-//     if (!formData) return [];
-//     return generateSections(formData, session);
-//   }, [formData, session]);
-
-//   const handleUpdate = async () => {
-//     const payload = JSON.stringify({
-//       company: {
-//         id: formData._id,
-//         status: formData.status,
-//         isDisabled: formData.isDisabled,
-//         incorporationDate: formData.incorporationDate,
-//         country: 'US',
-//         companyName: formData.companyName
-//       },
-//       session: {
-//         id: session._id,
-//         expiresAt: session.expiresAt,
-//         status: session.status,
-//       },
-//       assignedTo: adminAssigned,
-//     });
-
-//     const response = await updateEditValues(payload);
-//     if (response.success) {
-//       toast({ description: 'Record updated successfully' });
-//     }
-//   };
-
-//   const handleCompanyDataChange = (key: keyof UsaFormData, value: string | boolean) => {
-//     setFormData({ ...formData, [key]: value });
-//   };
-
-//   const handleSessionDataChange = (key: keyof SessionData, value: string) => {
-//     setSession({ ...session, [key]: value });
-//   };
-
-//   const IncorporationDateFrag = () => {
-//     let date = formData.incorporationDate;
-//     if (date !== null && date !== undefined && date !== '') {
-//       const [year, month, day] = date.split('T')[0].split('-');
-//       date = `${day}-${month}-${year}`;
-//     } else {
-//       date = 'Not set'
-//     }
-//     return (
-//       <React.Fragment>
-//         <TableCell className="font-medium">Incorporation Date</TableCell>
-//         <TableCell>{date}</TableCell>
-//         {user.role !== 'user' && <TableCell>
-//           <Dialog>
-//             <DialogTrigger asChild>
-//               <Button variant="outline">Edit</Button>
-//             </DialogTrigger>
-//             <DialogContent>
-//               <DialogHeader>
-//                 <DialogTitle>Edit Incorporation Date</DialogTitle>
-//                 <DialogDescription>
-//                   Set the incorporation date for the company. This is the date when the company was officially registered.
-//                 </DialogDescription>
-//               </DialogHeader>
-//               <div className="grid gap-4 py-4">
-//                 <div className="grid grid-cols-4 items-center gap-4">
-//                   <Label htmlFor="incorporationDate" className="text-right">
-//                     Date
-//                   </Label>
-//                   <Input
-//                     id="incorporationDate"
-//                     type="date"
-//                     value={formData.incorporationDate || ''}
-//                     onChange={(e) =>
-//                       handleCompanyDataChange('incorporationDate', e.target.value)
-//                     }
-//                     className="col-span-3"
-//                   />
-//                 </div>
-//               </div>
-//             </DialogContent>
-//           </Dialog>
-//         </TableCell>}
-//       </React.Fragment>
-//     );
-//   };
-
-//   const CompanyIncorpoStatus = () => {
-//     const statusOptions = [
-//       'Pending',
-//       'KYC Verification',
-//       'Waiting for Payment',
-//       'Waiting for Documents',
-//       'Waiting for Incorporation',
-//       'Incorporation Completed',
-//       'Good Standing',
-//       'Renewal Processing',
-//       'Renewal Completed',
-//     ];
-//     return (
-//       <React.Fragment>
-//         <TableCell className="font-medium">Incorporation Status</TableCell>
-//         <TableCell>{formData.status}</TableCell>
-//         {user.role !== 'user' && <TableCell>
-//           <Select
-//             value={formData.status}
-//             onValueChange={(value) => handleCompanyDataChange('status', value)}
-//           >
-//             <SelectTrigger className="w-[180px]">
-//               <SelectValue placeholder="Select status" />
-//             </SelectTrigger>
-//             <SelectContent>
-//               {statusOptions.map((status) => (
-//                 <SelectItem key={status} value={status}>
-//                   {status}
-//                 </SelectItem>
-//               ))}
-//             </SelectContent>
-//           </Select>
-//         </TableCell>}
-//       </React.Fragment>
-//     );
-//   };
-
-//   const AMLCDDEdit = () => (
-//     <React.Fragment>
-//       <TableCell className="font-medium">AML/CDD Edit</TableCell>
-//       <TableCell>{formData.isDisabled ? 'No' : 'Yes'}</TableCell>
-//       <TableCell>
-//         <Switch
-//           checked={!formData.isDisabled}
-//           onCheckedChange={(checked) => handleCompanyDataChange('isDisabled', !checked)}
-//         />
-//       </TableCell>
-//     </React.Fragment>
-//   );
-
-//   const PaymentStatus = () => {
-//     return (
-//       <React.Fragment>
-//         <TableCell className="font-medium">Payment Status</TableCell>
-//         <TableCell>{session.status}</TableCell>
-//         {user.role !== 'user' && <TableCell>
-//           <Select
-//             value={session.status}
-//             onValueChange={(value) => handleSessionDataChange('status', value)}
-//           >
-//             <SelectTrigger className="w-[180px]">
-//               <SelectValue placeholder="Select status" />
-//             </SelectTrigger>
-//             <SelectContent>
-//               <SelectItem value="pending">Pending</SelectItem>
-//               <SelectItem value="completed">Completed</SelectItem>
-//               <SelectItem value="expired">Expired</SelectItem>
-//             </SelectContent>
-//           </Select>
-//         </TableCell>}
-//       </React.Fragment>
-//     );
-//   };
-
-//   const ExtendPaymentTimer = () => {
-//     return (
-//       <React.Fragment>
-//         <TableCell className="font-medium">Payment Expire Date</TableCell>
-//         <TableCell>{new Date(session.expiresAt).toLocaleString() || 'Not set'}</TableCell>
-//         <TableCell>
-//           <Dialog>
-//             <DialogTrigger asChild>
-//               <Button variant="outline">Edit</Button>
-//             </DialogTrigger>
-//             <DialogContent>
-//               <DialogHeader>
-//                 <DialogTitle>Edit Payment Expire Date</DialogTitle>
-//                 <DialogDescription>
-//                   Extend the Payment Expire for the company Payment.
-//                 </DialogDescription>
-//               </DialogHeader>
-//               <div className="grid gap-4 py-4">
-//                 <div className="grid grid-cols-4 items-center gap-4">
-//                   <Label htmlFor="expiresAt" className="text-right">
-//                     Date
-//                   </Label>
-//                   <Input
-//                     id="expiresAt"
-//                     type="date"
-//                     value={session.expiresAt || ''}
-//                     onChange={(e) => handleSessionDataChange('expiresAt', e.target.value)}
-//                     className="col-span-3"
-//                   />
-//                 </div>
-//               </div>
-//             </DialogContent>
-//           </Dialog>
-//         </TableCell>
-//       </React.Fragment>
-//     );
-//   };
-
-//   const ReceietPaymentFrag = () => {
-//     return (
-//       <React.Fragment>
-//         <TableCell className="font-medium">Receipt</TableCell>
-//         <TableCell>{formData.receiptUrl ? 'Available' : 'Not available'}</TableCell>
-//         <TableCell>
-//           {formData.receiptUrl && (
-//             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-//               <SheetTrigger asChild>
-//                 <Button variant="outline">View Receipt</Button>
-//               </SheetTrigger>
-//               <SheetContent
-//                 side="right"
-//                 className="w-full max-w-[40vw]"
-//                 style={{ width: '40vw', maxWidth: '40vw' }}
-//               >
-//                 <SheetHeader>
-//                   <SheetTitle>Receipt</SheetTitle>
-//                 </SheetHeader>
-//                 <div className="mt-4 space-y-4">
-//                   <iframe
-//                     src={formData.receiptUrl}
-//                     className="w-full h-[calc(100vh-200px)]"
-//                     title="Receipt"
-//                   />
-//                 </div>
-//               </SheetContent>
-//             </Sheet>
-//           )}
-//         </TableCell>
-//       </React.Fragment>
-//     );
-//   };
-
-//   const AssignAdmin = () => {
-//     const handleAssign = (value: string) => {
-//       setAdminAssigned(value);
-//     };
-//     return (
-//       <div className="flex items-center gap-4">
-//         <span className="text-sm font-medium">Assign Admin:</span>
-//         <Select
-//           onValueChange={handleAssign}
-//           value={adminAssigned}
-//         >
-//           <SelectTrigger className="w-60 h-8 text-xs">
-//             <SelectValue placeholder="Assign Admin to..." />
-//           </SelectTrigger>
-//           <SelectContent>
-//             {users.map((u) => (
-//               <SelectItem key={u._id} value={u.fullName || ''}>
-//                 {u.fullName || u.email}
-//               </SelectItem>
-//             ))}
-//           </SelectContent>
-//         </Select>
-//       </div>
-//     );
-//   };
-
-//   return (
-//     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
-//       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
-//         <TabsTrigger
-//           value="details"
-//           className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-//         >
-//           Company Details
-//         </TabsTrigger>
-//         <TabsTrigger
-//           value="service-agreement"
-//           className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-//         >
-//           Record of Documents
-//         </TabsTrigger>
-//         {user.role !== 'user' && (
-//           <TabsTrigger
-//             value="Memos"
-//             className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-//           >
-//             Memo
-//           </TabsTrigger>
-//         )}
-//         {user.role !== 'user' && (
-//           <TabsTrigger
-//             value="Projects"
-//             className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-//           >
-//             Project
-//           </TabsTrigger>
-//         )}
-//         <TabsTrigger
-//           value="Checklist"
-//           className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-//         >
-//           Checklist
-//         </TabsTrigger>
-//       </TabsList>
-//       <TabsContent value="details" className="p-6">
-//         <div className="space-y-4">
-//           {/* <h1 className="text-2xl font-bold">Company Details</h1> */}
-//           <div className="mb-4">
-//             <TodoApp id={id} name={formData.companyName[0]} />
-//           </div>
-
-//           <div className="flex gap-4 mt-auto">
-//             {user.role !== 'user' && <AssignAdmin />}
-//             <Button
-//               onClick={() => navigate(`/company-documents/US/${id}`)}
-//               size="sm"
-//               className="flex items-center gap-2"
-//             >
-//               Company Docs
-//             </Button>
-//           </div>
-//           {sections.map((section) => (
-//             <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
-//               <CardHeader className="bg-muted/50 py-4">
-//                 <CardTitle className="text-lg font-medium">{section.title}</CardTitle>
-//               </CardHeader>
-//               <CardContent className="p-0">
-//                 <Table>
-//                   <TableHeader>
-//                     <TableRow className="border-b hover:bg-muted/30">
-//                       <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Field</TableHead>
-//                       <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Value</TableHead>
-//                       {user.role !== 'user' && <TableHead className="w-1/5 py-3 px-4 text-sm font-medium">Action</TableHead>}
-//                     </TableRow>
-//                   </TableHeader>
-//                   <TableBody>
-//                     {Object.entries(section.data).map(([key, value]) => {
-//                       if (key === 'Incorporation Date')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><IncorporationDateFrag /></TableRow>;
-//                       if (key === 'Incorporation Status')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><CompanyIncorpoStatus /></TableRow>;
-//                       if (key === 'Receipt')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><ReceietPaymentFrag /></TableRow>;
-//                       if (key === 'AML/CDD Edit' && user.role !== 'user')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><AMLCDDEdit /></TableRow>;
-//                       if (key === 'Payment Status')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><PaymentStatus /></TableRow>;
-//                       if (key === 'Payment Expire Date')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><ExtendPaymentTimer /></TableRow>;
-//                       return (
-//                         <TableRow key={key} className="border-b hover:bg-muted/30">
-//                           <TableCell className="py-3 px-4 font-medium">{key}</TableCell>
-//                           <TableCell className="py-3 px-4">{value}</TableCell>
-//                           <TableCell></TableCell>
-//                         </TableRow>
-//                       );
-//                     })}
-//                   </TableBody>
-//                 </Table>
-//                 {section.title === 'Status Information' && user.role !== 'user' && (
-//                   <div className="flex items-center gap-4 p-4 bg-muted/50 border-t">
-//                     <span className="text-sm font-medium">
-//                       Click here to Save the Data
-//                     </span>
-//                     <Button
-//                       onClick={handleUpdate}
-//                       className="px-4 py-2 text-sm"
-//                     >
-//                       Save
-//                     </Button>
-//                   </div>
-//                 )}
-//               </CardContent>
-//             </Card>
-//           ))}
-//         </div>
-//       </TabsContent>
-//       <TabsContent value="service-agreement" className="p-6">
-//         <div className="space-y-6">
-//           <h1 className="text-2xl font-bold">Service Agreement Details</h1>
-//         </div>
-//       </TabsContent>
-//       <TabsContent value="Memos" className="p-6">
-//         <div className="space-y-6">
-//           <MemoApp id={id} />
-//         </div>
-//       </TabsContent>
-//       <TabsContent value="Projects" className="p-6">
-//         <div className="space-y-6">
-//           <AdminProject id={id} />
-//         </div>
-//       </TabsContent>
-//       <TabsContent value="Checklist" className="p-6">
-//         <ChecklistHistory id={id} items={[usIncorporationItems, usRenewalList]} />
-//       </TabsContent>
-//     </Tabs>
-//   );
-// };
-
-// export default UsCompdetail;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
@@ -625,25 +9,62 @@ import { fetchUsers, getUsIncorpoDataById, updateEditValues } from "@/services/d
 import { paymentApi } from "@/lib/api/payment";
 import { useToast } from "@/hooks/use-toast";
 
-import { usaFormWithResetAtom, UsaFormData } from "../USA/UsState";
-import { SessionData } from "./HkCompdetail";
+import { usaAppWithResetAtom } from "../USA/UsState";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 
-import { Building2, Banknote,
-  //  ReceiptText,
-    ShieldCheck, Mail, Phone, Pencil, X, Save } from "lucide-react";
+import {
+  Building2,
+  Banknote,
+  ShieldCheck,
+  Mail,
+  Phone,
+  Pencil,
+  X,
+  Save,
+} from "lucide-react";
 
 import MemoApp from "./MemosHK";
 import TodoApp from "@/pages/Todo/TodoApp";
@@ -652,7 +73,7 @@ import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { User } from "@/components/userList/UsersList";
 import { usIncorporationItems, usRenewalList } from "./detailConstants";
 
-// ---------- tiny helpers ----------
+// -------- helpers --------
 const fmtDate = (iso?: string | null) => {
   if (!iso) return "—";
   try {
@@ -676,7 +97,10 @@ const FallbackAvatar: React.FC<{ name?: string | null }> = ({ name }) => {
   );
 };
 
-const LabelValue: React.FC<{ label: string; children?: React.ReactNode }> = ({ label, children }) => (
+const LabelValue: React.FC<{ label: string; children?: React.ReactNode }> = ({
+  label,
+  children,
+}) => (
   <div className="grid gap-1">
     <div className="text-xs text-muted-foreground">{label}</div>
     <div className="text-sm">{children ?? "—"}</div>
@@ -684,21 +108,35 @@ const LabelValue: React.FC<{ label: string; children?: React.ReactNode }> = ({ l
 );
 
 // normalize objects like {id,value} or direct strings
-const renderVal = (d: any) => (typeof d === "object" && d !== null ? d?.value ?? d?.id ?? "—" : d ?? "—");
+const renderVal = (d: any) =>
+  typeof d === "object" && d !== null ? d?.value ?? d?.id ?? "—" : d ?? "—";
 
 const BoolPill: React.FC<{ value?: boolean }> = ({ value }) => (
-  <Badge variant={value ? "default" : "outline"} className={!value ? "text-muted-foreground" : ""}>
+  <Badge
+    variant={value ? "default" : "outline"}
+    className={!value ? "text-muted-foreground" : ""}
+  >
     {value ? "YES" : "NO"}
   </Badge>
 );
 
-// ---------- Component ----------
+// -------- types --------
+export type SessionData = {
+  _id: string;
+  amount: number;
+  currency: string;
+  expiresAt: string;
+  status: string;
+  paymentId: string;
+};
+
+// -------- main component --------
 const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [form, setForm] = useAtom(usaFormWithResetAtom);
+  const [form, setForm] = useAtom(usaAppWithResetAtom);
   const [users, setUsers] = useState<User[]>([]);
   const [adminAssigned, setAdminAssigned] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -714,7 +152,9 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     paymentId: "",
   });
 
-  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+  const user = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user") as string)
+    : null;
   const isAdmin = user?.role !== "user";
 
   const STATUS_OPTIONS = [
@@ -729,6 +169,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     "Renewal Completed",
   ];
 
+  // ---- bootstrap ----
   useEffect(() => {
     const bootstrap = async () => {
       const data = await getUsIncorpoDataById(`${id}`);
@@ -748,17 +189,24 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       }
 
       const u = await fetchUsers();
-      setUsers(u.filter((e: { role: string }) => e.role === "admin" || e.role === "master"));
+      setUsers(
+        u.filter(
+          (e: { role: string }) => e.role === "admin" || e.role === "master"
+        )
+      );
     };
     bootstrap();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // patch helpers
-  const patchForm = (key: keyof UsaFormData, value: any) => setForm({ ...form, [key]: value });
-  const patchSession = (key: keyof SessionData, value: any) => setSession({ ...session, [key]: value });
+  // ---- patch helpers ----
+  const patchForm = (key: keyof any, value: any) =>
+    setForm({ ...form, [key]: value });
 
-  // assign admin
+  const patchSession = (key: keyof SessionData, value: any) =>
+    setSession({ ...session, [key]: value });
+
+  // ---- assign admin ----
   const AssignAdmin: React.FC = () => (
     <div className="flex items-center gap-3">
       <span className="text-sm font-medium">Assign Admin:</span>
@@ -777,9 +225,19 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     </div>
   );
 
+  // ---- save ----
   const onSave = async () => {
     try {
       setIsSaving(true);
+
+      // backend originally expected `companyName` array.
+      // we build it from companyName_1/2/3.
+      const companyNameArray = [
+        form.companyName_1 || "",
+        form.companyName_2 || "",
+        form.companyName_3 || "",
+      ].filter((n) => n && n.trim() !== "");
+
       const payload = JSON.stringify({
         company: {
           id: form._id,
@@ -787,7 +245,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
           isDisabled: form.isDisabled,
           incorporationDate: form.incorporationDate,
           country: "US",
-          companyName: form.companyName,
+          companyName: companyNameArray,
+          paymentStatus: form.paymentStatus,
         },
         session: {
           id: session._id,
@@ -801,68 +260,118 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       if (resp?.success) {
         toast({ description: "Record updated successfully" });
       } else {
-        toast({ description: "Update failed. Please try again.", variant: "destructive" });
+        toast({
+          description: "Update failed. Please try again.",
+          variant: "destructive",
+        });
       }
     } catch (e: any) {
-      toast({ description: e?.message || "Unexpected error", variant: "destructive" });
+      toast({
+        description: e?.message || "Unexpected error",
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }
   };
 
-  // deriveds
-  const primaryName = form?.companyName?.[0] || form?.name || form?.companyName?.find(Boolean) || "";
-  const altNames = (form?.companyName || []).slice(1, 3).filter(Boolean);
-  const contactName = form?.designatedContact || form?.beneficialOwner || form?.name || "";
-  const email = form?.email || "";
-  const phone = form?.phoneNum || "";
+  // ---- deriveds ----
+  // Primary company name is companyName_1
+  const primaryName = form?.companyName_1 || form?.name || "";
+
+  // Alt/local names are companyName_2 and companyName_3
+  const altNamesRaw = [form?.companyName_2, form?.companyName_3].filter(
+    (n) => n && n.trim() !== ""
+  );
+  const altNames = altNamesRaw as string[];
+
+  const contactName =
+    form?.designatedContact || form?.beneficialOwner || form?.name || "";
+  const emailVal = form?.email || "";
+  const phoneVal = form?.phoneNum || "";
+
   const currentStatus = form?.status || "Pending";
-  const stateName = form?.selectedState?.name || form?.selectedState?.id || "";
+
+  // selectedState can be plain string ("Wyoming") or object
+  const stateName =
+    typeof form?.selectedState === "string"
+      ? form.selectedState
+      : (form?.selectedState as any)?.name ||
+        (form?.selectedState as any)?.id ||
+        "";
+
   const entityType = form?.selectedEntity || "";
 
-  // business schema-aligned
   const industries = (form?.selectedIndustry || []) as string[];
   const purposes = (form?.purposeOfEstablishmentCompany || []) as string[];
-  const bizDesc = form?.descriptionOfBusiness || form?.descriptionOfProducts || "";
-  // const annualRenewalTermsText = t(renderVal(form?.annualRenewalTermsAgreement)); // <-- required on left
+  const bizDesc =
+    form?.descriptionOfBusiness || form?.descriptionOfProducts || "";
+
+  // Expiry fallback: some records store expiresAt at root of company, not only in Stripe session
+  const effectiveExpiresAt =
+    session.expiresAt || (form.expiresAt ? String(form.expiresAt) : "");
 
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
+      {/* TAB HEADERS */}
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
-        <TabsTrigger value="details" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+        <TabsTrigger
+          value="details"
+          className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+        >
           Company Details
         </TabsTrigger>
-        <TabsTrigger value="service-agreement" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+
+        <TabsTrigger
+          value="service-agreement"
+          className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+        >
           Record of Documents
         </TabsTrigger>
+
         {isAdmin && (
-          <TabsTrigger value="Memos" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+          <TabsTrigger
+            value="Memos"
+            className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+          >
             Memo
           </TabsTrigger>
         )}
+
         {isAdmin && (
-          <TabsTrigger value="Projects" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+          <TabsTrigger
+            value="Projects"
+            className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+          >
             Project
           </TabsTrigger>
         )}
-        <TabsTrigger value="Checklist" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+
+        <TabsTrigger
+          value="Checklist"
+          className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+        >
           Checklist
         </TabsTrigger>
       </TabsList>
 
-      {/* DETAILS */}
+      {/* DETAILS TAB */}
       <TabsContent value="details" className="p-4 md:p-6">
         {primaryName && <TodoApp id={id} name={primaryName} />}
 
         <div className="flex gap-x-8 mt-4">
           {isAdmin && <AssignAdmin />}
-          <Button onClick={() => navigate(`/company-documents/US/${id}`)} size="sm" className="flex items-center gap-2">
+          <Button
+            onClick={() => navigate(`/company-documents/US/${id}`)}
+            size="sm"
+            className="flex items-center gap-2"
+          >
             Company Docs
           </Button>
         </div>
 
         <div className="mx-auto grid max-width gap-6 p-4 lg:grid-cols-3 pb-24">
-          {/* LEFT */}
+          {/* LEFT SIDE */}
           <div className="lg:col-span-2 grid gap-6">
             <Card>
               <CardHeader className="pb-2">
@@ -870,38 +379,51 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
                     <Building2 className="h-5 w-5 text-primary" />
                   </div>
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
+                        {/* Company title / edit uses companyName_1 */}
                         {isEditing ? (
                           <Input
                             value={primaryName}
                             onChange={(e) => {
-                              const next = [...(form.companyName || [])];
-                              if (next.length === 0) next.push("");
-                              next[0] = e.target.value;
-                              patchForm("companyName", next);
+                              patchForm("companyName_1", e.target.value);
                             }}
                             className="h-8 text-base"
                             placeholder="Company Name"
                           />
                         ) : (
-                          <CardTitle className="text-xl truncate">{primaryName || "Untitled Company"}</CardTitle>
+                          <CardTitle className="text-xl truncate">
+                            {primaryName || "Untitled Company"}
+                          </CardTitle>
                         )}
 
+                        {/* badges + status */}
                         <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <Badge variant="secondary" className="text-muted-foreground">
-                            United States • US {stateName ? `• ${stateName}` : ""}
+                          <Badge
+                            variant="secondary"
+                            className="text-muted-foreground"
+                          >
+                            United States • US
+                            {stateName ? ` • ${stateName}` : ""}
                           </Badge>
-                          {entityType && <Badge variant="outline">{entityType}</Badge>}
+
+                          {entityType && (
+                            <Badge variant="outline">{entityType}</Badge>
+                          )}
 
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground">Incorporation Status</span>
+                            <span className="text-xs text-muted-foreground">
+                              Incorporation Status
+                            </span>
 
                             {isAdmin ? (
                               <Select
                                 value={currentStatus}
-                                onValueChange={(val) => patchForm("status", val as any)}
+                                onValueChange={(val) =>
+                                  patchForm("status", val as any)
+                                }
                               >
                                 <SelectTrigger className="h-7 w-[240px]">
                                   <SelectValue placeholder="Select status" />
@@ -921,14 +443,22 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         </div>
                       </div>
 
-                      {/* Edit toggle */}
+                      {/* edit toggle */}
                       <div className="flex shrink-0 items-center gap-2">
                         {!isEditing ? (
-                          <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setIsEditing(true)}
+                          >
                             <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
                           </Button>
                         ) : (
-                          <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setIsEditing(false)}
+                          >
                             <X className="mr-1 h-3.5 w-3.5" /> Cancel
                           </Button>
                         )}
@@ -939,12 +469,14 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
               </CardHeader>
 
               <CardContent className="grid gap-5">
-                {/* Basic info */}
+                {/* Basic applicant / contact / relationship / business */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <LabelValue label="Applicant">
                     <div className="flex items-center gap-2">
                       <FallbackAvatar name={String(contactName)} />
-                      <span className="font-medium">{contactName || "—"}</span>
+                      <span className="font-medium">
+                        {contactName || "—"}
+                      </span>
                     </div>
                   </LabelValue>
 
@@ -952,63 +484,65 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     <div className="grid gap-2">
                       <div className="flex items-center gap-2">
                         <Mail className="h-3.5 w-3.5" />
-                        <span className="text-sm">{email || "—"}</span>
+                        <span className="text-sm">{emailVal || "—"}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Phone className="h-3.5 w-3.5" />
-                        <span className="text-sm">{phone || "—"}</span>
+                        <span className="text-sm">{phoneVal || "—"}</span>
                       </div>
                     </div>
                   </LabelValue>
 
+                  {/* Alt / Local Names now uses companyName_2 and companyName_3 */}
                   <LabelValue label="Alt / Local Names">
                     {isEditing ? (
                       <div className="grid grid-cols-2 gap-2">
-                        {[1, 2].map((idx) => (
-                          <Input
-                            key={idx}
-                            value={altNames[idx - 1] || ""}
-                            onChange={(e) => {
-                              const next = [...(form.companyName || [])];
-                              while (next.length < 3) next.push("");
-                              next[idx] = e.target.value;
-                              patchForm("companyName", next);
-                            }}
-                            placeholder={`Name ${idx + 1}`}
-                            className="h-8"
-                          />
+                        <Input
+                          value={form.companyName_2 || ""}
+                          onChange={(e) =>
+                            patchForm("companyName_2", e.target.value)
+                          }
+                          placeholder="Alt Name 1"
+                          className="h-8"
+                        />
+                        <Input
+                          value={form.companyName_3 || ""}
+                          onChange={(e) =>
+                            patchForm("companyName_3", e.target.value)
+                          }
+                          placeholder="Alt Name 2"
+                          className="h-8"
+                        />
+                      </div>
+                    ) : altNames.length ? (
+                      <div className="flex flex-wrap gap-2">
+                        {altNames.map((n, i) => (
+                          <Badge key={n + i} variant="secondary">
+                            {n}
+                          </Badge>
                         ))}
                       </div>
                     ) : (
-                      <div className="flex flex-wrap gap-2">
-                        {altNames.length ? (
-                          altNames.map((n, i) => (
-                            <Badge key={String(n) + i} variant="secondary">
-                              {n}
-                            </Badge>
-                          ))
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </div>
+                      <span className="text-muted-foreground">—</span>
                     )}
                   </LabelValue>
 
                   <LabelValue label="Relationships">
                     {(form.establishedRelationshipType || []).length ? (
                       <div className="flex flex-wrap gap-2">
-                        {form.establishedRelationshipType!.map((r, i) => (
-                          <Badge key={r + i} variant="outline">
-                            {r}
-                          </Badge>
-                        ))}
+                        {form.establishedRelationshipType!.map(
+                          (r: any, i: number) => (
+                            <Badge key={r + i} variant="outline">
+                              {r}
+                            </Badge>
+                          )
+                        )}
                       </div>
                     ) : (
                       "—"
                     )}
                   </LabelValue>
 
-                  {/* Business schema-aligned */}
                   <LabelValue label="Industry">
                     {industries.length ? (
                       <div className="flex flex-wrap gap-2">
@@ -1037,91 +571,165 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     )}
                   </LabelValue>
 
-                  <LabelValue label="Business Description">{bizDesc || "—"}</LabelValue>
-
-                  {/* << Added: Annual Renewal Terms (translated) */}
-                  <LabelValue label="Annual Renewal Terms">
-                    {t(renderVal(form?.annualRenewalTermsAgreement)) || "—"}
+                  <LabelValue label="Business Description">
+                    {bizDesc || "—"}
                   </LabelValue>
-                  {/* >> */}
 
+                  <LabelValue label="Annual Renewal Terms">
+                    {t(renderVal((form as any)?.annualRenewalTermsAgreement)) ||
+                      "—"}
+                  </LabelValue>
+                   <LabelValue label="U.S. local company registration address">
+                    {t(renderVal((form as any)?.localCompanyRegistration)) ||
+                      "—"}
+                  </LabelValue>
+                   <LabelValue label="Business address within the United States">
+                    {t(renderVal((form as any)?.businessAddress)) ||
+                      "—"}
+                  </LabelValue>
                 </div>
 
                 <Separator />
 
-                {/* Shareholders */}
+                {/* Shareholders / directors */}
                 <div className="space-y-3">
-                  <div className="text-sm font-medium">Shareholding & Parties</div>
-                  {Array.isArray(form?.shareHolders) && form.shareHolders.length ? (
+                  <div className="text-sm font-medium">
+                    Shareholding & Parties
+                  </div>
+
+                  {Array.isArray(form?.shareHolders) &&
+                  form.shareHolders.length ? (
                     <div className="rounded-md border">
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[32%]">Shareholder</TableHead>
-                            <TableHead className="w-[20%]">Email</TableHead>
-                            <TableHead className="w-[16%]">Phone</TableHead>
-                            <TableHead className="w-[16%]">Ownership</TableHead>
-                            <TableHead className="w-[16%]">Director / Legal</TableHead>
+                            <TableHead className="w-[32%]">
+                              Shareholder
+                            </TableHead>
+                            <TableHead className="w-[20%]">
+                              Email
+                            </TableHead>
+                            <TableHead className="w-[16%]">
+                              Phone
+                            </TableHead>
+                            <TableHead className="w-[16%]">
+                              Ownership
+                            </TableHead>
+                            <TableHead className="w-[16%]">
+                              Director / Legal
+                            </TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {form.shareHolders.map((p: any, i: number) => (
-                            <TableRow key={(p?.email || p?.name || "sh") + i}>
-                              <TableCell className="font-medium">{p?.name || "—"}</TableCell>
-                              <TableCell>{p?.email || "—"}</TableCell>
-                              <TableCell>{p?.phone || "—"}</TableCell>
-                              <TableCell>
-                                {typeof p?.ownershipRate === "number"
-                                  ? `${p.ownershipRate}%`
-                                  : typeof p?.ownerShipRate === "number"
-                                  ? `${p.ownerShipRate}%`
-                                  : "—"}
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex gap-2">
-                                  <Badge variant={String(renderVal(p?.isDirector)).toLowerCase() === "yes" ? "default" : "outline"}>
-                                    {renderVal(p?.isDirector) || "—"}
-                                  </Badge>
-                                  <Badge variant={String(renderVal(p?.isLegalPerson)).toLowerCase() === "yes" ? "default" : "outline"}>
-                                    {renderVal(p?.isLegalPerson) || "—"}
-                                  </Badge>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                          {form.shareHolders.map(
+                            (p: any, i: number) => (
+                              <TableRow
+                                key={(p?.email || p?.name || "sh") + i}
+                              >
+                                <TableCell className="font-medium">
+                                  {p?.name || "—"}
+                                </TableCell>
+                                <TableCell>{p?.email || "—"}</TableCell>
+                                <TableCell>{p?.phone || "—"}</TableCell>
+                                <TableCell>
+                                  {typeof p?.ownershipRate === "number"
+                                    ? `${p.ownershipRate}%`
+                                    : typeof p?.ownerShipRate === "number"
+                                    ? `${p.ownerShipRate}%`
+                                    : "—"}
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex gap-2">
+                                    <Badge
+                                      variant={String(
+                                        renderVal(p?.isDirector)
+                                      )
+                                        .toLowerCase()
+                                        .includes("yes")
+                                        ? "default"
+                                        : "outline"}
+                                    >
+                                      {renderVal(p?.isDirector) || "—"}
+                                    </Badge>
+                                    <Badge
+                                      variant={String(
+                                        renderVal(p?.isLegalPerson)
+                                      )
+                                        .toLowerCase()
+                                        .includes("yes")
+                                        ? "default"
+                                        : "outline"}
+                                    >
+                                      {renderVal(p?.isLegalPerson) || "—"}
+                                    </Badge>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            )
+                          )}
                         </TableBody>
                       </Table>
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No parties added.</div>
+                    <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+                      No parties added.
+                    </div>
                   )}
                 </div>
 
                 <Separator />
 
-                {/* Dates & toggles */}
+                {/* Incorporation date + AML/CDD toggle */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <LabelValue label="Incorporation Date">
                     <div className="flex items-center gap-2">
-                      <span>{form?.incorporationDate ? fmtDate(form.incorporationDate) : "—"}</span>
+                      <span>
+                        {form?.incorporationDate
+                          ? fmtDate(form.incorporationDate)
+                          : "—"}
+                      </span>
                       {isAdmin && (
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" size="sm">Edit</Button>
+                            <Button variant="outline" size="sm">
+                              Edit
+                            </Button>
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>Edit Incorporation Date</DialogTitle>
-                              <DialogDescription>Set the date when the company was officially registered.</DialogDescription>
+                              <DialogTitle>
+                                Edit Incorporation Date
+                              </DialogTitle>
+                              <DialogDescription>
+                                Set the date when the company was officially
+                                registered.
+                              </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-4 py-2">
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="incorporationDate" className="text-right">Date</Label>
+                                <Label
+                                  htmlFor="incorporationDate"
+                                  className="text-right"
+                                >
+                                  Date
+                                </Label>
                                 <Input
                                   id="incorporationDate"
                                   type="date"
-                                  value={form?.incorporationDate ? String(form.incorporationDate).slice(0, 10) : ""}
-                                  onChange={(e) => patchForm("incorporationDate", e.target.value)}
+                                  value={
+                                    form?.incorporationDate
+                                      ? String(form.incorporationDate).slice(
+                                          0,
+                                          10
+                                        )
+                                      : ""
+                                  }
+                                  onChange={(e) =>
+                                    patchForm(
+                                      "incorporationDate",
+                                      e.target.value
+                                    )
+                                  }
                                   className="col-span-3"
                                 />
                               </div>
@@ -1138,7 +746,9 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       {isAdmin && (
                         <Switch
                           checked={!form?.isDisabled}
-                          onCheckedChange={(checked) => patchForm("isDisabled", !checked)}
+                          onCheckedChange={(checked) =>
+                            patchForm("isDisabled", !checked)
+                          }
                         />
                       )}
                     </div>
@@ -1148,9 +758,9 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
             </Card>
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT SIDE */}
           <div className="grid gap-6">
-            {/* Payment */}
+            {/* PAYMENT CARD */}
             <Card>
               <CardHeader className="pb-2">
                 <div className="flex items-start gap-3">
@@ -1159,19 +769,32 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   </div>
                   <div className="flex-1">
                     <CardTitle className="text-base">Payment</CardTitle>
-                    {/* <div className="mt-1 flex flex-wrap items-center gap-2">
-                      <Badge variant="secondary" className="gap-1">
-                        <ReceiptText className="h-3.5 w-3.5" />
-                        {(form.payMethod || form.paymentOption || "").toUpperCase() || "—"}
-                      </Badge>
-                      {form.bankRef && <Badge variant="outline" className="gap-1">Ref: {form.bankRef}</Badge>}
 
+                    {/* header badges */}
+                    <div className="mt-1 flex flex-wrap items-center gap-2">
+                      {/* Pay method badge */}
+                      <Badge variant="secondary" className="gap-1">
+                        {(form.payMethod || "")
+                          .toString()
+                          .toUpperCase() || "—"}
+                      </Badge>
+
+                      {/* Bank ref */}
+                      {form.bankRef && (
+                        <Badge variant="outline" className="gap-1">
+                          Ref: {form.bankRef}
+                        </Badge>
+                      )}
+
+                      {/* Stripe Paid indicator */}
                       {form.paymentStatus === "paid" &&
                         form.stripeLastStatus === "succeeded" &&
                         form.stripeReceiptUrl && (
-                          <Badge className="bg-emerald-600 hover:bg-emerald-600">Stripe Paid</Badge>
+                          <Badge className="bg-emerald-600 hover:bg-emerald-600">
+                            Stripe Paid
+                          </Badge>
                         )}
-                    </div> */}
+                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -1179,88 +802,197 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
               <CardContent className="grid gap-4">
                 {/* Receipt / Proof */}
                 <div className="grid gap-2">
-                  <div className="text-xs text-muted-foreground">Receipt / Proof</div>
+                  <div className="text-xs text-muted-foreground">
+                    Receipt / Proof
+                  </div>
 
-                  {/* {form.paymentStatus === "paid" &&
+                  {/* Case 1: Stripe success info box */}
+                  {form.paymentStatus === "paid" &&
                   form.stripeLastStatus === "succeeded" &&
                   form.stripeReceiptUrl ? (
                     <div className="rounded-md border bg-emerald-50 p-4 text-emerald-800">
-                      <div className="text-sm font-medium">Payment successful via Stripe.</div>
-                      <a href={form.stripeReceiptUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center text-sm underline">
+                      <div className="text-sm font-medium">
+                        Payment successful via Stripe.
+                      </div>
+                      <a
+                        href={form.stripeReceiptUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-2 inline-flex items-center text-sm underline"
+                      >
                         View Stripe Receipt
                       </a>
                     </div>
-                  ) : ()} */}
-                  {form.receiptUrl ? (
+                  ) : // Case 2: uploaded proof (from uploadReceiptUrl or receiptUrl if you store one)
+                  form.uploadReceiptUrl ? (
                     <div className="space-y-3">
-                      <a href={form.receiptUrl} target="_blank" rel="noreferrer" className="group relative block overflow-hidden rounded-md border">
-                        <img src={form.receiptUrl} alt="Payment receipt" className="h-44 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]" />
+                      <a
+                        href={form.uploadReceiptUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group relative block overflow-hidden rounded-md border"
+                      >
+                        <img
+                          src={form.uploadReceiptUrl}
+                          alt="Payment receipt"
+                          className="h-44 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]"
+                        />
                       </a>
 
-                    
+                      {/* Admin-only paymentStatus dropdown */}
+                      {isAdmin && (
+                        <div className="flex flex-col gap-3">
+                          <div className="flex items-center gap-3">
+                            <Label className="text-sm font-medium">
+                              Payment Status:
+                            </Label>
+                            <Select
+                              value={form.paymentStatus || "unpaid"}
+                              onValueChange={(val) =>
+                                patchForm("paymentStatus", val)
+                              }
+                            >
+                              <SelectTrigger className="w-32">
+                                <SelectValue placeholder="Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="unpaid">
+                                  Pending
+                                </SelectItem>
+                                <SelectItem value="paid">Paid</SelectItem>
+                                <SelectItem value="rejected">
+                                  Rejected
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No file uploaded</div>
+                    // Case 3: no proof
+                    <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+                      No file uploaded
+                    </div>
                   )}
-                  
                 </div>
 
-                {/* Amount + Expiry */}
-                <div className="grid gap-4 py-2">
+                {/* Amount / Expires / Payment Status / View Receipt */}
+                <div className="grid gap-4 py-4">
+                  {/* Amount */}
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label className="text-right">Amount</Label>
                     <div className="col-span-3 text-sm font-medium">
-                      { session.amount ? `${session.amount} ${session.currency || "USD"}` : "—"}
+                      {session.amount
+                        ? `${session.amount} ${session.currency || "USD"}`
+                        : form.stripeAmountCents
+                        ? `${(form.stripeAmountCents / 100).toFixed(2)} ${
+                            form.stripeCurrency
+                              ? form.stripeCurrency.toUpperCase()
+                              : "USD"
+                          }`
+                        : "—"}
                     </div>
                   </div>
 
+                  {/* ExpiresAt (Stripe session or company-level expiresAt) */}
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="expiresAt" className="text-right">Expires</Label>
+                    <Label htmlFor="expiresAt" className="text-right">
+                      Expires
+                    </Label>
+
                     {isAdmin ? (
                       <Input
                         id="expiresAt"
                         type="date"
-                        value={session.expiresAt ? session.expiresAt.slice(0, 10) : ""}
-                        onChange={(e) => patchSession("expiresAt", e.target.value)}
+                        value={
+                          effectiveExpiresAt
+                            ? effectiveExpiresAt.slice(0, 10)
+                            : ""
+                        }
+                        onChange={(e) => {
+                          // prefer to patch session first if we have a session
+                          if (session._id) {
+                            patchSession("expiresAt", e.target.value);
+                          } else {
+                            patchForm("expiresAt", e.target.value);
+                          }
+                        }}
                         className="col-span-3"
                       />
                     ) : (
-                      <div className="col-span-3 text-sm">{session.expiresAt ? fmtDate(session.expiresAt) : "—"}</div>
+                      <div className="col-span-3 text-sm">
+                        {effectiveExpiresAt
+                          ? fmtDate(effectiveExpiresAt)
+                          : "—"}
+                      </div>
                     )}
                   </div>
 
-                  {isAdmin && (
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Payment Status</Label>
-                      <div className="col-span-3">
-                        <Select value={session.status || ""} onValueChange={(val) => patchSession("status", val as any)}>
-                          <SelectTrigger className="w-48">
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                            <SelectItem value="expired">Expired</SelectItem>
-                          </SelectContent>
-                        </Select>
+                  {/* Admin-only Payment Status select if not already rendered above */}
+                  {!form.uploadReceiptUrl &&
+                    !(
+                      form.paymentStatus === "paid" &&
+                      form.stripeLastStatus === "succeeded" &&
+                      form.stripeReceiptUrl
+                    ) &&
+                    isAdmin && (
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label className="text-right">Payment Status</Label>
+                        <div className="col-span-3">
+                          <Select
+                            value={form.paymentStatus || "unpaid"}
+                            onValueChange={(val) =>
+                              patchForm("paymentStatus", val)
+                            }
+                          >
+                            <SelectTrigger className="w-48">
+                              <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="unpaid">Pending</SelectItem>
+                              <SelectItem value="paid">Paid</SelectItem>
+                              <SelectItem value="rejected">Rejected</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {form.receiptUrl && (
+                  {/* View Receipt button / sheet */}
+                  {(form.uploadReceiptUrl) && (
                     <div className="grid grid-cols-4 items-start gap-4">
                       <Label className="text-right">Receipt</Label>
                       <div className="col-span-3">
-                        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                        <Sheet
+                          open={isSheetOpen}
+                          onOpenChange={setIsSheetOpen}
+                        >
                           <SheetTrigger asChild>
-                            <Button variant="outline" size="sm">View Receipt</Button>
+                            <Button variant="outline" size="sm">
+                              View Receipt
+                            </Button>
                           </SheetTrigger>
-                          <SheetContent side="right" className="w-full max-w-[40vw]" style={{ width: "40vw", maxWidth: "40vw" }}>
+                          <SheetContent
+                            side="right"
+                            className="w-full max-w-[40vw]"
+                            style={{
+                              width: "40vw",
+                              maxWidth: "40vw",
+                            }}
+                          >
                             <SheetHeader>
                               <SheetTitle>Receipt</SheetTitle>
                             </SheetHeader>
                             <div className="mt-4 space-y-4">
-                              <iframe src={form.receiptUrl} className="w-full h-[calc(100vh-200px)]" title="Receipt" />
+                              <iframe
+                                src={
+                                  form.uploadReceiptUrl ||
+                                  form.stripeReceiptUrl
+                                }
+                                className="w-full h-[calc(100vh-200px)]"
+                                title="Receipt"
+                              />
                             </div>
                           </SheetContent>
                         </Sheet>
@@ -1271,7 +1003,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
               </CardContent>
             </Card>
 
-            {/* Compliance */}
+            {/* COMPLIANCE & DECLARATIONS CARD */}
             <Card>
               <CardHeader>
                 <div className="flex items-start gap-3">
@@ -1279,33 +1011,80 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     <ShieldCheck className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-base">Compliance & Declarations</CardTitle>
+                    <CardTitle className="text-base">
+                      Compliance & Declarations
+                    </CardTitle>
                   </div>
                 </div>
               </CardHeader>
+
               <CardContent className="grid gap-4">
-                {/* <div className="grid grid-cols-2 gap-3">
-                  <LabelValue label="Truthfulness"><BoolPill value={!!form.truthfulnessDeclaration} /></LabelValue>
-                  <LabelValue label="Legal Terms"><BoolPill value={!!form.legalTermsAcknowledgment} /></LabelValue>
-                  <LabelValue label="Compliance Precondition"><BoolPill value={!!form.compliancePreconditionAcknowledgment} /></LabelValue>
-                  <LabelValue label="e-Sign">{form.eSign || "—"}</LabelValue>
-                </div> */}
+                <div className="grid grid-cols-2 gap-3">
+                  <LabelValue label="Truthfulness">
+                    <BoolPill value={!!form.truthfulnessDeclaration} />
+                  </LabelValue>
+                  <LabelValue label="Legal Terms">
+                    <BoolPill value={!!form.legalTermsAcknowledgment} />
+                  </LabelValue>
+                  <LabelValue label="Compliance Precondition">
+                    <BoolPill
+                      value={!!form.compliancePreconditionAcknowledgment}
+                    />
+                  </LabelValue>
+                  <LabelValue label="e-Sign">
+                    {form.eSign || "—"}
+                  </LabelValue>
+                </div>
 
                 <Separator />
 
                 <div className="grid grid-cols-1 gap-3">
-                  <div className="text-xs text-muted-foreground">Sanctions / Restrictions</div>
+                  <div className="text-xs text-muted-foreground">
+                    Sanctions / Restrictions
+                  </div>
+
                   <div className="grid grid-cols-1 gap-2 text-sm">
                     {[
-                      ["Legal or Ethical Concern(money laundering etc)", String(renderVal(form?.hasLegalEthicalIssues)).toLowerCase().includes("yes")],
-                      ["Sanctioned Countries Activity (iran, sudan, NK, syria, cuba,belarus, zimbabwe", String(renderVal(form?.restrictedCountriesWithActivity)).toLowerCase().includes("yes")],
-                      ["Sanctions Exposure (involved in above countries or under sanctions by  UN, EU, UKHMT, HKMA, OFAC,)", String(renderVal(form?.sanctionedTiesPresent)).toLowerCase().includes("yes")],
-                      ["Crimea/Sevastopol Presence", String(renderVal(form?.businessInCrimea)).toLowerCase().includes("yes")],
-                      ["Russian Energy Presence", String(renderVal(form?.involvedInRussianEnergyDefense)).toLowerCase().includes("yes")],
+                      [
+                        "Legal or Ethical Concern(money laundering etc)",
+                        (form.legalAndEthicalConcern || "")
+                          .toLowerCase()
+                          .includes("yes"),
+                      ],
+                      [
+                        "Sanctioned Countries Activity (iran, sudan, NK, syria, cuba,belarus, zimbabwe",
+                        (form.q_country || "")
+                          .toLowerCase()
+                          .includes("yes"),
+                      ],
+                      [
+                        "Sanctions Exposure (involved in above countries or under sanctions by  UN, EU, UKHMT, HKMA, OFAC,)",
+                        (form.sanctionsExposureDeclaration || "")
+                          .toLowerCase()
+                          .includes("yes"),
+                      ],
+                      [
+                        "Crimea/Sevastopol Presence",
+                        (form.crimeaSevastapolPresence || "")
+                          .toLowerCase()
+                          .includes("yes"),
+                      ],
+                      [
+                        "Russian Energy Presence",
+                        (form.russianEnergyPresence || "")
+                          .toLowerCase()
+                          .includes("yes"),
+                      ],
                     ].map(([label, flagged], i) => (
-                      <div key={String(label) + i} className="flex items-center justify-between gap-3">
+                      <div
+                        key={String(label) + i}
+                        className="flex items-center justify-between gap-3"
+                      >
                         <span>{label as string}</span>
-                        <Badge variant={flagged ? "destructive" : "outline"} className={!flagged ? "text-muted-foreground" : ""}>
+                        <Badge
+                          variant={flagged ? "destructive" : "outline"}
+                          className={flagged ? "" : "text-muted-foreground"}
+                        >
                           {flagged ? "YES" : "NO"}
                         </Badge>
                       </div>
@@ -1316,14 +1095,18 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 <Separator />
 
                 <div className="grid grid-cols-2 gap-4">
-                  <LabelValue label="Social App">{renderVal(form?.snsAccountId?.id) || "—"}</LabelValue>
-                  <LabelValue label="Handle / ID">{renderVal(form?.snsAccountId?.value) || "—"}</LabelValue>
+                  <LabelValue label="Social App">
+                    {form.snsPlatform || form.sns || "—"}
+                  </LabelValue>
+                  <LabelValue label="Handle / ID">
+                    {form.snsHandle || form.snsId || "—"}
+                  </LabelValue>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Sticky save bar */}
+          {/* FIXED SAVE BAR */}
           <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
               <div className="text-xs text-muted-foreground">
@@ -1331,7 +1114,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
               </div>
               <div className="flex items-center gap-2">
                 <Button onClick={onSave}>
-                  <Save className="mr-1 h-4 w-4" /> {isSaving ? "Saving..." : "Save"}
+                  <Save className="mr-1 h-4 w-4" />{" "}
+                  {isSaving ? "Saving..." : "Save"}
                 </Button>
               </div>
             </div>
@@ -1339,30 +1123,33 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         </div>
       </TabsContent>
 
-      {/* RECORD OF DOCS */}
+      {/* RECORD OF DOCUMENTS TAB */}
       <TabsContent value="service-agreement" className="p-6">
         <div className="space-y-6">
           <h1 className="text-2xl font-bold">Service Agreement Details</h1>
         </div>
       </TabsContent>
 
-      {/* MEMOS */}
+      {/* MEMOS TAB */}
       <TabsContent value="Memos" className="p-6">
         <div className="space-y-6">
           <MemoApp id={id} />
         </div>
       </TabsContent>
 
-      {/* PROJECTS */}
+      {/* PROJECTS TAB */}
       <TabsContent value="Projects" className="p-6">
         <div className="space-y-6">
           <AdminProject id={id} />
         </div>
       </TabsContent>
 
-      {/* CHECKLIST */}
+      {/* CHECKLIST TAB */}
       <TabsContent value="Checklist" className="p-6">
-        <ChecklistHistory id={id} items={[usIncorporationItems, usRenewalList]} />
+        <ChecklistHistory
+          id={id}
+          items={[usIncorporationItems, usRenewalList]}
+        />
       </TabsContent>
     </Tabs>
   );

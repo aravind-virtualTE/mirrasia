@@ -29,7 +29,7 @@ import { allCompListAtom, companyIncorporationList } from "@/services/state";
 import { getIncorporationListByUserId } from "@/services/dataFetch";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 
-import { usaFormWithResetAtom } from "../Company/USA/UsState";
+import { usaAppWithResetAtom } from "../Company/USA/UsState";
 import { toast } from "@/hooks/use-toast";
 import ServiceCarousel from "./ServiceCarousel";
 import MainFunctionalities from "./MainFunctionalities";
@@ -46,12 +46,13 @@ const Dashboard = () => {
   const [cList] = useAtom(companyIncorporationList);
   const setCompIncList = useSetAtom(companyIncorporationList);
   const [allList, setAllList] = useAtom(allCompListAtom);
-  const [, setUsaReset] = useAtom(usaFormWithResetAtom);
+  const [, setUsaReset] = useAtom(usaAppWithResetAtom);
   const resetAllForms = useResetAllForms();
   const [,setHK] = useAtom(hkAppAtom)
   const [, setPA] = useAtom(paFormWithResetAtom);
   const [,setPAF] = useAtom(pifFormWithResetAtom);
   const [, setSG] = useAtom(sgFormWithResetAtom);
+  const [,setPifFormData] = useAtom(pifFormWithResetAtom);
 
 
   const token = useMemo(
@@ -80,6 +81,7 @@ const Dashboard = () => {
     setPAF("reset");
     setSG("reset");
     setUsaReset("reset");
+    setPifFormData("reset");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -104,7 +106,7 @@ const Dashboard = () => {
         }
       }
     })();
-    console.log("allList",allList)
+    // console.log("allList",allList)
     return () => {
       isActive = false;
       controller.abort();
@@ -165,7 +167,7 @@ const Dashboard = () => {
     }
     return "N/A";
   };
-  console.log("allList",allList)
+  // console.log("allList",allList)
   return (
     <>
       <div className="flex-1 p-8">

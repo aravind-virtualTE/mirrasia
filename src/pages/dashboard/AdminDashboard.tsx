@@ -24,7 +24,7 @@ import { useAtom, useSetAtom } from "jotai"
 import { allCompListAtom, companyIncorporationList } from "@/services/state"
 import { cn } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
-import { usaFormWithResetAtom } from "../Company/USA/UsState"
+import { usaAppWithResetAtom } from "../Company/USA/UsState"
 import { useResetAllForms } from "@/lib/atom"
 import { formatDateTime } from "./Admin/utils"
 import { companyTableData, Stats, StatsCardProps } from "./Admin/types"
@@ -44,7 +44,7 @@ const AdminDashboard = () => {
   const setCompIncList = useSetAtom(companyIncorporationList)
   const [allList, setAllList] = useAtom(allCompListAtom)
   const navigate = useNavigate()
-  const [, setUsaReset] = useAtom(usaFormWithResetAtom)
+  const [, setUsaReset] = useAtom(usaAppWithResetAtom)
   const [, setHK] = useAtom(hkAppAtom)
   const [, setPA] = useAtom(paFormWithResetAtom);
   const [, setPAF] = useAtom(pifFormWithResetAtom);

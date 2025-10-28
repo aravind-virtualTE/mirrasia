@@ -18,9 +18,9 @@ import {
     // getIncorporationListByCompId, getIncorporationListByUserId, 
     getUsIncorpoDataById, getPaIncorpoDataById, getSgIncorpoDataById
 } from '@/services/dataFetch';
-import IncorporateUSACompany from './USA/IncorporateUSCompany';
+// import IncorporateUSACompany from './USA/IncorporateUSCompany';
 import { Card, CardContent } from '@/components/ui/card';
-import { usaFormWithResetAtom } from './USA/UsState';
+import { usaAppWithResetAtom} from './USA/UsState'; //usaFormWithResetAtom
 import { useTranslation } from "react-i18next";
 import IncorporateSg from './Singapore/IncorporateSg';
 import IncorporatePa from './Panama/PaIncorporation';
@@ -30,6 +30,7 @@ import ConfigDrivenHKForm from './NewHKForm/NewHKIncorporation';
 import { getHkIncorpoData, hkAppAtom } from './NewHKForm/hkIncorpo';
 import PanamaFoundation from './PanamaFoundation/PaFIncorporation';
 import { getPaFIncorpoData, pifFormWithResetAtom } from './PanamaFoundation/PaState';
+import ConfigDrivenUSAForm from './USA/UsIncorporation';
 
 const CompanyRegistration = () => {
     const { t } = useTranslation();
@@ -40,7 +41,7 @@ const CompanyRegistration = () => {
     // const [, setCompaniesList] = useAtom(companyIncorporationList);
     // const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     // const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
-    const [, setFormData] = useAtom(usaFormWithResetAtom);
+    const [, setFormData] = useAtom(usaAppWithResetAtom);
     const [, setPAFormData] = useAtom(paFormWithResetAtom);
     const [, setSgFormData] = useAtom(sgFormWithResetAtom);
     const [, setHkInfoData] = useAtom(hkAppAtom);
@@ -144,7 +145,8 @@ const CompanyRegistration = () => {
                 // return <IncorporationForm />;
                 return <ConfigDrivenHKForm />;
             case 'US':
-                return <IncorporateUSACompany />;
+                // return <IncorporateUSACompany />;
+                return <ConfigDrivenUSAForm />;
             case 'SG':
                 return <IncorporateSg />;
             case 'PA':
