@@ -90,6 +90,7 @@ import api from "@/services/fetch";
 import CustomLoader from "@/components/ui/customLoader";
 import { sendInviteToShDir } from "@/services/dataFetch";
 import { isValidEmail } from "@/middleware";
+import { sendEmailOtpforVerification, validateOtpforVerification } from "@/hooks/useAuth";
 
 const STRIPE_CLIENT_ID =
     import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
@@ -151,20 +152,91 @@ function EmailWithOtp() {
     const set = (patch: Partial<typeof form>) =>
         setForm((prev: any) => ({ ...prev, ...patch }));
 
-    const sendOtp = () => {
-        if (!String(form.email || "").trim()) return;
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
-        set({
-            _emailOtpGenerated: code,
-            emailOtpSent: true,
-            emailOtpVerified: false,
-            emailOtpInput: "",
-        });
+    type OtpSession = { sms: string | null; email: string | null };
+    const [otpSession, setOtpSession] = React.useState<OtpSession>({ sms: null, email: null });
+    const [emailOtp, setEmailOtp] = React.useState("");
+    const [emailOtpSent, setEmailOtpSent] = React.useState(false);
+
+    // const sendOtp = () => {
+    //     if (!String(form.email || "").trim()) return;
+    //     const code = Math.floor(100000 + Math.random() * 900000).toString();
+    //     set({
+    //         _emailOtpGenerated: code,
+    //         emailOtpSent: true,
+    //         emailOtpVerified: false,
+    //         emailOtpInput: "",
+    //     });
+    // };
+    // const verifyOtp = () => {
+    //     const ok =
+    //         form.emailOtpInput && form.emailOtpInput === form._emailOtpGenerated;
+    //     set({ emailOtpVerified: !!ok });
+    // };
+
+    const handleSendEmailOtp = async () => {
+        if (!form.email) return;
+
+        const data = {
+            email: form.email,
+            name: form.name,
+        }
+        if (otpSession.email != null) {
+            toast({
+                title: "Error",
+                description: "Verify the otp sent already",
+                variant: "destructive"
+            })
+            return
+        }
+
+        const result = await sendEmailOtpforVerification(data)
+
+        if (result.success) {
+            setEmailOtpSent(true);
+            setOtpSession((s) => ({ ...s, email: result.id }));
+            toast({
+                title: "Success",
+                description: "OTP sent successfully",
+                variant: "default"
+            })
+        } else {
+            // console.log("testing send otp")
+            setEmailOtpSent(false);
+            setOtpSession((s) => ({ ...s, sms: null }));
+            toast({
+                title: "Error",
+                description: "Failed to send OTP. Please Try Later.",
+                variant: "destructive"
+            })
+        }
+
     };
-    const verifyOtp = () => {
-        const ok =
-            form.emailOtpInput && form.emailOtpInput === form._emailOtpGenerated;
-        set({ emailOtpVerified: !!ok });
+
+    const handleVerifyEmailOtp = async () => {
+        if (!emailOtp.trim()) {
+            toast({
+                title: "Error",
+                description: "Please enter OTP",
+                variant: "destructive"
+            })
+            return;
+        }
+        const data = {
+            otp: emailOtp,
+            id: otpSession.email
+        }
+        const result = await validateOtpforVerification(data)
+        if (result.success) {
+            set({ emailOtpVerified: true })
+            setOtpSession((s) => ({ ...s, sms: null }));
+            setEmailOtpSent(false)
+        } else {
+            toast({
+                title: "Error",
+                description: "Invalid OTP",
+                variant: "destructive"
+            })
+        }
     };
 
     return (
@@ -208,24 +280,24 @@ function EmailWithOtp() {
                 <Button
                     type="button"
                     variant="outline"
-                    onClick={sendOtp}
+                    onClick={handleSendEmailOtp}
                     disabled={!String(form.email || "").trim()}
                 >
                     {t("usa.email.sendOtp", "Send OTP")}
                 </Button>
             </div>
 
-            {form.emailOtpSent && !form.emailOtpVerified && (
+            {emailOtpSent && (
                 <div className="flex gap-2">
                     <Input
                         placeholder={t("usa.email.enterOtp", "Enter OTP")}
-                        value={form.emailOtpInput ?? ""}
-                        onChange={(e) => set({ emailOtpInput: e.target.value })}
+                        value={emailOtp ?? ""}
+                        onChange={(e) => setEmailOtp(e.target.value)}
                     />
                     <Button
                         type="button"
-                        onClick={verifyOtp}
-                        disabled={!String(form.emailOtpInput || "").trim()}
+                        onClick={handleVerifyEmailOtp}
+                        disabled={!String(emailOtp || "").trim()}
                     >
                         {t("usa.email.verify", "Verify")}
                     </Button>
@@ -993,7 +1065,7 @@ function RegistrationDetailsSection({
 
     const handleAddressSelect = (val: string) => {
         setField({ localCompanyRegistration: val });
-        if(val == addressOptions[0]) setField({ businessAddress: '' })
+        if (val == addressOptions[0]) setField({ businessAddress: '' })
     };
 
     const handleSharesSelect = (val: string | number) => {
@@ -3477,8 +3549,7 @@ export default function ConfigDrivenUSAForm() {
     }, [activeStep, form]);
     const decodedToken = jwtDecode<any>(token);
     const canNext = true;
-    const updateDoc = async () => {        
-        
+    const updateDoc = async () => {
         // const docId = localStorage.getItem("companyRecordId");
         const payload = { ...form };
         payload.userId = `${decodedToken.userId}`
@@ -3502,8 +3573,8 @@ export default function ConfigDrivenUSAForm() {
     }
 
     const handleNext = async () => {
-        console.log("Next clicked", form);
-        console.log("stepMissing", stepMissing)
+        // console.log("Next clicked", form);
+        // console.log("stepMissing", stepMissing)
         if (stepMissing.length > 0) {
             toast({
                 title: t("usa.validation.missingFieldsTitle", "Please complete all required fields before proceeding."),
@@ -3515,6 +3586,54 @@ export default function ConfigDrivenUSAForm() {
                 variant: "destructive",
 
             })
+            return
+        }
+        else if (idx == 1) {
+            const rcActivity = form.sanctionsExposureDeclaration
+            const rcSanctions = form.q_country
+            const bsnsCremia = form.crimeaSevastapolPresence
+            const involved = form.russianEnergyPresence
+            const legalInfo = form.legalAndEthicalConcern
+
+            const annualRenew = form.annualRenewalConsent
+            const values = [rcActivity, rcSanctions, bsnsCremia, involved, legalInfo, annualRenew];
+            console.log("values", values)
+            if (values.some(value => value.value === "")) {
+                toast({
+                    title: "Incomplete Information",
+                    description: "Please complete all fields before proceeding.",
+                });
+                return;
+            }
+            if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && ['yes', 'self_handle'].includes(annualRenew)) {
+                await updateDoc();
+                goto(idx + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            } else {
+                // setFormData({ ...formData, confirmationBusinessIntention: true });
+                await updateDoc();
+                toast({
+                    title: "Consultation required before proceeding",
+                    description: "It appears that you need to consult before proceeding. We will review the content of your reply and our consultant will contact you shortly. Thank you very much.",
+                });
+                return
+            }
+        }
+        else if (idx === 2) {
+            const emptyNameShareholders = form.shareHolders.filter(
+                (shareholder: any) => !shareholder.name.trim()
+            );
+
+            if (emptyNameShareholders.length > 0) {
+                toast({
+                    title: "Fill Details (Shareholder(s) / Director(s)), State, designated Contact",
+                    description: "Fill the required fields Shareholder(s) / Director(s)",
+                });
+            } else {
+                await updateDoc();
+                goto(idx + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
         }
         else {
             await updateDoc()
