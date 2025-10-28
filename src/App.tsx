@@ -56,6 +56,8 @@ import HKAccountingEstimator from './components/InvoiceManager/AccTaxEstimator';
 import MemberDirectorManager from './components/memDirManager/MemberDirectorManager';
 import ConfigDrivenHKForm from './pages/Company/NewHKForm/NewHKIncorporation';
 import HKCompDetailSummary from './pages/Company/Details/NewCompDetail';
+import ConfigDrivenUSAForm from './pages/Company/USA/UsIncorporation';
+import AdminCompanies from './pages/dashboard/AdminCompanies';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -131,6 +133,8 @@ const App: React.FC = () => {
                       <Route path="/member-director-change" element={<MemberDirectorManager />} />
                       <Route path="/new-form-layout" element={<ConfigDrivenHKForm />} />
                       <Route path="/new-company-detail" element={<HKCompDetailSummary id='68bedb5ee164e67b5fd3afa8' />} />
+                      <Route path="/new-usa-form" element={<ConfigDrivenUSAForm  />} />
+
                       
                     </Route>
                   </Route>
@@ -149,6 +153,7 @@ const App: React.FC = () => {
                       <Route path="/current-corporate-client" element={<CurrentCorporateClientList />} />
                       <Route path="/sms-management" element={<SMSTracker />} />
                       <Route path="/invoice-management" element={<InvoiceManager />} />
+                      <Route path="/admin-companies-list" element={<AdminCompanies />} /> 
                       {/* Add more admin-specific routes here */}
                       
                     </Route>

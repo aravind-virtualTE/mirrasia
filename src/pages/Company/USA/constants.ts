@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { t } from "i18next";
+import { FieldBase } from "../NewHKForm/hkIncorpo";
+import { ReactNode } from "react";
+
   export interface PricingData {
     companyFormation: {
       [state: string]: {
@@ -223,3 +228,50 @@
     
     return null;
   }
+
+  export const usaList = [
+    {code : "Delaware", label: t('usa.Section2StateOptions.Delaware')},
+    {code : "Wyoming", label: t('usa.Section2StateOptions.Wyoming')},
+    {code : "California", label: t('usa.Section2StateOptions.California')},
+    {code : "Washington", label: t('usa.Section2StateOptions.Washington')},
+    {code : "New York", label: t('usa.Section2StateOptions.New York')},
+    {code : "Washington D.C.", label: t('usa.Section2StateOptions.Washington D.C.')},
+    {code : "State of Texas", label: t('usa.Section2StateOptions.State of Texas')},
+    {code : "Nevada", label: t('usa.Section2StateOptions.Nevada')},
+    {code : "Florida", label: t('usa.Section2StateOptions.Florida')},
+    {code : "Georgia", label: t('usa.Section2StateOptions.Georgia')},
+    // t('usa.Section2StateOptions.Other'),
+  ];
+
+export type StepDefBase = {
+  id: string;
+  title: string;
+  description?: string;
+};
+
+export type SectionDef =
+  | {
+      kind: "fields";
+      asideTitle?: string;
+      asideText?: string;
+      fields: FieldBase[];
+    }
+  | {
+      kind: "widget";
+      widget: "shareholders" | "corpVsLlc";
+      asideTitle?: string;
+      asideText?: string;
+    };
+
+export type StepDef =
+  | (StepDefBase & { type: "fields"; fields: FieldBase[] })
+  | (StepDefBase & { type: "sections"; sections: SectionDef[] })
+  | (StepDefBase & { type: "placeholder" })
+  // NEW: render-only step (no `type` needed)
+  | (StepDefBase & { render: (ctx?: any) => ReactNode });
+
+export type FormConfig = {
+  title: string;
+  steps: StepDef[];
+};
+  

@@ -195,3 +195,96 @@ const updateShareholders = (shareholders: { name: string; email: string; ownersh
   });
 };
 */
+
+const initial: any = {
+  // Applicant section
+  stepIdx : 0,
+  _id: "",
+  userId: "",
+  name: "",
+  email: "",
+  emailOtpInput: "",
+  emailOtpSent: false,
+  emailOtpVerified: false,
+  _emailOtpGenerated: "",
+  companyName_1: "",
+  companyName_2: "",
+  companyName_3: "",
+  establishedRelationshipType: [] as string[],
+  phoneNum: "",
+  sns: "",
+  snsId: "",
+  snsPlatform: "",
+  snsHandle: "",
+  // Compliance / declarations
+  annualRenewalConsent: "",
+  legalAndEthicalConcern: "",
+  q_country: "",
+  sanctionsExposureDeclaration: "",
+  crimeaSevastapolPresence: "",
+  russianEnergyPresence: "",
+  // Incorporation choices
+  selectedEntity: "",     // 'LLC (limited liability company)' | 'Corporation' | 'Consultation required before proceeding'
+  selectedState: "",      // e.g. { code: "DE", name: "Delaware", id: "DE" } OR "Delaware" depending on usaList
+  // Section 9 (Business Information)
+  selectedIndustry: [] as string[],
+  otherIndustryText: "",
+  descriptionOfProducts: "",
+  descriptionOfBusiness: "",
+  webAddress: "",
+  purposeOfEstablishmentCompany: [] as string[],
+  otherCompanyPurposeText: "",
+  // Section 12 (Shareholders/Directors)
+  shareHolders: [
+    {
+      name: "",
+      email: "",
+      phone: "",
+      ownershipRate: 0,
+      isDirector: { id: "no", label: "AmlCdd.options.no" },
+      isLegalPerson: { id: "no", label: "AmlCdd.options.no" },
+      status: "",
+    },
+  ],
+  designatedContact: "",
+  beneficialOwner: "",
+  // Section 13 (Accounting data address)
+  accountingDataAddress: "",
+  // Service selection / quote
+  serviceItemsSelected: [] as string[], // <- added so includes() doesn't explode
+  sessionId: "",
+  // ---------- Payment fields (NEW) ----------
+  payMethod: "card",          // "card" | "bank" | "fps" | "other"
+  paymentStatus: "",          // "paid" | "" etc
+  paymentIntentId: "",        // Stripe PI id
+  stripeLastStatus: "",       // last known Stripe status
+  stripePaymentStatus: "",    // mirror if you store separately
+  stripeReceiptUrl: "",
+  stripeAmountCents: undefined as number | undefined,
+  stripeCurrency: "",
+  bankRef: "",                // manual payment reference
+  uploadReceiptUrl: "",       // proof-of-payment upload URL
+  expiresAt: "",              // ISO string we set for 48h quote lock
+  updatedAt: "",                         // <- referenced in handleCheckboxChange
+  totalCapital: "",                // dropdown/custom capital amount
+  companyExecutives: "",           // executive team selection
+  localCompanyRegistration: "",    // address choice
+  businessAddress: "",             // manual US business address if not using Mirr Asia address
+  noOfSharesSelected: "",          // total number of shares / share structure
+  truthfulnessDeclaration: false,
+  legalTermsAcknowledgment: false,
+  compliancePreconditionAcknowledgment: false,
+  eSign: "",
+}
+export const usaApplicantFormAtom = atom<any>(initial);
+
+export const usaAppWithResetAtom = atom(
+  (get) => get(usaApplicantFormAtom),
+  (_get, set, update: any | 'reset') => {
+    if (update == 'reset') {
+      set(usaApplicantFormAtom, initial);
+    } else {
+      set(usaApplicantFormAtom, update);
+    }
+  }
+);

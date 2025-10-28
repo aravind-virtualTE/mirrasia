@@ -73,19 +73,10 @@ const Section12 = ({ canEdit }: { canEdit: boolean }) => {
 
                  <div className="space-y-2">
                     <Label htmlFor="relationbtwauth" className="inline-flex">
-                        {t("usa.bInfo.shrldSection.benificialOwner")} <span className="text-red-500 font-bold ml-1 flex">*
-                            {/* <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <HelpCircle className="h-4 w-4 mt-1 ml-2 cursor-help" />
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-[500px] text-base">
-                                {t("usa.bInfo.shrldSection.desgnToolTip")}
-                                </TooltipContent>
-                            </Tooltip> */}
+                        {t("usa.bInfo.shrldSection.benificialOwner")} <span className="text-red-500 font-bold ml-1 flex">*                          
                         </span>
                     </Label>
-                </div>
-                
+                </div>                
                 {formData.shareHolders.length > 0 ? (
                     <DropdownSelect
                         options={shrDirArr}

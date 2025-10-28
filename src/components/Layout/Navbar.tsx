@@ -16,7 +16,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useResetAllForms } from "@/lib/atom";
 import { allCompListAtom } from "@/services/state";
 import { useAtom } from "jotai";
-import { usaFormWithResetAtom } from "@/pages/Company/USA/UsState";
+import { usaAppWithResetAtom } from "@/pages/Company/USA/UsState";
 import AdminNotification from "./AdminNotification";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { paFormWithResetAtom } from "@/pages/Company/Panama/PaState";
@@ -32,7 +32,7 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
     const navigate = useNavigate();
     const { theme } = useTheme();
     const [, setAllList] = useAtom(allCompListAtom)
-    const [, setUSForm] = useAtom(usaFormWithResetAtom)
+    const [, setUSForm] = useAtom(usaAppWithResetAtom)
     const [,setHK] = useAtom(hkAppAtom)
     const [, setPA] = useAtom(paFormWithResetAtom);
     const [, setPAF] = useAtom(pifFormWithResetAtom);

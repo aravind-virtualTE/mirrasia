@@ -131,12 +131,6 @@ const CompanyInformationUS = ({ canEdit }: { canEdit: boolean }) =>{
               </div>
 
               <div className="space-y-2">
-                {/* <DropdownSelect
-                  options={usaList}
-                  placeholder="Select..."
-                  selectedValue={formData.selectedState}
-                  onSelect={handleStateOptionChange}
-                /> */}
                 <SearchSelectNew
                   items={usaList}
                   placeholder="Select country"
