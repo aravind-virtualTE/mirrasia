@@ -193,7 +193,16 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
     loadProjects1(filters);
   };
 
-  const handleCompanySelect = (item: { id: string; name: string }): void => {
+  const handleCompanySelect = (item: { id: string; name: string } | null): void => {
+    if (item === null) {
+      setCurrentProject({
+        ...currentProject,
+        company: { id: "", name: "" }
+      });
+      setSelectedValue({ id: "", name: "" });
+      return;
+    }
+
     const company = filteredCompanies.find((c) => c.id === item.id);
 
      if (company) {

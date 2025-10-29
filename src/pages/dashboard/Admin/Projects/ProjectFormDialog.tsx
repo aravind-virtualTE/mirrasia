@@ -24,7 +24,7 @@ interface ProjectFormDialogProps {
   handleSubmit: (e: React.FormEvent) => void;
   handleCancel: () => void;
   filteredCompanies: { id: string; name: string }[];
-  handleCompanySelect: (item: { id: string; name: string }) => void;
+  handleCompanySelect: (item: { id: string; name: string } | null) => void;
   selectedValue: { id: string; name: string } | null;
 }
 

@@ -64,8 +64,14 @@ const CompanyInformationUS = ({ canEdit }: { canEdit: boolean }) =>{
   //   setFormData({ ...formData, selectedState: value });
   // };
 
-  const handleCountrySelect = (item: { id: string; name: string }) => {
+  const handleCountrySelect = (item: { id: string; name: string } | null) => {
         // console.log("code", item)
+        if(item === null){
+          setSelectedCountry({ id: "", name: "" })
+          setFormData({ ...formData, selectedState: undefined });
+          return
+        }
+
         setSelectedCountry(item)
         // setFormState({...formState, selectedCountry: item});
         setFormData({ ...formData, selectedState: item });

@@ -53,8 +53,8 @@ export interface CreateTaskFormState {
   priority: TaskPriority;
   status: TaskStatus;
   selectedUsers: { id: string; name: string }[];
-  selectedCompany: { id: string ; name: string } | undefined;
-  selectedProject: { id: string  ; name: string } | undefined;
+  selectedCompany: { id: string ; name: string } | undefined | null;
+  selectedProject: { id: string  ; name: string } | undefined | null;
   isProject?: boolean;
   shareWithClient?: boolean
 }

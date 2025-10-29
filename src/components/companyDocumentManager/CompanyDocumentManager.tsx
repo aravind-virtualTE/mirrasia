@@ -371,7 +371,13 @@ const saveDocuments = async (): Promise<void> => {
   }
 
   // -------------------- Company select --------------------
-  const handleCurrencySelect = (item: { id: string; name: string }) => {
+  const handleCurrencySelect = (item: { id: string; name: string }| null) => {
+    if(item === null){
+      setSelectedCompany(null)
+      setSelectedValue({ id: "", name: "" })
+      return
+    }
+    
     setSelectedValue(item)
     const company = companies.find((c) => c.id === item.id)
     if (company) {
