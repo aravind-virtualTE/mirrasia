@@ -63,8 +63,8 @@ export const CreateTaskDialog = ({
     const [allList] = useAtom(allCompNameAtom);
     const [projects] = useAtom(projectsAtom);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedValue, setSelectedValue] = useState(formState.selectedCompany || { id: '', name: '' });
-    const [selectedProject, setSelectedProj] = useState(formState.selectedProject || { id: '', name: '' });
+    const [selectedValue, setSelectedValue] = useState<{ id: string; name: string; } | null>(formState.selectedCompany || { id: '', name: '' });
+    const [selectedProject, setSelectedProj] = useState<{ id: string; name: string; } | null>(formState.selectedProject || { id: '', name: '' });
     const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null;
 
     // dropdown state
@@ -272,12 +272,12 @@ export const CreateTaskDialog = ({
         }
     };
 
-    const handleCurrencySelect = (item: { id: string; name: string }) => {
+    const handleCurrencySelect = (item: { id: string; name: string } | null) => {
         setSelectedValue(item);
         setFormState({ ...formState, selectedCompany: item });
     };
 
-    const handleProjectySelect = (item: { id: string; name: string }) => {
+    const handleProjectySelect = (item: { id: string; name: string } | null) => {
         setSelectedProj(item);
         setFormState({ ...formState, selectedProject: item });
     };

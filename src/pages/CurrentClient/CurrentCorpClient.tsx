@@ -83,7 +83,7 @@ export default function CurrentCorpClient() {
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
         if (!file) return
-
+        console.log("file===>", file)
         const fileExtension = file.name.split(".").pop()?.toLowerCase()
 
         const processData = (parsedData: any[]) => {
@@ -101,7 +101,7 @@ export default function CurrentCorpClient() {
                             keys.forEach((key) => {
                                 const field = `${prefix}${key.charAt(0).toUpperCase() + key.slice(1)}${index}`;
                                 entry[key] = key === "totalShares"
-                                    ? Number(item[field]) || 0
+                                    ? (item[field]) || 0
                                     : item[field] || "";
                             });
                             return entry;
@@ -109,7 +109,7 @@ export default function CurrentCorpClient() {
                             entry.name && ((entry.email && entry.name) || (entry.phone && entry.name) || (entry.totalShares && entry.name))
                         );
                     };
-
+                    console.log("item", item)
                     return {
                         status: item["status"] || "",
                         jurisdiction: item["Jurisdriction"] || "",
@@ -119,11 +119,11 @@ export default function CurrentCorpClient() {
                         companyNameChi: item["COMPANY NAME (CHI)"] || "",
                         companyType: item["Company Type"] || "",
                         brnNo: item["BRN NO."] || "",
-                        noOfShares: Number(item["noOfShares"]) || 0,
+                        noOfShares: (item["noOfShares"]) || 0,
                         shareCapital: item["Share Capital"] || "",
                         bank: item["Bank"] || "",
                         directors: extractValidEntries("dir", ["name", "email", "phone"], 4),
-                        shareholders: extractValidEntries("sh", ["name", "email", "totalShares"], 4),
+                        shareholders: extractValidEntries("sh", ["name", "email", "totalShares"], 5),
                         designatedContact: [{
                             name: item["dcpName"] || "",
                             email: item["dcpEmail"] || "",
