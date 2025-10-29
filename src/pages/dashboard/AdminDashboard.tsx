@@ -38,7 +38,8 @@ import { hkAppAtom } from "../Company/NewHKForm/hkIncorpo"
 import { paFormWithResetAtom } from "../Company/Panama/PaState"
 import { pifFormWithResetAtom } from "../Company/PanamaFoundation/PaState"
 import { sgFormWithResetAtom } from "../Company/Singapore/SgState"
-
+import SearchBox from "../MasterTodo/SearchBox"
+import {normalize} from "@/middleware";
 
 const AdminDashboard = () => {
   const setCompIncList = useSetAtom(companyIncorporationList)
@@ -57,6 +58,9 @@ const AdminDashboard = () => {
   const itemsPerPage = 20
   const [activeTab, setActiveTab] = useState("active");
   const [cccCount, setCccCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [displayList, setDisplayList] = useState<any[]>([])
 
   useEffect(() => {
     setUsaReset('reset')
@@ -75,9 +79,37 @@ const AdminDashboard = () => {
       // console.log("Incorporation count:", count)
       setCompIncList(result.companies)
       setAllList(result.allCompanies)
+      setDisplayList(result.allCompanies)
     }
     fetchData()
   }, [])
+
+//   useEffect(() => {
+//   // same body as handleSearch, but auto-run on searchQuery change
+//   const q = normalize(searchQuery);
+//   if (!q) {
+//     setDisplayList(allList);
+//     setCurrentPage(1);
+//     return;
+//   }
+
+//   const filtered = allList.filter((item: any) => {
+//     const applicantMatch = normalize(item.applicantName).includes(q);
+
+//     let companyMatch = false;
+//     const cn = item.companyName;
+//     if (typeof cn === "string") {
+//       companyMatch = normalize(cn).includes(q);
+//     } else if (Array.isArray(cn)) {
+//       companyMatch = cn.some((n) => normalize(n).includes(q));
+//     }
+
+//     return applicantMatch || companyMatch;
+//   });
+
+//   setDisplayList(filtered);
+//   setCurrentPage(1);
+// }, [searchQuery, allList]);
 
 
   const statusToKey = (status: string): keyof Stats => {
@@ -167,27 +199,102 @@ const AdminDashboard = () => {
     return "N/A";
   };
 
+  const handleSearch = async () => {
+    // await fetchTasks();
+    console.log('searchQuery', searchQuery);
+    const q = normalize(searchQuery);
+
+    // empty → reset
+    if (!q) {
+      setDisplayList(allList);
+      setCurrentPage(1);
+      return;
+    }
+
+    const filtered = allList.filter((item: any) => {
+      // applicantName match
+      const applicantMatch = normalize(item.applicantName).includes(q);
+
+      // companyName match (string OR array)
+      let companyMatch = false;
+      const cn = item.companyName;
+
+      if (typeof cn === "string") {
+        companyMatch = normalize(cn).includes(q);
+      } else if (Array.isArray(cn)) {
+        companyMatch = cn.some((n) => normalize(n).includes(q));
+      }
+
+      return applicantMatch || companyMatch;
+    });
+
+    setDisplayList(filtered);
+    setCurrentPage(1);
+  };
+  // console.log("allList", allList)
+  // const getSortedData = () => {
+  //   const initialFilter = allList.filter(
+  //     company => activeTab === "active" ? !company.isDeleted : company.isDeleted
+  //   );
+  //   const sortedData = [...initialFilter]
+  //   // console.log("sortedData",sortedData)
+  //   const filterData = sortedData.filter((e) => active_status.includes((e as { status: string }).status))
+  //   // console.log("filterData",filterData.length)
+
+  //   if (sortConfig !== null) {
+  //     filterData.sort((a: any, b: any) => {
+  //       let aValue, bValue
+
+  //       if (sortConfig.key === "companyName") {
+  //         // aValue = a.companyName.filter(Boolean).join(", ") || ""
+  //         // bValue = b.companyName.filter(Boolean).join(", ") || ""
+  //         aValue = resolveCompanyName(a).toLowerCase();
+  //         bValue = resolveCompanyName(b).toLowerCase();
+  //       } else if (sortConfig.key === "country") {
+  //         aValue = a.country.name
+  //         bValue = b.country.name
+  //       } else if (sortConfig.key === "incorporationDate") {
+  //         aValue = a.incorporationDate || ""
+  //         bValue = b.incorporationDate || ""
+  //       } else {
+  //         aValue = a[sortConfig.key] || ""
+  //         bValue = b[sortConfig.key] || ""
+  //       }
+
+  //       if (aValue < bValue) {
+  //         return sortConfig.direction === "ascending" ? -1 : 1
+  //       }
+  //       if (aValue > bValue) {
+  //         return sortConfig.direction === "ascending" ? 1 : -1
+  //       }
+  //       return 0
+  //     })
+  //   }
+  //   return filterData
+  // }
   const getSortedData = () => {
-    const initialFilter = allList.filter(
-      company => activeTab === "active" ? !company.isDeleted : company.isDeleted
-    );
+    const base = displayList.length ? displayList : [] // from search results
+
+    const initialFilter = base.filter(company =>
+      activeTab === "active" ? !company.isDeleted : company.isDeleted
+    )
+
     const sortedData = [...initialFilter]
-    // console.log("sortedData",sortedData)
-    const filterData = sortedData.filter((e) => active_status.includes((e as { status: string }).status))
-    // console.log("filterData",filterData.length)
+
+    const filterData = sortedData.filter((e) =>
+      active_status.includes((e as { status: string }).status)
+    )
 
     if (sortConfig !== null) {
       filterData.sort((a: any, b: any) => {
         let aValue, bValue
 
         if (sortConfig.key === "companyName") {
-          // aValue = a.companyName.filter(Boolean).join(", ") || ""
-          // bValue = b.companyName.filter(Boolean).join(", ") || ""
           aValue = resolveCompanyName(a).toLowerCase();
           bValue = resolveCompanyName(b).toLowerCase();
         } else if (sortConfig.key === "country") {
-          aValue = a.country.name
-          bValue = b.country.name
+          aValue = a.country.name || ""
+          bValue = b.country.name || ""
         } else if (sortConfig.key === "incorporationDate") {
           aValue = a.incorporationDate || ""
           bValue = b.incorporationDate || ""
@@ -205,6 +312,7 @@ const AdminDashboard = () => {
         return 0
       })
     }
+
     return filterData
   }
   const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { status: string }).status))
@@ -267,18 +375,43 @@ const AdminDashboard = () => {
       {/* Companies Table */}
       <Card>
         <CardHeader>
-          <CardTitle><button
-            className={`px-4 py-2 ${activeTab === "active" ? "border-b-2 border-blue-500 font-medium" : "text-gray-500"}`}
-            onClick={() => setActiveTab("active")}
-          >
-            Incorporation Process
-          </button>
-            <button
-              className={`px-4 py-2 ${activeTab === "deleted" ? "border-b-2 border-blue-500 font-medium" : "text-gray-500"}`}
-              onClick={() => setActiveTab("deleted")}
-            >
-              Marked As Deleted
-            </button></CardTitle>
+          <CardTitle className="flex items-center justify-between w-full">
+            {/* Left side: tabs */}
+            <div className="flex items-center gap-4">
+              <button
+                className={`px-4 py-2 ${activeTab === "active"
+                  ? "border-b-2 border-blue-500 font-medium"
+                  : "text-gray-500"
+                  }`}
+                onClick={() => setActiveTab("active")}
+              >
+                Incorporation Process
+              </button>
+
+              <button
+                className={`px-4 py-2 ${activeTab === "deleted"
+                  ? "border-b-2 border-blue-500 font-medium"
+                  : "text-gray-500"
+                  }`}
+                onClick={() => setActiveTab("deleted")}
+              >
+                Marked As Deleted
+              </button>
+            </div>
+
+            {/* Right side: search */}
+            <div className="ml-auto">
+              <SearchBox
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onSearch={handleSearch}
+                isFocused={isFocused}
+                setIsFocused={setIsFocused}
+                placeText="Search With Company Name/ Applicant Name"
+              />
+            </div>
+          </CardTitle>
+
         </CardHeader>
         <CardContent>
           <div className="border rounded-md overflow-hidden">
@@ -344,7 +477,7 @@ const AdminDashboard = () => {
                         ))}
                     </div>
                   </TableHead>
-                  
+
                   <TableHead>Edit</TableHead>
                   <TableHead
                     className="cursor-pointer hover:bg-muted/50"
@@ -454,7 +587,7 @@ const AdminDashboard = () => {
                       <TableCell className="py-2">
                         {typedCompany.assignedTo ? typedCompany.assignedTo : "N/A"}
                       </TableCell>
-                      
+
                       <TableCell className="py-2">
                         {typedCompany.lastLogin ? formatDateTime(typedCompany.lastLogin) : "N/A"}
                       </TableCell>
