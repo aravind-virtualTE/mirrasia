@@ -47,3 +47,9 @@ export function localDateToUtcNoonISO(d: Date): string {
   const isoNoonUtc = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0)).toISOString();
   return isoNoonUtc;
 }
+
+export const normalize = (val?: string | null) =>
+  (val ?? "")
+    .toString()
+    .trim()
+    .toLowerCase();
