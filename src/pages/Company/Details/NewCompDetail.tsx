@@ -353,7 +353,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
       <TabsContent value="details" className="p-6">
         <section>
-          {data?.form?.cname1 && <TodoApp id={data._id} name={data.form.cname1} />}
+          {data?.form?.name1 && <TodoApp id={data._id} name={data.form.name1} />}
           <div className="flex gap-x-8 mt-4">
             {user.role !== "user" && <AssignAdmin />}
             <Button onClick={() => navigate(`/company-documents/HK/${data._id}`)} size="sm" className="flex items-center gap-2">
