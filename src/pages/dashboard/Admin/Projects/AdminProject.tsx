@@ -259,14 +259,13 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
         </div>
       ) : (
         // Scroll container with sticky header
-        <div className="rounded-xl border mt-6 ml-2 mr-2 overflow-auto max-h-[70vh]">
+        <div className="rounded-xl border mt-6 ml-2 mr-2 overflow-auto max-h-[90vh]">
           <Table className="w-full table-fixed text-xs text-left">
             <TableHeader className="sticky top-0 z-10 bg-background">
               <TableRow className="h-9">
                 <TableHead className="w-12 px-2 py-1 text-center">No</TableHead>
 
-                {/* Project Name (sortable) */}
-                <TableHead className="px-2 py-1">
+                <TableHead className="px-2 py-1 w-[180px]">
                   <button
                     type="button"
                     onClick={() => toggleSort("projectName")}
@@ -276,8 +275,7 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                   </button>
                 </TableHead>
 
-                {/* Company Name (sortable) */}
-                <TableHead className="px-2 py-1">
+                <TableHead className="px-2 py-1 w-[200px]">
                   <button
                     type="button"
                     onClick={() => toggleSort("companyName")}
@@ -287,12 +285,18 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                   </button>
                 </TableHead>
 
-                <TableHead className="px-2 py-1">Email</TableHead>
-                <TableHead className="px-2 py-1">Contact</TableHead>
-                <TableHead className="px-2 py-1">Jurisdiction</TableHead>
-                <TableHead className="px-2 py-1">Description</TableHead>
-                <TableHead className="px-2 py-1 whitespace-nowrap">Updated</TableHead>
-                <TableHead className="px-2 py-1 text-right">Actions</TableHead>
+                <TableHead className="px-2 py-1 w-[180px]">Email</TableHead>
+                <TableHead className="px-2 py-1 w-[120px]">Contact</TableHead>
+                <TableHead className="px-2 py-1 w-[130px]">Jurisdiction</TableHead>
+
+                {/* Make Description wider than before */}
+                <TableHead className="px-2 py-1 w-[38%]">Description</TableHead>
+
+                {/* Keep date narrow & no wrap */}
+                <TableHead className="px-2 py-1 w-[100px] whitespace-nowrap">Updated At</TableHead>
+
+                {/* Keep actions tight */}
+                <TableHead className="px-2 py-1 w-[84px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -303,42 +307,23 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                   className="h-9 cursor-pointer"
                   onClick={() => handleNavigate(project)}
                 >
-                  <TableCell className="w-12 px-2 py-1 text-center whitespace-nowrap">
-                    {idx + 1}
+                  <TableCell className="w-12 px-2 py-1 text-center whitespace-nowrap">{idx + 1}</TableCell>
+
+                  <TableCell className="px-2 py-1 font-medium truncate">{project.projectName || "-"}</TableCell>
+                  <TableCell className="px-2 py-1 truncate">{project.company?.name || "-"}</TableCell>
+                  <TableCell className="px-2 py-1 whitespace-nowrap truncate">{project.email || "-"}</TableCell>
+                  <TableCell className="px-2 py-1 whitespace-nowrap truncate">{project.contactName || "-"}</TableCell>
+                  <TableCell className="px-2 py-1 whitespace-nowrap truncate">{project.jurisdiction || "-"}</TableCell>
+
+                  {/* Wider description cell; allow longer truncate width */}
+                  <TableCell className="px-2 py-1 truncate w-[38%]">{project.description || "-"}</TableCell>
+
+                  {/* Date: fixed width, single line, tabular digits */}
+                  <TableCell className="px-2 py-1 w-[100px] whitespace-nowrap tabular-nums ">
+                    {project.updatedAt ? format(new Date(project.updatedAt), "yyyy-MM-dd") : "-"}
                   </TableCell>
 
-                  <TableCell className="px-2 py-1 font-medium truncate">
-                    {project.projectName || "-"}
-                  </TableCell>
-
-                  <TableCell className="px-2 py-1 truncate">
-                    {project.company?.name || "-"}
-                  </TableCell>
-
-                  <TableCell className="px-2 py-1 whitespace-nowrap truncate">
-                    {project.email || "-"}
-                  </TableCell>
-
-                  <TableCell className="px-2 py-1 whitespace-nowrap truncate">
-                    {project.contactName || "-"}
-                  </TableCell>
-
-                  <TableCell className="px-2 py-1 whitespace-nowrap truncate">
-                    {project.jurisdiction || "-"}
-                  </TableCell>
-
-                  <TableCell className="px-2 py-1 truncate max-w-[220px]">
-                    {project.description || "-"}
-                  </TableCell>
-
-                  {/* Date: keep on one line, compact digits */}
-                  <TableCell className="px-2 py-1 whitespace-nowrap tabular-nums">
-                    {project.updatedAt
-                      ? format(new Date(project.updatedAt), "yyyy-MM-dd")
-                      : "-"}
-                  </TableCell>
-
-                  <TableCell className="px-2 py-1 text-right">
+                  <TableCell className="px-2 py-1 w-[84px] text-right">
                     <div className="flex justify-end space-x-1">
                       <Button
                         variant="ghost"
@@ -368,6 +353,7 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
               ))}
             </TableBody>
           </Table>
+
         </div>
       )}
 
