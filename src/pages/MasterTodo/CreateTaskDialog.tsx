@@ -174,15 +174,6 @@ export const CreateTaskDialog = ({
     const handleSubmit = async () => {
         if (!formState.taskName) return;
 
-        // const today = endOfDay(new Date());
-        // const picked = formState.dueDate ? startOfDay(formState.dueDate) : null;
-
-        // if (!picked || picked.getTime() <= today.getTime()) {
-        //     setDateError('Due date must be after today.');
-        //     window.alert('Please select a due date after today.');
-        //     return;
-        // }
-
         setIsLoading(true);
         try {
             if (isEditMode && taskToEdit) {
@@ -289,7 +280,7 @@ export const CreateTaskDialog = ({
                     <RichTextEditor
                         value={formState.description}
                         onChange={(value) => setFormState({ ...formState, description: value })}
-                        placeholder=""
+                        placeholder="Enter text…"
                         className="w-full min-h-[150px]"
                     />
 
