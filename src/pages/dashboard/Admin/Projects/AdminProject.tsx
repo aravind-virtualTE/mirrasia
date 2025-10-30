@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import SearchBox from '@/pages/MasterTodo/SearchBox';
 import { getAllCompanyNames } from '@/services/dataFetch';
-
+import { format } from "date-fns";
 const isEditingAtom = atom<boolean>(false);
 const isOpenAtom = atom<boolean>(false);
 
@@ -109,7 +109,7 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
       .map((company: any) => {
         const id =
           typeof company.id === 'string' ? company.id :
-          typeof company._id === 'string' ? company._id : '';
+            typeof company._id === 'string' ? company._id : '';
         const rawName = Array.isArray(company.companyName)
           ? company.companyName.find((n: any) => typeof n === 'string') ?? ''
           : company.companyName ?? '';
@@ -209,8 +209,7 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
 
   const SortIcon = ({ active }: { active: boolean }) =>
     active ? (sortDir === 'asc' ? <ChevronUp className="h-3.5 w-3.5 inline" /> : <ChevronDown className="h-3.5 w-3.5 inline" />)
-           : <ArrowUpDown className="h-3.5 w-3.5 inline" />;
-
+      : <ArrowUpDown className="h-3.5 w-3.5 inline" />;
   return (
     <div className="container py-4">
       <div className="flex justify-between items-center mb-2">
@@ -264,7 +263,7 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
           <Table className="w-full text-sm text-left">
             <TableHeader className="sticky top-0 z-10 bg-background">
               <TableRow>
-                <TableHead className="px-4 py-3">S.No</TableHead>
+                <TableHead className="px-4 py-3">No</TableHead>
 
                 {/* Sortable Project Name */}
                 <TableHead className="px-4 py-3 w-[220px]">
@@ -291,10 +290,8 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                 <TableHead className="px-4 py-3">Email</TableHead>
                 <TableHead className="px-4 py-3">Contact</TableHead>
                 <TableHead className="px-4 py-3">Jurisdiction</TableHead>
-
-                {/* SNS column REMOVED */}
-
                 <TableHead className="px-4 py-3">Description</TableHead>
+                <TableHead className="px-4 py-3">Updated</TableHead>
                 <TableHead className="px-4 py-3 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -318,6 +315,11 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                   <TableCell className="px-4 py-3 max-w-[280px] truncate">
                     {project.description ? project.description : '-'}
                   </TableCell>
+                  <TableCell className="px-4 py-3">
+                    {project.updatedAt
+                      ? format(new Date(project.updatedAt), "yyyy-MM-dd")
+                      : "-"}
+                  </TableCell>
                   <TableCell className="px-4 py-3 text-right">
                     <div className="flex justify-end space-x-2">
                       <Button
@@ -335,7 +337,8 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                         size="icon"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDelete(project._id)}
+                          handleDelete(project._id)
+                        }
                         }
                       >
                         <Trash2 className="h-3 w-3 text-red-500" />

@@ -15,6 +15,8 @@ export interface Project {
     description: string;
     otherInformation: string;
     company:{id: string, name: string};
+    updatedAt?: string;
+    createdAt?: string;
   }
   
   // Define the initial project state
