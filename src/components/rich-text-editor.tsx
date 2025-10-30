@@ -92,18 +92,26 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
       onChange(editor.getHTML())
     },
     editorProps: {
-      attributes: {
-        class: "focus:outline-none p-3 min-h-[150px] break-all whitespace-pre-wrap max-w-full",
+      attributes: {      
+        class:  "focus:outline-none p-3 min-h-[150px] w-full break-words whitespace-pre-wrap overflow-wrap-anywhere",
       },
     },
   })
+  const isEmpty = !value || value === "<p></p>"
 
   return (
-    <div className={cn("border rounded-md overflow-hidden max-h-[300px] overflow-y-auto", className)}>
+    <div className={cn("relative border rounded-md overflow-hidden max-h-[300px] overflow-y-auto w-full", className)}>
       <MenuBar editor={editor} />
-      <EditorContent editor={editor} className="prose prose-sm w-full break-words whitespace-pre-wrap" />
-      {!value && !editor?.isFocused && (
-        <div className="absolute top-[52px] left-3 text-gray-400 pointer-events-none">{placeholder}</div>
+      {/* Remove the width cap from Typography with max-w-none (or just drop `prose` entirely) */}
+      <EditorContent
+        editor={editor}
+        className="prose prose-sm w-full max-w-none break-words whitespace-pre-wrap overflow-wrap-anywhere"
+        style={{ wordBreak: "break-word" }}
+      />
+      {placeholder && isEmpty && !editor?.isFocused && (
+        <div className="pointer-events-none absolute top-[52px] left-3 text-gray-400">
+          {placeholder}
+        </div>
       )}
     </div>
   )
