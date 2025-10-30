@@ -125,7 +125,7 @@ const TaskDetailPopup = ({
 
   // desktop: resizable split
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [leftWidth, setLeftWidth] = useState(420); // px
+  const [leftRatio, setLeftRatio] = useState(0.4);
   const [resizing, setResizing] = useState(false);
 
   // comments scroller refs
@@ -139,8 +139,11 @@ const TaskDetailPopup = ({
       const x = e.clientX - rect.left;
       const minLeft = 300;
       const minRight = 360;
-      const maxLeft = rect.width - minRight;
-      setLeftWidth(clamp(x, minLeft, maxLeft));
+
+      const minRatio = minLeft / rect.width;
+      const maxRatio = 1 - (minRight / rect.width);
+
+      setLeftRatio(clamp(x / rect.width, minRatio, maxRatio));
     };
     const onUp = () => setResizing(false);
     window.addEventListener("mousemove", onMove);
@@ -218,19 +221,19 @@ const TaskDetailPopup = ({
     setIsLoading(true);
     try {
       await updateTask(task._id, { ...task, status: value });
-      
+
     } finally {
       setIsLoading(false);
       // setTasks((prev) => prev.map((t) => (t._id === oldTask._id ? oldTask : t)));
     }
   };
 
-  if (!task) return null; 
+  if (!task) return null;
 
   // console.log("task", task)
   const allowedStatuses = user.role === 'master'
-          ? statuses
-          : statuses.filter((s) => s.label !== 'COMPLETED');
+    ? statuses
+    : statuses.filter((s) => s.label !== 'COMPLETED');
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/30" />
@@ -310,7 +313,9 @@ const TaskDetailPopup = ({
         {/* Desktop split-view (resizable) */}
         <div
           className="hidden h-full min-h-0 md:grid"
-          style={{ gridTemplateColumns: `${leftWidth}px 6px 1fr` } as React.CSSProperties}
+          style={{
+            gridTemplateColumns: `${(leftRatio * 100).toFixed(3)}% 6px ${(100 - leftRatio * 100).toFixed(3)}%`,
+          } as React.CSSProperties}
         >
           {/* Left: Details */}
           <div className="h-full min-h-0 overflow-y-auto px-4 py-3">

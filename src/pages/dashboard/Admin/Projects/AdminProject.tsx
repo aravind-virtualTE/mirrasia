@@ -1,20 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { atom, useAtom } from 'jotai';
-import { PlusCircle, Pencil, Trash2 } from 'lucide-react';
-import {
-  Dialog,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { PlusCircle, Pencil, Trash2, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { createProject, currentProjectAtom, deleteProject, fetchProjects, initialProject, Project, projectsAtom, updateProject } from './ProjectAtom';
 import { allCompNameAtom } from '@/services/state';
 import ProjectFormDialog from './ProjectFormDialog';
@@ -26,22 +16,29 @@ import { getAllCompanyNames } from '@/services/dataFetch';
 const isEditingAtom = atom<boolean>(false);
 const isOpenAtom = atom<boolean>(false);
 
+type SortKey = 'projectName' | 'companyName' | null;
+type SortDir = 'asc' | 'desc';
+
 const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
   const [projects, setProjects] = useAtom(projectsAtom);
   const [currentProject, setCurrentProject] = useAtom(currentProjectAtom);
   const [isEditing, setIsEditing] = useAtom(isEditingAtom);
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
-  const [allList,setAllList] = useAtom(allCompNameAtom);
+  const [allList, setAllList] = useAtom(allCompNameAtom);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteProj, setDeleteProj] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey>(null);
+  const [sortDir, setSortDir] = useState<SortDir>('asc');
+
   const [selectedValue, setSelectedValue] = useState(
     currentProject
       ? { id: currentProject.company?.id, name: currentProject.company?.name }
       : { id: "", name: "" }
   );
-  const navigate = useNavigate()
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -55,39 +52,32 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
       }
     };
     loadProjects();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     const cp = currentProject?.company;
-    // only update if it actually differs to avoid useless re-renders
     setSelectedValue((prev) => {
       const next = { id: cp?.id || "", name: cp?.name || "" };
       return prev.id === next.id && prev.name === next.name ? prev : next;
     });
   }, [currentProject?.company?.id, currentProject?.company?.name]);
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setCurrentProject({
-      ...currentProject,
-      [name]: value
-    });
+    setCurrentProject({ ...currentProject, [name]: value });
   };
 
+  // kept for ProjectFormDialog compatibility
   const handleSelectChange = (value: string) => {
-    setCurrentProject({
-      ...currentProject,
-      snsPlatform: value
-    });
+    setCurrentProject({ ...currentProject, snsPlatform: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // console.log(isEditing, currentProject._id)
     try {
       if (isEditing && currentProject._id !== null) {
         const updated = await updateProject(currentProject._id, currentProject);
-        // console.log("updated--->", updated)
         setProjects(projects.map(p => p._id === updated._id ? updated : p));
       } else {
         const created = await createProject(currentProject);
@@ -96,7 +86,6 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
     } catch (error) {
       console.error('Error saving project', error);
     }
-
     setCurrentProject(initialProject);
     setIsEditing(false);
     setIsOpen(false);
@@ -114,52 +103,33 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
     setIsOpen(false);
   };
 
-  // const getFilteredCompanies = () => {
-  //   if (allList.length > 0) {
-  //     return allList.map((company) => {
-  //       if (typeof company._id === 'string' && Array.isArray(company.companyName) && typeof company.companyName[0] === 'string') {
-  //         return {
-  //           id: company._id,
-  //           name: company.companyName[0],
-  //         };
-  //       }
-  //       return { id: '', name: '' };
-  //     }).filter(company => company.id !== '');
-  //   }
-  //   return [];
-  // };
   const getFilteredCompanies = () => {
-        if (!Array.isArray(allList) || allList.length === 0) return [];
-        return allList
-            .map((company: any) => {
-                const id =
-                    typeof company.id === 'string' ? company.id :
-                        typeof company._id === 'string' ? company._id :
-                            '';
-
-                const rawName = Array.isArray(company.companyName)
-                    ? company.companyName.find((n: any) => typeof n === 'string') ?? ''
-                    : company.companyName ?? '';
-
-                const name = typeof rawName === 'string'
-                    ? rawName.replace(/\s+/g, ' ').trim()
-                    : '';
-
-                return { id, name };
-            })
-            .filter((c) => c.id !== '' && c.name !== '');
-    };
+    if (!Array.isArray(allList) || allList.length === 0) return [];
+    return allList
+      .map((company: any) => {
+        const id =
+          typeof company.id === 'string' ? company.id :
+          typeof company._id === 'string' ? company._id : '';
+        const rawName = Array.isArray(company.companyName)
+          ? company.companyName.find((n: any) => typeof n === 'string') ?? ''
+          : company.companyName ?? '';
+        const name = typeof rawName === 'string'
+          ? rawName.replace(/\s+/g, ' ').trim()
+          : '';
+        return { id, name };
+      })
+      .filter((c) => c.id !== '' && c.name !== '');
+  };
 
   const filteredCompanies = getFilteredCompanies();
 
   const handleNavigate = (project: Project) => {
-    // console.log("project--->", project)
-    navigate(`/project-detail/${project._id}`)
+    navigate(`/project-detail/${project._id}`);
   };
 
-  const handleDelete = async (id: string | null) => {
-    if (id === null) return;
-    setDeleteProj(id);
+  const handleDelete = async (pid: string | null) => {
+    if (pid === null) return;
+    setDeleteProj(pid);
     setDeleteDialogOpen(true);
   };
 
@@ -173,6 +143,7 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
       console.error('Failed to delete project', error);
     }
   };
+
   const loadProjects1 = async (filters: any) => {
     try {
       const { id, searchParam } = filters || {};
@@ -185,44 +156,61 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
 
   const handleSearch = async () => {
     const filters: { searchParam?: string; id?: string } = {};
-    if (searchQuery) {
-      filters.searchParam = searchQuery.trim();
-    }
+    if (searchQuery) filters.searchParam = searchQuery.trim();
     filters.id = id;
-    // console.log('filters', filters);
     loadProjects1(filters);
   };
 
   const handleCompanySelect = (item: { id: string; name: string } | null): void => {
     if (item === null) {
-      setCurrentProject({
-        ...currentProject,
-        company: { id: "", name: "" }
-      });
+      setCurrentProject({ ...currentProject, company: { id: "", name: "" } });
       setSelectedValue({ id: "", name: "" });
       return;
     }
-
     const company = filteredCompanies.find((c) => c.id === item.id);
-
-     if (company) {
-      setCurrentProject({
-        ...currentProject,
-        company: {
-          id: company.id,
-          name: company.name
-        }
-      });
+    if (company) {
+      setCurrentProject({ ...currentProject, company: { id: company.id, name: company.name } });
     } else {
-      setCurrentProject({
-        ...currentProject,
-        company: { id: "", name: "" }
-      });
+      setCurrentProject({ ...currentProject, company: { id: "", name: "" } });
     }
     setSelectedValue(item);
-  }
-// console.log("filteredCompanies", filteredCompanies)
-//  console.log('selectedValue',selectedValue)
+  };
+
+  // ---------- Sorting ----------
+  const toggleSort = (key: SortKey) => {
+    if (sortKey !== key) {
+      setSortKey(key);
+      setSortDir('asc');
+    } else {
+      setSortDir(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    }
+  };
+
+  const sortedProjects = useMemo(() => {
+    if (!sortKey) return projects;
+    const copy = [...projects];
+    copy.sort((a, b) => {
+      const aVal = (sortKey === 'projectName'
+        ? (a.projectName || '')
+        : (a.company?.name || '')
+      ).toString().toLowerCase();
+
+      const bVal = (sortKey === 'projectName'
+        ? (b.projectName || '')
+        : (b.company?.name || '')
+      ).toString().toLowerCase();
+
+      if (aVal < bVal) return sortDir === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return copy;
+  }, [projects, sortKey, sortDir]);
+
+  const SortIcon = ({ active }: { active: boolean }) =>
+    active ? (sortDir === 'asc' ? <ChevronUp className="h-3.5 w-3.5 inline" /> : <ChevronDown className="h-3.5 w-3.5 inline" />)
+           : <ArrowUpDown className="h-3.5 w-3.5 inline" />;
+
   return (
     <div className="container py-4">
       <div className="flex justify-between items-center mb-2">
@@ -256,7 +244,6 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
               currentProject={currentProject}
               handleInputChange={handleInputChange}
               handleSelectChange={handleSelectChange}
-              // handleCompanyChange={handleCompanyChange}
               handleSubmit={handleSubmit}
               handleCancel={handleCancel}
               filteredCompanies={filteredCompanies}
@@ -267,42 +254,68 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
         </div>
       </div>
 
-
       {projects.length === 0 ? (
         <div className="text-center py-10 text-muted-foreground">
           No projects added yet. Click "Add Project" to get started.
         </div>
       ) : (
-        <div className="rounded-xl border mt-6 ml-2 mr-2">
+        // Scroll container with sticky header
+        <div className="rounded-xl border mt-6 ml-2 mr-2 overflow-auto max-h-[70vh]">
           <Table className="w-full text-sm text-left">
-            <TableHeader className="">
+            <TableHeader className="sticky top-0 z-10 bg-background">
               <TableRow>
                 <TableHead className="px-4 py-3">S.No</TableHead>
-                <TableHead className="px-4 py-3 w-[200px]">Project Name</TableHead>
+
+                {/* Sortable Project Name */}
+                <TableHead className="px-4 py-3 w-[220px]">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort('projectName')}
+                    className="inline-flex items-center gap-1 hover:opacity-80"
+                  >
+                    Project Name <SortIcon active={sortKey === 'projectName'} />
+                  </button>
+                </TableHead>
+
+                {/* New Company Name column (sortable) */}
+                <TableHead className="px-4 py-3 w-[260px]">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort('companyName')}
+                    className="inline-flex items-center gap-1 hover:opacity-80"
+                  >
+                    Company Name <SortIcon active={sortKey === 'companyName'} />
+                  </button>
+                </TableHead>
+
                 <TableHead className="px-4 py-3">Email</TableHead>
                 <TableHead className="px-4 py-3">Contact</TableHead>
                 <TableHead className="px-4 py-3">Jurisdiction</TableHead>
-                <TableHead className="px-4 py-3">SNS</TableHead>
+
+                {/* SNS column REMOVED */}
+
                 <TableHead className="px-4 py-3">Description</TableHead>
                 <TableHead className="px-4 py-3 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
-              {projects.map((project, key) => (
+              {sortedProjects.map((project, idx) => (
                 <TableRow
                   key={project._id}
                   className="h-12 cursor-pointer"
                   onClick={() => handleNavigate(project)}
                 >
-                  <TableCell className="px-4 py-3" >{key + 1}</TableCell>
-                  <TableCell className="px-4 py-3 font-medium" >{project.projectName}</TableCell>
-                  <TableCell className="px-4 py-3">{project.email}</TableCell>
-                  <TableCell className="px-4 py-3">{project.contactName}</TableCell>
-                  <TableCell className="px-4 py-3">{project.jurisdiction}</TableCell>
-                  <TableCell className="px-4 py-3">
-                    {project.snsPlatform ? `${project.snsPlatform} (${project.snsAccountId})` : '-'}
-                  </TableCell>
-                  <TableCell className="px-4 py-3 max-w-[200px] truncate">
+                  <TableCell className="px-4 py-3">{idx + 1}</TableCell>
+                  <TableCell className="px-4 py-3 font-medium">{project.projectName || '-'}</TableCell>
+                  <TableCell className="px-4 py-3">{project.company?.name || '-'}</TableCell>
+                  <TableCell className="px-4 py-3">{project.email || '-'}</TableCell>
+                  <TableCell className="px-4 py-3">{project.contactName || '-'}</TableCell>
+                  <TableCell className="px-4 py-3">{project.jurisdiction || '-'}</TableCell>
+
+                  {/* SNS removed from row */}
+
+                  <TableCell className="px-4 py-3 max-w-[280px] truncate">
                     {project.description ? project.description : '-'}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-right">
@@ -322,8 +335,8 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                         size="icon"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDelete(project._id);
-                        }}
+                          handleDelete(project._id)}
+                        }
                       >
                         <Trash2 className="h-3 w-3 text-red-500" />
                       </Button>
@@ -332,19 +345,16 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                 </TableRow>
               ))}
             </TableBody>
+
           </Table>
         </div>
       )}
+
       <ConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title="Delete Task"
-        description={
-          <>
-            Are you sure you want to delete?
-            ?
-          </>
-        }
+        description={<>Are you sure you want to delete?</>}
         confirmText="Delete"
         cancelText="Cancel"
         onConfirm={confirmDelete}

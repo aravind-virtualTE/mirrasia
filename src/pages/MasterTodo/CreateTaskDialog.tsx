@@ -74,30 +74,7 @@ export const CreateTaskDialog = ({
 
     // Due date error
     const [dateError, setDateError] = useState<string>('');
-    // console.log("allList",allList)
-    // Get filtered companies
-    // const getFilteredCompanies = () => {
-    //     if (allList.length > 0) {
-    //         return allList
-    //             .map((company) => {
-    //                 if (typeof company._id === 'string') {
-    //                     const name =
-    //                         typeof company.companyName === 'string'
-    //                             ? company.companyName
-    //                             : Array.isArray(company.companyName) && typeof company.companyName[0] === 'string'
-    //                                 ? company.companyName[0]
-    //                                 : '';
-    //                     return {
-    //                         id: company._id,
-    //                         name,
-    //                     };
-    //                 }
-    //                 return { id: '', name: '' };
-    //             })
-    //             .filter((company) => company.id !== '');
-    //     }
-    //     return [];
-    // };
+  
     const getFilteredCompanies = () => {
         if (!Array.isArray(allList) || allList.length === 0) return [];
         return allList
