@@ -12,10 +12,10 @@ import businessWomen from "@/assets/images/businessWomen.jpg";
 import businessMan from "@/assets/images/businessMan.jpg";
 import calculator from "@/assets/images/calculator.jpg";
 import pricing from "@/assets/images/pricing.jpg";
-
+import { useNavigate } from "react-router-dom";
 import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 import { useTheme } from "@/components/theme-provider";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import FAQs from "./FAQs";
 
@@ -26,14 +26,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import HKAccountingEstimator from "@/components/InvoiceManager/AccTaxEstimator";
-import QuoteBuilder from "@/components/InvoiceManager/InvoiceQuotation";
+import EnquiryForm from "./EnquiryForm";
+
 
 
 const LandingPage = () => {
@@ -44,18 +38,14 @@ const LandingPage = () => {
   const pricingRef = useRef<HTMLDivElement>(null)
   const homeRef = useRef<HTMLDivElement>(null)
 
-  const [serviceDialogOpen, setServiceDialogOpen] = useState(false);
-  const [selectedService, setSelectedService] =
-    useState<"quotation" | "tax-fee" | null>(null);
-
-  const openService = (svc: "quotation" | "tax-fee") => {
-    setSelectedService(svc);
-    setServiceDialogOpen(true);
-  };
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: "smooth" })
   }
+  const navigate = useNavigate();
+  const openService = (svc: "quotation" | "tax-fee") => {
+    navigate(`/services/${svc}`);
+  };
 
   return (
     <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -151,40 +141,6 @@ const LandingPage = () => {
           <Link to="/signup" className="font-semibold hover:text-foreground">Get started</Link>
         </nav>
       </header>
-
-      {/* NEW: Services Popup Dialog */}
-      <Dialog open={serviceDialogOpen} onOpenChange={setServiceDialogOpen}>
-        <DialogContent
-          className="w-[98vw] sm:w-[95vw]  h-[90vh] sm:h-[80vh] max-w-full p-0 overflow-hidden ">
-          {/* Let children be flexed WITHOUT forcing content height bigger than container */}
-          <div className="flex h-full min-h-0 flex-col">
-            <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-2 border-b shrink-0">
-              <DialogTitle className="text-base sm:text-lg">
-                {selectedService === "quotation"
-                  ? "Quotation Request"
-                  : selectedService === "tax-fee"
-                    ? "Tax‑Fee Estimator"
-                    : "Service"}
-              </DialogTitle>
-            </DialogHeader>
-
-            {/* This is the ONLY scroller inside the dialog */}
-            <div className="flex-1 min-h-0 overflow-auto">
-              {selectedService === "quotation" ? (
-                // Provide modest padding here; invoice width stays locked, so this container scrolls
-                <div className="h-full p-3 sm:p-4">
-                  <QuoteBuilder lockInvoiceWidth />
-                </div>
-              ) : selectedService === "tax-fee" ? (
-                <div className="p-4 sm:p-6">
-                  <HKAccountingEstimator />
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
       {/* Hero Section */}
       <section ref={homeRef} id="home" className="bg-gradient-to-b from-white to-gray-50 py-16 md:py-24">
         <div className="max-width mx-auto px-4 sm:px-6 lg:px-8">
@@ -396,7 +352,21 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <FAQs />
+      <section className="py-16 md:py-24">
+        <div className="max-width mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+            {/* FAQs: 2 columns on md+ */}
+            <div className="md:col-span-2">
+              <FAQs />
+            </div>
+
+            {/* Enquiry: right side on desktop; below on mobile */}
+            <aside className="md:col-span-1 md:sticky md:top-24">
+              <EnquiryForm />
+            </aside>
+          </div>
+        </div>
+      </section>
 
       <footer className="bg-gray-800 text-white py-8">
         <div className="max-width mx-auto px-4 sm:px-6 lg:px-8">

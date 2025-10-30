@@ -74,7 +74,49 @@
     "rightP": "장부 관리부터 급여, 법무까지, 전문가와 함께 백오피스에 마음의 평화를 가져오세요!",
     "registerNow": "지금 등록하기",
     "contactUs": "문의하기",
-    "TransferBtn": "Mirr Asia로 이전"
+    "TransferBtn": "Mirr Asia로 이전",
+    "title": "무료 상담 요청",
+    "subtitle": "필수 입력란은 •로 표시되어 있습니다. 담당자가 곧 연락드리겠습니다.",
+    "honeypot": {
+      "label": "이 필드를 비워 두세요"
+    },
+    "name": {
+      "label": "성명 •",
+      "error": "이름을 입력해 주세요."
+    },
+    "phone": {
+      "label": "전화번호",
+      "error": "숫자, 공백, 괄호 또는 하이픈만 사용하세요."
+    },
+    "email": {
+      "label": "이메일 •",
+      "error": "유효한 이메일 주소를 입력해 주세요."
+    },
+    "message": {
+      "label": "메시지 •",
+      "helper": "도움이 되는 답변을 위해 충분한 세부 정보를 제공해 주세요.",
+      "counterAria": "글자 수",
+      "error": "메시지는 최소 10자 이상이어야 합니다."
+    },
+    "consent": {
+      "checkboxLabel": "(필수) 개인정보 수집 및 이용에 동의합니다.",
+      "policyLinkText": "개인정보 처리방침 보기",
+      "error": "제출하기 전에 동의해야 합니다."
+    },
+    "recaptcha": {
+      "groupLabel": "캡차",
+      "envWarning": ".env 파일에 VITE_RECAPTCHA_SITE_KEY를 설정해 주세요.",
+      "srOnly": "reCAPTCHA 인증을 완료해 주세요."
+    },
+    "actions": {
+      "disclaimer": "* 제출 시, 상담을 위한 연락에 동의하는 것입니다.",
+      "submit": "보내기",
+      "submitting": "제출 중..."
+    },
+    "success": "문의가 접수되었습니다. 감사합니다!",
+    "errors": {
+      "global": "문제가 발생했습니다. 다시 시도해 주세요."
+    }
   },
   "compFormation": {
     "appInfo": "신청자\n정보",
@@ -865,7 +907,7 @@
     "paymentConditionsDesc": "모든 결제는 환불되지 않습니다. 송금인은 송금액, 수취인 은행 수수료 및 기타 모든 은행 수수료(중개 은행 등)를 포함한 모든 결제 수수료를 부담합니다."
   },
   "usa": {
-    "title":"미국 법인 설립",
+    "title": "미국 법인 설립",
     "steps": {
       "step1": "신청자 정보",
       "step2": "KYC CDD",

@@ -57,6 +57,7 @@ import MemberDirectorManager from './components/memDirManager/MemberDirectorMana
 import ConfigDrivenHKForm from './pages/Company/NewHKForm/NewHKIncorporation';
 import HKCompDetailSummary from './pages/Company/Details/NewCompDetail';
 import ConfigDrivenUSAForm from './pages/Company/USA/UsIncorporation';
+import ServicesPage from './pages/Landing/ServicesPage';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -94,7 +95,7 @@ const App: React.FC = () => {
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/quotation" element={<QuoteBuilder />} />
                     <Route path="/estimator" element={<HKAccountingEstimator />} />
-                    
+                     <Route path="/services/:tab?" element={<ServicesPage />} />
                     
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />

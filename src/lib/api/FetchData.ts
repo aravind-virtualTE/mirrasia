@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '@/services/fetch';
 
 export const getNotificList = async () => {
@@ -130,6 +131,16 @@ export const deleteTodo = async (companyId: string, todoId: string) => {
     return response.data;
   } catch (error) {
     console.error("Error deleting todo:", error);
+    throw error;
+  }
+};
+
+export const reqEnquiry = async ( enquiry: any) => {
+  try {
+    const response = await api.post(`/utility/enquiry`, enquiry);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding todo:", error);
     throw error;
   }
 };
