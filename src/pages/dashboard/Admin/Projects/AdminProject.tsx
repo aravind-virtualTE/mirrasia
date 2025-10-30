@@ -260,39 +260,39 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
       ) : (
         // Scroll container with sticky header
         <div className="rounded-xl border mt-6 ml-2 mr-2 overflow-auto max-h-[70vh]">
-          <Table className="w-full text-sm text-left">
+          <Table className="w-full table-fixed text-xs text-left">
             <TableHeader className="sticky top-0 z-10 bg-background">
-              <TableRow>
-                <TableHead className="px-4 py-3">No</TableHead>
+              <TableRow className="h-9">
+                <TableHead className="w-12 px-2 py-1 text-center">No</TableHead>
 
-                {/* Sortable Project Name */}
-                <TableHead className="px-4 py-3 w-[220px]">
+                {/* Project Name (sortable) */}
+                <TableHead className="px-2 py-1">
                   <button
                     type="button"
-                    onClick={() => toggleSort('projectName')}
+                    onClick={() => toggleSort("projectName")}
                     className="inline-flex items-center gap-1 hover:opacity-80"
                   >
-                    Project Name <SortIcon active={sortKey === 'projectName'} />
+                    Project Name <SortIcon active={sortKey === "projectName"} />
                   </button>
                 </TableHead>
 
-                {/* New Company Name column (sortable) */}
-                <TableHead className="px-4 py-3 w-[260px]">
+                {/* Company Name (sortable) */}
+                <TableHead className="px-2 py-1">
                   <button
                     type="button"
-                    onClick={() => toggleSort('companyName')}
+                    onClick={() => toggleSort("companyName")}
                     className="inline-flex items-center gap-1 hover:opacity-80"
                   >
-                    Company Name <SortIcon active={sortKey === 'companyName'} />
+                    Company Name <SortIcon active={sortKey === "companyName"} />
                   </button>
                 </TableHead>
 
-                <TableHead className="px-4 py-3">Email</TableHead>
-                <TableHead className="px-4 py-3">Contact</TableHead>
-                <TableHead className="px-4 py-3">Jurisdiction</TableHead>
-                <TableHead className="px-4 py-3">Description</TableHead>
-                <TableHead className="px-4 py-3">Updated</TableHead>
-                <TableHead className="px-4 py-3 text-right">Actions</TableHead>
+                <TableHead className="px-2 py-1">Email</TableHead>
+                <TableHead className="px-2 py-1">Contact</TableHead>
+                <TableHead className="px-2 py-1">Jurisdiction</TableHead>
+                <TableHead className="px-2 py-1">Description</TableHead>
+                <TableHead className="px-2 py-1 whitespace-nowrap">Updated</TableHead>
+                <TableHead className="px-2 py-1 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -300,31 +300,50 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
               {sortedProjects.map((project, idx) => (
                 <TableRow
                   key={project._id}
-                  className="h-12 cursor-pointer"
+                  className="h-9 cursor-pointer"
                   onClick={() => handleNavigate(project)}
                 >
-                  <TableCell className="px-4 py-3">{idx + 1}</TableCell>
-                  <TableCell className="px-4 py-3 font-medium">{project.projectName || '-'}</TableCell>
-                  <TableCell className="px-4 py-3">{project.company?.name || '-'}</TableCell>
-                  <TableCell className="px-4 py-3">{project.email || '-'}</TableCell>
-                  <TableCell className="px-4 py-3">{project.contactName || '-'}</TableCell>
-                  <TableCell className="px-4 py-3">{project.jurisdiction || '-'}</TableCell>
-
-                  {/* SNS removed from row */}
-
-                  <TableCell className="px-4 py-3 max-w-[280px] truncate">
-                    {project.description ? project.description : '-'}
+                  <TableCell className="w-12 px-2 py-1 text-center whitespace-nowrap">
+                    {idx + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3">
+
+                  <TableCell className="px-2 py-1 font-medium truncate">
+                    {project.projectName || "-"}
+                  </TableCell>
+
+                  <TableCell className="px-2 py-1 truncate">
+                    {project.company?.name || "-"}
+                  </TableCell>
+
+                  <TableCell className="px-2 py-1 whitespace-nowrap truncate">
+                    {project.email || "-"}
+                  </TableCell>
+
+                  <TableCell className="px-2 py-1 whitespace-nowrap truncate">
+                    {project.contactName || "-"}
+                  </TableCell>
+
+                  <TableCell className="px-2 py-1 whitespace-nowrap truncate">
+                    {project.jurisdiction || "-"}
+                  </TableCell>
+
+                  <TableCell className="px-2 py-1 truncate max-w-[220px]">
+                    {project.description || "-"}
+                  </TableCell>
+
+                  {/* Date: keep on one line, compact digits */}
+                  <TableCell className="px-2 py-1 whitespace-nowrap tabular-nums">
                     {project.updatedAt
                       ? format(new Date(project.updatedAt), "yyyy-MM-dd")
                       : "-"}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-right">
-                    <div className="flex justify-end space-x-2">
+
+                  <TableCell className="px-2 py-1 text-right">
+                    <div className="flex justify-end space-x-1">
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-7 w-7"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleEdit(project);
@@ -335,11 +354,11 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-7 w-7"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDelete(project._id)
-                        }
-                        }
+                          handleDelete(project._id);
+                        }}
                       >
                         <Trash2 className="h-3 w-3 text-red-500" />
                       </Button>
@@ -348,7 +367,6 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                 </TableRow>
               ))}
             </TableBody>
-
           </Table>
         </div>
       )}
