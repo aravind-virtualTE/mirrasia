@@ -284,7 +284,7 @@ export default function EnquiryFormModern({ className = "" }: Props) {
                         />
                         <span>
                             {t("landingPage.consent.checkboxLabel")}{" "}
-                            <a className="text-[#1e60ff] underline underline-offset-2" href="/privacy" target="_blank" rel="noopener">
+                            <a className="text-[#1e60ff] underline underline-offset-2" href="/privacy-policy" target="_blank" rel="noopener">
                                 {t("landingPage.consent.policyLinkText")}
                             </a>
                         </span>
