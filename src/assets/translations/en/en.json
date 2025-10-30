@@ -8,7 +8,59 @@
     "rightP": "Register your company in minutes and get everything you need to stay compliant and confident!",
     "registerNow": "Register now",
     "contactUs": "Contact us",
-    "TransferBtn": "Transfer to Mirr Asia"
+    "TransferBtn": "Transfer to Mirr Asia",
+     "title": "Request a Free Consultation",
+    "subtitle": "Required fields are marked with •. Our team will contact you shortly.",
+
+    "honeypot": {
+      "label": "Leave this field blank"
+    },
+
+    "name": {
+      "label": "Full Name •",
+      "error": "Please enter your name."
+    },
+
+    "phone": {
+      "label": "Phone",
+      "error": "Use only numbers, spaces, parentheses, or hyphens."
+    },
+
+    "email": {
+      "label": "Email •",
+      "error": "Please enter a valid email address."
+    },
+
+    "message": {
+      "label": "Message •",
+      "helper": "Please provide enough detail for a helpful reply.",
+      "counterAria": "Character count",
+      "error": "Message must be at least 10 characters."
+    },
+
+    "consent": {
+      "checkboxLabel": "(Required) I agree to the collection and use of my personal data.",
+      "policyLinkText": "View Privacy Policy",
+      "error": "You must agree before submitting."
+    },
+
+    "recaptcha": {
+      "groupLabel": "Captcha",
+      "envWarning": "Please set VITE_RECAPTCHA_SITE_KEY in your .env.",
+      "srOnly": "Please complete the reCAPTCHA verification."
+    },
+
+    "actions": {
+      "disclaimer": "* By submitting, you consent to being contacted for consultation.",
+      "submit": "Send",
+      "submitting": "Submitting..."
+    },
+
+    "success": "Your enquiry has been received. Thank you!",
+
+    "errors": {
+      "global": "Something went wrong. Please try again."
+    }
   },
   "company": {
     "name": "Company Name",
