@@ -54,47 +54,47 @@ const DENSITY_STYLES: Record<Density, { row: string; cellPadY: string; text: str
 const priorityOrder = { Low: 1, Medium: 2, High: 3, Urgent: 4 } as const;
 
 // Deterministic pastel from string
-const hueFromString = (s: string) =>
-  Array.from(s).reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+// const hueFromString = (s: string) =>
+//   Array.from(s).reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
 
-const CompanyBadge: React.FC<{ name?: string }> = ({ name }) => {
-  if (!name) return null;
-  const hue = hueFromString(name);
-  const bg = `hsl(${hue} 80% 96%)`;
-  const ring = `hsl(${hue} 70% 84%)`;
-  const chip = `hsl(${hue} 85% 90%)`;
-  const txt = `hsl(${hue} 30% 30%)`;
+// const CompanyBadge: React.FC<{ name?: string }> = ({ name }) => {
+//   if (!name) return null;
+//   const hue = hueFromString(name);
+//   const bg = `hsl(${hue} 80% 96%)`;
+//   const ring = `hsl(${hue} 70% 84%)`;
+//   const chip = `hsl(${hue} 85% 90%)`;
+//   const txt = `hsl(${hue} 30% 30%)`;
 
-  const initials = name
-    .split(" ")
-    .map((p) => p[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
+//   const initials = name
+//     .split(" ")
+//     .map((p) => p[0])
+//     .join("")
+//     .slice(0, 2)
+//     .toUpperCase();
 
-  return (
-    <TooltipProvider delayDuration={0}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div
-            className="flex items-center gap-1.5 rounded-full border px-2 py-0.5 max-w-[180px] sm:max-w-[220px]"
-            style={{ backgroundColor: bg, borderColor: ring, color: txt }}
-            title={name}
-          >
-            <span
-              className="inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-semibold flex-shrink-0"
-              style={{ backgroundColor: chip }}
-            >
-              {initials}
-            </span>
-            <span className="truncate leading-4">{name}</span>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>{name}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-};
+//   return (
+//     <TooltipProvider delayDuration={0}>
+//       <Tooltip>
+//         <TooltipTrigger asChild>
+//           <div
+//             className="flex items-center gap-1.5 rounded-full border px-2 py-0.5 max-w-[180px] sm:max-w-[220px]"
+//             style={{ backgroundColor: bg, borderColor: ring, color: txt }}
+//             title={name}
+//           >
+//             <span
+//               className="inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-semibold flex-shrink-0"
+//               style={{ backgroundColor: chip }}
+//             >
+//               {initials}
+//             </span>
+//             <span className="truncate leading-4">{name}</span>
+//           </div>
+//         </TooltipTrigger>
+//         <TooltipContent>{name}</TooltipContent>
+//       </Tooltip>
+//     </TooltipProvider>
+//   );
+// };
 
 const FilterChip: React.FC<{ label: string; active?: boolean; muted?: boolean; onClick: () => void; pastelClass: string; }> = ({ label, active, muted, onClick, pastelClass }) => (
   <button
@@ -117,7 +117,7 @@ const FilterChip: React.FC<{ label: string; active?: boolean; muted?: boolean; o
     {label}
   </button>
 );
-
+const SCROLL_CONTAINER_HEIGHT = 600;
 const TaskTable = ({ tasks }: { tasks: Task[] }) => {
   const [, setFormState] = useAtom(createTaskFormAtom);
   const [, setAllTasks] = useAtom(tasksAtom);
@@ -127,7 +127,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
 
-  type SortField = "dueDate" | "priority" | "assignees" | "createdAt";
+  type SortField = "dueDate" | "priority" | "assignees" | "createdAt" | "company" | "project";
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [density, setDensity] = useState<Density>("ultra");
@@ -359,27 +359,23 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
 
   /* -------------------------------- render -------------------------------- */
   const d = DENSITY_STYLES[density];
-
+  // console.log("sortedTasks",sortedTasks)
   return (
     <>
       {/* Chip filter bar */}
       <div className="mb-2 flex flex-wrap items-center gap-2">
-        {/* Status chips */}
         <div className="flex flex-wrap items-center gap-1.5">
-          {(["TO DO", "IN PROGRESS", "IN REVIEW",] as TaskStatus[]).map(
-            (s) => (
-              <FilterChip
-                key={s}
-                label={s.replace("IN ", "")}
-                active={statusFilter.has(s)}
-                onClick={() => toggleStatus(s)}
-                pastelClass={statusPastels[s]}
-              />
-            )
-          )}
+          {(["TO DO", "IN PROGRESS", "IN REVIEW"] as TaskStatus[]).map((s) => (
+            <FilterChip
+              key={s}
+              label={s.replace("IN ", "")}
+              active={statusFilter.has(s)}
+              onClick={() => toggleStatus(s)}
+              pastelClass={statusPastels[s]}
+            />
+          ))}
         </div>
 
-        {/* Priority chips */}
         <div className="ml-2 flex flex-wrap items-center gap-1.5">
           {(["Urgent", "High", "Medium", "Low"] as Task["priority"][]).map((p) => (
             <FilterChip
@@ -401,193 +397,209 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         <div className="ml-auto flex items-center gap-2">
           {densityBtn("compact", "Compact")}
           {densityBtn("ultra", "Ultra")}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 px-2 text-[12px]"
-            onClick={clearFilters}
-          >
+          <Button variant="ghost" size="sm" className="h-7 px-2 text-[12px]" onClick={clearFilters}>
             Clear
           </Button>
         </div>
       </div>
 
+      {/* ======= Sticky header + fixed-height scroll container ======= */}
       <div className="rounded-md border">
-        <Table className={`compact-table w-full table-fixed ${d.text}`}>
-          <TableHeader className="bg-gray-50">
-            <TableRow className={`${d.row}`}>
-              <TableHead className="w-[84px]">Status</TableHead>
+        <div className="overflow-auto" style={{ height: SCROLL_CONTAINER_HEIGHT }}>
+          <Table className={`compact-table w-full table-fixed ${d.text} min-w-[1120px]`}>
+            <TableHeader className="sticky top-0 z-30 bg-gray-50 shadow-sm">
+              <TableRow className={`${d.row}`}>
+                <TableHead className="w-[84px] sticky top-0 z-30 bg-gray-50">Status</TableHead>
+                <TableHead className="w-auto sticky top-0 z-30 bg-gray-50">Task</TableHead>
 
-              {/* Task column is elastic with an upper bound; truncates like Excel */}
-              <TableHead className="w-auto">Task</TableHead>
-
-              <TableHead
-                className="w-[160px] cursor-pointer"
-                onClick={() => handleSort("assignees")}
-              >
-                <div className="flex items-center">
-                  Assignee{" "}
-                  {sortField === "assignees" &&
-                    (sortOrder === "asc" ? (
-                      <ChevronUp className="ml-1 h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                    ))}
-                </div>
-              </TableHead>
-
-              <TableHead
-                className="w-[112px] cursor-pointer"
-                onClick={() => handleSort("dueDate")}
-              >
-                <div className="flex items-center">
-                  Due{" "}
-                  {sortField === "dueDate" &&
-                    (sortOrder === "asc" ? (
-                      <ChevronUp className="ml-1 h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                    ))}
-                </div>
-              </TableHead>
-
-              <TableHead
-                className="w-[100px] cursor-pointer"
-                onClick={() => handleSort("priority")}
-              >
-                <div className="flex items-center">
-                  Priority{" "}
-                  {sortField === "priority" &&
-                    (sortOrder === "asc" ? (
-                      <ChevronUp className="ml-1 h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                    ))}
-                </div>
-              </TableHead>
-
-              {/* NEW: Created column, placed beside Actions (to its left) */}
-              <TableHead
-                className="w-[136px] cursor-pointer"
-                onClick={() => handleSort("createdAt")}
-                title="Sort by created date"
-              >
-                <div className="flex items-center">
-                  Created At{" "}
-                  {sortField === "createdAt" &&
-                    (sortOrder === "asc" ? (
-                      <ChevronUp className="ml-1 h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                    ))}
-                </div>
-              </TableHead>
-
-              <TableHead className="w-[88px]">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {sortedTasks.map((task) => (
-              <TableRow
-                onClick={() => handleRowClick(task)}
-                key={task._id}
-                className={`${d.row} cursor-pointer`}
-              >
-                <TableCell className={`${d.cellPadY}`}>
-                  <Badge
-                    variant="outline"
-                    className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}
-                  >
-                    {task.status}
-                  </Badge>
-                </TableCell>
-
-                {/* Elastic task cell: avatar chip + tight truncation */}
-                <TableCell className={`${d.cellPadY}`}>
-                  <div className="flex w-full items-center justify-between gap-2">
-                    <div
-                      className="min-w-0 flex-1"
-                      title={task.name}
-                    >
-                      <span className="block truncate font-medium leading-5">
-                        {task.name}
-                      </span>
-                    </div>
-
-                    {/* Fancy company pill */}
-                    {task.company?.name && (
-                      <CompanyBadge name={task.company.name} />
-                    )}
-                  </div>
-                </TableCell>
-
-                <TableCell className={`${d.cellPadY}`}>
-                  {renderAssignees(task.assignees)}
-                </TableCell>
-
-                <TableCell className={`${d.cellPadY}`}>
-                  {task.dueDate ? formatToDDMMYYYY(task.dueDate) : "-"}
-                </TableCell>
-
-                <TableCell className={`${d.cellPadY}`}>
-                  <div className="flex items-center gap-1">
-                    <Flag
-                      className={`h-3.5 w-3.5 ${priorityColors[task.priority]}`}
-                      fill={"currentColor"}
-                    />
-                    <span>{task.priority}</span>
-                  </div>
-                </TableCell>
-
-                {/* NEW: Created cell */}
-                <TableCell className={`${d.cellPadY}`}>
-                  {task.createdAt ? (
-                   formatToDDMMYYYY(task.createdAt)
-                  ) : (
-                    "-"
-                  )}
-                </TableCell>
-
-                <TableCell
-                  className={`${d.cellPadY}`}
-                  onClick={(e) => e.stopPropagation()}
+                {/* NEW: Company column */}
+                <TableHead
+                  className="w-[180px] cursor-pointer sticky top-0 z-30 bg-gray-50"
+                  onClick={() => handleSort("company")}
                 >
-                  <div className="flex space-x-1">
-                    {user?.role !== "user" && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0"
-                        onClick={(e) => handleEditClick(task, e)}
-                      >
-                        <Edit className="h-3.5 w-3.5" />
-                      </Button>
-                    )}
-                    {task.status === "COMPLETED" && user?.role === "master" && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0"
-                        onClick={(e) => handleDeleteClick(task, e)}
-                      >
-                        <Trash2 className="h-3.5 w-3.5 text-red-500" />
-                      </Button>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 p-0"
-                      onClick={() => handleRowClick(task)}
-                    >
-                      <MessageCircle className="h-3.5 w-3.5 text-green-500" />
-                    </Button>
+                  <div className="flex items-center">
+                    Company{" "}
+                    {sortField === "company" &&
+                      (sortOrder === "asc" ? (
+                        <ChevronUp className="ml-1 h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                      ))}
                   </div>
-                </TableCell>
+                </TableHead>
+
+                {/* NEW: Project column */}
+                <TableHead
+                  className="w-[180px] cursor-pointer sticky top-0 z-30 bg-gray-50"
+                  onClick={() => handleSort("project")}
+                >
+                  <div className="flex items-center">
+                    Project{" "}
+                    {sortField === "project" &&
+                      (sortOrder === "asc" ? (
+                        <ChevronUp className="ml-1 h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                      ))}
+                  </div>
+                </TableHead>
+
+                <TableHead
+                  className="w-[160px] cursor-pointer sticky top-0 z-30 bg-gray-50"
+                  onClick={() => handleSort("assignees")}
+                >
+                  <div className="flex items-center">
+                    Assignee{" "}
+                    {sortField === "assignees" &&
+                      (sortOrder === "asc" ? (
+                        <ChevronUp className="ml-1 h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                      ))}
+                  </div>
+                </TableHead>
+
+                <TableHead
+                  className="w-[112px] cursor-pointer sticky top-0 z-30 bg-gray-50"
+                  onClick={() => handleSort("dueDate")}
+                >
+                  <div className="flex items-center">
+                    Due{" "}
+                    {sortField === "dueDate" &&
+                      (sortOrder === "asc" ? (
+                        <ChevronUp className="ml-1 h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                      ))}
+                  </div>
+                </TableHead>
+
+                <TableHead
+                  className="w-[100px] cursor-pointer sticky top-0 z-30 bg-gray-50"
+                  onClick={() => handleSort("priority")}
+                >
+                  <div className="flex items-center">
+                    Priority{" "}
+                    {sortField === "priority" &&
+                      (sortOrder === "asc" ? (
+                        <ChevronUp className="ml-1 h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                      ))}
+                  </div>
+                </TableHead>
+
+                <TableHead
+                  className="w-[136px] cursor-pointer sticky top-0 z-30 bg-gray-50"
+                  onClick={() => handleSort("createdAt")}
+                  title="Sort by created date"
+                >
+                  <div className="flex items-center">
+                    Created At{" "}
+                    {sortField === "createdAt" &&
+                      (sortOrder === "asc" ? (
+                        <ChevronUp className="ml-1 h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                      ))}
+                  </div>
+                </TableHead>
+
+                <TableHead className="w-[88px] sticky top-0 z-30 bg-gray-50">Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+
+            <TableBody>
+              {sortedTasks.map((task) => (
+                <TableRow
+                  onClick={() => handleRowClick(task)}
+                  key={task._id}
+                  className={`${d.row} cursor-pointer`}
+                >
+                  <TableCell className={`${d.cellPadY}`}>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] px-1.5 py-0.5 ${statusColors[task.status]}`}
+                    >
+                      {task.status}
+                    </Badge>
+                  </TableCell>
+
+                  {/* Task name only (no badge) */}
+                  <TableCell className={`${d.cellPadY}`}>
+                    <div className="min-w-0" title={task.name}>
+                      <span className="block truncate font-medium leading-5">{task.name}</span>
+                    </div>
+                  </TableCell>
+
+                  {/* NEW: Company cell */}
+                  <TableCell className={`${d.cellPadY}`}>
+                    <div className="min-w-0" title={task.company?.name || "-"}>
+                      <span className="block truncate">{task.company?.name || "-"}</span>
+                    </div>
+                  </TableCell>
+
+                  {/* NEW: Project cell */}
+                  <TableCell className={`${d.cellPadY}`}>
+                    <div className="min-w-0" title={task.project?.name || "-"}>
+                      <span className="block truncate">{task.project?.name || "-"}</span>
+                    </div>
+                  </TableCell>
+
+                  <TableCell className={`${d.cellPadY}`}>{renderAssignees(task.assignees)}</TableCell>
+
+                  <TableCell className={`${d.cellPadY}`}>
+                    {task.dueDate ? formatToDDMMYYYY(task.dueDate) : "-"}
+                  </TableCell>
+
+                  <TableCell className={`${d.cellPadY}`}>
+                    <div className="flex items-center gap-1">
+                      <Flag className={`h-3.5 w-3.5 ${priorityColors[task.priority]}`} fill={"currentColor"} />
+                      <span>{task.priority}</span>
+                    </div>
+                  </TableCell>
+
+                  <TableCell className={`${d.cellPadY}`}>
+                    {task.createdAt ? formatToDDMMYYYY(task.createdAt) : "-"}
+                  </TableCell>
+
+                  <TableCell className={`${d.cellPadY}`} onClick={(e) => e.stopPropagation()}>
+                    <div className="flex space-x-1">
+                      {user?.role !== "user" && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0"
+                          onClick={(e) => handleEditClick(task, e)}
+                        >
+                          <Edit className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
+                      {task.status === "COMPLETED" && user?.role === "master" && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0"
+                          onClick={(e) => handleDeleteClick(task, e)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5 text-red-500" />
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                        onClick={() => handleRowClick(task)}
+                      >
+                        <MessageCircle className="h-3.5 w-3.5 text-green-500" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
 
         <ConfirmDialog
           open={deleteDialogOpen}
@@ -596,10 +608,7 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
           description={
             <>
               Are you sure you want to Delete{" "}
-              <span className="font-medium text-red-600">
-                {taskToDelete?.name}
-              </span>
-              ?
+              <span className="font-medium text-red-600">{taskToDelete?.name}</span>?
             </>
           }
           confirmText="Delete"
@@ -608,12 +617,8 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         />
       </div>
 
-      {/* Task Detail Popup */}
       {popupTask && (
-        <TaskDetailPopup
-          taskId={popupTask?._id ?? null}
-          onClose={() => setPopupTask(null)}
-        />
+        <TaskDetailPopup taskId={popupTask?._id ?? null} onClose={() => setPopupTask(null)} />
       )}
 
       {editDialogOpen && (
