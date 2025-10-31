@@ -534,3 +534,23 @@ export const getEnquiryData = async (data?: any) => {
     console.error("Error fetching enquiry data:", error);
   }
 }
+
+export const updateEnquiry = async ( id: string,update:any) => {
+  try {
+    const response = await api.put(`/utility/enquiry/${id}`, update);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating enquiry:", error);
+    throw error; // rethrow so caller can handle UI errors
+  }
+};
+
+export const deleteEnquiry = async (id: string) => {
+  try {
+    const response = await api.delete(`/utility/enquiry/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting enquiry:", error);
+    throw error;
+  }
+};
