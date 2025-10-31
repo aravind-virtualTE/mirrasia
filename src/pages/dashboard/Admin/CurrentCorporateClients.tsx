@@ -14,7 +14,7 @@ const CurrentCorporateClient: React.FC<{ data: companyTableData[]; count:number 
                     <Users className="h-4 w-4 text-green-500" />
                     <span className="text-sm font-medium">Current Corporate Client</span>
                 </div>
-                <span className="text-sm text-muted-foreground">Active: <span className="font-bold">{dataCount}</span></span>
+                <span className="text-sm text-muted-foreground">Total: <span className="font-bold">{dataCount}</span></span>
             </div>
         </Card>
     )
