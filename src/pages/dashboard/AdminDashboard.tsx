@@ -39,7 +39,8 @@ import { paFormWithResetAtom } from "../Company/Panama/PaState"
 import { pifFormWithResetAtom } from "../Company/PanamaFoundation/PaState"
 import { sgFormWithResetAtom } from "../Company/Singapore/SgState"
 import SearchBox from "../MasterTodo/SearchBox"
-import {normalize} from "@/middleware";
+import { normalize } from "@/middleware";
+import EnquiryCard from "./Admin/Enquiry/EnquiryCard"
 
 const AdminDashboard = () => {
   const setCompIncList = useSetAtom(companyIncorporationList)
@@ -84,32 +85,32 @@ const AdminDashboard = () => {
     fetchData()
   }, [])
 
-//   useEffect(() => {
-//   // same body as handleSearch, but auto-run on searchQuery change
-//   const q = normalize(searchQuery);
-//   if (!q) {
-//     setDisplayList(allList);
-//     setCurrentPage(1);
-//     return;
-//   }
+  //   useEffect(() => {
+  //   // same body as handleSearch, but auto-run on searchQuery change
+  //   const q = normalize(searchQuery);
+  //   if (!q) {
+  //     setDisplayList(allList);
+  //     setCurrentPage(1);
+  //     return;
+  //   }
 
-//   const filtered = allList.filter((item: any) => {
-//     const applicantMatch = normalize(item.applicantName).includes(q);
+  //   const filtered = allList.filter((item: any) => {
+  //     const applicantMatch = normalize(item.applicantName).includes(q);
 
-//     let companyMatch = false;
-//     const cn = item.companyName;
-//     if (typeof cn === "string") {
-//       companyMatch = normalize(cn).includes(q);
-//     } else if (Array.isArray(cn)) {
-//       companyMatch = cn.some((n) => normalize(n).includes(q));
-//     }
+  //     let companyMatch = false;
+  //     const cn = item.companyName;
+  //     if (typeof cn === "string") {
+  //       companyMatch = normalize(cn).includes(q);
+  //     } else if (Array.isArray(cn)) {
+  //       companyMatch = cn.some((n) => normalize(n).includes(q));
+  //     }
 
-//     return applicantMatch || companyMatch;
-//   });
+  //     return applicantMatch || companyMatch;
+  //   });
 
-//   setDisplayList(filtered);
-//   setCurrentPage(1);
-// }, [searchQuery, allList]);
+  //   setDisplayList(filtered);
+  //   setCurrentPage(1);
+  // }, [searchQuery, allList]);
 
 
   const statusToKey = (status: string): keyof Stats => {
@@ -366,11 +367,17 @@ const AdminDashboard = () => {
       <StatsCard stats={calculateStats()} />
       <Separator className="my-6" />
       {/* Additional Cards Section */}
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+       <div
+      className={[
+        "grid gap-3","grid-cols-1 sm:grid-cols-2 lg:grid-cols-3","xl:grid-cols-3 2xl:grid-cols-3",
+        "max-w-screen-2xl mx-auto",
+      ].join(" ")}
+    >
         <ProjectsCard />
         <AdminTodo />
         <CurrentCorporateClient data={projectsData} count={cccCount} />
         <CurrentClients />
+        <EnquiryCard />
       </div>
       {/* Companies Table */}
       <Card>
@@ -418,7 +425,7 @@ const AdminDashboard = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>S.No</TableHead>
+                  <TableHead>No</TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => requestSort("companyName")}>
                     <div className="flex items-center">
                       Company Name
@@ -684,32 +691,34 @@ const titles: Record<keyof Stats, string> = {
 
 
 const StatsCard: React.FC<StatsCardProps> = ({ stats }) => {
-  const [hoveredCard, setHoveredCard] = useState<keyof Stats | null>(null)
+  const [hovered, setHovered] = useState<keyof Stats | null>(null)
 
   return (
-    <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 ">
-      {Object.keys(stats).map((statusKey) => {
-        const key = statusKey as keyof Stats
+    <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
+      {Object.keys(stats).map((k) => {
+        const key = k as keyof Stats
         return (
           <Card
-            key={statusKey}
+            key={k}
             className={cn(
               "transition-all duration-200 overflow-hidden",
-              hoveredCard === key ? "shadow-md" : "shadow-sm",
+              hovered === key ? "shadow-md" : "shadow-sm"
             )}
-            onMouseEnter={() => setHoveredCard(key)}
-            onMouseLeave={() => setHoveredCard(null)}
+            onMouseEnter={() => setHovered(key)}
+            onMouseLeave={() => setHovered(null)}
           >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
-              <CardTitle className="text-xs font-medium">{titles[key]}</CardTitle>
-              {icons[key]}
+            <CardHeader className="flex items-center justify-between pb-1 pt-3 flex-col sm:flex-row gap-1 sm:gap-0">
+              <div className="flex items-center gap-2 flex-1 w-full">
+                {icons[key]}
+                <CardTitle className="text-xs font-medium">{titles[key]}</CardTitle>
+              </div>
+              <div className="text-xl font-bold">{stats[key]}</div>
             </CardHeader>
             <CardContent>
-              <div className="text-xl font-bold">{stats[key]}</div>
               <div
                 className={cn(
                   "text-xs text-muted-foreground transition-all duration-200 overflow-hidden",
-                  hoveredCard === key ? "max-h-12 opacity-100 mt-1" : "max-h-0 opacity-0",
+                  hovered === key ? "max-h-12 opacity-100 mt-1" : "max-h-0 opacity-0"
                 )}
               >
                 {descriptions[key]}
