@@ -574,10 +574,10 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
 
     const payload = { _id: app._id || "", inviteData: extractedData, country: "HK" };
     const response = await sendInviteToShDir(payload);
-
+    // console.log("response",response)
     if (response.summary.successful > 0) {
       setApp((prev) => {
-        const updated = prev.parties.map((p) => ({ ...p, invited: true }));
+        const updated = prev.parties.map((p) => ({ ...p, invited: true , status: "Invited"}));
         return { ...prev, parties: updated };
       });
       toast({
@@ -589,6 +589,10 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
     }
 
     if (response.summary.alreadyExists > 0) {
+       setApp((prev) => {
+        const updated = prev.parties.map((p) => ({ ...p, invited: true ,status: "Invited"}));
+        return { ...prev, parties: updated };
+      });
       toast({
         title: t("newHk.parties.toasts.invite.exists.title"),
         description: t("newHk.parties.toasts.invite.exists.desc")
@@ -596,6 +600,10 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
     }
 
     if (response.summary.failed > 0) {
+       setApp((prev) => {
+        const updated = prev.parties.map((p) => ({ ...p ,status: "Not Invited"}));
+        return { ...prev, parties: updated };
+      });
       toast({
         title: t("newHk.parties.toasts.invite.failed.title"),
         description: t("newHk.parties.toasts.invite.failed.desc")
@@ -2142,6 +2150,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
     }
   };
   // console.log("stepIdx", stepIdx)
+  console.log("app", app);
   return (
     <div className="max-width mx-auto p-3 sm:p-4 md:p-6 space-y-4">
       <TopBar title={config.title} totalSteps={config.steps.length} idx={stepIdx} />

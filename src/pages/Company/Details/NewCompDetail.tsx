@@ -37,6 +37,7 @@ export type Party = {
   shares?: number;
   invited?: boolean;
   typeOfShare?: string;
+  status?: string;
 };
 
 export type OnboardingRecord = {
@@ -210,8 +211,8 @@ function PartyRow({ p, totalShares }: { p: Party; totalShares?: number }) {
         </div>
       </TableCell>
       <TableCell className="py-3">
-        <Badge variant={p.invited ? "default" : "outline"} className={p.invited ? "bg-emerald-600 hover:bg-emerald-600" : "text-muted-foreground"}>
-          {p.invited ? "Invite sent" : "Not invited"}
+        <Badge className={p.status == "Invited" ? "bg-emerald-600 hover:bg-emerald-600" : ""}>
+          {p.status == "Invited" ? "Invite sent" : "Not invited"}
         </Badge>
       </TableCell>
     </TableRow>

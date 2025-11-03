@@ -297,8 +297,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     typeof form?.selectedState === "string"
       ? form.selectedState
       : (form?.selectedState as any)?.name ||
-        (form?.selectedState as any)?.id ||
-        "";
+      (form?.selectedState as any)?.id ||
+      "";
 
   const entityType = form?.selectedEntity || "";
 
@@ -579,11 +579,11 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     {t(renderVal((form as any)?.annualRenewalTermsAgreement)) ||
                       "—"}
                   </LabelValue>
-                   <LabelValue label="U.S. local company registration address">
+                  <LabelValue label="U.S. local company registration address">
                     {t(renderVal((form as any)?.localCompanyRegistration)) ||
                       "—"}
                   </LabelValue>
-                   <LabelValue label="Business address within the United States">
+                  <LabelValue label="Business address within the United States">
                     {t(renderVal((form as any)?.businessAddress)) ||
                       "—"}
                   </LabelValue>
@@ -598,7 +598,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   </div>
 
                   {Array.isArray(form?.shareHolders) &&
-                  form.shareHolders.length ? (
+                    form.shareHolders.length ? (
                     <div className="rounded-md border">
                       <Table>
                         <TableHeader>
@@ -618,6 +618,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             <TableHead className="w-[16%]">
                               Director / Legal
                             </TableHead>
+                            <TableHead className="w-[16%]">Invite</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -635,8 +636,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                   {typeof p?.ownershipRate === "number"
                                     ? `${p.ownershipRate}%`
                                     : typeof p?.ownerShipRate === "number"
-                                    ? `${p.ownerShipRate}%`
-                                    : "—"}
+                                      ? `${p.ownerShipRate}%`
+                                      : "—"}
                                 </TableCell>
                                 <TableCell>
                                   <div className="flex gap-2">
@@ -663,6 +664,11 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                       {renderVal(p?.isLegalPerson) || "—"}
                                     </Badge>
                                   </div>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <Badge className={p.status == "Invited" ? "bg-emerald-600 hover:bg-emerald-600" : ""}>
+                                    {p.status == "Invited" ? "Invite sent" : "Not invited"}
+                                  </Badge>
                                 </TableCell>
                               </TableRow>
                             )
@@ -719,9 +725,9 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                   value={
                                     form?.incorporationDate
                                       ? String(form.incorporationDate).slice(
-                                          0,
-                                          10
-                                        )
+                                        0,
+                                        10
+                                      )
                                       : ""
                                   }
                                   onChange={(e) =>
@@ -808,8 +814,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                   {/* Case 1: Stripe success info box */}
                   {form.paymentStatus === "paid" &&
-                  form.stripeLastStatus === "succeeded" &&
-                  form.stripeReceiptUrl ? (
+                    form.stripeLastStatus === "succeeded" &&
+                    form.stripeReceiptUrl ? (
                     <div className="rounded-md border bg-emerald-50 p-4 text-emerald-800">
                       <div className="text-sm font-medium">
                         Payment successful via Stripe.
@@ -824,57 +830,57 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       </a>
                     </div>
                   ) : // Case 2: uploaded proof (from uploadReceiptUrl or receiptUrl if you store one)
-                  form.uploadReceiptUrl ? (
-                    <div className="space-y-3">
-                      <a
-                        href={form.uploadReceiptUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="group relative block overflow-hidden rounded-md border"
-                      >
-                        <img
-                          src={form.uploadReceiptUrl}
-                          alt="Payment receipt"
-                          className="h-44 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]"
-                        />
-                      </a>
+                    form.uploadReceiptUrl ? (
+                      <div className="space-y-3">
+                        <a
+                          href={form.uploadReceiptUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="group relative block overflow-hidden rounded-md border"
+                        >
+                          <img
+                            src={form.uploadReceiptUrl}
+                            alt="Payment receipt"
+                            className="h-44 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]"
+                          />
+                        </a>
 
-                      {/* Admin-only paymentStatus dropdown */}
-                      {isAdmin && (
-                        <div className="flex flex-col gap-3">
-                          <div className="flex items-center gap-3">
-                            <Label className="text-sm font-medium">
-                              Payment Status:
-                            </Label>
-                            <Select
-                              value={form.paymentStatus || "unpaid"}
-                              onValueChange={(val) =>
-                                patchForm("paymentStatus", val)
-                              }
-                            >
-                              <SelectTrigger className="w-32">
-                                <SelectValue placeholder="Status" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="unpaid">
-                                  Pending
-                                </SelectItem>
-                                <SelectItem value="paid">Paid</SelectItem>
-                                <SelectItem value="rejected">
-                                  Rejected
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
+                        {/* Admin-only paymentStatus dropdown */}
+                        {isAdmin && (
+                          <div className="flex flex-col gap-3">
+                            <div className="flex items-center gap-3">
+                              <Label className="text-sm font-medium">
+                                Payment Status:
+                              </Label>
+                              <Select
+                                value={form.paymentStatus || "unpaid"}
+                                onValueChange={(val) =>
+                                  patchForm("paymentStatus", val)
+                                }
+                              >
+                                <SelectTrigger className="w-32">
+                                  <SelectValue placeholder="Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="unpaid">
+                                    Pending
+                                  </SelectItem>
+                                  <SelectItem value="paid">Paid</SelectItem>
+                                  <SelectItem value="rejected">
+                                    Rejected
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    // Case 3: no proof
-                    <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-                      No file uploaded
-                    </div>
-                  )}
+                        )}
+                      </div>
+                    ) : (
+                      // Case 3: no proof
+                      <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+                        No file uploaded
+                      </div>
+                    )}
                 </div>
 
                 {/* Amount / Expires / Payment Status / View Receipt */}
@@ -886,12 +892,11 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       {session.amount
                         ? `${session.amount} ${session.currency || "USD"}`
                         : form.stripeAmountCents
-                        ? `${(form.stripeAmountCents / 100).toFixed(2)} ${
-                            form.stripeCurrency
-                              ? form.stripeCurrency.toUpperCase()
-                              : "USD"
+                          ? `${(form.stripeAmountCents / 100).toFixed(2)} ${form.stripeCurrency
+                            ? form.stripeCurrency.toUpperCase()
+                            : "USD"
                           }`
-                        : "—"}
+                          : "—"}
                     </div>
                   </div>
 
