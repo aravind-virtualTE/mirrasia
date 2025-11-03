@@ -618,7 +618,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             <TableHead className="w-[16%]">
                               Director / Legal
                             </TableHead>
-                            <TableHead className="w-[16%]">Invite</TableHead>
+                            <TableHead className="w-[16%]">Status</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>

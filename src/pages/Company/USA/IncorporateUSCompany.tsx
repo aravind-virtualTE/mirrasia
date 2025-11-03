@@ -154,10 +154,8 @@ const IncorporateUSACompany = () => {
                     } else {
                         // setFormData({ ...formData, confirmationBusinessIntention: true });
                         await updateDoc();
-                        toast({
-                            title: "Consultation required before proceeding",
-                            description: "It appears that you need to consult before proceeding. We will review the content of your reply and our consultant will contact you shortly. Thank you very much.",
-                        });
+                        setCurrentSection(currentSection + 1);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
                     }
                     break;
                 }
