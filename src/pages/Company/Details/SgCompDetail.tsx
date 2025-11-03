@@ -1052,11 +1052,12 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[32%]">Shareholder</TableHead>
-                            <TableHead className="w-[20%]">Email</TableHead>
-                            <TableHead className="w-[16%]">Phone</TableHead>
-                            <TableHead className="w-[16%]">Ownership</TableHead>
-                            <TableHead className="w-[16%]">Legal Entity</TableHead>
+                            <TableHead className="w-[28%]">Shareholder</TableHead>
+                            <TableHead className="w-[18%]">Email</TableHead>
+                            <TableHead className="w-[14%]">Phone</TableHead>
+                            <TableHead className="w-[14%]">Ownership</TableHead>
+                            <TableHead className="w-[14%]">Legal Entity</TableHead>
+                            <TableHead className="w-[12%]">Status</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -1069,13 +1070,16 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                 {typeof p?.ownerShipRate === "number"
                                   ? `${p.ownerShipRate}%`
                                   : typeof p?.ownershipRate === "number"
-                                  ? `${p.ownershipRate}%`
-                                  : "—"}
+                                    ? `${p.ownershipRate}%`
+                                    : "—"}
                               </TableCell>
                               <TableCell>
                                 <Badge variant={renderVal(p?.legalEntity) === "Yes" ? "default" : "outline"}>
                                   {renderVal(p?.legalEntity) || "—"}
                                 </Badge>
+                              </TableCell>
+                              <TableCell>
+                                {p?.status || "—"}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -1083,9 +1087,12 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       </Table>
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No parties added.</div>
+                    <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+                      No parties added.
+                    </div>
                   )}
                 </div>
+
 
                 <Separator />
 
@@ -1171,8 +1178,8 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   <div className="text-xs text-muted-foreground">Receipt / Proof</div>
 
                   {form.paymentStatus === "paid" &&
-                  form.stripeLastStatus === "succeeded" &&
-                  form.stripeReceiptUrl ? (
+                    form.stripeLastStatus === "succeeded" &&
+                    form.stripeReceiptUrl ? (
                     <div className="rounded-md border bg-emerald-50 p-4 text-emerald-800">
                       <div className="text-sm font-medium">Payment successful via Stripe.</div>
                       <a href={form.stripeReceiptUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center text-sm underline">

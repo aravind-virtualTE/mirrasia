@@ -435,7 +435,7 @@ function FoundersManager() {
   const add = () =>
     setForm({
       ...form,
-      founders: [...form.founders, { type: "", name: "", id: "", email: "", tel: "" }],
+      founders: [...form.founders, { type: "", name: "", id: "", email: "", tel: "", status: "Pending" }],
     });
 
   const removeAt = (idx: number) => {
@@ -457,11 +457,19 @@ function FoundersManager() {
       const alreadyExists = response?.summary?.alreadyExists ?? 0;
 
       if (successful > 0) {
+        setForm((prev) => ({
+          ...prev,
+          founders: (prev.founders || []).map((f) => ({ ...f, status: "Sent Invitation" })),
+        }));
         toast({
           title: t("ppif.founders.toasts.invite.success.title"),
           description: t("ppif.founders.toasts.invite.success.desc", { count: successful }),
         });
       } else if (alreadyExists > 0) {
+        setForm((prev) => ({
+          ...prev,
+          founders: (prev.founders || []).map((f) => ({ ...f, status: "Resent Invitation" })),
+        }));
         toast({
           title: t("ppif.founders.toasts.invite.alreadyExists.title"),
           description: t("ppif.founders.toasts.invite.alreadyExists.desc", { count: alreadyExists }),
@@ -473,6 +481,7 @@ function FoundersManager() {
           variant: "destructive",
         });
       }
+
     } catch (e) {
       // Fallback to the "none" message on error
       toast({
@@ -563,11 +572,19 @@ function CouncilStep() {
       const alreadyExists = response?.summary?.alreadyExists ?? 0;
 
       if (successful > 0) {
+        setForm((prev) => ({
+          ...prev,
+          councilIndividuals: (prev.councilIndividuals || []).map((f) => ({ ...f, status: "Sent Invitation" })),
+        }));
         toast({
           title: t("ppif.council.toasts.invite.success.title"),
           description: t("ppif.council.toasts.invite.success.desc")
         });
       } else if (alreadyExists > 0) {
+         setForm((prev) => ({
+          ...prev,
+          councilIndividuals: (prev.councilIndividuals || []).map((f) => ({ ...f, status: "Resent Invitation" })),
+        }));
         toast({
           title: t("ppif.council.toasts.invite.alreadyExists.title"),
           description: t("ppif.council.toasts.invite.alreadyExists.desc", { count: alreadyExists })
@@ -900,6 +917,10 @@ function ProtectorsManager() {
       const alreadyExists = response?.summary?.alreadyExists ?? 0;
 
       if (successful > 0) {
+         setForm((prev) => ({
+          ...prev,
+          protectors: (prev.protectors || []).map((f) => ({ ...f, status: "Sent Invitation" })),
+        }));
         toast({
           title: t("ppif.protectors.toasts.invite.success.title"),
           description: t("ppif.protectors.toasts.invite.success.desc", {
@@ -907,6 +928,10 @@ function ProtectorsManager() {
           }),
         });
       } else if (alreadyExists > 0) {
+         setForm((prev) => ({
+          ...prev,
+          protectors: (prev.protectors || []).map((f) => ({ ...f, status: "Resent Invitation" })),
+        }));
         toast({
           title: t("ppif.protectors.toasts.invite.alreadyExists.title"),
           description: t("ppif.protectors.toasts.invite.alreadyExists.desc", {

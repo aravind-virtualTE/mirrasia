@@ -53,8 +53,8 @@ export interface PanamaPIFForm {
   councilMode?: "" | "ind3" | "corp1";
   nomineePersons?: "" | "1" | "2" | "3";
   // --- Founders / Council ---
-  founders: Array<{ type: "individual" | "corporate" | ""; name: string; id: string; email?: string; tel?: string }>;
-  councilIndividuals: Array<{ type: "individual" | "corporate" | ""; name: string; id: string; email?: string; tel?: string }>;
+  founders: Array<{ type: "individual" | "corporate" | ""; name: string; id: string; email?: string; tel?: string; status?: string }>;
+  councilIndividuals: Array<{ type: "individual" | "corporate" | ""; name: string; id: string; email?: string; tel?: string;status?: string }>;
   councilCorporate: { corpMain: string; addrRep: string; signatory?: string; email?: string };
   // --- Options / Roles ---
   useNomineeDirector: boolean;
@@ -62,7 +62,7 @@ export interface PanamaPIFForm {
   nomineeRole?: "" | "President" | "Treasurer" | "Secretary";
   // --- Protectors / Beneficiaries / Bylaws ---
   protectorsEnabled: boolean;
-  protectors: Array<{ name: string; contact: string }>;
+  protectors: Array<{ name: string; contact: string;status?: string }>;
   beneficiariesMode: "fixed" | "class" | "mixed";
   beneficiaries: Array<{ name: string; contact: string }>;
   bylawsMode: "standard" | "custom";
