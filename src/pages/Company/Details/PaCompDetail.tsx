@@ -1100,15 +1100,16 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                             <Table>
                                                 <TableHeader>
                                                     <TableRow>
-                                                        <TableHead className="w-[40%]">Party</TableHead>
-                                                        <TableHead className="w-[25%]">Role / Type</TableHead>
+                                                        <TableHead className="w-[35%]">Party</TableHead>
+                                                        <TableHead className="w-[20%]">Role / Type</TableHead>
                                                         <TableHead className="w-[20%]">Ownership</TableHead>
                                                         <TableHead className="w-[15%]">Legal Person</TableHead>
+                                                        <TableHead className="w-[10%]">Status</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
                                                     {formData.shareHolders.map((p: any, i: number) => (
-                                                        <TableRow key={p.name + i}>
+                                                        <TableRow key={(p?.name || "shareholder") + i}>
                                                             <TableCell>
                                                                 <div className="flex items-center gap-2">
                                                                     <FallbackAvatar name={p.name} />
@@ -1126,13 +1127,20 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                             <TableCell className="text-sm">
                                                                 {typeof p.ownershipRate === "number" ? `${p.ownershipRate}%` : "—"}
                                                             </TableCell>
-                                                            <TableCell className="text-sm">{p.isLegalPerson?.value || "—"}</TableCell>
+                                                            <TableCell className="text-sm">
+                                                                {p.isLegalPerson?.value || "—"}
+                                                            </TableCell>
+                                                            <TableCell className="text-sm">
+                                                                {p.status || "—"}                                                             
+                                                            </TableCell>
                                                         </TableRow>
                                                     ))}
+
                                                     <TableRow>
                                                         <TableCell className="font-medium">Total Shares</TableCell>
                                                         <TableCell />
                                                         <TableCell>{totalShares || "—"}</TableCell>
+                                                        <TableCell />
                                                         <TableCell />
                                                     </TableRow>
                                                 </TableBody>
@@ -1143,6 +1151,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                             No parties added.
                                         </div>
                                     )}
+
                                     {/* AML/CDD toggle */}
                                     <div className="flex items-center mt-2 gap-3">
                                         <Label className="text-right">AML/CDD Edit</Label>

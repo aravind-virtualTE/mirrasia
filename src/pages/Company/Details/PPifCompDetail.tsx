@@ -112,11 +112,11 @@ function FallbackAvatar({ name }: { name?: string }) {
 function LabelValue({ label, children }: React.PropsWithChildren<{ label: string }>) {
     return (
         <div className="grid gap-1">
-            <div className="text-xs text-muted-foreground">{label}</div>
+            <div className="text-xs">{label}</div>
             <div className="text-sm font-medium break-words">{children || "—"}</div>
         </div>
     );
-}   
+}
 
 function BoolPill({ value, trueText = "Yes", falseText = "No" }: { value?: boolean; trueText?: string; falseText?: string }) {
     const isTrue = !!value;
@@ -404,12 +404,12 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 {(data as any)?.sourceOfFunds || (data as any)?.sourceOfFundsOther || "—"}
                                             </LabelValue>
                                             <LabelValue label="Registered Address Mode">
-                                                 {(() => {
-                                                        const need = (data as any)?.registeredAddressMode;
-                                                        return need == "mirr" ? "opted for MIRRASIA address"
-                                                            : need === "own" ? "Manage own address"
-                                                                : "—";                                                                    
-                                                    })()}
+                                                {(() => {
+                                                    const need = (data as any)?.registeredAddressMode;
+                                                    return need == "mirr" ? "opted for MIRRASIA address"
+                                                        : need === "own" ? "Manage own address"
+                                                            : "—";
+                                                })()}
                                             </LabelValue>
                                             {(data as any)?.registeredAddressMode === "own" && (
                                                 <LabelValue label="Registered Address">
@@ -447,15 +447,16 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         {Array.isArray((data as any)?.founders) && (data as any).founders.length ? (
                                             <div className="overflow-x-auto rounded-md border overflow-hidden">
                                                 <div className="">
-                                                    <div className="grid gap-3 min-w-[600px] p-3">
+                                                    <div className="grid gap-3 min-w-[600px] p-2">
                                                         {(data as any).founders.map((fnd: any, i: number) => (
                                                             <div
                                                                 key={(fnd?.name || "founder") + i}
-                                                                className="grid md:grid-cols-4 gap-2 p-3"
+                                                                className="grid md:grid-cols-5  p-2"
                                                             >
                                                                 <LabelValue label="Type">{fnd?.type || "—"}</LabelValue>
                                                                 <LabelValue label="Name">{fnd?.name || "—"}</LabelValue>
                                                                 <LabelValue label="ID / Reg No.">{fnd?.id || "—"}</LabelValue>
+                                                                <LabelValue label="Status">{fnd?.status || "—"}</LabelValue>
                                                                 <div className="grid md:grid-cols-[2fr_1fr] gap-2">
                                                                     <LabelValue label="Email">{fnd?.email || "—"}</LabelValue>
                                                                     <LabelValue label="Phone">{fnd?.tel || "—"}</LabelValue>
@@ -468,6 +469,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         ) : (
                                             <div className="text-sm text-muted-foreground">No founders provided.</div>
                                         )}
+
                                     </div>
 
                                     <Separator />
@@ -478,7 +480,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <LabelValue label="Council Mode">{(data as any)?.councilMode || "—"}</LabelValue>
                                             <LabelValue label="Nominee Directors">{(data as any)?.nomineePersons || "—"}</LabelValue>
-                                            <LabelValue label="Use Nominee Director">
+                                            <LabelValue label="Use nominee director service">
                                                 <BoolPill value={!!(data as any)?.useNomineeDirector} />
                                             </LabelValue>
                                         </div>
@@ -489,10 +491,11 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                     <div className="overflow-x-auto">
                                                         <div className="grid gap-2 min-w-[600px] p-3">
                                                             {(data as any).councilIndividuals.map((m: any, i: number) => (
-                                                                <div key={"ind-" + i} className="grid md:grid-cols-4 gap-2 p-3">
+                                                                <div key={"ind-" + i} className="grid md:grid-cols-5 p-1">
                                                                     <LabelValue label="Type">{m?.type || "individual"}</LabelValue>
                                                                     <LabelValue label="Name">{m?.name || "—"}</LabelValue>
                                                                     <LabelValue label="ID">{m?.id || "—"}</LabelValue>
+                                                                    <LabelValue label="Status">{m?.status || "—"}</LabelValue>
                                                                     <div className="grid md:grid-cols-[2fr_1fr] gap-2">
                                                                         <LabelValue label="Email">{m?.email || "—"}</LabelValue>
                                                                         <LabelValue label="Phone">{m?.tel || "—"}</LabelValue>
@@ -507,11 +510,12 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         {(data as any)?.councilMode === "corp1" && (data as any)?.councilCorporate && (
                                             <div className="overflow-x-auto rounded-md border overflow-hidden">
                                                 <div className="">
-                                                    <div className="grid md:grid-cols-4 gap-2 min-w-[600px] p-3">
+                                                    <div className="grid md:grid-cols-5 min-w-[600px] p-3">
                                                         <LabelValue label="Corporate Main">{(data as any).councilCorporate?.corpMain || "—"}</LabelValue>
                                                         <LabelValue label="Address / Representative">{(data as any).councilCorporate?.addrRep || "—"}</LabelValue>
                                                         <LabelValue label="Signatory">{(data as any).councilCorporate?.signatory || "—"}</LabelValue>
                                                         <LabelValue label="Email">{(data as any).councilCorporate?.email || "—"}</LabelValue>
+                                                        <LabelValue label="Status">{(data as any).councilCorporate?.status || "—"}</LabelValue>
                                                     </div>
                                                 </div>
                                             </div>
@@ -528,9 +532,10 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         {((data as any)?.protectorsEnabled && Array.isArray((data as any)?.protectors)) ? (
                                             <div className="grid gap-2">
                                                 {(data as any).protectors.map((p: any, i: number) => (
-                                                    <div key={"prot-" + i} className="rounded-md border p-3 grid md:grid-cols-2 gap-2">
+                                                    <div key={"prot-" + i} className="rounded-md border p-3 grid md:grid-cols-3">
                                                         <LabelValue label="Name">{p?.name || "—"}</LabelValue>
                                                         <LabelValue label="Contact">{p?.contact || "—"}</LabelValue>
+                                                        <LabelValue label="Status">{p?.status || "—"}</LabelValue>                         
                                                     </div>
                                                 ))}
                                             </div>
@@ -543,9 +548,10 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         {Array.isArray((data as any)?.beneficiaries) && (data as any).beneficiaries.length ? (
                                             <div className="grid gap-2">
                                                 {(data as any).beneficiaries.map((b: any, i: number) => (
-                                                    <div key={"bene-" + i} className="rounded-md border p-3 grid md:grid-cols-2 gap-2">
+                                                    <div key={"bene-" + i} className="rounded-md border p-3 grid md:grid-cols-3">
                                                         <LabelValue label="Name">{b?.name || "—"}</LabelValue>
                                                         <LabelValue label="Contact">{b?.contact || "—"}</LabelValue>
+                                                        <LabelValue label="Status">{b?.status || "—"}</LabelValue>
                                                     </div>
                                                 ))}
                                             </div>
@@ -581,7 +587,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">I. Banking</div>
                                         <div className="rounded-md border p-3 grid gap-3">
-                                          
+
                                             <div className="grid md:grid-cols-3 gap-4">
                                                 <LabelValue label="Required any bank account?">
                                                     {(() => {

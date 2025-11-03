@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
@@ -37,6 +36,7 @@ export type Party = {
   shares?: number;
   invited?: boolean;
   typeOfShare?: string;
+  status?: string;
 };
 
 export type OnboardingRecord = {
@@ -123,17 +123,6 @@ function fmtDate(s?: string) {
   return d.toLocaleString(undefined, { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" });
 }
 
-function FallbackAvatar({ name }: { name?: string }) {
-  const initials = (name?.trim().split(/\s+/).map(n => n[0]).slice(0, 2).join("") || "?").toUpperCase();
-  return (
-    <Avatar className="h-8 w-8">
-      <AvatarFallback className="bg-muted/40 text-muted-foreground">
-        {initials}
-      </AvatarFallback>
-    </Avatar>
-  );
-}
-
 function LabelValue({ label, children }: React.PropsWithChildren<{ label: string }>) {
   return (
     <div className="grid gap-1">
@@ -188,7 +177,6 @@ function PartyRow({ p, totalShares }: { p: Party; totalShares?: number }) {
     <TableRow>
       <TableCell className="py-3">
         <div className="flex items-center gap-2">
-          <FallbackAvatar name={p.name} />
           <div className="grid">
             <div className="font-medium leading-tight">{p.name || "—"}</div>
             <div className="text-xs text-muted-foreground flex items-center gap-2">
@@ -210,8 +198,8 @@ function PartyRow({ p, totalShares }: { p: Party; totalShares?: number }) {
         </div>
       </TableCell>
       <TableCell className="py-3">
-        <Badge variant={p.invited ? "default" : "outline"} className={p.invited ? "bg-emerald-600 hover:bg-emerald-600" : "text-muted-foreground"}>
-          {p.invited ? "Invite sent" : "Not invited"}
+        <Badge className={p.status == "Invited" ? "bg-emerald-600 hover:bg-emerald-600" : ""}>
+          {p.status == "Invited" ? "Invite sent" : "Not invited"}
         </Badge>
       </TableCell>
     </TableRow>
@@ -437,7 +425,6 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <LabelValue label="Applicant">
                       <div className="flex items-center gap-2">
-                        <FallbackAvatar name={f.applicantName} />
                         <span className="font-medium">{f.applicantName || "—"}</span>
                       </div>
                     </LabelValue>
@@ -555,7 +542,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                             <TableHead className="w-[45%]">Party</TableHead>
                             <TableHead className="w-[20%]">Type / Roles</TableHead>
                             <TableHead className="w-[20%]">Shares</TableHead>
-                            <TableHead className="w-[15%]">Invite</TableHead>
+                            <TableHead className="w-[15%]">Status</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
