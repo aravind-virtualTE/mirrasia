@@ -3597,7 +3597,8 @@ export default function ConfigDrivenUSAForm() {
 
             const annualRenew = form.annualRenewalConsent
             const values = [rcActivity, rcSanctions, bsnsCremia, involved, legalInfo, annualRenew];
-            console.log("values", values)
+            // console.log('\n rcActivity==>',rcActivity, '\n rcSanctions==>',rcSanctions,'\n bsnsCremia==>', bsnsCremia,'\n involved==>',  involved,'\n legalInfo==>', legalInfo, '\n annualRenew==>',annualRenew)
+
             if (values.some(value => value.value === "")) {
                 toast({
                     title: "Incomplete Information",
@@ -3605,7 +3606,7 @@ export default function ConfigDrivenUSAForm() {
                 });
                 return;
             }
-            if (rcActivity.id == 'no' && rcSanctions.id == 'no' && bsnsCremia.id == 'no' && involved.id == 'no' && legalInfo.id == 'no' && ['yes', 'self_handle'].includes(annualRenew)) {
+            if (rcActivity == 'no' && rcSanctions == 'no' && bsnsCremia == 'no' && involved == 'no' && legalInfo == 'no' && ['yes', 'self_handle'].includes(annualRenew)) {
                 await updateDoc();
                 goto(idx + 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
