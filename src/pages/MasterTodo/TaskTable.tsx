@@ -117,7 +117,7 @@ const FilterChip: React.FC<{ label: string; active?: boolean; muted?: boolean; o
     {label}
   </button>
 );
-const SCROLL_CONTAINER_HEIGHT = 600;
+// const SCROLL_CONTAINER_HEIGHT = 600;
 const TaskTable = ({ tasks }: { tasks: Task[] }) => {
   const [, setFormState] = useAtom(createTaskFormAtom);
   const [, setAllTasks] = useAtom(tasksAtom);
@@ -403,9 +403,9 @@ const TaskTable = ({ tasks }: { tasks: Task[] }) => {
         </div>
       </div>
 
-      {/* ======= Sticky header + fixed-height scroll container ======= */}
+      {/* ======= Sticky header + fixed-height scroll container ======= style={{ height: SCROLL_CONTAINER_HEIGHT }} */}
       <div className="rounded-md border">
-        <div className="overflow-auto" style={{ height: SCROLL_CONTAINER_HEIGHT }}>
+        <div className="overflow-auto" >
           <Table className={`compact-table w-full table-fixed ${d.text} min-w-[1120px]`}>
             <TableHeader className="sticky top-0 z-30 bg-gray-50 shadow-sm">
               <TableRow className={`${d.row}`}>
