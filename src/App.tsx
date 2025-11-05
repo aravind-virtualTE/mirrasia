@@ -59,6 +59,7 @@ import HKCompDetailSummary from './pages/Company/Details/NewCompDetail';
 import ConfigDrivenUSAForm from './pages/Company/USA/UsIncorporation';
 import ServicesPage from './pages/Landing/ServicesPage';
 import EnquiryList from './pages/dashboard/Admin/Enquiry/EnquiryList';
+import NewPanamaIncorpo from './pages/Company/Panama/NewPanamaIncorpo';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -135,8 +136,8 @@ const App: React.FC = () => {
                       <Route path="/new-form-layout" element={<ConfigDrivenHKForm />} />
                       <Route path="/new-company-detail" element={<HKCompDetailSummary id='68bedb5ee164e67b5fd3afa8' />} />
                       <Route path="/new-usa-form" element={<ConfigDrivenUSAForm  />} />
-
-                      
+                      <Route path='/registrationForm' element={<CountryWiseShareholder />} />
+                      <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
                     </Route>
                   </Route>
 
@@ -156,6 +157,7 @@ const App: React.FC = () => {
                       <Route path="/invoice-management" element={<InvoiceManager />} />
                       <Route path="/admin-companies-list" element={<ViewBoard />} /> 
                       <Route path="/enquiries" element={<EnquiryList />} /> 
+                      <Route path="/newPanama" element={<NewPanamaIncorpo />} /> 
                       
                       {/* Add more admin-specific routes here */}
                       
@@ -181,8 +183,7 @@ const App: React.FC = () => {
                       <Route path='/TransferManagementInfo' element={<TransferManagementInfo />} />
                       <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm />} />
                       <Route path="/viewboard" element={<ViewBoard />} />
-                      <Route path='/registrationForm' element={<CountryWiseShareholder />} />
-                      <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
+                     
                     </Route>
                     <Route path="/docslayout" element={<DocsLayout />} />
                   </Route>

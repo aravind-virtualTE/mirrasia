@@ -366,13 +366,12 @@ const AdminDashboard = () => {
       {/* Stats Cards */}
       <StatsCard stats={calculateStats()} />
       <Separator className="my-6" />
-      {/* Additional Cards Section */}
-       <div
-      className={[
-        "grid gap-3","grid-cols-1 sm:grid-cols-2 lg:grid-cols-3","xl:grid-cols-3 2xl:grid-cols-3",
-        "max-w-screen-2xl mx-auto",
-      ].join(" ")}
-    >
+      <div
+        className={[
+          "grid gap-3", "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3", "xl:grid-cols-3 2xl:grid-cols-3",
+          "max-width mx-auto",
+        ].join(" ")}
+      >
         <ProjectsCard />
         <AdminTodo />
         <CurrentCorporateClient data={projectsData} count={cccCount} />
