@@ -2884,7 +2884,7 @@ const usaIncorpConfig: LocalFormConfig = {
                     type: "radio-group",
                     name: "q_country",
                     label:
-                        "newHk.steps.compliance.questions.q_country",
+                        "usa.AppInfo.plannedBusinessActivity",
                     required: true,
                     options: [
                         {
@@ -3525,12 +3525,7 @@ export default function ConfigDrivenUSAForm() {
         return { ...s, sections: patchedSections, };
     };
 
-    const activeStep =
-        hasType(step) && step.type === "sections"
-            ? (hydrateDynamicOptions(
-                step
-            ) as AnyStep)
-            : step;
+    const activeStep = hasType(step) && step.type === "sections" ? (hydrateDynamicOptions(step) as AnyStep) : step;
 
     // Validation for current step
     const stepMissing = React.useMemo(() => {
@@ -3683,9 +3678,7 @@ export default function ConfigDrivenUSAForm() {
         </Card>
     );
 
-    const renderFieldsStep = (
-        s: Extract<StepDef, { type: "fields" }>
-    ) => (
+    const renderFieldsStep = (s: Extract<StepDef, { type: "fields" }>) => (
         <Card>
             <CardContent className="pt-6 space-y-4">
                 {s.description && (
@@ -3726,9 +3719,7 @@ export default function ConfigDrivenUSAForm() {
             </CardContent>
         </Card>
     );
-    const renderSectionsStep = (
-        s: Extract<StepDef, { type: "sections" }>
-    ) => (
+    const renderSectionsStep = (s: Extract<StepDef, { type: "sections" }>) => (
         <>
             <Card>
                 <CardContent className="pt-6 space-y-6">
