@@ -259,9 +259,8 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
     try {
       setIsSaving(true);
       const result = await saveIncorporationData(data);
-      const ok =
-        (typeof result === "object" && result !== null && (result.success || result.ok || result.status === 200)) ||
-        result === true;
+      // console.log("result", result)
+      const ok = (typeof result === "object" && result !== null )
 
       if (ok) {
         toast({
