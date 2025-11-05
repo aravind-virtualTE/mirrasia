@@ -231,12 +231,6 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       setIsSaving(true);
 
       // backend originally expected `companyName` array.
-      // we build it from companyName_1/2/3.
-      const companyNameArray = [
-        form.companyName_1 || "",
-        form.companyName_2 || "",
-        form.companyName_3 || "",
-      ].filter((n) => n && n.trim() !== "");
 
       const payload = JSON.stringify({
         company: {
@@ -245,7 +239,9 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
           isDisabled: form.isDisabled,
           incorporationDate: form.incorporationDate,
           country: "US",
-          companyName: companyNameArray,
+          companyName_1: form.companyName_1,
+          companyName_2: form.companyName_2,
+          companyName_3: form.companyName_3,
           paymentStatus: form.paymentStatus,
         },
         session: {
