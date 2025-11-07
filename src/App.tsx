@@ -60,7 +60,7 @@ import ConfigDrivenUSAForm from './pages/Company/USA/UsIncorporation';
 import ServicesPage from './pages/Landing/ServicesPage';
 import EnquiryList from './pages/dashboard/Admin/Enquiry/EnquiryList';
 import NewPanamaIncorpo from './pages/Company/Panama/NewPanamaIncorpo';
-import NewSgIncorporation from './pages/Company/Singapore/NewSgIncorporation';
+// import NewSgIncorporation from './pages/Company/Singapore/NewSgIncorporation';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -159,7 +159,7 @@ const App: React.FC = () => {
                       <Route path="/admin-companies-list" element={<ViewBoard />} /> 
                       <Route path="/enquiries" element={<EnquiryList />} /> 
                       <Route path="/newPanama" element={<NewPanamaIncorpo />} /> 
-                      <Route path="/newSingapore" element={<NewSgIncorporation />} />
+                      {/* <Route path="/newSingapore" element={<NewSgIncorporation />} /> */}
                       
                       {/* Add more admin-specific routes here */}
                       

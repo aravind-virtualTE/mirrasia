@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 import { useResetAllForms } from "@/lib/atom";
 import { usaFormWithResetAtom } from "@/pages/Company/USA/UsState";
 import { paFormWithResetAtom } from "@/pages/Company/Panama/PaState";
-import { sgFormWithResetAtom } from "@/pages/Company/Singapore/SgState";
+import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
 import SocialMediaWidget from "../SocialMedia";
 import TopNav from "./Navbar";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
@@ -106,7 +106,7 @@ const Layout: React.FC = () => {
   const resetAllForms = useResetAllForms();
   const [, setUS] = useAtom(usaFormWithResetAtom);
   const [, setPA] = useAtom(paFormWithResetAtom);
-  const [, setSG] = useAtom(sgFormWithResetAtom);
+  const [, setSG] = useAtom(sgFormWithResetAtom1);
   const [,setHK] = useAtom(hkAppAtom)
 
 
