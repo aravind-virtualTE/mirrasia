@@ -274,48 +274,46 @@ const AdminDashboard = () => {
   //   return filterData
   // }
   const getSortedData = () => {
-    const base = displayList.length ? displayList : [] // from search results
+  const base = searchQuery ? displayList : allList;
 
-    const initialFilter = base.filter(company =>
-      activeTab === "active" ? !company.isDeleted : company.isDeleted
-    )
+  // First split by tab
+  let rows = base.filter(company =>
+    activeTab === "active" ? !company.isDeleted : company.isDeleted
+  );
 
-    const sortedData = [...initialFilter]
-
-    const filterData = sortedData.filter((e) =>
-      active_status.includes((e as { status: string }).status)
-    )
-
-    if (sortConfig !== null) {
-      filterData.sort((a: any, b: any) => {
-        let aValue, bValue
-
-        if (sortConfig.key === "companyName") {
-          aValue = resolveCompanyName(a).toLowerCase();
-          bValue = resolveCompanyName(b).toLowerCase();
-        } else if (sortConfig.key === "country") {
-          aValue = a.country.name || ""
-          bValue = b.country.name || ""
-        } else if (sortConfig.key === "incorporationDate") {
-          aValue = a.incorporationDate || ""
-          bValue = b.incorporationDate || ""
-        } else {
-          aValue = a[sortConfig.key] || ""
-          bValue = b[sortConfig.key] || ""
-        }
-
-        if (aValue < bValue) {
-          return sortConfig.direction === "ascending" ? -1 : 1
-        }
-        if (aValue > bValue) {
-          return sortConfig.direction === "ascending" ? 1 : -1
-        }
-        return 0
-      })
-    }
-
-    return filterData
+  // Only apply “active_status” filter on the ACTIVE tab
+  if (activeTab === "active") {
+    rows = rows.filter((e) => active_status.includes((e as { status: string }).status));
   }
+
+  // Sort
+  if (sortConfig) {
+    rows.sort((a: any, b: any) => {
+      let aValue, bValue;
+
+      if (sortConfig.key === "companyName") {
+        aValue = resolveCompanyName(a).toLowerCase();
+        bValue = resolveCompanyName(b).toLowerCase();
+      } else if (sortConfig.key === "country") {
+        aValue = a.country.name || "";
+        bValue = b.country.name || "";
+      } else if (sortConfig.key === "incorporationDate") {
+        aValue = a.incorporationDate || "";
+        bValue = b.incorporationDate || "";
+      } else {
+        aValue = a[sortConfig.key] || "";
+        bValue = b[sortConfig.key] || "";
+      }
+
+      if (aValue < bValue) return sortConfig.direction === "ascending" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "ascending" ? 1 : -1;
+      return 0;
+    });
+  }
+
+  return rows;
+};
+
   const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { status: string }).status))
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = user ? { role: user.role } : { role: "" };
@@ -326,35 +324,47 @@ const AdminDashboard = () => {
     setDeleteDialogOpen(true);
   };
 
+  const clampPage = (rowsCount: number) => {
+  const maxPage = Math.max(1, Math.ceil(rowsCount / itemsPerPage));
+  setCurrentPage((p) => Math.min(p, maxPage));
+};
+
   const confirmDelete = async () => {
-    if (taskToDelete?.companyId) {
-      const result = await deleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode })
-      // console.log("result", result)
-      if (result) {
-        // Filter out the deleted company and update the atom
-        const updatedList = allList.filter(company => company._id !== taskToDelete.companyId);
-        setAllList(updatedList);
-      }
+  if (taskToDelete?.companyId) {
+    const result = await deleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
+    if (result) {
+      const nextAll = allList.filter(c => c._id !== taskToDelete.companyId);
+      setAllList(nextAll);
+
+      // keep the current filtered view consistent, too
+      setDisplayList(prev => prev.filter(c => c._id !== taskToDelete.companyId));
+
+      clampPage(getSortedData().length - 1);
     }
-    setDeleteDialogOpen(false);
-    setTaskToDelete(null);
-  };
+  }
+  setDeleteDialogOpen(false);
+  setTaskToDelete(null);
+};
 
   const markDelete = async () => {
-    if (taskToDelete?.companyId) {
-      const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode })
-      if (result) {
-        const updatedList = allList.map(company =>
-          company._id === taskToDelete.companyId
-            ? { ...company, isDeleted: true }
-            : company
-        );
-        setAllList(updatedList);
-      }
+  if (taskToDelete?.companyId) {
+    const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
+    if (result) {
+      const updateOne = (c: any) =>
+        c._id === taskToDelete.companyId ? { ...c, isDeleted: true } : c;
+
+      const nextAll = allList.map(updateOne);
+      setAllList(nextAll);
+
+      // reflect in current filtered view
+      setDisplayList(prev => prev.map(updateOne));
+
+      clampPage(getSortedData().length);
     }
-    setDeleteDialogOpen(false);
-    setTaskToDelete(null);
-  };
+  }
+  setDeleteDialogOpen(false);
+  setTaskToDelete(null);
+};
 
   const paginatedData = getSortedData().slice(
     (currentPage - 1) * itemsPerPage,

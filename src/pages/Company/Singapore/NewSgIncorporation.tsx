@@ -1388,43 +1388,43 @@ function asNum(v: any) {
     return typeof v === "number" ? v : Number(v) || 0;
 }
 function computeSgAddonsTotal(app: any): number {
-  // (unchanged) – you can keep this as a fallback path
-  const selected: string[] = Array.isArray(app?.serviceItemsSelected) ? app.serviceItemsSelected : [];
-  const address = app?.businessAddress;
-  const parties: any[] = Array.isArray(app?.parties) ? app.parties : [];
+    // (unchanged) – you can keep this as a fallback path
+    const selected: string[] = Array.isArray(app?.serviceItemsSelected) ? app.serviceItemsSelected : [];
+    const address = app?.businessAddress;
+    const parties: any[] = Array.isArray(app?.parties) ? app.parties : [];
 
-  const optionalsTotal = service_list
-    .filter((svc) => !!svc.isOptional && selected.includes(svc.id))
-    .reduce((sum, svc) => sum + asNum(svc.price), 0);
+    const optionalsTotal = service_list
+        .filter((svc) => !!svc.isOptional && selected.includes(svc.id))
+        .reduce((sum, svc) => sum + asNum(svc.price), 0);
 
-  let dynamicTotal = 0;
+    let dynamicTotal = 0;
 
-  if (address && address.id === "mirrasiaAddress") dynamicTotal += 350;
+    if (address && address.id === "mirrasiaAddress") dynamicTotal += 350;
 
-  const legalEntityYesCount = parties.filter(
-    (p) => p?.isCorp === true && (p?.isDirector === true || asNum(p?.shares) > 0)
-  ).length;
+    const legalEntityYesCount = parties.filter(
+        (p) => p?.isCorp === true && (p?.isDirector === true || asNum(p?.shares) > 0)
+    ).length;
 
-  if (legalEntityYesCount > 0) dynamicTotal += legalEntityYesCount * 550;
+    if (legalEntityYesCount > 0) dynamicTotal += legalEntityYesCount * 550;
 
-  if (app?.onlineAccountingSoftware?.value === "yes") dynamicTotal += 2000;
+    if (app?.onlineAccountingSoftware?.value === "yes") dynamicTotal += 2000;
 
-  return optionalsTotal + dynamicTotal;
+    return optionalsTotal + dynamicTotal;
 }
 
 function computeSgGrandTotal(app: any): number {
-  const persistedSubtotal =
-    typeof app?.totalDiscounted === "number"
-      ? app.totalDiscounted
-      : null;
+    const persistedSubtotal =
+        typeof app?.totalDiscounted === "number"
+            ? app.totalDiscounted
+            : null;
 
-  const fallbackSubtotal = computeSgAddonsTotal(app);
+    const fallbackSubtotal = computeSgAddonsTotal(app);
 
-  const subtotal = persistedSubtotal ?? fallbackSubtotal;
+    const subtotal = persistedSubtotal ?? fallbackSubtotal;
 
-  const cardFeeRate = 0.035;
-  const needsCardFee = app?.payMethod === "card";
-  return needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
+    const cardFeeRate = 0.035;
+    const needsCardFee = app?.payMethod === "card";
+    return needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
 }
 
 const PaymentStep = () => {
@@ -1526,7 +1526,7 @@ const PaymentStep = () => {
             setCardDrawerOpen(true);
             return;
         }
-        console.log("form",form)
+        console.log("form", form)
         setCreatingPI(true);
         try {
             const fp = {
@@ -2614,7 +2614,7 @@ const SgIncorpForm: React.FC = () => {
     const [stepIdx, setStepIdx] = React.useState(0);
     const step = CONFIG.steps[stepIdx];
     const [isSubmitting, setIsSubmitting] = React.useState(false);
-    
+
     const fields = step.fields ?? [];
     const missing = step.fields ? requiredMissing(form, fields) : [];
 
@@ -2627,51 +2627,52 @@ const SgIncorpForm: React.FC = () => {
     }
 
     const canProceed = missing.length === 0;
-    const updateDoc = async () => {
-            // setIsSubmitting(true);
-            if (isSubmitting) {
-                return;
-            }
-            const token = localStorage.getItem("token") as string;
-            const decodedToken = jwtDecode<TokenData>(token);
-            setIsSubmitting(true);
-            form.userId = `${decodedToken.userId}`
-            const payload = { ...form };
-            try {
-                // console.log("payload", payload)
-                const response = await api.post("/company/sg-form", payload);
-                if (response.status === 200) {
-                    // console.log("formdata", response.data);
-                    localStorage.setItem("companyRecordId", response.data.data._id);
-                    setForm(response.data.data)
-                    window.history.pushState(
-                        {},
-                        "",
-                        `/company-register/SG/${response.data.data._id}`
-                    );
-                } else {
-                    console.log("error-->", response);
-                }
-            } catch (error) {
-                console.error("Submission error:", error);
-            } finally {
-                console.log("finally");
-                setIsSubmitting(false);
-                setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
-            }
-        }
 
-    const handleNext = async() => {
+    const updateDoc = async () => {
+        // setIsSubmitting(true);
+        if (isSubmitting) {
+            return;
+        }
+        const token = localStorage.getItem("token") as string;
+        const decodedToken = jwtDecode<TokenData>(token);
+        setIsSubmitting(true);
+        form.userId = `${decodedToken.userId}`
+        const payload = { ...form };
+        try {
+            // console.log("payload", payload)
+            const response = await api.post("/company/sg-form", payload);
+            if (response.status === 200) {
+                // console.log("formdata", response.data);
+                localStorage.setItem("companyRecordId", response.data.data._id);
+                setForm(response.data.data)
+                window.history.pushState(
+                    {},
+                    "",
+                    `/company-register/SG/${response.data.data._id}`
+                );
+            } else {
+                console.log("error-->", response);
+            }
+        } catch (error) {
+            console.error("Submission error:", error);
+        } finally {
+            console.log("finally");
+            setIsSubmitting(false);
+            setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
+        }
+    }
+
+    const handleNext = async () => {
         if (!canProceed) {
             toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
             return;
         }
         console.log("form", form)
-        await updateDoc();        
+        await updateDoc();
     };
 
     const back = () => setStepIdx((i) => Math.max(0, i - 1));
-
+    console.log("missing", missing)
     return (
         <div className="max-width mx-auto p-3 sm:p-6 space-y-4">
             <TopBar idx={stepIdx} total={CONFIG.steps.length} />
@@ -2709,12 +2710,20 @@ const SgIncorpForm: React.FC = () => {
                         {step.render ? <step.render form={form} setForm={setForm} /> : null}
 
                         {missing.length > 0 && (
-                            <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-3">
-                                <strong>Required:</strong> {missing.map((k) => t(k)).join(", ")}
+                            <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+                                <div className="mb-2 text-destructive text-sm font-semibold">
+                                    {t("Required")}
+                                </div>
+                                <ul className="list-disc pl-5 space-y-1 text-sm">
+                                    {missing.map((k) => (
+                                        <li key={k} className="leading-tight">
+                                            {t(k)}
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         )}
                     </CardContent>
-
                     <CardFooter className="flex justify-between">
                         <Button variant="outline" disabled={stepIdx === 0} onClick={back}>
                             ← Back
