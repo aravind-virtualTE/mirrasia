@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 
 import { fetchUsers, getSgIncorpoDataById, updateEditValues } from "@/services/dataFetch";
 import { paymentApi } from "@/lib/api/payment";
@@ -88,7 +87,7 @@ const namesFromFields = (data: any): string[] => {
   const n1 = data?.companyName_1 ?? arr[0] ?? "";
   const n2 = data?.companyName_2 ?? arr[1] ?? "";
   const n3 = data?.companyName_3 ?? arr[2] ?? "";
-  return [n1, n2, n3].filter((_, i) => true); // keep 3 slots
+  return [n1, n2, n3].filter((_) => true); // keep 3 slots
 };
 
 const fieldsFromNames = (arr: string[]) => ({
@@ -99,7 +98,6 @@ const fieldsFromNames = (arr: string[]) => ({
 
 /** ---------------- component ---------------- */
 const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
 
