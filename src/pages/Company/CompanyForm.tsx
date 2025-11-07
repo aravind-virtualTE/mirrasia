@@ -22,15 +22,16 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { usaAppWithResetAtom} from './USA/UsState'; //usaFormWithResetAtom
 import { useTranslation } from "react-i18next";
-import IncorporateSg from './Singapore/IncorporateSg';
+// import IncorporateSg from './Singapore/IncorporateSg';
 import IncorporatePa from './Panama/PaIncorporation';
 import { paFormWithResetAtom } from './Panama/PaState';
-import { sgFormWithResetAtom } from './Singapore/SgState';
+import { sgFormWithResetAtom1 } from './Singapore/SgState';
 import ConfigDrivenHKForm from './NewHKForm/NewHKIncorporation';
 import { getHkIncorpoData, hkAppAtom } from './NewHKForm/hkIncorpo';
 import PanamaFoundation from './PanamaFoundation/PaFIncorporation';
 import { getPaFIncorpoData, pifFormWithResetAtom } from './PanamaFoundation/PaState';
 import ConfigDrivenUSAForm from './USA/UsIncorporation';
+import SgIncorpForm from './Singapore/NewSgIncorporation';
 
 const CompanyRegistration = () => {
     const { t } = useTranslation();
@@ -43,7 +44,8 @@ const CompanyRegistration = () => {
     // const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
     const [, setFormData] = useAtom(usaAppWithResetAtom);
     const [, setPAFormData] = useAtom(paFormWithResetAtom);
-    const [, setSgFormData] = useAtom(sgFormWithResetAtom);
+    // const [, setSgFormData] = useAtom(sgFormWithResetAtom);
+    const [, setSgFormData] = useAtom(sgFormWithResetAtom1);
     const [, setHkInfoData] = useAtom(hkAppAtom);
     const [, setPpiF] = useAtom(pifFormWithResetAtom);
     useEffect(() => {
@@ -102,7 +104,7 @@ const CompanyRegistration = () => {
                 return await getSgIncorpoDataById(`${id}`)
             }
             getSgData().then((result) => {
-                // console.log("result-->", result);
+                console.log("result-->", result);
                 setSgFormData(result)
             })
             setCountryState({ code: 'SG', name: 'Singapore' });
@@ -148,7 +150,9 @@ const CompanyRegistration = () => {
                 // return <IncorporateUSACompany />;
                 return <ConfigDrivenUSAForm />;
             case 'SG':
-                return <IncorporateSg />;
+                // return <IncorporateSg />;
+                return <SgIncorpForm />;
+                
             case 'PA':
                 return <IncorporatePa />;
             case 'PPIF':

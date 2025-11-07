@@ -20,7 +20,7 @@ import { usaAppWithResetAtom } from "@/pages/Company/USA/UsState";
 import AdminNotification from "./AdminNotification";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { paFormWithResetAtom } from "@/pages/Company/Panama/PaState";
-import { sgFormWithResetAtom } from "@/pages/Company/Singapore/SgState";
+import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
 import { pifFormWithResetAtom } from "@/pages/Company/PanamaFoundation/PaState";
 
 interface NavbarProps {
@@ -36,7 +36,7 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
     const [,setHK] = useAtom(hkAppAtom)
     const [, setPA] = useAtom(paFormWithResetAtom);
     const [, setPAF] = useAtom(pifFormWithResetAtom);
-    const [, setSG] = useAtom(sgFormWithResetAtom);
+    const [, setSG] = useAtom(sgFormWithResetAtom1);
     const resetAllForms = useResetAllForms();
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />

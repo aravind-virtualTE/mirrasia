@@ -203,3 +203,42 @@ export const sgPriceAtom = atom(
   }
 );
 
+export const sgFormAtom1 = atom<any>({});
+
+export const sgFormWithResetAtom1 = atom(
+  (get) => get(sgFormAtom1),
+  (_get, set, update: any | 'reset') => {
+    if (update === 'reset') {
+      set(sgFormAtom1, initialFormState);
+    } else {
+      set(sgFormAtom1, update);
+    }
+  }
+);
+
+export type Party = {
+  name: string;
+  email: string;
+  phone: string;
+  // isDirector: boolean; // removed from UI (kept here only if you still persist it)
+  isCorp: boolean;
+  shares: number;
+  invited?: boolean;
+  status?: "Invited" | "Not Invited" | "";
+  typeOfShare?: string;
+  // NEW FIELDS
+  address?: string;
+  isSignificant?: boolean;
+  isDesignatedContact?: boolean;
+  isDirector?: boolean,
+};
+
+export type FeeRow = {
+  id: string;
+  description: string;
+  originalPrice: number;
+  discountedPrice: number;
+  isOptional: boolean;
+  note?: string;
+  isHighlight?: boolean;
+};

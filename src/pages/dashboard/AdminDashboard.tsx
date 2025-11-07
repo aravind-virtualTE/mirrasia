@@ -37,7 +37,7 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
 import { hkAppAtom } from "../Company/NewHKForm/hkIncorpo"
 import { paFormWithResetAtom } from "../Company/Panama/PaState"
 import { pifFormWithResetAtom } from "../Company/PanamaFoundation/PaState"
-import { sgFormWithResetAtom } from "../Company/Singapore/SgState"
+import { sgFormWithResetAtom1 } from "../Company/Singapore/SgState"
 import SearchBox from "../MasterTodo/SearchBox"
 import { normalize } from "@/middleware";
 import EnquiryCard from "./Admin/Enquiry/EnquiryCard"
@@ -50,7 +50,7 @@ const AdminDashboard = () => {
   const [, setHK] = useAtom(hkAppAtom)
   const [, setPA] = useAtom(paFormWithResetAtom);
   const [, setPAF] = useAtom(pifFormWithResetAtom);
-  const [, setSG] = useAtom(sgFormWithResetAtom);
+  const [, setSG] = useAtom(sgFormWithResetAtom1);
   const resetAllForms = useResetAllForms();
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: "ascending" | "descending" } | null>(null)
   const [taskToDelete, setTaskToDelete] = useState<{ companyId: string, countryCode: string } | null>(null);

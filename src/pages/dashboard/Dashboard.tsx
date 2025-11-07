@@ -36,7 +36,7 @@ import MainFunctionalities from "./MainFunctionalities";
 import ViewBoard from "@/components/shareholderDirector/ViewBoard";
 import { hkAppAtom } from "../Company/NewHKForm/hkIncorpo";
 import { paFormWithResetAtom } from "../Company/Panama/PaState";
-import { sgFormWithResetAtom } from "../Company/Singapore/SgState";
+import { sgFormWithResetAtom1 } from "../Company/Singapore/SgState";
 import { pifFormWithResetAtom } from "../Company/PanamaFoundation/PaState";
 
 const Dashboard = () => {
@@ -51,7 +51,7 @@ const Dashboard = () => {
   const [,setHK] = useAtom(hkAppAtom)
   const [, setPA] = useAtom(paFormWithResetAtom);
   const [,setPAF] = useAtom(pifFormWithResetAtom);
-  const [, setSG] = useAtom(sgFormWithResetAtom);
+  const [, setSG] = useAtom(sgFormWithResetAtom1);
   const [,setPifFormData] = useAtom(pifFormWithResetAtom);
 
 
