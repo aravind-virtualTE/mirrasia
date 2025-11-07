@@ -43,7 +43,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const [cList] = useAtom(companyIncorporationList);
+  // const [cList] = useAtom(companyIncorporationList);
   const setCompIncList = useSetAtom(companyIncorporationList);
   const [allList, setAllList] = useAtom(allCompListAtom);
   const [, setUsaReset] = useAtom(usaAppWithResetAtom);
@@ -271,7 +271,7 @@ const Dashboard = () => {
           </AccordionItem>
 
           {/* Companies Table Accordion */}
-          {cList.length !== 0 && (
+          {allList.length !== 0 && (
             <AccordionItem value="companies-list" className="border rounded-lg">
               <AccordionTrigger className="px-4 py-3 hover:no-underline">
                 <div className="flex items-center justify-between w-full">
