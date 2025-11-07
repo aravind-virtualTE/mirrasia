@@ -1,618 +1,3 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { fetchUsers, getSgIncorpoDataById, updateEditValues } from '@/services/dataFetch';
-// import { useAtom } from 'jotai';
-// import React, { useEffect, useMemo, useState } from 'react';
-// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from '@/components/ui/table';
-// import { Button } from '@/components/ui/button';
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-// import { SessionData } from './HkCompdetail';
-// import { paymentApi } from '@/lib/api/payment';
-// import { Label } from '@/components/ui/label';
-// import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-// import { Input } from '@/components/ui/input';
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-// import { Switch } from '@/components/ui/switch';
-// import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-// import { useToast } from '@/hooks/use-toast';
-// import MemoApp from './MemosHK';
-// import TodoApp from '@/pages/Todo/TodoApp';
-// import { User } from '@/components/userList/UsersList';
-// import { useNavigate } from 'react-router-dom';
-// import { useTranslation } from 'react-i18next';
-// import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
-// import ChecklistHistory from '@/pages/Checklist/ChecklistHistory';
-// import { sgFormWithResetAtom,SgFormData } from '../Singapore/SgState';
-
-
-// const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
-//   const { t } = useTranslation()
-//   const [formData, setFormData] = useAtom(sgFormWithResetAtom);
-//   const [isSheetOpen, setIsSheetOpen] = useState(false);
-//   const { toast } = useToast();
-//   const [users, setUsers] = useState<User[]>([]);
-//   const [adminAssigned, setAdminAssigned] = useState('');
-//   const [session, setSession] = useState<SessionData>({
-//     _id: '',
-//     amount: 0,
-//     currency: '',
-//     expiresAt: '',
-//     status: '',
-//     paymentId: '',
-//   });
-//   const navigate = useNavigate();
-//   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
-
-//   useEffect(() => {
-//     async function getUsData() {
-//       const data = await getSgIncorpoDataById(`${id}`);
-//       setAdminAssigned(data.assignedTo);
-
-//       if (data.sessionId !== '') {
-//         const session = await paymentApi.getSession(data.sessionId);
-//         const transformedSession: SessionData = {
-//           _id: session._id,
-//           amount: session.amount,
-//           currency: session.currency,
-//           expiresAt: session.expiresAt,
-//           status: session.status,
-//           paymentId: session.paymentId,
-//         };
-//         setSession(transformedSession);
-//       }
-
-//       const response = await fetchUsers();
-//       const filteredUsers = response.filter((e: { role: string }) => e.role === 'admin' || e.role === 'master');
-//       setUsers(filteredUsers);
-
-//       return data;
-//     }
-
-//     getUsData().then((result) => {
-//       setFormData(result);
-//     });
-//   }, []);
-
-//   // Helper function to render object values
-//   const renderValue = (data: any): string => {
-//     if (typeof data === 'object' && data !== null) {
-//       return data.value || data.id || 'N/A';
-//     }
-//     return data || 'N/A';
-//   };
-
-//   const generateSections = (formData: SgFormData, session: SessionData) => {
-//     const sections = [];
-//     // console.log("formData", formData);
-//     // Applicant Information Section
-//     sections.push({
-//       title: 'Applicant Information',
-//       data: {
-//         'Company Name': (
-//           <div className="space-y-4">
-//             <div className="grid gap-2">
-//               {formData.companyName.slice(0, 3).map((name, index) => (
-//                 <div key={index} className="flex items-center gap-2">
-//                   <div className="flex-1 p-2 border rounded-md bg-background">{name || "N/A"}</div>
-//                   {index > 0 && (
-//                     <Button
-//                       variant="outline"
-//                       size="sm"
-//                       onClick={() => {
-//                         const newNames = [...formData.companyName]
-//                         // Move this item to the first position
-//                         const [removed] = newNames.splice(index, 1)
-//                         newNames.unshift(removed)
-
-//                         // Update the company state
-//                         setFormData({
-//                           ...formData,
-//                           companyName: newNames,
-//                         })
-//                       }}
-//                     >
-//                       Move to Top
-//                     </Button>
-//                   )}
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-//         ),
-//         'Applicant Name': formData.name,
-//         Email: formData.email,
-//         Phone: formData.phoneNum,
-//         Relationships: formData.establishedRelationshipType?.join(', ') || 'N/A',
-//         'SNS Account ID': renderValue(formData.snsAccountId.id),
-//         'SNS Account Number': renderValue(formData.snsAccountId.value),
-//       },
-//     });
-
-//     // Country Information Section
-//     sections.push({
-//       title: 'Jurisdiction Information',
-//       data: {
-//         Country: 'Singapore',
-//         'Country Code': 'SG',
-//       },
-//     });
-
-//     // Business Information Section
-//     sections.push({
-//       title: 'AML/CDD Information',
-//       data: {
-//         'Sanctioned Countries': t(renderValue(formData.restrictedCountriesWithActivity)),
-//         'Sanctions Presence': t(renderValue(formData.sanctionedTiesPresent)),
-//         'Crimea Presence': t(renderValue(formData.businessInCrimea)),
-//         'Russian Business Presence': t(renderValue(formData.involvedInRussianEnergyDefense)),
-//         'Legal Assessment': t(renderValue(formData.hasLegalEthicalIssues)),
-//         'Annual Renewal Terms': t(renderValue(formData.annualRenewalTermsAgreement)),
-//       },
-//     })
-
-//     // Shareholder and Director Information Section
-//     if (formData.shareHolders) {
-//       const shareholderData = formData.shareHolders;
-//       // console.log("shareholderDat", shareholderData)
-//       sections.push({
-//         title: 'Shareholder and Director Information',
-//         data: {
-//           'Designated Contact Person': formData.designatedContact,
-//           'Shareholders and Directors': (
-//             <Table>
-//               <TableHeader>
-//                 <TableRow>
-//                   <TableHead>Name</TableHead>
-//                   <TableHead>Email</TableHead>
-//                   <TableHead>Phone</TableHead>
-//                   <TableHead>Ownership Rate</TableHead>
-//                   <TableHead>Is Director</TableHead>
-//                   <TableHead>Is Legal Person</TableHead>
-//                 </TableRow>
-//               </TableHeader>
-//               <TableBody>
-//                 {Array.isArray(shareholderData) &&
-//                   shareholderData.map((shareholder, index) => (
-//                     <TableRow key={index}>
-//                       <TableCell>{shareholder.name}</TableCell>
-//                       <TableCell>{shareholder.email}</TableCell>
-//                       <TableCell>{shareholder.phone || 'N/A'}</TableCell>
-//                       <TableCell>{shareholder.ownerShipRate}%</TableCell>
-//                       <TableCell>{t(renderValue(shareholder.isDirector))}</TableCell>
-//                       <TableCell>{t(renderValue(shareholder.isLegalPerson))}</TableCell>
-//                     </TableRow>
-//                   ))}
-//               </TableBody>
-//             </Table>
-//           ),
-//         },
-//       });
-//     }
-
-//     // Payment Information Section
-//     if (formData.sessionId && session) {
-//       sections.push({
-//         title: 'Payment Information',
-//         data: {
-//           Amount: session.amount,
-//           'Payment Status': session.status,
-//           'Payment Expire Date': new Date(session.expiresAt).toLocaleString(),
-//           Receipt: formData.receiptUrl ? 'Available' : 'Not available',
-//         },
-//       });
-//     }
-
-//     // Status Information Section
-//     sections.push({
-//       title: 'Status Information',
-//       data: {
-//         'Incorporation Status': formData.status,
-//         'Incorporation Date': formData.incorporationDate || 'N/A',
-//         'AML/CDD Edit': formData.isDisabled ? 'No' : 'Yes',
-//       },
-//     });
-//     return sections;
-//   };
-
-//   const sections = useMemo(() => {
-//     if (!formData) return [];
-//     return generateSections(formData, session);
-//   }, [formData, session]);
-
-//   const handleUpdate = async () => {
-//     const payload = JSON.stringify({
-//       company: {
-//         id: formData._id,
-//         status: formData.status,
-//         isDisabled: formData.isDisabled,
-//         incorporationDate: formData.incorporationDate,
-//         country: 'US',
-//         companyName: formData.companyName
-//       },
-//       session: {
-//         id: session._id,
-//         expiresAt: session.expiresAt,
-//         status: session.status,
-//       },
-//       assignedTo: adminAssigned,
-//     });
-
-//     const response = await updateEditValues(payload);
-//     if (response.success) {
-//       toast({ description: 'Record updated successfully' });
-//     }
-//   };
-
-//   const handleCompanyDataChange = (key: keyof SgFormData, value: string | boolean) => {
-//     setFormData({ ...formData, [key]: value });
-//   };
-
-//   const handleSessionDataChange = (key: keyof SessionData, value: string) => {
-//     setSession({ ...session, [key]: value });
-//   };
-
-//   const IncorporationDateFrag = () => {
-//     let date = formData.incorporationDate;
-//     if (date !== null && date !== undefined && date !== '') {
-//       const [year, month, day] = date.split('T')[0].split('-');
-//       date = `${day}-${month}-${year}`;
-//     }else{
-//         date = 'Not set'
-//     }
-//     return (
-//       <React.Fragment>
-//         <TableCell className="font-medium">Incorporation Date</TableCell>
-//         <TableCell>{date }</TableCell>
-//         {user.role !== 'user' && <TableCell>
-//           <Dialog>
-//             <DialogTrigger asChild>
-//               <Button variant="outline">Edit</Button>
-//             </DialogTrigger>
-//             <DialogContent>
-//               <DialogHeader>
-//                 <DialogTitle>Edit Incorporation Date</DialogTitle>
-//                 <DialogDescription>
-//                   Set the incorporation date for the company. This is the date when the company was officially registered.
-//                 </DialogDescription>
-//               </DialogHeader>
-//               <div className="grid gap-4 py-4">
-//                 <div className="grid grid-cols-4 items-center gap-4">
-//                   <Label htmlFor="incorporationDate" className="text-right">
-//                     Date
-//                   </Label>
-//                   <Input
-//                     id="incorporationDate"
-//                     type="date"
-//                     value={formData.incorporationDate || ''}
-//                     onChange={(e) =>
-//                       handleCompanyDataChange('incorporationDate', e.target.value)
-//                     }
-//                     className="col-span-3"
-//                   />
-//                 </div>
-//               </div>
-//             </DialogContent>
-//           </Dialog>
-//         </TableCell>}
-//       </React.Fragment>
-//     );
-//   };
-
-//   const CompanyIncorpoStatus = () => {
-//     const statusOptions = [
-//       'Pending',
-//       'KYC Verification',
-//       'Waiting for Payment',
-//       'Waiting for Documents',
-//       'Waiting for Incorporation',
-//       'Incorporation Completed',
-//       'Good Standing',
-//       'Renewal Processing',
-//       'Renewal Completed',
-//     ];
-//     return (
-//       <React.Fragment>
-//         <TableCell className="font-medium">Incorporation Status</TableCell>
-//         <TableCell>{formData.status}</TableCell>
-//         {user.role !== 'user' && <TableCell>
-//           <Select
-//             value={formData.status}
-//             onValueChange={(value) => handleCompanyDataChange('status', value)}
-//           >
-//             <SelectTrigger className="w-[180px]">
-//               <SelectValue placeholder="Select status" />
-//             </SelectTrigger>
-//             <SelectContent>
-//               {statusOptions.map((status) => (
-//                 <SelectItem key={status} value={status}>
-//                   {status}
-//                 </SelectItem>
-//               ))}
-//             </SelectContent>
-//           </Select>
-//         </TableCell>}
-//       </React.Fragment>
-//     );
-//   };
-
-//   const AMLCDDEdit = () => (
-//     <React.Fragment>
-//       <TableCell className="font-medium">AML/CDD Edit</TableCell>
-//       <TableCell>{formData.isDisabled ? 'No' : 'Yes'}</TableCell>
-//       <TableCell>
-//         <Switch
-//           checked={!formData.isDisabled}
-//           onCheckedChange={(checked) => handleCompanyDataChange('isDisabled', !checked)}
-//         />
-//       </TableCell>
-//     </React.Fragment>
-//   );
-
-//   const PaymentStatus = () => {
-//     return (
-//       <React.Fragment>
-//         <TableCell className="font-medium">Payment Status</TableCell>
-//         <TableCell>{session.status}</TableCell>
-//         {user.role !== 'user' && <TableCell>
-//           <Select
-//             value={session.status}
-//             onValueChange={(value) => handleSessionDataChange('status', value)}
-//           >
-//             <SelectTrigger className="w-[180px]">
-//               <SelectValue placeholder="Select status" />
-//             </SelectTrigger>
-//             <SelectContent>
-//               <SelectItem value="pending">Pending</SelectItem>
-//               <SelectItem value="completed">Completed</SelectItem>
-//               <SelectItem value="expired">Expired</SelectItem>
-//             </SelectContent>
-//           </Select>
-//         </TableCell>}
-//       </React.Fragment>
-//     );
-//   };
-
-//   const ExtendPaymentTimer = () => {
-//     return (
-//       <React.Fragment>
-//         <TableCell className="font-medium">Payment Expire Date</TableCell>
-//         <TableCell>{new Date(session.expiresAt).toLocaleString() || 'Not set'}</TableCell>
-//         <TableCell>
-//           <Dialog>
-//             <DialogTrigger asChild>
-//               <Button variant="outline">Edit</Button>
-//             </DialogTrigger>
-//             <DialogContent>
-//               <DialogHeader>
-//                 <DialogTitle>Edit Payment Expire Date</DialogTitle>
-//                 <DialogDescription>
-//                   Extend the Payment Expire for the company Payment.
-//                 </DialogDescription>
-//               </DialogHeader>
-//               <div className="grid gap-4 py-4">
-//                 <div className="grid grid-cols-4 items-center gap-4">
-//                   <Label htmlFor="expiresAt" className="text-right">
-//                     Date
-//                   </Label>
-//                   <Input
-//                     id="expiresAt"
-//                     type="date"
-//                     value={session.expiresAt || ''}
-//                     onChange={(e) => handleSessionDataChange('expiresAt', e.target.value)}
-//                     className="col-span-3"
-//                   />
-//                 </div>
-//               </div>
-//             </DialogContent>
-//           </Dialog>
-//         </TableCell>
-//       </React.Fragment>
-//     );
-//   };
-
-//   const ReceietPaymentFrag = () => {
-//     return (
-//       <React.Fragment>
-//         <TableCell className="font-medium">Receipt</TableCell>
-//         <TableCell>{formData.receiptUrl ? 'Available' : 'Not available'}</TableCell>
-//         <TableCell>
-//           {formData.receiptUrl && (
-//             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-//               <SheetTrigger asChild>
-//                 <Button variant="outline">View Receipt</Button>
-//               </SheetTrigger>
-//               <SheetContent
-//                 side="right"
-//                 className="w-full max-w-[40vw]"
-//                 style={{ width: '40vw', maxWidth: '40vw' }}
-//               >
-//                 <SheetHeader>
-//                   <SheetTitle>Receipt</SheetTitle>
-//                 </SheetHeader>
-//                 <div className="mt-4 space-y-4">
-//                   <iframe
-//                     src={formData.receiptUrl}
-//                     className="w-full h-[calc(100vh-200px)]"
-//                     title="Receipt"
-//                   />
-//                 </div>
-//               </SheetContent>
-//             </Sheet>
-//           )}
-//         </TableCell>
-//       </React.Fragment>
-//     );
-//   };
-
-//   const AssignAdmin = () => {
-//     const handleAssign = (value: string) => {
-//       setAdminAssigned(value);
-//     };
-//     return (
-//       <div className="flex items-center gap-4">
-//         <span className="text-sm font-medium">Assign Admin:</span>
-//         <Select
-//           onValueChange={handleAssign}
-//           value={adminAssigned}
-//         >
-//           <SelectTrigger className="w-60 h-8 text-xs">
-//             <SelectValue placeholder="Assign Admin to..." />
-//           </SelectTrigger>
-//           <SelectContent>
-//             {users.map((u) => (
-//               <SelectItem key={u._id} value={u.fullName || ''}>
-//                 {u.fullName || u.email}
-//               </SelectItem>
-//             ))}
-//           </SelectContent>
-//         </Select>
-//       </div>
-//     );
-//   };
-
-//   return (
-//     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
-//       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
-//         <TabsTrigger
-//           value="details"
-//           className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-//         >
-//           Company Details
-//         </TabsTrigger>
-//         <TabsTrigger
-//           value="service-agreement"
-//           className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-//         >
-//           Record of Documents
-//         </TabsTrigger>
-//         {user.role !== 'user' && (
-//           <TabsTrigger
-//             value="Memos"
-//             className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-//           >
-//             Memo
-//           </TabsTrigger>
-//         )}
-//         {user.role !== 'user' && (
-//           <TabsTrigger
-//             value="Projects"
-//             className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-//           >
-//             Project
-//           </TabsTrigger>
-//         )}
-//         <TabsTrigger
-//           value="Checklist"
-//           className="flex-1 py-3 text-md font-medium transition-all rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-//         >
-//           Checklist
-//         </TabsTrigger>
-//       </TabsList>
-//       <TabsContent value="details" className="p-6">
-//         <div className="space-y-4">
-//           {/* <h1 className="text-2xl font-bold">Company Details</h1> */}    
-//            <div className="mb-4">
-//               <TodoApp id={id} name={formData.companyName[0]} />
-//             </div>
-
-//           <div className="flex gap-4 mt-auto">
-//             {user.role !== 'user' && <AssignAdmin />}
-//             <Button
-//               onClick={() => navigate(`/company-documents/US/${id}`)}
-//               size="sm"
-//               className="flex items-center gap-2"
-//             >
-//               Company Docs
-//             </Button>
-//           </div>
-//           {sections.map((section) => (
-//             <Card key={section.title} className="mb-6 border rounded-lg overflow-hidden transition-all hover:shadow-md">
-//               <CardHeader className="bg-muted/50 py-4">
-//                 <CardTitle className="text-lg font-medium">{section.title}</CardTitle>
-//               </CardHeader>
-//               <CardContent className="p-0">
-//                 <Table>
-//                   <TableHeader>
-//                     <TableRow className="border-b hover:bg-muted/30">
-//                       <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Field</TableHead>
-//                       <TableHead className="w-1/3 py-3 px-4 text-sm font-medium">Value</TableHead>
-//                       {user.role !== 'user' && <TableHead className="w-1/5 py-3 px-4 text-sm font-medium">Action</TableHead>}
-//                     </TableRow>
-//                   </TableHeader>
-//                   <TableBody>
-//                     {Object.entries(section.data).map(([key, value]) => {
-//                       if (key === 'Incorporation Date')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><IncorporationDateFrag /></TableRow>;
-//                       if (key === 'Incorporation Status')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><CompanyIncorpoStatus /></TableRow>;
-//                       if (key === 'Receipt')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><ReceietPaymentFrag /></TableRow>;
-//                       if (key === 'AML/CDD Edit' && user.role !== 'user')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><AMLCDDEdit /></TableRow>;
-//                       if (key === 'Payment Status')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><PaymentStatus /></TableRow>;
-//                       if (key === 'Payment Expire Date')
-//                         return <TableRow key={key} className="border-b hover:bg-muted/30"><ExtendPaymentTimer /></TableRow>;
-//                       return (
-//                         <TableRow key={key} className="border-b hover:bg-muted/30">
-//                           <TableCell className="py-3 px-4 font-medium">{key}</TableCell>
-//                           <TableCell className="py-3 px-4">{value}</TableCell>
-//                           <TableCell></TableCell>
-//                         </TableRow>
-//                       );
-//                     })}
-//                   </TableBody>
-//                 </Table>
-//                 {section.title === 'Status Information' && user.role !== 'user' && (
-//                   <div className="flex items-center gap-4 p-4 bg-muted/50 border-t">
-//                     <span className="text-sm font-medium">
-//                       Click here to Save the Data
-//                     </span>
-//                     <Button
-//                       onClick={handleUpdate}
-//                       className="px-4 py-2 text-sm"
-//                     >
-//                       Save
-//                     </Button>
-//                   </div>
-//                 )}
-//               </CardContent>
-//             </Card>
-//           ))}
-//         </div>
-//       </TabsContent>
-//       <TabsContent value="service-agreement" className="p-6">
-//         <div className="space-y-6">
-//           <h1 className="text-2xl font-bold">Service Agreement Details</h1>
-//         </div>
-//       </TabsContent>
-//       <TabsContent value="Memos" className="p-6">
-//         <div className="space-y-6">
-//           <MemoApp id={id} />
-//         </div>
-//       </TabsContent>
-//       <TabsContent value="Projects" className="p-6">
-//         <div className="space-y-6">
-//           <AdminProject id={id} />
-//         </div>
-//       </TabsContent>
-//       <TabsContent value="Checklist" className="p-6">
-//         <ChecklistHistory id={id} items={[[], []]} />
-//       </TabsContent>
-//     </Tabs>
-//   );
-// };
-
-// export default SgCompdetail;
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
@@ -625,9 +10,8 @@ import { paymentApi } from "@/lib/api/payment";
 import { useToast } from "@/hooks/use-toast";
 
 import { sgFormWithResetAtom, SgFormData } from "../Singapore/SgState";
-import { SessionData } from "./HkCompdetail"; // reusing type
+import { SessionData } from "./HkCompdetail";
 
-// UI (shadcn)
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -649,7 +33,7 @@ import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { User } from "@/components/userList/UsersList";
 
-// ---------- tiny local helpers ----------
+/** ---------------- helpers ---------------- */
 const fmtDate = (iso?: string) => {
   if (!iso) return "—";
   try {
@@ -657,6 +41,17 @@ const fmtDate = (iso?: string) => {
   } catch {
     return iso;
   }
+};
+
+// normalize object-or-string values like {id,value}
+const renderVal = (d: any) =>
+  typeof d === "object" && d !== null ? d?.value ?? d?.id ?? "—" : d ?? "—";
+
+const toYesNoBool = (v: any) => {
+  if (typeof v === "boolean") return v;
+  if (v == null) return undefined;
+  const s = String(v).trim().toLowerCase();
+  return s === "yes" || s === "true";
 };
 
 const FallbackAvatar: React.FC<{ name?: string | null }> = ({ name }) => {
@@ -680,17 +75,29 @@ const LabelValue: React.FC<{ label: string; children?: React.ReactNode }> = ({ l
   </div>
 );
 
-// normalize “object or string” values like {id, value}
-const renderVal = (d: any) =>
-  typeof d === "object" && d !== null ? d?.value ?? d?.id ?? "—" : d ?? "—";
-
 const BoolPill: React.FC<{ value?: boolean }> = ({ value }) => (
   <Badge variant={value ? "default" : "outline"} className={!value ? "text-muted-foreground" : ""}>
     {value ? "YES" : "NO"}
   </Badge>
 );
 
-// ---------- Component ----------
+/** Map companyName_1/2/3 <-> array for UI editing */
+const namesFromFields = (data: any): string[] => {
+  const arr = Array.isArray(data?.companyName) ? data.companyName : [];
+  // Prefer explicit fields if present
+  const n1 = data?.companyName_1 ?? arr[0] ?? "";
+  const n2 = data?.companyName_2 ?? arr[1] ?? "";
+  const n3 = data?.companyName_3 ?? arr[2] ?? "";
+  return [n1, n2, n3].filter((_, i) => true); // keep 3 slots
+};
+
+const fieldsFromNames = (arr: string[]) => ({
+  companyName_1: arr?.[0] || "",
+  companyName_2: arr?.[1] || "",
+  companyName_3: arr?.[2] || "",
+});
+
+/** ---------------- component ---------------- */
 const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -727,10 +134,18 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
     "Renewal Completed",
   ];
 
+  /** bootstrap */
   useEffect(() => {
     const bootstrap = async () => {
       const data = await getSgIncorpoDataById(`${id}`);
-      setForm(data);
+
+      // hydrate names array from new fields
+      const hydrated = {
+        ...data,
+        companyName: namesFromFields(data),
+      };
+
+      setForm(hydrated);
       setAdminAssigned(data.assignedTo || "");
 
       if (data.sessionId) {
@@ -752,32 +167,24 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // patch helpers
-  const patchForm = (key: keyof SgFormData, value: any) => setForm({ ...form, [key]: value });
-  const patchSession = (key: keyof SessionData, value: any) => setSession({ ...session, [key]: value });
+  /** tiny patch helpers */
+  const patchForm = (key: keyof SgFormData | string, value: any) => setForm({ ...form, [key]: value });
+  const patchNames = (i: number, value: string) => {
+    const next = [...(form.companyName || ["", "", ""])];
+    while (next.length < 3) next.push("");
+    next[i] = value;
+    const fields = fieldsFromNames(next);
+    setForm({ ...form, companyName: next, ...fields });
+  };
 
-  // assign admin
-  const AssignAdmin: React.FC = () => (
-    <div className="flex items-center gap-3">
-      <span className="text-sm font-medium">Assign Admin:</span>
-      <Select value={adminAssigned} onValueChange={setAdminAssigned}>
-        <SelectTrigger className="w-60 h-8 text-xs">
-          <SelectValue placeholder="Assign Admin to..." />
-        </SelectTrigger>
-        <SelectContent>
-          {users.map((u) => (
-            <SelectItem key={u._id} value={u.fullName || ""}>
-              {u.fullName || u.email}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  );
-
+  console.log("form--->", form);
   const onSave = async () => {
     try {
       setIsSaving(true);
+
+      const names = namesFromFields(form)
+      const nameFields = fieldsFromNames(names);
+
       const payload = JSON.stringify({
         company: {
           id: form._id,
@@ -785,7 +192,9 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
           isDisabled: form.isDisabled,
           incorporationDate: form.incorporationDate,
           country: "SG",
-          companyName: form.companyName,
+          paymentStatus: form.paymentStatus,          
+          // send explicit fields (new schema)
+          ...nameFields,
         },
         session: {
           id: session._id,
@@ -808,9 +217,13 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
     }
   };
 
-  // deriveds & schema-aligned fields
-  const primaryName = form?.companyName?.[0] || form?.name || form?.companyName?.find(Boolean) || "";
-  const altNames = (form?.companyName || []).slice(1, 3).filter(Boolean);
+  /** deriveds */
+  const namesArr = form?.companyName || ["", "", ""];
+  const primaryName = namesArr[0] || form?.companyName_1 || "";
+  const alt1 = namesArr[1] || form?.companyName_2 || "";
+  const alt2 = namesArr[2] || form?.companyName_3 || "";
+  const altNames = [alt1, alt2].filter(Boolean);
+
   const contactName = form?.designatedContactPerson || form?.designatedContact || form?.name || "";
   const email = form?.email || "";
   const phone = form?.phoneNum || "";
@@ -819,7 +232,31 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const industries = (form?.selectedIndustry || []) as string[];
   const purposes = (form?.establishmentPurpose || []) as string[];
   const bizDesc = form?.productDescription || form?.businessDescription || "";
-  const annualRenewalTermsText = t(renderVal(form?.annualRenewalTermsAgreement)); // <-- required field
+
+  const annualRenewalTermsText = (() => {
+    // new data comes as "yes"/"no" string in `annualRenewalConsent`; keep legacy too
+    const v = form?.annualRenewalConsent ?? renderVal(form?.annualRenewalTermsAgreement);
+    return typeof v === "string" ? v : String(v ?? "");
+  })();
+
+  /** UI bits */
+  const AssignAdmin: React.FC = () => (
+    <div className="flex items-center gap-3">
+      <span className="text-sm font-medium">Assign Admin:</span>
+      <Select value={adminAssigned} onValueChange={setAdminAssigned}>
+        <SelectTrigger className="w-60 h-8 text-xs">
+          <SelectValue placeholder="Assign Admin to..." />
+        </SelectTrigger>
+        <SelectContent>
+          {users.map((u) => (
+            <SelectItem key={u._id} value={u.fullName || ""}>
+              {u.fullName || u.email}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
 
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
@@ -830,12 +267,12 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
         <TabsTrigger value="service-agreement" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
           Record of Documents
         </TabsTrigger>
-        {isAdmin && (
+        {user?.role !== "user" && (
           <TabsTrigger value="Memos" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
             Memo
           </TabsTrigger>
         )}
-        {isAdmin && (
+        {user?.role !== "user" && (
           <TabsTrigger value="Projects" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
             Project
           </TabsTrigger>
@@ -850,7 +287,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
         {primaryName && <TodoApp id={id} name={primaryName} />}
 
         <div className="flex gap-x-8 mt-4">
-          {isAdmin && <AssignAdmin />}
+          {user?.role !== "user" && <AssignAdmin />}
           <Button onClick={() => navigate(`/company-documents/SG/${id}`)} size="sm" className="flex items-center gap-2">
             Company Docs
           </Button>
@@ -869,20 +306,15 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        {isEditing ? (
+                        {!isEditing ? (
+                          <CardTitle className="text-xl truncate">{primaryName || "Untitled Company"}</CardTitle>
+                        ) : (
                           <Input
                             value={primaryName}
-                            onChange={(e) => {
-                              const next = [...(form.companyName || [])];
-                              if (next.length === 0) next.push("");
-                              next[0] = e.target.value;
-                              patchForm("companyName", next);
-                            }}
+                            onChange={(e) => patchNames(0, e.target.value)}
                             className="h-8 text-base"
                             placeholder="Company Name"
                           />
-                        ) : (
-                          <CardTitle className="text-xl truncate">{primaryName || "Untitled Company"}</CardTitle>
                         )}
 
                         <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -893,11 +325,8 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-muted-foreground">Incorporation Status</span>
 
-                            {isAdmin ? (
-                              <Select
-                                value={currentStatus}
-                                onValueChange={(val) => patchForm("status", val as any)}
-                              >
+                            {user?.role !== "user" ? (
+                              <Select value={currentStatus} onValueChange={(val) => patchForm("status", val as any)}>
                                 <SelectTrigger className="h-7 w-[240px]">
                                   <SelectValue placeholder="Select status" />
                                 </SelectTrigger>
@@ -916,7 +345,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         </div>
                       </div>
 
-                      {/* Edit toggle */}
+                      {/* edit toggle */}
                       <div className="flex shrink-0 items-center gap-2">
                         {!isEditing ? (
                           <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
@@ -956,23 +385,21 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     </div>
                   </LabelValue>
 
-                  <LabelValue label="Alt / Local Names">
+                  <LabelValue label="Alternative Names (2/3)">
                     {isEditing ? (
                       <div className="grid grid-cols-2 gap-2">
-                        {[1, 2].map((idx) => (
-                          <Input
-                            key={idx}
-                            value={altNames[idx - 1] || ""}
-                            onChange={(e) => {
-                              const next = [...(form.companyName || [])];
-                              while (next.length < 3) next.push("");
-                              next[idx] = e.target.value;
-                              patchForm("companyName", next);
-                            }}
-                            placeholder={`Name ${idx + 1}`}
-                            className="h-8"
-                          />
-                        ))}
+                        <Input
+                          value={alt1}
+                          onChange={(e) => patchNames(1, e.target.value)}
+                          placeholder="Name 2"
+                          className="h-8"
+                        />
+                        <Input
+                          value={alt2}
+                          onChange={(e) => patchNames(2, e.target.value)}
+                          placeholder="Name 3"
+                          className="h-8"
+                        />
                       </div>
                     ) : (
                       <div className="flex flex-wrap gap-2">
@@ -1003,7 +430,6 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     )}
                   </LabelValue>
 
-                  {/* SCHEMA-ALIGNED FIELDS */}
                   <LabelValue label="Industry">
                     {industries.length ? (
                       <div className="flex flex-wrap gap-2">
@@ -1034,53 +460,42 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                   <LabelValue label="Business Description">{bizDesc || "—"}</LabelValue>
 
-                  {/* >>>>>>> ADDED: Annual Renewal Terms (translated) */}
-                  <LabelValue label="Annual Renewal Terms">
+                  {/* annual renewal consent/terms */}
+                  <LabelValue label="Annual Renewal Terms / Consent">
                     {annualRenewalTermsText || "—"}
                   </LabelValue>
-                  {/* <<<<<<< */}
-
                 </div>
 
                 <Separator />
 
-                {/* Shareholders / Directors (using sample schema keys) */}
+                {/* Parties */}
                 <div className="space-y-3">
                   <div className="text-sm font-medium">Shareholding & Parties</div>
-                  {Array.isArray(form?.shareHolders) && form.shareHolders.length ? (
+
+                  { Array.isArray(form?.parties) && form.parties.length ? (
                     <div className="rounded-md border">
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[28%]">Shareholder</TableHead>
-                            <TableHead className="w-[18%]">Email</TableHead>
+                            <TableHead className="w-[26%]">Name</TableHead>
+                            <TableHead className="w-[20%]">Email</TableHead>
                             <TableHead className="w-[14%]">Phone</TableHead>
-                            <TableHead className="w-[14%]">Ownership</TableHead>
-                            <TableHead className="w-[14%]">Legal Entity</TableHead>
-                            <TableHead className="w-[12%]">Status</TableHead>
+                            <TableHead className="w-[12%]">Shares</TableHead>
+                            <TableHead className="w-[12%]">Share Type</TableHead>
+                            <TableHead className="w-[8%]">Director</TableHead>
+                            <TableHead className="w-[8%]">Significant</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {form.shareHolders.map((p: any, i: number) => (
-                            <TableRow key={(p?.email || p?.name || "sh") + i}>
-                              <TableCell className="font-medium">{p?.name || "—"}</TableCell>
-                              <TableCell>{p?.email || "—"}</TableCell>
-                              <TableCell>{p?.phone || "—"}</TableCell>
-                              <TableCell>
-                                {typeof p?.ownerShipRate === "number"
-                                  ? `${p.ownerShipRate}%`
-                                  : typeof p?.ownershipRate === "number"
-                                    ? `${p.ownershipRate}%`
-                                    : "—"}
-                              </TableCell>
-                              <TableCell>
-                                <Badge variant={renderVal(p?.legalEntity) === "Yes" ? "default" : "outline"}>
-                                  {renderVal(p?.legalEntity) || "—"}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>
-                                {p?.status || "—"}
-                              </TableCell>
+                          {form.parties.map((p: any) => (
+                            <TableRow key={p._id}>
+                              <TableCell className="font-medium">{p.name}</TableCell>
+                              <TableCell>{p.email}</TableCell>
+                              <TableCell>{p.phone}</TableCell>
+                              <TableCell>{p.shares}</TableCell>
+                              <TableCell>{p.typeOfShare || "—"}</TableCell>
+                              <TableCell><BoolPill value={!!p.isDirector} /></TableCell>
+                              <TableCell><BoolPill value={!!p.isSignificant} /></TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -1092,7 +507,6 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     </div>
                   )}
                 </div>
-
 
                 <Separator />
 
@@ -1117,7 +531,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                 <Input
                                   id="incorporationDate"
                                   type="date"
-                                  value={form?.incorporationDate ? form.incorporationDate.slice(0, 10) : ""}
+                                  value={form?.incorporationDate ? String(form.incorporationDate).slice(0, 10) : ""}
                                   onChange={(e) => patchForm("incorporationDate", e.target.value)}
                                   className="col-span-3"
                                 />
@@ -1161,9 +575,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         <ReceiptText className="h-3.5 w-3.5" />
                         {(form.payMethod || "").toUpperCase() || "—"}
                       </Badge>
-                      {form.bankRef && (
-                        <Badge variant="outline" className="gap-1">Ref: {form.bankRef}</Badge>
-                      )}
+                      {form.bankRef && <Badge variant="outline" className="gap-1">Ref: {form.bankRef}</Badge>}
                       {form.paymentStatus === "paid" && form.stripeLastStatus === "succeeded" && form.stripeReceiptUrl && (
                         <Badge className="bg-emerald-600 hover:bg-emerald-600">Stripe Paid</Badge>
                       )}
@@ -1218,7 +630,11 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label className="text-right">Amount</Label>
                     <div className="col-span-3 text-sm font-medium">
-                      {form.finalAmount ? `${form.finalAmount} USD` : session.amount ? `${session.amount} ${session.currency || "USD"}` : "—"}
+                      {form.totalDiscounted
+                        ? `${form.totalDiscounted} USD`
+                        : session.amount
+                          ? `${session.amount} ${session.currency || "USD"}`
+                          : "—"}
                     </div>
                   </div>
 
@@ -1228,20 +644,25 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       <Input
                         id="expiresAt"
                         type="date"
-                        value={session.expiresAt ? session.expiresAt.slice(0, 10) : ""}
-                        onChange={(e) => patchSession("expiresAt", e.target.value)}
+                        value={form.sessionExpiresAt ? String(form.sessionExpiresAt).slice(0, 10) : ""}
+                        onChange={(e) => patchForm("sessionExpiresAt" as any, e.target.value)}
                         className="col-span-3"
                       />
                     ) : (
-                      <div className="col-span-3 text-sm">{session.expiresAt ? fmtDate(session.expiresAt) : "—"}</div>
+                      <div className="col-span-3 text-sm">
+                        {form.sessionExpiresAt ? fmtDate(form.sessionExpiresAt) : "—"}
+                      </div>
                     )}
                   </div>
 
-                  {isAdmin && (
+                  {/* {isAdmin && (
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Label className="text-right">Payment Status</Label>
                       <div className="col-span-3">
-                        <Select value={session.status || ""} onValueChange={(val) => patchSession("status", val as any)}>
+                        <Select
+                          value={form.sessionStatus || ""}
+                          onValueChange={(val) => patchForm("sessionStatus" as any, val)}
+                        >
                           <SelectTrigger className="w-48">
                             <SelectValue placeholder="Select status" />
                           </SelectTrigger>
@@ -1253,7 +674,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         </Select>
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {form.receiptUrl && (
                     <div className="grid grid-cols-4 items-start gap-4">
@@ -1293,32 +714,21 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
               </CardHeader>
               <CardContent className="grid gap-4">
                 <div className="grid grid-cols-2 gap-3">
-                  <LabelValue label="Truthfulness"><BoolPill value={!!form.truthfulnessDeclaration} /></LabelValue>
-                  <LabelValue label="Legal Terms"><BoolPill value={!!form.legalTermsAcknowledgment} /></LabelValue>
-                  <LabelValue label="Compliance Precondition"><BoolPill value={!!form.compliancePreconditionAcknowledgment} /></LabelValue>
-                  <LabelValue label="e-Sign">{form.eSign || "—"}</LabelValue>
-                </div>
-
-                <Separator />
-
-                <div className="grid grid-cols-1 gap-3">
-                  <div className="text-xs text-muted-foreground">Sanctions / Restrictions</div>
-                  <div className="grid grid-cols-1 gap-2 text-sm">
-                    {[
-                      ["Legal or Ethical Concern(money laundering etc)", String(renderVal(form?.hasLegalEthicalIssues)).toLowerCase().includes("yes")],
-                      ["Sanctioned Countries Activity (iran, sudan, NK, syria, cuba,belarus, zimbabwe", String(renderVal(form?.restrictedCountriesWithActivity)).toLowerCase().includes("yes")],
-                      ["Sanctions Exposure (involved in above countries or under sanctions by  UN, EU, UKHMT, HKMA, OFAC,)", String(renderVal(form?.sanctionedTiesPresent)).toLowerCase().includes("yes")],
-                      ["Crimea/Sevastopol Presence", String(renderVal(form?.businessInCrimea)).toLowerCase().includes("yes")],
-                      ["Russian Energy Presence", String(renderVal(form?.involvedInRussianEnergyDefense)).toLowerCase().includes("yes")],
-                    ].map(([label, flagged], i) => (
-                      <div key={String(label) + i} className="flex items-center justify-between gap-3">
-                        <span>{label as string}</span>
-                        <Badge variant={flagged ? "destructive" : "outline"} className={!flagged ? "text-muted-foreground" : ""}>
-                          {flagged ? "YES" : "NO"}
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
+                  <LabelValue label="Legal & Ethical Concern">
+                    <BoolPill value={toYesNoBool(form?.legalAndEthicalConcern ?? form?.hasLegalEthicalIssues)} />
+                  </LabelValue>
+                  <LabelValue label="Sanctioned Countries Activity">
+                    <BoolPill value={toYesNoBool(form?.restrictedCountriesWithActivity ?? form?.q_country)} />
+                  </LabelValue>
+                  <LabelValue label="Sanctions Exposure">
+                    <BoolPill value={toYesNoBool(form?.sanctionsExposureDeclaration ?? form?.sanctionedTiesPresent)} />
+                  </LabelValue>
+                  <LabelValue label="Crimea/Sevastopol Presence">
+                    <BoolPill value={toYesNoBool(form?.crimeaSevastapolPresence ?? form?.businessInCrimea)} />
+                  </LabelValue>
+                  <LabelValue label="Russian Energy/Defense Presence">
+                    <BoolPill value={toYesNoBool(form?.russianEnergyPresence ?? form?.involvedInRussianEnergyDefense)} />
+                  </LabelValue>
                 </div>
 
                 <Separator />
