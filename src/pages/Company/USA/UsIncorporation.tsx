@@ -2884,7 +2884,7 @@ const usaIncorpConfig: LocalFormConfig = {
                     type: "radio-group",
                     name: "q_country",
                     label:
-                        "usa.AppInfo.plannedBusinessActivity",
+                        "newHk.steps.compliance.questions.q_country",
                     required: true,
                     options: [
                         {
@@ -3525,7 +3525,7 @@ export default function ConfigDrivenUSAForm() {
         return { ...s, sections: patchedSections, };
     };
 
-    const activeStep = hasType(step) && step.type === "sections" ? (hydrateDynamicOptions(step) as AnyStep) : step;
+    const activeStep = hasType(step) && step.type === "sections" ? (hydrateDynamicOptions(step) as AnyStep): step;
 
     // Validation for current step
     const stepMissing = React.useMemo(() => {
