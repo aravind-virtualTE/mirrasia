@@ -139,7 +139,7 @@ function PartiesManager() {
     const sendInvites = async () => {
         const invites = parties
             .filter((p) => p.email && isValidEmail(p.email))
-            .map(({ name, email }) => ({ name, email }));
+            .map(({ name, email,isCorp }) => ({ name, email,isCorp }));
 
         if (!invites.length) {
             toast({
@@ -153,7 +153,7 @@ function PartiesManager() {
         const res = await sendInviteToShDir({
             _id: form._id || "",
             inviteData: invites,
-            country: "HK",
+            country: "SG",
         });
 
         const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
