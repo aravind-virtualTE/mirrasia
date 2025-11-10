@@ -2064,6 +2064,9 @@
         "capAmount": {
           "label": "Total share capital",
           "options": {
+            "1":"1",
+            "10": "10",
+            "100": "100",
             "1000": "1,000",
             "10000": "10,000",
             "100000": "100,000",
@@ -2077,9 +2080,12 @@
         "shareCount": {
           "label": "Total number of shares (min 1)",
           "options": {
-            "1": "1",
+           "1":"1",
             "10": "10",
+            "100": "100",
+            "1000": "1,000",
             "10000": "10,000",
+            "100000": "100,000",
             "other": "Other (enter quantity)"
           }
         },
@@ -2122,7 +2128,7 @@
           }
         },
         "isDirector": {
-          "label": "Will this person also serve as a director?",
+          "label": "Will this person also act as a director?",
           "tip": "Directors manage the company and sign statutory filings. At least one individual director is required by law.",
           "options": {
             "yes": "Yes",
@@ -2159,7 +2165,7 @@
         "invite": {
           "success": {
             "title": "Success",
-            "desc": "Successfully sent invitation mail to {{count}} people"
+            "desc": "Successfully sent invitation mail to people"
           },
           "exists": {
             "title": "Success",
