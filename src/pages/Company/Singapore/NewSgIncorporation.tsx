@@ -139,7 +139,7 @@ function PartiesManager() {
     const sendInvites = async () => {
         const invites = parties
             .filter((p) => p.email && isValidEmail(p.email))
-            .map(({ name, email,isCorp }) => ({ name, email,isCorp }));
+            .map(({ name, email, isCorp }) => ({ name, email, isCorp }));
 
         if (!invites.length) {
             toast({
@@ -169,7 +169,7 @@ function PartiesManager() {
             });
             toast({
                 title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
-                description: t("newHk.parties.toasts.invite.success.desc", { count: summary.successful }),
+                description: t("newHk.parties.toasts.invite.success.desc"),
             });
         }
 
@@ -447,7 +447,7 @@ function PartiesManager() {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-2 pt-2">
+            <div className="flex items-center justify-between pt-2">
                 <Button
                     onClick={add}
                     variant="outline"
@@ -513,7 +513,7 @@ const CompanyInfoStep = () => {
             { id: "geographical-benefits", value: "Singapore.purpose.p5" },
             { id: "business-diversification", value: "Singapore.purpose.p6" },
             { id: "competitive-advantage", value: "Singapore.purpose.p7" },
-            { id: "tax-advantage", value: "Singapore.purpose.p8" },
+            // { id: "tax-advantage", value: "Singapore.purpose.p8" },
             { id: "capital-gain", value: "Singapore.purpose.p9" },
             { id: "other", value: "InformationIncorporation.paymentOption_other" },
         ],
@@ -739,6 +739,9 @@ const CompanyInfoStep = () => {
                                 required: true,
                                 defaultValue: "10000",
                                 options: [
+                                    { label: "newHk.company.fields.capAmount.options.1", value: "1" },
+                                    { label: "newHk.company.fields.capAmount.options.10", value: "10" },
+                                    { label: "newHk.company.fields.capAmount.options.100", value: "100" },
                                     { label: "newHk.company.fields.capAmount.options.1000", value: "1000" },
                                     { label: "newHk.company.fields.capAmount.options.10000", value: "10000" },
                                     { label: "newHk.company.fields.capAmount.options.100000", value: "100000" },
@@ -769,9 +772,12 @@ const CompanyInfoStep = () => {
                                 required: true,
                                 defaultValue: "10000",
                                 options: [
-                                    { label: "newHk.company.fields.shareCount.options.1", value: "1" },
-                                    { label: "newHk.company.fields.shareCount.options.10", value: "10" },
-                                    { label: "newHk.company.fields.shareCount.options.10000", value: "10000" },
+                                    { label: "newHk.company.fields.capAmount.options.1", value: "1" },
+                                    { label: "newHk.company.fields.capAmount.options.10", value: "10" },
+                                    { label: "newHk.company.fields.capAmount.options.100", value: "100" },
+                                    { label: "newHk.company.fields.capAmount.options.1000", value: "1000" },
+                                    { label: "newHk.company.fields.capAmount.options.10000", value: "10000" },
+                                    { label: "newHk.company.fields.capAmount.options.100000", value: "100000" },
                                     { label: "newHk.company.fields.shareCount.options.other", value: "other" },
                                 ],
                             }}
@@ -830,13 +836,13 @@ const CompanyInfoStep = () => {
 const SgServiceSelectionStep = () => {
     const [form, setForm] = useAtom(sgFormWithResetAtom1);
     const { t } = useTranslation();
-
+    console.log("form in service selection step:", form.serviceItemsSelected);
     const selected: string[] = Array.isArray(form.serviceItemsSelected) ? form.serviceItemsSelected : [];
     const address = form.businessAddress;
     const shareholders = Array.isArray(form.shareHolders) ? form.shareHolders : [];
     const directors = Array.isArray(form.directors) ? form.directors : [];
 
-    // 1) Base catalog from constants
+    // 1) Base catalog from constants   
     const catalog: any = service_list.map((s) => ({
         id: s.id,
         description: t(s.key),
@@ -1965,7 +1971,7 @@ const CONFIG: FormConfig = {
                     type: "radio-group",
                     name: "q_country",
                     label:
-                        "newHk.steps.compliance.questions.q_country",
+                        "Singapore.singFollowingCompaniesActivity",
                     required: true,
                     options: [
                         {

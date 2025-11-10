@@ -577,7 +577,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
     // console.log("response",response)
     if (response.summary.successful > 0) {
       setApp((prev) => {
-        const updated = prev.parties.map((p) => ({ ...p, invited: true , status: "Invited"}));
+        const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
         return { ...prev, parties: updated };
       });
       toast({
@@ -589,8 +589,8 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
     }
 
     if (response.summary.alreadyExists > 0) {
-       setApp((prev) => {
-        const updated = prev.parties.map((p) => ({ ...p, invited: true ,status: "Invited"}));
+      setApp((prev) => {
+        const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
         return { ...prev, parties: updated };
       });
       toast({
@@ -600,8 +600,8 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
     }
 
     if (response.summary.failed > 0) {
-       setApp((prev) => {
-        const updated = prev.parties.map((p) => ({ ...p ,status: "Not Invited"}));
+      setApp((prev) => {
+        const updated = prev.parties.map((p) => ({ ...p, status: "Not Invited" }));
         return { ...prev, parties: updated };
       });
       toast({
@@ -1798,6 +1798,9 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
                 required: true,
                 defaultValue: "10000",
                 options: [
+                  { label: "newHk.company.fields.capAmount.options.1", value: "1" },
+                  { label: "newHk.company.fields.capAmount.options.10", value: "10" },
+                  { label: "newHk.company.fields.capAmount.options.100", value: "100" },
                   { label: "newHk.company.fields.capAmount.options.1000", value: "1000" },
                   { label: "newHk.company.fields.capAmount.options.10000", value: "10000" },
                   { label: "newHk.company.fields.capAmount.options.100000", value: "100000" },
@@ -1828,9 +1831,12 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
                 required: true,
                 defaultValue: "10000",
                 options: [
-                  { label: "newHk.company.fields.shareCount.options.1", value: "1" },
-                  { label: "newHk.company.fields.shareCount.options.10", value: "10" },
-                  { label: "newHk.company.fields.shareCount.options.10000", value: "10000" },
+                  { label: "newHk.company.fields.capAmount.options.1", value: "1" },
+                  { label: "newHk.company.fields.capAmount.options.10", value: "10" },
+                  { label: "newHk.company.fields.capAmount.options.100", value: "100" },
+                  { label: "newHk.company.fields.capAmount.options.1000", value: "1000" },
+                  { label: "newHk.company.fields.capAmount.options.10000", value: "10000" },
+                  { label: "newHk.company.fields.capAmount.options.100000", value: "100000" },
                   { label: "newHk.company.fields.shareCount.options.other", value: "other" }
                 ]
               }}
