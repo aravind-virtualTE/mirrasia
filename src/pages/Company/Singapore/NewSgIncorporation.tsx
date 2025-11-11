@@ -932,7 +932,7 @@ const SgServiceSelectionStep: React.FC = () => {
 
                     <ol style={{ marginLeft: 18 }}>
                         <li>
-                            Do you <u>already</u> meet the local director requirement?
+                            Do you have a Singapore-based individual who can act as your company’s local director?
                             <div style={{ marginTop: 6 }}>
                                 <label className="mr-4">
                                     <input
@@ -959,7 +959,7 @@ const SgServiceSelectionStep: React.FC = () => {
 
                         {hasLocalDir === "no" && (
                             <li style={{ marginTop: 8 }}>
-                                Security method for nominee director:
+                                Security Deposit for nominee director:
                                 <div style={{ marginTop: 6 }}>
                                     <label className="mr-4">
                                         <input
