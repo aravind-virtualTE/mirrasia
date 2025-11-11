@@ -26,7 +26,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Building2, ChevronDown, ChevronUp, HelpCircle, Info, Send, UserIcon, Users, X } from "lucide-react";
 import CommonServiceAgrementTxt from "../CommonServiceAgrementTxt";
-import { service_list } from "./Components/sgConstant";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
@@ -833,216 +832,485 @@ const CompanyInfoStep = () => {
         </div>
     );
 };
-const SgServiceSelectionStep = () => {
+type YesNo = "yes" | "no";
+type Security = "deposit" | "prepay";
+
+const fmtUSD = (n: number) => `USD ${Number(n || 0).toLocaleString()}`;
+
+const SgServiceSelectionStep: React.FC = () => {
     const [form, setForm] = useAtom(sgFormWithResetAtom1);
-    const { t } = useTranslation();
-    console.log("form in service selection step:", form.serviceItemsSelected);
+    React.useEffect(() => {
+        if (!form?.sg_preAnswers) {
+            setForm((prev: any) => ({
+                ...prev,
+                sg_preAnswers: { hasLocalDir: "no", ndSecurity: "deposit" },
+            }));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    // Persisted pre-answers (so navigation keeps state)
+    const hasLocalDir: YesNo = form?.sg_preAnswers?.hasLocalDir ?? "no";
+    const ndSecurity: Security = form?.sg_preAnswers?.ndSecurity ?? "deposit";
+
+    const setPreAnswers = (updates: Partial<{ hasLocalDir: YesNo; ndSecurity: Security }>) => {
+        setForm((prev: any) => ({
+            ...prev,
+            sg_preAnswers: {
+                // read the latest values from state, not from render-time variables
+                hasLocalDir: prev?.sg_preAnswers?.hasLocalDir ?? "no",
+                ndSecurity: prev?.sg_preAnswers?.ndSecurity ?? "deposit",
+                ...(prev?.sg_preAnswers || {}),
+                ...updates,
+            },
+        }));
+    };
+
+    // Optional selections (bank advisory, EMI, etc.)
     const selected: string[] = Array.isArray(form.serviceItemsSelected) ? form.serviceItemsSelected : [];
-    const address = form.businessAddress;
-    const shareholders = Array.isArray(form.shareHolders) ? form.shareHolders : [];
-    const directors = Array.isArray(form.directors) ? form.directors : [];
+    const includeOptional = (id: string, on: boolean) => {
+        const curr = Array.isArray(form.serviceItemsSelected) ? form.serviceItemsSelected : [];
+        const exists = curr.includes(id);
+        if (on && !exists) setForm({ ...form, serviceItemsSelected: [...curr, id] });
+        if (!on && exists) setForm({ ...form, serviceItemsSelected: curr.filter((x: string) => x !== id) });
+    };
 
-    // 1) Base catalog from constants   
-    const catalog: any = service_list.map((s) => ({
-        id: s.id,
-        description: t(s.key),
-        originalPrice: Number(s.price) || 0,
-        discountedPrice: Number(s.price) || 0,
-        isOptional: !!s.isOptional,
-    }));
+    // ===== Fixed mandatory rows (always) =====
+    const MANDATORY = [
+        { id: "companyIncorporation", label: "Company Incorporation (filing)", price: 350 },
+        { id: "nomineeDirector", label: "Nominee Director (1 year)", price: 2000 }, // always mandatory now
+        { id: "companySecretary", label: "Company Secretary (1 year)", price: 480 },
+        { id: "registeredAddress", label: "Registered Address (1 year)", price: 300 },
+    ];
 
-    // 2) Dynamic add: Registered business address if Mirr Asia address chosen
-    if (address && address.id === "mirrasiaAddress") {
-        catalog.push({
-            id: "registeredBusinessAddress",
-            description: t("Singapore.regBsnsService"),
-            originalPrice: 350,
-            discountedPrice: 350,
-            isOptional: false,
-        });
-    }
+    // Base mandatory sum (without security)
+    const baseMandatoryTotal = MANDATORY.reduce((s, r) => s + r.price, 0); // 350+2000+480+300 = 3,130
 
-    // 3) Dynamic add: Corporate Secretary Annual Service per legal entity
-    const legalEntityYesCount =
-        shareholders.filter((x: any) => x?.legalEntity?.id === "Yes").length +
-        directors.filter((x: any) => x?.legalEntity?.id === "Yes").length;
+    // Extra mandatory security (only when nominee REQUIRED)
+    const extraSecurityMandatory = hasLocalDir === "no" ? 2000 : 0;
 
-    if (legalEntityYesCount > 0) {
-        catalog.push({
-            id: "corporateSecretaryAnnualService",
-            description: `${t("Singapore.crpSecAnnualServ")} (${legalEntityYesCount})`,
-            originalPrice: legalEntityYesCount * 550,
-            discountedPrice: legalEntityYesCount * 550,
-            isOptional: false,
-        });
-    }
+    // ===== Optionals (paid options excluding security; EMI is 0) =====
+    const OPTIONALS = [
+        { id: "bankAccountAdvisory", label: "Bank Account Advisory (optional)", price: 1200 },
+        { id: "emiEAccount", label: "EMI e-Account Opening (basic) Free", price: 0 },
+    ];
 
-    // 4) Dynamic add: Online accounting software package
-    if (form.onlineAccountingSoftware?.value === "yes") {
-        catalog.push({
-            id: "onlineAccountingSoftware",
-            description: t("Singapore.accPackageSixMonths"),
-            originalPrice: 2000,
-            discountedPrice: 2000,
-            isOptional: false,
-        });
-    }
+    // Totals
+    const paidOptionalSum = OPTIONALS
+        .filter((r) => selected.includes(r.id))
+        .reduce((s, r) => s + r.price, 0);
 
-    // Only include optional items if user selected them; always include non-optional
-    const displayed = catalog.filter((row: any) => !row.isOptional || selected.includes(row.id));
+    const initialMandatoryTotal = baseMandatoryTotal + extraSecurityMandatory;
+    const totalInclOptions = initialMandatoryTotal + paidOptionalSum; // equals mandatory when no paid optionals
 
-    // Totals: of displayed items
-    const totalOriginal = displayed.reduce((sum: any, r: any) => sum + (Number(r.originalPrice) || 0), 0);
-    const totalDiscounted = displayed.reduce((sum: any, r: any) => sum + (Number(r.discountedPrice) || 0), 0);
-
-    const toggleOptional = (id: string) => {
+    // Guards
+    const canToggle = () => {
         if (form.sessionId) {
             toast({
-                title: t("Payment Session Initiated"),
-                description: t("Cant select extra items once payment session initiated"),
+                title: "Payment Session Initiated",
+                description: "Can't select extra items once payment session initiated",
             });
-            return;
+            return false;
         }
-        const next = selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id];
-        setForm({ ...form, serviceItemsSelected: next });
+        return true;
+    };
+
+    const toggleOptional = (id: string) => {
+        if (!canToggle()) return;
+        includeOptional(id, !selected.includes(id));
     };
 
     return (
         <Card className="w-full">
             <CardHeader className="flex flex-row justify-between items-center">
-                <CardTitle className="text-xl text-cyan-400">
-                    {t("usa.serviceSelection.heading")}
-                </CardTitle>
+                <CardTitle className="text-xl text-cyan-400">Pricing &amp; Quote</CardTitle>
             </CardHeader>
-            <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-1/2">{t("usa.serviceSelection.col1")}</TableHead>
-                            <TableHead className="text-right">{t("usa.serviceSelection.col2")}</TableHead>
-                            <TableHead className="text-right">{t("usa.serviceSelection.col3")}</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {/* Render non-optional first, then optional that are selected (with checkbox to deselect) */}
-                        {catalog.map((row: any) => {
-                            const isChecked = selected.includes(row.id);
-                            const shouldShow = !row.isOptional || isChecked;
-                            if (!shouldShow) return null;
 
-                            return (
-                                <TableRow key={row.id} className={row.isOptional ? "text-gray-600" : ""}>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            {row.isOptional && (
-                                                <Checkbox checked={isChecked} onCheckedChange={() => toggleOptional(row.id)} />
-                                            )}
-                                            {row.description}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className={`text-right ${row.originalPrice !== row.discountedPrice ? "line-through text-gray-500" : ""}`}>
-                                        USD {row.originalPrice}
-                                    </TableCell>
-                                    <TableCell className={`text-right ${row.discountedPrice === 0 ? "text-red-500 font-semibold" : ""}`}>
-                                        {row.discountedPrice === 0 ? t("ServiceSelection.FREE") : `USD ${row.discountedPrice}`}
+            <CardContent className="space-y-6">
+                {/* === Pre-Questions (exact text) === */}
+                <div className="card qs rounded-lg border p-4 space-y-4" id="pre-questions">
+                    <div className="font-semibold">Pre-Questions (auto-applies to the quote below)</div>
+
+                    <ol style={{ marginLeft: 18 }}>
+                        <li>
+                            Do you <u>already</u> meet the local director requirement?
+                            <div style={{ marginTop: 6 }}>
+                                <label className="mr-4">
+                                    <input
+                                        type="radio"
+                                        name="q-local-dir"
+                                        value="yes"
+                                        checked={hasLocalDir === "yes"}
+                                        onChange={() => setPreAnswers({ hasLocalDir: "yes" })}
+                                    />{" "}
+                                    Yes, we can appoint an internal local director
+                                </label>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="q-local-dir"
+                                        value="no"
+                                        checked={hasLocalDir === "no"}
+                                        onChange={() => setPreAnswers({ hasLocalDir: "no" })}
+                                    />{" "}
+                                    No, nominee director is required
+                                </label>
+                            </div>
+                        </li>
+
+                        {hasLocalDir === "no" && (
+                            <li style={{ marginTop: 8 }}>
+                                Security method for nominee director:
+                                <div style={{ marginTop: 6 }}>
+                                    <label className="mr-4">
+                                        <input
+                                            type="radio"
+                                            name="q-security"
+                                            value="deposit"
+                                            checked={ndSecurity === "deposit"}
+                                            onChange={() => setPreAnswers({ ndSecurity: "deposit" })}
+                                        />{" "}
+                                        Security deposit USD 2,000
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="q-security"
+                                            value="prepay"
+                                            checked={ndSecurity === "prepay"}
+                                            onChange={() => setPreAnswers({ ndSecurity: "prepay" })}
+                                        />{" "}
+                                        Prepay accounting/tax USD 2,000
+                                    </label>
+                                </div>
+                            </li>
+                        )}
+                    </ol>
+
+                    <div className="text-xs text-muted-foreground">
+                        Choices above will toggle the security/prepay options in the initial cost below.
+                    </div>
+                </div>
+
+                {/* === Table === */}
+                <div className="card rounded-lg border">
+                    <h3 className="px-4 pt-4 text-lg font-semibold">Incorporation + First Year</h3>
+
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-1/2">Item</TableHead>
+                                <TableHead className="text-right">Price</TableHead>
+                                <TableHead className="text-right">Selected</TableHead>
+                            </TableRow>
+                        </TableHeader>
+
+                        <TableBody>
+                            {/* Always mandatory rows */}
+                            {MANDATORY.map((r) => (
+                                <TableRow key={r.id}>
+                                    <TableCell>{r.label}</TableCell>
+                                    <TableCell className="text-right">{fmtUSD(r.price)}</TableCell>
+                                    <TableCell className="text-right">
+                                        <Checkbox checked disabled />
                                     </TableCell>
                                 </TableRow>
-                            );
-                        })}
-                        <TableRow className="font-bold bg-gray-100">
-                            <TableCell>{t("usa.serviceSelection.totalCost")}</TableCell>
-                            <TableCell className="text-right line-through text-gray-500">USD {totalOriginal}</TableCell>
-                            <TableCell className="text-right text-yellow-600">USD {totalDiscounted}</TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                            ))}
+
+                            {/* Extra mandatory security (no checkbox; method chosen above) */}
+                            {hasLocalDir === "no" && (
+                                <>
+                                    <TableRow>
+                                        <TableCell className="font-medium">
+                                            {/* Show the two lines exactly as you asked, but these are informative (no extra beyond the +2000 already counted). */}
+                                            <div>[Optional] Accounting/Tax Prepayment</div>
+                                            <div className="text-xs text-muted-foreground">
+                                                (i) Bookkeeping &amp; CIT filing for the first YA. Alternative to a nominee director deposit.
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-right">{fmtUSD(2000)}</TableCell>
+                                        <TableCell className="text-right">—</TableCell>
+                                    </TableRow>
+
+                                    <TableRow>
+                                        <TableCell className="font-medium">
+                                            <div>[Optional] Nominee Director Deposit</div>
+                                            <div className="text-xs text-muted-foreground">
+                                                (i) Refundable upon 1-month prior written termination notice.
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-right">{fmtUSD(2000)}</TableCell>
+                                        <TableCell className="text-right">—</TableCell>
+                                    </TableRow>
+                                </>
+                            )}
+
+                            {/* Other optionals (user can toggle) */}
+                            {OPTIONALS.map((r) => {
+                                const isChecked = selected.includes(r.id);
+                                return (
+                                    <TableRow key={r.id} className="text-gray-600">
+                                        <TableCell>{r.label}</TableCell>
+                                        <TableCell className={`text-right ${r.price === 0 ? "text-red-500 font-semibold" : ""}`}>
+                                            {fmtUSD(r.price)}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Checkbox checked={isChecked} onCheckedChange={() => toggleOptional(r.id)} />
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+
+                            {/* Totals */}
+                            <TableRow className="font-bold bg-gray-50">
+                                <TableCell>
+                                    Initial <b>mandatory</b> total
+                                </TableCell>
+                                <TableCell className="text-right" colSpan={2}>
+                                    {fmtUSD(initialMandatoryTotal)}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow className="font-bold bg-gray-100">
+                                <TableCell>Total incl. options</TableCell>
+                                <TableCell className="text-right text-yellow-600" colSpan={2}>
+                                    {fmtUSD(totalInclOptions)}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell colSpan={3} className="text-xs text-muted-foreground">
+                                    Assumes standard profile (≤5 individual shareholders). Notarization/translation/apostille &amp; complex KYC are extra.
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </div>
             </CardContent>
         </Card>
     );
 };
 
-const asNumber = (v: any) => (typeof v === "number" ? v : Number(v) || 0);
+// const SgServiceSelectionStep = () => {
+//     const [form, setForm] = useAtom(sgFormWithResetAtom1);
+//     const { t } = useTranslation();
+//     console.log("form in service selection step:", form.serviceItemsSelected);
+//     const selected: string[] = Array.isArray(form.serviceItemsSelected) ? form.serviceItemsSelected : [];
+//     const address = form.businessAddress;
+//     const shareholders = Array.isArray(form.shareHolders) ? form.shareHolders : [];
+//     const directors = Array.isArray(form.directors) ? form.directors : [];
 
-const InvoiceSgStep = () => {
+//     // 1) Base catalog from constants   
+//     const catalog: any = service_list.map((s) => ({
+//         id: s.id,
+//         description: t(s.key),
+//         originalPrice: Number(s.price) || 0,
+//         discountedPrice: Number(s.price) || 0,
+//         isOptional: !!s.isOptional,
+//     }));
+
+//     // 2) Dynamic add: Registered business address if Mirr Asia address chosen
+//     if (address && address.id === "mirrasiaAddress") {
+//         catalog.push({
+//             id: "registeredBusinessAddress",
+//             description: t("Singapore.regBsnsService"),
+//             originalPrice: 350,
+//             discountedPrice: 350,
+//             isOptional: false,
+//         });
+//     }
+
+//     // 3) Dynamic add: Corporate Secretary Annual Service per legal entity
+//     const legalEntityYesCount =
+//         shareholders.filter((x: any) => x?.legalEntity?.id === "Yes").length +
+//         directors.filter((x: any) => x?.legalEntity?.id === "Yes").length;
+
+//     if (legalEntityYesCount > 0) {
+//         catalog.push({
+//             id: "corporateSecretaryAnnualService",
+//             description: `${t("Singapore.crpSecAnnualServ")} (${legalEntityYesCount})`,
+//             originalPrice: legalEntityYesCount * 550,
+//             discountedPrice: legalEntityYesCount * 550,
+//             isOptional: false,
+//         });
+//     }
+
+//     // 4) Dynamic add: Online accounting software package
+//     if (form.onlineAccountingSoftware?.value === "yes") {
+//         catalog.push({
+//             id: "onlineAccountingSoftware",
+//             description: t("Singapore.accPackageSixMonths"),
+//             originalPrice: 2000,
+//             discountedPrice: 2000,
+//             isOptional: false,
+//         });
+//     }
+
+//     // Only include optional items if user selected them; always include non-optional
+//     const displayed = catalog.filter((row: any) => !row.isOptional || selected.includes(row.id));
+
+//     // Totals: of displayed items
+//     const totalOriginal = displayed.reduce((sum: any, r: any) => sum + (Number(r.originalPrice) || 0), 0);
+//     const totalDiscounted = displayed.reduce((sum: any, r: any) => sum + (Number(r.discountedPrice) || 0), 0);
+
+//     const toggleOptional = (id: string) => {
+//         if (form.sessionId) {
+//             toast({
+//                 title: t("Payment Session Initiated"),
+//                 description: t("Cant select extra items once payment session initiated"),
+//             });
+//             return;
+//         }
+//         const next = selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id];
+//         setForm({ ...form, serviceItemsSelected: next });
+//     };
+
+//     return (
+//         <Card className="w-full">
+//             <CardHeader className="flex flex-row justify-between items-center">
+//                 <CardTitle className="text-xl text-cyan-400">
+//                     {t("usa.serviceSelection.heading")}
+//                 </CardTitle>
+//             </CardHeader>
+//             <CardContent>
+//                 <Table>
+//                     <TableHeader>
+//                         <TableRow>
+//                             <TableHead className="w-1/2">{t("usa.serviceSelection.col1")}</TableHead>
+//                             <TableHead className="text-right">{t("usa.serviceSelection.col2")}</TableHead>
+//                             <TableHead className="text-right">{t("usa.serviceSelection.col3")}</TableHead>
+//                         </TableRow>
+//                     </TableHeader>
+//                     <TableBody>
+//                         {/* Render non-optional first, then optional that are selected (with checkbox to deselect) */}
+//                         {catalog.map((row: any) => {
+//                             const isChecked = selected.includes(row.id);
+//                             const shouldShow = !row.isOptional || isChecked;
+//                             if (!shouldShow) return null;
+
+//                             return (
+//                                 <TableRow key={row.id} className={row.isOptional ? "text-gray-600" : ""}>
+//                                     <TableCell>
+//                                         <div className="flex items-center gap-2">
+//                                             {row.isOptional && (
+//                                                 <Checkbox checked={isChecked} onCheckedChange={() => toggleOptional(row.id)} />
+//                                             )}
+//                                             {row.description}
+//                                         </div>
+//                                     </TableCell>
+//                                     <TableCell className={`text-right ${row.originalPrice !== row.discountedPrice ? "line-through text-gray-500" : ""}`}>
+//                                         USD {row.originalPrice}
+//                                     </TableCell>
+//                                     <TableCell className={`text-right ${row.discountedPrice === 0 ? "text-red-500 font-semibold" : ""}`}>
+//                                         {row.discountedPrice === 0 ? t("ServiceSelection.FREE") : `USD ${row.discountedPrice}`}
+//                                     </TableCell>
+//                                 </TableRow>
+//                             );
+//                         })}
+//                         <TableRow className="font-bold bg-gray-100">
+//                             <TableCell>{t("usa.serviceSelection.totalCost")}</TableCell>
+//                             <TableCell className="text-right line-through text-gray-500">USD {totalOriginal}</TableCell>
+//                             <TableCell className="text-right text-yellow-600">USD {totalDiscounted}</TableCell>
+//                         </TableRow>
+//                     </TableBody>
+//                 </Table>
+//             </CardContent>
+//         </Card>
+//     );
+// };
+
+const asNumber = (v: any) => (typeof v === "number" ? v : Number(v) || 0);
+const fmt = (n: number) => (n > 0 ? `USD ${n.toFixed(2)}` : "USD 0.00");
+
+const InvoiceSgStep: React.FC = () => {
     const [form, setForm] = useAtom(sgFormWithResetAtom1);
     const { t } = useTranslation();
+
+
+
+    const hasLocalDir: YesNo = (form?.sg_preAnswers?.hasLocalDir as YesNo) ?? "no";
+    const ndSecurity: Security = (form?.sg_preAnswers?.ndSecurity as Security) ?? "deposit";
 
     const selectedOptionals: string[] = Array.isArray(form?.serviceItemsSelected)
         ? form.serviceItemsSelected
         : [];
 
-    const rows: FeeRow[] = useMemo(() => {
-        // derive parties/address inside memo to avoid unstable deps caused by inline conditionals
-        const parties = Array.isArray(form?.parties) ? form.parties : [];
-        const address = form?.businessAddress;
+    
 
-        // 1) Base catalog
-        const base: FeeRow[] = service_list.map((s) => ({
-            id: s.id,
-            description: t(s.key),
-            originalPrice: asNumber(s.price),
-            discountedPrice: asNumber(s.price),
-            isOptional: !!s.isOptional,
-            note: "",
-            isHighlight: false,
-        }));
+    // Build invoice rows to EXACTLY reflect the selection component
+    const rows: FeeRow[] = React.useMemo(() => {
+        const list: FeeRow[] = [];
 
-        // 2) Dynamic adds (always included; these are not optional)
-        const out: FeeRow[] = [...base];
+        // Always mandatory (same labels & prices)
+        list.push(
+            { id: "companyIncorporation", description: "Company Incorporation (filing)", originalPrice: 350, discountedPrice: 350 },
+            { id: "nomineeDirector", description: "Nominee Director (1 year)", originalPrice: 2000, discountedPrice: 2000 },
+            { id: "companySecretary", description: "Company Secretary (1 year)", originalPrice: 480, discountedPrice: 480 },
+            { id: "registeredAddress", description: "Registered Address (1 year)", originalPrice: 300, discountedPrice: 300 },
+        );
 
-        if (address && address.id === "mirrasiaAddress") {
-            out.push({
-                id: "registeredBusinessAddress",
-                description: t("Singapore.regBsnsService"),
-                originalPrice: 350,
-                discountedPrice: 350,
-                isOptional: false,
-                note: "",
-            });
-        }
-
-        const legalEntityYesCount = parties.filter(
-            (p: any) => p?.isCorp === true && (p?.isDirector === true || (Number(p?.shares) || 0) > 0)
-        ).length;
-
-        if (legalEntityYesCount > 0) {
-            out.push({
-                id: "corporateSecretaryAnnualService",
-                description: `${t("Singapore.crpSecAnnualServ")} (${legalEntityYesCount})`,
-                originalPrice: legalEntityYesCount * 550,
-                discountedPrice: legalEntityYesCount * 550,
-                isOptional: false,
-                note: "",
-            });
-        }
-
-        if (form?.onlineAccountingSoftware?.value === "yes") {
-            out.push({
-                id: "onlineAccountingSoftware",
-                description: t("Singapore.accPackageSixMonths"),
+        // Extra mandatory: security 2,000 only if nominee director is required
+        if (hasLocalDir === "no") {
+            const secLabel =
+                ndSecurity === "prepay"
+                    ? "Prepay accounting/tax (Nominee Director)"
+                    : "Security deposit (Nominee Director)";
+            list.push({
+                id: "nomineeSecurity",
+                description: secLabel,
                 originalPrice: 2000,
                 discountedPrice: 2000,
-                isOptional: false,
-                note: "",
             });
         }
 
-        // 3) For invoice display:
-        //    - Always include non-optional items
-        //    - Include optional items ONLY if selected
-        return out.filter((r) => !r.isOptional || selectedOptionals.includes(r.id));
-    }, [t, form, selectedOptionals]);
+        // Optionals shown only if selected (match IDs from ServiceSelectionStep)
+        if (selectedOptionals.includes("bankAccountAdvisory")) {
+            list.push({
+                id: "bankAccountAdvisory",
+                description: "Bank Account Advisory (optional)",
+                originalPrice: 1200,
+                discountedPrice: 1200,
+                isOptional: true,
+            });
+        }
+        if (selectedOptionals.includes("emiEAccount")) {
+            list.push({
+                id: "emiEAccount",
+                description: "EMI e-Account Opening (basic) Free",
+                originalPrice: 0,
+                discountedPrice: 0,
+                isOptional: true,
+            });
+        }
 
-    const totalOriginal = rows.reduce((sum, r) => sum + asNumber(r.originalPrice), 0);
-    const totalDiscounted = rows.reduce((sum, r) => sum + asNumber(r.discountedPrice), 0);
+        return list;
+    }, [hasLocalDir, ndSecurity, selectedOptionals]);
+
+    // Totals (original == discounted here, but we keep both fields)
+    const initialMandatoryTotal = React.useMemo(() => {
+        // mandatory = everything except the selected optionals
+        return rows
+            .filter((r) => !r.isOptional)
+            .reduce((s, r) => s + asNumber(r.discountedPrice), 0);
+    }, [rows]);
+
+    const totalInclOptions = React.useMemo(() => {
+        return rows.reduce((s, r) => s + asNumber(r.discountedPrice), 0);
+    }, [rows]);
+
+    // Persist totals & currency back to form for payment step
     React.useEffect(() => {
         setForm((prev: any) => ({
             ...prev,
-            totalOriginal,
-            totalDiscounted,
+            initialMandatoryTotal,             // keep for display/analytics
+            totalInclOptions,                  // final invoice subtotal (before card fee)
+            totalOriginal: totalInclOptions,   // <<— write to legacy field for downstream
+            totalDiscounted: totalInclOptions, // <<— keep both in sync
             currency: "USD",
+            invoiceItems: rows.map((r) => ({
+                id: r.id,
+                description: r.description,
+                amount: asNumber(r.discountedPrice),
+            })),
         }));
-    }, [totalOriginal, totalDiscounted, setForm]);
+    }, [initialMandatoryTotal, totalInclOptions, rows, setForm]);
 
     return (
         <div className="w-full py-8 px-4">
@@ -1050,6 +1318,7 @@ const InvoiceSgStep = () => {
                 <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>{t("mirrasisaSSL")}</CardTitle>
                 </CardHeader>
+
                 <CardContent>
                     <Table>
                         <TableHeader>
@@ -1057,7 +1326,6 @@ const InvoiceSgStep = () => {
                                 <TableHead>{t("invoice.desc")}</TableHead>
                                 <TableHead className="text-right">{t("invoice.originalPrice")}</TableHead>
                                 <TableHead className="text-right">{t("invoice.discPrice")}</TableHead>
-                                {/* <TableHead className="text-right">{t("invoice.notes")}</TableHead> */}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -1069,29 +1337,35 @@ const InvoiceSgStep = () => {
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right text-muted-foreground">
-                                        {asNumber(item.originalPrice) > 0 ? `USD ${asNumber(item.originalPrice).toFixed(2)}` : "USD 0.00"}
+                                        {fmt(asNumber(item.originalPrice))}
                                     </TableCell>
                                     <TableCell className="text-right font-medium">
-                                        {asNumber(item.discountedPrice) > 0 ? `USD ${asNumber(item.discountedPrice).toFixed(2)}` : "USD 0.00"}
+                                        {fmt(asNumber(item.discountedPrice))}
                                     </TableCell>
-                                    {/* <TableCell className="text-right text-sm text-muted-foreground">{item.note || ""}</TableCell> */}
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
 
-                    {/* Totals */}
+                    {/* Totals Card */}
                     <div className="mt-4 flex justify-end">
                         <Card className="w-80">
                             <CardContent className="pt-4">
                                 <div className="flex justify-between mb-2">
                                     <span className="font-xs text-xs line-through text-gray-500">{t("invoice.total")}:</span>
-                                    <span className="font-xs text-xs line-through text-gray-500">USD {totalOriginal.toFixed(2)}</span>
+                                    <span className="font-xs text-xs line-through text-gray-500">
+                                        {fmt(totalInclOptions)}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between text-green-600">
                                     <span className="font-medium">{t("invoice.totalDisc")}:</span>
-                                    <span className="font-bold">USD {totalDiscounted.toFixed(2)}</span>
+                                    <span className="font-bold">{fmt(totalInclOptions)}</span>
                                 </div>
+                                {/* If you want to show the initial mandatory in the card too, uncomment: */}
+                                {/* <div className="flex justify-between text-sm mt-2">
+                  <span>Initial mandatory total:</span>
+                  <span>{fmt(initialMandatoryTotal)}</span>
+                </div> */}
                             </CardContent>
                         </Card>
                     </div>
@@ -1100,6 +1374,144 @@ const InvoiceSgStep = () => {
         </div>
     );
 };
+
+// const InvoiceSgStep = () => {
+//     const [form, setForm] = useAtom(sgFormWithResetAtom1);
+//     const { t } = useTranslation();
+
+//     const selectedOptionals: string[] = Array.isArray(form?.serviceItemsSelected)
+//         ? form.serviceItemsSelected
+//         : [];
+
+//     const rows: FeeRow[] = useMemo(() => {
+//         // derive parties/address inside memo to avoid unstable deps caused by inline conditionals
+//         const parties = Array.isArray(form?.parties) ? form.parties : [];
+//         const address = form?.businessAddress;
+
+//         // 1) Base catalog
+//         const base: FeeRow[] = service_list.map((s) => ({
+//             id: s.id,
+//             description: t(s.key),
+//             originalPrice: asNumber(s.price),
+//             discountedPrice: asNumber(s.price),
+//             isOptional: !!s.isOptional,
+//             note: "",
+//             isHighlight: false,
+//         }));
+
+//         // 2) Dynamic adds (always included; these are not optional)
+//         const out: FeeRow[] = [...base];
+
+//         if (address && address.id === "mirrasiaAddress") {
+//             out.push({
+//                 id: "registeredBusinessAddress",
+//                 description: t("Singapore.regBsnsService"),
+//                 originalPrice: 350,
+//                 discountedPrice: 350,
+//                 isOptional: false,
+//                 note: "",
+//             });
+//         }
+
+//         const legalEntityYesCount = parties.filter(
+//             (p: any) => p?.isCorp === true && (p?.isDirector === true || (Number(p?.shares) || 0) > 0)
+//         ).length;
+
+//         if (legalEntityYesCount > 0) {
+//             out.push({
+//                 id: "corporateSecretaryAnnualService",
+//                 description: `${t("Singapore.crpSecAnnualServ")} (${legalEntityYesCount})`,
+//                 originalPrice: legalEntityYesCount * 550,
+//                 discountedPrice: legalEntityYesCount * 550,
+//                 isOptional: false,
+//                 note: "",
+//             });
+//         }
+
+//         if (form?.onlineAccountingSoftware?.value === "yes") {
+//             out.push({
+//                 id: "onlineAccountingSoftware",
+//                 description: t("Singapore.accPackageSixMonths"),
+//                 originalPrice: 2000,
+//                 discountedPrice: 2000,
+//                 isOptional: false,
+//                 note: "",
+//             });
+//         }
+
+//         // 3) For invoice display:
+//         //    - Always include non-optional items
+//         //    - Include optional items ONLY if selected
+//         return out.filter((r) => !r.isOptional || selectedOptionals.includes(r.id));
+//     }, [t, form, selectedOptionals]);
+
+//     const totalOriginal = rows.reduce((sum, r) => sum + asNumber(r.originalPrice), 0);
+//     const totalDiscounted = rows.reduce((sum, r) => sum + asNumber(r.discountedPrice), 0);
+//     React.useEffect(() => {
+//         setForm((prev: any) => ({
+//             ...prev,
+//             totalOriginal,
+//             totalDiscounted,
+//             currency: "USD",
+//         }));
+//     }, [totalOriginal, totalDiscounted, setForm]);
+
+//     return (
+//         <div className="w-full py-8 px-4">
+//             <Card className="w-full">
+//                 <CardHeader className="flex flex-row items-center justify-between">
+//                     <CardTitle>{t("mirrasisaSSL")}</CardTitle>
+//                 </CardHeader>
+//                 <CardContent>
+//                     <Table>
+//                         <TableHeader>
+//                             <TableRow>
+//                                 <TableHead>{t("invoice.desc")}</TableHead>
+//                                 <TableHead className="text-right">{t("invoice.originalPrice")}</TableHead>
+//                                 <TableHead className="text-right">{t("invoice.discPrice")}</TableHead>
+//                                 {/* <TableHead className="text-right">{t("invoice.notes")}</TableHead> */}
+//                             </TableRow>
+//                         </TableHeader>
+//                         <TableBody>
+//                             {rows.map((item) => (
+//                                 <TableRow key={item.id}>
+//                                     <TableCell>
+//                                         <div className="flex items-center gap-2">
+//                                             <span className={item.isHighlight ? "font-semibold" : ""}>{item.description}</span>
+//                                         </div>
+//                                     </TableCell>
+//                                     <TableCell className="text-right text-muted-foreground">
+//                                         {asNumber(item.originalPrice) > 0 ? `USD ${asNumber(item.originalPrice).toFixed(2)}` : "USD 0.00"}
+//                                     </TableCell>
+//                                     <TableCell className="text-right font-medium">
+//                                         {asNumber(item.discountedPrice) > 0 ? `USD ${asNumber(item.discountedPrice).toFixed(2)}` : "USD 0.00"}
+//                                     </TableCell>
+//                                     {/* <TableCell className="text-right text-sm text-muted-foreground">{item.note || ""}</TableCell> */}
+//                                 </TableRow>
+//                             ))}
+//                         </TableBody>
+//                     </Table>
+
+//                     {/* Totals */}
+//                     <div className="mt-4 flex justify-end">
+//                         <Card className="w-80">
+//                             <CardContent className="pt-4">
+//                                 <div className="flex justify-between mb-2">
+//                                     <span className="font-xs text-xs line-through text-gray-500">{t("invoice.total")}:</span>
+//                                     <span className="font-xs text-xs line-through text-gray-500">USD {totalOriginal.toFixed(2)}</span>
+//                                 </div>
+//                                 <div className="flex justify-between text-green-600">
+//                                     <span className="font-medium">{t("invoice.totalDisc")}:</span>
+//                                     <span className="font-bold">USD {totalDiscounted.toFixed(2)}</span>
+//                                 </div>
+//                             </CardContent>
+//                         </Card>
+//                     </div>
+//                 </CardContent>
+//             </Card>
+//         </div>
+//     );
+// };
 
 function StripePaymentForm({ app, onSuccess, onClose, }: {
     app: any;
@@ -1393,44 +1805,16 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
 function asNum(v: any) {
     return typeof v === "number" ? v : Number(v) || 0;
 }
-function computeSgAddonsTotal(app: any): number {
-    // (unchanged) – you can keep this as a fallback path
-    const selected: string[] = Array.isArray(app?.serviceItemsSelected) ? app.serviceItemsSelected : [];
-    const address = app?.businessAddress;
-    const parties: any[] = Array.isArray(app?.parties) ? app.parties : [];
-
-    const optionalsTotal = service_list
-        .filter((svc) => !!svc.isOptional && selected.includes(svc.id))
-        .reduce((sum, svc) => sum + asNum(svc.price), 0);
-
-    let dynamicTotal = 0;
-
-    if (address && address.id === "mirrasiaAddress") dynamicTotal += 350;
-
-    const legalEntityYesCount = parties.filter(
-        (p) => p?.isCorp === true && (p?.isDirector === true || asNum(p?.shares) > 0)
-    ).length;
-
-    if (legalEntityYesCount > 0) dynamicTotal += legalEntityYesCount * 550;
-
-    if (app?.onlineAccountingSoftware?.value === "yes") dynamicTotal += 2000;
-
-    return optionalsTotal + dynamicTotal;
-}
 
 function computeSgGrandTotal(app: any): number {
-    const persistedSubtotal =
-        typeof app?.totalDiscounted === "number"
-            ? app.totalDiscounted
-            : null;
+  // Subtotal is whatever the invoice last wrote
+  const subtotal = asNum(app?.totalInclOptions ?? app?.totalOriginal ?? 0);
 
-    const fallbackSubtotal = computeSgAddonsTotal(app);
+  const cardFeeRate = 0.035;
+  const needsCardFee = app?.payMethod === "card";
 
-    const subtotal = persistedSubtotal ?? fallbackSubtotal;
-
-    const cardFeeRate = 0.035;
-    const needsCardFee = app?.payMethod === "card";
-    return needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
+  const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
+  return Math.round(total * 100) / 100; // cents-safe
 }
 
 const PaymentStep = () => {
@@ -1439,7 +1823,7 @@ const PaymentStep = () => {
 
     // Compute grand total using SG logic
     const grand = computeSgGrandTotal(form);
-
+    console.log("Computed SG grand total:", grand);
     const isPaid =
         form.paymentStatus === "paid" ||
         form.stripeLastStatus === "succeeded" ||
@@ -1629,7 +2013,7 @@ const PaymentStep = () => {
                                 label: t("newHk.payment.methods.options.card.label"),
                                 tip: t("newHk.payment.methods.options.card.tip"),
                             },
-                            { v: "fps", label: t("newHk.payment.methods.options.fps.label") },
+                            // { v: "fps", label: t("newHk.payment.methods.options.fps.label") },
                             { v: "bank", label: t("newHk.payment.methods.options.bank.label") },
                             { v: "other", label: t("newHk.payment.methods.options.other.label") },
                         ].map((o) => (

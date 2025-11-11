@@ -238,7 +238,7 @@ export type FeeRow = {
   description: string;
   originalPrice: number;
   discountedPrice: number;
-  isOptional: boolean;
+  isOptional?: boolean;
   note?: string;
   isHighlight?: boolean;
 };
