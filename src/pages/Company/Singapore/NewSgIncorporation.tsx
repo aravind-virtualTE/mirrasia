@@ -447,14 +447,18 @@ function PartiesManager() {
 
             {/* Actions */}
             <div className="flex items-center justify-between pt-2">
-                <Button
-                    onClick={add}
-                    variant="outline"
-                    className="flex items-center gap-2"
-                // disabled={totalShares > 0 && assigned >= totalShares}
-                >
-                    {t("newHk.parties.buttons.add", "Add Shareholder")}
-                </Button>
+                <div className="flex items-center gap-3">
+                    <Button
+                        onClick={add}
+                        variant="outline"
+                        className="flex items-center gap-2"
+                    >
+                        {t("newHk.parties.buttons.add", "Add Shareholder")}
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                        At least 1 local director must be registered
+                    </span>
+                </div>
 
                 <Button
                     onClick={sendInvites}
@@ -1232,7 +1236,7 @@ const InvoiceSgStep: React.FC = () => {
         ? form.serviceItemsSelected
         : [];
 
-    
+
 
     // Build invoice rows to EXACTLY reflect the selection component
     const rows: FeeRow[] = React.useMemo(() => {
@@ -1807,14 +1811,14 @@ function asNum(v: any) {
 }
 
 function computeSgGrandTotal(app: any): number {
-  // Subtotal is whatever the invoice last wrote
-  const subtotal = asNum(app?.totalInclOptions ?? app?.totalOriginal ?? 0);
+    // Subtotal is whatever the invoice last wrote
+    const subtotal = asNum(app?.totalInclOptions ?? app?.totalOriginal ?? 0);
 
-  const cardFeeRate = 0.035;
-  const needsCardFee = app?.payMethod === "card";
+    const cardFeeRate = 0.035;
+    const needsCardFee = app?.payMethod === "card";
 
-  const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
-  return Math.round(total * 100) / 100; // cents-safe
+    const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
+    return Math.round(total * 100) / 100; // cents-safe
 }
 
 const PaymentStep = () => {
