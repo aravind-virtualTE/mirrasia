@@ -8,7 +8,7 @@ import { usaFormWithResetAtom } from '../Company/USA/UsState';
 import { allCompListAtom } from '@/services/state';
 import { useTranslation } from "react-i18next";
 import { hkAppAtom } from '../Company/NewHKForm/hkIncorpo';
-import { paFormWithResetAtom } from '../Company/Panama/PaState';
+import { paFormWithResetAtom1 } from '../Company/Panama/PaState';
 import { sgFormWithResetAtom1 } from '../Company/Singapore/SgState';
 import { pifFormWithResetAtom } from '../Company/PanamaFoundation/PaState';
 
@@ -18,7 +18,7 @@ const MainFunctionalities: React.FC = () => {
     const [, setAllList] = useAtom(allCompListAtom)
     const [, setUSForm] = useAtom(usaFormWithResetAtom)
     const [,setHK] = useAtom(hkAppAtom)
-    const [, setPA] = useAtom(paFormWithResetAtom);
+    const [, setPA] = useAtom(paFormWithResetAtom1);
     const [, setPAF] = useAtom(pifFormWithResetAtom);
     const [, setSG] = useAtom(sgFormWithResetAtom1);
     

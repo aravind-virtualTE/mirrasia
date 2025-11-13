@@ -19,7 +19,7 @@ import { useAtom } from "jotai";
 import { usaAppWithResetAtom } from "@/pages/Company/USA/UsState";
 import AdminNotification from "./AdminNotification";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
-import { paFormWithResetAtom } from "@/pages/Company/Panama/PaState";
+import { paFormWithResetAtom1 } from "@/pages/Company/Panama/PaState";
 import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
 import { pifFormWithResetAtom } from "@/pages/Company/PanamaFoundation/PaState";
 
@@ -34,7 +34,7 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
     const [, setAllList] = useAtom(allCompListAtom)
     const [, setUSForm] = useAtom(usaAppWithResetAtom)
     const [,setHK] = useAtom(hkAppAtom)
-    const [, setPA] = useAtom(paFormWithResetAtom);
+    const [, setPA] = useAtom(paFormWithResetAtom1);
     const [, setPAF] = useAtom(pifFormWithResetAtom);
     const [, setSG] = useAtom(sgFormWithResetAtom1);
     const resetAllForms = useResetAllForms();
