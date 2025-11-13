@@ -23,8 +23,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { usaAppWithResetAtom} from './USA/UsState'; //usaFormWithResetAtom
 import { useTranslation } from "react-i18next";
 // import IncorporateSg from './Singapore/IncorporateSg';
-import IncorporatePa from './Panama/PaIncorporation';
-import { paFormWithResetAtom } from './Panama/PaState';
+// import IncorporatePa from './Panama/PaIncorporation';
+import { paFormWithResetAtom1 } from './Panama/PaState';
 import { sgFormWithResetAtom1 } from './Singapore/SgState';
 import ConfigDrivenHKForm from './NewHKForm/NewHKIncorporation';
 import { getHkIncorpoData, hkAppAtom } from './NewHKForm/hkIncorpo';
@@ -32,6 +32,7 @@ import PanamaFoundation from './PanamaFoundation/PaFIncorporation';
 import { getPaFIncorpoData, pifFormWithResetAtom } from './PanamaFoundation/PaState';
 import ConfigDrivenUSAForm from './USA/UsIncorporation';
 import SgIncorpForm from './Singapore/NewSgIncorporation';
+import PanamaIncorporationForm from './Panama/NewPanamaIncorpo';
 
 const CompanyRegistration = () => {
     const { t } = useTranslation();
@@ -43,7 +44,7 @@ const CompanyRegistration = () => {
     // const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
     // const [, setApplicantHkInfoData] = useAtom(applicantInfoFormAtom);
     const [, setFormData] = useAtom(usaAppWithResetAtom);
-    const [, setPAFormData] = useAtom(paFormWithResetAtom);
+    const [, setPAFormData] = useAtom(paFormWithResetAtom1);
     // const [, setSgFormData] = useAtom(sgFormWithResetAtom);
     const [, setSgFormData] = useAtom(sgFormWithResetAtom1);
     const [, setHkInfoData] = useAtom(hkAppAtom);
@@ -154,7 +155,9 @@ const CompanyRegistration = () => {
                 return <SgIncorpForm />;
                 
             case 'PA':
-                return <IncorporatePa />;
+                // return <IncorporatePa />;
+                return <PanamaIncorporationForm />;
+                
             case 'PPIF':
                 return <PanamaFoundation />
             default:

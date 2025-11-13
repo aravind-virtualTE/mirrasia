@@ -194,3 +194,15 @@ export const paPriceAtom = atom(
   }
 );
 
+export const paFormAtom1 = atom<any>({});
+
+export const paFormWithResetAtom1 = atom(
+  (get) => get(paFormAtom1),
+  (_get, set, update: any | 'reset') => {
+    if (update === 'reset') {
+      set(paFormAtom1, initialFormState);
+    } else {
+      set(paFormAtom1, update);
+    }
+  }
+);

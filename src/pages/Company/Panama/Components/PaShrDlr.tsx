@@ -622,8 +622,6 @@ const ShareholderDirectorFormPa: React.FC<{canEdit: boolean}> = ({ canEdit }) =>
                 </Button>
             </div>
             <div className="relative mt-2">
-                {/* <div className="absolute top-0 right-0 mt-2 mr-2">
-                </div> */}
                 {legalDirectors.map((shareholder, index) => (
                     <LegalDirectorList
                         key={index}
