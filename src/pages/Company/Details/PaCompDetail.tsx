@@ -663,13 +663,8 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                     </TableCell>
                                                                     <TableCell className="text-sm">
                                                                         <div className="flex flex-col">
-                                                                            <span className="font-medium">
-                                                                                {p.role?.value ||
-                                                                                    p.role?.id ||
-                                                                                    "—"}
-                                                                            </span>
                                                                             {p.typeOfShare && (
-                                                                                <span className="text-xs text-muted-foreground">
+                                                                                <span className="text-medium">
                                                                                     {p.typeOfShare}
                                                                                 </span>
                                                                             )}
