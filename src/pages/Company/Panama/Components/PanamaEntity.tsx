@@ -48,7 +48,7 @@ const PanamaEntity: React.FC <{canEdit: boolean}> = ({ canEdit }) => {
                         )}
                     </RadioGroup>
                 </div>
-                {formData.panamaEntity.id === 'yes' && <div className="space-y-2">
+                {formData.panamaEntity.id === 'Yes' && <div className="space-y-2">
                     <Label htmlFor="entity" className="inline-flex">
                         {t("panama.descPanamaEntity")} <span className="text-red-500 font-bold ml-1 flex">*</span>
                     </Label>

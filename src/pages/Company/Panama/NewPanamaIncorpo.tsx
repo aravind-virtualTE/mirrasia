@@ -1,517 +1,3216 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useAtom } from "jotai";
-
-// shadcn/ui
+import { Trans, useTranslation } from "react-i18next";
+import { paFormWithResetAtom1 } from "./PaState";
+import { sendEmailOtpforVerification, validateOtpforVerification, sendMobileOtpforVerification, } from "@/hooks/useAuth";
+import { sendInviteToShDir } from "@/services/dataFetch";
+import { isValidEmail } from "@/middleware";
+import { toast, useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Progress } from "@/components/ui/progress";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { X, Plus, Info, CheckCircle2, Lock } from "lucide-react";
-
-// state atom (your existing atom export)
-import { paFormWithResetAtom } from "./PaState";
-import CommonServiceAgrementTxt from "../CommonServiceAgrementTxt";
-import { toast } from "@/hooks/use-toast";
-import { Item } from "@/components/SearchSelect";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useTranslation } from "react-i18next";
+import { Plus, ChevronDown, ChevronUp, HelpCircle, Info, Landmark, Scale, Send, UserIcon, Users, X } from "lucide-react";
+import CommonServiceAgrementTxt from "../CommonServiceAgrementTxt";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { StripeSuccessInfo, Tip } from "../NewHKForm/NewHKIncorporation";
+import { createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof } from "../NewHKForm/hkIncorpo";
+import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
+import { TokenData } from "@/middleware/ProtectedRoutes";
+import api from "@/services/fetch";
+import { FeeRow } from "../Singapore/SgState";
+import SearchSelect, { Item } from "@/components/SearchSelect";
+import { currencies } from "../HongKong/constants";
+import CustomLoader from "@/components/ui/customLoader";
+import { t } from "i18next";
 
+const SHARE_TYPES = [
+    { id: "ordinary", label: "CompanyInformation.typeOfShare.ordinaryShares" },
+    { id: "preference", label: "CompanyInformation.typeOfShare.preferenceShares" },
+] as const;
+type ShareTypeId = typeof SHARE_TYPES[number]["id"];
+const DEFAULT_SHARE_ID: ShareTypeId = "ordinary";
 
-/* -------------------------------------------------------------------------- */
-/* Utils                                                                      */
-/* -------------------------------------------------------------------------- */
+const STRIPE_CLIENT_ID =
+    import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
 
-const cx = (...classes: Array<string | false | undefined>) =>
-    classes.filter(Boolean).join(" ");
+const stripePromise = loadStripe(STRIPE_CLIENT_ID);
 
-const getDeep = (obj: any, path: string) => {
-    const parts = path.split(".");
-    return parts.reduce((acc, key) => (acc ? acc[key] : undefined), obj);
-};
-
-// supports dotted array index like "companyName.0"
-const setDeep = (obj: any, path: string, value: any) => {
-    const parts = path.split(".");
-    const last = parts.pop()!;
-    let ref = obj;
-
-    for (const key of parts) {
-        const isIdx = /^\d+$/.test(key);
-        if (isIdx) {
-            const i = Number(key);
-            if (!Array.isArray(ref)) {
-                // convert previous prop into array if needed
-                // find previous key to set as array
-                throw new Error("setDeep: numeric index without array parent");
-            }
-            if (ref[i] === undefined) ref[i] = {};
-            ref = ref[i];
-        } else {
-            if (ref[key] === undefined) ref[key] = {};
-            ref = ref[key];
-        }
-    }
-
-    if (/^\d+$/.test(last)) {
-        if (!Array.isArray(ref)) throw new Error("setDeep: final index without array");
-        ref[Number(last)] = value;
-    } else {
-        ref[last] = value;
-    }
-};
-
-const isEmpty = (v: any) =>
-    v === undefined || v === null || v === "" || (Array.isArray(v) && v.length === 0);
-
-/* -------------------------------------------------------------------------- */
-/* Types                                                                      */
-/* -------------------------------------------------------------------------- */
-
-type Option = { id: string; value: string } | { value: string; label: string };
-
-type FieldBase = {
-    type:
+type FieldType =
     | "text"
     | "email"
     | "number"
-    | "phone"
     | "textarea"
     | "select"
-    | "multiselect"
     | "checkbox"
-    | "repeater"
-    | "companyNames"; // 3 separate inputs bound to string[]
+    | "checkbox-group"
+    | "radio-group"
+    | "derived"
+    | "search-select";
+
+type Option = { label: string; value: string };
+
+type Field = {
+    type: FieldType;
     name: string;
     label: string;
-    tooltip?: string;
     placeholder?: string;
-    description?: string;
+    tooltip?: string;
+    hint?: string;
     required?: boolean;
+    colSpan?: 1 | 2;
+    condition?: (form: any) => boolean;
     options?: Option[];
-    itemFields?: Omit<FieldBase, "repeater" | "multiselect" | "companyNames">[];
+    rows?: number;
+    compute?: (form: any) => string;
+    defaultValue?: any;             // easily seed initial value
+    disabled?: boolean;             // disable input if needed
+    readOnly?: boolean;
     items?: Item[];
-    minItems?: number;
-    maxItems?: number;
-    condition?: (form: Record<string, any>) => boolean;
-    compute?: (form: Record<string, any>) => string;
 };
 
-type StepConfig = {
-    id: string;
-    title: string;
-    description?: string;
-    fields?: FieldBase[];                 // either fields…
-    render?: React.ComponentType;         // …or a custom renderer 
+type Step = { id: string; title: string; description?: string; fields?: Field[]; widget?: "shareholders"; render?: React.ComponentType<{ form: any; setForm: (fn: (p: any) => any) => void }>; };
+
+type FormConfig = { title: string; steps: Step[] };
+
+type YesNoOption = { id: "yes" | "no"; value: string };
+type RoleOption = { id: "president" | "treasurer" | "secretary" | ""; value: string };
+type ShareholderDirectorItem = {
+  name: string;
+  email: string;
+  phone: string;
+  shares: number;
+  role: RoleOption;
+  isLegalPerson: YesNoOption;
+  invited?: boolean;
+  status?: "Invited" | "Not Invited" | "";
+  typeOfShare: ShareTypeId; 
 };
 
-type FormConfig = {
-    title: string;
-    steps: StepConfig[];
+type LegalDirectorItem = {
+  shares: number;
+  role?: RoleOption;
+  isLegalPerson: YesNoOption;
+  invited?: boolean;
+  status?: "Invited" | "Not Invited" | "";
 };
 
+const YES_NO: YesNoOption[] = [
+  { id: "yes", value: "AmlCdd.options.yes" },
+  { id: "no", value: "AmlCdd.options.no" },
+];
 
-const paIncorpConfig: FormConfig = {
+const ROLE_OPTIONS: RoleOption[] = [
+  { id: "president", value: "panama.rOptions.4" },
+  { id: "treasurer", value: "panama.rOptions.5" },
+  { id: "secretary", value: "panama.rOptions.3" },
+];
+
+
+function PartiesManager() {
+  const { toast } = useToast();
+  const [form, setForm] = useAtom(paFormWithResetAtom1);
+
+  // hydrate from form state
+  const shareholders: ShareholderDirectorItem[] = Array.isArray(form?.shareHolders)
+    ? form.shareHolders.map((s: any) => ({
+        name: s.name ?? "",
+        email: s.email ?? "",
+        phone: s.phone ?? "",
+        shares: Number(s.shares ?? 0),
+        role: s.role?.id ? s.role : { id: "", value: "" },
+        isLegalPerson: s.isLegalPerson?.id ? s.isLegalPerson : { id: "no", value: "AmlCdd.options.no" },
+        typeOfShare: (s.typeOfShare as ShareTypeId) || DEFAULT_SHARE_ID,
+        invited: s.invited ?? false,
+        status: s.status ?? "",
+      }))
+    : [
+        {
+          name: "",
+          email: "",
+          phone: "",
+          shares: 0,
+          role: { id: "", value: "" },
+          isLegalPerson: { id: "no", value: "AmlCdd.options.no" },
+          typeOfShare: DEFAULT_SHARE_ID,
+          invited: false,
+          status: "",
+        },
+      ];
+
+  const legalDirectors: LegalDirectorItem[] = Array.isArray(form?.legalDirectors)
+    ? form.legalDirectors.map((l: any) => ({
+        shares: Number(l.shares ?? 0),
+        role: l.role?.id ? l.role : { id: "", value: "" },
+        isLegalPerson: l.isLegalPerson?.id ? l.isLegalPerson : { id: "no", value: "AmlCdd.options.no" },
+        invited: l.invited ?? false,
+        status: l.status ?? "",
+      }))
+    : [];
+
+  const setShareholders = (next: ShareholderDirectorItem[]) =>
+    setForm((prev: any) => ({ ...prev, shareHolders: next }));
+  const setLegalDirectors = (next: LegalDirectorItem[]) =>
+    setForm((prev: any) => ({ ...prev, legalDirectors: next }));
+
+  // totals
+  const totalShares =
+    (form.shareCount === "other"
+      ? Number(form.shareOther || 0)
+      : Number(form.shareCount || 0)) || 0;
+
+  const allocatedShares =
+    shareholders.reduce((s, p) => s + (Number(p.shares) || 0), 0) +
+    legalDirectors.reduce((s, p) => s + (Number(p.shares) || 0), 0);
+
+  // UI state
+  const [expandedSH, setExpandedSH] = React.useState<number | null>(null);
+  const [expandedLD, setExpandedLD] = React.useState<number | null>(null);
+  const [isInviting, setIsInviting] = React.useState(false);
+
+  // patch helpers
+  const patchShareholder = (i: number, updates: Partial<ShareholderDirectorItem>) => {
+    const next = [...shareholders];
+    next[i] = { ...next[i], ...updates };
+    setShareholders(next);
+  };
+  const patchLegalDirector = (i: number, updates: Partial<LegalDirectorItem>) => {
+    const next = [...legalDirectors];
+    next[i] = { ...next[i], ...updates };
+    setLegalDirectors(next);
+  };
+
+  // add/remove
+  const addShareholder = () => {
+    const next: ShareholderDirectorItem[] = [
+      ...shareholders,
+      {
+        name: "",
+        email: "",
+        phone: "",
+        shares: 0,
+        role: { id: "", value: "" },
+        isLegalPerson: { id: "no", value: "AmlCdd.options.no" },
+        typeOfShare: DEFAULT_SHARE_ID,
+        invited: false,
+        status: "",
+      },
+    ];
+    setShareholders(next);
+    setExpandedSH(next.length - 1);
+  };
+  const removeShareholder = (i: number) => {
+    const next = shareholders.filter((_, idx) => idx !== i);
+    setShareholders(next);
+    if (expandedSH === i) setExpandedSH(null);
+  };
+
+  const addLegalDirector = () => {
+    const next: LegalDirectorItem[] = [
+      ...legalDirectors,
+      {
+        shares: 0,
+        role: { id: "", value: "" },
+        isLegalPerson: { id: "no", value: "AmlCdd.options.no" },
+        invited: false,
+        status: "",
+      },
+    ];
+    setLegalDirectors(next);
+    setExpandedLD(next.length - 1);
+  };
+  const removeLegalDirector = (i: number) => {
+    const next = legalDirectors.filter((_, idx) => idx !== i);
+    setLegalDirectors(next);
+    if (expandedLD === i) setExpandedLD(null);
+  };
+
+  // invites (shareholders list only, PA)
+  const sendInvites = async () => {
+    const invites = shareholders
+      .filter((p) => p.email && isValidEmail(p.email))
+      .map(({ name, email, isLegalPerson }) => ({
+        name,
+        email,
+        corporation: isLegalPerson.id, // "yes" | "no"
+      }));
+
+    if (!invites.length) {
+      toast({
+        title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
+        description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsInviting(true);
+      const docId = typeof window !== "undefined" ? localStorage.getItem("companyRecordId") : form?._id || "";
+      const payload = { _id: docId || form?._id || "", inviteData: invites, country: "PA" };
+      const res = await sendInviteToShDir(payload);
+
+      const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
+
+      if (summary.successful > 0 || summary.alreadyExists > 0) {
+        setShareholders(
+          shareholders.map((p) => ({
+            ...p,
+            invited: true,
+            status: "Invited",
+          }))
+        );
+        toast({
+          title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
+          description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
+        });
+      }
+
+      if (summary.failed > 0) {
+        setShareholders(
+          shareholders.map((p) => ({
+            ...p,
+            status: p.invited ? p.status : ("Not Invited" as const),
+          }))
+        );
+        toast({
+          title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
+          description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsInviting(false);
+    }
+  };
+
+  return (
+    <div className="max-width mx-auto p-2 space-y-4">
+      {/* Header with Status */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 bg-blue-100 rounded-lg flex items-center justify-center">
+            <Users className="w-5 h-5 text-blue-600" />
+          </div>
+        </div>
+        <div className="text-right">
+          <h2 className="text-base font-semibold text-gray-900">
+            {t("newHk.parties.title", "Shareholders & Directors")}
+          </h2>
+          <p
+            className={cn(
+              "text-sm",
+              totalShares > 0
+                ? allocatedShares === totalShares
+                  ? "text-green-600"
+                  : allocatedShares > totalShares
+                  ? "text-red-600"
+                  : "text-gray-500"
+                : "text-gray-500"
+            )}
+          >
+            {t("newHk.parties.of", "Allocated")} {allocatedShares.toLocaleString()} /{" "}
+            {totalShares.toLocaleString()} {t("newHk.parties.allocated", "shares")}
+          </p>
+        </div>
+      </div>
+
+      {/* Shareholders/Directors list */}
+      <div className="space-y-2">
+        {shareholders.map((p, i) => {
+          const isExpanded = expandedSH === i;
+          const shareTypeLabel = SHARE_TYPES.find((s) => s.id === p.typeOfShare)?.label;
+          return (
+            <Card key={`sh-${i}`} className="overflow-hidden transition-all hover:shadow-md">
+              {/* Compact Header */}
+              <div
+                className="p-2 cursor-pointer flex items-center justify-between hover:bg-gray-50"
+                onClick={() => setExpandedSH(isExpanded ? null : i)}
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-100">
+                    <UserIcon className="w-4 h-4 text-blue-600" />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-900 truncate">
+                        {p.name || t("newHk.parties.new", "New Shareholder/Director")}
+                      </span>
+                      {p.status && (
+                        <span
+                          className={cn(
+                            "text-xs px-2 py-0.5 rounded-full",
+                            p.status === "Invited" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+                          )}
+                        >
+                          {p.status}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-500 truncate">{p.email || t("common.noEmail", "No email")}</p>
+                  </div>
+
+                  <div className="text-right flex-shrink-0">
+                    <div className="font-semibold text-gray-900">{p.shares.toLocaleString()}</div>
+                    {p.role?.id && <div className="text-xs text-gray-500">{t(p.role.value)}</div>}
+                    {shareTypeLabel && <div className="text-[11px] text-gray-400">{t(shareTypeLabel)}</div>}
+                  </div>
+                </div>
+
+                <button className="ml-4 p-1 hover:bg-gray-200 rounded" type="button">
+                  {isExpanded ? <ChevronUp className="w-4 h-4 text-gray-600" /> : <ChevronDown className="w-4 h-4 text-gray-600" />}
+                </button>
+              </div>
+
+              {/* Expanded Details */}
+              {isExpanded && (
+                <CardContent className="pt-0 pb-4 px-4 border-t bg-gray-50">
+                  <div className="grid grid-cols-2 gap-3 mt-4">
+                    {/* Name */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <Label className="text-xs text-gray-600 mb-1">{t("panama.sharehldrs", "Shareholder/Director")}</Label>
+                      <Input value={p.name} onChange={(e) => patchShareholder(i, { name: e.target.value })} className="h-9" />
+                    </div>
+
+                    {/* Email */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <Label className="text-xs text-gray-600 mb-1">{t("ApplicantInfoForm.email", "Email")}</Label>
+                      <Input
+                        type="email"
+                        value={p.email}
+                        onChange={(e) => patchShareholder(i, { email: e.target.value })}
+                        className="h-9"
+                      />
+                    </div>
+
+                    {/* Phone */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <Label className="text-xs text-gray-600 mb-1">{t("ApplicantInfoForm.phoneNum", "Phone")}</Label>
+                      <Input value={p.phone} onChange={(e) => patchShareholder(i, { phone: e.target.value })} className="h-9" />
+                    </div>
+
+                    {/* Shares */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.shares", "Number of Shares")}</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={Number.isFinite(p.shares) ? p.shares : 0}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          patchShareholder(i, { shares: Number.isFinite(val) ? val : 0 });
+                        }}
+                        className="h-9"
+                      />
+                    </div>
+
+                    {/* Role */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <Label className="text-xs text-gray-600 mb-1">{t("panama.role", "Role")}</Label>
+                      <Select
+                        value={p.role?.id || ""}
+                        onValueChange={(id) => {
+                          const selected = ROLE_OPTIONS.find((r) => r.id === id) || { id: "" as const, value: "" };
+                          patchShareholder(i, { role: selected });
+                        }}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue placeholder={t("common.select", "Select")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ROLE_OPTIONS.map((r) => (
+                            <SelectItem key={r.id} value={r.id}>
+                              {t(r.value)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Type of Share (NEW) */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <Label className="text-xs text-gray-600 mb-1">
+                        {t("CompanyInformation.typeOfShare.label", "Type of Shares")}
+                      </Label>
+                      <Select
+                        value={p.typeOfShare || DEFAULT_SHARE_ID}
+                        onValueChange={(id) => patchShareholder(i, { typeOfShare: id as ShareTypeId })}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue placeholder={t("common.select", "Select")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SHARE_TYPES.map((opt) => (
+                            <SelectItem key={opt.id} value={opt.id}>
+                              {t(opt.label)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Is Legal Person */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.isLegal", "Is Legal Person?")}</Label>
+                      <Select
+                        value={p.isLegalPerson?.id || "no"}
+                        onValueChange={(id: "yes" | "no") => {
+                          const selected = YES_NO.find((o) => o.id === id)!;
+                          patchShareholder(i, { isLegalPerson: selected });
+                        }}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {YES_NO.map((o) => (
+                            <SelectItem key={o.id} value={o.id}>
+                              {t(o.value)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Remove */}
+                    <div className="col-span-2 flex justify-end mt-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeShareholder(i)}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <X className="w-4 h-4 mr-1" />
+                        {t("newHk.parties.buttons.remove", "Remove")}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center justify-between pt-2">
+        <Button onClick={addShareholder} variant="outline" className="flex items-center gap-2">
+          <Plus className="w-4 h-4" />
+          {t("CompanyInformation.addShldrDir", "Add Shareholder/Director")}
+        </Button>
+
+        <Button onClick={sendInvites} variant="default" className="flex items-center gap-2 hover:bg-green-700" disabled={isInviting}>
+          {isInviting ? <CustomLoader /> : <Send className="w-4 h-4" />}
+          <span className="ml-1">{t("CompanyInformation.sendInvitation", "Send Invitations")}</span>
+        </Button>
+      </div>
+
+      {/* Legal Directors header */}
+      <div className="mt-4 flex items-center gap-2">
+        <div className="w-5 h-5 bg-purple-100 rounded-lg flex items-center justify-center">
+          <Landmark className="w-4 h-4 text-purple-600" />
+        </div>
+        <h3 className="text-sm font-semibold text-gray-900">{t("panama.localNominee", "Local Legal Directors")}</h3>
+      </div>
+
+      {/* Legal Directors list */}
+      <div className="space-y-2">
+        {legalDirectors.map((p, i) => {
+          const isExpanded = expandedLD === i;
+          return (
+            <Card key={`ld-${i}`} className="overflow-hidden transition-all hover:shadow-md">
+              {/* Compact Header */}
+              <div
+                className="p-2 cursor-pointer flex items-center justify-between hover:bg-gray-50"
+                onClick={() => setExpandedLD(isExpanded ? null : i)}
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-purple-100">
+                    <Scale className="w-4 h-4 text-purple-700" />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-900 truncate">
+                        {p.role?.id ? t(p.role.value) : t("panama.addLegalD", "Add Legal Director")}
+                      </span>
+                      {p.status && (
+                        <span
+                          className={cn(
+                            "text-xs px-2 py-0.5 rounded-full",
+                            p.status === "Invited" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+                          )}
+                        >
+                          {p.status}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-500 truncate">
+                      {t("CompanyInformation.isLegal", "Is Legal Person?")}: {t(p.isLegalPerson?.value || "AmlCdd.options.no")}
+                    </p>
+                  </div>
+
+                  <div className="text-right flex-shrink-0">
+                    <div className="font-semibold text-gray-900">{p.shares.toLocaleString()}</div>
+                  </div>
+                </div>
+
+                <button className="ml-4 p-1 hover:bg-gray-200 rounded" type="button">
+                  {isExpanded ? <ChevronUp className="w-4 h-4 text-gray-600" /> : <ChevronDown className="w-4 h-4 text-gray-600" />}
+                </button>
+              </div>
+
+              {/* Expanded */}
+              {isExpanded && (
+                <CardContent className="pt-0 pb-4 px-4 border-t bg-gray-50">
+                  <div className="grid grid-cols-2 gap-3 mt-4">
+                    {/* Role */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <Label className="text-xs text-gray-600 mb-1">{t("panama.role", "Role")}</Label>
+                      <Select
+                        value={p.role?.id || ""}
+                        onValueChange={(id) => {
+                          const selected = ROLE_OPTIONS.find((r) => r.id === id) || { id: "" as const, value: "" };
+                          patchLegalDirector(i, { role: selected });
+                        }}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue placeholder={t("common.select", "Select")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ROLE_OPTIONS.map((r) => (
+                            <SelectItem key={r.id} value={r.id}>
+                              {t(r.value)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Shares */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.shares", "Number of Shares")}</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={Number.isFinite(p.shares) ? p.shares : 0}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          patchLegalDirector(i, { shares: Number.isFinite(val) ? val : 0 });
+                        }}
+                        className="h-9"
+                      />
+                    </div>
+
+                    {/* Is Legal Person */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.isLegal", "Is Legal Person?")}</Label>
+                      <Select
+                        value={p.isLegalPerson?.id || "no"}
+                        onValueChange={(id: "yes" | "no") => {
+                          const selected = YES_NO.find((o) => o.id === id)!;
+                          patchLegalDirector(i, { isLegalPerson: selected });
+                        }}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {YES_NO.map((o) => (
+                            <SelectItem key={o.id} value={o.id}>
+                              {t(o.value)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Remove */}
+                    <div className="col-span-2 flex justify-end mt-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeLegalDirector(i)}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <X className="w-4 h-4 mr-1" />
+                        {t("newHk.parties.buttons.remove", "Remove")}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Actions for Legal Directors */}
+      <div className="flex items-center justify-between pt-2">
+        <Button onClick={addLegalDirector} variant="outline" className="flex items-center gap-2">
+          <Plus className="w-4 h-4" />
+          {t("panama.addLegalD", "Add Legal Director")}
+        </Button>
+        <div />
+      </div>
+    </div>
+  );
+}
+
+
+const CompanyInfoStep = () => {
+    const { t } = useTranslation();
+    const [formData, setFormData] = useAtom(paFormWithResetAtom1);
+    // seed safe defaults once
+    useEffect(() => {
+        setFormData((p: any) => {
+            const next = { ...p };
+            if (next.currency === undefined) next.currency = "HKD";
+            if (next.capAmount === undefined) next.capAmount = "10000";
+            if (next.shareCount === undefined) next.shareCount = "10000";
+            if (!Array.isArray(next.selectedIndustry)) next.selectedIndustry = [];
+            if (!Array.isArray(next.establishmentPurpose)) next.establishmentPurpose = [];
+
+            return next;
+        });
+    }, [setFormData]);
+
+    const industries = useMemo(
+        () => [
+            { id: "trade", value: "Singapore.industries.i1" },
+            { id: "wholesale", value: "Singapore.industries.i2" },
+            { id: "consulting", value: "Singapore.industries.i3" },
+            { id: "manufacturing", value: "Singapore.industries.i4" },
+            { id: "investment", value: "Singapore.industries.i5" },
+            { id: "ecommerce", value: "Singapore.industries.i6" },
+            { id: "online-purchase", value: "Singapore.industries.i7" },
+            { id: "it-software", value: "Singapore.industries.i8" },
+            { id: "crypto", value: "Singapore.industries.i9" },
+            { id: "other", value: "InformationIncorporation.paymentOption_other" },
+        ],
+        []
+    );
+
+    const purposes = useMemo(
+        () => [
+            { id: "entry-expansion", value: "Singapore.purpose.p1" },
+            { id: "asset-management", value: "Singapore.purpose.p2" },
+            { id: "holding-company", value: "Singapore.purpose.p3" },
+            { id: "proposal", value: "Singapore.purpose.p4" },
+            { id: "geographical-benefits", value: "Singapore.purpose.p5" },
+            { id: "business-diversification", value: "Singapore.purpose.p6" },
+            { id: "competitive-advantage", value: "Singapore.purpose.p7" },
+            // { id: "tax-advantage", value: "Singapore.purpose.p8" },
+            { id: "capital-gain", value: "Singapore.purpose.p9" },
+            { id: "other", value: "InformationIncorporation.paymentOption_other" },
+        ],
+        []
+    );
+
+    const addressList = useMemo(
+        () => [
+            { id: "mirrasiaAddress", value: "panama.useRegMirProide" },
+            { id: "ownAddress", value: "panama.haveSepAddress" },
+            { id: "other", value: "InformationIncorporation.paymentOption_other" },
+        ],
+        []
+    );
+    const sourceFundingList = [
+        { id: "labourIncome", value: t("panama.sourceList.1") },
+        { id: "depositsSaving", value: t("panama.sourceList.2") },
+        { id: "incomeFromStocks", value: t("panama.sourceList.3") },
+        { id: "loans", value: t("panama.sourceList.4") },
+        { id: "saleOfCompany", value: t("panama.sourceList.5") },
+        { id: "businessDivident", value: t("panama.sourceList.6") },
+        { id: "inheritance", value: t("panama.sourceList.7") },
+        { id: "other", value: t("InformationIncorporation.paymentOption_other"), },
+    ]
+
+    const toggleIndustry = (id: string, on: boolean) => {
+        const selected = Array.isArray(formData.selectedIndustry) ? formData.selectedIndustry : [];
+        const next = on ? Array.from(new Set([...selected, id])) : selected.filter((x: string) => x !== id);
+        setFormData((p: any) => ({ ...p, selectedIndustry: next }));
+    };
+
+    const togglePurpose = (id: string, on: boolean) => {
+        const selected = Array.isArray(formData.establishmentPurpose) ? formData.establishmentPurpose : [];
+        const next = on ? Array.from(new Set([...selected, id])) : selected.filter((x: string) => x !== id);
+        setFormData((p: any) => ({ ...p, establishmentPurpose: next }));
+    };
+
+    const onChangeBusinessAddress = (value: string) => {
+        const sel = addressList.find((i) => t(i.value) === t(value)) || { id: "", value: "" };
+        setFormData((p: any) => ({ ...p, businessAddress: sel }));
+    };
+    const entityOptions = [{ id: 'Yes', value: t('AmlCdd.options.yes') },
+    { id: 'No', value: t('AmlCdd.options.no') }, { id: 'Other', value: t('InformationIncorporation.paymentOption_other') }]
+
+    const handlePanamaEntity = (value: string) => {
+        const selectedItem = entityOptions.find(item => (item.value) == (value));
+        setFormData({ ...formData, panamaEntity: selectedItem || { id: '', value: "" } })
+    }
+
+    return (
+        <div className="space-y-3 max-width mx-auto">
+            {/* Card A */}
+            <Card className="shadow-sm border-gray-200">
+                <CardContent className="p-6">
+                    <div className="space-y-5">
+                        <h3 className="text-base font-semibold text-gray-900 border-b pb-2">
+                            {t("newHk.company.sections.a")}
+                        </h3>
+                        <div className="space-y-2">
+                            <Label htmlFor="Relation" className="text-sm font-medium text-gray-700">
+                                {t("panama.panamaEntity")}
+                                <span className="text-red-500 inline-flex">*</span>
+                            </Label>
+                            <RadioGroup value={formData?.panamaEntity?.value ?? null} onValueChange={(e) => handlePanamaEntity(e)} className="gap-4" >
+                                {entityOptions.map(option => (
+                                    <div key={option.value} className="flex items-center space-x-2">
+                                        <RadioGroupItem value={option.value} id={`bookkeeping-${option.value}`} />
+                                        <Label className="font-normal" htmlFor={`bookkeeping-${option.value}`}>
+                                            {option.value}
+                                        </Label>
+                                    </div>
+                                ))}
+                                {formData?.panamaEntity?.value == "Other" && (
+                                    <Input placeholder="Please specify" value={formData.otherPanamaEntity} onChange={(e) => setFormData({ ...formData, otherPanamaEntity: e.target.value })} />
+                                )}
+                            </RadioGroup>
+                            {formData?.panamaEntity?.id === 'Yes' && <div className="space-y-2">
+                                <Label htmlFor="entity" className="inline-flex">
+                                    {t("panama.descPanamaEntity")} <span className="text-red-500 font-bold ml-1 flex">*</span>
+                                </Label>
+                                <Input id="entity" placeholder="Descibe entity" className="w-full" value={formData.pEntityInfo} onChange={(e) => setFormData({ ...formData, pEntityInfo: e.target.value })} />
+                            </div>}
+                        </div>
+                        {/* Industry */}
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {t("usa.bInfo.selectIndustryItems")} <span className="text-red-500">*</span>
+                            </Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                {industries.map((ind) => {
+                                    const checked = Array.isArray(formData.selectedIndustry) && formData.selectedIndustry.includes(ind.id);
+                                    return (
+                                        <label
+                                            key={ind.id}
+                                            className="flex items-center gap-2.5 rounded-md border border-gray-200 px-3 py-2 hover:bg-gray-50 cursor-pointer transition-colors"
+                                        >
+                                            <Checkbox
+                                                checked={!!checked}
+                                                onCheckedChange={(c) => toggleIndustry(ind.id, c === true)}
+                                            />
+                                            <span className="text-sm text-gray-700">{t(ind.value)}</span>
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                            {Array.isArray(formData.selectedIndustry) && formData.selectedIndustry.includes("other") && (
+                                <Input
+                                    placeholder={t("common.enterValue", "Please specify")}
+                                    value={formData.otherIndustryText ?? ""}
+                                    onChange={(e) => setFormData((p: any) => ({ ...p, otherIndustryText: e.target.value }))}
+                                    className="max-w-md h-9"
+                                />
+                            )}
+                        </div>
+
+                        {/* Product description */}
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {t("Singapore.bInfoDescProdName")} <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                placeholder={t("common.enterValue", "Your answer")}
+                                value={formData.productDescription ?? ""}
+                                onChange={(e) => setFormData((p: any) => ({ ...p, productDescription: e.target.value }))}
+                                className="h-9"
+                            />
+                        </div>
+                        {/* Purpose */}
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {t("panama.purposeSetting")} <span className="text-red-500">*</span>
+                            </Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                {purposes.map((p) => {
+                                    const checked = Array.isArray(formData.establishmentPurpose) && formData.establishmentPurpose.includes(p.id);
+                                    return (
+                                        <label
+                                            key={p.id}
+                                            className="flex items-center gap-2.5 rounded-md border border-gray-200 px-3 py-2 hover:bg-gray-50 cursor-pointer transition-colors"
+                                        >
+                                            <Checkbox checked={!!checked} onCheckedChange={(c) => togglePurpose(p.id, c === true)} />
+                                            <span className="text-sm text-gray-700">{t(p.value)}</span>
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                            {Array.isArray(formData.establishmentPurpose) && formData.establishmentPurpose.includes("other") && (
+                                <Input
+                                    placeholder={t("common.enterValue", "Please specify")}
+                                    value={formData.otherEstablishmentPurpose ?? ""}
+                                    onChange={(e) => setFormData((p: any) => ({ ...p, otherEstablishmentPurpose: e.target.value }))}
+                                    className="max-w-md h-9"
+                                />
+                            )}
+                        </div>
+                        {/* Secondary industry */}
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
+                                {t("panama.businessTransactions")}
+                                <span className="text-red-500">*</span>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <HelpCircle className="h-3.5 w-3.5 text-gray-400 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-sm text-sm">
+                                        {t("panama.btInfo")}
+                                    </TooltipContent>
+                                </Tooltip>
+                            </Label>
+                            <Input
+                                placeholder={t("common.enterValue", "Your answer")}
+                                value={formData.listCountry ?? ""}
+                                onChange={(e) => setFormData((p: any) => ({ ...p, listCountry: e.target.value }))}
+                                className="h-9"
+                            />
+                        </div>
+
+                        {/* Source of funding */}
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
+                                {t("panama.sourceOfFund")}
+                                <span className="text-red-500">*</span>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <HelpCircle className="h-3.5 w-3.5 text-gray-400 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-[500px] text-sm">
+                                        {t("panama.sofInfo")}
+                                    </TooltipContent>
+                                </Tooltip>
+                            </Label>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                {sourceFundingList.map((opt) => {
+                                    const selected = Array.isArray(formData.sourceFunding) ? formData.sourceFunding : [];
+                                    const checked = selected.includes(opt.id);
+
+                                    const toggle = (on: boolean) => {
+                                        const next = on
+                                            ? Array.from(new Set([...selected, opt.id]))
+                                            : selected.filter((x: string) => x !== opt.id);
+                                        setFormData((p: any) => ({ ...p, sourceFunding: next }));
+                                    };
+
+                                    return (
+                                        <label
+                                            key={opt.id}
+                                            className="flex items-center gap-2.5 rounded-md border border-gray-200 px-3 py-2 hover:bg-gray-50 cursor-pointer transition-colors"
+                                            htmlFor={`sof-${opt.id}`}
+                                        >
+                                            <Checkbox
+                                                id={`sof-${opt.id}`}
+                                                checked={!!checked}
+                                                onCheckedChange={(c) => toggle(c === true)}
+                                            />
+                                            <span className="text-sm text-gray-700">
+                                                {typeof opt.value === "string" ? t(opt.value) : opt.value}
+                                            </span>
+                                        </label>
+                                    );
+                                })}
+                            </div>
+
+                            {Array.isArray(formData.sourceFunding) && formData.sourceFunding.includes("other") && (
+                                <Input
+                                    placeholder={t("common.enterValue", "Please specify")}
+                                    value={formData.otherSourceFund ?? ""}
+                                    onChange={(e) => setFormData((p: any) => ({ ...p, otherSourceFund: e.target.value }))}
+                                    className="max-w-md h-9"
+                                />
+                            )}
+                        </div>
+                        {/* Business Address */}
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
+                                {t("panama.regAddress")}
+                                <span className="text-red-500">*</span>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <HelpCircle className="h-3.5 w-3.5 text-gray-400 cursor-help" />
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-sm text-sm">{t("panama.panamaRegInfo")}</TooltipContent>
+                                </Tooltip>
+                            </Label>
+
+                            <RadioGroup
+                                value={formData.businessAddress ? t(formData.businessAddress.value) : ""}
+                                onValueChange={onChangeBusinessAddress}
+                                className="space-y-2"
+                            >
+                                {addressList.map((opt) => (
+                                    <div
+                                        key={opt.id}
+                                        className="flex items-center gap-2.5 rounded-md border border-gray-200 px-3 py-2 hover:bg-gray-50 transition-colors"
+                                    >
+                                        <RadioGroupItem value={t(opt.value)} id={`addr-${opt.id}`} />
+                                        <Label className="font-normal cursor-pointer text-sm text-gray-700" htmlFor={`addr-${opt.id}`}>
+                                            {t(opt.value)}
+                                        </Label>
+                                    </div>
+                                ))}
+                            </RadioGroup>
+
+                            {formData.businessAddress?.id === "other" && (
+                                <Input
+                                    placeholder={t("common.enterValue", "Please specify")}
+                                    value={formData.otherBusinessAddress ?? ""}
+                                    onChange={(e) => setFormData((p: any) => ({ ...p, otherBusinessAddress: e.target.value }))}
+                                    className="max-w-md h-9"
+                                />
+                            )}
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Card B — styled to match */}
+            <Card className="shadow-sm border-gray-200">
+                <CardContent className="p-6">
+                    <h3 className="text-base font-semibold text-gray-900 border-b pb-2 mb-4">
+                        {t("newHk.company.sections.b")}
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                            field={{
+                                type: "search-select",
+                                name: "currency",
+                                label: "newHk.company.fields.currency.label",
+                                required: true,
+                                defaultValue: "HKD",
+                                items: currencies,
+                            }}
+                            form={formData}
+                            setForm={setFormData}
+                        />
+
+                        <FormField
+                            field={{
+                                type: "select",
+                                name: "capAmount",
+                                label: "newHk.company.fields.capAmount.label",
+                                required: true,
+                                defaultValue: "10000",
+                                options: [
+                                    { label: "newHk.company.fields.capAmount.options.1", value: "1" },
+                                    { label: "newHk.company.fields.capAmount.options.10", value: "10" },
+                                    { label: "newHk.company.fields.capAmount.options.100", value: "100" },
+                                    { label: "newHk.company.fields.capAmount.options.1000", value: "1000" },
+                                    { label: "newHk.company.fields.capAmount.options.10000", value: "10000" },
+                                    { label: "newHk.company.fields.capAmount.options.100000", value: "100000" },
+                                    { label: "newHk.company.fields.capAmount.options.other", value: "other" },
+                                ],
+                            }}
+                            form={formData}
+                            setForm={setFormData}
+                        />
+
+                        <FormField
+                            field={{
+                                type: "number",
+                                name: "capOther",
+                                label: "newHk.company.fields.capOther.label",
+                                placeholder: "newHk.company.fields.capOther.placeholder",
+                                condition: (f) => f.capAmount === "other",
+                            }}
+                            form={formData}
+                            setForm={setFormData}
+                        />
+
+                        <FormField
+                            field={{
+                                type: "select",
+                                name: "shareCount",
+                                label: "newHk.company.fields.shareCount.label",
+                                required: true,
+                                defaultValue: "10000",
+                                options: [
+                                    { label: "newHk.company.fields.capAmount.options.1", value: "1" },
+                                    { label: "newHk.company.fields.capAmount.options.10", value: "10" },
+                                    { label: "newHk.company.fields.capAmount.options.100", value: "100" },
+                                    { label: "newHk.company.fields.capAmount.options.1000", value: "1000" },
+                                    { label: "newHk.company.fields.capAmount.options.10000", value: "10000" },
+                                    { label: "newHk.company.fields.capAmount.options.100000", value: "100000" },
+                                    { label: "newHk.company.fields.shareCount.options.other", value: "other" },
+                                ],
+                            }}
+                            form={formData}
+                            setForm={setFormData}
+                        />
+
+                        <FormField
+                            field={{
+                                type: "number",
+                                name: "shareOther",
+                                label: "newHk.company.fields.shareOther.label",
+                                placeholder: "newHk.company.fields.shareOther.placeholder",
+                                condition: (f) => f.shareCount === "other",
+                            }}
+                            form={formData}
+                            setForm={setFormData}
+                        />
+
+                        <FormField
+                            field={{
+                                type: "derived",
+                                name: "parValue",
+                                label: "newHk.company.fields.parValue.label",
+                                compute: (f) => {
+                                    const currency = f.currency || "HKD";
+                                    const total = f.capAmount === "other" ? Number(f.capOther || 0) : Number(f.capAmount || 0);
+                                    const shares = f.shareCount === "other" ? Number(f.shareOther || 1) : Number(f.shareCount || 1);
+                                    if (!total || !shares) return `${currency} 0.00`;
+                                    const pv = total / shares;
+                                    return `${currency} ${pv.toFixed(2)}`;
+                                },
+                                hint: "newHk.company.fields.parValue.hint",
+                            }}
+                            form={formData}
+                            setForm={setFormData}
+                        />
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Card C */}
+            <Card className="shadow-sm border-gray-200">
+                <CardContent className="p-6">
+                    <div className="space-y-4">
+                        <h3 className="text-base font-semibold text-gray-900 border-b pb-2">
+                            {t("newHk.company.sections.c")}
+                        </h3>
+                        <PartiesManager />
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+};
+type YesNo = "yes" | "no";
+type Security = "deposit" | "prepay";
+
+const fmtUSD = (n: number) => `USD ${Number(n || 0).toLocaleString()}`;
+
+const SgServiceSelectionStep: React.FC = () => {
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
+    React.useEffect(() => {
+        if (!form?.sg_preAnswers) {
+            setForm((prev: any) => ({
+                ...prev,
+                sg_preAnswers: { hasLocalDir: "no", ndSecurity: "deposit" },
+            }));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    // Persisted pre-answers (so navigation keeps state)
+    const hasLocalDir: YesNo = form?.sg_preAnswers?.hasLocalDir ?? "no";
+    const ndSecurity: Security = form?.sg_preAnswers?.ndSecurity ?? "deposit";
+
+    const setPreAnswers = (updates: Partial<{ hasLocalDir: YesNo; ndSecurity: Security }>) => {
+        setForm((prev: any) => ({
+            ...prev,
+            sg_preAnswers: {
+                // read the latest values from state, not from render-time variables
+                hasLocalDir: prev?.sg_preAnswers?.hasLocalDir ?? "no",
+                ndSecurity: prev?.sg_preAnswers?.ndSecurity ?? "deposit",
+                ...(prev?.sg_preAnswers || {}),
+                ...updates,
+            },
+        }));
+    };
+
+    // Optional selections (bank advisory, EMI, etc.)
+    const selected: string[] = Array.isArray(form.serviceItemsSelected) ? form.serviceItemsSelected : [];
+    const includeOptional = (id: string, on: boolean) => {
+        const curr = Array.isArray(form.serviceItemsSelected) ? form.serviceItemsSelected : [];
+        const exists = curr.includes(id);
+        if (on && !exists) setForm({ ...form, serviceItemsSelected: [...curr, id] });
+        if (!on && exists) setForm({ ...form, serviceItemsSelected: curr.filter((x: string) => x !== id) });
+    };
+
+    // ===== Fixed mandatory rows (always) =====
+    const MANDATORY = [
+        { id: "companyIncorporation", label: "Company Incorporation (filing)", price: 350 },
+        { id: "nomineeDirector", label: "Nominee Director (1 year)", price: 2000 }, // always mandatory now
+        { id: "companySecretary", label: "Company Secretary (1 year)", price: 480 },
+        { id: "registeredAddress", label: "Registered Address (1 year)", price: 300 },
+    ];
+
+    // Base mandatory sum (without security)
+    const baseMandatoryTotal = MANDATORY.reduce((s, r) => s + r.price, 0); // 350+2000+480+300 = 3,130
+
+    // Extra mandatory security (only when nominee REQUIRED)
+    const extraSecurityMandatory = hasLocalDir === "no" ? 2000 : 0;
+
+    // ===== Optionals (paid options excluding security; EMI is 0) =====
+    const OPTIONALS = [
+        { id: "bankAccountAdvisory", label: "Bank Account Advisory (optional)", price: 1200 },
+        { id: "emiEAccount", label: "EMI e-Account Opening (basic) Free", price: 0 },
+    ];
+
+    // Totals
+    const paidOptionalSum = OPTIONALS
+        .filter((r) => selected.includes(r.id))
+        .reduce((s, r) => s + r.price, 0);
+
+    const initialMandatoryTotal = baseMandatoryTotal + extraSecurityMandatory;
+    const totalInclOptions = initialMandatoryTotal + paidOptionalSum; // equals mandatory when no paid optionals
+
+    // Guards
+    const canToggle = () => {
+        if (form.sessionId) {
+            toast({
+                title: "Payment Session Initiated",
+                description: "Can't select extra items once payment session initiated",
+            });
+            return false;
+        }
+        return true;
+    };
+
+    const toggleOptional = (id: string) => {
+        if (!canToggle()) return;
+        includeOptional(id, !selected.includes(id));
+    };
+
+    return (
+        <Card className="w-full">
+            <CardHeader className="flex flex-row justify-between items-center">
+                <CardTitle className="text-xl text-cyan-400">Pricing &amp; Quote</CardTitle>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+                {/* === Pre-Questions (exact text) === */}
+                <div className="card qs rounded-lg border p-4 space-y-4" id="pre-questions">
+                    <div className="font-semibold">Pre-Questions (auto-applies to the quote below)</div>
+
+                    <ol style={{ marginLeft: 18 }}>
+                        <li>
+                            Do you have a Singapore-based individual who can act as your company’s local director?
+                            <div style={{ marginTop: 6 }}>
+                                <label className="mr-4">
+                                    <input
+                                        type="radio"
+                                        name="q-local-dir"
+                                        value="yes"
+                                        checked={hasLocalDir === "yes"}
+                                        onChange={() => setPreAnswers({ hasLocalDir: "yes" })}
+                                    />{" "}
+                                    Yes, we can appoint an internal local director
+                                </label>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="q-local-dir"
+                                        value="no"
+                                        checked={hasLocalDir === "no"}
+                                        onChange={() => setPreAnswers({ hasLocalDir: "no" })}
+                                    />{" "}
+                                    No, nominee director is required
+                                </label>
+                            </div>
+                        </li>
+
+                        {hasLocalDir === "no" && (
+                            <li style={{ marginTop: 8 }}>
+                                Security Deposit for nominee director:
+                                <div style={{ marginTop: 6 }}>
+                                    <label className="mr-4">
+                                        <input
+                                            type="radio"
+                                            name="q-security"
+                                            value="deposit"
+                                            checked={ndSecurity === "deposit"}
+                                            onChange={() => setPreAnswers({ ndSecurity: "deposit" })}
+                                        />{" "}
+                                        Security deposit USD 2,000
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="q-security"
+                                            value="prepay"
+                                            checked={ndSecurity === "prepay"}
+                                            onChange={() => setPreAnswers({ ndSecurity: "prepay" })}
+                                        />{" "}
+                                        Prepay accounting/tax USD 2,000
+                                    </label>
+                                </div>
+                            </li>
+                        )}
+                    </ol>
+
+                    <div className="text-xs text-muted-foreground">
+                        Choices above will toggle the security/prepay options in the initial cost below.
+                    </div>
+                </div>
+
+                {/* === Table === */}
+                <div className="card rounded-lg border">
+                    <h3 className="px-4 pt-4 text-lg font-semibold">Incorporation + First Year</h3>
+
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-1/2">Item</TableHead>
+                                <TableHead className="text-right">Price</TableHead>
+                                <TableHead className="text-right">Selected</TableHead>
+                            </TableRow>
+                        </TableHeader>
+
+                        <TableBody>
+                            {/* Always mandatory rows */}
+                            {MANDATORY.map((r) => (
+                                <TableRow key={r.id}>
+                                    <TableCell>{r.label}</TableCell>
+                                    <TableCell className="text-right">{fmtUSD(r.price)}</TableCell>
+                                    <TableCell className="text-right">
+                                        <Checkbox checked disabled />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+
+                            {/* Extra mandatory security (no checkbox; method chosen above) */}
+                            {hasLocalDir === "no" && (
+                                <>
+                                    <TableRow>
+                                        <TableCell className="font-medium">
+                                            {/* Show the two lines exactly as you asked, but these are informative (no extra beyond the +2000 already counted). */}
+                                            <div>[Optional] Accounting/Tax Prepayment</div>
+                                            <div className="text-xs text-muted-foreground">
+                                                (i) Bookkeeping &amp; CIT filing for the first YA. Alternative to a nominee director deposit.
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-right">{fmtUSD(2000)}</TableCell>
+                                        <TableCell className="text-right">—</TableCell>
+                                    </TableRow>
+
+                                    <TableRow>
+                                        <TableCell className="font-medium">
+                                            <div>[Optional] Nominee Director Deposit</div>
+                                            <div className="text-xs text-muted-foreground">
+                                                (i) Refundable upon 1-month prior written termination notice.
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-right">{fmtUSD(2000)}</TableCell>
+                                        <TableCell className="text-right">—</TableCell>
+                                    </TableRow>
+                                </>
+                            )}
+
+                            {/* Other optionals (user can toggle) */}
+                            {OPTIONALS.map((r) => {
+                                const isChecked = selected.includes(r.id);
+                                return (
+                                    <TableRow key={r.id} className="text-gray-600">
+                                        <TableCell>{r.label}</TableCell>
+                                        <TableCell className={`text-right ${r.price === 0 ? "text-red-500 font-semibold" : ""}`}>
+                                            {fmtUSD(r.price)}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Checkbox checked={isChecked} onCheckedChange={() => toggleOptional(r.id)} />
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+
+                            {/* Totals */}
+                            <TableRow className="font-bold bg-gray-50">
+                                <TableCell>
+                                    Initial mandatory total
+                                </TableCell>
+                                <TableCell className="text-right" colSpan={2}>
+                                    {fmtUSD(initialMandatoryTotal)}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow className="font-bold bg-gray-100">
+                                <TableCell>Total incl. options</TableCell>
+                                <TableCell className="text-right text-yellow-600" colSpan={2}>
+                                    {fmtUSD(totalInclOptions)}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell colSpan={3} className="text-xs text-muted-foreground">
+                                    Assumes standard profile (≤5 individual shareholders). Notarization/translation/apostille &amp; complex KYC are extra.
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
+
+const asNumber = (v: any) => (typeof v === "number" ? v : Number(v) || 0);
+const fmt = (n: number) => (n > 0 ? `USD ${n.toFixed(2)}` : "USD 0.00");
+
+const InvoiceSgStep: React.FC = () => {
+  const [form, setForm] = useAtom(paFormWithResetAtom1);
+  const { t } = useTranslation();
+
+  const hasLocalDir: YesNo = (form?.sg_preAnswers?.hasLocalDir as YesNo) ?? "no";
+  const ndSecurity: Security =
+    (form?.sg_preAnswers?.ndSecurity as Security) ?? "deposit";
+
+  const selectedOptionals: string[] = Array.isArray(form?.serviceItemsSelected)
+    ? form.serviceItemsSelected
+    : [];
+
+  // Build invoice rows to EXACTLY reflect the selection component
+  const rows: FeeRow[] = React.useMemo(() => {
+    const list: FeeRow[] = [];
+
+    // Always mandatory (same labels & prices)
+    list.push(
+      {
+        id: "companyIncorporation",
+        description: "Company Incorporation (filing)",
+        originalPrice: 350,
+        discountedPrice: 350,
+      },
+      {
+        id: "nomineeDirector",
+        description: "Nominee Director (1 year)",
+        originalPrice: 2000,
+        discountedPrice: 2000,
+      },
+      {
+        id: "companySecretary",
+        description: "Company Secretary (1 year)",
+        originalPrice: 480,
+        discountedPrice: 480,
+      },
+      {
+        id: "registeredAddress",
+        description: "Registered Address (1 year)",
+        originalPrice: 300,
+        discountedPrice: 300,
+      }
+    );
+
+    // Extra mandatory: security 2,000 only if nominee director is required
+    if (hasLocalDir === "no") {
+      const secLabel =
+        ndSecurity === "prepay"
+          ? "Prepay accounting/tax (Nominee Director)"
+          : "Security deposit (Nominee Director)";
+      list.push({
+        id: "nomineeSecurity",
+        description: secLabel,
+        originalPrice: 2000,
+        discountedPrice: 2000,
+      });
+    }
+
+    // Optionals shown only if selected (match IDs from ServiceSelectionStep)
+    if (selectedOptionals.includes("bankAccountAdvisory")) {
+      list.push({
+        id: "bankAccountAdvisory",
+        description: "Bank Account Advisory (optional)",
+        originalPrice: 1200,
+        discountedPrice: 1200,
+        isOptional: true,
+      });
+    }
+
+    if (selectedOptionals.includes("emiEAccount")) {
+      list.push({
+        id: "emiEAccount",
+        description: "EMI e-Account Opening (basic) Free",
+        originalPrice: 0,
+        discountedPrice: 0,
+        isOptional: true,
+      });
+    }
+
+    return list;
+  }, [hasLocalDir, ndSecurity, selectedOptionals]);
+
+  // Totals (original == discounted here, but we keep both fields)
+  const initialMandatoryTotal = React.useMemo(() => {
+    // mandatory = everything except the selected optionals
+    return rows
+      .filter((r) => !r.isOptional)
+      .reduce((s, r) => s + asNumber(r.discountedPrice), 0);
+  }, [rows]);
+
+  const totalInclOptions = React.useMemo(() => {
+    return rows.reduce((s, r) => s + asNumber(r.discountedPrice), 0);
+  }, [rows]);
+
+  // Memoize invoiceItems so we can compare and avoid loops
+  const invoiceItems = React.useMemo(
+    () =>
+      rows.map((r) => ({
+        id: r.id,
+        description: r.description,
+        amount: asNumber(r.discountedPrice),
+      })),
+    [rows]
+  );
+
+  // shallow compare helper for invoiceItems
+  const sameItems = React.useCallback((a: any[] = [], b: any[] = []) => {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      const x = a[i];
+      const y = b[i];
+      if (!y) return false;
+      if (x.id !== y.id || x.description !== y.description || x.amount !== y.amount) {
+        return false;
+      }
+    }
+    return true;
+  }, []);
+
+  // Persist totals & currency back to form for payment step — but only if changed
+  React.useEffect(() => {
+    setForm((prev: any) => {
+      const unchanged =
+        prev?.initialMandatoryTotal === initialMandatoryTotal &&
+        prev?.totalInclOptions === totalInclOptions &&
+        prev?.totalOriginal === totalInclOptions &&
+        prev?.totalDiscounted === totalInclOptions &&
+        prev?.currency === "USD" &&
+        sameItems(prev?.invoiceItems, invoiceItems);
+
+      if (unchanged) return prev; // do not trigger an update
+
+      return {
+        ...prev,
+        initialMandatoryTotal, // keep for display/analytics
+        totalInclOptions, // final invoice subtotal (before card fee)
+        totalOriginal: totalInclOptions, // legacy field for downstream
+        totalDiscounted: totalInclOptions, // keep both in sync
+        currency: "USD",
+        invoiceItems,
+      };
+    });
+    // setForm is stable for jotai; including it is fine but not required.
+  }, [
+    initialMandatoryTotal,
+    totalInclOptions,
+    invoiceItems,
+    sameItems,
+    setForm,
+  ]);
+
+  return (
+    <div className="w-full py-8 px-4">
+      <Card className="w-full">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>{t("mirrasisaSSL")}</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("invoice.desc")}</TableHead>
+                <TableHead className="text-right">
+                  {t("invoice.originalPrice")}
+                </TableHead>
+                <TableHead className="text-right">
+                  {t("invoice.discPrice")}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rows.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <span className={item.isHighlight ? "font-semibold" : ""}>
+                        {item.description}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right text-muted-foreground">
+                    {fmt(asNumber(item.originalPrice))}
+                  </TableCell>
+                  <TableCell className="text-right font-medium">
+                    {fmt(asNumber(item.discountedPrice))}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          {/* Totals Card */}
+          <div className="mt-4 flex justify-end">
+            <Card className="w-80">
+              <CardContent className="pt-4">
+                <div className="flex justify-between mb-2">
+                  <span className="font-xs text-xs line-through text-gray-500">
+                    {t("invoice.total")}:
+                  </span>
+                  <span className="font-xs text-xs line-through text-gray-500">
+                    {fmt(totalInclOptions)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-green-600">
+                  <span className="font-medium">{t("invoice.totalDisc")}:</span>
+                  <span className="font-bold">{fmt(totalInclOptions)}</span>
+                </div>
+                {/* If you want to show the initial mandatory in the card too, uncomment: */}
+                {/* <div className="flex justify-between text-sm mt-2">
+                    <span>Initial mandatory total:</span>
+                    <span>{fmt(initialMandatoryTotal)}</span>
+                  </div> */}
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// const InvoiceSgStep = () => {
+//     const [form, setForm] = useAtom(paFormWithResetAtom1);
+//     const { t } = useTranslation();
+
+//     const selectedOptionals: string[] = Array.isArray(form?.serviceItemsSelected)
+//         ? form.serviceItemsSelected
+//         : [];
+
+//     const rows: FeeRow[] = useMemo(() => {
+//         // derive parties/address inside memo to avoid unstable deps caused by inline conditionals
+//         const parties = Array.isArray(form?.parties) ? form.parties : [];
+//         const address = form?.businessAddress;
+
+//         // 1) Base catalog
+//         const base: FeeRow[] = service_list.map((s) => ({
+//             id: s.id,
+//             description: t(s.key),
+//             originalPrice: asNumber(s.price),
+//             discountedPrice: asNumber(s.price),
+//             isOptional: !!s.isOptional,
+//             note: "",
+//             isHighlight: false,
+//         }));
+
+//         // 2) Dynamic adds (always included; these are not optional)
+//         const out: FeeRow[] = [...base];
+
+//         if (address && address.id === "mirrasiaAddress") {
+//             out.push({
+//                 id: "registeredBusinessAddress",
+//                 description: t("Singapore.regBsnsService"),
+//                 originalPrice: 350,
+//                 discountedPrice: 350,
+//                 isOptional: false,
+//                 note: "",
+//             });
+//         }
+
+//         const legalEntityYesCount = parties.filter(
+//             (p: any) => p?.isCorp === true && (p?.isDirector === true || (Number(p?.shares) || 0) > 0)
+//         ).length;
+
+//         if (legalEntityYesCount > 0) {
+//             out.push({
+//                 id: "corporateSecretaryAnnualService",
+//                 description: `${t("Singapore.crpSecAnnualServ")} (${legalEntityYesCount})`,
+//                 originalPrice: legalEntityYesCount * 550,
+//                 discountedPrice: legalEntityYesCount * 550,
+//                 isOptional: false,
+//                 note: "",
+//             });
+//         }
+
+//         if (form?.onlineAccountingSoftware?.value === "yes") {
+//             out.push({
+//                 id: "onlineAccountingSoftware",
+//                 description: t("Singapore.accPackageSixMonths"),
+//                 originalPrice: 2000,
+//                 discountedPrice: 2000,
+//                 isOptional: false,
+//                 note: "",
+//             });
+//         }
+
+//         // 3) For invoice display:
+//         //    - Always include non-optional items
+//         //    - Include optional items ONLY if selected
+//         return out.filter((r) => !r.isOptional || selectedOptionals.includes(r.id));
+//     }, [t, form, selectedOptionals]);
+
+//     const totalOriginal = rows.reduce((sum, r) => sum + asNumber(r.originalPrice), 0);
+//     const totalDiscounted = rows.reduce((sum, r) => sum + asNumber(r.discountedPrice), 0);
+//     React.useEffect(() => {
+//         setForm((prev: any) => ({
+//             ...prev,
+//             totalOriginal,
+//             totalDiscounted,
+//             currency: "USD",
+//         }));
+//     }, [totalOriginal, totalDiscounted, setForm]);
+
+//     return (
+//         <div className="w-full py-8 px-4">
+//             <Card className="w-full">
+//                 <CardHeader className="flex flex-row items-center justify-between">
+//                     <CardTitle>{t("mirrasisaSSL")}</CardTitle>
+//                 </CardHeader>
+//                 <CardContent>
+//                     <Table>
+//                         <TableHeader>
+//                             <TableRow>
+//                                 <TableHead>{t("invoice.desc")}</TableHead>
+//                                 <TableHead className="text-right">{t("invoice.originalPrice")}</TableHead>
+//                                 <TableHead className="text-right">{t("invoice.discPrice")}</TableHead>
+//                                 {/* <TableHead className="text-right">{t("invoice.notes")}</TableHead> */}
+//                             </TableRow>
+//                         </TableHeader>
+//                         <TableBody>
+//                             {rows.map((item) => (
+//                                 <TableRow key={item.id}>
+//                                     <TableCell>
+//                                         <div className="flex items-center gap-2">
+//                                             <span className={item.isHighlight ? "font-semibold" : ""}>{item.description}</span>
+//                                         </div>
+//                                     </TableCell>
+//                                     <TableCell className="text-right text-muted-foreground">
+//                                         {asNumber(item.originalPrice) > 0 ? `USD ${asNumber(item.originalPrice).toFixed(2)}` : "USD 0.00"}
+//                                     </TableCell>
+//                                     <TableCell className="text-right font-medium">
+//                                         {asNumber(item.discountedPrice) > 0 ? `USD ${asNumber(item.discountedPrice).toFixed(2)}` : "USD 0.00"}
+//                                     </TableCell>
+//                                     {/* <TableCell className="text-right text-sm text-muted-foreground">{item.note || ""}</TableCell> */}
+//                                 </TableRow>
+//                             ))}
+//                         </TableBody>
+//                     </Table>
+
+//                     {/* Totals */}
+//                     <div className="mt-4 flex justify-end">
+//                         <Card className="w-80">
+//                             <CardContent className="pt-4">
+//                                 <div className="flex justify-between mb-2">
+//                                     <span className="font-xs text-xs line-through text-gray-500">{t("invoice.total")}:</span>
+//                                     <span className="font-xs text-xs line-through text-gray-500">USD {totalOriginal.toFixed(2)}</span>
+//                                 </div>
+//                                 <div className="flex justify-between text-green-600">
+//                                     <span className="font-medium">{t("invoice.totalDisc")}:</span>
+//                                     <span className="font-bold">USD {totalDiscounted.toFixed(2)}</span>
+//                                 </div>
+//                             </CardContent>
+//                         </Card>
+//                     </div>
+//                 </CardContent>
+//             </Card>
+//         </div>
+//     );
+// };
+
+function StripePaymentForm({ app, onSuccess, onClose, }: {
+    app: any;
+    onSuccess: (info: StripeSuccessInfo) => void;
+    onClose: () => void;
+}) {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [submitting, setSubmitting] = React.useState(false);
+    const [error, setError] = React.useState<string | null>(
+        null
+    );
+
+    // Success / processing UI
+    const [successPayload, setSuccessPayload] =
+        React.useState<StripeSuccessInfo | null>(null);
+    const [processingMsg, setProcessingMsg] =
+        React.useState<string | null>(null);
+
+    const handleConfirm = async () => {
+        if (!stripe || !elements) return;
+        setSubmitting(true);
+        setError(null);
+        setSuccessPayload(null);
+        setProcessingMsg(null);
+
+        try {
+            const { error, paymentIntent } =
+                await stripe.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        return_url:
+                            typeof window !== "undefined"
+                                ? window.location.href
+                                : "",
+                    },
+                    redirect: "if_required",
+                });
+
+            if (error) {
+                setError(
+                    error.message ??
+                    "Payment failed. Please try again."
+                );
+                setSubmitting(false);
+                return;
+            }
+
+            const status = paymentIntent?.status;
+
+            const notifyBackend = async () => {
+                try {
+                    const result =
+                        await updateCorporateInvoicePaymentIntent({
+                            paymentIntentId:
+                                app.paymentIntentId,
+                            companyId: app._id,
+                            companyName:
+                                app.companyName_1 ||
+                                app.companyName_2 ||
+                                app.companyName_3 ||
+                                "Company (TBD)",
+                            userEmail: app.email,
+                            country: "SG",
+                        });
+
+                    if (result?.ok) {
+                        const payload: StripeSuccessInfo = {
+                            receiptUrl: result?.receiptUrl,
+                            amount: result?.amount,
+                            currency: result?.currency,
+                            paymentIntentStatus:
+                                result?.paymentIntentStatus,
+                        };
+
+                        if (
+                            result?.paymentIntentStatus ===
+                            "succeeded"
+                        ) {
+                            setSuccessPayload(payload);
+                            onSuccess(payload);
+                            setSubmitting(false);
+                            return;
+                        }
+
+                        if (
+                            result?.paymentIntentStatus ===
+                            "processing" ||
+                            result?.paymentIntentStatus ===
+                            "requires_capture"
+                        ) {
+                            setProcessingMsg(
+                                "Your payment is processing. You’ll receive a receipt once the transaction is confirmed."
+                            );
+                            onSuccess(payload);
+                            setSubmitting(false);
+                            return;
+                        }
+                    }
+
+                    // fallback
+                    setError(
+                        "Payment confirmed, but we couldn’t retrieve the receipt from the server. Please contact support if you didn’t receive an email."
+                    );
+                    setSubmitting(false);
+                } catch (e: any) {
+                    console.error(
+                        "Failed to notify backend about PI update:",
+                        e
+                    );
+                    setError(
+                        "Payment confirmed, but saving the payment on the server failed. We’ll email your receipt soon or contact support."
+                    );
+                    setSubmitting(false);
+                }
+            };
+
+            if (status === "succeeded") {
+                await notifyBackend();
+            } else if (
+                status === "processing" ||
+                status === "requires_capture"
+            ) {
+                await notifyBackend();
+            } else {
+                setError(
+                    `Payment status: ${status ?? "unknown"
+                    }. If this persists, contact support.`
+                );
+                setSubmitting(false);
+            }
+        } catch (e: any) {
+            console.error(e);
+            setError(
+                e?.message ||
+                "Something went wrong while confirming payment."
+            );
+            setSubmitting(false);
+        }
+    };
+
+    if (successPayload) {
+        const amt =
+            typeof successPayload.amount === "number"
+                ? successPayload.amount
+                : undefined;
+        const currency = successPayload.currency
+            ? successPayload.currency.toUpperCase()
+            : undefined;
+        return (
+            <div className="space-y-4">
+                <div className="border rounded-md p-3 text-sm bg-emerald-50 border-emerald-200 text-emerald-900">
+                    <div className="font-semibold mb-1">
+                        Payment successful
+                    </div>
+                    <div className="space-y-1">
+                        {amt != null && currency ? (
+                            <div>
+                                Amount:{" "}
+                                <b>
+                                    {currency}{" "}
+                                    {(amt / 100).toFixed(2)}
+                                </b>
+                            </div>
+                        ) : null}
+                        <div>
+                            {successPayload.receiptUrl ? (
+                                <>
+                                    Receipt:&nbsp;
+                                    <a
+                                        href={successPayload.receiptUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="underline underline-offset-2"
+                                    >
+                                        View Stripe receipt
+                                    </a>
+                                </>
+                            ) : null}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-end">
+                    <Button onClick={onClose}>Done</Button>
+                </div>
+            </div>
+        );
+    }
+
+    if (processingMsg) {
+        return (
+            <div className="space-y-4">
+                <div className="border rounded-md p-3 text-sm bg-amber-50 border-amber-200 text-amber-900">
+                    <div className="font-semibold mb-1">
+                        Payment is processing
+                    </div>
+                    <div>{processingMsg}</div>
+                </div>
+                <div className="flex items-center justify-end">
+                    <Button onClick={onClose}>Close</Button>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-4">
+            <PaymentElement />
+            {error ? (
+                <div className="text-xs text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2">
+                    {error}
+                </div>
+            ) : null}
+            <div className="flex items-center justify-end gap-2">
+                <Button
+                    variant="outline"
+                    onClick={onClose}
+                    disabled={submitting}
+                >
+                    Cancel
+                </Button>
+                <Button
+                    onClick={handleConfirm}
+                    disabled={!stripe || !elements || submitting}
+                >
+                    {submitting ? "Processing…" : "Pay now"}
+                </Button>
+            </div>
+        </div>
+    );
+}
+
+function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, onSuccess }: {
+    open: boolean;
+    onOpenChange: (v: boolean) => void;
+    clientSecret: string;
+    amountUSD: number;
+    app: any;
+    onSuccess: (info: StripeSuccessInfo) => void;
+}) {
+    const options = React.useMemo(
+        () => ({
+            clientSecret,
+            appearance: { theme: "stripe" as const },
+        }),
+        [clientSecret]
+    );
+
+    return (
+        <Sheet open={open} onOpenChange={onOpenChange}>
+            <SheetContent
+                side="right"
+                className="w-full sm:max-w-md"
+            >
+                <SheetHeader>
+                    <SheetTitle>
+                        Stripe Card Payment
+                    </SheetTitle>
+                    <SheetDescription>
+                        Grand Total:{" "}
+                        <b>USD {amountUSD.toFixed(2)}</b>{" "}
+                        {app.payMethod === "card"
+                            ? "(incl. 3.5% card fee)"
+                            : ""}
+                    </SheetDescription>
+                </SheetHeader>
+
+                {clientSecret ? (
+                    <div className="mt-4">
+                        <Elements
+                            stripe={stripePromise}
+                            options={options}
+                        >
+                            <StripePaymentForm
+                                app={app}
+                                onSuccess={onSuccess}
+                                onClose={() => onOpenChange(false)}
+                            />
+                        </Elements>
+                    </div>
+                ) : (
+                    <div className="mt-4 text-sm text-muted-foreground">
+                        Preparing secure payment…
+                    </div>
+                )}
+            </SheetContent>
+        </Sheet>
+    );
+}
+function asNum(v: any) {
+    return typeof v === "number" ? v : Number(v) || 0;
+}
+
+function computeSgGrandTotal(app: any): number {
+    // Subtotal is whatever the invoice last wrote
+    const subtotal = asNum(app?.totalInclOptions ?? app?.totalOriginal ?? 0);
+
+    const cardFeeRate = 0.035;
+    const needsCardFee = app?.payMethod === "card";
+
+    const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
+    return Math.round(total * 100) / 100; // cents-safe
+}
+
+const PaymentStep = () => {
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
+    const { t } = useTranslation();
+
+    // Compute grand total using SG logic
+    const grand = computeSgGrandTotal(form);
+    // console.log("Computed SG grand total:", grand);
+    const isPaid =
+        form.paymentStatus === "paid" ||
+        form.stripeLastStatus === "succeeded" ||
+        form.stripePaymentStatus === "succeeded";
+
+    // Expiry bootstrap (2 days) if not paid
+    React.useEffect(() => {
+        if (isPaid) return;
+        const now = Date.now();
+        const current = form.expiresAt ? new Date(form.expiresAt).getTime() : 0;
+        if (!current || current <= now) {
+            const twoDaysMs = 2 * 24 * 60 * 60 * 1000;
+            const expiryISO = new Date(now + twoDaysMs).toISOString();
+            setForm((prev: any) => ({
+                ...prev,
+                expiresAt: expiryISO,
+                updatedAt: new Date().toISOString(),
+            }));
+        }
+    }, [isPaid, setForm, form.expiresAt]);
+
+    // Countdown
+    const [nowTs, setNowTs] = React.useState(() => Date.now());
+    React.useEffect(() => {
+        if (isPaid) return;
+        const id = window.setInterval(() => setNowTs(Date.now()), 1000);
+        return () => window.clearInterval(id);
+    }, [isPaid]);
+
+    const expiresTs = form.expiresAt ? new Date(form.expiresAt).getTime() : 0;
+    const remainingMs = Math.max(0, expiresTs - nowTs);
+    const isExpired = !isPaid && (!expiresTs || remainingMs <= 0);
+
+    const formatRemaining = (ms: number) => {
+        const s = Math.floor(ms / 1000);
+        const d = Math.floor(s / 86400);
+        const h = Math.floor((s % 86400) / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const sec = s % 60;
+        return d > 0
+            ? `${d}d ${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
+            : `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+    };
+
+    // Local UI state
+    const [creatingPI, setCreatingPI] = React.useState(false);
+    const [uploading, setUploading] = React.useState(false);
+    const [bankFile, setBankFile] = React.useState<File | null>(null);
+    const [clientSecret, setClientSecret] = React.useState<string | null>(null);
+    const [cardDrawerOpen, setCardDrawerOpen] = React.useState(false);
+
+    const guard = (msg: string) => {
+        if (isPaid) {
+            alert(t("newHk.payment.alerts.alreadyPaid"));
+            return true;
+        }
+        if (isExpired) {
+            alert(msg);
+            return true;
+        }
+        return false;
+    };
+
+    const handleBankProofSubmit = async () => {
+        if (guard(t("newHk.payment.alerts.expiredGuard"))) return;
+        if (!bankFile) return;
+        setUploading(true);
+        try {
+            const method = form.payMethod;
+            const expiresAt = form.expiresAt || "";
+            const result = await uploadIncorpoPaymentBankProof(form._id || "", "PA", bankFile, method, expiresAt);
+            if (result) {
+                setForm((prev: any) => ({ ...prev, uploadReceiptUrl: result?.url }));
+            }
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleDeleteBankProof = async () => {
+        if (guard(t("newHk.payment.alerts.expiredGuard"))) return;
+        await deleteIncorpoPaymentBankProof(form._id || "", "PA");
+        setForm((prev: any) => ({ ...prev, uploadReceiptUrl: undefined }));
+    };
+
+    const handleProceedCard = async () => {
+        if (guard(t("newHk.payment.alerts.expiredGuard"))) return;
+
+        if (clientSecret && form.paymentIntentId) {
+            setCardDrawerOpen(true);
+            return;
+        }
+        console.log("form", form)
+        setCreatingPI(true);
+        try {
+            const fp = {
+                companyId: form._id ?? null,
+                totalCents: Math.round(grand * 100),
+                country: "PA",
+            };
+            const result = await createInvoicePaymentIntent(fp);
+
+            if (result?.clientSecret && result?.id) {
+                setClientSecret(result.clientSecret);
+                setForm((prev: any) => ({
+                    ...prev,
+                    paymentIntentId: result.id,
+                    payMethod: "card",
+                }));
+                setCardDrawerOpen(true);
+            } else {
+                alert("Could not initialize card payment. Please try again.");
+            }
+        } catch (e) {
+            console.error("PI creation failed:", e);
+            alert(t("newHk.payment.alerts.prepareFailedDesc"));
+        } finally {
+            setCreatingPI(false);
+        }
+    };
+
+    return (
+        <>
+            {/* PAID banner */}
+            {isPaid && (
+                <div className="mb-4 border rounded-md p-3 text-sm bg-emerald-50 border-emerald-200 text-emerald-900">
+                    <div className="font-semibold mb-1">{t("newHk.payment.success.title")}</div>
+                    <div className="space-y-1">
+                        {typeof form.stripeAmountCents === "number" && form.stripeCurrency ? (
+                            <div>
+                                {t("newHk.payment.success.amountLabel")}{" "}
+                                <b>
+                                    {form.stripeCurrency.toUpperCase()} {(form.stripeAmountCents / 100).toFixed(2)}
+                                </b>
+                            </div>
+                        ) : null}
+
+                        <div>
+                            {form.stripeReceiptUrl ? (
+                                <>
+                                    {t("newHk.payment.success.receiptLabel")}&nbsp;
+                                    <a
+                                        href={form.stripeReceiptUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="underline underline-offset-2"
+                                    >
+                                        {t("newHk.payment.success.viewStripeReceipt")}
+                                    </a>
+                                </>
+                            ) : null}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Expiry / countdown */}
+            {!isPaid && (
+                <div
+                    className={[
+                        "mb-4 rounded-md border p-3 text-sm",
+                        isExpired ? "border-red-200 bg-red-50 text-red-900" : "border-amber-200 bg-amber-50 text-amber-900",
+                    ].join(" ")}
+                >
+                    {isExpired ? (
+                        <div className="font-medium">{t("newHk.payment.expiryBanner.expiredMessage")}</div>
+                    ) : (
+                        <div className="flex items-center justify-between gap-2">
+                            <div className="font-medium">{t("newHk.payment.expiryBanner.timerTitle")}</div>
+                            <div className="text-base font-bold tabular-nums">
+                                {t("newHk.payment.expiryBanner.timeRemaining", { time: formatRemaining(remainingMs) })}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            <div className="grid md:grid-cols-2 gap-4">
+                {/* LEFT: payment method */}
+                <Card>
+                    <CardContent className="pt-6 space-y-2">
+                        <div className="font-bold">{t("newHk.payment.methods.title")}</div>
+
+                        {[
+                            {
+                                v: "card",
+                                label: t("newHk.payment.methods.options.card.label"),
+                                tip: t("newHk.payment.methods.options.card.tip"),
+                            },
+                            // { v: "fps", label: t("newHk.payment.methods.options.fps.label") },
+                            { v: "bank", label: t("newHk.payment.methods.options.bank.label") },
+                            { v: "other", label: t("newHk.payment.methods.options.other.label") },
+                        ].map((o) => (
+                            <label key={o.v} className="block space-x-2">
+                                <input
+                                    type="radio"
+                                    name="pay"
+                                    value={o.v}
+                                    checked={form.payMethod === o.v}
+                                    onChange={() =>
+                                        setForm((prev: any) => ({
+                                            ...prev,
+                                            payMethod: o.v,
+                                        }))
+                                    }
+                                    disabled={isPaid || isExpired}
+                                />
+                                <span className={isPaid || isExpired ? "text-muted-foreground" : ""}>{o.label}</span>
+                                {o.tip && !(isPaid || isExpired) ? (
+                                    <span className="inline-flex ml-1">
+                                        <Tip text={o.tip} />
+                                    </span>
+                                ) : null}
+                            </label>
+                        ))}
+
+                        {(isPaid || isExpired) && (
+                            <div className="mt-2 text-xs text-muted-foreground">
+                                {isPaid ? t("newHk.payment.methods.statusNote.paid") : t("newHk.payment.methods.statusNote.expired")}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* RIGHT: proof/card upload + totals */}
+                <Card>
+                    <CardContent className="pt-6 space-y-2">
+                        <div className="font-bold">{t("newHk.payment.conditions.title")}</div>
+                        <p className="text-sm">
+                            <Trans i18nKey="newHk.payment.conditions.text">
+                                100% advance payment. All payments are non-refundable. The remitter bears all bank charges (including
+                                intermediary bank fees).
+                            </Trans>
+                        </p>
+
+                        {["bank", "other", "fps"].includes(form.payMethod) && (
+                            <div className="mt-4 grid gap-3">
+                                <div className="grid gap-2">
+                                    <Label>{t("newHk.payment.bankUpload.refLabel")}</Label>
+                                    <Input
+                                        placeholder={t("newHk.payment.bankUpload.refPlaceholder")}
+                                        value={form.bankRef || ""}
+                                        onChange={(e) =>
+                                            setForm((prev: any) => ({
+                                                ...prev,
+                                                bankRef: e.target.value,
+                                            }))
+                                        }
+                                        disabled={isPaid || isExpired}
+                                    />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label>{t("newHk.payment.bankUpload.proofLabel")}</Label>
+                                    <Input
+                                        type="file"
+                                        accept="image/*,.pdf"
+                                        onChange={(e) => {
+                                            const f = e.target.files?.[0] || null;
+                                            setBankFile(f);
+                                        }}
+                                        disabled={isPaid || isExpired}
+                                    />
+                                    <Button onClick={handleBankProofSubmit} disabled={isPaid || isExpired || creatingPI || uploading}>
+                                        {uploading ? t("newHk.payment.bankUpload.uploading") : t("newHk.payment.bankUpload.submit")}
+                                    </Button>
+                                </div>
+
+                                {form.uploadReceiptUrl ? (
+                                    <div className="mt-2 space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <div className="text-sm font-medium">{t("newHk.payment.bankUpload.previewTitle")}</div>
+                                            <div className="flex items-center gap-2">
+                                                <Button asChild variant="outline" size="sm" disabled={isPaid || isExpired}>
+                                                    <a href={form.uploadReceiptUrl} target="_blank" rel="noopener noreferrer">
+                                                        {t("newHk.payment.bankUpload.openInNewTab")}
+                                                    </a>
+                                                </Button>
+
+                                                <Button variant="destructive" size="sm" onClick={handleDeleteBankProof} disabled={isPaid || isExpired}>
+                                                    {t("newHk.payment.bankUpload.delete")}
+                                                </Button>
+                                            </div>
+                                        </div>
+
+                                        <div className="rounded-lg border overflow-hidden">
+                                            <iframe key={form.uploadReceiptUrl} src={form.uploadReceiptUrl} title="Payment Proof" className="w-full h-[420px]" />
+                                        </div>
+                                    </div>
+                                ) : null}
+                            </div>
+                        )}
+
+                        {form.payMethod === "card" && !isPaid && (
+                            <div className="mt-3">
+                                <Button onClick={handleProceedCard} disabled={isPaid || isExpired || creatingPI}>
+                                    {creatingPI ? t("newHk.payment.card.preparing") : t("newHk.payment.card.proceed")}
+                                </Button>
+                                <div className="text-xs text-muted-foreground mt-2">
+                                    {isExpired ? t("newHk.payment.card.disabledExpired") : t("newHk.payment.card.drawerNote")}
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="text-right font-bold mt-4">
+                            {t("newHk.payment.totals.grandTotal", { amount: grand.toFixed(2) })}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {clientSecret && !isPaid && !isExpired ? (
+                <StripeCardDrawer
+                    open={cardDrawerOpen}
+                    onOpenChange={setCardDrawerOpen}
+                    clientSecret={clientSecret}
+                    amountUSD={grand}
+                    app={form}
+                    onSuccess={(info) => {
+                        setForm((prev: any) => ({
+                            ...prev,
+                            paymentStatus: info?.paymentIntentStatus === "succeeded" ? "paid" : prev.paymentStatus,
+                            stripeLastStatus: info?.paymentIntentStatus ?? prev.stripeLastStatus,
+                            stripeReceiptUrl: info?.receiptUrl ?? prev.stripeReceiptUrl,
+                            stripeAmountCents: typeof info?.amount === "number" ? info.amount : prev.stripeAmountCents,
+                            stripeCurrency: info?.currency ?? prev.stripeCurrency,
+                            updatedAt: new Date().toISOString(),
+                        }));
+                        setCardDrawerOpen(false);
+                    }}
+                />
+            ) : null}
+        </>
+    );
+};
+
+const SgFinalSectionStep: React.FC = () => {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+
+    let role: string | undefined;
+    try {
+        const token = localStorage.getItem("token") || "";
+        if (token) role = (jwtDecode(token) as TokenData)?.role;
+    } catch {
+        role = undefined;
+    }
+
+    const handleReturn = () => {
+        if (role && ["admin", "master"].includes(role)) {
+            navigate("/admin-dashboard");
+        } else {
+            localStorage.removeItem("companyRecordId");
+            navigate("/dashboard");
+        }
+    };
+
+    return (
+        <div className="flex justify-center items-center min-h-[70vh] px-4">
+            <Card className="w-full max-w-md shadow-md border border-green-200">
+                <CardHeader className="text-center">
+                    <CardTitle className="text-2xl font-semibold text-green-600">
+                        {t("finalMsg.congrats")}
+                    </CardTitle>
+                </CardHeader>
+
+                <CardContent className="space-y-4 text-center text-gray-700">
+                    <p>{t("Singapore.finalSgTake")}</p>
+                    <p>{t("SwitchService.Consultation.thanks")}</p>
+                </CardContent>
+
+                <CardFooter className="flex justify-center">
+                    <Button className="bg-green-600 hover:bg-green-700" onClick={handleReturn}>
+                        {t("finalMsg.returntoDash")}
+                    </Button>
+                </CardFooter>
+            </Card>
+        </div>
+    );
+};
+
+const CONFIG: FormConfig = {
     title: "Company Incorporation — Panama",
     steps: [
         {
             id: "applicant",
-            title: "1. Applicant information",
-            description:
-                "Provide your details and three proposed company names. Verify your email via OTP to proceed.",
+            title: "Applicant Information",
             fields: [
                 {
-                    type: "email", name: "email", label: "Email", placeholder: "name@example.com", required: true, tooltip:
-                        "newHk.steps.applicant.fields.applicantName.tooltip",
-                },
-                { type: "text", name: "name", label: "Applicant's Full Name", placeholder: "e.g., Kim Minsoo", required: true },
-
-                // Three input boxes for company name (no chips)
-                {
-                    type: "companyNames",
-                    name: "companyName",
-                    label: "Proposed Panama company names (exactly 3)",
-                    description: "Enter three unique options in order of preference.",
+                    type: "text",
+                    name: "name",
+                    label: "newHk.steps.applicant.fields.applicantName.label",
+                    placeholder: "newHk.steps.applicant.fields.applicantName.placeholder",
+                    tooltip: "newHk.steps.applicant.fields.applicantName.tooltip",
                     required: true,
+                    colSpan: 2,
                 },
-                { type: "phone", name: "phoneNum", label: "Mobile number", placeholder: "+507 6000 0000" },
-            ],
-        },
-        {
-            id: "aml",
-            title: "2. AML CDD",
-            description: "Basic declarations for compliance.",
-            fields: [
-                {
-                    type: "multiselect",
-                    name: "selectedIndustry",
-                    label: "Industry / Business Nature",
-                    options: [
-                        { value: "consulting", label: "Consulting" },
-                        { value: "it", label: "IT / Software" },
-                        { value: "trading", label: "Trading" },
-                        { value: "finance", label: "Financial Services (non-licensed)" },
-                        { value: "other", label: "Other" },
-                    ],
-                },
-                { type: "text", name: "otherIndustryText", label: "If Other, specify" },
-                {
-                    type: "multiselect",
-                    name: "purposePaCompany",
-                    label: "Purpose of the company",
-                    options: [
-                        { value: "holding", label: "Holding assets / shares" },
-                        { value: "operations", label: "Operating business" },
-                        { value: "payments", label: "Payments / invoicing" },
-                        { value: "other", label: "Other" },
-                    ],
-                },
-                { type: "text", name: "otherPurposePaCompany", label: "If Other, specify" },
+                { type: "text", name: "companyName_1", label: "Company Name (1st Choice)", placeholder: "usa.AppInfo.namePlaceholder", required: true, colSpan: 2, tooltip: "usa.AppInfo.usCompNamePopup" },
+                { type: "text", name: "companyName_2", label: "Company Name (2nd Choice)", placeholder: "usa.AppInfo.namePlaceholder", required: true, colSpan: 2 },
+                { type: "text", name: "companyName_3", label: "Company Name (3rd Choice)", placeholder: "usa.AppInfo.namePlaceholder", required: true, colSpan: 2 },
                 {
                     type: "select",
-                    name: "sanctionedTiesPresent.id",
-                    label: "Any sanctioned ties present?",
+                    name: "sns",
+                    label: "newHk.steps.applicant.fields.sns.label",
+                    placeholder: "newHk.steps.applicant.fields.sns.placeholder",
                     options: [
-                        { id: "no", value: "No" },
-                        { id: "yes", value: "Yes" },
+                        { label: "newHk.steps.applicant.fields.sns.options.WhatsApp", value: "WhatsApp" },
+                        { label: "newHk.steps.applicant.fields.sns.options.WeChat", value: "WeChat" },
+                        { label: "newHk.steps.applicant.fields.sns.options.Line", value: "Line" },
+                        { label: "newHk.steps.applicant.fields.sns.options.KakaoTalk", value: "KakaoTalk" },
+                        { label: "newHk.steps.applicant.fields.sns.options.Telegram", value: "Telegram" },
                     ],
-                    required: true,
                 },
                 {
-                    type: "select",
-                    name: "annualRenewalTermsAgreement.id",
-                    label: "I confirm annual renewal compliance",
-                    options: [
-                        { id: "agree", value: "Agree" },
-                        { id: "disagree", value: "Disagree" },
-                    ],
-                    required: true,
+                    type: "text",
+                    name: "snsId",
+                    label: "newHk.steps.applicant.fields.snsId.label",
+                    placeholder: "newHk.steps.applicant.fields.snsId.placeholder",
+                    condition: (f) => !!f.sns,
                 },
             ],
         },
         {
-            id: "company",
-            title: "3. Company information",
+            id: "kyc",
+            title: "usa.steps.step2",
+            description: "newHk.steps.compliance.description",
             fields: [
-                { type: "text", name: "pEntityInfo", label: "Brief business description", required: true },
-                { type: "text", name: "address", label: "Registered address (if any)" },
-                { type: "text", name: "typeOfShare", label: "Type of shares", placeholder: "e.g., Bearer shares not accepted; registered shares" },
-                { type: "number", name: "noOfSharesIssued", label: "No. of shares issued", required: true },
                 {
-                    type: "repeater",
-                    name: "shareHolders",
-                    label: "Shareholders",
-                    description: "Add individual or corporate owners.",
-                    minItems: 1,
-                    itemFields: [
-                        { type: "text", name: "name", label: "Name", required: true },
-                        { type: "email", name: "email", label: "Email" },
-                        { type: "phone", name: "phone", label: "Phone" },
-                        { type: "number", name: "ownershipRate", label: "% Ownership", required: true },
+                    type: "radio-group",
+                    name: "annualRenewalConsent",
+                    label: "aml.amlEstablishment",
+                    required: true,
+                    options: [
                         {
-                            type: "select",
-                            name: "isLegalPerson.id",
-                            label: "Is legal person?",
-                            options: [
-                                { id: "no", value: "No" },
-                                { id: "yes", value: "Yes" },
-                            ],
+                            label:
+                                "newHk.steps.compliance.options.yes",
+                            value: "yes",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.no",
+                            value: "no",
+                        },
+                        {
+                            label:
+                                "usa.AppInfo.handleOwnIncorpo",
+                            value: "self_handle",
+                        },
+                        {
+                            label:
+                                "usa.AppInfo.didntIntedEveryYear",
+                            value: "no_if_fixed_cost",
+                        },
+                        {
+                            label:
+                                "usa.AppInfo.consultationRequired",
+                            value: "consultation_required",
                         },
                     ],
+                    colSpan: 2,
                 },
                 {
-                    type: "repeater",
-                    name: "legalDirectors",
-                    label: "Directors / Officers",
-                    minItems: 1,
-                    itemFields: [
-                        { type: "text", name: "name", label: "Name", required: true },
-                        { type: "email", name: "email", label: "Email" },
-                        { type: "phone", name: "phone", label: "Phone" },
-                        { type: "number", name: "ownershipRate", label: "% Ownership (if any)" },
+                    type: "radio-group",
+                    name: "legalAndEthicalConcern",
+                    label:
+                        "newHk.steps.compliance.questions.legalAndEthicalConcern",
+                    required: true,
+                    options: [
                         {
-                            type: "select",
-                            name: "isLegalPerson.id",
-                            label: "Is legal person?",
-                            options: [
-                                { id: "no", value: "No" },
-                                { id: "yes", value: "Yes" },
-                            ],
+                            label:
+                                "newHk.steps.compliance.options.yes",
+                            value: "yes",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.no",
+                            value: "no",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.unsure",
+                            value: "unsure",
                         },
                     ],
+                    colSpan: 2,
+                },
+                {
+                    type: "radio-group",
+                    name: "q_country",
+                    label:
+                        "aml.plannedBusinessActivity",
+                    required: true,
+                    options: [
+                        {
+                            label:
+                                "newHk.steps.compliance.options.yes",
+                            value: "yes",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.no",
+                            value: "no",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.unsure",
+                            value: "unsure",
+                        },
+                    ],
+                    colSpan: 2,
+                },
+                {
+                    type: "radio-group",
+                    name: "sanctionsExposureDeclaration",
+                    label:
+                        "newHk.steps.compliance.questions.sanctionsExposureDeclaration",
+                    required: true,
+                    options: [
+                        {
+                            label:
+                                "newHk.steps.compliance.options.yes",
+                            value: "yes",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.no",
+                            value: "no",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.unsure",
+                            value: "unsure",
+                        },
+                    ],
+                    colSpan: 2,
+                },
+                {
+                    type: "radio-group",
+                    name: "crimeaSevastapolPresence",
+                    label:
+                        "newHk.steps.compliance.questions.crimeaSevastapolPresence",
+                    required: true,
+                    options: [
+                        {
+                            label:
+                                "newHk.steps.compliance.options.yes",
+                            value: "yes",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.no",
+                            value: "no",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.unsure",
+                            value: "unsure",
+                        },
+                    ],
+                    colSpan: 2,
+                },
+                {
+                    type: "radio-group",
+                    name: "russianEnergyPresence",
+                    label:
+                        "newHk.steps.compliance.questions.russianEnergyPresence",
+                    required: true,
+                    options: [
+                        {
+                            label:
+                                "newHk.steps.compliance.options.yes",
+                            value: "yes",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.no",
+                            value: "no",
+                        },
+                        {
+                            label:
+                                "newHk.steps.compliance.options.unsure",
+                            value: "unsure",
+                        },
+                    ],
+                    colSpan: 2,
                 },
             ],
         },
-
-        // AGREEMENT: render-only step using shared component
+        { id: "company", title: "newHk.steps.company.title", render: CompanyInfoStep },
+        {
+            id: "acct",
+            title: "newHk.steps.acct.title",
+            fields: [
+                {
+                    type: "select", name: "finYrEnd", label: "newHk.steps.acct.fields.finYrEnd.label",
+                    options: [
+                        { label: "newHk.steps.acct.fields.finYrEnd.options.December 31", value: "December 31" },
+                        { label: "newHk.steps.acct.fields.finYrEnd.options.March 31", value: "March 31" },
+                        { label: "newHk.steps.acct.fields.finYrEnd.options.June 30", value: "June 30" },
+                        { label: "newHk.steps.acct.fields.finYrEnd.options.September 30", value: "September 30" }
+                    ]
+                },
+                {
+                    type: "radio-group", name: "bookKeepingCycle", label: "newHk.steps.acct.fields.bookKeepingCycle.label",
+                    options: [
+                        { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Monthly", value: "Monthly" },
+                        { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Quarterly", value: "Quarterly" },
+                        { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Half-annually", value: "Half-annually" },
+                        { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Annually", value: "Annually" }
+                    ],
+                    colSpan: 2
+                },
+                {
+                    type: "radio-group", name: "xero", label: "newHk.steps.acct.fields.xero.label",
+                    options: [
+                        { label: "newHk.steps.acct.fields.xero.options.Yes", value: "Yes" },
+                        { label: "newHk.steps.acct.fields.xero.options.No", value: "No" },
+                        { label: "newHk.steps.acct.fields.xero.options.Recommendation required", value: "Recommendation required" },
+                        { label: "newHk.steps.acct.fields.xero.options.Other", value: "Other" }
+                    ],
+                    colSpan: 2
+                },
+                { type: "text", name: "softNote", label: "newHk.steps.acct.fields.softNote.label", placeholder: "newHk.steps.acct.fields.softNote.placeholder", colSpan: 2 }
+            ]
+        },
         {
             id: "agreement",
-            title: "4. Service Agreement",
-            description: "Please confirm to proceed to invoicing.",
-            render: CommonServiceAgrementTxt,
+            title: "usa.steps.step4",
+            description:
+                "usa.steps.agreement.description",
+            render: CommonServiceAgrementTxt
         },
-
+        {
+            id: "services",
+            title: "usa.steps.step5",
+            description:
+                "usa.steps.services.description",
+            render: SgServiceSelectionStep,
+        },
         {
             id: "invoice",
-            title: "5. Invoice",
-            fields: [
-                { type: "text", name: "registerCurrencyAtom.code", label: "Currency code", placeholder: "USD", required: true },
-                { type: "number", name: "totalAmountCap", label: "Estimated invoice amount", required: true },
-            ],
+            title: "usa.steps.step6",
+            description:
+                "usa.steps.invoice.description",
+            render: InvoiceSgStep,
         },
         {
             id: "payment",
-            title: "6. Payment",
-            description: "Enter payment reference details (Stripe/Bank).",
-            fields: [
-                { type: "text", name: "paymentId", label: "Payment ID (Stripe / Bank Ref)", required: true },
-                { type: "text", name: "receiptUrl", label: "Receipt URL" },
-                { type: "text", name: "sessionId", label: "Session ID (if Stripe)" },
-            ],
+            title: "usa.steps.step7",
+            description: "usa.steps.payment.description",
+            render: PaymentStep,
         },
         {
-            id: "incorporation",
-            title: "7. Incorporation",
-            fields: [
-                { type: "text", name: "status", label: "Current status", placeholder: "Draft / Filed / Approved" },
-                { type: "text", name: "incorporationDate", label: "Incorporation date (YYYY-MM-DD)" },
-                {
-                    type: "checkbox",
-                    name: "isTermsAndConditionsAccepted",
-                    label: "I confirm all information is true and accurate.",
-                    required: true,
-                },
-            ],
+            id: "incorp",
+            title: "usa.steps.step9",
+            description: "usa.steps.incorp.description",
+            render: SgFinalSectionStep,
         },
     ],
 };
 
-/* -------------------------------------------------------------------------- */
-/* Field renderer                                                             */
-/* -------------------------------------------------------------------------- */
+/* =============================================================================
+   Utils
+============================================================================= */
 
-function Field({
-    field,
-    value,
-    onChange,
-}: {
-    field: FieldBase;
-    value: any;
-    onChange: (v: any) => void;
-}) {
+const requiredMissing = (form: Record<string, any>, fields: Field[]): string[] =>
+    fields.reduce<string[]>((acc, f) => {
+        if (f.condition && !f.condition(form)) return acc;
+        if (!f.required || f.type === "derived") return acc;
+
+        const v = form[f.name];
+        if (f.type === "checkbox-group") {
+            if (!Array.isArray(v) || v.length === 0) acc.push(f.label);
+        } else if (f.type === "checkbox") {
+            if (!v) acc.push(f.label);
+        } else if (v === undefined || v === null || String(v).trim() === "") {
+            acc.push(f.label);
+        }
+        return acc;
+    }, []);
+
+/* =============================================================================
+   Small UI bits
+============================================================================= */
+
+const TopBar: React.FC<{ idx: number; total: number }> = ({ idx, total }) => {
     const { t } = useTranslation();
-    const { type, label, placeholder, description, options } = field;
-    const tooltipText = field.tooltip
-        ? t(field.tooltip as any, field.tooltip)
-        : undefined;
-    const wrap = (control: React.ReactNode) => (
-        <div className="space-y-2">
-            <div className="flex items-center gap-2">
-                <Label className="text-sm font-medium flex items-center gap-2">
-                    {label}
-                    {field.required && <span className="text-red-500">*</span>}
-                </Label>
-                {tooltipText && (
-                    <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Info className="size-4 text-muted-foreground" />
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-xs text-sm">
-                                {tooltipText}
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                )}
-            </div>
-            {control}
-            {description && (
-                <p className="text-[12px] text-muted-foreground flex items-center gap-1">
-                    <Info className="h-3 w-3" />
-                    {description}
+    const progress = Math.round(((idx + 1) / total) * 100);
+    return (
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex-1 min-w-0">
+                <h1 className="text-lg sm:text-xl font-extrabold truncate">{t(CONFIG.title)}</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                    {t("newHk.infoHelpIcon", "Complete each step. Helpful tips (ⓘ) appear where needed.")}
                 </p>
+            </div>
+            <div className="w-full sm:w-72 shrink-0">
+                <Progress value={progress} />
+                <p className="text-right text-xs text-muted-foreground mt-1">
+                    Step {idx + 1} of {total}
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const Sidebar: React.FC<{ steps: Step[]; currentIdx: number; onNavigate: (idx: number) => void; canProceed: boolean }> = ({
+    steps,
+    currentIdx,
+    onNavigate,
+    canProceed,
+}) => {
+    const { t } = useTranslation();
+    return (
+        <aside className="space-y-3 sticky top-0 h-[calc(100vh-2rem)] overflow-auto">
+            <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded bg-red-600 shrink-0" />
+                <span className="text-xs font-semibold truncate">Company Incorporation — Panama</span>
+            </div>
+
+            <div className="flex flex-wrap gap-1 text-xs">
+                <Badge variant="outline">SSL</Badge>
+                <Badge variant="outline">AML/KYC</Badge>
+                <Badge variant="outline">Secure</Badge>
+            </div>
+            <div className="space-y-1 mt-3">
+                {steps.map((s, i) => {
+                    const enabled = i <= currentIdx || canProceed;
+                    const active = i === currentIdx;
+                    return (
+                        <button
+                            key={s.id}
+                            onClick={() => enabled && onNavigate(i)}
+                            disabled={!enabled}
+                            className={cn(
+                                "w-full text-left rounded-lg border p-2 sm:p-3 transition",
+                                active && "border-primary bg-accent/10",
+                                !active && enabled && "hover:bg-accent/10",
+                                !enabled && "opacity-60 cursor-not-allowed"
+                            )}
+                        >
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="font-semibold text-xs sm:text-sm truncate">
+                                    {i + 1}. {t(s.title)}
+                                </span>
+                                {i < currentIdx && (
+                                    <Badge variant="secondary" className="text-xs">
+                                        Done
+                                    </Badge>
+                                )}
+                            </div>
+                        </button>
+                    );
+                })}
+            </div>
+        </aside>
+    );
+};
+
+const FieldLabel: React.FC<{ label: string; tooltip?: string; htmlFor: string; className?: string; }> = ({ label, tooltip, htmlFor, className = "", }) => {
+    const { t } = useTranslation();
+    return (
+        <div className={`flex items-center gap-2 ${className}`}>
+            <Label htmlFor={htmlFor} className="font-semibold">
+                {t(label)}
+            </Label>
+            {tooltip && (
+                <TooltipProvider delayDuration={0}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Info className="size-4 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs text-sm">
+                            {t(tooltip)}
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             )}
         </div>
     );
+};
 
-    switch (type) {
+const EmailOTPField: React.FC = () => {
+    const { t } = useTranslation();
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
+    const [otp, setOtp] = React.useState("");
+    const [sessionId, setSessionId] = React.useState<string | null>(null);
+
+    const sendOTP = async () => {
+        if (!form.email?.trim()) return;
+        if (sessionId) {
+            toast({ title: "Error", description: "Verify the OTP sent already", variant: "destructive" });
+            return;
+        }
+        const res = await sendEmailOtpforVerification({ email: form.email, name: form.name });
+        if (res.success) {
+            setSessionId(res.id);
+            toast({ title: "Success", description: "OTP sent successfully" });
+        } else {
+            toast({ title: "Error", description: "Failed to send OTP", variant: "destructive" });
+        }
+    };
+
+    const verifyOTP = async () => {
+        if (!otp.trim()) return;
+        const res = await validateOtpforVerification({ otp, id: sessionId });
+        if (res.success) {
+            setForm((p: any) => ({ ...p, emailOtpVerified: true }));
+            setSessionId(null);
+            setOtp("");
+            toast({ title: "Success", description: "Email verified successfully" });
+        } else {
+            toast({ title: "Error", description: "Invalid OTP", variant: "destructive" });
+        }
+    };
+
+    return (
+        <div className="grid gap-2 md:col-span-2">
+            <div className="flex items-center justify-between">
+                <Label className="font-semibold">{t("ApplicantInfoForm.email")} *</Label>
+                {form.emailOtpVerified && <Badge variant="secondary">Verified ✓</Badge>}
+                {sessionId && !form.emailOtpVerified && <Badge variant="outline">OTP Sent</Badge>}
+            </div>
+
+            <div className="flex gap-2">
+                <Input
+                    type="email"
+                    placeholder={t("usa.AppInfo.emailPlaceholder", "Valid email")}
+                    value={form.email ?? ""}
+                    onChange={(e) => setForm((p: any) => ({ ...p, email: e.target.value, emailOtpVerified: false }))}
+                />
+                <Button type="button" variant="outline" onClick={sendOTP} disabled={!form.email?.trim()}>
+                    Send OTP
+                </Button>
+            </div>
+
+            {sessionId && !form.emailOtpVerified && (
+                <div className="flex gap-2">
+                    <Input placeholder={t("usa.email.enterOtp", "Enter OTP")} value={otp} onChange={(e) => setOtp(e.target.value)} />
+                    <Button onClick={verifyOTP} disabled={!otp.trim()}>
+                        Verify
+                    </Button>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const MobileOTPField: React.FC = () => {
+    const { t } = useTranslation();
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
+    const [otp, setOtp] = React.useState("");
+    const [sessionId, setSessionId] = React.useState<string | null>(null);
+    const [otpSent, setOtpSent] = React.useState(false);
+    const [resendTimer, setResendTimer] = React.useState(0);
+
+    React.useEffect(() => {
+        if (resendTimer <= 0) return;
+        const id = setInterval(() => setResendTimer((s) => s - 1), 1000);
+        return () => clearInterval(id);
+    }, [resendTimer]);
+
+    const sendOTP = async () => {
+        if (!form.phoneNum?.trim()) {
+            toast({ title: "Missing Number", description: "Phone Number is required", variant: "default" });
+            return;
+        }
+        if (sessionId) {
+            toast({ title: "Error", description: "Verify the otp sent already", variant: "destructive" });
+            return;
+        }
+        const res = await sendMobileOtpforVerification({ phoneNum: form.phoneNum });
+        if (res.success) {
+            setOtpSent(true);
+            setResendTimer(60);
+            setSessionId(res.id);
+            toast({ title: "Success", description: "OTP sent successfully" });
+        } else {
+            setOtpSent(false);
+            setResendTimer(0);
+            setSessionId(null);
+            toast({
+                title: "Error",
+                description: "Failed to send OTP. Please enter proper phone number along with country code.",
+                variant: "destructive",
+            });
+        }
+    };
+
+    const verifyOTP = async () => {
+        if (!otp.trim()) {
+            toast({ title: "Error", description: "Please enter OTP", variant: "destructive" });
+            return;
+        }
+        const res = await validateOtpforVerification({ otp, id: sessionId });
+        if (res.success) {
+            setForm((p: any) => ({ ...p, mobileOtpVerified: true }));
+            setSessionId(null);
+            toast({ title: "Success", description: "Phone number verified successfully" });
+        } else {
+            toast({ title: "Error", description: "Invalid OTP", variant: "destructive" });
+        }
+    };
+
+    return (
+        <div className="grid gap-2 md:col-span-2">
+            <div className="flex items-center justify-between">
+                <Label className="font-semibold">{t("ApplicantInfoForm.phoneNum", "Phone Number")} *</Label>
+                {form.mobileOtpVerified && <Badge variant="secondary">Verified ✓</Badge>}
+                {otpSent && !form.mobileOtpVerified && <Badge variant="outline">OTP Sent</Badge>}
+            </div>
+
+            <div className="flex gap-2">
+                <Input
+                    type="tel"
+                    placeholder={t("ApplicantInfoForm.phoneNumInfo", "Enter phone with country code, e.g. +65...")}
+                    value={form.phoneNum ?? ""}
+                    onChange={(e) => setForm((p: any) => ({ ...p, phoneNum: e.target.value, mobileOtpVerified: false }))}
+                />
+                <Button type="button" variant="outline" onClick={sendOTP} disabled={resendTimer > 0}>
+                    {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Send OTP"}
+                </Button>
+            </div>
+
+            {otpSent && !form.mobileOtpVerified && (
+                <div className="flex gap-2">
+                    <Input placeholder="OTP" value={otp} onChange={(e) => setOtp(e.target.value)} className="w-32" />
+                    <Button type="button" onClick={verifyOTP} disabled={!otp.trim()}>
+                        Verify
+                    </Button>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const FormField: React.FC<{ field: Field; form: any; setForm: (fn: (p: any) => any) => void }> = ({ field, form, setForm }) => {
+    const { t } = useTranslation();
+
+    // apply defaultValue once if missing
+    useEffect(() => {
+        if (field.defaultValue !== undefined && form[field.name] === undefined) {
+            setForm((p) => ({ ...p, [field.name]: field.defaultValue }));
+        }
+    }, [field.defaultValue, field.name, form, setForm]);
+    if (field.condition && !field.condition(form)) return null;
+
+    const span = field.colSpan === 2 ? "md:col-span-2" : "";
+    const value = form[field.name];
+    const set = (v: any) => setForm((p) => ({ ...p, [field.name]: v }));
+
+    const labelCls = "text-sm font-medium text-gray-700";
+    const hintCls = "text-xs text-muted-foreground";
+    const wrapCls = cn("grid gap-2", span);
+    const inputCls = "h-9 rounded-md";
+    const selectTriggerCls = "h-9 rounded-md";
+
+    switch (field.type) {
         case "text":
         case "email":
         case "number":
-        case "phone":
-            return wrap(
-                <Input
-                    type={type === "phone" ? "text" : type}
-                    value={value ?? ""}
-                    placeholder={placeholder}
-                    onChange={(e) =>
-                        onChange(
-                            type === "number"
-                                ? e.target.value === ""
-                                    ? ""
-                                    : Number(e.target.value)
-                                : e.target.value
-                        )
-                    }
-                />
+            return (
+                <div className={wrapCls}>
+                    <FieldLabel label={field.label} tooltip={field.tooltip} htmlFor={field.name} className={labelCls} />
+                    <Input
+                        id={field.name}
+                        type={field.type === "number" ? "number" : field.type}
+                        placeholder={field.placeholder ? t(field.placeholder) : ""}
+                        value={value ?? ""}
+                        onChange={(e) => set(e.target.value)}
+                        className={inputCls}
+                    />
+                    {field.hint && <p className={hintCls}>{t(field.hint)}</p>}
+                </div>
             );
 
         case "textarea":
-            return wrap(
-                <Textarea
-                    value={value ?? ""}
-                    placeholder={placeholder}
-                    onChange={(e) => onChange(e.target.value)}
-                />
+            return (
+                <div className={wrapCls}>
+                    <FieldLabel label={field.label} tooltip={field.tooltip} htmlFor={field.name} className={labelCls} />
+                    <Textarea
+                        id={field.name}
+                        rows={field.rows ?? 4}
+                        placeholder={field.placeholder ? t(field.placeholder) : ""}
+                        value={value ?? ""}
+                        onChange={(e) => set(e.target.value)}
+                        className="rounded-md"
+                    />
+                    {field.hint && <p className={hintCls}>{t(field.hint)}</p>}
+                </div>
             );
 
         case "select": {
-            const opts = (options ?? []).map((o: any) => ({
-                id: o.id ?? o.value,
-                label: o.value ?? o.label,
-            }));
-            return wrap(
-                <Select value={value ?? ""} onValueChange={(v) => onChange(v)}>
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder={placeholder ?? "Select"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {opts.map((o) => (
-                            <SelectItem key={o.id} value={o.id}>
-                                {o.label}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            );
-        }
-
-        case "multiselect": {
-            const opts = (options ?? []).map((o: any) => ({
-                id: o.id ?? o.value,
-                label: o.label ?? o.value,
-            }));
-            const arr: string[] = Array.isArray(value) ? value : [];
-            return wrap(
-                <div className="grid gap-2">
-                    {opts.map((o) => (
-                        <label key={o.id} className="flex items-center gap-2 text-sm">
-                            <Checkbox
-                                checked={arr.includes(o.id)}
-                                onCheckedChange={(c) => {
-                                    const next = new Set(arr);
-                                    if (c) next.add(o.id);
-                                    else next.delete(o.id);
-                                    onChange(Array.from(next));
-                                }}
-                            />
-                            <span>{o.label}</span>
-                        </label>
-                    ))}
+            const opts = field.options ?? [];
+            return (
+                <div className={wrapCls}>
+                    <FieldLabel label={field.label} tooltip={field.tooltip} htmlFor={field.name} className={labelCls} />
+                    <Select value={String(value ?? "")} onValueChange={set}>
+                        <SelectTrigger id={field.name} className={selectTriggerCls}>
+                            <SelectValue placeholder={t("common.select", "Select")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {opts.map((o) => (
+                                <SelectItem key={o.value} value={o.value}>
+                                    {t(o.label)}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    {field.hint && <p className={hintCls}>{t(field.hint)}</p>}
                 </div>
             );
         }
 
         case "checkbox":
             return (
-                <label className="flex items-center gap-2 text-sm">
-                    <Checkbox checked={!!value} onCheckedChange={(c) => onChange(!!c)} />
-                    <span>
-                        {label}
-                        {field.required && <span className="text-red-500"> *</span>}
-                    </span>
-                </label>
+                <div className={cn("flex items-center gap-2", span)}>
+                    <Checkbox id={field.name} checked={!!value} onCheckedChange={(v) => set(v === true)} />
+                    <FieldLabel label={field.label} tooltip={field.tooltip} htmlFor={field.name} className={labelCls} />
+                </div>
             );
 
-        case "repeater": {
-            const items: any[] = Array.isArray(value) ? value : [];
+        case "checkbox-group": {
+            const selected: string[] = Array.isArray(value) ? value : [];
+            const opts = field.options ?? [];
+            const isOtherOption = (optValue: string) => optValue.toLowerCase() === "other";
+            const otherPrefix = "other:";
+            const hasOther = selected.some((v) => v === "Other" || v.startsWith(otherPrefix));
+            const currentOtherVal = (() => {
+                const v = selected.find((x) => x.startsWith(otherPrefix));
+                return v ? v.slice(otherPrefix.length) : "";
+            })();
+            const setArray = (arr: string[]) => setForm((p) => ({ ...p, [field.name]: arr }));
+
+            const toggleValue = (optValue: string, on: boolean) => {
+                const next = new Set(selected);
+                if (isOtherOption(optValue)) {
+                    if (on) {
+                        Array.from(next).forEach((v) => {
+                            if (v === "Other") next.delete(v);
+                        });
+                        if (!Array.from(next).some((v) => v.startsWith(otherPrefix))) next.add(otherPrefix);
+                    } else {
+                        Array.from(next).forEach((v) => {
+                            if (v === "Other" || v.startsWith(otherPrefix)) next.delete(v);
+                        });
+                    }
+                } else {
+                    if (on) next.add(optValue);
+                    else next.delete(optValue);
+                }
+                setArray(Array.from(next));
+            };
+
+            const updateOtherText = (text: string) => {
+                const base = selected.filter((v) => !(v === "Other" || v.startsWith(otherPrefix)));
+                base.push(`${otherPrefix}${text}`);
+                setArray(base);
+            };
+
             return (
-                <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                        <Label className="text-sm font-medium">{field.label}</Label>
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => onChange([...(items || []), {}])}
-                        >
-                            <Plus className="h-4 w-4 mr-1" /> Add
-                        </Button>
-                    </div>
-                    {items.length === 0 && (
-                        <p className="text-sm text-muted-foreground">No items yet.</p>
-                    )}
-                    {items.map((it, idx) => (
-                        <Card key={idx} className="border-dashed">
-                            <CardContent className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {(field.itemFields || []).map((sub, sIdx) => (
-                                    <Field
-                                        key={`${idx}-${sIdx}-${sub.name}`}
-                                        field={sub as FieldBase}
-                                        value={(it as any)[sub.name]}
-                                        onChange={(v) => {
-                                            const next = [...items];
-                                            next[idx] = { ...next[idx], [sub.name]: v };
-                                            onChange(next);
-                                        }}
+                <div className={wrapCls}>
+                    <FieldLabel label={field.label} tooltip={field.tooltip} htmlFor={field.name} className={labelCls} />
+                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
+                        {opts.map((opt) => {
+                            const isOther = isOtherOption(opt.value);
+                            const isChecked = isOther ? hasOther : selected.includes(opt.value);
+                            return (
+                                <label key={opt.value} className="flex items-center gap-2 rounded-md border border-gray-200 p-2 hover:bg-gray-50">
+                                    <Checkbox
+                                        checked={isChecked}
+                                        onCheckedChange={(checked) => toggleValue(opt.value, checked === true)}
                                     />
-                                ))}
-                                <div className="md:col-span-2 flex justify-end">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() =>
-                                            onChange(items.filter((_, i) => i !== idx))
-                                        }
-                                    >
-                                        <X className="h-4 w-4 mr-1" /> Remove
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
+                                    <span className="text-sm text-gray-700">{t(opt.label)}</span>
+                                </label>
+                            );
+                        })}
+                    </div>
+
+                    {hasOther && (
+                        <div className="flex items-center gap-2 mt-1">
+                            <Label htmlFor={`${field.name}-other`} className="text-sm text-muted-foreground">
+                                {t("common.specifyOther", "Please specify")}
+                            </Label>
+                            <Input
+                                id={`${field.name}-other`}
+                                placeholder={t("common.enterValue", "Enter value")}
+                                value={currentOtherVal}
+                                onChange={(e) => updateOtherText(e.target.value)}
+                                className={inputCls}
+                            />
+                        </div>
+                    )}
+
+                    {field.hint && <p className={hintCls}>{t(field.hint)}</p>}
                 </div>
             );
         }
 
-        // 3 company name inputs -> companyName[0..2]
-        case "companyNames": {
-            const arr: string[] = Array.isArray(value) ? value : ["", "", ""];
-            const ensureLen = (a: string[]) => {
-                const next = [...a];
-                while (next.length < 3) next.push("");
-                return next.slice(0, 3);
+        case "radio-group": {
+            const opts = field.options ?? [];
+            return (
+                <div className={wrapCls}>
+                    <FieldLabel label={field.label} tooltip={field.tooltip} htmlFor={field.name} className={labelCls} />
+                    <RadioGroup value={String(value ?? "")} onValueChange={set} className="space-y-2">
+                        {opts.map((opt) => (
+                            <label key={opt.value} className="flex items-start gap-3 text-sm cursor-pointer">
+                                <RadioGroupItem value={opt.value} className="mt-0.5" />
+                                <span>{t(opt.label)}</span>
+                            </label>
+                        ))}
+                    </RadioGroup>
+                    {field.hint && <p className={hintCls}>{t(field.hint)}</p>}
+                </div>
+            );
+        }
+
+        case "derived": {
+            const computed = field.compute ? field.compute(form) : "";
+            return (
+                <div className={wrapCls}>
+                    <FieldLabel label={field.label} tooltip={field.tooltip} htmlFor={field.name} className={labelCls} />
+                    <Input id={field.name} readOnly value={computed} className={inputCls} />
+                </div>
+            );
+        }
+        case "search-select" : {
+            const selectedItem = form[field.name]
+                ? field.items?.find(
+                    (o: any) => o.code === form[field.name]
+                ) || null
+                : null;
+
+            const handleSelect = (item: {
+                code: string;
+                label: string;
+            }) => {
+                set(item.code);
             };
-            const vals = ensureLen(arr);
-            return wrap(
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                    {vals.map((v, i) => (
-                        <div key={i} className="space-y-1">
-                            <Label className="text-xs text-muted-foreground">
-                                {t("proposedName")} #{i + 1}
-                            </Label>
-                            <Input
-                                value={v ?? ""}
-                                placeholder={`Company name ${i + 1}`}
-                                onChange={(e) => {
-                                    const next = ensureLen(arr);
-                                    next[i] = e.target.value;
-                                    onChange(next);
-                                }}
-                            />
-                        </div>
-                    ))}
+
+            const items = (field.items || []).map((it: any) => ({
+                ...it,
+                label: t(it.label as any, it.label),
+            }));
+
+            return (
+                <div className={cn("grid gap-2", span)}>
+                    {t(field.label)}
+                    <SearchSelect
+                        items={items}
+                        placeholder={t("common.select", "Select")}
+                        onSelect={handleSelect}
+                        selectedItem={
+                            selectedItem
+                                ? {
+                                    ...selectedItem,
+                                    label: t(
+                                        selectedItem.label as any,
+                                        selectedItem.label
+                                    ),
+                                }
+                                : null
+                        }
+                    />
+                    {field.hint && <p className={hintCls}>{t(field.hint)}</p>}
                 </div>
             );
         }
@@ -519,372 +3218,136 @@ function Field({
         default:
             return null;
     }
-}
+};
 
-/* -------------------------------------------------------------------------- */
-/* Validation                                                                 */
-/* -------------------------------------------------------------------------- */
 
-function validateStep(step: StepConfig, form: any): string[] {
-    const missing: string[] = [];
+const PanamaIncorporationForm: React.FC = () => {
+    const { t } = useTranslation();
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
+    const [stepIdx, setStepIdx] = React.useState(0);
+    const step = CONFIG.steps[stepIdx];
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-    // render-only steps have nothing to validate
-    if (!step.fields || step.fields.length === 0) return missing;
+    const fields = step.fields ?? [];
+    const missing = step.fields ? requiredMissing(form, fields) : [];
 
-    for (const f of step.fields) {
-        if (!f.required) continue;
+    // Applicant step: require email + phone + both verifications
+    if (step.id === "applicant") {
+        if (!String(form.email || "").trim()) missing.push("Email");
+        if (!String(form.phoneNum || "").trim()) missing.push("ApplicantInfoForm.phoneNum");
+        // if (!form.emailOtpVerified) missing.push("usa.email.otpRequired");
+        // if (!form.mobileOtpVerified) missing.push("usa.mobile.otpRequired");
+    }
 
-        if (f.type === "checkbox") {
-            const v = getDeep(form, f.name);
-            if (!v) missing.push(f.label);
-            continue;
+    const canProceed = missing.length === 0;
+
+    const updateDoc = async () => {
+        // setIsSubmitting(true);
+        if (isSubmitting) {
+            return;
         }
-
-        const v = getDeep(form, f.name);
-
-        if (f.type === "companyNames") {
-            const arr = Array.isArray(v) ? v : [];
-            const filled = arr.filter((x) => (x ?? "").trim().length > 0);
-            if (filled.length < 3) missing.push(`${f.label}`);
-            continue;
-        }
-
-        if (f.type === "repeater") {
-            const items = Array.isArray(v) ? v : [];
-            if (f.minItems && items.length < f.minItems)
-                missing.push(`${f.label} (min. ${f.minItems})`);
-            if (f.itemFields) {
-                items.forEach((it, idx) => {
-                    f.itemFields!.forEach((sf) => {
-                        if (sf.required && isEmpty(it[sf.name])) {
-                            missing.push(`${f.label} #${idx + 1}: ${sf.label}`);
-                        }
-                    });
-                });
+        const token = localStorage.getItem("token") as string;
+        const decodedToken = jwtDecode<TokenData>(token);
+        setIsSubmitting(true);
+        form.userId = `${decodedToken.userId}`
+        const payload = { ...form };
+        try {
+            // console.log("payload", payload)
+            const response = await api.post("/company/pa-form", payload);
+            if (response.status === 200) {
+                // console.log("formdata", response.data);
+                localStorage.setItem("companyRecordId", response.data.data._id);
+                setForm(response.data.data)
+                window.history.pushState(
+                    {},
+                    "",
+                    `/company-register/SG/${response.data.data._id}`
+                );
+            } else {
+                console.log("error-->", response);
             }
-            continue;
+        } catch (error) {
+            console.error("Submission error:", error);
+        } finally {
+            console.log("finally");
+            setIsSubmitting(false);
+            setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
         }
-
-        if (isEmpty(v)) missing.push(f.label);
     }
-    return missing;
-}
 
-/* -------------------------------------------------------------------------- */
-/* TopBar (as requested)                                                      */
-/* -------------------------------------------------------------------------- */
-
-function TopBar({
-    title,
-    totalSteps,
-    idx,
-}: {
-    title: string;
-    totalSteps: number;
-    idx: number;
-}) {
-    const { t } = useTranslation();
-    const pct = Math.round(((idx + 1) / totalSteps) * 100);
-    return (
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-            <div className="min-w-0 flex-1">
-                <div className="text-lg sm:text-xl font-extrabold truncate">
-                    {t(title) || t("ppif.topbar.defaultTitle")}
-                </div>
-                <div className="text-xs sm:text-sm text-muted-foreground">
-                    {t("newHk.infoHelpIcon")}
-                </div>
-            </div>
-            <div className="w-full sm:w-72 shrink-0">
-                <Progress value={pct} />
-                <div className="text-right text-xs text-muted-foreground mt-1">
-                    {t("newHk.topbar.stepOf", { current: idx + 1, total: totalSteps })}
-                </div>
-            </div>
-        </div>
-    );
-}
-
-/* -------------------------------------------------------------------------- */
-/* Sidebar                                                                    */
-/* -------------------------------------------------------------------------- */
-
-type StepLike = { id: string; title: string };
-
-function SidebarPanama({
-    steps,
-    idx,
-    goto,
-    canProceedFromCurrent,
-}: {
-    steps: StepLike[];
-    idx: number;
-    goto: (i: number) => void;
-    canProceedFromCurrent: boolean;
-}) {
-    const { t } = useTranslation();
-    const canJumpTo = (target: number) => {
-        if (target === idx) return true;
-        if (target < idx) return true;
-        return canProceedFromCurrent;
-    };
-
-    const onTryGoto = (target: number) => {
-        if (target === idx) return;
-        if (target < idx) {
-            goto(target);
+    const handleNext = async () => {
+        if (!canProceed) {
+            toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
             return;
         }
-        if (!canProceedFromCurrent) {
-            toast({
-                title: t("newHk.sidebar.toasts.completeStepTitle"),
-                description: t("newHk.sidebar.toasts.completeStepDesc"),
-            });
-            return;
-        }
-        goto(target);
+        console.log("form", form)
+        await updateDoc();
+        // setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
     };
 
+    const back = () => setStepIdx((i) => Math.max(0, i - 1));
+    // console.log("missing", missing)
     return (
-        <aside className="space-y-4 sticky top-0 h-[calc(100vh-2rem)] overflow-auto p-0">
-            {/* Brand / badges */}
-            <div className="flex items-center gap-2 mb-1">
-                <div className="w-5 h-5 rounded bg-red-600 shrink-0" />
-                <div className="text-[11px] sm:text[13px] tracking-wide font-semibold truncate">
-                    {t("newHk.sidebar.brand")}
-                </div>
-            </div>
-            <div className="text-xs text-muted-foreground">
-                <div className="flex flex-wrap gap-1">
-                    <span className="inline-flex items-center gap-1 border rounded-full px-2 py-1 text-[10px] sm:text-xs">
-                        {t("newHk.sidebar.badges.ssl")}
-                    </span>
-                    <span className="inline-flex items-center gap-1 border rounded-full px-2 py-1 text-[10px] sm:text-xs">
-                        {t("newHk.sidebar.badges.registry")}
-                    </span>
-                    <span className="inline-flex items-center gap-1 border rounded-full px-2 py-1 text-[10px] sm:text-xs">
-                        {t("newHk.sidebar.badges.aml")}
-                    </span>
-                </div>
-            </div>
+        <div className="max-width mx-auto p-3 sm:p-6 space-y-4">
+            <TopBar idx={stepIdx} total={CONFIG.steps.length} />
 
-            {/* Steps */}
-            <div className="space-y-1 mt-3">
-                {steps.map((s, i) => {
-                    const enabled = canJumpTo(i);
-                    const isCurrent = i === idx;
-                    const isDone = i < idx;
-                    return (
-                        <button
-                            key={s.id}
-                            onClick={() => onTryGoto(i)}
-                            disabled={!enabled}
-                            className={cx(
-                                "w-full text-left rounded-lg border p-2 sm:p-3 transition touch-manipulation",
-                                isCurrent ? "border-primary bg-accent/10" : "hover:bg-accent/10",
-                                !enabled && "opacity-60 cursor-not-allowed"
-                            )}
-                        >
-                            <div className="flex items-center justify-between gap-2">
-                                <div className="font-semibold text-xs sm:text-sm truncate">
-                                    {i + 1}. {t(s.title as string)}
-                                </div>
-                                <div className="shrink-0 flex items-center gap-1">
-                                    {isDone && (
-                                        <Badge
-                                            variant="secondary"
-                                            className="text-[10px] sm:text-xs flex items-center gap-1"
-                                        >
-                                            <CheckCircle2 className="h-3.5 w-3.5" /> {t("newHk.sidebar.done")}
-                                        </Badge>
-                                    )}
-                                    {!enabled && !isDone && (
-                                        <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground">
-                                            <Lock className="h-3.5 w-3.5" />
-                                        </span>
-                                    )}
-                                </div>
+            <div className="grid lg:grid-cols-[280px_1fr] gap-6">
+                {/* Sidebar */}
+                <div className="hidden lg:block">
+                    <Sidebar steps={CONFIG.steps} currentIdx={stepIdx} onNavigate={setStepIdx} canProceed={canProceed} />
+                </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>
+                            {stepIdx + 1}. {t(step.title)}
+                        </CardTitle>
+                    </CardHeader>
+
+                    <CardContent className="space-y-4">
+                        {/* OTP Blocks on Applicant step */}
+                        {step.id === "applicant" && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <EmailOTPField />
+                                <MobileOTPField />
                             </div>
-                        </button>
-                    );
-                })}
-                <p className="text-xs text-muted-foreground mt-2">
-                    {t("newHk.sidebar.needHelp")}{" "}
-                    <button
-                        className="text-sky-600 underline-offset-2 hover:underline touch-manipulation"
-                        onClick={() =>
-                            toast({
-                                title: t("ppif.sidebar.contactToastTitle"),
-                                description: t("ppif.sidebar.contactToastDesc"),
-                            })
-                        }
-                    >
-                        {t("newHk.sidebar.chatCta")}
-                    </button>
-                </p>
+                        )}
+
+                        {/* Fields */}
+                        {step.fields && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {fields.map((f) => (
+                                    <FormField key={f.name} field={f} form={form} setForm={setForm} />
+                                ))}
+                            </div>
+                        )}
+                        {step.render ? <step.render form={form} setForm={setForm} /> : null}
+
+                        {missing.length > 0 && (
+                            <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+                                <div className="mb-2 text-destructive text-sm font-semibold">
+                                    {t("Required")}
+                                </div>
+                                <ul className="list-disc pl-5 space-y-1 text-sm">
+                                    {missing.map((k) => (
+                                        <li key={k} className="leading-tight">
+                                            {t(k)}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </CardContent>
+                    <CardFooter className="flex justify-between">
+                        <Button variant="outline" disabled={stepIdx === 0} onClick={back}>
+                            ← Back
+                        </Button>
+                        <Button onClick={handleNext}>{stepIdx < CONFIG.steps.length - 1 ? "Next →" : "Finish"}</Button>
+                    </CardFooter>
+                </Card>
             </div>
-        </aside>
-    );
-}
-
-/* -------------------------------------------------------------------------- */
-/* Main component                                                             */
-/* -------------------------------------------------------------------------- */
-
-export default function PanamaIncorporationForm() {
-  const [form, setForm] = useAtom(paFormWithResetAtom);
-  const [idx, setIdx] = useState(0);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false); // NEW
-  const step = paIncorpConfig.steps[idx];
-  const [errors, setErrors] = useState<string[]>([]);
-
-  const onFieldChange = (name: string, value: any) => {
-    const next = { ...form };
-    setDeep(next, name, value);
-    setForm(next);
-  };
-  const { t } = useTranslation();
-  const currentMissing = validateStep(step, form);
-  const canProceedFromCurrent = currentMissing.length === 0;
-
-  const goto = (i: number) => setIdx(i);
-
-  const handleNext = () => {
-    const missing = validateStep(step, form);
-    if (missing.length > 0) {
-      setErrors(missing);
-      return;
-    }
-    setErrors([]);
-    setIdx((i) => Math.min(i + 1, paIncorpConfig.steps.length - 1));
-  };
-
-  const handlePrev = () => setIdx((i) => Math.max(0, i - 1));
-
-  const stepsForSidebar = useMemo<StepLike[]>(
-    () => paIncorpConfig.steps.map((s) => ({ id: s.id, title: s.title })),
-    []
-  );
-
-  return (
-    <div className="max-width mx-auto py-6">
-      {/* Top Bar */}
-      <TopBar title={paIncorpConfig.title} totalSteps={paIncorpConfig.steps.length} idx={idx} />
-
-      {/* Mobile: Steps drawer trigger */}
-      <div className="mt-4 md:hidden flex justify-start">
-        <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="sm">
-              {t("newHk.sidebar.openSteps") || "Steps"}
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-[85vw] sm:w-96">
-            <div className="p-4 border-b text-sm font-semibold">
-              {t("newHk.sidebar.brand") || "Mirr Asia"}
-            </div>
-            {/* Render the same sidebar inside the sheet; close on selection */}
-            <div className="p-3">
-              <SidebarPanama
-                steps={stepsForSidebar}
-                idx={idx}
-                canProceedFromCurrent={canProceedFromCurrent}
-                goto={(i) => {
-                  setIdx(i);
-                  setMobileNavOpen(false);
-                }}
-              />
-            </div>
-          </SheetContent>
-        </Sheet>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-[260px,1fr] gap-6 mt-6">
-        {/* Sidebar: hidden on mobile to let the form occupy full width */}
-        <div className="hidden md:block">
-          <SidebarPanama
-            steps={stepsForSidebar}
-            idx={idx}
-            goto={goto}
-            canProceedFromCurrent={canProceedFromCurrent}
-          />
         </div>
+    );
+};
 
-        {/* Right content */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">{step.title}</CardTitle>
-            {step.description && (
-              <p className="text-sm text-muted-foreground">{step.description}</p>
-            )}
-          </CardHeader>
-
-          <CardContent>
-            {"fields" in step && step.fields?.length ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {step.fields.map((f, i) => (
-                  <div
-                    key={f.name ?? i}
-                    className={
-                      f.type === "checkbox" ||
-                      f.type === "repeater" ||
-                      f.type === "companyNames"
-                        ? "md:col-span-2"
-                        : ""
-                    }
-                  >
-                    <Field
-                      field={f as any}
-                      value={getDeep(form, f.name)}
-                      onChange={(v: any) => onFieldChange(f.name, v)}
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : step.render ? (
-              // custom renderer (e.g., your CommonServiceAgrementTxt)
-              React.createElement(step.render as any)
-            ) : null}
-
-            {errors.length > 0 && (
-              <div className="mt-4 border border-destructive/30 bg-destructive/5 text-destructive rounded-md p-3 text-sm">
-                <p className="font-medium mb-1">Please complete the required fields:</p>
-                <ul className="list-disc pl-5 space-y-1">
-                  {errors.map((e, i) => (
-                    <li key={i}>{e}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Sticky mobile action bar for easier nav (optional but nice) */}
-            <div className="mt-6 flex items-center justify-between sticky bottom-2 md:static bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-2 rounded-md border md:border-0">
-              <Button variant="ghost" onClick={handlePrev} disabled={idx === 0}>
-                {t("usa.buttons.back","← Back")}
-              </Button>
-              <div className="flex items-center gap-2">
-                {idx < paIncorpConfig.steps.length - 1 ? (
-                  <Button onClick={handleNext}>{t("usa.buttons.next","Next →")}</Button>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      const missing = validateStep(step, form);
-                      if (missing.length > 0) {
-                        setErrors(missing);
-                        return;
-                      }
-                      console.log("Submit form", form);
-                      alert("Form is ready to submit. Check console for payload.");
-                    }}
-                  >
-                    {t("usa.buttons.finish") || "Finish"}
-                  </Button>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-}
+export default PanamaIncorporationForm;
