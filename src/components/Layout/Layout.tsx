@@ -26,7 +26,7 @@ import jwtDecode from "jwt-decode";
 import { cn } from "@/lib/utils";
 import { useResetAllForms } from "@/lib/atom";
 import { usaFormWithResetAtom } from "@/pages/Company/USA/UsState";
-import { paFormWithResetAtom } from "@/pages/Company/Panama/PaState";
+import { paFormWithResetAtom1 } from "@/pages/Company/Panama/PaState";
 import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
 import SocialMediaWidget from "../SocialMedia";
 import TopNav from "./Navbar";
@@ -105,7 +105,7 @@ const Layout: React.FC = () => {
   const [expandedGroups, setExpandedGroups] = useLocalStorage<string[]>("sidebar:expandedGroups", []);
   const resetAllForms = useResetAllForms();
   const [, setUS] = useAtom(usaFormWithResetAtom);
-  const [, setPA] = useAtom(paFormWithResetAtom);
+  const [, setPA] = useAtom(paFormWithResetAtom1);
   const [, setSG] = useAtom(sgFormWithResetAtom1);
   const [,setHK] = useAtom(hkAppAtom)
 

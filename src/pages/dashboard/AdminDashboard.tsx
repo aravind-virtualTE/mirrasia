@@ -35,7 +35,7 @@ import AdminTodo from "./Admin/AdminTodoCard"
 import { toast } from "@/hooks/use-toast"
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
 import { hkAppAtom } from "../Company/NewHKForm/hkIncorpo"
-import { paFormWithResetAtom } from "../Company/Panama/PaState"
+import { paFormWithResetAtom1 } from "../Company/Panama/PaState"
 import { pifFormWithResetAtom } from "../Company/PanamaFoundation/PaState"
 import { sgFormWithResetAtom1 } from "../Company/Singapore/SgState"
 import SearchBox from "../MasterTodo/SearchBox"
@@ -48,7 +48,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate()
   const [, setUsaReset] = useAtom(usaAppWithResetAtom)
   const [, setHK] = useAtom(hkAppAtom)
-  const [, setPA] = useAtom(paFormWithResetAtom);
+  const [, setPA] = useAtom(paFormWithResetAtom1);
   const [, setPAF] = useAtom(pifFormWithResetAtom);
   const [, setSG] = useAtom(sgFormWithResetAtom1);
   const resetAllForms = useResetAllForms();
