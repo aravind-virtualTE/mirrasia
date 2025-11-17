@@ -59,7 +59,7 @@ import HKCompDetailSummary from './pages/Company/Details/NewCompDetail';
 import ConfigDrivenUSAForm from './pages/Company/USA/UsIncorporation';
 import ServicesPage from './pages/Landing/ServicesPage';
 import EnquiryList from './pages/dashboard/Admin/Enquiry/EnquiryList';
-import NewPanamaIncorpo from './pages/Company/Panama/NewPanamaIncorpo';
+import ReqForQuotation from './components/reqForQuotation/ReqForQuotation';
 // import NewSgIncorporation from './pages/Company/Singapore/NewSgIncorporation';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -98,8 +98,8 @@ const App: React.FC = () => {
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/quotation" element={<QuoteBuilder />} />
                     <Route path="/estimator" element={<HKAccountingEstimator />} />
-                     <Route path="/services/:tab?" element={<ServicesPage />} />
-                    
+                    <Route path="/services/:tab?" element={<ServicesPage />} />
+                    <Route path="/reqForQuotation" element={<ReqForQuotation />} /> 
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />
                     {/* <Route path="/test" element={<UsCorporateShdr />} /> */}
@@ -158,7 +158,7 @@ const App: React.FC = () => {
                       <Route path="/invoice-management" element={<InvoiceManager />} />
                       <Route path="/admin-companies-list" element={<ViewBoard />} /> 
                       <Route path="/enquiries" element={<EnquiryList />} /> 
-                      <Route path="/newPanama" element={<NewPanamaIncorpo />} /> 
+                      
                       {/* <Route path="/newSingapore" element={<NewSgIncorporation />} /> */}
                       
                       {/* Add more admin-specific routes here */}

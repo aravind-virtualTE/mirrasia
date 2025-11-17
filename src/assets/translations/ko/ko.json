@@ -2163,5 +2163,149 @@
         }
       }
     }
+  },
+  "reqForQuote": {
+    "title": "견적 요청서",
+    "contact": {
+      "title": "견적 요청서",
+      "emailLabel": "이메일",
+      "emailPlaceholder": "your@email.com",
+      "personNameLabel": "담당자 성함",
+      "personNamePlaceholder": "전체 이름 입력",
+      "personTitleLabel": "담당자 직함",
+      "personTitlePlaceholder": "예: CEO, 이사, 매니저",
+      "personPhoneLabel": "담당자 전화번호",
+      "personPhonePlaceholder": "가능하다면 국가번호 포함",
+      "snsTypeLabel": "SNS 플랫폼",
+      "snsTypePlaceholder": "예: 카카오톡, WhatsApp, 텔레그램",
+      "snsIdLabel": "카카오톡 (또는 기타 SNS 계정) ID",
+      "snsIdPlaceholder": "카카오톡 ID 또는 기타 SNS ID"
+    },
+    "country": {
+      "title": "법인 설립을 희망하는 국가를 선택하십시오 (복수 선택 가능)",
+      "options": {
+        "hk": "홍콩 법인 설립 + 1년 관리",
+        "sg": "싱가포르 법인 설립 + 1년 관리",
+        "us-de": "(미국) 델라웨어 법인 설립 + 1년 관리",
+        "us-ny": "(미국) 뉴욕 법인 설립 + 1년 관리",
+        "us-wy": "(미국) 와이오밍 법인 설립 + 1년 관리",
+        "us-ca": "(미국) 캘리포니아 법인 설립 + 1년 관리",
+        "us-wa": "(미국) 워싱턴 법인 설립 + 1년 관리",
+        "us-dc": "(미국) 워싱턴 DC 법인 설립 + 1년 관리",
+        "uk": "영국 법인 설립 + 1년 관리",
+        "ch": "스위스 법인 설립 + 1년 관리",
+        "ie": "아일랜드 법인 설립 + 1년 관리",
+        "ee": "에스토니아 법인 설립 + 1년 관리",
+        "lt": "리투아니아 법인 설립 + 1년 관리",
+        "ge": "조지아 법인 설립 + 1년 관리",
+        "bg": "불가리아 법인 설립 + 1년 관리",
+        "mt": "몰타 법인 설립 + 1년 관리",
+        "ca": "캐나다 법인 설립 + 1년 관리",
+        "ae-ifza": "두바이 IFZA 법인 설립 + 1년 관리",
+        "ae-ad": "아부다비 법인 설립 + 1년 관리",
+        "ae-rak": "라스 알 카이마 법인 설립 + 1년 관리",
+        "vc-llc": "세인트빈센트 유한책임회사(LLC) 설립 + 2개 역년 관리",
+        "vc-guarantee": "세인트빈센트 보증 유한회사(비영리) 설립 + 2개 역년 관리",
+        "vc-bc": "세인트빈센트 사업회사 설립 + 2개 역년 관리",
+        "bvi": "BVI (영국령 버진 아일랜드) 법인 설립 + 1년 관리",
+        "il": "이스라엘 법인 설립 + 1년 관리",
+        "kr": "한국 법인 설립 + 1년 관리",
+        "sc": "세이셸 법인 설립 + 1년 관리",
+        "pa-foundation": "파나마 재단 설립 (비영리 재단) + 1년 관리",
+        "ck-foundation": "쿡 제도 재단 설립 (비영리 재단) + 1년 관리",
+        "bz": "벨리즈 법인 설립 + 1년 관리",
+        "cn": "중국 법인 설립 + 1년 관리",
+        "vn": "베트남 법인 설립 + 1년 관리",
+        "cw": "퀴라소 법인 설립 + 1년 관리",
+        "kz": "카자흐스탄 법인 설립 + 1년 관리",
+        "tw": "대만 법인 설립 + 1년 관리",
+        "ph": "필리핀 법인 설립 + 1년 관리",
+        "mn": "몽골 법인 설립 + 1년 관리",
+        "other": "기타:"
+      }
+    },
+    "industry": {
+      "title": "귀사의 산업 분야를 선택하십시오 (해당되는 모든 항목을 체크)",
+      "options": {
+        "trade": "무역업",
+        "wholesale": "도매/소매 유통업",
+        "consulting": "컨설팅",
+        "manufacturing": "제조업",
+        "online-service": "온라인 서비스업 (전자상거래)",
+        "online-direct": "온라인 직구/배송대행/구매대행",
+        "utility-token": "유틸리티 토큰 발행",
+        "utility-token-listing": "유틸리티 토큰 거래소 상장/판매",
+        "security-token": "증권형 토큰 발행/거래소 상장/판매",
+        "crypto-exchange": "가상화폐 거래소",
+        "other-virtual": "기타 가상화폐 관련 사업",
+        "it-dev": "IT, 블록체인, 소프트웨어 개발 등",
+        "crypto-finance": "가상화폐 기반 투자/대출/금융 관련 사업",
+        "crypto-games": "가상화폐 기반 게임",
+        "fx-trading": "외환 거래",
+        "finance": "금융, 투자, 컨설팅, 대부업 등",
+        "holding": "투자 지주 (지주회사)",
+        "other": "기타:"
+      }
+    },
+    "services": {
+      "title": "필요하신 서비스 항목 (해당되는 모든 항목을 체크)",
+      "options": {
+        "incorporation-standard": "법인 설립 + 설립 후 유지관리 (표준 서비스)",
+        "emi-list": "EMI (전자화폐 기관) 리스트 제공 (당사 서비스 이용 고객 무료)",
+        "emi-account": "EMI (전자화폐 기관) 계좌 개설 신청 및 상담 (사업 확정 후 별도 견적)",
+        "bank-account": "은행 계좌 개설 신청 및 상담 (사업 확정 후 별도 견적)",
+        "legal-opinion-local": "법인 현지 법률 의견서 (백서 검토 후 견적)",
+        "legal-opinion-domestic": "국내 거래소 상장을 위한 법률 의견서 (백서 검토 후 견적)",
+        "legal-opinion-other": "기타 국가 법률 의견서 (백서 검토 후 견적)",
+        "consulting-reg": "사업 관련 규제 검토, 타당성 검토, 문서 작성, 운영 컨설팅을 포함한 컨설팅 서비스 (별도 견적)",
+        "local-registration": "현지 등록 서비스 (현지 규정상 필요하거나 특별한 사유가 있을 경우 제공)",
+        "vasp-licenses": "가상자산 거래소 라이선스 (리투아니아, 이스라엘, 에스토니아)",
+        "emi-license-lt": "EMI 라이선스 (리투아니아)",
+        "dpt-license-sg": "디지털 결제 토큰 라이선스 (싱가포르)",
+        "token-swap-license": "결제 토큰 및 스왑 관련 라이선스",
+        "self-regulatory-ch": "자율 규제 기구 회원 가입 및 상담 (스위스)",
+        "other": "기타:"
+      }
+    },
+    "product": {
+      "title": "법인 설립 후 거래할 상품명, 상품 유형, 서비스 내용, 서비스 유형 등에 대한 설명",
+      "descriptionLabel": "예) 생활용품, 자동차 부품 및 용품, 건설 용품, F&B, 여행 관련 서비스 등",
+      "descriptionPlaceholder": "법인 설립 후 주요 상품/서비스, 유형 및 사업 모델을 설명해 주십시오."
+    },
+    "vasp": {
+      "title": "VASP 라이선스 보유 법인 인수에 관심이 있으십니까?",
+      "options": {
+        "yes": "예",
+        "no": "아니요, 관련 없음",
+        "apply-again": "라이선스 획득 및 운영이 쉬운 국가로 재신청을 희망합니다.",
+        "no-reg": "VASP 규제가 없는 국가 희망"
+      }
+    },
+    "structure": {
+      "title": "설립 희망 법인 정보 – 설립할 법인의 주주 및 지배구조",
+      "helperText": "복잡하고 계층적인 구조(이중/삼중 레이어)는 은행 계좌 개설을 상당히 어렵게 만듭니다.",
+      "options": {
+        "single-1-individual": "개인 1명이 주식 100% 소유 (단일 구조)",
+        "single-2-individuals": "개인 2인 이상이 주식 100% 소유 (단일 구조)",
+        "single-kr-holding": "한국 법인이 지주회사로서 주식 100% 소유 (단일 구조)",
+        "single-foreign-holding": "한국 외 다른 국가에 설립된 (해외) 법인이 지주회사로서 주식 100% 소유 (단일 구조)",
+        "single-mixed": "법인과 개인이 홍콩 법인의 주식을 주주로 소유 (단일 구조)",
+        "double-layer": "지주회사가 이중 레이어 구조로 구성됨",
+        "double-or-more-layer": "지주회사가 이중 레이어 이상 구조로 구성됨",
+        "other": "기타:"
+      }
+    },
+    "materials": {
+      "title": "제시 가능한 사업 관련 자료",
+      "options": {
+        "website": "웹사이트 주소",
+        "whitepaper-ko": "백서 (한국어)",
+        "whitepaper-en": "백서 (영어)",
+        "bp-ko": "사업계획서 (한국어)",
+        "bp-en": "사업계획서 (영어)",
+        "token-ecosystem": "토큰 생태계",
+        "other": "기타:"
+      }
+    }
   }
 }

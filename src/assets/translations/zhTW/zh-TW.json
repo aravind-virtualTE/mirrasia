@@ -2164,5 +2164,149 @@
         }
       }
     }
+  },
+  "reqForQuote": {
+    "title": "報價請求書",
+    "contact": {
+      "title": "報價請求書",
+      "emailLabel": "電子郵件",
+      "emailPlaceholder": "your@email.com",
+      "personNameLabel": "負責人姓名",
+      "personNamePlaceholder": "輸入全名",
+      "personTitleLabel": "負責人職稱",
+      "personTitlePlaceholder": "例如: CEO, 董事, 經理",
+      "personPhoneLabel": "負責人電話號碼",
+      "personPhonePlaceholder": "請盡可能包含國家/地區代碼",
+      "snsTypeLabel": "社群媒體平台",
+      "snsTypePlaceholder": "例如: KakaoTalk, WhatsApp, Telegram",
+      "snsIdLabel": "KakaoTalk（或其他社群媒體帳戶）ID",
+      "snsIdPlaceholder": "KakaoTalk ID 或其他社群媒體 ID"
+    },
+    "country": {
+      "title": "請選擇您希望設立公司的國家/地區 (可複選)",
+      "options": {
+        "hk": "香港公司設立 + 1 年管理",
+        "sg": "新加坡公司設立 + 1 年管理",
+        "us-de": "(美國) 德拉瓦州公司設立 + 1 年管理",
+        "us-ny": "(美國) 紐約州公司設立 + 1 年管理",
+        "us-wy": "(美國) 懷俄明州公司設立 + 1 年管理",
+        "us-ca": "(美國) 加州公司設立 + 1 年管理",
+        "us-wa": "(美國) 華盛頓州公司設立 + 1 年管理",
+        "us-dc": "(美國) 華盛頓特區公司設立 + 1 年管理",
+        "uk": "英國公司設立 + 1 年管理",
+        "ch": "瑞士公司設立 + 1 年管理",
+        "ie": "愛爾蘭公司設立 + 1 年管理",
+        "ee": "愛沙尼亞公司設立 + 1 年管理",
+        "lt": "立陶宛公司設立 + 1 年管理",
+        "ge": "喬治亞公司設立 + 1 年管理",
+        "bg": "保加利亞公司設立 + 1 年管理",
+        "mt": "馬爾他公司設立 + 1 年管理",
+        "ca": "加拿大公司設立 + 1 年管理",
+        "ae-ifza": "杜拜 IFZA 公司設立 + 1 年管理",
+        "ae-ad": "阿布達比公司設立 + 1 年管理",
+        "ae-rak": "拉斯海瑪公司設立 + 1 年管理",
+        "vc-llc": "聖文森特有限責任公司 (LLC) 設立 + 2 個日曆年管理",
+        "vc-guarantee": "聖文森特擔保有限公司 (非營利) 設立 + 2 個日曆年管理",
+        "vc-bc": "聖文森特商業公司設立 + 2 個日曆年管理",
+        "bvi": "BVI（英屬維京群島）公司設立 + 1 年管理",
+        "il": "以色列公司設立 + 1 年管理",
+        "kr": "韓國公司設立 + 1 年管理",
+        "sc": "塞席爾公司設立 + 1 年管理",
+        "pa-foundation": "巴拿馬基金會設立 (非營利基金會) + 1 年管理",
+        "ck-foundation": "庫克群島基金會設立 (非營利基金會) + 1 年管理",
+        "bz": "貝里斯公司設立 + 1 年管理",
+        "cn": "中國公司設立 + 1 年管理",
+        "vn": "越南公司設立 + 1 年管理",
+        "cw": "庫拉索公司設立 + 1 年管理",
+        "kz": "哈薩克斯坦公司設立 + 1 年管理",
+        "tw": "台灣公司設立 + 1 年管理",
+        "ph": "菲律賓公司設立 + 1 年管理",
+        "mn": "蒙古公司設立 + 1 年管理",
+        "other": "其他:"
+      }
+    },
+    "industry": {
+      "title": "請選擇您的行業（勾選所有相關項目）",
+      "options": {
+        "trade": "貿易業",
+        "wholesale": "批發/零售分銷",
+        "consulting": "顧問諮詢",
+        "manufacturing": "製造業",
+        "online-service": "線上服務業（電子商務）",
+        "online-direct": "線上直購/代發貨服務/代購代理",
+        "utility-token": "實用型代幣發行",
+        "utility-token-listing": "實用型代幣交易所上市/銷售",
+        "security-token": "證券型代幣發行/交易所上市/銷售",
+        "crypto-exchange": "加密貨幣交易所",
+        "other-virtual": "其他虛擬貨幣相關業務",
+        "it-dev": "IT、區塊鏈、軟體開發等",
+        "crypto-finance": "加密貨幣基礎的投資/貸款/金融相關業務",
+        "crypto-games": "加密貨幣基礎的遊戲",
+        "fx-trading": "外匯交易",
+        "finance": "金融、投資、諮詢、借貸等",
+        "holding": "投資控股（控股公司）",
+        "other": "其他:"
+      }
+    },
+    "services": {
+      "title": "您需要的服務項目（勾選所有適用項）",
+      "options": {
+        "incorporation-standard": "公司設立 + 設立後維護（標準服務）",
+        "emi-list": "EMI（電子貨幣機構）名單（向使用我們服務的客戶免費提供）",
+        "emi-account": "EMI（電子貨幣機構）帳戶開立申請和諮詢（業務確認後另行報價）",
+        "bank-account": "銀行帳戶開立申請和諮詢（業務確認後另行報價）",
+        "legal-opinion-local": "公司當地法律意見書（審核白皮書後報價）",
+        "legal-opinion-domestic": "在國內交易所上市的法律意見書（審核白皮書後報價）",
+        "legal-opinion-other": "其他國家的法律意見書（審核白皮書後報價）",
+        "consulting-reg": "包括法規審查、可行性審查、文件準備和營運諮詢在內的業務諮詢服務（另行報價）",
+        "local-registration": "當地註冊服務（當地法規要求或特殊原因時提供）",
+        "vasp-licenses": "虛擬資產交易所牌照（立陶宛、以色列、愛沙尼亞）",
+        "emi-license-lt": "EMI 牌照（立陶宛）",
+        "dpt-license-sg": "數位支付代幣牌照（新加坡）",
+        "token-swap-license": "與支付代幣和交換相關的牌照",
+        "self-regulatory-ch": "自願性監管機構會員資格和諮詢（瑞士）",
+        "other": "其他:"
+      }
+    },
+    "product": {
+      "title": "公司設立後將交易的產品名稱、產品類型、服務內容、服務類型等描述",
+      "descriptionLabel": "範例) 日用品、汽車零件和用品、建築用品、餐飲、旅遊相關服務等",
+      "descriptionPlaceholder": "請描述公司設立後的主要產品/服務、類型和商業模式。"
+    },
+    "vasp": {
+      "title": "您是否有興趣收購一家持有 VASP 牌照的實體？",
+      "options": {
+        "yes": "是",
+        "no": "否，不相關",
+        "apply-again": "我們希望在容易獲得和營運牌照的國家/地區再次申請。",
+        "no-reg": "希望選擇沒有 VASP 監管的國家/地區"
+      }
+    },
+    "structure": {
+      "title": "您希望設立的公司的資訊 – 設立公司的股東和治理結構",
+      "helperText": "複雜的、多層次的層級結構（雙層/三層）會使銀行開戶變得困難得多。",
+      "options": {
+        "single-1-individual": "一位個人擁有 100% 股份（單一結構）",
+        "single-2-individuals": "兩位或多位個人擁有 100% 股份（單一結構）",
+        "single-kr-holding": "韓國公司作為控股公司擁有 100% 股份（單一結構）",
+        "single-foreign-holding": "在韓國以外國家/地區設立的（外國）公司作為控股公司擁有 100% 股份（單一結構）",
+        "single-mixed": "公司和個人作為股東擁有香港公司的股份（單一結構）",
+        "double-layer": "控股公司以雙層結構組成",
+        "double-or-more-layer": "控股公司以雙層或更高層結構組成",
+        "other": "其他:"
+      }
+    },
+    "materials": {
+      "title": "可提供的業務相關資料",
+      "options": {
+        "website": "網站地址",
+        "whitepaper-ko": "白皮書 (韓文)",
+        "whitepaper-en": "白皮書 (英文)",
+        "bp-ko": "商業計劃書 (韓文)",
+        "bp-en": "商業計劃書 (英文)",
+        "token-ecosystem": "代幣生態系統",
+        "other": "其他:"
+      }
+    }
   }
 }

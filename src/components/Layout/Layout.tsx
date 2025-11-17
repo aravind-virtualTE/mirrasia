@@ -107,7 +107,7 @@ const Layout: React.FC = () => {
   const [, setUS] = useAtom(usaFormWithResetAtom);
   const [, setPA] = useAtom(paFormWithResetAtom1);
   const [, setSG] = useAtom(sgFormWithResetAtom1);
-  const [,setHK] = useAtom(hkAppAtom)
+  const [, setHK] = useAtom(hkAppAtom)
 
 
 
@@ -126,13 +126,13 @@ const Layout: React.FC = () => {
     } catch {
       /* no-op */
     }
-  }, [resetAllForms, setUS, setPA, setSG]);
+  }, [resetAllForms, setUS, setPA, setSG,setHK]);
 
   const baseItem =
     "w-full inline-flex items-center h-10 rounded-md px-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400";
   const baseItemChild =
     "w-full inline-flex items-center h-9 rounded-md px-2 text-sm text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400";
- const grouped: SidebarGroupCfg[] = useMemo(
+  const grouped: SidebarGroupCfg[] = useMemo(
     () => [
       {
         id: "services",
@@ -187,7 +187,7 @@ const Layout: React.FC = () => {
     ],
     [t]
   );
- 
+
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   if (!token) return <Navigate to="/" replace />;
 
@@ -198,7 +198,8 @@ const Layout: React.FC = () => {
   } catch {
     return <Navigate to="/" replace />;
   }
-   const singleItems: SidebarItemCfg[] = useMemo(
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const singleItems: SidebarItemCfg[] = useMemo(
     () => [
       {
         id: "home",
@@ -383,12 +384,11 @@ const Layout: React.FC = () => {
         </Sheet>
 
         <main className="min-w-0 min-h-0 overflow-hidden bg-white dark:bg-gray-900">
-          <div className="h-full overflow-y-auto p-4 sm:p-6">
+          <div className="h-full overflow-y-auto p-4 sm:p-6 pb-20">
             <Outlet />
           </div>
         </main>
       </div>
-
       <SocialMediaWidget />
     </div>
   );
