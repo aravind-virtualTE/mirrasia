@@ -2178,5 +2178,163 @@
         }
       }
     }
+  },
+  "reqForQuote": {
+    "title": "Request for Quotation",
+
+    "contact": {
+      "title": "Request for Quotation",
+
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+
+      "personNameLabel": "Name of person in charge",
+      "personNamePlaceholder": "Enter full name",
+
+      "personTitleLabel": "Person in charge's title",
+      "personTitlePlaceholder": "e.g. CEO, Director, Manager",
+
+      "personPhoneLabel": "Person in charge's phone number",
+      "personPhonePlaceholder": "Include country code if possible",
+
+      "snsTypeLabel": "SNS Platform",
+      "snsTypePlaceholder": "e.g. KakaoTalk, WhatsApp, Telegram",
+
+      "snsIdLabel": "KakaoTalk (or other SNS account) ID",
+      "snsIdPlaceholder": "KakaoTalk ID or other SNS ID"
+    },
+
+    "country": {
+      "title": "Select the country in which you wish to establish the corporation (multiple selections possible)",
+      "options": {
+        "hk": "Establishment of a Hong Kong corporation + 1 year of management",
+        "sg": "Establishment of a Singapore corporation + 1 year of management",
+        "us-de": "(USA) Delaware Corporation Establishment + 1 year of management",
+        "us-ny": "(USA) New York Corporation Establishment + 1 year of management",
+        "us-wy": "(USA) Wyoming Corporation Establishment + 1 Year Management",
+        "us-ca": "(USA) California Corporation Establishment + 1 year of management",
+        "us-wa": "(USA) Washington Corporation Establishment + 1 year of management",
+        "us-dc": "(USA) Washington DC Corporation Establishment + 1 year of management",
+        "uk": "UK incorporation + 1 year of management",
+        "ch": "Swiss incorporation + 1 year of management",
+        "ie": "Irish incorporation + 1 year of management",
+        "ee": "Establishment of an Estonian corporation + 1 year of management",
+        "lt": "Establishment of a Lithuanian corporation + 1 year of management",
+        "ge": "Establishment of a Georgia corporation + 1 year of management",
+        "bg": "Establishment of a Bulgarian corporation + 1 year of management",
+        "mt": "Establishment of a Maltese corporation + 1 year of management",
+        "ca": "Canadian corporation establishment + 1 year of management",
+        "ae-ifza": "Establishment of Dubai IFZA Corporation + 1 year of management",
+        "ae-ad": "Establishment of Abu Dhabi Corporation + 1 year of management",
+        "ae-rak": "Ras Al Khaimah Corporation Establishment + 1 Year Management",
+        "vc-llc": "Establishment of St. Vincent Limited Liability Company (LLC) + 2-year calendar year management",
+        "vc-guarantee": "Establishment of St. Vincent Guarantee Limited (non-profit) + 2-year calendar year management",
+        "vc-bc": "Establishment of St. Vincent Business Company + 2-year calendar year management",
+        "bvi": "Establishment of a BVI (British Virgin Islands) corporation + 1 year of management",
+        "il": "Establishment of an Israeli corporation + 1 year of management",
+        "kr": "Establishment of a Korean corporation + 1 year of management",
+        "sc": "Seychelles company establishment + 1 year of management",
+        "pa-foundation": "Establishment of the Panama Foundation (non-profit foundation) + 1-year management",
+        "ck-foundation": "Establishment of the Cook Islands Foundation (non-profit foundation) + 1-year management",
+        "bz": "Belize Corporation Incorporation + 1 Year Management",
+        "cn": "Establishment of a Chinese corporation + 1 year of management",
+        "vn": "Establishment of a Vietnamese corporation + 1 year of management",
+        "cw": "Establishment of a Curaçao corporation + 1 year of management",
+        "kz": "Establishment of a Kazakhstani corporation + 1 year of management",
+        "tw": "Establishment of Taiwanese corporation + 1 year of management",
+        "ph": "Establishment of a Philippine corporation + 1 year of management",
+        "mn": "Establishment of a Mongolian corporation + 1 year of management",
+        "other": "Other:"
+      }
+    },
+
+    "industry": {
+      "title": "Select your industry (check all relevant items)",
+      "options": {
+        "trade": "trade industry",
+        "wholesale": "Wholesale/retail distribution",
+        "consulting": "Consulting",
+        "manufacturing": "manufacturing",
+        "online-service": "Online service industry (e-commerce)",
+        "online-direct": "Online direct purchase/delivery service/purchasing agency",
+        "utility-token": "Utility token issuance",
+        "utility-token-listing": "Utility Token Exchange Listing/Sales",
+        "security-token": "Security token issuance/exchange listing/sale",
+        "crypto-exchange": "cryptocurrency exchange",
+        "other-virtual": "Other virtual currency-related businesses",
+        "it-dev": "Development of IT, blockchain, software, etc.",
+        "crypto-finance": "Cryptocurrency-based investment/loan/finance-related businesses",
+        "crypto-games": "Cryptocurrency-based games",
+        "fx-trading": "Foreign exchange trading",
+        "finance": "Finance, investment, consulting, lending, etc.",
+        "holding": "Investment Holdings (holding company)",
+        "other": "Other:"
+      }
+    },
+
+    "services": {
+      "title": "Service items you require (check all that apply)",
+      "options": {
+        "incorporation-standard": "Incorporation + Post-incorporation maintenance (Standard Service)",
+        "emi-list": "EMI (Electronic Money Institution) List (Free to Customers Using Our Service)",
+        "emi-account": "EMI (Electronic Money Institution) account opening application and consultation (separate quote after business confirmation)",
+        "bank-account": "Bank account opening application and consultation (separate quote after business confirmation)",
+        "legal-opinion-local": "Legal Opinion at the local location of the corporation (quote after review of white paper)",
+        "legal-opinion-domestic": "Legal Opinion for listing on domestic exchanges (quote after review of white paper)",
+        "legal-opinion-other": "Legal Opinion for other countries (quote after reviewing white paper)",
+        "consulting-reg": "Consulting services including regulatory review, feasibility review, document preparation, and operational consulting for business (separate quote)",
+        "local-registration": "Local registration service (provided when required by local regulations or for special reasons)",
+        "vasp-licenses": "Virtual asset exchange licenses (Lithuania, Israel, Estonia)",
+        "emi-license-lt": "EMI License (Lithuania)",
+        "dpt-license-sg": "Digital Payment Token License (Singapore)",
+        "token-swap-license": "Licenses related to payment tokens and swaps",
+        "self-regulatory-ch": "Voluntary regulatory body membership and consultation (Switzerland)",
+        "other": "Other:"
+      }
+    },
+
+    "product": {
+      "title": "Description of the product name, product type, service content, service type, etc. to be traded after the corporation is established",
+      "descriptionLabel": "Example) Daily necessities, automobile parts and supplies, construction supplies, F&B, travel-related services, etc.",
+      "descriptionPlaceholder": "Describe the main products/services, type, and business model after incorporation."
+    },
+
+    "vasp": {
+      "title": "Are you interested in acquiring a VASP licensed entity?",
+      "options": {
+        "yes": "yes",
+        "no": "No, not related",
+        "apply-again": "We hope to apply again in a country where it is easy to obtain and operate a license.",
+        "no-reg": "Hope for a country without VASP regulations"
+      }
+    },
+
+    "structure": {
+      "title": "Information about the corporation you wish to establish – Shareholders and governance structure of the corporation to be established",
+      "helperText": "Multiple, complex hierarchical structures (double / triple layer) make bank account opening significantly more difficult.",
+      "options": {
+        "single-1-individual": "One individual owns 100% of the shares (single structure)",
+        "single-2-individuals": "Two or more individuals own 100% of the shares (single structure)",
+        "single-kr-holding": "Korean corporation owns 100% of the shares as a holding company (single structure)",
+        "single-foreign-holding": "A (foreign) corporation established in a country other than Korea holds 100% of the shares as a holding company (single structure)",
+        "single-mixed": "Corporations and individuals own shares of a Hong Kong corporation as shareholders (single structure)",
+        "double-layer": "The holding company is structured in a double layer structure.",
+        "double-or-more-layer": "The holding company is structured in a double layer or higher structure.",
+        "other": "Other:"
+      }
+    },
+
+    "materials": {
+      "title": "Presentable business-related materials",
+      "options": {
+        "website": "Website address",
+        "whitepaper-ko": "White Paper (Korean)",
+        "whitepaper-en": "White Paper (English)",
+        "bp-ko": "Business Plan (Korean)",
+        "bp-en": "Business Plan (English)",
+        "token-ecosystem": "Token Ecosystem",
+        "other": "Other:"
+      }
+    }
   }
 }

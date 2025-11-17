@@ -14,7 +14,8 @@ import { Menu } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 
-const QuoteBuilder = lazy(() => import("@/components/InvoiceManager/InvoiceQuotation"));
+// const QuoteBuilder = lazy(() => import("@/components/InvoiceManager/InvoiceQuotation"));
+const ReqForQuotation = lazy(() => import("@/components/reqForQuotation/ReqForQuotation"));
 const HKAccountingEstimator = lazy(() => import("@/components/InvoiceManager/AccTaxEstimator"));
 
 const VALID_TABS = ["quotation", "tax-fee"] as const;
@@ -146,7 +147,8 @@ export default function ServicesPage() {
             <Suspense fallback={<Card className="p-6">Loading…</Card>}>
               <TabsContent value="quotation" asChild>
                 <div className="p-0">
-                  <QuoteBuilder lockInvoiceWidth />
+                  {/* <QuoteBuilder lockInvoiceWidth /> */}
+                  <ReqForQuotation />
                 </div>
               </TabsContent>
 

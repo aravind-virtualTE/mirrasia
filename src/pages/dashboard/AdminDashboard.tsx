@@ -202,7 +202,7 @@ const AdminDashboard = () => {
 
   const handleSearch = async () => {
     // await fetchTasks();
-    console.log('searchQuery', searchQuery);
+    // console.log('searchQuery', searchQuery);
     const q = normalize(searchQuery);
 
     // empty → reset
