@@ -313,7 +313,8 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   if (!data) {
     return <div className="p-6 text-sm text-muted-foreground">Loading…</div>;
   }
-  // console.log("data", data)
+  console.log("data", data)
+  console.log("f--->",f)
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
