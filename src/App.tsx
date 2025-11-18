@@ -60,6 +60,7 @@ import ConfigDrivenUSAForm from './pages/Company/USA/UsIncorporation';
 import ServicesPage from './pages/Landing/ServicesPage';
 import EnquiryList from './pages/dashboard/Admin/Enquiry/EnquiryList';
 import ReqForQuotation from './components/reqForQuotation/ReqForQuotation';
+import ReqForQuoteList from './pages/dashboard/Admin/ReqForQuote/ReqForQuoteList';
 // import NewSgIncorporation from './pages/Company/Singapore/NewSgIncorporation';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -158,6 +159,7 @@ const App: React.FC = () => {
                       <Route path="/invoice-management" element={<InvoiceManager />} />
                       <Route path="/admin-companies-list" element={<ViewBoard />} /> 
                       <Route path="/enquiries" element={<EnquiryList />} /> 
+                      <Route path="/quote-enquiries" element={<ReqForQuoteList />} /> 
                       
                       {/* <Route path="/newSingapore" element={<NewSgIncorporation />} /> */}
                       

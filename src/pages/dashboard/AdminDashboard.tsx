@@ -41,6 +41,7 @@ import { sgFormWithResetAtom1 } from "../Company/Singapore/SgState"
 import SearchBox from "../MasterTodo/SearchBox"
 import { normalize } from "@/middleware";
 import EnquiryCard from "./Admin/Enquiry/EnquiryCard"
+import ReqForQuoteCard from "./Admin/ReqForQuote/ReqForQuoteCard"
 
 const AdminDashboard = () => {
   const setCompIncList = useSetAtom(companyIncorporationList)
@@ -387,6 +388,7 @@ const AdminDashboard = () => {
         <CurrentCorporateClient data={projectsData} count={cccCount} />
         <CurrentClients />
         <EnquiryCard />
+        <ReqForQuoteCard />
       </div>
       {/* Companies Table */}
       <Card>
