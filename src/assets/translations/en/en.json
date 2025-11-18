@@ -9,55 +9,45 @@
     "registerNow": "Register now",
     "contactUs": "Contact us",
     "TransferBtn": "Transfer to Mirr Asia",
-     "title": "Request a Free Consultation",
+    "title": "Request a Free Consultation",
     "subtitle": "Required fields are marked with •. Our team will contact you shortly.",
-
     "honeypot": {
       "label": "Leave this field blank"
     },
-
     "name": {
       "label": "Full Name •",
       "error": "Please enter your name."
     },
-
     "phone": {
       "label": "Phone",
       "error": "Use only numbers, spaces, parentheses, or hyphens."
     },
-
     "email": {
       "label": "Email •",
       "error": "Please enter a valid email address."
     },
-
     "message": {
       "label": "Message •",
       "helper": "Please provide enough detail for a helpful reply.",
       "counterAria": "Character count",
       "error": "Message must be at least 10 characters."
     },
-
     "consent": {
       "checkboxLabel": "(Required) I agree to the collection and use of my personal data.",
       "policyLinkText": "View Privacy Policy",
       "error": "You must agree before submitting."
     },
-
     "recaptcha": {
       "groupLabel": "Captcha",
       "envWarning": "Please set VITE_RECAPTCHA_SITE_KEY in your .env.",
       "srOnly": "Please complete the reCAPTCHA verification."
     },
-
     "actions": {
       "disclaimer": "* By submitting, you consent to being contacted for consultation.",
       "submit": "Send",
       "submitting": "Submitting..."
     },
-
     "success": "Your enquiry has been received. Thank you!",
-
     "errors": {
       "global": "Something went wrong. Please try again."
     }
@@ -922,7 +912,7 @@
     "paymentConditionsDesc": "All payments are NON-REFUNDABLE. The remitter bears all charges of payment, which includes the remittance amount, beneficiary bank's charges, as well as all the other banks' fees (intermediary bank, etc)."
   },
   "usa": {
-    "title" : "Company Incorporation — USA",
+    "title": "Company Incorporation — USA",
     "steps": {
       "step1": "Applicant information",
       "step2": "KYC CDD",
@@ -1583,40 +1573,76 @@
           "c": "Company secretary registration and maintenance of statutory records. Business Registration and Companies Registry filings (as applicable). Handling Employer’s Return for the first two employees (postage surcharge may apply). Handling the mandatory Survey of Company Information. Preparation and filing of Annual Return; keeping copies of renewal forms. Maintaining the Significant Controllers Register. Maintaining Registers of Members/Directors/Secretary and Organisation Chart. Maintaining AGM minutes templates and related records. Maintaining the Business Registration Certificate at the registered office (if applicable). Brief business/operational advice (non-legal, best-effort only). Client cooperation: The Client will provide all information/documents required. Mirr Asia is not obliged to assist with unlawful matters."
         },
         "5": {
-          "t": "5. Fees & Exclusions",
-          "c": "The Client shall pay the amount shown in the payment section. Fees exclude accounting, audit, tax filings, bank account opening advice, and third-party charges (e.g., bank charges, government fees, taxes, courier)."
+          "t": "5. Term",
+          "c": "This Agreement shall be effective from the date of its execution upon full payment and shall remain in force for a period of one year. The agreement may be extended or adjusted for some services by agreement of both parties."
         },
         "6": {
-          "t": "6. Assignment & Subcontractors",
-          "c": "Neither party may assign or transfer its rights/obligations without prior written consent of the other."
+          "t": "6. Fees & Exclusions",
+          "c": "The Client shall pay the amount shown in the payment section. Fees may exclude accounting, audit, tax filings, bank account opening advice, and third-party charges (e.g., bank charges, government fees, taxes, courier)."
         },
         "7": {
-          "t": "7. Confidentiality",
-          "c": "Both parties will keep confidential any non-public business or technical information obtained under this Agreement, except where disclosure is required by law or the information is already public."
+          "t": "7. Termination",
+          "c": "The Client may terminate this Agreement by giving Mirr Asia 15 days written notice, but Mirr Asia may not terminate this Agreement arbitrarily before the services under this Agreement have been performed. However, if the Client is deemed to be in breach of its obligations under this Agreement or there is a significant legal risk, Mirr Asia may terminate the services after a certain period of notice, after consulting with the Client as much as possible. The prepaid service fee will not be refunded if the client terminates this contract. However, if this contract is terminated due to Mirr Asia's fault, the client may receive a refund only for the work scope that the consultant did not perform."
         },
         "8": {
-          "t": "8. Entire Agreement",
-          "c": "This Agreement is the complete understanding between the parties and supersedes prior communications. It prevails over pre-printed terms in POs or other documents."
+          "t": "8. Mirr Asia's Obligations",
+          "c": "Mirr Asia shall perform the Services with professionalism and due care, and shall report to the Client by email or other electronic means any changes in the progress of the work set out in this Agreement. Mirr Asia shall promptly notify the Client of any legal or administrative issues that arise in the course of performing the work under this Agreement."
         },
         "9": {
-          "t": "9. Severability",
-          "c": "If any provision is invalid or unenforceable, the remainder remains in force. The parties will attempt in good faith to replace invalid provisions with valid ones reflecting the original intent."
+          "t": "9. Client's Obligations",
+          "c": "The Client shall provide the information and materials required for Mirr Asia to perform the work in a timely manner and shall pay the fees agreed upon in this Agreement within the time limit. The Client shall ensure the accuracy of the personal information provided to Mirr Asia in connection with the work under this Agreement and shall provide any power of attorney or legal documents required by Mirr Asia."
         },
         "10": {
-          "t": "10. No Third-party Beneficiaries",
-          "c": "No rights are created for third parties unless authorized in writing by Mirr Asia."
+          "t": "10. Limitation of Liability",
+          "c": "Mirr Asia shall not be liable for any consequences resulting from the direct or indirect actions of the client, regardless of whether Mirr Asia could have foreseen such damages. Mirr Asia's liability for breach of contract shall be limited to remuneration and may not be increased for any reason."
         },
         "11": {
-          "t": "11. Governing Law & Dispute Resolution",
-          "c": "Hong Kong law governs this Agreement. Disputes will be referred to binding arbitration under the rules of a recognized Hong Kong arbitration institution."
+          "t": "11. Force Majeure",
+          "c": "If performance of the Agreement is impossible due to force majeure, such as acts of God, war, riot, or government regulation, both parties are relieved of liability."
         },
         "12": {
-          "t": "12. Costs & Attorney’s Fees",
-          "c": "The prevailing party in any dispute (mediation, arbitration, or litigation) may recover reasonable costs and attorney’s fees. The Client will also pay Mirr Asia’s reasonable costs of responding to lawful demands for information or documents."
+          "t": "12. Assignment & Subcontractors",
+          "c": "Neither party may assign or transfer its rights/obligations without prior written consent of the other."
         },
         "13": {
-          "t": "13. Client Confirmation & Declaration",
-          "c": "The Client confirms that services will not be used for unlawful purposes and that all provided information is true and correct. The Client will promptly notify Mirr Asia of any changes. Mirr Asia may discontinue services if illegal activity is suspected."
+          "t": "13. Confidentiality",
+          "c": "Both parties will keep confidential any non-public business or technical information obtained under this Agreement, except where disclosure is required by law or the information is already public."
+        },
+        "14": {
+          "t": "14. Entire Agreement",
+          "c": "This Agreement constitutes the entire agreement between the parties with respect to the subject matter hereof and supersedes all prior and contemporaneous understandings between the parties, whether written or oral, with respect thereto, except that the representations and warranties made by Company Members/Directors in the application for registration requested by Mirr Asia shall be separately classified from this Agreement and remain in full force and effect in accordance with the current Compliance Policy."
+        },
+        "15": {
+          "t": "15. Amendments",
+          "c": "Amendments to this Agreement may only be made by written agreement of both parties. Express agreement via email or social media is also considered as written agreement."
+        },
+        "16": {
+          "t": "16. Notices and Communications",
+          "c": "All notices relating to this Agreement shall be in writing and shall be sent to the other party's address or sent to the other party's email address. Communications via email or social media are legally binding and shall be considered part of the Agreement. Emails or social media communications regarding important decisions, approvals, or contract changes have the same effect as written notifications. Both parties are obliged to regularly check the email or social media accounts with which they have agreed to communicate with each other or with which they have consistently communicated. Mirr Asia must periodically report to the client on the progress of the work under this Agreement, and instructions or approvals from the client via email are considered official decisions. Both parties must confirm important decisions by email."
+        },
+        "17": {
+          "t": "17. Independent Contractor",
+          "c": "Mirr Asia is an independent contractor and nothing in this Agreement shall be construed to create an employer-employee relationship between Client and Mirr Asia."
+        },
+        "18": {
+          "t": "18. Severability",
+          "c": "Any provisions of this Agreement held in violation of any law or ordinance shall be deemed stricken and all remaining provisions shall continue valid and binding upon the parties. The Client and Mirr Asia shall attempt in good faith to replace any invalid or unenforceable provisions of this Agreement with provisions which are valid and enforceable and which come as close as possible to expressing the intention of the original provisions."
+        },
+        "19": {
+          "t": "19. No Third-party Beneficiaries",
+          "c": "No rights are created for third parties unless authorized in writing by Mirr Asia."
+        },
+        "20": {
+          "t": "20. Governing Law and Remedies",
+          "c": "Unless otherwise provided in an attachment, this Agreement shall be performed and construed under the laws of Hong Kong Special Administrative Region without regard to the conflict of laws’ provisions. In the event of any claim, dispute or other matter in question between the parties, the Client and Mirr Asia agree to submit the matter to binding arbitration in accordance with the then-existing rules of the Hong Kong International Arbitration Centre (HKIAC)."
+        },
+        "21": {
+          "t": "21. Costs & Attorney’s Fees",
+          "c": "The prevailing party in any dispute (mediation, arbitration, or litigation) may recover reasonable costs and attorney’s fees. The Client will also pay Mirr Asia’s reasonable costs of responding to lawful demands for information or documents."
+        },
+        "22": {
+          "t": "22. Client Confirmation & Declaration",
+          "c": "The Client confirms that the purpose of the request for this service and the funds to be received in the future are not related to or derived from illegal activities such as illegal weapons, money laundering, terrorist financing, illegal drugs, or fraud. The Client agrees to provide the necessary documents and information in connection with this service, and agrees that such information may be provided to institutions, government agencies, and companies that are essential to the provision of the service. The Client shall promptly notify Mirr Asia of any changes. Mirr Asia has a right to discontinue services if illegal activity is suspected."
         }
       }
     },
@@ -2064,7 +2090,7 @@
         "capAmount": {
           "label": "Total share capital",
           "options": {
-            "1":"1",
+            "1": "1",
             "10": "10",
             "100": "100",
             "1000": "1,000",
@@ -2080,7 +2106,7 @@
         "shareCount": {
           "label": "Total number of shares (min 1)",
           "options": {
-           "1":"1",
+            "1": "1",
             "10": "10",
             "100": "100",
             "1000": "1,000",
@@ -2181,29 +2207,21 @@
   },
   "reqForQuote": {
     "title": "Request for Quotation",
-
     "contact": {
       "title": "Request for Quotation",
-
       "emailLabel": "Email",
       "emailPlaceholder": "your@email.com",
-
       "personNameLabel": "Name of person in charge",
       "personNamePlaceholder": "Enter full name",
-
       "personTitleLabel": "Person in charge's title",
       "personTitlePlaceholder": "e.g. CEO, Director, Manager",
-
       "personPhoneLabel": "Person in charge's phone number",
       "personPhonePlaceholder": "Include country code if possible",
-
       "snsTypeLabel": "SNS Platform",
       "snsTypePlaceholder": "e.g. KakaoTalk, WhatsApp, Telegram",
-
       "snsIdLabel": "KakaoTalk (or other SNS account) ID",
       "snsIdPlaceholder": "KakaoTalk ID or other SNS ID"
     },
-
     "country": {
       "title": "Select the country in which you wish to establish the corporation (multiple selections possible)",
       "options": {
@@ -2247,7 +2265,6 @@
         "other": "Other:"
       }
     },
-
     "industry": {
       "title": "Select your industry (check all relevant items)",
       "options": {
@@ -2271,7 +2288,6 @@
         "other": "Other:"
       }
     },
-
     "services": {
       "title": "Service items you require (check all that apply)",
       "options": {
@@ -2292,13 +2308,11 @@
         "other": "Other:"
       }
     },
-
     "product": {
       "title": "Description of the product name, product type, service content, service type, etc. to be traded after the corporation is established",
       "descriptionLabel": "Example) Daily necessities, automobile parts and supplies, construction supplies, F&B, travel-related services, etc.",
       "descriptionPlaceholder": "Describe the main products/services, type, and business model after incorporation."
     },
-
     "vasp": {
       "title": "Are you interested in acquiring a VASP licensed entity?",
       "options": {
@@ -2308,7 +2322,6 @@
         "no-reg": "Hope for a country without VASP regulations"
       }
     },
-
     "structure": {
       "title": "Information about the corporation you wish to establish – Shareholders and governance structure of the corporation to be established",
       "helperText": "Multiple, complex hierarchical structures (double / triple layer) make bank account opening significantly more difficult.",
@@ -2323,7 +2336,6 @@
         "other": "Other:"
       }
     },
-
     "materials": {
       "title": "Presentable business-related materials",
       "options": {
