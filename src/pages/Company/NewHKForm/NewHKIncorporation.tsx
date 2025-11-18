@@ -1909,7 +1909,7 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
 }
 export const EngagementTerms = () => {
 
-  const items = Array.from({ length: 13 }).map((_, idx) => {
+  const items = Array.from({ length: 22 }).map((_, idx) => {
     const k = String(idx + 1);
     return {
       t: t(`newHk.terms.items.${k}.t`, ""),
