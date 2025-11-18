@@ -257,11 +257,14 @@ const feesConfig = {
 // ---------- Derived helpers
 const computeBaseTotal = (app: AppDoc) => {
   const selectedIds = new Set(app.optionalFeeIds);
+  console.log("selectedIds", selectedIds)
   let total = 0;
   [...feesConfig.government, ...feesConfig.service].forEach((item) => {
     const on = item.mandatory || selectedIds.has(item.id);
     if (on) total += item.amount;
   });
+  console.log("total", total)
+
   return Number(total.toFixed(2));
 };
 
@@ -745,7 +748,8 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
 // ---------- Fees / Invoice / Payment / Review
 function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React.SetStateAction<AppDoc>> }) {
   const baseTotal = computeBaseTotal(app);
-
+  console.log("baseTotal",baseTotal)
+  console.log("app---->",app)
   const toggle = (id: string) => {
     setApp((prev) => {
       const has = prev.optionalFeeIds.includes(id);
