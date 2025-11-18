@@ -194,17 +194,17 @@ const SectionCard: React.FC<{
 // Fees config (unchanged numbers; labels/info will be translated at render)
 const feesConfig = {
   government: [
-    { id: "cr_fee", label: "HK Company Incorporation Government Fee to Companies Registry", original: 221, amount: 221, mandatory: true },
-    { id: "br_fee", label: "Business Registration (government) fee", original: 283, amount: 283, mandatory: true }
+    { id: "cr_fee", label: "HK Company Incorporation Government Fee to Companies Registry", original: 221, amount: 221, mandatory: true, info: undefined },
+    { id: "br_fee", label: "Business Registration (government) fee", original: 283, amount: 283, mandatory: true, info: undefined }
   ],
   service: [
-    { id: "inc_service", label: "Hong Kong Company Incorporation — service fee (discounted)", original: 219, amount: 0, mandatory: true },
-    { id: "sec_annual", label: "Company Secretary Annual Service Charge", original: 450, amount: 225, mandatory: true },
-    { id: "kyc", label: "KYC / Due Diligence fee (1st year)", original: 65, amount: 0, mandatory: true },
-    { id: "reg_office", label: "Registered Office Address (annual, optional)", original: 322, amount: 161, mandatory: false },
-    { id: "bank_arr", label: "Bank/EMI Account Opening Arrangement (optional)", original: 400, amount: 400, mandatory: false },
-    { id: "kit", label: "Company Kit Producing cost (optional)", original: 70, amount: 70, mandatory: false },
-    { id: "corr_addr", label: "Correspondence Address Annual Service (optional)", original: 65, amount: 65, mandatory: false }
+    { id: "inc_service", label: "Hong Kong Company Incorporation — service fee (discounted)", original: 219, amount: 0, mandatory: true, info: undefined },
+    { id: "sec_annual", label: "Company Secretary Annual Service Charge", original: 450, amount: 225, mandatory: true, info: undefined },
+    { id: "kyc", label: "KYC / Due Diligence fee (1st year)", original: 65, amount: 0, mandatory: true, info: undefined },
+    { id: "reg_office", label: "Registered Office Address (annual, optional)", original: 322, amount: 161, mandatory: false, info: undefined },
+    { id: "bank_arr", label: "Bank/EMI Account Opening Arrangement (optional)", original: 400, amount: 400, mandatory: false, info: undefined },
+    { id: "kit", label: "Company Kit Producing cost (optional)", original: 70, amount: 70, mandatory: false, info: undefined },
+    { id: "corr_addr", label: "Correspondence Address Annual Service (optional)", original: 65, amount: 65, mandatory: false, info: undefined }
   ]
 };
 
@@ -222,15 +222,75 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
     reg_office: t("newHk.invoice.info.reg_office"),
     bank_arr: t("newHk.invoice.info.bank_arr"),
     kit: t("newHk.invoice.info.kit"),
-    corr_addr: t("newHk.invoice.info.corr_addr")
+    corr_addr: t("newHk.invoice.info.corr_addr"),
   };
 
-  const selectedOptionals = new Set(app.optionalFeeIds);
+  const selectedOptionals = new Set(app.optionalFeeIds || []);
 
-  // Build items (government: always; service: mandatory OR selected optionals)
+  // ---------- EXTRA KYC ITEMS BASED ON SHAREHOLDERS ----------
+
+  // defensive: ensure parties is an array
+  const parties = Array.isArray((app as any).parties) ? (app as any).parties : [];
+
+  // count shareholders = parties with > 0 shares
+  const shareholders = parties.filter((p: any) => {
+    const shares = Number(p?.shares ?? 0);
+    return shares > 0;
+  });
+
+  const legalPersonCount = shareholders.filter((p: any) => p?.isCorp === true).length;
+  const individualCount = shareholders.length - legalPersonCount;
+
+  // build dynamic KYC fee lines (service category)
+  const extraKycItems: {
+    id: string;
+    label: string;
+    original: number;
+    amount: number;
+    mandatory: boolean;
+    info?: string;
+  }[] = [];
+
+  // 1) Legal person KYC (130 each)
+  for (let i = 0; i < legalPersonCount; i++) {
+    extraKycItems.push({
+      id: `kyc_legal_${i + 1}`,
+      label: "KYC / Due Diligence fee (Legal Person)",
+      original: 130,
+      amount: 130,
+      mandatory: true,
+      info:
+        "KYC for corporate shareholders (legal persons). Includes company documents, registers and UBO/KYC checks.",
+    });
+  }
+
+  // 2) Additional individual KYC beyond 2 individuals included
+  if (individualCount > 2) {
+    const peopleNeedingKyc = individualCount - 2;
+    const kycSlots = Math.ceil(peopleNeedingKyc / 2); // 1 slot = up to 2 people
+
+    for (let i = 0; i < kycSlots; i++) {
+      extraKycItems.push({
+        id: `kyc_extra_${i + 1}`,
+        label: "KYC / Due Diligence fee (Additional individuals)",
+        original: 65,
+        amount: 65,
+        mandatory: true,
+        info:
+          "Additional KYC checks for individual shareholders/directors beyond the two already included in the package.",
+      });
+    }
+  }
+
+  // ---------- BUILD INVOICE ITEMS (GOV + SERVICE + EXTRA KYC) ----------
+
   const toItems = (category: "government" | "service") => {
-    const list = category === "government" ? feesConfig.government : feesConfig.service;
-    return list
+    const baseList =
+      category === "government"
+        ? feesConfig.government
+        : [...feesConfig.service, ...extraKycItems];
+
+    return baseList
       .filter((it) => it.mandatory || selectedOptionals.has(it.id))
       .map((it) => {
         const original = Number(it.original ?? it.amount ?? 0);
@@ -238,14 +298,13 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
         const discountLabel =
           it.original && it.original > it.amount
             ? t("newHk.fees.discountApplied", "Discount applied (−{{pct}}%)", {
-                pct: (((it.original - it.amount) / it.original) * 100).toFixed(0)
+                pct: (((it.original - it.amount) / it.original) * 100).toFixed(0),
               })
             : undefined;
 
-        // Use translated labels for description/sublabel
         const itemKey = `newHk.fees.items.${it.id}`;
         const translatedLabel = t(`${itemKey}.label`, it.label);
-        const translatedInfo = t(`${itemKey}.info`, "");
+        const translatedInfo = t(`${itemKey}.info`, it.info || "");
 
         return {
           id: it.id,
@@ -257,13 +316,22 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
           totalDiscounted: fmt(discounted),
           category,
           sublabel: translatedInfo || (infoById[it.id] as string | undefined),
-          discountLabel
+          discountLabel,
         } as InvoiceItem;
       });
   };
 
-  const govItems = React.useMemo(() => toItems("government"), [app.optionalFeeIds, t]);
-  const svcItems = React.useMemo(() => toItems("service"), [app.optionalFeeIds, t]);
+  const govItems = React.useMemo(
+    () => toItems("government"),
+    // government items depend only on optionals + t (no KYC extras there)
+    [app.optionalFeeIds, t]
+  );
+
+  const svcItems = React.useMemo(
+    () => toItems("service"),
+    // service items depend on optionals + t + parties (for extra KYC rows)
+    [app.optionalFeeIds, t, app.parties]
+  );
 
   // Totals
   const sum = (items: InvoiceItem[]) =>
@@ -294,7 +362,9 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
               MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED
             </CardTitle>
             <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
-              <Badge variant="outline" className="ml-2">{t("newHk.invoice.currencyBadge", "USD")}</Badge>
+              <Badge variant="outline" className="ml-2">
+                {t("newHk.invoice.currencyBadge", "USD")}
+              </Badge>
             </div>
           </div>
         </CardHeader>
@@ -328,11 +398,21 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-[46%] py-2">{t("newHk.invoice.table.headers.serviceDescription")}</TableHead>
-                <TableHead className="text-right py-2">{t("newHk.invoice.table.headers.qty")}</TableHead>
-                <TableHead className="text-right py-2">{t("newHk.invoice.table.headers.original")}</TableHead>
-                <TableHead className="text-right py-2">{t("newHk.invoice.table.headers.amount")}</TableHead>
-                <TableHead className="text-right py-2">{t("newHk.invoice.table.headers.total")}</TableHead>
+                <TableHead className="w-[46%] py-2">
+                  {t("newHk.invoice.table.headers.serviceDescription")}
+                </TableHead>
+                <TableHead className="text-right py-2">
+                  {t("newHk.invoice.table.headers.qty")}
+                </TableHead>
+                <TableHead className="text-right py-2">
+                  {t("newHk.invoice.table.headers.original")}
+                </TableHead>
+                <TableHead className="text-right py-2">
+                  {t("newHk.invoice.table.headers.amount")}
+                </TableHead>
+                <TableHead className="text-right py-2">
+                  {t("newHk.invoice.table.headers.total")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -355,14 +435,16 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
                 <TableCell className="py-2" />
                 <TableCell className="py-2" />
                 <TableCell className="py-2" />
-                <TableCell className="py-2 text-right font-semibold">{fmt(gov.discounted)}</TableCell>
+                <TableCell className="py-2 text-right font-semibold">
+                  {fmt(gov.discounted)}
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </div>
       </SectionCard>
 
-      {/* Our Service Fees (mandatory + selected optionals) */}
+      {/* Our Service Fees (mandatory + selected optionals + extra KYC) */}
       <SectionCard
         title={t("newHk.invoice.sections.service.title")}
         badge={t("newHk.invoice.sections.service.badge")}
@@ -390,11 +472,21 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="w-[46%] py-2">{t("newHk.invoice.table.headers.serviceDescription")}</TableHead>
-                <TableHead className="text-right py-2">{t("newHk.invoice.table.headers.qty")}</TableHead>
-                <TableHead className="text-right py-2">{t("newHk.invoice.table.headers.original")}</TableHead>
-                <TableHead className="text-right py-2">{t("newHk.invoice.table.headers.amount")}</TableHead>
-                <TableHead className="text-right py-2">{t("newHk.invoice.table.headers.total")}</TableHead>
+                <TableHead className="w-[46%] py-2">
+                  {t("newHk.invoice.table.headers.serviceDescription")}
+                </TableHead>
+                <TableHead className="text-right py-2">
+                  {t("newHk.invoice.table.headers.qty")}
+                </TableHead>
+                <TableHead className="text-right py-2">
+                  {t("newHk.invoice.table.headers.original")}
+                </TableHead>
+                <TableHead className="text-right py-2">
+                  {t("newHk.invoice.table.headers.amount")}
+                </TableHead>
+                <TableHead className="text-right py-2">
+                  {t("newHk.invoice.table.headers.total")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -417,7 +509,9 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
                 <TableCell className="py-2" />
                 <TableCell className="py-2" />
                 <TableCell className="py-2" />
-                <TableCell className="py-2 text-right font-semibold">{fmt(svc.discounted)}</TableCell>
+                <TableCell className="py-2 text-right font-semibold">
+                  {fmt(svc.discounted)}
+                </TableCell>
               </TableRow>
               <TableRow className="bg-muted/20">
                 <TableCell className="py-2 font-semibold text-base">
@@ -426,7 +520,9 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
                 <TableCell className="py-2" />
                 <TableCell className="py-2" />
                 <TableCell className="py-2" />
-                <TableCell className="py-2 text-right font-bold text-base">{fmt(grand.discounted)}</TableCell>
+                <TableCell className="py-2 text-right font-bold text-base">
+                  {fmt(grand.discounted)}
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -435,15 +531,21 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
         {/* Mobile totals */}
         <div className="md:hidden mt-2 grid gap-2 text-sm">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">{t("newHk.invoice.sections.government.subtotal")}</span>
+            <span className="text-muted-foreground">
+              {t("newHk.invoice.sections.government.subtotal")}
+            </span>
             <span className="font-semibold">{fmt(gov.discounted)}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">{t("newHk.invoice.sections.service.subtotal")}</span>
+            <span className="text-muted-foreground">
+              {t("newHk.invoice.sections.service.subtotal")}
+            </span>
             <span className="font-semibold">{fmt(svc.discounted)}</span>
           </div>
           <div className="flex items-center justify-between text-base">
-            <span className="font-medium">{t("newHk.invoice.sections.grandTotal")}</span>
+            <span className="font-medium">
+              {t("newHk.invoice.sections.grandTotal")}
+            </span>
             <span className="font-bold">{fmt(grand.discounted)}</span>
           </div>
         </div>
@@ -457,17 +559,18 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
       <Card>
         <CardContent className="pt-4 text-sm">
           <div className="flex items-center justify-end gap-6 flex-wrap">
-            <>
-              <div className="text-right">
-                <div className="text-base font-bold">{t("newHk.invoice.surcharge.cardFee")}</div>
+            <div className="text-right">
+              <div className="text-base font-bold">
+                {t("newHk.invoice.surcharge.cardFee")}
               </div>
-            </>
+            </div>
           </div>
         </CardContent>
       </Card>
     </div>
   );
 }
+
 
 
 // function InvoicePreview({ app }: { app: AppDoc }) {

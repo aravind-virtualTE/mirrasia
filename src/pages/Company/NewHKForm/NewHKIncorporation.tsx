@@ -253,17 +253,65 @@ const feesConfig = {
   ],
 };
 
+const computeShareholderKycExtras = (app: AppDoc): number => {
+  // defensive: handle missing or malformed parties
+  const shareholders = Array.isArray((app as any).parties) ? (app as any).parties : [];
 
+  // // treat as shareholders only those with > 0 shares
+  // const shareholders = parties.filter((p) => {
+  //   const shares = Number(p?.shares ?? 0);
+  //   return shares > 0;
+  // });
+
+  // map to old logic: legalPersonFees = isLegalPerson; here isCorp ~ isLegalPerson
+  const legalPersonCount = shareholders.filter((p:any) => p?.isCorp === true).length;
+  const individualCount = shareholders.length - legalPersonCount;
+
+  // constants consistent with old ServiceSelection
+  const LEGAL_PERSON_KYC_FEE = 130; // per corporate shareholder
+  const INDIVIDUAL_KYC_SLOT_FEE = 65; // covers up to 2 extra individuals
+
+  let extra = 0;
+
+  // 1) All corporate shareholders are charged at 130 each
+  if (legalPersonCount > 0) {
+    extra += legalPersonCount * LEGAL_PERSON_KYC_FEE;
+  }
+
+  // 2) For individuals: first 2 are included (amount = 0 in base "kyc" line)
+  if (individualCount > 2) {
+    const peopleNeedingKyc = individualCount - 2;
+    const kycSlots = Math.ceil(peopleNeedingKyc / 2); // same as old logic
+    extra += kycSlots * INDIVIDUAL_KYC_SLOT_FEE;
+  }
+
+  // console.log("KYC extras detail", {
+  //   legalPersonCount,
+  //   individualCount,
+  //   extra,
+  // });
+
+  return extra;
+};
 // ---------- Derived helpers
 const computeBaseTotal = (app: AppDoc) => {
-  const selectedIds = new Set(app.optionalFeeIds);
-  console.log("selectedIds", selectedIds)
+  const selectedIds = new Set(app.optionalFeeIds || []);
   let total = 0;
+
+  // base government + service fees
   [...feesConfig.government, ...feesConfig.service].forEach((item) => {
     const on = item.mandatory || selectedIds.has(item.id);
     if (on) total += item.amount;
   });
-  console.log("total", total)
+
+  // add shareholder-based KYC extras (corporate + extra individuals)
+  const kycExtras = computeShareholderKycExtras(app);
+  total += kycExtras;
+
+  // console.log("selectedIds", selectedIds);
+  // console.log("baseWithoutKycExtras", Number((total - kycExtras).toFixed(2)));
+  // console.log("kycExtras", kycExtras);
+  // console.log("baseWithKycExtras", Number(total.toFixed(2)));
 
   return Number(total.toFixed(2));
 };
@@ -748,15 +796,72 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
 // ---------- Fees / Invoice / Payment / Review
 function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React.SetStateAction<AppDoc>> }) {
   const baseTotal = computeBaseTotal(app);
-  console.log("baseTotal",baseTotal)
-  console.log("app---->",app)
+  // console.log("baseTotal", baseTotal);
+  // console.log("app---->", app);
+
   const toggle = (id: string) => {
     setApp((prev) => {
       const has = prev.optionalFeeIds.includes(id);
-      const optionalFeeIds = has ? prev.optionalFeeIds.filter((x) => x !== id) : [...prev.optionalFeeIds, id];
+      const optionalFeeIds = has
+        ? prev.optionalFeeIds.filter((x) => x !== id)
+        : [...prev.optionalFeeIds, id];
       return { ...prev, optionalFeeIds, updatedAt: new Date().toISOString() };
     });
   };
+
+  // ---- EXTRA KYC ROWS (based on shareholders) ----
+  // Mirror the old ServiceSelection logic: corporate = 130 each,
+  // extra individuals beyond 2 = 65 per slot (1 slot covers up to 2 people).
+  const parties = Array.isArray((app as any).parties) ? (app as any).parties : [];
+
+  // treat as shareholders only those with > 0 shares
+  const shareholders = parties.filter((p: any) => {
+    const shares = Number(p?.shares ?? 0);
+    return shares > 0;
+  });
+
+  const legalPersonCount = shareholders.filter((p: any) => p?.isCorp === true).length;
+  const individualCount = shareholders.length - legalPersonCount;
+
+  const extraKycItems: {
+    id: string;
+    label: string;
+    original: number;
+    amount: number;
+    mandatory: boolean;
+    info?: string;
+  }[] = [];
+
+  // 1) Legal person KYC rows (130 each)
+  for (let i = 0; i < legalPersonCount; i++) {
+    extraKycItems.push({
+      id: `kyc_legal_${i + 1}`,
+      label: "KYC / Due Diligence fee (Legal Person)",
+      original: 130,
+      amount: 130,
+      mandatory: true,
+      info:
+        "KYC for corporate shareholders (legal persons). Includes company documents, registers and UBO/KYC checks.",
+    });
+  }
+
+  // 2) Additional individual KYC rows (beyond 2 included)
+  if (individualCount > 2) {
+    const peopleNeedingKyc = individualCount - 2;
+    const kycSlots = Math.ceil(peopleNeedingKyc / 2); // 1 slot = up to 2 people
+
+    for (let i = 0; i < kycSlots; i++) {
+      extraKycItems.push({
+        id: `kyc_extra_${i + 1}`,
+        label: "KYC / Due Diligence fee (Additional individuals)",
+        original: 65,
+        amount: 65,
+        mandatory: true,
+        info:
+          "Additional KYC checks for individual shareholders/directors beyond the two already included in the package.",
+      });
+    }
+  }
 
   function getRichTipContent(id: string): React.ReactNode | undefined {
     if (id === "reg_office") {
@@ -808,6 +913,7 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
     const label = t(`${itemKey}.label`, item.label);
     const info = t(`${itemKey}.info`, item.info);
     const richTip = getRichTipContent(item.id);
+
     return (
       <TableRow>
         <TableCell className="font-medium flex items-center gap-2">
@@ -829,6 +935,13 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
     );
   };
 
+  // Combine static fees + dynamic extra KYC items
+  const allItems = [
+    ...feesConfig.government,
+    ...feesConfig.service,
+    ...extraKycItems,
+  ];
+
   return (
     <div className="space-y-3">
       <Table>
@@ -843,7 +956,7 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
           </TableRow>
         </TableHeader>
         <TableBody>
-          {[...feesConfig.government, ...feesConfig.service].map((x) => (
+          {allItems.map((x) => (
             <Row key={x.id} item={x} />
           ))}
         </TableBody>
@@ -860,6 +973,7 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
     </div>
   );
 }
+
 
 export type StripeSuccessInfo = {
   receiptUrl?: string;
