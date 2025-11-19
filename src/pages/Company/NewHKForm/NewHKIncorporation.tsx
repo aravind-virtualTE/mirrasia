@@ -2242,7 +2242,7 @@ async function saveDraft(doc: AppDoc): Promise<{ ok: boolean; _id?: string }> {
     window.history.pushState({}, "", `/company-register/HK/${result._id}`);
   }
   result.ok = true
-  console.log("result", result);
+  // console.log("result", result);
   return result;
 }
 
