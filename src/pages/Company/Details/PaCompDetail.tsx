@@ -269,6 +269,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
     const onSave = async () => {
         if (!formData) return;
+        console.log("formDta", formData.paymentStatus)
         try {
             setIsSaving(true);
             const payload = JSON.stringify({
@@ -281,6 +282,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     companyName_1: formData.companyName_1,
                     companyName_2: formData.companyName_2,
                     companyName_3: formData.companyName_3,
+                    paymentStatus: formData.paymentStatus
                 },
                 session: {
                     id: session._id,

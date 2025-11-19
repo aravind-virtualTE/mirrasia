@@ -681,7 +681,7 @@ const CompanyInfoStep = () => {
     useEffect(() => {
         setFormData((p: any) => {
             const next = { ...p };
-            if (next.currency === undefined) next.currency = "HKD";
+            if (next.currency === undefined) next.currency = "USD";
             if (next.capAmount === undefined) next.capAmount = "10000";
             if (next.shareCount === undefined) next.shareCount = "10000";
             if (!Array.isArray(next.selectedIndustry)) next.selectedIndustry = [];
