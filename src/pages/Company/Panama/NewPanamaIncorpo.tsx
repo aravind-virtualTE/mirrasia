@@ -89,588 +89,588 @@ type FormConfig = { title: string; steps: Step[] };
 type YesNoOption = { id: "yes" | "no"; value: string };
 type RoleOption = { id: "president" | "treasurer" | "secretary" | ""; value: string };
 type ShareholderDirectorItem = {
-  name: string;
-  email: string;
-  phone: string;
-  shares: number;
-  role: RoleOption;
-  isLegalPerson: YesNoOption;
-  invited?: boolean;
-  status?: "Invited" | "Not Invited" | "";
-  typeOfShare: ShareTypeId; 
+    name: string;
+    email: string;
+    phone: string;
+    shares: number;
+    role: RoleOption;
+    isLegalPerson: YesNoOption;
+    invited?: boolean;
+    status?: "Invited" | "Not Invited" | "";
+    typeOfShare: ShareTypeId;
 };
 
 type LegalDirectorItem = {
-  shares: number;
-  role?: RoleOption;
-  isLegalPerson: YesNoOption;
-  invited?: boolean;
-  status?: "Invited" | "Not Invited" | "";
+    shares: number;
+    role?: RoleOption;
+    isLegalPerson: YesNoOption;
+    invited?: boolean;
+    status?: "Invited" | "Not Invited" | "";
 };
 
 const YES_NO: YesNoOption[] = [
-  { id: "yes", value: "AmlCdd.options.yes" },
-  { id: "no", value: "AmlCdd.options.no" },
+    { id: "yes", value: "AmlCdd.options.yes" },
+    { id: "no", value: "AmlCdd.options.no" },
 ];
 
 const ROLE_OPTIONS: RoleOption[] = [
-  { id: "president", value: "panama.rOptions.4" },
-  { id: "treasurer", value: "panama.rOptions.5" },
-  { id: "secretary", value: "panama.rOptions.3" },
+    { id: "president", value: "panama.rOptions.4" },
+    { id: "treasurer", value: "panama.rOptions.5" },
+    { id: "secretary", value: "panama.rOptions.3" },
 ];
 
 
 function PartiesManager() {
-  const { toast } = useToast();
-  const [form, setForm] = useAtom(paFormWithResetAtom1);
+    const { toast } = useToast();
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
 
-  // hydrate from form state
-  const shareholders: ShareholderDirectorItem[] = Array.isArray(form?.shareHolders)
-    ? form.shareHolders.map((s: any) => ({
-        name: s.name ?? "",
-        email: s.email ?? "",
-        phone: s.phone ?? "",
-        shares: Number(s.shares ?? 0),
-        role: s.role?.id ? s.role : { id: "", value: "" },
-        isLegalPerson: s.isLegalPerson?.id ? s.isLegalPerson : { id: "no", value: "AmlCdd.options.no" },
-        typeOfShare: (s.typeOfShare as ShareTypeId) || DEFAULT_SHARE_ID,
-        invited: s.invited ?? false,
-        status: s.status ?? "",
-      }))
-    : [
-        {
-          name: "",
-          email: "",
-          phone: "",
-          shares: 0,
-          role: { id: "", value: "" },
-          isLegalPerson: { id: "no", value: "AmlCdd.options.no" },
-          typeOfShare: DEFAULT_SHARE_ID,
-          invited: false,
-          status: "",
-        },
-      ];
+    // hydrate from form state
+    const shareholders: ShareholderDirectorItem[] = Array.isArray(form?.shareHolders)
+        ? form.shareHolders.map((s: any) => ({
+            name: s.name ?? "",
+            email: s.email ?? "",
+            phone: s.phone ?? "",
+            shares: Number(s.shares ?? 0),
+            role: s.role?.id ? s.role : { id: "", value: "" },
+            isLegalPerson: s.isLegalPerson?.id ? s.isLegalPerson : { id: "no", value: "AmlCdd.options.no" },
+            typeOfShare: (s.typeOfShare as ShareTypeId) || DEFAULT_SHARE_ID,
+            invited: s.invited ?? false,
+            status: s.status ?? "",
+        }))
+        : [
+            {
+                name: "",
+                email: "",
+                phone: "",
+                shares: 0,
+                role: { id: "", value: "" },
+                isLegalPerson: { id: "no", value: "AmlCdd.options.no" },
+                typeOfShare: DEFAULT_SHARE_ID,
+                invited: false,
+                status: "",
+            },
+        ];
 
-  const legalDirectors: LegalDirectorItem[] = Array.isArray(form?.legalDirectors)
-    ? form.legalDirectors.map((l: any) => ({
-        shares: Number(l.shares ?? 0),
-        role: l.role?.id ? l.role : { id: "", value: "" },
-        isLegalPerson: l.isLegalPerson?.id ? l.isLegalPerson : { id: "no", value: "AmlCdd.options.no" },
-        invited: l.invited ?? false,
-        status: l.status ?? "",
-      }))
-    : [];
+    const legalDirectors: LegalDirectorItem[] = Array.isArray(form?.legalDirectors)
+        ? form.legalDirectors.map((l: any) => ({
+            shares: Number(l.shares ?? 0),
+            role: l.role?.id ? l.role : { id: "", value: "" },
+            isLegalPerson: l.isLegalPerson?.id ? l.isLegalPerson : { id: "no", value: "AmlCdd.options.no" },
+            invited: l.invited ?? false,
+            status: l.status ?? "",
+        }))
+        : [];
 
-  const setShareholders = (next: ShareholderDirectorItem[]) =>
-    setForm((prev: any) => ({ ...prev, shareHolders: next }));
-  const setLegalDirectors = (next: LegalDirectorItem[]) =>
-    setForm((prev: any) => ({ ...prev, legalDirectors: next }));
+    const setShareholders = (next: ShareholderDirectorItem[]) =>
+        setForm((prev: any) => ({ ...prev, shareHolders: next }));
+    const setLegalDirectors = (next: LegalDirectorItem[]) =>
+        setForm((prev: any) => ({ ...prev, legalDirectors: next }));
 
-  // totals
-  const totalShares =
-    (form.shareCount === "other"
-      ? Number(form.shareOther || 0)
-      : Number(form.shareCount || 0)) || 0;
+    // totals
+    const totalShares =
+        (form.shareCount === "other"
+            ? Number(form.shareOther || 0)
+            : Number(form.shareCount || 0)) || 0;
 
-  const allocatedShares =
-    shareholders.reduce((s, p) => s + (Number(p.shares) || 0), 0) +
-    legalDirectors.reduce((s, p) => s + (Number(p.shares) || 0), 0);
+    const allocatedShares =
+        shareholders.reduce((s, p) => s + (Number(p.shares) || 0), 0) +
+        legalDirectors.reduce((s, p) => s + (Number(p.shares) || 0), 0);
 
-  // UI state
-  const [expandedSH, setExpandedSH] = React.useState<number | null>(null);
-  const [expandedLD, setExpandedLD] = React.useState<number | null>(null);
-  const [isInviting, setIsInviting] = React.useState(false);
+    // UI state
+    const [expandedSH, setExpandedSH] = React.useState<number | null>(null);
+    const [expandedLD, setExpandedLD] = React.useState<number | null>(null);
+    const [isInviting, setIsInviting] = React.useState(false);
 
-  // patch helpers
-  const patchShareholder = (i: number, updates: Partial<ShareholderDirectorItem>) => {
-    const next = [...shareholders];
-    next[i] = { ...next[i], ...updates };
-    setShareholders(next);
-  };
-  const patchLegalDirector = (i: number, updates: Partial<LegalDirectorItem>) => {
-    const next = [...legalDirectors];
-    next[i] = { ...next[i], ...updates };
-    setLegalDirectors(next);
-  };
+    // patch helpers
+    const patchShareholder = (i: number, updates: Partial<ShareholderDirectorItem>) => {
+        const next = [...shareholders];
+        next[i] = { ...next[i], ...updates };
+        setShareholders(next);
+    };
+    const patchLegalDirector = (i: number, updates: Partial<LegalDirectorItem>) => {
+        const next = [...legalDirectors];
+        next[i] = { ...next[i], ...updates };
+        setLegalDirectors(next);
+    };
 
-  // add/remove
-  const addShareholder = () => {
-    const next: ShareholderDirectorItem[] = [
-      ...shareholders,
-      {
-        name: "",
-        email: "",
-        phone: "",
-        shares: 0,
-        role: { id: "", value: "" },
-        isLegalPerson: { id: "no", value: "AmlCdd.options.no" },
-        typeOfShare: DEFAULT_SHARE_ID,
-        invited: false,
-        status: "",
-      },
-    ];
-    setShareholders(next);
-    setExpandedSH(next.length - 1);
-  };
-  const removeShareholder = (i: number) => {
-    const next = shareholders.filter((_, idx) => idx !== i);
-    setShareholders(next);
-    if (expandedSH === i) setExpandedSH(null);
-  };
+    // add/remove
+    const addShareholder = () => {
+        const next: ShareholderDirectorItem[] = [
+            ...shareholders,
+            {
+                name: "",
+                email: "",
+                phone: "",
+                shares: 0,
+                role: { id: "", value: "" },
+                isLegalPerson: { id: "no", value: "AmlCdd.options.no" },
+                typeOfShare: DEFAULT_SHARE_ID,
+                invited: false,
+                status: "",
+            },
+        ];
+        setShareholders(next);
+        setExpandedSH(next.length - 1);
+    };
+    const removeShareholder = (i: number) => {
+        const next = shareholders.filter((_, idx) => idx !== i);
+        setShareholders(next);
+        if (expandedSH === i) setExpandedSH(null);
+    };
 
-  const addLegalDirector = () => {
-    const next: LegalDirectorItem[] = [
-      ...legalDirectors,
-      {
-        shares: 0,
-        role: { id: "", value: "" },
-        isLegalPerson: { id: "no", value: "AmlCdd.options.no" },
-        invited: false,
-        status: "",
-      },
-    ];
-    setLegalDirectors(next);
-    setExpandedLD(next.length - 1);
-  };
-  const removeLegalDirector = (i: number) => {
-    const next = legalDirectors.filter((_, idx) => idx !== i);
-    setLegalDirectors(next);
-    if (expandedLD === i) setExpandedLD(null);
-  };
+    const addLegalDirector = () => {
+        const next: LegalDirectorItem[] = [
+            ...legalDirectors,
+            {
+                shares: 0,
+                role: { id: "", value: "" },
+                isLegalPerson: { id: "no", value: "AmlCdd.options.no" },
+                invited: false,
+                status: "",
+            },
+        ];
+        setLegalDirectors(next);
+        setExpandedLD(next.length - 1);
+    };
+    const removeLegalDirector = (i: number) => {
+        const next = legalDirectors.filter((_, idx) => idx !== i);
+        setLegalDirectors(next);
+        if (expandedLD === i) setExpandedLD(null);
+    };
 
-  // invites (shareholders list only, PA)
-  const sendInvites = async () => {
-    const invites = shareholders
-      .filter((p) => p.email && isValidEmail(p.email))
-      .map(({ name, email, isLegalPerson }) => ({
-        name,
-        email,
-        corporation: isLegalPerson.id, // "yes" | "no"
-      }));
+    // invites (shareholders list only, PA)
+    const sendInvites = async () => {
+        const invites = shareholders
+            .filter((p) => p.email && isValidEmail(p.email))
+            .map(({ name, email, isLegalPerson }) => ({
+                name,
+                email,
+                corporation: isLegalPerson.id, // "yes" | "no"
+            }));
 
-    if (!invites.length) {
-      toast({
-        title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
-        description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
-        variant: "destructive",
-      });
-      return;
-    }
+        if (!invites.length) {
+            toast({
+                title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
+                description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
+                variant: "destructive",
+            });
+            return;
+        }
 
-    try {
-      setIsInviting(true);
-      const docId = typeof window !== "undefined" ? localStorage.getItem("companyRecordId") : form?._id || "";
-      const payload = { _id: docId || form?._id || "", inviteData: invites, country: "PA" };
-      const res = await sendInviteToShDir(payload);
+        try {
+            setIsInviting(true);
+            const docId = typeof window !== "undefined" ? localStorage.getItem("companyRecordId") : form?._id || "";
+            const payload = { _id: docId || form?._id || "", inviteData: invites, country: "PA" };
+            const res = await sendInviteToShDir(payload);
 
-      const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
+            const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
 
-      if (summary.successful > 0 || summary.alreadyExists > 0) {
-        setShareholders(
-          shareholders.map((p) => ({
-            ...p,
-            invited: true,
-            status: "Invited",
-          }))
-        );
-        toast({
-          title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
-          description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
-        });
-      }
+            if (summary.successful > 0 || summary.alreadyExists > 0) {
+                setShareholders(
+                    shareholders.map((p) => ({
+                        ...p,
+                        invited: true,
+                        status: "Invited",
+                    }))
+                );
+                toast({
+                    title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
+                    description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
+                });
+            }
 
-      if (summary.failed > 0) {
-        setShareholders(
-          shareholders.map((p) => ({
-            ...p,
-            status: p.invited ? p.status : ("Not Invited" as const),
-          }))
-        );
-        toast({
-          title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
-          description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
-          variant: "destructive",
-        });
-      }
-    } finally {
-      setIsInviting(false);
-    }
-  };
+            if (summary.failed > 0) {
+                setShareholders(
+                    shareholders.map((p) => ({
+                        ...p,
+                        status: p.invited ? p.status : ("Not Invited" as const),
+                    }))
+                );
+                toast({
+                    title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
+                    description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
+                    variant: "destructive",
+                });
+            }
+        } finally {
+            setIsInviting(false);
+        }
+    };
 
-  return (
-    <div className="max-width mx-auto p-2 space-y-4">
-      {/* Header with Status */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-5 h-5 bg-blue-100 rounded-lg flex items-center justify-center">
-            <Users className="w-5 h-5 text-blue-600" />
-          </div>
-        </div>
-        <div className="text-right">
-          <h2 className="text-base font-semibold text-gray-900">
-            {t("newHk.parties.title", "Shareholders & Directors")}
-          </h2>
-          <p
-            className={cn(
-              "text-sm",
-              totalShares > 0
-                ? allocatedShares === totalShares
-                  ? "text-green-600"
-                  : allocatedShares > totalShares
-                  ? "text-red-600"
-                  : "text-gray-500"
-                : "text-gray-500"
-            )}
-          >
-            {t("newHk.parties.of", "Allocated")} {allocatedShares.toLocaleString()} /{" "}
-            {totalShares.toLocaleString()} {t("newHk.parties.allocated", "shares")}
-          </p>
-        </div>
-      </div>
-
-      {/* Shareholders/Directors list */}
-      <div className="space-y-2">
-        {shareholders.map((p, i) => {
-          const isExpanded = expandedSH === i;
-          const shareTypeLabel = SHARE_TYPES.find((s) => s.id === p.typeOfShare)?.label;
-          return (
-            <Card key={`sh-${i}`} className="overflow-hidden transition-all hover:shadow-md">
-              {/* Compact Header */}
-              <div
-                className="p-2 cursor-pointer flex items-center justify-between hover:bg-gray-50"
-                onClick={() => setExpandedSH(isExpanded ? null : i)}
-              >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-100">
-                    <UserIcon className="w-4 h-4 text-blue-600" />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900 truncate">
-                        {p.name || t("newHk.parties.new", "New Shareholder/Director")}
-                      </span>
-                      {p.status && (
-                        <span
-                          className={cn(
-                            "text-xs px-2 py-0.5 rounded-full",
-                            p.status === "Invited" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
-                          )}
-                        >
-                          {p.status}
-                        </span>
-                      )}
+    return (
+        <div className="max-width mx-auto p-2 space-y-4">
+            {/* Header with Status */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Users className="w-5 h-5 text-blue-600" />
                     </div>
-                    <p className="text-sm text-gray-500 truncate">{p.email || t("common.noEmail", "No email")}</p>
-                  </div>
-
-                  <div className="text-right flex-shrink-0">
-                    <div className="font-semibold text-gray-900">{p.shares.toLocaleString()}</div>
-                    {p.role?.id && <div className="text-xs text-gray-500">{t(p.role.value)}</div>}
-                    {shareTypeLabel && <div className="text-[11px] text-gray-400">{t(shareTypeLabel)}</div>}
-                  </div>
                 </div>
-
-                <button className="ml-4 p-1 hover:bg-gray-200 rounded" type="button">
-                  {isExpanded ? <ChevronUp className="w-4 h-4 text-gray-600" /> : <ChevronDown className="w-4 h-4 text-gray-600" />}
-                </button>
-              </div>
-
-              {/* Expanded Details */}
-              {isExpanded && (
-                <CardContent className="pt-0 pb-4 px-4 border-t bg-gray-50">
-                  <div className="grid grid-cols-2 gap-3 mt-4">
-                    {/* Name */}
-                    <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs text-gray-600 mb-1">{t("panama.sharehldrs", "Shareholder/Director")}</Label>
-                      <Input value={p.name} onChange={(e) => patchShareholder(i, { name: e.target.value })} className="h-9" />
-                    </div>
-
-                    {/* Email */}
-                    <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs text-gray-600 mb-1">{t("ApplicantInfoForm.email", "Email")}</Label>
-                      <Input
-                        type="email"
-                        value={p.email}
-                        onChange={(e) => patchShareholder(i, { email: e.target.value })}
-                        className="h-9"
-                      />
-                    </div>
-
-                    {/* Phone */}
-                    <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs text-gray-600 mb-1">{t("ApplicantInfoForm.phoneNum", "Phone")}</Label>
-                      <Input value={p.phone} onChange={(e) => patchShareholder(i, { phone: e.target.value })} className="h-9" />
-                    </div>
-
-                    {/* Shares */}
-                    <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.shares", "Number of Shares")}</Label>
-                      <Input
-                        type="number"
-                        min={0}
-                        step={1}
-                        value={Number.isFinite(p.shares) ? p.shares : 0}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value, 10);
-                          patchShareholder(i, { shares: Number.isFinite(val) ? val : 0 });
-                        }}
-                        className="h-9"
-                      />
-                    </div>
-
-                    {/* Role */}
-                    <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs text-gray-600 mb-1">{t("panama.role", "Role")}</Label>
-                      <Select
-                        value={p.role?.id || ""}
-                        onValueChange={(id) => {
-                          const selected = ROLE_OPTIONS.find((r) => r.id === id) || { id: "" as const, value: "" };
-                          patchShareholder(i, { role: selected });
-                        }}
-                      >
-                        <SelectTrigger className="h-9">
-                          <SelectValue placeholder={t("common.select", "Select")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ROLE_OPTIONS.map((r) => (
-                            <SelectItem key={r.id} value={r.id}>
-                              {t(r.value)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Type of Share (NEW) */}
-                    <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs text-gray-600 mb-1">
-                        {t("CompanyInformation.typeOfShare.label", "Type of Shares")}
-                      </Label>
-                      <Select
-                        value={p.typeOfShare || DEFAULT_SHARE_ID}
-                        onValueChange={(id) => patchShareholder(i, { typeOfShare: id as ShareTypeId })}
-                      >
-                        <SelectTrigger className="h-9">
-                          <SelectValue placeholder={t("common.select", "Select")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {SHARE_TYPES.map((opt) => (
-                            <SelectItem key={opt.id} value={opt.id}>
-                              {t(opt.label)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Is Legal Person */}
-                    <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.isLegal", "Is Legal Person?")}</Label>
-                      <Select
-                        value={p.isLegalPerson?.id || "no"}
-                        onValueChange={(id: "yes" | "no") => {
-                          const selected = YES_NO.find((o) => o.id === id)!;
-                          patchShareholder(i, { isLegalPerson: selected });
-                        }}
-                      >
-                        <SelectTrigger className="h-9">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {YES_NO.map((o) => (
-                            <SelectItem key={o.id} value={o.id}>
-                              {t(o.value)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Remove */}
-                    <div className="col-span-2 flex justify-end mt-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeShareholder(i)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                      >
-                        <X className="w-4 h-4 mr-1" />
-                        {t("newHk.parties.buttons.remove", "Remove")}
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          );
-        })}
-      </div>
-
-      {/* Actions */}
-      <div className="flex items-center justify-between pt-2">
-        <Button onClick={addShareholder} variant="outline" className="flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          {t("CompanyInformation.addShldrDir", "Add Shareholder/Director")}
-        </Button>
-
-        <Button onClick={sendInvites} variant="default" className="flex items-center gap-2 hover:bg-green-700" disabled={isInviting}>
-          {isInviting ? <CustomLoader /> : <Send className="w-4 h-4" />}
-          <span className="ml-1">{t("CompanyInformation.sendInvitation", "Send Invitations")}</span>
-        </Button>
-      </div>
-
-      {/* Legal Directors header */}
-      <div className="mt-4 flex items-center gap-2">
-        <div className="w-5 h-5 bg-purple-100 rounded-lg flex items-center justify-center">
-          <Landmark className="w-4 h-4 text-purple-600" />
-        </div>
-        <h3 className="text-sm font-semibold text-gray-900">{t("panama.localNominee", "Local Legal Directors")}</h3>
-      </div>
-
-      {/* Legal Directors list */}
-      <div className="space-y-2">
-        {legalDirectors.map((p, i) => {
-          const isExpanded = expandedLD === i;
-          return (
-            <Card key={`ld-${i}`} className="overflow-hidden transition-all hover:shadow-md">
-              {/* Compact Header */}
-              <div
-                className="p-2 cursor-pointer flex items-center justify-between hover:bg-gray-50"
-                onClick={() => setExpandedLD(isExpanded ? null : i)}
-              >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-purple-100">
-                    <Scale className="w-4 h-4 text-purple-700" />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900 truncate">
-                        {p.role?.id ? t(p.role.value) : t("panama.addLegalD", "Add Legal Director")}
-                      </span>
-                      {p.status && (
-                        <span
-                          className={cn(
-                            "text-xs px-2 py-0.5 rounded-full",
-                            p.status === "Invited" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
-                          )}
-                        >
-                          {p.status}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-500 truncate">
-                      {t("CompanyInformation.isLegal", "Is Legal Person?")}: {t(p.isLegalPerson?.value || "AmlCdd.options.no")}
+                <div className="text-right">
+                    <h2 className="text-base font-semibold text-gray-900">
+                        {t("newHk.parties.title", "Shareholders & Directors")}
+                    </h2>
+                    <p
+                        className={cn(
+                            "text-sm",
+                            totalShares > 0
+                                ? allocatedShares === totalShares
+                                    ? "text-green-600"
+                                    : allocatedShares > totalShares
+                                        ? "text-red-600"
+                                        : "text-gray-500"
+                                : "text-gray-500"
+                        )}
+                    >
+                        {t("newHk.parties.of", "Allocated")} {allocatedShares.toLocaleString()} /{" "}
+                        {totalShares.toLocaleString()} {t("newHk.parties.allocated", "shares")}
                     </p>
-                  </div>
-
-                  <div className="text-right flex-shrink-0">
-                    <div className="font-semibold text-gray-900">{p.shares.toLocaleString()}</div>
-                  </div>
                 </div>
+            </div>
 
-                <button className="ml-4 p-1 hover:bg-gray-200 rounded" type="button">
-                  {isExpanded ? <ChevronUp className="w-4 h-4 text-gray-600" /> : <ChevronDown className="w-4 h-4 text-gray-600" />}
-                </button>
-              </div>
+            {/* Shareholders/Directors list */}
+            <div className="space-y-2">
+                {shareholders.map((p, i) => {
+                    const isExpanded = expandedSH === i;
+                    const shareTypeLabel = SHARE_TYPES.find((s) => s.id === p.typeOfShare)?.label;
+                    return (
+                        <Card key={`sh-${i}`} className="overflow-hidden transition-all hover:shadow-md">
+                            {/* Compact Header */}
+                            <div
+                                className="p-2 cursor-pointer flex items-center justify-between hover:bg-gray-50"
+                                onClick={() => setExpandedSH(isExpanded ? null : i)}
+                            >
+                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-100">
+                                        <UserIcon className="w-4 h-4 text-blue-600" />
+                                    </div>
 
-              {/* Expanded */}
-              {isExpanded && (
-                <CardContent className="pt-0 pb-4 px-4 border-t bg-gray-50">
-                  <div className="grid grid-cols-2 gap-3 mt-4">
-                    {/* Role */}
-                    <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs text-gray-600 mb-1">{t("panama.role", "Role")}</Label>
-                      <Select
-                        value={p.role?.id || ""}
-                        onValueChange={(id) => {
-                          const selected = ROLE_OPTIONS.find((r) => r.id === id) || { id: "" as const, value: "" };
-                          patchLegalDirector(i, { role: selected });
-                        }}
-                      >
-                        <SelectTrigger className="h-9">
-                          <SelectValue placeholder={t("common.select", "Select")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ROLE_OPTIONS.map((r) => (
-                            <SelectItem key={r.id} value={r.id}>
-                              {t(r.value)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-medium text-gray-900 truncate">
+                                                {p.name || t("newHk.parties.new", "New Shareholder/Director")}
+                                            </span>
+                                            {p.status && (
+                                                <span
+                                                    className={cn(
+                                                        "text-xs px-2 py-0.5 rounded-full",
+                                                        p.status === "Invited" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+                                                    )}
+                                                >
+                                                    {p.status}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-gray-500 truncate">{p.email || t("common.noEmail", "No email")}</p>
+                                    </div>
 
-                    {/* Shares */}
-                    <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.shares", "Number of Shares")}</Label>
-                      <Input
-                        type="number"
-                        min={0}
-                        step={1}
-                        value={Number.isFinite(p.shares) ? p.shares : 0}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value, 10);
-                          patchLegalDirector(i, { shares: Number.isFinite(val) ? val : 0 });
-                        }}
-                        className="h-9"
-                      />
-                    </div>
+                                    <div className="text-right flex-shrink-0">
+                                        <div className="font-semibold text-gray-900">{p.shares.toLocaleString()}</div>
+                                        {p.role?.id && <div className="text-xs text-gray-500">{t(p.role.value)}</div>}
+                                        {shareTypeLabel && <div className="text-[11px] text-gray-400">{t(shareTypeLabel)}</div>}
+                                    </div>
+                                </div>
 
-                    {/* Is Legal Person */}
-                    <div className="col-span-2 sm:col-span-1">
-                      <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.isLegal", "Is Legal Person?")}</Label>
-                      <Select
-                        value={p.isLegalPerson?.id || "no"}
-                        onValueChange={(id: "yes" | "no") => {
-                          const selected = YES_NO.find((o) => o.id === id)!;
-                          patchLegalDirector(i, { isLegalPerson: selected });
-                        }}
-                      >
-                        <SelectTrigger className="h-9">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {YES_NO.map((o) => (
-                            <SelectItem key={o.id} value={o.id}>
-                              {t(o.value)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                                <button className="ml-4 p-1 hover:bg-gray-200 rounded" type="button">
+                                    {isExpanded ? <ChevronUp className="w-4 h-4 text-gray-600" /> : <ChevronDown className="w-4 h-4 text-gray-600" />}
+                                </button>
+                            </div>
 
-                    {/* Remove */}
-                    <div className="col-span-2 flex justify-end mt-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeLegalDirector(i)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                      >
-                        <X className="w-4 h-4 mr-1" />
-                        {t("newHk.parties.buttons.remove", "Remove")}
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          );
-        })}
-      </div>
+                            {/* Expanded Details */}
+                            {isExpanded && (
+                                <CardContent className="pt-0 pb-4 px-4 border-t bg-gray-50">
+                                    <div className="grid grid-cols-2 gap-3 mt-4">
+                                        {/* Name */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">{t("panama.sharehldrs", "Shareholder/Director")}</Label>
+                                            <Input value={p.name} onChange={(e) => patchShareholder(i, { name: e.target.value })} className="h-9" />
+                                        </div>
 
-      {/* Actions for Legal Directors */}
-      <div className="flex items-center justify-between pt-2">
-        <Button onClick={addLegalDirector} variant="outline" className="flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          {t("panama.addLegalD", "Add Legal Director")}
-        </Button>
-        <div />
-      </div>
-    </div>
-  );
+                                        {/* Email */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">{t("ApplicantInfoForm.email", "Email")}</Label>
+                                            <Input
+                                                type="email"
+                                                value={p.email}
+                                                onChange={(e) => patchShareholder(i, { email: e.target.value })}
+                                                className="h-9"
+                                            />
+                                        </div>
+
+                                        {/* Phone */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">{t("ApplicantInfoForm.phoneNum", "Phone")}</Label>
+                                            <Input value={p.phone} onChange={(e) => patchShareholder(i, { phone: e.target.value })} className="h-9" />
+                                        </div>
+
+                                        {/* Shares */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.shares", "Number of Shares")}</Label>
+                                            <Input
+                                                type="number"
+                                                min={0}
+                                                step={1}
+                                                value={Number.isFinite(p.shares) ? p.shares : 0}
+                                                onChange={(e) => {
+                                                    const val = parseInt(e.target.value, 10);
+                                                    patchShareholder(i, { shares: Number.isFinite(val) ? val : 0 });
+                                                }}
+                                                className="h-9"
+                                            />
+                                        </div>
+
+                                        {/* Role */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">{t("panama.role", "Role")}</Label>
+                                            <Select
+                                                value={p.role?.id || ""}
+                                                onValueChange={(id) => {
+                                                    const selected = ROLE_OPTIONS.find((r) => r.id === id) || { id: "" as const, value: "" };
+                                                    patchShareholder(i, { role: selected });
+                                                }}
+                                            >
+                                                <SelectTrigger className="h-9">
+                                                    <SelectValue placeholder={t("common.select", "Select")} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {ROLE_OPTIONS.map((r) => (
+                                                        <SelectItem key={r.id} value={r.id}>
+                                                            {t(r.value)}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* Type of Share (NEW) */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">
+                                                {t("CompanyInformation.typeOfShare.label", "Type of Shares")}
+                                            </Label>
+                                            <Select
+                                                value={p.typeOfShare || DEFAULT_SHARE_ID}
+                                                onValueChange={(id) => patchShareholder(i, { typeOfShare: id as ShareTypeId })}
+                                            >
+                                                <SelectTrigger className="h-9">
+                                                    <SelectValue placeholder={t("common.select", "Select")} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {SHARE_TYPES.map((opt) => (
+                                                        <SelectItem key={opt.id} value={opt.id}>
+                                                            {t(opt.label)}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* Is Legal Person */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.isLegal", "Is Legal Person?")}</Label>
+                                            <Select
+                                                value={p.isLegalPerson?.id || "no"}
+                                                onValueChange={(id: "yes" | "no") => {
+                                                    const selected = YES_NO.find((o) => o.id === id)!;
+                                                    patchShareholder(i, { isLegalPerson: selected });
+                                                }}
+                                            >
+                                                <SelectTrigger className="h-9">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {YES_NO.map((o) => (
+                                                        <SelectItem key={o.id} value={o.id}>
+                                                            {t(o.value)}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* Remove */}
+                                        <div className="col-span-2 flex justify-end mt-2">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => removeShareholder(i)}
+                                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                            >
+                                                <X className="w-4 h-4 mr-1" />
+                                                {t("newHk.parties.buttons.remove", "Remove")}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            )}
+                        </Card>
+                    );
+                })}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-between pt-2">
+                <Button onClick={addShareholder} variant="outline" className="flex items-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    {t("CompanyInformation.addShldrDir", "Add Shareholder/Director")}
+                </Button>
+
+                <Button onClick={sendInvites} variant="default" className="flex items-center gap-2 hover:bg-green-700" disabled={isInviting}>
+                    {isInviting ? <CustomLoader /> : <Send className="w-4 h-4" />}
+                    <span className="ml-1">{t("CompanyInformation.sendInvitation", "Send Invitations")}</span>
+                </Button>
+            </div>
+
+            {/* Legal Directors header */}
+            <div className="mt-4 flex items-center gap-2">
+                <div className="w-5 h-5 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <Landmark className="w-4 h-4 text-purple-600" />
+                </div>
+                <h3 className="text-sm font-semibold text-gray-900">{t("panama.localNominee", "Local Legal Directors")}</h3>
+            </div>
+
+            {/* Legal Directors list */}
+            <div className="space-y-2">
+                {legalDirectors.map((p, i) => {
+                    const isExpanded = expandedLD === i;
+                    return (
+                        <Card key={`ld-${i}`} className="overflow-hidden transition-all hover:shadow-md">
+                            {/* Compact Header */}
+                            <div
+                                className="p-2 cursor-pointer flex items-center justify-between hover:bg-gray-50"
+                                onClick={() => setExpandedLD(isExpanded ? null : i)}
+                            >
+                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-purple-100">
+                                        <Scale className="w-4 h-4 text-purple-700" />
+                                    </div>
+
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-medium text-gray-900 truncate">
+                                                {p.role?.id ? t(p.role.value) : t("panama.addLegalD", "Add Legal Director")}
+                                            </span>
+                                            {p.status && (
+                                                <span
+                                                    className={cn(
+                                                        "text-xs px-2 py-0.5 rounded-full",
+                                                        p.status === "Invited" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+                                                    )}
+                                                >
+                                                    {p.status}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-gray-500 truncate">
+                                            {t("CompanyInformation.isLegal", "Is Legal Person?")}: {t(p.isLegalPerson?.value || "AmlCdd.options.no")}
+                                        </p>
+                                    </div>
+
+                                    <div className="text-right flex-shrink-0">
+                                        <div className="font-semibold text-gray-900">{p.shares.toLocaleString()}</div>
+                                    </div>
+                                </div>
+
+                                <button className="ml-4 p-1 hover:bg-gray-200 rounded" type="button">
+                                    {isExpanded ? <ChevronUp className="w-4 h-4 text-gray-600" /> : <ChevronDown className="w-4 h-4 text-gray-600" />}
+                                </button>
+                            </div>
+
+                            {/* Expanded */}
+                            {isExpanded && (
+                                <CardContent className="pt-0 pb-4 px-4 border-t bg-gray-50">
+                                    <div className="grid grid-cols-2 gap-3 mt-4">
+                                        {/* Role */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">{t("panama.role", "Role")}</Label>
+                                            <Select
+                                                value={p.role?.id || ""}
+                                                onValueChange={(id) => {
+                                                    const selected = ROLE_OPTIONS.find((r) => r.id === id) || { id: "" as const, value: "" };
+                                                    patchLegalDirector(i, { role: selected });
+                                                }}
+                                            >
+                                                <SelectTrigger className="h-9">
+                                                    <SelectValue placeholder={t("common.select", "Select")} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {ROLE_OPTIONS.map((r) => (
+                                                        <SelectItem key={r.id} value={r.id}>
+                                                            {t(r.value)}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* Shares */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.shares", "Number of Shares")}</Label>
+                                            <Input
+                                                type="number"
+                                                min={0}
+                                                step={1}
+                                                value={Number.isFinite(p.shares) ? p.shares : 0}
+                                                onChange={(e) => {
+                                                    const val = parseInt(e.target.value, 10);
+                                                    patchLegalDirector(i, { shares: Number.isFinite(val) ? val : 0 });
+                                                }}
+                                                className="h-9"
+                                            />
+                                        </div>
+
+                                        {/* Is Legal Person */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">{t("CompanyInformation.isLegal", "Is Legal Person?")}</Label>
+                                            <Select
+                                                value={p.isLegalPerson?.id || "no"}
+                                                onValueChange={(id: "yes" | "no") => {
+                                                    const selected = YES_NO.find((o) => o.id === id)!;
+                                                    patchLegalDirector(i, { isLegalPerson: selected });
+                                                }}
+                                            >
+                                                <SelectTrigger className="h-9">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {YES_NO.map((o) => (
+                                                        <SelectItem key={o.id} value={o.id}>
+                                                            {t(o.value)}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* Remove */}
+                                        <div className="col-span-2 flex justify-end mt-2">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => removeLegalDirector(i)}
+                                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                            >
+                                                <X className="w-4 h-4 mr-1" />
+                                                {t("newHk.parties.buttons.remove", "Remove")}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            )}
+                        </Card>
+                    );
+                })}
+            </div>
+
+            {/* Actions for Legal Directors */}
+            <div className="flex items-center justify-between pt-2">
+                <Button onClick={addLegalDirector} variant="outline" className="flex items-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    {t("panama.addLegalD", "Add Legal Director")}
+                </Button>
+                <div />
+            </div>
+        </div>
+    );
 }
 
 
@@ -1376,225 +1376,225 @@ const asNumber = (v: any) => (typeof v === "number" ? v : Number(v) || 0);
 const fmt = (n: number) => (n > 0 ? `USD ${n.toFixed(2)}` : "USD 0.00");
 
 const InvoiceSgStep: React.FC = () => {
-  const [form, setForm] = useAtom(paFormWithResetAtom1);
-  const { t } = useTranslation();
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
+    const { t } = useTranslation();
 
-  const hasLocalDir: YesNo = (form?.sg_preAnswers?.hasLocalDir as YesNo) ?? "no";
-  const ndSecurity: Security =
-    (form?.sg_preAnswers?.ndSecurity as Security) ?? "deposit";
+    const hasLocalDir: YesNo = (form?.sg_preAnswers?.hasLocalDir as YesNo) ?? "no";
+    const ndSecurity: Security =
+        (form?.sg_preAnswers?.ndSecurity as Security) ?? "deposit";
 
-  const selectedOptionals: string[] = Array.isArray(form?.serviceItemsSelected)
-    ? form.serviceItemsSelected
-    : [];
+    const selectedOptionals: string[] = Array.isArray(form?.serviceItemsSelected)
+        ? form.serviceItemsSelected
+        : [];
 
-  // Build invoice rows to EXACTLY reflect the selection component
-  const rows: FeeRow[] = React.useMemo(() => {
-    const list: FeeRow[] = [];
+    // Build invoice rows to EXACTLY reflect the selection component
+    const rows: FeeRow[] = React.useMemo(() => {
+        const list: FeeRow[] = [];
 
-    // Always mandatory (same labels & prices)
-    list.push(
-      {
-        id: "companyIncorporation",
-        description: "Company Incorporation (filing)",
-        originalPrice: 350,
-        discountedPrice: 350,
-      },
-      {
-        id: "nomineeDirector",
-        description: "Nominee Director (1 year)",
-        originalPrice: 2000,
-        discountedPrice: 2000,
-      },
-      {
-        id: "companySecretary",
-        description: "Company Secretary (1 year)",
-        originalPrice: 480,
-        discountedPrice: 480,
-      },
-      {
-        id: "registeredAddress",
-        description: "Registered Address (1 year)",
-        originalPrice: 300,
-        discountedPrice: 300,
-      }
+        // Always mandatory (same labels & prices)
+        list.push(
+            {
+                id: "companyIncorporation",
+                description: "Company Incorporation (filing)",
+                originalPrice: 350,
+                discountedPrice: 350,
+            },
+            {
+                id: "nomineeDirector",
+                description: "Nominee Director (1 year)",
+                originalPrice: 2000,
+                discountedPrice: 2000,
+            },
+            {
+                id: "companySecretary",
+                description: "Company Secretary (1 year)",
+                originalPrice: 480,
+                discountedPrice: 480,
+            },
+            {
+                id: "registeredAddress",
+                description: "Registered Address (1 year)",
+                originalPrice: 300,
+                discountedPrice: 300,
+            }
+        );
+
+        // Extra mandatory: security 2,000 only if nominee director is required
+        if (hasLocalDir === "no") {
+            const secLabel =
+                ndSecurity === "prepay"
+                    ? "Prepay accounting/tax (Nominee Director)"
+                    : "Security deposit (Nominee Director)";
+            list.push({
+                id: "nomineeSecurity",
+                description: secLabel,
+                originalPrice: 2000,
+                discountedPrice: 2000,
+            });
+        }
+
+        // Optionals shown only if selected (match IDs from ServiceSelectionStep)
+        if (selectedOptionals.includes("bankAccountAdvisory")) {
+            list.push({
+                id: "bankAccountAdvisory",
+                description: "Bank Account Advisory (optional)",
+                originalPrice: 1200,
+                discountedPrice: 1200,
+                isOptional: true,
+            });
+        }
+
+        if (selectedOptionals.includes("emiEAccount")) {
+            list.push({
+                id: "emiEAccount",
+                description: "EMI e-Account Opening (basic) Free",
+                originalPrice: 0,
+                discountedPrice: 0,
+                isOptional: true,
+            });
+        }
+
+        return list;
+    }, [hasLocalDir, ndSecurity, selectedOptionals]);
+
+    // Totals (original == discounted here, but we keep both fields)
+    const initialMandatoryTotal = React.useMemo(() => {
+        // mandatory = everything except the selected optionals
+        return rows
+            .filter((r) => !r.isOptional)
+            .reduce((s, r) => s + asNumber(r.discountedPrice), 0);
+    }, [rows]);
+
+    const totalInclOptions = React.useMemo(() => {
+        return rows.reduce((s, r) => s + asNumber(r.discountedPrice), 0);
+    }, [rows]);
+
+    // Memoize invoiceItems so we can compare and avoid loops
+    const invoiceItems = React.useMemo(
+        () =>
+            rows.map((r) => ({
+                id: r.id,
+                description: r.description,
+                amount: asNumber(r.discountedPrice),
+            })),
+        [rows]
     );
 
-    // Extra mandatory: security 2,000 only if nominee director is required
-    if (hasLocalDir === "no") {
-      const secLabel =
-        ndSecurity === "prepay"
-          ? "Prepay accounting/tax (Nominee Director)"
-          : "Security deposit (Nominee Director)";
-      list.push({
-        id: "nomineeSecurity",
-        description: secLabel,
-        originalPrice: 2000,
-        discountedPrice: 2000,
-      });
-    }
+    // shallow compare helper for invoiceItems
+    const sameItems = React.useCallback((a: any[] = [], b: any[] = []) => {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+            const x = a[i];
+            const y = b[i];
+            if (!y) return false;
+            if (x.id !== y.id || x.description !== y.description || x.amount !== y.amount) {
+                return false;
+            }
+        }
+        return true;
+    }, []);
 
-    // Optionals shown only if selected (match IDs from ServiceSelectionStep)
-    if (selectedOptionals.includes("bankAccountAdvisory")) {
-      list.push({
-        id: "bankAccountAdvisory",
-        description: "Bank Account Advisory (optional)",
-        originalPrice: 1200,
-        discountedPrice: 1200,
-        isOptional: true,
-      });
-    }
+    // Persist totals & currency back to form for payment step — but only if changed
+    React.useEffect(() => {
+        setForm((prev: any) => {
+            const unchanged =
+                prev?.initialMandatoryTotal === initialMandatoryTotal &&
+                prev?.totalInclOptions === totalInclOptions &&
+                prev?.totalOriginal === totalInclOptions &&
+                prev?.totalDiscounted === totalInclOptions &&
+                prev?.currency === "USD" &&
+                sameItems(prev?.invoiceItems, invoiceItems);
 
-    if (selectedOptionals.includes("emiEAccount")) {
-      list.push({
-        id: "emiEAccount",
-        description: "EMI e-Account Opening (basic) Free",
-        originalPrice: 0,
-        discountedPrice: 0,
-        isOptional: true,
-      });
-    }
+            if (unchanged) return prev; // do not trigger an update
 
-    return list;
-  }, [hasLocalDir, ndSecurity, selectedOptionals]);
-
-  // Totals (original == discounted here, but we keep both fields)
-  const initialMandatoryTotal = React.useMemo(() => {
-    // mandatory = everything except the selected optionals
-    return rows
-      .filter((r) => !r.isOptional)
-      .reduce((s, r) => s + asNumber(r.discountedPrice), 0);
-  }, [rows]);
-
-  const totalInclOptions = React.useMemo(() => {
-    return rows.reduce((s, r) => s + asNumber(r.discountedPrice), 0);
-  }, [rows]);
-
-  // Memoize invoiceItems so we can compare and avoid loops
-  const invoiceItems = React.useMemo(
-    () =>
-      rows.map((r) => ({
-        id: r.id,
-        description: r.description,
-        amount: asNumber(r.discountedPrice),
-      })),
-    [rows]
-  );
-
-  // shallow compare helper for invoiceItems
-  const sameItems = React.useCallback((a: any[] = [], b: any[] = []) => {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-      const x = a[i];
-      const y = b[i];
-      if (!y) return false;
-      if (x.id !== y.id || x.description !== y.description || x.amount !== y.amount) {
-        return false;
-      }
-    }
-    return true;
-  }, []);
-
-  // Persist totals & currency back to form for payment step — but only if changed
-  React.useEffect(() => {
-    setForm((prev: any) => {
-      const unchanged =
-        prev?.initialMandatoryTotal === initialMandatoryTotal &&
-        prev?.totalInclOptions === totalInclOptions &&
-        prev?.totalOriginal === totalInclOptions &&
-        prev?.totalDiscounted === totalInclOptions &&
-        prev?.currency === "USD" &&
-        sameItems(prev?.invoiceItems, invoiceItems);
-
-      if (unchanged) return prev; // do not trigger an update
-
-      return {
-        ...prev,
-        initialMandatoryTotal, // keep for display/analytics
-        totalInclOptions, // final invoice subtotal (before card fee)
-        totalOriginal: totalInclOptions, // legacy field for downstream
-        totalDiscounted: totalInclOptions, // keep both in sync
-        currency: "USD",
+            return {
+                ...prev,
+                initialMandatoryTotal, // keep for display/analytics
+                totalInclOptions, // final invoice subtotal (before card fee)
+                totalOriginal: totalInclOptions, // legacy field for downstream
+                totalDiscounted: totalInclOptions, // keep both in sync
+                currency: "USD",
+                invoiceItems,
+            };
+        });
+        // setForm is stable for jotai; including it is fine but not required.
+    }, [
+        initialMandatoryTotal,
+        totalInclOptions,
         invoiceItems,
-      };
-    });
-    // setForm is stable for jotai; including it is fine but not required.
-  }, [
-    initialMandatoryTotal,
-    totalInclOptions,
-    invoiceItems,
-    sameItems,
-    setForm,
-  ]);
+        sameItems,
+        setForm,
+    ]);
 
-  return (
-    <div className="w-full py-8 px-4">
-      <Card className="w-full">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{t("mirrasisaSSL")}</CardTitle>
-        </CardHeader>
+    return (
+        <div className="w-full py-8 px-4">
+            <Card className="w-full">
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <CardTitle>{t("mirrasisaSSL")}</CardTitle>
+                </CardHeader>
 
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("invoice.desc")}</TableHead>
-                <TableHead className="text-right">
-                  {t("invoice.originalPrice")}
-                </TableHead>
-                <TableHead className="text-right">
-                  {t("invoice.discPrice")}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <span className={item.isHighlight ? "font-semibold" : ""}>
-                        {item.description}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {fmt(asNumber(item.originalPrice))}
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {fmt(asNumber(item.discountedPrice))}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>{t("invoice.desc")}</TableHead>
+                                <TableHead className="text-right">
+                                    {t("invoice.originalPrice")}
+                                </TableHead>
+                                <TableHead className="text-right">
+                                    {t("invoice.discPrice")}
+                                </TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {rows.map((item) => (
+                                <TableRow key={item.id}>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            <span className={item.isHighlight ? "font-semibold" : ""}>
+                                                {item.description}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-right text-muted-foreground">
+                                        {fmt(asNumber(item.originalPrice))}
+                                    </TableCell>
+                                    <TableCell className="text-right font-medium">
+                                        {fmt(asNumber(item.discountedPrice))}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
 
-          {/* Totals Card */}
-          <div className="mt-4 flex justify-end">
-            <Card className="w-80">
-              <CardContent className="pt-4">
-                <div className="flex justify-between mb-2">
-                  <span className="font-xs text-xs line-through text-gray-500">
-                    {t("invoice.total")}:
-                  </span>
-                  <span className="font-xs text-xs line-through text-gray-500">
-                    {fmt(totalInclOptions)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-green-600">
-                  <span className="font-medium">{t("invoice.totalDisc")}:</span>
-                  <span className="font-bold">{fmt(totalInclOptions)}</span>
-                </div>
-                {/* If you want to show the initial mandatory in the card too, uncomment: */}
-                {/* <div className="flex justify-between text-sm mt-2">
+                    {/* Totals Card */}
+                    <div className="mt-4 flex justify-end">
+                        <Card className="w-80">
+                            <CardContent className="pt-4">
+                                <div className="flex justify-between mb-2">
+                                    <span className="font-xs text-xs line-through text-gray-500">
+                                        {t("invoice.total")}:
+                                    </span>
+                                    <span className="font-xs text-xs line-through text-gray-500">
+                                        {fmt(totalInclOptions)}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-green-600">
+                                    <span className="font-medium">{t("invoice.totalDisc")}:</span>
+                                    <span className="font-bold">{fmt(totalInclOptions)}</span>
+                                </div>
+                                {/* If you want to show the initial mandatory in the card too, uncomment: */}
+                                {/* <div className="flex justify-between text-sm mt-2">
                     <span>Initial mandatory total:</span>
                     <span>{fmt(initialMandatoryTotal)}</span>
                   </div> */}
-              </CardContent>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </CardContent>
             </Card>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+        </div>
+    );
 };
 
 // const InvoiceSgStep = () => {
@@ -3172,7 +3172,7 @@ const FormField: React.FC<{ field: Field; form: any; setForm: (fn: (p: any) => a
                 </div>
             );
         }
-        case "search-select" : {
+        case "search-select": {
             const selectedItem = form[field.name]
                 ? field.items?.find(
                     (o: any) => o.code === form[field.name]
@@ -3240,7 +3240,8 @@ const PanamaIncorporationForm: React.FC = () => {
     }
 
     const canProceed = missing.length === 0;
-
+    console.log("stepIdx", stepIdx)
+    console.log("form-->", form)
     const updateDoc = async () => {
         // setIsSubmitting(true);
         if (isSubmitting) {
@@ -3261,7 +3262,7 @@ const PanamaIncorporationForm: React.FC = () => {
                 window.history.pushState(
                     {},
                     "",
-                    `/company-register/SG/${response.data.data._id}`
+                    `/company-register/PA/${response.data.data._id}`
                 );
             } else {
                 console.log("error-->", response);
@@ -3271,7 +3272,7 @@ const PanamaIncorporationForm: React.FC = () => {
         } finally {
             console.log("finally");
             setIsSubmitting(false);
-            setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
+            // setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
         }
     }
 
@@ -3280,9 +3281,30 @@ const PanamaIncorporationForm: React.FC = () => {
             toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
             return;
         }
-        console.log("form", form)
+        // console.log("form", form)
+        if (stepIdx == 1) {
+            const q1 = form.annualRenewalConsent
+            const q2 = form.legalAndEthicalConcern
+            const q3 = form.q_country
+            const q4 = form.sanctionsExposureDeclaration
+            const q5 = form.crimeaSevastapolPresence
+            const q6 = form.russianEnergyPresence
+            const q1Valid = q1 === "yes" || q1 === "self_handle";
+            // q2..q6 must all be "no"
+            const q2to6AllNo = [q2, q3, q4, q5, q6].every((x) => x === "no");
+            // anyRisk = risk exists when the combined condition FAILS
+            const anyRisk = !(q1Valid && q2to6AllNo);
+            if (anyRisk) {
+                await updateDoc();
+                toast({
+                    title: "",
+                    description: "Consultation Required.",
+                });
+                return;
+            }
+        }
         await updateDoc();
-        // setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
+        setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
     };
 
     const back = () => setStepIdx((i) => Math.max(0, i - 1));
