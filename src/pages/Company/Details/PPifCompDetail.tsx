@@ -166,7 +166,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
     const [users, setUsers] = useAtom(usersData);
     const [adminAssigned, setAdminAssigned] = React.useState("");
 
-    const f = React.useMemo(() => ({
+    const dataMemo = React.useMemo(() => ({
         applicantName: data?.contactName || "",
         email: data?.email || "",
         phone: data?.phone || "",
@@ -267,7 +267,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
             </TabsList>
             <TabsContent value="details" className="p-6">
                 <section>
-                    {f?.name1 && data && <TodoApp id={data._id || ""} name={f?.name1} />}
+                    {dataMemo?.name1 && data && <TodoApp id={data._id || ""} name={dataMemo?.name1} />}
                     <div className="flex gap-x-8 mt-4">
                         {user.role !== "user" && <AssignAdmin />}
                         <Button
@@ -293,14 +293,14 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 <div className="min-w-0">
                                                     {isEditing ? (
                                                         <Input
-                                                            value={f.name1 || ""}
+                                                            value={dataMemo.name1 || ""}
                                                             onChange={(e) => patchCompany("foundationNameEn", e.target.value)}
                                                             className="h-8 text-base"
                                                             placeholder="Foundation Name"
                                                         />
                                                     ) : (
                                                         <CardTitle className="text-xl truncate">
-                                                            {f.name1 || f.cname1 || "Untitled Foundation"}
+                                                            {dataMemo.name1 || dataMemo.cname1 || "Untitled Foundation"}
                                                         </CardTitle>
                                                     )}
                                                     <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -346,33 +346,33 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         <LabelValue label="Applicant">
                                             <div className="flex items-center gap-2">
-                                                <FallbackAvatar name={f.applicantName} />
-                                                <span className="font-medium">{f.applicantName || "—"}</span>
+                                                <FallbackAvatar name={dataMemo.applicantName} />
+                                                <span className="font-medium">{dataMemo.applicantName || "—"}</span>
                                             </div>
                                         </LabelValue>
                                         <LabelValue label="Contact">
                                             <div className="grid gap-2">
                                                 <div className="flex items-center gap-2">
                                                     <Mail className="h-3.5 w-3.5" />
-                                                    <span className="text-sm">{f.email || "—"}</span>
+                                                    <span className="text-sm">{dataMemo.email || "—"}</span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <Phone className="h-3.5 w-3.5" />
-                                                    <span className="text-sm">{f.phone || "—"}</span>
+                                                    <span className="text-sm">{dataMemo.phone || "—"}</span>
                                                 </div>
                                             </div>
                                         </LabelValue>
                                         <LabelValue label="Alt / Local Names">
                                             {isEditing ? (
                                                 <div className="grid grid-cols-2 gap-2">
-                                                    <Input value={f.name2 || ""} onChange={(e) => patchCompany("foundationNameEs", e.target.value)} placeholder="Alt Name (ES)" className="h-8" />
-                                                    <Input value={f.name3 || ""} onChange={(e) => patchCompany("altName1", e.target.value)} placeholder="Alt Name 2" className="h-8" />
-                                                    <Input value={f.cname1 || ""} onChange={(e) => patchCompany("altName2", e.target.value)} placeholder="Alt Name 3" className="h-8" />
+                                                    <Input value={dataMemo.name2 || ""} onChange={(e) => patchCompany("foundationNameEs", e.target.value)} placeholder="Alt Name (ES)" className="h-8" />
+                                                    <Input value={dataMemo.name3 || ""} onChange={(e) => patchCompany("altName1", e.target.value)} placeholder="Alt Name 2" className="h-8" />
+                                                    <Input value={dataMemo.cname1 || ""} onChange={(e) => patchCompany("altName2", e.target.value)} placeholder="Alt Name 3" className="h-8" />
                                                 </div>
                                             ) : (
                                                 <div className="flex flex-wrap gap-2">
-                                                    {[f.name2, f.name3, f.cname1].filter(Boolean).length ? (
-                                                        [f.name2, f.name3, f.cname1].filter(Boolean).map((n, i) => (
+                                                    {[dataMemo.name2, dataMemo.name3, dataMemo.cname1].filter(Boolean).length ? (
+                                                        [dataMemo.name2, dataMemo.name3, dataMemo.cname1].filter(Boolean).map((n, i) => (
                                                             <Badge key={String(n) + i} variant="secondary">
                                                                 {n as string}
                                                             </Badge>
@@ -383,15 +383,15 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 </div>
                                             )}
                                         </LabelValue>
-                                        <LabelValue label="Industry">{f.industry || "—"}</LabelValue>
+                                        <LabelValue label="Industry">{dataMemo.industry || "—"}</LabelValue>
                                         <LabelValue label="Purpose">
                                             <div className="flex flex-wrap gap-2">
-                                                {(f.purpose?.length ? f.purpose : ["—"]).map((p, i) => (
+                                                {(dataMemo.purpose?.length ? dataMemo.purpose : ["—"]).map((p, i) => (
                                                     <Badge key={p + i} variant="secondary">{p}</Badge>
                                                 ))}
                                             </div>
                                         </LabelValue>
-                                        <LabelValue label="Business Description">{f.bizdesc || "—"}</LabelValue>
+                                        <LabelValue label="Business Description">{dataMemo.bizdesc || "—"}</LabelValue>
                                     </div>
                                     <Separator />
                                     <div className="grid gap-5">
@@ -694,10 +694,10 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                             <div className="mt-1 flex flex-wrap items-center gap-2">
                                                 <Badge variant="secondary" className="gap-1">
                                                     <ReceiptText className="h-3.5 w-3.5" />
-                                                    {(f.payMethod || "").toUpperCase() || "—"}
+                                                    {(dataMemo.payMethod || "").toUpperCase() || "—"}
                                                 </Badge>
-                                                {f.bankRef && <Badge variant="outline" className="gap-1">Ref: {f.bankRef}</Badge>}
-                                                {data?.paymentStatus === "paid" && f.stripeLastStatus === "succeeded" && f.stripeReceiptUrl && (
+                                                {dataMemo.bankRef && <Badge variant="outline" className="gap-1">Ref: {dataMemo.bankRef}</Badge>}
+                                                {data?.paymentStatus === "paid" && dataMemo.stripeLastStatus === "succeeded" && dataMemo.stripeReceiptUrl && (
                                                     <Badge className="bg-emerald-600 hover:bg-emerald-600">Stripe Paid</Badge>
                                                 )}
                                             </div>
@@ -707,17 +707,17 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                 <CardContent className="grid gap-4">
                                     <div className="grid gap-2">
                                         <div className="text-xs text-muted-foreground">Receipt / Proof</div>
-                                        {data?.paymentStatus === "paid" && f.stripeLastStatus === "succeeded" && f.stripeReceiptUrl ? (
+                                        {data?.paymentStatus === "paid" && dataMemo.stripeLastStatus === "succeeded" && dataMemo.stripeReceiptUrl ? (
                                             <div className="rounded-md border bg-emerald-50 p-4 text-emerald-800">
                                                 <div className="text-sm font-medium">Payment successful via Stripe.</div>
-                                                <a href={f.stripeReceiptUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center text-sm underline">
+                                                <a href={dataMemo.stripeReceiptUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center text-sm underline">
                                                     View Stripe Receipt
                                                 </a>
                                             </div>
-                                        ) : f.uploadReceiptUrl ? (
+                                        ) : dataMemo.uploadReceiptUrl ? (
                                             <div className="space-y-3">
-                                                <a href={f.uploadReceiptUrl} target="_blank" rel="noreferrer" className="group relative block overflow-hidden rounded-md border">
-                                                    <img src={f.uploadReceiptUrl} alt="Payment receipt" className="h-44 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]" />
+                                                <a href={dataMemo.uploadReceiptUrl} target="_blank" rel="noreferrer" className="group relative block overflow-hidden rounded-md border">
+                                                    <img src={dataMemo.uploadReceiptUrl} alt="Payment receipt" className="h-44 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]" />
                                                 </a>
                                                 {user.role !== "user" && (
                                                     <div className="flex items-center gap-3">
@@ -743,7 +743,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         <div className="grid grid-cols-4 items-center gap-4">
                                             <Label className="text-right">Amount</Label>
                                             <div className="col-span-3 text-sm font-medium">
-                                                {typeof f.finalAmount === "number" ? `${f.finalAmount} ${f.currency || "USD"}` : "—"}
+                                                {typeof dataMemo.finalAmount === "number" ? `${dataMemo.finalAmount} ${dataMemo.currency || "USD"}` : "—"}
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-4 items-center gap-4">
@@ -779,7 +779,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 ["Crimea/Sevastopol Presence", "crimeaSevastapolPresence"],
                                                 ["Russian Energy Presence", "russianEnergyPresence"],
                                             ] as const).map(([label, key]) => {
-                                                const raw = (f as any)[key];
+                                                const raw = (dataMemo as any)[key];
                                                 const val = raw ? String(raw).toLowerCase() : "";
                                                 const isYes = val === "yes";
                                                 return (
@@ -818,16 +818,16 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         <div className="text-xs text-muted-foreground">Declarations</div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                             <LabelValue label="Truthfulness">
-                                                <BoolPill value={!!f.truthfulnessDeclaration} />
+                                                <BoolPill value={!!dataMemo.truthfulnessDeclaration} />
                                             </LabelValue>
                                             <LabelValue label="Legal Terms">
-                                                <BoolPill value={!!f.legalTermsAcknowledgment} />
+                                                <BoolPill value={!!dataMemo.legalTermsAcknowledgment} />
                                             </LabelValue>
                                             <LabelValue label="Compliance Precondition">
-                                                <BoolPill value={!!f.compliancePreconditionAcknowledgment} />
+                                                <BoolPill value={!!dataMemo.compliancePreconditionAcknowledgment} />
                                             </LabelValue>
                                             <LabelValue label="e-Sign">
-                                                {f.eSign || "—"}
+                                                {dataMemo.eSign || "—"}
                                             </LabelValue>
                                         </div>
                                     </div>

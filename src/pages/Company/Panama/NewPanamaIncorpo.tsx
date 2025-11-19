@@ -3240,8 +3240,8 @@ const PanamaIncorporationForm: React.FC = () => {
     }
 
     const canProceed = missing.length === 0;
-    console.log("stepIdx", stepIdx)
-    console.log("form-->", form)
+    // console.log("stepIdx", stepIdx)
+    // console.log("form-->", form)
     const updateDoc = async () => {
         // setIsSubmitting(true);
         if (isSubmitting) {

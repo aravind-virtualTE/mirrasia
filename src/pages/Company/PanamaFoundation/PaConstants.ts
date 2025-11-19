@@ -9,20 +9,24 @@ export const PRICE_CBI = 3880
 export const money = (n: number, c: "USD" = "USD") =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: c }).format(n)
 
+const PRICE_RECORD_STORAGE = 350;
+
 export function computePIFSetupTotal(p: PIFPricing) {
+  console.log("p--->", p)
   return (
     p.setupBase +
     ND_PRICES[p.ndSetup] +
     (p.nsSetup ? PRICE_NS : 0) +
     (p.optEmi ? PRICE_EMI : 0) +
     (p.optBank ? PRICE_BANK : 0) +
-    (p.optCbi ? PRICE_CBI : 0)
+    (p.optCbi ? PRICE_CBI : 0)  +
+    (p.recordStorageUseMirr ? PRICE_RECORD_STORAGE : 0)
   )
 }
 
 export function computePIFBaseTotal(form: PanamaPIFForm) {
   // For setup-only invoice, the "base total" is the setup total we computed.
-  return computePIFSetupTotal(form.pricing)
+  return computePIFSetupTotal(form.pricing) + (form.recordStorageUseMirr ? PRICE_RECORD_STORAGE : 0)
 }
 
 export function computePIFGrandTotal(form: PanamaPIFForm) {
