@@ -569,6 +569,8 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 // ---------- Parties Manager (per-party typeOfShare = id only)
 function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React.SetStateAction<AppDoc>> }) {
   const form = app.form;
+  // lock when paid
+  const isLocked = app.paymentStatus === "paid";
 
   const totalShares = React.useMemo(
     () => (form.shareCount === "other" ? Number(form.shareOther || 0) : Number(form.shareCount || 0)) || 0,
@@ -576,6 +578,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
   );
 
   const upd = (i: number, key: keyof Party, value: any) => {
+    if (isLocked) return;
     setApp((prev) => {
       const parties = [...prev.parties];
       (parties[i] as any)[key] = value;
@@ -583,13 +586,16 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
     });
   };
 
-  const del = (i: number) =>
+  const del = (i: number) => {
+    if (isLocked) return;
     setApp((prev) => {
       const parties = prev.parties.filter((_, idx) => idx !== i);
       return { ...prev, parties, updatedAt: new Date().toISOString() };
     });
+  };
 
-  const add = () =>
+  const add = () => {
+    if (isLocked) return;
     setApp((prev) => ({
       ...prev,
       parties: [
@@ -607,11 +613,14 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
       ],
       updatedAt: new Date().toISOString()
     }));
+  };
 
   const assigned = app.parties.reduce((s, p) => s + (Number(p.shares) || 0), 0);
   const equal = totalShares > 0 && assigned === totalShares;
 
   const sendMailFunction = async () => {
+    if (isLocked) return;
+
     const extractedData = app.parties.map((item) => {
       const { name, email } = item;
       if (!isValidEmail(email)) {
@@ -625,7 +634,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
 
     const payload = { _id: app._id || "", inviteData: extractedData, country: "HK" };
     const response = await sendInviteToShDir(payload);
-    // console.log("response",response)
+
     if (response.summary.successful > 0) {
       setApp((prev) => {
         const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
@@ -673,6 +682,12 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
         {equal ? t("newHk.parties.banner.ok") : t("newHk.parties.banner.err")}
       </div>
 
+      {isLocked && (
+        <div className="border rounded-xl p-3 text-sm border-amber-200 bg-amber-50 text-amber-900">
+          {t("newHk.parties.banner.locked") || "Payment completed. Details can no longer be edited."}
+        </div>
+      )}
+
       {app.parties.map((p, i) => {
         const pct = totalShares ? ((Number(p.shares) || 0) / totalShares) * 100 : 0;
         return (
@@ -681,22 +696,34 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label>{t("newHk.parties.fields.name.label")}</Label>
-                  <Input value={p.name} onChange={(e) => upd(i, "name", e.target.value)} />
+                  <Input
+                    value={p.name}
+                    disabled={isLocked}
+                    onChange={(e) => upd(i, "name", e.target.value)}
+                  />
                   <p
                     className="text-xs text-muted-foreground"
-                    // if you render as raw HTML elsewhere; otherwise keep plain text
                     dangerouslySetInnerHTML={{ __html: t("newHk.parties.fields.name.example") }}
                   />
                 </div>
 
                 <div className="grid gap-2">
                   <Label>{t("newHk.parties.fields.email.label")}</Label>
-                  <Input type="email" value={p.email} onChange={(e) => upd(i, "email", e.target.value)} />
+                  <Input
+                    type="email"
+                    value={p.email}
+                    disabled={isLocked}
+                    onChange={(e) => upd(i, "email", e.target.value)}
+                  />
                 </div>
 
                 <div className="grid gap-2">
                   <Label>{t("newHk.parties.fields.phone.label")}</Label>
-                  <Input value={p.phone} onChange={(e) => upd(i, "phone", e.target.value)} />
+                  <Input
+                    value={p.phone}
+                    disabled={isLocked}
+                    onChange={(e) => upd(i, "phone", e.target.value)}
+                  />
                 </div>
 
                 <div className="grid gap-2">
@@ -704,7 +731,11 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
                     {t("newHk.parties.fields.isCorp.label")}{" "}
                     <Tip text={t("newHk.parties.fields.isCorp.tip")} />
                   </Label>
-                  <Select value={String(p.isCorp)} onValueChange={(v) => upd(i, "isCorp", v === "true")}>
+                  <Select
+                    value={String(p.isCorp)}
+                    disabled={isLocked}
+                    onValueChange={(v) => upd(i, "isCorp", v === "true")}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -720,7 +751,11 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
                     {t("newHk.parties.fields.isDirector.label")}{" "}
                     <Tip text={t("newHk.parties.fields.isDirector.tip")} />
                   </Label>
-                  <Select value={String(p.isDirector)} onValueChange={(v) => upd(i, "isDirector", v === "true")}>
+                  <Select
+                    value={String(p.isDirector)}
+                    disabled={isLocked}
+                    onValueChange={(v) => upd(i, "isDirector", v === "true")}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -736,6 +771,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
                   <Input
                     type="number"
                     value={String(p.shares)}
+                    disabled={isLocked}
                     onChange={(e) => upd(i, "shares", Number(e.target.value || 0))}
                   />
                 </div>
@@ -751,6 +787,8 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
                   <RadioGroup
                     value={p.typeOfShare ?? DEFAULT_SHARE_ID}
                     onValueChange={(v) => upd(i, "typeOfShare", (v as ShareTypeId) || DEFAULT_SHARE_ID)}
+                    // shadcn RadioGroup doesn't have disabled prop; we can disable items via CSS/opacity & pointer-events
+                    className={isLocked ? "pointer-events-none opacity-60" : ""}
                   >
                     <div className="flex items-center gap-4 text-sm">
                       {SHARE_TYPES.map((tdef) => {
@@ -767,7 +805,11 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
               </div>
 
               <div className="flex items-center justify-between mt-4">
-                <Button variant="ghost" onClick={() => del(i)}>
+                <Button
+                  variant="ghost"
+                  onClick={() => del(i)}
+                  disabled={isLocked}
+                >
                   {t("newHk.parties.buttons.remove")}
                 </Button>
               </div>
@@ -777,7 +819,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
       })}
 
       <div className="flex items-center gap-2">
-        <Button variant="outline" onClick={add}>
+        <Button variant="outline" onClick={add} disabled={isLocked}>
           {t("newHk.parties.buttons.add")}
         </Button>
         <div className="text-sm text-muted-foreground">
@@ -786,20 +828,23 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
             assigned: assigned.toLocaleString()
           })}
         </div>
-        <Button variant="outline" onClick={sendMailFunction}>
+        <Button variant="outline" onClick={sendMailFunction} disabled={isLocked}>
           {t("newHk.parties.buttons.invite")}
         </Button>
       </div>
     </div>
   );
 }
+
 // ---------- Fees / Invoice / Payment / Review
 function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React.SetStateAction<AppDoc>> }) {
   const baseTotal = computeBaseTotal(app);
-  // console.log("baseTotal", baseTotal);
-  // console.log("app---->", app);
+
+  // lock when payment is completed
+  const isLocked = app.paymentStatus === "paid";
 
   const toggle = (id: string) => {
+    if (isLocked) return; // 🔒 no changes after payment
     setApp((prev) => {
       const has = prev.optionalFeeIds.includes(id);
       const optionalFeeIds = has
@@ -810,11 +855,8 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
   };
 
   // ---- EXTRA KYC ROWS (based on shareholders) ----
-  // Mirror the old ServiceSelection logic: corporate = 130 each,
-  // extra individuals beyond 2 = 65 per slot (1 slot covers up to 2 people).
   const parties = Array.isArray((app as any).parties) ? (app as any).parties : [];
 
-  // treat as shareholders only those with > 0 shares
   const shareholders = parties.filter((p: any) => {
     const shares = Number(p?.shares ?? 0);
     return shares > 0;
@@ -848,7 +890,7 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
   // 2) Additional individual KYC rows (beyond 2 included)
   if (individualCount > 2) {
     const peopleNeedingKyc = individualCount - 2;
-    const kycSlots = Math.ceil(peopleNeedingKyc / 2); // 1 slot = up to 2 people
+    const kycSlots = Math.ceil(peopleNeedingKyc / 2);
 
     for (let i = 0; i < kycSlots; i++) {
       extraKycItems.push({
@@ -914,6 +956,9 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
     const info = t(`${itemKey}.info`, item.info);
     const richTip = getRichTipContent(item.id);
 
+    const checked = item.mandatory || app.optionalFeeIds.includes(item.id);
+    const disabled = item.mandatory || isLocked; // 🔒 cannot toggle when locked
+
     return (
       <TableRow>
         <TableCell className="font-medium flex items-center gap-2">
@@ -926,8 +971,8 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
         <TableCell>{`USD ${item.amount.toFixed(2)}`}</TableCell>
         <TableCell className="w-[90px]">
           <Checkbox
-            checked={item.mandatory || app.optionalFeeIds.includes(item.id)}
-            disabled={item.mandatory}
+            checked={checked}
+            disabled={disabled}
             onCheckedChange={() => toggle(item.id)}
           />
         </TableCell>
@@ -935,7 +980,6 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
     );
   };
 
-  // Combine static fees + dynamic extra KYC items
   const allItems = [
     ...feesConfig.government,
     ...feesConfig.service,
@@ -961,18 +1005,27 @@ function FeesEstimator({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<Re
           ))}
         </TableBody>
       </Table>
+
       <div className="text-right font-bold">
         {t("newHk.fees.table.totalLabel", { amount: baseTotal.toFixed(2) })}
       </div>
+
       <p className="text-sm text-muted-foreground">
         <Trans i18nKey="newHk.fees.table.note">
           Government fees are statutory and payable by all companies. Optional
           items can be toggled before payment.
         </Trans>
+        {isLocked && (
+          <> {" "}
+            {/* extra hint when locked */}
+            {t("newHk.fees.table.lockedNote", "After payment, fee selections are locked and cannot be changed.")}
+          </>
+        )}
       </p>
     </div>
   );
 }
+
 
 
 export type StripeSuccessInfo = {
