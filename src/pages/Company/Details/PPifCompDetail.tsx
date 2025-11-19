@@ -194,7 +194,6 @@ export default function PPifCompDetail({ id }: { id: string }) {
         russianEnergyPresence: data?.russianEnergyPresence || "",
         eSign: data?.signName ? `${data.signName} • ${fmtDate(data?.signDate)}` : "",
     }), [data]);
-
     React.useEffect(() => {
         const fetchData = async () => {
             const result = await getPaFIncorpoData(id);
@@ -535,7 +534,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                     <div key={"prot-" + i} className="rounded-md border p-3 grid md:grid-cols-3">
                                                         <LabelValue label="Name">{p?.name || "—"}</LabelValue>
                                                         <LabelValue label="Contact">{p?.contact || "—"}</LabelValue>
-                                                        <LabelValue label="Status">{p?.status || "—"}</LabelValue>                         
+                                                        <LabelValue label="Status">{p?.status || "—"}</LabelValue>
                                                     </div>
                                                 ))}
                                             </div>
@@ -742,10 +741,23 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     <div className="grid gap-4 py-4">
                                         <div className="grid grid-cols-4 items-center gap-4">
                                             <Label className="text-right">Amount</Label>
+
                                             <div className="col-span-3 text-sm font-medium">
-                                                {typeof dataMemo.finalAmount === "number" ? `${dataMemo.finalAmount} ${dataMemo.currency || "USD"}` : "—"}
+                                                {typeof dataMemo.finalAmount === "number" ? (
+                                                    (() => {
+                                                        const base = dataMemo.finalAmount;
+                                                        const surcharge =
+                                                            dataMemo.payMethod === "card" ? base * 0.035 : 0;
+                                                        const total = (base + surcharge).toFixed(2);
+
+                                                        return `${total} ${dataMemo.currency || "USD"}`;
+                                                    })()
+                                                ) : (
+                                                    "—"
+                                                )}
                                             </div>
                                         </div>
+
                                         <div className="grid grid-cols-4 items-center gap-4">
                                             <Label htmlFor="expiresAt" className="text-right">Expires</Label>
                                             <Input

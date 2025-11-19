@@ -2027,7 +2027,10 @@ function InvoicePIF() {
   const [form, setForm] = useAtom(pifFormAtom);
   const { pricing } = form;
 
+  const isLocked = form.paymentStatus === "paid";
+
   const updatePricing = <K extends keyof typeof pricing>(key: K, value: (typeof pricing)[K]) => {
+    if (isLocked) return; // 🔒 no changes allowed after payment
     const next = { ...pricing, [key]: value };
     next.total = computePIFSetupTotal(next);
     setForm({ ...form, pricing: next });
@@ -2056,6 +2059,12 @@ function InvoicePIF() {
       </CardHeader>
 
       <CardContent className="space-y-6">
+        {isLocked && (
+          <div className="border rounded-xl p-3 text-sm border-amber-200 bg-amber-50 text-amber-900 mb-2">
+            {t("ppif.invoice.lockedMessage", "Payment completed. Invoice options are now locked.")}
+          </div>
+        )}
+
         <div className="border rounded-xl p-4">
           <h3 className="font-semibold mb-3">{t("ppif.invoice.setup.title")}</h3>
 
@@ -2103,6 +2112,7 @@ function InvoicePIF() {
               <Select
                 value={String(pricing.ndSetup)}
                 onValueChange={(v) => updatePricing("ndSetup", Number(v) as any)}
+                disabled={isLocked}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={t("ppif.profile.sourceOfFunds.placeholder")} />
@@ -2134,6 +2144,7 @@ function InvoicePIF() {
                   placeholder={t("ppif.invoice.setup.ndSetup.reason.placeholder")}
                   value={pricing.nd3ReasonSetup ?? ""}
                   onChange={(e) => updatePricing("nd3ReasonSetup", e.target.value)}
+                  disabled={isLocked}
                 />
                 <p className="text-[12px] text-muted-foreground">
                   {t("ppif.invoice.setup.ndSetup.reason.hint")}
@@ -2147,6 +2158,7 @@ function InvoicePIF() {
                 checked={pricing.nsSetup}
                 onCheckedChange={(c) => updatePricing("nsSetup", Boolean(c))}
                 id="ns-setup"
+                disabled={isLocked}
               />
               <Label htmlFor="ns-setup">
                 {t("ppif.invoice.setup.nsSetup.label", { price: money(1300) })}
@@ -2163,6 +2175,7 @@ function InvoicePIF() {
                   checked={pricing.optEmi}
                   onCheckedChange={(c) => updatePricing("optEmi", Boolean(c))}
                   id="opt-emi"
+                  disabled={isLocked}
                 />
                 <Label htmlFor="opt-emi">
                   {t("ppif.invoice.setup.optional.emi", { price: money(400) })}
@@ -2174,6 +2187,7 @@ function InvoicePIF() {
                   checked={pricing.optBank}
                   onCheckedChange={(c) => updatePricing("optBank", Boolean(c))}
                   id="opt-bank"
+                  disabled={isLocked}
                 />
                 <Label htmlFor="opt-bank">
                   {t("ppif.invoice.setup.optional.bank", { price: money(2000) })}
@@ -2185,6 +2199,7 @@ function InvoicePIF() {
                   checked={pricing.optCbi}
                   onCheckedChange={(c) => updatePricing("optCbi", Boolean(c))}
                   id="opt-cbi"
+                  disabled={isLocked}
                 />
                 <Label htmlFor="opt-cbi">
                   {t("ppif.invoice.setup.optional.cbi", { price: money(3880) })}
