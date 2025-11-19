@@ -14,6 +14,7 @@ export interface PIFPricing {
   optCbi: boolean
   nd3ReasonSetup?: string
   total: number             // setup total only (computed)
+  recordStorageUseMirr? :boolean
 }
 
 export interface PanamaPIFForm {

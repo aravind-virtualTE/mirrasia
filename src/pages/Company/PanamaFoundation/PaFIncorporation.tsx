@@ -581,7 +581,7 @@ function CouncilStep() {
           description: t("ppif.council.toasts.invite.success.desc")
         });
       } else if (alreadyExists > 0) {
-         setForm((prev) => ({
+        setForm((prev) => ({
           ...prev,
           councilIndividuals: (prev.councilIndividuals || []).map((f) => ({ ...f, status: "Resent Invitation" })),
         }));
@@ -917,7 +917,7 @@ function ProtectorsManager() {
       const alreadyExists = response?.summary?.alreadyExists ?? 0;
 
       if (successful > 0) {
-         setForm((prev) => ({
+        setForm((prev) => ({
           ...prev,
           protectors: (prev.protectors || []).map((f) => ({ ...f, status: "Sent Invitation" })),
         }));
@@ -928,7 +928,7 @@ function ProtectorsManager() {
           }),
         });
       } else if (alreadyExists > 0) {
-         setForm((prev) => ({
+        setForm((prev) => ({
           ...prev,
           protectors: (prev.protectors || []).map((f) => ({ ...f, status: "Resent Invitation" })),
         }));
@@ -2043,6 +2043,10 @@ function InvoicePIF() {
 
   const base = pricing.total;
 
+  // ✅ Mirr Asia record-storage address
+  const recordStorageFee = form.recordStorageUseMirr ? 350 : 0;
+  const totalWithStorage = base + recordStorageFee;
+
   return (
     <Card>
       <CardHeader>
@@ -2190,12 +2194,27 @@ function InvoicePIF() {
 
             <Separator className="my-2" />
 
+            {/* ✅ Mirr Asia record-storage line */}
+            {form.recordStorageUseMirr && (
+              <div className="flex items-start justify-between gap-3 py-1 text-sm">
+                <span className="font-medium">
+                  {t(
+                    "ppif.invoice.setup.recordStorage.label",
+                    "Use Mirr Asia record-storage address (Mirr Asia address used)"
+                  )}
+                </span>
+                <span className="text-sm font-medium">{money(recordStorageFee)}</span>
+              </div>
+            )}
+
             {/* Totals */}
             <div className="flex items-start justify-between gap-3 py-1">
               <span className="text-sm font-medium">
                 {t("ppif.invoice.setup.totals.setupY1")}
               </span>
-              <span className="text-sm font-medium">{money(base)}</span>
+              <span className="text-sm font-medium">
+                {money(totalWithStorage)}
+              </span>
             </div>
           </div>
         </div>
@@ -3118,6 +3137,7 @@ export default function PanamaPIFWizard() {
       if (result) {
         setForm({ ...form, _id: result._id });
         toast({ title: t("ppif.save.successTitle"), description: t("ppif.save.successDesc") });
+        window.history.pushState({}, "", `/company-register/PPIF/${result._id}`);
         return true;
       }
       toast({ variant: "destructive", title: t("ppif.save.errorTitle"), description: t("ppif.save.errorDesc") });
@@ -3128,8 +3148,9 @@ export default function PanamaPIFWizard() {
       return false;
     }
   };
-  // console.log("missing0", missing)
+  console.log("missing0", stepIdx, "\n ", form)
   const handleNext = async () => {
+    
     if (stepIdx >= config.steps.length - 1) return;
     if (missing.length > 0) {
       toast({
@@ -3140,7 +3161,25 @@ export default function PanamaPIFWizard() {
       return;
     }
     try {
+     
       setSavingNext(true);
+       if (stepIdx == 10) {
+        const q2 = form.legalAndEthicalConcern
+        const q3 = form.q_country
+        const q4 = form.sanctionsExposureDeclaration
+        const q5 = form.crimeaSevastapolPresence
+        const q6 = form.russianEnergyPresence
+        const q2to6AllNo = [q2, q3, q4, q5, q6].every((x) => x === "no");
+        // console.log("q2to6AllNo",q2to6AllNo)
+        if(!q2to6AllNo){
+          await saveAll();
+          toast({
+            title: "",
+            description: "Consultation Required.",
+          });
+          return
+        }
+      }
       const ok = await saveAll();
       if (!ok) return;
       goto(stepIdx + 1);
