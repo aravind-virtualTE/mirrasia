@@ -264,7 +264,7 @@ const computeShareholderKycExtras = (app: AppDoc): number => {
   // });
 
   // map to old logic: legalPersonFees = isLegalPerson; here isCorp ~ isLegalPerson
-  const legalPersonCount = shareholders.filter((p:any) => p?.isCorp === true).length;
+  const legalPersonCount = shareholders.filter((p: any) => p?.isCorp === true).length;
   const individualCount = shareholders.length - legalPersonCount;
 
   // constants consistent with old ServiceSelection
@@ -2279,20 +2279,23 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
   };
   const missing = step.fields ? requiredMissing(form, step) : [];
   const canNext = missing.length === 0;
-
+  // console.log("stepIdx", stepIdx);
   const handleNext = async () => {
+    // console.log("app---->",app)
     if (stepIdx >= config.steps.length - 1) return;
     if (stepIdx === 7 && app.paymentStatus !== "paid") {
       toast({ title: "Payment required", description: "Please complete the payment to continue." });
       return;
     }
+
     if (step.fields && !canNext) return; // should already be disabled, guard anyway
     try {
       setSavingNext(true);
       const grand = computeGrandTotal(app);
       app.form.finalAmount = grand
       const payload: AppDoc = { ...app, stepIdx: Math.min(stepIdx + 1, config.steps.length - 1) };
-      // console.log("stepIdx", stepIdx);
+
+
       if (stepIdx == 8) {
         const f = app.form;
         const ok =
@@ -2305,11 +2308,39 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
           return;
         }
       }
+
       const token = localStorage.getItem("token") as string;
       const decodedToken = jwtDecode<TokenData>(token);
       payload.userId = decodedToken.userId;
+      if (stepIdx == 1) {
+        const q1 = form.legalAndEthicalConcern
+        const q2 = form.q_country
+        const q3 = form.sanctionsExposureDeclaration
+        const q4 = form.crimeaSevastapolPresence
+        const q5 = form.russianEnergyPresence
+        const anyRisk = [q1, q2, q3, q4, q5].some((x) => x !== "no");
+        if (anyRisk) {
+          await saveDraft(payload);
+          toast({
+            title: "",
+            description: "Consultation Required.",
+          });
+          return;
+        }       
+        const res = await saveDraft(payload);
 
+        // console.log("saveDraft res", res);
+        if (res?.ok) {
+          if (res._id && !app._id) {
+            setApp((prev) => ({ ...prev!, _id: res._id }));
+          }
+          goto(stepIdx + 1);
+        } else {
+          toast({ title: "Error", description: "Could not save draft. Please try again." });
+        }
+      }
       const res = await saveDraft(payload);
+
       // console.log("saveDraft res", res);
       if (res?.ok) {
         if (res._id && !app._id) {
@@ -2319,6 +2350,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
       } else {
         toast({ title: "Error", description: "Could not save draft. Please try again." });
       }
+
     } catch (err) {
       console.error(err);
       toast({ title: "Error", description: "Could not save draft. Please try again." });
@@ -2327,7 +2359,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
     }
   };
   // console.log("stepIdx", stepIdx)
-  console.log("app", app);
+  // console.log("app", app);
   return (
     <div className="max-width mx-auto p-3 sm:p-4 md:p-6 space-y-4">
       <TopBar title={config.title} totalSteps={config.steps.length} idx={stepIdx} />
