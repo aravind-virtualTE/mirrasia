@@ -843,6 +843,8 @@ const fmtUSD = (n: number) => `USD ${Number(n || 0).toLocaleString()}`;
 
 const SgServiceSelectionStep: React.FC = () => {
     const [form, setForm] = useAtom(sgFormWithResetAtom1);
+    const { t } = useTranslation();
+
     React.useEffect(() => {
         if (!form?.sg_preAnswers) {
             setForm((prev: any) => ({
@@ -852,6 +854,7 @@ const SgServiceSelectionStep: React.FC = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     // Persisted pre-answers (so navigation keeps state)
     const hasLocalDir: YesNo = form?.sg_preAnswers?.hasLocalDir ?? "no";
     const ndSecurity: Security = form?.sg_preAnswers?.ndSecurity ?? "deposit";
@@ -860,7 +863,6 @@ const SgServiceSelectionStep: React.FC = () => {
         setForm((prev: any) => ({
             ...prev,
             sg_preAnswers: {
-                // read the latest values from state, not from render-time variables
                 hasLocalDir: prev?.sg_preAnswers?.hasLocalDir ?? "no",
                 ndSecurity: prev?.sg_preAnswers?.ndSecurity ?? "deposit",
                 ...(prev?.sg_preAnswers || {}),
@@ -878,24 +880,53 @@ const SgServiceSelectionStep: React.FC = () => {
         if (!on && exists) setForm({ ...form, serviceItemsSelected: curr.filter((x: string) => x !== id) });
     };
 
-    // ===== Fixed mandatory rows (always) =====
-    const MANDATORY = [
-        { id: "companyIncorporation", label: "Company Incorporation (filing)", price: 350 },
-        { id: "nomineeDirector", label: "Nominee Director (1 year)", price: 2000 }, // always mandatory now
-        { id: "companySecretary", label: "Company Secretary (1 year)", price: 480 },
-        { id: "registeredAddress", label: "Registered Address (1 year)", price: 300 },
+    // ===== Fixed mandatory rows (dynamic based on hasLocalDir) =====
+    const BASE_MANDATORY = [
+        {
+            id: "companyIncorporation",
+            labelKey: "Singapore.serviceSelection.table.rows.companyIncorporation",
+            price: 350,
+        },
+        {
+            id: "companySecretary",
+            labelKey: "Singapore.serviceSelection.table.rows.companySecretary",
+            price: 480,
+        },
+        {
+            id: "registeredAddress",
+            labelKey: "Singapore.serviceSelection.table.rows.registeredAddress",
+            price: 300,
+        },
     ];
 
-    // Base mandatory sum (without security)
-    const baseMandatoryTotal = MANDATORY.reduce((s, r) => s + r.price, 0); // 350+2000+480+300 = 3,130
+    const NOMINEE_DIRECTOR_ROW = {
+        id: "nomineeDirector",
+        labelKey: "Singapore.serviceSelection.table.rows.nomineeDirector",
+        price: 2000,
+    };
+
+    // If user has a local director, we do NOT show/add Nominee Director
+    const MANDATORY =
+        hasLocalDir === "no" ? [...BASE_MANDATORY, NOMINEE_DIRECTOR_ROW] : BASE_MANDATORY;
+
+    // Base mandatory sum (without security deposit/prepay)
+    const baseMandatoryTotal = MANDATORY.reduce((s, r) => s + r.price, 0);
 
     // Extra mandatory security (only when nominee REQUIRED)
     const extraSecurityMandatory = hasLocalDir === "no" ? 2000 : 0;
 
     // ===== Optionals (paid options excluding security; EMI is 0) =====
     const OPTIONALS = [
-        { id: "bankAccountAdvisory", label: "Bank Account Advisory (optional)", price: 1200 },
-        { id: "emiEAccount", label: "EMI e-Account Opening (basic) Free", price: 0 },
+        {
+            id: "bankAccountAdvisory",
+            labelKey: "Singapore.serviceSelection.table.rows.bankAdvisory",
+            price: 1200,
+        },
+        {
+            id: "emiEAccount",
+            labelKey: "Singapore.serviceSelection.table.rows.emiAccount",
+            price: 0,
+        },
     ];
 
     // Totals
@@ -904,14 +935,14 @@ const SgServiceSelectionStep: React.FC = () => {
         .reduce((s, r) => s + r.price, 0);
 
     const initialMandatoryTotal = baseMandatoryTotal + extraSecurityMandatory;
-    const totalInclOptions = initialMandatoryTotal + paidOptionalSum; // equals mandatory when no paid optionals
+    const totalInclOptions = initialMandatoryTotal + paidOptionalSum;
 
     // Guards
     const canToggle = () => {
         if (form.sessionId) {
             toast({
-                title: "Payment Session Initiated",
-                description: "Can't select extra items once payment session initiated",
+                title: t("Singapore.serviceSelection.toast.sessionTitle"),
+                description: t("Singapore.serviceSelection.toast.sessionDesc"),
             });
             return false;
         }
@@ -926,17 +957,21 @@ const SgServiceSelectionStep: React.FC = () => {
     return (
         <Card className="w-full">
             <CardHeader className="flex flex-row justify-between items-center">
-                <CardTitle className="text-xl text-cyan-400">Pricing &amp; Quote</CardTitle>
+                <CardTitle className="text-xl text-cyan-400">
+                    {t("Singapore.serviceSelection.cardTitle")}
+                </CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-6">
-                {/* === Pre-Questions (exact text) === */}
+                {/* === Pre-Questions === */}
                 <div className="card qs rounded-lg border p-4 space-y-4" id="pre-questions">
-                    <div className="font-semibold">Pre-Questions (auto-applies to the quote below)</div>
+                    <div className="font-semibold">
+                        {t("Singapore.serviceSelection.preQuestions.title")}
+                    </div>
 
                     <ol style={{ marginLeft: 18 }}>
                         <li>
-                            Do you have a Singapore-based individual who can act as your company’s local director?
+                            {t("Singapore.serviceSelection.preQuestions.q1.label")}
                             <div style={{ marginTop: 6 }}>
                                 <label className="mr-4">
                                     <input
@@ -946,7 +981,7 @@ const SgServiceSelectionStep: React.FC = () => {
                                         checked={hasLocalDir === "yes"}
                                         onChange={() => setPreAnswers({ hasLocalDir: "yes" })}
                                     />{" "}
-                                    Yes, we can appoint an internal local director
+                                    {t("Singapore.serviceSelection.preQuestions.q1.yes")}
                                 </label>
                                 <label>
                                     <input
@@ -956,14 +991,14 @@ const SgServiceSelectionStep: React.FC = () => {
                                         checked={hasLocalDir === "no"}
                                         onChange={() => setPreAnswers({ hasLocalDir: "no" })}
                                     />{" "}
-                                    No, nominee director is required
+                                    {t("Singapore.serviceSelection.preQuestions.q1.no")}
                                 </label>
                             </div>
                         </li>
 
                         {hasLocalDir === "no" && (
                             <li style={{ marginTop: 8 }}>
-                                Security Deposit for nominee director:
+                                {t("Singapore.serviceSelection.preQuestions.q2.label")}
                                 <div style={{ marginTop: 6 }}>
                                     <label className="mr-4">
                                         <input
@@ -973,7 +1008,7 @@ const SgServiceSelectionStep: React.FC = () => {
                                             checked={ndSecurity === "deposit"}
                                             onChange={() => setPreAnswers({ ndSecurity: "deposit" })}
                                         />{" "}
-                                        Security deposit USD 2,000
+                                        {t("Singapore.serviceSelection.preQuestions.q2.deposit")}
                                     </label>
                                     <label>
                                         <input
@@ -983,7 +1018,7 @@ const SgServiceSelectionStep: React.FC = () => {
                                             checked={ndSecurity === "prepay"}
                                             onChange={() => setPreAnswers({ ndSecurity: "prepay" })}
                                         />{" "}
-                                        Prepay accounting/tax USD 2,000
+                                        {t("Singapore.serviceSelection.preQuestions.q2.prepay")}
                                     </label>
                                 </div>
                             </li>
@@ -991,28 +1026,36 @@ const SgServiceSelectionStep: React.FC = () => {
                     </ol>
 
                     <div className="text-xs text-muted-foreground">
-                        Choices above will toggle the security/prepay options in the initial cost below.
+                        {t("Singapore.serviceSelection.preQuestions.helper")}
                     </div>
                 </div>
 
                 {/* === Table === */}
                 <div className="card rounded-lg border">
-                    <h3 className="px-4 pt-4 text-lg font-semibold">Incorporation + First Year</h3>
+                    <h3 className="px-4 pt-4 text-lg font-semibold">
+                        {t("Singapore.serviceSelection.table.title")}
+                    </h3>
 
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-1/2">Item</TableHead>
-                                <TableHead className="text-right">Price</TableHead>
-                                <TableHead className="text-right">Selected</TableHead>
+                                <TableHead className="w-1/2">
+                                    {t("Singapore.serviceSelection.table.columns.item")}
+                                </TableHead>
+                                <TableHead className="text-right">
+                                    {t("Singapore.serviceSelection.table.columns.price")}
+                                </TableHead>
+                                <TableHead className="text-right">
+                                    {t("Singapore.serviceSelection.table.columns.selected")}
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
 
                         <TableBody>
-                            {/* Always mandatory rows */}
+                            {/* Mandatory rows (dynamic) */}
                             {MANDATORY.map((r) => (
                                 <TableRow key={r.id}>
-                                    <TableCell>{r.label}</TableCell>
+                                    <TableCell>{t(r.labelKey)}</TableCell>
                                     <TableCell className="text-right">{fmtUSD(r.price)}</TableCell>
                                     <TableCell className="text-right">
                                         <Checkbox checked disabled />
@@ -1020,30 +1063,45 @@ const SgServiceSelectionStep: React.FC = () => {
                                 </TableRow>
                             ))}
 
-                            {/* Extra mandatory security (no checkbox; method chosen above) */}
+                            {/* Extra mandatory security (no extra toggle; reflected via ndSecurity choice) */}
                             {hasLocalDir === "no" && (
                                 <>
                                     <TableRow>
                                         <TableCell className="font-medium">
-                                            {/* Show the two lines exactly as you asked, but these are informative (no extra beyond the +2000 already counted). */}
-                                            <div>[Optional] Accounting/Tax Prepayment</div>
+                                            <div>
+                                                {t(
+                                                    "Singapore.serviceSelection.table.rows.acctTaxPrepayTitle"
+                                                )}
+                                            </div>
                                             <div className="text-xs text-muted-foreground">
-                                                (i) Bookkeeping &amp; CIT filing for the first YA. Alternative to a nominee director deposit.
+                                                {t(
+                                                    "Singapore.serviceSelection.table.rows.acctTaxPrepayDesc"
+                                                )}
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-right">{fmtUSD(2000)}</TableCell>
-                                        <TableCell className="text-right">—</TableCell>
+                                        <TableCell className="text-right">
+                                            <Checkbox checked={ndSecurity === "prepay"} disabled />
+                                        </TableCell>
                                     </TableRow>
 
                                     <TableRow>
                                         <TableCell className="font-medium">
-                                            <div>[Optional] Nominee Director Deposit</div>
+                                            <div>
+                                                {t(
+                                                    "Singapore.serviceSelection.table.rows.ndDepositTitle"
+                                                )}
+                                            </div>
                                             <div className="text-xs text-muted-foreground">
-                                                (i) Refundable upon 1-month prior written termination notice.
+                                                {t(
+                                                    "Singapore.serviceSelection.table.rows.ndDepositDesc"
+                                                )}
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-right">{fmtUSD(2000)}</TableCell>
-                                        <TableCell className="text-right">—</TableCell>
+                                        <TableCell className="text-right">
+                                            <Checkbox checked={ndSecurity === "deposit"} disabled />
+                                        </TableCell>
                                     </TableRow>
                                 </>
                             )}
@@ -1053,12 +1111,19 @@ const SgServiceSelectionStep: React.FC = () => {
                                 const isChecked = selected.includes(r.id);
                                 return (
                                     <TableRow key={r.id} className="text-gray-600">
-                                        <TableCell>{r.label}</TableCell>
-                                        <TableCell className={`text-right ${r.price === 0 ? "text-red-500 font-semibold" : ""}`}>
+                                        <TableCell>{t(r.labelKey)}</TableCell>
+                                        <TableCell
+                                            className={`text-right ${
+                                                r.price === 0 ? "text-red-500 font-semibold" : ""
+                                            }`}
+                                        >
                                             {fmtUSD(r.price)}
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Checkbox checked={isChecked} onCheckedChange={() => toggleOptional(r.id)} />
+                                            <Checkbox
+                                                checked={isChecked}
+                                                onCheckedChange={() => toggleOptional(r.id)}
+                                            />
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -1067,21 +1132,25 @@ const SgServiceSelectionStep: React.FC = () => {
                             {/* Totals */}
                             <TableRow className="font-bold bg-gray-50">
                                 <TableCell>
-                                    Initial <b>mandatory</b> total
+                                    {t(
+                                        "Singapore.serviceSelection.table.rows.initialMandatoryTotal"
+                                    )}
                                 </TableCell>
                                 <TableCell className="text-right" colSpan={2}>
                                     {fmtUSD(initialMandatoryTotal)}
                                 </TableCell>
                             </TableRow>
                             <TableRow className="font-bold bg-gray-100">
-                                <TableCell>Total incl. options</TableCell>
+                                <TableCell>
+                                    {t("Singapore.serviceSelection.table.rows.totalInclOptions")}
+                                </TableCell>
                                 <TableCell className="text-right text-yellow-600" colSpan={2}>
                                     {fmtUSD(totalInclOptions)}
                                 </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell colSpan={3} className="text-xs text-muted-foreground">
-                                    Assumes standard profile (≤5 individual shareholders). Notarization/translation/apostille &amp; complex KYC are extra.
+                                    {t("Singapore.serviceSelection.table.rows.footnote")}
                                 </TableCell>
                             </TableRow>
                         </TableBody>
@@ -2164,57 +2233,60 @@ const PaymentStep = () => {
     );
 };
 
-const SgFinalSectionStep: React.FC = () => {
+function CongratsStep() {
+    const [app,] = useAtom(sgFormWithResetAtom1)
     const { t } = useTranslation();
+
     const navigate = useNavigate();
+    const token = localStorage.getItem("token") as string;
+    const decodedToken = jwtDecode<any>(token);
 
-    let role: string | undefined;
-    try {
-        const token = localStorage.getItem("token") || "";
-        if (token) role = (jwtDecode(token) as TokenData)?.role;
-    } catch {
-        role = undefined;
-    }
-
-    const handleReturn = () => {
-        if (role && ["admin", "master"].includes(role)) {
-            navigate("/admin-dashboard");
-        } else {
-            localStorage.removeItem("companyRecordId");
-            navigate("/dashboard");
-        }
+    const navigateRoute = () => {
+        localStorage.removeItem("companyRecordId");
+        if (["admin", "master"].includes(decodedToken.role)) navigate("/admin-dashboard");
+        else navigate("/dashboard");
     };
 
+    const namePart = app.name ? t("newHk.congrats.thankYouName", { applicantName: app.name }) : "";
+
+    const steps = [1, 2, 3, 4].map((i) => ({
+        t: t(`Singapore.congrats.steps.${i}.t`),
+        s: t(`Singapore.congrats.steps.${i}.s`),
+    }));
+
     return (
-        <div className="flex justify-center items-center min-h-[70vh] px-4">
-            <Card className="w-full max-w-md shadow-md border border-green-200">
-                <CardHeader className="text-center">
-                    <CardTitle className="text-2xl font-semibold text-green-600">
-                        {t("finalMsg.congrats")}
-                    </CardTitle>
-                </CardHeader>
+        <div className="grid place-items-center gap-4 text-center py-6">
+            <h2 className="text-xl font-extrabold">{t("newHk.congrats.title")}</h2>
+            <p className="text-sm">
+                {t("newHk.congrats.thankYou", { name: namePart })}
+            </p>
 
-                <CardContent className="space-y-4 text-center text-gray-700">
-                    <p>{t("Singapore.finalSgTake")}</p>
-                    <p>{t("SwitchService.Consultation.thanks")}</p>
-                </CardContent>
+            <div className="grid gap-3 w-full max-w-3xl text-left">
+                {steps.map((x, i) => (
+                    <div key={i} className="grid grid-cols-[12px_1fr] gap-3 text-sm">
+                        <div className="mt-2 w-3 h-3 rounded-full bg-sky-500" />
+                        <div>
+                            <b>{x.t}</b>
+                            <br />
+                            <span className="text-muted-foreground">{x.s}</span>
+                        </div>
+                    </div>
+                ))}
+            </div>
 
-                <CardFooter className="flex justify-center">
-                    <Button className="bg-green-600 hover:bg-green-700" onClick={handleReturn}>
-                        {t("finalMsg.returntoDash")}
-                    </Button>
-                </CardFooter>
-            </Card>
+            <div className="flex items-center gap-2 justify-center">
+                <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>
+            </div>
         </div>
     );
-};
+}
 
 const CONFIG: FormConfig = {
     title: "Company Incorporation — Singapore",
     steps: [
         {
             id: "applicant",
-            title: "Applicant Information",
+            title: "ppif.section1",
             fields: [
                 {
                     type: "text",
@@ -2525,7 +2597,7 @@ const CONFIG: FormConfig = {
             id: "incorp",
             title: "usa.steps.step9",
             description: "usa.steps.incorp.description",
-            render: SgFinalSectionStep,
+            render: CongratsStep,
         },
     ],
 };

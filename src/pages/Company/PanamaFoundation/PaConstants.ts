@@ -12,7 +12,7 @@ export const money = (n: number, c: "USD" = "USD") =>
 const PRICE_RECORD_STORAGE = 350;
 
 export function computePIFSetupTotal(p: PIFPricing) {
-  console.log("p--->", p)
+  // console.log("p--->", p)
   return (
     p.setupBase +
     ND_PRICES[p.ndSetup] +
