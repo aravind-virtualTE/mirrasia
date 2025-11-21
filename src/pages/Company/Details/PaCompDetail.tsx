@@ -903,8 +903,8 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                         <div className="grid grid-cols-4 items-center gap-4">
                                             <Label className="text-right">Amount</Label>
                                             <div className="col-span-3 text-sm font-medium">
-                                                {formData.totalDiscounted
-                                                    ? `${formData.totalDiscounted} USD`
+                                                {formData.panamaQuote
+                                                    ? `${formData.panamaQuote?.total} USD`
                                                     : session.amount
                                                         ? `${session.amount} ${session.currency || "USD"}`
                                                         : "—"}

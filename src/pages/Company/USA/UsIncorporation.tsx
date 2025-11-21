@@ -85,7 +85,7 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
-import { t } from "i18next";
+// import { t } from "i18next";
 import api from "@/services/fetch";
 import CustomLoader from "@/components/ui/customLoader";
 import { sendInviteToShDir } from "@/services/dataFetch";
@@ -2632,35 +2632,83 @@ function PaymentStep() {
     );
 }
 
+// function CongratsStep() {
+//     const navigate = useNavigate();
+
+//     const navigateRoute = () => {
+//         localStorage.removeItem("companyRecordId");
+//         const decodedToken = jwtDecode<any>(token);
+//         if (["admin", "master"].includes(decodedToken.role)) navigate("/admin-dashboard");
+//         else navigate("/dashboard");
+//     };
+
+//     return (
+//         <div className="grid place-items-center gap-4 text-center py-6">
+//             <h2 className="text-xl font-extrabold">{t("newHk.congrats.title")}</h2>
+//             {/* <p className="text-sm">
+//         {t("newHk.congrats.thankYou", { name: namePart })}
+//       </p>
+
+//       <div className="grid gap-3 w-full max-w-3xl text-left">
+//         {steps.map((x, i) => (
+//           <div key={i} className="grid grid-cols-[12px_1fr] gap-3 text-sm">
+//             <div className="mt-2 w-3 h-3 rounded-full bg-sky-500" />
+//             <div>
+//               <b>{x.t}</b>
+//               <br />
+//               <span className="text-muted-foreground">{x.s}</span>
+//             </div>
+//           </div>
+//         ))}
+//       </div> */}
+
+//             <div className="flex items-center gap-2 justify-center">
+//                 <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>
+//             </div>
+//         </div>
+//     );
+// }
+
 function CongratsStep() {
+    const [app,] = useAtom(usaAppWithResetAtom)
+    const { t } = useTranslation();
+
     const navigate = useNavigate();
+    const token = localStorage.getItem("token") as string;
+    const decodedToken = jwtDecode<any>(token);
 
     const navigateRoute = () => {
         localStorage.removeItem("companyRecordId");
-        const decodedToken = jwtDecode<any>(token);
         if (["admin", "master"].includes(decodedToken.role)) navigate("/admin-dashboard");
         else navigate("/dashboard");
     };
 
+    const namePart = app.name ? t("newHk.congrats.thankYouName", { applicantName: app.name }) : "";
+
+    const steps = [1, 2, 3, 4].map((i) => ({
+        t: t(`Singapore.congrats.steps.${i}.t`),
+        s: t(`Singapore.congrats.steps.${i}.s`),
+    }));
+
     return (
         <div className="grid place-items-center gap-4 text-center py-6">
             <h2 className="text-xl font-extrabold">{t("newHk.congrats.title")}</h2>
-            {/* <p className="text-sm">
-        {t("newHk.congrats.thankYou", { name: namePart })}
-      </p>
+            <p className="text-sm">
+                {t("newHk.congrats.thankYou", { name: namePart })}
+            </p>
 
-      <div className="grid gap-3 w-full max-w-3xl text-left">
-        {steps.map((x, i) => (
-          <div key={i} className="grid grid-cols-[12px_1fr] gap-3 text-sm">
-            <div className="mt-2 w-3 h-3 rounded-full bg-sky-500" />
-            <div>
-              <b>{x.t}</b>
-              <br />
-              <span className="text-muted-foreground">{x.s}</span>
+            <div className="grid gap-3 w-full max-w-3xl text-left">
+                {steps.map((x, i) => (
+                    <div key={i} className="grid grid-cols-[12px_1fr] gap-3 text-sm">
+                        <div className="mt-2 w-3 h-3 rounded-full bg-sky-500" />
+                        <div>
+                            <b>{x.t}</b>
+                            <br />
+                            <span className="text-muted-foreground">{x.s}</span>
+                        </div>
+                    </div>
+                ))}
             </div>
-          </div>
-        ))}
-      </div> */}
 
             <div className="flex items-center gap-2 justify-center">
                 <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>

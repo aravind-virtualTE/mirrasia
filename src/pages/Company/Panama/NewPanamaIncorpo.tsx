@@ -21,7 +21,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Plus, ChevronDown, ChevronUp, HelpCircle, Info, Landmark, Scale, Send, UserIcon, Users, X } from "lucide-react";
 import CommonServiceAgrementTxt from "../CommonServiceAgrementTxt";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -31,11 +31,12 @@ import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import api from "@/services/fetch";
-import { FeeRow } from "../Singapore/SgState";
+// import { FeeRow } from "../Singapore/SgState";
 import SearchSelect, { Item } from "@/components/SearchSelect";
 import { currencies } from "../HongKong/constants";
 import CustomLoader from "@/components/ui/customLoader";
 import { t } from "i18next";
+import { money } from "../PanamaFoundation/PaConstants";
 
 const SHARE_TYPES = [
     { id: "ordinary", label: "CompanyInformation.typeOfShare.ordinaryShares" },
@@ -119,6 +120,28 @@ const ROLE_OPTIONS: RoleOption[] = [
     { id: "secretary", value: "panama.rOptions.3" },
 ];
 
+const PRICE_NS = 1300;
+const PRICE_EMI = 400;
+const PRICE_BANK = 2000;
+const PRICE_CBI = 3880;
+const BASE_SETUP_CORP = 3000; // Mirr Asia setup fee + first-year services (corp)
+
+type PanamaQuotePricing = {
+    setupBase: number;       // base setup for corp (3,000)
+    ndSetup: 0 | 1 | 2 | 3;  // nominee director count for setup
+    nsSetup: boolean;        // nominee shareholder (setup)
+    optEmi: boolean;         // EMI account opening
+    optBank: boolean;        // Panama local bank account opening
+    optCbi: boolean;         // Puerto Rico CBI account opening
+    nd3ReasonSetup?: string; // reason for selecting 3 NDs
+    total: number;           // computed setup total
+};
+const ND_PRICES: Record<number, number> = {
+    0: 0,
+    1: 1200,
+    2: 1700,
+    3: 2200,
+};
 
 function PartiesManager() {
     const { toast } = useToast();
@@ -1116,624 +1139,264 @@ const CompanyInfoStep = () => {
         </div>
     );
 };
-type YesNo = "yes" | "no";
-type Security = "deposit" | "prepay";
 
-const fmtUSD = (n: number) => `USD ${Number(n || 0).toLocaleString()}`;
 
-const SgServiceSelectionStep: React.FC = () => {
+
+function computePanamaSetupTotal(p: PanamaQuotePricing): number {
+    return (
+        p.setupBase +
+        ND_PRICES[p.ndSetup] +
+        (p.nsSetup ? PRICE_NS : 0) +
+        (p.optEmi ? PRICE_EMI : 0) +
+        (p.optBank ? PRICE_BANK : 0) +
+        (p.optCbi ? PRICE_CBI : 0)
+    );
+}
+
+
+const PanamaQuoteSetupStep = () => {
     const [form, setForm] = useAtom(paFormWithResetAtom1);
-    React.useEffect(() => {
-        if (!form?.sg_preAnswers) {
-            setForm((prev: any) => ({
-                ...prev,
-                sg_preAnswers: { hasLocalDir: "no", ndSecurity: "deposit" },
-            }));
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    // Persisted pre-answers (so navigation keeps state)
-    const hasLocalDir: YesNo = form?.sg_preAnswers?.hasLocalDir ?? "no";
-    const ndSecurity: Security = form?.sg_preAnswers?.ndSecurity ?? "deposit";
 
-    const setPreAnswers = (updates: Partial<{ hasLocalDir: YesNo; ndSecurity: Security }>) => {
+    // lock if already paid (optional – keep if you use this flag)
+    const isLocked = form?.paymentStatus === "paid";
+
+    const initialPricing: PanamaQuotePricing = React.useMemo(
+        () => ({
+            setupBase: BASE_SETUP_CORP,
+            ndSetup: 0,
+            nsSetup: false,
+            optEmi: false,
+            optBank: false,
+            optCbi: false,
+            nd3ReasonSetup: "",
+            total: BASE_SETUP_CORP,
+        }),
+        []
+    );
+
+    const pricing: PanamaQuotePricing = React.useMemo(
+        () => ({
+            ...initialPricing,
+            ...(form?.panamaQuote || {}),
+        }),
+        [form?.panamaQuote, initialPricing]
+    );
+
+    const updatePricing = <K extends keyof PanamaQuotePricing>(
+        key: K,
+        value: PanamaQuotePricing[K]
+    ) => {
+        if (isLocked) return;
+        const next: PanamaQuotePricing = { ...pricing, [key]: value };
+        next.total = computePanamaSetupTotal(next);
         setForm((prev: any) => ({
             ...prev,
-            sg_preAnswers: {
-                // read the latest values from state, not from render-time variables
-                hasLocalDir: prev?.sg_preAnswers?.hasLocalDir ?? "no",
-                ndSecurity: prev?.sg_preAnswers?.ndSecurity ?? "deposit",
-                ...(prev?.sg_preAnswers || {}),
-                ...updates,
-            },
+            panamaQuote: next,
         }));
     };
 
-    // Optional selections (bank advisory, EMI, etc.)
-    const selected: string[] = Array.isArray(form.serviceItemsSelected) ? form.serviceItemsSelected : [];
-    const includeOptional = (id: string, on: boolean) => {
-        const curr = Array.isArray(form.serviceItemsSelected) ? form.serviceItemsSelected : [];
-        const exists = curr.includes(id);
-        if (on && !exists) setForm({ ...form, serviceItemsSelected: [...curr, id] });
-        if (!on && exists) setForm({ ...form, serviceItemsSelected: curr.filter((x: string) => x !== id) });
-    };
-
-    // ===== Fixed mandatory rows (always) =====
-    const MANDATORY = [
-        { id: "companyIncorporation", label: "Company Incorporation (filing)", price: 350 },
-        { id: "nomineeDirector", label: "Nominee Director (1 year)", price: 2000 }, // always mandatory now
-        { id: "companySecretary", label: "Company Secretary (1 year)", price: 480 },
-        { id: "registeredAddress", label: "Registered Address (1 year)", price: 300 },
-    ];
-
-    // Base mandatory sum (without security)
-    const baseMandatoryTotal = MANDATORY.reduce((s, r) => s + r.price, 0); // 350+2000+480+300 = 3,130
-
-    // Extra mandatory security (only when nominee REQUIRED)
-    const extraSecurityMandatory = hasLocalDir === "no" ? 2000 : 0;
-
-    // ===== Optionals (paid options excluding security; EMI is 0) =====
-    const OPTIONALS = [
-        { id: "bankAccountAdvisory", label: "Bank Account Advisory (optional)", price: 1200 },
-        { id: "emiEAccount", label: "EMI e-Account Opening (basic) Free", price: 0 },
-    ];
-
-    // Totals
-    const paidOptionalSum = OPTIONALS
-        .filter((r) => selected.includes(r.id))
-        .reduce((s, r) => s + r.price, 0);
-
-    const initialMandatoryTotal = baseMandatoryTotal + extraSecurityMandatory;
-    const totalInclOptions = initialMandatoryTotal + paidOptionalSum; // equals mandatory when no paid optionals
-
-    // Guards
-    const canToggle = () => {
-        if (form.sessionId) {
-            toast({
-                title: "Payment Session Initiated",
-                description: "Can't select extra items once payment session initiated",
-            });
-            return false;
-        }
-        return true;
-    };
-
-    const toggleOptional = (id: string) => {
-        if (!canToggle()) return;
-        includeOptional(id, !selected.includes(id));
-    };
-
-    return (
-        <Card className="w-full">
-            <CardHeader className="flex flex-row justify-between items-center">
-                <CardTitle className="text-xl text-cyan-400">Pricing &amp; Quote</CardTitle>
-            </CardHeader>
-
-            <CardContent className="space-y-6">
-                {/* === Pre-Questions (exact text) === */}
-                <div className="card qs rounded-lg border p-4 space-y-4" id="pre-questions">
-                    <div className="font-semibold">Pre-Questions (auto-applies to the quote below)</div>
-
-                    <ol style={{ marginLeft: 18 }}>
-                        <li>
-                            Do you have a Singapore-based individual who can act as your company’s local director?
-                            <div style={{ marginTop: 6 }}>
-                                <label className="mr-4">
-                                    <input
-                                        type="radio"
-                                        name="q-local-dir"
-                                        value="yes"
-                                        checked={hasLocalDir === "yes"}
-                                        onChange={() => setPreAnswers({ hasLocalDir: "yes" })}
-                                    />{" "}
-                                    Yes, we can appoint an internal local director
-                                </label>
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="q-local-dir"
-                                        value="no"
-                                        checked={hasLocalDir === "no"}
-                                        onChange={() => setPreAnswers({ hasLocalDir: "no" })}
-                                    />{" "}
-                                    No, nominee director is required
-                                </label>
-                            </div>
-                        </li>
-
-                        {hasLocalDir === "no" && (
-                            <li style={{ marginTop: 8 }}>
-                                Security Deposit for nominee director:
-                                <div style={{ marginTop: 6 }}>
-                                    <label className="mr-4">
-                                        <input
-                                            type="radio"
-                                            name="q-security"
-                                            value="deposit"
-                                            checked={ndSecurity === "deposit"}
-                                            onChange={() => setPreAnswers({ ndSecurity: "deposit" })}
-                                        />{" "}
-                                        Security deposit USD 2,000
-                                    </label>
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name="q-security"
-                                            value="prepay"
-                                            checked={ndSecurity === "prepay"}
-                                            onChange={() => setPreAnswers({ ndSecurity: "prepay" })}
-                                        />{" "}
-                                        Prepay accounting/tax USD 2,000
-                                    </label>
-                                </div>
-                            </li>
-                        )}
-                    </ol>
-
-                    <div className="text-xs text-muted-foreground">
-                        Choices above will toggle the security/prepay options in the initial cost below.
-                    </div>
-                </div>
-
-                {/* === Table === */}
-                <div className="card rounded-lg border">
-                    <h3 className="px-4 pt-4 text-lg font-semibold">Incorporation + First Year</h3>
-
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-1/2">Item</TableHead>
-                                <TableHead className="text-right">Price</TableHead>
-                                <TableHead className="text-right">Selected</TableHead>
-                            </TableRow>
-                        </TableHeader>
-
-                        <TableBody>
-                            {/* Always mandatory rows */}
-                            {MANDATORY.map((r) => (
-                                <TableRow key={r.id}>
-                                    <TableCell>{r.label}</TableCell>
-                                    <TableCell className="text-right">{fmtUSD(r.price)}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Checkbox checked disabled />
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-
-                            {/* Extra mandatory security (no checkbox; method chosen above) */}
-                            {hasLocalDir === "no" && (
-                                <>
-                                    <TableRow>
-                                        <TableCell className="font-medium">
-                                            {/* Show the two lines exactly as you asked, but these are informative (no extra beyond the +2000 already counted). */}
-                                            <div>[Optional] Accounting/Tax Prepayment</div>
-                                            <div className="text-xs text-muted-foreground">
-                                                (i) Bookkeeping &amp; CIT filing for the first YA. Alternative to a nominee director deposit.
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right">{fmtUSD(2000)}</TableCell>
-                                        <TableCell className="text-right">—</TableCell>
-                                    </TableRow>
-
-                                    <TableRow>
-                                        <TableCell className="font-medium">
-                                            <div>[Optional] Nominee Director Deposit</div>
-                                            <div className="text-xs text-muted-foreground">
-                                                (i) Refundable upon 1-month prior written termination notice.
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right">{fmtUSD(2000)}</TableCell>
-                                        <TableCell className="text-right">—</TableCell>
-                                    </TableRow>
-                                </>
-                            )}
-
-                            {/* Other optionals (user can toggle) */}
-                            {OPTIONALS.map((r) => {
-                                const isChecked = selected.includes(r.id);
-                                return (
-                                    <TableRow key={r.id} className="text-gray-600">
-                                        <TableCell>{r.label}</TableCell>
-                                        <TableCell className={`text-right ${r.price === 0 ? "text-red-500 font-semibold" : ""}`}>
-                                            {fmtUSD(r.price)}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <Checkbox checked={isChecked} onCheckedChange={() => toggleOptional(r.id)} />
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-
-                            {/* Totals */}
-                            <TableRow className="font-bold bg-gray-50">
-                                <TableCell>
-                                    Initial mandatory total
-                                </TableCell>
-                                <TableCell className="text-right" colSpan={2}>
-                                    {fmtUSD(initialMandatoryTotal)}
-                                </TableCell>
-                            </TableRow>
-                            <TableRow className="font-bold bg-gray-100">
-                                <TableCell>Total incl. options</TableCell>
-                                <TableCell className="text-right text-yellow-600" colSpan={2}>
-                                    {fmtUSD(totalInclOptions)}
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell colSpan={3} className="text-xs text-muted-foreground">
-                                    Assumes standard profile (≤5 individual shareholders). Notarization/translation/apostille &amp; complex KYC are extra.
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </div>
-            </CardContent>
-        </Card>
-    );
-};
-
-const asNumber = (v: any) => (typeof v === "number" ? v : Number(v) || 0);
-const fmt = (n: number) => (n > 0 ? `USD ${n.toFixed(2)}` : "USD 0.00");
-
-const InvoiceSgStep: React.FC = () => {
-    const [form, setForm] = useAtom(paFormWithResetAtom1);
-    const { t } = useTranslation();
-
-    const hasLocalDir: YesNo = (form?.sg_preAnswers?.hasLocalDir as YesNo) ?? "no";
-    const ndSecurity: Security =
-        (form?.sg_preAnswers?.ndSecurity as Security) ?? "deposit";
-
-    const selectedOptionals: string[] = Array.isArray(form?.serviceItemsSelected)
-        ? form.serviceItemsSelected
-        : [];
-
-    // Build invoice rows to EXACTLY reflect the selection component
-    const rows: FeeRow[] = React.useMemo(() => {
-        const list: FeeRow[] = [];
-
-        // Always mandatory (same labels & prices)
-        list.push(
-            {
-                id: "companyIncorporation",
-                description: "Company Incorporation (filing)",
-                originalPrice: 350,
-                discountedPrice: 350,
-            },
-            {
-                id: "nomineeDirector",
-                description: "Nominee Director (1 year)",
-                originalPrice: 2000,
-                discountedPrice: 2000,
-            },
-            {
-                id: "companySecretary",
-                description: "Company Secretary (1 year)",
-                originalPrice: 480,
-                discountedPrice: 480,
-            },
-            {
-                id: "registeredAddress",
-                description: "Registered Address (1 year)",
-                originalPrice: 300,
-                discountedPrice: 300,
-            }
-        );
-
-        // Extra mandatory: security 2,000 only if nominee director is required
-        if (hasLocalDir === "no") {
-            const secLabel =
-                ndSecurity === "prepay"
-                    ? "Prepay accounting/tax (Nominee Director)"
-                    : "Security deposit (Nominee Director)";
-            list.push({
-                id: "nomineeSecurity",
-                description: secLabel,
-                originalPrice: 2000,
-                discountedPrice: 2000,
-            });
-        }
-
-        // Optionals shown only if selected (match IDs from ServiceSelectionStep)
-        if (selectedOptionals.includes("bankAccountAdvisory")) {
-            list.push({
-                id: "bankAccountAdvisory",
-                description: "Bank Account Advisory (optional)",
-                originalPrice: 1200,
-                discountedPrice: 1200,
-                isOptional: true,
-            });
-        }
-
-        if (selectedOptionals.includes("emiEAccount")) {
-            list.push({
-                id: "emiEAccount",
-                description: "EMI e-Account Opening (basic) Free",
-                originalPrice: 0,
-                discountedPrice: 0,
-                isOptional: true,
-            });
-        }
-
-        return list;
-    }, [hasLocalDir, ndSecurity, selectedOptionals]);
-
-    // Totals (original == discounted here, but we keep both fields)
-    const initialMandatoryTotal = React.useMemo(() => {
-        // mandatory = everything except the selected optionals
-        return rows
-            .filter((r) => !r.isOptional)
-            .reduce((s, r) => s + asNumber(r.discountedPrice), 0);
-    }, [rows]);
-
-    const totalInclOptions = React.useMemo(() => {
-        return rows.reduce((s, r) => s + asNumber(r.discountedPrice), 0);
-    }, [rows]);
-
-    // Memoize invoiceItems so we can compare and avoid loops
-    const invoiceItems = React.useMemo(
-        () =>
-            rows.map((r) => ({
-                id: r.id,
-                description: r.description,
-                amount: asNumber(r.discountedPrice),
-            })),
-        [rows]
-    );
-
-    // shallow compare helper for invoiceItems
-    const sameItems = React.useCallback((a: any[] = [], b: any[] = []) => {
-        if (a.length !== b.length) return false;
-        for (let i = 0; i < a.length; i++) {
-            const x = a[i];
-            const y = b[i];
-            if (!y) return false;
-            if (x.id !== y.id || x.description !== y.description || x.amount !== y.amount) {
-                return false;
-            }
-        }
-        return true;
-    }, []);
-
-    // Persist totals & currency back to form for payment step — but only if changed
+    // Ensure total is synced on mount/atom change
     React.useEffect(() => {
-        setForm((prev: any) => {
-            const unchanged =
-                prev?.initialMandatoryTotal === initialMandatoryTotal &&
-                prev?.totalInclOptions === totalInclOptions &&
-                prev?.totalOriginal === totalInclOptions &&
-                prev?.totalDiscounted === totalInclOptions &&
-                prev?.currency === "USD" &&
-                sameItems(prev?.invoiceItems, invoiceItems);
-
-            if (unchanged) return prev; // do not trigger an update
-
-            return {
+        const computed = computePanamaSetupTotal(pricing);
+        // console.log("computed",computed)
+        if (computed !== pricing.total) {
+            setForm((prev: any) => ({
                 ...prev,
-                initialMandatoryTotal, // keep for display/analytics
-                totalInclOptions, // final invoice subtotal (before card fee)
-                totalOriginal: totalInclOptions, // legacy field for downstream
-                totalDiscounted: totalInclOptions, // keep both in sync
-                currency: "USD",
-                invoiceItems,
-            };
-        });
-        // setForm is stable for jotai; including it is fine but not required.
-    }, [
-        initialMandatoryTotal,
-        totalInclOptions,
-        invoiceItems,
-        sameItems,
-        setForm,
-    ]);
+                totalOriginal: pricing.total,
+                panamaQuote: { ...pricing, total: computed },
+            }));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pricing]);
 
+    const totalSetup = pricing.total;
+    // console.log("testing--->", form.totalOriginal, totalSetup)
     return (
-        <div className="w-full py-8 px-4">
-            <Card className="w-full">
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>{t("mirrasisaSSL")}</CardTitle>
-                </CardHeader>
+        <div className="p-4 space-y-4">
+            {/* Title */}
+            <h1 className="text-lg sm:text-xl font-bold border-b border-dashed border-slate-200">
+                {t("panama.quoteSetup.title")}
+            </h1>
 
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>{t("invoice.desc")}</TableHead>
-                                <TableHead className="text-right">
-                                    {t("invoice.originalPrice")}
-                                </TableHead>
-                                <TableHead className="text-right">
-                                    {t("invoice.discPrice")}
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {rows.map((item) => (
-                                <TableRow key={item.id}>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <span className={item.isHighlight ? "font-semibold" : ""}>
-                                                {item.description}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-right text-muted-foreground">
-                                        {fmt(asNumber(item.originalPrice))}
-                                    </TableCell>
-                                    <TableCell className="text-right font-medium">
-                                        {fmt(asNumber(item.discountedPrice))}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+            {/* Initial Setup Heading */}
+            <h3 className="font-semibold text-base">
+                {t("panama.quoteSetup.initialSetupTitle")}
+            </h3>
 
-                    {/* Totals Card */}
-                    <div className="mt-4 flex justify-end">
-                        <Card className="w-80">
-                            <CardContent className="pt-4">
-                                <div className="flex justify-between mb-2">
-                                    <span className="font-xs text-xs line-through text-gray-500">
-                                        {t("invoice.total")}:
-                                    </span>
-                                    <span className="font-xs text-xs line-through text-gray-500">
-                                        {fmt(totalInclOptions)}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between text-green-600">
-                                    <span className="font-medium">{t("invoice.totalDisc")}:</span>
-                                    <span className="font-bold">{fmt(totalInclOptions)}</span>
-                                </div>
-                                {/* If you want to show the initial mandatory in the card too, uncomment: */}
-                                {/* <div className="flex justify-between text-sm mt-2">
-                    <span>Initial mandatory total:</span>
-                    <span>{fmt(initialMandatoryTotal)}</span>
-                  </div> */}
-                            </CardContent>
-                        </Card>
-                    </div>
-                </CardContent>
-            </Card>
+            {/* Locked Banner */}
+            {isLocked && (
+                <div className="border rounded-xl p-3 text-sm border-amber-200 bg-amber-50 text-amber-900 mb-2">
+                    {t("panama.quoteSetup.lockedMessage")}
+                </div>
+            )}
+
+            {/* Setup package base */}
+            <div className="flex items-start justify-between gap-3 py-2 border-b border-dashed border-slate-200">
+                <span className="text-sm">
+                    {t("panama.quoteSetup.base.label")}
+                    <span className="ml-1 text-xs text-slate-500">
+                        {t("panama.quoteSetup.base.note")}
+                    </span>
+                </span>
+                <span className="text-sm font-semibold">
+                    {money(pricing.setupBase)}
+                </span>
+            </div>
+
+            {/* Nominee Director (setup) */}
+            <div className="flex items-center justify-between gap-3 py-2 border-b border-dashed border-slate-200">
+                <Label htmlFor="nd-setup" className="text-sm font-normal whitespace-nowrap">
+                    {t("panama.quoteSetup.ndSetup.label")}
+                </Label>
+
+                <Select
+                    value={String(pricing.ndSetup)}
+                    onValueChange={(v) => updatePricing("ndSetup", Number(v) as 0 | 1 | 2 | 3)}
+                    disabled={isLocked}
+                >
+                    <SelectTrigger id="nd-setup" className="w-48">
+                        <SelectValue placeholder={t("panama.quoteSetup.ndSetup.placeholder")} />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                        <SelectItem value="0">{t("panama.quoteSetup.ndSetup.options.0")}</SelectItem>
+                        <SelectItem value="1">{t("panama.quoteSetup.ndSetup.options.1")}</SelectItem>
+                        <SelectItem value="2">{t("panama.quoteSetup.ndSetup.options.2")}</SelectItem>
+                        <SelectItem value="3">{t("panama.quoteSetup.ndSetup.options.3")}</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+
+            {/* Reason for 3 nominee directors */}
+            {pricing.ndSetup === 3 && (
+                <div className="mt-2 space-y-1">
+                    <Label htmlFor="nd3-reason" className="text-xs">
+                        {t("panama.quoteSetup.nd3Reason.label")}
+                    </Label>
+
+                    <Textarea
+                        id="nd3-reason"
+                        placeholder={t("panama.quoteSetup.nd3Reason.placeholder")}
+                        value={pricing.nd3ReasonSetup ?? ""}
+                        onChange={(e) => updatePricing("nd3ReasonSetup", e.target.value)}
+                        disabled={isLocked}
+                        className="min-h-[72px]"
+                    />
+
+                    <p className="text-[11px] text-muted-foreground">
+                        {t("panama.quoteSetup.nd3Reason.hint")}
+                    </p>
+                </div>
+            )}
+
+            {/* Nominee Shareholder (setup) */}
+            <div className="flex items-center justify-between gap-3 py-2 border-b border-dashed border-slate-200">
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                        id="ns-setup"
+                        checked={pricing.nsSetup}
+                        onCheckedChange={(c) => updatePricing("nsSetup", Boolean(c))}
+                        disabled={isLocked}
+                    />
+                    <Label htmlFor="ns-setup" className="text-sm">
+                        {t("panama.quoteSetup.nsSetup.label")}
+                    </Label>
+                </div>
+
+                <span className="text-sm font-semibold">{money(PRICE_NS)}</span>
+            </div>
+
+            {/* Optional Services Title */}
+            <h4 className="font-medium text-sm mt-3">
+                {t("panama.quoteSetup.optional.title")}
+            </h4>
+
+            {/* EMI option */}
+            <div className="flex items-center justify-between gap-3 py-1">
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                        id="opt-emi"
+                        checked={pricing.optEmi}
+                        onCheckedChange={(c) => updatePricing("optEmi", Boolean(c))}
+                        disabled={isLocked}
+                    />
+                    <Label htmlFor="opt-emi" className="text-sm">
+                        {t("panama.quoteSetup.optional.emi")}
+                    </Label>
+                </div>
+                <span className="text-sm font-semibold">{money(PRICE_EMI)}</span>
+            </div>
+
+            {/* Bank account option */}
+            <div className="flex items-center justify-between gap-3 py-1">
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                        id="opt-bank"
+                        checked={pricing.optBank}
+                        onCheckedChange={(c) => updatePricing("optBank", Boolean(c))}
+                        disabled={isLocked}
+                    />
+                    <Label htmlFor="opt-bank" className="text-sm">
+                        {t("panama.quoteSetup.optional.bank")}
+                    </Label>
+                </div>
+                <span className="text-sm font-semibold">{money(PRICE_BANK)}</span>
+            </div>
+
+            {/* CBI option */}
+            <div className="flex items-center justify-between gap-3 py-1">
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                        id="opt-cbi"
+                        checked={pricing.optCbi}
+                        onCheckedChange={(c) => updatePricing("optCbi", Boolean(c))}
+                        disabled={isLocked}
+                    />
+                    <Label htmlFor="opt-cbi" className="text-sm">
+                        {t("panama.quoteSetup.optional.cbi")}
+                    </Label>
+                </div>
+                <span className="text-sm font-semibold">{money(PRICE_CBI)}</span>
+            </div>
+
+            {/* Total Setup */}
+            <div className="mt-4 flex items-center justify-between rounded-xl bg-[#0e3a8a] text-white px-3 py-2">
+                <span className="text-sm font-medium">
+                    {t("panama.quoteSetup.totals.setupY1")}
+                </span>
+                <span className="text-sm font-semibold">
+                    {money(totalSetup)}
+                </span>
+            </div>
+
+            {/* Included List */}
+            <div className="mt-4 rounded-xl p-3 text-xs leading-relaxed">
+                <b>{t("panama.quoteSetup.includes.title")}</b>
+
+                <ol className="mt-2 list-decimal pl-5 space-y-1">
+                    <li>{t("panama.quoteSetup.includes.items.i1")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i2")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i3")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i4")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i5")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i6")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i7")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i8")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i9")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i10")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i11")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i12")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i13")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i14")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i15")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i16")}</li>
+                    <li>{t("panama.quoteSetup.includes.items.i17")}</li>
+                </ol>
+            </div>
         </div>
+
     );
 };
-
-// const InvoiceSgStep = () => {
-//     const [form, setForm] = useAtom(paFormWithResetAtom1);
-//     const { t } = useTranslation();
-
-//     const selectedOptionals: string[] = Array.isArray(form?.serviceItemsSelected)
-//         ? form.serviceItemsSelected
-//         : [];
-
-//     const rows: FeeRow[] = useMemo(() => {
-//         // derive parties/address inside memo to avoid unstable deps caused by inline conditionals
-//         const parties = Array.isArray(form?.parties) ? form.parties : [];
-//         const address = form?.businessAddress;
-
-//         // 1) Base catalog
-//         const base: FeeRow[] = service_list.map((s) => ({
-//             id: s.id,
-//             description: t(s.key),
-//             originalPrice: asNumber(s.price),
-//             discountedPrice: asNumber(s.price),
-//             isOptional: !!s.isOptional,
-//             note: "",
-//             isHighlight: false,
-//         }));
-
-//         // 2) Dynamic adds (always included; these are not optional)
-//         const out: FeeRow[] = [...base];
-
-//         if (address && address.id === "mirrasiaAddress") {
-//             out.push({
-//                 id: "registeredBusinessAddress",
-//                 description: t("Singapore.regBsnsService"),
-//                 originalPrice: 350,
-//                 discountedPrice: 350,
-//                 isOptional: false,
-//                 note: "",
-//             });
-//         }
-
-//         const legalEntityYesCount = parties.filter(
-//             (p: any) => p?.isCorp === true && (p?.isDirector === true || (Number(p?.shares) || 0) > 0)
-//         ).length;
-
-//         if (legalEntityYesCount > 0) {
-//             out.push({
-//                 id: "corporateSecretaryAnnualService",
-//                 description: `${t("Singapore.crpSecAnnualServ")} (${legalEntityYesCount})`,
-//                 originalPrice: legalEntityYesCount * 550,
-//                 discountedPrice: legalEntityYesCount * 550,
-//                 isOptional: false,
-//                 note: "",
-//             });
-//         }
-
-//         if (form?.onlineAccountingSoftware?.value === "yes") {
-//             out.push({
-//                 id: "onlineAccountingSoftware",
-//                 description: t("Singapore.accPackageSixMonths"),
-//                 originalPrice: 2000,
-//                 discountedPrice: 2000,
-//                 isOptional: false,
-//                 note: "",
-//             });
-//         }
-
-//         // 3) For invoice display:
-//         //    - Always include non-optional items
-//         //    - Include optional items ONLY if selected
-//         return out.filter((r) => !r.isOptional || selectedOptionals.includes(r.id));
-//     }, [t, form, selectedOptionals]);
-
-//     const totalOriginal = rows.reduce((sum, r) => sum + asNumber(r.originalPrice), 0);
-//     const totalDiscounted = rows.reduce((sum, r) => sum + asNumber(r.discountedPrice), 0);
-//     React.useEffect(() => {
-//         setForm((prev: any) => ({
-//             ...prev,
-//             totalOriginal,
-//             totalDiscounted,
-//             currency: "USD",
-//         }));
-//     }, [totalOriginal, totalDiscounted, setForm]);
-
-//     return (
-//         <div className="w-full py-8 px-4">
-//             <Card className="w-full">
-//                 <CardHeader className="flex flex-row items-center justify-between">
-//                     <CardTitle>{t("mirrasisaSSL")}</CardTitle>
-//                 </CardHeader>
-//                 <CardContent>
-//                     <Table>
-//                         <TableHeader>
-//                             <TableRow>
-//                                 <TableHead>{t("invoice.desc")}</TableHead>
-//                                 <TableHead className="text-right">{t("invoice.originalPrice")}</TableHead>
-//                                 <TableHead className="text-right">{t("invoice.discPrice")}</TableHead>
-//                                 {/* <TableHead className="text-right">{t("invoice.notes")}</TableHead> */}
-//                             </TableRow>
-//                         </TableHeader>
-//                         <TableBody>
-//                             {rows.map((item) => (
-//                                 <TableRow key={item.id}>
-//                                     <TableCell>
-//                                         <div className="flex items-center gap-2">
-//                                             <span className={item.isHighlight ? "font-semibold" : ""}>{item.description}</span>
-//                                         </div>
-//                                     </TableCell>
-//                                     <TableCell className="text-right text-muted-foreground">
-//                                         {asNumber(item.originalPrice) > 0 ? `USD ${asNumber(item.originalPrice).toFixed(2)}` : "USD 0.00"}
-//                                     </TableCell>
-//                                     <TableCell className="text-right font-medium">
-//                                         {asNumber(item.discountedPrice) > 0 ? `USD ${asNumber(item.discountedPrice).toFixed(2)}` : "USD 0.00"}
-//                                     </TableCell>
-//                                     {/* <TableCell className="text-right text-sm text-muted-foreground">{item.note || ""}</TableCell> */}
-//                                 </TableRow>
-//                             ))}
-//                         </TableBody>
-//                     </Table>
-
-//                     {/* Totals */}
-//                     <div className="mt-4 flex justify-end">
-//                         <Card className="w-80">
-//                             <CardContent className="pt-4">
-//                                 <div className="flex justify-between mb-2">
-//                                     <span className="font-xs text-xs line-through text-gray-500">{t("invoice.total")}:</span>
-//                                     <span className="font-xs text-xs line-through text-gray-500">USD {totalOriginal.toFixed(2)}</span>
-//                                 </div>
-//                                 <div className="flex justify-between text-green-600">
-//                                     <span className="font-medium">{t("invoice.totalDisc")}:</span>
-//                                     <span className="font-bold">USD {totalDiscounted.toFixed(2)}</span>
-//                                 </div>
-//                             </CardContent>
-//                         </Card>
-//                     </div>
-//                 </CardContent>
-//             </Card>
-//         </div>
-//     );
-// };
 
 function StripePaymentForm({ app, onSuccess, onClose, }: {
     app: any;
@@ -2030,7 +1693,8 @@ function asNum(v: any) {
 
 function computeSgGrandTotal(app: any): number {
     // Subtotal is whatever the invoice last wrote
-    const subtotal = asNum(app?.totalInclOptions ?? app?.totalOriginal ?? 0);
+    // console.log("App--->",app.totalOriginal)
+    const subtotal = asNum(app.panamaQuote?.total ?? 0);
 
     const cardFeeRate = 0.035;
     const needsCardFee = app?.payMethod === "card";
@@ -2138,7 +1802,7 @@ const PaymentStep = () => {
             setCardDrawerOpen(true);
             return;
         }
-        console.log("form", form)
+        // console.log("form", form)
         setCreatingPI(true);
         try {
             const fp = {
@@ -2382,57 +2046,58 @@ const PaymentStep = () => {
     );
 };
 
-const SgFinalSectionStep: React.FC = () => {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
+function CongratsStep() {
+    const [app, ] = useAtom(paFormWithResetAtom1)
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token") as string;
+  const decodedToken = jwtDecode<any>(token);
 
-    let role: string | undefined;
-    try {
-        const token = localStorage.getItem("token") || "";
-        if (token) role = (jwtDecode(token) as TokenData)?.role;
-    } catch {
-        role = undefined;
-    }
+  const navigateRoute = () => {
+    localStorage.removeItem("companyRecordId");
+    if (["admin", "master"].includes(decodedToken.role)) navigate("/admin-dashboard");
+    else navigate("/dashboard");
+  };
 
-    const handleReturn = () => {
-        if (role && ["admin", "master"].includes(role)) {
-            navigate("/admin-dashboard");
-        } else {
-            localStorage.removeItem("companyRecordId");
-            navigate("/dashboard");
-        }
-    };
+  const namePart = app.name ? t("newHk.congrats.thankYouName", { applicantName: app.name }) : "";
 
-    return (
-        <div className="flex justify-center items-center min-h-[70vh] px-4">
-            <Card className="w-full max-w-md shadow-md border border-green-200">
-                <CardHeader className="text-center">
-                    <CardTitle className="text-2xl font-semibold text-green-600">
-                        {t("finalMsg.congrats")}
-                    </CardTitle>
-                </CardHeader>
+  const steps = [1, 2, 3, 4].map((i) => ({
+    t: t(`panama.congrats.steps.${i}.t`),
+    s: t(`panama.congrats.steps.${i}.s`),
+  }));
 
-                <CardContent className="space-y-4 text-center text-gray-700">
-                    <p>{t("Singapore.finalSgTake")}</p>
-                    <p>{t("SwitchService.Consultation.thanks")}</p>
-                </CardContent>
+  return (
+    <div className="grid place-items-center gap-4 text-center py-6">
+      <h2 className="text-xl font-extrabold">{t("newHk.congrats.title")}</h2>
+      <p className="text-sm">
+        {t("newHk.congrats.thankYou", { name: namePart })}
+      </p>
 
-                <CardFooter className="flex justify-center">
-                    <Button className="bg-green-600 hover:bg-green-700" onClick={handleReturn}>
-                        {t("finalMsg.returntoDash")}
-                    </Button>
-                </CardFooter>
-            </Card>
-        </div>
-    );
-};
+      <div className="grid gap-3 w-full max-w-3xl text-left">
+        {steps.map((x, i) => (
+          <div key={i} className="grid grid-cols-[12px_1fr] gap-3 text-sm">
+            <div className="mt-2 w-3 h-3 rounded-full bg-sky-500" />
+            <div>
+              <b>{x.t}</b>
+              <br />
+              <span className="text-muted-foreground">{x.s}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-2 justify-center">
+        <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>
+      </div>
+    </div>
+  );
+}
 
 const CONFIG: FormConfig = {
-    title: "Company Incorporation — Panama",
+    title: "panama.title",
     steps: [
         {
             id: "applicant",
-            title: "Applicant Information",
+            title: "ppif.section1",
             fields: [
                 {
                     type: "text",
@@ -2678,19 +2343,19 @@ const CONFIG: FormConfig = {
                 "usa.steps.agreement.description",
             render: CommonServiceAgrementTxt
         },
-        {
-            id: "services",
-            title: "usa.steps.step5",
-            description:
-                "usa.steps.services.description",
-            render: SgServiceSelectionStep,
-        },
+        // {
+        //     id: "services",
+        //     title: "usa.steps.step5",
+        //     description:
+        //         "usa.steps.services.description",
+        //     render: SgServiceSelectionStep,
+        // },
         {
             id: "invoice",
             title: "usa.steps.step6",
             description:
                 "usa.steps.invoice.description",
-            render: InvoiceSgStep,
+            render: PanamaQuoteSetupStep,
         },
         {
             id: "payment",
@@ -2702,7 +2367,7 @@ const CONFIG: FormConfig = {
             id: "incorp",
             title: "usa.steps.step9",
             description: "usa.steps.incorp.description",
-            render: SgFinalSectionStep,
+            render: CongratsStep,
         },
     ],
 };
@@ -2763,7 +2428,7 @@ const Sidebar: React.FC<{ steps: Step[]; currentIdx: number; onNavigate: (idx: n
         <aside className="space-y-3 sticky top-0 h-[calc(100vh-2rem)] overflow-auto">
             <div className="flex items-center gap-2">
                 <div className="w-5 h-5 rounded bg-red-600 shrink-0" />
-                <span className="text-xs font-semibold truncate">Company Incorporation — Panama</span>
+                <span className="text-xs font-semibold truncate">{t("panama.title")}</span>
             </div>
 
             <div className="flex flex-wrap gap-1 text-xs">

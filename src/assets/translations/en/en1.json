@@ -724,6 +724,24 @@
                 }
             },
             "footnote": "※ This form is for preliminary information gathering for review/quotation/KYC and does not constitute legal or tax advice."
+        },
+        "steps": {
+            "1": {
+                "t": "Step 1 — Compliance review",
+                "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1–2 business days."
+            },
+            "2": {
+                "t": "Step 2 — Filing with Companies Registry",
+                "s": "We will file the incorporation documents."
+            },
+            "3": {
+                "t": "Step 3 — Registration certificates",
+                "s": "Expected: Certificate of Incorporation & Business Registration within 3-4 business weeks."
+            },
+            "4": {
+                "t": "Step 4 — Bank/EMI account",
+                "s": "If selected, we arrange an account opening with your preferred bank/EMI."
+            }
         }
     },
     "ppifMember": {
