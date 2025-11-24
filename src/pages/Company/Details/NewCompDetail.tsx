@@ -67,7 +67,8 @@ export type OnboardingRecord = {
     legalTermsAcknowledgment?: boolean;
     compliancePreconditionAcknowledgment?: boolean;
     eSign?: string;
-    dcp?: string;
+    dcpEmail?: string;
+    dcpName?: string;
     industry?: string;
     purpose?: string[];
     bizdesc?: string;
@@ -260,7 +261,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
       setIsSaving(true);
       const result = await saveIncorporationData(data);
       // console.log("result", result)
-      const ok = (typeof result === "object" && result !== null )
+      const ok = (typeof result === "object" && result !== null)
 
       if (ok) {
         toast({
@@ -313,8 +314,8 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   if (!data) {
     return <div className="p-6 text-sm text-muted-foreground">Loading…</div>;
   }
-  console.log("data", data)
-  console.log("f--->",f)
+  // console.log("data", data)
+  // console.log("f--->",f)
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -426,6 +427,16 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                     <LabelValue label="Applicant">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{f.applicantName || "—"}</span>
+                      </div>
+                    </LabelValue>
+                    <LabelValue label="Dcp Name">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{f.dcpName || "—"}</span>
+                      </div>
+                    </LabelValue>
+                    <LabelValue label="Dcp Email">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{f.dcpEmail || "—"}</span>
                       </div>
                     </LabelValue>
 
@@ -555,6 +566,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                   ) : (
                     <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No parties added.</div>
                   )}
+
                 </CardContent>
               </Card>
             </div>

@@ -66,6 +66,7 @@ export type Party = {
   shares: number;
   invited: boolean;
   typeOfShare: ShareTypeId; // id only
+  status?: string;
 };
 
 export type AppDoc = {
