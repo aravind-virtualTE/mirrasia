@@ -1413,70 +1413,70 @@
     "bkeepop6": "控股公司為雙層結構",
     "bkeepop7": "控股公司為三層結構",
     "finalSgTake": "感謝您與我們一起完成了新加坡公司的註冊程序。我們將審閱您的回覆內容，我們的顧問會盡快與您聯繫。",
-      "congrats": {
+    "congrats": {
       "steps": {
-            "1": {
-                "t": "步驟 1 — 合規審查",
-                "s": "我們的合規官將審查您的 KYC/CDD 和股權資訊。預計完成時間：1–2 個工作日。"
-            },
-            "2": {
-                "t": "步驟 2 — 向公司註冊處提交文件",
-                "s": "我們將提交公司設立文件。"
-            },
-            "3": {
-                "t": "步驟 3 — 註冊證書",
-                "s": "預計：公司註冊證書和商業登記將在一週內完成。"
-            },
-            "4": {
-                "t": "步驟 4 — 銀行/EMI 帳戶",
-                "s": "如果選擇了此項服務，我們將安排您與首選銀行/EMI 開立帳戶。"
-            }
+        "1": {
+          "t": "步驟 1 — 合規審查",
+          "s": "我們的合規官將審查您的 KYC/CDD 和股權資訊。預計完成時間：1–2 個工作日。"
+        },
+        "2": {
+          "t": "步驟 2 — 向公司註冊處提交文件",
+          "s": "我們將提交公司設立文件。"
+        },
+        "3": {
+          "t": "步驟 3 — 註冊證書",
+          "s": "預計：公司註冊證書和商業登記將在一週內完成。"
+        },
+        "4": {
+          "t": "步驟 4 — 銀行/EMI 帳戶",
+          "s": "如果選擇了此項服務，我們將安排您與首選銀行/EMI 開立帳戶。"
         }
+      }
     },
     "serviceSelection": {
-  "cardTitle": "定價與報價",
-  "preQuestions": {
-    "title": "事前問題 (自動適用於下方報價)",
-    "q1": {
-      "label": "您是否有新加坡籍人士可擔任貴公司的當地董事？",
-      "yes": "是，我們可以指定內部當地董事",
-      "no": "否，需要名義董事 (Nominee Director)"
-    },
-    "q2": {
-      "label": "名義董事保證金：",
-      "deposit": "保證金 2,000 美元",
-      "prepay": "預付會計/稅務費用 2,000 美元"
-    },
-    "helper": "上述選擇將切換下方初始成本中的保證金/預付選項。"
-  },
-  "table": {
-    "title": "公司設立 + 第一年",
-    "columns": {
-      "item": "項目",
-      "price": "價格",
-      "selected": "已選"
-    },
-    "rows": {
-      "companyIncorporation": "公司設立 (文件提交)",
-      "companySecretary": "公司秘書 (1 年)",
-      "registeredAddress": "註冊地址 (1 年)",
-      "nomineeDirector": "名義董事 (1 年)",
-      "acctTaxPrepayTitle": "[可選] 會計/稅務預付款",
-      "acctTaxPrepayDesc": "(i) 第一個評稅年度的簿記及 CIT 申報。可作為名義董事保證金的替代方案。",
-      "ndDepositTitle": "[可選] 名義董事保證金",
-      "ndDepositDesc": "(i) 提前 1 個月書面終止通知後可退還。",
-      "bankAdvisory": "銀行開戶諮詢 (可選)",
-      "emiAccount": "EMI 電子帳戶開立 (基本) 免費",
-      "initialMandatoryTotal": "初始強制總計",
-      "totalInclOptions": "總計 (包含選項)",
-      "footnote": "假設為標準資料 (≤5 名個人股東)。公證/翻譯/海牙認證及複雜的 KYC 需額外付費。"
+      "cardTitle": "定價與報價",
+      "preQuestions": {
+        "title": "事前問題 (自動適用於下方報價)",
+        "q1": {
+          "label": "您是否有新加坡籍人士可擔任貴公司的當地董事？",
+          "yes": "是，我們可以指定內部當地董事",
+          "no": "否，需要名義董事 (Nominee Director)"
+        },
+        "q2": {
+          "label": "名義董事保證金：",
+          "deposit": "保證金 2,000 美元",
+          "prepay": "預付會計/稅務費用 2,000 美元"
+        },
+        "helper": "上述選擇將切換下方初始成本中的保證金/預付選項。"
+      },
+      "table": {
+        "title": "公司設立 + 第一年",
+        "columns": {
+          "item": "項目",
+          "price": "價格",
+          "selected": "已選"
+        },
+        "rows": {
+          "companyIncorporation": "公司設立 (文件提交)",
+          "companySecretary": "公司秘書 (1 年)",
+          "registeredAddress": "註冊地址 (1 年)",
+          "nomineeDirector": "名義董事 (1 年)",
+          "acctTaxPrepayTitle": "[可選] 會計/稅務預付款",
+          "acctTaxPrepayDesc": "(i) 第一個評稅年度的簿記及 CIT 申報。可作為名義董事保證金的替代方案。",
+          "ndDepositTitle": "[可選] 名義董事保證金",
+          "ndDepositDesc": "(i) 提前 1 個月書面終止通知後可退還。",
+          "bankAdvisory": "銀行開戶諮詢 (可選)",
+          "emiAccount": "EMI 電子帳戶開立 (基本) 免費",
+          "initialMandatoryTotal": "初始強制總計",
+          "totalInclOptions": "總計 (包含選項)",
+          "footnote": "假設為標準資料 (≤5 名個人股東)。公證/翻譯/海牙認證及複雜的 KYC 需額外付費。"
+        }
+      },
+      "toast": {
+        "sessionTitle": "付款會話已啟動",
+        "sessionDesc": "付款會話啟動後，無法選擇額外項目"
+      }
     }
-  },
-  "toast": {
-    "sessionTitle": "付款會話已啟動",
-    "sessionDesc": "付款會話啟動後，無法選擇額外項目"
-  }
-}
   },
   "mirrasisaSSL": "MIRR ASIA 商業諮詢與秘書服務有限公司",
   "aml": {
@@ -2262,9 +2262,17 @@
           "label": "計算所得面值（唯讀）",
           "hint": "面值 = 總股本 ÷ 總股數。"
         },
-        "dcp": {
-          "label": "指定聯絡人",
-          "placeholder": "選擇聯絡人"
+        "dcpName": {
+          "label": "指定聯絡人姓名",
+          "placeholder": "輸入姓名"
+        },
+        "dcpEmail": {
+          "label": "指定聯絡人電子郵件",
+          "placeholder": "輸入電子郵件"
+        },
+        "dcpNumber": {
+          "label": "指定聯絡人電話號碼",
+          "placeholder": "輸入電話號碼"
         }
       }
     },

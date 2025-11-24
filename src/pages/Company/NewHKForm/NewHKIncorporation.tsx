@@ -14,14 +14,14 @@ import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Info } from "lucide-react";
+import { ChevronDown, ChevronUp, Info, Send, UserIcon, Users, X } from "lucide-react";
 import { FPSForm } from "../payment/FPSForm";
 import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, } from "./hkIncorpo";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { t } from "i18next";
-import { toast } from "@/hooks/use-toast";
+import { toast, useToast } from "@/hooks/use-toast";
 import { sendInviteToShDir } from "@/services/dataFetch";
 import { isValidEmail } from "@/middleware";
 import { useNavigate } from "react-router-dom";
@@ -31,6 +31,8 @@ import { businessNatureList } from "../HongKong/constants";
 import SearchSelect from "@/components/SearchSelect";
 import InvoicePreview from "./NewInvoicePreview";
 import { Trans } from "react-i18next";
+import { cn } from "@/lib/utils";
+import CustomLoader from "@/components/ui/customLoader";
 
 const STRIPE_CLIENT_ID =
   import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
@@ -568,14 +570,20 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 }
 // ---------- Parties Manager (per-party typeOfShare = id only)
 function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React.SetStateAction<AppDoc>> }) {
+  const { toast } = useToast();
   const form = app.form;
-  // lock when paid
   const isLocked = app.paymentStatus === "paid";
 
   const totalShares = React.useMemo(
     () => (form.shareCount === "other" ? Number(form.shareOther || 0) : Number(form.shareCount || 0)) || 0,
     [form.shareCount, form.shareOther]
   );
+
+  const assigned = app.parties.reduce((s, p) => s + (Number(p.shares) || 0), 0);
+  const equal = totalShares > 0 && assigned === totalShares;
+
+  const [expandedIndex, setExpandedIndex] = React.useState<number | null>(null);
+  const [isInviting, setIsInviting] = React.useState(false);
 
   const upd = (i: number, key: keyof Party, value: any) => {
     if (isLocked) return;
@@ -608,15 +616,12 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
           isDirector: false,
           shares: 0,
           invited: false,
-          typeOfShare: DEFAULT_SHARE_ID
-        }
+          typeOfShare: DEFAULT_SHARE_ID,
+        },
       ],
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     }));
   };
-
-  const assigned = app.parties.reduce((s, p) => s + (Number(p.shares) || 0), 0);
-  const equal = totalShares > 0 && assigned === totalShares;
 
   const sendMailFunction = async () => {
     if (isLocked) return;
@@ -626,210 +631,369 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
       if (!isValidEmail(email)) {
         toast({
           title: t("newHk.parties.toasts.invalidEmail.title"),
-          description: t("newHk.parties.toasts.invalidEmail.desc", { name, email })
+          description: t("newHk.parties.toasts.invalidEmail.desc", { name, email }),
         });
       }
       return { name, email };
     });
 
     const payload = { _id: app._id || "", inviteData: extractedData, country: "HK" };
-    const response = await sendInviteToShDir(payload);
 
-    if (response.summary.successful > 0) {
-      setApp((prev) => {
-        const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
-        return { ...prev, parties: updated };
-      });
-      toast({
-        title: t("newHk.parties.toasts.invite.success.title"),
-        description: t("newHk.parties.toasts.invite.success.desc", {
-          count: response.summary.successful
-        })
-      });
-    }
+    try {
+      setIsInviting(true);
+      const response = await sendInviteToShDir(payload);
 
-    if (response.summary.alreadyExists > 0) {
-      setApp((prev) => {
-        const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
-        return { ...prev, parties: updated };
-      });
-      toast({
-        title: t("newHk.parties.toasts.invite.exists.title"),
-        description: t("newHk.parties.toasts.invite.exists.desc")
-      });
-    }
+      if (response.summary.successful > 0) {
+        setApp((prev) => {
+          const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
+          return { ...prev, parties: updated };
+        });
+        toast({
+          title: t("newHk.parties.toasts.invite.success.title"),
+          description: t("newHk.parties.toasts.invite.success.desc", {
+            count: response.summary.successful,
+          }),
+        });
+      }
 
-    if (response.summary.failed > 0) {
-      setApp((prev) => {
-        const updated = prev.parties.map((p) => ({ ...p, status: "Not Invited" }));
-        return { ...prev, parties: updated };
-      });
-      toast({
-        title: t("newHk.parties.toasts.invite.failed.title"),
-        description: t("newHk.parties.toasts.invite.failed.desc")
-      });
+      if (response.summary.alreadyExists > 0) {
+        setApp((prev) => {
+          const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
+          return { ...prev, parties: updated };
+        });
+        toast({
+          title: t("newHk.parties.toasts.invite.exists.title"),
+          description: t("newHk.parties.toasts.invite.exists.desc"),
+        });
+      }
+
+      if (response.summary.failed > 0) {
+        setApp((prev) => {
+          const updated = prev.parties.map((p) => ({ ...p, status: "Not Invited" }));
+          return { ...prev, parties: updated };
+        });
+        toast({
+          title: t("newHk.parties.toasts.invite.failed.title"),
+          description: t("newHk.parties.toasts.invite.failed.desc"),
+        });
+      }
+    } finally {
+      setIsInviting(false);
     }
   };
 
+  const statusText = equal ? t("newHk.parties.banner.ok") : t("newHk.parties.banner.err");
+  const statusColor = equal ? "text-green-600" : "text-red-600";
+
   return (
-    <div className="space-y-3">
-      <div
-        className={classNames(
-          "border rounded-xl p-3 text-sm",
-          equal ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-red-200 bg-rose-50 text-rose-900"
-        )}
-      >
-        {equal ? t("newHk.parties.banner.ok") : t("newHk.parties.banner.err")}
+    <div className="max-width mx-auto p-2 space-y-4">
+      {/* Header with status + totals (Panama-style) */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 bg-blue-100 rounded-lg flex items-center justify-center">
+            <Users className="w-4 h-4 text-blue-600" />
+          </div>
+          <div>
+            <h2 className="text-base font-semibold text-gray-900">
+              {t("newHk.parties.title", "Shareholders & Directors")}
+            </h2>
+            <p className={cn("text-xs mt-0.5", statusColor)}>{statusText}</p>
+            {isLocked && (
+              <p className="text-xs text-amber-600 mt-0.5">
+                {t("newHk.parties.banner.locked") ||
+                  "Payment completed. Details can no longer be edited."}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="text-right">
+          <p
+            className={cn(
+              "text-sm",
+              totalShares > 0
+                ? assigned === totalShares
+                  ? "text-green-600"
+                  : assigned > totalShares
+                    ? "text-red-600"
+                    : "text-gray-500"
+                : "text-gray-500"
+            )}
+          >
+            {t("newHk.parties.totals", {
+              total: totalShares.toLocaleString(),
+              assigned: assigned.toLocaleString(),
+            })}
+          </p>
+        </div>
       </div>
 
-      {isLocked && (
-        <div className="border rounded-xl p-3 text-sm border-amber-200 bg-amber-50 text-amber-900">
-          {t("newHk.parties.banner.locked") || "Payment completed. Details can no longer be edited."}
-        </div>
-      )}
+      {/* Parties list (Panama-style cards with compact headers) */}
+      <div className="space-y-2">
+        {app.parties.map((p, i) => {
+          const pct = totalShares ? ((Number(p.shares) || 0) / totalShares) * 100 : 0;
+          const isExpanded = expandedIndex === i;
 
-      {app.parties.map((p, i) => {
-        const pct = totalShares ? ((Number(p.shares) || 0) / totalShares) * 100 : 0;
-        return (
-          <Card key={i} className="shadow-sm">
-            <CardContent className="pt-6">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label>{t("newHk.parties.fields.name.label")}</Label>
-                  <Input
-                    value={p.name}
-                    disabled={isLocked}
-                    onChange={(e) => upd(i, "name", e.target.value)}
-                  />
-                  <p
-                    className="text-xs text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: t("newHk.parties.fields.name.example") }}
-                  />
-                </div>
+          return (
+            <Card key={i} className="overflow-hidden transition-all hover:shadow-md">
+              {/* Compact Header */}
+              <div
+                className={cn(
+                  "p-2 cursor-pointer flex items-center justify-between hover:bg-gray-50",
+                  isLocked && "cursor-default"
+                )}
+                onClick={() => {
+                  if (isLocked) return;
+                  setExpandedIndex(isExpanded ? null : i);
+                }}
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-100">
+                    <UserIcon className="w-4 h-4 text-blue-600" />
+                  </div>
 
-                <div className="grid gap-2">
-                  <Label>{t("newHk.parties.fields.email.label")}</Label>
-                  <Input
-                    type="email"
-                    value={p.email}
-                    disabled={isLocked}
-                    onChange={(e) => upd(i, "email", e.target.value)}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label>{t("newHk.parties.fields.phone.label")}</Label>
-                  <Input
-                    value={p.phone}
-                    disabled={isLocked}
-                    onChange={(e) => upd(i, "phone", e.target.value)}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label>
-                    {t("newHk.parties.fields.isCorp.label")}{" "}
-                    <Tip text={t("newHk.parties.fields.isCorp.tip")} />
-                  </Label>
-                  <Select
-                    value={String(p.isCorp)}
-                    disabled={isLocked}
-                    onValueChange={(v) => upd(i, "isCorp", v === "true")}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="false">{t("newHk.parties.fields.isCorp.options.no")}</SelectItem>
-                      <SelectItem value="true">{t("newHk.parties.fields.isCorp.options.yes")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="grid gap-2">
-                  <Label>
-                    {t("newHk.parties.fields.isDirector.label")}{" "}
-                    <Tip text={t("newHk.parties.fields.isDirector.tip")} />
-                  </Label>
-                  <Select
-                    value={String(p.isDirector)}
-                    disabled={isLocked}
-                    onValueChange={(v) => upd(i, "isDirector", v === "true")}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="true">{t("newHk.parties.fields.isDirector.options.yes")}</SelectItem>
-                      <SelectItem value="false">{t("newHk.parties.fields.isDirector.options.no")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="grid gap-2">
-                  <Label>{t("newHk.parties.fields.shares.label")}</Label>
-                  <Input
-                    type="number"
-                    value={String(p.shares)}
-                    disabled={isLocked}
-                    onChange={(e) => upd(i, "shares", Number(e.target.value || 0))}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label>{t("newHk.parties.fields.pct.label")}</Label>
-                  <Input readOnly value={`${pct.toFixed(2)}%`} />
-                </div>
-
-                {/* Per-party Type of Shares */}
-                <div className="grid gap-2 md:col-span-2">
-                  <Label>{t("newHk.parties.fields.type.label")}</Label>
-                  <RadioGroup
-                    value={p.typeOfShare ?? DEFAULT_SHARE_ID}
-                    onValueChange={(v) => upd(i, "typeOfShare", (v as ShareTypeId) || DEFAULT_SHARE_ID)}
-                    // shadcn RadioGroup doesn't have disabled prop; we can disable items via CSS/opacity & pointer-events
-                    className={isLocked ? "pointer-events-none opacity-60" : ""}
-                  >
-                    <div className="flex items-center gap-4 text-sm">
-                      {SHARE_TYPES.map((tdef) => {
-                        return (
-                          <label key={tdef.id} className="flex items-center gap-2">
-                            <RadioGroupItem id={`stype-${tdef.id}-${i}`} value={tdef.id} />
-                            {t(tdef.label)}
-                          </label>
-                        );
-                      })}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-900 truncate">
+                        {p.name || t("newHk.parties.fields.name.label")}
+                      </span>
+                      {p.status && (
+                        <span
+                          className={cn(
+                            "text-xs px-2 py-0.5 rounded-full",
+                            p.status === "Invited"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-amber-100 text-amber-700"
+                          )}
+                        >
+                          {p.status}
+                        </span>
+                      )}
                     </div>
-                  </RadioGroup>
-                </div>
-              </div>
+                    <p className="text-sm text-gray-500 truncate">
+                      {p.email || t("common.noEmail", "No email")}
+                    </p>
+                  </div>
 
-              <div className="flex items-center justify-between mt-4">
-                <Button
-                  variant="ghost"
-                  onClick={() => del(i)}
+                  <div className="text-right flex-shrink-0">
+                    <div className="font-semibold text-gray-900">
+                      {Number(p.shares || 0).toLocaleString()}
+                    </div>
+                    <div className="text-xs text-gray-500">{pct.toFixed(2)}%</div>
+                  </div>
+                </div>
+
+                <button
+                  className="ml-4 p-1 hover:bg-gray-200 rounded disabled:opacity-40"
+                  type="button"
                   disabled={isLocked}
                 >
-                  {t("newHk.parties.buttons.remove")}
-                </Button>
+                  {isExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-gray-600" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-gray-600" />
+                  )}
+                </button>
               </div>
-            </CardContent>
-          </Card>
-        );
-      })}
 
-      <div className="flex items-center gap-2">
-        <Button variant="outline" onClick={add} disabled={isLocked}>
+              {/* Expanded Details */}
+              {isExpanded && (
+                <CardContent className="pt-0 pb-4 px-4 border-t bg-gray-50">
+                  <div className="grid md:grid-cols-2 gap-3 mt-4">
+                    {/* Name */}
+                    <div className="grid gap-2">
+                      <Label className="text-xs text-gray-600 mb-1">
+                        {t("newHk.parties.fields.name.label")}
+                      </Label>
+                      <Input
+                        value={p.name}
+                        disabled={isLocked}
+                        onChange={(e) => upd(i, "name", e.target.value)}
+                        className="h-9"
+                      />
+                      <p
+                        className="text-[11px] text-muted-foreground"
+                        dangerouslySetInnerHTML={{
+                          __html: t("newHk.parties.fields.name.example"),
+                        }}
+                      />
+                    </div>
+
+                    {/* Email */}
+                    <div className="grid gap-2">
+                      <Label className="text-xs text-gray-600 mb-1">
+                        {t("newHk.parties.fields.email.label")}
+                      </Label>
+                      <Input
+                        type="email"
+                        value={p.email}
+                        disabled={isLocked}
+                        onChange={(e) => upd(i, "email", e.target.value)}
+                        className="h-9"
+                      />
+                    </div>
+
+                    {/* Phone */}
+                    <div className="grid gap-2">
+                      <Label className="text-xs text-gray-600 mb-1">
+                        {t("newHk.parties.fields.phone.label")}
+                      </Label>
+                      <Input
+                        value={p.phone}
+                        disabled={isLocked}
+                        onChange={(e) => upd(i, "phone", e.target.value)}
+                        className="h-9"
+                      />
+                    </div>
+
+                    {/* Is Corp */}
+                    <div className="grid gap-2">
+                      <Label className="text-xs text-gray-600 mb-1">
+                        {t("newHk.parties.fields.isCorp.label")}{" "}
+                        <Tip text={t("newHk.parties.fields.isCorp.tip")} />
+                      </Label>
+                      <Select
+                        value={String(p.isCorp)}
+                        disabled={isLocked}
+                        onValueChange={(v) => upd(i, "isCorp", v === "true")}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="false">
+                            {t("newHk.parties.fields.isCorp.options.no")}
+                          </SelectItem>
+                          <SelectItem value="true">
+                            {t("newHk.parties.fields.isCorp.options.yes")}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Is Director */}
+                    <div className="grid gap-2">
+                      <Label className="text-xs text-gray-600 mb-1">
+                        {t("newHk.parties.fields.isDirector.label")}{" "}
+                        <Tip text={t("newHk.parties.fields.isDirector.tip")} />
+                      </Label>
+                      <Select
+                        value={String(p.isDirector)}
+                        disabled={isLocked}
+                        onValueChange={(v) => upd(i, "isDirector", v === "true")}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="true">
+                            {t("newHk.parties.fields.isDirector.options.yes")}
+                          </SelectItem>
+                          <SelectItem value="false">
+                            {t("newHk.parties.fields.isDirector.options.no")}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Shares */}
+                    <div className="grid gap-2">
+                      <Label className="text-xs text-gray-600 mb-1">
+                        {t("newHk.parties.fields.shares.label")}
+                      </Label>
+                      <Input
+                        type="number"
+                        value={String(p.shares)}
+                        disabled={isLocked}
+                        onChange={(e) => upd(i, "shares", Number(e.target.value || 0))}
+                        className="h-9"
+                      />
+                    </div>
+
+                    {/* Percentage */}
+                    <div className="grid gap-2">
+                      <Label className="text-xs text-gray-600 mb-1">
+                        {t("newHk.parties.fields.pct.label")}
+                      </Label>
+                      <Input readOnly value={`${pct.toFixed(2)}%`} className="h-9" />
+                    </div>
+
+                    {/* Type of Shares (same field, radio-group, Panama-style layout) */}
+                    <div className="grid gap-2 md:col-span-2">
+                      <Label className="text-xs text-gray-600 mb-1">
+                        {t("newHk.parties.fields.type.label")}
+                      </Label>
+                      <RadioGroup
+                        value={p.typeOfShare ?? DEFAULT_SHARE_ID}
+                        onValueChange={(v) =>
+                          upd(i, "typeOfShare", (v as ShareTypeId) || DEFAULT_SHARE_ID)
+                        }
+                        className={isLocked ? "pointer-events-none opacity-60" : ""}
+                      >
+                        <div className="flex flex-wrap items-center gap-4 text-sm">
+                          {SHARE_TYPES.map((tdef) => (
+                            <label key={tdef.id} className="flex items-center gap-2">
+                              <RadioGroupItem
+                                id={`stype-${tdef.id}-${i}`}
+                                value={tdef.id}
+                              />
+                              {t(tdef.label)}
+                            </label>
+                          ))}
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  </div>
+
+                  {/* Remove button */}
+                  <div className="flex items-center justify-between mt-4">
+                    <Button
+                      variant="ghost"
+                      onClick={() => del(i)}
+                      disabled={isLocked}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <X className="w-4 h-4 mr-1" />
+                      {t("newHk.parties.buttons.remove")}
+                    </Button>
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Actions (Panama-style row) */}
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
+        <Button
+          variant="outline"
+          onClick={add}
+          disabled={isLocked}
+          className="flex items-center gap-2"
+        >
           {t("newHk.parties.buttons.add")}
         </Button>
-        <div className="text-sm text-muted-foreground">
+
+        <div className="text-sm text-muted-foreground flex-1 text-center md:text-left">
           {t("newHk.parties.totals", {
             total: totalShares.toLocaleString(),
-            assigned: assigned.toLocaleString()
+            assigned: assigned.toLocaleString(),
           })}
         </div>
-        <Button variant="outline" onClick={sendMailFunction} disabled={isLocked}>
-          {t("newHk.parties.buttons.invite")}
+
+        <Button
+          variant="default"
+          onClick={sendMailFunction}
+          disabled={isLocked || isInviting}
+          className="flex items-center gap-2 hover:bg-green-700"
+        >
+          {isInviting ? (
+            <CustomLoader />
+          ) : (
+            <Send className="w-4 h-4" />
+          )}
+          <span className="ml-1">{t("newHk.parties.buttons.invite")}</span>
         </Button>
       </div>
     </div>
@@ -1858,25 +2022,85 @@ function CongratsStep({ app }: { app: AppDoc }) {
 function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<React.SetStateAction<AppDoc>> }) {
   const form = app.form;
   const setForm = (updater: (prev: any) => any) =>
-    setApp((prev) => ({ ...prev, form: updater(prev.form), updatedAt: new Date().toISOString() }));
-
+    setApp((prev) => ({ ...prev, form: updater(prev.form) }));
+  const isLocked = app.paymentStatus === "paid";
   // keys are stored in form; labels come from i18n when rendering
   const incorporationPurposeKeys = ["operateHK", "assetMgmt", "holdingCo", "crossBorder", "taxNeutral"] as const;
 
-  const contactOptions = React.useMemo(
-    () =>
-      Array.from(
-        new Set((app.parties || []).map((p) => (p?.name || "").trim()).filter(Boolean))
-      ),
-    [app.parties]
-  );
+  // const contactOptions = React.useMemo(
+  //   () =>
+  //     Array.from(
+  //       new Set((app.parties || []).map((p) => (p?.name || "").trim()).filter(Boolean))
+  //     ),
+  //   [app.parties]
+  // );
 
-  React.useEffect(() => {
-    if (form.dcp && !contactOptions.includes(form.dcp)) {
-      setForm((p) => ({ ...p, dcp: "" }));
+  // React.useEffect(() => {
+  //   if (form.dcp && !contactOptions.includes(form.dcp)) {
+  //     setForm((p) => ({ ...p, dcp: "" }));
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [contactOptions]);
+  const [isInviting, setIsInviting] = React.useState(false);
+
+  const sendMailFunction = async () => {
+    if (isLocked) return;
+
+    const extractedData = [{ name: app.form.dcpName, email: app.form.dcpEmail }];
+
+    const payload = { _id: app._id || "", inviteData: extractedData, country: "HK" };
+
+    try {
+      setIsInviting(true);
+      const response = await sendInviteToShDir(payload);
+
+      if (response.summary.successful > 0) {
+        setApp((prev) => ({
+          ...prev,
+          form: {
+            ...prev.form,
+            dcpStatus: "Invited",
+          },
+        }));
+        toast({
+          title: t("newHk.parties.toasts.invite.success.title"),
+          description: t("newHk.parties.toasts.invite.success.desc", {
+            count: response.summary.successful,
+          }),
+        });
+      }
+
+      if (response.summary.alreadyExists > 0) {
+        setApp((prev) => ({
+          ...prev,
+          form: {
+            ...prev.form,
+            dcpStatus: "Invited",
+          },
+        }));
+        toast({
+          title: t("newHk.parties.toasts.invite.exists.title"),
+          description: t("newHk.parties.toasts.invite.exists.desc"),
+        });
+      }
+
+      if (response.summary.failed > 0) {
+        setApp((prev) => ({
+          ...prev,
+          form: {
+            ...prev.form,
+            dcpStatus: "Not Invited",
+          },
+        }));
+        toast({
+          title: t("newHk.parties.toasts.invite.failed.title"),
+          description: t("newHk.parties.toasts.invite.failed.desc"),
+        });
+      }
+    } finally {
+      setIsInviting(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contactOptions]);
+  };
 
   return (
     <div className="space-y-4">
@@ -2054,8 +2278,58 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
           <SectionTitle>{t("newHk.company.sections.c")}</SectionTitle>
 
           <PartiesManager app={app} setApp={setApp} />
+          <div className="grid gap-4 mt-4 md:grid-cols-3">
+            {/* DCP Name */}
+            <Field
+              field={{
+                type: "text",
+                name: "dcpName",
+                label: "newHk.company.fields.dcpName.label",
+                placeholder: "newHk.company.fields.dcpName.placeholder",
+              }}
+              form={form}
+              setForm={setForm}
+            />
 
-          <div className="grid gap-2 mt-4">
+            {/* DCP Email */}
+            <Field
+              field={{
+                type: "email",
+                name: "dcpEmail",
+                label: "newHk.company.fields.dcpEmail.label",
+                placeholder: "newHk.company.fields.dcpEmail.placeholder",
+              }}
+              form={form}
+              setForm={setForm}
+            />
+
+            {/* DCP Phone / Number */}
+            <Field
+              field={{
+                type: "text", // use text so +, leading 0, etc. are allowed
+                name: "dcpNumber",
+                label: "newHk.company.fields.dcpNumber.label",
+                placeholder: "newHk.company.fields.dcpNumber.placeholder",
+              }}
+              form={form}
+              setForm={setForm}
+            />
+            <Button
+              variant="default"
+              onClick={sendMailFunction}
+              disabled={isLocked || isInviting}
+              className="flex items-center hover:bg-green-700"
+            >
+              {isInviting ? (
+                <CustomLoader />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+              <span className="ml-1">{t("newHk.parties.buttons.invite")}</span>
+            </Button>
+          </div>
+
+          {/* <div className="grid gap-2 mt-4">
             <Field
               field={{
                 type: "select",
@@ -2072,7 +2346,7 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
               form={form}
               setForm={setForm}
             />
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>
@@ -2326,7 +2600,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
             description: "Consultation Required.",
           });
           return;
-        }       
+        }
         const res = await saveDraft(payload);
 
         // console.log("saveDraft res", res);

@@ -2261,9 +2261,17 @@
           "label": "계산된 액면가 (읽기 전용)",
           "hint": "액면가 = 총 자본금 ÷ 주식 수."
         },
-        "dcp": {
+        "dcpName": {
           "label": "지정된 연락 담당자",
-          "placeholder": "연락 담당자 선택"
+          "placeholder": "이름 입력"
+        },
+        "dcpEmail": {
+          "label": "지정된 연락 담당자 이메일",
+          "placeholder": "이메일 입력"
+        },
+        "dcpNumber": {
+          "label": "지정된 연락 담당자 전화번호",
+          "placeholder": "전화번호 입력"
         }
       }
     },

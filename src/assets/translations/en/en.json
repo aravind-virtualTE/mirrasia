@@ -2280,11 +2280,19 @@
           "label": "Calculated par value (read-only)",
           "hint": "Par value = total share capital ÷ number of shares."
         },
-        "dcp": {
+        "dcpName": {
           "label": "Designated Contact Person",
-          "placeholder": "Select a contact person"
-        }
+          "placeholder": "Enter name"
+        },
+        "dcpEmail":{
+          "label": "Designated Contact Person Email",
+          "placeholder": "Enter email"
+        },
+        "dcpNumber": {
+          "label": "Designated Contact Person Phone Number",
+          "placeholder": "Enter phone number"
       }
+    }
     },
     "parties": {
       "banner": {
