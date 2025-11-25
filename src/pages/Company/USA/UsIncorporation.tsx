@@ -634,367 +634,475 @@ function Field({
 
 // ---------- Shareholders widget ----------
 function ShareholdersWidget({
-  form,
-  setForm,
+    form,
+    setForm,
 }: {
-  form: any;
-  setForm: (fn: (prev: any) => any) => void;
+    form: any;
+    setForm: (fn: (prev: any) => any) => void;
 }) {
-  const { t } = useTranslation();
-  const { toast } = useToast();
+    const { t } = useTranslation();
+    const { toast } = useToast();
 
-  const shareholders = (form.shareHolders || []) as any[];
-  const setShareholders = (next: any[]) =>
-    setForm((p) => ({ ...p, shareHolders: next }));
+    const shareholders = (form.shareHolders || []) as any[];
+    const setShareholders = (next: any[]) =>
+        setForm((p) => ({ ...p, shareHolders: next }));
 
-  const yesNo = [
-    { id: "yes", label: "AmlCdd.options.yes" },
-    { id: "no", label: "AmlCdd.options.no" },
-  ];
+    const yesNo = [
+        { id: "yes", label: "AmlCdd.options.yes" },
+        { id: "no", label: "AmlCdd.options.no" },
+    ];
 
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [expandedIndex, setExpandedIndex] = React.useState<number | null>(null);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [expandedIndex, setExpandedIndex] = React.useState<number | null>(null);
 
-  const totalOwnership = shareholders.reduce(
-    (sum, s) => sum + (Number(s.ownershipRate) || 0),
-    0
-  );
+    const totalOwnership = shareholders.reduce(
+        (sum, s) => sum + (Number(s.ownershipRate) || 0),
+        0
+    );
 
-  const updateAt = (idx: number, patch: any) => {
-    const next = [...shareholders];
-    next[idx] = { ...next[idx], ...patch };
-    setShareholders(next);
-  };
+    const updateAt = (idx: number, patch: any) => {
+        const next = [...shareholders];
+        next[idx] = { ...next[idx], ...patch };
+        setShareholders(next);
+    };
 
-  const removeAt = (idx: number) => {
-    if (shareholders.length <= 1) return;
-    setShareholders(shareholders.filter((_, i) => i !== idx));
-  };
+    const removeAt = (idx: number) => {
+        if (shareholders.length <= 1) return;
+        setShareholders(shareholders.filter((_, i) => i !== idx));
+    };
 
-  const addShareholder = () =>
-    setShareholders([
-      ...shareholders,
-      {
-        name: "",
-        email: "",
-        phone: "",
-        ownershipRate: 0,
-        isDirector: { id: "no", label: "AmlCdd.options.no" },
-        isLegalPerson: { id: "no", label: "AmlCdd.options.no" },
-      },
-    ]);
+    const addShareholder = () =>
+        setShareholders([
+            ...shareholders,
+            {
+                name: "",
+                email: "",
+                phone: "",
+                ownershipRate: 0,
+                isDirector: { id: "no", label: "AmlCdd.options.no" },
+                isLegalPerson: { id: "no", label: "AmlCdd.options.no" },
+            },
+        ]);
 
-  const sendMailFunction = async () => {
-    try {
-      setIsLoading(true);
+    const sendMailFunction = async () => {
+        try {
+            setIsLoading(true);
 
-      const extractedData = shareholders.map((item) => {
-        const { name, email } = item;
-        if (!isValidEmail(email)) {
-          alert(`Invalid email format for ${name}: ${email}`);
+            const extractedData = shareholders.map((item) => {
+                const { name, email } = item;
+                if (!isValidEmail(email)) {
+                    alert(`Invalid email format for ${name}: ${email}`);
+                }
+                return { name, email };
+            });
+
+            const docId = localStorage.getItem("companyRecordId");
+            let country = "US_Individual";
+            if (form.selectedEntity === "Corporation") {
+                country = "US_Corporate";
+            }
+
+            const payload = { _id: docId, inviteData: extractedData, country };
+            const response = await sendInviteToShDir(payload);
+
+            if (response.summary.successful > 0) {
+                toast({
+                    title: "Success",
+                    description: `Successfully sent invitation mail to ${response.summary.successful} people`,
+                });
+            }
+            if (response.summary.alreadyExists > 0) {
+                toast({
+                    title: "Success",
+                    description: `Invite sent to member/director`,
+                });
+            }
+            if (response.summary.failed > 0) {
+                toast({
+                    title: "Failed",
+                    description: `Some Invitations Failed`,
+                });
+            }
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setIsLoading(false);
         }
-        return { name, email };
-      });
+    };
 
-      const docId = localStorage.getItem("companyRecordId");
-      let country = "US_Individual";
-      if (form.selectedEntity === "Corporation") {
-        country = "US_Corporate";
-      }
+    // Ownership summary (Panama-style banner but compact)
+    let ownershipMessage = "";
+    let ownershipClass = "text-destructive";
 
-      const payload = { _id: docId, inviteData: extractedData, country };
-      const response = await sendInviteToShDir(payload);
-
-      if (response.summary.successful > 0) {
-        toast({
-          title: "Success",
-          description: `Successfully sent invitation mail to ${response.summary.successful} people`,
-        });
-      }
-      if (response.summary.alreadyExists > 0) {
-        toast({
-          title: "Success",
-          description: `Invite sent to member/director`,
-        });
-      }
-      if (response.summary.failed > 0) {
-        toast({
-          title: "Failed",
-          description: `Some Invitations Failed`,
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setIsLoading(false);
+    if (totalOwnership === 0) {
+        ownershipMessage = t("usa.bInfo.shrldSection.ownerShp0");
+    } else if (totalOwnership > 0 && totalOwnership < 100) {
+        ownershipMessage = `${t("CompanyInformation.totalShrldrName")}: ${totalOwnership.toFixed(
+            2
+        )}%`;
+    } else if (totalOwnership === 100) {
+        ownershipMessage = `✅ ${t("usa.bInfo.shrldSection.ownerShip100")}`;
+        ownershipClass = "text-green-600 font-medium";
+    } else if (totalOwnership > 100) {
+        ownershipMessage = `${t("CompanyInformation.totalShrldrName")}: ${totalOwnership.toFixed(
+            2
+        )}%`;
     }
-  };
 
-  // Ownership summary (Panama-style banner but compact)
-  let ownershipMessage = "";
-  let ownershipClass = "text-destructive";
-
-  if (totalOwnership === 0) {
-    ownershipMessage = t("usa.bInfo.shrldSection.ownerShp0");
-  } else if (totalOwnership > 0 && totalOwnership < 100) {
-    ownershipMessage = `${t("CompanyInformation.totalShrldrName")}: ${totalOwnership.toFixed(
-      2
-    )}%`;
-  } else if (totalOwnership === 100) {
-    ownershipMessage = `✅ ${t("usa.bInfo.shrldSection.ownerShip100")}`;
-    ownershipClass = "text-green-600 font-medium";
-  } else if (totalOwnership > 100) {
-    ownershipMessage = `${t("CompanyInformation.totalShrldrName")}: ${totalOwnership.toFixed(
-      2
-    )}%`;
-  }
-
-  return (
-    <div className="max-width mx-auto p-2 space-y-4">
-      {/* Header + ownership summary */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-5 h-5 bg-blue-100 rounded-lg flex items-center justify-center">
-            <Users className="w-4 h-4 text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-base font-semibold text-gray-900">
-              {t("usa.bInfo.shrldSection.shareholderOfficer", "Shareholders / Owners")}
-            </h2>
-            {ownershipMessage && (
-              <p className={cn("text-xs mt-1", ownershipClass)}>
-                {ownershipMessage}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="text-right text-xs text-muted-foreground">
-          {t("CompanyInformation.totalShrldrName")}: {totalOwnership.toFixed(2)}%
-        </div>
-      </div>
-
-      {/* Shareholders list (Panama-style cards with compact headers) */}
-      <div className="space-y-2">
-        {shareholders.map((sh, idx) => {
-          const isExpanded = expandedIndex === idx;
-          const ownershipRate = Number(sh.ownershipRate || 0);
-
-          return (
-            <Card key={idx} className="overflow-hidden transition-all hover:shadow-md">
-              {/* Compact header */}
-              <div
-                className="p-2 cursor-pointer flex items-center justify-between hover:bg-gray-50"
-                onClick={() => setExpandedIndex(isExpanded ? null : idx)}
-              >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-100">
-                    <UserIcon className="w-4 h-4 text-blue-600" />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900 truncate">
-                        {sh.name ||
-                          t("usa.bInfo.shrldSection.shareholderOfficer", "Shareholder/Officer")}
-                      </span>
+    return (
+        <div className="max-width mx-auto p-2 space-y-4">
+            {/* Header + ownership summary */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Users className="w-4 h-4 text-blue-600" />
                     </div>
-                    <p className="text-sm text-gray-500 truncate">
-                      {sh.email || t("common.noEmail", "No email")}
-                    </p>
-                  </div>
-
-                  <div className="text-right flex-shrink-0">
-                    <div className="font-semibold text-gray-900">
-                      {ownershipRate.toFixed(2)}%
+                    <div>
+                        <h2 className="text-base font-semibold text-gray-900">
+                            {t("usa.bInfo.shrldSection.shareholderOfficer", "Shareholders / Owners")}
+                        </h2>
+                        {ownershipMessage && (
+                            <p className={cn("text-xs mt-1", ownershipClass)}>
+                                {ownershipMessage}
+                            </p>
+                        )}
                     </div>
-                  </div>
                 </div>
 
-                <button className="ml-4 p-1 hover:bg-gray-200 rounded" type="button">
-                  {isExpanded ? (
-                    <ChevronUp className="w-4 h-4 text-gray-600" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-gray-600" />
-                  )}
-                </button>
-              </div>
+                <div className="text-right text-xs text-muted-foreground">
+                    {t("CompanyInformation.totalShrldrName")}: {totalOwnership.toFixed(2)}%
+                </div>
+            </div>
 
-              {/* Expanded details */}
-              {isExpanded && (
-                <CardContent className="pt-0 pb-4 px-4 border-t bg-gray-50">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-                    {/* Name */}
-                    <div className="grid gap-2">
-                      <Label className="text-xs text-gray-600 mb-1">
-                        {t("usa.bInfo.shrldSection.shareholderOfficer")}
-                      </Label>
-                      <Input
-                        className="h-9"
-                        placeholder="Name on passport/official documents"
-                        value={sh.name}
-                        onChange={(e) => updateAt(idx, { name: e.target.value })}
-                      />
-                    </div>
+            {/* Shareholders list (Panama-style cards with compact headers) */}
+            <div className="space-y-2">
+                {shareholders.map((sh, idx) => {
+                    const isExpanded = expandedIndex === idx;
+                    const ownershipRate = Number(sh.ownershipRate || 0);
 
-                    {/* Ownership rate */}
-                    <div className="grid gap-2">
-                      <Label className="text-xs text-gray-600 mb-1">
-                        {t("CompanyInformation.ownerShpRte")}
-                      </Label>
-                      <Input
-                        type="number"
-                        min={0}
-                        max={100}
-                        step={0.01}
-                        className="h-9"
-                        value={sh.ownershipRate}
-                        onChange={(e) =>
-                          updateAt(idx, {
-                            ownershipRate: parseFloat(e.target.value || "0"),
-                          })
-                        }
-                      />
-                    </div>
+                    return (
+                        <Card key={idx} className="overflow-hidden transition-all hover:shadow-md">
+                            {/* Compact header */}
+                            <div
+                                className="p-2 cursor-pointer flex items-center justify-between hover:bg-gray-50"
+                                onClick={() => setExpandedIndex(isExpanded ? null : idx)}
+                            >
+                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-100">
+                                        <UserIcon className="w-4 h-4 text-blue-600" />
+                                    </div>
 
-                    {/* Email */}
-                    <div className="grid gap-2">
-                      <Label className="text-xs text-gray-600 mb-1">
-                        {t("ApplicantInfoForm.email")}
-                      </Label>
-                      <Input
-                        type="email"
-                        className="h-9"
-                        placeholder="email@example.com"
-                        value={sh.email}
-                        onChange={(e) => updateAt(idx, { email: e.target.value })}
-                      />
-                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-medium text-gray-900 truncate">
+                                                {sh.name ||
+                                                    t("usa.bInfo.shrldSection.shareholderOfficer", "Shareholder/Officer")}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm text-gray-500 truncate">
+                                            {sh.email || t("common.noEmail", "No email")}
+                                        </p>
+                                    </div>
 
-                    {/* Phone */}
-                    <div className="grid gap-2">
-                      <Label className="text-xs text-gray-600 mb-1">
-                        {t("ApplicantInfoForm.phoneNum")}
-                      </Label>
-                      <Input
-                        type="tel"
-                        className="h-9"
-                        placeholder="+1234567890"
-                        value={sh.phone}
-                        onChange={(e) => updateAt(idx, { phone: e.target.value })}
-                      />
-                    </div>
+                                    <div className="text-right flex-shrink-0">
+                                        <div className="font-semibold text-gray-900">
+                                            {ownershipRate.toFixed(2)}%
+                                        </div>
+                                    </div>
+                                </div>
 
-                    {/* Is Director */}
-                    <div className="grid gap-2">
-                      <Label className="text-xs text-gray-600 mb-1">
-                        {t("CompanyInformation.actDirector")}
-                      </Label>
-                      <Select
-                        value={sh.isDirector?.id || "no"}
-                        onValueChange={(val) =>
-                          updateAt(idx, {
-                            isDirector:
-                              yesNo.find((x) => x.id === val) || {
-                                id: "no",
-                                label: "AmlCdd.options.no",
-                              },
-                          })
-                        }
-                      >
-                        <SelectTrigger className="h-9">
-                          <SelectValue placeholder={t("common.select", "Select")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {yesNo.map((o) => (
-                            <SelectItem key={o.id} value={o.id}>
-                              {t(o.label)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                                <button className="ml-4 p-1 hover:bg-gray-200 rounded" type="button">
+                                    {isExpanded ? (
+                                        <ChevronUp className="w-4 h-4 text-gray-600" />
+                                    ) : (
+                                        <ChevronDown className="w-4 h-4 text-gray-600" />
+                                    )}
+                                </button>
+                            </div>
 
-                    {/* Is Legal Person */}
-                    <div className="grid gap-2">
-                      <Label className="text-xs text-gray-600 mb-1">
-                        {t("CompanyInformation.isLegal")}
-                      </Label>
-                      <Select
-                        value={sh.isLegalPerson?.id || "no"}
-                        onValueChange={(val) =>
-                          updateAt(idx, {
-                            isLegalPerson:
-                              yesNo.find((x) => x.id === val) || {
-                                id: "no",
-                                label: "AmlCdd.options.no",
-                              },
-                          })
-                        }
-                      >
-                        <SelectTrigger className="h-9">
-                          <SelectValue placeholder={t("common.select", "Select")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {yesNo.map((o) => (
-                            <SelectItem key={o.id} value={o.id}>
-                              {t(o.label)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
+                            {/* Expanded details */}
+                            {isExpanded && (
+                                <CardContent className="pt-0 pb-4 px-4 border-t bg-gray-50">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                                        {/* Name */}
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs text-gray-600 mb-1">
+                                                {t("usa.bInfo.shrldSection.shareholderOfficer")}
+                                            </Label>
+                                            <Input
+                                                className="h-9"
+                                                placeholder="Name on passport/official documents"
+                                                value={sh.name}
+                                                onChange={(e) => updateAt(idx, { name: e.target.value })}
+                                            />
+                                        </div>
 
-                  {/* Remove button */}
-                  <div className="flex items-center justify-between mt-4">
-                    {shareholders.length > 1 && (
-                      <Button
-                        variant="ghost"
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        onClick={() => removeAt(idx)}
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        {t("newHk.parties.buttons.remove", "Remove")}
-                      </Button>
+                                        {/* Ownership rate */}
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs text-gray-600 mb-1">
+                                                {t("CompanyInformation.ownerShpRte")}
+                                            </Label>
+                                            <Input
+                                                type="number"
+                                                min={0}
+                                                max={100}
+                                                step={0.01}
+                                                className="h-9"
+                                                value={sh.ownershipRate}
+                                                onChange={(e) =>
+                                                    updateAt(idx, {
+                                                        ownershipRate: parseFloat(e.target.value || "0"),
+                                                    })
+                                                }
+                                            />
+                                        </div>
+
+                                        {/* Email */}
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs text-gray-600 mb-1">
+                                                {t("ApplicantInfoForm.email")}
+                                            </Label>
+                                            <Input
+                                                type="email"
+                                                className="h-9"
+                                                placeholder="email@example.com"
+                                                value={sh.email}
+                                                onChange={(e) => updateAt(idx, { email: e.target.value })}
+                                            />
+                                        </div>
+
+                                        {/* Phone */}
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs text-gray-600 mb-1">
+                                                {t("ApplicantInfoForm.phoneNum")}
+                                            </Label>
+                                            <Input
+                                                type="tel"
+                                                className="h-9"
+                                                placeholder="+1234567890"
+                                                value={sh.phone}
+                                                onChange={(e) => updateAt(idx, { phone: e.target.value })}
+                                            />
+                                        </div>
+
+                                        {/* Is Director */}
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs text-gray-600 mb-1">
+                                                {t("CompanyInformation.actDirector")}
+                                            </Label>
+                                            <Select
+                                                value={sh.isDirector?.id || "no"}
+                                                onValueChange={(val) =>
+                                                    updateAt(idx, {
+                                                        isDirector:
+                                                            yesNo.find((x) => x.id === val) || {
+                                                                id: "no",
+                                                                label: "AmlCdd.options.no",
+                                                            },
+                                                    })
+                                                }
+                                            >
+                                                <SelectTrigger className="h-9">
+                                                    <SelectValue placeholder={t("common.select", "Select")} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {yesNo.map((o) => (
+                                                        <SelectItem key={o.id} value={o.id}>
+                                                            {t(o.label)}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* Is Legal Person */}
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs text-gray-600 mb-1">
+                                                {t("CompanyInformation.isLegal")}
+                                            </Label>
+                                            <Select
+                                                value={sh.isLegalPerson?.id || "no"}
+                                                onValueChange={(val) =>
+                                                    updateAt(idx, {
+                                                        isLegalPerson:
+                                                            yesNo.find((x) => x.id === val) || {
+                                                                id: "no",
+                                                                label: "AmlCdd.options.no",
+                                                            },
+                                                    })
+                                                }
+                                            >
+                                                <SelectTrigger className="h-9">
+                                                    <SelectValue placeholder={t("common.select", "Select")} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {yesNo.map((o) => (
+                                                        <SelectItem key={o.id} value={o.id}>
+                                                            {t(o.label)}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    {/* Remove button */}
+                                    <div className="flex items-center justify-between mt-4">
+                                        {shareholders.length > 1 && (
+                                            <Button
+                                                variant="ghost"
+                                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                onClick={() => removeAt(idx)}
+                                            >
+                                                <Trash2 className="w-4 h-4 mr-1" />
+                                                {t("newHk.parties.buttons.remove", "Remove")}
+                                            </Button>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            )}
+                        </Card>
+                    );
+                })}
+            </div>
+
+            {/* Actions row (Panama-style) */}
+            <div className="flex flex-wrap items-center gap-3 mt-4">
+                <Button
+                    onClick={sendMailFunction}
+                    disabled={isLoading}
+                    className="flex items-center"
+                    aria-busy={isLoading}
+                    aria-live="polite"
+                >
+                    {isLoading ? (
+                        <>
+                            <CustomLoader />
+                            <span className="ml-2">Processing...</span>
+                        </>
+                    ) : (
+                        <span>{t("newHk.parties.buttons.invite")}</span>
                     )}
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          );
-        })}
-      </div>
+                </Button>
 
-      {/* Actions row (Panama-style) */}
-      <div className="flex flex-wrap items-center gap-3 mt-4">
-        <Button
-          onClick={sendMailFunction}
-          disabled={isLoading}
-          className="flex items-center"
-          aria-busy={isLoading}
-          aria-live="polite"
-        >
-          {isLoading ? (
-            <>
-              <CustomLoader />
-              <span className="ml-2">Processing...</span>
-            </>
-          ) : (
-            <span>{t("CompanyInformation.sendInvitation")}</span>
-          )}
-        </Button>
+                <Button
+                    onClick={addShareholder}
+                    disabled={totalOwnership >= 100}
+                    variant="outline"
+                >
+                    {t("CompanyInformation.addShldrDir")}
+                </Button>
+            </div>
+        </div>
+    );
+}
 
-        <Button
-          onClick={addShareholder}
-          disabled={totalOwnership >= 100}
-          variant="outline"
-        >
-          {t("CompanyInformation.addShldrDir")}
-        </Button>
-      </div>
-    </div>
-  );
+function DcpWidget({ form, setForm, }: { form: any; setForm: (fn: (prev: any) => any) => void; }) {
+    const { toast } = useToast();
+    const [isLoading, setIsLoading] = React.useState(false);
+    const { t } = useTranslation();
+
+    const fields: FieldBase[] = [
+        {
+            type: "text",
+            name: "dcpName",
+            label: "newHk.company.fields.dcpName.label",
+            placeholder: "newHk.company.fields.dcpName.placeholder",
+            tooltip: "usa.bInfo.shrldSection.desgnToolTip",
+            required: true,
+            options: [],
+            colSpan: 2,
+        },
+        {
+            type: "text",
+            name: "dcpEmail",
+            label: "newHk.company.fields.dcpEmail.label",
+            placeholder: "newHk.company.fields.dcpEmail.placeholder",
+            required: true,
+            options: [],
+            colSpan: 1,
+        },
+        {
+            type: "text",
+            name: "dcpNumber",
+            label: "newHk.company.fields.dcpNumber.label",
+            placeholder: "newHk.company.fields.dcpNumber.placeholder",
+            required: true,
+            options: [],
+            colSpan: 1,
+        },
+    ];
+
+    const sendMailFunction = async () => {
+        try {
+            setIsLoading(true);
+
+            const extractedData = [{name: form.dcpName, email: form.dcpEmail}];
+
+            const docId = localStorage.getItem("companyRecordId");
+            let country = "US_Individual";
+            if (form.selectedEntity === "Corporation") {
+                country = "US_Corporate";
+            }
+
+            const payload = { _id: docId, inviteData: extractedData, country };
+            const response = await sendInviteToShDir(payload);
+
+            if (response.summary.successful > 0) {
+                toast({
+                    title: "Success",
+                    description: `Successfully sent invitation mail to ${response.summary.successful} people`,
+                });
+            }
+            if (response.summary.alreadyExists > 0) {
+                toast({
+                    title: "Success",
+                    description: `Invite sent to member/director`,
+                });
+            }
+            if (response.summary.failed > 0) {
+                toast({
+                    title: "Failed",
+                    description: `Some Invitations Failed`,
+                });
+            }
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="max-width mx-auto p-2 space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {fields.map((f) => (
+                    <Field
+                        key={f.name}
+                        field={f}
+                        form={form}
+                        setForm={setForm}
+                    />
+                ))}
+            </div>
+            <Button
+                onClick={sendMailFunction}
+                disabled={isLoading}
+                className="flex items-center"
+                aria-busy={isLoading}
+                aria-live="polite"
+            >
+                {isLoading ? (
+                    <>
+                        <CustomLoader />
+                        <span className="ml-2">Processing...</span>
+                    </>
+                ) : (
+                    <span>{t("newHk.parties.buttons.invite")}</span>
+                )}
+            </Button>
+        </div>
+    );
 }
 
 
@@ -3361,20 +3469,16 @@ const usaIncorpConfig: LocalFormConfig = {
                     asideText: "usa.bInfo.shrldSection.para",
                 },
                 {
+                    kind: "widget",
+                    widget: "custom-dcp",
+                    asideTitle: "newHk.company.fields.dcpName.label",
+                    tooltip: "usa.bInfo.shrldSection.desgnToolTip"
+                },
+                {
                     kind: "fields",
-                    asideTitle: "usa.bInfo.shrldSection.heading",
-                    asideText: "usa.bInfo.shrldSection.para",
+                    // asideTitle: "usa.bInfo.shrldSection.heading",
+                    // asideText: "usa.bInfo.shrldSection.para",
                     fields: [
-                        {
-                            type: "select-custom",
-                            name: "designatedContact",
-                            label: "usa.bInfo.shrldSection.desgContact",
-                            placeholder: "usa.bInfo.shrldSection.selectDesignatedContact",
-                            tooltip: "usa.bInfo.shrldSection.desgnToolTip",
-                            required: true,
-                            options: [],
-                            colSpan: 2,
-                        },
                         {
                             type: "select-custom",
                             name: "beneficialOwner",
@@ -3669,7 +3773,7 @@ export default function ConfigDrivenUSAForm() {
         return { ...s, sections: patchedSections, };
     };
 
-    const activeStep = hasType(step) && step.type === "sections" ? (hydrateDynamicOptions(step) as AnyStep): step;
+    const activeStep = hasType(step) && step.type === "sections" ? (hydrateDynamicOptions(step) as AnyStep) : step;
 
     // Validation for current step
     const stepMissing = React.useMemo(() => {
@@ -4137,6 +4241,16 @@ function SectionRenderer({ section, form, setForm, setOpenDialog, }: {
                     </p>
                 )}
                 <ShareholdersWidget
+                    form={form}
+                    setForm={setForm}
+                />
+            </div>
+        );
+    }
+    if (section.kind === "widget" && section.widget === "custom-dcp") {
+        return (
+            <div className="w-full">
+                <DcpWidget
                     form={form}
                     setForm={setForm}
                 />

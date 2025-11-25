@@ -281,10 +281,13 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   );
   const altNames = altNamesRaw as string[];
 
-  const contactName =
-    form?.designatedContact || form?.beneficialOwner || form?.name || "";
+  const contactName =form?.name || "";
   const emailVal = form?.email || "";
   const phoneVal = form?.phoneNum || "";
+  const dcpName = form?.dcpName || "";
+  const dcpNumber = form?.dcpNumber || "";
+  const dcpEmail = form?.dcpEmail || "";
+  // const dcpStatus = form?.dcpStatus || "";
 
   const currentStatus = form?.status || "Pending";
 
@@ -475,6 +478,22 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       </span>
                     </div>
                   </LabelValue>
+                 
+                    <LabelValue label="Dcp Name">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{dcpName || "—"}</span>
+                      </div>
+                    </LabelValue>
+                    <LabelValue label="Dcp Email">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{dcpEmail || "—"}</span>
+                      </div>
+                    </LabelValue>
+                     <LabelValue label="Dcp Number">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{dcpNumber || "—"}</span>
+                      </div>
+                    </LabelValue>
 
                   <LabelValue label="Contact">
                     <div className="grid gap-2">
