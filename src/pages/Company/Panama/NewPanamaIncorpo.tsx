@@ -700,6 +700,8 @@ function PartiesManager() {
 const CompanyInfoStep = () => {
     const { t } = useTranslation();
     const [formData, setFormData] = useAtom(paFormWithResetAtom1);
+    const [isInviting, setIsInviting] = React.useState(false);
+
     // seed safe defaults once
     useEffect(() => {
         setFormData((p: any) => {
@@ -789,6 +791,45 @@ const CompanyInfoStep = () => {
         setFormData({ ...formData, panamaEntity: selectedItem || { id: '', value: "" } })
     }
 
+    const sendInvites = async () => {
+        const invites = [{ "email": formData.dcpEmail, "name": formData.dcpName }].filter(i => i.email && i.email.includes("@"))
+
+        if (!invites.length) {
+            toast({
+                title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
+                description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
+                variant: "destructive",
+            });
+            return;
+        }
+
+        try {
+            setIsInviting(true);
+            const docId = typeof window !== "undefined" ? localStorage.getItem("companyRecordId") : formData?._id || "";
+            const payload = { _id: docId || formData?._id || "", inviteData: invites, country: "PA" };
+            const res = await sendInviteToShDir(payload);
+
+            const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
+
+            if (summary.successful > 0 || summary.alreadyExists > 0) {
+                setFormData({ ...formData, dcpStatus: "Invited" });
+                toast({
+                    title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
+                    description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
+                });
+            }
+
+            if (summary.failed > 0) {
+                toast({
+                    title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
+                    description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
+                    variant: "destructive",
+                });
+            }
+        } finally {
+            setIsInviting(false);
+        }
+    };
     return (
         <div className="space-y-3 max-width mx-auto">
             {/* Card A */}
@@ -1134,6 +1175,74 @@ const CompanyInfoStep = () => {
                         </h3>
                         <PartiesManager />
                     </div>
+
+                    <div className="grid gap-4 mt-4 md:grid-cols-3">
+
+                        {/* DCP Name */}
+                        <div className="space-y-2 md:col-span-1">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {t("newHk.company.fields.dcpName.label")}
+                                <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                placeholder={t("newHk.company.fields.dcpName.placeholder")}
+                                value={formData.dcpName ?? ""}
+                                onChange={(e) =>
+                                    setFormData((p: any) => ({ ...p, dcpName: e.target.value }))
+                                }
+                                className="h-9"
+                            />
+                        </div>
+
+                        {/* DCP Email */}
+                        <div className="space-y-2 md:col-span-1">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {t("newHk.company.fields.dcpEmail.label")}
+                                <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                placeholder={t("newHk.company.fields.dcpEmail.placeholder")}
+                                value={formData.dcpEmail ?? ""}
+                                onChange={(e) =>
+                                    setFormData((p: any) => ({ ...p, dcpEmail: e.target.value }))
+                                }
+                                className="h-9"
+                            />
+                        </div>
+
+                        <div className="flex items-end gap-3">
+
+                            {/* DCP Number */}
+                            <div className="flex-1 space-y-2">
+                                <Label className="text-sm font-medium text-gray-700">
+                                    {t("newHk.company.fields.dcpNumber.label")}
+                                    <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    placeholder={t("newHk.company.fields.dcpNumber.placeholder")}
+                                    value={formData.dcpNumber ?? ""}
+                                    onChange={(e) =>
+                                        setFormData((p: any) => ({ ...p, dcpNumber: e.target.value }))
+                                    }
+                                    className="h-9"
+                                />
+                            </div>
+                            <div className="pb-[2px]">
+                                <Button
+                                    onClick={sendInvites}
+                                    variant="default"
+                                    className="flex h-9 items-center gap-2 hover:bg-green-700"
+                                    disabled={isInviting}
+                                >
+                                    {isInviting ? <CustomLoader /> : <Send className="w-4 h-4" />}
+                                </Button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
                 </CardContent>
             </Card>
         </div>
@@ -2047,49 +2156,49 @@ const PaymentStep = () => {
 };
 
 function CongratsStep() {
-    const [app, ] = useAtom(paFormWithResetAtom1)
-  const navigate = useNavigate();
-  const token = localStorage.getItem("token") as string;
-  const decodedToken = jwtDecode<any>(token);
+    const [app,] = useAtom(paFormWithResetAtom1)
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token") as string;
+    const decodedToken = jwtDecode<any>(token);
 
-  const navigateRoute = () => {
-    localStorage.removeItem("companyRecordId");
-    if (["admin", "master"].includes(decodedToken.role)) navigate("/admin-dashboard");
-    else navigate("/dashboard");
-  };
+    const navigateRoute = () => {
+        localStorage.removeItem("companyRecordId");
+        if (["admin", "master"].includes(decodedToken.role)) navigate("/admin-dashboard");
+        else navigate("/dashboard");
+    };
 
-  const namePart = app.name ? t("newHk.congrats.thankYouName", { applicantName: app.name }) : "";
+    const namePart = app.name ? t("newHk.congrats.thankYouName", { applicantName: app.name }) : "";
 
-  const steps = [1, 2, 3, 4].map((i) => ({
-    t: t(`panama.congrats.steps.${i}.t`),
-    s: t(`panama.congrats.steps.${i}.s`),
-  }));
+    const steps = [1, 2, 3, 4].map((i) => ({
+        t: t(`panama.congrats.steps.${i}.t`),
+        s: t(`panama.congrats.steps.${i}.s`),
+    }));
 
-  return (
-    <div className="grid place-items-center gap-4 text-center py-6">
-      <h2 className="text-xl font-extrabold">{t("newHk.congrats.title")}</h2>
-      <p className="text-sm">
-        {t("newHk.congrats.thankYou", { name: namePart })}
-      </p>
+    return (
+        <div className="grid place-items-center gap-4 text-center py-6">
+            <h2 className="text-xl font-extrabold">{t("newHk.congrats.title")}</h2>
+            <p className="text-sm">
+                {t("newHk.congrats.thankYou", { name: namePart })}
+            </p>
 
-      <div className="grid gap-3 w-full max-w-3xl text-left">
-        {steps.map((x, i) => (
-          <div key={i} className="grid grid-cols-[12px_1fr] gap-3 text-sm">
-            <div className="mt-2 w-3 h-3 rounded-full bg-sky-500" />
-            <div>
-              <b>{x.t}</b>
-              <br />
-              <span className="text-muted-foreground">{x.s}</span>
+            <div className="grid gap-3 w-full max-w-3xl text-left">
+                {steps.map((x, i) => (
+                    <div key={i} className="grid grid-cols-[12px_1fr] gap-3 text-sm">
+                        <div className="mt-2 w-3 h-3 rounded-full bg-sky-500" />
+                        <div>
+                            <b>{x.t}</b>
+                            <br />
+                            <span className="text-muted-foreground">{x.s}</span>
+                        </div>
+                    </div>
+                ))}
             </div>
-          </div>
-        ))}
-      </div>
 
-      <div className="flex items-center gap-2 justify-center">
-        <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>
-      </div>
-    </div>
-  );
+            <div className="flex items-center gap-2 justify-center">
+                <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>
+            </div>
+        </div>
+    );
 }
 
 const CONFIG: FormConfig = {
