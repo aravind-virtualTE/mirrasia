@@ -144,7 +144,9 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
             // prefer new productDescription or softNote, fallback to bizDesc/specificProvisions
             bizdesc: dAny.productDescription || dAny.bizDesc || "",
             softNote: dAny.softNote || dAny.specificProvisions || "",
-
+            dcpName: dAny.dcpName || "",
+            dcpEmail: dAny.dcpEmail || "",
+            dcpPhone: dAny.dcpNumber || "",
             // finance – use new fields from sample
             currency: dAny.currency || d?.registerCurrencyAtom?.code || "USD",
             capAmount: dAny.capAmount || dAny.totalAmountCap || "",
@@ -464,7 +466,16 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                 </span>
                                             </div>
                                         </LabelValue>
-
+                                        <LabelValue label="Dcp Name">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-medium">{f.dcpName || "—"}</span>
+                                            </div>
+                                        </LabelValue>
+                                        <LabelValue label="Dcp Email">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-medium">{f.dcpEmail || "—"}</span>
+                                            </div>
+                                        </LabelValue>
                                         <LabelValue label="Contact">
                                             <div className="grid gap-2">
                                                 <div className="flex items-center gap-2">
