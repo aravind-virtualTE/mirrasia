@@ -258,9 +258,10 @@ export type SectionDef =
     }
   | {
       kind: "widget";
-      widget: "shareholders" | "corpVsLlc";
+      widget: "shareholders" | "corpVsLlc" | "custom-dcp";
       asideTitle?: string;
       asideText?: string;
+      tooltip?: string;
     };
 
 export type StepDef =
