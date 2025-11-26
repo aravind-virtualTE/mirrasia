@@ -805,8 +805,8 @@ const CompanyInfoStep = () => {
 
         try {
             setIsInviting(true);
-            const docId = typeof window !== "undefined" ? localStorage.getItem("companyRecordId") : formData?._id || "";
-            const payload = { _id: docId || formData?._id || "", inviteData: invites, country: "PA" };
+            const docId = formData?._id || "";
+            const payload = { _id: docId, inviteData: invites, country: "PA" };
             const res = await sendInviteToShDir(payload);
 
             const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };

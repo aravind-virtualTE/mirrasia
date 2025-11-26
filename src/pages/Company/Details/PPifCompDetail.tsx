@@ -9,18 +9,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Banknote, Building2, ShieldCheck, ReceiptText, Mail, Phone, CheckCircle2, Circle, Save } from "lucide-react";
+import { Banknote, Building2, ShieldCheck, ReceiptText, Mail, Phone, CheckCircle2, Circle, Save, Trash2 } from "lucide-react";
 import { createOrUpdatePaFIncorpo, getPaFIncorpoData } from "../PanamaFoundation/PaState";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MemoApp from "./MemosHK";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import TodoApp from "@/pages/Todo/TodoApp";
 import { useNavigate } from "react-router-dom";
-import { fetchUsers } from "@/services/dataFetch";
+import { fetchUsers, markDeleteCompanyRecord } from "@/services/dataFetch";
 import { useAtom } from "jotai";
 import { usersData } from "@/services/state";
 import { toast } from "@/hooks/use-toast";
 import { t } from "i18next";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 
 // ----------------- Types -----------------
 export type PIFRecord = {
@@ -165,6 +166,8 @@ export default function PPifCompDetail({ id }: { id: string }) {
     const navigate = useNavigate();
     const [users, setUsers] = useAtom(usersData);
     const [adminAssigned, setAdminAssigned] = React.useState("");
+    const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+    const [taskToDelete, setTaskToDelete] = React.useState<{ companyId: string, countryCode: string } | null>(null);
 
     const dataMemo = React.useMemo(() => ({
         applicantName: data?.contactName || "",
@@ -239,6 +242,29 @@ export default function PPifCompDetail({ id }: { id: string }) {
                 </Select>
             </div>
         );
+    };
+    const handleDeleteClick = (companyId: string, countryCode: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setTaskToDelete({ companyId, countryCode });
+        setDeleteDialogOpen(true);
+    };
+    const markDelete = async () => {
+        if (taskToDelete?.companyId) {
+            const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
+            if (result) {
+                console.log("Marked as delete successfully");
+                toast({
+                    title: "Success",
+                    description: "Company record marked for deletion.",
+                })
+                if (user.role === "admin" || user.role === "master") {
+                    navigate("/admin-dashboard");
+                }
+                else navigate("/dashboard");
+            }
+        }
+        setDeleteDialogOpen(false);
+        setTaskToDelete(null);
     };
 
     return (
@@ -329,6 +355,12 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                     </div>
                                                 </div>
                                                 <div className="flex shrink-0 items-center gap-2">
+                                                    {user.role !== "user" ? <button
+                                                        className="text-red-500 hover:red-blue-700 transition"
+                                                        onClick={(e) => handleDeleteClick(id, "PPIF", e)}
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button> : ""}
                                                     {!isEditing ? (
                                                         <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>Edit</Button>
                                                     ) : (
@@ -879,6 +911,15 @@ export default function PPifCompDetail({ id }: { id: string }) {
             <TabsContent value="Checklist" className="p-6">
                 <h1>To Be Updated Soon.</h1>
             </TabsContent>
+            <ConfirmDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                title={"Mark as Delete"}
+                description='Are you sure you want to mark as delete?'
+                confirmText="Delete"
+                cancelText="Cancel"
+                onConfirm={markDelete}
+            />
         </Tabs>
     );
 }

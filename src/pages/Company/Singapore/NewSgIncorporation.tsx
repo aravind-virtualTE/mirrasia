@@ -36,6 +36,7 @@ import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import api from "@/services/fetch";
+import CustomLoader from "@/components/ui/customLoader";
 
 const SHARE_TYPES = [
     { id: "ordinary", label: "CompanyInformation.typeOfShare.ordinaryShares" },
@@ -477,7 +478,8 @@ function PartiesManager() {
 const CompanyInfoStep = () => {
     const { t } = useTranslation();
     const [formData, setFormData] = useAtom(sgFormWithResetAtom1);
-
+    const [isInviting, setIsInviting] = React.useState(false);
+    
     // seed safe defaults once
     useEffect(() => {
         setFormData((p: any) => {
@@ -548,6 +550,45 @@ const CompanyInfoStep = () => {
         const sel = addressList.find((i) => t(i.value) === t(value)) || { id: "", value: "" };
         setFormData((p: any) => ({ ...p, businessAddress: sel }));
     };
+    const sendInvites = async () => {
+            const invites = [{ "email": formData.dcpEmail, "name": formData.dcpName }].filter(i => i.email && i.email.includes("@"))
+    
+            if (!invites.length) {
+                toast({
+                    title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
+                    description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
+                    variant: "destructive",
+                });
+                return;
+            }
+    
+            try {
+                setIsInviting(true);
+                const docId = formData?._id || "";
+                const payload = { _id: docId, inviteData: invites, country: "SG" };
+                const res = await sendInviteToShDir(payload);
+    
+                const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
+    
+                if (summary.successful > 0 || summary.alreadyExists > 0) {
+                    setFormData({ ...formData, dcpStatus: "Invited" });
+                    toast({
+                        title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
+                        description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
+                    });
+                }
+    
+                if (summary.failed > 0) {
+                    toast({
+                        title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
+                        description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
+                        variant: "destructive",
+                    });
+                }
+            } finally {
+                setIsInviting(false);
+            }
+        };
     return (
         <div className="space-y-3 max-width mx-auto">
             {/* Card A */}
@@ -831,6 +872,71 @@ const CompanyInfoStep = () => {
                         </h3>
                         <PartiesManager />
                     </div>
+                    <div className="grid gap-4 mt-4 md:grid-cols-3">
+
+                        {/* DCP Name */}
+                        <div className="space-y-2 md:col-span-1">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {t("newHk.company.fields.dcpName.label")}
+                                <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                placeholder={t("newHk.company.fields.dcpName.placeholder")}
+                                value={formData.dcpName ?? ""}
+                                onChange={(e) =>
+                                    setFormData((p: any) => ({ ...p, dcpName: e.target.value }))
+                                }
+                                className="h-9"
+                            />
+                        </div>
+
+                        {/* DCP Email */}
+                        <div className="space-y-2 md:col-span-1">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {t("newHk.company.fields.dcpEmail.label")}
+                                <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                placeholder={t("newHk.company.fields.dcpEmail.placeholder")}
+                                value={formData.dcpEmail ?? ""}
+                                onChange={(e) =>
+                                    setFormData((p: any) => ({ ...p, dcpEmail: e.target.value }))
+                                }
+                                className="h-9"
+                            />
+                        </div>
+
+                        <div className="flex items-end gap-3">
+
+                            {/* DCP Number */}
+                            <div className="flex-1 space-y-2">
+                                <Label className="text-sm font-medium text-gray-700">
+                                    {t("newHk.company.fields.dcpNumber.label")}
+                                    <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    placeholder={t("newHk.company.fields.dcpNumber.placeholder")}
+                                    value={formData.dcpNumber ?? ""}
+                                    onChange={(e) =>
+                                        setFormData((p: any) => ({ ...p, dcpNumber: e.target.value }))
+                                    }
+                                    className="h-9"
+                                />
+                            </div>
+                            <div className="pb-[2px]">
+                                <Button
+                                    onClick={sendInvites}
+                                    variant="default"
+                                    className="flex h-9 items-center gap-2 hover:bg-green-700"
+                                    disabled={isInviting}
+                                >
+                                    {isInviting ? <CustomLoader /> : <Send className="w-4 h-4" />}
+                                </Button>
+                            </div>
+
+                        </div>
+
+                    </div>
                 </CardContent>
             </Card>
         </div>
@@ -1113,9 +1219,8 @@ const SgServiceSelectionStep: React.FC = () => {
                                     <TableRow key={r.id} className="text-gray-600">
                                         <TableCell>{t(r.labelKey)}</TableCell>
                                         <TableCell
-                                            className={`text-right ${
-                                                r.price === 0 ? "text-red-500 font-semibold" : ""
-                                            }`}
+                                            className={`text-right ${r.price === 0 ? "text-red-500 font-semibold" : ""
+                                                }`}
                                         >
                                             {fmtUSD(r.price)}
                                         </TableCell>

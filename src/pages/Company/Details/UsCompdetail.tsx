@@ -5,7 +5,7 @@ import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { fetchUsers, getUsIncorpoDataById, updateEditValues } from "@/services/dataFetch";
+import { fetchUsers, getUsIncorpoDataById, markDeleteCompanyRecord, updateEditValues } from "@/services/dataFetch";
 import { paymentApi } from "@/lib/api/payment";
 import { useToast } from "@/hooks/use-toast";
 
@@ -64,6 +64,7 @@ import {
   Pencil,
   X,
   Save,
+  Trash2,
 } from "lucide-react";
 
 import MemoApp from "./MemosHK";
@@ -72,6 +73,7 @@ import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { User } from "@/components/userList/UsersList";
 import { usIncorporationItems, usRenewalList } from "./detailConstants";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 
 // -------- helpers --------
 const fmtDate = (iso?: string | null) => {
@@ -135,13 +137,14 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
-
   const [form, setForm] = useAtom(usaAppWithResetAtom);
   const [users, setUsers] = useState<User[]>([]);
   const [adminAssigned, setAdminAssigned] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [taskToDelete, setTaskToDelete] = React.useState<{ companyId: string, countryCode: string } | null>(null);
 
   const [session, setSession] = useState<SessionData>({
     _id: "",
@@ -281,7 +284,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   );
   const altNames = altNamesRaw as string[];
 
-  const contactName =form?.name || "";
+  const contactName = form?.name || "";
   const emailVal = form?.email || "";
   const phoneVal = form?.phoneNum || "";
   const dcpName = form?.dcpName || "";
@@ -310,6 +313,29 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const effectiveExpiresAt =
     session.expiresAt || (form.expiresAt ? String(form.expiresAt) : "");
 
+  const handleDeleteClick = (companyId: string, countryCode: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTaskToDelete({ companyId, countryCode });
+    setDeleteDialogOpen(true);
+  };
+  const markDelete = async () => {
+    if (taskToDelete?.companyId) {
+      const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
+      if (result) {
+        console.log("Marked as delete successfully");
+        toast({
+          title: "Success",
+          description: "Company record marked for deletion.",
+        })
+        if (user.role === "admin" || user.role === "master") {
+          navigate("/admin-dashboard");
+        }
+        else navigate("/dashboard");
+      }
+    }
+    setDeleteDialogOpen(false);
+    setTaskToDelete(null);
+  };
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       {/* TAB HEADERS */}
@@ -444,6 +470,12 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                       {/* edit toggle */}
                       <div className="flex shrink-0 items-center gap-2">
+                        {isAdmin ? <button
+                          className="text-red-500 hover:red-blue-700 transition"
+                          onClick={(e) => handleDeleteClick(id, "US", e)}
+                        >
+                          <Trash2 size={16} />
+                        </button> : ""}
                         {!isEditing ? (
                           <Button
                             size="sm"
@@ -478,22 +510,22 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       </span>
                     </div>
                   </LabelValue>
-                 
-                    <LabelValue label="Dcp Name">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{dcpName || "—"}</span>
-                      </div>
-                    </LabelValue>
-                    <LabelValue label="Dcp Email">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{dcpEmail || "—"}</span>
-                      </div>
-                    </LabelValue>
-                     <LabelValue label="Dcp Number">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{dcpNumber || "—"}</span>
-                      </div>
-                    </LabelValue>
+
+                  <LabelValue label="Dcp Name">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{dcpName || "—"}</span>
+                    </div>
+                  </LabelValue>
+                  <LabelValue label="Dcp Email">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{dcpEmail || "—"}</span>
+                    </div>
+                  </LabelValue>
+                  <LabelValue label="Dcp Number">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{dcpNumber || "—"}</span>
+                    </div>
+                  </LabelValue>
 
                   <LabelValue label="Contact">
                     <div className="grid gap-2">
@@ -1171,6 +1203,15 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
           items={[usIncorporationItems, usRenewalList]}
         />
       </TabsContent>
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title={"Mark as Delete"}
+        description='Are you sure you want to mark as delete?'
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={markDelete}
+      />
     </Tabs>
   );
 };
