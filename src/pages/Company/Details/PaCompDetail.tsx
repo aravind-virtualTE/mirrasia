@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
-import { fetchUsers, getPaIncorpoDataById, updateEditValues } from "@/services/dataFetch";
+import { fetchUsers, getPaIncorpoDataById, markDeleteCompanyRecord, updateEditValues } from "@/services/dataFetch";
 import { paymentApi } from "@/lib/api/payment";
 
 import { paFormWithResetAtom1, PaFormData } from "../Panama/PaState";
@@ -34,9 +34,11 @@ import {
     Pencil,
     X,
     Save,
+    Trash2,
 } from "lucide-react";
 
 import { User } from "@/components/userList/UsersList";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 
 type SessionData = {
     _id: string;
@@ -117,6 +119,8 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState<{ companyId: string, countryCode: string } | null>(null);
 
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const isAdmin = user?.role !== "user";
@@ -317,6 +321,30 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
         formData?.companyName?.[0] ||
         "";
 
+    const handleDeleteClick = (companyId: string, countryCode: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setTaskToDelete({ companyId, countryCode });
+        setDeleteDialogOpen(true);
+    };
+    const markDelete = async () => {
+        if (taskToDelete?.companyId) {
+            const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
+            if (result) {
+                console.log("Marked as delete successfully");
+                toast({
+                    title: "Success",
+                    description: "Company record marked for deletion.",
+                })
+                if (user.role === "admin" || user.role === "master") {
+                    navigate("/admin-dashboard");
+                }
+                else navigate("/dashboard");
+            }
+        }
+        setDeleteDialogOpen(false);
+        setTaskToDelete(null);
+    };
+
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
             <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -431,6 +459,12 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                                                 {/* Edit toggle */}
                                                 <div className="flex shrink-0 items-center gap-2">
+                                                    {isAdmin ? <button
+                                                        className="text-red-500 hover:red-blue-700 transition"
+                                                        onClick={(e) => handleDeleteClick(id, "PA", e)}
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button> : ""}
                                                     {!isEditing ? (
                                                         <Button
                                                             size="sm"
@@ -1127,6 +1161,15 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
             <TabsContent value="Checklist" className="p-6">
                 <ChecklistHistory id={id} items={[[], []]} />
             </TabsContent>
+            <ConfirmDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                title={"Mark as Delete"}
+                description='Are you sure you want to mark as delete?'
+                confirmText="Delete"
+                cancelText="Cancel"
+                onConfirm={markDelete}
+            />
         </Tabs>
     );
 };

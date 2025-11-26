@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Banknote, Building2, ShieldCheck, ReceiptText, Mail, Phone, CheckCircle2, Circle, Pencil, X, Save } from "lucide-react";
+import { Banknote, Building2, ShieldCheck, ReceiptText, Mail, Phone, CheckCircle2, Circle, Pencil, X, Save, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TodoApp from "@/pages/Todo/TodoApp";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ import { useAtom } from "jotai";
 import { usersData } from "@/services/state";
 // import { paymentApi } from "@/lib/api/payment";
 // import { SessionData } from "./HkCompdetail";
-import { fetchUsers } from "@/services/dataFetch";
+import { fetchUsers, markDeleteCompanyRecord } from "@/services/dataFetch";
 import { getHkIncorpoData, saveIncorporationData } from "../NewHKForm/hkIncorpo";
 import SAgrementPdf from "../HongKong/ServiceAgreement/SAgrementPdf";
 import MemoApp from "./MemosHK";
@@ -26,6 +26,7 @@ import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { hkIncorporationItems, hkRenewalList } from "./detailConstants";
 import { toast } from "@/hooks/use-toast";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 
 export type Party = {
   name: string;
@@ -218,6 +219,9 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   const [users, setUsers] = useAtom(usersData);
   const [adminAssigned, setAdminAssigned] = React.useState("");
   const [isSaving, setIsSaving] = React.useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [taskToDelete, setTaskToDelete] = React.useState<{ companyId: string, countryCode: string } | null>(null);
+
   // ------- FETCH on mount / id change -------
   React.useEffect(() => {
     const fetchAll = async () => {
@@ -314,6 +318,29 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   if (!data) {
     return <div className="p-6 text-sm text-muted-foreground">Loading…</div>;
   }
+  const handleDeleteClick = (companyId: string, countryCode: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTaskToDelete({ companyId, countryCode });
+    setDeleteDialogOpen(true);
+  };
+    const markDelete = async () => {
+    if (taskToDelete?.companyId) {
+      const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
+      if (result) {
+       console.log("Marked as delete successfully");
+       toast({
+        title: "Success",
+        description: "Company record marked for deletion.",
+       })
+       if(user.role === "admin" || user.role === "master"){
+        navigate("/admin-dashboard");
+       }
+       else navigate("/dashboard");
+      }
+    }
+    setDeleteDialogOpen(false);
+    setTaskToDelete(null);
+  };
   // console.log("data", data)
   // console.log("f--->",f)
   return (
@@ -404,6 +431,12 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
                         {/* Edit toggle */}
                         <div className="flex shrink-0 items-center gap-2">
+                          {user.role !== "user" ? <button
+                            className="text-red-500 hover:red-blue-700 transition"
+                            onClick={(e) => handleDeleteClick(data._id, "HK", e)}
+                          >
+                            <Trash2 size={16} />
+                          </button> : ""}
                           {!isEditing ? (
                             <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
                               <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
@@ -769,6 +802,15 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
       <TabsContent value="Checklist" className="p-6">
         <ChecklistHistory id={id} items={[hkIncorporationItems, hkRenewalList]} />
       </TabsContent>
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title={"Mark as Delete"}
+        description='Are you sure you want to mark as delete?'
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={markDelete}
+      />
     </Tabs>
   );
 }

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 
-import { fetchUsers, getSgIncorpoDataById, updateEditValues } from "@/services/dataFetch";
+import { fetchUsers, getSgIncorpoDataById, markDeleteCompanyRecord, updateEditValues } from "@/services/dataFetch";
 import { paymentApi } from "@/lib/api/payment";
 import { useToast } from "@/hooks/use-toast";
 
@@ -24,13 +24,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { Building2, Banknote, ReceiptText, ShieldCheck, Mail, Phone, Pencil, X, Save } from "lucide-react";
+import { Building2, Banknote, ReceiptText, ShieldCheck, Mail, Phone, Pencil, X, Save, Trash2 } from "lucide-react";
 
 import MemoApp from "./MemosHK";
 import TodoApp from "@/pages/Todo/TodoApp";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { User } from "@/components/userList/UsersList";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 
 /** ---------------- helpers ---------------- */
 const fmtDate = (iso?: string) => {
@@ -116,6 +117,8 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
     status: "",
     paymentId: "",
   });
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [taskToDelete, setTaskToDelete] = React.useState<{ companyId: string, countryCode: string } | null>(null);
 
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
   const isAdmin = user?.role !== "user";
@@ -175,7 +178,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
     setForm({ ...form, companyName: next, ...fields });
   };
 
-  console.log("form--->", form);
+  // console.log("form--->", form);
   const onSave = async () => {
     try {
       setIsSaving(true);
@@ -256,7 +259,29 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
       </Select>
     </div>
   );
-
+  const handleDeleteClick = (companyId: string, countryCode: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTaskToDelete({ companyId, countryCode });
+    setDeleteDialogOpen(true);
+  };
+  const markDelete = async () => {
+    if (taskToDelete?.companyId) {
+      const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
+      if (result) {
+        console.log("Marked as delete successfully");
+        toast({
+          title: "Success",
+          description: "Company record marked for deletion.",
+        })
+        if (user.role === "admin" || user.role === "master") {
+          navigate("/admin-dashboard");
+        }
+        else navigate("/dashboard");
+      }
+    }
+    setDeleteDialogOpen(false);
+    setTaskToDelete(null);
+  };
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -346,6 +371,12 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                       {/* edit toggle */}
                       <div className="flex shrink-0 items-center gap-2">
+                        {user.role !== "user" ? <button
+                          className="text-red-500 hover:red-blue-700 transition"
+                          onClick={(e) => handleDeleteClick(id, "SG", e)}
+                        >
+                          <Trash2 size={16} />
+                        </button> : ""}
                         {!isEditing ? (
                           <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
                             <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
@@ -791,6 +822,15 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
       <TabsContent value="Checklist" className="p-6">
         <ChecklistHistory id={id} items={[[], []]} />
       </TabsContent>
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title={"Mark as Delete"}
+        description='Are you sure you want to mark as delete?'
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={markDelete}
+      />
     </Tabs>
   );
 };
