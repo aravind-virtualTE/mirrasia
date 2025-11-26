@@ -7,7 +7,7 @@ import { PlusCircle, Upload, FileText, X, Minimize2, Trash, Shield, Mail, Buildi
 import { toast } from "@/hooks/use-toast"
 import jwtDecode from "jwt-decode"
 import type { TokenData } from "@/middleware/ProtectedRoutes"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { deleteCompanyDoc, getCompDocs, uploadCompanyDocs } from "@/services/dataFetch"
 import SearchSelectNew from "../SearchSelect2"
 import {
@@ -55,6 +55,7 @@ const CompanyDocumentManager: React.FC = () => {
   const [activeTab, setActiveTab] = useState<DocumentType>("company")
   const [currentDocumentType, setCurrentDocumentType] = useState<DocumentType>("company")
   const [isUpdating, setIsUpdating] = useState(false) // NEW loader state
+    const navigate = useNavigate();
 
   const token = (typeof window !== "undefined" ? localStorage.getItem("token") : null) as string
   const [selectedValue, setSelectedValue] = useState(
@@ -127,70 +128,70 @@ const CompanyDocumentManager: React.FC = () => {
     setShowUploadSection(true)
   }
 
-// ---- helpers (put near your other helpers/types) ----
-const buildSlimCompanyPayload = (company: Company, type: DocumentType): Company => {
-  // only include the changed doc group; others as empty arrays
-  const base = {
-    id: company.id,
-    companyName: company.companyName,
-    country: company.country,
-    companyDocs: [] as Document[],
-    kycDocs: [] as Document[],
-    letterDocs: [] as Document[],
+  // ---- helpers (put near your other helpers/types) ----
+  const buildSlimCompanyPayload = (company: Company, type: DocumentType): Company => {
+    // only include the changed doc group; others as empty arrays
+    const base = {
+      id: company.id,
+      companyName: company.companyName,
+      country: company.country,
+      companyDocs: [] as Document[],
+      kycDocs: [] as Document[],
+      letterDocs: [] as Document[],
+    };
+
+    if (type === "company") base.companyDocs = (company.companyDocs ?? []);
+    if (type === "kyc") base.kycDocs = (company.kycDocs ?? []);
+    if (type === "letters") base.letterDocs = (company.letterDocs ?? []);
+
+    return base;
   };
 
-  if (type === "company") base.companyDocs = (company.companyDocs ?? []);
-  if (type === "kyc") base.kycDocs = (company.kycDocs ?? []);
-  if (type === "letters") base.letterDocs = (company.letterDocs ?? []);
+  const mergeByDocName = (oldDocs: Document[] = [], addedOrUpdated: Document[] = []) => {
+    if (!addedOrUpdated.length) return oldDocs;
+    const serverByName = new Map(addedOrUpdated.map(d => [d.docName, d]));
+    // update if server returned same docName; keep others as is
+    const updated = oldDocs.map(d => (serverByName.has(d.docName) ? { ...d, ...serverByName.get(d.docName)! } : d));
 
-  return base;
-};
-
-const mergeByDocName = (oldDocs: Document[] = [], addedOrUpdated: Document[] = []) => {
-  if (!addedOrUpdated.length) return oldDocs;
-  const serverByName = new Map(addedOrUpdated.map(d => [d.docName, d]));
-  // update if server returned same docName; keep others as is
-  const updated = oldDocs.map(d => (serverByName.has(d.docName) ? { ...d, ...serverByName.get(d.docName)! } : d));
-
-  // if server returned a doc that wasn't in the list (edge case), append it
-  const existingNames = new Set(oldDocs.map(d => d.docName));
-  const newOnes = addedOrUpdated.filter(d => !existingNames.has(d.docName));
-  return [...updated, ...newOnes];
-};
-
-// ---- the refactored saveDocuments ----
-const saveDocuments = async (): Promise<void> => {
-  if (!selectedCompany) return;
-
-  // 1) Prepare an optimistic update snapshot
-  const prevCompanies = companies; // for rollback
-  const companyIndex = companies.findIndex(c => c.id === selectedCompany.id);
-  if (companyIndex === -1) return;
-
-  // helper to read/write arrays for the active company
-  const readDocs = (c: Company, t: DocumentType) =>
-    t === "kyc" ? (c.kycDocs ?? []) : t === "letters" ? (c.letterDocs ?? []) : (c.companyDocs ?? []);
-
-  const writeDocs = (c: Company, t: DocumentType, docs: Document[]) => {
-    if (t === "kyc") c.kycDocs = docs;
-    else if (t === "letters") c.letterDocs = docs;
-    else c.companyDocs = docs;
+    // if server returned a doc that wasn't in the list (edge case), append it
+    const existingNames = new Set(oldDocs.map(d => d.docName));
+    const newOnes = addedOrUpdated.filter(d => !existingNames.has(d.docName));
+    return [...updated, ...newOnes];
   };
 
-  // 2) Build the optimistic documents (either replace one or add many)
-  const optimisticCompanies = structuredClone(companies);
-  const optimisticCompany = optimisticCompanies[companyIndex];
-  const currentDocs = readDocs(optimisticCompany, currentDocumentType);
+  // ---- the refactored saveDocuments ----
+  const saveDocuments = async (): Promise<void> => {
+    if (!selectedCompany) return;
 
-  let optimisticDocs: Document[] = currentDocs;
+    // 1) Prepare an optimistic update snapshot
+    const prevCompanies = companies; // for rollback
+    const companyIndex = companies.findIndex(c => c.id === selectedCompany.id);
+    if (companyIndex === -1) return;
 
-  if (documentToReplace) {
-    const idx = currentDocs.findIndex(d => d.id === documentToReplace.id);
-    if (idx !== -1 && uploadedFiles.length > 0) {
-      const file = uploadedFiles[0];
-      optimisticDocs = currentDocs.map((d, i) =>
-        i === idx
-          ? {
+    // helper to read/write arrays for the active company
+    const readDocs = (c: Company, t: DocumentType) =>
+      t === "kyc" ? (c.kycDocs ?? []) : t === "letters" ? (c.letterDocs ?? []) : (c.companyDocs ?? []);
+
+    const writeDocs = (c: Company, t: DocumentType, docs: Document[]) => {
+      if (t === "kyc") c.kycDocs = docs;
+      else if (t === "letters") c.letterDocs = docs;
+      else c.companyDocs = docs;
+    };
+
+    // 2) Build the optimistic documents (either replace one or add many)
+    const optimisticCompanies = structuredClone(companies);
+    const optimisticCompany = optimisticCompanies[companyIndex];
+    const currentDocs = readDocs(optimisticCompany, currentDocumentType);
+
+    let optimisticDocs: Document[] = currentDocs;
+
+    if (documentToReplace) {
+      const idx = currentDocs.findIndex(d => d.id === documentToReplace.id);
+      if (idx !== -1 && uploadedFiles.length > 0) {
+        const file = uploadedFiles[0];
+        optimisticDocs = currentDocs.map((d, i) =>
+          i === idx
+            ? {
               ...d,
               // keep same id so row stays stable
               docName: file.name,
@@ -198,83 +199,83 @@ const saveDocuments = async (): Promise<void> => {
               docUrl: "", // will be filled by server merge
               type: currentDocumentType,
             }
-          : d
-      );
-    }
-  } else {
-    const newDocs: Document[] = uploadedFiles.map((file, i) => ({
-      id: `${Date.now()}-${i}`, // temp id for UI stability
-      docName: file.name,
-      file,
-      docUrl: "", // will be filled by server
-      type: currentDocumentType,
-    }));
-    optimisticDocs = [...currentDocs, ...newDocs];
-  }
-
-  writeDocs(optimisticCompany, currentDocumentType, optimisticDocs);
-
-  // 3) Commit optimistic UI
-  setCompanies(optimisticCompanies);
-  setSelectedCompany(optimisticCompany);
-  setUploadedFiles([]);
-  setDocumentToReplace(null);
-  setShowUploadSection(false);
-
-  // 4) Send slim payload (only active company + changed group)
-  try {
-    setIsUpdating(true);
-
-    // NOTE: uploadCompanyDocs expects files to be present on the objects in state.
-    // We already inserted `file` into the optimistic docs above, so build from `optimisticCompany`.
-    const slimPayload = buildSlimCompanyPayload(optimisticCompany, currentDocumentType);
-
-    // Keep API contract the same (array), but only include the one company
-    const res: Array<{
-      id: string;
-      companyName: string;
-      country: Company["country"];
-      companyDocs?: Document[];
-      kycDocs?: Document[];
-      letterDocs?: Document[];
-    }> = await uploadCompanyDocs([slimPayload]);
-
-    // 5) Merge server response back into state so URLs appear without refresh
-    if (Array.isArray(res) && res.length > 0) {
-      const serverItem = res.find(r => r.id === optimisticCompany.id) ?? res[0];
-
-      const patchCompany = (c: Company): Company => {
-        if (c.id !== serverItem.id) return c;
-
-        const next = { ...c };
-        if (currentDocumentType === "company") {
-          next.companyDocs = mergeByDocName(c.companyDocs ?? [], serverItem.companyDocs ?? []);
-        } else if (currentDocumentType === "kyc") {
-          next.kycDocs = mergeByDocName(c.kycDocs ?? [], serverItem.kycDocs ?? []);
-        } else {
-          next.letterDocs = mergeByDocName(c.letterDocs ?? [], serverItem.letterDocs ?? []);
-        }
-        return next;
-      };
-
-      setCompanies(prev => prev.map(patchCompany));
-      setSelectedCompany(prev => (prev ? patchCompany(prev) : prev));
+            : d
+        );
+      }
+    } else {
+      const newDocs: Document[] = uploadedFiles.map((file, i) => ({
+        id: `${Date.now()}-${i}`, // temp id for UI stability
+        docName: file.name,
+        file,
+        docUrl: "", // will be filled by server
+        type: currentDocumentType,
+      }));
+      optimisticDocs = [...currentDocs, ...newDocs];
     }
 
-    toast({
-      title: documentToReplace ? "Document replaced" : "Documents added",
-      description: `Successfully ${documentToReplace ? "replaced document" : "added new documents"} to ${optimisticCompany.companyName}.`,
-    });
-  } catch (err) {
-    // 6) Roll back optimistic UI on error
-    console.error("Error uploading documents:", err);
-    setCompanies(prevCompanies);
-    setSelectedCompany(prevCompanies[companyIndex]);
-    toast({ title: "Error", description: "Failed to upload documents. Please try again." });
-  } finally {
-    setIsUpdating(false);
-  }
-};
+    writeDocs(optimisticCompany, currentDocumentType, optimisticDocs);
+
+    // 3) Commit optimistic UI
+    setCompanies(optimisticCompanies);
+    setSelectedCompany(optimisticCompany);
+    setUploadedFiles([]);
+    setDocumentToReplace(null);
+    setShowUploadSection(false);
+
+    // 4) Send slim payload (only active company + changed group)
+    try {
+      setIsUpdating(true);
+
+      // NOTE: uploadCompanyDocs expects files to be present on the objects in state.
+      // We already inserted `file` into the optimistic docs above, so build from `optimisticCompany`.
+      const slimPayload = buildSlimCompanyPayload(optimisticCompany, currentDocumentType);
+
+      // Keep API contract the same (array), but only include the one company
+      const res: Array<{
+        id: string;
+        companyName: string;
+        country: Company["country"];
+        companyDocs?: Document[];
+        kycDocs?: Document[];
+        letterDocs?: Document[];
+      }> = await uploadCompanyDocs([slimPayload]);
+
+      // 5) Merge server response back into state so URLs appear without refresh
+      if (Array.isArray(res) && res.length > 0) {
+        const serverItem = res.find(r => r.id === optimisticCompany.id) ?? res[0];
+
+        const patchCompany = (c: Company): Company => {
+          if (c.id !== serverItem.id) return c;
+
+          const next = { ...c };
+          if (currentDocumentType === "company") {
+            next.companyDocs = mergeByDocName(c.companyDocs ?? [], serverItem.companyDocs ?? []);
+          } else if (currentDocumentType === "kyc") {
+            next.kycDocs = mergeByDocName(c.kycDocs ?? [], serverItem.kycDocs ?? []);
+          } else {
+            next.letterDocs = mergeByDocName(c.letterDocs ?? [], serverItem.letterDocs ?? []);
+          }
+          return next;
+        };
+
+        setCompanies(prev => prev.map(patchCompany));
+        setSelectedCompany(prev => (prev ? patchCompany(prev) : prev));
+      }
+
+      toast({
+        title: documentToReplace ? "Document replaced" : "Documents added",
+        description: `Successfully ${documentToReplace ? "replaced document" : "added new documents"} to ${optimisticCompany.companyName}.`,
+      });
+    } catch (err) {
+      // 6) Roll back optimistic UI on error
+      console.error("Error uploading documents:", err);
+      setCompanies(prevCompanies);
+      setSelectedCompany(prevCompanies[companyIndex]);
+      toast({ title: "Error", description: "Failed to upload documents. Please try again." });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
 
 
@@ -371,13 +372,13 @@ const saveDocuments = async (): Promise<void> => {
   }
 
   // -------------------- Company select --------------------
-  const handleCurrencySelect = (item: { id: string; name: string }| null) => {
-    if(item === null){
+  const handleCurrencySelect = (item: { id: string; name: string } | null) => {
+    if (item === null) {
       setSelectedCompany(null)
       setSelectedValue({ id: "", name: "" })
       return
     }
-    
+
     setSelectedValue(item)
     const company = companies.find((c) => c.id === item.id)
     if (company) {
@@ -399,6 +400,13 @@ const saveDocuments = async (): Promise<void> => {
           {companies.length === 0 && (
             <div className="rounded-md bg-muted text-muted-foreground p-2 text-sm">No companies found</div>
           )}
+          <Button
+            onClick={() => navigate(-1)}
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            Return to Previous Details
+          </Button>
           <SearchSelectNew
             items={filteredCompanies}
             placeholder="Select a Company"
