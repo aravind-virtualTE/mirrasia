@@ -147,6 +147,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
             dcpName: dAny.dcpName || "",
             dcpEmail: dAny.dcpEmail || "",
             dcpPhone: dAny.dcpNumber || "",
+            // dcpStatus: dAny.dcpStatus || "",
             // finance – use new fields from sample
             currency: dAny.currency || d?.registerCurrencyAtom?.code || "USD",
             capAmount: dAny.capAmount || dAny.totalAmountCap || "",
