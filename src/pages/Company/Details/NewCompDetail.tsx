@@ -27,6 +27,14 @@ import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { hkIncorporationItems, hkRenewalList } from "./detailConstants";
 import { toast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import InvoicePreview from "../NewHKForm/NewInvoicePreview";
+
 
 export type Party = {
   name: string;
@@ -43,6 +51,7 @@ export type Party = {
 export type OnboardingRecord = {
   _id: string;
   stepIdx: number; // 0-based
+  userId?: string | undefined
   form: {
     applicantName?: string;
     email?: string;
@@ -221,6 +230,8 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   const [isSaving, setIsSaving] = React.useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [taskToDelete, setTaskToDelete] = React.useState<{ companyId: string, countryCode: string } | null>(null);
+  const [invoiceOpen, setInvoiceOpen] = React.useState(false);
+
 
   // ------- FETCH on mount / id change -------
   React.useEffect(() => {
@@ -323,19 +334,19 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
     setTaskToDelete({ companyId, countryCode });
     setDeleteDialogOpen(true);
   };
-    const markDelete = async () => {
+  const markDelete = async () => {
     if (taskToDelete?.companyId) {
       const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
       if (result) {
-       console.log("Marked as delete successfully");
-       toast({
-        title: "Success",
-        description: "Company record marked for deletion.",
-       })
-       if(user.role === "admin" || user.role === "master"){
-        navigate("/admin-dashboard");
-       }
-       else navigate("/dashboard");
+        console.log("Marked as delete successfully");
+        toast({
+          title: "Success",
+          description: "Company record marked for deletion.",
+        })
+        if (user.role === "admin" || user.role === "master") {
+          navigate("/admin-dashboard");
+        }
+        else navigate("/dashboard");
       }
     }
     setDeleteDialogOpen(false);
@@ -706,6 +717,15 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                       />
                     </div>
                   </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-center"
+                    onClick={() => setInvoiceOpen(true)}
+                  >
+                    <ReceiptText className="mr-2 h-4 w-4" />
+                    View Invoice
+                  </Button>
                 </CardContent>
               </Card>
               <Card>
@@ -811,6 +831,21 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
         cancelText="Cancel"
         onConfirm={markDelete}
       />
+      <Dialog open={invoiceOpen} onOpenChange={setInvoiceOpen}>
+        <DialogContent className="sm:max-w-[900px] w-[95vw] p-0" >
+          <DialogHeader className="px-6 pt-6 pb-4">
+            <DialogTitle>Invoice</DialogTitle>
+          </DialogHeader>
+          <div className="px-6 pb-6">
+            <div className="max-h-[70vh] overflow-y-auto"
+            >
+              <InvoicePreview app={data as any} />
+            </div>
+          </div>
+
+        </DialogContent>
+      </Dialog>
+
     </Tabs>
   );
 }
