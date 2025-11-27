@@ -67,6 +67,7 @@ export type Party = {
   invited: boolean;
   typeOfShare: ShareTypeId; // id only
   status?: string;
+  isDcp?:boolean
 };
 
 export type AppDoc = {
