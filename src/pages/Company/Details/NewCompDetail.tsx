@@ -46,6 +46,7 @@ export type Party = {
   invited?: boolean;
   typeOfShare?: string;
   status?: string;
+  isDcp?: boolean;
 };
 
 export type OnboardingRecord = {
@@ -200,6 +201,7 @@ function PartyRow({ p, totalShares }: { p: Party; totalShares?: number }) {
       <TableCell className="py-3">
         <Badge variant="secondary" className="mr-2">{p.isCorp ? "Corporate" : "Individual"}</Badge>
         {p.isDirector && <Badge variant="outline">Director</Badge>}
+        {p.isDcp && <Badge variant="outline">Designated Contact Person</Badge>}
       </TableCell>
       <TableCell className="py-3">
         <div className="flex items-center gap-2">
@@ -473,7 +475,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                         <span className="font-medium">{f.applicantName || "—"}</span>
                       </div>
                     </LabelValue>
-                    <LabelValue label="Dcp Name">
+                    {/* <LabelValue label="Dcp Name">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{f.dcpName || "—"}</span>
                       </div>
@@ -482,7 +484,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{f.dcpEmail || "—"}</span>
                       </div>
-                    </LabelValue>
+                    </LabelValue> */}
 
                     <LabelValue label="Contact">
                       <div className="grid gap-2">

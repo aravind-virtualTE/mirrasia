@@ -331,7 +331,7 @@ function PartiesManager() {
                 </div>
                 <div className="text-right">
                     <h2 className="text-base font-semibold text-gray-900">
-                        {t("newHk.parties.title", "Shareholders & Directors")}
+                        {t("newHk.parties.title", "Shareholders / Directors / DCP")}
                     </h2>
                     <p
                         className={cn(

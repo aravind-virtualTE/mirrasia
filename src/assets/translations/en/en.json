@@ -1869,8 +1869,8 @@
         "description": "Answer accurately based on your current knowledge. Select ‘Unsure’ if you need help.",
         "options": {
           "yes": "Yes",
-          "no": "No — to the best of my knowledge",
-          "unsure": "Unsure — request assistance"
+          "no": "No",
+          "unsure": "Unsure"
         },
         "questions": {
           "legalAndEthicalConcern": "Are there any legal or ethical concerns related to the business (e.g., money laundering, gambling, tax evasion, asset concealment, fraud)?",
@@ -2280,6 +2280,11 @@
           "label": "Calculated par value (read-only)",
           "hint": "Par value = total share capital ÷ number of shares."
         },
+        "inviteText":"Invite Shareholders/Directors Members before proceeding Next",
+        "isDcp": {
+          "label": "Will this person act as DCP?",
+          "tip": "A DCP is an individual authorized to liaise with Mirr Asia on behalf of the company for secretarial matters. This can be a director, shareholder, or an external representative."
+        },
         "dcpName": {
           "label": "Designated Contact Person",
           "placeholder": "Enter name"
@@ -2295,6 +2300,7 @@
     }
     },
     "parties": {
+      "title": "Shareholders / Directors / DCP",
       "banner": {
         "ok": "All good — total number of shares allocated equals the company’s issued shares.",
         "err": "Error: The total allocated shares must equal the company’s total number of shares. Please revise entries.",

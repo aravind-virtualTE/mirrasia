@@ -616,6 +616,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
           isDirector: false,
           shares: 0,
           invited: false,
+          isDcp: false,
           typeOfShare: DEFAULT_SHARE_ID,
         },
       ],
@@ -695,7 +696,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
           </div>
           <div>
             <h2 className="text-base font-semibold text-gray-900">
-              {t("newHk.parties.title", "Shareholders & Directors")}
+              {t("newHk.parties.title", "Shareholders / Directors / DCP")}
             </h2>
             <p className={cn("text-xs mt-0.5", statusColor)}>{statusText}</p>
             {isLocked && (
@@ -804,19 +805,19 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
                     <div className="grid gap-2">
                       <Label className="text-xs text-gray-600 mb-1">
                         {t("newHk.parties.fields.name.label")}
-                      </Label>
+                      </Label><span
+                        className="text-[11px] text-muted-foreground"
+                        dangerouslySetInnerHTML={{
+                          __html: t("newHk.parties.fields.name.example"),
+                        }}
+                      />
                       <Input
                         value={p.name}
                         disabled={isLocked}
                         onChange={(e) => upd(i, "name", e.target.value)}
                         className="h-9"
                       />
-                      <p
-                        className="text-[11px] text-muted-foreground"
-                        dangerouslySetInnerHTML={{
-                          __html: t("newHk.parties.fields.name.example"),
-                        }}
-                      />
+
                     </div>
 
                     {/* Email */}
@@ -870,7 +871,6 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
                         </SelectContent>
                       </Select>
                     </div>
-
                     {/* Is Director */}
                     <div className="grid gap-2">
                       <Label className="text-xs text-gray-600 mb-1">
@@ -881,6 +881,30 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
                         value={String(p.isDirector)}
                         disabled={isLocked}
                         onValueChange={(v) => upd(i, "isDirector", v === "true")}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="true">
+                            {t("newHk.parties.fields.isDirector.options.yes")}
+                          </SelectItem>
+                          <SelectItem value="false">
+                            {t("newHk.parties.fields.isDirector.options.no")}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {/* Is Dcp */}
+                    <div className="grid gap-2">
+                      <Label className="text-xs text-gray-600 mb-1">
+                        {t("newHk.company.fields.isDcp.label", "Will this person act as DCP?")}{" "}
+                        <Tip text={t("newHk.company.fields.isDcp.tip", "Designated Contact Person for compliance/communication.")} />
+                      </Label>
+                      <Select
+                        value={String(p.isDcp ?? false)}
+                        disabled={isLocked}
+                        onValueChange={(v) => upd(i, "isDcp", v === "true")}
                       >
                         <SelectTrigger className="h-9">
                           <SelectValue />
@@ -2023,7 +2047,6 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
   const form = app.form;
   const setForm = (updater: (prev: any) => any) =>
     setApp((prev) => ({ ...prev, form: updater(prev.form) }));
-  const isLocked = app.paymentStatus === "paid";
   // keys are stored in form; labels come from i18n when rendering
   const incorporationPurposeKeys = ["operateHK", "assetMgmt", "holdingCo", "crossBorder", "taxNeutral"] as const;
 
@@ -2041,66 +2064,7 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [contactOptions]);
-  const [isInviting, setIsInviting] = React.useState(false);
 
-  const sendMailFunction = async () => {
-    if (isLocked) return;
-
-    const extractedData = [{ name: app.form.dcpName, email: app.form.dcpEmail }];
-
-    const payload = { _id: app._id || "", inviteData: extractedData, country: "HK" };
-
-    try {
-      setIsInviting(true);
-      const response = await sendInviteToShDir(payload);
-
-      if (response.summary.successful > 0) {
-        setApp((prev) => ({
-          ...prev,
-          form: {
-            ...prev.form,
-            dcpStatus: "Invited",
-          },
-        }));
-        toast({
-          title: t("newHk.parties.toasts.invite.success.title"),
-          description: t("newHk.parties.toasts.invite.success.desc", {
-            count: response.summary.successful,
-          }),
-        });
-      }
-
-      if (response.summary.alreadyExists > 0) {
-        setApp((prev) => ({
-          ...prev,
-          form: {
-            ...prev.form,
-            dcpStatus: "Invited",
-          },
-        }));
-        toast({
-          title: t("newHk.parties.toasts.invite.exists.title"),
-          description: t("newHk.parties.toasts.invite.exists.desc"),
-        });
-      }
-
-      if (response.summary.failed > 0) {
-        setApp((prev) => ({
-          ...prev,
-          form: {
-            ...prev.form,
-            dcpStatus: "Not Invited",
-          },
-        }));
-        toast({
-          title: t("newHk.parties.toasts.invite.failed.title"),
-          description: t("newHk.parties.toasts.invite.failed.desc"),
-        });
-      }
-    } finally {
-      setIsInviting(false);
-    }
-  };
 
   return (
     <div className="space-y-4">
@@ -2275,60 +2239,9 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
 
       <Card>
         <CardContent className="pt-6">
-          <SectionTitle>{t("newHk.company.sections.c")}</SectionTitle>
+          <SectionTitle>{t("newHk.parties.title")}</SectionTitle>
 
           <PartiesManager app={app} setApp={setApp} />
-          <div className="grid gap-4 mt-4 md:grid-cols-3">
-            {/* DCP Name */}
-            <Field
-              field={{
-                type: "text",
-                name: "dcpName",
-                label: "newHk.company.fields.dcpName.label",
-                placeholder: "newHk.company.fields.dcpName.placeholder",
-              }}
-              form={form}
-              setForm={setForm}
-            />
-
-            {/* DCP Email */}
-            <Field
-              field={{
-                type: "email",
-                name: "dcpEmail",
-                label: "newHk.company.fields.dcpEmail.label",
-                placeholder: "newHk.company.fields.dcpEmail.placeholder",
-              }}
-              form={form}
-              setForm={setForm}
-            />
-
-            {/* DCP Phone / Number */}
-            <Field
-              field={{
-                type: "text", // use text so +, leading 0, etc. are allowed
-                name: "dcpNumber",
-                label: "newHk.company.fields.dcpNumber.label",
-                placeholder: "newHk.company.fields.dcpNumber.placeholder",
-              }}
-              form={form}
-              setForm={setForm}
-            />
-            <Button
-              variant="default"
-              onClick={sendMailFunction}
-              disabled={isLocked || isInviting}
-              className="flex items-center hover:bg-green-700"
-            >
-              {isInviting ? (
-                <CustomLoader />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
-              <span className="ml-1">{t("newHk.parties.buttons.invite")}</span>
-            </Button>
-          </div>
-
           {/* <div className="grid gap-2 mt-4">
             <Field
               field={{
@@ -2347,6 +2260,9 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
               setForm={setForm}
             />
           </div> */}
+          <Label className="text-lg text-red-600 m-2">
+            {t("newHk.company.fields.inviteText", "Invite Shareholders/Directors Members before proceeding Next")}
+          </Label>
         </CardContent>
       </Card>
     </div>

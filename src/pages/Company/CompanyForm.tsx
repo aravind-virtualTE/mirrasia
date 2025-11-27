@@ -71,7 +71,7 @@ const CompanyRegistration = () => {
                 //   console.warn("No incorporation data found for id:", id);
                 // }
                 const result = await getHkIncorpoData(id)
-                console.log("result-->", result);
+                // console.log("result-->", result);
                 setHkInfoData(result)
                 setCountryState({ code: 'HK', name: 'Hong Kong' });
             })();
@@ -105,7 +105,7 @@ const CompanyRegistration = () => {
                 return await getSgIncorpoDataById(`${id}`)
             }
             getSgData().then((result) => {
-                console.log("result-->", result);
+                // console.log("result-->", result);
                 setSgFormData(result)
             })
             setCountryState({ code: 'SG', name: 'Singapore' });
@@ -113,7 +113,7 @@ const CompanyRegistration = () => {
         else if (id && countryCode == "PPIF") {
             (async () => {
                 const result = await getPaFIncorpoData(id)
-                console.log("result-->", result);
+                // console.log("result-->", result);
                 setPpiF(result)
                 setCountryState({ code: 'PPIF', name: 'Panama Foundation' });
             })();
