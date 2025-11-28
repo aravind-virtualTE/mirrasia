@@ -501,7 +501,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                 </span>
                                             </div>
                                         </LabelValue>
-                                        <LabelValue label="Dcp Name">
+                                        {/* <LabelValue label="Dcp Name">
                                             <div className="flex items-center gap-2">
                                                 <span className="font-medium">{f.dcpName || "—"}</span>
                                             </div>
@@ -510,7 +510,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                             <div className="flex items-center gap-2">
                                                 <span className="font-medium">{f.dcpEmail || "—"}</span>
                                             </div>
-                                        </LabelValue>
+                                        </LabelValue> */}
                                         <LabelValue label="Contact">
                                             <div className="grid gap-2">
                                                 <div className="flex items-center gap-2">

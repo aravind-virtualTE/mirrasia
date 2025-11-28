@@ -160,6 +160,7 @@ function PartiesManager() {
             typeOfShare: (s.typeOfShare as ShareTypeId) || DEFAULT_SHARE_ID,
             invited: s.invited ?? false,
             status: s.status ?? "",
+            isDcp: s.isDcp ?? false,
         }))
         : [
             {
@@ -172,6 +173,7 @@ function PartiesManager() {
                 typeOfShare: DEFAULT_SHARE_ID,
                 invited: false,
                 status: "",
+                isDcp: false,
             },
         ];
 
@@ -231,6 +233,7 @@ function PartiesManager() {
                 typeOfShare: DEFAULT_SHARE_ID,
                 invited: false,
                 status: "",
+                isDcp: false,
             },
         ];
         setShareholders(next);
@@ -511,6 +514,40 @@ function PartiesManager() {
                                                 </SelectContent>
                                             </Select>
                                         </div>
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">
+                                                {t(
+                                                    "newHk.company.fields.isDcp.label",
+                                                    "Will this person act as DCP?"
+                                                )}{" "}
+                                                <Tip
+                                                    text={t(
+                                                        "newHk.company.fields.isDcp.tip",
+                                                        "Designated Contact Person for compliance/communication."
+                                                    )}
+                                                />
+                                            </Label>
+                                            <Select
+                                                value={String(p.isDcp ?? false)}
+                                                onValueChange={(v) => patchShareholder(i, { isDcp: v === "true", })}
+                                            >
+                                                <SelectTrigger className="h-9">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="true">
+                                                        {t(
+                                                            "newHk.parties.fields.isDirector.options.yes"
+                                                        )}
+                                                    </SelectItem>
+                                                    <SelectItem value="false">
+                                                        {t(
+                                                            "newHk.parties.fields.isDirector.options.no"
+                                                        )}
+                                                    </SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
 
                                         {/* Remove */}
                                         <div className="col-span-2 flex justify-end mt-2">
@@ -702,7 +739,7 @@ function PartiesManager() {
 const CompanyInfoStep = () => {
     const { t } = useTranslation();
     const [formData, setFormData] = useAtom(paFormWithResetAtom1);
-    const [isInviting, setIsInviting] = React.useState(false);
+    // const [isInviting, setIsInviting] = React.useState(false);
 
     // seed safe defaults once
     useEffect(() => {
@@ -793,45 +830,45 @@ const CompanyInfoStep = () => {
         setFormData({ ...formData, panamaEntity: selectedItem || { id: '', value: "" } })
     }
 
-    const sendInvites = async () => {
-        const invites = [{ "email": formData.dcpEmail, "name": formData.dcpName }].filter(i => i.email && i.email.includes("@"))
+    // const sendInvites = async () => {
+    //     const invites = [{ "email": formData.dcpEmail, "name": formData.dcpName }].filter(i => i.email && i.email.includes("@"))
 
-        if (!invites.length) {
-            toast({
-                title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
-                description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
-                variant: "destructive",
-            });
-            return;
-        }
+    //     if (!invites.length) {
+    //         toast({
+    //             title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
+    //             description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
+    //             variant: "destructive",
+    //         });
+    //         return;
+    //     }
 
-        try {
-            setIsInviting(true);
-            const docId = formData?._id || "";
-            const payload = { _id: docId, inviteData: invites, country: "PA" };
-            const res = await sendInviteToShDir(payload);
+    //     try {
+    //         setIsInviting(true);
+    //         const docId = formData?._id || "";
+    //         const payload = { _id: docId, inviteData: invites, country: "PA" };
+    //         const res = await sendInviteToShDir(payload);
 
-            const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
+    //         const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
 
-            if (summary.successful > 0 || summary.alreadyExists > 0) {
-                setFormData({ ...formData, dcpStatus: "Invited" });
-                toast({
-                    title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
-                    description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
-                });
-            }
+    //         if (summary.successful > 0 || summary.alreadyExists > 0) {
+    //             setFormData({ ...formData, dcpStatus: "Invited" });
+    //             toast({
+    //                 title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
+    //                 description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
+    //             });
+    //         }
 
-            if (summary.failed > 0) {
-                toast({
-                    title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
-                    description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
-                    variant: "destructive",
-                });
-            }
-        } finally {
-            setIsInviting(false);
-        }
-    };
+    //         if (summary.failed > 0) {
+    //             toast({
+    //                 title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
+    //                 description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
+    //                 variant: "destructive",
+    //             });
+    //         }
+    //     } finally {
+    //         setIsInviting(false);
+    //     }
+    // };
     return (
         <div className="space-y-3 max-width mx-auto">
             {/* Card A */}
@@ -1177,10 +1214,7 @@ const CompanyInfoStep = () => {
                         </h3>
                         <PartiesManager />
                     </div>
-
-                    <div className="grid gap-4 mt-4 md:grid-cols-3">
-
-                        {/* DCP Name */}
+                    {/* <div className="grid gap-4 mt-4 md:grid-cols-3">
                         <div className="space-y-2 md:col-span-1">
                             <Label className="text-sm font-medium text-gray-700">
                                 {t("newHk.company.fields.dcpName.label")}
@@ -1195,8 +1229,6 @@ const CompanyInfoStep = () => {
                                 className="h-9"
                             />
                         </div>
-
-                        {/* DCP Email */}
                         <div className="space-y-2 md:col-span-1">
                             <Label className="text-sm font-medium text-gray-700">
                                 {t("newHk.company.fields.dcpEmail.label")}
@@ -1211,10 +1243,7 @@ const CompanyInfoStep = () => {
                                 className="h-9"
                             />
                         </div>
-
                         <div className="flex items-end gap-3">
-
-                            {/* DCP Number */}
                             <div className="flex-1 space-y-2">
                                 <Label className="text-sm font-medium text-gray-700">
                                     {t("newHk.company.fields.dcpNumber.label")}
@@ -1239,12 +1268,11 @@ const CompanyInfoStep = () => {
                                     {isInviting ? <CustomLoader /> : <Send className="w-4 h-4" />}
                                 </Button>
                             </div>
-
                         </div>
-
-                    </div>
-
-
+                    </div> */}
+                    <Label className="text-lg text-red-600 m-2">
+                        {t("newHk.company.fields.inviteText", "Invite Shareholders/Directors Members before proceeding Next")}
+                    </Label>
                 </CardContent>
             </Card>
         </div>
