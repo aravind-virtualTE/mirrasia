@@ -231,6 +231,7 @@ export type Party = {
   isSignificant?: boolean;
   isDesignatedContact?: boolean;
   isDirector?: boolean,
+  isDcp?: boolean,
 };
 
 export type FeeRow = {

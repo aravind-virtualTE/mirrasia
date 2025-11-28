@@ -2830,7 +2830,7 @@ function PaymentStepPIF() {
 }
 
 function CongratsStep() {
-    const [app, ] = useAtom(pifFormAtom)
+  const [app,] = useAtom(pifFormAtom)
   const navigate = useNavigate();
   const token = localStorage.getItem("token") as string;
   const decodedToken = jwtDecode<any>(token);
@@ -2947,7 +2947,7 @@ const panamaPIFConfig: FormConfig = {
     { id: "aml", title: "ppif.section11", render: AMLStep },
     { id: "deliverables", title: "ppif.section12", render: DeliverablesStep },
     { id: "accounting", title: "ppif.section13", render: AccountingRecordsStep },
-    {id: "agreement",title: "usa.steps.step4", render: CommonServiceAgrementTxt },
+    { id: "agreement", title: "usa.steps.step4", render: CommonServiceAgrementTxt },
     { id: "invoice", title: "ppif.section14", render: InvoicePIF },
     { id: "payment", title: "ppif.section15", render: PaymentStepPIF },
     { id: "declarations", title: "ppif.section16", render: DeclarationsStep },
@@ -3162,9 +3162,20 @@ export default function PanamaPIFWizard() {
 
       const payload = {
         ...form,
-        userId: decodedToken?.userId ?? "",
         stepIdx,
       };
+
+      if (!payload.userId) {
+        payload.userId = decodedToken.userId;
+        payload.users = [{ "userId": decodedToken.userId, "role": "owner" }];
+      } else {
+        // If userId exists but belongs to someone else, do NOT override
+        if (payload.userId !== decodedToken.userId) {
+          // Just leave it as is — do nothing
+        } else {
+          // Same user — keep as is or update (your choice)
+        }
+      }
 
       const result = await createOrUpdatePaFIncorpo(payload);
       if (result) {
@@ -3181,9 +3192,9 @@ export default function PanamaPIFWizard() {
       return false;
     }
   };
-  console.log("missing0", stepIdx, "\n ", form)
+  // console.log("missing0", stepIdx, "\n ", form)
   const handleNext = async () => {
-    
+
     if (stepIdx >= config.steps.length - 1) return;
     if (missing.length > 0) {
       toast({
@@ -3194,9 +3205,9 @@ export default function PanamaPIFWizard() {
       return;
     }
     try {
-     
+
       setSavingNext(true);
-       if (stepIdx == 10) {
+      if (stepIdx == 10) {
         const q2 = form.legalAndEthicalConcern
         const q3 = form.q_country
         const q4 = form.sanctionsExposureDeclaration
@@ -3204,7 +3215,7 @@ export default function PanamaPIFWizard() {
         const q6 = form.russianEnergyPresence
         const q2to6AllNo = [q2, q3, q4, q5, q6].every((x) => x === "no");
         // console.log("q2to6AllNo",q2to6AllNo)
-        if(!q2to6AllNo){
+        if (!q2to6AllNo) {
           await saveAll();
           toast({
             title: "",

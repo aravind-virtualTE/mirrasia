@@ -628,14 +628,14 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
     if (isLocked) return;
 
     const extractedData = app.parties.map((item) => {
-      const { name, email } = item;
+      const { name, email, isDcp } = item;
       if (!isValidEmail(email)) {
         toast({
           title: t("newHk.parties.toasts.invalidEmail.title"),
           description: t("newHk.parties.toasts.invalidEmail.desc", { name, email }),
         });
       }
-      return { name, email };
+      return { name, email, isDcp };
     });
 
     const payload = { _id: app._id || "", inviteData: extractedData, country: "HK" };
@@ -2501,7 +2501,18 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
 
       const token = localStorage.getItem("token") as string;
       const decodedToken = jwtDecode<TokenData>(token);
-      payload.userId = decodedToken.userId;
+
+      if (!payload.userId) {
+        payload.userId = decodedToken.userId;
+        payload.users = [{ "userId": decodedToken.userId, "role": "owner" }];
+      } else {
+        // If userId exists but belongs to someone else, do NOT override
+        if (payload.userId !== decodedToken.userId) {
+          // Just leave it as is — do nothing
+        } else {
+          // Same user — keep as is or update (your choice)
+        }
+      }
       if (stepIdx == 1) {
         const q1 = form.legalAndEthicalConcern
         const q2 = form.q_country

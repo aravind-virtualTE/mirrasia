@@ -139,7 +139,7 @@ function PartiesManager() {
     const sendInvites = async () => {
         const invites = parties
             .filter((p) => p.email && isValidEmail(p.email))
-            .map(({ name, email, isCorp }) => ({ name, email, isCorp }));
+            .map(({ name, email, isCorp, isDcp }) => ({ name, email, isCorp, isDcp }));
 
         if (!invites.length) {
             toast({
@@ -479,7 +479,7 @@ const CompanyInfoStep = () => {
     const { t } = useTranslation();
     const [formData, setFormData] = useAtom(sgFormWithResetAtom1);
     const [isInviting, setIsInviting] = React.useState(false);
-    
+
     // seed safe defaults once
     useEffect(() => {
         setFormData((p: any) => {
@@ -551,44 +551,44 @@ const CompanyInfoStep = () => {
         setFormData((p: any) => ({ ...p, businessAddress: sel }));
     };
     const sendInvites = async () => {
-            const invites = [{ "email": formData.dcpEmail, "name": formData.dcpName }].filter(i => i.email && i.email.includes("@"))
-    
-            if (!invites.length) {
+        const invites = [{ "email": formData.dcpEmail, "name": formData.dcpName }].filter(i => i.email && i.email.includes("@"))
+
+        if (!invites.length) {
+            toast({
+                title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
+                description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
+                variant: "destructive",
+            });
+            return;
+        }
+
+        try {
+            setIsInviting(true);
+            const docId = formData?._id || "";
+            const payload = { _id: docId, inviteData: invites, country: "SG" };
+            const res = await sendInviteToShDir(payload);
+
+            const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
+
+            if (summary.successful > 0 || summary.alreadyExists > 0) {
+                setFormData({ ...formData, dcpStatus: "Invited" });
                 toast({
-                    title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
-                    description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
+                    title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
+                    description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
+                });
+            }
+
+            if (summary.failed > 0) {
+                toast({
+                    title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
+                    description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
                     variant: "destructive",
                 });
-                return;
             }
-    
-            try {
-                setIsInviting(true);
-                const docId = formData?._id || "";
-                const payload = { _id: docId, inviteData: invites, country: "SG" };
-                const res = await sendInviteToShDir(payload);
-    
-                const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
-    
-                if (summary.successful > 0 || summary.alreadyExists > 0) {
-                    setFormData({ ...formData, dcpStatus: "Invited" });
-                    toast({
-                        title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
-                        description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
-                    });
-                }
-    
-                if (summary.failed > 0) {
-                    toast({
-                        title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
-                        description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
-                        variant: "destructive",
-                    });
-                }
-            } finally {
-                setIsInviting(false);
-            }
-        };
+        } finally {
+            setIsInviting(false);
+        }
+    };
     return (
         <div className="space-y-3 max-width mx-auto">
             {/* Card A */}
@@ -3209,6 +3209,17 @@ const SgIncorpForm: React.FC = () => {
         setIsSubmitting(true);
         form.userId = `${decodedToken.userId}`
         const payload = { ...form };
+        if (!payload.userId) {
+            payload.userId = decodedToken.userId;
+            payload.users = [{ "userId": decodedToken.userId, "role": "owner" }];
+        } else {
+            // If userId exists but belongs to someone else, do NOT override
+            if (payload.userId !== decodedToken.userId) {
+                // Just leave it as is — do nothing
+            } else {
+                // Same user — keep as is or update (your choice)
+            }
+        }
         try {
             // console.log("payload", payload)
             const response = await api.post("/company/sg-form", payload);
@@ -3238,7 +3249,7 @@ const SgIncorpForm: React.FC = () => {
             toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
             return;
         }
-        console.log("form", form)
+        // console.log("form", form)
         await updateDoc();
     };
 

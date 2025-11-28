@@ -689,11 +689,11 @@ function ShareholdersWidget({
             setIsLoading(true);
 
             const extractedData = shareholders.map((item) => {
-                const { name, email } = item;
+                const { name, email, isDcp } = item;
                 if (!isValidEmail(email)) {
                     alert(`Invalid email format for ${name}: ${email}`);
                 }
-                return { name, email };
+                return { name, email, isDcp };
             });
 
             const docId = localStorage.getItem("companyRecordId");
@@ -3796,6 +3796,17 @@ export default function ConfigDrivenUSAForm() {
         // const docId = localStorage.getItem("companyRecordId");
         const payload = { ...form };
         payload.userId = `${decodedToken.userId}`
+         if (!payload.userId) {
+            payload.userId = decodedToken.userId;
+            payload.users = [{ "userId": decodedToken.userId, "role": "owner" }];
+        } else {
+            // If userId exists but belongs to someone else, do NOT override
+            if (payload.userId !== decodedToken.userId) {
+                // Just leave it as is — do nothing
+            } else {
+                // Same user — keep as is or update (your choice)
+            }
+        }
         if (idx === 1) payload.isDisabled = true;
         // console.log("formdata", formData)
         try {
