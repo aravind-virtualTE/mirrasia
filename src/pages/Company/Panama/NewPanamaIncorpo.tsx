@@ -99,6 +99,7 @@ type ShareholderDirectorItem = {
     invited?: boolean;
     status?: "Invited" | "Not Invited" | "";
     typeOfShare: ShareTypeId;
+    isDcp?: boolean;
 };
 
 type LegalDirectorItem = {
@@ -265,10 +266,11 @@ function PartiesManager() {
     const sendInvites = async () => {
         const invites = shareholders
             .filter((p) => p.email && isValidEmail(p.email))
-            .map(({ name, email, isLegalPerson }) => ({
+            .map(({ name, email, isLegalPerson, isDcp }) => ({
                 name,
                 email,
                 corporation: isLegalPerson.id, // "yes" | "no"
+                isDcp
             }));
 
         if (!invites.length) {
@@ -3024,7 +3026,17 @@ const PanamaIncorporationForm: React.FC = () => {
         const token = localStorage.getItem("token") as string;
         const decodedToken = jwtDecode<TokenData>(token);
         setIsSubmitting(true);
-        form.userId = `${decodedToken.userId}`
+        if (!form.userId) {
+            form.userId = decodedToken.userId;
+            form.users = [{ "userId": decodedToken.userId, "role": "owner" }];
+        } else {
+            // If userId exists but belongs to someone else, do NOT override
+            if (form.userId !== decodedToken.userId) {
+                // Just leave it as is — do nothing
+            } else {
+                // Same user — keep as is or update (your choice)
+            }
+        }
         const payload = { ...form };
         try {
             // console.log("payload", payload)

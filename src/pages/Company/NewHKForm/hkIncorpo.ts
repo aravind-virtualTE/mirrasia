@@ -81,6 +81,7 @@ export type AppDoc = {
   createdAt?: string;
   expiresAt?: string;
   updatedAt?: string;
+  users?: { userId: string; role: string }[];
 };
 
 /** Global HK incorporation state (null until hydrated) */

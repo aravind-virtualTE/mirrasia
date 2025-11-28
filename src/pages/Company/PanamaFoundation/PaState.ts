@@ -120,6 +120,7 @@ export interface PanamaPIFForm {
   currency?: string;
   paymentIntentStatus?: string;
   createdAt ? : string;
+  users?: { userId: string; role: string }[];
 }
 
 export const initialPIF: PanamaPIFForm = {
@@ -230,7 +231,8 @@ export const initialPIF: PanamaPIFForm = {
   amount: '',        // cents
   currency: '',    // e.g., "usd"
   paymentIntentStatus: '',
-  createdAt: ""
+  createdAt: "",
+  users: [],
 }
 
 export const pifFormAtom = atom<PanamaPIFForm>(initialPIF)
