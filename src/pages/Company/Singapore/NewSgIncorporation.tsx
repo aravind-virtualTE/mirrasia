@@ -36,7 +36,7 @@ import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import api from "@/services/fetch";
-import CustomLoader from "@/components/ui/customLoader";
+// import CustomLoader from "@/components/ui/customLoader";
 
 const SHARE_TYPES = [
     { id: "ordinary", label: "CompanyInformation.typeOfShare.ordinaryShares" },
@@ -88,6 +88,7 @@ type FormConfig = { title: string; steps: Step[] };
 function PartiesManager() {
     const { t } = useTranslation();
     const [form, setForm] = useAtom(sgFormWithResetAtom1);
+    const isLocked = form?.paymentStatus === "paid";
 
     // Normalize parties
     const parties: Party[] = Array.isArray(form.parties) ? form.parties : [];
@@ -99,7 +100,6 @@ function PartiesManager() {
             : Number(form.shareCount || 0)) || 0;
 
     const assigned = parties.reduce((s, p) => s + (Number(p.shares) || 0), 0);
-    //   const isBalanced = totalShares > 0 && assigned === totalShares;
     const [expandedIndex, setExpandedIndex] = React.useState<number | null>(null);
     const toggleExpand = (i: number) => setExpandedIndex(expandedIndex === i ? null : i);
 
@@ -130,6 +130,8 @@ function PartiesManager() {
                 isDesignatedContact: false,
                 isDirector: false,
                 status: "",
+                invited: false,
+                isDcp: false,
             },
         ];
         setForm((prev: any) => ({ ...prev, parties: next }));
@@ -144,7 +146,10 @@ function PartiesManager() {
         if (!invites.length) {
             toast({
                 title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
-                description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
+                description: t(
+                    "newHk.parties.toasts.invalidEmail.desc",
+                    "Add at least one valid email to send invites."
+                ),
                 variant: "destructive",
             });
             return;
@@ -183,7 +188,10 @@ function PartiesManager() {
             });
             toast({
                 title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
-                description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
+                description: t(
+                    "newHk.parties.toasts.invite.failed.desc",
+                    "Please verify emails and try again."
+                ),
                 variant: "destructive",
             });
         }
@@ -202,7 +210,9 @@ function PartiesManager() {
                             {t("newHk.parties.title", "Shareholders")}
                         </h2>
                         <p className="text-sm text-gray-500">
-                            {assigned.toLocaleString()} {t("newHk.parties.of", "of")} {totalShares.toLocaleString()} {t("newHk.parties.allocated", "shares allocated")}
+                            {assigned.toLocaleString()} {t("newHk.parties.of", "of")}{" "}
+                            {totalShares.toLocaleString()}{" "}
+                            {t("newHk.parties.allocated", "shares allocated")}
                         </p>
                     </div>
                 </div>
@@ -210,7 +220,10 @@ function PartiesManager() {
 
             <div className="space-y-2">
                 {(parties || []).map((p, i) => {
-                    const pct = totalShares > 0 ? ((Number(p.shares) / totalShares) * 100).toFixed(1) : "0.0";
+                    const pct =
+                        totalShares > 0
+                            ? ((Number(p.shares) / totalShares) * 100).toFixed(1)
+                            : "0.0";
                     const isExpanded = expandedIndex === i;
 
                     return (
@@ -237,7 +250,11 @@ function PartiesManager() {
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
                                             <span className="font-medium text-gray-900 truncate">
-                                                {p.name || t("newHk.parties.new", "New Shareholder/Director")}
+                                                {p.name ||
+                                                    t(
+                                                        "newHk.parties.new",
+                                                        "New Shareholder/Director"
+                                                    )}
                                             </span>
                                             {p.status && (
                                                 <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full">
@@ -245,16 +262,23 @@ function PartiesManager() {
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="text-sm text-gray-500 truncate">{p.email || t("common.noEmail", "No email")}</p>
+                                        <p className="text-sm text-gray-500 truncate">
+                                            {p.email || t("common.noEmail", "No email")}
+                                        </p>
                                     </div>
 
                                     <div className="text-right flex-shrink-0">
-                                        <div className="font-semibold text-gray-900">{(p.shares || 0).toLocaleString()}</div>
+                                        <div className="font-semibold text-gray-900">
+                                            {(p.shares || 0).toLocaleString()
+                                            }</div>
                                         <div className="text-xs text-gray-500">{pct}%</div>
                                     </div>
                                 </div>
 
-                                <button className="ml-4 p-1 hover:bg-gray-200 rounded" type="button">
+                                <button
+                                    className="ml-4 p-1 hover:bg-gray-200 rounded"
+                                    type="button"
+                                >
                                     {isExpanded ? (
                                         <ChevronUp className="w-4 h-4 text-gray-600" />
                                     ) : (
@@ -270,11 +294,17 @@ function PartiesManager() {
                                         {/* Name */}
                                         <div className="col-span-2 sm:col-span-1">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("newHk.parties.fields.name.label", "Name")}
+                                                {t(
+                                                    "newHk.parties.fields.name.label",
+                                                    "Name"
+                                                )}
                                             </Label>
                                             <Input
                                                 value={p.name}
-                                                onChange={(e) => patch(i, { name: e.target.value })}
+                                                disabled={isLocked}
+                                                onChange={(e) =>
+                                                    patch(i, { name: e.target.value })
+                                                }
                                                 className="h-9"
                                             />
                                         </div>
@@ -282,12 +312,18 @@ function PartiesManager() {
                                         {/* Email */}
                                         <div className="col-span-2 sm:col-span-1">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("newHk.parties.fields.email.label", "Email")}
+                                                {t(
+                                                    "newHk.parties.fields.email.label",
+                                                    "Email"
+                                                )}
                                             </Label>
                                             <Input
                                                 type="email"
+                                                disabled={isLocked}
                                                 value={p.email}
-                                                onChange={(e) => patch(i, { email: e.target.value })}
+                                                onChange={(e) =>
+                                                    patch(i, { email: e.target.value })
+                                                }
                                                 className="h-9"
                                             />
                                         </div>
@@ -295,11 +331,17 @@ function PartiesManager() {
                                         {/* Phone */}
                                         <div className="col-span-2 sm:col-span-1">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("newHk.parties.fields.phone.label", "Phone")}
+                                                {t(
+                                                    "newHk.parties.fields.phone.label",
+                                                    "Phone"
+                                                )}
                                             </Label>
                                             <Input
                                                 value={p.phone}
-                                                onChange={(e) => patch(i, { phone: e.target.value })}
+                                                disabled={isLocked}
+                                                onChange={(e) =>
+                                                    patch(i, { phone: e.target.value })
+                                                }
                                                 className="h-9"
                                             />
                                         </div>
@@ -307,14 +349,28 @@ function PartiesManager() {
                                         {/* Shares */}
                                         <div className="col-span-2 sm:col-span-1">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("newHk.parties.fields.shares.label", "Shares")}
+                                                {t(
+                                                    "newHk.parties.fields.shares.label",
+                                                    "Shares"
+                                                )}
                                             </Label>
                                             <Input
                                                 type="number"
-                                                value={Number.isFinite(p.shares) ? p.shares : 0}
+                                                disabled={isLocked}
+                                                value={
+                                                    Number.isFinite(p.shares)
+                                                        ? p.shares
+                                                        : 0
+                                                }
                                                 onChange={(e) => {
-                                                    const val = Number(e.target.value);
-                                                    patch(i, { shares: Number.isFinite(val) ? val : 0 });
+                                                    const val = Number(
+                                                        e.target.value
+                                                    );
+                                                    patch(i, {
+                                                        shares: Number.isFinite(val)
+                                                            ? val
+                                                            : 0,
+                                                    });
                                                 }}
                                                 className="h-9"
                                             />
@@ -323,12 +379,21 @@ function PartiesManager() {
                                         {/* Address */}
                                         <div className="col-span-2">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("newHk.parties.fields.address.label", "Address")}
+                                                {t(
+                                                    "newHk.parties.fields.address.label",
+                                                    "Address"
+                                                )}
                                             </Label>
                                             <Input
                                                 value={p.address ?? ""}
-                                                onChange={(e) => patch(i, { address: e.target.value })}
-                                                placeholder={t("newHk.parties.fields.address.placeholder", "Street, City, Country")}
+                                                disabled={isLocked}
+                                                onChange={(e) =>
+                                                    patch(i, { address: e.target.value })
+                                                }
+                                                placeholder={t(
+                                                    "newHk.parties.fields.address.placeholder",
+                                                    "Street, City, Country"
+                                                )}
                                                 className="h-9"
                                             />
                                         </div>
@@ -336,17 +401,28 @@ function PartiesManager() {
                                         {/* Share Type */}
                                         <div className="col-span-2">
                                             <Label className="text-xs text-gray-600 mb-2">
-                                                {t("newHk.parties.fields.type.label", "Share Type")}
+                                                {t(
+                                                    "newHk.parties.fields.type.label",
+                                                    "Share Type"
+                                                )}
                                             </Label>
                                             <RadioGroup
                                                 value={p.typeOfShare ?? DEFAULT_SHARE_ID}
-                                                onValueChange={(v) => patch(i, { typeOfShare: v })}
+                                                disabled={isLocked}
+                                                onValueChange={(v) =>
+                                                    patch(i, { typeOfShare: v })
+                                                }
                                                 className="flex gap-4"
                                             >
                                                 {SHARE_TYPES.map((type) => (
-                                                    <label key={type.id} className="flex items-center gap-2 cursor-pointer">
+                                                    <label
+                                                        key={type.id}
+                                                        className="flex items-center gap-2 cursor-pointer"
+                                                    >
                                                         <RadioGroupItem value={type.id} />
-                                                        <span className="text-sm">{t(type.label, type.label)}</span>
+                                                        <span className="text-sm">
+                                                            {t(type.label, type.label)}
+                                                        </span>
                                                     </label>
                                                 ))}
                                             </RadioGroup>
@@ -355,18 +431,28 @@ function PartiesManager() {
                                         {/* Corporate Entity */}
                                         <div className="col-span-2 sm:col-span-1">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("newHk.parties.fields.isCorp.label", "Corporate Entity")}
+                                                {t(
+                                                    "newHk.parties.fields.isCorp.label",
+                                                    "Corporate Entity"
+                                                )}
                                             </Label>
                                             <Select
                                                 value={String(p.isCorp)}
-                                                onValueChange={(v) => patch(i, { isCorp: v === "true" })}
+                                                disabled={isLocked}
+                                                onValueChange={(v) =>
+                                                    patch(i, { isCorp: v === "true" })
+                                                }
                                             >
                                                 <SelectTrigger className="h-9">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="false">{t("common.no", "No")}</SelectItem>
-                                                    <SelectItem value="true">{t("common.yes", "Yes")}</SelectItem>
+                                                    <SelectItem value="false">
+                                                        {t("common.no", "No")}
+                                                    </SelectItem>
+                                                    <SelectItem value="true">
+                                                        {t("common.yes", "Yes")}
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -374,54 +460,134 @@ function PartiesManager() {
                                         {/* Significant Controller */}
                                         <div className="col-span-2 sm:col-span-1">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("newHk.parties.fields.isSignificant.label", "Significant Controller")}
+                                                {t(
+                                                    "newHk.parties.fields.isSignificant.label",
+                                                    "Significant Controller"
+                                                )}
                                             </Label>
                                             <Select
                                                 value={String(p.isSignificant ?? false)}
-                                                onValueChange={(v) => patch(i, { isSignificant: v === "true" })}
+                                                disabled={isLocked}
+                                                onValueChange={(v) =>
+                                                    patch(i, {
+                                                        isSignificant: v === "true",
+                                                    })
+                                                }
                                             >
                                                 <SelectTrigger className="h-9">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="false">{t("common.no", "No")}</SelectItem>
-                                                    <SelectItem value="true">{t("common.yes", "Yes")}</SelectItem>
+                                                    <SelectItem value="false">
+                                                        {t("common.no", "No")}
+                                                    </SelectItem>
+                                                    <SelectItem value="true">
+                                                        {t("common.yes", "Yes")}
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
 
                                         {/* Designated Contact */}
-                                        <div className="col-span-2 sm:col-span-1">
+                                        {/* <div className="col-span-2 sm:col-span-1">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("newHk.parties.fields.isDesignatedContact.label", "Designated Contact")}
+                                                {t(
+                                                    "newHk.parties.fields.isDesignatedContact.label",
+                                                    "Designated Contact"
+                                                )}
                                             </Label>
                                             <Select
-                                                value={String(p.isDesignatedContact ?? false)}
-                                                onValueChange={(v) => patch(i, { isDesignatedContact: v === "true" })}
+                                                value={String(
+                                                    p.isDesignatedContact ?? false
+                                                )}
+                                                disabled={isLocked}
+                                                onValueChange={(v) =>
+                                                    patch(i, {
+                                                        isDesignatedContact:
+                                                            v === "true",
+                                                    })
+                                                }
                                             >
                                                 <SelectTrigger className="h-9">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="false">{t("common.no", "No")}</SelectItem>
-                                                    <SelectItem value="true">{t("common.yes", "Yes")}</SelectItem>
+                                                    <SelectItem value="false">
+                                                        {t("common.no", "No")}
+                                                    </SelectItem>
+                                                    <SelectItem value="true">
+                                                        {t("common.yes", "Yes")}
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
-                                        </div>
+                                        </div> */}
+
+                                        {/* Is Director */}
                                         <div className="col-span-2 sm:col-span-1">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("newHk.parties.fields.isDirector.label", "Is Director?")}
+                                                {t(
+                                                    "newHk.parties.fields.isDirector.label",
+                                                    "Is Director?"
+                                                )}
                                             </Label>
                                             <Select
                                                 value={String(p.isDirector ?? false)}
-                                                onValueChange={(v) => patch(i, { isDirector: v === "true" })}
+                                                disabled={isLocked}
+                                                onValueChange={(v) =>
+                                                    patch(i, { isDirector: v === "true" })
+                                                }
                                             >
                                                 <SelectTrigger className="h-9">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="false">{t("common.no", "No")}</SelectItem>
-                                                    <SelectItem value="true">{t("common.yes", "Yes")}</SelectItem>
+                                                    <SelectItem value="false">
+                                                        {t("common.no", "No")}
+                                                    </SelectItem>
+                                                    <SelectItem value="true">
+                                                        {t("common.yes", "Yes")}
+                                                    </SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* DCP (same styling as HK/PA) */}
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <Label className="text-xs text-gray-600 mb-1">
+                                                {t(
+                                                    "newHk.company.fields.isDcp.label",
+                                                    "Will this person act as DCP?"
+                                                )}{" "}
+                                                <Tip
+                                                    text={t(
+                                                        "newHk.company.fields.isDcp.tip",
+                                                        "Designated Contact Person for compliance/communication."
+                                                    )}
+                                                />
+                                            </Label>
+                                            <Select
+                                                value={String(p.isDcp ?? false)}
+                                                disabled={isLocked}
+                                                onValueChange={(v) =>
+                                                    patch(i, {
+                                                        isDcp: v === "true",
+                                                    })
+                                                }
+                                            >
+                                                <SelectTrigger className="h-9">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="true">
+                                                        {t(
+                                                            "newHk.parties.fields.isDirector.options.yes"
+                                                        )}
+                                                    </SelectItem>
+                                                    <SelectItem value="false">
+                                                        {t(
+                                                            "newHk.parties.fields.isDirector.options.no"
+                                                        )}
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -478,7 +644,7 @@ function PartiesManager() {
 const CompanyInfoStep = () => {
     const { t } = useTranslation();
     const [formData, setFormData] = useAtom(sgFormWithResetAtom1);
-    const [isInviting, setIsInviting] = React.useState(false);
+    // const [isInviting, setIsInviting] = React.useState(false);
 
     // seed safe defaults once
     useEffect(() => {
@@ -550,45 +716,45 @@ const CompanyInfoStep = () => {
         const sel = addressList.find((i) => t(i.value) === t(value)) || { id: "", value: "" };
         setFormData((p: any) => ({ ...p, businessAddress: sel }));
     };
-    const sendInvites = async () => {
-        const invites = [{ "email": formData.dcpEmail, "name": formData.dcpName }].filter(i => i.email && i.email.includes("@"))
+    // const sendInvites = async () => {
+    //     const invites = [{ "email": formData.dcpEmail, "name": formData.dcpName }].filter(i => i.email && i.email.includes("@"))
 
-        if (!invites.length) {
-            toast({
-                title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
-                description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
-                variant: "destructive",
-            });
-            return;
-        }
+    //     if (!invites.length) {
+    //         toast({
+    //             title: t("newHk.parties.toasts.invalidEmail.title", "No valid emails"),
+    //             description: t("newHk.parties.toasts.invalidEmail.desc", "Add at least one valid email to send invites."),
+    //             variant: "destructive",
+    //         });
+    //         return;
+    //     }
 
-        try {
-            setIsInviting(true);
-            const docId = formData?._id || "";
-            const payload = { _id: docId, inviteData: invites, country: "SG" };
-            const res = await sendInviteToShDir(payload);
+    //     try {
+    //         setIsInviting(true);
+    //         const docId = formData?._id || "";
+    //         const payload = { _id: docId, inviteData: invites, country: "SG" };
+    //         const res = await sendInviteToShDir(payload);
 
-            const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
+    //         const summary = res?.summary ?? { successful: 0, alreadyExists: 0, failed: 0 };
 
-            if (summary.successful > 0 || summary.alreadyExists > 0) {
-                setFormData({ ...formData, dcpStatus: "Invited" });
-                toast({
-                    title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
-                    description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
-                });
-            }
+    //         if (summary.successful > 0 || summary.alreadyExists > 0) {
+    //             setFormData({ ...formData, dcpStatus: "Invited" });
+    //             toast({
+    //                 title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
+    //                 description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
+    //             });
+    //         }
 
-            if (summary.failed > 0) {
-                toast({
-                    title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
-                    description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
-                    variant: "destructive",
-                });
-            }
-        } finally {
-            setIsInviting(false);
-        }
-    };
+    //         if (summary.failed > 0) {
+    //             toast({
+    //                 title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
+    //                 description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),
+    //                 variant: "destructive",
+    //             });
+    //         }
+    //     } finally {
+    //         setIsInviting(false);
+    //     }
+    // };
     return (
         <div className="space-y-3 max-width mx-auto">
             {/* Card A */}
@@ -872,9 +1038,7 @@ const CompanyInfoStep = () => {
                         </h3>
                         <PartiesManager />
                     </div>
-                    <div className="grid gap-4 mt-4 md:grid-cols-3">
-
-                        {/* DCP Name */}
+                    {/* <div className="grid gap-4 mt-4 md:grid-cols-3">
                         <div className="space-y-2 md:col-span-1">
                             <Label className="text-sm font-medium text-gray-700">
                                 {t("newHk.company.fields.dcpName.label")}
@@ -889,8 +1053,6 @@ const CompanyInfoStep = () => {
                                 className="h-9"
                             />
                         </div>
-
-                        {/* DCP Email */}
                         <div className="space-y-2 md:col-span-1">
                             <Label className="text-sm font-medium text-gray-700">
                                 {t("newHk.company.fields.dcpEmail.label")}
@@ -907,8 +1069,6 @@ const CompanyInfoStep = () => {
                         </div>
 
                         <div className="flex items-end gap-3">
-
-                            {/* DCP Number */}
                             <div className="flex-1 space-y-2">
                                 <Label className="text-sm font-medium text-gray-700">
                                     {t("newHk.company.fields.dcpNumber.label")}
@@ -936,7 +1096,10 @@ const CompanyInfoStep = () => {
 
                         </div>
 
-                    </div>
+                    </div> */}
+                    <Label className="text-lg text-red-600 m-2">
+                        {t("newHk.company.fields.inviteText", "Invite Shareholders/Directors Members before proceeding Next")}
+                    </Label>
                 </CardContent>
             </Card>
         </div>

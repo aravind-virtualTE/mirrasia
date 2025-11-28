@@ -55,7 +55,7 @@ export interface PanamaPIFForm {
   nomineePersons?: "" | "1" | "2" | "3";
   // --- Founders / Council ---
   founders: Array<{ type: "individual" | "corporate" | ""; name: string; id: string; email?: string; tel?: string; status?: string }>;
-  councilIndividuals: Array<{ type: "individual" | "corporate" | ""; name: string; id: string; email?: string; tel?: string;status?: string }>;
+  councilIndividuals: Array<{ type: "individual" | "corporate" | ""; name: string; id: string; email?: string; tel?: string;status?: string; isDcp?: boolean }>;
   councilCorporate: { corpMain: string; addrRep: string; signatory?: string; email?: string };
   // --- Options / Roles ---
   useNomineeDirector: boolean;

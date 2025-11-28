@@ -229,8 +229,8 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const email = form?.email || "";
   const phone = form?.phoneNum || "";
   const currentStatus = form?.status || "Pending";
-  const dcpName = form?.dcpName || "";
-  const dcpEmail = form?.dcpEmail || "";
+  // const dcpName = form?.dcpName || "";
+  // const dcpEmail = form?.dcpEmail || "";
   const industries = (form?.selectedIndustry || []) as string[];
   const purposes = (form?.establishmentPurpose || []) as string[];
   const bizDesc = form?.productDescription || form?.businessDescription || "";
@@ -401,7 +401,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       <span className="font-medium">{contactName || "—"}</span>
                     </div>
                   </LabelValue>
-                  <LabelValue label="Dcp Name">
+                  {/* <LabelValue label="Dcp Name">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{dcpName || "—"}</span>
                     </div>
@@ -410,7 +410,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{dcpEmail || "—"}</span>
                     </div>
-                  </LabelValue>
+                  </LabelValue> */}
                   <LabelValue label="Contact">
                     <div className="grid gap-2">
                       <div className="flex items-center gap-2">

@@ -703,6 +703,45 @@ function CouncilStep() {
                       onChange={(e) => updateInd(i, { tel: e.target.value })}
                     />
                   </div>
+                  <div className="col-span-2 sm:col-span-1">
+                    <Label className="text-xs text-gray-600 mb-1">
+                      {t(
+                        "newHk.company.fields.isDcp.label",
+                        "Will this person act as DCP?"
+                      )}{" "}
+                      <Tip
+                        text={t(
+                          "newHk.company.fields.isDcp.tip",
+                          "Designated Contact Person for compliance/communication."
+                        )}
+                      />
+                    </Label>
+                    <Select
+                      value={String(m.isDcp ?? false)}
+                      // disabled={isLocked}
+                      onValueChange={(v) =>
+                        updateInd(i, {
+                          isDcp: v === "true",
+                        })
+                      }
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="true">
+                          {t(
+                            "newHk.parties.fields.isDirector.options.yes"
+                          )}
+                        </SelectItem>
+                        <SelectItem value="false">
+                          {t(
+                            "newHk.parties.fields.isDirector.options.no"
+                          )}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </CardContent>
               </Card>
             ))}

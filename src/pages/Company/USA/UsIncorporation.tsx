@@ -681,6 +681,7 @@ function ShareholdersWidget({
                 ownershipRate: 0,
                 isDirector: { id: "no", label: "AmlCdd.options.no" },
                 isLegalPerson: { id: "no", label: "AmlCdd.options.no" },
+                isDcp: false,
             },
         ]);
 
@@ -759,7 +760,10 @@ function ShareholdersWidget({
                     </div>
                     <div>
                         <h2 className="text-base font-semibold text-gray-900">
-                            {t("usa.bInfo.shrldSection.shareholderOfficer", "Shareholders / Owners")}
+                            {t(
+                                "usa.bInfo.shrldSection.shareholderOfficer",
+                                "Shareholders / Owners"
+                            )}
                         </h2>
                         {ownershipMessage && (
                             <p className={cn("text-xs mt-1", ownershipClass)}>
@@ -770,7 +774,8 @@ function ShareholdersWidget({
                 </div>
 
                 <div className="text-right text-xs text-muted-foreground">
-                    {t("CompanyInformation.totalShrldrName")}: {totalOwnership.toFixed(2)}%
+                    {t("CompanyInformation.totalShrldrName")}:{" "}
+                    {totalOwnership.toFixed(2)}%
                 </div>
             </div>
 
@@ -781,11 +786,18 @@ function ShareholdersWidget({
                     const ownershipRate = Number(sh.ownershipRate || 0);
 
                     return (
-                        <Card key={idx} className="overflow-hidden transition-all hover:shadow-md">
+                        <Card
+                            key={idx}
+                            className="overflow-hidden transition-all hover:shadow-md"
+                        >
                             {/* Compact header */}
                             <div
                                 className="p-2 cursor-pointer flex items-center justify-between hover:bg-gray-50"
-                                onClick={() => setExpandedIndex(isExpanded ? null : idx)}
+                                onClick={() =>
+                                    setExpandedIndex(
+                                        isExpanded ? null : idx
+                                    )
+                                }
                             >
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
                                     <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-100">
@@ -796,11 +808,15 @@ function ShareholdersWidget({
                                         <div className="flex items-center gap-2">
                                             <span className="font-medium text-gray-900 truncate">
                                                 {sh.name ||
-                                                    t("usa.bInfo.shrldSection.shareholderOfficer", "Shareholder/Officer")}
+                                                    t(
+                                                        "usa.bInfo.shrldSection.shareholderOfficer",
+                                                        "Shareholder/Officer"
+                                                    )}
                                             </span>
                                         </div>
                                         <p className="text-sm text-gray-500 truncate">
-                                            {sh.email || t("common.noEmail", "No email")}
+                                            {sh.email ||
+                                                t("common.noEmail", "No email")}
                                         </p>
                                     </div>
 
@@ -811,7 +827,10 @@ function ShareholdersWidget({
                                     </div>
                                 </div>
 
-                                <button className="ml-4 p-1 hover:bg-gray-200 rounded" type="button">
+                                <button
+                                    className="ml-4 p-1 hover:bg-gray-200 rounded"
+                                    type="button"
+                                >
                                     {isExpanded ? (
                                         <ChevronUp className="w-4 h-4 text-gray-600" />
                                     ) : (
@@ -827,20 +846,28 @@ function ShareholdersWidget({
                                         {/* Name */}
                                         <div className="grid gap-2">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("usa.bInfo.shrldSection.shareholderOfficer")}
+                                                {t(
+                                                    "usa.bInfo.shrldSection.shareholderOfficer"
+                                                )}
                                             </Label>
                                             <Input
                                                 className="h-9"
                                                 placeholder="Name on passport/official documents"
                                                 value={sh.name}
-                                                onChange={(e) => updateAt(idx, { name: e.target.value })}
+                                                onChange={(e) =>
+                                                    updateAt(idx, {
+                                                        name: e.target.value,
+                                                    })
+                                                }
                                             />
                                         </div>
 
                                         {/* Ownership rate */}
                                         <div className="grid gap-2">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("CompanyInformation.ownerShpRte")}
+                                                {t(
+                                                    "CompanyInformation.ownerShpRte"
+                                                )}
                                             </Label>
                                             <Input
                                                 type="number"
@@ -851,7 +878,12 @@ function ShareholdersWidget({
                                                 value={sh.ownershipRate}
                                                 onChange={(e) =>
                                                     updateAt(idx, {
-                                                        ownershipRate: parseFloat(e.target.value || "0"),
+                                                        ownershipRate:
+                                                            parseFloat(
+                                                                e.target
+                                                                    .value ||
+                                                                "0"
+                                                            ),
                                                     })
                                                 }
                                             />
@@ -867,7 +899,11 @@ function ShareholdersWidget({
                                                 className="h-9"
                                                 placeholder="email@example.com"
                                                 value={sh.email}
-                                                onChange={(e) => updateAt(idx, { email: e.target.value })}
+                                                onChange={(e) =>
+                                                    updateAt(idx, {
+                                                        email: e.target.value,
+                                                    })
+                                                }
                                             />
                                         </div>
 
@@ -881,33 +917,52 @@ function ShareholdersWidget({
                                                 className="h-9"
                                                 placeholder="+1234567890"
                                                 value={sh.phone}
-                                                onChange={(e) => updateAt(idx, { phone: e.target.value })}
+                                                onChange={(e) =>
+                                                    updateAt(idx, {
+                                                        phone: e.target.value,
+                                                    })
+                                                }
                                             />
                                         </div>
 
                                         {/* Is Director */}
                                         <div className="grid gap-2">
                                             <Label className="text-xs text-gray-600 mb-1">
-                                                {t("CompanyInformation.actDirector")}
+                                                {t(
+                                                    "CompanyInformation.actDirector"
+                                                )}
                                             </Label>
                                             <Select
                                                 value={sh.isDirector?.id || "no"}
                                                 onValueChange={(val) =>
                                                     updateAt(idx, {
                                                         isDirector:
-                                                            yesNo.find((x) => x.id === val) || {
+                                                            yesNo.find(
+                                                                (x) =>
+                                                                    x.id ===
+                                                                    val
+                                                            ) || {
                                                                 id: "no",
-                                                                label: "AmlCdd.options.no",
+                                                                label:
+                                                                    "AmlCdd.options.no",
                                                             },
                                                     })
                                                 }
                                             >
                                                 <SelectTrigger className="h-9">
-                                                    <SelectValue placeholder={t("common.select", "Select")} />
+                                                    <SelectValue
+                                                        placeholder={t(
+                                                            "common.select",
+                                                            "Select"
+                                                        )}
+                                                    />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {yesNo.map((o) => (
-                                                        <SelectItem key={o.id} value={o.id}>
+                                                        <SelectItem
+                                                            key={o.id}
+                                                            value={o.id}
+                                                        >
                                                             {t(o.label)}
                                                         </SelectItem>
                                                     ))}
@@ -921,26 +976,84 @@ function ShareholdersWidget({
                                                 {t("CompanyInformation.isLegal")}
                                             </Label>
                                             <Select
-                                                value={sh.isLegalPerson?.id || "no"}
+                                                value={
+                                                    sh.isLegalPerson?.id ||
+                                                    "no"
+                                                }
                                                 onValueChange={(val) =>
                                                     updateAt(idx, {
                                                         isLegalPerson:
-                                                            yesNo.find((x) => x.id === val) || {
+                                                            yesNo.find(
+                                                                (x) =>
+                                                                    x.id ===
+                                                                    val
+                                                            ) || {
                                                                 id: "no",
-                                                                label: "AmlCdd.options.no",
+                                                                label:
+                                                                    "AmlCdd.options.no",
                                                             },
                                                     })
                                                 }
                                             >
                                                 <SelectTrigger className="h-9">
-                                                    <SelectValue placeholder={t("common.select", "Select")} />
+                                                    <SelectValue
+                                                        placeholder={t(
+                                                            "common.select",
+                                                            "Select"
+                                                        )}
+                                                    />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {yesNo.map((o) => (
-                                                        <SelectItem key={o.id} value={o.id}>
+                                                        <SelectItem
+                                                            key={o.id}
+                                                            value={o.id}
+                                                        >
                                                             {t(o.label)}
                                                         </SelectItem>
                                                     ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* DCP */}
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs text-gray-600 mb-1">
+                                                {t(
+                                                    "newHk.company.fields.isDcp.label",
+                                                    "Will this person act as DCP?"
+                                                )}{" "}
+                                                <Tip
+                                                    text={t(
+                                                        "newHk.company.fields.isDcp.tip",
+                                                        "Designated Contact Person for compliance/communication."
+                                                    )}
+                                                />
+                                            </Label>
+                                            <Select
+                                                value={String(
+                                                    sh.isDcp ?? false
+                                                )}
+                                                onValueChange={(v) =>
+                                                    updateAt(idx, {
+                                                        isDcp: v === "true",
+                                                    })
+                                                }
+                                            >
+                                                <SelectTrigger className="h-9">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="true">
+                                                        {t(
+                                                            "newHk.parties.fields.isDirector.options.yes"
+                                                        )}
+                                                    </SelectItem>
+                                                    <SelectItem value="false">
+                                                        {t(
+                                                            "newHk.parties.fields.isDirector.options.no"
+                                                        )}
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -955,7 +1068,10 @@ function ShareholdersWidget({
                                                 onClick={() => removeAt(idx)}
                                             >
                                                 <Trash2 className="w-4 h-4 mr-1" />
-                                                {t("newHk.parties.buttons.remove", "Remove")}
+                                                {t(
+                                                    "newHk.parties.buttons.remove",
+                                                    "Remove"
+                                                )}
                                             </Button>
                                         )}
                                     </div>
@@ -997,113 +1113,114 @@ function ShareholdersWidget({
     );
 }
 
-function DcpWidget({ form, setForm, }: { form: any; setForm: (fn: (prev: any) => any) => void; }) {
-    const { toast } = useToast();
-    const [isLoading, setIsLoading] = React.useState(false);
-    const { t } = useTranslation();
 
-    const fields: FieldBase[] = [
-        {
-            type: "text",
-            name: "dcpName",
-            label: "newHk.company.fields.dcpName.label",
-            placeholder: "newHk.company.fields.dcpName.placeholder",
-            tooltip: "usa.bInfo.shrldSection.desgnToolTip",
-            required: true,
-            options: [],
-            colSpan: 2,
-        },
-        {
-            type: "text",
-            name: "dcpEmail",
-            label: "newHk.company.fields.dcpEmail.label",
-            placeholder: "newHk.company.fields.dcpEmail.placeholder",
-            required: true,
-            options: [],
-            colSpan: 1,
-        },
-        {
-            type: "text",
-            name: "dcpNumber",
-            label: "newHk.company.fields.dcpNumber.label",
-            placeholder: "newHk.company.fields.dcpNumber.placeholder",
-            required: true,
-            options: [],
-            colSpan: 1,
-        },
-    ];
+// function DcpWidget({ form, setForm, }: { form: any; setForm: (fn: (prev: any) => any) => void; }) {
+//     const { toast } = useToast();
+//     const [isLoading, setIsLoading] = React.useState(false);
+//     const { t } = useTranslation();
 
-    const sendMailFunction = async () => {
-        try {
-            setIsLoading(true);
+//     const fields: FieldBase[] = [
+//         {
+//             type: "text",
+//             name: "dcpName",
+//             label: "newHk.company.fields.dcpName.label",
+//             placeholder: "newHk.company.fields.dcpName.placeholder",
+//             tooltip: "usa.bInfo.shrldSection.desgnToolTip",
+//             required: true,
+//             options: [],
+//             colSpan: 2,
+//         },
+//         {
+//             type: "text",
+//             name: "dcpEmail",
+//             label: "newHk.company.fields.dcpEmail.label",
+//             placeholder: "newHk.company.fields.dcpEmail.placeholder",
+//             required: true,
+//             options: [],
+//             colSpan: 1,
+//         },
+//         {
+//             type: "text",
+//             name: "dcpNumber",
+//             label: "newHk.company.fields.dcpNumber.label",
+//             placeholder: "newHk.company.fields.dcpNumber.placeholder",
+//             required: true,
+//             options: [],
+//             colSpan: 1,
+//         },
+//     ];
 
-            const extractedData = [{name: form.dcpName, email: form.dcpEmail}];
+//     const sendMailFunction = async () => {
+//         try {
+//             setIsLoading(true);
 
-            const docId = localStorage.getItem("companyRecordId");
-            let country = "US_Individual";
-            if (form.selectedEntity === "Corporation") {
-                country = "US_Corporate";
-            }
+//             const extractedData = [{name: form.dcpName, email: form.dcpEmail}];
 
-            const payload = { _id: docId, inviteData: extractedData, country };
-            const response = await sendInviteToShDir(payload);
+//             const docId = localStorage.getItem("companyRecordId");
+//             let country = "US_Individual";
+//             if (form.selectedEntity === "Corporation") {
+//                 country = "US_Corporate";
+//             }
 
-            if (response.summary.successful > 0) {
-                toast({
-                    title: "Success",
-                    description: `Successfully sent invitation mail to ${response.summary.successful} people`,
-                });
-            }
-            if (response.summary.alreadyExists > 0) {
-                toast({
-                    title: "Success",
-                    description: `Invite sent to member/director`,
-                });
-            }
-            if (response.summary.failed > 0) {
-                toast({
-                    title: "Failed",
-                    description: `Some Invitations Failed`,
-                });
-            }
-        } catch (e) {
-            console.log(e);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+//             const payload = { _id: docId, inviteData: extractedData, country };
+//             const response = await sendInviteToShDir(payload);
 
-    return (
-        <div className="max-width mx-auto p-2 space-y-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {fields.map((f) => (
-                    <Field
-                        key={f.name}
-                        field={f}
-                        form={form}
-                        setForm={setForm}
-                    />
-                ))}
-            </div>
-            <Button
-                onClick={sendMailFunction}
-                disabled={isLoading}
-                className="flex items-center"
-                aria-busy={isLoading}
-                aria-live="polite"
-            >
-                {isLoading ? (
-                    <>
-                        <CustomLoader />
-                        <span className="ml-2">Processing...</span>
-                    </>
-                ) : (
-                    <span>{t("newHk.parties.buttons.invite")}</span>
-                )}
-            </Button>
-        </div>
-    );
-}
+//             if (response.summary.successful > 0) {
+//                 toast({
+//                     title: "Success",
+//                     description: `Successfully sent invitation mail to ${response.summary.successful} people`,
+//                 });
+//             }
+//             if (response.summary.alreadyExists > 0) {
+//                 toast({
+//                     title: "Success",
+//                     description: `Invite sent to member/director`,
+//                 });
+//             }
+//             if (response.summary.failed > 0) {
+//                 toast({
+//                     title: "Failed",
+//                     description: `Some Invitations Failed`,
+//                 });
+//             }
+//         } catch (e) {
+//             console.log(e);
+//         } finally {
+//             setIsLoading(false);
+//         }
+//     };
+
+//     return (
+//         <div className="max-width mx-auto p-2 space-y-2">
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//                 {fields.map((f) => (
+//                     <Field
+//                         key={f.name}
+//                         field={f}
+//                         form={form}
+//                         setForm={setForm}
+//                     />
+//                 ))}
+//             </div>
+//             <Button
+//                 onClick={sendMailFunction}
+//                 disabled={isLoading}
+//                 className="flex items-center"
+//                 aria-busy={isLoading}
+//                 aria-live="polite"
+//             >
+//                 {isLoading ? (
+//                     <>
+//                         <CustomLoader />
+//                         <span className="ml-2">Processing...</span>
+//                     </>
+//                 ) : (
+//                     <span>{t("newHk.parties.buttons.invite")}</span>
+//                 )}
+//             </Button>
+//         </div>
+//     );
+// }
 
 
 // ---------- Corp vs LLC dialog ----------
@@ -3796,7 +3913,7 @@ export default function ConfigDrivenUSAForm() {
         // const docId = localStorage.getItem("companyRecordId");
         const payload = { ...form };
         payload.userId = `${decodedToken.userId}`
-         if (!payload.userId) {
+        if (!payload.userId) {
             payload.userId = decodedToken.userId;
             payload.users = [{ "userId": decodedToken.userId, "role": "owner" }];
         } else {
@@ -4255,18 +4372,21 @@ function SectionRenderer({ section, form, setForm, setOpenDialog, }: {
                     form={form}
                     setForm={setForm}
                 />
+                <Label className="text-lg text-red-600 m-2">
+                    {t("newHk.company.fields.inviteText", "Invite Shareholders/Directors Members before proceeding Next")}
+                </Label>
             </div>
         );
     }
-    if (section.kind === "widget" && section.widget === "custom-dcp") {
-        return (
-            <div className="w-full">
-                <DcpWidget
-                    form={form}
-                    setForm={setForm}
-                />
-            </div>
-        );
-    }
+    // if (section.kind === "widget" && section.widget === "custom-dcp") {
+    //     return (
+    //         <div className="w-full">
+    //             <DcpWidget
+    //                 form={form}
+    //                 setForm={setForm}
+    //             />
+    //         </div>
+    //     );
+    // }
     return null;
 }
