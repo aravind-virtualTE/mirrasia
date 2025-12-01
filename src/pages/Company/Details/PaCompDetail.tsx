@@ -39,6 +39,7 @@ import {
 
 import { User } from "@/components/userList/UsersList";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type SessionData = {
     _id: string;
@@ -121,6 +122,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [isSaving, setIsSaving] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [taskToDelete, setTaskToDelete] = useState<{ companyId: string, countryCode: string } | null>(null);
+    const [invoiceOpen, setInvoiceOpen] = React.useState(false);
 
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const isAdmin = user?.role !== "user";
@@ -1011,6 +1013,15 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                 </div>
                                             </div>
                                         )}
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="w-full justify-center"
+                                            onClick={() => setInvoiceOpen(true)}
+                                        >
+                                            <ReceiptText className="mr-2 h-4 w-4" />
+                                            View Invoice
+                                        </Button>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -1170,6 +1181,19 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 cancelText="Cancel"
                 onConfirm={markDelete}
             />
+            <Dialog open={invoiceOpen} onOpenChange={setInvoiceOpen}>
+                <DialogContent className="sm:max-w-[900px] w-[95vw] p-0" >
+                    <DialogHeader className="px-6 pt-6 pb-4">
+                        <DialogTitle>Invoice</DialogTitle>
+                    </DialogHeader>
+                    <div className="px-6 pb-6">
+                        <div className="max-h-[70vh] overflow-y-auto"
+                        >
+                            <h1>to be updated soon..</h1>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </Tabs>
     );
 };
