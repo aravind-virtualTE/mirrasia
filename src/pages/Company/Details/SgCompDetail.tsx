@@ -108,6 +108,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [invoiceOpen, setInvoiceOpen] = useState(false);
 
   const [session, setSession] = useState<SessionData>({
     _id: "",
@@ -693,6 +694,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       </div>
                     )}
                   </div>
+                  
 
                   {/* {isAdmin && (
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -735,6 +737,15 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       </div>
                     </div>
                   )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-center"
+                    onClick={() => setInvoiceOpen(true)}
+                  >
+                    <ReceiptText className="mr-2 h-4 w-4" />
+                    View Invoice
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -831,6 +842,19 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
         cancelText="Cancel"
         onConfirm={markDelete}
       />
+      <Dialog open={invoiceOpen} onOpenChange={setInvoiceOpen}>
+        <DialogContent className="sm:max-w-[900px] w-[95vw] p-0" >
+          <DialogHeader className="px-6 pt-6 pb-4">
+            <DialogTitle>Invoice</DialogTitle>
+          </DialogHeader>
+          <div className="px-6 pb-6">
+            <div className="max-h-[70vh] overflow-y-auto"
+            >
+              <h1>to be updated soon..</h1>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Tabs>
   );
 };

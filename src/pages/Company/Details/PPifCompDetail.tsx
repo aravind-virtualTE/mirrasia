@@ -22,6 +22,7 @@ import { usersData } from "@/services/state";
 import { toast } from "@/hooks/use-toast";
 import { t } from "i18next";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // ----------------- Types -----------------
 export type PIFRecord = {
@@ -168,6 +169,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
     const [adminAssigned, setAdminAssigned] = React.useState("");
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
     const [taskToDelete, setTaskToDelete] = React.useState<{ companyId: string, countryCode: string } | null>(null);
+    const [invoiceOpen, setInvoiceOpen] = React.useState(false);
 
     const dataMemo = React.useMemo(() => ({
         applicantName: data?.contactName || "",
@@ -800,6 +802,15 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 className="col-span-3"
                                             />
                                         </div>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="w-full justify-center"
+                                            onClick={() => setInvoiceOpen(true)}
+                                        >
+                                            <ReceiptText className="mr-2 h-4 w-4" />
+                                            View Invoice
+                                        </Button>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -920,6 +931,19 @@ export default function PPifCompDetail({ id }: { id: string }) {
                 cancelText="Cancel"
                 onConfirm={markDelete}
             />
+            <Dialog open={invoiceOpen} onOpenChange={setInvoiceOpen}>
+                <DialogContent className="sm:max-w-[900px] w-[95vw] p-0" >
+                    <DialogHeader className="px-6 pt-6 pb-4">
+                        <DialogTitle>Invoice</DialogTitle>
+                    </DialogHeader>
+                    <div className="px-6 pb-6">
+                        <div className="max-h-[70vh] overflow-y-auto"
+                        >
+                            <h1>to be updated soon..</h1>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </Tabs>
     );
 }
