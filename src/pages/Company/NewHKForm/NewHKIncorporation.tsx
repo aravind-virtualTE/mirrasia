@@ -2504,7 +2504,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
 
       if (!payload.userId) {
         payload.userId = decodedToken.userId;
-        payload.users = [{ "userId": decodedToken.userId, "role": "owner" }];
+        payload.users = [{ "userId": decodedToken.userId, "role": "applicant" }];
       } else {
         // If userId exists but belongs to someone else, do NOT override
         if (payload.userId !== decodedToken.userId) {

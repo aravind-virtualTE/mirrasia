@@ -82,7 +82,7 @@ const CompanyRegistration = () => {
                 return await getUsIncorpoDataById(`${id}`)
             }
             getUsData().then((result) => {
-                // console.log("result-->", result);
+                console.log("usa  result-->", result);
                 setFormData(result)
             })
             setCountryState({

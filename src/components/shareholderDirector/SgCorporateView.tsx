@@ -1,4 +1,5 @@
-import type React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import * as React from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,62 +8,59 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { X, Eye, Download, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { X, Eye, Download, FileText } from "lucide-react";
 
-interface NewUserDetail {
+export interface SgCorporateMember {
   _id: string;
   userId: string;
-  name: string;
   email: string;
-  nameChanged: string;
+  name: string;
+  companyName: string;
+  nameChanged: string; // "yes" | "no"
   previousName: string;
   birthdate: string;
-  maritalStatus: string;
   nationality: string;
   passport: string;
-  job: string;
   residenceAddress: string;
-  postalAddressSame: string;
+  postalAddressSame: string; // "yes" | "no"
   postalAddress: string;
   phone: string;
-  companyName: string;
-  corporationRelationship: string[];
-  investedAmount: string;
-  sharesAcquired: string;
-  fundSource: string[];
-  originFundInvestFromCountry: string;
-  fundGenerated: string[];
+  kakaoId: string;
+  otherSNSIds: string;
+  companyRelation: string[] | string;
+  percentSharesHeld: string;
+  fundSource: string[] | string;
+  countryOriginFund: string;
+  fundGenerated: string[] | string;
   originFundGenerateCountry: string;
-  taxCountry: string;
-  taxNumber: string;
-  annualSaleIncomePrevYr: string[];
-  currentNetWorth: string[];
-  isPoliticallyProminentFig: string;
+  netAssetValue: string;
+  usTaxStatus: string; // "yes" | "no"
+  usTIN: string;
+  isPoliticallyProminentFig: string; // "yes" | "no"
   descPoliticImpRel: string;
-  isCrimeConvitted: string;
-  lawEnforced: string;
-  isMoneyLaundered: string;
-  isBankRupted: string;
-  isInvolvedBankRuptedOfficer: string;
-  isPartnerOfOtherComp: string;
-  otherPartnerOtherComp: string;
-  declarationAgreement: string;
-  passportId: string;
-  bankStatement3Mnth: string;
-  addressProof: string;
-  profRefLetter: string;
-  engResume: string;
-  createdAt: string;
-  updatedAt: string;
+  isCrimeConvitted: string; // "yes" | "no"
+  lawEnforced: string; // "yes" | "no"
+  isMoneyLaundered: string; // "yes" | "no"
+  isBankRupted: string; // "yes" | "no"
+  isInvolvedBankRuptedOfficer: string; // "yes" | "no"
+  describeIfInvolvedBankRupted: string;
+  declarationAgreement: string; // "yes" | "no"
+  passportId?: string;   // URL or filename
+  addressProof?: string; // URL or filename
+  engResume?: string;    // URL or filename
+  otherInputs?: Record<string, string>;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
 }
 
-interface DetailUserDialogProps {
+interface SgCorporateMemberDetailDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  userData: NewUserDetail | null;
+  data: SgCorporateMember | null;
 }
 
 /* ---------- helpers ---------- */
@@ -89,11 +87,32 @@ const toArray = (val: string[] | string | undefined | null): string[] => {
   return [];
 };
 
-// const formatKey = (key: string): string => {
-//   return key
-//     .replace(/([A-Z])/g, " $1")
-//     .replace(/^(.)/, (str) => str.toUpperCase());
-// };
+const COMPANY_RELATION_LABELS: Record<string, string> = {
+  shareholder: "Shareholder",
+  director: "Director",
+  officer: "Officer",
+};
+
+const FUND_SOURCE_LABELS: Record<string, string> = {
+  employedIncome: "Employed income",
+  businessIncome: "Business income",
+  companyShareSale: "Sale of company shares",
+  savings: "Savings / deposits",
+  inheritance: "Inheritance / gifts",
+  other: "Other",
+};
+
+const FUND_GENERATED_LABELS: Record<string, string> = {
+  businessIncome: "Business income",
+  investmentIncome: "Investment income",
+  salary: "Salary",
+  other: "Other",
+};
+
+const mapWithLabels = (
+  values: string[],
+  labels: Record<string, string>
+): string[] => values.map((v) => labels[v] ?? v);
 
 const renderFilePreview = (label: string, fileValue?: string | File | null) => {
   if (!fileValue) return null;
@@ -195,7 +214,212 @@ const renderFilePreview = (label: string, fileValue?: string | File | null) => {
   );
 };
 
-/* ---------- mini layout helpers (same pattern as SgCorporateMemberDetailDialog) ---------- */
+/* ---------- main component ---------- */
+
+const SgCorporateMemberDetail: React.FC<
+  SgCorporateMemberDetailDialogProps
+> = ({ isOpen, onClose, data }) => {
+  if (!data) return null;
+
+  const relations = mapWithLabels(
+    toArray(data.companyRelation),
+    COMPANY_RELATION_LABELS
+  );
+  const fundSource = mapWithLabels(toArray(data.fundSource), FUND_SOURCE_LABELS);
+  const fundGenerated = mapWithLabels(
+    toArray(data.fundGenerated),
+    FUND_GENERATED_LABELS
+  );
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
+        <DialogHeader className="px-6 pt-6 pb-2 sticky top-0 bg-background z-10 border-b">
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-xl font-bold">
+              Singapore Company Member – Corporate Detail
+            </DialogTitle>
+            <DialogClose asChild>
+              <Button variant="ghost" size="icon">
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogClose>
+          </div>
+          {(data.createdAt || data.updatedAt) && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              {data.createdAt && <>Created: {formatDate(data.createdAt)}</>}
+              {data.updatedAt && (
+                <>
+                  {"  ·  "}
+                  Last Updated: {formatDate(data.updatedAt)}
+                </>
+              )}
+            </p>
+          )}
+        </DialogHeader>
+
+        <ScrollArea className="h-[calc(90vh-5rem)] px-6 pb-6">
+          {/* 1) Basic info */}
+          <Section title="1) Basic Information">
+            <div className="space-y-2">
+              <Row label="Member Name" value={data.name} />
+              <Row label="Email" value={data.email} />
+              <Row label="Singapore Company Name" value={data.companyName} />
+              <Row label="Date of Birth" value={formatDate(data.birthdate)} />
+              <Row label="Nationality" value={data.nationality} />
+              <Row label="Passport No." value={data.passport} />
+              <Row label="Mobile / Phone" value={data.phone} />
+
+              <Row
+                label="Name Changed Before"
+                value={formatYesNo(data.nameChanged)}
+              />
+              {data.nameChanged === "yes" && (
+                <Row
+                  label="Previous English Name"
+                  value={data.previousName || "-"}
+                />
+              )}
+
+              <Row
+                label="Residence Address"
+                value={data.residenceAddress || "-"}
+              />
+              <Row
+                label="Postal Address Same as Residence"
+                value={formatYesNo(data.postalAddressSame)}
+              />
+              {data.postalAddressSame === "no" && (
+                <Row label="Postal Address" value={data.postalAddress || "-"} />
+              )}
+
+              <Row label="Kakao ID" value={data.kakaoId || "-"} />
+              <Row
+                label="Other SNS IDs (Telegram / WeChat / etc.)"
+                value={data.otherSNSIds || "-"}
+              />
+            </div>
+          </Section>
+
+          <Separator className="my-6" />
+
+          {/* 2) Relationship & ownership */}
+          <Section title="2) Relationship with Company & Ownership">
+            <div className="space-y-2">
+              <Row
+                label="Relationship with Singapore Company"
+                isBadges
+                badges={relations}
+              />
+              <Row
+                label="Percentage of Shares Held"
+                value={data.percentSharesHeld ? `${data.percentSharesHeld}%` : "-"}
+              />
+              <Row
+                label="Estimated Net Asset Value"
+                value={data.netAssetValue || "-"}
+              />
+            </div>
+          </Section>
+
+          <Separator className="my-6" />
+
+          {/* 3) Funds */}
+          <Section title="3) Source & Generation of Funds">
+            <div className="space-y-2">
+              <Row
+                label="Source of Funds (for Investment)"
+                isBadges
+                badges={fundSource}
+              />
+              <Row
+                label="Country(ies) Where Investment Funds Originate"
+                value={data.countryOriginFund || "-"}
+              />
+
+              <Row
+                label="How Funds Are / Will Be Generated"
+                isBadges
+                badges={fundGenerated}
+              />
+              <Row
+                label="Country(ies) Where Funds Are Generated"
+                value={data.originFundGenerateCountry || "-"}
+              />
+            </div>
+          </Section>
+
+          <Separator className="my-6" />
+
+          {/* 4) US Tax */}
+          <Section title="4) US Tax Status">
+            <div className="space-y-2">
+              <Row label="US Tax Status" value={formatYesNo(data.usTaxStatus)} />
+              <Row label="US TIN (if applicable)" value={data.usTIN || "-"} />
+            </div>
+          </Section>
+
+          <Separator className="my-6" />
+
+          {/* 5) PEP / AML */}
+          <Section title="5) PEP / AML & Declarations">
+            <div className="space-y-2">
+              <Row
+                label="Politically Exposed Person (PEP)"
+                value={formatYesNo(data.isPoliticallyProminentFig)}
+              />
+              <Row
+                label="PEP / Relationship Details"
+                value={data.descPoliticImpRel || "-"}
+              />
+
+              <Row
+                label="Ever Convicted of a Crime"
+                value={formatYesNo(data.isCrimeConvitted)}
+              />
+              <Row
+                label="Ever Investigated by Law Enforcement / Authorities"
+                value={formatYesNo(data.lawEnforced)}
+              />
+              <Row
+                label="Involved in Money Laundering"
+                value={formatYesNo(data.isMoneyLaundered)}
+              />
+              <Row
+                label="Ever Bankrupted Personally"
+                value={formatYesNo(data.isBankRupted)}
+              />
+              <Row
+                label="Officer in Bankrupted / Liquidated Entity"
+                value={formatYesNo(data.isInvolvedBankRuptedOfficer)}
+              />
+              <Row
+                label="Details of Bankruptcy / Liquidation Involvement"
+                value={data.describeIfInvolvedBankRupted || "-"}
+              />
+
+              <Row
+                label="Declaration & Agreement"
+                value={formatYesNo(data.declarationAgreement)}
+              />
+            </div>
+          </Section>
+
+          <Separator className="my-6" />
+
+          {/* 6) Supporting documents */}
+          <Section title="6) Supporting Documents">
+            {renderFilePreview("Passport / ID Copy", data.passportId)}
+            {renderFilePreview("Proof of Address", data.addressProof)}
+            {renderFilePreview("English Resume / Profile", data.engResume)}
+          </Section>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+/* ---------- mini UI helpers ---------- */
 
 function Section({
   title,
@@ -241,219 +465,4 @@ function Row({ label, value, isBadges, badges = [] }: RowProps) {
   );
 }
 
-/* ---------- main component ---------- */
-
-const DetailPAShareHolderDialog: React.FC<DetailUserDialogProps> = ({
-  isOpen,
-  onClose,
-  userData,
-}) => {
-  if (!userData) return null;
-
-  const corpRelations = toArray(userData.corporationRelationship);
-  const fundSource = toArray(userData.fundSource);
-  const fundGenerated = toArray(userData.fundGenerated);
-  const annualSale = toArray(userData.annualSaleIncomePrevYr);
-  const netWorth = toArray(userData.currentNetWorth);
-
-  return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
-        <DialogHeader className="px-6 pt-6 pb-2 sticky top-0 bg-background z-10 border-b">
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl font-bold">
-              Panama Company Shareholder / Investor Detail
-            </DialogTitle>
-            <DialogClose asChild>
-              <Button variant="ghost" size="icon">
-                <X className="h-4 w-4" />
-              </Button>
-            </DialogClose>
-          </div>
-          {(userData.createdAt || userData.updatedAt) && (
-            <p className="mt-1 text-xs text-muted-foreground">
-              {userData.createdAt && (
-                <>Created: {formatDate(userData.createdAt)}</>
-              )}
-              {userData.updatedAt && (
-                <>
-                  {"  ·  "}
-                  Last Updated: {formatDate(userData.updatedAt)}
-                </>
-              )}
-            </p>
-          )}
-        </DialogHeader>
-
-        <ScrollArea className="h-[calc(90vh-5rem)] px-6 pb-6">
-          {/* 1) Basic info */}
-          <Section title="1) Basic Information">
-            <div className="space-y-2">
-              <Row label="Name" value={userData.name} />
-              <Row label="Email" value={userData.email} />
-              <Row label="Date of Birth" value={formatDate(userData.birthdate)} />
-              <Row label="Marital Status" value={userData.maritalStatus} />
-              <Row label="Nationality" value={userData.nationality} />
-              <Row label="Passport No." value={userData.passport} />
-              <Row label="Occupation / Job" value={userData.job} />
-              <Row
-                label="Name Changed Before"
-                value={formatYesNo(userData.nameChanged)}
-              />
-              {userData.nameChanged?.toLowerCase() === "yes" && (
-                <Row
-                  label="Previous English Name"
-                  value={userData.previousName || "-"}
-                />
-              )}
-            </div>
-          </Section>
-
-          <Separator className="my-6" />
-
-          {/* 2) Address */}
-          <Section title="2) Address & Contact">
-            <div className="space-y-2">
-              <Row
-                label="Residence Address"
-                value={userData.residenceAddress || "-"}
-              />
-              <Row
-                label="Postal Address Same as Residence"
-                value={formatYesNo(userData.postalAddressSame)}
-              />
-              {userData.postalAddressSame?.toLowerCase() === "no" && (
-                <Row
-                  label="Postal Address"
-                  value={userData.postalAddress || "-"}
-                />
-              )}
-              <Row label="Phone / Mobile" value={userData.phone} />
-            </div>
-          </Section>
-
-          <Separator className="my-6" />
-
-          {/* 3) Company & Investment */}
-          <Section title="3) Company & Investment">
-            <div className="space-y-2">
-              <Row label="Company Name" value={userData.companyName} />
-              <Row
-                label="Relationship with Corporation"
-                isBadges
-                badges={corpRelations}
-              />
-              <Row label="Invested Amount" value={userData.investedAmount} />
-              <Row label="Shares Acquired" value={userData.sharesAcquired} />
-            </div>
-          </Section>
-
-          <Separator className="my-6" />
-
-          {/* 4) Funds details */}
-          <Section title="4) Funds & Financial Profile">
-            <div className="space-y-2">
-              <Row
-                label="Source of Funds (for Investment)"
-                isBadges
-                badges={fundSource}
-              />
-              <Row
-                label="Country(ies) Where Investment Funds Originate"
-                value={userData.originFundInvestFromCountry || "-"}
-              />
-              <Row
-                label="How Funds Are / Will Be Generated"
-                isBadges
-                badges={fundGenerated}
-              />
-              <Row
-                label="Country(ies) Where Funds Are Generated"
-                value={userData.originFundGenerateCountry || "-"}
-              />
-              <Row
-                label="Tax Residence Country"
-                value={userData.taxCountry || "-"}
-              />
-              <Row label="Tax Identification Number" value={userData.taxNumber || "-"} />
-              <Row
-                label="Annual Sales / Income (Previous Year)"
-                isBadges
-                badges={annualSale}
-              />
-              <Row
-                label="Current Net Worth"
-                isBadges
-                badges={netWorth}
-              />
-            </div>
-          </Section>
-
-          <Separator className="my-6" />
-
-          {/* 5) Compliance & Legal */}
-          <Section title="5) Compliance & Legal Declarations">
-            <div className="space-y-2">
-              <Row
-                label="Politically Exposed Person (PEP)"
-                value={formatYesNo(userData.isPoliticallyProminentFig)}
-              />
-              <Row
-                label="PEP / Relationship Details"
-                value={userData.descPoliticImpRel || "-"}
-              />
-              <Row
-                label="Ever Convicted of a Crime"
-                value={formatYesNo(userData.isCrimeConvitted)}
-              />
-              <Row
-                label="Ever Investigated by Law Enforcement / Tax Authorities"
-                value={formatYesNo(userData.lawEnforced)}
-              />
-              <Row
-                label="Involved in Money Laundering"
-                value={formatYesNo(userData.isMoneyLaundered)}
-              />
-              <Row
-                label="Ever Bankrupted Personally"
-                value={formatYesNo(userData.isBankRupted)}
-              />
-              <Row
-                label="Officer in Bankrupted / Liquidated Entity"
-                value={formatYesNo(userData.isInvolvedBankRuptedOfficer)}
-              />
-              <Row
-                label="Partner / Officer in Other Companies"
-                value={formatYesNo(userData.isPartnerOfOtherComp)}
-              />
-              <Row
-                label="Details of Other Company Partnerships"
-                value={userData.otherPartnerOtherComp || "-"}
-              />
-              <Row
-                label="Declaration & Agreement"
-                value={formatYesNo(userData.declarationAgreement)}
-              />
-            </div>
-          </Section>
-
-          <Separator className="my-6" />
-
-          {/* 6) Documents */}
-          <Section title="6) Supporting Documents">
-            {renderFilePreview("Passport / ID Copy", userData.passportId)}
-            {renderFilePreview(
-              "Bank Statement (Last 3 Months)",
-              userData.bankStatement3Mnth
-            )}
-            {renderFilePreview("Proof of Address", userData.addressProof)}
-            {renderFilePreview("Professional Reference Letter", userData.profRefLetter)}
-            {renderFilePreview("English Resume / Profile", userData.engResume)}
-          </Section>
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-export default DetailPAShareHolderDialog;
+export default SgCorporateMemberDetail;
