@@ -576,6 +576,7 @@ function CouncilStep() {
         setForm((prev) => ({
           ...prev,
           councilIndividuals: (prev.councilIndividuals || []).map((f) => ({ ...f, status: "Sent Invitation" })),
+          users:response.users
         }));
         toast({
           title: t("ppif.council.toasts.invite.success.title"),
@@ -585,6 +586,7 @@ function CouncilStep() {
         setForm((prev) => ({
           ...prev,
           councilIndividuals: (prev.councilIndividuals || []).map((f) => ({ ...f, status: "Resent Invitation" })),
+          users:response.users
         }));
         toast({
           title: t("ppif.council.toasts.invite.alreadyExists.title"),

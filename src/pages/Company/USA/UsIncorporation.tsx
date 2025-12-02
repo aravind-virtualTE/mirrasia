@@ -644,6 +644,7 @@ function ShareholdersWidget({
     const { toast } = useToast();
 
     const shareholders = (form.shareHolders || []) as any[];
+    // console.log("shareholders--->", shareholders);
     const setShareholders = (next: any[]) =>
         setForm((p) => ({ ...p, shareHolders: next }));
 
@@ -705,14 +706,16 @@ function ShareholdersWidget({
 
             const payload = { _id: docId, inviteData: extractedData, country };
             const response = await sendInviteToShDir(payload);
-
+            // console.log("Invitation Response:", response);
             if (response.summary.successful > 0) {
+                setForm((p) => ({ ...p, users: response.users }));
                 toast({
                     title: "Success",
                     description: `Successfully sent invitation mail to ${response.summary.successful} people`,
                 });
             }
             if (response.summary.alreadyExists > 0) {
+                setForm((p) => ({ ...p, users: response.users }));
                 toast({
                     title: "Success",
                     description: `Invite sent to member/director`,
@@ -3908,12 +3911,12 @@ export default function ConfigDrivenUSAForm() {
         return [];
     }, [activeStep, form]);
     const decodedToken = jwtDecode<any>(token);
-    console.log("decodedToken",decodedToken)
+    // console.log("decodedToken",decodedToken)
     const canNext = true;
     const updateDoc = async () => {
         // const docId = localStorage.getItem("companyRecordId");
         const payload = { ...form };
-        console.log("payload before adjustment", payload.userId);
+        // console.log("payload before adjustment", payload.userId);
         if (!payload.userId) {
             payload.userId = decodedToken.userId;
             payload.users = [{ "userId": decodedToken.userId, "role": "applicant" }];

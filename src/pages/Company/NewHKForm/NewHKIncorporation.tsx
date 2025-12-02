@@ -647,7 +647,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
       if (response.summary.successful > 0) {
         setApp((prev) => {
           const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
-          return { ...prev, parties: updated };
+          return { ...prev, parties: updated, users: response.users };
         });
         toast({
           title: t("newHk.parties.toasts.invite.success.title"),
@@ -660,7 +660,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
       if (response.summary.alreadyExists > 0) {
         setApp((prev) => {
           const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
-          return { ...prev, parties: updated };
+          return { ...prev, parties: updated,users: response.users };
         });
         toast({
           title: t("newHk.parties.toasts.invite.exists.title"),
