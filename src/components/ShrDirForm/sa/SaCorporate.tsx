@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { Button } from '@/components/ui/button';
@@ -98,28 +99,6 @@ const SaCompRegistrationForm: React.FC = () => {
             });
         }
     };
-
-    //   const loadFormData = async (userId: string) => {
-    //     try {
-    //       const response = await fetch(`/api/form-data/${userId}`);
-    //       if (!response.ok) throw new Error('Failed to load');
-
-    //       const data = await response.json();
-    //       setFormData(data);
-
-    //       toast({
-    //         title: "Data loaded",
-    //         description: "Your saved form data has been loaded",
-    //       });
-    //     } catch (error) {
-    //       console.error('Error loading form data:', error);
-    //       toast({
-    //         title: "Load failed",
-    //         description: "Failed to load your saved form data",
-    //         variant: "destructive",
-    //       });
-    //     }
-    //   };
 
     const handleSubmit = async () => {
         // console.log('Form submitted with data:', formData);
@@ -712,29 +691,7 @@ const SaCompRegistrationForm: React.FC = () => {
                         <CheckCircle className="h-5 w-5" />
                         <span className="font-medium">Form Completed Successfully!</span>
                     </div>
-                    <div className="flex gap-3 justify-center">
-                        <Button
-                            variant="outline"
-                            onClick={() => setIsCompleted(false)}
-                            className="text-sm hover:bg-accent hover:text-accent-foreground transition-smooth"
-                        >
-                            <Edit3 className="h-4 w-4 mr-2" />
-                            Edit Answers
-                        </Button>
-                        <Button
-                            onClick={handleSubmit}
-                            className="text-sm option-button"
-                        >
-                            Submit Form
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={clearFormData}
-                            className="text-sm"
-                        >
-                            Clear All Data
-                        </Button>
-                    </div>
+
                 </div>
 
                 <div className="space-y-3">
@@ -767,6 +724,29 @@ const SaCompRegistrationForm: React.FC = () => {
                             </div>
                         );
                     })}
+                </div>
+                <div className="flex gap-3 justify-center">
+                    <Button
+                        variant="outline"
+                        onClick={() => setIsCompleted(false)}
+                        className="text-sm hover:bg-accent hover:text-accent-foreground transition-smooth"
+                    >
+                        <Edit3 className="h-4 w-4 mr-2" />
+                        Edit Answers
+                    </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        className="text-sm option-button"
+                    >
+                        Submit Form
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        onClick={clearFormData}
+                        className="text-sm"
+                    >
+                        Clear All Data
+                    </Button>
                 </div>
             </div>
         );

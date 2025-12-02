@@ -3056,7 +3056,7 @@ const PanamaIncorporationForm: React.FC = () => {
         setIsSubmitting(true);
         if (!form.userId) {
             form.userId = decodedToken.userId;
-            form.users = [{ "userId": decodedToken.userId, "role": "owner" }];
+            form.users = [{ "userId": decodedToken.userId, "role": "applicant" }];
         } else {
             // If userId exists but belongs to someone else, do NOT override
             if (form.userId !== decodedToken.userId) {

@@ -3908,14 +3908,15 @@ export default function ConfigDrivenUSAForm() {
         return [];
     }, [activeStep, form]);
     const decodedToken = jwtDecode<any>(token);
+    console.log("decodedToken",decodedToken)
     const canNext = true;
     const updateDoc = async () => {
         // const docId = localStorage.getItem("companyRecordId");
         const payload = { ...form };
-        payload.userId = `${decodedToken.userId}`
+        console.log("payload before adjustment", payload.userId);
         if (!payload.userId) {
             payload.userId = decodedToken.userId;
-            payload.users = [{ "userId": decodedToken.userId, "role": "owner" }];
+            payload.users = [{ "userId": decodedToken.userId, "role": "applicant" }];
         } else {
             // If userId exists but belongs to someone else, do NOT override
             if (payload.userId !== decodedToken.userId) {
