@@ -18,6 +18,7 @@ import PPifDetail from './ppifDetail';
 import UsCorporateShdrDetailDialog from './UsCorporateDetail';
 import SgIndividualShrDetail from './SgIndividualDetail';
 import SgCorporateMemberDetail from './SgCorporateView';
+import UsIndividualShdrDetail from './UsIndividualDetail';
 
 export default function ViewBoard() {
   const { t } = useTranslation();
@@ -481,7 +482,7 @@ export default function ViewBoard() {
       {/* Dialog Components */}
       {country == 'HK' && <DetailShdHk isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}
       {country == 'US_Corporate' && (<UsCorporateShdrDetailDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} data={selectedData} />)}
-      {country == 'US' && (<p>Detail View in Progress...</p>)}
+      {country == 'US_Individual' && (<UsIndividualShdrDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} data={selectedData} />)}
       {country == 'PA_Individual' && <DetailPAShareHolderDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}
       {country == 'PPIF' && <PPifDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}
       {country == 'SG_Individual' && <SgIndividualShrDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} data={selectedData} />}
