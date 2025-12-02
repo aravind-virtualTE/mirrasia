@@ -517,13 +517,14 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[26%]">Name</TableHead>
+                            <TableHead className="w-[24%]">Name</TableHead>
                             <TableHead className="w-[20%]">Email</TableHead>
                             <TableHead className="w-[14%]">Phone</TableHead>
                             <TableHead className="w-[12%]">Shares</TableHead>
                             <TableHead className="w-[12%]">Share Type</TableHead>
                             <TableHead className="w-[8%]">Director</TableHead>
                             <TableHead className="w-[8%]">Significant</TableHead>
+                            <TableHead className="w-[8%]">Status</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -536,6 +537,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                               <TableCell>{p.typeOfShare || "—"}</TableCell>
                               <TableCell><BoolPill value={!!p.isDirector} /></TableCell>
                               <TableCell><BoolPill value={!!p.isSignificant} /></TableCell>
+                              <TableCell> <Badge >{p.status}</Badge></TableCell>
                             </TableRow>
                           ))}
                         </TableBody>

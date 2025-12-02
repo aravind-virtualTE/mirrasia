@@ -40,6 +40,7 @@ import {
 import { User } from "@/components/userList/UsersList";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { t } from "i18next";
 
 type SessionData = {
     _id: string;
@@ -310,13 +311,13 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
     // ► total shares should use new shareCount first, fallback to old field
     const totalShares = Number(((formData as any)?.shareCount || (formData as any)?.noOfSharesIssued || 0));
-    const assignedShares =
-        Array.isArray((formData as any)?.shareHolders) ?
-            (formData as any).shareHolders.reduce(
-                (sum: number, p: any) => sum + (Number(p.shares || 0) || 0),
-                0
-            ) :
-            0;
+    // const assignedShares =
+    //     Array.isArray((formData as any)?.shareHolders) ?
+    //         (formData as any).shareHolders.reduce(
+    //             (sum: number, p: any) => sum + (Number(p.shares || 0) || 0),
+    //             0
+    //         ) :
+    //         0;
 
     const primaryName =
         (formData as any)?.companyName_1 ||
@@ -743,17 +744,17 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                         )}
                                                                     </TableCell>
                                                                     <TableCell className="text-sm">
-                                                                        {legalPersonLabel}
+                                                                        {t(legalPersonLabel)}
                                                                     </TableCell>
                                                                     <TableCell className="text-sm">
-                                                                        {p.status || (p.invited ? "Invited" : "—")}
+                                                                        <Badge>{p.status || (p.invited ? "Invited" : "—")}</Badge>
                                                                     </TableCell>
                                                                 </TableRow>
                                                             );
                                                         }
                                                     )}
 
-                                                    <TableRow>
+                                                    {/* <TableRow>
                                                         <TableCell className="font-medium">
                                                             Total / Assigned Shares
                                                         </TableCell>
@@ -771,7 +772,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                         </TableCell>
                                                         <TableCell />
                                                         <TableCell />
-                                                    </TableRow>
+                                                    </TableRow> */}
                                                 </TableBody>
                                             </Table>
                                         </div>

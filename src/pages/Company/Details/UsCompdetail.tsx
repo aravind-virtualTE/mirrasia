@@ -715,8 +715,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                   </div>
                                 </TableCell>
                                 <TableCell className="text-right">
-                                  <Badge className={p.status == "Invited" ? "bg-emerald-600 hover:bg-emerald-600" : ""}>
-                                    {p.status == "Invited" ? "Invite sent" : "Not invited"}
+                                  <Badge >
+                                    {p.status == "Invited" || p.status == "Resent Invitation" ? "Invite sent" : "Not invited"}
                                   </Badge>
                                 </TableCell>
                               </TableRow>

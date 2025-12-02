@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { lazy, useEffect } from 'react'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css'
@@ -59,9 +59,9 @@ import HKCompDetailSummary from './pages/Company/Details/NewCompDetail';
 import ConfigDrivenUSAForm from './pages/Company/USA/UsIncorporation';
 import ServicesPage from './pages/Landing/ServicesPage';
 import EnquiryList from './pages/dashboard/Admin/Enquiry/EnquiryList';
-import ReqForQuotation from './components/reqForQuotation/ReqForQuotation';
 import ReqForQuoteList from './pages/dashboard/Admin/ReqForQuote/ReqForQuoteList';
 // import NewSgIncorporation from './pages/Company/Singapore/NewSgIncorporation';
+const ReqForQuotation = lazy(() => import("@/components/reqForQuotation/ReqForQuotation"));
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -100,7 +100,7 @@ const App: React.FC = () => {
                     <Route path="/quotation" element={<QuoteBuilder />} />
                     <Route path="/estimator" element={<HKAccountingEstimator />} />
                     <Route path="/services/:tab?" element={<ServicesPage />} />
-                    <Route path="/reqForQuotation" element={<ReqForQuotation />} /> 
+                    {/* <Route path="/reqForQuotation" element={<ReqForQuotation />} />  */}
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />
                     {/* <Route path="/test" element={<UsCorporateShdr />} /> */}
@@ -140,6 +140,8 @@ const App: React.FC = () => {
                       <Route path="/new-usa-form" element={<ConfigDrivenUSAForm  />} />
                       <Route path='/registrationForm' element={<CountryWiseShareholder />} />
                       <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
+                      <Route path="/quotation-request" element={<ReqForQuotation />} />
+                      
                     </Route>
                   </Route>
 
