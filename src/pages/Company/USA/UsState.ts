@@ -244,6 +244,7 @@ const initial: any = {
       isDirector: { id: "no", label: "AmlCdd.options.no" },
       isLegalPerson: { id: "no", label: "AmlCdd.options.no" },
       status: "",
+      isDcp: false,
     },
   ],
   designatedContact: "",

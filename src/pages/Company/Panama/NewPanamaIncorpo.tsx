@@ -301,6 +301,8 @@ function PartiesManager() {
                         status: "Invited",
                     }))
                 );
+                setForm((prev: any) => ({ ...prev, users: res.users }));
+
                 toast({
                     title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
                     description: t("newHk.parties.toasts.invite.success.desc", "Invite emails were sent."),
@@ -314,6 +316,7 @@ function PartiesManager() {
                         status: p.invited ? p.status : ("Not Invited" as const),
                     }))
                 );
+                setForm((prev: any) => ({ ...prev, users: res.users }));
                 toast({
                     title: t("newHk.parties.toasts.invite.failed.title", "Some invites failed"),
                     description: t("newHk.parties.toasts.invite.failed.desc", "Please verify emails and try again."),

@@ -170,7 +170,7 @@ function PartiesManager() {
                     invited: true,
                     status: "Invited" as const,
                 }));
-                return { ...prev, parties: updated };
+                return { ...prev, parties: updated, users:res.users };
             });
             toast({
                 title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
