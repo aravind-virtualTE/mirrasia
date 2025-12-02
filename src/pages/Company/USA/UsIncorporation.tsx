@@ -708,14 +708,21 @@ function ShareholdersWidget({
             const response = await sendInviteToShDir(payload);
             // console.log("Invitation Response:", response);
             if (response.summary.successful > 0) {
-                setForm((p) => ({ ...p, users: response.users }));
+                const next = [...shareholders.map((sh) => {
+                    sh.status = "Invited"
+                })];
+
+                setForm((p) => ({ ...p, users: response.users, shareholders: next }));
                 toast({
                     title: "Success",
                     description: `Successfully sent invitation mail to ${response.summary.successful} people`,
                 });
             }
             if (response.summary.alreadyExists > 0) {
-                setForm((p) => ({ ...p, users: response.users }));
+                const next = [...shareholders.map((sh) => {
+                    sh.status = "Resent Invitation"
+                })];
+                setForm((p) => ({ ...p, users: response.users, shareholders: next }));
                 toast({
                     title: "Success",
                     description: `Invite sent to member/director`,

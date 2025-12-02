@@ -16,6 +16,7 @@ import {
   Users,
   UserPlus,
   Building2,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -181,6 +182,13 @@ const Layout: React.FC = () => {
             label: "Member/Director Management",
             roles: ["user", "admin", "master"],
             to: "/member-director-change",
+          },
+           {
+            id: "quotation-request",
+            icon: FileText,
+            label: "Quotation Request",
+            roles: ["user", "admin", "master"],
+            to: "/quotation-request",
           },
         ],
       },
