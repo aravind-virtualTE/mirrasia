@@ -31,6 +31,8 @@ export interface User {
     lastLogin?: string;
     lastAccessIP?: string;
     twoFactorEnabled?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
     kycDocuments?: {
         passportUrl?: string;
         addressProofUrl?: string;
@@ -52,10 +54,10 @@ export interface User {
     }[]
 }
 
-type SortKey = "fullName" | "email" | "role";
+type SortKey = "fullName" | "email" | "role" |"createdAt" | "updatedAt";
 
 const UsersList = () => {
-    const [users, setUsers] = useState<User[]>([{ _id: "", fullName: "", email: "", role: "", picture: "" }])
+    const [users, setUsers] = useState<User[]>([{ _id: "", fullName: "", email: "", role: "", picture: "", createdAt: "", updatedAt: "" }])
     const [newUser, setNewUser] = useState({ fullName: "", email: "", role: "user" })
     const [isAddUserOpen, setIsAddUserOpen] = useState(false)
     const [isEditRoleOpen, setIsEditRoleOpen] = useState(false)
@@ -426,7 +428,7 @@ const UsersList = () => {
                     <TableHeader>
                         <TableRow className="bg-muted hover:bg-muted">
                             <TableHead
-                                className="h-8 px-2 text-xs w-1/4 cursor-pointer select-none"
+                                className="h-8 px-2 text-xs w-1/5 cursor-pointer select-none"
                                 onClick={() => handleSort("fullName")}
                                 aria-sort={ariaSort("fullName")}
                                 title="Sort by name"
@@ -440,7 +442,7 @@ const UsersList = () => {
                             </TableHead>
 
                             <TableHead
-                                className="h-8 px-2 text-xs w-1/4 cursor-pointer select-none"
+                                className="h-8 px-2 text-xs w-1/5 cursor-pointer select-none"
                                 onClick={() => handleSort("email")}
                                 aria-sort={ariaSort("email")}
                                 title="Sort by email"
@@ -454,7 +456,7 @@ const UsersList = () => {
                             </TableHead>
 
                             <TableHead
-                                className="h-8 px-2 text-xs w-1/4 cursor-pointer select-none"
+                                className="h-8 px-2 text-xs w-1/5 cursor-pointer select-none"
                                 onClick={() => handleSort("role")}
                                 aria-sort={ariaSort("role")}
                                 title="Sort by role"
@@ -467,7 +469,38 @@ const UsersList = () => {
                                 </span>
                             </TableHead>
 
-                            <TableHead className="h-8 px-2 text-xs w-1/4">Actions</TableHead>
+                            {/* Created At */}
+                            <TableHead
+                                className="h-8 px-2 text-xs w-1/5 cursor-pointer select-none"
+                                onClick={() => handleSort("createdAt")}
+                                aria-sort={ariaSort("createdAt")}
+                                title="Sort by created date"
+                            >
+                                <span className="inline-flex items-center gap-1">
+                                    Created
+                                    <span className="text-[10px] opacity-70">
+                                        {sortBy === "createdAt" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+                                    </span>
+                                </span>
+                            </TableHead>
+
+                            {/* Last Login (updatedAt) */}
+                            <TableHead
+                                className="h-8 px-2 text-xs w-1/5 cursor-pointer select-none"
+                                onClick={() => handleSort("updatedAt")}
+                                aria-sort={ariaSort("updatedAt")}
+                                title="Sort by last login"
+                            >
+                                <span className="inline-flex items-center gap-1">
+                                    Last login
+                                    <span className="text-[10px] opacity-70">
+                                        {sortBy === "updatedAt" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+                                    </span>
+                                </span>
+                            </TableHead>
+
+                            {/* Actions */}
+                            <TableHead className="h-8 px-2 text-xs w-[60px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
 
@@ -481,6 +514,33 @@ const UsersList = () => {
                                 <TableCell className="p-2 text-sm">{user.fullName}</TableCell>
                                 <TableCell className="p-2 text-sm">{user.email}</TableCell>
                                 <TableCell className="p-2 text-sm">{user.role}</TableCell>
+
+                                {/* createdAt */}
+                                <TableCell className="p-2 text-xs">
+                                    {user.createdAt
+                                        ? new Date(user.createdAt).toLocaleString("en-GB", {
+                                            year: "numeric",
+                                            month: "2-digit",
+                                            day: "2-digit",
+                                            // hour: "2-digit",
+                                            // minute: "2-digit",
+                                        })
+                                        : "-"}
+                                </TableCell>
+
+                                {/* last login = updatedAt */}
+                                <TableCell className="p-2 text-xs">
+                                    {user.updatedAt
+                                        ? new Date(user.updatedAt).toLocaleString("en-GB", {
+                                            year: "numeric",
+                                            month: "2-digit",
+                                            day: "2-digit",
+                                            // hour: "2-digit",
+                                            // minute: "2-digit",
+                                        })
+                                        : "-"}
+                                </TableCell>
+
                                 <TableCell className="p-2">
                                     <Button
                                         variant="ghost"
@@ -497,6 +557,7 @@ const UsersList = () => {
                         ))}
                     </TableBody>
                 </Table>
+
             </div>
 
             <Dialog open={isEditRoleOpen} onOpenChange={setIsEditRoleOpen}>
@@ -747,11 +808,10 @@ const UsersList = () => {
                                                         />
                                                         <label
                                                             htmlFor={`task-${index}`}
-                                                            className={`${
-                                                                task.checked
+                                                            className={`${task.checked
                                                                     ? "line-through text-muted-foreground"
                                                                     : ""
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {task.label}
                                                         </label>
