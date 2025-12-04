@@ -76,6 +76,7 @@ export interface PaShrFormData {
   profRefLetter: string;
   engResume: string;
   otherInputs: Record<string, string>;
+  companyId?:string
 }
 
 
@@ -120,13 +121,16 @@ export const formDataAtom = atom<PaShrFormData>({
   addressProof: '',
   profRefLetter: '',
   engResume: '',
-  otherInputs: {}
+  otherInputs: {},
+  companyId:""
+
 });
 
 export interface PanamaEstFormData {
   name: string;
   email: string;
   companyName: string;
+  companyId?:string;
   dateOfEstablishment: string;
   establishmentCountry: string;
   brnNumber: string;
@@ -159,6 +163,7 @@ export const panamaCorporateFormAtom = atom<PanamaEstFormData>({
   name: "",
   email: "",
   companyName: "",
+  companyId: "",
   dateOfEstablishment: "",
   establishmentCountry: "",
   brnNumber: "",

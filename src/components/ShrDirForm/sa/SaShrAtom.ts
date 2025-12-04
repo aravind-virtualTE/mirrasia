@@ -60,6 +60,7 @@ export interface FormData {
   describeIfInvolvedBankRupted: string;
   declarationAgreement: string;
   otherInputs: Record<string, string>;
+  companyId?:string;
 }
 
 export const formDataAtom = atom<FormData>({
@@ -95,7 +96,8 @@ export const formDataAtom = atom<FormData>({
   isInvolvedBankRuptedOfficer: '',
   describeIfInvolvedBankRupted: '',
   declarationAgreement: '',
-  otherInputs: {}
+  otherInputs: {},
+  companyId:""
 });
 
 export const saveShrSgInviteData = async (data: any, id?: string) => {
@@ -150,6 +152,7 @@ export interface SaCompShrFormData {
   addressProof: string;
   engResume: string;
   otherInputs: Record<string, string>;
+  companyId?: string;
 }
 
 
@@ -190,7 +193,8 @@ export const SaCompDefaultAtom = atom<SaCompShrFormData>({
   passportId: '',
   addressProof: '',
   engResume: '',
-  otherInputs: {}
+  otherInputs: {},
+  companyId: ""
 });
 
 

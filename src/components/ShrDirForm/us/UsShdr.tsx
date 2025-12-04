@@ -59,7 +59,8 @@ const UsShdr: React.FC = () => {
         personalBankruptcy: "",
         companyBankruptcy: "",
         declaration: "",
-        otherDeclaration: ""
+        otherDeclaration: "",
+        companyId:""
     })
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [fileSource, setFileSource] = useState<any>('');
@@ -80,7 +81,7 @@ const UsShdr: React.FC = () => {
             ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
             : null;
         if (findData) {
-            setFormState({ ...formState, email: findData.email, companyName: findData.companyName })
+            setFormState({ ...formState, email: findData.email, companyName: findData.companyName, companyId: findData.companyId  });
         }
         // console.log("multiShId",findData)
     }, [])

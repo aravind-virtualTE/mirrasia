@@ -5,6 +5,7 @@ import api from '@/services/fetch';
 export type MemberForm = {
     _id?: string
     companyName?:string;
+    companyId?:string;
     userId?: string
     email: string
     fullName: string
@@ -46,6 +47,7 @@ export const initialMemberForm: MemberForm = {
     _id: "",
     userId: "",
     companyName:"",
+    companyId:"",
     email: "",
     fullName: "",
     renamed: "",

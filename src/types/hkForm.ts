@@ -137,6 +137,7 @@ export interface Country {
     _id: string;
     email: string;
     companyName: string;
+    companyId: string;
     roles: string[];
     significantController: string;
     fullName: string;
