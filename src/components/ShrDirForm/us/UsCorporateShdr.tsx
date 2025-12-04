@@ -56,6 +56,8 @@ const UsCorporateShdr: React.FC = () => {
         declarationDesc: "",
         isAgreed: "",
         otherIsAgreed: '',
+        companyId:""
+
     })
     const [errors, setErrors] = React.useState({
         companyName: '',
@@ -106,7 +108,7 @@ const UsCorporateShdr: React.FC = () => {
             ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
             : null;
         if (findData) {
-            setFormState({ ...formState, email: findData.email, companyName: findData.companyName })
+            setFormState({ ...formState, email: findData.email, companyName: findData.companyName , companyId: findData.companyId })
         }
     }, [])
     

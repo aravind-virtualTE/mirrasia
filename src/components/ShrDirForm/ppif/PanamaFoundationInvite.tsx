@@ -1033,6 +1033,7 @@ export default function PanamaFoundationInvite() {
               userId: user?._id || "",
               email: res.email || shrId?.email || "",
               companyName: res.companyName || shrId?.companyName || "",
+              companyId: shrId.companyId 
             });
           }
         } catch (err) {

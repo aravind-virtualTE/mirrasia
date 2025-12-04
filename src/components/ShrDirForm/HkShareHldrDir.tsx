@@ -195,6 +195,7 @@ const HkShareHldrDir = () => {
     _id: "",
     email: "",
     companyName: "",
+    companyId: "",
     roles: [] as string[],
     significantController: "",
     fullName: "",
@@ -281,6 +282,7 @@ const HkShareHldrDir = () => {
         ...s,
         email: findData.email,
         companyName: findData.companyName,
+        companyId: findData.companyId,
       }));
     }
   }, []);

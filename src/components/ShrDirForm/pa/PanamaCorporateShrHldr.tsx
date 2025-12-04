@@ -60,7 +60,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
             ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
             : null;
         if (findData) {
-            setFormData({ ...formData, email: findData.email, companyName: findData.companyName })
+            setFormData({ ...formData, email: findData.email, companyName: findData.companyName, companyId: findData.companyId  })
         }
         // console.log("multiShId",findData)
     }, [])
