@@ -554,3 +554,12 @@ export const deleteEnquiry = async (id: string) => {
     throw error;
   }
 };
+
+export const getHkMemberData = async (id: string, email: string) => {
+  try{
+    const response = await api.get(`incorporation/getHkMemberData`, { params: { id, email } });
+    return response.data;
+  }catch(e){
+    console.log("Error fetching HK member data:", e);
+  }
+}

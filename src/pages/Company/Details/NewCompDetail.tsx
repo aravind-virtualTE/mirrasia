@@ -18,7 +18,7 @@ import { useAtom } from "jotai";
 import { usersData } from "@/services/state";
 // import { paymentApi } from "@/lib/api/payment";
 // import { SessionData } from "./HkCompdetail";
-import { fetchUsers, markDeleteCompanyRecord } from "@/services/dataFetch";
+import { fetchUsers, getHkMemberData, markDeleteCompanyRecord } from "@/services/dataFetch";
 import { getHkIncorpoData, saveIncorporationData } from "../NewHKForm/hkIncorpo";
 import SAgrementPdf from "../HongKong/ServiceAgreement/SAgrementPdf";
 import MemoApp from "./MemosHK";
@@ -34,6 +34,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import InvoicePreview from "../NewHKForm/NewInvoicePreview";
+import DetailShdHk from "@/components/shareholderDirector/detailShddHk";
 
 
 export type Party = {
@@ -183,10 +184,10 @@ function StepRail({ stepIdx }: { stepIdx: number }) {
   );
 }
 
-function PartyRow({ p, totalShares }: { p: Party; totalShares?: number }) {
+function PartyRow({ p, totalShares, onClick, }: { p: Party; totalShares?: number,  onClick?: (p: Party) => void; }) {
   const pct = p.shares && totalShares ? Math.round((p.shares / totalShares) * 1000) / 10 : undefined;
   return (
-    <TableRow>
+    <TableRow onClick={() => onClick?.(p)} className="cursor-pointer">
       <TableCell className="py-3">
         <div className="flex items-center gap-2">
           <div className="grid">
@@ -233,7 +234,8 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [taskToDelete, setTaskToDelete] = React.useState<{ companyId: string, countryCode: string } | null>(null);
   const [invoiceOpen, setInvoiceOpen] = React.useState(false);
-
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+  const [selectedData, setSelectedData] = React.useState<any >(null);
 
   // ------- FETCH on mount / id change -------
   React.useEffect(() => {
@@ -356,6 +358,14 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   };
   // console.log("data", data)
   // console.log("f--->",f)
+  const showMemberDetails =async (email:string| undefined) =>{
+    // when user clicks on view details button in shareholder director party is should send the id the HKCompDetailSummary component recievd and email from party list , later i will implement the api to fetch data based on id and email and show the data in detail component
+    // console.log("email--->",email,id)
+    const result = await getHkMemberData(id,email as string);
+    // console.log("result--->",result)
+    setSelectedData(result.data);
+    setIsDialogOpen(true);
+  }
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -604,7 +614,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                         </TableHeader>
                         <TableBody>
                           {data.parties.map((p, i) => (
-                            <PartyRow key={p.name + i} p={p} totalShares={totalShares} />
+                            <PartyRow key={p.name + i} p={p} totalShares={totalShares} onClick={(party) => showMemberDetails(party.email)} />
                           ))}
                         </TableBody>
                       </Table>
@@ -612,7 +622,6 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                   ) : (
                     <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No parties added.</div>
                   )}
-
                 </CardContent>
               </Card>
             </div>
@@ -847,7 +856,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
         </DialogContent>
       </Dialog>
-
+      {isDialogOpen && <DetailShdHk isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}                
     </Tabs>
   );
 }
