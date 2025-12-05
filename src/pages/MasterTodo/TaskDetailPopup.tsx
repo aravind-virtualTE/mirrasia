@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom } from "jotai";
 import { format, endOfDay, isBefore } from "date-fns"; //startOfDay
-import { Flag, X, MoreHorizontal, Trash2 } from "lucide-react";
+import { Flag, X, MoreHorizontal, Trash2, Download, Eye, FileText } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -227,6 +227,105 @@ const TaskDetailPopup = ({
       // setTasks((prev) => prev.map((t) => (t._id === oldTask._id ? oldTask : t)));
     }
   };
+  const renderFilePreview = (fileValue?: string | File | null,) => {
+    if (!fileValue) return null;
+
+    const isFile = fileValue instanceof File;
+    const isUrl = typeof fileValue === "string" && fileValue.startsWith("http");
+
+    // extra guard – probably not needed but fine to keep
+    if (!isFile && !isUrl && !fileValue) return null;
+
+    const fileName = isFile
+      ? fileValue.name
+      : typeof fileValue === "string"
+        ? fileValue.split("/").pop() || fileValue
+        : "File";
+
+    const fileUrl = isFile
+      ? URL.createObjectURL(fileValue)
+      : typeof fileValue === "string"
+        ? fileValue
+        : "";
+
+    const fileType = isFile ? fileValue.type : "";
+    const fileSize = isFile ? fileValue.size : null;
+
+    const isImage = isFile
+      ? fileValue.type.startsWith("image/")
+      : /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(fileName);
+
+    const isPDF = isFile
+      ? fileValue.type === "application/pdf"
+      : /\.pdf$/i.test(fileName);
+
+    return (
+      <div className="mb-4">
+        <div className="mt-1 p-3 border border-border rounded-lg bg-muted/50">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium truncate max-w-[60%]">
+              {fileName}
+            </span>
+            <div className="flex gap-2">
+              {fileUrl && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => window.open(fileUrl, "_blank")}
+                >
+                  <Eye className="h-3 w-3 mr-1" />
+                  {isPDF ? "Open PDF" : "View"}
+                </Button>
+              )}
+              {fileUrl && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    const a = document.createElement("a");
+                    a.href = fileUrl;
+                    a.download = fileName;
+                    a.click();
+                  }}
+                >
+                  <Download className="h-3 w-3 mr-1" />
+                  Download
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {isImage && fileUrl && (
+            <div className="mt-2">
+              <img
+                src={fileUrl}
+                // alt={label}
+                className="max-w-full h-32 object-cover rounded border"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            </div>
+          )}
+
+          {isPDF && (
+            <div className="mt-2 p-2 bg-background rounded border text-center">
+              <FileText className="h-8 w-8 mx-auto mb-1 text-muted-foreground" />
+              <p className="text-xs text-muted-foreground">
+                PDF file – click &quot;Open PDF&quot; to view
+              </p>
+            </div>
+          )}
+
+          <div className="text-xs text-muted-foreground mt-1">
+            {fileSize && `Size: ${(fileSize / 1024).toFixed(1)} KB • `}
+            {fileType && `Type: ${fileType}`}
+            {isUrl && !isFile && " External file"}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   if (!task) return null;
 
@@ -440,12 +539,13 @@ const TaskDetailPopup = ({
                       </div>
 
                       {comment.fileUrl && (
-                        <div className="mt-2 overflow-hidden rounded border">
-                          <iframe
+                        <div className="mt-2 overflow-hidden">
+                          {renderFilePreview(comment.fileUrl)}
+                          {/* <iframe
                             src={typeof comment.fileUrl === "string" ? comment.fileUrl : URL.createObjectURL(comment.fileUrl)}
                             className="h-56 w-full"
                             title={`Attachment ${index}`}
-                          />
+                          /> */}
                         </div>
                       )}
                     </div>
@@ -586,12 +686,13 @@ const TaskDetailPopup = ({
                         </div>
 
                         {comment.fileUrl && (
-                          <div className="mt-2 overflow-hidden rounded border">
-                            <iframe
+                          <div className="mt-2 overflow-hidden">
+                            {renderFilePreview(comment.fileUrl)}
+                            {/* <iframe
                               src={typeof comment.fileUrl === "string" ? comment.fileUrl : URL.createObjectURL(comment.fileUrl)}
                               className="h-48 w-full"
                               title={`Attachment ${index}`}
-                            />
+                            /> */}
                           </div>
                         )}
                       </div>

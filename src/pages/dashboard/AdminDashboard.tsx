@@ -275,45 +275,45 @@ const AdminDashboard = () => {
   //   return filterData
   // }
   const getSortedData = () => {
-  const base = searchQuery ? displayList : allList;
+    const base = searchQuery ? displayList : allList;
 
-  // First split by tab
-  let rows = base.filter(company =>
-    activeTab === "active" ? !company.isDeleted : company.isDeleted
-  );
+    // First split by tab
+    let rows = base.filter(company =>
+      activeTab === "active" ? !company.isDeleted : company.isDeleted
+    );
 
-  // Only apply “active_status” filter on the ACTIVE tab
-  if (activeTab === "active") {
-    rows = rows.filter((e) => active_status.includes((e as { status: string }).status));
-  }
+    // Only apply “active_status” filter on the ACTIVE tab
+    if (activeTab === "active") {
+      rows = rows.filter((e) => active_status.includes((e as { status: string }).status));
+    }
 
-  // Sort
-  if (sortConfig) {
-    rows.sort((a: any, b: any) => {
-      let aValue, bValue;
+    // Sort
+    if (sortConfig) {
+      rows.sort((a: any, b: any) => {
+        let aValue, bValue;
 
-      if (sortConfig.key === "companyName") {
-        aValue = resolveCompanyName(a).toLowerCase();
-        bValue = resolveCompanyName(b).toLowerCase();
-      } else if (sortConfig.key === "country") {
-        aValue = a.country.name || "";
-        bValue = b.country.name || "";
-      } else if (sortConfig.key === "incorporationDate") {
-        aValue = a.incorporationDate || "";
-        bValue = b.incorporationDate || "";
-      } else {
-        aValue = a[sortConfig.key] || "";
-        bValue = b[sortConfig.key] || "";
-      }
+        if (sortConfig.key === "companyName") {
+          aValue = resolveCompanyName(a).toLowerCase();
+          bValue = resolveCompanyName(b).toLowerCase();
+        } else if (sortConfig.key === "country") {
+          aValue = a.country.name || "";
+          bValue = b.country.name || "";
+        } else if (sortConfig.key === "incorporationDate") {
+          aValue = a.incorporationDate || "";
+          bValue = b.incorporationDate || "";
+        } else {
+          aValue = a[sortConfig.key] || "";
+          bValue = b[sortConfig.key] || "";
+        }
 
-      if (aValue < bValue) return sortConfig.direction === "ascending" ? -1 : 1;
-      if (aValue > bValue) return sortConfig.direction === "ascending" ? 1 : -1;
-      return 0;
-    });
-  }
+        if (aValue < bValue) return sortConfig.direction === "ascending" ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === "ascending" ? 1 : -1;
+        return 0;
+      });
+    }
 
-  return rows;
-};
+    return rows;
+  };
 
   const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { status: string }).status))
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -326,46 +326,46 @@ const AdminDashboard = () => {
   };
 
   const clampPage = (rowsCount: number) => {
-  const maxPage = Math.max(1, Math.ceil(rowsCount / itemsPerPage));
-  setCurrentPage((p) => Math.min(p, maxPage));
-};
+    const maxPage = Math.max(1, Math.ceil(rowsCount / itemsPerPage));
+    setCurrentPage((p) => Math.min(p, maxPage));
+  };
 
   const confirmDelete = async () => {
-  if (taskToDelete?.companyId) {
-    const result = await deleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
-    if (result) {
-      const nextAll = allList.filter(c => c._id !== taskToDelete.companyId);
-      setAllList(nextAll);
+    if (taskToDelete?.companyId) {
+      const result = await deleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
+      if (result) {
+        const nextAll = allList.filter(c => c._id !== taskToDelete.companyId);
+        setAllList(nextAll);
 
-      // keep the current filtered view consistent, too
-      setDisplayList(prev => prev.filter(c => c._id !== taskToDelete.companyId));
+        // keep the current filtered view consistent, too
+        setDisplayList(prev => prev.filter(c => c._id !== taskToDelete.companyId));
 
-      clampPage(getSortedData().length - 1);
+        clampPage(getSortedData().length - 1);
+      }
     }
-  }
-  setDeleteDialogOpen(false);
-  setTaskToDelete(null);
-};
+    setDeleteDialogOpen(false);
+    setTaskToDelete(null);
+  };
 
   const markDelete = async () => {
-  if (taskToDelete?.companyId) {
-    const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
-    if (result) {
-      const updateOne = (c: any) =>
-        c._id === taskToDelete.companyId ? { ...c, isDeleted: true } : c;
+    if (taskToDelete?.companyId) {
+      const result = await markDeleteCompanyRecord({ _id: taskToDelete.companyId, country: taskToDelete.countryCode });
+      if (result) {
+        const updateOne = (c: any) =>
+          c._id === taskToDelete.companyId ? { ...c, isDeleted: true } : c;
 
-      const nextAll = allList.map(updateOne);
-      setAllList(nextAll);
+        const nextAll = allList.map(updateOne);
+        setAllList(nextAll);
 
-      // reflect in current filtered view
-      setDisplayList(prev => prev.map(updateOne));
+        // reflect in current filtered view
+        setDisplayList(prev => prev.map(updateOne));
 
-      clampPage(getSortedData().length);
+        clampPage(getSortedData().length);
+      }
     }
-  }
-  setDeleteDialogOpen(false);
-  setTaskToDelete(null);
-};
+    setDeleteDialogOpen(false);
+    setTaskToDelete(null);
+  };
 
   const paginatedData = getSortedData().slice(
     (currentPage - 1) * itemsPerPage,
@@ -712,30 +712,34 @@ const StatsCard: React.FC<StatsCardProps> = ({ stats }) => {
           <Card
             key={k}
             className={cn(
-              "transition-all duration-200 overflow-hidden",
+              "p-4 cursor-pointer transition-all duration-200",
               hovered === key ? "shadow-md" : "shadow-sm"
             )}
             onMouseEnter={() => setHovered(key)}
             onMouseLeave={() => setHovered(null)}
           >
-            <CardHeader className="flex items-center justify-between pb-1 pt-3 flex-col sm:flex-row gap-1 sm:gap-0">
-              <div className="flex items-center gap-2 flex-1 w-full">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0">
                 {icons[key]}
-                <CardTitle className="text-xs font-medium">{titles[key]}</CardTitle>
+                <span className="text-sm font-medium truncate">{titles[key]}</span>
               </div>
-              <div className="text-xl font-bold">{stats[key]}</div>
-            </CardHeader>
-            <CardContent>
-              <div
-                className={cn(
-                  "text-xs text-muted-foreground transition-all duration-200 overflow-hidden",
-                  hovered === key ? "max-h-12 opacity-100 mt-1" : "max-h-0 opacity-0"
-                )}
-              >
-                {descriptions[key]}
-              </div>
-            </CardContent>
+
+              <span className="text-sm text-muted-foreground">
+                Total: <span className="font-bold text-foreground">{stats[key]}</span>
+              </span>
+            </div>
+
+            {/* Optional: slim hover description (like a subtle second line) */}
+            <div
+              className={cn(
+                "text-xs text-muted-foreground transition-all duration-200 overflow-hidden",
+                hovered === key ? "max-h-10 opacity-100 mt-1" : "max-h-0 opacity-0"
+              )}
+            >
+              {descriptions[key]}
+            </div>
           </Card>
+
         )
       })}
     </div>
