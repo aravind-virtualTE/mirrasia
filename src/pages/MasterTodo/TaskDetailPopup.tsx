@@ -231,9 +231,8 @@ const TaskDetailPopup = ({
   if (!task) return null;
 
   // console.log("task", task)
-  const allowedStatuses = user.role === 'master'
-    ? statuses
-    : statuses.filter((s) => s.label !== 'COMPLETED');
+  const allowedStatuses = statuses
+  // user.role === 'master'? statuses: statuses.filter((s) => s.label !== 'COMPLETED');
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/30" />
