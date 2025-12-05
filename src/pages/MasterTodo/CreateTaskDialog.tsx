@@ -250,8 +250,8 @@ export const CreateTaskDialog = ({
         setFormState({ ...formState, selectedProject: item });
     };
 
-    const allowedStatuses =
-        user?.role === 'master' ? statuses : statuses.filter((s) => s.label !== 'COMPLETED');
+    const allowedStatuses = statuses
+        // user?.role === 'master' ? statuses : statuses.filter((s) => s.label !== 'COMPLETED');
 
     // Normalize dueDate to UTC for display
     const normalizedDueDate = formState.dueDate
