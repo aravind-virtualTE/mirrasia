@@ -75,6 +75,9 @@ import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { User } from "@/components/userList/UsersList";
 import { usIncorporationItems, usRenewalList } from "./detailConstants";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { getShrMemberData } from "./detailData";
+import UsIndividualShdrDetail from "@/components/shareholderDirector/UsIndividualDetail";
+import UsCorporateShdrDetailDialog from "@/components/shareholderDirector/UsCorporateDetail";
 
 // -------- helpers --------
 const fmtDate = (iso?: string | null) => {
@@ -147,6 +150,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [taskToDelete, setTaskToDelete] = React.useState<{ companyId: string, countryCode: string } | null>(null);
   const [invoiceOpen, setInvoiceOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+  const [selectedData, setSelectedData] = React.useState<any>(null);
 
   const [session, setSession] = useState<SessionData>({
     _id: "",
@@ -338,6 +343,13 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     setDeleteDialogOpen(false);
     setTaskToDelete(null);
   };
+
+  const showMemberDetails = async (email: string) => {
+    const res = await getShrMemberData(id, email, "US", entityType);
+    console.log("email--->", email, id, entityType, res)
+    setSelectedData(res.data);
+    setIsDialogOpen(true);
+  }
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       {/* TAB HEADERS */}
@@ -675,6 +687,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             (p: any, i: number) => (
                               <TableRow
                                 key={(p?.email || p?.name || "sh") + i}
+                                onClick={() => showMemberDetails(p.email)}
+                                className="cursor-pointer"
                               >
                                 <TableCell className="font-medium">
                                   {p?.name || "—"}
@@ -1236,6 +1250,24 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
           </div>
         </DialogContent>
       </Dialog>
+      {
+        entityType.toUpperCase().replace(/\s/g, "").includes("LLC") && isDialogOpen && (
+          <UsIndividualShdrDetail
+            isOpen={isDialogOpen}
+            onClose={() => setIsDialogOpen(false)}
+            data={selectedData}
+          />
+        ) 
+      }
+       {
+        !entityType.toUpperCase().replace(/\s/g, "").includes("LLC") && isDialogOpen && (
+          <UsCorporateShdrDetailDialog
+            isOpen={isDialogOpen}
+            onClose={() => setIsDialogOpen(false)}
+            data={selectedData}
+          />
+        ) 
+      }
     </Tabs>
   );
 };
