@@ -210,11 +210,11 @@ const TaskDetailPopup = ({
     }
   };
 
-  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+  // const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
 
   const handleStatusChange = async (value: TaskStatus) => {
     if (!task?._id) return;
-    if (value === "COMPLETED" && user.role !== "master") return;
+    // if (value === "COMPLETED" && user.role !== "master") return;
     //  const oldTask = task;
     const nextTask = { ...task, status: value };
     setTasks((prev) => prev.map((t) => (t._id === task._id ? nextTask : t)));
