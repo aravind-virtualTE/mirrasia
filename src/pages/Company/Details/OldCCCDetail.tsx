@@ -241,12 +241,36 @@ const OldCCCDetail: React.FC<{ id: string }> = ({ id }) => {
                 <Separator />
 
                 {/* Designated contact */}
-                <div className="grid gap-3">
+                {/* <div className="grid gap-3">
                   <div className="text-xs text-muted-foreground">Designated Contact</div>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <LabelValue label="Name">{comp?.designatedContact?.[0]?.name || "—"}</LabelValue>
                     <LabelValue label="Email">{comp?.designatedContact?.[0]?.email || "—"}</LabelValue>
-                    <LabelValue label="Phone">{comp?.designatedContact?.[0]?.phone || "—"}</LabelValue>
+                    <LabelValue label="Phone">{comp?.designatedContact?.[0]?.phone || "—"}</LabelValue>                    
+                  </div>
+                </div> */}
+
+                <div className="grid gap-3">
+                  <div className="text-xs text-muted-foreground">Designated Contac</div>
+                  <div className="grid gap-3">
+                    {comp?.designatedContact?.length ? (
+                      comp.designatedContact.map((d, idx) => (
+                        <div key={`director-${idx}`} className="rounded-md border p-3">
+                          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                            <LabelValue label="Name"> 
+                              <div className="flex items-center gap-2">
+                                <FallbackAvatar name={d?.name} />
+                                <span className="text-sm">{d?.name || "—"}</span>
+                              </div>
+                            </LabelValue>
+                            <LabelValue label="Email">{d?.email || "—"}</LabelValue>
+                            <LabelValue label="Phone">{d?.phone || "—"}</LabelValue>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-sm text-muted-foreground">No DCP added.</div>
+                    )}
                   </div>
                 </div>
 

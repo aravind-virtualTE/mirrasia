@@ -647,7 +647,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
       if (response.summary.successful > 0) {
         setApp((prev) => {
           const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
-          return { ...prev, parties: updated, users: response.users };
+          return { ...prev, parties: updated, users: response.users , partyInvited:true};
         });
         toast({
           title: t("newHk.parties.toasts.invite.success.title"),
@@ -660,7 +660,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
       if (response.summary.alreadyExists > 0) {
         setApp((prev) => {
           const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
-          return { ...prev, parties: updated,users: response.users };
+          return { ...prev, parties: updated,users: response.users ,partyInvited:true };
         });
         toast({
           title: t("newHk.parties.toasts.invite.exists.title"),
@@ -1009,7 +1009,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
         <Button
           variant="default"
           onClick={sendMailFunction}
-          disabled={isLocked || isInviting}
+          // disabled={isLocked || isInviting}
           className="flex items-center gap-2 hover:bg-green-700"
         >
           {isInviting ? (
@@ -1830,8 +1830,8 @@ function PaymentStep({ app, setApp, }: {
                     ? info.amount
                     : prev.form.stripeAmountCents,
                 stripeCurrency: info?.currency ?? prev.form.stripeCurrency,
+                paymentDate: new Date().toISOString(),
               },
-              updatedAt: new Date().toISOString(),
             }));
             setCardDrawerOpen(false);
           }}
@@ -2511,6 +2511,12 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
           // Just leave it as is — do nothing
         } else {
           // Same user — keep as is or update (your choice)
+        }
+      }
+      if(stepIdx == 2){
+        if(!app.partyInvited ) {
+          toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
+          return 
         }
       }
       if (stepIdx == 1) {
