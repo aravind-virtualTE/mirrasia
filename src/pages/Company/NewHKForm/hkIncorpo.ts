@@ -78,6 +78,7 @@ export type AppDoc = {
   parties: Party[];
   optionalFeeIds: string[];
   _id?: string;
+  partyInvited?:boolean;
   createdAt?: string;
   expiresAt?: string;
   updatedAt?: string;

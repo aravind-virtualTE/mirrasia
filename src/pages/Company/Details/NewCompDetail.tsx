@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Banknote, Building2, ShieldCheck, ReceiptText, Mail, Phone, CheckCircle2, Circle, Pencil, X, Save, Trash2 } from "lucide-react";
+import { Banknote, Building2, ShieldCheck, ReceiptText, Mail, Phone, CheckCircle2, Circle, Pencil, X, Save, Trash2, Send } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TodoApp from "@/pages/Todo/TodoApp";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ import { useAtom } from "jotai";
 import { usersData } from "@/services/state";
 // import { paymentApi } from "@/lib/api/payment";
 // import { SessionData } from "./HkCompdetail";
-import { fetchUsers, getHkMemberData, markDeleteCompanyRecord } from "@/services/dataFetch";
+import { fetchUsers, getHkMemberData, markDeleteCompanyRecord, sendInviteToShDir } from "@/services/dataFetch";
 import { getHkIncorpoData, saveIncorporationData } from "../NewHKForm/hkIncorpo";
 import SAgrementPdf from "../HongKong/ServiceAgreement/SAgrementPdf";
 import MemoApp from "./MemosHK";
@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/dialog";
 import InvoicePreview from "../NewHKForm/NewInvoicePreview";
 import DetailShdHk from "@/components/shareholderDirector/detailShddHk";
+import { t } from "i18next";
 
 
 export type Party = {
@@ -48,6 +49,13 @@ export type Party = {
   typeOfShare?: string;
   status?: string;
   isDcp?: boolean;
+};
+
+export type PartyRowProps = {
+  p: Party;
+  totalShares?: number;
+  onClick?: (p: Party) => void;
+  onSendInvite?: (p: Party) => void; // new
 };
 
 export type OnboardingRecord = {
@@ -90,6 +98,7 @@ export type OnboardingRecord = {
     stripeLastStatus?: string;
     stripeReceiptUrl?: string;
     finalAmount?: string;
+    paymentDate?: string;
   };
   parties?: Party[];
   incorporationStatus?: string;
@@ -184,37 +193,85 @@ function StepRail({ stepIdx }: { stepIdx: number }) {
   );
 }
 
-function PartyRow({ p, totalShares, onClick, }: { p: Party; totalShares?: number,  onClick?: (p: Party) => void; }) {
-  const pct = p.shares && totalShares ? Math.round((p.shares / totalShares) * 1000) / 10 : undefined;
+function PartyRow({ p, totalShares, onClick, onSendInvite }: PartyRowProps) {
+  const pct =
+    p.shares && totalShares
+      ? Math.round((p.shares / totalShares) * 1000) / 10
+      : undefined;
+
   return (
     <TableRow onClick={() => onClick?.(p)} className="cursor-pointer">
       <TableCell className="py-3">
         <div className="flex items-center gap-2">
           <div className="grid">
-            <div className="font-medium leading-tight">{p.name || "—"}</div>
+            <div className="font-medium leading-tight">
+              {p.name || "—"}
+            </div>
             <div className="text-xs text-muted-foreground flex items-center gap-2">
-              {p.email && (<span className="inline-flex items-center gap-1"><Mail className="h-3.5 w-3.5" />{p.email}</span>)}
-              {p.phone && (<span className="inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" />{p.phone}</span>)}
+              {p.email && (
+                <span className="inline-flex items-center gap-1">
+                  <Mail className="h-3.5 w-3.5" />
+                  {p.email}
+                </span>
+              )}
+              {p.phone && (
+                <span className="inline-flex items-center gap-1">
+                  <Phone className="h-3.5 w-3.5" />
+                  {p.phone}
+                </span>
+              )}
             </div>
           </div>
         </div>
       </TableCell>
+
       <TableCell className="py-3">
-        <Badge variant="secondary" className="mr-2">{p.isCorp ? "Corporate" : "Individual"}</Badge>
+        <Badge variant="secondary" className="mr-2">
+          {p.isCorp ? "Corporate" : "Individual"}
+        </Badge>
         {p.isDirector && <Badge variant="outline">Director</Badge>}
-        {p.isDcp && <Badge variant="outline">Designated Contact Person</Badge>}
+        {p.isDcp && (
+          <Badge variant="outline">Designated Contact Person</Badge>
+        )}
       </TableCell>
+
       <TableCell className="py-3">
         <div className="flex items-center gap-2">
           <Badge variant="outline">{p.typeOfShare || "—"}</Badge>
           <span className="text-sm">{p.shares ?? "—"}</span>
-          {typeof pct === "number" && <span className="text-xs text-muted-foreground">({pct}%)</span>}
+          {typeof pct === "number" && (
+            <span className="text-xs text-muted-foreground">
+              ({pct}%)
+            </span>
+          )}
         </div>
       </TableCell>
+
       <TableCell className="py-3">
-        <Badge className={p.status == "Invited" ? "bg-emerald-600 hover:bg-emerald-600" : ""}>
-          {p.status == "Invited" ? "Invite sent" : "Not invited"}
-        </Badge>
+        <div className="flex items-center justify-between gap-2">
+          <Badge
+            className={
+              p.status === "Invited"
+                ? "bg-emerald-600 hover:bg-emerald-600"
+                : ""
+            }
+          >
+            {p.status === "Invited" ? "Invited" : "Not invited"}
+          </Badge>
+
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-1"
+            onClick={(e) => {
+              e.stopPropagation(); // keep row onClick from firing
+              onSendInvite?.(p);   // call parent’s function for THIS row
+            }}
+          >
+            <Send className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Remind</span>
+          </Button>
+        </div>
       </TableCell>
     </TableRow>
   );
@@ -235,7 +292,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   const [taskToDelete, setTaskToDelete] = React.useState<{ companyId: string, countryCode: string } | null>(null);
   const [invoiceOpen, setInvoiceOpen] = React.useState(false);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
-  const [selectedData, setSelectedData] = React.useState<any >(null);
+  const [selectedData, setSelectedData] = React.useState<any>(null);
 
   // ------- FETCH on mount / id change -------
   React.useEffect(() => {
@@ -358,13 +415,52 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   };
   // console.log("data", data)
   // console.log("f--->",f)
-  const showMemberDetails =async (email:string| undefined) =>{
+  const showMemberDetails = async (email: string | undefined) => {
     // when user clicks on view details button in shareholder director party is should send the id the HKCompDetailSummary component recievd and email from party list , later i will implement the api to fetch data based on id and email and show the data in detail component
     // console.log("email--->",email,id)
-    const result = await getHkMemberData(id,email as string);
+    const result = await getHkMemberData(id, email as string);
     // console.log("result--->",result)
     setSelectedData(result.data);
     setIsDialogOpen(true);
+  }
+
+  const sendInviteToMembers = async (party: any) => {
+    // this is executed for the clicked row only
+    // you can use any party fields here
+    // console.log("Send invite to:", party);
+    const payload = { _id: id || "", inviteData: [{ email: party.email, name: party.name, isDcp: party.isDcp }], country: "HK" };
+    const response = await sendInviteToShDir(payload);
+    if (response.summary.successful > 0) {
+      toast({
+        title: t("newHk.parties.toasts.invite.success.title"),
+        description: t("newHk.parties.toasts.invite.success.desc", {
+          count: response.summary.successful,
+        }),
+      });
+      setData((prev) => {
+        if (!prev) return null;
+        const updated = prev.parties ? prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" })) : [];
+        return { ...prev, parties: updated ,users: response.users};
+      });
+    }
+    if (response.summary.alreadyExists > 0) {
+      setData((prev) => {
+        if (!prev) return null;
+        const updated = prev.parties ? prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" })) : [];
+        return { ...prev, parties: updated ,users: response.users};
+      });
+      toast({
+        title: t("newHk.parties.toasts.invite.exists.title"),
+        description: t("newHk.parties.toasts.invite.exists.desc"),
+      });
+    }
+
+    if (response.summary.failed > 0) {    
+      toast({
+        title: t("newHk.parties.toasts.invite.failed.title"),
+        description: t("newHk.parties.toasts.invite.failed.desc"),
+      });
+    }
   }
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
@@ -598,7 +694,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Shareholding & Parties</CardTitle>
+                  <CardTitle>Shareholders / Directors / DCP</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {data.parties && data.parties.length > 0 ? (
@@ -614,7 +710,13 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                         </TableHeader>
                         <TableBody>
                           {data.parties.map((p, i) => (
-                            <PartyRow key={p.name + i} p={p} totalShares={totalShares} onClick={(party) => showMemberDetails(party.email)} />
+                            <PartyRow
+                              key={p.name + i}
+                              p={p}
+                              totalShares={totalShares}
+                              onClick={(party) => showMemberDetails(party.email)}
+                              onSendInvite={(party) => sendInviteToMembers(party)}
+                            />
                           ))}
                         </TableBody>
                       </Table>
@@ -728,6 +830,12 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                       />
                     </div>
                   </div>
+                  {f.paymentDate ? (<div className="grid grid-cols-4 items-center gap-4">
+                    <Label className="text-right">Payment Date</Label>
+                    <div className="col-span-3 text-sm font-medium">
+                      {f.paymentDate ? f.paymentDate : "—"}
+                    </div>
+                  </div>) : ""}
                   <Button
                     variant="outline"
                     size="sm"
@@ -856,7 +964,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
         </DialogContent>
       </Dialog>
-      {isDialogOpen && <DetailShdHk isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}                
+      {isDialogOpen && <DetailShdHk isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}
     </Tabs>
   );
 }
