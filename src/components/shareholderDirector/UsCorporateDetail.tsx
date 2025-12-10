@@ -13,8 +13,14 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { investmentOptionsMap, relationMap, sourceFundMap, usEgnArticleOptions, usResidencyOptions, usShrDirEngOptions } from "../ShrDirForm/ShrDirConstants";
-
+import {
+  investmentOptionsMap,
+  relationMap,
+  sourceFundMap,
+  usEgnArticleOptions,
+  usResidencyOptions,
+  usShrDirEngOptions,
+} from "../ShrDirForm/ShrDirConstants";
 
 export interface UsCorporateShareholder {
   _id: string;
@@ -80,21 +86,23 @@ const formatYesNo = (value?: string) => {
 
 const mapSingleFromOptions = (
   key: string | undefined,
-  options: { key: string; value: string }[],
+  options: { key: string; value: string }[] | undefined,
   t: (k: string) => string
 ) => {
   if (!key) return "-";
+  if (!options || !Array.isArray(options)) return key;
   const found = options.find((o) => o.key === key);
   if (!found) return key;
   return t(found.value);
 };
 
 const mapArrayFromMap = (
-  keys: string[],
-  map: { key: string; value: string }[],
+  keys: string[] | undefined,
+  map: { key: string; value: string }[] | undefined,
   t: (k: string) => string
 ): string[] => {
-  if (!keys || !keys.length) return [];
+  if (!keys || !Array.isArray(keys) || keys.length === 0) return [];
+  if (!map || !Array.isArray(map)) return keys;
   return keys.map((k) => {
     const found = map.find((m) => m.key === k);
     return found ? t(found.value) : k;
@@ -110,18 +118,14 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
 
   if (!data) return null;
 
-  const relationLabels = mapArrayFromMap(
-    data.relationWithUs || [],
-    relationMap,
-    t
-  );
+  const relationLabels = mapArrayFromMap(data.relationWithUs, relationMap, t);
   const investmentLabels = mapArrayFromMap(
-    data.investmentSource || [],
+    data.investmentSource,
     investmentOptionsMap,
     t
   );
   const expectedSourceLabels = mapArrayFromMap(
-    data.sourceFundExpected || [],
+    data.sourceFundExpected,
     sourceFundMap,
     t
   );
@@ -168,11 +172,7 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
           </div>
           {(data.createdAt || data.updatedAt) && (
             <p className="mt-1 text-xs text-muted-foreground">
-              {data.createdAt && (
-                <>
-                  Created: {formatDate(data.createdAt)}
-                </>
-              )}
+              {data.createdAt && <>Created: {formatDate(data.createdAt)}</>}
               {data.updatedAt && (
                 <>
                   {"  ·  "}
@@ -187,10 +187,10 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
           {/* 1. Company & Contact */}
           <Section title="1) Company & Contact">
             <div className="space-y-2">
-              <Row label="Company Name" value={data.companyName} />
+              <Row label="Company Name" value={data.companyName || "-"} />
               <Row
                 label="Representative Name"
-                value={data.representativeName}
+                value={data.representativeName || "-"}
               />
               <Row
                 label="Date of Establishment"
@@ -198,14 +198,14 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
               />
               <Row
                 label="Country of Establishment"
-                value={data.countryOfEstablishment}
+                value={data.countryOfEstablishment || "-"}
               />
-              <Row label="Business Address" value={data.businessAddress || "-"} />
-              <Row label="Email" value={data.email} />
               <Row
-                label="KakaoTalk ID"
-                value={data.kakaoTalkId || "-"}
+                label="Business Address"
+                value={data.businessAddress || "-"}
               />
+              <Row label="Email" value={data.email || "-"} />
+              <Row label="KakaoTalk ID" value={data.kakaoTalkId || "-"} />
               <Row
                 label="Other Social ID (Telegram / WeChat / etc.)"
                 value={data.socialMediaId || "-"}
@@ -218,11 +218,8 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
           {/* 2. Listing & Corporate Documents */}
           <Section title="2) Listing & Corporate Documents">
             <div className="space-y-2">
-              <Row
-                label="Listed on Stock Exchange"
-                value={listedLabel}
-              />
-              {data.listedOnStockExchange === "other" && (
+              <Row label="Listed on Stock Exchange" value={listedLabel} />
+              {(data.listedOnStockExchange || "") === "other" && (
                 <Row
                   label="Other Stock Exchange Status"
                   value={data.otherListedOnStockExchange || "-"}
@@ -233,7 +230,7 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
                 label="Shareholders / Directors English Name Docs"
                 value={englishNamesDocLabel}
               />
-              {data.englishNamesOfShareholders === "other" && (
+              {(data.englishNamesOfShareholders || "") === "other" && (
                 <Row
                   label="Other English Name Docs Detail"
                   value={data.otherEnglishNamesOfShareholders || "-"}
@@ -244,7 +241,7 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
                 label="Articles of Association (English)"
                 value={articlesLabel}
               />
-              {data.articlesOfAssociation === "other" && (
+              {(data.articlesOfAssociation || "") === "other" && (
                 <Row
                   label="Other Articles Details"
                   value={data.otherArticlesOfAssociation || "-"}
@@ -263,7 +260,7 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
                 isBadges
                 badges={relationLabels}
               />
-              {data.relationWithUs.includes("other") && (
+              {((data.relationWithUs || []) as string[]).includes("other") && (
                 <Row
                   label="Other Relation Detail"
                   value={data.otherRelation || "-"}
@@ -280,7 +277,7 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
                 isBadges
                 badges={investmentLabels}
               />
-              {data.investmentSource.includes("other") && (
+              {((data.investmentSource || []) as string[]).includes("other") && (
                 <Row
                   label="Other Investment Source"
                   value={data.otherInvestmentSource || "-"}
@@ -304,7 +301,9 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
                 isBadges
                 badges={expectedSourceLabels}
               />
-              {data.sourceFundExpected.includes("other") && (
+              {((data.sourceFundExpected || []) as string[]).includes(
+                "other"
+              ) && (
                 <Row
                   label="Other Expected Source of Funds"
                   value={data.otherSourceFund || "-"}
@@ -385,7 +384,7 @@ const UsCorporateShdrDetailDialog: React.FC<UsCorporateShdrDetailDialogProps> = 
                 label="Agreed to Declaration & Conditions"
                 value={agreedLabel}
               />
-              {data.isAgreed === "other" && (
+              {(data.isAgreed || "") === "other" && (
                 <Row
                   label="Other Agreement Description"
                   value={data.otherIsAgreed || "-"}
@@ -421,16 +420,18 @@ interface RowProps {
 }
 
 function Row({ label, value, isBadges, badges = [] }: RowProps) {
+  const safeBadges = Array.isArray(badges) ? badges : [];
+
   return (
     <div className="grid grid-cols-2 gap-2 text-sm mb-1">
       <div className="text-muted-foreground font-medium">{label}</div>
       <div className="font-medium">
         {isBadges ? (
-          badges.length ? (
+          safeBadges.length ? (
             <div className="flex flex-wrap gap-1">
-              {badges.map((b) => (
-                <Badge key={b} variant="outline">
-                  {b}
+              {safeBadges.map((b, idx) => (
+                <Badge key={`${b}-${idx}`} variant="outline">
+                  {b || "-"}
                 </Badge>
               ))}
             </div>
