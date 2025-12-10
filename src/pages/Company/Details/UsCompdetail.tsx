@@ -5,7 +5,7 @@ import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { fetchUsers, getUsIncorpoDataById, markDeleteCompanyRecord, updateEditValues } from "@/services/dataFetch";
+import { fetchUsers, getUsIncorpoDataById, markDeleteCompanyRecord, sendInviteToShDir, updateEditValues } from "@/services/dataFetch";
 import { paymentApi } from "@/lib/api/payment";
 import { useToast } from "@/hooks/use-toast";
 
@@ -66,6 +66,7 @@ import {
   Save,
   Trash2,
   ReceiptText,
+  Send,
 } from "lucide-react";
 
 import MemoApp from "./MemosHK";
@@ -349,6 +350,44 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     console.log("email--->", email, id, entityType, res)
     setSelectedData(res.data);
     setIsDialogOpen(true);
+  }
+
+  const onSendInvite = async (party: any) => {
+    // console.log("p--->", party)
+    let country = "US_Individual";
+    if (form.selectedEntity === "Corporation") {
+      country = "US_Corporate";
+    }
+    const payload = { _id: id || "", inviteData: [{ email: party.email, name: party.name, isDcp: party.isDcp }], country };
+    const response = await sendInviteToShDir(payload);
+    if (response.summary.successful > 0) {
+      const next = [...form.shareholders.map((sh:any) => {
+        sh.status = "Invited"
+      })];
+
+      setForm((p:any) => ({ ...p, users: response.users, shareholders: next }));
+      toast({
+        title: "Success",
+        description: `Successfully sent invitation mail to ${response.summary.successful} people`,
+      });
+    }
+    if (response.summary.alreadyExists > 0) {
+      const next = [...form.shareholders.map((sh:any) => {
+        sh.status = "Resent Invitation"
+      })];
+      setForm((p:any) => ({ ...p, users: response.users, shareholders: next }));
+      toast({
+        title: "Success",
+        description: `Invite sent to member/director`,
+      });
+    }
+    if (response.summary.failed > 0) {
+      toast({
+        title: "Failed",
+        description: `Some Invitations Failed`,
+      });
+    }
+
   }
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
@@ -664,20 +703,23 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[32%]">
+                            <TableHead className="w-[24%]">
                               Shareholder
                             </TableHead>
                             <TableHead className="w-[20%]">
                               Email
                             </TableHead>
-                            <TableHead className="w-[16%]">
+                            <TableHead className="w-[18%]">
                               Phone
                             </TableHead>
                             <TableHead className="w-[16%]">
                               Ownership
                             </TableHead>
                             <TableHead className="w-[16%]">
-                              Director / Legal
+                              Director/DCP
+                            </TableHead>
+                            <TableHead className="w-[8%]">
+                              Legal Entity
                             </TableHead>
                             <TableHead className="w-[16%]">Status</TableHead>
                           </TableRow>
@@ -704,17 +746,14 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                 </TableCell>
                                 <TableCell>
                                   <div className="flex gap-2">
-                                    <Badge
-                                      variant={String(
-                                        renderVal(p?.isDirector)
-                                      )
-                                        .toLowerCase()
-                                        .includes("yes")
-                                        ? "default"
-                                        : "outline"}
-                                    >
-                                      {renderVal(p?.isDirector) || "—"}
-                                    </Badge>
+                                    {p.isDirector && <Badge variant="outline">{p.isDirector.id}</Badge>}
+                                    {p.isDcp && (
+                                      <Badge variant="outline">Designated Contact Person</Badge>
+                                    )}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex gap-2">
                                     <Badge
                                       variant={String(
                                         renderVal(p?.isLegalPerson)
@@ -728,10 +767,22 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                     </Badge>
                                   </div>
                                 </TableCell>
-                                <TableCell className="text-right">
+                                <TableCell className="text-right flex items-center justify-between gap-2">
                                   <Badge >
                                     {p.status == "Invited" || p.status == "Resent Invitation" ? "Invited" : "Not invited"}
                                   </Badge>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="flex items-center gap-1"
+                                    onClick={(e) => {
+                                      e.stopPropagation(); // keep row onClick from firing
+                                      onSendInvite?.(p);   // call parent’s function for THIS row
+                                    }}
+                                  >
+                                    <Send className="h-3.5 w-3.5" />
+                                    <span className="hidden sm:inline">Remind</span>
+                                  </Button>
                                 </TableCell>
                               </TableRow>
                             )
@@ -1257,16 +1308,16 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
             onClose={() => setIsDialogOpen(false)}
             data={selectedData}
           />
-        ) 
+        )
       }
-       {
+      {
         !entityType.toUpperCase().replace(/\s/g, "").includes("LLC") && isDialogOpen && (
           <UsCorporateShdrDetailDialog
             isOpen={isDialogOpen}
             onClose={() => setIsDialogOpen(false)}
             data={selectedData}
           />
-        ) 
+        )
       }
     </Tabs>
   );
