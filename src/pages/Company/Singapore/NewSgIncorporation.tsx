@@ -88,7 +88,7 @@ type FormConfig = { title: string; steps: Step[] };
 function PartiesManager() {
     const { t } = useTranslation();
     const [form, setForm] = useAtom(sgFormWithResetAtom1);
-    const isLocked = form?.paymentStatus === "paid";
+    // const isLocked = form?.paymentStatus === "paid";
 
     // Normalize parties
     const parties: Party[] = Array.isArray(form.parties) ? form.parties : [];
@@ -301,7 +301,7 @@ function PartiesManager() {
                                             </Label>
                                             <Input
                                                 value={p.name}
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 onChange={(e) =>
                                                     patch(i, { name: e.target.value })
                                                 }
@@ -319,7 +319,7 @@ function PartiesManager() {
                                             </Label>
                                             <Input
                                                 type="email"
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 value={p.email}
                                                 onChange={(e) =>
                                                     patch(i, { email: e.target.value })
@@ -338,7 +338,7 @@ function PartiesManager() {
                                             </Label>
                                             <Input
                                                 value={p.phone}
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 onChange={(e) =>
                                                     patch(i, { phone: e.target.value })
                                                 }
@@ -356,7 +356,7 @@ function PartiesManager() {
                                             </Label>
                                             <Input
                                                 type="number"
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 value={
                                                     Number.isFinite(p.shares)
                                                         ? p.shares
@@ -386,7 +386,7 @@ function PartiesManager() {
                                             </Label>
                                             <Input
                                                 value={p.address ?? ""}
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 onChange={(e) =>
                                                     patch(i, { address: e.target.value })
                                                 }
@@ -408,7 +408,7 @@ function PartiesManager() {
                                             </Label>
                                             <RadioGroup
                                                 value={p.typeOfShare ?? DEFAULT_SHARE_ID}
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 onValueChange={(v) =>
                                                     patch(i, { typeOfShare: v })
                                                 }
@@ -438,7 +438,7 @@ function PartiesManager() {
                                             </Label>
                                             <Select
                                                 value={String(p.isCorp)}
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 onValueChange={(v) =>
                                                     patch(i, { isCorp: v === "true" })
                                                 }
@@ -467,7 +467,7 @@ function PartiesManager() {
                                             </Label>
                                             <Select
                                                 value={String(p.isSignificant ?? false)}
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 onValueChange={(v) =>
                                                     patch(i, {
                                                         isSignificant: v === "true",
@@ -500,7 +500,7 @@ function PartiesManager() {
                                                 value={String(
                                                     p.isDesignatedContact ?? false
                                                 )}
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 onValueChange={(v) =>
                                                     patch(i, {
                                                         isDesignatedContact:
@@ -532,7 +532,7 @@ function PartiesManager() {
                                             </Label>
                                             <Select
                                                 value={String(p.isDirector ?? false)}
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 onValueChange={(v) =>
                                                     patch(i, { isDirector: v === "true" })
                                                 }
@@ -567,7 +567,7 @@ function PartiesManager() {
                                             </Label>
                                             <Select
                                                 value={String(p.isDcp ?? false)}
-                                                disabled={isLocked}
+                                                //disabled={isLocked}
                                                 onValueChange={(v) =>
                                                     patch(i, {
                                                         isDcp: v === "true",

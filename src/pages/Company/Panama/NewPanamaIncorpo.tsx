@@ -37,6 +37,7 @@ import { currencies } from "../HongKong/constants";
 import CustomLoader from "@/components/ui/customLoader";
 import { t } from "i18next";
 import { money } from "../PanamaFoundation/PaConstants";
+import { ROLE_OPTIONS,RoleOption } from "./PaConstants";
 
 const SHARE_TYPES = [
     { id: "ordinary", label: "CompanyInformation.typeOfShare.ordinaryShares" },
@@ -88,7 +89,6 @@ type Step = { id: string; title: string; description?: string; fields?: Field[];
 type FormConfig = { title: string; steps: Step[] };
 
 type YesNoOption = { id: "yes" | "no"; value: string };
-type RoleOption = { id: "president" | "treasurer" | "secretary" | ""; value: string };
 type ShareholderDirectorItem = {
     name: string;
     email: string;
@@ -115,11 +115,7 @@ const YES_NO: YesNoOption[] = [
     { id: "no", value: "AmlCdd.options.no" },
 ];
 
-const ROLE_OPTIONS: RoleOption[] = [
-    { id: "president", value: "panama.rOptions.4" },
-    { id: "treasurer", value: "panama.rOptions.5" },
-    { id: "secretary", value: "panama.rOptions.3" },
-];
+
 
 const PRICE_NS = 1300;
 const PRICE_EMI = 400;

@@ -22,6 +22,7 @@ export interface StatsCardProps {
     applicantName: string
     assignedTo: string
     status: string
+    incorporationStatus? :string
     incorporationDate: string | null
     lastLogin: string | null
     _id: string

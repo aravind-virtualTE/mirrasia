@@ -32,6 +32,7 @@ import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { User } from "@/components/userList/UsersList";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { STATUS_OPTIONS } from "./detailData";
 
 /** ---------------- helpers ---------------- */
 const fmtDate = (iso?: string) => {
@@ -124,18 +125,6 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
   const isAdmin = user?.role !== "user";
 
-  const STATUS_OPTIONS = [
-    "Pending",
-    "KYC Verification",
-    "Waiting for Payment",
-    "Waiting for Documents",
-    "Waiting for Incorporation",
-    "Incorporation Completed",
-    "Good Standing",
-    "Renewal Processing",
-    "Renewal Completed",
-  ];
-
   /** bootstrap */
   useEffect(() => {
     const bootstrap = async () => {
@@ -191,10 +180,12 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
         company: {
           id: form._id,
           status: form.status,
+          incorporationStatus: form.incorporationStatus,
           isDisabled: form.isDisabled,
           incorporationDate: form.incorporationDate,
           country: "SG",
           paymentStatus: form.paymentStatus,
+          parties:form.parties,
           // send explicit fields (new schema)
           ...nameFields,
         },
@@ -229,7 +220,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const contactName = form?.designatedContactPerson || form?.designatedContact || form?.name || "";
   const email = form?.email || "";
   const phone = form?.phoneNum || "";
-  const currentStatus = form?.status || "Pending";
+  const currentStatus = form?.incorporationStatus || "Pending";
   // const dcpName = form?.dcpName || "";
   // const dcpEmail = form?.dcpEmail || "";
   const industries = (form?.selectedIndustry || []) as string[];
@@ -283,6 +274,15 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
     setDeleteDialogOpen(false);
     setTaskToDelete(null);
   };
+  const updatePartyAt = (index: number, patch: any) => {
+    if (!form || !Array.isArray(form.parties)) return;
+    const clone = { ...form };
+    const arr = [...clone.parties];
+    arr[index] = { ...arr[index], ...patch };
+    clone.parties = arr;
+    setForm(clone);
+  };
+
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -351,7 +351,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             <span className="text-xs text-muted-foreground">Incorporation Status</span>
 
                             {user?.role !== "user" ? (
-                              <Select value={currentStatus} onValueChange={(val) => patchForm("status", val as any)}>
+                              <Select value={currentStatus} onValueChange={(val) => patchForm("incorporationStatus", val as any)}>
                                 <SelectTrigger className="h-7 w-[240px]">
                                   <SelectValue placeholder="Select status" />
                                 </SelectTrigger>
@@ -378,15 +378,17 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         >
                           <Trash2 size={16} />
                         </button> : ""}
-                        {!isEditing ? (
-                          <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
-                            <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
-                          </Button>
-                        ) : (
-                          <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
-                            <X className="mr-1 h-3.5 w-3.5" /> Cancel
-                          </Button>
-                        )}
+
+                        {isAdmin &&
+                          (!isEditing ? (
+                            <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
+                              <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
+                            </Button>
+                          ) : (
+                            <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
+                              <X className="mr-1 h-3.5 w-3.5" /> Cancel
+                            </Button>
+                          ))}
                       </div>
                     </div>
                   </div>
@@ -402,16 +404,6 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       <span className="font-medium">{contactName || "—"}</span>
                     </div>
                   </LabelValue>
-                  {/* <LabelValue label="Dcp Name">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{dcpName || "—"}</span>
-                    </div>
-                  </LabelValue>
-                  <LabelValue label="Dcp Email">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{dcpEmail || "—"}</span>
-                    </div>
-                  </LabelValue> */}
                   <LabelValue label="Contact">
                     <div className="grid gap-2">
                       <div className="flex items-center gap-2">
@@ -519,25 +511,142 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                           <TableRow>
                             <TableHead className="w-[24%]">Name</TableHead>
                             <TableHead className="w-[20%]">Email</TableHead>
-                            <TableHead className="w-[14%]">Phone</TableHead>
                             <TableHead className="w-[12%]">Shares</TableHead>
                             <TableHead className="w-[12%]">Share Type</TableHead>
                             <TableHead className="w-[8%]">Director</TableHead>
-                            <TableHead className="w-[8%]">Significant</TableHead>
+                            <TableHead className="w-[14%]">DCP</TableHead>
+                            <TableHead className="w-[8%]">Significant Controller</TableHead>
                             <TableHead className="w-[8%]">Status</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {form.parties.map((p: any) => (
-                            <TableRow key={p._id}>
-                              <TableCell className="font-medium">{p.name}</TableCell>
-                              <TableCell>{p.email}</TableCell>
-                              <TableCell>{p.phone}</TableCell>
-                              <TableCell>{p.shares}</TableCell>
-                              <TableCell>{p.typeOfShare || "—"}</TableCell>
-                              <TableCell><BoolPill value={!!p.isDirector} /></TableCell>
-                              <TableCell><BoolPill value={!!p.isSignificant} /></TableCell>
-                              <TableCell> <Badge >{p.status}</Badge></TableCell>
+                          {form.parties.map((p: any, index: number) => (
+                            <TableRow key={p._id || index}>
+                              {/* Name */}
+                              <TableCell className="font-medium">
+                                {isAdmin && isEditing ? (
+                                  <Input
+                                    className="h-8"
+                                    placeholder="Name"
+                                    value={p.name || ""}
+                                    onChange={(e) =>
+                                      updatePartyAt(index, { name: e.target.value })
+                                    }
+                                  />
+                                ) : (
+                                  p.name || "—"
+                                )}
+                              </TableCell>
+
+                              {/* Email */}
+                              <TableCell>
+                                {isAdmin && isEditing ? (
+                                  <Input
+                                    className="h-8"
+                                    type="email"
+                                    placeholder="Email"
+                                    value={p.email || ""}
+                                    onChange={(e) =>
+                                      updatePartyAt(index, { email: e.target.value })
+                                    }
+                                  />
+                                ) : (
+                                  p.email || "—"
+                                )}
+                              </TableCell>
+
+                              {/* Shares */}
+                              <TableCell>
+                                {isAdmin && isEditing ? (
+                                  <Input
+                                    className="h-8"
+                                    type="number"
+                                    placeholder="Shares"
+                                    value={p.shares ?? ""}
+                                    onChange={(e) => {
+                                      const raw = e.target.value;
+                                      const val = raw === "" ? undefined : Number(raw);
+                                      updatePartyAt(index, { shares: val });
+                                    }}
+                                  />
+                                ) : (
+                                  (p.shares ?? "—")
+                                )}
+                              </TableCell>
+
+                              {/* Share Type */}
+                              <TableCell>
+                                {isAdmin && isEditing ? (
+                                  <Input
+                                    className="h-8"
+                                    placeholder="Share type"
+                                    value={p.typeOfShare || ""}
+                                    onChange={(e) =>
+                                      updatePartyAt(index, { typeOfShare: e.target.value })
+                                    }
+                                  />
+                                ) : (
+                                  p.typeOfShare || "—"
+                                )}
+                              </TableCell>
+
+                              {/* Director */}
+                              <TableCell>
+                                {isAdmin && isEditing ? (
+                                  <div className="flex items-center gap-2">
+                                    <Switch
+                                      checked={!!p.isDirector}
+                                      onCheckedChange={(checked) =>
+                                        updatePartyAt(index, { isDirector: checked })
+                                      }
+                                    />
+                                    <span className="text-xs text-muted-foreground">Director</span>
+                                  </div>
+                                ) : (
+                                  <BoolPill value={!!p.isDirector} />
+                                )}
+                              </TableCell>
+
+                              {/* DCP */}
+                              <TableCell>
+                                {isAdmin && isEditing ? (
+                                  <div className="flex items-center gap-2">
+                                    <Switch
+                                      checked={!!p.isDcp}
+                                      onCheckedChange={(checked) =>
+                                        updatePartyAt(index, { isDcp: checked })
+                                      }
+                                    />
+                                    <span className="text-xs text-muted-foreground">DCP</span>
+                                  </div>
+                                ) : (
+                                  <BoolPill value={!!p.isDcp} />
+                                )}
+                              </TableCell>
+
+                              {/* Significant Controller */}
+                              <TableCell>
+                                {isAdmin && isEditing ? (
+                                  <div className="flex items-center gap-2">
+                                    <Switch
+                                      checked={!!p.isSignificant}
+                                      onCheckedChange={(checked) =>
+                                        updatePartyAt(index, { isSignificant: checked })
+                                      }
+                                    />
+                                    <span className="text-xs text-muted-foreground">
+                                      Significant
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <BoolPill value={!!p.isSignificant} />
+                                )}
+                              </TableCell>
+
+                              {/* Status (read-only for now) */}
+                              <TableCell>
+                                <Badge>{p.status || "—"}</Badge>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -696,7 +805,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       </div>
                     )}
                   </div>
-                  
+
 
                   {/* {isAdmin && (
                     <div className="grid grid-cols-4 items-center gap-4">

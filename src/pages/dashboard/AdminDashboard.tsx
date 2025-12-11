@@ -315,7 +315,7 @@ const AdminDashboard = () => {
     return rows;
   };
 
-  const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { status: string }).status))
+  const projectsData = (allList as companyTableData[]).filter((e) => !active_status.includes((e as { incorporationStatus: string }).incorporationStatus))
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = user ? { role: user.role } : { role: "" };
 
