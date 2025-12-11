@@ -30,13 +30,16 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import InvoicePreview from "../NewHKForm/NewInvoicePreview";
 import DetailShdHk from "@/components/shareholderDirector/detailShddHk";
 import { t } from "i18next";
-
+import { Switch } from "@/components/ui/switch";
+import { STATUS_OPTIONS } from "./detailData";
 
 export type Party = {
   name: string;
@@ -56,12 +59,15 @@ export type PartyRowProps = {
   totalShares?: number;
   onClick?: (p: Party) => void;
   onSendInvite?: (p: Party) => void; // new
+  isEditing?: boolean;
+  isAdmin?: boolean;
+  onChange?: (patch: Partial<Party>) => void;
 };
 
 export type OnboardingRecord = {
   _id: string;
   stepIdx: number; // 0-based
-  userId?: string | undefined
+  userId?: string | undefined;
   form: {
     applicantName?: string;
     email?: string;
@@ -105,8 +111,14 @@ export type OnboardingRecord = {
   paymentStatus?: string;
   expiresAt?: string;
   optionalFeeIds?: string[];
-  createdAt?: string; updatedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+
+  // NEW
+  incorporationDate?: string;   // when company officially registered
+  isDisabled?: boolean;         // AML/CDD: false = enabled, true = disabled
 };
+
 
 const steps = [
   "Applicant",
@@ -119,17 +131,6 @@ const steps = [
   "Payment",
   "e-Sign",
   "Review"
-] as const;
-
-const STATUS_OPTIONS = [
-  "Pending",
-  "KYC Verification",
-  "Waiting for Payment",
-  "Waiting for Documents",
-  "Waiting for Incorporation",
-  "Incorporation Completed",
-  "Renewal Processing",
-  "Renewal Completed",
 ] as const;
 
 function pctFromStep(stepIdx: number) {
@@ -193,60 +194,188 @@ function StepRail({ stepIdx }: { stepIdx: number }) {
   );
 }
 
-function PartyRow({ p, totalShares, onClick, onSendInvite }: PartyRowProps) {
+function PartyRow({ p, totalShares, onClick, onSendInvite, isEditing, isAdmin, onChange, }: PartyRowProps) {
   const pct =
     p.shares && totalShares
       ? Math.round((p.shares / totalShares) * 1000) / 10
       : undefined;
 
   return (
-    <TableRow onClick={() => onClick?.(p)} className="cursor-pointer">
+    <TableRow
+      onClick={!isEditing ? () => onClick?.(p) : undefined}
+      className={!isEditing ? "cursor-pointer" : ""}
+    >
+      {/* Party: name + contact */}
       <TableCell className="py-3">
-        <div className="flex items-center gap-2">
-          <div className="grid">
-            <div className="font-medium leading-tight">
-              {p.name || "—"}
-            </div>
-            <div className="text-xs text-muted-foreground flex items-center gap-2">
-              {p.email && (
-                <span className="inline-flex items-center gap-1">
+        <div className="flex flex-col gap-2">
+          {/* Name */}
+          <div className="font-medium leading-tight">
+            {isEditing ? (
+              <Input
+                className="h-8"
+                value={p.name || ""}
+                onChange={(e) =>
+                  onChange?.({ name: e.target.value })
+                }
+              />
+            ) : (
+              p.name || "—"
+            )}
+          </div>
+
+          {/* Email + phone */}
+          <div className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">
+            {isEditing ? (
+              <>
+                <div className="flex items-center gap-1">
                   <Mail className="h-3.5 w-3.5" />
-                  {p.email}
-                </span>
-              )}
-              {p.phone && (
-                <span className="inline-flex items-center gap-1">
+                  <Input
+                    className="h-7 w-48"
+                    type="email"
+                    placeholder="Email"
+                    value={p.email || ""}
+                    onChange={(e) =>
+                      onChange?.({ email: e.target.value })
+                    }
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+                <div className="flex items-center gap-1">
                   <Phone className="h-3.5 w-3.5" />
-                  {p.phone}
-                </span>
-              )}
-            </div>
+                  <Input
+                    className="h-7 w-40"
+                    placeholder="Phone"
+                    value={p.phone || ""}
+                    onChange={(e) =>
+                      onChange?.({ phone: e.target.value })
+                    }
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                {p.email && (
+                  <span className="inline-flex items-center gap-1">
+                    <Mail className="h-3.5 w-3.5" />
+                    {p.email}
+                  </span>
+                )}
+                {p.phone && (
+                  <span className="inline-flex items-center gap-1">
+                    <Phone className="h-3.5 w-3.5" />
+                    {p.phone}
+                  </span>
+                )}
+              </>
+            )}
           </div>
         </div>
       </TableCell>
 
+      {/* Type / Roles / DCP toggle */}
       <TableCell className="py-3">
-        <Badge variant="secondary" className="mr-2">
-          {p.isCorp ? "Corporate" : "Individual"}
-        </Badge>
-        {p.isDirector && <Badge variant="outline">Director</Badge>}
-        {p.isDcp && (
-          <Badge variant="outline">Designated Contact Person</Badge>
-        )}
-      </TableCell>
+        <div className="flex flex-col gap-2">
+          {/* Type + Director badge/toggle */}
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary">
+              {p.isCorp ? "Corporate" : "Individual"}
+            </Badge>
 
-      <TableCell className="py-3">
-        <div className="flex items-center gap-2">
-          <Badge variant="outline">{p.typeOfShare || "—"}</Badge>
-          <span className="text-sm">{p.shares ?? "—"}</span>
-          {typeof pct === "number" && (
-            <span className="text-xs text-muted-foreground">
-              ({pct}%)
-            </span>
-          )}
+            {isEditing ? (
+              <div
+                className="flex items-center gap-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="text-xs text-muted-foreground">
+                  Director
+                </span>
+                <Switch
+                  checked={!!p.isDirector}
+                  onCheckedChange={(checked) =>
+                    onChange?.({ isDirector: checked })
+                  }
+                />
+              </div>
+            ) : (
+              p.isDirector && <Badge variant="outline">Director</Badge>
+            )}
+          </div>
+
+          {/* DCP toggle/badge */}
+          <div className="flex flex-wrap items-center gap-2">
+            {isEditing ? (
+              <div
+                className="flex items-center gap-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="text-xs text-muted-foreground">
+                  DCP
+                </span>
+                <Switch
+                  checked={!!p.isDcp}
+                  onCheckedChange={(checked) =>
+                    onChange?.({ isDcp: checked })
+                  }
+                />
+              </div>
+            ) : (
+              p.isDcp && (
+                <Badge variant="outline">
+                  DCP
+                </Badge>
+              )
+            )}
+          </div>
         </div>
       </TableCell>
 
+      {/* Shares + typeOfShare */}
+      <TableCell className="py-3">
+        {isEditing ? (
+          <div
+            className="flex flex-wrap items-center gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Input
+              className="h-8 w-24"
+              placeholder="Shares"
+              type="number"
+              value={p.shares ?? ""}
+              onChange={(e) => {
+                const raw = e.target.value;
+                const val = raw === "" ? undefined : Number(raw);
+                onChange?.({ shares: val });
+              }}
+            />
+            <Input
+              className="h-8 w-32"
+              placeholder="Type"
+              value={p.typeOfShare || ""}
+              onChange={(e) =>
+                onChange?.({ typeOfShare: e.target.value })
+              }
+            />
+            {typeof pct === "number" && (
+              <span className="text-xs text-muted-foreground">
+                ({pct}%)
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Badge variant="outline">{p.typeOfShare || "—"}</Badge>
+            <span className="text-sm">{p.shares ?? "—"}</span>
+            {typeof pct === "number" && (
+              <span className="text-xs text-muted-foreground">
+                ({pct}%)
+              </span>
+            )}
+          </div>
+        )}
+      </TableCell>
+
+      {/* Status + Remind (admin-only) */}
       <TableCell className="py-3">
         <div className="flex items-center justify-between gap-2">
           <Badge
@@ -259,23 +388,26 @@ function PartyRow({ p, totalShares, onClick, onSendInvite }: PartyRowProps) {
             {p.status === "Invited" ? "Invited" : "Not invited"}
           </Badge>
 
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-1"
-            onClick={(e) => {
-              e.stopPropagation(); // keep row onClick from firing
-              onSendInvite?.(p);   // call parent’s function for THIS row
-            }}
-          >
-            <Send className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Remind</span>
-          </Button>
+          {isAdmin && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1"
+              onClick={(e) => {
+                e.stopPropagation(); // prevent row click when view mode
+                onSendInvite?.(p);
+              }}
+            >
+              <Send className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Remind</span>
+            </Button>
+          )}
         </div>
       </TableCell>
     </TableRow>
   );
 }
+
 
 export default function HKCompDetailSummary({ id }: { id: string }) {
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : { role: "user" };
@@ -293,7 +425,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   const [invoiceOpen, setInvoiceOpen] = React.useState(false);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [selectedData, setSelectedData] = React.useState<any>(null);
-
+  const isAdmin = user?.role !== "user";
   // ------- FETCH on mount / id change -------
   React.useEffect(() => {
     const fetchAll = async () => {
@@ -440,14 +572,14 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
       setData((prev) => {
         if (!prev) return null;
         const updated = prev.parties ? prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" })) : [];
-        return { ...prev, parties: updated ,users: response.users};
+        return { ...prev, parties: updated, users: response.users };
       });
     }
     if (response.summary.alreadyExists > 0) {
       setData((prev) => {
         if (!prev) return null;
         const updated = prev.parties ? prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" })) : [];
-        return { ...prev, parties: updated ,users: response.users};
+        return { ...prev, parties: updated, users: response.users };
       });
       toast({
         title: t("newHk.parties.toasts.invite.exists.title"),
@@ -455,13 +587,22 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
       });
     }
 
-    if (response.summary.failed > 0) {    
+    if (response.summary.failed > 0) {
       toast({
         title: t("newHk.parties.toasts.invite.failed.title"),
         description: t("newHk.parties.toasts.invite.failed.desc"),
       });
     }
   }
+  const updatePartyAt = (idx: number, patch: Partial<Party>) => {
+    setData((prev) => {
+      if (!prev) return prev;
+      const parties = prev.parties ? [...prev.parties] : [];
+      parties[idx] = { ...parties[idx], ...patch };
+      return { ...prev, parties };
+    });
+  };
+
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -556,15 +697,16 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                           >
                             <Trash2 size={16} />
                           </button> : ""}
-                          {!isEditing ? (
-                            <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
-                              <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
-                            </Button>
-                          ) : (
-                            <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
-                              <X className="mr-1 h-3.5 w-3.5" /> Cancel
-                            </Button>
-                          )}
+                          {isAdmin &&
+                            (!isEditing ? (
+                              <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
+                                <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
+                              </Button>
+                            ) : (
+                              <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
+                                <X className="mr-1 h-3.5 w-3.5" /> Cancel
+                              </Button>
+                            ))}
                         </div>
                       </div>
                     </div>
@@ -581,17 +723,6 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                         <span className="font-medium">{f.applicantName || "—"}</span>
                       </div>
                     </LabelValue>
-                    {/* <LabelValue label="Dcp Name">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{f.dcpName || "—"}</span>
-                      </div>
-                    </LabelValue>
-                    <LabelValue label="Dcp Email">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{f.dcpEmail || "—"}</span>
-                      </div>
-                    </LabelValue> */}
-
                     <LabelValue label="Contact">
                       <div className="grid gap-2">
                         <div className="flex items-center gap-2">
@@ -714,8 +845,11 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                               key={p.name + i}
                               p={p}
                               totalShares={totalShares}
+                              isEditing={isEditing}
+                              isAdmin={isAdmin}
                               onClick={(party) => showMemberDetails(party.email)}
                               onSendInvite={(party) => sendInviteToMembers(party)}
+                              onChange={(patch) => updatePartyAt(i, patch)}
                             />
                           ))}
                         </TableBody>
@@ -724,6 +858,76 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                   ) : (
                     <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No parties added.</div>
                   )}
+                  <Separator />
+                  {/* Incorporation date + AML/CDD toggle */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <LabelValue label="Incorporation Date">
+                      <div className="flex items-center gap-2">
+                        <span>
+                          {data.incorporationDate
+                            ? fmtDate(data.incorporationDate)
+                            : "—"}
+                        </span>
+                        {isAdmin && (
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                Edit
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Edit Incorporation Date</DialogTitle>
+                                <DialogDescription>
+                                  Set the date when the company was officially registered.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className="grid gap-4 py-2">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label
+                                    htmlFor="incorporationDate"
+                                    className="text-right"
+                                  >
+                                    Date
+                                  </Label>
+                                  <Input
+                                    id="incorporationDate"
+                                    type="date"
+                                    value={
+                                      data.incorporationDate
+                                        ? String(data.incorporationDate).slice(0, 10)
+                                        : ""
+                                    }
+                                    onChange={(e) =>
+                                      patchCompany("incorporationDate", e.target.value)
+                                    }
+                                    className="col-span-3"
+                                  />
+                                </div>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        )}
+                      </div>
+                    </LabelValue>
+
+                    <LabelValue label="AML/CDD Edit">
+                      <div className="flex items-center gap-2">
+                        {/* true = enabled => !isDisabled */}
+                        <BoolPill value={!data.isDisabled} />
+                        {isAdmin && (
+                          <Switch
+                            checked={!data.isDisabled}
+                            onCheckedChange={(checked) =>
+                              // checked = AML/CDD enabled => isDisabled = !checked
+                              patchCompany("isDisabled", !checked)
+                            }
+                          />
+                        )}
+                      </div>
+                    </LabelValue>
+                  </div>
+
                 </CardContent>
               </Card>
             </div>

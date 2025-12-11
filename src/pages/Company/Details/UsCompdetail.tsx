@@ -76,7 +76,7 @@ import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { User } from "@/components/userList/UsersList";
 import { usIncorporationItems, usRenewalList } from "./detailConstants";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
-import { getShrMemberData } from "./detailData";
+import { getShrMemberData, STATUS_OPTIONS } from "./detailData";
 import UsIndividualShdrDetail from "@/components/shareholderDirector/UsIndividualDetail";
 import UsCorporateShdrDetailDialog from "@/components/shareholderDirector/UsCorporateDetail";
 
@@ -168,18 +168,6 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     : null;
   const isAdmin = user?.role !== "user";
 
-  const STATUS_OPTIONS = [
-    "Pending",
-    "KYC Verification",
-    "Waiting for Payment",
-    "Waiting for Documents",
-    "Waiting for Incorporation",
-    "Incorporation Completed",
-    "Good Standing",
-    "Renewal Processing",
-    "Renewal Completed",
-  ];
-
   // ---- bootstrap ----
   useEffect(() => {
     const bootstrap = async () => {
@@ -240,13 +228,12 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const onSave = async () => {
     try {
       setIsSaving(true);
-
       // backend originally expected `companyName` array.
-
       const payload = JSON.stringify({
         company: {
           id: form._id,
           status: form.status,
+          incorporationStatus: form.incorporationStatus,
           isDisabled: form.isDisabled,
           incorporationDate: form.incorporationDate,
           country: "US",
@@ -254,6 +241,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
           companyName_2: form.companyName_2,
           companyName_3: form.companyName_3,
           paymentStatus: form.paymentStatus,
+          shareHolders: form.shareHolders,
         },
         session: {
           id: session._id,
@@ -300,7 +288,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   // const dcpEmail = form?.dcpEmail || "";
   // const dcpStatus = form?.dcpStatus || "";
 
-  const currentStatus = form?.status || "Pending";
+  const currentStatus = form?.incorporationStatus || "Pending";
 
   // selectedState can be plain string ("Wyoming") or object
   const stateName =
@@ -361,21 +349,21 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const payload = { _id: id || "", inviteData: [{ email: party.email, name: party.name, isDcp: party.isDcp }], country };
     const response = await sendInviteToShDir(payload);
     if (response.summary.successful > 0) {
-      const next = [...form.shareholders.map((sh:any) => {
+      const next = [...form.shareholders.map((sh: any) => {
         sh.status = "Invited"
       })];
 
-      setForm((p:any) => ({ ...p, users: response.users, shareholders: next }));
+      setForm((p: any) => ({ ...p, users: response.users, shareholders: next }));
       toast({
         title: "Success",
         description: `Successfully sent invitation mail to ${response.summary.successful} people`,
       });
     }
     if (response.summary.alreadyExists > 0) {
-      const next = [...form.shareholders.map((sh:any) => {
+      const next = [...form.shareholders.map((sh: any) => {
         sh.status = "Resent Invitation"
       })];
-      setForm((p:any) => ({ ...p, users: response.users, shareholders: next }));
+      setForm((p: any) => ({ ...p, users: response.users, shareholders: next }));
       toast({
         title: "Success",
         description: `Invite sent to member/director`,
@@ -387,8 +375,16 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
         description: `Some Invitations Failed`,
       });
     }
-
   }
+  const updateShareholderAt = (idx: number, patch: any) => {
+    setForm((prev: any) => {
+      const current = Array.isArray(prev.shareHolders) ? prev.shareHolders : [];
+      const next = [...current];
+      next[idx] = { ...next[idx], ...patch };
+      return { ...prev, shareHolders: next };
+    });
+  };
+
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       {/* TAB HEADERS */}
@@ -500,7 +496,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                               <Select
                                 value={currentStatus}
                                 onValueChange={(val) =>
-                                  patchForm("status", val as any)
+                                  patchForm("incorporationStatus", val as any)
                                 }
                               >
                                 <SelectTrigger className="h-7 w-[240px]">
@@ -529,23 +525,16 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         >
                           <Trash2 size={16} />
                         </button> : ""}
-                        {!isEditing ? (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setIsEditing(true)}
-                          >
-                            <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => setIsEditing(false)}
-                          >
-                            <X className="mr-1 h-3.5 w-3.5" /> Cancel
-                          </Button>
-                        )}
+                        {isAdmin &&
+                          (!isEditing ? (
+                            <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
+                              <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
+                            </Button>
+                          ) : (
+                            <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
+                              <X className="mr-1 h-3.5 w-3.5" /> Cancel
+                            </Button>
+                          ))}
                       </div>
                     </div>
                   </div>
@@ -688,15 +677,12 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       "—"}
                   </LabelValue>
                 </div>
-
                 <Separator />
-
                 {/* Shareholders / directors */}
                 <div className="space-y-3">
                   <div className="text-sm font-medium">
                     Shareholding & Parties
                   </div>
-
                   {Array.isArray(form?.shareHolders) &&
                     form.shareHolders.length ? (
                     <div className="rounded-md border">
@@ -704,19 +690,19 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         <TableHeader>
                           <TableRow>
                             <TableHead className="w-[24%]">
-                              Shareholder
+                              Name
                             </TableHead>
                             <TableHead className="w-[20%]">
                               Email
                             </TableHead>
                             <TableHead className="w-[18%]">
-                              Phone
+                              Director
                             </TableHead>
                             <TableHead className="w-[16%]">
                               Ownership
                             </TableHead>
                             <TableHead className="w-[16%]">
-                              Director/DCP
+                              DCP
                             </TableHead>
                             <TableHead className="w-[8%]">
                               Legal Entity
@@ -725,68 +711,141 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {form.shareHolders.map(
-                            (p: any, i: number) => (
-                              <TableRow
-                                key={(p?.email || p?.name || "sh") + i}
-                                onClick={() => showMemberDetails(p.email)}
-                                className="cursor-pointer"
-                              >
-                                <TableCell className="font-medium">
-                                  {p?.name || "—"}
-                                </TableCell>
-                                <TableCell>{p?.email || "—"}</TableCell>
-                                <TableCell>{p?.phone || "—"}</TableCell>
-                                <TableCell>
-                                  {typeof p?.ownershipRate === "number"
-                                    ? `${p.ownershipRate}%`
-                                    : typeof p?.ownerShipRate === "number"
-                                      ? `${p.ownerShipRate}%`
-                                      : "—"}
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex gap-2">
-                                    {p.isDirector && <Badge variant="outline">{p.isDirector.id}</Badge>}
-                                    {p.isDcp && (
-                                      <Badge variant="outline">Designated Contact Person</Badge>
-                                    )}
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex gap-2">
-                                    <Badge
-                                      variant={String(
-                                        renderVal(p?.isLegalPerson)
-                                      )
-                                        .toLowerCase()
-                                        .includes("yes")
-                                        ? "default"
-                                        : "outline"}
-                                    >
-                                      {renderVal(p?.isLegalPerson) || "—"}
-                                    </Badge>
-                                  </div>
-                                </TableCell>
-                                <TableCell className="text-right flex items-center justify-between gap-2">
-                                  <Badge >
-                                    {p.status == "Invited" || p.status == "Resent Invitation" ? "Invited" : "Not invited"}
+                          {form.shareHolders.map((p: any, i: number) => (
+                            <TableRow
+                              key={(p?.email || p?.name || "sh") + i}
+                              onClick={
+                                !isEditing
+                                  ? () => showMemberDetails(p.email)
+                                  : undefined
+                              }
+                              className={!isEditing ? "cursor-pointer" : ""}
+                            >
+                              <TableCell className="font-medium">
+                                {isEditing ? (
+                                  <Input
+                                    className="h-8"
+                                    value={p?.name || ""}
+                                    onChange={(e) =>
+                                      updateShareholderAt(i, { name: e.target.value })
+                                    }
+                                  />
+                                ) : (
+                                  p?.name || "—"
+                                )}
+                              </TableCell>
+                              {/* Email */}
+                              <TableCell>
+                                {isEditing ? (
+                                  <Input
+                                    className="h-8"
+                                    type="email"
+                                    value={p?.email || ""}
+                                    onChange={(e) =>
+                                      updateShareholderAt(i, { email: e.target.value })
+                                    }
+                                  />
+                                ) : (
+                                  p?.email || "—"
+                                )}
+                              </TableCell>
+                              {/* Phone */}
+                              <TableCell>
+                                {p.isDirector && (
+                                  <Badge variant="outline">{p.isDirector.id}</Badge>
+                                )}
+                              </TableCell>
+                              {/* Ownership */}
+                              <TableCell>
+                                {isEditing ? (
+                                  <Input
+                                    className="h-8"
+                                    type="number"
+                                    value={p?.ownershipRate ?? p?.ownerShipRate ?? ""}
+                                    onChange={(e) => {
+                                      const raw = e.target.value;
+                                      const val = raw === "" ? "" : Number(raw);
+                                      updateShareholderAt(i, {
+                                        ownershipRate: val,
+                                        ownerShipRate: val,
+                                      });
+                                    }}
+                                  />
+                                ) : typeof p?.ownershipRate === "number" ? (
+                                  `${p.ownershipRate}%`
+                                ) : typeof p?.ownerShipRate === "number" ? (
+                                  `${p.ownerShipRate}%`
+                                ) : (
+                                  "—"
+                                )}
+                              </TableCell>
+                              {/* Director / DCP (simple DCP toggle, director still display-only) */}
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+
+                                  {/* DCP editable toggle when editing */}
+                                  {isEditing ? (
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-xs text-muted-foreground">
+                                        DCP
+                                      </span>
+                                      <Switch
+                                        checked={!!p.isDcp}
+                                        onCheckedChange={(checked) =>
+                                          updateShareholderAt(i, { isDcp: checked })
+                                        }
+                                      />
+                                    </div>
+                                  ) : (
+                                    p.isDcp && (
+                                      <Badge variant="outline">
+                                        DCP
+                                      </Badge>
+                                    )
+                                  )}
+                                </div>
+                              </TableCell>
+                              {/* Legal Entity (still read-only for now) */}
+                              <TableCell>
+                                <div className="flex gap-2">
+                                  <Badge
+                                    variant={String(renderVal(p?.isLegalPerson))
+                                      .toLowerCase()
+                                      .includes("yes")
+                                      ? "default"
+                                      : "outline"}
+                                  >
+                                    {renderVal(p?.isLegalPerson) || "—"}
                                   </Badge>
+                                </div>
+                              </TableCell>
+
+                              {/* Status + Remind (invite) */}
+                              <TableCell className="text-right flex items-center justify-between gap-2">
+                                <Badge>
+                                  {p.status === "Invited" || p.status === "Resent Invitation"
+                                    ? "Invited"
+                                    : "Not invited"}
+                                </Badge>
+
+                                {/* Only admin | master can see and use Remind button */}
+                                {isAdmin && (
                                   <Button
                                     variant="outline"
                                     size="sm"
                                     className="flex items-center gap-1"
                                     onClick={(e) => {
                                       e.stopPropagation(); // keep row onClick from firing
-                                      onSendInvite?.(p);   // call parent’s function for THIS row
+                                      onSendInvite?.(p);
                                     }}
                                   >
                                     <Send className="h-3.5 w-3.5" />
                                     <span className="hidden sm:inline">Remind</span>
                                   </Button>
-                                </TableCell>
-                              </TableRow>
-                            )
-                          )}
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
                         </TableBody>
                       </Table>
                     </div>
@@ -796,9 +855,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     </div>
                   )}
                 </div>
-
                 <Separator />
-
                 {/* Incorporation date + AML/CDD toggle */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <LabelValue label="Incorporation Date">

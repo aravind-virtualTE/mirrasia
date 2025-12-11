@@ -23,6 +23,7 @@ import { toast } from "@/hooks/use-toast";
 import { t } from "i18next";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { STATUS_OPTIONS } from "./detailData";
 
 // ----------------- Types -----------------
 export type PIFRecord = {
@@ -40,7 +41,7 @@ export type PIFRecord = {
     bizDesc?: string;
     createdAt?: string;
     updatedAt?: string;
-
+    incorporationStatus?: string;
     // Declarations
     truthOk?: boolean;
     taxOk?: boolean;
@@ -79,7 +80,6 @@ const steps = [
     "Review"
 ];
 
-const STATUS_OPTIONS = ["Pending", "KYC Review", "Docs Requested", "Incorporated", "On Hold", "Cancelled"];
 
 function pctFromStep(stepIdx: number) {
     const maxIdx = steps.length - 1;
@@ -337,7 +337,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                             {user.role !== "user" ? (
                                                                 <Select
                                                                     value={data?.status || ""}
-                                                                    onValueChange={(val) => patchCompany("status", val)}
+                                                                    onValueChange={(val) => patchCompany("incorporationStatus", val)}
                                                                 >
                                                                     <SelectTrigger className="h-7 w-[220px]">
                                                                         <SelectValue placeholder="Select status" />

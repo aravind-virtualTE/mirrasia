@@ -41,6 +41,8 @@ import { User } from "@/components/userList/UsersList";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { t } from "i18next";
+import { STATUS_OPTIONS } from "./detailData";
+import { ROLE_OPTIONS } from "../Panama/PaConstants";
 
 type SessionData = {
     _id: string;
@@ -50,18 +52,6 @@ type SessionData = {
     status: string;
     paymentId: string;
 };
-
-const STATUS_OPTIONS = [
-    "Pending",
-    "KYC Verification",
-    "Waiting for Payment",
-    "Waiting for Documents",
-    "Waiting for Incorporation",
-    "Incorporation Completed",
-    "Good Standing",
-    "Renewal Processing",
-    "Renewal Completed",
-];
 
 function fmtDate(d?: string | Date) {
     if (!d) return "—";
@@ -241,7 +231,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
     };
 
     const patchCompany = (
-        key: "status" | "incorporationDate" | "expiresAt" | "paymentStatus",
+        key: "status" | "incorporationDate" | "expiresAt" | "paymentStatus" | "incorporationStatus",
         val: string
     ) => {
         if (!formData) return;
@@ -286,6 +276,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 company: {
                     id: (formData as any)._id,
                     status: formData.status,
+                    incorporationStatus: formData.incorporationStatus,
                     isDisabled: formData.isDisabled,
                     incorporationDate: formData.incorporationDate,
                     country: "PA",
@@ -346,6 +337,17 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
         }
         setDeleteDialogOpen(false);
         setTaskToDelete(null);
+    };
+
+    const updateShareholderAt = (index: number, patch: any) => {
+        setFormData((prev: any) => {
+            if (!prev || !Array.isArray((prev as any).shareHolders)) return prev;
+            const clone: any = { ...prev };
+            const arr = [...clone.shareHolders];
+            arr[index] = { ...arr[index], ...patch };
+            clone.shareHolders = arr;
+            return clone;
+        });
     };
 
     return (
@@ -438,7 +440,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                             {user?.role !== "user" ? (
                                                                 <Select
                                                                     value={formData?.status || ""}
-                                                                    onValueChange={(val) => patchCompany("status", val)}
+                                                                    onValueChange={(val) => patchCompany("incorporationStatus", val)}
                                                                 >
                                                                     <SelectTrigger className="h-7 w-[220px]">
                                                                         <SelectValue placeholder="Select status" />
@@ -459,41 +461,42 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 {/* Edit toggle */}
                                                 <div className="flex shrink-0 items-center gap-2">
-                                                    {isAdmin ? <button
-                                                        className="text-red-500 hover:red-blue-700 transition"
-                                                        onClick={(e) => handleDeleteClick(id, "PA", e)}
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button> : ""}
-                                                    {!isEditing ? (
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            onClick={() => setIsEditing(true)}
+                                                    {isAdmin && (
+                                                        <button
+                                                            className="text-red-500 hover:red-blue-700 transition"
+                                                            onClick={(e) => handleDeleteClick(id, "PA", e)}
                                                         >
-                                                            <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
-                                                        </Button>
-                                                    ) : (
-                                                        <Button
-                                                            size="sm"
-                                                            variant="ghost"
-                                                            onClick={() => setIsEditing(false)}
-                                                        >
-                                                            <X className="mr-1 h-3.5 w-3.5" /> Cancel
-                                                        </Button>
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    )}
+                                                    {isAdmin && (
+                                                        !isEditing ? (
+                                                            <Button
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() => setIsEditing(true)}
+                                                            >
+                                                                <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
+                                                            </Button>
+                                                        ) : (
+                                                            <Button
+                                                                size="sm"
+                                                                variant="ghost"
+                                                                onClick={() => setIsEditing(false)}
+                                                            >
+                                                                <X className="mr-1 h-3.5 w-3.5" /> Cancel
+                                                            </Button>
+                                                        )
                                                     )}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </CardHeader>
-
                                 <CardContent className="grid gap-5">
                                     <StepRail stepIdx={f.stepIdx} />
-
                                     {/* Basic info (editable names) */}
                                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         <LabelValue label="Applicant">
@@ -504,16 +507,6 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                 </span>
                                             </div>
                                         </LabelValue>
-                                        {/* <LabelValue label="Dcp Name">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-medium">{f.dcpName || "—"}</span>
-                                            </div>
-                                        </LabelValue>
-                                        <LabelValue label="Dcp Email">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-medium">{f.dcpEmail || "—"}</span>
-                                            </div>
-                                        </LabelValue> */}
                                         <LabelValue label="Contact">
                                             <div className="grid gap-2">
                                                 <div className="flex items-center gap-2">
@@ -646,7 +639,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             {/* ► Shareholders now reflect new sample structure */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Shareholding & Parties</CardTitle>
+                                    <CardTitle>Shareholders/DCP</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     {Array.isArray((formData as any)?.shareHolders) &&
@@ -655,64 +648,133 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                             <Table>
                                                 <TableHeader>
                                                     <TableRow>
-                                                        <TableHead className="w-[30%]">Party</TableHead>
-                                                        <TableHead className="w-[22%]">
-                                                            Role / Share Type
-                                                        </TableHead>
-                                                        <TableHead className="w-[20%]">
-                                                            Shares / Ownership
-                                                        </TableHead>
-                                                        <TableHead className="w-[15%]">
-                                                            Legal Person
-                                                        </TableHead>
-                                                        <TableHead className="w-[13%]">Status</TableHead>
+                                                        <TableHead className="w-[22%]">Name</TableHead>
+                                                        <TableHead className="w-[16%]">Role</TableHead>
+                                                        <TableHead className="w-[18%]">Share Type</TableHead>
+                                                        <TableHead className="w-[18%]">Shares / Ownership</TableHead>
+                                                        <TableHead className="w-[14%]">Legal Person</TableHead>
+                                                        <TableHead className="w-[12%]">DCP</TableHead>
+                                                        <TableHead className="w-[10%]">Status</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
+
                                                 <TableBody>
-                                                    {(formData as any).shareHolders.map(
-                                                        (p: any, i: number) => {
-                                                            const ownedShares =
-                                                                typeof p.shares === "number"
-                                                                    ? p.shares
-                                                                    : undefined;
-                                                            const pct =
-                                                                totalShares && ownedShares != null
-                                                                    ? Number(
-                                                                        (
-                                                                            (ownedShares /
-                                                                                totalShares) *
-                                                                            100
-                                                                        ).toFixed(2)
-                                                                    )
+                                                    {(formData as any).shareHolders.map((p: any, i: number) => {
+                                                        const ownedShares =
+                                                            typeof p.shares === "number"
+                                                                ? p.shares
+                                                                : p.shares != null
+                                                                    ? Number(p.shares)
                                                                     : undefined;
 
-                                                            const legalPersonLabel =
-                                                                p.isLegalPerson?.value ||
-                                                                p.isLegalPerson?.id ||
-                                                                (p.isLegalPerson === "yes"
-                                                                    ? "Yes"
-                                                                    : p.isLegalPerson === "no"
-                                                                        ? "No"
-                                                                        : "—");
+                                                        const pct =
+                                                            totalShares && ownedShares != null
+                                                                ? Number(((ownedShares / totalShares) * 100).toFixed(2))
+                                                                : undefined;
 
-                                                            return (
-                                                                <TableRow
-                                                                    key={(p?.name || "shareholder") + i}
-                                                                >
-                                                                    <TableCell>
-                                                                        <div className="flex items-center gap-2">
-                                                                            <FallbackAvatar name={p.name} />
-                                                                            <div className="grid">
-                                                                                <span className="font-medium">
-                                                                                    {p.name || "—"}
-                                                                                </span>
-                                                                                <span className="text-xs text-muted-foreground">
-                                                                                    {p.email || "—"}
-                                                                                </span>
-                                                                            </div>
+                                                        const legalPersonLabel =
+                                                            p.isLegalPerson?.value ||
+                                                            p.isLegalPerson?.id ||
+                                                            (p.isLegalPerson === "yes"
+                                                                ? "Yes"
+                                                                : p.isLegalPerson === "no"
+                                                                    ? "No"
+                                                                    : "—");
+
+                                                        // Normalized value for editing select
+                                                        const legalPersonValue =
+                                                            typeof p.isLegalPerson === "string"
+                                                                ? p.isLegalPerson
+                                                                : p.isLegalPerson?.id || "";
+
+                                                        return (
+                                                            <TableRow key={(p?.name || "shareholder") + i}>
+                                                                {/* Name: name + email (same as now) */}
+                                                                <TableCell>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <FallbackAvatar name={p.name} />
+                                                                        <div className="grid gap-1">
+                                                                            {isAdmin && isEditing ? (
+                                                                                <>
+                                                                                    <Input
+                                                                                        className="h-8"
+                                                                                        placeholder="Name"
+                                                                                        value={p.name || ""}
+                                                                                        onChange={(e) =>
+                                                                                            updateShareholderAt(i, { name: e.target.value })
+                                                                                        }
+                                                                                    />
+                                                                                    <Input
+                                                                                        className="h-7 text-xs"
+                                                                                        type="email"
+                                                                                        placeholder="Email"
+                                                                                        value={p.email || ""}
+                                                                                        onChange={(e) =>
+                                                                                            updateShareholderAt(i, { email: e.target.value })
+                                                                                        }
+                                                                                    />
+                                                                                </>
+                                                                            ) : (
+                                                                                <>
+                                                                                    <span className="font-medium">
+                                                                                        {p.name || "—"}
+                                                                                    </span>
+                                                                                    <span className="text-xs text-muted-foreground">
+                                                                                        {p.email || "—"}
+                                                                                    </span>
+                                                                                </>
+                                                                            )}
                                                                         </div>
-                                                                    </TableCell>
-                                                                    <TableCell className="text-sm">
+                                                                    </div>
+                                                                </TableCell>
+
+                                                                {/* Role column */}
+                                                                <TableCell className="text-sm">
+                                                                    {isAdmin && isEditing ? (
+                                                                        <Select
+                                                                            value={p.role?.id || ""}
+                                                                            onValueChange={(id) => {
+                                                                                const selected =
+                                                                                    ROLE_OPTIONS.find((r) => r.id === id) ||
+                                                                                    { id: "", value: "" };
+                                                                                updateShareholderAt(i, { role: selected });
+                                                                            }}
+                                                                        >
+                                                                            <SelectTrigger className="h-8">
+                                                                                <SelectValue
+                                                                                    placeholder={t("common.select", "Select")}
+                                                                                />
+                                                                            </SelectTrigger>
+                                                                            <SelectContent>
+                                                                                {ROLE_OPTIONS.map((r) => (
+                                                                                    <SelectItem key={r.id} value={r.id}>
+                                                                                        {t(r.value)}
+                                                                                    </SelectItem>
+                                                                                ))}
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    ) : (
+                                                                        <span>
+                                                                            { p.role?.id ||
+                                                                                "—"}
+                                                                        </span>
+                                                                    )}
+                                                                </TableCell>
+
+                                                                {/* Share Type column */}
+                                                                <TableCell className="text-sm">
+                                                                    {isAdmin && isEditing ? (
+                                                                        <Input
+                                                                            className="h-8"
+                                                                            placeholder="Type of share"
+                                                                            value={p.typeOfShare || ""}
+                                                                            onChange={(e) =>
+                                                                                updateShareholderAt(i, {
+                                                                                    typeOfShare: e.target.value,
+                                                                                })
+                                                                            }
+                                                                        />
+                                                                    ) : (
                                                                         <div className="flex flex-col">
                                                                             {p.typeOfShare && (
                                                                                 <span className="text-medium">
@@ -720,59 +782,106 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                                 </span>
                                                                             )}
                                                                         </div>
-                                                                    </TableCell>
-                                                                    <TableCell className="text-sm">
-                                                                        {ownedShares != null ? (
-                                                                            <div className="flex flex-col">
-                                                                                <span>
-                                                                                    {ownedShares}{" "}
-                                                                                    shares
-                                                                                </span>
-                                                                                {pct != null && (
-                                                                                    <span className="text-xs text-muted-foreground">
-                                                                                        ({pct}%)
-                                                                                    </span>
-                                                                                )}
-                                                                            </div>
-                                                                        ) : typeof p.ownershipRate ===
-                                                                            "number" ? (
-                                                                            <span>
-                                                                                {p.ownershipRate}%
-                                                                            </span>
-                                                                        ) : (
-                                                                            "—"
-                                                                        )}
-                                                                    </TableCell>
-                                                                    <TableCell className="text-sm">
-                                                                        {t(legalPersonLabel)}
-                                                                    </TableCell>
-                                                                    <TableCell className="text-sm">
-                                                                        <Badge>{p.status || (p.invited ? "Invited" : "—")}</Badge>
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            );
-                                                        }
-                                                    )}
+                                                                    )}
+                                                                </TableCell>
 
-                                                    {/* <TableRow>
-                                                        <TableCell className="font-medium">
-                                                            Total / Assigned Shares
-                                                        </TableCell>
-                                                        <TableCell />
-                                                        <TableCell>
-                                                            <div className="flex flex-col text-sm">
-                                                                <span>
-                                                                    Company total:{" "}
-                                                                    {totalShares || "—"}
-                                                                </span>
-                                                                <span className="text-xs text-muted-foreground">
-                                                                    Assigned: {assignedShares}
-                                                                </span>
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell />
-                                                        <TableCell />
-                                                    </TableRow> */}
+                                                                {/* Shares / Ownership */}
+                                                                <TableCell className="text-sm">
+                                                                    {isAdmin && isEditing ? (
+                                                                        <div className="flex flex-col gap-1">
+                                                                            <Input
+                                                                                className="h-8"
+                                                                                type="number"
+                                                                                placeholder="Shares"
+                                                                                value={ownedShares ?? ""}
+                                                                                onChange={(e) => {
+                                                                                    const raw = e.target.value;
+                                                                                    const val =
+                                                                                        raw === "" ? undefined : Number(raw);
+                                                                                    updateShareholderAt(i, { shares: val });
+                                                                                }}
+                                                                            />
+                                                                            {pct != null && (
+                                                                                <span className="text-xs text-muted-foreground">
+                                                                                    ({pct}%)
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                    ) : ownedShares != null ? (
+                                                                        <div className="flex flex-col">
+                                                                            <span>{ownedShares} shares</span>
+                                                                            {pct != null && (
+                                                                                <span className="text-xs text-muted-foreground">
+                                                                                    ({pct}%)
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                    ) : typeof p.ownershipRate === "number" ? (
+                                                                        <span>{p.ownershipRate}%</span>
+                                                                    ) : (
+                                                                        "—"
+                                                                    )}
+                                                                </TableCell>
+
+                                                                {/* Legal Person (unchanged) */}
+                                                                <TableCell className="text-sm">
+                                                                    {isAdmin && isEditing ? (
+                                                                        <Select
+                                                                            value={legalPersonValue}
+                                                                            onValueChange={(val) =>
+                                                                                updateShareholderAt(i, {
+                                                                                    isLegalPerson: {
+                                                                                        id: val,
+                                                                                        value: val === "yes" ? "Yes" : "No",
+                                                                                    },
+                                                                                })
+                                                                            }
+                                                                        >
+                                                                            <SelectTrigger className="h-8">
+                                                                                <SelectValue placeholder="Select" />
+                                                                            </SelectTrigger>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="yes">Yes</SelectItem>
+                                                                                <SelectItem value="no">No</SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    ) : (
+                                                                        t(legalPersonLabel)
+                                                                    )}
+                                                                </TableCell>
+
+                                                                {/* DCP flag (unchanged) */}
+                                                                <TableCell className="text-sm">
+                                                                    {isAdmin && isEditing ? (
+                                                                        <div className="flex items-center gap-2">
+                                                                            <Switch
+                                                                                checked={!!p.isDcp}
+                                                                                onCheckedChange={(checked) =>
+                                                                                    updateShareholderAt(i, { isDcp: checked })
+                                                                                }
+                                                                            />
+                                                                            <span className="text-xs text-muted-foreground">
+                                                                                DCP
+                                                                            </span>
+                                                                        </div>
+                                                                    ) : (
+                                                                        p.isDcp && (
+                                                                            <Badge variant="outline">
+                                                                                DCP
+                                                                            </Badge>
+                                                                        )
+                                                                    )}
+                                                                </TableCell>
+
+                                                                {/* Status (read-only) */}
+                                                                <TableCell className="text-sm">
+                                                                    <Badge>
+                                                                        {p.status || (p.invited ? "Invited" : "—")}
+                                                                    </Badge>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        );
+                                                    })}
                                                 </TableBody>
                                             </Table>
                                         </div>
@@ -783,7 +892,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                     )}
 
                                     {/* AML/CDD toggle */}
-                                    <div className="flex items-center mt-2 gap-3">
+                                    {isAdmin && <div className="flex items-center mt-2 gap-3">
                                         <Label className="text-right">AML/CDD Edit</Label>
                                         <div className="flex items-center gap-2">
                                             <Badge variant="outline">
@@ -799,7 +908,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                 }
                                             />
                                         </div>
-                                    </div>
+                                    </div>}
                                 </CardContent>
                             </Card>
                             {formData?.legalDirectors && formData.legalDirectors.length > 0 && (
@@ -832,7 +941,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                             </div>
                                                         </TableCell>
 
-                                                        <TableCell>{d.role?.id || "—"}</TableCell>
+                                                        <TableCell>{(d.role?.id) || "—"}</TableCell>
                                                         <TableCell>{d.shares || "—"}</TableCell>
                                                         <TableCell>{d.isLegalPerson?.value || "—"}</TableCell>
                                                         <TableCell>{d.status || "—"}</TableCell>
