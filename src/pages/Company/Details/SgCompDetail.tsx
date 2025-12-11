@@ -35,14 +35,19 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { STATUS_OPTIONS } from "./detailData";
 
 /** ---------------- helpers ---------------- */
-const fmtDate = (iso?: string) => {
-  if (!iso) return "—";
-  try {
-    return new Date(iso).toLocaleString();
-  } catch {
-    return iso;
-  }
-};
+
+function fmtDate(d?: string | Date) {
+  if (!d) return "—";
+
+  const dt = typeof d === "string" ? new Date(d) : d;
+
+  // Simple invalid-date guard without using getTime()
+  const timestamp = +dt; // same as Number(dt)
+  if (Number.isNaN(timestamp)) return "—";
+
+  // Date only (no time)
+  return dt.toISOString().slice(0, 10);
+}
 
 // normalize object-or-string values like {id,value}
 const renderVal = (d: any) =>

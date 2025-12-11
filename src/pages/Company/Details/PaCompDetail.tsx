@@ -54,10 +54,16 @@ type SessionData = {
 };
 
 function fmtDate(d?: string | Date) {
-    if (!d) return "—";
-    const dt = typeof d === "string" ? new Date(d) : d;
-    if (Number.isNaN(dt.getTime())) return "—";
-    return dt.toLocaleString();
+  if (!d) return "—";
+
+  const dt = typeof d === "string" ? new Date(d) : d;
+
+  // Simple invalid-date guard without using getTime()
+  const timestamp = +dt; // same as Number(dt)
+  if (Number.isNaN(timestamp)) return "—";
+
+  // Date only (no time)
+  return dt.toISOString().slice(0, 10);
 }
 
 const FallbackAvatar: React.FC<{ name?: string | null }> = ({ name }) => {
@@ -755,7 +761,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                         </Select>
                                                                     ) : (
                                                                         <span>
-                                                                            { p.role?.id ||
+                                                                            {p.role?.id ||
                                                                                 "—"}
                                                                         </span>
                                                                     )}
@@ -875,8 +881,14 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                                                                 {/* Status (read-only) */}
                                                                 <TableCell className="text-sm">
-                                                                    <Badge>
-                                                                        {p.status || (p.invited ? "Invited" : "—")}
+                                                                    <Badge
+                                                                        className={
+                                                                            p.status === "Invited"
+                                                                                ? "bg-emerald-600 hover:bg-emerald-600"
+                                                                                : ""
+                                                                        }
+                                                                    >
+                                                                        {p.status === "Invited" ? "Invited" : "Not invited"}
                                                                     </Badge>
                                                                 </TableCell>
                                                             </TableRow>

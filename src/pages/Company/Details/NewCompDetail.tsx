@@ -139,11 +139,14 @@ function pctFromStep(stepIdx: number) {
   return Math.round((clamped / maxIdx) * 100);
 }
 
-function fmtDate(s?: string) {
-  if (!s) return "—";
-  const d = new Date(s);
-  if (isNaN(d.getTime())) return "—";
-  return d.toLocaleString(undefined, { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+function fmtDate(d?: string | Date) {
+  if (!d) return "—";
+  const dt = typeof d === "string" ? new Date(d) : d;
+  // Simple invalid-date guard without using getTime()
+  const timestamp = +dt; // same as Number(dt)
+  if (Number.isNaN(timestamp)) return "—";
+  // Date only (no time)
+  return dt.toISOString().slice(0, 10);
 }
 
 function LabelValue({ label, children }: React.PropsWithChildren<{ label: string }>) {
