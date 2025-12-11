@@ -81,14 +81,18 @@ import UsIndividualShdrDetail from "@/components/shareholderDirector/UsIndividua
 import UsCorporateShdrDetailDialog from "@/components/shareholderDirector/UsCorporateDetail";
 
 // -------- helpers --------
-const fmtDate = (iso?: string | null) => {
-  if (!iso) return "—";
-  try {
-    return new Date(iso).toLocaleString();
-  } catch {
-    return String(iso);
-  }
-};
+function fmtDate(d?: string | Date) {
+  if (!d) return "—";
+
+  const dt = typeof d === "string" ? new Date(d) : d;
+
+  // Simple invalid-date guard without using getTime()
+  const timestamp = +dt; // same as Number(dt)
+  if (Number.isNaN(timestamp)) return "—";
+
+  // Date only (no time)
+  return dt.toISOString().slice(0, 10);
+}
 
 const FallbackAvatar: React.FC<{ name?: string | null }> = ({ name }) => {
   const initials = (name || "")
