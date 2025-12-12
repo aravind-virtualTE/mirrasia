@@ -1110,7 +1110,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
             </div>
 
             {/* Sticky save bar */}
-            <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+           {isAdmin && <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
                 <div className="text-xs text-muted-foreground">
                   Status: <strong>{data?.incorporationStatus || "Pending"}</strong>
@@ -1121,7 +1121,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                   </Button>
                 </div>
               </div>
-            </div>
+            </div>}
           </div>
         </section>
       </TabsContent>

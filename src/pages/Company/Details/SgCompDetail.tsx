@@ -38,13 +38,9 @@ import { STATUS_OPTIONS } from "./detailData";
 
 function fmtDate(d?: string | Date) {
   if (!d) return "—";
-
   const dt = typeof d === "string" ? new Date(d) : d;
-
-  // Simple invalid-date guard without using getTime()
   const timestamp = +dt; // same as Number(dt)
   if (Number.isNaN(timestamp)) return "—";
-
   // Date only (no time)
   return dt.toISOString().slice(0, 10);
 }
@@ -190,7 +186,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
           incorporationDate: form.incorporationDate,
           country: "SG",
           paymentStatus: form.paymentStatus,
-          parties:form.parties,
+          parties: form.parties,
           // send explicit fields (new schema)
           ...nameFields,
         },
@@ -377,23 +373,24 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                       {/* edit toggle */}
                       <div className="flex shrink-0 items-center gap-2">
-                        {user.role !== "user" ? <button
-                          className="text-red-500 hover:red-blue-700 transition"
-                          onClick={(e) => handleDeleteClick(id, "SG", e)}
-                        >
-                          <Trash2 size={16} />
-                        </button> : ""}
+                        {isAdmin ? (
+                          <button
+                            className="text-red-500 hover:red-blue-700 transition"
+                            onClick={(e) => handleDeleteClick(id, "SG", e)}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        ) : null}
 
-                        {isAdmin &&
-                          (!isEditing ? (
-                            <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
-                              <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
-                            </Button>
-                          ) : (
-                            <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
-                              <X className="mr-1 h-3.5 w-3.5" /> Cancel
-                            </Button>
-                          ))}
+                        {isAdmin && (!isEditing ? (
+                          <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
+                            <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
+                          </Button>
+                        ) : (
+                          <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
+                            <X className="mr-1 h-3.5 w-3.5" /> Cancel
+                          </Button>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -811,28 +808,6 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     )}
                   </div>
 
-
-                  {/* {isAdmin && (
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label className="text-right">Payment Status</Label>
-                      <div className="col-span-3">
-                        <Select
-                          value={form.sessionStatus || ""}
-                          onValueChange={(val) => patchForm("sessionStatus" as any, val)}
-                        >
-                          <SelectTrigger className="w-48">
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                            <SelectItem value="expired">Expired</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  )} */}
-
                   {form.receiptUrl && (
                     <div className="grid grid-cols-4 items-start gap-4">
                       <Label className="text-right">Receipt</Label>
@@ -908,7 +883,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
           </div>
 
           {/* Sticky save bar */}
-          <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          {isAdmin && <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
               <div className="text-xs text-muted-foreground">
                 Status: <strong>{currentStatus}</strong>
@@ -919,7 +894,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 </Button>
               </div>
             </div>
-          </div>
+          </div>}
         </div>
       </TabsContent>
 
