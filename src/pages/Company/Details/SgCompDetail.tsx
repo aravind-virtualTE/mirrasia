@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 
-import { fetchUsers, getSgIncorpoDataById, markDeleteCompanyRecord, updateEditValues } from "@/services/dataFetch";
+import { fetchUsers, getSgIncorpoDataById, markDeleteCompanyRecord, sendInviteToShDir, updateEditValues } from "@/services/dataFetch";
 import { paymentApi } from "@/lib/api/payment";
 import { useToast } from "@/hooks/use-toast";
 
@@ -24,7 +24,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { Building2, Banknote, ReceiptText, ShieldCheck, Mail, Phone, Pencil, X, Save, Trash2 } from "lucide-react";
+import { Building2, Banknote, ReceiptText, ShieldCheck, Mail, Phone, Pencil, X, Save, Trash2, Send } from "lucide-react";
 
 import MemoApp from "./MemosHK";
 import TodoApp from "@/pages/Todo/TodoApp";
@@ -33,6 +33,7 @@ import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { User } from "@/components/userList/UsersList";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { STATUS_OPTIONS } from "./detailData";
+import { t } from "i18next";
 
 /** ---------------- helpers ---------------- */
 
@@ -284,6 +285,35 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
     setForm(clone);
   };
 
+  const sendInvite = async (party: any) => {
+    const payload = { _id: id || "", inviteData: [{ email: party.email, name: party.name, isDcp: party.isDcp }], country: "SG" };
+    const response = await sendInviteToShDir(payload);
+    if (response.summary.successful > 0) {
+      toast({
+        title: t("newHk.parties.toasts.invite.success.title"),
+        description: t("newHk.parties.toasts.invite.success.desc", {
+          count: response.summary.successful,
+        }),
+      });
+      const updated = form.parties ? form.parties.map((p: any) => ({ ...p, invited: true, status: "Invited" })) : [];
+      setForm({ ...form, parties: updated, users: response.users });
+    }
+    if (response.summary.alreadyExists > 0) {
+      const updated = form.parties ? form.parties.map((p: any) => ({ ...p, invited: true, status: "Invited" })) : [];
+      setForm({ ...form, parties: updated, users: response.users });
+      toast({
+        title: t("newHk.parties.toasts.invite.exists.title"),
+        description: t("newHk.parties.toasts.invite.exists.desc"),
+      })
+    }
+    if (response.summary.failed > 0) {
+      toast({
+        title: t("newHk.parties.toasts.invite.failed.title"),
+        description: t("newHk.parties.toasts.invite.failed.desc"),
+      });
+    }
+  }
+
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -504,7 +534,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                 {/* Parties */}
                 <div className="space-y-3">
-                  <div className="text-sm font-medium">Shareholding & Parties</div>
+                  <div className="text-sm font-medium">Shareholders / Directors / DCP</div>
 
                   {Array.isArray(form?.parties) && form.parties.length ? (
                     <div className="rounded-md border">
@@ -646,8 +676,25 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                               </TableCell>
 
                               {/* Status (read-only for now) */}
-                              <TableCell>
-                                <Badge>{p.status || "—"}</Badge>
+                              <TableCell className="py-3">
+                                <div className="flex items-center justify-between gap-2">
+                                  <Badge>{p.status || "—"}</Badge>
+                                  {isAdmin && (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="flex items-center gap-1"
+                                      onClick={(e) => {
+                                        e.stopPropagation(); // prevent row click when view mode
+                                        sendInvite?.(p);
+                                      }}
+                                    >
+                                      <Send className="h-3.5 w-3.5" />
+                                      <span className="hidden sm:inline">Remind</span>
+                                    </Button>
+                                  )}
+                                </div>
+
                               </TableCell>
                             </TableRow>
                           ))}
