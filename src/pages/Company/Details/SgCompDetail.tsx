@@ -351,8 +351,8 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
         <div className="mx-auto grid max-width gap-6 p-4 lg:grid-cols-3 pb-24">
           {/* LEFT */}
-          <div className="lg:col-span-2 grid gap-6">
-            <Card>
+          <div className="lg:col-span-2 grid gap-6 min-w-0">
+            <Card className="min-w-0">
               <CardHeader className="pb-2">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
@@ -363,7 +363,9 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         {!isEditing ? (
-                          <CardTitle className="text-xl truncate">{primaryName || "Untitled Company"}</CardTitle>
+                          <CardTitle className="text-xl truncate">
+                            {primaryName || "Untitled Company"}
+                          </CardTitle>
                         ) : (
                           <Input
                             value={primaryName}
@@ -379,10 +381,17 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                           </Badge>
 
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground">Incorporation Status</span>
+                            <span className="text-xs text-muted-foreground">
+                              Incorporation Status
+                            </span>
 
                             {user?.role !== "user" ? (
-                              <Select value={currentStatus} onValueChange={(val) => patchForm("incorporationStatus", val as any)}>
+                              <Select
+                                value={currentStatus}
+                                onValueChange={(val) =>
+                                  patchForm("incorporationStatus", val as any)
+                                }
+                              >
                                 <SelectTrigger className="h-7 w-[240px]">
                                   <SelectValue placeholder="Select status" />
                                 </SelectTrigger>
@@ -412,22 +421,31 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                           </button>
                         ) : null}
 
-                        {isAdmin && (!isEditing ? (
-                          <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
-                            <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
-                          </Button>
-                        ) : (
-                          <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
-                            <X className="mr-1 h-3.5 w-3.5" /> Cancel
-                          </Button>
-                        ))}
+                        {isAdmin &&
+                          (!isEditing ? (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setIsEditing(true)}
+                            >
+                              <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
+                            </Button>
+                          ) : (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setIsEditing(false)}
+                            >
+                              <X className="mr-1 h-3.5 w-3.5" /> Cancel
+                            </Button>
+                          ))}
                       </div>
                     </div>
                   </div>
                 </div>
               </CardHeader>
 
-              <CardContent className="grid gap-5">
+              <CardContent className="grid gap-5 min-w-0">
                 {/* Basic info */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <LabelValue label="Applicant">
@@ -436,6 +454,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       <span className="font-medium">{contactName || "—"}</span>
                     </div>
                   </LabelValue>
+
                   <LabelValue label="Contact">
                     <div className="grid gap-2">
                       <div className="flex items-center gap-2">
@@ -524,7 +543,6 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                   <LabelValue label="Business Description">{bizDesc || "—"}</LabelValue>
 
-                  {/* annual renewal consent/terms */}
                   <LabelValue label="Annual Renewal Terms / Consent">
                     {annualRenewalTermsText || "—"}
                   </LabelValue>
@@ -533,173 +551,185 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 <Separator />
 
                 {/* Parties */}
-                <div className="space-y-3">
+                <div className="space-y-3 min-w-0">
                   <div className="text-sm font-medium">Shareholders / Directors / DCP</div>
 
                   {Array.isArray(form?.parties) && form.parties.length ? (
-                    <div className="rounded-md border">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-[24%]">Name</TableHead>
-                            <TableHead className="w-[20%]">Email</TableHead>
-                            <TableHead className="w-[12%]">Shares</TableHead>
-                            <TableHead className="w-[12%]">Share Type</TableHead>
-                            <TableHead className="w-[8%]">Director</TableHead>
-                            <TableHead className="w-[14%]">DCP</TableHead>
-                            <TableHead className="w-[8%]">Significant Controller</TableHead>
-                            <TableHead className="w-[8%]">Status</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {form.parties.map((p: any, index: number) => (
-                            <TableRow key={p._id || index}>
-                              {/* Name */}
-                              <TableCell className="font-medium">
-                                {isAdmin && isEditing ? (
-                                  <Input
-                                    className="h-8"
-                                    placeholder="Name"
-                                    value={p.name || ""}
-                                    onChange={(e) =>
-                                      updatePartyAt(index, { name: e.target.value })
-                                    }
-                                  />
-                                ) : (
-                                  p.name || "—"
-                                )}
-                              </TableCell>
-
-                              {/* Email */}
-                              <TableCell>
-                                {isAdmin && isEditing ? (
-                                  <Input
-                                    className="h-8"
-                                    type="email"
-                                    placeholder="Email"
-                                    value={p.email || ""}
-                                    onChange={(e) =>
-                                      updatePartyAt(index, { email: e.target.value })
-                                    }
-                                  />
-                                ) : (
-                                  p.email || "—"
-                                )}
-                              </TableCell>
-
-                              {/* Shares */}
-                              <TableCell>
-                                {isAdmin && isEditing ? (
-                                  <Input
-                                    className="h-8"
-                                    type="number"
-                                    placeholder="Shares"
-                                    value={p.shares ?? ""}
-                                    onChange={(e) => {
-                                      const raw = e.target.value;
-                                      const val = raw === "" ? undefined : Number(raw);
-                                      updatePartyAt(index, { shares: val });
-                                    }}
-                                  />
-                                ) : (
-                                  (p.shares ?? "—")
-                                )}
-                              </TableCell>
-
-                              {/* Share Type */}
-                              <TableCell>
-                                {isAdmin && isEditing ? (
-                                  <Input
-                                    className="h-8"
-                                    placeholder="Share type"
-                                    value={p.typeOfShare || ""}
-                                    onChange={(e) =>
-                                      updatePartyAt(index, { typeOfShare: e.target.value })
-                                    }
-                                  />
-                                ) : (
-                                  p.typeOfShare || "—"
-                                )}
-                              </TableCell>
-
-                              {/* Director */}
-                              <TableCell>
-                                {isAdmin && isEditing ? (
-                                  <div className="flex items-center gap-2">
-                                    <Switch
-                                      checked={!!p.isDirector}
-                                      onCheckedChange={(checked) =>
-                                        updatePartyAt(index, { isDirector: checked })
-                                      }
-                                    />
-                                    <span className="text-xs text-muted-foreground">Director</span>
-                                  </div>
-                                ) : (
-                                  <BoolPill value={!!p.isDirector} />
-                                )}
-                              </TableCell>
-
-                              {/* DCP */}
-                              <TableCell>
-                                {isAdmin && isEditing ? (
-                                  <div className="flex items-center gap-2">
-                                    <Switch
-                                      checked={!!p.isDcp}
-                                      onCheckedChange={(checked) =>
-                                        updatePartyAt(index, { isDcp: checked })
-                                      }
-                                    />
-                                    <span className="text-xs text-muted-foreground">DCP</span>
-                                  </div>
-                                ) : (
-                                  <BoolPill value={!!p.isDcp} />
-                                )}
-                              </TableCell>
-
-                              {/* Significant Controller */}
-                              <TableCell>
-                                {isAdmin && isEditing ? (
-                                  <div className="flex items-center gap-2">
-                                    <Switch
-                                      checked={!!p.isSignificant}
-                                      onCheckedChange={(checked) =>
-                                        updatePartyAt(index, { isSignificant: checked })
-                                      }
-                                    />
-                                    <span className="text-xs text-muted-foreground">
-                                      Significant
-                                    </span>
-                                  </div>
-                                ) : (
-                                  <BoolPill value={!!p.isSignificant} />
-                                )}
-                              </TableCell>
-
-                              {/* Status (read-only for now) */}
-                              <TableCell className="py-3">
-                                <div className="flex items-center justify-between gap-2">
-                                  <Badge>{p.status || "—"}</Badge>
-                                  {isAdmin && (
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="flex items-center gap-1"
-                                      onClick={(e) => {
-                                        e.stopPropagation(); // prevent row click when view mode
-                                        sendInvite?.(p);
-                                      }}
-                                    >
-                                      <Send className="h-3.5 w-3.5" />
-                                      <span className="hidden sm:inline">Remind</span>
-                                    </Button>
-                                  )}
-                                </div>
-
-                              </TableCell>
+                    <div className="rounded-md border min-w-0 overflow-hidden">
+                      {/* scroll container */}
+                      <div className="w-full max-w-full overflow-x-auto overflow-y-hidden">
+                        <Table className="w-max min-w-full">
+                          <TableHeader>
+                            <TableRow className="whitespace-nowrap">
+                              <TableHead className="w-[120px]">Name</TableHead>
+                              <TableHead className="w-[180px]">Email</TableHead>
+                              <TableHead className="w-[80px]">Shares</TableHead>
+                              <TableHead className="w-[80px]">Share Type</TableHead>
+                              <TableHead className="w-[80px]">Director</TableHead>
+                              <TableHead className="w-[80px]">DCP</TableHead>
+                              <TableHead className="w-[80px]">Significant Controller</TableHead>
+                              <TableHead className="w-[160px]">Status</TableHead>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                          </TableHeader>
+
+                          <TableBody>
+                            {form.parties.map((p: any, index: number) => (
+                              <TableRow key={p._id || index} className="align-top">
+                                {/* Name */}
+                                <TableCell className="font-medium">
+                                  {isAdmin && isEditing ? (
+                                    <Input
+                                      className="h-8 w-full min-w-[180px]"
+                                      placeholder="Name"
+                                      value={p.name || ""}
+                                      onChange={(e) =>
+                                        updatePartyAt(index, { name: e.target.value })
+                                      }
+                                    />
+                                  ) : (
+                                    <span className="block max-w-[220px] truncate">
+                                      {p.name || "—"}
+                                    </span>
+                                  )}
+                                </TableCell>
+
+                                {/* Email */}
+                                <TableCell>
+                                  {isAdmin && isEditing ? (
+                                    <Input
+                                      className="h-8 w-full min-w-[200px]"
+                                      type="email"
+                                      placeholder="Email"
+                                      value={p.email || ""}
+                                      onChange={(e) =>
+                                        updatePartyAt(index, { email: e.target.value })
+                                      }
+                                    />
+                                  ) : (
+                                    <span className="block max-w-[240px] truncate">
+                                      {p.email || "—"}
+                                    </span>
+                                  )}
+                                </TableCell>
+
+                                {/* Shares */}
+                                <TableCell className="whitespace-nowrap">
+                                  {isAdmin && isEditing ? (
+                                    <Input
+                                      className="h-8 w-full min-w-[90px]"
+                                      type="number"
+                                      placeholder="Shares"
+                                      value={p.shares ?? ""}
+                                      onChange={(e) => {
+                                        const raw = e.target.value;
+                                        const val = raw === "" ? undefined : Number(raw);
+                                        updatePartyAt(index, { shares: val });
+                                      }}
+                                    />
+                                  ) : (
+                                    p.shares ?? "—"
+                                  )}
+                                </TableCell>
+
+                                {/* Share Type */}
+                                <TableCell>
+                                  {isAdmin && isEditing ? (
+                                    <Input
+                                      className="h-8 w-full min-w-[120px]"
+                                      placeholder="Share type"
+                                      value={p.typeOfShare || ""}
+                                      onChange={(e) =>
+                                        updatePartyAt(index, { typeOfShare: e.target.value })
+                                      }
+                                    />
+                                  ) : (
+                                    <span className="block max-w-[140px] truncate">
+                                      {p.typeOfShare || "—"}
+                                    </span>
+                                  )}
+                                </TableCell>
+
+                                {/* Director */}
+                                <TableCell className="whitespace-nowrap">
+                                  {isAdmin && isEditing ? (
+                                    <div className="flex items-center gap-2">
+                                      <Switch
+                                        checked={!!p.isDirector}
+                                        onCheckedChange={(checked) =>
+                                          updatePartyAt(index, { isDirector: checked })
+                                        }
+                                      />
+                                      <span className="text-xs text-muted-foreground">Director</span>
+                                    </div>
+                                  ) : (
+                                    <BoolPill value={!!p.isDirector} />
+                                  )}
+                                </TableCell>
+
+                                {/* DCP */}
+                                <TableCell className="whitespace-nowrap">
+                                  {isAdmin && isEditing ? (
+                                    <div className="flex items-center gap-2">
+                                      <Switch
+                                        checked={!!p.isDcp}
+                                        onCheckedChange={(checked) =>
+                                          updatePartyAt(index, { isDcp: checked })
+                                        }
+                                      />
+                                      <span className="text-xs text-muted-foreground">DCP</span>
+                                    </div>
+                                  ) : (
+                                    <BoolPill value={!!p.isDcp} />
+                                  )}
+                                </TableCell>
+
+                                {/* Significant Controller */}
+                                <TableCell className="whitespace-nowrap">
+                                  {isAdmin && isEditing ? (
+                                    <div className="flex items-center gap-2">
+                                      <Switch
+                                        checked={!!p.isSignificant}
+                                        onCheckedChange={(checked) =>
+                                          updatePartyAt(index, { isSignificant: checked })
+                                        }
+                                      />
+                                      <span className="text-xs text-muted-foreground">
+                                        Significant
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <BoolPill value={!!p.isSignificant} />
+                                  )}
+                                </TableCell>
+
+                                {/* Status */}
+                                <TableCell className="py-3">
+                                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between min-w-0">
+                                    <Badge className="max-w-[140px] truncate">
+                                      {p.status || "—"}
+                                    </Badge>
+
+                                    {isAdmin && (
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="shrink-0 inline-flex items-center gap-1"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          sendInvite?.(p);
+                                        }}
+                                      >
+                                        <Send className="h-3.5 w-3.5" />
+                                        <span className="hidden sm:inline">Remind</span>
+                                      </Button>
+                                    )}
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
                     </div>
                   ) : (
                     <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
@@ -714,25 +744,39 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <LabelValue label="Incorporation Date">
                     <div className="flex items-center gap-2">
-                      <span>{form?.incorporationDate ? fmtDate(form.incorporationDate) : "—"}</span>
+                      <span>
+                        {form?.incorporationDate ? fmtDate(form.incorporationDate) : "—"}
+                      </span>
                       {isAdmin && (
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" size="sm">Edit</Button>
+                            <Button variant="outline" size="sm">
+                              Edit
+                            </Button>
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
                               <DialogTitle>Edit Incorporation Date</DialogTitle>
-                              <DialogDescription>Set the date when the company was officially registered.</DialogDescription>
+                              <DialogDescription>
+                                Set the date when the company was officially registered.
+                              </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-4 py-2">
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="incorporationDate" className="text-right">Date</Label>
+                                <Label htmlFor="incorporationDate" className="text-right">
+                                  Date
+                                </Label>
                                 <Input
                                   id="incorporationDate"
                                   type="date"
-                                  value={form?.incorporationDate ? String(form.incorporationDate).slice(0, 10) : ""}
-                                  onChange={(e) => patchForm("incorporationDate", e.target.value)}
+                                  value={
+                                    form?.incorporationDate
+                                      ? String(form.incorporationDate).slice(0, 10)
+                                      : ""
+                                  }
+                                  onChange={(e) =>
+                                    patchForm("incorporationDate", e.target.value)
+                                  }
                                   className="col-span-3"
                                 />
                               </div>
@@ -758,6 +802,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
               </CardContent>
             </Card>
           </div>
+
 
           {/* RIGHT */}
           <div className="grid gap-6">
