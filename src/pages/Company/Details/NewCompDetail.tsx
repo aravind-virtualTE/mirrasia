@@ -40,6 +40,7 @@ import DetailShdHk from "@/components/shareholderDirector/detailShddHk";
 import { t } from "i18next";
 import { Switch } from "@/components/ui/switch";
 import { STATUS_OPTIONS } from "./detailData";
+import { businessNatureList } from "../HongKong/constants";
 
 export type Party = {
   name: string;
@@ -774,7 +775,8 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                     </LabelValue>
 
                     <LabelValue label="Industry">
-                      {f.industry || "—"}
+                      {t(businessNatureList.find(e => e.code == f.industry)?.label || "", "")}
+                     
                     </LabelValue>
 
                     <LabelValue label="Purpose">
