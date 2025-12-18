@@ -563,3 +563,33 @@ export const getHkMemberData = async (id: string, email: string) => {
     console.log("Error fetching HK member data:", e);
   }
 }
+
+export const getCommonIncorpoDataById = async (countryCode: string, id: string) => {
+  try {
+    const res = await api.get(`company/commonCountry/${countryCode}-form/${id}`);
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching common company data:", error);
+  }
+};
+
+export const upsertCommonIncorpo = async (countryCode: string, payload: any, id?: string) => {
+  try {
+    const url = id
+      ? `company/commonCountry/${countryCode}-form/${id}`
+      : `company/commonCountry/${countryCode}-form`;
+    const res = await api.post(url, payload);
+    return res.data;
+  } catch (error) {
+    console.error("Error saving common company data:", error);
+  }
+};
+
+export const deleteCommonIncorpo = async (countryCode: string, id: string) => {
+  try {
+    const res = await api.delete(`company/commonCountry/${countryCode}-form/${id}`);
+    return res.data;
+  } catch (error) {
+    console.error("Error deleting common company data:", error);
+  }
+};
