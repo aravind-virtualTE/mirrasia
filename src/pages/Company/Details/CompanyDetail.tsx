@@ -6,10 +6,21 @@ import SgCompdetail from "./SgCompDetail";
 import PaCompdetail from "./PaCompDetail";
 import HKCompDetailSummary from "./NewCompDetail";
 import PPifCompDetail from "./PPifCompDetail";
+import UKDetail from "./UKDetail";
+import SeychellesDetail from "./SeychellesDetail";
+import SwitzerlandDetail from "./SwitzerlandDetail";
+import MaltaDetail from "./MaltaDetail";
+import MarshallDetail from "./MarshallDetail";
+import CaymanDetail from "./CaymanDetail";
+import BviDetail from "./BviDetail";
+import BelizeDetail from "./BelizeDetail";
+import CuracaoDetail from "./CuracaoDetail";
+import EstoniaDetail from "./EstoniaDetail";
+import SaintVincentDetail from "./SaintVincentDetail";
 
 const CompanyDetail = () => {
     const { countryCode, id } = useParams();
-    console.log("countryCode-->", countryCode, "id-->", id);
+    // console.log("countryCode-->", countryCode, "id-->", id);
     // return (
     //     <HkCompdetail id={id ?? ""} />
     // );
@@ -29,27 +40,27 @@ const CompanyDetail = () => {
             case "PPIF":
                 return <PPifCompDetail id={id ?? ""} />;
             case "GB": // United Kingdom
-                return <p>In progress...</p>
-            case "SC": // Seychelles
-                return <p>In progress...</p>
+                return <UKDetail id={id ?? ""} />;
+            case "SC": // Seychelles    
+                return <SeychellesDetail id={id ?? ""} />;
             case "CH": // Switzerland
-                return <p>In progress...</p>
+                return <SwitzerlandDetail id={id ?? ""} />;
             case "MT": // Malta
-                return <p>In progress...</p>
+                return <MaltaDetail id={id ?? ""} />;
             case "MH": // Marshall Islands
-                return <p>In progress...</p>
+                return <MarshallDetail id={id ?? ""} />;
             case "KY": // Cayman Islands
-                return <p>In progress...</p>
+                return <CaymanDetail id={id ?? ""} />;
             case "BVI": // British Virgin Islands
-                return <p>In progress...</p>
+                return <BviDetail id={id ?? ""} />;
             case "BZ": // Belize
-                return <p>In progress...</p>
+                return <BelizeDetail id={id ?? ""} />;
             case "CW": // Curacao
-                return <p>In progress...</p>
+                return <CuracaoDetail id={id ?? ""} />;
             case "EE": // Estonia
-                return <p>In progress...</p>
+                return <EstoniaDetail id={id ?? ""} />;
             case "VC": // Saint Vincent and the Grenadines
-                return <p>In progress...</p>
+                return <SaintVincentDetail id={id ?? ""} />;
             
             default:
                 return <p> Not Found... </p>
