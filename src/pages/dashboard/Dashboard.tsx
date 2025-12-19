@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, Pencil, ShieldAlert, X } from "lucide-react";
+import { HelpCircle, Pencil, ShieldAlert, X, ChevronUp, ChevronDown } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -39,26 +39,28 @@ import { paFormWithResetAtom1 } from "../Company/Panama/PaState";
 import { sgFormWithResetAtom1 } from "../Company/Singapore/SgState";
 import { pifFormWithResetAtom } from "../Company/PanamaFoundation/PaState";
 
+import SearchBox from "../MasterTodo/SearchBox";
+import { normalize } from "@/middleware";
+
+type SortKey = "companyName" | "country" | "status" | "incorporationDate";
+type SortConfig = { key: SortKey; direction: "ascending" | "descending" } | null;
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // const [cList] = useAtom(companyIncorporationList);
   const setCompIncList = useSetAtom(companyIncorporationList);
   const [allList, setAllList] = useAtom(allCompListAtom);
+
   const [, setUsaReset] = useAtom(usaAppWithResetAtom);
   const resetAllForms = useResetAllForms();
-  const [,setHK] = useAtom(hkAppAtom)
+  const [, setHK] = useAtom(hkAppAtom);
   const [, setPA] = useAtom(paFormWithResetAtom1);
-  const [,setPAF] = useAtom(pifFormWithResetAtom);
+  const [, setPAF] = useAtom(pifFormWithResetAtom);
   const [, setSG] = useAtom(sgFormWithResetAtom1);
-  const [,setPifFormData] = useAtom(pifFormWithResetAtom);
+  const [, setPifFormData] = useAtom(pifFormWithResetAtom);
 
-
-  const token = useMemo(
-    () => ((localStorage.getItem("token") as string) ?? ""),
-    []
-  );
+  const token = useMemo(() => ((localStorage.getItem("token") as string) ?? ""), []);
   const { userId, role } = useMemo(() => {
     if (!token) return { userId: "", role: "" } as TokenData;
     try {
@@ -68,15 +70,36 @@ const Dashboard = () => {
     }
   }, [token]);
 
-
   const [showKycBanner, setShowKycBanner] = useState(true);
   const dismissKycBanner = () => setShowKycBanner(false);
-  const goToKyc = () => navigate("/profile"); // adjust if needed
+  const goToKyc = () => navigate("/profile");
 
+  // ---- Added (sort + search) ----
+  const [sortConfig, setSortConfig] = useState<SortConfig>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+
+  const requestSort = (key: SortKey) => {
+    let direction: "ascending" | "descending" = "ascending";
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortIcon = (key: SortKey) => {
+    if (sortConfig?.key !== key) return null;
+    return sortConfig.direction === "ascending" ? (
+      <ChevronUp className="h-4 w-4" />
+    ) : (
+      <ChevronDown className="h-4 w-4" />
+    );
+  };
+  // -------------------------------
 
   useEffect(() => {
     resetAllForms();
-    setHK(null)
+    setHK(null);
     setPA("reset");
     setPAF("reset");
     setSG("reset");
@@ -84,7 +107,6 @@ const Dashboard = () => {
     setPifFormData("reset");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   useEffect(() => {
     if (!userId) return;
@@ -94,7 +116,7 @@ const Dashboard = () => {
 
     (async () => {
       try {
-        const result = await getIncorporationListByUserId(`${userId}`,`${role}`);
+        const result = await getIncorporationListByUserId(`${userId}`, `${role}`);
 
         if (!isActive) return;
 
@@ -106,24 +128,19 @@ const Dashboard = () => {
         }
       }
     })();
-    // console.log("allList",allList)
+
     return () => {
       isActive = false;
       controller.abort();
     };
   }, [userId, role, setCompIncList, setAllList]);
 
-
   const handleRowClick = (companyId: string, countryCode: string) => {
     localStorage.setItem("companyRecordId", companyId);
     navigate(`/company-details/${countryCode}/${companyId}`);
   };
 
-  const handleEditClick = (
-    companyId: string,
-    countryCode: string,
-    status: string
-  ) => {
+  const handleEditClick = (companyId: string, countryCode: string, status: string) => {
     const active_status = [
       "Pending",
       "KYC Verification",
@@ -142,7 +159,6 @@ const Dashboard = () => {
     }
   };
 
-  // read tasks (optional)
   const tasks = (() => {
     const uStr = localStorage.getItem("user");
     try {
@@ -153,28 +169,82 @@ const Dashboard = () => {
     }
   })();
 
-   const resolveCompanyName = (company: any): string => {
+  const resolveCompanyName = (company: any): string => {
     const cn = company?.companyName;
     if (typeof cn === "string") {
       const s = cn.trim();
       return s || "N/A";
     }
     if (Array.isArray(cn)) {
-      const joined = cn
-        .filter((v) => typeof v === "string" && v.trim())
-        .join(", ");
+      const joined = cn.filter((v) => typeof v === "string" && v.trim()).join(", ");
       return joined || "N/A";
     }
     return "N/A";
   };
-  // console.log("allList",allList)
+
+  // -------- Added: derived list for Companies table only (search + sort) --------
+  const displayedCompanies = useMemo(() => {
+    const q = normalize(searchQuery);
+    const base = !q
+      ? allList
+      : allList.filter((item: any) => {
+          const name = normalize(resolveCompanyName(item));
+          const country = normalize(item?.country?.name);
+          const status = normalize(item?.status);
+          return name.includes(q) || country.includes(q) || status.includes(q);
+        });
+
+    const next = [...base];
+    if (!sortConfig) return next;
+
+    const dir = sortConfig.direction === "ascending" ? 1 : -1;
+
+    const getComparable = (c: any, key: SortKey) => {
+      if (key === "companyName") return resolveCompanyName(c).toLowerCase();
+      if (key === "country") return String(c?.country?.name ?? "").toLowerCase();
+      if (key === "status") return String(c?.status ?? "").toLowerCase();
+      if (key === "incorporationDate") return String(c?.incorporationDate ?? ""); // ISO sorts fine lexicographically
+      return "";
+    };
+
+    next.sort((a: any, b: any) => {
+      const av = getComparable(a, sortConfig.key);
+      const bv = getComparable(b, sortConfig.key);
+      if (av < bv) return -1 * dir;
+      if (av > bv) return 1 * dir;
+      return 0;
+    });
+
+    return next;
+  }, [allList, searchQuery, sortConfig]);
+  // ---------------------------------------------------------------------------
+
+  // ---- Table styling (compact + responsive horizontal scroll) ----
+  const COL = {
+    no: 56,
+    company: 320,
+    country: 180,
+    status: 180,
+    incorp: 160,
+    edit: 72,
+  } as const;
+
+  const thBase =
+    "px-2 py-1.5 text-[12px] font-medium text-muted-foreground whitespace-nowrap hover:bg-muted/40 cursor-pointer select-none";
+  const thFixed = "px-2 py-1.5 text-[12px] font-medium text-muted-foreground whitespace-nowrap select-none";
+  const tdBase = "px-2 py-1.5 text-[12px] whitespace-nowrap align-middle";
+  const truncate = "truncate";
+  const headerCell = (w: number) => ({ width: w, minWidth: w, maxWidth: w });
+  const bodyCell = (w: number) => ({ width: w, minWidth: w, maxWidth: w });
+  // ---------------------------------------------------------------
+
   return (
     <>
       <div className="flex-1 p-8">
         <h1 className="text-2xl font-semibold mb-4">
           {t("dashboard.welcome")}User {t("dashboard.welcome1")}
         </h1>
-        {/* Simple KYC Banner (every mount/refresh) */}
+
         {showKycBanner && (
           <div
             className={cn(
@@ -201,12 +271,7 @@ const Dashboard = () => {
               <Button size="sm" onClick={goToKyc} className="px-2 py-1 text-xs">
                 Go to KYC
               </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={dismissKycBanner}
-                className="px-2 py-1 text-xs"
-              >
+              <Button size="sm" variant="ghost" onClick={dismissKycBanner} className="px-2 py-1 text-xs">
                 Dismiss
               </Button>
               <button
@@ -220,22 +285,14 @@ const Dashboard = () => {
           </div>
         )}
 
-        <Accordion
-          type="multiple"
-          className="w-full space-y-4"
-          defaultValue={["outstanding-tasks", "companies-list"]}
-        >
+        <Accordion type="multiple" className="w-full space-y-4" defaultValue={["outstanding-tasks", "companies-list"]}>
           {/* Outstanding Tasks Accordion */}
           <AccordionItem value="outstanding-tasks" className="border rounded-lg">
             <AccordionTrigger className="px-4 py-3 hover:no-underline">
               <div className="flex items-center justify-between w-full">
-                <h3 className="text-primary font-semibold text-left">
-                  Outstanding Tasks
-                </h3>
+                <h3 className="text-primary font-semibold text-left">Outstanding Tasks</h3>
                 <span className="text-sm text-muted-foreground mr-4">
-                  {tasks.length > 0
-                    ? `${tasks.length} task${tasks.length > 1 ? "s" : ""}`
-                    : "No tasks"}
+                  {tasks.length > 0 ? `${tasks.length} task${tasks.length > 1 ? "s" : ""}` : "No tasks"}
                 </span>
               </div>
             </AccordionTrigger>
@@ -249,23 +306,16 @@ const Dashboard = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {tasks.map(
-                      (
-                        task: { label: string; _id: string },
-                        index: number
-                      ) => (
-                        <TableRow key={task._id || index}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{task.label}</TableCell>
-                        </TableRow>
-                      )
-                    )}
+                    {tasks.map((task: { label: string; _id: string }, index: number) => (
+                      <TableRow key={task._id || index}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{task.label}</TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               ) : (
-                <p className="text-muted-foreground py-4">
-                  No outstanding tasks
-                </p>
+                <p className="text-muted-foreground py-4">No outstanding tasks</p>
               )}
             </AccordionContent>
           </AccordionItem>
@@ -275,40 +325,91 @@ const Dashboard = () => {
             <AccordionItem value="companies-list" className="border rounded-lg">
               <AccordionTrigger className="px-4 py-3 hover:no-underline">
                 <div className="flex items-center justify-between w-full">
-                  <h3 className="text-primary font-semibold text-left">
-                    {t("dashboard.companiesH")}
-                  </h3>
+                  <h3 className="text-primary font-semibold text-left">{t("dashboard.companiesH")}</h3>
                   <span className="text-sm text-muted-foreground mr-4">
-                    {allList.length} compan
-                    {allList.length > 1 ? "ies" : "y"}
+                    {allList.length} compan{allList.length > 1 ? "ies" : "y"}
                   </span>
                 </div>
               </AccordionTrigger>
+
               <AccordionContent className="px-4 pb-4">
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="py-2 px-3">S.No</TableHead>
-                        <TableHead className="w-[40%] py-2 px-3">
-                          {t("dashboard.tCompName")}
+                {/* Added: search bar (same component pattern as Admin) */}
+                <div className="flex items-center justify-end mb-3">
+                  <div className="w-full md:w-[420px]">
+                    <SearchBox
+                      value={searchQuery}
+                      onChange={setSearchQuery}
+                      onSearch={() => null}
+                      isFocused={isFocused}
+                      setIsFocused={setIsFocused}
+                      placeText="Search by Company / Country / Status"
+                    />
+                  </div>
+                </div>
+
+                {/* Styled table: compact + horizontal scroll */}
+                <div className="border rounded-md overflow-x-auto overflow-y-hidden">
+                  <Table className="table-fixed min-w-max">
+                    <TableHeader className="sticky top-0 z-10 bg-background">
+                      <TableRow className="h-9">
+                        <TableHead style={headerCell(COL.no)} className={cn(thFixed, "text-center")}>
+                          S.No
                         </TableHead>
-                        <TableHead className="w-[20%] py-2 px-3">
-                          {t("dashboard.tcountry")}
+
+                        <TableHead
+                          style={headerCell(COL.company)}
+                          className={thBase}
+                          onClick={() => requestSort("companyName")}
+                        >
+                          <div className="flex items-center gap-1">
+                            <span className="truncate">{t("dashboard.tCompName")}</span>
+                            {sortIcon("companyName")}
+                          </div>
                         </TableHead>
-                        <TableHead className="w-[20%] py-2 px-3">
-                          {t("dashboard.status")}
+
+                        <TableHead
+                          style={headerCell(COL.country)}
+                          className={thBase}
+                          onClick={() => requestSort("country")}
+                        >
+                          <div className="flex items-center gap-1">
+                            <span className="truncate">{t("dashboard.tcountry")}</span>
+                            {sortIcon("country")}
+                          </div>
                         </TableHead>
-                        <TableHead className="w-[20%] py-2 px-3">
-                          {t("dashboard.incorpoDate")}
+
+                        <TableHead
+                          style={headerCell(COL.status)}
+                          className={thBase}
+                          onClick={() => requestSort("status")}
+                        >
+                          <div className="flex items-center gap-1">
+                            <span className="truncate">{t("dashboard.status")}</span>
+                            {sortIcon("status")}
+                          </div>
                         </TableHead>
-                        <TableHead className="py-2 px-3">Edit</TableHead>
+
+                        <TableHead
+                          style={headerCell(COL.incorp)}
+                          className={thBase}
+                          onClick={() => requestSort("incorporationDate")}
+                        >
+                          <div className="flex items-center gap-1">
+                            <span className="truncate">{t("dashboard.incorpoDate")}</span>
+                            {sortIcon("incorporationDate")}
+                          </div>
+                        </TableHead>
+
+                        <TableHead style={headerCell(COL.edit)} className={cn(thFixed, "text-center")}>
+                          Edit
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
+
                     <TableBody>
-                      {allList.map((company, idx) => {
+                      {displayedCompanies.map((company, idx) => {
                         const typedCompany = company as {
-                          companyName: string[];
+                          companyName: string[] | string;
                           applicantName: string;
                           country: { code: string; name: string };
                           status: string;
@@ -318,41 +419,34 @@ const Dashboard = () => {
 
                         let date = typedCompany.incorporationDate;
                         if (date) {
-                          const [year, month, day] = date
-                            .split("T")[0]
-                            .split("-");
+                          const [year, month, day] = date.split("T")[0].split("-");
                           date = `${day}-${month}-${year}`;
                         }
 
-                        const validCompanyNames =
-                          resolveCompanyName(typedCompany)
+                        const validCompanyName = resolveCompanyName(typedCompany);
+
                         return (
-                          <TableRow key={typedCompany._id}>
-                            <TableCell className="py-2 px-3">
+                          <TableRow key={typedCompany._id} className="h-9 border-b hover:bg-muted/30">
+                            <TableCell style={bodyCell(COL.no)} className={cn(tdBase, "text-center tabular-nums")}>
                               {idx + 1}
                             </TableCell>
+
                             <TableCell
-                              className={cn(
-                                "font-medium cursor-pointer py-2 px-3"
-                              )}
-                              onClick={() =>
-                                handleRowClick(
-                                  typedCompany._id,
-                                  typedCompany.country.code
-                                )
-                              }
+                              style={bodyCell(COL.company)}
+                              className={cn(tdBase, "font-medium cursor-pointer")}
+                              onClick={() => handleRowClick(typedCompany._id, typedCompany.country.code)}
                             >
-                              {validCompanyNames}
+                              <div className={cn(truncate, "hover:underline")}>{validCompanyName}</div>
                             </TableCell>
 
-                            <TableCell className="py-2 px-3">
-                              {typedCompany.country.name || "N/A"}
+                            <TableCell style={bodyCell(COL.country)} className={tdBase}>
+                              <div className={truncate}>{typedCompany.country?.name || "N/A"}</div>
                             </TableCell>
 
-                            <TableCell className="py-2 px-3">
+                            <TableCell style={bodyCell(COL.status)} className={tdBase}>
                               <span
                                 className={cn(
-                                  "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium",
+                                  "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] leading-4 font-medium whitespace-nowrap",
                                   typedCompany.status === "Active"
                                     ? "bg-green-100 text-green-800"
                                     : typedCompany.status === "Pending"
@@ -364,21 +458,21 @@ const Dashboard = () => {
                               </span>
                             </TableCell>
 
-                            <TableCell className="py-2 px-3">
+                            <TableCell style={bodyCell(COL.incorp)} className={cn(tdBase, "tabular-nums")}>
                               {date || "N/A"}
                             </TableCell>
-                            <TableCell className="py-2 px-3">
+
+                            <TableCell style={bodyCell(COL.edit)} className={cn(tdBase, "text-center")}>
                               <button
-                                className="transition hover:text-blue-600"
-                                onClick={() =>
-                                  handleEditClick(
-                                    typedCompany._id,
-                                    typedCompany.country.code,
-                                    typedCompany.status
-                                  )
-                                }
+                                type="button"
+                                className="inline-flex items-center justify-center h-7 w-7 rounded-md text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditClick(typedCompany._id, typedCompany.country.code, typedCompany.status);
+                                }}
+                                aria-label="Edit"
                               >
-                                <Pencil size={16} />
+                                <Pencil size={14} />
                               </button>
                             </TableCell>
                           </TableRow>
@@ -391,7 +485,7 @@ const Dashboard = () => {
             </AccordionItem>
           )}
         </Accordion>
-          {/*shareholder member invite data */}
+
         <ViewBoard />
         <MainFunctionalities />
 
@@ -410,12 +504,8 @@ const Dashboard = () => {
               <div className="flex items-center space-x-4">
                 <HelpCircle className="w-8 h-8" />
                 <div>
-                  <h3 className="text-lg font-semibold">
-                    {t("dashboard.needHelp")}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {t("dashboard.expIssue")}
-                  </p>
+                  <h3 className="text-lg font-semibold">{t("dashboard.needHelp")}</h3>
+                  <p className="text-sm text-muted-foreground">{t("dashboard.expIssue")}</p>
                 </div>
               </div>
               <div className="mt-4 grid gap-2 text-sm">
@@ -423,8 +513,7 @@ const Dashboard = () => {
                   <strong>{t("ApplicantInfoForm.email")}:</strong> cs@mirrasia.com
                 </p>
                 <p>
-                  <strong>{t("ApplicantInfoForm.phoneNum")}:</strong> (HK)
-                  +852-2187-2428 | (KR) +82-2-543-6187
+                  <strong>{t("ApplicantInfoForm.phoneNum")}:</strong> (HK) +852-2187-2428 | (KR) +82-2-543-6187
                 </p>
                 <p>
                   <strong>{t("dashboard.kakaoT")}:</strong> mirrasia
@@ -464,4 +553,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
