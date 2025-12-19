@@ -228,172 +228,315 @@ const CurrentCorporateClientList: React.FC = () => {
   const renderCurrentClientsTable = () => {
     const sortedRows = getSortedData();
 
+    const SortableHead = ({
+      w,
+      keyName,
+      children,
+      align = "left",
+    }: {
+      w: number;
+      keyName: string;
+      children: React.ReactNode;
+      align?: "left" | "center" | "right";
+    }) => {
+      // IMPORTANT: do NOT use `w-[${w}px]` (Tailwind won’t generate that class).
+      // Use inline style for fixed widths so columns don’t become “too wide” on large screens.
+      const justify =
+        align === "center" ? "justify-center" : align === "right" ? "justify-end" : "justify-start";
+      const text =
+        align === "center" ? "text-center" : align === "right" ? "text-right" : "text-left";
+
+      return (
+        <TableHead
+          style={{ width: w, minWidth: w, maxWidth: w }}
+          className={cn(
+            "px-2 py-1.5 cursor-pointer select-none",
+            "whitespace-nowrap",
+            "hover:bg-muted/40",
+            text
+          )}
+          onClick={() => requestSort(keyName)}
+        >
+          <div className={cn("flex items-center gap-1", justify)}>
+            <span className="truncate">{children}</span>
+            {sortIcon(keyName)}
+          </div>
+        </TableHead>
+      );
+    };
+
+    const FixedHead = ({
+      w,
+      children,
+      align = "left",
+    }: {
+      w: number;
+      children: React.ReactNode;
+      align?: "left" | "center" | "right";
+    }) => {
+      const text =
+        align === "center" ? "text-center" : align === "right" ? "text-right" : "text-left";
+      return (
+        <TableHead
+          style={{ width: w, minWidth: w, maxWidth: w }}
+          className={cn("px-2 py-1.5 whitespace-nowrap", text)}
+        >
+          {children}
+        </TableHead>
+      );
+    };
+
+    const EmptyRow = ({ msg }: { msg: string }) => (
+      <TableRow>
+        <TableCell
+          colSpan={currentUser.role === "master" ? 10 : 9}
+          className="h-28 text-center text-muted-foreground text-sm"
+        >
+          {msg}
+        </TableCell>
+      </TableRow>
+    );
+
+    const StatusBadge = ({ status }: { status: string }) => (
+      <span
+        className={cn(
+          "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] leading-4 font-medium whitespace-nowrap",
+          status === "Active" || status === "Good Standing"
+            ? "bg-green-100 text-green-800"
+            : status === "Pending"
+              ? "bg-yellow-100 text-yellow-800"
+              : status === "Rejected"
+                ? "bg-red-100 text-red-800"
+                : "bg-blue-100 text-blue-800"
+        )}
+      >
+        {status}
+      </span>
+    );
+
+    const EditButton = ({ onClick }: { onClick: (e: React.MouseEvent) => void }) => (
+      <button
+        className={cn(
+          "inline-flex items-center justify-center",
+          "h-7 w-7 rounded-md",
+          "text-blue-600 hover:text-blue-700",
+          "hover:bg-blue-50 transition"
+        )}
+        onClick={onClick}
+        aria-label="Edit"
+        type="button"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+        </svg>
+      </button>
+    );
+
+    const DeleteButton = ({ onClick }: { onClick: (e: React.MouseEvent) => void }) => (
+      <button
+        className={cn(
+          "inline-flex items-center justify-center",
+          "h-7 w-7 rounded-md",
+          "text-red-600 hover:text-red-700",
+          "hover:bg-red-50 transition"
+        )}
+        onClick={onClick}
+        aria-label="Delete"
+        type="button"
+      >
+        <Trash2 size={14} />
+      </button>
+    );
+
+    const formatIncorpDate = (date: any) => {
+      if (!date) return null;
+      try {
+        const iso = String(date).split("T")[0];
+        const [y, m, d] = iso.split("-");
+        return y && m && d ? `${d}-${m}-${y}` : null;
+      } catch {
+        return null;
+      }
+    };
+
+    // Compact fixed column widths (tune as needed).
+    // Goal: on MacBook, horizontal scroll is available; on large desktop, columns do not expand too much.
+    const COL = {
+      sno: 56,
+      company: 220,
+      applicant: 180,
+      country: 140,
+      status: 150,
+      incorp: 120,
+      edit: 64,
+      assigned: 160,
+      lastLogin: 170,
+      del: 64,
+    };
+
     return (
-      <div className="rounded-xl border overflow-x-auto">
-        <Table className="w-full text-sm text-left">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-center">S.no</TableHead>
-
-              <TableHead
-                className="px-4 py-3 min-w-[180px] cursor-pointer hover:bg-muted/50 select-none"
-                onClick={() => requestSort("companyName")}
-              >
-                <div className="flex items-center">
-                  Company Name {sortIcon("companyName")}
-                </div>
-              </TableHead>
-
-              <TableHead
-                className="px-4 py-3 min-w-[150px] cursor-pointer hover:bg-muted/50 select-none"
-                onClick={() => requestSort("applicantName")}
-              >
-                <div className="flex items-center">
-                  Applicant Name {sortIcon("applicantName")}
-                </div>
-              </TableHead>
-
-              <TableHead
-                className="px-4 py-3 min-w-[100px] cursor-pointer hover:bg-muted/50 select-none"
-                onClick={() => requestSort("country")}
-              >
-                <div className="flex items-center">
-                  Country {sortIcon("country")}
-                </div>
-              </TableHead>
-
-              <TableHead className="px-4 py-3 min-w-[120px]" onClick={() => requestSort("status")}>Status {sortIcon("status")}</TableHead>
-
-              <TableHead
-                className="px-4 py-3 min-w-[120px] cursor-pointer hover:bg-muted/50 select-none"
-                onClick={() => requestSort("incorporationDate")}
-              >
-                <div className="flex items-center">
-                  Incorp Date {sortIcon("incorporationDate")}
-                </div>
-              </TableHead>
-
-              <TableHead className="px-4 py-3 min-w-[80px] text-center">Edit</TableHead>
-
-              <TableHead
-                className="px-4 py-3 min-w-[120px] cursor-pointer hover:bg-muted/50 select-none"
-                onClick={() => requestSort("assignedTo")}
-              >
-                <div className="flex items-center">
-                  Assigned To {sortIcon("assignedTo")}
-                </div>
-              </TableHead>
-
-              <TableHead className="px-4 py-3 min-w-[150px]">Last Login</TableHead>
-
-              {currentUser.role === "master" && <TableHead>Delete</TableHead>}
+      <div
+        className={cn(
+          "rounded-lg border bg-background",
+          // Horizontal scroll on smaller widths (MacBook/medium screens)
+          "overflow-x-auto overflow-y-hidden",
+          // Smooth horizontal scroll on trackpads
+          "scrollbar-thin"
+        )}
+      >
+        {/* 
+        Create a “sheet-like” fixed table width so columns remain compact on large screens:
+        - table uses fixed layout
+        - explicit col widths via inline styles on heads/cells
+        - wrapper enables horizontal scroll when needed
+      */}
+        <Table className="table-fixed text-[12px] leading-4">
+          <TableHeader className="sticky top-0 z-10 bg-background">
+            <TableRow className="h-9">
+              <FixedHead w={COL.sno} align="center">
+                S.No
+              </FixedHead>
+              <SortableHead w={COL.company} keyName="companyName">
+                Company
+              </SortableHead>
+              <SortableHead w={COL.applicant} keyName="applicantName">
+                Applicant
+              </SortableHead>
+              <SortableHead w={COL.country} keyName="country">
+                Country
+              </SortableHead>
+              <SortableHead w={COL.status} keyName="status">
+                Status
+              </SortableHead>
+              <SortableHead w={COL.incorp} keyName="incorporationDate">
+                Incorp
+              </SortableHead>
+              <FixedHead w={COL.edit} align="center">
+                Edit
+              </FixedHead>
+              <SortableHead w={COL.assigned} keyName="assignedTo">
+                Assigned
+              </SortableHead>
+              <FixedHead w={COL.lastLogin}>Last Login</FixedHead>
+              {currentUser.role === "master" && (
+                <FixedHead w={COL.del} align="center">
+                  Del
+                </FixedHead>
+              )}
             </TableRow>
           </TableHeader>
 
           <TableBody>
             {loading ? (
-              <TableRow>
-                <TableCell colSpan={currentUser.role === "master" ? 10 : 9} className="py-6 text-center text-muted-foreground">
-                  Loading...
-                </TableCell>
-              </TableRow>
+              <EmptyRow msg="Loading..." />
             ) : sortedRows.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={currentUser.role === "master" ? 10 : 9} className="py-6 text-center text-muted-foreground">
-                  No records found.
-                </TableCell>
-              </TableRow>
+              <EmptyRow msg="No records found." />
             ) : (
               sortedRows.map((company: any, idx: number) => {
                 const status = company?.status ?? company?.incorporationStatus ?? "N/A";
-
-                let date = company?.incorporationDate ?? null;
-                if (date) {
-                  try {
-                    const iso = String(date).split("T")[0];
-                    const [y, m, d] = iso.split("-");
-                    if (y && m && d) date = `${d}-${m}-${y}`;
-                  } catch {
-                    /* ignore */
-                  }
-                }
+                const date = formatIncorpDate(company?.incorporationDate);
 
                 return (
                   <TableRow
                     key={company._id}
-                    className="h-12 cursor-pointer hover:bg-gray-50 transition-colors"
+                    className={cn(
+                      "h-9 border-b",
+                      "hover:bg-muted/30",
+                      "cursor-pointer"
+                    )}
                     onClick={() => handleRowClick(company._id, company?.country?.code)}
                   >
-                    <TableCell className="text-center font-medium">{idx + 1}</TableCell>
-
-                    <TableCell className="px-4 py-3 font-medium">
-                      <span className="hover:underline">{resolveCompanyName(company)}</span>
+                    <TableCell
+                      style={{ width: COL.sno, minWidth: COL.sno, maxWidth: COL.sno }}
+                      className="px-2 py-1.5 text-center tabular-nums whitespace-nowrap"
+                    >
+                      {idx + 1}
                     </TableCell>
 
-                    <TableCell className="px-4 py-3">{company?.applicantName || "N/A"}</TableCell>
-
-                    <TableCell className="px-4 py-3">{company?.country?.name || "N/A"}</TableCell>
-
-                    <TableCell className="px-4 py-3">
-                      <span
-                        className={cn(
-                          "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium",
-                          status === "Active" || status === "Good Standing"
-                            ? "bg-green-100 text-green-800"
-                            : status === "Pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : status === "Rejected"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-blue-100 text-blue-800"
-                        )}
-                      >
-                        {status}
-                      </span>
+                    <TableCell
+                      style={{ width: COL.company, minWidth: COL.company, maxWidth: COL.company }}
+                      className="px-2 py-1.5 font-medium"
+                    >
+                      <div className="truncate">
+                        <span className="hover:underline">{resolveCompanyName(company)}</span>
+                      </div>
                     </TableCell>
 
-                    <TableCell className="px-4 py-3">{date || "N/A"}</TableCell>
+                    <TableCell
+                      style={{ width: COL.applicant, minWidth: COL.applicant, maxWidth: COL.applicant }}
+                      className="px-2 py-1.5"
+                    >
+                      <div className="truncate">{company?.applicantName || "N/A"}</div>
+                    </TableCell>
 
-                    <TableCell className="px-4 py-3 text-center">
-                      <button
-                        className="text-blue-500 hover:text-blue-700 p-1 rounded hover:bg-blue-50 transition"
-                        onClick={(e) => {
+                    <TableCell
+                      style={{ width: COL.country, minWidth: COL.country, maxWidth: COL.country }}
+                      className="px-2 py-1.5"
+                    >
+                      <div className="truncate">{company?.country?.name || "N/A"}</div>
+                    </TableCell>
+
+                    <TableCell
+                      style={{ width: COL.status, minWidth: COL.status, maxWidth: COL.status }}
+                      className="px-2 py-1.5"
+                    >
+                      <StatusBadge status={status} />
+                    </TableCell>
+
+                    <TableCell
+                      style={{ width: COL.incorp, minWidth: COL.incorp, maxWidth: COL.incorp }}
+                      className="px-2 py-1.5 whitespace-nowrap tabular-nums"
+                    >
+                      {date || "N/A"}
+                    </TableCell>
+
+                    <TableCell
+                      style={{ width: COL.edit, minWidth: COL.edit, maxWidth: COL.edit }}
+                      className="px-2 py-1.5 text-center"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <EditButton
+                        onClick={(e: any) => {
                           e.stopPropagation();
                           handleEditClick(company._id, company?.country?.code);
                         }}
-                        aria-label="Edit"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                        </svg>
-                      </button>
+                      />
                     </TableCell>
 
-                    <TableCell className="px-4 py-3">{company?.assignedTo || "N/A"}</TableCell>
+                    <TableCell
+                      style={{ width: COL.assigned, minWidth: COL.assigned, maxWidth: COL.assigned }}
+                      className="px-2 py-1.5"
+                    >
+                      <div className="truncate">{company?.assignedTo || "N/A"}</div>
+                    </TableCell>
 
-                    <TableCell className="px-4 py-3">
+                    <TableCell
+                      style={{ width: COL.lastLogin, minWidth: COL.lastLogin, maxWidth: COL.lastLogin }}
+                      className="px-2 py-1.5 whitespace-nowrap"
+                    >
                       {company?.lastLogin ? formatDateTime(company.lastLogin) : "N/A"}
                     </TableCell>
 
                     {currentUser.role === "master" && (
-                      <TableCell className="py-2">
-                        <button
-                          className="text-red-500 hover:text-red-700 transition"
-                          onClick={(e) => handleDeleteClick(company._id, company?.country?.code, e)}
-                          aria-label="Delete"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                      <TableCell
+                        style={{ width: COL.del, minWidth: COL.del, maxWidth: COL.del }}
+                        className="px-2 py-1.5 text-center"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <DeleteButton
+                          onClick={(e: any) => handleDeleteClick(company._id, company?.country?.code, e)}
+                        />
                       </TableCell>
                     )}
                   </TableRow>
@@ -405,6 +548,7 @@ const CurrentCorporateClientList: React.FC = () => {
       </div>
     );
   };
+
 
   return (
     <div className="mt-6 mx-2">
