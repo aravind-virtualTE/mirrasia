@@ -32,18 +32,21 @@ export const getIncorporationListByCompId = async (
 };
 
 
-export const getIncorporationList = async () => { // country, companyStatus
+export const getIncorporationList = async (country?: string, companyStatus?: string | string[]) => {
   try {
-    const response = await api.get('company/company-incorporation', {
-      // params: { country, companyStatus },
+    const response = await api.get("company/company-incorporation", {
+      params: {
+        ...(country ? { country } : {}),
+        ...(companyStatus ? { companyStatus } : {}),
+      },
     });
-    // console.log("response -->", response);
     return response.data;
   } catch (error) {
     console.error("Error fetching company incorporation list with filters:", error);
-    throw new Error('Fetching Failed For Company Incorporation List');
+    throw new Error("Fetching Failed For Company Incorporation List");
   }
 };
+
 
 export const getAllCompanyNames = async () =>{
   try{

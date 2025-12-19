@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as XLSX from "xlsx"
-import Papa from "papaparse"
-import { useState, useRef, useEffect } from "react"
+// import * as XLSX from "xlsx"
+// import Papa from "papaparse"  useRef,
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
 import {
     Table,
     TableBody,
@@ -13,7 +13,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import {
-    FileUp,
+    // FileUp,
     Pencil,
     Trash2,
     Save,
@@ -62,7 +62,7 @@ export default function CurrentCorpClient() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [deleteId, setDeleteId] = useState<any>(null)
     const [isLoading, setIsLoading] = useState(false)
-    const fileInputRef = useRef<HTMLInputElement>(null)
+    // const fileInputRef = useRef<HTMLInputElement>(null)
     const [sortConfig, setSortConfig] = useState<{
         key: keyof Company
         direction: "asc" | "desc"
@@ -200,138 +200,138 @@ export default function CurrentCorpClient() {
         }
     }
 
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0]
-        if (!file) return
-        const fileExtension = file.name.split(".").pop()?.toLowerCase()
+    // const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = event.target.files?.[0]
+    //     if (!file) return
+    //     const fileExtension = file.name.split(".").pop()?.toLowerCase()
 
-        const processData = (parsedData: any[]) => {
-            const validData = parsedData
-                .filter((item) => item["COMPANY NAME (ENG)"])
-                .map((item) => {
-                    const extractValidEntries = (
-                        prefix: string,
-                        keys: string[],
-                        maxCount: number
-                    ) => {
-                        return Array.from({ length: maxCount }, (_, i) => {
-                            const index = i + 1
-                            const entry: any = {}
-                            keys.forEach((key) => {
-                                const field = `${prefix}${key
-                                    .charAt(0)
-                                    .toUpperCase()}${key.slice(1)}${index}`
-                                entry[key] =
-                                    key === "totalShares"
-                                        ? (item[field]) * 100 || 0
-                                        : item[field] || ""
-                            })
-                            return entry
-                        }).filter(
-                            (entry) =>
-                                entry.name &&
-                                ((entry.email && entry.name) ||
-                                    (entry.phone && entry.name) ||
-                                    (entry.totalShares && entry.name))
-                        )
-                    }
-                    return {
-                        status: item["status"] || "",
-                        jurisdiction: item["Jurisdriction"] || "",
-                        comments: item["comments"] || "",
-                        incorporationDate:
-                            item["INCORPORATION DATE"] || "",
-                        companyNameEng:
-                            item["COMPANY NAME (ENG)"] || "",
-                        companyNameChi:
-                            item["COMPANY NAME (CHI)"] || "",
-                        companyType: item["Company Type"] || "",
-                        brnNo: item["BRN NO."] || "",
-                        noOfShares: item["noOfShares"] || 0,
-                        shareCapital: item["shareCapital"] || "",
-                        bank: item["Bank"] || "",
-                        directors: extractValidEntries(
-                            "dir",
-                            ["name", "email", "phone"],
-                            4
-                        ),
-                        shareholders: extractValidEntries(
-                            "sh",
-                            ["name", "email", "totalShares"],
-                            4
-                        ),
-                        designatedContact: [
-                            {
-                                name: item["dcpName"] || "",
-                                email: item["dcpEmail"] || "",
-                                phone: item["dcpNum"] || "",
-                                sns: item["dcpSns"] || "",
-                            },
-                        ],
-                        companySecretarialService:
-                            item["Company Secretarial Service"] || "No",
-                        registeredBusinessAddressService:
-                            item[
-                            "Registered Business Address Service"
-                            ] || "No",
-                    }
-                })
+    //     const processData = (parsedData: any[]) => {
+    //         const validData = parsedData
+    //             .filter((item) => item["COMPANY NAME (ENG)"])
+    //             .map((item) => {
+    //                 const extractValidEntries = (
+    //                     prefix: string,
+    //                     keys: string[],
+    //                     maxCount: number
+    //                 ) => {
+    //                     return Array.from({ length: maxCount }, (_, i) => {
+    //                         const index = i + 1
+    //                         const entry: any = {}
+    //                         keys.forEach((key) => {
+    //                             const field = `${prefix}${key
+    //                                 .charAt(0)
+    //                                 .toUpperCase()}${key.slice(1)}${index}`
+    //                             entry[key] =
+    //                                 key === "totalShares"
+    //                                     ? (item[field]) * 100 || 0
+    //                                     : item[field] || ""
+    //                         })
+    //                         return entry
+    //                     }).filter(
+    //                         (entry) =>
+    //                             entry.name &&
+    //                             ((entry.email && entry.name) ||
+    //                                 (entry.phone && entry.name) ||
+    //                                 (entry.totalShares && entry.name))
+    //                     )
+    //                 }
+    //                 return {
+    //                     status: item["status"] || "",
+    //                     jurisdiction: item["Jurisdriction"] || "",
+    //                     comments: item["comments"] || "",
+    //                     incorporationDate:
+    //                         item["INCORPORATION DATE"] || "",
+    //                     companyNameEng:
+    //                         item["COMPANY NAME (ENG)"] || "",
+    //                     companyNameChi:
+    //                         item["COMPANY NAME (CHI)"] || "",
+    //                     companyType: item["Company Type"] || "",
+    //                     brnNo: item["BRN NO."] || "",
+    //                     noOfShares: item["noOfShares"] || 0,
+    //                     shareCapital: item["shareCapital"] || "",
+    //                     bank: item["Bank"] || "",
+    //                     directors: extractValidEntries(
+    //                         "dir",
+    //                         ["name", "email", "phone"],
+    //                         4
+    //                     ),
+    //                     shareholders: extractValidEntries(
+    //                         "sh",
+    //                         ["name", "email", "totalShares"],
+    //                         4
+    //                     ),
+    //                     designatedContact: [
+    //                         {
+    //                             name: item["dcpName"] || "",
+    //                             email: item["dcpEmail"] || "",
+    //                             phone: item["dcpNum"] || "",
+    //                             sns: item["dcpSns"] || "",
+    //                         },
+    //                     ],
+    //                     companySecretarialService:
+    //                         item["Company Secretarial Service"] || "No",
+    //                     registeredBusinessAddressService:
+    //                         item[
+    //                         "Registered Business Address Service"
+    //                         ] || "No",
+    //                 }
+    //             })
 
-            setCustomers((prev) => [...prev, ...validData])
-            toast({
-                title: "File uploaded successfully",
-                description: `Added ${validData.length} company records`,
-            })
-        }
+    //         setCustomers((prev) => [...prev, ...validData])
+    //         toast({
+    //             title: "File uploaded successfully",
+    //             description: `Added ${validData.length} company records`,
+    //         })
+    //     }
 
-        if (fileExtension === "csv") {
-            Papa.parse(file, {
-                header: true,
-                complete: (results) => {
-                    processData(results.data as any[])
-                },
-                error: (error: any) => {
-                    toast({
-                        title: "Error parsing CSV file",
-                        description: error.message,
-                        variant: "destructive",
-                    })
-                },
-            })
-        } else if (fileExtension === "xlsx" || fileExtension === "xls") {
-            const reader = new FileReader()
-            reader.onload = (e) => {
-                const data = e.target?.result
-                if (!data) return
-                try {
-                    const workbook = XLSX.read(data, { type: "binary" })
-                    const sheetName = workbook.SheetNames[0]
-                    const worksheet = workbook.Sheets[sheetName]
-                    const jsonData = XLSX.utils.sheet_to_json(
-                        worksheet
-                    ) as any[]
-                    processData(jsonData)
-                } catch (error: any) {
-                    toast({
-                        title: "Error parsing Excel file",
-                        description: error.message,
-                        variant: "destructive",
-                    })
-                }
-            }
-            reader.readAsBinaryString(file)
-        } else {
-            toast({
-                title: "Unsupported file format",
-                description: "Please upload a CSV or Excel file",
-                variant: "destructive",
-            })
-        }
+    //     if (fileExtension === "csv") {
+    //         Papa.parse(file, {
+    //             header: true,
+    //             complete: (results) => {
+    //                 processData(results.data as any[])
+    //             },
+    //             error: (error: any) => {
+    //                 toast({
+    //                     title: "Error parsing CSV file",
+    //                     description: error.message,
+    //                     variant: "destructive",
+    //                 })
+    //             },
+    //         })
+    //     } else if (fileExtension === "xlsx" || fileExtension === "xls") {
+    //         const reader = new FileReader()
+    //         reader.onload = (e) => {
+    //             const data = e.target?.result
+    //             if (!data) return
+    //             try {
+    //                 const workbook = XLSX.read(data, { type: "binary" })
+    //                 const sheetName = workbook.SheetNames[0]
+    //                 const worksheet = workbook.Sheets[sheetName]
+    //                 const jsonData = XLSX.utils.sheet_to_json(
+    //                     worksheet
+    //                 ) as any[]
+    //                 processData(jsonData)
+    //             } catch (error: any) {
+    //                 toast({
+    //                     title: "Error parsing Excel file",
+    //                     description: error.message,
+    //                     variant: "destructive",
+    //                 })
+    //             }
+    //         }
+    //         reader.readAsBinaryString(file)
+    //     } else {
+    //         toast({
+    //             title: "Unsupported file format",
+    //             description: "Please upload a CSV or Excel file",
+    //             variant: "destructive",
+    //         })
+    //     }
 
-        if (fileInputRef.current) {
-            fileInputRef.current.value = ""
-        }
-    }
+    //     if (fileInputRef.current) {
+    //         fileInputRef.current.value = ""
+    //     }
+    // }
 
     const handleSort = (key: keyof Company) => {
         setSortConfig((prev) => ({
@@ -490,7 +490,7 @@ export default function CurrentCorpClient() {
             <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 py-2 my-4">
                 {/* left side controls */}
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                    <Input
+                    {/* <Input
                         ref={fileInputRef}
                         type="file"
                         accept=".csv,.xlsx,.xls"
@@ -506,7 +506,7 @@ export default function CurrentCorpClient() {
                     >
                         <FileUp className="mr-2 h-4 w-4" />
                         Upload File
-                    </Button>
+                    </Button> */}
 
                     <SearchBox
                         value={searchQuery}
