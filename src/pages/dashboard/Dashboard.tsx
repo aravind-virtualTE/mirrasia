@@ -224,7 +224,7 @@ const Dashboard = () => {
     no: 56,
     company: 320,
     country: 180,
-    status: 180,
+    incorporationStatus: 180,
     incorp: 160,
     edit: 72,
   } as const;
@@ -379,7 +379,7 @@ const Dashboard = () => {
                         </TableHead>
 
                         <TableHead
-                          style={headerCell(COL.status)}
+                          style={headerCell(COL.incorporationStatus)}
                           className={thBase}
                           onClick={() => requestSort("status")}
                         >
@@ -412,7 +412,7 @@ const Dashboard = () => {
                           companyName: string[] | string;
                           applicantName: string;
                           country: { code: string; name: string };
-                          status: string;
+                          incorporationStatus: string;
                           incorporationDate: string | null;
                           _id: string;
                         };
@@ -443,18 +443,18 @@ const Dashboard = () => {
                               <div className={truncate}>{typedCompany.country?.name || "N/A"}</div>
                             </TableCell>
 
-                            <TableCell style={bodyCell(COL.status)} className={tdBase}>
+                            <TableCell style={bodyCell(COL.incorporationStatus)} className={tdBase}>
                               <span
                                 className={cn(
                                   "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] leading-4 font-medium whitespace-nowrap",
-                                  typedCompany.status === "Active"
+                                  typedCompany.incorporationStatus === "Active"
                                     ? "bg-green-100 text-green-800"
-                                    : typedCompany.status === "Pending"
+                                    : typedCompany.incorporationStatus === "Pending"
                                       ? "bg-yellow-100 text-yellow-800"
                                       : "bg-red-100 text-red-800"
                                 )}
                               >
-                                {typedCompany.status}
+                                {typedCompany.incorporationStatus}
                               </span>
                             </TableCell>
 
@@ -468,7 +468,7 @@ const Dashboard = () => {
                                 className="inline-flex items-center justify-center h-7 w-7 rounded-md text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleEditClick(typedCompany._id, typedCompany.country.code, typedCompany.status);
+                                  handleEditClick(typedCompany._id, typedCompany.country.code, typedCompany.incorporationStatus);
                                 }}
                                 aria-label="Edit"
                               >
