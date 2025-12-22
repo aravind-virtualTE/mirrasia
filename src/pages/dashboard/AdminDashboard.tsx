@@ -195,13 +195,13 @@ const AdminDashboard = () => {
 
   const handleEditClick = (companyId: string, countryCode: string, statusOrCompany: any) => {
     const rawStatus = typeof statusOrCompany === "string" ? statusOrCompany : getRawStatus(statusOrCompany);
-
-    if (ACTIVE_STATUSES_CANON.includes(toCanonicalStatus(rawStatus) as any)) {
-      localStorage.setItem("companyRecordId", companyId);
-      navigate(`/company-register/${countryCode}/${companyId}`);
-    } else {
-      toast({ title: "Cant Edit", description: "Company got incorporated" });
-    }
+    console.log("rawStatus", rawStatus)
+    localStorage.setItem("companyRecordId", companyId);
+    navigate(`/company-register/${countryCode}/${companyId}`);
+    // if (ACTIVE_STATUSES_CANON.includes(toCanonicalStatus(rawStatus) as any)) {
+    // } else {
+    //   toast({ title: "Cant Edit", description: "Company got incorporated" });
+    // }
   };
 
   // 1) Search-filtered base (no “displayList” state, no stale mismatch)
