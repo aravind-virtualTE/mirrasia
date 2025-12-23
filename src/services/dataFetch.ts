@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ShareHolderRegistrationForm } from "@/types/hkForm";
 import api from "./fetch";
-import { Company } from "@/components/companyDocumentManager/CompanyDocumentManager";
+import { Company } from "@/components/companyDocumentManager/cdm";
 
 export const getIncorporationListByUserId = async (
   userId: string,

@@ -31,7 +31,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Badge as StatusBadge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-import { Company } from "../../companyDocumentManager/CompanyDocumentManager";
+import { Company } from "../../companyDocumentManager/cdm";
 import { TokenData } from "@/middleware/ProtectedRoutes";
 import jwtDecode from "jwt-decode";
 import { getCompDocs } from "@/services/dataFetch";
