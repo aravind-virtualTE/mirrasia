@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { Company } from '../companyDocumentManager/CompanyDocumentManager';
+import { Company } from '../companyDocumentManager/cdm';
 import api from '@/services/fetch';
 
 
