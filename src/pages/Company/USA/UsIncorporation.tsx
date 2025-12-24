@@ -712,7 +712,7 @@ function ShareholdersWidget({
                     sh.status = "Invited"
                 })];
 
-                setForm((p) => ({ ...p, users: response.users, shareholders: next }));
+                setForm((p) => ({ ...p, users: response.users, shareholders: next,partyInvited:true }));
                 toast({
                     title: "Success",
                     description: `Successfully sent invitation mail to ${response.summary.successful} people`,
@@ -722,7 +722,7 @@ function ShareholdersWidget({
                 const next = [...shareholders.map((sh) => {
                     sh.status = "Resent Invitation"
                 })];
-                setForm((p) => ({ ...p, users: response.users, shareholders: next }));
+                setForm((p) => ({ ...p, users: response.users, shareholders: next,partyInvited:true }));
                 toast({
                     title: "Success",
                     description: `Invite sent to member/director`,
@@ -3935,8 +3935,10 @@ export default function ConfigDrivenUSAForm() {
                 // Same user — keep as is or update (your choice)
             }
         }
+        console.log("idx",idx)
         if (idx === 1) payload.isDisabled = true;
         // console.log("formdata", formData)
+         
         try {
             const response = await api.post("/company/usa-form", payload);
             if (response.status === 200) {
@@ -4006,7 +4008,10 @@ export default function ConfigDrivenUSAForm() {
             const emptyNameShareholders = form.shareHolders.filter(
                 (shareholder: any) => !shareholder.name.trim()
             );
-
+            if(!form.partyInvited ) {
+                toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
+                return 
+            }
             if (emptyNameShareholders.length > 0) {
                 toast({
                     title: "Fill Details (Shareholder(s) / Director(s)), State, designated Contact",

@@ -170,7 +170,7 @@ function PartiesManager() {
                     invited: true,
                     status: "Invited" as const,
                 }));
-                return { ...prev, parties: updated, users:res.users };
+                return { ...prev, parties: updated, users: res.users , partyInvited:true};
             });
             toast({
                 title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
@@ -3401,7 +3401,7 @@ const SgIncorpForm: React.FC = () => {
         } catch (error) {
             console.error("Submission error:", error);
         } finally {
-            console.log("finally");
+            // console.log("finally");
             setIsSubmitting(false);
             setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
         }
@@ -3412,12 +3412,18 @@ const SgIncorpForm: React.FC = () => {
             toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
             return;
         }
+        if (stepIdx == 2) {
+            if (!form.partyInvited) {
+                toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
+                return
+            }
+        }
         // console.log("form", form)
         await updateDoc();
     };
 
     const back = () => setStepIdx((i) => Math.max(0, i - 1));
-    console.log("missing", missing)
+    // console.log("missing", missing)
     return (
         <div className="max-width mx-auto p-3 sm:p-6 space-y-4">
             <TopBar idx={stepIdx} total={CONFIG.steps.length} />
