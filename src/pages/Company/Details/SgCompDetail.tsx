@@ -8,7 +8,7 @@ import { fetchUsers, getSgIncorpoDataById, markDeleteCompanyRecord, sendInviteTo
 import { paymentApi } from "@/lib/api/payment";
 import { useToast } from "@/hooks/use-toast";
 
-import { sgFormWithResetAtom, SgFormData } from "../Singapore/SgState";
+import { sgFormWithResetAtom1, SgFormData } from "../Singapore/SgState";
 import { SessionData } from "./HkCompdetail";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,6 +34,7 @@ import { User } from "@/components/userList/UsersList";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { STATUS_OPTIONS } from "./detailData";
 import { t } from "i18next";
+import { InvoiceSgStep } from "../Singapore/NewSgIncorporation";
 
 /** ---------------- helpers ---------------- */
 
@@ -105,7 +106,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [form, setForm] = useAtom(sgFormWithResetAtom);
+  const [form, setForm] = useAtom(sgFormWithResetAtom1);
   const [users, setUsers] = useState<User[]>([]);
   const [adminAssigned, setAdminAssigned] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -502,7 +503,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   <LabelValue label="Relationships">
                     {(form.establishedRelationshipType || []).length ? (
                       <div className="flex flex-wrap gap-2">
-                        {form.establishedRelationshipType!.map((r, i) => (
+                        {form.establishedRelationshipType!.map((r: any, i: any) => (
                           <Badge key={r + i} variant="outline">
                             {r}
                           </Badge>
@@ -1033,7 +1034,8 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
           <div className="px-6 pb-6">
             <div className="max-h-[70vh] overflow-y-auto"
             >
-              <h1>to be updated soon..</h1>
+              {/* <h1>to be updated soon..</h1> */}
+              <InvoiceSgStep />
             </div>
           </div>
         </DialogContent>

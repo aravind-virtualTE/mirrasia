@@ -1804,7 +1804,7 @@ function UsServiceSelectionStep() {
 }
 
 // ---------- Invoice step ----------
-function InvoiceUsStep() {
+export function InvoiceUsStep() {
     const { t } = useTranslation();
     const [formData] = useAtom(usaAppWithResetAtom);
     const [, setUsPrice] = useAtom(usaPriceAtom);
@@ -2930,11 +2930,7 @@ function PaymentStep() {
                         setApp(
                             (prev: any) => ({
                                 ...prev,
-                                paymentStatus:
-                                    info?.paymentIntentStatus ===
-                                        "succeeded"
-                                        ? "paid"
-                                        : prev.paymentStatus,
+                                paymentStatus:"paid",
                                 stripeLastStatus:
                                     info?.paymentIntentStatus ??
                                     prev.stripeLastStatus,
@@ -4022,6 +4018,10 @@ export default function ConfigDrivenUSAForm() {
                 goto(idx + 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }
+        }
+        else if(idx == 6 && form.paymentStatus !== "paid"){
+            toast({ title: "Payment Pending", description: "Please complete the payment before proceeding Next" });
+            return
         }
         else {
             await updateDoc()

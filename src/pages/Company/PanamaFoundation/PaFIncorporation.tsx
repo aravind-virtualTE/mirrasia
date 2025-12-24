@@ -2855,7 +2855,7 @@ function PaymentStepPIF() {
             onSuccess={(info) => {
               setForm((prev) => ({
                 ...prev,
-                paymentStatus: info?.paymentIntentStatus === "succeeded" ? "paid" : prev.paymentStatus,
+                paymentStatus: "paid",
                 stripeLastStatus: info?.paymentIntentStatus ?? prev.stripeLastStatus,
                 stripeReceiptUrl: info?.receiptUrl ?? prev.stripeReceiptUrl,
                 stripeAmountCents: typeof info?.amount === "number" ? info.amount : prev.stripeAmountCents,
