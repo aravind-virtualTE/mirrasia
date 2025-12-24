@@ -37,7 +37,7 @@ import { currencies } from "../HongKong/constants";
 import CustomLoader from "@/components/ui/customLoader";
 import { t } from "i18next";
 import { money } from "../PanamaFoundation/PaConstants";
-import { ROLE_OPTIONS,RoleOption } from "./PaConstants";
+import { ROLE_OPTIONS, RoleOption } from "./PaConstants";
 
 const SHARE_TYPES = [
     { id: "ordinary", label: "CompanyInformation.typeOfShare.ordinaryShares" },
@@ -297,7 +297,7 @@ function PartiesManager() {
                         status: "Invited",
                     }))
                 );
-                setForm((prev: any) => ({ ...prev, users: res.users }));
+                setForm((prev: any) => ({ ...prev, users: res.users, partyInvited:true }));
 
                 toast({
                     title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
@@ -3084,7 +3084,7 @@ const PanamaIncorporationForm: React.FC = () => {
         } catch (error) {
             console.error("Submission error:", error);
         } finally {
-            console.log("finally");
+            // console.log("finally");
             setIsSubmitting(false);
             // setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
         }
@@ -3095,6 +3095,7 @@ const PanamaIncorporationForm: React.FC = () => {
             toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
             return;
         }
+        // console.log("stepIdx", stepIdx)
         // console.log("form", form)
         if (stepIdx == 1) {
             const q1 = form.annualRenewalConsent
@@ -3115,6 +3116,12 @@ const PanamaIncorporationForm: React.FC = () => {
                     description: "Consultation Required.",
                 });
                 return;
+            }
+        }
+        if (stepIdx == 2) {
+            if (!form.partyInvited) {
+                toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
+                return
             }
         }
         await updateDoc();
