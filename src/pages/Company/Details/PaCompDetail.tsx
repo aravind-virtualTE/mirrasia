@@ -43,6 +43,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { t } from "i18next";
 import { STATUS_OPTIONS } from "./detailData";
 import { ROLE_OPTIONS } from "../Panama/PaConstants";
+import { PanamaQuoteSetupStep } from "../Panama/NewPanamaIncorpo";
 
 type SessionData = {
     _id: string;
@@ -1311,7 +1312,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     <div className="px-6 pb-6">
                         <div className="max-h-[70vh] overflow-y-auto"
                         >
-                            <h1>to be updated soon..</h1>
+                            <PanamaQuoteSetupStep />
                         </div>
                     </div>
                 </DialogContent>

@@ -79,6 +79,7 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { getShrMemberData, STATUS_OPTIONS } from "./detailData";
 import UsIndividualShdrDetail from "@/components/shareholderDirector/UsIndividualDetail";
 import UsCorporateShdrDetailDialog from "@/components/shareholderDirector/UsCorporateDetail";
+import { InvoiceUsStep } from "../USA/UsIncorporation";
 
 // -------- helpers --------
 function fmtDate(d?: string | Date) {
@@ -1357,7 +1358,8 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
           <div className="px-6 pb-6">
             <div className="max-h-[70vh] overflow-y-auto"
             >
-              <h1>to be updated soon..</h1>
+              {/* <h1>to be updated soon..</h1> */}
+              <InvoiceUsStep />
             </div>
           </div>
         </DialogContent>

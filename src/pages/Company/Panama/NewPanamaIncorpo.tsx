@@ -2170,7 +2170,7 @@ const PaymentStep = () => {
                     onSuccess={(info) => {
                         setForm((prev: any) => ({
                             ...prev,
-                            paymentStatus: info?.paymentIntentStatus === "succeeded" ? "paid" : prev.paymentStatus,
+                            paymentStatus: "paid",
                             stripeLastStatus: info?.paymentIntentStatus ?? prev.stripeLastStatus,
                             stripeReceiptUrl: info?.receiptUrl ?? prev.stripeReceiptUrl,
                             stripeAmountCents: typeof info?.amount === "number" ? info.amount : prev.stripeAmountCents,
@@ -3095,7 +3095,7 @@ const PanamaIncorporationForm: React.FC = () => {
             toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
             return;
         }
-        // console.log("stepIdx", stepIdx)
+        console.log("stepIdx", stepIdx)
         // console.log("form", form)
         if (stepIdx == 1) {
             const q1 = form.annualRenewalConsent
@@ -3123,6 +3123,10 @@ const PanamaIncorporationForm: React.FC = () => {
                 toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
                 return
             }
+        }
+        if(stepIdx ==6 && form.paymentStatus !== "paid"){
+            toast({ title: "Payment Pending", description: "Please complete the payment before proceeding Next" });
+            return
         }
         await updateDoc();
         setStepIdx((i) => Math.min(i + 1, CONFIG.steps.length - 1));
@@ -3194,3 +3198,5 @@ const PanamaIncorporationForm: React.FC = () => {
 };
 
 export default PanamaIncorporationForm;
+
+export {PanamaQuoteSetupStep}

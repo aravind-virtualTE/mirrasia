@@ -1815,10 +1815,7 @@ function PaymentStep({ app, setApp, }: {
           onSuccess={(info) => {
             setApp((prev) => ({
               ...prev,
-              paymentStatus:
-                info?.paymentIntentStatus === "succeeded"
-                  ? "paid"
-                  : prev.paymentStatus,
+              paymentStatus:"paid",
               form: {
                 ...prev.form,
                 stripeLastStatus:

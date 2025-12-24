@@ -2257,7 +2257,7 @@ const PaymentStep = () => {
             setCardDrawerOpen(true);
             return;
         }
-        console.log("form", form)
+        // console.log("form", form)
         setCreatingPI(true);
         try {
             const fp = {
@@ -2486,7 +2486,7 @@ const PaymentStep = () => {
                     onSuccess={(info) => {
                         setForm((prev: any) => ({
                             ...prev,
-                            paymentStatus: info?.paymentIntentStatus === "succeeded" ? "paid" : prev.paymentStatus,
+                            paymentStatus: "paid",
                             stripeLastStatus: info?.paymentIntentStatus ?? prev.stripeLastStatus,
                             stripeReceiptUrl: info?.receiptUrl ?? prev.stripeReceiptUrl,
                             stripeAmountCents: typeof info?.amount === "number" ? info.amount : prev.stripeAmountCents,
@@ -3412,11 +3412,16 @@ const SgIncorpForm: React.FC = () => {
             toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
             return;
         }
+        console.log("stepIdx",stepIdx)
         if (stepIdx == 2) {
             if (!form.partyInvited) {
                 toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
                 return
             }
+        }
+        if(stepIdx ==7 && form.paymentStatus !== "paid"){
+            toast({ title: "Payment Pending", description: "Please complete the payment before proceeding Next" });
+            return
         }
         // console.log("form", form)
         await updateDoc();
@@ -3488,3 +3493,4 @@ const SgIncorpForm: React.FC = () => {
 };
 
 export default SgIncorpForm;
+export { InvoiceSgStep }
