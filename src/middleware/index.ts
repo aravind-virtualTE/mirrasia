@@ -1,6 +1,6 @@
 export function isValidEmail(email: string): boolean {
   // Regular expression to check if the email is in a proper format
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   return emailRegex.test(email);
 }
 
@@ -53,3 +53,15 @@ export const normalize = (val?: string | null) =>
     .toString()
     .trim()
     .toLowerCase();
+
+export const validatePasswordPolicy = (pwd: string) => {
+  const minLen = 10;
+  const hasUpper = /[A-Z]/.test(pwd);
+  const hasLower = /[a-z]/.test(pwd);
+  const hasDigit = /\d/.test(pwd);
+  const hasSpecial = /[^A-Za-z0-9]/.test(pwd);
+  if (pwd.length < minLen) return `Password must be at least ${minLen} characters.`;
+  if (!(hasUpper && hasLower && hasDigit && hasSpecial))
+    return "Password must include upper, lower, number, and special character.";
+  return "";
+};
