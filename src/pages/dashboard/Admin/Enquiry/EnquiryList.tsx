@@ -18,8 +18,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -92,9 +90,9 @@ const collator = new Intl.Collator(undefined, { sensitivity: "base" });
 const dt = new Intl.DateTimeFormat(undefined, {
   year: "numeric",
   month: "short",
-  day: "2-digit",
-  hour: "2-digit",
-  minute: "2-digit",
+  // day: "2-digit",
+  // hour: "2-digit",
+  // minute: "2-digit",
 });
 
 function asDate(x?: string | Date) {
@@ -108,7 +106,12 @@ function priorityRank(p?: Enquiry["priority"]) {
 }
 
 function statusRank(s?: Enquiry["status"]) {
-  const order: Record<NonNullable<Enquiry["status"]>, number> = { "TO DO": 0, "IN PROGRESS": 1, "IN REVIEW": 2, COMPLETED: 3 };
+  const order: Record<NonNullable<Enquiry["status"]>, number> = {
+    "TO DO": 0,
+    "IN PROGRESS": 1,
+    "IN REVIEW": 2,
+    COMPLETED: 3,
+  };
   return s ? order[s] : -1;
 }
 
@@ -124,7 +127,7 @@ function normalizeEnquiry(e: Enquiry): Enquiry {
   };
 }
 
-// ---------------- Component (uses enquiryAtom) ----------------
+// ---------------- Component ----------------
 export type SortKey = "name" | "email" | "createdAt" | "priority" | "status";
 
 export default function EnquiryList() {
@@ -132,14 +135,18 @@ export default function EnquiryList() {
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({ key: "createdAt", dir: "desc" });
   const compact = false as const;
 
-  // Edit dialog state
-  const [editOpen, setEditOpen] = useState(false);
-  const [editing, setEditing] = useState<Enquiry | null>(null);
-  const [form, setForm] = useState<Enquiry | null>(null);
+  // Detail dialog state
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selected, setSelected] = useState<Enquiry | null>(null);
 
-  // Delete dialog state
+  // Edit mode state (inside dialog)
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [form, setForm] = useState<Enquiry | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  // Delete confirm state
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deletingId, setDeletingId] = useState<string>('');
+  const [deletingId, setDeletingId] = useState<string>("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -150,7 +157,9 @@ export default function EnquiryList() {
   }, [setListState]);
 
   const onToggleSort = (key: SortKey) => {
-    setSort((prev) => (prev.key === key ? { key, dir: prev.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" }));
+    setSort((prev) =>
+      prev.key === key ? { key, dir: prev.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" }
+    );
   };
 
   const enquiries = useMemo(() => {
@@ -174,9 +183,9 @@ export default function EnquiryList() {
         return dir === "asc" ? ap - bp : bp - ap;
       }
       if (key === "status") {
-        const as = statusRank(a.status);
-        const bs = statusRank(b.status);
-        return dir === "asc" ? as - bs : bs - as;
+        const asr = statusRank(a.status);
+        const bsr = statusRank(b.status);
+        return dir === "asc" ? asr - bsr : bsr - asr;
       }
       const av = (a?.[key] || "") as string;
       const bv = (b?.[key] || "") as string;
@@ -187,46 +196,81 @@ export default function EnquiryList() {
     return arr;
   }, [enquiries, sort]);
 
-  // ----- Edit handlers -----
-  const openEdit = (row: Enquiry) => {
-    setEditing(row);
-    setForm({ ...row });
-    setEditOpen(true);
+  // ---- Dialog open/close ----
+  const openDetails = (row: Enquiry) => {
+    const normalized = normalizeEnquiry(row);
+    setSelected(normalized);
+    setForm({ ...normalized });
+    setIsEditMode(false);
+    setDetailOpen(true);
   };
 
-  const closeEdit = () => {
-    setEditOpen(false);
-    setEditing(null);
+  const closeDetails = () => {
+    setDetailOpen(false);
+    setSelected(null);
     setForm(null);
+    setIsEditMode(false);
+    setSaving(false);
+  };
+
+  const enterEditMode = () => {
+    if (!selected) return;
+    setForm({ ...selected });
+    setIsEditMode(true);
+  };
+
+  const cancelEditMode = () => {
+    if (!selected) return;
+    setForm({ ...selected });
+    setIsEditMode(false);
   };
 
   const saveEdit = async () => {
-    if (!form || !editing || !editing._id) return;
-    // Local update to atom (replace with API later)
-    setListState((prev) =>
-      (prev || []).map((e: Enquiry) => (e._id === editing._id ? { ...e, ...form, updatedAt: new Date().toISOString() } : e))
-    );
-    await updateEnquiry(editing._id, form)
-    closeEdit();
+    if (!form || !selected || !selected._id) return;
+    try {
+      setSaving(true);
+
+      // Optimistic update
+      setListState((prev) =>
+        (prev || []).map((e: Enquiry) =>
+          e._id === selected._id ? { ...e, ...form, updatedAt: new Date().toISOString() } : e
+        )
+      );
+
+      await updateEnquiry(selected._id, form);
+
+      const updatedSelected = { ...selected, ...form, updatedAt: new Date().toISOString() };
+      setSelected(updatedSelected);
+      setForm({ ...updatedSelected });
+      setIsEditMode(false);
+    } finally {
+      setSaving(false);
+    }
   };
 
-  // ----- Delete handlers -----
-  const openDelete = (id?: string) => {
-    setDeletingId(id ?? '');
+  // ---- Delete ----
+  const requestDelete = (id?: string) => {
+    setDeletingId(id ?? "");
     setDeleteOpen(true);
   };
 
   const confirmDelete = async () => {
-    // Local removal from atom (replace with API later)
     setListState((prev) => (prev || []).filter((e: Enquiry) => e._id !== deletingId));
     await deleteEnquiry(deletingId);
+
+    if (selected?._id === deletingId) closeDetails();
     setDeleteOpen(false);
-    setDeletingId('');
+    setDeletingId("");
   };
 
   const cancelDelete = () => {
     setDeleteOpen(false);
-    setDeletingId('');
+    setDeletingId("");
+  };
+
+  const stopRowClick: React.MouseEventHandler = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   return (
@@ -239,39 +283,47 @@ export default function EnquiryList() {
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead>No</TableHead>
+
                 <TableHead className="whitespace-nowrap py-2 px-3">
                   <button className="inline-flex items-center text-left font-semibold" onClick={() => onToggleSort("name")}>
                     Name
                     <SortIcon active={sort.key === "name"} dir={sort.dir} />
                   </button>
                 </TableHead>
+
                 <TableHead className="whitespace-nowrap py-2 px-3">
                   <button className="inline-flex items-center text-left font-semibold" onClick={() => onToggleSort("email")}>
                     Email
                     <SortIcon active={sort.key === "email"} dir={sort.dir} />
                   </button>
                 </TableHead>
+
                 <TableHead>Phone</TableHead>
                 <TableHead className="max-w-[320px]">Message</TableHead>
+
                 <TableHead className="whitespace-nowrap py-2 px-3">
                   <button className="inline-flex items-center text-left font-semibold" onClick={() => onToggleSort("priority")}>
                     Priority
                     <SortIcon active={sort.key === "priority"} dir={sort.dir} />
                   </button>
                 </TableHead>
+
                 <TableHead className="whitespace-nowrap py-2 px-3">
                   <button className="inline-flex items-center text-left font-semibold" onClick={() => onToggleSort("status")}>
                     Status
                     <SortIcon active={sort.key === "status"} dir={sort.dir} />
                   </button>
                 </TableHead>
+
                 <TableHead>Assignees</TableHead>
+
                 <TableHead className="whitespace-nowrap py-2 px-3">
                   <button className="inline-flex items-center text-left font-semibold" onClick={() => onToggleSort("createdAt")}>
                     Created
                     <SortIcon active={sort.key === "createdAt"} dir={sort.dir} />
                   </button>
                 </TableHead>
+
                 <TableHead className="text-right">Comments</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -281,7 +333,20 @@ export default function EnquiryList() {
               {sorted.map((row, idx) => {
                 const created = asDate(row.createdAt);
                 return (
-                  <TableRow key={row._id || row.email + row.name} className="hover:bg-muted/40">
+                  <TableRow
+                    key={row._id || row.email + row.name}
+                    className={cn(
+                      "hover:bg-muted/40 cursor-pointer",
+                      "focus-within:bg-muted/40"
+                    )}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => openDetails(row)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") openDetails(row);
+                    }}
+                    aria-label={`Open enquiry details for ${row.name || row.email || "row"}`}
+                  >
                     <TableCell className="font-medium">{idx + 1}</TableCell>
                     <TableCell className="font-medium">{row.name || "—"}</TableCell>
                     <TableCell className="text-muted-foreground">{row.email || "—"}</TableCell>
@@ -289,24 +354,33 @@ export default function EnquiryList() {
                     <TableCell className="max-w-[320px]">
                       <p className="truncate text-muted-foreground">{row.message || "—"}</p>
                     </TableCell>
+
                     <TableCell>
                       {row.priority ? (
-                        <Badge variant="outline" className={cn("rounded-full px-2 py-0.5 text-[11px] leading-4", priorityTone[row.priority])}>
+                        <Badge
+                          variant="outline"
+                          className={cn("rounded-full px-2 py-0.5 text-[11px] leading-4", priorityTone[row.priority])}
+                        >
                           {row.priority}
                         </Badge>
                       ) : (
                         <span className="text-muted-foreground">—</span>
                       )}
                     </TableCell>
+
                     <TableCell>
                       {row.status ? (
-                        <Badge variant="outline" className={cn("rounded-full px-2 py-0.5 text-[11px] leading-4", statusTone[row.status])}>
+                        <Badge
+                          variant="outline"
+                          className={cn("rounded-full px-2 py-0.5 text-[11px] leading-4", statusTone[row.status])}
+                        >
                           {row.status}
                         </Badge>
                       ) : (
                         <span className="text-muted-foreground">—</span>
                       )}
                     </TableCell>
+
                     <TableCell className="max-w-[220px]">
                       {row.assignees && row.assignees.length > 0 ? (
                         <div className="truncate text-muted-foreground">
@@ -316,20 +390,18 @@ export default function EnquiryList() {
                         <span className="text-muted-foreground">—</span>
                       )}
                     </TableCell>
+
                     <TableCell className="text-muted-foreground">{created ? dt.format(created) : "—"}</TableCell>
                     <TableCell className="text-right text-muted-foreground">{row.comments?.length ?? 0}</TableCell>
 
-                    {/* Actions */}
-                    <TableCell className="text-right">
+                    {/* Actions (stop propagation so row click doesn't trigger) */}
+                    <TableCell className="text-right" onClick={stopRowClick}>
                       <div className="inline-flex items-center gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => openEdit(row)} aria-label="Edit">
-                          <Pencil className="h-4 w-4" />
-                        </Button>
                         <Button
                           variant="ghost"
                           size="icon"
                           className="text-red-600 hover:text-red-700"
-                          onClick={() => openDelete(row._id as string)}
+                          onClick={() => requestDelete(row._id as string)}
                           aria-label="Delete"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -352,78 +424,195 @@ export default function EnquiryList() {
         </ScrollArea>
       </div>
 
-      {/* Edit Dialog */}
-      <Dialog open={editOpen} onOpenChange={(o) => (!o ? closeEdit() : setEditOpen(true))}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Edit enquiry</DialogTitle>
-            <DialogDescription>Update the details and click Save. You can wire this to your API later.</DialogDescription>
-          </DialogHeader>
-
-          {form && (
-            <div className="grid gap-3 py-2">
-              <div className="grid gap-1.5">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="message">Message</Label>
-                <Textarea id="message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
-              </div>
-
-              <div className="grid gap-1.5 sm:grid-cols-2">
-                <div className="grid gap-1.5">
-                  <Label htmlFor="priority">Priority</Label>
-                  <select
-                    id="priority"
-                    className="h-9 w-full rounded-md border bg-background px-3 text-sm shadow-sm"
-                    value={form.priority || ""}
-                    onChange={(e) => setForm({ ...form, priority: (e.target.value || undefined) as Enquiry["priority"] })}
-                  >
-                    <option value="">—</option>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                    <option value="Urgent">Urgent</option>
-                  </select>
-                </div>
-
-                <div className="grid gap-1.5">
-                  <Label htmlFor="status">Status</Label>
-                  <select
-                    id="status"
-                    className="h-9 w-full rounded-md border bg-background px-3 text-sm shadow-sm"
-                    value={form.status || ""}
-                    onChange={(e) => setForm({ ...form, status: (e.target.value || undefined) as Enquiry["status"] })}
-                  >
-                    <option value="">—</option>
-                    <option value="TO DO">TO DO</option>
-                    <option value="IN PROGRESS">IN PROGRESS</option>
-                    <option value="IN REVIEW">IN REVIEW</option>
-                    <option value="COMPLETED">COMPLETED</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+      {/* Detail Dialog (Buttons stay inside, sticky footer) */}
+      <Dialog open={detailOpen} onOpenChange={(o) => (!o ? closeDetails() : setDetailOpen(true))}>
+        <DialogContent
+          className={cn(
+            "w-[calc(100vw-24px)] max-w-[calc(100vw-24px)]",
+            "sm:max-w-2xl lg:max-w-4xl xl:max-w-5xl",
+            "max-h-[88vh] p-0 overflow-hidden"
           )}
+        >
+          {/* Header */}
+          <div className="p-6 pb-4 border-b">
+            <DialogHeader>
+              <DialogTitle className="flex items-center justify-between gap-3">
+                <span>Enquiry details</span>
+                {/* Top right quick status chips */}
+                <div className="flex items-center gap-2">
+                  {form?.priority ? (
+                    <Badge
+                      variant="outline"
+                      className={cn("rounded-full px-2 py-0.5 text-[11px] leading-4", priorityTone[form.priority])}
+                    >
+                      {form.priority}
+                    </Badge>
+                  ) : null}
+                  {form?.status ? (
+                    <Badge
+                      variant="outline"
+                      className={cn("rounded-full px-2 py-0.5 text-[11px] leading-4", statusTone[form.status])}
+                    >
+                      {form.status}
+                    </Badge>
+                  ) : null}
+                </div>
+              </DialogTitle>
 
-          <DialogFooter className="gap-2">
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button onClick={saveEdit}>Save</Button>
-          </DialogFooter>
+              <DialogDescription className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">                
+                <span className="text-xs text-muted-foreground">
+                  Created: {asDate(selected?.createdAt) ? dt.format(asDate(selected?.createdAt)!) : "—"}                  
+                </span>
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+
+          {/* Body (scroll) */}
+          <div className="px-6 py-5 overflow-auto max-h-[calc(88vh-160px)]">
+            {form && (
+              <div className="grid gap-5">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="detail-name">Name</Label>
+                    <Input
+                      id="detail-name"
+                      value={form.name}
+                      disabled={!isEditMode}
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="detail-email">Email</Label>
+                    <Input
+                      id="detail-email"
+                      type="email"
+                      value={form.email}
+                      disabled={!isEditMode}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="detail-phone">Phone</Label>
+                    <Input
+                      id="detail-phone"
+                      value={form.phone}
+                      disabled={!isEditMode}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="detail-comments">Comments</Label>
+                    <Input id="detail-comments" value={`${selected?.comments?.length ?? 0}`} disabled />
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="detail-priority">Priority</Label>
+                    <select
+                      id="detail-priority"
+                      className={cn(
+                        "h-9 w-full rounded-md border bg-background px-3 text-sm shadow-sm",
+                        !isEditMode && "opacity-70 pointer-events-none"
+                      )}
+                      value={form.priority || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, priority: (e.target.value || undefined) as Enquiry["priority"] })
+                      }
+                    >
+                      <option value="">—</option>
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                      <option value="Urgent">Urgent</option>
+                    </select>
+                  </div>
+
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="detail-status">Status</Label>
+                    <select
+                      id="detail-status"
+                      className={cn(
+                        "h-9 w-full rounded-md border bg-background px-3 text-sm shadow-sm",
+                        !isEditMode && "opacity-70 pointer-events-none"
+                      )}
+                      value={form.status || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, status: (e.target.value || undefined) as Enquiry["status"] })
+                      }
+                    >
+                      <option value="">—</option>
+                      <option value="TO DO">TO DO</option>
+                      <option value="IN PROGRESS">IN PROGRESS</option>
+                      <option value="IN REVIEW">IN REVIEW</option>
+                      <option value="COMPLETED">COMPLETED</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid gap-1.5">
+                  <Label htmlFor="detail-message">Message</Label>
+                  <Textarea
+                    id="detail-message"
+                    value={form.message}
+                    disabled={!isEditMode}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    className="min-h-[140px]"
+                  />
+                </div>
+
+                <div className="rounded-xl border p-4">
+                  <div className="text-sm font-medium">Assignees</div>
+                  <div className="mt-1 text-sm text-muted-foreground">
+                    {selected?.assignees && selected.assignees.length > 0
+                      ? selected.assignees.map((a) => a?.name || a?.id).filter(Boolean).join(", ")
+                      : "—"}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Sticky footer (actions always in-scope) */}
+          <div className="border-t bg-background px-6 py-4 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              {/* Delete is in-dialog, not on table column */}
+              <Button
+                variant="outline"
+                className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-red-900/40 dark:hover:bg-red-950/40"
+                onClick={() => requestDelete(selected?._id)}
+                disabled={!selected?._id}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </Button>
+            </div>
+
+            <div className="flex items-center gap-2 sm:justify-end">
+              <Button variant="outline" onClick={closeDetails} disabled={saving}>
+                Close
+              </Button>
+
+              {!isEditMode ? (
+                <Button onClick={enterEditMode} disabled={!selected}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Edit
+                </Button>
+              ) : (
+                <>
+                  <Button variant="outline" onClick={cancelEditMode} disabled={saving}>
+                    Cancel edit
+                  </Button>
+                  <Button onClick={saveEdit} disabled={saving}>
+                    {saving ? "Saving..." : "Save"}
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -432,7 +621,7 @@ export default function EnquiryList() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete enquiry?</AlertDialogTitle>
-            <AlertDialogDescription>This action cannot be undone. You can replace this with an API call later.</AlertDialogDescription>
+            <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={cancelDelete}>Cancel</AlertDialogCancel>
