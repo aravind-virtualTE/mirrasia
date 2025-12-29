@@ -34,9 +34,9 @@ const ServiceAgreementSignDocs: React.FC = () => {
         const token = localStorage.getItem('token') as string;
         const decodedToken = jwtDecode<TokenData>(token);
         const data = await getCompDocs(`${decodedToken.userId}`);
-        setCompanies(data);
-        if (data.length > 0) {
-          setSelectedCompanyId(data[0].id);
+        setCompanies(data.companies);
+        if (data.companies.length > 0) {
+          setSelectedCompanyId(data.companies[0].id);
         }
       } catch (error) {
         console.error('Error fetching companies:', error);
@@ -74,7 +74,6 @@ const ServiceAgreementSignDocs: React.FC = () => {
     setDataFetched(false);
     setSelectedCompanyId(companyId);
   };
-
   return (
     <div className="w-full max-width mx-auto p-6">
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
