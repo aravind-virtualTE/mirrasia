@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useAtom } from "jotai";
-import { reqAtom } from "./rfq"; 
-import { deleteReqForEnquiry, getRedQuoteData, updateReqForEnquiry } from "./rfq"; // 👈 change names if needed
+import { reqAtom } from "./rfq";
+import { deleteReqForEnquiry, getRedQuoteData, updateReqForEnquiry } from "./rfq";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -16,10 +16,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
+  DialogTitle
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -49,7 +46,7 @@ export type ReqForEnquiry = {
   services?: string[];
   servicesOther?: string;
   productDescription?: string;
-  vaspInterest?: string; // "yes" | "no" | ... if you want to narrow
+  vaspInterest?: string;
   structure?: string;
   structureOther?: string;
   materials?: string[];
@@ -70,8 +67,8 @@ const dt = new Intl.DateTimeFormat(undefined, {
   year: "numeric",
   month: "short",
   day: "2-digit",
-  hour: "2-digit",
-  minute: "2-digit",
+  // hour: "2-digit",
+  // minute: "2-digit",
 });
 
 function asDate(x?: string | Date) {
@@ -89,8 +86,39 @@ function normalizeReq(e: ReqForEnquiry): ReqForEnquiry {
     personName: e.personName ?? "",
     email: e.email ?? "",
     personPhone: e.personPhone ?? "",
+    personTitle: e.personTitle ?? "",
+    snsType: e.snsType ?? "",
+    snsId: e.snsId ?? "",
+    countriesOther: e.countriesOther ?? "",
+    industriesOther: e.industriesOther ?? "",
+    servicesOther: e.servicesOther ?? "",
+    materialsOther: e.materialsOther ?? "",
+    productDescription: e.productDescription ?? "",
+    vaspInterest: e.vaspInterest ?? "",
+    structure: e.structure ?? "",
+    structureOther: e.structureOther ?? "",
   };
 }
+
+const joinWithOther = (values?: string[], other?: string) => {
+  const list = [...(values || [])];
+  if (other && other.trim() !== "") list.push(other.trim());
+  return list;
+};
+
+const renderBadges = (values?: string[], other?: string) => {
+  const list = joinWithOther(values, other);
+  if (!list.length) return <span className="text-muted-foreground">—</span>;
+  return (
+    <div className="flex flex-wrap gap-1">
+      {list.map((v) => (
+        <Badge key={v} variant="outline" className="text-[11px] px-2 py-0.5">
+          {v}
+        </Badge>
+      ))}
+    </div>
+  );
+};
 
 // ---------------- Component ----------------
 export type SortKey = "personName" | "email" | "createdAt" | "vaspInterest" | "structure";
@@ -103,10 +131,13 @@ export default function ReqForEnquiryList() {
   });
   const compact = false as const;
 
-  // Edit dialog state
-  const [editOpen, setEditOpen] = useState(false);
-  const [editing, setEditing] = useState<ReqForEnquiry | null>(null);
+  // Detail dialog state (view -> edit -> save)
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selected, setSelected] = useState<ReqForEnquiry | null>(null);
+
+  const [isEditMode, setIsEditMode] = useState(false);
   const [form, setForm] = useState<ReqForEnquiry | null>(null);
+  const [saving, setSaving] = useState(false);
 
   // Delete dialog state
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -151,32 +182,62 @@ export default function ReqForEnquiryList() {
     return arr;
   }, [items, sort]);
 
-  // ----- Edit handlers -----
-  const openEdit = (row: ReqForEnquiry) => {
-    setEditing(row);
-    setForm({ ...row });
-    setEditOpen(true);
+  // ----- Detail dialog handlers -----
+  const openDetails = (row: ReqForEnquiry) => {
+    const normalized = normalizeReq(row);
+    setSelected(normalized);
+    setForm({ ...normalized });
+    setIsEditMode(false);
+    setDetailOpen(true);
   };
 
-  const closeEdit = () => {
-    setEditOpen(false);
-    setEditing(null);
+  const closeDetails = () => {
+    setDetailOpen(false);
+    setSelected(null);
     setForm(null);
+    setIsEditMode(false);
+    setSaving(false);
+  };
+
+  const enterEditMode = () => {
+    if (!selected) return;
+    setForm({ ...selected });
+    setIsEditMode(true);
+  };
+
+  const cancelEditMode = () => {
+    if (!selected) return;
+    setForm({ ...selected });
+    setIsEditMode(false);
   };
 
   const saveEdit = async () => {
-    if (!form || !editing || !editing._id) return;
-    setListState((prev) =>
-      (prev || []).map((e: ReqForEnquiry) =>
-        e._id === editing._id ? { ...e, ...form, updatedAt: new Date().toISOString() } : e
-      )
-    );
-    await updateReqForEnquiry(form);
-    closeEdit();
+    if (!form || !selected || !selected._id) return;
+
+    try {
+      setSaving(true);
+
+      // optimistic update (local)
+      setListState((prev) =>
+        (prev || []).map((e: ReqForEnquiry) =>
+          e._id === selected._id ? { ...e, ...form, updatedAt: new Date().toISOString() } : e
+        )
+      );
+
+      // API call: keep your current signature
+      await updateReqForEnquiry(form);
+
+      const updatedSelected: ReqForEnquiry = { ...selected, ...form, updatedAt: new Date().toISOString() };
+      setSelected(updatedSelected);
+      setForm({ ...updatedSelected });
+      setIsEditMode(false);
+    } finally {
+      setSaving(false);
+    }
   };
 
   // ----- Delete handlers -----
-  const openDelete = (id?: string) => {
+  const requestDelete = (id?: string) => {
     setDeletingId(id ?? "");
     setDeleteOpen(true);
   };
@@ -184,6 +245,8 @@ export default function ReqForEnquiryList() {
   const confirmDelete = async () => {
     setListState((prev) => (prev || []).filter((e: ReqForEnquiry) => e._id !== deletingId));
     await deleteReqForEnquiry(deletingId);
+
+    if (selected?._id === deletingId) closeDetails();
     setDeleteOpen(false);
     setDeletingId("");
   };
@@ -193,20 +256,9 @@ export default function ReqForEnquiryList() {
     setDeletingId("");
   };
 
-  const renderTags = (values?: string[], other?: string) => {
-    const list = [...(values || [])];
-    if (other && other.trim() !== "") list.push(other.trim());
-    if (!list.length) return <span className="text-muted-foreground">—</span>;
-
-    return (
-      <div className="flex flex-wrap gap-1">
-        {list.map((v) => (
-          <Badge key={v} variant="outline" className="text-[11px] px-2 py-0.5">
-            {v}
-          </Badge>
-        ))}
-      </div>
-    );
+  const stopRowClick: React.MouseEventHandler = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   return (
@@ -221,20 +273,14 @@ export default function ReqForEnquiryList() {
                 <TableHead>No</TableHead>
 
                 <TableHead className="whitespace-nowrap py-2 px-3">
-                  <button
-                    className="inline-flex items-center text-left font-semibold"
-                    onClick={() => onToggleSort("personName")}
-                  >
+                  <button className="inline-flex items-center text-left font-semibold" onClick={() => onToggleSort("personName")}>
                     Name
                     <SortIcon active={sort.key === "personName"} dir={sort.dir} />
                   </button>
                 </TableHead>
 
                 <TableHead className="whitespace-nowrap py-2 px-3">
-                  <button
-                    className="inline-flex items-center text-left font-semibold"
-                    onClick={() => onToggleSort("email")}
-                  >
+                  <button className="inline-flex items-center text-left font-semibold" onClick={() => onToggleSort("email")}>
                     Email
                     <SortIcon active={sort.key === "email"} dir={sort.dir} />
                   </button>
@@ -242,25 +288,18 @@ export default function ReqForEnquiryList() {
 
                 <TableHead>Phone</TableHead>
                 <TableHead>SNS</TableHead>
-                {/* <TableHead>Countries</TableHead> */}
                 <TableHead>Industries</TableHead>
                 <TableHead>Services</TableHead>
 
                 <TableHead className="whitespace-nowrap py-2 px-3">
-                  <button
-                    className="inline-flex items-center text-left font-semibold"
-                    onClick={() => onToggleSort("vaspInterest")}
-                  >
+                  <button className="inline-flex items-center text-left font-semibold" onClick={() => onToggleSort("vaspInterest")}>
                     VASP
                     <SortIcon active={sort.key === "vaspInterest"} dir={sort.dir} />
                   </button>
                 </TableHead>
 
                 <TableHead className="whitespace-nowrap py-2 px-3">
-                  <button
-                    className="inline-flex items-center text-left font-semibold"
-                    onClick={() => onToggleSort("structure")}
-                  >
+                  <button className="inline-flex items-center text-left font-semibold" onClick={() => onToggleSort("structure")}>
                     Structure
                     <SortIcon active={sort.key === "structure"} dir={sort.dir} />
                   </button>
@@ -269,15 +308,13 @@ export default function ReqForEnquiryList() {
                 <TableHead className="max-w-[300px]">Product description</TableHead>
 
                 <TableHead className="whitespace-nowrap py-2 px-3">
-                  <button
-                    className="inline-flex items-center text-left font-semibold"
-                    onClick={() => onToggleSort("createdAt")}
-                  >
+                  <button className="inline-flex items-center text-left font-semibold" onClick={() => onToggleSort("createdAt")}>
                     Created
                     <SortIcon active={sort.key === "createdAt"} dir={sort.dir} />
                   </button>
                 </TableHead>
 
+                {/* Keep column for spacing/alignment, but no per-row edit icon needed */}
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -288,15 +325,20 @@ export default function ReqForEnquiryList() {
                 return (
                   <TableRow
                     key={row._id || row.email + row.personName}
-                    className="hover:bg-muted/40"
+                    className={cn("hover:bg-muted/40 cursor-pointer", "focus-within:bg-muted/40")}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => openDetails(row)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") openDetails(row);
+                    }}
+                    aria-label={`Open quotation request details for ${row.personName || row.email || "row"}`}
                   >
                     <TableCell className="font-medium">{idx + 1}</TableCell>
 
                     <TableCell className="font-medium">
                       {row.personName || "—"}
-                      {row.personTitle ? (
-                        <span className="ml-1 text-xs text-muted-foreground">({row.personTitle})</span>
-                      ) : null}
+                      {row.personTitle ? <span className="ml-1 text-xs text-muted-foreground">({row.personTitle})</span> : null}
                     </TableCell>
 
                     <TableCell className="text-muted-foreground">{row.email || "—"}</TableCell>
@@ -312,59 +354,32 @@ export default function ReqForEnquiryList() {
                       )}
                     </TableCell>
 
-                    {/* <TableCell className="max-w-[220px]">
-                      {renderTags(row.countries, row.countriesOther)}
-                    </TableCell> */}
+                    <TableCell className="max-w-[220px]">{renderBadges(row.industries, row.industriesOther)}</TableCell>
+                    <TableCell className="max-w-[220px]">{renderBadges(row.services, row.servicesOther)}</TableCell>
 
-                    <TableCell className="max-w-[220px]">
-                      {renderTags(row.industries, row.industriesOther)}
-                    </TableCell>
-
-                    <TableCell className="max-w-[220px]">
-                      {renderTags(row.services, row.servicesOther)}
-                    </TableCell>
-
-                    <TableCell className="text-muted-foreground">
-                      {row.vaspInterest || "—"}
-                    </TableCell>
+                    <TableCell className="text-muted-foreground">{row.vaspInterest || "—"}</TableCell>
 
                     <TableCell className="max-w-[180px] text-muted-foreground">
-                      {row.structureOther
-                        ? `${row.structure || ""} (${row.structureOther})`.trim()
-                        : row.structure || "—"}
+                      {row.structureOther ? `${row.structure || ""} (${row.structureOther})`.trim() : row.structure || "—"}
                     </TableCell>
 
                     <TableCell className="max-w-[300px]">
-                      <p className="truncate text-muted-foreground">
-                        {row.productDescription || "—"}
-                      </p>
+                      <p className="truncate text-muted-foreground">{row.productDescription || "—"}</p>
                     </TableCell>
 
-                    <TableCell className="text-muted-foreground">
-                      {created ? dt.format(created) : "—"}
-                    </TableCell>
+                    <TableCell className="text-muted-foreground">{created ? dt.format(created) : "—"}</TableCell>
 
-                    {/* Actions */}
-                    <TableCell className="text-right">
-                      <div className="inline-flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openEdit(row)}
-                          aria-label="Edit"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-red-600 hover:text-red-700"
-                          onClick={() => openDelete(row._id as string)}
-                          aria-label="Delete"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                    {/* Action is minimal; primary actions live in dialog */}
+                    <TableCell className="text-right" onClick={stopRowClick}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-red-600 hover:text-red-700"
+                        onClick={() => requestDelete(row._id as string)}
+                        aria-label="Delete"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );
@@ -372,7 +387,7 @@ export default function ReqForEnquiryList() {
 
               {sorted.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={13} className="py-6 text-center text-muted-foreground">
+                  <TableCell colSpan={12} className="py-6 text-center text-muted-foreground">
                     No records.
                   </TableCell>
                 </TableRow>
@@ -382,114 +397,216 @@ export default function ReqForEnquiryList() {
         </ScrollArea>
       </div>
 
-      {/* Edit Dialog */}
-      <Dialog open={editOpen} onOpenChange={(o) => (!o ? closeEdit() : setEditOpen(true))}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Edit Req For Enquiry</DialogTitle>
-            <DialogDescription>Update the details and click Save.</DialogDescription>
-          </DialogHeader>
-
-          {form && (
-            <div className="grid gap-3 py-2">
-              <div className="grid gap-1.5">
-                <Label htmlFor="personName">Name</Label>
-                <Input
-                  id="personName"
-                  value={form.personName}
-                  onChange={(e) => setForm({ ...form, personName: e.target.value })}
-                />
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="personTitle">Title</Label>
-                <Input
-                  id="personTitle"
-                  value={form.personTitle || ""}
-                  onChange={(e) => setForm({ ...form, personTitle: e.target.value })}
-                />
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                />
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="personPhone">Phone</Label>
-                <Input
-                  id="personPhone"
-                  value={form.personPhone || ""}
-                  onChange={(e) => setForm({ ...form, personPhone: e.target.value })}
-                />
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="snsType">SNS Type</Label>
-                <Input
-                  id="snsType"
-                  value={form.snsType || ""}
-                  onChange={(e) => setForm({ ...form, snsType: e.target.value })}
-                />
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="snsId">SNS ID</Label>
-                <Input
-                  id="snsId"
-                  value={form.snsId || ""}
-                  onChange={(e) => setForm({ ...form, snsId: e.target.value })}
-                />
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="productDescription">Product description</Label>
-                <Textarea
-                  id="productDescription"
-                  value={form.productDescription || ""}
-                  onChange={(e) => setForm({ ...form, productDescription: e.target.value })}
-                />
-              </div>
-
-              <div className="grid gap-1.5 sm:grid-cols-2">
-                <div className="grid gap-1.5">
-                  <Label htmlFor="vaspInterest">VASP interest</Label>
-                  <select
-                    id="vaspInterest"
-                    className="h-9 w-full rounded-md border bg-background px-3 text-sm shadow-sm"
-                    value={form.vaspInterest || ""}
-                    onChange={(e) => setForm({ ...form, vaspInterest: e.target.value || undefined })}
-                  >
-                    <option value="">—</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                    <option value="unknown">Unknown</option>
-                  </select>
-                </div>
-
-                <div className="grid gap-1.5">
-                  <Label htmlFor="structure">Structure</Label>
-                  <Input
-                    id="structure"
-                    value={form.structure || ""}
-                    onChange={(e) => setForm({ ...form, structure: e.target.value })}
-                  />
-                </div>
-              </div>
-            </div>
+      {/* Detail Dialog (View -> Edit -> Save) */}
+      <Dialog open={detailOpen} onOpenChange={(o) => (!o ? closeDetails() : setDetailOpen(true))}>
+        <DialogContent
+          className={cn(
+            "w-[calc(100vw-24px)] max-w-[calc(100vw-24px)]",
+            "sm:max-w-2xl lg:max-w-4xl xl:max-w-5xl",
+            "max-h-[88vh] p-0 overflow-hidden"
           )}
+        >
+          {/* Header */}
+          <div className="p-6 pb-4 border-b">
+            <DialogHeader>
+              <DialogTitle className="flex items-start justify-between gap-3">
+                <span>Quotation request details</span>
+                <div className="text-right text-xs text-muted-foreground">
+                  <div>Created: {asDate(selected?.createdAt) ? dt.format(asDate(selected?.createdAt)!) : "—"}</div>                  
+                </div>
+              </DialogTitle>             
+            </DialogHeader>
+          </div>
 
-          <DialogFooter className="gap-2">
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button onClick={saveEdit}>Save</Button>
-          </DialogFooter>
+          {/* Body (scroll) */}
+          <div className="px-6 py-5 overflow-auto max-h-[calc(88vh-160px)]">
+            {form && (
+              <div className="grid gap-6">
+                {/* Contact */}
+                <div className="rounded-xl border p-4">
+                  <div className="text-sm font-semibold mb-3">Contact</div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="personName">Name</Label>
+                      <Input
+                        id="personName"
+                        value={form.personName}
+                        disabled={!isEditMode}
+                        onChange={(e) => setForm({ ...form, personName: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="personTitle">Title</Label>
+                      <Input
+                        id="personTitle"
+                        value={form.personTitle || ""}
+                        disabled={!isEditMode}
+                        onChange={(e) => setForm({ ...form, personTitle: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={form.email}
+                        disabled={!isEditMode}
+                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="personPhone">Phone</Label>
+                      <Input
+                        id="personPhone"
+                        value={form.personPhone || ""}
+                        disabled={!isEditMode}
+                        onChange={(e) => setForm({ ...form, personPhone: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* SNS */}
+                <div className="rounded-xl border p-4">
+                  <div className="text-sm font-semibold mb-3">SNS</div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="snsType">SNS Type</Label>
+                      <Input
+                        id="snsType"
+                        value={form.snsType || ""}
+                        disabled={!isEditMode}
+                        onChange={(e) => setForm({ ...form, snsType: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="snsId">SNS ID</Label>
+                      <Input
+                        id="snsId"
+                        value={form.snsId || ""}
+                        disabled={!isEditMode}
+                        onChange={(e) => setForm({ ...form, snsId: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Interests & Scope */}
+                <div className="rounded-xl border p-4">
+                  <div className="text-sm font-semibold mb-3">Scope</div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="vaspInterest">VASP interest</Label>
+                      <select
+                        id="vaspInterest"
+                        className={cn(
+                          "h-9 w-full rounded-md border bg-background px-3 text-sm shadow-sm",
+                          !isEditMode && "opacity-70 pointer-events-none"
+                        )}
+                        value={form.vaspInterest || ""}
+                        onChange={(e) => setForm({ ...form, vaspInterest: e.target.value || undefined })}
+                      >
+                        <option value="">—</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                        <option value="unknown">Unknown</option>
+                      </select>
+                    </div>
+
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="structure">Structure</Label>
+                      <Input
+                        id="structure"
+                        value={form.structure || ""}
+                        disabled={!isEditMode}
+                        onChange={(e) => setForm({ ...form, structure: e.target.value })}
+                      />
+                      {form.structureOther ? (
+                        <div className="text-xs text-muted-foreground">Other: {form.structureOther}</div>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  {/* Readable tag sections (view-first UX); keep edit mode simple */}
+                  <div className="mt-5 grid gap-4">
+                    <div>
+                      <div className="text-sm font-medium mb-2">Countries</div>
+                      {renderBadges(form.countries, form.countriesOther)}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium mb-2">Industries</div>
+                      {renderBadges(form.industries, form.industriesOther)}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium mb-2">Services</div>
+                      {renderBadges(form.services, form.servicesOther)}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium mb-2">Materials</div>
+                      {renderBadges(form.materials, form.materialsOther)}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Product description */}
+                <div className="rounded-xl border p-4">
+                  <div className="text-sm font-semibold mb-3">Product description</div>
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="productDescription">Description</Label>
+                    <Textarea
+                      id="productDescription"
+                      value={form.productDescription || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => setForm({ ...form, productDescription: e.target.value })}
+                      className="min-h-[160px]"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Sticky footer (actions always visible) */}
+          <div className="border-t bg-background px-6 py-4 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-red-900/40 dark:hover:bg-red-950/40"
+                onClick={() => requestDelete(selected?._id)}
+                disabled={!selected?._id}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </Button>
+            </div>
+
+            <div className="flex items-center gap-2 sm:justify-end">
+              <Button variant="outline" onClick={closeDetails} disabled={saving}>
+                Close
+              </Button>
+
+              {!isEditMode ? (
+                <Button onClick={enterEditMode} disabled={!selected}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Edit
+                </Button>
+              ) : (
+                <>
+                  <Button variant="outline" onClick={cancelEditMode} disabled={saving}>
+                    Cancel edit
+                  </Button>
+                  <Button onClick={saveEdit} disabled={saving}>
+                    {saving ? "Saving..." : "Save"}
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
