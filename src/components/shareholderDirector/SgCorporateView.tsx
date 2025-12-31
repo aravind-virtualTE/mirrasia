@@ -60,7 +60,7 @@ export interface SgCorporateMember {
 interface SgCorporateMemberDetailDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  data: any | null;
+  data: SgCorporateMember | null;
 }
 
 /* ---------- helpers ---------- */
