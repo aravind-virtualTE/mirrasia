@@ -62,10 +62,12 @@ function TopBar({ title, totalSteps, idx }: { title: string; totalSteps: number;
 const cx = (...xs: (string | false | null | undefined)[]) => xs.filter(Boolean).join(" ")
 type StepLike = { id: string; title: string }
 
-function SidebarPanama({ steps, idx, goto, canProceedFromCurrent, }: {
+function SidebarPanama({ steps, idx, 
+  // goto, 
+  canProceedFromCurrent, }: {
   steps: StepLike[]
   idx: number
-  goto: (i: number) => void
+  // goto: (i: number) => void
   canProceedFromCurrent: boolean
 }) {
   const canJumpTo = (target: number) => {
@@ -74,21 +76,21 @@ function SidebarPanama({ steps, idx, goto, canProceedFromCurrent, }: {
     return canProceedFromCurrent
   }
 
-  const onTryGoto = (target: number) => {
-    if (target === idx) return
-    if (target < idx) {
-      goto(target)
-      return
-    }
-    if (!canProceedFromCurrent) {
-      toast({
-        title: t("newHk.sidebar.toasts.completeStepTitle"),
-        description: t("newHk.sidebar.toasts.completeStepDesc"),
-      })
-      return
-    }
-    goto(target)
-  }
+  // const onTryGoto = (target: number) => {
+  //   if (target === idx) return
+  //   if (target < idx) {
+  //     goto(target)
+  //     return
+  //   }
+  //   if (!canProceedFromCurrent) {
+  //     toast({
+  //       title: t("newHk.sidebar.toasts.completeStepTitle"),
+  //       description: t("newHk.sidebar.toasts.completeStepDesc"),
+  //     })
+  //     return
+  //   }
+  //   goto(target)
+  // }
 
   return (
     <aside className="space-y-4 sticky top-0 h-[calc(100vh-2rem)] overflow-auto p-0">
@@ -122,7 +124,7 @@ function SidebarPanama({ steps, idx, goto, canProceedFromCurrent, }: {
           return (
             <button
               key={s.id}
-              onClick={() => onTryGoto(i)}
+              // onClick={() => onTryGoto(i)}
               disabled={!enabled}
               className={cx(
                 "w-full text-left rounded-lg border p-2 sm:p-3 transition touch-manipulation",
@@ -3308,7 +3310,7 @@ export default function PanamaPIFWizard() {
               <SidebarPanama
                 steps={config.steps as any}
                 idx={stepIdx}
-                goto={goto}
+                // goto={goto}
                 canProceedFromCurrent={canNext}
               />
             </div>
@@ -3320,7 +3322,7 @@ export default function PanamaPIFWizard() {
           <SidebarPanama
             steps={config.steps as any}
             idx={stepIdx}
-            goto={goto}
+            // goto={goto}
             canProceedFromCurrent={canNext}
           />
         </div>

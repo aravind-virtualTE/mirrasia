@@ -3745,10 +3745,12 @@ function TopBar({ title, total, idx, }: {
     );
 }
 
-function Sidebar({ steps, idx, goto, canProceedFromCurrent, }: {
+function Sidebar({ steps, idx, 
+    // goto, 
+    canProceedFromCurrent, }: {
     steps: AnyStep[];
     idx: number;
-    goto: (i: number) => void;
+    // goto: (i: number) => void;
     canProceedFromCurrent: boolean;
 }) {
     const { t } = useTranslation();
@@ -3799,9 +3801,9 @@ function Sidebar({ steps, idx, goto, canProceedFromCurrent, }: {
                     return (
                         <button
                             key={s.id}
-                            onClick={() =>
-                                enabled && goto(i)
-                            }
+                            // onClick={() =>
+                            //     enabled && goto(i)
+                            // }
                             disabled={!enabled}
                             className={cn(
                                 "w-full text-left rounded-lg border p-2 sm:p-3 transition touch-manipulation",
@@ -4252,10 +4254,10 @@ export default function ConfigDrivenUSAForm() {
                             <Sidebar
                                 steps={usaIncorpConfig.steps}
                                 idx={idx}
-                                goto={(i) => {
-                                    setSidebarOpen(false);
-                                    goto(i);
-                                }}
+                                // goto={(i) => {
+                                //     setSidebarOpen(false);
+                                //     goto(i);
+                                // }}
                                 canProceedFromCurrent={canNext}
                             />
                         </div>
@@ -4269,7 +4271,7 @@ export default function ConfigDrivenUSAForm() {
                             usaIncorpConfig.steps
                         }
                         idx={idx}
-                        goto={goto}
+                        // goto={goto}
                         canProceedFromCurrent={
                             canNext
                         }
