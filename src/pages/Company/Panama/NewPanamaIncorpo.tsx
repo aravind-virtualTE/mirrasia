@@ -2556,10 +2556,12 @@ const TopBar: React.FC<{ idx: number; total: number }> = ({ idx, total }) => {
     );
 };
 
-const Sidebar: React.FC<{ steps: Step[]; currentIdx: number; onNavigate: (idx: number) => void; canProceed: boolean }> = ({
+const Sidebar: React.FC<{ steps: Step[]; currentIdx: number; 
+    // onNavigate: (idx: number) => void; 
+    canProceed: boolean }> = ({
     steps,
     currentIdx,
-    onNavigate,
+    // onNavigate,
     canProceed,
 }) => {
     const { t } = useTranslation();
@@ -2582,7 +2584,7 @@ const Sidebar: React.FC<{ steps: Step[]; currentIdx: number; onNavigate: (idx: n
                     return (
                         <button
                             key={s.id}
-                            onClick={() => enabled && onNavigate(i)}
+                            // onClick={() => enabled && onNavigate(i)}
                             disabled={!enabled}
                             className={cn(
                                 "w-full text-left rounded-lg border p-2 sm:p-3 transition",
@@ -3141,7 +3143,9 @@ const PanamaIncorporationForm: React.FC = () => {
             <div className="grid lg:grid-cols-[280px_1fr] gap-6">
                 {/* Sidebar */}
                 <div className="hidden lg:block">
-                    <Sidebar steps={CONFIG.steps} currentIdx={stepIdx} onNavigate={setStepIdx} canProceed={canProceed} />
+                    <Sidebar steps={CONFIG.steps} currentIdx={stepIdx} 
+                    // onNavigate={setStepIdx} 
+                    canProceed={canProceed} />
                 </div>
 
                 <Card>

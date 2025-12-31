@@ -2311,13 +2311,13 @@ function TopBar({ title, totalSteps, idx }: { title: string; totalSteps: number;
 function Sidebar({
   steps,
   idx,
-  goto,
+  // goto,
   canProceedFromCurrent,
   paymentStatus = "unpaid",
 }: {
   steps: Step[];
   idx: number;
-  goto: (i: number) => void;
+  // goto: (i: number) => void;
   canProceedFromCurrent: boolean; // derived from requiredMissing => canNext
   paymentStatus?: string;         // "paid" or anything else
 }) {
@@ -2334,34 +2334,34 @@ function Sidebar({
     return true;
   };
 
-  const onTryGoto = (target: number) => {
-    if (target === idx) return;
+  // const onTryGoto = (target: number) => {
+  //   if (target === idx) return;
 
-    // If going backward, always allow
-    if (target < idx) {
-      goto(target);
-      return;
-    }
+  //   // If going backward, always allow
+  //   if (target < idx) {
+  //     goto(target);
+  //     return;
+  //   }
 
-    // Forward navigation checks
-    if (!canProceedFromCurrent) {
-      toast({
-        title: t("newHk.sidebar.toasts.completeStepTitle"),
-        description: t("newHk.sidebar.toasts.completeStepDesc")
-      });
-      return;
-    }
+  //   // Forward navigation checks
+  //   if (!canProceedFromCurrent) {
+  //     toast({
+  //       title: t("newHk.sidebar.toasts.completeStepTitle"),
+  //       description: t("newHk.sidebar.toasts.completeStepDesc")
+  //     });
+  //     return;
+  //   }
 
-    if (paymentStatus !== "paid" && target > 7) {
-      toast({
-        title: t("newHk.sidebar.toasts.paymentReqTitle"),
-        description: t("newHk.sidebar.toasts.paymentReqDesc")
-      });
-      return;
-    }
+  //   if (paymentStatus !== "paid" && target > 7) {
+  //     toast({
+  //       title: t("newHk.sidebar.toasts.paymentReqTitle"),
+  //       description: t("newHk.sidebar.toasts.paymentReqDesc")
+  //     });
+  //     return;
+  //   }
 
-    goto(target);
-  };
+  //   goto(target);
+  // };
 
   return (
     <aside className="space-y-4 sticky top-0 h-[calc(100vh-2rem)] overflow-auto p-0 lg:block">
@@ -2392,7 +2392,7 @@ function Sidebar({
           return (
             <button
               key={s.id}
-              onClick={() => onTryGoto(i)}
+              // onClick={() => onTryGoto(i)}
               disabled={!enabled}
               className={classNames(
                 "w-full text-left rounded-lg border p-2 sm:p-3 transition touch-manipulation",
@@ -2604,7 +2604,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
               <Sidebar
                 steps={config.steps}
                 idx={stepIdx}
-                goto={goto}
+                // goto={goto}
                 canProceedFromCurrent={canNext}
                 paymentStatus={app.paymentStatus || "unpaid"}
               />
@@ -2617,7 +2617,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
           <Sidebar
             steps={config.steps}
             idx={stepIdx}
-            goto={goto}
+            // goto={goto}
             canProceedFromCurrent={canNext}
             paymentStatus={app.paymentStatus || "unpaid"}
           />
