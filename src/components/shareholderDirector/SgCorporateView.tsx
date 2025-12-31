@@ -216,9 +216,7 @@ const renderFilePreview = (label: string, fileValue?: string | File | null) => {
 
 /* ---------- main component ---------- */
 
-const SgCorporateMemberDetail: React.FC<
-  SgCorporateMemberDetailDialogProps
-> = ({ isOpen, onClose, data }) => {
+const SgCorporateMemberDetail: React.FC<SgCorporateMemberDetailDialogProps> = ({ isOpen, onClose, data }) => {
   if (!data) return null;
 
   const relations = mapWithLabels(

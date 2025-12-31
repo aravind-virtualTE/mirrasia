@@ -78,7 +78,7 @@ export default function ViewBoard() {
 
   const handleShowClick = (company: any) => {
     const country = multiData.find((item: { shrDirId: any; }) => item.shrDirId == company._id).country
-    console.log(country,"company--->",company)
+    // console.log(country,"company--->",company)
     setsSelectedData(company)
     setIsDialogOpen(true)
     setCountry(country)
@@ -374,7 +374,7 @@ export default function ViewBoard() {
                                 const shrId = multiData.find((item: { shrDirId: string; }) => item.shrDirId == company._id)
                                 localStorage.setItem('shdrItem', shrId._id)
                                 const corporation = company.corporation ? company.corporation : 'No'
-                                localStorage.setItem('country', corporation == 'Yes' ? 'SA_Corporate' : 'SA_Individual')
+                                localStorage.setItem('country', corporation == 'Yes' ? 'SG_Corporate' : 'SG_Individual')
                                 navigate(`/registrationForm/${company._id}`)
                               }}>
                                 <Pencil size={16} />
