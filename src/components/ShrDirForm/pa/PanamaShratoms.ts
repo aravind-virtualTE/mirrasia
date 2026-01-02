@@ -240,7 +240,8 @@ export const saveShrCorporatePanamaInviteData = async (data: any, id?: string) =
   // });
 
   const response = await api.post(`/company/pa-corp-shareholder-form/${id}`,data,
-     { headers: { 'Content-Type': 'multipart/form-data' } });
+    //  { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
   return response.data;
 };
 

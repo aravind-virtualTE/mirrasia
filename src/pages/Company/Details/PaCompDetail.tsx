@@ -41,9 +41,11 @@ import { User } from "@/components/userList/UsersList";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { t } from "i18next";
-import { STATUS_OPTIONS } from "./detailData";
+import { getShrMemberData, STATUS_OPTIONS } from "./detailData";
 import { ROLE_OPTIONS } from "../Panama/PaConstants";
 import { PanamaQuoteSetupStep } from "../Panama/NewPanamaIncorpo";
+import DetailPAShareHolderDialog from "@/components/shareholderDirector/detailShrPa";
+import DetailPACorporateShareHolderDialog from "@/components/shareholderDirector/PaCorpMemberDetail";
 
 type SessionData = {
     _id: string;
@@ -55,16 +57,16 @@ type SessionData = {
 };
 
 function fmtDate(d?: string | Date) {
-  if (!d) return "—";
+    if (!d) return "—";
 
-  const dt = typeof d === "string" ? new Date(d) : d;
+    const dt = typeof d === "string" ? new Date(d) : d;
 
-  // Simple invalid-date guard without using getTime()
-  const timestamp = +dt; // same as Number(dt)
-  if (Number.isNaN(timestamp)) return "—";
+    // Simple invalid-date guard without using getTime()
+    const timestamp = +dt; // same as Number(dt)
+    if (Number.isNaN(timestamp)) return "—";
 
-  // Date only (no time)
-  return dt.toISOString().slice(0, 10);
+    // Date only (no time)
+    return dt.toISOString().slice(0, 10);
 }
 
 const FallbackAvatar: React.FC<{ name?: string | null }> = ({ name }) => {
@@ -121,6 +123,9 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [taskToDelete, setTaskToDelete] = useState<{ companyId: string, countryCode: string } | null>(null);
     const [invoiceOpen, setInvoiceOpen] = React.useState(false);
+    const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+    const [selectedData, setSelectedData] = React.useState<any>(null);
+    const [memType, setMemType] = React.useState<any>(null);
 
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const isAdmin = user?.role !== "user";
@@ -356,6 +361,17 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
             return clone;
         });
     };
+
+    const showMemberDetails = async (email: string, isCorp: string) => {
+        const type = isCorp == 'yes' ? "PA_Corporate" : "PA_Individual";
+        // console.log("email", email, "isCorp", isCorp);
+        const res = await getShrMemberData(id, email, "PA", type);
+        setMemType(type);
+        // console.log("email--->", email, id, type, res)
+        setSelectedData(res.data);
+        setIsDialogOpen(true);
+    }
+
 
     return (
         <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
@@ -695,7 +711,14 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                 : p.isLegalPerson?.id || "";
 
                                                         return (
-                                                            <TableRow key={(p?.name || "shareholder") + i}>
+                                                            <TableRow key={(p?.name || "shareholder") + i}
+                                                                className={`align-top ${!isEditing && p?.email ? "cursor-pointer" : ""
+                                                                    }`}
+                                                                onClick={
+                                                                    !isEditing && p?.email
+                                                                        ? () => showMemberDetails(p.email, p.isLegalPerson?.id)
+                                                                        : undefined
+                                                                }>
                                                                 {/* Name: name + email (same as now) */}
                                                                 <TableCell>
                                                                     <div className="flex items-center gap-2">
@@ -1317,6 +1340,22 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     </div>
                 </DialogContent>
             </Dialog>
+            {
+                memType == "PA_Corporate" && isDialogOpen && (
+                    <DetailPACorporateShareHolderDialog
+                        isOpen={isDialogOpen}
+                        onClose={() => setIsDialogOpen(false)}
+                        userData={selectedData}
+                    />
+                )
+            }
+            {memType == "PA_Individual" && isDialogOpen && (
+                <DetailPAShareHolderDialog
+                    isOpen={isDialogOpen}
+                    onClose={() => setIsDialogOpen(false)}
+                    userData={selectedData}
+                />
+            )}
         </Tabs>
     );
 };
