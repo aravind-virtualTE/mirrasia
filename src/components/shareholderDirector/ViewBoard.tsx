@@ -19,6 +19,7 @@ import UsCorporateShdrDetailDialog from './UsCorporateDetail';
 import SgIndividualShrDetail from './SgIndividualDetail';
 import SgCorporateMemberDetail from './SgCorporateView';
 import UsIndividualShdrDetail from './UsIndividualDetail';
+import DetailPACorporateShareHolderDialog from './PaCorpMemberDetail';
 
 export default function ViewBoard() {
   const { t } = useTranslation();
@@ -38,6 +39,9 @@ export default function ViewBoard() {
     companyName: "" as string, name: "" as string, amountInvestedAndShares: "" as string, _id: "" as string
   }])
   const [paState, setPaShrState] = useState([{
+    companyName: "" as string, name: "" as string, sharesAcquired: "" as string, _id: "" as string
+  }])
+  const [paCorpState, setPaCorpShrState] = useState([{
     companyName: "" as string, name: "" as string, sharesAcquired: "" as string, _id: "" as string
   }])
   const [saState, setSaShrState] = useState([{
@@ -65,6 +69,7 @@ export default function ViewBoard() {
         setUsState(data.usRegData)
         setCorpUsState(data.usCorpData)
         setPaShrState(data.paShrData)
+        setPaCorpShrState(data.paCorpShrData)
         setSaShrState(data.saShrData)
         setPifState(data.pifShrData)
         setSgCorpShrState(data.sgCorpData)
@@ -83,7 +88,7 @@ export default function ViewBoard() {
     setIsDialogOpen(true)
     setCountry(country)
   }
-  console.log('pifState', pifState, country)
+  // console.log('pifState', pifState, country)
   return (
     <div className="flex-1 py-4">
       {/* defaultValue={["registration-table", "associated-companies"]} */}
@@ -343,6 +348,75 @@ export default function ViewBoard() {
                   </div>
                 </div>
               )}
+              {paCorpState.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3 text-primary">
+                    Panama Corporate Shareholder Member
+                  </h4>
+
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                         <TableRow>
+                          <TableHead className="w-10">S.No</TableHead>
+                          <TableHead className="w-48">{t("company.name")}</TableHead>
+                          <TableHead className="w-48">{t("shldr_viewboard.fullName")}</TableHead>
+                          <TableHead className="min-w-[300px]">Shares Acquired</TableHead>
+                          <TableHead className="w-16 text-center">{t("shldr_viewboard.edit")}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+
+                      <TableBody>
+                        {paCorpState.map((company, index) => (
+                          <TableRow
+                            key={`${company._id}-${index}`}
+                            onClick={() => handleShowClick(company)}
+                            className="cursor-pointer"
+                          >
+                            <TableCell className="font-medium">
+                              {index + 1}
+                            </TableCell>
+
+                            <TableCell className="font-medium">
+                              {company.companyName}
+                            </TableCell>
+
+                            <TableCell>
+                              {company.name}
+                            </TableCell>
+                            <TableCell>
+                              {''}
+                            </TableCell>
+                            <TableCell className="text-center">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+
+                                  const shrId = multiData.find(
+                                    (item: { shrDirId: string }) =>
+                                      item.shrDirId === company._id
+                                  )
+
+                                  if (shrId?._id) {
+                                    localStorage.setItem("shdrItem", shrId._id)
+                                  }
+
+                                  localStorage.setItem("country", "PA_Corporate")
+
+                                  navigate(`/registrationForm/${company._id}`)
+                                }}
+                              >
+                                <Pencil size={16} />
+                              </button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              )}
+
               {saState.length > 0 && (
                 <div>
                   <h4 className="font-semibold mb-3 text-primary">Singapore Shareholder member</h4>
@@ -484,10 +558,11 @@ export default function ViewBoard() {
       {country == 'US_Corporate' && (<UsCorporateShdrDetailDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} data={selectedData} />)}
       {country == 'US_Individual' && (<UsIndividualShdrDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} data={selectedData} />)}
       {country == 'PA_Individual' && <DetailPAShareHolderDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}
+      {country == 'PA_Corporate' && <DetailPACorporateShareHolderDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}
       {country == 'PPIF' && <PPifDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}
       {country == 'SG_Individual' && <SgIndividualShrDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} data={selectedData} />}
       {country == 'SG_Corporate' && <SgCorporateMemberDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} data={selectedData} />}
-        
+
     </div>
   )
 }
