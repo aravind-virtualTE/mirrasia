@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { Banknote, Building2, ShieldCheck, ReceiptText, Mail, Phone, CheckCircle2, Circle, Save, Trash2 } from "lucide-react";
 import { createOrUpdatePaFIncorpo, getPaFIncorpoData } from "../PanamaFoundation/PaState";
@@ -23,7 +24,8 @@ import { toast } from "@/hooks/use-toast";
 import { t } from "i18next";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { STATUS_OPTIONS } from "./detailData";
+import { getShrMemberData, STATUS_OPTIONS } from "./detailData";
+import PPifDetail from "@/components/shareholderDirector/ppifDetail";
 
 // ----------------- Types -----------------
 export type PIFRecord = {
@@ -212,6 +214,142 @@ export default function PPifCompDetail({ id }: { id: string }) {
     }, []);
 
     const patchCompany = (key: keyof PIFRecord, value: any) => setData(prev => ({ ...prev, [key]: value }));
+
+    const updateFounderAt = (index: number, patch: any) => {
+        setData(prev => {
+            if (!prev || !Array.isArray((prev as any).founders)) return prev;
+            const clone: any = { ...prev };
+            const arr = [...clone.founders];
+            arr[index] = { ...arr[index], ...patch };
+            clone.founders = arr;
+            return clone;
+        });
+    };
+
+    // Council helpers
+    const updateCouncilIndividualAt = (index: number, patch: any) => {
+        setData(prev => {
+            if (!prev) return prev;
+            const clone: any = { ...prev };
+            const arr = Array.isArray(clone.councilIndividuals) ? [...clone.councilIndividuals] : [];
+            arr[index] = { ...(arr[index] || {}), ...patch };
+            clone.councilIndividuals = arr;
+            return clone;
+        });
+    };
+
+    const addCouncilIndividual = () => {
+        setData(prev => {
+            const clone: any = { ...prev };
+            const arr = Array.isArray(clone.councilIndividuals) ? [...clone.councilIndividuals] : [];
+            arr.push({ type: "individual", name: "", id: "", status: "", email: "", tel: "" });
+            clone.councilIndividuals = arr;
+            return clone;
+        });
+    };
+
+    const removeCouncilIndividualAt = (index: number) => {
+        setData(prev => {
+            if (!prev || !Array.isArray((prev as any).councilIndividuals)) return prev;
+            const clone: any = { ...prev };
+            const arr = [...clone.councilIndividuals];
+            arr.splice(index, 1);
+            clone.councilIndividuals = arr;
+            return clone;
+        });
+    };
+
+    const updateCouncilCorporate = (patch: any) => {
+        setData(prev => {
+            if (!prev) return prev;
+            const clone: any = { ...prev };
+            clone.councilCorporate = { ...(clone.councilCorporate || {}), ...patch };
+            return clone;
+        });
+    };
+
+    // Protectors
+    const updateProtectorAt = (index: number, patch: any) => {
+        setData(prev => {
+            if (!prev) return prev;
+            const clone: any = { ...prev };
+            const arr = Array.isArray(clone.protectors) ? [...clone.protectors] : [];
+            arr[index] = { ...(arr[index] || {}), ...patch };
+            clone.protectors = arr;
+            return clone;
+        });
+    };
+
+    const addProtector = () => {
+        setData(prev => {
+            const clone: any = { ...prev };
+            const arr = Array.isArray(clone.protectors) ? [...clone.protectors] : [];
+            arr.push({ name: "", contact: "", status: "" });
+            clone.protectors = arr;
+            clone.protectorsEnabled = true;
+            return clone;
+        });
+    };
+
+    const removeProtectorAt = (index: number) => {
+        setData(prev => {
+            if (!prev || !Array.isArray((prev as any).protectors)) return prev;
+            const clone: any = { ...prev };
+            const arr = [...clone.protectors];
+            arr.splice(index, 1);
+            clone.protectors = arr;
+            return clone;
+        });
+    };
+
+    // Beneficiaries
+    const updateBeneficiaryAt = (index: number, patch: any) => {
+        setData(prev => {
+            if (!prev) return prev;
+            const clone: any = { ...prev };
+            const arr = Array.isArray(clone.beneficiaries) ? [...clone.beneficiaries] : [];
+            arr[index] = { ...(arr[index] || {}), ...patch };
+            clone.beneficiaries = arr;
+            return clone;
+        });
+    };
+
+    const addBeneficiary = () => {
+        setData(prev => {
+            const clone: any = { ...prev };
+            const arr = Array.isArray(clone.beneficiaries) ? [...clone.beneficiaries] : [];
+            arr.push({ name: "", contact: "", status: "" });
+            clone.beneficiaries = arr;
+            return clone;
+        });
+    };
+
+    const removeBeneficiaryAt = (index: number) => {
+        setData(prev => {
+            if (!prev || !Array.isArray((prev as any).beneficiaries)) return prev;
+            const clone: any = { ...prev };
+            const arr = [...clone.beneficiaries];
+            arr.splice(index, 1);
+            clone.beneficiaries = arr;
+            return clone;
+        });
+    };
+
+    // Dialog state for viewing PPIF member details
+    const [selectedData, setSelectedData] = React.useState<any>(null);
+    const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+
+    const showMemberDetails = async (email: string | undefined, isCorp: string | undefined) => {
+        if (!email) return;
+        const type = isCorp == 'yes' || isCorp === 'corporate' ? "PPIF_Corporate" : "PPIF_Individual";
+        try {
+            const res = await getShrMemberData(id, email, "PPIF", type);
+            setSelectedData(res.data);
+            setIsDialogOpen(true);
+        } catch (err) {
+            console.error("Error fetching PPIF member data:", err);
+        }
+    };
 
     const onSave = async () => {
         setIsSaving(true);
@@ -479,24 +617,91 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         <div className="text-sm font-semibold">B. Founders</div>
                                         {Array.isArray((data as any)?.founders) && (data as any).founders.length ? (
                                             <div className="overflow-x-auto rounded-md border overflow-hidden">
-                                                <div className="">
-                                                    <div className="grid gap-3 min-w-[600px] p-2">
-                                                        {(data as any).founders.map((fnd: any, i: number) => (
-                                                            <div
-                                                                key={(fnd?.name || "founder") + i}
-                                                                className="grid md:grid-cols-5  p-2"
-                                                            >
-                                                                <LabelValue label="Type">{fnd?.type || "—"}</LabelValue>
-                                                                <LabelValue label="Name">{fnd?.name || "—"}</LabelValue>
-                                                                <LabelValue label="ID / Reg No.">{fnd?.id || "—"}</LabelValue>
-                                                                <LabelValue label="Status">{fnd?.status || "—"}</LabelValue>
-                                                                <div className="grid md:grid-cols-[2fr_1fr] gap-2">
-                                                                    <LabelValue label="Email">{fnd?.email || "—"}</LabelValue>
-                                                                    <LabelValue label="Phone">{fnd?.tel || "—"}</LabelValue>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
+                                                <div className="min-w-[700px] p-2">
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead className="w-[12%]">{t("ppif.founders.type.label")}</TableHead>
+                                                                <TableHead className="w-[24%]">{t("common.name", "Name")}</TableHead>
+                                                                <TableHead className="w-[16%]">{t("ppif.founders.id.label", "ID / Reg No.")}</TableHead>
+                                                                <TableHead className="w-[14%]">{t("common.status", "Status")}</TableHead>
+                                                                <TableHead className="w-[20%]">{t("common.email", "Email")}</TableHead>
+                                                                <TableHead className="w-[14%]">{t("common.phone", "Phone")}</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {(data as any).founders.map((fnd: any, i: number) => (
+                                                                <TableRow
+                                                                    key={(fnd?.name || "founder") + i}
+                                                                    className={`align-top ${!isEditing && fnd?.email ? 'cursor-pointer hover:bg-slate-50' : ''}`}
+                                                                    onClick={() => {
+                                                                        if (!isEditing && fnd?.email) showMemberDetails(fnd?.email, fnd?.type);
+                                                                    }}
+                                                                >
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Select
+                                                                                value={fnd?.type || ""}
+                                                                                onValueChange={(val) => updateFounderAt(i, { type: val })}
+                                                                            >
+                                                                                <SelectTrigger className="h-8">
+                                                                                    <SelectValue placeholder={t("common.select", "Select")} />
+                                                                                </SelectTrigger>
+                                                                                <SelectContent>
+                                                                                    <SelectItem value="individual">{t("ppif.founders.type.options.individual")}</SelectItem>
+                                                                                    <SelectItem value="corporate">{t("ppif.founders.type.options.corporate")}</SelectItem>
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                        ) : (
+                                                                            <span>{fnd?.type || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={fnd?.name || ""} onChange={(e) => updateFounderAt(i, { name: e.target.value })} />
+                                                                        ) : (
+                                                                            <span className="font-medium">{fnd?.name || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={fnd?.id || ""} onChange={(e) => updateFounderAt(i, { id: e.target.value })} />
+                                                                        ) : (
+                                                                            <span>{fnd?.id || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={fnd?.status || ""} onChange={(e) => updateFounderAt(i, { status: e.target.value })} />
+                                                                        ) : (
+                                                                            <span>{fnd?.status || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8 min-w-[220px]" type="email" value={fnd?.email || ""} onChange={(e) => updateFounderAt(i, { email: e.target.value })} />
+                                                                        ) : (
+                                                                            <span className="text-xs text-muted-foreground">{fnd?.email || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <div className="overflow-x-auto">
+                                                                                <Input className="h-8 min-w-[160px] w-full" value={fnd?.tel || ""} onChange={(e) => updateFounderAt(i, { tel: e.target.value })} />
+                                                                            </div>
+                                                                        ) : (
+                                                                            <span>{fnd?.tel || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
                                                 </div>
                                             </div>
                                         ) : (
@@ -518,38 +723,146 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                             </LabelValue>
                                         </div>
 
-                                        {(data as any)?.councilMode === "ind3" &&
-                                            Array.isArray((data as any)?.councilIndividuals) && (
-                                                <div className="rounded-md border overflow-hidden">
-                                                    <div className="overflow-x-auto">
-                                                        <div className="grid gap-2 min-w-[600px] p-3">
-                                                            {(data as any).councilIndividuals.map((m: any, i: number) => (
-                                                                <div key={"ind-" + i} className="grid md:grid-cols-5 p-1">
-                                                                    <LabelValue label="Type">{m?.type || "individual"}</LabelValue>
-                                                                    <LabelValue label="Name">{m?.name || "—"}</LabelValue>
-                                                                    <LabelValue label="ID">{m?.id || "—"}</LabelValue>
-                                                                    <LabelValue label="Status">{m?.status || "—"}</LabelValue>
-                                                                    <div className="grid md:grid-cols-[2fr_1fr] gap-2">
-                                                                        <LabelValue label="Email">{m?.email || "—"}</LabelValue>
-                                                                        <LabelValue label="Phone">{m?.tel || "—"}</LabelValue>
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
+                                        {(data as any)?.councilMode === "ind3" && Array.isArray((data as any)?.councilIndividuals) && (
+                                                <div className="overflow-x-auto rounded-md border overflow-hidden">
+                                                    <div className="min-w-[700px] p-3">
+                                                        {isAdmin && isEditing && (
+                                                            <div className="flex justify-end mb-2">
+                                                                <Button size="sm" variant="outline" onClick={addCouncilIndividual}>{t("common.add","Add")}</Button>
+                                                            </div>
+                                                        )}
+                                                        <Table>
+                                                            <TableHeader>
+                                                                <TableRow>
+                                                                    <TableHead className="w-[12%]">Type</TableHead>
+                                                                    <TableHead className="w-[24%]">Name</TableHead>
+                                                                    <TableHead className="w-[16%]">ID</TableHead>
+                                                                    <TableHead className="w-[14%]">Status</TableHead>
+                                                                    <TableHead className="w-[20%]">Email</TableHead>
+                                                                    <TableHead className="w-[14%]">Phone</TableHead>
+                                                                    <TableHead className="w-[10%]">Actions</TableHead>
+                                                                </TableRow>
+                                                            </TableHeader>
+                                                            <TableBody>
+                                                                {(data as any).councilIndividuals.map((m: any, i: number) => (
+                                                                    <TableRow key={"ind-" + i} className={`align-top ${!isEditing && m?.email ? 'cursor-pointer hover:bg-slate-50' : ''}`} onClick={() => { if (!isEditing && m?.email) showMemberDetails(m?.email, m?.type); }}>
+                                                                        <TableCell>
+                                                                            {isAdmin && isEditing ? (
+                                                                                <Input className="h-8" value={m?.type || "individual"} onChange={(e) => updateCouncilIndividualAt(i, { type: e.target.value })} />
+                                                                            ) : (
+                                                                                <span>{m?.type || "individual"}</span>
+                                                                            )}
+                                                                        </TableCell>
+
+                                                                        <TableCell>
+                                                                            {isAdmin && isEditing ? (
+                                                                                <Input className="h-8" value={m?.name || ""} onChange={(e) => updateCouncilIndividualAt(i, { name: e.target.value })} />
+                                                                            ) : (
+                                                                                <span className="font-medium">{m?.name || "—"}</span>
+                                                                            )}
+                                                                        </TableCell>
+
+                                                                        <TableCell>
+                                                                            {isAdmin && isEditing ? (
+                                                                                <Input className="h-8" value={m?.id || ""} onChange={(e) => updateCouncilIndividualAt(i, { id: e.target.value })} />
+                                                                            ) : (
+                                                                                <span>{m?.id || "—"}</span>
+                                                                            )}
+                                                                        </TableCell>
+
+                                                                        <TableCell>
+                                                                            {isAdmin && isEditing ? (
+                                                                                <Input className="h-8" value={m?.status || ""} onChange={(e) => updateCouncilIndividualAt(i, { status: e.target.value })} />
+                                                                            ) : (
+                                                                                <span>{m?.status || "—"}</span>
+                                                                            )}
+                                                                        </TableCell>
+
+                                                                        <TableCell>
+                                                                            {isAdmin && isEditing ? (
+                                                                                <Input className="h-8 min-w-[220px]" type="email" value={m?.email || ""} onChange={(e) => updateCouncilIndividualAt(i, { email: e.target.value })} />
+                                                                            ) : (
+                                                                                <span className="text-xs text-muted-foreground">{m?.email || "—"}</span>
+                                                                            )}
+                                                                        </TableCell>
+
+                                                                        <TableCell>
+                                                                            {isAdmin && isEditing ? (
+                                                                                <div className="overflow-x-auto">
+                                                                                    <Input className="h-8 min-w-[160px] w-full" value={m?.tel || ""} onChange={(e) => updateCouncilIndividualAt(i, { tel: e.target.value })} />
+                                                                                </div>
+                                                                            ) : (
+                                                                                <span>{m?.tel || "—"}</span>
+                                                                            )}
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            {isAdmin && isEditing ? (
+                                                                                <div className="flex justify-end">
+                                                                                    <Button size="sm" variant="ghost" onClick={() => removeCouncilIndividualAt(i)}><Trash2 className="mr-2 h-4 w-4" /></Button>
+                                                                                </div>
+                                                                            ) : null}
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                ))}
+                                                            </TableBody>
+                                                        </Table>
                                                     </div>
                                                 </div>
                                             )}
 
                                         {(data as any)?.councilMode === "corp1" && (data as any)?.councilCorporate && (
                                             <div className="overflow-x-auto rounded-md border overflow-hidden">
-                                                <div className="">
-                                                    <div className="grid md:grid-cols-5 min-w-[600px] p-3">
-                                                        <LabelValue label="Corporate Main">{(data as any).councilCorporate?.corpMain || "—"}</LabelValue>
-                                                        <LabelValue label="Address / Representative">{(data as any).councilCorporate?.addrRep || "—"}</LabelValue>
-                                                        <LabelValue label="Signatory">{(data as any).councilCorporate?.signatory || "—"}</LabelValue>
-                                                        <LabelValue label="Email">{(data as any).councilCorporate?.email || "—"}</LabelValue>
-                                                        <LabelValue label="Status">{(data as any).councilCorporate?.status || "—"}</LabelValue>
-                                                    </div>
+                                                <div className="min-w-[900px] p-3">
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead className="w-[20%]">Corporate Main</TableHead>
+                                                                <TableHead className="w-[30%]">Address / Representative</TableHead>
+                                                                <TableHead className="w-[16%]">Signatory</TableHead>
+                                                                <TableHead className="w-[18%]">Email</TableHead>
+                                                                <TableHead className="w-[16%]">Status</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            <TableRow className={`align-top ${!isEditing && (data as any).councilCorporate?.email ? 'cursor-pointer hover:bg-slate-50' : ''}`} onClick={() => { if (!isEditing && (data as any).councilCorporate?.email) showMemberDetails((data as any).councilCorporate?.email, 'corporate'); }}>
+                                                                <TableCell>
+                                                                    {isAdmin && isEditing ? (
+                                                                        <Input className="h-8" value={(data as any).councilCorporate?.corpMain || ""} onChange={(e) => updateCouncilCorporate({ corpMain: e.target.value })} />
+                                                                    ) : (
+                                                                        <span>{(data as any).councilCorporate?.corpMain || "—"}</span>
+                                                                    )}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {isAdmin && isEditing ? (
+                                                                        <Input className="h-8" value={(data as any).councilCorporate?.addrRep || ""} onChange={(e) => updateCouncilCorporate({ addrRep: e.target.value })} />
+                                                                    ) : (
+                                                                        <span className="text-xs text-muted-foreground">{(data as any).councilCorporate?.addrRep || "—"}</span>
+                                                                    )}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {isAdmin && isEditing ? (
+                                                                        <Input className="h-8" value={(data as any).councilCorporate?.signatory || ""} onChange={(e) => updateCouncilCorporate({ signatory: e.target.value })} />
+                                                                    ) : (
+                                                                        <span>{(data as any).councilCorporate?.signatory || "—"}</span>
+                                                                    )}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {isAdmin && isEditing ? (
+                                                                        <Input className="h-8" type="email" value={(data as any).councilCorporate?.email || ""} onChange={(e) => updateCouncilCorporate({ email: e.target.value })} />
+                                                                    ) : (
+                                                                        <span className="text-xs text-muted-foreground">{(data as any).councilCorporate?.email || "—"}</span>
+                                                                    )}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {isAdmin && isEditing ? (
+                                                                        <Input className="h-8" value={(data as any).councilCorporate?.status || ""} onChange={(e) => updateCouncilCorporate({ status: e.target.value })} />
+                                                                    ) : (
+                                                                        <span>{(data as any).councilCorporate?.status || "—"}</span>
+                                                                    )}
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        </TableBody>
+                                                    </Table>
                                                 </div>
                                             </div>
                                         )}
@@ -563,14 +876,55 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                             {/* <span className="text-sm text-muted-foreground">Enabled</span> */}
                                         </div>
                                         {((data as any)?.protectorsEnabled && Array.isArray((data as any)?.protectors)) ? (
-                                            <div className="grid gap-2">
-                                                {(data as any).protectors.map((p: any, i: number) => (
-                                                    <div key={"prot-" + i} className="rounded-md border p-3 grid md:grid-cols-3">
-                                                        <LabelValue label="Name">{p?.name || "—"}</LabelValue>
-                                                        <LabelValue label="Contact">{p?.contact || "—"}</LabelValue>
-                                                        <LabelValue label="Status">{p?.status || "—"}</LabelValue>
-                                                    </div>
-                                                ))}
+                                            <div className="overflow-x-auto rounded-md border overflow-hidden">
+                                                <div className="min-w-[700px] p-3">
+                                                    {isAdmin && isEditing && (
+                                                        <div className="flex justify-end mb-2">
+                                                            <Button size="sm" variant="outline" onClick={addProtector}>{t("common.add","Add")}</Button>
+                                                        </div>
+                                                    )}
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead className="w-[40%]">Name</TableHead>
+                                                                <TableHead className="w-[40%]">Contact</TableHead>
+                                                                <TableHead className="w-[20%]">Status</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {(data as any).protectors.map((p: any, i: number) => (
+                                                                <TableRow key={"prot-" + i} className={`align-top ${!isEditing && p?.contact && p?.contact.includes('@') ? 'cursor-pointer hover:bg-slate-50' : ''}`} onClick={() => { if (!isEditing && p?.contact && p?.contact.includes('@')) showMemberDetails(p?.contact, 'no'); }}>
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={p?.name || ""} onChange={(e) => updateProtectorAt(i, { name: e.target.value })} />
+                                                                        ) : (
+                                                                            <span className="font-medium">{p?.name || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={p?.contact || ""} onChange={(e) => updateProtectorAt(i, { contact: e.target.value })} />
+                                                                        ) : (
+                                                                            <span className="text-xs text-muted-foreground">{p?.contact || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        <div className="flex items-center justify-between">
+                                                                            {isAdmin && isEditing ? (
+                                                                                <>
+                                                                                    <Input className="h-8" value={p?.status || ""} onChange={(e) => updateProtectorAt(i, { status: e.target.value })} />
+                                                                                    <Button size="sm" variant="ghost" onClick={() => removeProtectorAt(i)}><Trash2 className="mr-2 h-4 w-4" /></Button>
+                                                                                </>
+                                                                            ) : (
+                                                                                <span>{p?.status || "—"}</span>
+                                                                            )}
+                                                                        </div>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </div>
                                             </div>
                                         ) : null}
                                     </div>
@@ -579,14 +933,55 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         <div className="text-sm font-semibold">F. Beneficiaries</div>
                                         <LabelValue label="Mode">{(data as any)?.beneficiariesMode || "—"}</LabelValue>
                                         {Array.isArray((data as any)?.beneficiaries) && (data as any).beneficiaries.length ? (
-                                            <div className="grid gap-2">
-                                                {(data as any).beneficiaries.map((b: any, i: number) => (
-                                                    <div key={"bene-" + i} className="rounded-md border p-3 grid md:grid-cols-3">
-                                                        <LabelValue label="Name">{b?.name || "—"}</LabelValue>
-                                                        <LabelValue label="Contact">{b?.contact || "—"}</LabelValue>
-                                                        <LabelValue label="Status">{b?.status || "—"}</LabelValue>
-                                                    </div>
-                                                ))}
+                                            <div className="overflow-x-auto rounded-md border overflow-hidden">
+                                                <div className="min-w-[700px] p-3">
+                                                    {isAdmin && isEditing && (
+                                                        <div className="flex justify-end mb-2">
+                                                            <Button size="sm" variant="outline" onClick={addBeneficiary}>{t("common.add","Add")}</Button>
+                                                        </div>
+                                                    )}
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead className="w-[40%]">Name</TableHead>
+                                                                <TableHead className="w-[40%]">Contact</TableHead>
+                                                                <TableHead className="w-[20%]">Status</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {(data as any).beneficiaries.map((b: any, i: number) => (
+                                                                <TableRow key={"bene-" + i} className={`align-top ${!isEditing && b?.contact && b?.contact.includes('@') ? 'cursor-pointer hover:bg-slate-50' : ''}`} onClick={() => { if (!isEditing && b?.contact && b?.contact.includes('@')) showMemberDetails(b?.contact, 'no'); }}>
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={b?.name || ""} onChange={(e) => updateBeneficiaryAt(i, { name: e.target.value })} />
+                                                                        ) : (
+                                                                            <span className="font-medium">{b?.name || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={b?.contact || ""} onChange={(e) => updateBeneficiaryAt(i, { contact: e.target.value })} />
+                                                                        ) : (
+                                                                            <span className="text-xs text-muted-foreground">{b?.contact || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        <div className="flex items-center justify-between">
+                                                                            {isAdmin && isEditing ? (
+                                                                                <>
+                                                                                    <Input className="h-8" value={b?.status || ""} onChange={(e) => updateBeneficiaryAt(i, { status: e.target.value })} />
+                                                                                    <Button size="sm" variant="ghost" onClick={() => removeBeneficiaryAt(i)}><Trash2 className="mr-2 h-4 w-4" /></Button>
+                                                                                </>
+                                                                            ) : (
+                                                                                <span>{b?.status || "—"}</span>
+                                                                            )}
+                                                                        </div>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </div>
                                             </div>
                                         ) : (
                                             <div className="text-sm text-muted-foreground">No beneficiaries listed.</div>
@@ -922,6 +1317,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
             <TabsContent value="Checklist" className="p-6">
                 <h1>To Be Updated Soon.</h1>
             </TabsContent>
+            {isDialogOpen && <PPifDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}
             <ConfirmDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
