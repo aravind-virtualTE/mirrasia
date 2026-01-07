@@ -41,6 +41,11 @@ import { t } from "i18next";
 import { Switch } from "@/components/ui/switch";
 import { STATUS_OPTIONS } from "./detailData";
 import { businessNatureList } from "../HongKong/constants";
+import SearchSelect from "@/components/SearchSelect";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { applicantRoles, incorporationPurposeKeys, currencyOptions, capitalAmountOptions, shareCountOptions, finYearOptions, bookKeepingCycleOptions, yesNoOtherOptions } from "../NewHKForm/hkIncorpo";
 
 export type Party = {
   name: string;
@@ -723,19 +728,35 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                   {/* Basic info (editable) */}
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <LabelValue label="Applicant">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{f.applicantName || "—"}</span>
+                      <div className="flex items-center gap-2 w-full">
+                        {isEditing ? (
+                          <Input
+                            value={f.applicantName || ""}
+                            onChange={(e) => patchForm("applicantName", e.target.value)}
+                            className="h-8 w-full"
+                          />
+                        ) : (
+                          <span className="font-medium">{f.applicantName || "—"}</span>
+                        )}
                       </div>
                     </LabelValue>
                     <LabelValue label="Contact">
                       <div className="grid gap-2">
                         <div className="flex items-center gap-2">
                           <Mail className="h-3.5 w-3.5" />
-                          <span className="text-sm">{f.email || "—"}</span>
+                          {isEditing ? (
+                            <Input className="h-7 w-48" type="email" value={f.email || ""} onChange={(e) => patchForm("email", e.target.value)} />
+                          ) : (
+                            <span className="text-sm">{f.email || "—"}</span>
+                          )}
                         </div>
                         <div className="flex items-center gap-2">
                           <Phone className="h-3.5 w-3.5" />
-                          <span className="text-sm">{f.phone || "—"}</span>
+                          {isEditing ? (
+                            <Input className="h-7 w-40" value={f.phone || ""} onChange={(e) => patchForm("phone", e.target.value)} />
+                          ) : (
+                            <span className="text-sm">{f.phone || "—"}</span>
+                          )}
                         </div>
                       </div>
                     </LabelValue>
@@ -763,39 +784,97 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                       )}
                     </LabelValue>
 
-                    {/* Roles — READ ONLY */}
                     <LabelValue label="Roles">
-                      <div className="flex flex-wrap gap-2">
-                        {(f.roles?.length ? f.roles : ["—"]).map((r, i) => (
-                          <Badge key={r + i} variant="outline">
-                            {r}
-                          </Badge>
-                        ))}
-                      </div>
-                    </LabelValue>
+                      {isEditing ? (
+                        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
+                          {applicantRoles.map((o) => (
+                            <label key={o.value} className="flex items-center gap-2 rounded-md border p-2">
+                              <Checkbox
+                                checked={Array.isArray(f.roles) && f.roles.includes(o.value)}
+                                onCheckedChange={(v) => {
+                                  const cur = new Set<string>(Array.isArray(f.roles) ? f.roles : []);
+                                  if (v) cur.add(o.value);
+                                  else cur.delete(o.value);
+                                  patchForm("roles", Array.from(cur));
+                                }}
+                              />
+                              <span className="text-sm">{t(o.label as any, o.label)}</span>
+                            </label>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {(f.roles?.length ? f.roles : ["—"]).map((r, i) => (
+                            <Badge key={r + i} variant="outline">
+                              {r}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </LabelValue> 
 
                     <LabelValue label="Industry">
-                      {t(businessNatureList.find(e => e.code == f.industry)?.label || "", "")}
-                     
-                    </LabelValue>
+                      {isEditing ? (
+                        <div className="max-w-sm">
+                          <SearchSelect
+                            items={businessNatureList.map(i=>({...i,label:t(i.label,i.label)}))}
+                            placeholder={t("common.select","Select")}
+                            selectedItem={f.industry ? (businessNatureList.find(i => i.code === f.industry) ? {...businessNatureList.find(i => i.code === f.industry)!, label: t(businessNatureList.find(i => i.code === f.industry)!.label as any, businessNatureList.find(i => i.code === f.industry)!.label)} : null) : null}
+                            onSelect={(it:any)=>patchForm("industry", it.code)}
+                          />
+                        </div>
+                      ) : (
+                        t(businessNatureList.find(e => e.code == f.industry)?.label || "", "")
+                      )}
+                    </LabelValue> 
 
                     <LabelValue label="Purpose">
-                      <div className="flex flex-wrap gap-2">
-                        {(f.purpose?.length ? f.purpose : ["—"]).map((p, i) => (
-                          <Badge key={p + i} variant="secondary">
-                            {p}
-                          </Badge>
-                        ))}
-                      </div>
-                    </LabelValue>
+                      {isEditing ? (
+                        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
+                          {incorporationPurposeKeys.map((key) => {
+                            const checked = Array.isArray(f.purpose) && f.purpose.includes(key);
+                            return (
+                              <label key={key} className="flex items-center gap-2 rounded-md border p-2">
+                                <Checkbox
+                                  checked={checked}
+                                  onCheckedChange={(v) => {
+                                    const cur = new Set<string>(Array.isArray(f.purpose) ? f.purpose : []);
+                                    if (v) cur.add(key);
+                                    else cur.delete(key);
+                                    patchForm("purpose", Array.from(cur));
+                                  }}
+                                />
+                                <span className="text-sm">{t(`newHk.company.fields.purpose.options.${key}`)}</span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {(f.purpose?.length ? f.purpose : ["—"]).map((p, i) => (
+                            <Badge key={p + i} variant="secondary">
+                              {p}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </LabelValue> 
 
                     <LabelValue label="Business Description">
-                      {f.bizdesc || "—"}
+                      {isEditing ? (
+                        <Textarea value={f.bizdesc || ""} onChange={(e)=>patchForm("bizdesc", e.target.value)} rows={4} />
+                      ) : (
+                        f.bizdesc || "—"
+                      )}
                     </LabelValue>
 
                     <LabelValue label="Notes">
-                      {f.softNote || "—"}
-                    </LabelValue>
+                      {isEditing ? (
+                        <Input value={f.softNote || ""} onChange={(e)=>patchForm("softNote", e.target.value)} className="h-8" />
+                      ) : (
+                        f.softNote || "—"
+                      )}
+                    </LabelValue> 
                   </div>
 
                   <Separator />
@@ -803,23 +882,97 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                   {/* Finance & accounting (some editable) */}
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <LabelValue label="Currency">
-                      <Badge variant="outline">{f.currency || "—"}</Badge>
+                      {isEditing ? (
+                        <Select value={String(f.currency ?? "")} onValueChange={(v)=>patchForm("currency", v)}>
+                          <SelectTrigger className="h-8">
+                            <SelectValue placeholder={t("common.select","Select")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {currencyOptions.map((o)=> (
+                              <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Badge variant="outline">{f.currency || "—"}</Badge>
+                      )}
                     </LabelValue>
 
                     <LabelValue label="Declared Capital">
-                      {f.capAmount || "—"}
+                      {isEditing ? (
+                        <Select value={String(f.capAmount ?? "")} onValueChange={(v)=>patchForm("capAmount", v)}>
+                          <SelectTrigger className="h-8">
+                            <SelectValue placeholder={t("common.select","Select")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {capitalAmountOptions.map((o)=> (
+                              <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        f.capAmount || "—"
+                      )}
                     </LabelValue>
 
                     <LabelValue label="Total Shares">
-                      {f.shareCount || "—"}
+                      {isEditing ? (
+                        <Select value={String(f.shareCount ?? "")} onValueChange={(v)=>patchForm("shareCount", v)}>
+                          <SelectTrigger className="h-8">
+                            <SelectValue placeholder={t("common.select","Select")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {shareCountOptions.map((o)=> (
+                              <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        f.shareCount || "—"
+                      )}
                     </LabelValue>
                     <LabelValue label="Financial Year End">
-                      {f.finYrEnd || "—"}
+                      {isEditing ? (
+                        <Select value={String(f.finYrEnd ?? "")} onValueChange={(v)=>patchForm("finYrEnd", v)}>
+                          <SelectTrigger className="h-8">
+                            <SelectValue placeholder={t("common.select","Select")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {finYearOptions.map((o)=> (
+                              <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        f.finYrEnd || "—"
+                      )}
                     </LabelValue>
                     <LabelValue label="Bookkeeping Cycle">
-                      {f.bookKeepingCycle || "—"}
+                      {isEditing ? (
+                        <RadioGroup value={String(f.bookKeepingCycle ?? "")} onValueChange={(v)=>patchForm("bookKeepingCycle", v)} className="flex flex-col gap-2">
+                          {bookKeepingCycleOptions.map((o)=> (
+                            <label key={o.value} className="flex items-center gap-2">
+                              <RadioGroupItem value={o.value} id={`bk-${o.value}`} />
+                              <span className="text-sm">{t(o.label as any, o.label)}</span>
+                            </label>
+                          ))}
+                        </RadioGroup>
+                      ) : (
+                        f.bookKeepingCycle || "—"
+                      )}
                     </LabelValue>
-                    <LabelValue label="Xero">{f.xero || "—"}</LabelValue>
+                    <LabelValue label="Xero">{isEditing ? (
+                      <RadioGroup value={String(f.xero ?? "")} onValueChange={(v)=>patchForm("xero", v)} className="flex flex-col gap-2">
+                        {yesNoOtherOptions.map((o)=> (
+                          <label key={o.value} className="flex items-center gap-2">
+                            <RadioGroupItem value={o.value} id={`xero-${o.value}`} />
+                            <span className="text-sm">{t(o.label as any, o.label)}</span>
+                          </label>
+                        ))}
+                      </RadioGroup>
+                    ) : (
+                      f.xero || "—"
+                    )}</LabelValue>
                   </div>
                   <Separator />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
