@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronDown, ChevronUp, Info, Send, UserIcon, Users, X } from "lucide-react";
 import { FPSForm } from "../payment/FPSForm";
-import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, } from "./hkIncorpo";
+import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, applicantRoles, incorporationPurposeKeys,currencyOptions,capitalAmountOptions,shareCountOptions,finYearOptions,bookKeepingCycleOptions,yesNoOtherOptions} from "./hkIncorpo";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -2045,7 +2045,7 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
   const setForm = (updater: (prev: any) => any) =>
     setApp((prev) => ({ ...prev, form: updater(prev.form) }));
   // keys are stored in form; labels come from i18n when rendering
-  const incorporationPurposeKeys = ["operateHK", "assetMgmt", "holdingCo", "crossBorder", "taxNeutral"] as const;
+  
 
   // const contactOptions = React.useMemo(
   //   () =>
@@ -2136,11 +2136,7 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
                 label: "newHk.company.fields.currency.label",
                 required: true,
                 defaultValue: "HKD",
-                options: [
-                  { label: "newHk.company.fields.currency.options.HKD", value: "HKD" },
-                  { label: "newHk.company.fields.currency.options.USD", value: "USD" },
-                  { label: "newHk.company.fields.currency.options.CNY", value: "CNY" }
-                ]
+                options: currencyOptions
               }}
               form={form}
               setForm={setForm}
@@ -2153,15 +2149,7 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
                 label: "newHk.company.fields.capAmount.label",
                 required: true,
                 defaultValue: "10000",
-                options: [
-                  { label: "newHk.company.fields.capAmount.options.1", value: "1" },
-                  { label: "newHk.company.fields.capAmount.options.10", value: "10" },
-                  { label: "newHk.company.fields.capAmount.options.100", value: "100" },
-                  { label: "newHk.company.fields.capAmount.options.1000", value: "1000" },
-                  { label: "newHk.company.fields.capAmount.options.10000", value: "10000" },
-                  { label: "newHk.company.fields.capAmount.options.100000", value: "100000" },
-                  { label: "newHk.company.fields.capAmount.options.other", value: "other" }
-                ]
+                options: capitalAmountOptions
               }}
               form={form}
               setForm={setForm}
@@ -2186,15 +2174,7 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
                 label: "newHk.company.fields.shareCount.label",
                 required: true,
                 defaultValue: "10000",
-                options: [
-                  { label: "newHk.company.fields.capAmount.options.1", value: "1" },
-                  { label: "newHk.company.fields.capAmount.options.10", value: "10" },
-                  { label: "newHk.company.fields.capAmount.options.100", value: "100" },
-                  { label: "newHk.company.fields.capAmount.options.1000", value: "1000" },
-                  { label: "newHk.company.fields.capAmount.options.10000", value: "10000" },
-                  { label: "newHk.company.fields.capAmount.options.100000", value: "100000" },
-                  { label: "newHk.company.fields.shareCount.options.other", value: "other" }
-                ]
+                options: shareCountOptions
               }}
               form={form}
               setForm={setForm}
@@ -2708,13 +2688,7 @@ const hkIncorpConfig: FormConfig = {
           name: "roles",
           label: "newHk.steps.applicant.fields.roles.label",
           tooltip: "newHk.steps.applicant.fields.roles.tooltip",
-          options: [
-            { label: "newHk.steps.applicant.fields.roles.options.Director", value: "Director" },
-            { label: "newHk.steps.applicant.fields.roles.options.Shareholder", value: "Shareholder" },
-            { label: "newHk.steps.applicant.fields.roles.options.Authorized", value: "Authorized" },
-            { label: "newHk.steps.applicant.fields.roles.options.Professional", value: "Professional" },
-            { label: "newHk.steps.applicant.fields.roles.options.Other", value: "Other" }
-          ],
+          options:applicantRoles,
           colSpan: 2
         },
         {
@@ -2808,31 +2782,16 @@ const hkIncorpConfig: FormConfig = {
       fields: [
         {
           type: "select", name: "finYrEnd", label: "newHk.steps.acct.fields.finYrEnd.label",
-          options: [
-            { label: "newHk.steps.acct.fields.finYrEnd.options.December 31", value: "December 31" },
-            { label: "newHk.steps.acct.fields.finYrEnd.options.March 31", value: "March 31" },
-            { label: "newHk.steps.acct.fields.finYrEnd.options.June 30", value: "June 30" },
-            { label: "newHk.steps.acct.fields.finYrEnd.options.September 30", value: "September 30" }
-          ]
+          options:finYearOptions
         },
         {
           type: "radio-group", name: "bookKeepingCycle", label: "newHk.steps.acct.fields.bookKeepingCycle.label",
-          options: [
-            { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Monthly", value: "Monthly" },
-            { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Quarterly", value: "Quarterly" },
-            { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Half-annually", value: "Half-annually" },
-            { label: "newHk.steps.acct.fields.bookKeepingCycle.options.Annually", value: "Annually" }
-          ],
+          options: bookKeepingCycleOptions,
           colSpan: 2
         },
         {
           type: "radio-group", name: "xero", label: "newHk.steps.acct.fields.xero.label",
-          options: [
-            { label: "newHk.steps.acct.fields.xero.options.Yes", value: "Yes" },
-            { label: "newHk.steps.acct.fields.xero.options.No", value: "No" },
-            { label: "newHk.steps.acct.fields.xero.options.Recommendation required", value: "Recommendation required" },
-            { label: "newHk.steps.acct.fields.xero.options.Other", value: "Other" }
-          ],
+          options: yesNoOtherOptions,
           colSpan: 2
         },
         { type: "text", name: "softNote", label: "newHk.steps.acct.fields.softNote.label", placeholder: "newHk.steps.acct.fields.softNote.placeholder", colSpan: 2 }
