@@ -2007,7 +2007,7 @@
         "title": "FPS Payment"
       },
       "totals": {
-        "grandTotal": "Grand Total: USD {{amount}}"
+        "grandTotal": "Grand Total: {{currency}} {{amount}}"
       }
     },
     "common": {
@@ -2122,7 +2122,7 @@
       },
       "footnote": "Prices are in USD for convenience. Government fees may change based on official notices. Optional items can be added/removed before payment. Accounting/taxation services are not included here.",
       "surcharge": {
-        "cardFee": "Card processing fee (3.5%)"
+        "cardFee": "Card processing fee (3.5% for HKD, 6% for USD)"
       },
       "info": {
         "cr_fee": "Mandatory filing fee to the Companies Registry when establishing a new company.",

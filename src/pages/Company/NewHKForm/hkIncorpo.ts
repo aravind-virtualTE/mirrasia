@@ -85,7 +85,6 @@ export const incorporationPurposeKeys = [
 export const currencyOptions = [
   { label: "newHk.company.fields.currency.options.HKD", value: "HKD" },
   { label: "newHk.company.fields.currency.options.USD", value: "USD" },
-  { label: "newHk.company.fields.currency.options.CNY", value: "CNY" },
 ];
 
 export const capitalAmountOptions = [
@@ -205,7 +204,7 @@ export const saveIncorporationData = async (data: any) => {
 
 export const updateInvoicePaymentIntent = (intentId: string, body: any) =>
   api
-    .patch(`/incorporation/invoice-intent/${intentId}`, body)
+    .patch(`/payment/invoice-intent/${intentId}`, body)
     .then((r) => r.data);
 
 export const notifyPaymentSuccess = async (payload: any) => {

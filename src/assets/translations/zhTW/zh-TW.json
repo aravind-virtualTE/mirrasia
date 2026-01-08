@@ -1989,7 +1989,7 @@
         "title": "轉數快（FPS）付款"
       },
       "totals": {
-        "grandTotal": "總計：美元 {{amount}}"
+        "grandTotal": "總計：{{currency}} {{amount}}"
       }
     },
     "common": {
@@ -2104,7 +2104,7 @@
       },
       "footnote": "為方便起見，價格以美元計價。政府費用可能隨官方公告變動。可選項目可在付款前增減。此處不包含會計/稅務服務。",
       "surcharge": {
-        "cardFee": "信用卡處理費（3.5%）"
+        "cardFee": "信用卡處理費 (港幣 HKD 為 3.5%，美金 USD 為 6%)"
       },
       "info": {
         "cr_fee": "新公司成立時，必須向公司註冊處支付的法定登記費。",
