@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronDown, ChevronUp, Info, Send, UserIcon, Users, X } from "lucide-react";
 import { FPSForm } from "../payment/FPSForm";
-import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, applicantRoles, incorporationPurposeKeys,currencyOptions,capitalAmountOptions,shareCountOptions,finYearOptions,bookKeepingCycleOptions,yesNoOtherOptions} from "./hkIncorpo";
+import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent, updateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, applicantRoles, incorporationPurposeKeys,currencyOptions,capitalAmountOptions,shareCountOptions,finYearOptions,bookKeepingCycleOptions,yesNoOtherOptions} from "./hkIncorpo";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -318,10 +318,18 @@ const computeBaseTotal = (app: AppDoc) => {
   return Number(total.toFixed(2));
 };
 
+const getCardFeePct = (currency?: string) => {
+  // Card fees: HKD -> 3.5% (0.035), USD -> 6% (0.06), default to 3.5%
+  if (!currency) return 0.035;
+  if (String(currency).toUpperCase() === "USD") return 0.06;
+  return 0.035;
+};
+
 const computeGrandTotal = (app: AppDoc) => {
   const base = computeBaseTotal(app);
   const pay = (app.form.payMethod || "card") as string;
-  const surcharge = pay === "card" ? base * 0.035 : 0;
+  const surchargePct = pay === "card" ? getCardFeePct(app.form.paymentCurrency ?? app.form.currency) : 0;
+  const surcharge = base * surchargePct;
   return Number((base + surcharge).toFixed(2));
 };
 
@@ -1421,7 +1429,7 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
         <SheetHeader>
           <SheetTitle>Stripe Card Payment</SheetTitle>
           <SheetDescription>
-            Grand Total: <b>USD {amountUSD.toFixed(2)}</b> {app.form.payMethod === "card" ? "(incl. 3.5% card fee)" : ""}
+            Grand Total: <b>{app.form.paymentCurrency ?? app.form.currency ?? "USD"} {amountUSD.toFixed(2)}</b> {app.form.payMethod === "card" ? `(incl. ${(getCardFeePct(app.form.paymentCurrency ?? app.form.currency) * 100).toFixed(1)}% card fee)` : ""}
           </SheetDescription>
         </SheetHeader>
 
@@ -1550,11 +1558,14 @@ function PaymentStep({ app, setApp, }: {
         companyId: app?._id ?? null,
         totalCents: Math.round(grand * 100),
         country: "HK",
+        currency: app.form.paymentCurrency ?? app.form.currency ?? "HKD",
       };
       const result = await createInvoicePaymentIntent(currentFP);
       if (result?.clientSecret && result?.id) {
         setClientSecret(result.clientSecret);
-        setForm((p) => ({ ...p, paymentIntentId: result.id, payMethod: "card" }));
+        // persist payment currency and payment intent info
+        const usedCurrency = app.form.paymentCurrency ?? app.form.currency ?? "HKD";
+        setForm((p) => ({ ...p, paymentIntentId: result.id, payMethod: "card", paymentIntentCurrency: usedCurrency, paymentCurrency: usedCurrency }));
         setCardDrawerOpen(true);
       } else {
         alert("Could not initialize card payment. Please try again.");
@@ -1776,19 +1787,53 @@ function PaymentStep({ app, setApp, }: {
             )}
 
             {app.form.payMethod === "card" && !isPaid && (
-              <div className="mt-3">
-                <Button
-                  onClick={handleProceedCard}
-                  disabled={isPaid || isExpired || creatingPI}
-                >
-                  {creatingPI
-                    ? t("newHk.payment.card.preparing")
-                    : t("newHk.payment.card.proceed")}
-                </Button>
-                <div className="text-xs text-muted-foreground mt-2">
-                  {isExpired
-                    ? t("newHk.payment.card.disabledExpired")
-                    : t("newHk.payment.card.drawerNote")}
+              <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="text-sm text-muted-foreground">Currency:</div>
+                  <Select value={String(app.form.paymentCurrency ?? "HKD")} onValueChange={async (val) => {
+                    const newCurrency = String(val || "HKD");
+                    // persist selected payment currency separately from form.currency
+                    setForm((p) => ({ ...p, paymentCurrency: newCurrency }));
+
+                    // Recompute new grand and update payment intent if exists
+                    const newGrand = computeGrandTotal({ ...app, form: { ...app.form, paymentCurrency: newCurrency } } as AppDoc);
+                    if (app.form?.paymentIntentId) {
+                      try {
+                        await updateInvoicePaymentIntent(app.form.paymentIntentId, { totalCents: Math.round(newGrand * 100), currency: newCurrency });
+                        // reflect change locally
+                        setForm((p) => ({ ...p, paymentIntentCurrency: newCurrency }));
+                        // toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
+                      } catch (err) {
+                        console.error("Failed to update payment intent:", err);
+                        // toast({ title: t("newHk.payment.totals.updateFailed", ""), description: t("newHk.payment.totals.tryAgain"), variant: "destructive" });
+                      }
+                    }
+                  }}>
+                    <SelectTrigger className="h-8">
+                      <SelectValue placeholder={t("common.select","Select")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {currencyOptions.map((o) => (
+                        <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="mt-2 sm:mt-0">
+                  <Button
+                    onClick={handleProceedCard}
+                    disabled={isPaid || isExpired || creatingPI}
+                  >
+                    {creatingPI
+                      ? t("newHk.payment.card.preparing")
+                      : t("newHk.payment.card.proceed")}
+                  </Button>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    {isExpired
+                      ? t("newHk.payment.card.disabledExpired")
+                      : t("newHk.payment.card.drawerNote")}
+                  </div>
                 </div>
               </div>
             )}
@@ -1798,6 +1843,7 @@ function PaymentStep({ app, setApp, }: {
             <div className="text-right font-bold mt-4">
               {t("newHk.payment.totals.grandTotal", {
                 amount: grand.toFixed(2),
+                currency: app.form.paymentCurrency ?? "USD",
               })}
             </div>
           </CardContent>
