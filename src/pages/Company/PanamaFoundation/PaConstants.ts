@@ -32,6 +32,8 @@ export function computePIFBaseTotal(form: PanamaPIFForm) {
 export function computePIFGrandTotal(form: PanamaPIFForm) {
   const base = computePIFBaseTotal(form)
   const pay = form.payMethod || "card"
-  const surcharge = pay === "card" ? base * 0.035 : 0
+  const currency = form.stripeCurrency
+  const surchargePct = pay === "card" ? (currency && String(currency).toUpperCase() == "USD" ? 0.06 : 0.035) : 0
+  const surcharge = base * surchargePct
   return Number((base + surcharge).toFixed(2))
 }
