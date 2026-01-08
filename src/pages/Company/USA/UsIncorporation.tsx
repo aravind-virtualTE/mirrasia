@@ -66,6 +66,8 @@ import {
     FieldBase,
     updateCorporateInvoicePaymentIntent,
     uploadIncorpoPaymentBankProof,
+    updateInvoicePaymentIntent,
+    currencyOptions,
 } from "../NewHKForm/hkIncorpo";
 import { toast, useToast } from "@/hooks/use-toast";
 import {
@@ -1959,7 +1961,8 @@ function computeUsGrandTotal(app: any): number {
         );
 
     const subtotal = basePrice + addonsTotal;
-    const cardFeeRate = 0.035;
+    const currency = app.stripeCurrency;
+    const cardFeeRate = currency && String(currency).toUpperCase() === "USD" ? 0.06 : 0.035;
     const grand =
         app.payMethod === "card"
             ? subtotal * (1 + cardFeeRate)
@@ -2239,11 +2242,8 @@ function StripeCardDrawer({
                         Stripe Card Payment
                     </SheetTitle>
                     <SheetDescription>
-                        Grand Total:{" "}
-                        <b>USD {amountUSD.toFixed(2)}</b>{" "}
-                        {app.payMethod === "card"
-                            ? "(incl. 3.5% card fee)"
-                            : ""}
+                        Grand Total: {app.stripeCurrency ?? "USD"} <b>{amountUSD.toFixed(2)}</b>{" "}
+                        {app.payMethod === "card" ? `(incl. ${(app.stripeCurrency && String(app.stripeCurrency).toUpperCase() === "USD" ? 6 : 3.5)}% card fee)` : ""}
                     </SheetDescription>
                 </SheetHeader>
 
@@ -2459,12 +2459,14 @@ function PaymentStep() {
 
         setCreatingPI(true);
         try {
+            const usedCurrency = app.stripeCurrency ?? "USD";
             const fp = {
                 companyId:
                     app._id ?? null,
                 totalCents:
                     Math.round(grand * 100),
                 country: "USA",
+                currency: usedCurrency,
             };
             const result =
                 await createInvoicePaymentIntent(
@@ -2479,12 +2481,15 @@ function PaymentStep() {
                     result.clientSecret
                 );
 
+                const usedCurrency = app.stripeCurrency ?? "USD";
                 setApp((prev: any) => ({
                     ...prev,
                     paymentIntentId:
                         result.id,
                     payMethod:
                         "card",
+                    paymentIntentCurrency: usedCurrency,
+                    stripeCurrency: usedCurrency,
                 }));
 
                 setCardDrawerOpen(true);
@@ -2867,33 +2872,65 @@ function PaymentStep() {
 
                         {app.payMethod === "card" &&
                             !isPaid && (
-                                <div className="mt-3">
-                                    <Button
-                                        onClick={
-                                            handleProceedCard
-                                        }
-                                        disabled={
-                                            isPaid ||
-                                            isExpired ||
-                                            creatingPI
-                                        }
-                                    >
-                                        {creatingPI
-                                            ? t(
-                                                "newHk.payment.card.preparing"
-                                            )
-                                            : t(
-                                                "newHk.payment.card.proceed"
-                                            )}
-                                    </Button>
-                                    <div className="text-xs text-muted-foreground mt-2">
-                                        {isExpired
-                                            ? t(
-                                                "newHk.payment.card.disabledExpired"
-                                            )
-                                            : t(
-                                                "newHk.payment.card.drawerNote"
-                                            )}
+                                <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                                    <div className="flex items-center gap-2">
+                                        <div className="text-sm text-muted-foreground">Currency:</div>
+                                        <Select value={String(app.stripeCurrency ?? "USD")} onValueChange={async (val) => {
+                                            const newCurrency = String(val || "USD");
+                                            setApp((prev: any) => ({ ...prev, stripeCurrency: newCurrency }));
+
+                                            // Recompute and update payment intent if exists
+                                            const newGrand = computeUsGrandTotal({ ...app, stripeCurrency: newCurrency });
+                                            if (app.paymentIntentId) {
+                                                try {
+                                                    await updateInvoicePaymentIntent(app.paymentIntentId, { totalCents: Math.round(newGrand * 100), currency: newCurrency });
+                                                    setApp((prev: any) => ({ ...prev, paymentIntentCurrency: newCurrency }));
+                                                    toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
+                                                } catch (err) {
+                                                    console.error("Failed to update payment intent:", err);
+                                                    toast({ title: t("newHk.payment.totals.updateFailed"), description: t("newHk.payment.totals.tryAgain"), variant: "destructive" });
+                                                }
+                                            }
+                                        }}>
+                                            <SelectTrigger className="h-8">
+                                                <SelectValue placeholder={t("common.select","Select")} />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {currencyOptions.map((o) => (
+                                                    <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div className="mt-2 sm:mt-0">
+                                        <Button
+                                            onClick={
+                                                handleProceedCard
+                                            }
+                                            disabled={
+                                                isPaid ||
+                                                isExpired ||
+                                                creatingPI
+                                            }
+                                        >
+                                            {creatingPI
+                                                ? t(
+                                                    "newHk.payment.card.preparing"
+                                                )
+                                                : t(
+                                                    "newHk.payment.card.proceed"
+                                                )}
+                                        </Button>
+                                        <div className="text-xs text-muted-foreground mt-2">
+                                            {isExpired
+                                                ? t(
+                                                    "newHk.payment.card.disabledExpired"
+                                                )
+                                                : t(
+                                                    "newHk.payment.card.drawerNote"
+                                                )}
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -2902,10 +2939,8 @@ function PaymentStep() {
                             {t(
                                 "newHk.payment.totals.grandTotal",
                                 {
-                                    amount:
-                                        grand.toFixed(
-                                            2
-                                        ),
+                                    amount:  grand.toFixed(2),
+                                    currency:app.stripeCurrency
                                 }
                             )}
                         </div>

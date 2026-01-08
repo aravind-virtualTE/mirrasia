@@ -4,7 +4,7 @@ import api from '@/services/fetch';
 
 export type NdCount = 0 | 1 | 2 | 3
 export interface PIFPricing {
-  currency: "USD"
+  currency: "USD" | "HKD"
   entityType: "pif" | "corp"
   setupBase: number         // PIF: 3800
   ndSetup: NdCount
@@ -121,6 +121,7 @@ export interface PanamaPIFForm {
   paymentIntentStatus?: string;
   createdAt ? : string;
   users?: { userId: string; role: string }[];
+  
 }
 
 export const initialPIF: PanamaPIFForm = {

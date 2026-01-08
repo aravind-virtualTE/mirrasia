@@ -262,7 +262,7 @@ const initial: any = {
   stripePaymentStatus: "",    // mirror if you store separately
   stripeReceiptUrl: "",
   stripeAmountCents: undefined as number | undefined,
-  stripeCurrency: "",
+  stripeCurrency: "usd",
   bankRef: "",                // manual payment reference
   uploadReceiptUrl: "",       // proof-of-payment upload URL
   expiresAt: "",              // ISO string we set for 48h quote lock

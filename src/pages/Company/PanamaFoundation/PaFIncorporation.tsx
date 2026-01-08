@@ -18,7 +18,7 @@ import { createOrUpdatePaFIncorpo, FieldBase, FieldOption, FormConfig, initialPI
 import { computePIFGrandTotal, computePIFSetupTotal, money } from "./PaConstants"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof } from "../NewHKForm/hkIncorpo"
+import { createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, updateInvoicePaymentIntent, currencyOptions } from "../NewHKForm/hkIncorpo"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import { StripeSuccessInfo } from "../NewHKForm/NewHKIncorporation"
@@ -2506,6 +2506,12 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
   );
 
   const note = app.payMethod === "card" ? t("ppif.payment.stripe.drawer.cardFeeNote") : "";
+  const usedCcy = app.pricing?.currency ?? "USD";
+  const getCardFeePct = (currency?: string) => {
+    if (!currency) return 0.035;
+    if (String(currency).toUpperCase() === "USD") return 0.06;
+    return 0.035;
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -2514,8 +2520,8 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
           <SheetTitle>{t("ppif.payment.stripe.drawer.title")}</SheetTitle>
           <SheetDescription>
             {t("ppif.payment.stripe.drawer.description", {
-              amount: `USD ${amountUSD.toFixed(2)}`,
-              note
+              amount: `${usedCcy} ${amountUSD.toFixed(2)}`,
+              note: `${note} ${app.payMethod === "card" ? `(${Math.round(getCardFeePct(usedCcy) * 100)}% card fee)` : ""}`,
             })}
           </SheetDescription>
         </SheetHeader>
@@ -2624,15 +2630,17 @@ function PaymentStepPIF() {
     }
     setCreatingPI(true);
     try {
+      const usedCurrency = form.pricing?.currency ?? "USD";
       const currentFP = {
         companyId: form?._id ?? null,
         totalCents: Math.round(grand * 100),
-        country: "PIF"
+        country: "PIF",
+        currency: usedCurrency,
       };
       const result = await createInvoicePaymentIntent(currentFP);
       if (result?.clientSecret && result?.id) {
         setClientSecret(result.clientSecret);
-        setForm((p) => ({ ...p, paymentIntentId: result.id, payMethod: "card" }));
+        setForm((p) => ({ ...p, paymentIntentId: result.id, payMethod: "card", paymentIntentCurrency: usedCurrency, pricing: { ...(p.pricing || {}), currency: usedCurrency } }));
         setCardDrawerOpen(true);
       } else {
         alert(t("ppif.payment.step.alerts.cardInitError"));
@@ -2826,12 +2834,44 @@ function PaymentStepPIF() {
 
               {/* Card flow */}
               {form.payMethod === "card" && !isPaid && (
-                <div className="mt-3">
-                  <Button onClick={handleProceedCard} disabled={isPaid || isExpired || creatingPI}>
-                    {creatingPI ? t("newHk.payment.card.preparing") : t("newHk.payment.card.proceed")}
-                  </Button>
-                  <div className="text-xs text-muted-foreground mt-2">
-                    {isExpired ? t("newHk.payment.card.disabledExpired") : t("newHk.payment.card.drawerNote")}
+                <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="text-sm text-muted-foreground">Currency:</div>
+                    <Select value={String(form.stripeCurrency ?? "USD")} onValueChange={async (val) => {
+                      const newCurrency = String(val || "USD");
+                      // persist into pricing.currency
+                      setForm((p) => ({ ...p, stripeCurrency: newCurrency }));
+                      // Recompute and update existing payment intent if present
+                      const newGrand = computePIFGrandTotal({ ...form,stripeCurrency: newCurrency });
+                      if (form.paymentIntentId) {
+                        try {
+                          await updateInvoicePaymentIntent(form.paymentIntentId, { totalCents: Math.round(newGrand * 100), currency: newCurrency });
+                          setForm((p) => ({ ...p, paymentIntentCurrency: newCurrency }));
+                          toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
+                        } catch (err) {
+                          console.error("Failed to update payment intent:", err);
+                          toast({ title: t("newHk.payment.totals.updateFailed"), description: t("newHk.payment.totals.tryAgain"), variant: "destructive" });
+                        }
+                      }
+                    }}>
+                      <SelectTrigger className="h-8">
+                        <SelectValue placeholder={t("common.select","Select")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {currencyOptions.map((o) => (
+                          <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="mt-2 sm:mt-0">
+                    <Button onClick={handleProceedCard} disabled={isPaid || isExpired || creatingPI}>
+                      {creatingPI ? t("newHk.payment.card.preparing") : t("newHk.payment.card.proceed")}
+                    </Button>
+                    <div className="text-xs text-muted-foreground mt-2">
+                      {isExpired ? t("newHk.payment.card.disabledExpired") : t("newHk.payment.card.drawerNote")}
+                    </div>
                   </div>
                 </div>
               )}
@@ -2840,7 +2880,7 @@ function PaymentStepPIF() {
 
               {/* Grand total */}
               <div className="text-right font-bold mt-4">
-                {t("newHk.payment.totals.grandTotal", { amount: grand.toFixed(2) })}
+                {t("newHk.payment.totals.grandTotal", { amount: grand.toFixed(2),currency: form.stripeCurrency ?? "USD", })}
               </div>
             </CardContent>
           </Card>

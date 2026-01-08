@@ -31,7 +31,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { StripeSuccessInfo, Tip } from "../NewHKForm/NewHKIncorporation";
-import { createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof } from "../NewHKForm/hkIncorpo";
+import { createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, updateInvoicePaymentIntent, currencyOptions } from "../NewHKForm/hkIncorpo";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
@@ -2114,9 +2114,9 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
                     </SheetTitle>
                     <SheetDescription>
                         Grand Total:{" "}
-                        <b>USD {amountUSD.toFixed(2)}</b>{" "}
+                        <b>{(app.stripeCurrency ?? "usd").toUpperCase()} {amountUSD.toFixed(2)}</b>{" "}
                         {app.payMethod === "card"
-                            ? "(incl. 3.5% card fee)"
+                            ? `(incl. ${(getCardFeePct(app.stripeCurrency ?? "usd") * 100).toFixed(1)}% card fee)`
                             : ""}
                     </SheetDescription>
                 </SheetHeader>
@@ -2147,11 +2147,17 @@ function asNum(v: any) {
     return typeof v === "number" ? v : Number(v) || 0;
 }
 
+function getCardFeePct(currency?: string) {
+    if (!currency) return 0.035;
+    return String(currency).toUpperCase() == "USD" ? 0.06 : 0.035;
+}
+
 function computeSgGrandTotal(app: any): number {
     // Subtotal is whatever the invoice last wrote
     const subtotal = asNum(app?.totalInclOptions ?? app?.totalOriginal ?? 0);
 
-    const cardFeeRate = 0.035;
+    const currency = app?.stripeCurrency ?? "usd";
+    const cardFeeRate = getCardFeePct(currency);
     const needsCardFee = app?.payMethod === "card";
 
     const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
@@ -2264,6 +2270,7 @@ const PaymentStep = () => {
                 companyId: form._id ?? null,
                 totalCents: Math.round(grand * 100),
                 country: "SG",
+                currency: form.stripeCurrency ?? "usd",
             };
             const result = await createInvoicePaymentIntent(fp);
 
@@ -2272,6 +2279,7 @@ const PaymentStep = () => {
                 setForm((prev: any) => ({
                     ...prev,
                     paymentIntentId: result.id,
+                    paymentIntentCurrency: form.stripeCurrency ?? "usd",
                     payMethod: "card",
                 }));
                 setCardDrawerOpen(true);
@@ -2459,10 +2467,43 @@ const PaymentStep = () => {
                         )}
 
                         {form.payMethod === "card" && !isPaid && (
-                            <div className="mt-3">
-                                <Button onClick={handleProceedCard} disabled={isPaid || isExpired || creatingPI}>
-                                    {creatingPI ? t("newHk.payment.card.preparing") : t("newHk.payment.card.proceed")}
-                                </Button>
+                            <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="text-sm text-muted-foreground">Currency:</div>
+                                    <Select value={String(form.stripeCurrency ?? "USD")} onValueChange={async (val) => {
+                                        const newCurrency = String(val || "USD");
+                                        setForm((prev: any) => ({ ...prev, stripeCurrency: newCurrency }));
+
+                                        // Recompute and update payment intent if exists
+                                        const newGrand = computeSgGrandTotal({ ...form, stripeCurrency: newCurrency });
+                                        if (form.paymentIntentId) {
+                                            try {
+                                                await updateInvoicePaymentIntent(form.paymentIntentId, { totalCents: Math.round(newGrand * 100), currency: newCurrency });
+                                                setForm((prev: any) => ({ ...prev, paymentIntentCurrency: newCurrency }));
+                                                toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
+                                            } catch (err) {
+                                                console.error("Failed to update payment intent:", err);
+                                                toast({ title: t("newHk.payment.totals.updateFailed"), description: t("newHk.payment.totals.tryAgain"), variant: "destructive" });
+                                            }
+                                        }
+                                    }}>
+                                        <SelectTrigger className="h-8">
+                                            <SelectValue placeholder={t("common.select","Select")} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {currencyOptions.map((o) => (
+                                                <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="mt-2 sm:mt-0">
+                                    <Button onClick={handleProceedCard} disabled={isPaid || isExpired || creatingPI}>
+                                        {creatingPI ? t("newHk.payment.card.preparing") : t("newHk.payment.card.proceed")}
+                                    </Button>
+                                </div>
+
                                 <div className="text-xs text-muted-foreground mt-2">
                                     {isExpired ? t("newHk.payment.card.disabledExpired") : t("newHk.payment.card.drawerNote")}
                                 </div>
@@ -2470,7 +2511,7 @@ const PaymentStep = () => {
                         )}
 
                         <div className="text-right font-bold mt-4">
-                            {t("newHk.payment.totals.grandTotal", { amount: grand.toFixed(2) })}
+                            {t("newHk.payment.totals.grandTotal", { amount: grand.toFixed(2), currency: form.stripeCurrency ?? "usd" })}
                         </div>
                     </CardContent>
                 </Card>
