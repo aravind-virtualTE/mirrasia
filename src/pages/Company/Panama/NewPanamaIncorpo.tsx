@@ -1313,13 +1313,38 @@ const PanamaQuoteSetupStep = () => {
         []
     );
 
-    const pricing: PanamaQuotePricing = React.useMemo(
-        () => ({
-            ...initialPricing,
-            ...(form?.panamaQuote || {}),
-        }),
-        [form?.panamaQuote, initialPricing]
-    );
+    const pricing: PanamaQuotePricing = React.useMemo(() => {
+        const src = form?.panamaQuote || {};
+        const setupBase = initialPricing.setupBase;
+        const ndSetup = src.ndSetup ?? initialPricing.ndSetup;
+        const nsSetup = src.nsSetup ?? initialPricing.nsSetup;
+        const optEmi = src.optEmi ?? initialPricing.optEmi;
+        const optBank = src.optBank ?? initialPricing.optBank;
+        const optCbi = src.optCbi ?? initialPricing.optCbi;
+        const nd3ReasonSetup = src.nd3ReasonSetup ?? initialPricing.nd3ReasonSetup;
+
+        const total = computePanamaSetupTotal({
+            setupBase,
+            ndSetup,
+            nsSetup,
+            optEmi,
+            optBank,
+            optCbi,
+            nd3ReasonSetup,
+            total: 0,
+        });
+
+        return {
+            setupBase,
+            ndSetup,
+            nsSetup,
+            optEmi,
+            optBank,
+            optCbi,
+            nd3ReasonSetup,
+            total,
+        };
+    }, [form?.panamaQuote, initialPricing]);
 
     const updatePricing = <K extends keyof PanamaQuotePricing>(
         key: K,
@@ -1349,7 +1374,7 @@ const PanamaQuoteSetupStep = () => {
     }, [pricing]);
 
     const totalSetup = pricing.total;
-    // console.log("testing--->", form.totalOriginal, totalSetup)
+    // console.log("testing--->", form.totalOriginal, pricing)
     return (
         <div className="p-4 space-y-4">
             {/* Title */}
