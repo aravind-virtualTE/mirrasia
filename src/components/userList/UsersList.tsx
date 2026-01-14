@@ -740,7 +740,7 @@ const UsersList = () => {
                                                             className="hover:bg-muted/50 cursor-pointer"
                                                         >
                                                             <TableCell className="px-4 py-2 border-b">{idx + 1}</TableCell>
-                                                            <TableCell className="px-4 py-2 border-b">{company.companyName && ""}</TableCell>
+                                                            <TableCell className="px-4 py-2 border-b">{company.companyName ? company.companyName : "N/A"}</TableCell>
                                                             <TableCell className="px-4 py-2 border-b">{company.type}</TableCell>
                                                         </TableRow>
                                                     );
