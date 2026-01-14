@@ -83,6 +83,7 @@ const UsersList = () => {
         const load = async () => {
             try {
                 const detailedUsers = await fetchDetailedUsers(defaultRole);
+                console.log("detailedUsers",detailedUsers)
                 setUsers(detailedUsers);
             } catch (e) {
                 console.log("error", e)
@@ -739,7 +740,7 @@ const UsersList = () => {
                                                             className="hover:bg-muted/50 cursor-pointer"
                                                         >
                                                             <TableCell className="px-4 py-2 border-b">{idx + 1}</TableCell>
-                                                            <TableCell className="px-4 py-2 border-b">{company.companyName[0]}</TableCell>
+                                                            <TableCell className="px-4 py-2 border-b">{company.companyName ? company.companyName : "N/A"}</TableCell>
                                                             <TableCell className="px-4 py-2 border-b">{company.type}</TableCell>
                                                         </TableRow>
                                                     );
