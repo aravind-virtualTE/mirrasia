@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { addUser, updateUserRole, fetchDetailedUsers, sendCustomMail, createOutstandingTask, updateUserProfileData } from "@/services/dataFetch"
+import { addUser, updateUserRole, fetchDetailedUsers, deleteUserById, sendCustomMail, createOutstandingTask, updateUserProfileData } from "@/services/dataFetch"
 import { useEffect, useMemo, useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -54,7 +54,7 @@ export interface User {
     }[]
 }
 
-type SortKey = "fullName" | "email" | "role" |"createdAt" | "updatedAt";
+type SortKey = "fullName" | "email" | "role" | "createdAt" | "updatedAt";
 
 const UsersList = () => {
     const [users, setUsers] = useState<User[]>([{ _id: "", fullName: "", email: "", role: "", picture: "", createdAt: "", updatedAt: "" }])
@@ -71,8 +71,11 @@ const UsersList = () => {
     const navigate = useNavigate();
     const [sortBy, setSortBy] = useState<SortKey>("fullName");
     const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
     const [searchQuery, setSearchQuery] = useState('');
     const [isFocused, setIsFocused] = useState(false);
+    const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const defaultRole = user?.role || "";
@@ -83,7 +86,7 @@ const UsersList = () => {
         const load = async () => {
             try {
                 const detailedUsers = await fetchDetailedUsers(defaultRole);
-                console.log("detailedUsers",detailedUsers)
+                // console.log("detailedUsers",detailedUsers)
                 setUsers(detailedUsers);
             } catch (e) {
                 console.log("error", e)
@@ -362,6 +365,27 @@ const UsersList = () => {
         }
     };
 
+    const confirmDeleteUser = async () => {
+        if (!userToDelete) return;
+        try {
+            await deleteUserById(userToDelete._id || "");
+            setUsers(prev => prev.filter(u => u._id !== userToDelete._id));
+            toast({
+                title: "User deleted",
+                description: `${userToDelete.fullName} has been deleted.`
+            });
+            setDeleteUserDialogOpen(false);
+            setUserToDelete(null);
+        } catch (error) {
+            console.error("Error deleting user:", error);
+            toast({
+                title: "Error",
+                description: "Failed to delete user.",
+                variant: "destructive",
+            });
+        }
+    }
+
     return (
         <div className="space-y-4">
             <div className="flex justify-end space-x-2 mr-4">
@@ -425,11 +449,11 @@ const UsersList = () => {
             </div>
 
             <div className="border rounded-md">
-                <Table>
-                    <TableHeader>
-                        <TableRow className="bg-muted hover:bg-muted">
+                <Table className="w-full border border-muted/60 rounded-md overflow-hidden">
+                    <TableHeader className="[&_tr]:border-b [&_tr]:border-muted/60">
+                        <TableRow className="bg-muted/60 hover:bg-muted/60 sticky top-0 z-10">
                             <TableHead
-                                className="h-8 px-2 text-xs w-1/5 cursor-pointer select-none"
+                                className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap cursor-pointer select-none border-r border-muted/60"
                                 onClick={() => handleSort("fullName")}
                                 aria-sort={ariaSort("fullName")}
                                 title="Sort by name"
@@ -443,7 +467,7 @@ const UsersList = () => {
                             </TableHead>
 
                             <TableHead
-                                className="h-8 px-2 text-xs w-1/5 cursor-pointer select-none"
+                                className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap cursor-pointer select-none border-r border-muted/60"
                                 onClick={() => handleSort("email")}
                                 aria-sort={ariaSort("email")}
                                 title="Sort by email"
@@ -457,7 +481,7 @@ const UsersList = () => {
                             </TableHead>
 
                             <TableHead
-                                className="h-8 px-2 text-xs w-1/5 cursor-pointer select-none"
+                                className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap cursor-pointer select-none border-r border-muted/60"
                                 onClick={() => handleSort("role")}
                                 aria-sort={ariaSort("role")}
                                 title="Sort by role"
@@ -470,9 +494,8 @@ const UsersList = () => {
                                 </span>
                             </TableHead>
 
-                            {/* Created At */}
                             <TableHead
-                                className="h-8 px-2 text-xs w-1/5 cursor-pointer select-none"
+                                className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap cursor-pointer select-none border-r border-muted/60"
                                 onClick={() => handleSort("createdAt")}
                                 aria-sort={ariaSort("createdAt")}
                                 title="Sort by created date"
@@ -485,9 +508,8 @@ const UsersList = () => {
                                 </span>
                             </TableHead>
 
-                            {/* Last Login (updatedAt) */}
                             <TableHead
-                                className="h-8 px-2 text-xs w-1/5 cursor-pointer select-none"
+                                className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap cursor-pointer select-none border-r border-muted/60"
                                 onClick={() => handleSort("updatedAt")}
                                 aria-sort={ariaSort("updatedAt")}
                                 title="Sort by last login"
@@ -500,59 +522,91 @@ const UsersList = () => {
                                 </span>
                             </TableHead>
 
-                            {/* Actions */}
-                            <TableHead className="h-8 px-2 text-xs w-[60px]">Actions</TableHead>
+                            <TableHead className="h-7 px-2 py-1 text-[11px] font-semibold tracking-tight whitespace-nowrap w-[68px]">
+                                Actions
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
 
-                    <TableBody>
+                    <TableBody className="[&_tr]:border-b [&_tr]:border-muted/60">
                         {sortedUsers.map((user) => (
                             <TableRow
                                 key={user._id}
                                 onClick={() => openUserDetails(user)}
-                                className="hover:bg-muted/50"
+                                className={[
+                                    "cursor-pointer",
+                                    "odd:bg-muted/20",
+                                    "hover:bg-muted/40",
+                                    "data-[state=selected]:bg-muted/60",
+                                ].join(" ")}
                             >
-                                <TableCell className="p-2 text-sm">{user.fullName}</TableCell>
-                                <TableCell className="p-2 text-sm">{user.email}</TableCell>
-                                <TableCell className="p-2 text-sm">{user.role}</TableCell>
+                                <TableCell className="px-2 py-1 text-[12px] leading-4 border-r border-muted/60">
+                                    <div className="max-w-[220px] truncate" title={user.fullName}>
+                                        {user.fullName}
+                                    </div>
+                                </TableCell>
 
-                                {/* createdAt */}
-                                <TableCell className="p-2 text-xs">
+                                <TableCell className="px-2 py-1 text-[12px] leading-4 border-r border-muted/60">
+                                    <div className="max-w-[280px] truncate" title={user.email}>
+                                        {user.email}
+                                    </div>
+                                </TableCell>
+
+                                <TableCell className="px-2 py-1 text-[12px] leading-4 border-r border-muted/60">
+                                    <div className="max-w-[140px] truncate" title={user.role}>
+                                        {user.role}
+                                    </div>
+                                </TableCell>
+
+                                <TableCell className="px-2 py-1 text-[11px] leading-4 whitespace-nowrap tabular-nums border-r border-muted/60">
                                     {user.createdAt
-                                        ? new Date(user.createdAt).toLocaleString("en-GB", {
+                                        ? new Date(user.createdAt).toLocaleDateString("en-GB", {
                                             year: "numeric",
                                             month: "2-digit",
                                             day: "2-digit",
-                                            // hour: "2-digit",
-                                            // minute: "2-digit",
                                         })
                                         : "-"}
                                 </TableCell>
 
-                                {/* last login = updatedAt */}
-                                <TableCell className="p-2 text-xs">
+                                <TableCell className="px-2 py-1 text-[11px] leading-4 whitespace-nowrap tabular-nums border-r border-muted/60">
                                     {user.updatedAt
-                                        ? new Date(user.updatedAt).toLocaleString("en-GB", {
+                                        ? new Date(user.updatedAt).toLocaleDateString("en-GB", {
                                             year: "numeric",
                                             month: "2-digit",
                                             day: "2-digit",
-                                            // hour: "2-digit",
-                                            // minute: "2-digit",
                                         })
                                         : "-"}
                                 </TableCell>
 
-                                <TableCell className="p-2">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            openEditRoleDialog(user);
-                                        }}
-                                    >
-                                        <Pencil className="h-4 w-4" />
-                                    </Button>
+                                <TableCell className="px-1 py-1">
+                                    <div className="flex items-center justify-end gap-0.5">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-7 w-7"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                openEditRoleDialog(user);
+                                            }}
+                                            title="Edit"
+                                        >
+                                            <Pencil className="h-3.5 w-3.5" />
+                                        </Button>
+
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-7 w-7 text-destructive hover:text-destructive/90"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setUserToDelete(user);
+                                                setDeleteUserDialogOpen(true);
+                                            }}
+                                            title="Delete"
+                                        >
+                                            <Trash2 className="h-3.5 w-3.5" />
+                                        </Button>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -810,8 +864,8 @@ const UsersList = () => {
                                                         <label
                                                             htmlFor={`task-${index}`}
                                                             className={`${task.checked
-                                                                    ? "line-through text-muted-foreground"
-                                                                    : ""
+                                                                ? "line-through text-muted-foreground"
+                                                                : ""
                                                                 }`}
                                                         >
                                                             {task.label}
@@ -898,6 +952,16 @@ const UsersList = () => {
                 confirmText="Delete"
                 cancelText="Cancel"
                 onConfirm={handleDeleteTask}
+            />
+
+            <ConfirmDialog
+                open={deleteUserDialogOpen}
+                onOpenChange={setDeleteUserDialogOpen}
+                title="Delete User"
+                description={`Are you sure you want to delete user "${userToDelete?.fullName}"? This action cannot be undone.`}
+                confirmText="Delete User"
+                cancelText="Cancel"
+                onConfirm={confirmDeleteUser}
             />
         </div>
     )

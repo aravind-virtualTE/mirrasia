@@ -6,7 +6,7 @@ import { Company } from "@/components/companyDocumentManager/cdm";
 
 export const getIncorporationListByUserId = async (
   userId: string,
-  role:string
+  role: string
 ) => {
   try {
     const response = await api.get(`company/company-incorporation/user/${userId}/${role}`);
@@ -48,11 +48,11 @@ export const getIncorporationList = async (country?: string, companyStatus?: str
 };
 
 
-export const getAllCompanyNames = async () =>{
-  try{
+export const getAllCompanyNames = async () => {
+  try {
     const response = await api.get(`company/getAllCompanyNames`);
     return response.data;
-  }catch(e){
+  } catch (e) {
     console.error("Error fetching company names:", e);
 
   }
@@ -156,7 +156,7 @@ export const saveShrDirRegData = async (data: ShareHolderRegistrationForm, id?: 
 
 
 
-export const getShrDirRegData = async ( id?: string) => {
+export const getShrDirRegData = async (id?: string) => {
   try {
     const url = id ? `company/registerShrDir/${id}` : 'company/registerShrDir';
     const response = await api.get(url);
@@ -166,7 +166,7 @@ export const getShrDirRegData = async ( id?: string) => {
   }
 }
 
-export const getShrDirSavedData = async (id?: string) =>{
+export const getShrDirSavedData = async (id?: string) => {
   try {
     const response = await api.get(`company/getshrdirdata/${id}`);
     return response.data;
@@ -175,7 +175,7 @@ export const getShrDirSavedData = async (id?: string) =>{
   }
 }
 
-export const fetchUsers = async () =>{
+export const fetchUsers = async () => {
   try {
     const response = await api.get(`user/getUsers`);
     return response.data;
@@ -184,7 +184,7 @@ export const fetchUsers = async () =>{
   }
 }
 
-export const addUser = async (data: string) =>{
+export const addUser = async (data: string) => {
   try {
     const response = await api.post(`user/addUser`, data);
     return response.data;
@@ -193,7 +193,7 @@ export const addUser = async (data: string) =>{
   }
 }
 
-export const updateUserRole = async (userId: string, newRole: string) =>{
+export const updateUserRole = async (userId: string, newRole: string) => {
   try {
     const response = await api.post(`user/updateUserRole`, { data: { userId, newRole } });
     return response.data;
@@ -202,17 +202,19 @@ export const updateUserRole = async (userId: string, newRole: string) =>{
   }
 }
 
+
+
 export const getCompDocs = async (id?: string) => {
   try {
     const response = await api.get(`company/getCompanyDocs/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching company documents:", error);
-  }  
+  }
 }
 
 
-export const uploadCompanyDocs = async (companiesData : Company[]) => {
+export const uploadCompanyDocs = async (companiesData: Company[]) => {
   const formData = new FormData();
 
   const sanitizedCompanies = companiesData.map(company => {
@@ -222,7 +224,7 @@ export const uploadCompanyDocs = async (companiesData : Company[]) => {
         const { file, ...rest } = doc;
         return rest;
       }),
-       kycDocs: (company.kycDocs ?? []).map(doc => {
+      kycDocs: (company.kycDocs ?? []).map(doc => {
         const { file, ...rest } = doc;
         return rest;
       }),
@@ -241,12 +243,12 @@ export const uploadCompanyDocs = async (companiesData : Company[]) => {
         formData.append('companyDocs', doc.file, doc.docName);
       }
     });
-     company.kycDocs?.forEach((doc) => {
+    company.kycDocs?.forEach((doc) => {
       if (doc.file) {
         formData.append('kycDocs', doc.file, doc.docName);
       }
     });
-     company.letterDocs?.forEach((doc) => {
+    company.letterDocs?.forEach((doc) => {
       if (doc.file) {
         formData.append('letterDocs', doc.file, doc.docName);
       }
@@ -267,9 +269,9 @@ export const uploadCompanyDocs = async (companiesData : Company[]) => {
 }
 
 
-export const deleteCompanyDoc = async (data: string) =>{
+export const deleteCompanyDoc = async (data: string) => {
   try {
-    const response = await api.post(`company/deleteCompanyDoc`,data);
+    const response = await api.post(`company/deleteCompanyDoc`, data);
     return response.data;
   } catch (error) {
     console.error("Error fetching saved data:", error);
@@ -286,18 +288,18 @@ export const getUsIncorpoDataById = async (userId: string) => {
   }
 };
 
-export const deleteCompanyRecord = async (data: { _id: string | null;country: string}) => {
+export const deleteCompanyRecord = async (data: { _id: string | null; country: string }) => {
   try {
-    const response = await api.post('company/deleteCompanyById',data);
+    const response = await api.post('company/deleteCompanyById', data);
     return response.data;
   } catch (error) {
     console.error("Error sending invite to significant director:", error);
   }
 };
 
-export const markDeleteCompanyRecord = async (data: { _id: string | null;country: string}) => {
+export const markDeleteCompanyRecord = async (data: { _id: string | null; country: string }) => {
   try {
-    const response = await api.post('company/markDeleteCompanyById',data);
+    const response = await api.post('company/markDeleteCompanyById', data);
     return response.data;
   } catch (error) {
     console.error("Error sending invite to significant director:", error);
@@ -314,7 +316,7 @@ export const getPaIncorpoDataById = async (userId: string) => {
   }
 };
 
-export const getMultiShrDirData = async (id?: string) =>{
+export const getMultiShrDirData = async (id?: string) => {
   try {
     const response = await api.get(`company/getMultiShrDirData/${id}`);
     return response.data;
@@ -323,8 +325,8 @@ export const getMultiShrDirData = async (id?: string) =>{
   }
 }
 
-export const getShareHolderDirData = async (id: string, email : string) =>{
-try {
+export const getShareHolderDirData = async (id: string, email: string) => {
+  try {
     const response = await api.get(`company/getShareHolderDirData`, { params: { id, email } });
     return response.data;
   } catch (error) {
@@ -346,7 +348,7 @@ export const usIndividualShareholderData = async (data: any, id?: string) => {
   }
 }
 
-export const getUsIndividualShrDirRegData = async ( id?: string, entity? : string) => {
+export const getUsIndividualShrDirRegData = async (id?: string, entity?: string) => {
   try {
     const url = id ? `company/registerUsIndividualShrDir/${id}/${entity}` : 'company/registerUsIndividualShrDir';
     const response = await api.get(url);
@@ -369,7 +371,7 @@ export const updateProfileData = async (data: any, id?: string) => {
   }
 }
 
-export const getUserById = async ( id: string) =>{
+export const getUserById = async (id: string) => {
   try {
     const response = await api.get(`user/getUser/${id}`);
     return response.data;
@@ -391,7 +393,16 @@ export const fetchDetailedUsers = async (role?: string, q?: string) => {
   }
 };
 
-export const sendCustomMail = async (data: any,) =>{
+export const deleteUserById = async (userId: string) => {
+  try {
+    const response = await api.delete(`user/deleteUser/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching saved data:", error);
+  }
+}
+
+export const sendCustomMail = async (data: any,) => {
   try {
     const response = await api.post(`user/sendCustomMail`, data);
     return response.data;
@@ -401,7 +412,7 @@ export const sendCustomMail = async (data: any,) =>{
 }
 
 
-export const createOutstandingTask = async (data: any,) =>{
+export const createOutstandingTask = async (data: any,) => {
   try {
     const response = await api.post(`tasks/outstandingTasks`, data);
     return response.data;
@@ -410,7 +421,7 @@ export const createOutstandingTask = async (data: any,) =>{
   }
 }
 
-export const delOutstandingTask = async (data: any,) =>{
+export const delOutstandingTask = async (data: any,) => {
   try {
     const response = await api.post(`tasks/delOutstandingTasks`, data);
     return response.data;
@@ -430,7 +441,7 @@ export const usCorporateShareholderData = async (data: any, id?: string) => {
 }
 
 
-export const saveCurrentClients = async (companiesList:any) => {
+export const saveCurrentClients = async (companiesList: any) => {
   try {
     const response = await api.post("/currentclicorp/currentClients", companiesList);
     return response.data;
@@ -480,7 +491,7 @@ export const getCurrentClients = async (params: GetClientsParams = {}) => {
   }
 };
 
-export const delCurrentClients = async (id:string) => {
+export const delCurrentClients = async (id: string) => {
   try {
     const response = await api.delete(`/currentclicorp/currentClient/${id}`);
     return response.data;
@@ -500,9 +511,9 @@ export const getCurrentClientsCount = async () => {
   }
 };
 
-export const delProfileDoc = async (id:string, url:string, type: string) => {
+export const delProfileDoc = async (id: string, url: string, type: string) => {
   try {
-    const response = await api.delete(`/user/delteProfileDoc`, {params : {id, url,type}});
+    const response = await api.delete(`/user/delteProfileDoc`, { params: { id, url, type } });
     return response.data;
   } catch (error) {
     console.error("Error fetching company data:", error);
@@ -538,7 +549,7 @@ export const getEnquiryData = async (data?: any) => {
   }
 }
 
-export const updateEnquiry = async ( id: string,update:any) => {
+export const updateEnquiry = async (id: string, update: any) => {
   try {
     const response = await api.put(`/utility/enquiry/${id}`, update);
     return response.data;
@@ -559,10 +570,10 @@ export const deleteEnquiry = async (id: string) => {
 };
 
 export const getHkMemberData = async (id: string, email: string) => {
-  try{
+  try {
     const response = await api.get(`incorporation/getHkMemberData`, { params: { id, email } });
     return response.data;
-  }catch(e){
+  } catch (e) {
     console.log("Error fetching HK member data:", e);
   }
 }
