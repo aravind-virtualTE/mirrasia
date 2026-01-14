@@ -1854,11 +1854,11 @@ function asNum(v: any) {
 
 function computeSgGrandTotal(app: any): number {
     // Subtotal is whatever the invoice last wrote
-    // console.log("App--->",app.totalOriginal)
+    // console.log("App--->",app)
     const subtotal = asNum(app.panamaQuote?.total ?? 0);
 
     const currency = app.stripeCurrency;
-    const cardFeeRate = currency && String(currency).toUpperCase() === "USD" ? 0.06 : 0.035;
+    const cardFeeRate = currency && String(currency).toUpperCase() == "USD" ? 0.06 : 0.035;
     const needsCardFee = app?.payMethod === "card";
 
     const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
