@@ -42,8 +42,10 @@ const CompactRow: React.FC<{
   info?: React.ReactNode;
   hintOpen?: boolean;
   onToggleHint?: () => void;
-}> = ({ item, info, hintOpen = false, onToggleHint }) => {
+  fmt?: (n: number) => string;
+}> = ({ item, info, hintOpen = false, onToggleHint, fmt: localFmt }) => {
   const { t } = useTranslation();
+  const doFmt = localFmt || fmt;
   const qty = Math.max(1, item.quantity ?? 1);
   const uo = parseMoney(item.originalPrice);
   const ud = parseMoney(item.discountedPrice);
@@ -96,7 +98,7 @@ const CompactRow: React.FC<{
                 <span className="block text-[11px] uppercase tracking-wide text-muted-foreground/80">
                   {t("newHk.invoice.compact.original")}
                 </span>
-                <span className="line-through text-muted-foreground">{fmt(uo)}</span>
+                <span className="line-through text-muted-foreground">{doFmt(uo)}</span>
               </div>
               <div className="text-right">
                 <span className="block text-[11px] uppercase tracking-wide text-muted-foreground/80">
@@ -105,7 +107,7 @@ const CompactRow: React.FC<{
                 {isFree ? (
                   <Badge className="rounded-full px-2 py-0.5">{t("newHk.invoice.compact.free")}</Badge>
                 ) : (
-                  <span className="font-semibold">{fmt(ud)}</span>
+                  <span className="font-semibold">{doFmt(ud)}</span>
                 )}
               </div>
             </div>
@@ -113,8 +115,8 @@ const CompactRow: React.FC<{
             <div className="mt-1 flex items-center justify-between text-sm">
               <span className="text-muted-foreground">{t("newHk.invoice.compact.lineTotal")}</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-xs line-through text-muted-foreground">{fmt(to)}</span>
-                <span className="font-semibold">{isFree ? fmt(0) : fmt(td)}</span>
+                <span className="text-xs line-through text-muted-foreground">{doFmt(to)}</span>
+                <span className="font-semibold">{isFree ? doFmt(0) : doFmt(td)}</span>
               </div>
             </div>
           </div>
@@ -175,8 +177,10 @@ const SectionCard: React.FC<{
   description?: string;
   subtotal?: number;
   children: React.ReactNode;
-}> = ({ title, badge, description, subtotal, children }) => {
+  fmt?: (n: number) => string;
+}> = ({ title, badge, description, subtotal, children, fmt: localFmt }) => {
   const { t } = useTranslation();
+  const doFmt = localFmt || fmt;
   return (
     <Card className="border bg-background">
       <CardHeader className="py-2">
@@ -186,7 +190,7 @@ const SectionCard: React.FC<{
             {typeof subtotal === "number" && (
               <div className="hidden md:flex items-center gap-2 text-sm">
                 <span className="text-muted-foreground">{t("newHk.invoice.common.subtotal", "Subtotal")}</span>
-                <span className="font-semibold">{fmt(subtotal)}</span>
+                <span className="font-semibold">{doFmt(subtotal)}</span>
               </div>
             )}
             {badge ? <Badge variant="secondary" className="whitespace-nowrap">{badge}</Badge> : null}
@@ -224,7 +228,6 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
   const [selectedCurrency, setSelectedCurrency] = React.useState<string>(
     (app.form as any).paymentCurrency || "USD"
   );
-  const [convertedAmount, setConvertedAmount] = React.useState<number | null>(null);
   const [exchangeRate, setExchangeRate] = React.useState<number | null>(null);
   const [isConverting, setIsConverting] = React.useState(false);
 
@@ -385,7 +388,6 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
         setIsConverting(true);
         try {
           const { hkdAmount, rate } = await convertUsdToHkd(grand.discounted);
-          setConvertedAmount(hkdAmount);
           setExchangeRate(rate);
           // Persist to formData
           if (setForm) {
@@ -406,7 +408,6 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
           setIsConverting(false);
         }
       } else {
-        setConvertedAmount(null);
         setExchangeRate(null);
         if (setForm) {
           setForm((prev: any) => ({
@@ -426,10 +427,6 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
     convertAmount();
   }, [selectedCurrency, grand.discounted, setForm]);
 
-  // Display grand total
-  const displayGrandTotal = selectedCurrency === "HKD" && convertedAmount !== null
-    ? convertedAmount
-    : grand.discounted;
 
   const [hintOpen, setHintOpen] = React.useState<Record<string, boolean>>({});
   const toggleHint = (key: string) => setHintOpen((s) => ({ ...s, [key]: !s[key] }));
@@ -474,6 +471,7 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
         badge={t("newHk.invoice.sections.government.badge")}
         subtotal={gov.discounted}
         description={t("newHk.invoice.sections.government.description")}
+        fmt={fmtCurrency}
       >
         {/* Mobile */}
         <div className="md:hidden">
@@ -486,6 +484,7 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
                 info={infoById[item.id]}
                 hintOpen={!!hintOpen[key]}
                 onToggleHint={() => toggleHint(key)}
+                fmt={fmtCurrency}
               />
             );
           })}
@@ -523,6 +522,7 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
                     info={infoById[item.id]}
                     hintOpen={!!hintOpen[key]}
                     onToggleHint={() => toggleHint(key)}
+                    fmt={fmtCurrency}
                   />
                 );
               })}
@@ -534,7 +534,7 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
                 <TableCell className="py-2" />
                 <TableCell className="py-2" />
                 <TableCell className="py-2 text-right font-semibold">
-                  {fmt(gov.discounted)}
+                  {fmtCurrency(gov.discounted)}
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -548,6 +548,7 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
         badge={t("newHk.invoice.sections.service.badge")}
         subtotal={svc.discounted}
         description={t("newHk.invoice.sections.service.description")}
+        fmt={fmtCurrency}
       >
         {/* Mobile */}
         <div className="md:hidden">
@@ -560,6 +561,7 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
                 info={infoById[item.id]}
                 hintOpen={!!hintOpen[key]}
                 onToggleHint={() => toggleHint(key)}
+                fmt={fmtCurrency}
               />
             );
           })}
@@ -597,6 +599,7 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
                     info={infoById[item.id]}
                     hintOpen={!!hintOpen[key]}
                     onToggleHint={() => toggleHint(key)}
+                    fmt={fmtCurrency}
                   />
                 );
               })}
@@ -632,13 +635,13 @@ export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?
             <span className="text-muted-foreground">
               {t("newHk.invoice.sections.government.subtotal")}
             </span>
-            <span className="font-semibold">{fmt(gov.discounted)}</span>
+            <span className="font-semibold">{fmtCurrency(gov.discounted)}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">
               {t("newHk.invoice.sections.service.subtotal")}
             </span>
-            <span className="font-semibold">{fmt(svc.discounted)}</span>
+            <span className="font-semibold">{fmtCurrency(svc.discounted)}</span>
           </div>
           <div className="flex items-center justify-between text-base">
             <span className="font-medium">
