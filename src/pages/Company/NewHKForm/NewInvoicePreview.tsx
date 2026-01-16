@@ -3,9 +3,16 @@ import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { HelpCircle } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { HelpCircle, RefreshCw } from "lucide-react";
 import { AppDoc } from "./hkIncorpo";
 import { useTranslation } from "react-i18next";
+import { convertUsdToHkd } from "@/services/exchangeRate";
+
+const CURRENCY_OPTIONS = [
+  { value: "USD", label: "USD" },
+  { value: "HKD", label: "HKD" },
+];
 
 // ---- Types
 interface InvoiceItem {
@@ -210,8 +217,29 @@ const feesConfig = {
 };
 
 // ---- Main (builds from feesConfig + app)
-export default function InvoicePreview({ app }: { app: AppDoc }) {
+export default function InvoicePreview({ app, setForm }: { app: AppDoc; setForm?: (fn: (prev: any) => any) => void }) {
   const { t } = useTranslation();
+
+  // Currency state
+  const [selectedCurrency, setSelectedCurrency] = React.useState<string>(
+    (app.form as any).paymentCurrency || "USD"
+  );
+  const [convertedAmount, setConvertedAmount] = React.useState<number | null>(null);
+  const [exchangeRate, setExchangeRate] = React.useState<number | null>(null);
+  const [isConverting, setIsConverting] = React.useState(false);
+
+  const handleCurrencyChange = (currency: string) => {
+    setSelectedCurrency(currency);
+  };
+
+  // Format amount based on selected currency
+  const fmtCurrency = (n: number) => {
+    if (selectedCurrency === "HKD" && exchangeRate !== null) {
+      const converted = n * exchangeRate;
+      return `HKD ${converted.toFixed(2)}`;
+    }
+    return `USD ${n.toFixed(2)}`;
+  };
 
   // Info copy by item id (translated)
   const infoById: Record<string, React.ReactNode> = {
@@ -299,8 +327,8 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
         const discountLabel =
           it.original && it.original > it.amount
             ? t("newHk.fees.discountApplied", "Discount applied (−{{pct}}%)", {
-                pct: (((it.original - it.amount) / it.original) * 100).toFixed(0),
-              })
+              pct: (((it.original - it.amount) / it.original) * 100).toFixed(0),
+            })
             : undefined;
 
         const itemKey = `newHk.fees.items.${it.id}`;
@@ -310,11 +338,11 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
         return {
           id: it.id,
           description: translatedLabel,
-          originalPrice: fmt(original),
-          discountedPrice: fmt(discounted),
+          originalPrice: fmtCurrency(original),
+          discountedPrice: fmtCurrency(discounted),
           quantity: 1,
-          totalOriginal: fmt(original),
-          totalDiscounted: fmt(discounted),
+          totalOriginal: fmtCurrency(original),
+          totalDiscounted: fmtCurrency(discounted),
           category,
           sublabel: translatedInfo || (infoById[it.id] as string | undefined),
           discountLabel,
@@ -350,6 +378,59 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
   const svc = sum(svcItems);
   const grand = { original: gov.original + svc.original, discounted: gov.discounted + svc.discounted };
 
+  // Currency conversion effect
+  React.useEffect(() => {
+    const convertAmount = async () => {
+      if (selectedCurrency === "HKD") {
+        setIsConverting(true);
+        try {
+          const { hkdAmount, rate } = await convertUsdToHkd(grand.discounted);
+          setConvertedAmount(hkdAmount);
+          setExchangeRate(rate);
+          // Persist to formData
+          if (setForm) {
+            setForm((prev: any) => ({
+              ...prev,
+              form: {
+                ...prev.form,
+                paymentCurrency: "HKD",
+                exchangeRateUsed: rate,
+                originalAmountUsd: grand.discounted,
+                amount: hkdAmount,
+              },
+            }));
+          }
+        } catch (err) {
+          console.error("Exchange rate fetch failed:", err);
+        } finally {
+          setIsConverting(false);
+        }
+      } else {
+        setConvertedAmount(null);
+        setExchangeRate(null);
+        if (setForm) {
+          setForm((prev: any) => ({
+            ...prev,
+            form: {
+              ...prev.form,
+              paymentCurrency: "USD",
+              exchangeRateUsed: undefined,
+              originalAmountUsd: undefined,
+              amount: grand.discounted,
+            },
+          }));
+        }
+      }
+    };
+
+    convertAmount();
+  }, [selectedCurrency, grand.discounted, setForm]);
+
+  // Display grand total
+  const displayGrandTotal = selectedCurrency === "HKD" && convertedAmount !== null
+    ? convertedAmount
+    : grand.discounted;
+
   const [hintOpen, setHintOpen] = React.useState<Record<string, boolean>>({});
   const toggleHint = (key: string) => setHintOpen((s) => ({ ...s, [key]: !s[key] }));
 
@@ -363,11 +444,27 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
               MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED
             </CardTitle>
             <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
-              <Badge variant="outline" className="ml-2">
-                {t("newHk.invoice.currencyBadge", "USD")}
-              </Badge>
+              <span className="text-sm">Payment Currency:</span>
+              <Select value={selectedCurrency} onValueChange={handleCurrencyChange}>
+                <SelectTrigger className="w-[100px] h-8">
+                  <SelectValue placeholder="Currency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CURRENCY_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {isConverting && <RefreshCw className="h-4 w-4 animate-spin" />}
             </div>
           </div>
+          {selectedCurrency === "HKD" && exchangeRate && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Exchange rate: 1 USD = {exchangeRate.toFixed(4)} HKD
+            </p>
+          )}
         </CardHeader>
       </Card>
 
@@ -511,7 +608,7 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
                 <TableCell className="py-2" />
                 <TableCell className="py-2" />
                 <TableCell className="py-2 text-right font-semibold">
-                  {fmt(svc.discounted)}
+                  {fmtCurrency(svc.discounted)}
                 </TableCell>
               </TableRow>
               <TableRow className="bg-muted/20">
@@ -522,7 +619,7 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
                 <TableCell className="py-2" />
                 <TableCell className="py-2" />
                 <TableCell className="py-2 text-right font-bold text-base">
-                  {fmt(grand.discounted)}
+                  {fmtCurrency(grand.discounted)}
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -547,7 +644,7 @@ export default function InvoicePreview({ app }: { app: AppDoc }) {
             <span className="font-medium">
               {t("newHk.invoice.sections.grandTotal")}
             </span>
-            <span className="font-bold">{fmt(grand.discounted)}</span>
+            <span className="font-bold">{fmtCurrency(grand.discounted)}</span>
           </div>
         </div>
 
