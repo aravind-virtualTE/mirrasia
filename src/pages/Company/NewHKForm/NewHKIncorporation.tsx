@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronDown, ChevronUp, Info, Send, UserIcon, Users, X } from "lucide-react";
 import { FPSForm } from "../payment/FPSForm";
-import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent, updateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, applicantRoles, incorporationPurposeKeys,currencyOptions,capitalAmountOptions,shareCountOptions,finYearOptions,bookKeepingCycleOptions,yesNoOtherOptions} from "./hkIncorpo";
+import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent, updateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, applicantRoles, incorporationPurposeKeys, currencyOptions, capitalAmountOptions, shareCountOptions, finYearOptions, bookKeepingCycleOptions, yesNoOtherOptions } from "./hkIncorpo";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -655,7 +655,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
       if (response.summary.successful > 0) {
         setApp((prev) => {
           const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
-          return { ...prev, parties: updated, users: response.users , partyInvited:true};
+          return { ...prev, parties: updated, users: response.users, partyInvited: true };
         });
         toast({
           title: t("newHk.parties.toasts.invite.success.title"),
@@ -668,7 +668,7 @@ function PartiesManager({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<R
       if (response.summary.alreadyExists > 0) {
         setApp((prev) => {
           const updated = prev.parties.map((p) => ({ ...p, invited: true, status: "Invited" }));
-          return { ...prev, parties: updated,users: response.users ,partyInvited:true };
+          return { ...prev, parties: updated, users: response.users, partyInvited: true };
         });
         toast({
           title: t("newHk.parties.toasts.invite.exists.title"),
@@ -1429,7 +1429,7 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
         <SheetHeader>
           <SheetTitle>Stripe Card Payment</SheetTitle>
           <SheetDescription>
-            Grand Total: <b>{app.form.paymentCurrency ?? app.form.currency ?? "USD"} {amountUSD.toFixed(2)}</b> {app.form.payMethod === "card" ? `(incl. ${(getCardFeePct(app.form.paymentCurrency ?? app.form.currency) * 100).toFixed(1)}% card fee)` : ""}
+            Grand Total: <b>{app.form.paymentCurrency ?? app.form.currency ?? "USD"} {(app.form.paymentCurrency === "HKD" && app.form.amount ? Number(app.form.amount).toFixed(2) : amountUSD.toFixed(2))}</b> {app.form.payMethod === "card" ? `(incl. ${(getCardFeePct(app.form.paymentCurrency ?? app.form.currency) * 100).toFixed(1)}% card fee)` : ""}
           </SheetDescription>
         </SheetHeader>
 
@@ -1551,21 +1551,43 @@ function PaymentStep({ app, setApp, }: {
       setCardDrawerOpen(true);
       return;
     }
-
+    // console.log("[Payment] Proceeding to card payment...");
     setCreatingPI(true);
     try {
+      const selectedCurrency = (app.form.paymentCurrency ?? app.form.currency ?? "").toUpperCase();
+      let finalAmountCents = Math.round(grand * 100);
+      let finalCurrency = selectedCurrency || "HKD";
+      let exchangeRateUsed: number | undefined;
+
+      // If currency is USD or not specified, convert to HKD
+      if (selectedCurrency === "HKD") {
+        const { convertUsdToHkd } = await import("@/services/exchangeRate");
+        const { hkdAmount, rate } = await convertUsdToHkd(grand);
+
+        finalAmountCents = Math.round(hkdAmount * 100);
+        finalCurrency = "HKD";
+        exchangeRateUsed = rate;
+        // console.log(`[Payment] Converted USD ${grand} -> HKD ${hkdAmount} (rate: ${rate})`);
+      }
+
       const currentFP = {
         companyId: app?._id ?? null,
-        totalCents: Math.round(grand * 100),
+        totalCents: finalAmountCents,
         country: "HK",
-        currency: app.form.paymentCurrency ?? app.form.currency ?? "HKD",
+        currency: finalCurrency,
       };
       const result = await createInvoicePaymentIntent(currentFP);
       if (result?.clientSecret && result?.id) {
         setClientSecret(result.clientSecret);
-        // persist payment currency and payment intent info
-        const usedCurrency = app.form.paymentCurrency ?? app.form.currency ?? "HKD";
-        setForm((p) => ({ ...p, paymentIntentId: result.id, payMethod: "card", paymentIntentCurrency: usedCurrency, paymentCurrency: usedCurrency }));
+        // persist payment currency, exchange rate, and payment intent info
+        setForm((p) => ({
+          ...p,
+          paymentIntentId: result.id,
+          payMethod: "card",
+          paymentIntentCurrency: finalCurrency,
+          paymentCurrency: finalCurrency,
+          ...(exchangeRateUsed ? { exchangeRateUsed, originalAmountUsd: grand } : {}),
+        }));
         setCardDrawerOpen(true);
       } else {
         alert("Could not initialize card payment. Please try again.");
@@ -1790,18 +1812,35 @@ function PaymentStep({ app, setApp, }: {
               <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
                 <div className="flex items-center gap-2">
                   <div className="text-sm text-muted-foreground">Currency:</div>
-                  <Select value={String(app.form.paymentCurrency ?? "HKD")} onValueChange={async (val) => {
-                    const newCurrency = String(val || "HKD");
+                  <Select value={String(app.form.paymentCurrency ?? "USD")} onValueChange={async (val) => {
+                    const newCurrency = String(val || "USD").toUpperCase();
                     // persist selected payment currency separately from form.currency
                     setForm((p) => ({ ...p, paymentCurrency: newCurrency }));
 
                     // Recompute new grand and update payment intent if exists
                     const newGrand = computeGrandTotal({ ...app, form: { ...app.form, paymentCurrency: newCurrency } } as AppDoc);
+                    let finalAmountCents = Math.round(newGrand * 100);
+                    const finalCurrency = newCurrency;
+                    // If currency is HKD, convert from USD base price
+                    if (newCurrency == "HKD") {
+                      try {
+                        const { convertUsdToHkd } = await import("@/services/exchangeRate");
+                        const { hkdAmount, rate } = await convertUsdToHkd(newGrand);
+                        finalAmountCents = Math.round(hkdAmount * 100);
+                        // console.log("newCurrency", newCurrency)
+                        // console.log(`[CurrencySelect] Converted USD ${newGrand} -> HKD ${hkdAmount} (rate: ${rate}), finalAmountCents${finalAmountCents}`);
+                        // Store exchange rate info
+                        setForm((p) => ({ ...p, exchangeRateUsed: rate, originalAmountUsd: newGrand, amount: hkdAmount }));
+                      } catch (err) {
+                        console.error("Exchange rate fetch failed:", err);
+                      }
+                    }
+
                     if (app.form?.paymentIntentId) {
                       try {
-                        await updateInvoicePaymentIntent(app.form.paymentIntentId, { totalCents: Math.round(newGrand * 100), currency: newCurrency });
+                        await updateInvoicePaymentIntent(app.form.paymentIntentId, { totalCents: finalAmountCents, currency: finalCurrency });
                         // reflect change locally
-                        setForm((p) => ({ ...p, paymentIntentCurrency: newCurrency }));
+                        setForm((p) => ({ ...p, paymentIntentCurrency: finalCurrency }));
                         // toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
                       } catch (err) {
                         console.error("Failed to update payment intent:", err);
@@ -1810,7 +1849,7 @@ function PaymentStep({ app, setApp, }: {
                     }
                   }}>
                     <SelectTrigger className="h-8">
-                      <SelectValue placeholder={t("common.select","Select")} />
+                      <SelectValue placeholder={t("common.select", "Select")} />
                     </SelectTrigger>
                     <SelectContent>
                       {currencyOptions.map((o) => (
@@ -1842,7 +1881,9 @@ function PaymentStep({ app, setApp, }: {
 
             <div className="text-right font-bold mt-4">
               {t("newHk.payment.totals.grandTotal", {
-                amount: grand.toFixed(2),
+                amount: (app.form.paymentCurrency === "HKD" && app.form.amount
+                  ? Number(app.form.amount).toFixed(2)
+                  : grand.toFixed(2)),
                 currency: app.form.paymentCurrency ?? "USD",
               })}
             </div>
@@ -1861,7 +1902,7 @@ function PaymentStep({ app, setApp, }: {
           onSuccess={(info) => {
             setApp((prev) => ({
               ...prev,
-              paymentStatus:"paid",
+              paymentStatus: "paid",
               form: {
                 ...prev.form,
                 stripeLastStatus:
@@ -2091,7 +2132,7 @@ function CompanyInfoStep({ app, setApp }: { app: AppDoc; setApp: React.Dispatch<
   const setForm = (updater: (prev: any) => any) =>
     setApp((prev) => ({ ...prev, form: updater(prev.form) }));
   // keys are stored in form; labels come from i18n when rendering
-  
+
 
   // const contactOptions = React.useMemo(
   //   () =>
@@ -2536,10 +2577,10 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
           // Same user — keep as is or update (your choice)
         }
       }
-      if(stepIdx == 2){
-        if(!app.partyInvited ) {
+      if (stepIdx == 2) {
+        if (!app.partyInvited) {
           toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
-          return 
+          return
         }
       }
       if (stepIdx == 1) {
@@ -2734,7 +2775,7 @@ const hkIncorpConfig: FormConfig = {
           name: "roles",
           label: "newHk.steps.applicant.fields.roles.label",
           tooltip: "newHk.steps.applicant.fields.roles.tooltip",
-          options:applicantRoles,
+          options: applicantRoles,
           colSpan: 2
         },
         {
@@ -2828,7 +2869,7 @@ const hkIncorpConfig: FormConfig = {
       fields: [
         {
           type: "select", name: "finYrEnd", label: "newHk.steps.acct.fields.finYrEnd.label",
-          options:finYearOptions
+          options: finYearOptions
         },
         {
           type: "radio-group", name: "bookKeepingCycle", label: "newHk.steps.acct.fields.bookKeepingCycle.label",

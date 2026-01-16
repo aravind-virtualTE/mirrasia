@@ -211,6 +211,7 @@ const AdminDashboard = () => {
 
     return allList.filter((item: any) => {
       const applicantMatch = normalize(item.applicantName).includes(q);
+      const emailMatch = normalize(item?.email).includes(q);
 
       const cn = item.companyName;
       const companyMatch =
@@ -220,7 +221,7 @@ const AdminDashboard = () => {
             ? cn.some((n) => normalize(n).includes(q))
             : false;
 
-      return applicantMatch || companyMatch;
+      return applicantMatch || companyMatch || emailMatch;
     });
   }, [allList, searchQuery]);
 
@@ -230,18 +231,19 @@ const AdminDashboard = () => {
     const base = !q
       ? list
       : list.filter((item: any) => {
-          const applicantMatch = normalize(item.applicantName).includes(q);
+        const applicantMatch = normalize(item.applicantName).includes(q);
+        const emailMatch = normalize(item?.email).includes(q);
 
-          const cn = item.companyName;
-          const companyMatch =
-            typeof cn === "string"
-              ? normalize(cn).includes(q)
-              : Array.isArray(cn)
-                ? cn.some((n) => normalize(n).includes(q))
-                : false;
+        const cn = item.companyName;
+        const companyMatch =
+          typeof cn === "string"
+            ? normalize(cn).includes(q)
+            : Array.isArray(cn)
+              ? cn.some((n) => normalize(n).includes(q))
+              : false;
 
-          return applicantMatch || companyMatch;
-        });
+        return applicantMatch || companyMatch || emailMatch;
+      });
 
     let rows = base.filter((company: any) => (activeTab === "active" ? !company.isDeleted : company.isDeleted));
     if (activeTab === "active") rows = rows.filter((e: any) => isActiveStatus(e));
@@ -292,7 +294,7 @@ const AdminDashboard = () => {
   const paginatedData = useMemo(() => {
     return sortedRows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   }, [sortedRows, currentPage]);
-
+  console.log('paginatedData----->', paginatedData)
   // Clamp page if filter/tab reduces rows (prevents empty pages)
   useEffect(() => {
     const maxPage = Math.max(1, Math.ceil(sortedRows.length / itemsPerPage));
@@ -439,9 +441,8 @@ const AdminDashboard = () => {
             {/* Left side: tabs */}
             <div className="flex items-center gap-4">
               <button
-                className={`px-4 py-2 ${
-                  activeTab === "active" ? "border-b-2 border-blue-500 font-medium" : "text-gray-500"
-                }`}
+                className={`px-4 py-2 ${activeTab === "active" ? "border-b-2 border-blue-500 font-medium" : "text-gray-500"
+                  }`}
                 onClick={() => {
                   setActiveTab("active");
                   setCurrentPage(1);
@@ -451,9 +452,8 @@ const AdminDashboard = () => {
               </button>
 
               <button
-                className={`px-4 py-2 ${
-                  activeTab === "deleted" ? "border-b-2 border-blue-500 font-medium" : "text-gray-500"
-                }`}
+                className={`px-4 py-2 ${activeTab === "deleted" ? "border-b-2 border-blue-500 font-medium" : "text-gray-500"
+                  }`}
                 onClick={() => {
                   setActiveTab("deleted");
                   setCurrentPage(1);
