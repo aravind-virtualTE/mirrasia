@@ -16,7 +16,8 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronDown, ChevronUp, Info, Send, UserIcon, Users, X } from "lucide-react";
 import { FPSForm } from "../payment/FPSForm";
-import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent, updateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, applicantRoles, incorporationPurposeKeys, currencyOptions, capitalAmountOptions, shareCountOptions, finYearOptions, bookKeepingCycleOptions, yesNoOtherOptions } from "./hkIncorpo";
+//updateInvoicePaymentIntent,
+import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent,  uploadIncorpoPaymentBankProof, applicantRoles, incorporationPurposeKeys, currencyOptions, capitalAmountOptions, shareCountOptions, finYearOptions, bookKeepingCycleOptions, yesNoOtherOptions } from "./hkIncorpo";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -1554,20 +1555,24 @@ function PaymentStep({ app, setApp, }: {
     // console.log("[Payment] Proceeding to card payment...");
     setCreatingPI(true);
     try {
-      const selectedCurrency = (app.form.paymentCurrency ?? app.form.currency ?? "").toUpperCase();
+      const selectedCurrency = (app.form.paymentCurrency ?? app.form.currency ?? "").toUpperCase() || "USD";
       let finalAmountCents = Math.round(grand * 100);
-      let finalCurrency = selectedCurrency || "HKD";
+      const finalCurrency = selectedCurrency;
       let exchangeRateUsed: number | undefined;
 
-      // If currency is USD or not specified, convert to HKD
+      // If currency is HKD, try to use pre-converted amount or convert now
       if (selectedCurrency === "HKD") {
-        const { convertUsdToHkd } = await import("@/services/exchangeRate");
-        const { hkdAmount, rate } = await convertUsdToHkd(grand);
-
-        finalAmountCents = Math.round(hkdAmount * 100);
-        finalCurrency = "HKD";
-        exchangeRateUsed = rate;
-        // console.log(`[Payment] Converted USD ${grand} -> HKD ${hkdAmount} (rate: ${rate})`);
+        if (app.form.amount && app.form.originalAmountUsd === grand) {
+          // Use pre-converted amount from form state (set in InvoicePreview)
+          finalAmountCents = Math.round(Number(app.form.amount) * 100);
+          exchangeRateUsed = app.form.exchangeRateUsed;
+        } else {
+          // Fallback: convert now if not pre-converted or if grand total changed
+          const { convertUsdToHkd } = await import("@/services/exchangeRate");
+          const { hkdAmount, rate } = await convertUsdToHkd(grand);
+          finalAmountCents = Math.round(hkdAmount * 100);
+          exchangeRateUsed = rate;
+        }
       }
 
       const currentFP = {
@@ -1810,55 +1815,6 @@ function PaymentStep({ app, setApp, }: {
 
             {app.form.payMethod === "card" && !isPaid && (
               <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="text-sm text-muted-foreground">Currency:</div>
-                  <Select value={String(app.form.paymentCurrency ?? "USD")} onValueChange={async (val) => {
-                    const newCurrency = String(val || "USD").toUpperCase();
-                    // persist selected payment currency separately from form.currency
-                    setForm((p) => ({ ...p, paymentCurrency: newCurrency }));
-
-                    // Recompute new grand and update payment intent if exists
-                    const newGrand = computeGrandTotal({ ...app, form: { ...app.form, paymentCurrency: newCurrency } } as AppDoc);
-                    let finalAmountCents = Math.round(newGrand * 100);
-                    const finalCurrency = newCurrency;
-                    // If currency is HKD, convert from USD base price
-                    if (newCurrency == "HKD") {
-                      try {
-                        const { convertUsdToHkd } = await import("@/services/exchangeRate");
-                        const { hkdAmount, rate } = await convertUsdToHkd(newGrand);
-                        finalAmountCents = Math.round(hkdAmount * 100);
-                        // console.log("newCurrency", newCurrency)
-                        // console.log(`[CurrencySelect] Converted USD ${newGrand} -> HKD ${hkdAmount} (rate: ${rate}), finalAmountCents${finalAmountCents}`);
-                        // Store exchange rate info
-                        setForm((p) => ({ ...p, exchangeRateUsed: rate, originalAmountUsd: newGrand, amount: hkdAmount }));
-                      } catch (err) {
-                        console.error("Exchange rate fetch failed:", err);
-                      }
-                    }
-
-                    if (app.form?.paymentIntentId) {
-                      try {
-                        await updateInvoicePaymentIntent(app.form.paymentIntentId, { totalCents: finalAmountCents, currency: finalCurrency });
-                        // reflect change locally
-                        setForm((p) => ({ ...p, paymentIntentCurrency: finalCurrency }));
-                        // toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
-                      } catch (err) {
-                        console.error("Failed to update payment intent:", err);
-                        // toast({ title: t("newHk.payment.totals.updateFailed", ""), description: t("newHk.payment.totals.tryAgain"), variant: "destructive" });
-                      }
-                    }
-                  }}>
-                    <SelectTrigger className="h-8">
-                      <SelectValue placeholder={t("common.select", "Select")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {currencyOptions.map((o) => (
-                        <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div className="mt-2 sm:mt-0">
                   <Button
                     onClick={handleProceedCard}
@@ -2886,7 +2842,7 @@ const hkIncorpConfig: FormConfig = {
     },
     { id: "terms", title: "newHk.steps.termsStep.title", render: () => <EngagementTerms /> },
     { id: "fees", title: "newHk.steps.fees.title", render: ({ app, setApp }) => <FeesEstimator app={app} setApp={setApp} /> },
-    { id: "invoice", title: "newHk.steps.invoice.title", render: ({ app }) => <InvoicePreview app={app} /> },
+    { id: "invoice", title: "newHk.steps.invoice.title", render: ({ app, setApp }) => <InvoicePreview app={app} setForm={setApp} /> },
     { id: "payment", title: "newHk.steps.payment.title", render: ({ app, setApp }) => <PaymentStep app={app} setApp={setApp} /> },
     { id: "review", title: "newHk.steps.review.title", render: ({ app, setApp }) => <ReviewStep app={app} setApp={setApp} /> },
     { id: "congrats", title: "newHk.steps.congrats.title", render: ({ app }) => <CongratsStep app={app} /> }
