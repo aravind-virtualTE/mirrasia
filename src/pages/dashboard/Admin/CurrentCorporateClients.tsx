@@ -3,9 +3,9 @@ import { Users } from "lucide-react"
 import { companyTableData } from "./types";
 import { useNavigate } from "react-router-dom"
 
-const CurrentCorporateClient: React.FC<{ data: companyTableData[]; count:number }> = ({ data, count }) => {
+const CurrentCorporateClient: React.FC<{ data: companyTableData[]; count: number }> = ({ data, count }) => {
     const navigate = useNavigate()
-    console.log("CurrentCorporateClient data", data.length, "count", count)
+    console.log(data.length, count)
     const dataCount = data.length;
     return (
         <Card onClick={() => navigate("/current-corporate-client")} className="cursor-pointer hover:shadow-lg transition-shadow p-4">

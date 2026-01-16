@@ -878,10 +878,10 @@
   },
   "payment": {
     "paymentCalc": "Payment Amount Calculation",
-    "processCreditFee": "Includes a 3.5% Stripe credit card processing fee.",
+    "processCreditFee": "Includes a (3.5% for HKD, 6% for USD) Stripe credit card processing fee.",
     "fnlAmtCharged": "Final Amount Charged",
     "successPayment": "Payment successful! Thank you for your purchase.",
-    "cardDesc": "Stripe Payments (3.5% Processing Fee)",
+    "cardDesc": "Stripe Payments (3.5% for HKD, 6% for USD)",
     "bankDesc": "Direct bank transfer with receipt upload",
     "fpsDesc": "Direct bank transfer via FPS",
     "otherDesc": "Other(Cash Payment) with receipt upload",
@@ -1965,7 +1965,7 @@
         "title": "Payment Methods",
         "options": {
           "card": {
-            "label": "Card Payment — Stripe (3.5% processing fee)",
+            "label": "Card Payment — Stripe (3.5% for HKD, 6% for USD)",
             "tip": "Convenient for international cards. A processing fee is added to the invoice."
           },
           "fps": {
