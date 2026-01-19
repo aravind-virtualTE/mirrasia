@@ -32,6 +32,8 @@ import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-
 import { loadStripe } from "@stripe/stripe-js";
 import { StripeSuccessInfo, Tip } from "../NewHKForm/NewHKIncorporation";
 import { createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, updateInvoicePaymentIntent, currencyOptions } from "../NewHKForm/hkIncorpo";
+import { convertCurrency, getExchangeRate } from "@/services/exchangeRate";
+
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
@@ -170,7 +172,7 @@ function PartiesManager() {
                     invited: true,
                     status: "Invited" as const,
                 }));
-                return { ...prev, parties: updated, users: res.users , partyInvited:true};
+                return { ...prev, parties: updated, users: res.users, partyInvited: true };
             });
             toast({
                 title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
@@ -1429,134 +1431,6 @@ const SgServiceSelectionStep: React.FC = () => {
     );
 };
 
-// const SgServiceSelectionStep = () => {
-//     const [form, setForm] = useAtom(sgFormWithResetAtom1);
-//     const { t } = useTranslation();
-//     console.log("form in service selection step:", form.serviceItemsSelected);
-//     const selected: string[] = Array.isArray(form.serviceItemsSelected) ? form.serviceItemsSelected : [];
-//     const address = form.businessAddress;
-//     const shareholders = Array.isArray(form.shareHolders) ? form.shareHolders : [];
-//     const directors = Array.isArray(form.directors) ? form.directors : [];
-
-//     // 1) Base catalog from constants   
-//     const catalog: any = service_list.map((s) => ({
-//         id: s.id,
-//         description: t(s.key),
-//         originalPrice: Number(s.price) || 0,
-//         discountedPrice: Number(s.price) || 0,
-//         isOptional: !!s.isOptional,
-//     }));
-
-//     // 2) Dynamic add: Registered business address if Mirr Asia address chosen
-//     if (address && address.id === "mirrasiaAddress") {
-//         catalog.push({
-//             id: "registeredBusinessAddress",
-//             description: t("Singapore.regBsnsService"),
-//             originalPrice: 350,
-//             discountedPrice: 350,
-//             isOptional: false,
-//         });
-//     }
-
-//     // 3) Dynamic add: Corporate Secretary Annual Service per legal entity
-//     const legalEntityYesCount =
-//         shareholders.filter((x: any) => x?.legalEntity?.id === "Yes").length +
-//         directors.filter((x: any) => x?.legalEntity?.id === "Yes").length;
-
-//     if (legalEntityYesCount > 0) {
-//         catalog.push({
-//             id: "corporateSecretaryAnnualService",
-//             description: `${t("Singapore.crpSecAnnualServ")} (${legalEntityYesCount})`,
-//             originalPrice: legalEntityYesCount * 550,
-//             discountedPrice: legalEntityYesCount * 550,
-//             isOptional: false,
-//         });
-//     }
-
-//     // 4) Dynamic add: Online accounting software package
-//     if (form.onlineAccountingSoftware?.value === "yes") {
-//         catalog.push({
-//             id: "onlineAccountingSoftware",
-//             description: t("Singapore.accPackageSixMonths"),
-//             originalPrice: 2000,
-//             discountedPrice: 2000,
-//             isOptional: false,
-//         });
-//     }
-
-//     // Only include optional items if user selected them; always include non-optional
-//     const displayed = catalog.filter((row: any) => !row.isOptional || selected.includes(row.id));
-
-//     // Totals: of displayed items
-//     const totalOriginal = displayed.reduce((sum: any, r: any) => sum + (Number(r.originalPrice) || 0), 0);
-//     const totalDiscounted = displayed.reduce((sum: any, r: any) => sum + (Number(r.discountedPrice) || 0), 0);
-
-//     const toggleOptional = (id: string) => {
-//         if (form.sessionId) {
-//             toast({
-//                 title: t("Payment Session Initiated"),
-//                 description: t("Cant select extra items once payment session initiated"),
-//             });
-//             return;
-//         }
-//         const next = selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id];
-//         setForm({ ...form, serviceItemsSelected: next });
-//     };
-
-//     return (
-//         <Card className="w-full">
-//             <CardHeader className="flex flex-row justify-between items-center">
-//                 <CardTitle className="text-xl text-cyan-400">
-//                     {t("usa.serviceSelection.heading")}
-//                 </CardTitle>
-//             </CardHeader>
-//             <CardContent>
-//                 <Table>
-//                     <TableHeader>
-//                         <TableRow>
-//                             <TableHead className="w-1/2">{t("usa.serviceSelection.col1")}</TableHead>
-//                             <TableHead className="text-right">{t("usa.serviceSelection.col2")}</TableHead>
-//                             <TableHead className="text-right">{t("usa.serviceSelection.col3")}</TableHead>
-//                         </TableRow>
-//                     </TableHeader>
-//                     <TableBody>
-//                         {/* Render non-optional first, then optional that are selected (with checkbox to deselect) */}
-//                         {catalog.map((row: any) => {
-//                             const isChecked = selected.includes(row.id);
-//                             const shouldShow = !row.isOptional || isChecked;
-//                             if (!shouldShow) return null;
-
-//                             return (
-//                                 <TableRow key={row.id} className={row.isOptional ? "text-gray-600" : ""}>
-//                                     <TableCell>
-//                                         <div className="flex items-center gap-2">
-//                                             {row.isOptional && (
-//                                                 <Checkbox checked={isChecked} onCheckedChange={() => toggleOptional(row.id)} />
-//                                             )}
-//                                             {row.description}
-//                                         </div>
-//                                     </TableCell>
-//                                     <TableCell className={`text-right ${row.originalPrice !== row.discountedPrice ? "line-through text-gray-500" : ""}`}>
-//                                         USD {row.originalPrice}
-//                                     </TableCell>
-//                                     <TableCell className={`text-right ${row.discountedPrice === 0 ? "text-red-500 font-semibold" : ""}`}>
-//                                         {row.discountedPrice === 0 ? t("ServiceSelection.FREE") : `USD ${row.discountedPrice}`}
-//                                     </TableCell>
-//                                 </TableRow>
-//                             );
-//                         })}
-//                         <TableRow className="font-bold bg-gray-100">
-//                             <TableCell>{t("usa.serviceSelection.totalCost")}</TableCell>
-//                             <TableCell className="text-right line-through text-gray-500">USD {totalOriginal}</TableCell>
-//                             <TableCell className="text-right text-yellow-600">USD {totalDiscounted}</TableCell>
-//                         </TableRow>
-//                     </TableBody>
-//                 </Table>
-//             </CardContent>
-//         </Card>
-//     );
-// };
-
 const asNumber = (v: any) => (typeof v === "number" ? v : Number(v) || 0);
 const fmt = (n: number) => (n > 0 ? `USD ${n.toFixed(2)}` : "USD 0.00");
 
@@ -1653,11 +1527,75 @@ const InvoiceSgStep: React.FC = () => {
         }));
     }, [initialMandatoryTotal, totalInclOptions, rows, setForm]);
 
+    // --- Dynamic Currency Logic ---
+    const [displayRate, setDisplayRate] = React.useState(1);
+    const selectedCurrency = form.stripeCurrency || "USD";
+
+    React.useEffect(() => {
+        async function fetchRate() {
+            if (selectedCurrency === "USD") {
+                setDisplayRate(1);
+                return;
+            }
+            try {
+                const r = await getExchangeRate("USD", selectedCurrency);
+                setDisplayRate(r);
+            } catch (e) {
+                console.error("Failed to get rate", e);
+            }
+        }
+        fetchRate();
+    }, [selectedCurrency]);
+
+    const fmtFx = (usd: number) => {
+        if (selectedCurrency === "USD") return fmt(usd);
+        const val = usd * displayRate;
+        // eslint-disable-next-line
+        return `${selectedCurrency.toUpperCase()} ${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
+
     return (
         <div className="w-full py-8 px-4">
             <Card className="w-full">
                 <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>{t("mirrasisaSSL")}</CardTitle>
+                    {/* Currency Selector */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">Select Payment Currency:</span>
+                        <Select value={String(form.stripeCurrency ?? "USD")} onValueChange={async (val) => {
+                            const newCurrency = String(val || "USD");
+                            setForm((prev: any) => ({ ...prev, stripeCurrency: newCurrency }));
+
+                            // Recompute grand total (USD base + card fee adjustment)
+                            const newGrand = computeSgGrandTotal({ ...form, stripeCurrency: newCurrency });
+
+                            if (form.paymentIntentId) {
+                                try {
+                                    let finalTotalCents = Math.round(newGrand * 100);
+
+                                    if (newCurrency !== "USD") {
+                                        const { convertedAmount } = await convertCurrency(newGrand, "USD", newCurrency);
+                                        finalTotalCents = Math.round(convertedAmount * 100);
+                                    }
+
+                                    await updateInvoicePaymentIntent(form.paymentIntentId, { totalCents: finalTotalCents, currency: newCurrency });
+                                    setForm((prev: any) => ({ ...prev, paymentIntentCurrency: newCurrency }));
+                                    toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
+                                } catch (err) {
+                                    console.error("Failed to update payment intent:", err);
+                                }
+                            }
+                        }}>
+                            <SelectTrigger className="h-8 w-[120px]">
+                                <SelectValue placeholder={t("common.select", "Select")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {currencyOptions.map((o) => (
+                                    <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </CardHeader>
 
                 <CardContent>
@@ -1678,10 +1616,10 @@ const InvoiceSgStep: React.FC = () => {
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right text-muted-foreground">
-                                        {fmt(asNumber(item.originalPrice))}
+                                        {fmtFx(asNumber(item.originalPrice))}
                                     </TableCell>
                                     <TableCell className="text-right font-medium">
-                                        {fmt(asNumber(item.discountedPrice))}
+                                        {fmtFx(asNumber(item.discountedPrice))}
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -1695,18 +1633,13 @@ const InvoiceSgStep: React.FC = () => {
                                 <div className="flex justify-between mb-2">
                                     <span className="font-xs text-xs line-through text-gray-500">{t("invoice.total")}:</span>
                                     <span className="font-xs text-xs line-through text-gray-500">
-                                        {fmt(totalInclOptions)}
+                                        {fmtFx(totalInclOptions)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-green-600">
                                     <span className="font-medium">{t("invoice.totalDisc")}:</span>
-                                    <span className="font-bold">{fmt(totalInclOptions)}</span>
+                                    <span className="font-bold">{fmtFx(totalInclOptions)}</span>
                                 </div>
-                                {/* If you want to show the initial mandatory in the card too, uncomment: */}
-                                {/* <div className="flex justify-between text-sm mt-2">
-                  <span>Initial mandatory total:</span>
-                  <span>{fmt(initialMandatoryTotal)}</span>
-                </div> */}
                             </CardContent>
                         </Card>
                     </div>
@@ -1715,144 +1648,6 @@ const InvoiceSgStep: React.FC = () => {
         </div>
     );
 };
-
-// const InvoiceSgStep = () => {
-//     const [form, setForm] = useAtom(sgFormWithResetAtom1);
-//     const { t } = useTranslation();
-
-//     const selectedOptionals: string[] = Array.isArray(form?.serviceItemsSelected)
-//         ? form.serviceItemsSelected
-//         : [];
-
-//     const rows: FeeRow[] = useMemo(() => {
-//         // derive parties/address inside memo to avoid unstable deps caused by inline conditionals
-//         const parties = Array.isArray(form?.parties) ? form.parties : [];
-//         const address = form?.businessAddress;
-
-//         // 1) Base catalog
-//         const base: FeeRow[] = service_list.map((s) => ({
-//             id: s.id,
-//             description: t(s.key),
-//             originalPrice: asNumber(s.price),
-//             discountedPrice: asNumber(s.price),
-//             isOptional: !!s.isOptional,
-//             note: "",
-//             isHighlight: false,
-//         }));
-
-//         // 2) Dynamic adds (always included; these are not optional)
-//         const out: FeeRow[] = [...base];
-
-//         if (address && address.id === "mirrasiaAddress") {
-//             out.push({
-//                 id: "registeredBusinessAddress",
-//                 description: t("Singapore.regBsnsService"),
-//                 originalPrice: 350,
-//                 discountedPrice: 350,
-//                 isOptional: false,
-//                 note: "",
-//             });
-//         }
-
-//         const legalEntityYesCount = parties.filter(
-//             (p: any) => p?.isCorp === true && (p?.isDirector === true || (Number(p?.shares) || 0) > 0)
-//         ).length;
-
-//         if (legalEntityYesCount > 0) {
-//             out.push({
-//                 id: "corporateSecretaryAnnualService",
-//                 description: `${t("Singapore.crpSecAnnualServ")} (${legalEntityYesCount})`,
-//                 originalPrice: legalEntityYesCount * 550,
-//                 discountedPrice: legalEntityYesCount * 550,
-//                 isOptional: false,
-//                 note: "",
-//             });
-//         }
-
-//         if (form?.onlineAccountingSoftware?.value === "yes") {
-//             out.push({
-//                 id: "onlineAccountingSoftware",
-//                 description: t("Singapore.accPackageSixMonths"),
-//                 originalPrice: 2000,
-//                 discountedPrice: 2000,
-//                 isOptional: false,
-//                 note: "",
-//             });
-//         }
-
-//         // 3) For invoice display:
-//         //    - Always include non-optional items
-//         //    - Include optional items ONLY if selected
-//         return out.filter((r) => !r.isOptional || selectedOptionals.includes(r.id));
-//     }, [t, form, selectedOptionals]);
-
-//     const totalOriginal = rows.reduce((sum, r) => sum + asNumber(r.originalPrice), 0);
-//     const totalDiscounted = rows.reduce((sum, r) => sum + asNumber(r.discountedPrice), 0);
-//     React.useEffect(() => {
-//         setForm((prev: any) => ({
-//             ...prev,
-//             totalOriginal,
-//             totalDiscounted,
-//             currency: "USD",
-//         }));
-//     }, [totalOriginal, totalDiscounted, setForm]);
-
-//     return (
-//         <div className="w-full py-8 px-4">
-//             <Card className="w-full">
-//                 <CardHeader className="flex flex-row items-center justify-between">
-//                     <CardTitle>{t("mirrasisaSSL")}</CardTitle>
-//                 </CardHeader>
-//                 <CardContent>
-//                     <Table>
-//                         <TableHeader>
-//                             <TableRow>
-//                                 <TableHead>{t("invoice.desc")}</TableHead>
-//                                 <TableHead className="text-right">{t("invoice.originalPrice")}</TableHead>
-//                                 <TableHead className="text-right">{t("invoice.discPrice")}</TableHead>
-//                                 {/* <TableHead className="text-right">{t("invoice.notes")}</TableHead> */}
-//                             </TableRow>
-//                         </TableHeader>
-//                         <TableBody>
-//                             {rows.map((item) => (
-//                                 <TableRow key={item.id}>
-//                                     <TableCell>
-//                                         <div className="flex items-center gap-2">
-//                                             <span className={item.isHighlight ? "font-semibold" : ""}>{item.description}</span>
-//                                         </div>
-//                                     </TableCell>
-//                                     <TableCell className="text-right text-muted-foreground">
-//                                         {asNumber(item.originalPrice) > 0 ? `USD ${asNumber(item.originalPrice).toFixed(2)}` : "USD 0.00"}
-//                                     </TableCell>
-//                                     <TableCell className="text-right font-medium">
-//                                         {asNumber(item.discountedPrice) > 0 ? `USD ${asNumber(item.discountedPrice).toFixed(2)}` : "USD 0.00"}
-//                                     </TableCell>
-//                                     {/* <TableCell className="text-right text-sm text-muted-foreground">{item.note || ""}</TableCell> */}
-//                                 </TableRow>
-//                             ))}
-//                         </TableBody>
-//                     </Table>
-
-//                     {/* Totals */}
-//                     <div className="mt-4 flex justify-end">
-//                         <Card className="w-80">
-//                             <CardContent className="pt-4">
-//                                 <div className="flex justify-between mb-2">
-//                                     <span className="font-xs text-xs line-through text-gray-500">{t("invoice.total")}:</span>
-//                                     <span className="font-xs text-xs line-through text-gray-500">USD {totalOriginal.toFixed(2)}</span>
-//                                 </div>
-//                                 <div className="flex justify-between text-green-600">
-//                                     <span className="font-medium">{t("invoice.totalDisc")}:</span>
-//                                     <span className="font-bold">USD {totalDiscounted.toFixed(2)}</span>
-//                                 </div>
-//                             </CardContent>
-//                         </Card>
-//                     </div>
-//                 </CardContent>
-//             </Card>
-//         </div>
-//     );
-// };
 
 function StripePaymentForm({ app, onSuccess, onClose, }: {
     app: any;
@@ -2086,11 +1881,11 @@ function StripePaymentForm({ app, onSuccess, onClose, }: {
     );
 }
 
-function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, onSuccess }: {
+function StripeCardDrawer({ open, onOpenChange, clientSecret, displayAmount, app, onSuccess }: {
     open: boolean;
     onOpenChange: (v: boolean) => void;
     clientSecret: string;
-    amountUSD: number;
+    displayAmount: number;
     app: any;
     onSuccess: (info: StripeSuccessInfo) => void;
 }) {
@@ -2114,7 +1909,7 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
                     </SheetTitle>
                     <SheetDescription>
                         Grand Total:{" "}
-                        <b>{(app.stripeCurrency ?? "usd").toUpperCase()} {amountUSD.toFixed(2)}</b>{" "}
+                        <b>{(app.stripeCurrency ?? "usd").toUpperCase()} {displayAmount.toFixed(2)}</b>{" "}
                         {app.payMethod === "card"
                             ? `(incl. ${(getCardFeePct(app.stripeCurrency ?? "usd") * 100).toFixed(1)}% card fee)`
                             : ""}
@@ -2168,9 +1963,31 @@ const PaymentStep = () => {
     const [form, setForm] = useAtom(sgFormWithResetAtom1);
     const { t } = useTranslation();
 
-    // Compute grand total using SG logic
+    // --- Dynamic Currency Display Logic (Payment Step) ---
+    const [displayRate, setDisplayRate] = React.useState(1);
+    const selectedCurrency = form.stripeCurrency || "USD";
+
+    React.useEffect(() => {
+        async function fetchRate() {
+            if (selectedCurrency === "USD") {
+                setDisplayRate(1);
+                return;
+            }
+            try {
+                const r = await getExchangeRate("USD", selectedCurrency);
+                setDisplayRate(r);
+            } catch (err) {
+                console.error("Failed to fetch rate for payment display", err);
+            }
+        }
+        fetchRate();
+    }, [selectedCurrency]);
+
+    // Compute grand total using SG logic (this is USD base with card fee)
     const grand = computeSgGrandTotal(form);
-    console.log("Computed SG grand total:", grand);
+    const displayedGrand = grand * displayRate;
+
+    console.log("Computed SG grand total (USD):", grand);
     const isPaid =
         form.paymentStatus === "paid" ||
         form.stripeLastStatus === "succeeded" ||
@@ -2263,14 +2080,25 @@ const PaymentStep = () => {
             setCardDrawerOpen(true);
             return;
         }
-        // console.log("form", form)
+
         setCreatingPI(true);
         try {
+            const usedCurrency = (form.stripeCurrency ?? "USD").toUpperCase();
+            let finalTotalCents = Math.round(grand * 100);
+            let exchangeRateUsed: number | undefined;
+
+            // Dynamic conversion if not USD
+            if (usedCurrency !== "USD") {
+                const { convertedAmount, rate } = await convertCurrency(grand, "USD", usedCurrency);
+                finalTotalCents = Math.round(convertedAmount * 100);
+                exchangeRateUsed = rate;
+            }
+
             const fp = {
                 companyId: form._id ?? null,
-                totalCents: Math.round(grand * 100),
+                totalCents: finalTotalCents,
                 country: "SG",
-                currency: form.stripeCurrency ?? "usd",
+                currency: usedCurrency,
             };
             const result = await createInvoicePaymentIntent(fp);
 
@@ -2279,8 +2107,10 @@ const PaymentStep = () => {
                 setForm((prev: any) => ({
                     ...prev,
                     paymentIntentId: result.id,
-                    paymentIntentCurrency: form.stripeCurrency ?? "usd",
+                    paymentIntentCurrency: usedCurrency,
+                    stripeCurrency: usedCurrency,
                     payMethod: "card",
+                    ...(exchangeRateUsed ? { exchangeRateUsed, originalAmountUsd: grand } : {}),
                 }));
                 setCardDrawerOpen(true);
             } else {
@@ -2469,33 +2299,8 @@ const PaymentStep = () => {
                         {form.payMethod === "card" && !isPaid && (
                             <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
                                 <div className="flex items-center gap-2">
-                                    <div className="text-sm text-muted-foreground">Currency:</div>
-                                    <Select value={String(form.stripeCurrency ?? "USD")} onValueChange={async (val) => {
-                                        const newCurrency = String(val || "USD");
-                                        setForm((prev: any) => ({ ...prev, stripeCurrency: newCurrency }));
-
-                                        // Recompute and update payment intent if exists
-                                        const newGrand = computeSgGrandTotal({ ...form, stripeCurrency: newCurrency });
-                                        if (form.paymentIntentId) {
-                                            try {
-                                                await updateInvoicePaymentIntent(form.paymentIntentId, { totalCents: Math.round(newGrand * 100), currency: newCurrency });
-                                                setForm((prev: any) => ({ ...prev, paymentIntentCurrency: newCurrency }));
-                                                toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
-                                            } catch (err) {
-                                                console.error("Failed to update payment intent:", err);
-                                                toast({ title: t("newHk.payment.totals.updateFailed"), description: t("newHk.payment.totals.tryAgain"), variant: "destructive" });
-                                            }
-                                        }
-                                    }}>
-                                        <SelectTrigger className="h-8">
-                                            <SelectValue placeholder={t("common.select","Select")} />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {currencyOptions.map((o) => (
-                                                <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <span className="text-sm text-muted-foreground">Currency:</span>
+                                    <span className="text-sm font-semibold">{form.stripeCurrency ?? "USD"}</span>
                                 </div>
 
                                 <div className="mt-2 sm:mt-0">
@@ -2511,7 +2316,7 @@ const PaymentStep = () => {
                         )}
 
                         <div className="text-right font-bold mt-4">
-                            {t("newHk.payment.totals.grandTotal", { amount: grand.toFixed(2), currency: form.stripeCurrency ?? "usd" })}
+                            {t("newHk.payment.totals.grandTotal", { amount: displayedGrand.toFixed(2), currency: form.stripeCurrency ?? "usd" })}
                         </div>
                     </CardContent>
                 </Card>
@@ -2522,7 +2327,7 @@ const PaymentStep = () => {
                     open={cardDrawerOpen}
                     onOpenChange={setCardDrawerOpen}
                     clientSecret={clientSecret}
-                    amountUSD={grand}
+                    displayAmount={displayedGrand}
                     app={form}
                     onSuccess={(info) => {
                         setForm((prev: any) => ({
@@ -2956,61 +2761,63 @@ const TopBar: React.FC<{ idx: number; total: number }> = ({ idx, total }) => {
     );
 };
 
-const Sidebar: React.FC<{ steps: Step[]; 
-    currentIdx: number; 
+const Sidebar: React.FC<{
+    steps: Step[];
+    currentIdx: number;
     // onNavigate: (idx: number) => void; 
-    canProceed: boolean }> = ({
+    canProceed: boolean
+}> = ({
     steps,
     currentIdx,
     // onNavigate,
     canProceed,
 }) => {
-    const { t } = useTranslation();
-    return (
-        <aside className="space-y-3 sticky top-0 h-[calc(100vh-2rem)] overflow-auto">
-            <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded bg-red-600 shrink-0" />
-                <span className="text-xs font-semibold truncate">Company Incorporation — Singapore</span>
-            </div>
+        const { t } = useTranslation();
+        return (
+            <aside className="space-y-3 sticky top-0 h-[calc(100vh-2rem)] overflow-auto">
+                <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-red-600 shrink-0" />
+                    <span className="text-xs font-semibold truncate">Company Incorporation — Singapore</span>
+                </div>
 
-            <div className="flex flex-wrap gap-1 text-xs">
-                <Badge variant="outline">SSL</Badge>
-                <Badge variant="outline">AML/KYC</Badge>
-                <Badge variant="outline">Secure</Badge>
-            </div>
-            <div className="space-y-1 mt-3">
-                {steps.map((s, i) => {
-                    const enabled = i <= currentIdx || canProceed;
-                    const active = i === currentIdx;
-                    return (
-                        <button
-                            key={s.id}
-                            // onClick={() => enabled && onNavigate(i)}
-                            disabled={!enabled}
-                            className={cn(
-                                "w-full text-left rounded-lg border p-2 sm:p-3 transition",
-                                active && "border-primary bg-accent/10",
-                                !active && enabled && "hover:bg-accent/10",
-                                !enabled && "opacity-60 cursor-not-allowed"
-                            )}
-                        >
-                            <div className="flex items-center justify-between gap-2">
-                                <span className="font-semibold text-xs sm:text-sm truncate">
-                                    {i + 1}. {t(s.title)}
-                                </span>
-                                {i < currentIdx && (
-                                    <Badge variant="secondary" className="text-xs">
-                                        Done
-                                    </Badge>
+                <div className="flex flex-wrap gap-1 text-xs">
+                    <Badge variant="outline">SSL</Badge>
+                    <Badge variant="outline">AML/KYC</Badge>
+                    <Badge variant="outline">Secure</Badge>
+                </div>
+                <div className="space-y-1 mt-3">
+                    {steps.map((s, i) => {
+                        const enabled = i <= currentIdx || canProceed;
+                        const active = i === currentIdx;
+                        return (
+                            <button
+                                key={s.id}
+                                // onClick={() => enabled && onNavigate(i)}
+                                disabled={!enabled}
+                                className={cn(
+                                    "w-full text-left rounded-lg border p-2 sm:p-3 transition",
+                                    active && "border-primary bg-accent/10",
+                                    !active && enabled && "hover:bg-accent/10",
+                                    !enabled && "opacity-60 cursor-not-allowed"
                                 )}
-                            </div>
-                        </button>
-                    );
-                })}
-            </div>
-        </aside>
-    );
-};
+                            >
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="font-semibold text-xs sm:text-sm truncate">
+                                        {i + 1}. {t(s.title)}
+                                    </span>
+                                    {i < currentIdx && (
+                                        <Badge variant="secondary" className="text-xs">
+                                            Done
+                                        </Badge>
+                                    )}
+                                </div>
+                            </button>
+                        );
+                    })}
+                </div>
+            </aside>
+        );
+    };
 
 const FieldLabel: React.FC<{ label: string; tooltip?: string; htmlFor: string; className?: string; }> = ({ label, tooltip, htmlFor, className = "", }) => {
     const { t } = useTranslation();
@@ -3456,14 +3263,14 @@ const SgIncorpForm: React.FC = () => {
             toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
             return;
         }
-        console.log("stepIdx",stepIdx)
+        console.log("stepIdx", stepIdx)
         if (stepIdx == 2) {
             if (!form.partyInvited) {
                 toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
                 return
             }
         }
-        if(stepIdx ==7 && form.paymentStatus !== "paid"){
+        if (stepIdx == 7 && form.paymentStatus !== "paid") {
             toast({ title: "Payment Pending", description: "Please complete the payment before proceeding Next" });
             return
         }
@@ -3480,9 +3287,9 @@ const SgIncorpForm: React.FC = () => {
             <div className="grid lg:grid-cols-[280px_1fr] gap-6">
                 {/* Sidebar */}
                 <div className="hidden lg:block">
-                    <Sidebar steps={CONFIG.steps} currentIdx={stepIdx} 
-                    // onNavigate={setStepIdx} 
-                    canProceed={canProceed} />
+                    <Sidebar steps={CONFIG.steps} currentIdx={stepIdx}
+                        // onNavigate={setStepIdx} 
+                        canProceed={canProceed} />
                 </div>
 
                 <Card>
