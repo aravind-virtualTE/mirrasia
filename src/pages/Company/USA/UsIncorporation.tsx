@@ -93,6 +93,7 @@ import CustomLoader from "@/components/ui/customLoader";
 import { sendInviteToShDir } from "@/services/dataFetch";
 import { isValidEmail } from "@/middleware";
 import { sendEmailOtpforVerification, validateOtpforVerification } from "@/hooks/useAuth";
+import { convertCurrency, getExchangeRate } from "@/services/exchangeRate";
 
 const STRIPE_CLIENT_ID =
     import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
@@ -714,7 +715,7 @@ function ShareholdersWidget({
                     sh.status = "Invited"
                 })];
 
-                setForm((p) => ({ ...p, users: response.users, shareholders: next,partyInvited:true }));
+                setForm((p) => ({ ...p, users: response.users, shareholders: next, partyInvited: true }));
                 toast({
                     title: "Success",
                     description: `Successfully sent invitation mail to ${response.summary.successful} people`,
@@ -724,7 +725,7 @@ function ShareholdersWidget({
                 const next = [...shareholders.map((sh) => {
                     sh.status = "Resent Invitation"
                 })];
-                setForm((p) => ({ ...p, users: response.users, shareholders: next,partyInvited:true }));
+                setForm((p) => ({ ...p, users: response.users, shareholders: next, partyInvited: true }));
                 toast({
                     title: "Success",
                     description: `Invite sent to member/director`,
@@ -1808,8 +1809,35 @@ function UsServiceSelectionStep() {
 // ---------- Invoice step ----------
 export function InvoiceUsStep() {
     const { t } = useTranslation();
-    const [formData] = useAtom(usaAppWithResetAtom);
+    const [formData, setFormData] = useAtom(usaAppWithResetAtom);
     const [, setUsPrice] = useAtom(usaPriceAtom);
+
+    // --- Dynamic Currency Logic ---
+    const [displayRate, setDisplayRate] = React.useState(1);
+    const selectedCurrency = formData.stripeCurrency || "USD";
+
+    React.useEffect(() => {
+        async function fetchRate() {
+            if (selectedCurrency === "USD") {
+                setDisplayRate(1);
+                return;
+            }
+            try {
+                const r = await getExchangeRate("USD", selectedCurrency);
+                setDisplayRate(r);
+            } catch (e) {
+                console.error("Failed to get rate", e);
+            }
+        }
+        fetchRate();
+    }, [selectedCurrency]);
+
+    const fmtFx = (usd: number) => {
+        if (selectedCurrency === "USD") return `USD ${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const val = usd * displayRate;
+        // eslint-disable-next-line
+        return `${selectedCurrency.toUpperCase()} ${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
 
     const selectedServices = formData.serviceItemsSelected ?? [];
     const state = formData.selectedState;
@@ -1861,6 +1889,43 @@ export function InvoiceUsStep() {
                         MIRR ASIA BUSINESS ADVISORY &amp; SECRETARIAL
                         SERVICES LIMITED
                     </CardTitle>
+                    {/* Currency Selector */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">Payment Currency:</span>
+                        <Select value={String(formData.stripeCurrency ?? "USD")} onValueChange={async (val) => {
+                            const newCurrency = String(val || "USD");
+                            setFormData((prev: any) => ({ ...prev, stripeCurrency: newCurrency }));
+
+                            // Recompute grand total (USD base + card fee adjustment)
+                            const newGrand = computeUsGrandTotal({ ...formData, stripeCurrency: newCurrency });
+
+                            if (formData.paymentIntentId) {
+                                try {
+                                    let finalTotalCents = Math.round(newGrand * 100);
+
+                                    if (newCurrency !== "USD") {
+                                        const { convertedAmount } = await convertCurrency(newGrand, "USD", newCurrency);
+                                        finalTotalCents = Math.round(convertedAmount * 100);
+                                    }
+
+                                    await updateInvoicePaymentIntent(formData.paymentIntentId, { totalCents: finalTotalCents, currency: newCurrency });
+                                    setFormData((prev: any) => ({ ...prev, paymentIntentCurrency: newCurrency }));
+                                    toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
+                                } catch (err) {
+                                    console.error("Failed to update payment intent:", err);
+                                }
+                            }
+                        }}>
+                            <SelectTrigger className="h-8 w-[120px]">
+                                <SelectValue placeholder={t("common.select", "Select")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {currencyOptions.map((o) => (
+                                    <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <Table>
@@ -1895,14 +1960,10 @@ export function InvoiceUsStep() {
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right text-muted-foreground">
-                                        {item.originalPrice > 0
-                                            ? `USD ${item.originalPrice}`
-                                            : "USD 0.00"}
+                                        {fmtFx(item.originalPrice)}
                                     </TableCell>
                                     <TableCell className="text-right font-medium">
-                                        {item.discountedPrice > 0
-                                            ? `USD ${item.discountedPrice}`
-                                            : "USD 0.00"}
+                                        {fmtFx(item.discountedPrice)}
                                     </TableCell>
                                     <TableCell className="text-right text-sm text-muted-foreground">
                                         {item.note}
@@ -1920,7 +1981,7 @@ export function InvoiceUsStep() {
                                         Total (Original):
                                     </span>
                                     <span className="font-xs text-xs line-through text-gray-500">
-                                        USD {totalOriginal.toFixed(2)}
+                                        {fmtFx(totalOriginal)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-green-600">
@@ -1928,7 +1989,7 @@ export function InvoiceUsStep() {
                                         Total (Discounted):
                                     </span>
                                     <span className="font-bold">
-                                        USD {totalDiscounted.toFixed(2)}
+                                        {fmtFx(totalDiscounted)}
                                     </span>
                                 </div>
                             </CardContent>
@@ -2212,14 +2273,14 @@ function StripeCardDrawer({
     open,
     onOpenChange,
     clientSecret,
-    amountUSD,
+    displayAmount,
     app,
     onSuccess,
 }: {
     open: boolean;
     onOpenChange: (v: boolean) => void;
     clientSecret: string;
-    amountUSD: number;
+    displayAmount: number;
     app: any;
     onSuccess: (info: StripeSuccessInfo) => void;
 }) {
@@ -2242,7 +2303,7 @@ function StripeCardDrawer({
                         Stripe Card Payment
                     </SheetTitle>
                     <SheetDescription>
-                        Grand Total: {app.stripeCurrency ?? "USD"} <b>{amountUSD.toFixed(2)}</b>{" "}
+                        Grand Total: {app.stripeCurrency ?? "USD"} <b>{displayAmount.toFixed(2)}</b>{" "}
                         {app.payMethod === "card" ? `(incl. ${(app.stripeCurrency && String(app.stripeCurrency).toUpperCase() === "USD" ? 6 : 3.5)}% card fee)` : ""}
                     </SheetDescription>
                 </SheetHeader>
@@ -2274,7 +2335,28 @@ function PaymentStep() {
     const { t } = useTranslation();
     const [app, setApp] = useAtom(usaAppWithResetAtom);
 
+    // --- Dynamic Currency Display Logic (Payment Step) ---
+    const [displayRate, setDisplayRate] = React.useState(1);
+    const selectedCurrency = app.stripeCurrency || "USD";
+
+    React.useEffect(() => {
+        async function fetchRate() {
+            if (selectedCurrency === "USD") {
+                setDisplayRate(1);
+                return;
+            }
+            try {
+                const r = await getExchangeRate("USD", selectedCurrency);
+                setDisplayRate(r);
+            } catch (err) {
+                console.error("Failed to fetch rate for payment display", err);
+            }
+        }
+        fetchRate();
+    }, [selectedCurrency]);
+
     const grand = computeUsGrandTotal(app);
+    const displayedGrand = grand * displayRate;
 
     const isPaid =
         app.paymentStatus === "paid" ||
@@ -2440,74 +2522,51 @@ function PaymentStep() {
     };
 
     const handleProceedCard = async () => {
-        if (
-            guard(
-                t(
-                    "newHk.payment.alerts.expiredGuard"
-                )
-            )
-        )
-            return;
+        if (guard(t("newHk.payment.alerts.expiredGuard"))) return;
 
-        if (
-            clientSecret &&
-            app.paymentIntentId
-        ) {
+        if (clientSecret && app.paymentIntentId) {
             setCardDrawerOpen(true);
             return;
         }
 
         setCreatingPI(true);
         try {
-            const usedCurrency = app.stripeCurrency ?? "USD";
+            const usedCurrency = (app.stripeCurrency ?? "USD").toUpperCase();
+            let finalTotalCents = Math.round(grand * 100);
+            let exchangeRateUsed: number | undefined;
+
+            // Dynamic conversion if not USD
+            if (usedCurrency !== "USD") {
+                const { convertedAmount, rate } = await convertCurrency(grand, "USD", usedCurrency);
+                finalTotalCents = Math.round(convertedAmount * 100);
+                exchangeRateUsed = rate;
+            }
+
             const fp = {
-                companyId:
-                    app._id ?? null,
-                totalCents:
-                    Math.round(grand * 100),
+                companyId: app._id ?? null,
+                totalCents: finalTotalCents,
                 country: "USA",
                 currency: usedCurrency,
             };
-            const result =
-                await createInvoicePaymentIntent(
-                    fp
-                );
+            const result = await createInvoicePaymentIntent(fp);
 
-            if (
-                result?.clientSecret &&
-                result?.id
-            ) {
-                setClientSecret(
-                    result.clientSecret
-                );
-
-                const usedCurrency = app.stripeCurrency ?? "USD";
+            if (result?.clientSecret && result?.id) {
+                setClientSecret(result.clientSecret);
                 setApp((prev: any) => ({
                     ...prev,
-                    paymentIntentId:
-                        result.id,
-                    payMethod:
-                        "card",
+                    paymentIntentId: result.id,
+                    payMethod: "card",
                     paymentIntentCurrency: usedCurrency,
                     stripeCurrency: usedCurrency,
+                    ...(exchangeRateUsed ? { exchangeRateUsed, originalAmountUsd: grand } : {}),
                 }));
-
                 setCardDrawerOpen(true);
             } else {
-                alert(
-                    "Could not initialize card payment. Please try again."
-                );
+                alert("Could not initialize card payment. Please try again.");
             }
         } catch (e) {
-            console.error(
-                "PI creation failed:",
-                e
-            );
-            alert(
-                t(
-                    "newHk.payment.alerts.prepareFailedDesc"
-                )
-            );
+            console.error("PI creation failed:", e);
+            alert(t("newHk.payment.alerts.prepareFailedDesc"));
         } finally {
             setCreatingPI(false);
         }
@@ -2874,33 +2933,8 @@ function PaymentStep() {
                             !isPaid && (
                                 <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
                                     <div className="flex items-center gap-2">
-                                        <div className="text-sm text-muted-foreground">Currency:</div>
-                                        <Select value={String(app.stripeCurrency ?? "USD")} onValueChange={async (val) => {
-                                            const newCurrency = String(val || "USD");
-                                            setApp((prev: any) => ({ ...prev, stripeCurrency: newCurrency }));
-
-                                            // Recompute and update payment intent if exists
-                                            const newGrand = computeUsGrandTotal({ ...app, stripeCurrency: newCurrency });
-                                            if (app.paymentIntentId) {
-                                                try {
-                                                    await updateInvoicePaymentIntent(app.paymentIntentId, { totalCents: Math.round(newGrand * 100), currency: newCurrency });
-                                                    setApp((prev: any) => ({ ...prev, paymentIntentCurrency: newCurrency }));
-                                                    toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
-                                                } catch (err) {
-                                                    console.error("Failed to update payment intent:", err);
-                                                    toast({ title: t("newHk.payment.totals.updateFailed"), description: t("newHk.payment.totals.tryAgain"), variant: "destructive" });
-                                                }
-                                            }
-                                        }}>
-                                            <SelectTrigger className="h-8">
-                                                <SelectValue placeholder={t("common.select","Select")} />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {currencyOptions.map((o) => (
-                                                    <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                                        <span className="text-sm text-muted-foreground">Currency:</span>
+                                        <span className="text-sm font-semibold">{app.stripeCurrency ?? "USD"}</span>
                                     </div>
 
                                     <div className="mt-2 sm:mt-0">
@@ -2939,8 +2973,8 @@ function PaymentStep() {
                             {t(
                                 "newHk.payment.totals.grandTotal",
                                 {
-                                    amount:  grand.toFixed(2),
-                                    currency:app.stripeCurrency
+                                    amount: displayedGrand.toFixed(2),
+                                    currency: app.stripeCurrency ?? "usd"
                                 }
                             )}
                         </div>
@@ -2959,13 +2993,13 @@ function PaymentStep() {
                     clientSecret={
                         clientSecret
                     }
-                    amountUSD={grand}
+                    displayAmount={displayedGrand}
                     app={app}
                     onSuccess={(info) => {
                         setApp(
                             (prev: any) => ({
                                 ...prev,
-                                paymentStatus:"paid",
+                                paymentStatus: "paid",
                                 stripeLastStatus:
                                     info?.paymentIntentStatus ??
                                     prev.stripeLastStatus,
@@ -3780,14 +3814,14 @@ function TopBar({ title, total, idx, }: {
     );
 }
 
-function Sidebar({ steps, idx, 
+function Sidebar({ steps, idx,
     // goto, 
     canProceedFromCurrent, }: {
-    steps: AnyStep[];
-    idx: number;
-    // goto: (i: number) => void;
-    canProceedFromCurrent: boolean;
-}) {
+        steps: AnyStep[];
+        idx: number;
+        // goto: (i: number) => void;
+        canProceedFromCurrent: boolean;
+    }) {
     const { t } = useTranslation();
 
     const canJumpTo = (target: number) => {
@@ -3968,10 +4002,10 @@ export default function ConfigDrivenUSAForm() {
                 // Same user — keep as is or update (your choice)
             }
         }
-        console.log("idx",idx)
+        console.log("idx", idx)
         if (idx === 1) payload.isDisabled = true;
         // console.log("formdata", formData)
-         
+
         try {
             const response = await api.post("/company/usa-form", payload);
             if (response.status === 200) {
@@ -4041,9 +4075,9 @@ export default function ConfigDrivenUSAForm() {
             const emptyNameShareholders = form.shareHolders.filter(
                 (shareholder: any) => !shareholder.name.trim()
             );
-            if(!form.partyInvited ) {
+            if (!form.partyInvited) {
                 toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
-                return 
+                return
             }
             if (emptyNameShareholders.length > 0) {
                 toast({
@@ -4056,7 +4090,7 @@ export default function ConfigDrivenUSAForm() {
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }
         }
-        else if(idx == 6 && form.paymentStatus !== "paid"){
+        else if (idx == 6 && form.paymentStatus !== "paid") {
             toast({ title: "Payment Pending", description: "Please complete the payment before proceeding Next" });
             return
         }
