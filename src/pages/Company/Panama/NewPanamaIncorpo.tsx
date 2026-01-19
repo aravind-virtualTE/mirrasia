@@ -26,7 +26,9 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { StripeSuccessInfo, Tip } from "../NewHKForm/NewHKIncorporation";
-import { createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, updateInvoicePaymentIntent, currencyOptions } from "../NewHKForm/hkIncorpo";
+import { createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, currencyOptions } from "../NewHKForm/hkIncorpo";
+import { convertCurrency, getExchangeRate } from "@/services/exchangeRate"; // Auto-added
+
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { TokenData } from "@/middleware/ProtectedRoutes";
@@ -297,7 +299,7 @@ function PartiesManager() {
                         status: "Invited",
                     }))
                 );
-                setForm((prev: any) => ({ ...prev, users: res.users, partyInvited:true }));
+                setForm((prev: any) => ({ ...prev, users: res.users, partyInvited: true }));
 
                 toast({
                     title: t("newHk.parties.toasts.invite.success.title", "Invitations sent"),
@@ -1358,7 +1360,7 @@ const PanamaQuoteSetupStep = () => {
             panamaQuote: next,
         }));
     };
-
+    console.log("pricing", form)
     // Ensure total is synced on mount/atom change
     React.useEffect(() => {
         const computed = computePanamaSetupTotal(pricing);
@@ -1372,6 +1374,34 @@ const PanamaQuoteSetupStep = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pricing]);
+
+    // --- Dynamic Currency Display Logic ---
+    const [displayRate, setDisplayRate] = React.useState(1);
+    const selectedCurrency = form.stripeCurrency ?? "USD";
+
+    React.useEffect(() => {
+        async function fetchRate() {
+            if (selectedCurrency === "USD") {
+                setDisplayRate(1);
+                return;
+            }
+            try {
+                const r = await getExchangeRate("USD", selectedCurrency);
+                setDisplayRate(r);
+            } catch (err) {
+                console.error("Failed to fetch rate for display", err);
+            }
+        }
+        fetchRate();
+    }, [selectedCurrency]);
+
+    // Helper to render price in selected currency
+    const fmt = (usdAmount: number) => {
+        if (selectedCurrency === "USD") return money(usdAmount);
+        const converted = usdAmount * displayRate;
+        // Basic formatting for foreign currency
+        return `${selectedCurrency} ${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
 
     const totalSetup = pricing.total;
     // console.log("testing--->", form.totalOriginal, pricing)
@@ -1403,7 +1433,7 @@ const PanamaQuoteSetupStep = () => {
                     </span>
                 </span>
                 <span className="text-sm font-semibold">
-                    {money(pricing.setupBase)}
+                    {fmt(pricing.setupBase)}
                 </span>
             </div>
 
@@ -1467,7 +1497,7 @@ const PanamaQuoteSetupStep = () => {
                     </Label>
                 </div>
 
-                <span className="text-sm font-semibold">{money(PRICE_NS)}</span>
+                <span className="text-sm font-semibold">{fmt(PRICE_NS)}</span>
             </div>
 
             {/* Optional Services Title */}
@@ -1488,7 +1518,7 @@ const PanamaQuoteSetupStep = () => {
                         {t("panama.quoteSetup.optional.emi")}
                     </Label>
                 </div>
-                <span className="text-sm font-semibold">{money(PRICE_EMI)}</span>
+                <span className="text-sm font-semibold">{fmt(PRICE_EMI)}</span>
             </div>
 
             {/* Bank account option */}
@@ -1504,7 +1534,7 @@ const PanamaQuoteSetupStep = () => {
                         {t("panama.quoteSetup.optional.bank")}
                     </Label>
                 </div>
-                <span className="text-sm font-semibold">{money(PRICE_BANK)}</span>
+                <span className="text-sm font-semibold">{fmt(PRICE_BANK)}</span>
             </div>
 
             {/* CBI option */}
@@ -1520,17 +1550,42 @@ const PanamaQuoteSetupStep = () => {
                         {t("panama.quoteSetup.optional.cbi")}
                     </Label>
                 </div>
-                <span className="text-sm font-semibold">{money(PRICE_CBI)}</span>
+                <span className="text-sm font-semibold">{fmt(PRICE_CBI)}</span>
             </div>
 
             {/* Total Setup */}
-            <div className="mt-4 flex items-center justify-between rounded-xl bg-[#0e3a8a] text-white px-3 py-2">
-                <span className="text-sm font-medium">
-                    {t("panama.quoteSetup.totals.setupY1")}
-                </span>
-                <span className="text-sm font-semibold">
-                    {money(totalSetup)}
-                </span>
+            <div className="mt-4 flex flex-col gap-2 rounded-xl bg-[#0e3a8a] text-white px-3 py-2">
+                <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">
+                        {t("panama.quoteSetup.totals.setupY1")}
+                    </span>
+                    <span className="text-sm font-semibold">
+                        {fmt(totalSetup)}
+                    </span>
+                </div>
+
+                {/* Currency Selection */}
+                <div className="flex items-center justify-between border-t border-white/20 pt-2 mt-1">
+                    <span className="text-sm font-medium text-white/90">
+                        {t("newHk.company.fields.currency.label", "Payment Currency")}
+                    </span>
+                    <Select
+                        value={String(form.stripeCurrency ?? "USD")}
+                        onValueChange={(val) => {
+                            const newCurrency = String(val || "USD");
+                            setForm((p: any) => ({ ...p, stripeCurrency: newCurrency }));
+                        }}
+                    >
+                        <SelectTrigger className="h-8 w-[140px] bg-white/10 border-white/20 text-white placeholder:text-white/70">
+                            <SelectValue placeholder={t("common.select", "Select")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {currencyOptions.map((o) => (
+                                <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
 
             {/* Included List */}
@@ -1588,6 +1643,13 @@ function StripePaymentForm({ app, onSuccess, onClose, }: {
         setProcessingMsg(null);
 
         try {
+            const { error: submitError } = await elements.submit();
+            if (submitError) {
+                setError(submitError.message ?? "Validation failed");
+                setSubmitting(false);
+                return;
+            }
+
             const { error, paymentIntent } =
                 await stripe.confirmPayment({
                     elements,
@@ -1794,11 +1856,11 @@ function StripePaymentForm({ app, onSuccess, onClose, }: {
     );
 }
 
-function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, onSuccess }: {
+function StripeCardDrawer({ open, onOpenChange, clientSecret, displayAmount, app, onSuccess }: {
     open: boolean;
     onOpenChange: (v: boolean) => void;
     clientSecret: string;
-    amountUSD: number;
+    displayAmount: number;
     app: any;
     onSuccess: (info: StripeSuccessInfo) => void;
 }) {
@@ -1821,7 +1883,7 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
                         Stripe Card Payment
                     </SheetTitle>
                     <SheetDescription>
-                        Grand Total: {app.stripeCurrency ?? "USD"} <b>{amountUSD.toFixed(2)}</b>{" "}
+                        Grand Total: {app.stripeCurrency ?? "USD"} <b>{displayAmount.toFixed(2)}</b>{" "}
                         {app.payMethod === "card" ? `(incl. ${(app.stripeCurrency && String(app.stripeCurrency).toUpperCase() === "USD" ? 6 : 3.5)}% card fee)` : ""}
                     </SheetDescription>
                 </SheetHeader>
@@ -1923,6 +1985,28 @@ const PaymentStep = () => {
     const [clientSecret, setClientSecret] = React.useState<string | null>(null);
     const [cardDrawerOpen, setCardDrawerOpen] = React.useState(false);
 
+    // --- Dynamic Currency Display Logic (Payment Step) ---
+    const [displayRate, setDisplayRate] = React.useState(1);
+    const selectedCurrency = form.stripeCurrency || "USD";
+
+    React.useEffect(() => {
+        async function fetchRate() {
+            if (selectedCurrency === "USD") {
+                setDisplayRate(1);
+                return;
+            }
+            try {
+                const r = await getExchangeRate("USD", selectedCurrency);
+                setDisplayRate(r);
+            } catch (err) {
+                console.error("Failed to fetch rate for payment display", err);
+            }
+        }
+        fetchRate();
+    }, [selectedCurrency]);
+
+    const displayedGrand = grand * displayRate;
+
     const guard = (msg: string) => {
         if (isPaid) {
             alert(t("newHk.payment.alerts.alreadyPaid"));
@@ -1967,10 +2051,20 @@ const PaymentStep = () => {
         // console.log("form", form)
         setCreatingPI(true);
         try {
-            const usedCurrency = form.stripeCurrency ?? "USD";
+            const usedCurrency = (form.stripeCurrency ?? "USD").toUpperCase();
+            let finalTotalCents = Math.round(grand * 100);
+            let exchangeRateUsed: number | undefined;
+
+            // Dynamic conversion if not USD
+            if (usedCurrency !== "USD") {
+                const { convertedAmount, rate } = await convertCurrency(grand, "USD", usedCurrency);
+                finalTotalCents = Math.round(convertedAmount * 100);
+                exchangeRateUsed = rate;
+            }
+
             const fp = {
                 companyId: form._id ?? null,
-                totalCents: Math.round(grand * 100),
+                totalCents: finalTotalCents,
                 country: "PA",
                 currency: usedCurrency,
             };
@@ -1984,6 +2078,7 @@ const PaymentStep = () => {
                     payMethod: "card",
                     paymentIntentCurrency: usedCurrency,
                     stripeCurrency: usedCurrency,
+                    ...(exchangeRateUsed ? { exchangeRateUsed, originalAmountUsd: grand } : {}),
                 }));
                 setCardDrawerOpen(true);
             } else {
@@ -2170,50 +2265,26 @@ const PaymentStep = () => {
                         )}
 
                         {form.payMethod === "card" && !isPaid ? (
-                        <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
-                            <div className="flex items-center gap-2">
-                                <div className="text-sm text-muted-foreground">Currency:</div>
-                                <Select value={String(form.stripeCurrency ?? "USD")} onValueChange={async (val) => {
-                                    const newCurrency = String(val || "USD");
-                                    setForm((p: any) => ({ ...p, stripeCurrency: newCurrency }));
+                            <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                                {/* Currency display only (selection moved to Quote step) */}
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm text-muted-foreground">Currency:</span>
+                                    <span className="text-sm font-semibold">{form.stripeCurrency ?? "USD"}</span>
+                                </div>
 
-                                    // Recompute new grand and update payment intent if exists
-                                    const newGrand = computeSgGrandTotal({ ...form, stripeCurrency: newCurrency });
-                                    if (form.paymentIntentId) {
-                                        try {
-                                            await updateInvoicePaymentIntent(form.paymentIntentId, { totalCents: Math.round(newGrand * 100), currency: newCurrency });
-                                            setForm((p: any) => ({ ...p, paymentIntentCurrency: newCurrency }));
-                                            toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
-                                        } catch (err) {
-                                            console.error("Failed to update payment intent:", err);
-                                            toast({ title: t("newHk.payment.totals.updateFailed"), description: t("newHk.payment.totals.tryAgain"), variant: "destructive" });
-                                        }
-                                    }
-                                }}>
-                                    <SelectTrigger className="h-8">
-                                        <SelectValue placeholder={t("common.select","Select")} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {currencyOptions.map((o) => (
-                                            <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="mt-2 sm:mt-0">
-                                <Button onClick={handleProceedCard} disabled={isPaid || isExpired || creatingPI}>
-                                    {creatingPI ? t("newHk.payment.card.preparing") : t("newHk.payment.card.proceed")}
-                                </Button>
-                                <div className="text-xs text-muted-foreground mt-2">
-                                    {isExpired ? t("newHk.payment.card.disabledExpired") : t("newHk.payment.card.drawerNote")}
+                                <div className="mt-2 sm:mt-0">
+                                    <Button onClick={handleProceedCard} disabled={isPaid || isExpired || creatingPI}>
+                                        {creatingPI ? t("newHk.payment.card.preparing") : t("newHk.payment.card.proceed")}
+                                    </Button>
+                                    <div className="text-xs text-muted-foreground mt-2">
+                                        {isExpired ? t("newHk.payment.card.disabledExpired") : t("newHk.payment.card.drawerNote")}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         ) : null}
 
                         <div className="text-right font-bold mt-4">
-                            {t("newHk.payment.totals.grandTotal", { amount: grand.toFixed(2), currency:form.stripeCurrency ?? "usd" })}
+                            {t("newHk.payment.totals.grandTotal", { amount: displayedGrand.toFixed(2), currency: form.stripeCurrency ?? "usd" })}
                         </div>
                     </CardContent>
                 </Card>
@@ -2224,7 +2295,7 @@ const PaymentStep = () => {
                     open={cardDrawerOpen}
                     onOpenChange={setCardDrawerOpen}
                     clientSecret={clientSecret}
-                    amountUSD={grand}
+                    displayAmount={displayedGrand}
                     app={form}
                     onSuccess={(info) => {
                         setForm((prev: any) => ({
@@ -2615,60 +2686,62 @@ const TopBar: React.FC<{ idx: number; total: number }> = ({ idx, total }) => {
     );
 };
 
-const Sidebar: React.FC<{ steps: Step[]; currentIdx: number; 
+const Sidebar: React.FC<{
+    steps: Step[]; currentIdx: number;
     // onNavigate: (idx: number) => void; 
-    canProceed: boolean }> = ({
+    canProceed: boolean
+}> = ({
     steps,
     currentIdx,
     // onNavigate,
     canProceed,
 }) => {
-    const { t } = useTranslation();
-    return (
-        <aside className="space-y-3 sticky top-0 h-[calc(100vh-2rem)] overflow-auto">
-            <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded bg-red-600 shrink-0" />
-                <span className="text-xs font-semibold truncate">{t("panama.title")}</span>
-            </div>
+        const { t } = useTranslation();
+        return (
+            <aside className="space-y-3 sticky top-0 h-[calc(100vh-2rem)] overflow-auto">
+                <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-red-600 shrink-0" />
+                    <span className="text-xs font-semibold truncate">{t("panama.title")}</span>
+                </div>
 
-            <div className="flex flex-wrap gap-1 text-xs">
-                <Badge variant="outline">SSL</Badge>
-                <Badge variant="outline">AML/KYC</Badge>
-                <Badge variant="outline">Secure</Badge>
-            </div>
-            <div className="space-y-1 mt-3">
-                {steps.map((s, i) => {
-                    const enabled = i <= currentIdx || canProceed;
-                    const active = i === currentIdx;
-                    return (
-                        <button
-                            key={s.id}
-                            // onClick={() => enabled && onNavigate(i)}
-                            disabled={!enabled}
-                            className={cn(
-                                "w-full text-left rounded-lg border p-2 sm:p-3 transition",
-                                active && "border-primary bg-accent/10",
-                                !active && enabled && "hover:bg-accent/10",
-                                !enabled && "opacity-60 cursor-not-allowed"
-                            )}
-                        >
-                            <div className="flex items-center justify-between gap-2">
-                                <span className="font-semibold text-xs sm:text-sm truncate">
-                                    {i + 1}. {t(s.title)}
-                                </span>
-                                {i < currentIdx && (
-                                    <Badge variant="secondary" className="text-xs">
-                                        Done
-                                    </Badge>
+                <div className="flex flex-wrap gap-1 text-xs">
+                    <Badge variant="outline">SSL</Badge>
+                    <Badge variant="outline">AML/KYC</Badge>
+                    <Badge variant="outline">Secure</Badge>
+                </div>
+                <div className="space-y-1 mt-3">
+                    {steps.map((s, i) => {
+                        const enabled = i <= currentIdx || canProceed;
+                        const active = i === currentIdx;
+                        return (
+                            <button
+                                key={s.id}
+                                // onClick={() => enabled && onNavigate(i)}
+                                disabled={!enabled}
+                                className={cn(
+                                    "w-full text-left rounded-lg border p-2 sm:p-3 transition",
+                                    active && "border-primary bg-accent/10",
+                                    !active && enabled && "hover:bg-accent/10",
+                                    !enabled && "opacity-60 cursor-not-allowed"
                                 )}
-                            </div>
-                        </button>
-                    );
-                })}
-            </div>
-        </aside>
-    );
-};
+                            >
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="font-semibold text-xs sm:text-sm truncate">
+                                        {i + 1}. {t(s.title)}
+                                    </span>
+                                    {i < currentIdx && (
+                                        <Badge variant="secondary" className="text-xs">
+                                            Done
+                                        </Badge>
+                                    )}
+                                </div>
+                            </button>
+                        );
+                    })}
+                </div>
+            </aside>
+        );
+    };
 
 const FieldLabel: React.FC<{ label: string; tooltip?: string; htmlFor: string; className?: string; }> = ({ label, tooltip, htmlFor, className = "", }) => {
     const { t } = useTranslation();
@@ -3185,7 +3258,7 @@ const PanamaIncorporationForm: React.FC = () => {
                 return
             }
         }
-        if(stepIdx ==6 && form.paymentStatus !== "paid"){
+        if (stepIdx == 6 && form.paymentStatus !== "paid") {
             toast({ title: "Payment Pending", description: "Please complete the payment before proceeding Next" });
             return
         }
@@ -3202,9 +3275,9 @@ const PanamaIncorporationForm: React.FC = () => {
             <div className="grid lg:grid-cols-[280px_1fr] gap-6">
                 {/* Sidebar */}
                 <div className="hidden lg:block">
-                    <Sidebar steps={CONFIG.steps} currentIdx={stepIdx} 
-                    // onNavigate={setStepIdx} 
-                    canProceed={canProceed} />
+                    <Sidebar steps={CONFIG.steps} currentIdx={stepIdx}
+                        // onNavigate={setStepIdx} 
+                        canProceed={canProceed} />
                 </div>
 
                 <Card>
@@ -3262,4 +3335,4 @@ const PanamaIncorporationForm: React.FC = () => {
 
 export default PanamaIncorporationForm;
 
-export {PanamaQuoteSetupStep}
+export { PanamaQuoteSetupStep }
