@@ -19,6 +19,7 @@ import { computePIFGrandTotal, computePIFSetupTotal, money } from "./PaConstants
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, updateInvoicePaymentIntent, currencyOptions } from "../NewHKForm/hkIncorpo"
+import { convertCurrency, getExchangeRate } from "@/services/exchangeRate";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import { StripeSuccessInfo } from "../NewHKForm/NewHKIncorporation"
@@ -62,14 +63,14 @@ function TopBar({ title, totalSteps, idx }: { title: string; totalSteps: number;
 const cx = (...xs: (string | false | null | undefined)[]) => xs.filter(Boolean).join(" ")
 type StepLike = { id: string; title: string }
 
-function SidebarPanama({ steps, idx, 
+function SidebarPanama({ steps, idx,
   // goto, 
   canProceedFromCurrent, }: {
-  steps: StepLike[]
-  idx: number
-  // goto: (i: number) => void
-  canProceedFromCurrent: boolean
-}) {
+    steps: StepLike[]
+    idx: number
+    // goto: (i: number) => void
+    canProceedFromCurrent: boolean
+  }) {
   const canJumpTo = (target: number) => {
     if (target === idx) return true
     if (target < idx) return true
@@ -578,7 +579,7 @@ function CouncilStep() {
         setForm((prev) => ({
           ...prev,
           councilIndividuals: (prev.councilIndividuals || []).map((f) => ({ ...f, status: "Sent Invitation" })),
-          users:response.users
+          users: response.users
         }));
         toast({
           title: t("ppif.council.toasts.invite.success.title"),
@@ -588,7 +589,7 @@ function CouncilStep() {
         setForm((prev) => ({
           ...prev,
           councilIndividuals: (prev.councilIndividuals || []).map((f) => ({ ...f, status: "Resent Invitation" })),
-          users:response.users
+          users: response.users
         }));
         toast({
           title: t("ppif.council.toasts.invite.alreadyExists.title"),
@@ -2094,12 +2095,76 @@ function InvoicePIF() {
   const recordStorageFee = form.recordStorageUseMirr ? 350 : 0;
   const totalWithStorage = base + recordStorageFee;
 
+  // --- Dynamic Currency Logic ---
+  const [displayRate, setDisplayRate] = React.useState(1);
+  const selectedCurrency = form.stripeCurrency || "USD";
+
+  React.useEffect(() => {
+    async function fetchRate() {
+      if (selectedCurrency === "USD") {
+        setDisplayRate(1);
+        return;
+      }
+      try {
+        const r = await getExchangeRate("USD", selectedCurrency);
+        setDisplayRate(r);
+      } catch (e) {
+        console.error("Failed to get rate", e);
+      }
+    }
+    fetchRate();
+  }, [selectedCurrency]);
+
+  const fmtFx = (usd: number) => {
+    if (selectedCurrency === "USD") return money(usd);
+    const val = usd * displayRate;
+    // eslint-disable-next-line
+    return `${selectedCurrency.toUpperCase()} ${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-lg sm:text-xl">
           {t("ppif.invoice.title")}
         </CardTitle>
+        {/* Currency Selector */}
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">Select Payment Currency:</span>
+          <Select value={String(form.stripeCurrency ?? "USD")} onValueChange={async (val) => {
+            const newCurrency = String(val || "USD");
+            setForm((prev: any) => ({ ...prev, stripeCurrency: newCurrency }));
+
+            // Recompute grand total (USD base + card fee adjustment)
+            const newGrand = computePIFGrandTotal({ ...form, stripeCurrency: newCurrency });
+
+            if (form.paymentIntentId) {
+              try {
+                let finalTotalCents = Math.round(newGrand * 100);
+
+                if (newCurrency !== "USD") {
+                  const { convertedAmount } = await convertCurrency(newGrand, "USD", newCurrency);
+                  finalTotalCents = Math.round(convertedAmount * 100);
+                }
+
+                await updateInvoicePaymentIntent(form.paymentIntentId, { totalCents: finalTotalCents, currency: newCurrency });
+                setForm((prev: any) => ({ ...prev, paymentIntentCurrency: newCurrency }));
+                toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
+              } catch (err) {
+                console.error("Failed to update payment intent:", err);
+              }
+            }
+          }}>
+            <SelectTrigger className="h-8 w-[120px]">
+              <SelectValue placeholder={t("common.select", "Select")} />
+            </SelectTrigger>
+            <SelectContent>
+              {currencyOptions.map((o) => (
+                <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -2143,7 +2208,7 @@ function InvoicePIF() {
               </Tooltip>
             </div>
 
-            <span className="text-sm font-medium">{money(pricing.setupBase)}</span>
+            <span className="text-sm font-medium">{fmtFx(pricing.setupBase)}</span>
           </div>
 
           {/* Selects & options */}
@@ -2166,13 +2231,13 @@ function InvoicePIF() {
                     {t("ppif.invoice.setup.ndSetup.options.0")}
                   </SelectItem>
                   <SelectItem value="1">
-                    {t("ppif.invoice.setup.ndSetup.options.1", { price: money(1200) })}
+                    {t("ppif.invoice.setup.ndSetup.options.1", { price: fmtFx(1200) })}
                   </SelectItem>
                   <SelectItem value="2">
-                    {t("ppif.invoice.setup.ndSetup.options.2", { price: money(1700) })}
+                    {t("ppif.invoice.setup.ndSetup.options.2", { price: fmtFx(1700) })}
                   </SelectItem>
                   <SelectItem value="3">
-                    {t("ppif.invoice.setup.ndSetup.options.3", { price: money(2200) })}
+                    {t("ppif.invoice.setup.ndSetup.options.3", { price: fmtFx(2200) })}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -2205,7 +2270,7 @@ function InvoicePIF() {
                 disabled={isLocked}
               />
               <Label htmlFor="ns-setup">
-                {t("ppif.invoice.setup.nsSetup.label", { price: money(1300) })}
+                {t("ppif.invoice.setup.nsSetup.label", { price: fmtFx(1300) })}
               </Label>
             </div>
 
@@ -2222,7 +2287,7 @@ function InvoicePIF() {
                   disabled={isLocked}
                 />
                 <Label htmlFor="opt-emi">
-                  {t("ppif.invoice.setup.optional.emi", { price: money(400) })}
+                  {t("ppif.invoice.setup.optional.emi", { price: fmtFx(400) })}
                 </Label>
               </div>
 
@@ -2234,7 +2299,7 @@ function InvoicePIF() {
                   disabled={isLocked}
                 />
                 <Label htmlFor="opt-bank">
-                  {t("ppif.invoice.setup.optional.bank", { price: money(2000) })}
+                  {t("ppif.invoice.setup.optional.bank", { price: fmtFx(2000) })}
                 </Label>
               </div>
 
@@ -2246,7 +2311,7 @@ function InvoicePIF() {
                   disabled={isLocked}
                 />
                 <Label htmlFor="opt-cbi">
-                  {t("ppif.invoice.setup.optional.cbi", { price: money(3880) })}
+                  {t("ppif.invoice.setup.optional.cbi", { price: fmtFx(3880) })}
                 </Label>
               </div>
             </div>
@@ -2262,7 +2327,7 @@ function InvoicePIF() {
                     "Use Mirr Asia record-storage address (Mirr Asia address used)"
                   )}
                 </span>
-                <span className="text-sm font-medium">{money(recordStorageFee)}</span>
+                <span className="text-sm font-medium">{fmtFx(recordStorageFee)}</span>
               </div>
             )}
 
@@ -2272,7 +2337,7 @@ function InvoicePIF() {
                 {t("ppif.invoice.setup.totals.setupY1")}
               </span>
               <span className="text-sm font-medium">
-                {money(totalWithStorage)}
+                {fmtFx(totalWithStorage)}
               </span>
             </div>
           </div>
@@ -2488,12 +2553,12 @@ function StripePaymentForm({ app, onSuccess, onClose }: {
   );
 }
 
-function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, onSuccess
+function StripeCardDrawer({ open, onOpenChange, clientSecret, displayAmount, app, onSuccess
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   clientSecret: string;
-  amountUSD: number;
+  displayAmount: number;
   app: PanamaPIFForm;
   onSuccess: (info: StripeSuccessInfo) => void;
 }) {
@@ -2506,7 +2571,7 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
   );
 
   const note = app.payMethod === "card" ? t("ppif.payment.stripe.drawer.cardFeeNote") : "";
-  const usedCcy = app.pricing?.currency ?? "USD";
+  const usedCcy = app.stripeCurrency ?? "USD";
   const getCardFeePct = (currency?: string) => {
     if (!currency) return 0.035;
     if (String(currency).toUpperCase() === "USD") return 0.06;
@@ -2520,7 +2585,7 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amountUSD, app, on
           <SheetTitle>{t("ppif.payment.stripe.drawer.title")}</SheetTitle>
           <SheetDescription>
             {t("ppif.payment.stripe.drawer.description", {
-              amount: `${usedCcy} ${amountUSD.toFixed(2)}`,
+              amount: `${usedCcy} ${displayAmount.toFixed(2)}`,
               note: `${note} ${app.payMethod === "card" ? `(${Math.round(getCardFeePct(usedCcy) * 100)}% card fee)` : ""}`,
             })}
           </SheetDescription>
@@ -2613,7 +2678,28 @@ function PaymentStepPIF() {
     return false;
   };
 
+  // --- Dynamic Currency Display Logic (Payment Step) ---
+  const [displayRate, setDisplayRate] = React.useState(1);
+  const selectedCurrency = form.stripeCurrency || "USD";
+
+  React.useEffect(() => {
+    async function fetchRate() {
+      if (selectedCurrency === "USD") {
+        setDisplayRate(1);
+        return;
+      }
+      try {
+        const r = await getExchangeRate("USD", selectedCurrency);
+        setDisplayRate(r);
+      } catch (err) {
+        console.error("Failed to fetch rate for payment display", err);
+      }
+    }
+    fetchRate();
+  }, [selectedCurrency]);
+
   const grand = computePIFGrandTotal(form);
+  const displayedGrand = grand * displayRate;
 
   // UI state
   const [creatingPI, setCreatingPI] = React.useState(false);
@@ -2630,21 +2716,33 @@ function PaymentStepPIF() {
     }
     setCreatingPI(true);
     try {
-      const usedCurrency = form.pricing?.currency ?? "USD";
+      const usedCurrency = (form.stripeCurrency || "USD").toUpperCase();
+      let finalTotalCents = Math.round(grand * 100);
+      let exchangeRateUsed: number | undefined;
+
+      // Dynamic conversion if not USD
+      if (usedCurrency !== "USD") {
+        const { convertedAmount, rate } = await convertCurrency(grand, "USD", usedCurrency);
+        finalTotalCents = Math.round(convertedAmount * 100);
+        exchangeRateUsed = rate;
+      }
+
       const currentFP = {
         companyId: form?._id ?? null,
-        totalCents: Math.round(grand * 100),
+        totalCents: finalTotalCents,
         country: "PIF",
         currency: usedCurrency,
       };
       const result = await createInvoicePaymentIntent(currentFP);
       if (result?.clientSecret && result?.id) {
         setClientSecret(result.clientSecret);
-        setForm((p) => ({ ...p, paymentIntentId: result.id, payMethod: "card", paymentIntentCurrency: usedCurrency, pricing: { ...(p.pricing || {}), currency: usedCurrency } }));
+        setForm((p) => ({ ...p, paymentIntentId: result.id, payMethod: "card", paymentIntentCurrency: usedCurrency, brandingCurrency: usedCurrency, stripeCurrency: usedCurrency, ...(exchangeRateUsed ? { exchangeRateUsed, originalAmountUsd: grand } : {}) }));
         setCardDrawerOpen(true);
       } else {
         alert(t("ppif.payment.step.alerts.cardInitError"));
       }
+    } catch (e) {
+      console.error("PI creation failed:", e);
     } finally {
       setCreatingPI(false);
     }
@@ -2836,33 +2934,8 @@ function PaymentStepPIF() {
               {form.payMethod === "card" && !isPaid && (
                 <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:gap-4">
                   <div className="flex items-center gap-2">
-                    <div className="text-sm text-muted-foreground">Currency:</div>
-                    <Select value={String(form.stripeCurrency ?? "USD")} onValueChange={async (val) => {
-                      const newCurrency = String(val || "USD");
-                      // persist into pricing.currency
-                      setForm((p) => ({ ...p, stripeCurrency: newCurrency }));
-                      // Recompute and update existing payment intent if present
-                      const newGrand = computePIFGrandTotal({ ...form,stripeCurrency: newCurrency });
-                      if (form.paymentIntentId) {
-                        try {
-                          await updateInvoicePaymentIntent(form.paymentIntentId, { totalCents: Math.round(newGrand * 100), currency: newCurrency });
-                          setForm((p) => ({ ...p, paymentIntentCurrency: newCurrency }));
-                          toast({ title: t("newHk.payment.totals.updated"), description: t("newHk.payment.totals.updatedDesc") });
-                        } catch (err) {
-                          console.error("Failed to update payment intent:", err);
-                          toast({ title: t("newHk.payment.totals.updateFailed"), description: t("newHk.payment.totals.tryAgain"), variant: "destructive" });
-                        }
-                      }
-                    }}>
-                      <SelectTrigger className="h-8">
-                        <SelectValue placeholder={t("common.select","Select")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {currencyOptions.map((o) => (
-                          <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <span className="text-sm text-muted-foreground">Currency:</span>
+                    <span className="text-sm font-semibold">{form.stripeCurrency ?? "USD"}</span>
                   </div>
 
                   <div className="mt-2 sm:mt-0">
@@ -2880,7 +2953,7 @@ function PaymentStepPIF() {
 
               {/* Grand total */}
               <div className="text-right font-bold mt-4">
-                {t("newHk.payment.totals.grandTotal", { amount: grand.toFixed(2),currency: form.stripeCurrency ?? "USD", })}
+                {t("newHk.payment.totals.grandTotal", { amount: displayedGrand.toFixed(2), currency: form.stripeCurrency || "USD" })}
               </div>
             </CardContent>
           </Card>
@@ -2892,7 +2965,7 @@ function PaymentStepPIF() {
             open={cardDrawerOpen}
             onOpenChange={setCardDrawerOpen}
             clientSecret={clientSecret}
-            amountUSD={grand}
+            displayAmount={displayedGrand}
             app={form}
             onSuccess={(info) => {
               setForm((prev) => ({
