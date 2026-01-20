@@ -18,6 +18,7 @@ import { Checkbox } from "../ui/checkbox"
 import { ConfirmDialog } from "../shared/ConfirmDialog"
 import UserVerificationCard from "./UserVerificationCard"
 import SearchBox from "@/pages/MasterTodo/SearchBox"
+import UserOtherDocumentsCard from "./UserOtherDocumentsCard";
 
 export interface User {
     _id?: string;
@@ -52,6 +53,16 @@ export interface User {
         label: string;
         checked: boolean;
     }[]
+    otherDocuments?: {
+        _id: string;
+        url: string;
+        name: string;
+        size: number;
+        type: string;
+        uploadedAt: string;
+        status: "pending" | "uploaded" | "verified" | "rejected" | string;
+    }[];
+
 }
 
 type SortKey = "fullName" | "email" | "role" | "createdAt" | "updatedAt";
@@ -205,7 +216,7 @@ const UsersList = () => {
         }
     };
 
-    // console.log('Review updated:', selectedUser);
+    console.log('Review updated:', selectedUser);
     const handleReviewUpdate = async (review: any) => {
         try {
             const userData = selectedUser
@@ -763,6 +774,7 @@ const UsersList = () => {
                                 addressProofStatus={selectedUser?.kycDocuments?.addressProofStatus || "pending"}
                                 onReviewUpdate={handleReviewUpdate}
                             />
+                             <UserOtherDocumentsCard docs={(selectedUser as any)?.otherDocuments || []} />
                         </TabsContent>
 
                         <TabsContent value="companies" className="space-y-4">
@@ -923,15 +935,6 @@ const UsersList = () => {
                                             </Button>
                                         </div>
 
-                                        {/* Sent Messages 
-                                        <div className="space-y-2 pt-4 border-t">
-                                            <p className="font-semibold text-sm text-muted-foreground">Sent Messages</p>
-                                            {sentMessages.map((msg) => (
-                                                <div key={msg.id} className="p-3 rounded-md border text-sm bg-muted">
-                                                    {msg.content}
-                                                </div>
-                                            ))}
-                                        </div>*/}
                                     </CardContent>
                                 </Card>
                             </div>

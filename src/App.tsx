@@ -47,7 +47,6 @@ import ToDoList from './pages/MasterTodo/Mtodo';
 import ProjectDetail from './pages/dashboard/Admin/Projects/ProjectDetail';
 import CurrentCorporateClientList from './pages/dashboard/Admin/CurrentCorporateClientList';
 import CountryWiseShareholder from './components/ShrDirForm/CountryWiseShrDir';
-// import UsersList1 from './components/userList/uList2';
 import CurrentCorpClient from './pages/CurrentClient/CurrentCorpClient';
 import SMSTracker from './components/smsManager/SmsManager';
 import InvoiceManager from './components/InvoiceManager/InvoiceManager';
