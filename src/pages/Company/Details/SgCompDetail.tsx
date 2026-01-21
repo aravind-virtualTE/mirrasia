@@ -118,7 +118,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [selectedData, setSelectedData] = React.useState<any>(null);
   const [memType, setMemType] = React.useState<any>(null);
-  
+
   const [session, setSession] = useState<SessionData>({
     _id: "",
     amount: 0,
@@ -138,10 +138,14 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const bootstrap = async () => {
       const data = await getSgIncorpoDataById(`${id}`);
 
-      // hydrate names array from new fields
+      // hydrate names array from new fields and assign stable keys to parties
       const hydrated = {
         ...data,
         companyName: namesFromFields(data),
+        parties: (data.parties || []).map((p: any) => ({
+          ...p,
+          __key: p.__key || crypto.randomUUID(),
+        })),
       };
 
       setForm(hydrated);
@@ -290,6 +294,28 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
     setForm(clone);
   };
 
+  const addNewParty = () => {
+    const next = [...(form.parties || [])];
+    next.push({
+      name: "",
+      email: "",
+      shares: undefined,
+      typeOfShare: "",
+      isDirector: false,
+      isDcp: false,
+      isSignificant: false,
+      status: "Not invited",
+      __key: crypto.randomUUID(),
+    });
+    setForm({ ...form, parties: next });
+  };
+
+  const deletePartyAt = (index: number) => {
+    const next = [...(form.parties || [])];
+    next.splice(index, 1);
+    setForm({ ...form, parties: next });
+  };
+
   const sendInvite = async (party: any) => {
     const payload = { _id: id || "", inviteData: [{ email: party.email, name: party.name, isDcp: party.isDcp }], country: "SG" };
     const response = await sendInviteToShDir(payload);
@@ -321,13 +347,13 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
   const showMemberDetails = async (email: string, isCorp: boolean) => {
     const type = isCorp === true ? "SG_Corporate" : "SG_Individual";
-      const res = await getShrMemberData(id, email, "SG", type);
-      setMemType(type);
-      console.log("email--->", email, id, type, res)
-      setSelectedData(res.data);
-      setIsDialogOpen(true);
-    }
-    
+    const res = await getShrMemberData(id, email, "SG", type);
+    setMemType(type);
+    console.log("email--->", email, id, type, res)
+    setSelectedData(res.data);
+    setIsDialogOpen(true);
+  }
+
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
@@ -383,6 +409,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         ) : (
                           <Input
                             value={primaryName}
+                            onClick={(e) => e.stopPropagation()}
                             onChange={(e) => patchNames(0, e.target.value)}
                             className="h-8 text-base"
                             placeholder="Company Name"
@@ -400,23 +427,25 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             </span>
 
                             {user?.role !== "user" ? (
-                              <Select
-                                value={currentStatus}
-                                onValueChange={(val) =>
-                                  patchForm("incorporationStatus", val as any)
-                                }
-                              >
-                                <SelectTrigger className="h-7 w-[240px]">
-                                  <SelectValue placeholder="Select status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {STATUS_OPTIONS.map((s) => (
-                                    <SelectItem key={s} value={s}>
-                                      {s}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <div onClick={(e) => e.stopPropagation()}>
+                                <Select
+                                  value={currentStatus}
+                                  onValueChange={(val) =>
+                                    patchForm("incorporationStatus", val as any)
+                                  }
+                                >
+                                  <SelectTrigger className="h-7 w-[240px]">
+                                    <SelectValue placeholder="Select status" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {STATUS_OPTIONS.map((s) => (
+                                      <SelectItem key={s} value={s}>
+                                        {s}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
                             ) : (
                               <Badge variant="default">{currentStatus}</Badge>
                             )}
@@ -583,13 +612,14 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                               <TableHead className="w-[80px]">DCP</TableHead>
                               <TableHead className="w-[80px]">Significant Controller</TableHead>
                               <TableHead className="w-[160px]">Status</TableHead>
+                              {isEditing && isAdmin && <TableHead className="w-[80px]">Actions</TableHead>}
                             </TableRow>
                           </TableHeader>
 
                           <TableBody>
                             {form.parties.map((p: any, index: number) => (
                               <TableRow
-                                key={p._id || index}
+                                key={p.__key ?? index}
                                 className={`align-top ${!isEditing && p?.email ? "cursor-pointer" : ""
                                   }`}
                                 onClick={
@@ -605,6 +635,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                       className="h-8 w-full min-w-[180px]"
                                       placeholder="Name"
                                       value={p.name || ""}
+                                      onClick={(e) => e.stopPropagation()}
                                       onChange={(e) => updatePartyAt(index, { name: e.target.value })}
                                     />
                                   ) : (
@@ -620,6 +651,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                       type="email"
                                       placeholder="Email"
                                       value={p.email || ""}
+                                      onClick={(e) => e.stopPropagation()}
                                       onChange={(e) => updatePartyAt(index, { email: e.target.value })}
                                     />
                                   ) : (
@@ -635,6 +667,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                       type="number"
                                       placeholder="Shares"
                                       value={p.shares ?? ""}
+                                      onClick={(e) => e.stopPropagation()}
                                       onChange={(e) => {
                                         const raw = e.target.value;
                                         const val = raw === "" ? undefined : Number(raw);
@@ -653,6 +686,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                       className="h-8 w-full min-w-[120px]"
                                       placeholder="Share type"
                                       value={p.typeOfShare || ""}
+                                      onClick={(e) => e.stopPropagation()}
                                       onChange={(e) => updatePartyAt(index, { typeOfShare: e.target.value })}
                                     />
                                   ) : (
@@ -665,7 +699,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                 {/* Director */}
                                 <TableCell className="whitespace-nowrap">
                                   {isAdmin && isEditing ? (
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                                       <Switch
                                         checked={!!p.isDirector}
                                         onCheckedChange={(checked) => updatePartyAt(index, { isDirector: checked })}
@@ -680,7 +714,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                 {/* DCP */}
                                 <TableCell className="whitespace-nowrap">
                                   {isAdmin && isEditing ? (
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                                       <Switch
                                         checked={!!p.isDcp}
                                         onCheckedChange={(checked) => updatePartyAt(index, { isDcp: checked })}
@@ -695,7 +729,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                 {/* Significant Controller */}
                                 <TableCell className="whitespace-nowrap">
                                   {isAdmin && isEditing ? (
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                                       <Switch
                                         checked={!!p.isSignificant}
                                         onCheckedChange={(checked) => updatePartyAt(index, { isSignificant: checked })}
@@ -728,6 +762,20 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                     )}
                                   </div>
                                 </TableCell>
+                                 {isEditing && isAdmin && (
+                                   <TableCell>
+                                     <Button
+                                       variant="destructive"
+                                       size="sm"
+                                       onClick={(e) => {
+                                         e.stopPropagation();
+                                         deletePartyAt(index);
+                                       }}
+                                     >
+                                       <Trash2 className="h-3.5 w-3.5" />
+                                     </Button>
+                                   </TableCell>
+                                 )}
                               </TableRow>
                             ))}
                           </TableBody>
@@ -738,6 +786,19 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   ) : (
                     <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
                       No parties added.
+                    </div>
+                  )}
+                  {isEditing && isAdmin && (
+                    <div className="mt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={addNewParty}
+                        className="flex items-center gap-2"
+                      >
+                        <span className="text-lg leading-none">+</span>
+                        Add Party
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -1053,12 +1114,12 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
         )
       }
       {memType == "SG_Individual" && isDialogOpen && (
-          <SgIndividualShrDetail
-            isOpen={isDialogOpen}
-            onClose={() => setIsDialogOpen(false)}
-            data={selectedData}
-          />
-        ) }
+        <SgIndividualShrDetail
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          data={selectedData}
+        />
+      )}
     </Tabs>
   );
 };

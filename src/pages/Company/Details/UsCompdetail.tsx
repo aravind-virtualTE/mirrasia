@@ -177,7 +177,19 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   useEffect(() => {
     const bootstrap = async () => {
       const data = await getUsIncorpoDataById(`${id}`);
-      setForm(data);
+
+      // Add stable __key to existing shareholders
+      const withKeys = {
+        ...data,
+        shareHolders: (data.shareHolders ?? []).map((p: any) => ({
+          ...p,
+          __key: p.__key ?? (typeof crypto !== "undefined" && "randomUUID" in crypto
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random()}`),
+        })),
+      };
+
+      setForm(withKeys);
       setAdminAssigned(data.assignedTo || "");
 
       if (data.sessionId) {
@@ -390,6 +402,34 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     });
   };
 
+  const addNewShareholder = () => {
+    setForm((prev: any) => {
+      const newShareholder = {
+        __key: typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random()}`,
+        name: "",
+        email: "",
+        isDirector: { id: "no", value: "No" },
+        ownershipRate: undefined,
+        ownerShipRate: undefined,
+        isDcp: false,
+        isLegalPerson: { id: "no", value: "No" },
+        status: "Not invited",
+      };
+      const shareholders = Array.isArray(prev.shareHolders) ? [...prev.shareHolders, newShareholder] : [newShareholder];
+      return { ...prev, shareHolders: shareholders };
+    });
+  };
+
+  const deleteShareholderAt = (index: number) => {
+    setForm((prev: any) => {
+      if (!prev || !Array.isArray(prev.shareHolders)) return prev;
+      const shareholders = prev.shareHolders.filter((_: any, i: number) => i !== index);
+      return { ...prev, shareHolders: shareholders };
+    });
+  };
+
   return (
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       {/* TAB HEADERS */}
@@ -466,6 +506,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                         {isEditing ? (
                           <Input
                             value={primaryName}
+                            onClick={(e) => e.stopPropagation()}
                             onChange={(e) => {
                               patchForm("companyName_1", e.target.value);
                             }}
@@ -498,23 +539,25 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             </span>
 
                             {isAdmin ? (
-                              <Select
-                                value={currentStatus}
-                                onValueChange={(val) =>
-                                  patchForm("incorporationStatus", val as any)
-                                }
-                              >
-                                <SelectTrigger className="h-7 w-[240px]">
-                                  <SelectValue placeholder="Select status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {STATUS_OPTIONS.map((s) => (
-                                    <SelectItem key={s} value={s}>
-                                      {s}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <div onClick={(e) => e.stopPropagation()}>
+                                <Select
+                                  value={currentStatus}
+                                  onValueChange={(val) =>
+                                    patchForm("incorporationStatus", val as any)
+                                  }
+                                >
+                                  <SelectTrigger className="h-7 w-[240px]">
+                                    <SelectValue placeholder="Select status" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {STATUS_OPTIONS.map((s) => (
+                                      <SelectItem key={s} value={s}>
+                                        {s}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
                             ) : (
                               <Badge variant="default">{currentStatus}</Badge>
                             )}
@@ -686,7 +729,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 {/* Shareholders / directors */}
                 <div className="space-y-3">
                   <div className="text-sm font-medium">
-                    Shareholding & Parties
+                    Shareholders / Directors / DCP
                   </div>
                   {Array.isArray(form?.shareHolders) &&
                     form.shareHolders.length ? (
@@ -694,31 +737,32 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[24%]">
+                            <TableHead className="w-[20%]">
                               Name
                             </TableHead>
-                            <TableHead className="w-[20%]">
+                            <TableHead className="w-[18%]">
                               Email
                             </TableHead>
-                            <TableHead className="w-[18%]">
+                            <TableHead className="w-[14%]">
                               Director
                             </TableHead>
-                            <TableHead className="w-[16%]">
+                            <TableHead className="w-[12%]">
                               Ownership
                             </TableHead>
-                            <TableHead className="w-[16%]">
+                            <TableHead className="w-[12%]">
                               DCP
                             </TableHead>
                             <TableHead className="w-[8%]">
                               Legal Entity
                             </TableHead>
-                            <TableHead className="w-[16%]">Status</TableHead>
+                            <TableHead className="w-[10%]">Status</TableHead>
+                            {isEditing && isAdmin && <TableHead className="w-[6%]">Actions</TableHead>}
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {form.shareHolders.map((p: any, i: number) => (
                             <TableRow
-                              key={(p?.email || p?.name || "sh") + i}
+                              key={p?.__key ?? i}
                               onClick={
                                 !isEditing
                                   ? () => showMemberDetails(p.email)
@@ -731,6 +775,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                   <Input
                                     className="h-8"
                                     value={p?.name || ""}
+                                    onClick={(e) => e.stopPropagation()}
                                     onChange={(e) =>
                                       updateShareholderAt(i, { name: e.target.value })
                                     }
@@ -746,6 +791,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                     className="h-8"
                                     type="email"
                                     value={p?.email || ""}
+                                    onClick={(e) => e.stopPropagation()}
                                     onChange={(e) =>
                                       updateShareholderAt(i, { email: e.target.value })
                                     }
@@ -767,6 +813,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                     className="h-8"
                                     type="number"
                                     value={p?.ownershipRate ?? p?.ownerShipRate ?? ""}
+                                    onClick={(e) => e.stopPropagation()}
                                     onChange={(e) => {
                                       const raw = e.target.value;
                                       const val = raw === "" ? "" : Number(raw);
@@ -790,7 +837,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                                   {/* DCP editable toggle when editing */}
                                   {isEditing ? (
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                                       <span className="text-xs text-muted-foreground">
                                         DCP
                                       </span>
@@ -849,6 +896,22 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                   </Button>
                                 )}
                               </TableCell>
+
+                              {/* Actions (delete button) */}
+                              {isEditing && isAdmin && (
+                                <TableCell>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      deleteShareholderAt(i);
+                                    }}
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </Button>
+                                </TableCell>
+                              )}
                             </TableRow>
                           ))}
                         </TableBody>
@@ -857,6 +920,19 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   ) : (
                     <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
                       No parties added.
+                    </div>
+                  )}
+                  {isEditing && isAdmin && (
+                    <div className="mt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={addNewShareholder}
+                        className="flex items-center gap-2"
+                      >
+                        <span className="text-lg leading-none">+</span>
+                        Add Shareholder
+                      </Button>
                     </div>
                   )}
                 </div>

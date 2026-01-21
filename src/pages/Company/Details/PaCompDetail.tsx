@@ -218,7 +218,24 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
             const filtered = response.filter((e: { role: string }) => e.role === "admin" || e.role === "master");
             setUsers(filtered);
 
-            setFormData(data);
+            // Add stable __key to existing shareholders and legalDirectors
+            const withKeys = {
+                ...data,
+                shareHolders: (data.shareHolders ?? []).map((p: any) => ({
+                    ...p,
+                    __key: p.__key ?? (typeof crypto !== "undefined" && "randomUUID" in crypto
+                        ? crypto.randomUUID()
+                        : `${Date.now()}-${Math.random()}`),
+                })),
+                legalDirectors: (data.legalDirectors ?? []).map((d: any) => ({
+                    ...d,
+                    __key: d.__key ?? (typeof crypto !== "undefined" && "randomUUID" in crypto
+                        ? crypto.randomUUID()
+                        : `${Date.now()}-${Math.random()}`),
+                })),
+            };
+
+            setFormData(withKeys);
         }
         load();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -362,6 +379,73 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
         });
     };
 
+    const addNewShareholder = () => {
+        setFormData((prev: any) => {
+            if (!prev) return prev;
+            const newShareholder = {
+                __key: typeof crypto !== "undefined" && "randomUUID" in crypto
+                    ? crypto.randomUUID()
+                    : `${Date.now()}-${Math.random()}`,
+                name: "",
+                email: "",
+                role: { id: "", value: "" },
+                typeOfShare: "Ordinary",
+                shares: undefined,
+                isLegalPerson: { id: "no", value: "No" },
+                isDcp: false,
+                status: "Not invited",
+            };
+            const shareholders = prev.shareHolders ? [...prev.shareHolders, newShareholder] : [newShareholder];
+            return { ...prev, shareHolders: shareholders };
+        });
+    };
+
+    const deleteShareholderAt = (index: number) => {
+        setFormData((prev: any) => {
+            if (!prev || !Array.isArray(prev.shareHolders)) return prev;
+            const shareholders = prev.shareHolders.filter((_: any, i: number) => i !== index);
+            return { ...prev, shareHolders: shareholders };
+        });
+    };
+
+    const updateLegalDirectorAt = (index: number, patch: any) => {
+        setFormData((prev: any) => {
+            if (!prev || !Array.isArray(prev.legalDirectors)) return prev;
+            const clone: any = { ...prev };
+            const arr = [...clone.legalDirectors];
+            arr[index] = { ...arr[index], ...patch };
+            clone.legalDirectors = arr;
+            return clone;
+        });
+    };
+
+    const addNewLegalDirector = () => {
+        setFormData((prev: any) => {
+            if (!prev) return prev;
+            const newDirector = {
+                __key: typeof crypto !== "undefined" && "randomUUID" in crypto
+                    ? crypto.randomUUID()
+                    : `${Date.now()}-${Math.random()}`,
+                name: "",
+                email: "",
+                role: { id: "director", value: "Director" },
+                shares: undefined,
+                isLegalPerson: { id: "no", value: "No" },
+                status: "Not invited",
+            };
+            const directors = prev.legalDirectors ? [...prev.legalDirectors, newDirector] : [newDirector];
+            return { ...prev, legalDirectors: directors };
+        });
+    };
+
+    const deleteLegalDirectorAt = (index: number) => {
+        setFormData((prev: any) => {
+            if (!prev || !Array.isArray(prev.legalDirectors)) return prev;
+            const directors = prev.legalDirectors.filter((_: any, i: number) => i !== index);
+            return { ...prev, legalDirectors: directors };
+        });
+    };
+
     const showMemberDetails = async (email: string, isCorp: string) => {
         const type = isCorp == 'yes' ? "PA_Corporate" : "PA_Individual";
         // console.log("email", email, "isCorp", isCorp);
@@ -443,6 +527,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                         <Input
                                                             value={f.name1 || ""}
                                                             onChange={(e) => patchForm("name1", e.target.value)}
+                                                            onClick={(e) => e.stopPropagation()}
                                                             className="h-8 text-base"
                                                             placeholder="Company Name"
                                                         />
@@ -549,12 +634,14 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                     <Input
                                                         value={f.name2 || ""}
                                                         onChange={(e) => patchForm("name2", e.target.value)}
+                                                        onClick={(e) => e.stopPropagation()}
                                                         placeholder="Name 2"
                                                         className="h-8"
                                                     />
                                                     <Input
                                                         value={f.name3 || ""}
                                                         onChange={(e) => patchForm("name3", e.target.value)}
+                                                        onClick={(e) => e.stopPropagation()}
                                                         placeholder="Name 3"
                                                         className="h-8"
                                                     />
@@ -662,7 +749,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             {/* ► Shareholders now reflect new sample structure */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Shareholders/DCP</CardTitle>
+                                    <CardTitle>Shareholders / Directors / DCP</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     {Array.isArray((formData as any)?.shareHolders) &&
@@ -671,13 +758,14 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                             <Table>
                                                 <TableHeader>
                                                     <TableRow>
-                                                        <TableHead className="w-[22%]">Name</TableHead>
-                                                        <TableHead className="w-[16%]">Role</TableHead>
-                                                        <TableHead className="w-[18%]">Share Type</TableHead>
-                                                        <TableHead className="w-[18%]">Shares / Ownership</TableHead>
-                                                        <TableHead className="w-[14%]">Legal Person</TableHead>
-                                                        <TableHead className="w-[12%]">DCP</TableHead>
+                                                        <TableHead className="w-[20%]">Name</TableHead>
+                                                        <TableHead className="w-[14%]">Role</TableHead>
+                                                        <TableHead className="w-[14%]">Share Type</TableHead>
+                                                        <TableHead className="w-[14%]">Shares / Ownership</TableHead>
+                                                        <TableHead className="w-[12%]">Legal Person</TableHead>
+                                                        <TableHead className="w-[10%]">DCP</TableHead>
                                                         <TableHead className="w-[10%]">Status</TableHead>
+                                                        {isEditing && isAdmin && <TableHead className="w-[6%]">Actions</TableHead>}
                                                     </TableRow>
                                                 </TableHeader>
 
@@ -711,7 +799,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                 : p.isLegalPerson?.id || "";
 
                                                         return (
-                                                            <TableRow key={(p?.name || "shareholder") + i}
+                                                            <TableRow key={p?.__key ?? i}
                                                                 className={`align-top ${!isEditing && p?.email ? "cursor-pointer" : ""
                                                                     }`}
                                                                 onClick={
@@ -733,6 +821,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                                         onChange={(e) =>
                                                                                             updateShareholderAt(i, { name: e.target.value })
                                                                                         }
+                                                                                        onClick={(e) => e.stopPropagation()}
                                                                                     />
                                                                                     <Input
                                                                                         className="h-7 text-xs"
@@ -742,6 +831,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                                         onChange={(e) =>
                                                                                             updateShareholderAt(i, { email: e.target.value })
                                                                                         }
+                                                                                        onClick={(e) => e.stopPropagation()}
                                                                                     />
                                                                                 </>
                                                                             ) : (
@@ -761,28 +851,30 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                 {/* Role column */}
                                                                 <TableCell className="text-sm">
                                                                     {isAdmin && isEditing ? (
-                                                                        <Select
-                                                                            value={p.role?.id || ""}
-                                                                            onValueChange={(id) => {
-                                                                                const selected =
-                                                                                    ROLE_OPTIONS.find((r) => r.id === id) ||
-                                                                                    { id: "", value: "" };
-                                                                                updateShareholderAt(i, { role: selected });
-                                                                            }}
-                                                                        >
-                                                                            <SelectTrigger className="h-8">
-                                                                                <SelectValue
-                                                                                    placeholder={t("common.select", "Select")}
-                                                                                />
-                                                                            </SelectTrigger>
-                                                                            <SelectContent>
-                                                                                {ROLE_OPTIONS.map((r) => (
-                                                                                    <SelectItem key={r.id} value={r.id}>
-                                                                                        {t(r.value)}
-                                                                                    </SelectItem>
-                                                                                ))}
-                                                                            </SelectContent>
-                                                                        </Select>
+                                                                        <div onClick={(e) => e.stopPropagation()}>
+                                                                            <Select
+                                                                                value={p.role?.id || ""}
+                                                                                onValueChange={(id) => {
+                                                                                    const selected =
+                                                                                        ROLE_OPTIONS.find((r) => r.id === id) ||
+                                                                                        { id: "", value: "" };
+                                                                                    updateShareholderAt(i, { role: selected });
+                                                                                }}
+                                                                            >
+                                                                                <SelectTrigger className="h-8">
+                                                                                    <SelectValue
+                                                                                        placeholder={t("common.select", "Select")}
+                                                                                    />
+                                                                                </SelectTrigger>
+                                                                                <SelectContent>
+                                                                                    {ROLE_OPTIONS.map((r) => (
+                                                                                        <SelectItem key={r.id} value={r.id}>
+                                                                                            {t(r.value)}
+                                                                                        </SelectItem>
+                                                                                    ))}
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                        </div>
                                                                     ) : (
                                                                         <span>
                                                                             {p.role?.id ||
@@ -803,6 +895,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                                     typeOfShare: e.target.value,
                                                                                 })
                                                                             }
+                                                                            onClick={(e) => e.stopPropagation()}
                                                                         />
                                                                     ) : (
                                                                         <div className="flex flex-col">
@@ -830,6 +923,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                                         raw === "" ? undefined : Number(raw);
                                                                                     updateShareholderAt(i, { shares: val });
                                                                                 }}
+                                                                                onClick={(e) => e.stopPropagation()}
                                                                             />
                                                                             {pct != null && (
                                                                                 <span className="text-xs text-muted-foreground">
@@ -856,25 +950,27 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                 {/* Legal Person (unchanged) */}
                                                                 <TableCell className="text-sm">
                                                                     {isAdmin && isEditing ? (
-                                                                        <Select
-                                                                            value={legalPersonValue}
-                                                                            onValueChange={(val) =>
-                                                                                updateShareholderAt(i, {
-                                                                                    isLegalPerson: {
-                                                                                        id: val,
-                                                                                        value: val === "yes" ? "Yes" : "No",
-                                                                                    },
-                                                                                })
-                                                                            }
-                                                                        >
-                                                                            <SelectTrigger className="h-8">
-                                                                                <SelectValue placeholder="Select" />
-                                                                            </SelectTrigger>
-                                                                            <SelectContent>
-                                                                                <SelectItem value="yes">Yes</SelectItem>
-                                                                                <SelectItem value="no">No</SelectItem>
-                                                                            </SelectContent>
-                                                                        </Select>
+                                                                        <div onClick={(e) => e.stopPropagation()}>
+                                                                            <Select
+                                                                                value={legalPersonValue}
+                                                                                onValueChange={(val) =>
+                                                                                    updateShareholderAt(i, {
+                                                                                        isLegalPerson: {
+                                                                                            id: val,
+                                                                                            value: val === "yes" ? "Yes" : "No",
+                                                                                        },
+                                                                                    })
+                                                                                }
+                                                                            >
+                                                                                <SelectTrigger className="h-8">
+                                                                                    <SelectValue placeholder="Select" />
+                                                                                </SelectTrigger>
+                                                                                <SelectContent>
+                                                                                    <SelectItem value="yes">Yes</SelectItem>
+                                                                                    <SelectItem value="no">No</SelectItem>
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                        </div>
                                                                     ) : (
                                                                         t(legalPersonLabel)
                                                                     )}
@@ -883,7 +979,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                 {/* DCP flag (unchanged) */}
                                                                 <TableCell className="text-sm">
                                                                     {isAdmin && isEditing ? (
-                                                                        <div className="flex items-center gap-2">
+                                                                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                                                                             <Switch
                                                                                 checked={!!p.isDcp}
                                                                                 onCheckedChange={(checked) =>
@@ -915,6 +1011,22 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                         {p.status === "Invited" ? "Invited" : "Not invited"}
                                                                     </Badge>
                                                                 </TableCell>
+
+                                                                {/* Actions (delete button) */}
+                                                                {isEditing && isAdmin && (
+                                                                    <TableCell className="text-sm">
+                                                                        <Button
+                                                                            variant="destructive"
+                                                                            size="sm"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                deleteShareholderAt(i);
+                                                                            }}
+                                                                        >
+                                                                            <Trash2 className="h-3.5 w-3.5" />
+                                                                        </Button>
+                                                                    </TableCell>
+                                                                )}
                                                             </TableRow>
                                                         );
                                                     })}
@@ -924,6 +1036,19 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                     ) : (
                                         <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
                                             No parties added.
+                                        </div>
+                                    )}
+                                    {isEditing && isAdmin && (
+                                        <div className="mt-4">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={addNewShareholder}
+                                                className="flex items-center gap-2"
+                                            >
+                                                <span className="text-lg leading-none">+</span>
+                                                Add Shareholder
+                                            </Button>
                                         </div>
                                     )}
 
@@ -947,47 +1072,176 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                     </div>}
                                 </CardContent>
                             </Card>
-                            {formData?.legalDirectors && formData.legalDirectors.length > 0 && (
+                            {(formData?.legalDirectors && formData.legalDirectors.length > 0) || (isEditing && isAdmin) ? (
                                 <div className="mt-6">
                                     <h3 className="text-sm font-medium mb-2">Legal Directors</h3>
-                                    <div className="rounded-md border">
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="w-[35%]">Director</TableHead>
-                                                    <TableHead className="w-[20%]">Role</TableHead>
-                                                    <TableHead className="w-[20%]">Shares</TableHead>
-                                                    <TableHead className="w-[15%]">Legal Person</TableHead>
-                                                    <TableHead className="w-[10%]">Status</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-
-                                            <TableBody>
-                                                {formData.legalDirectors.map((d: any, idx: number) => (
-                                                    <TableRow key={idx}>
-                                                        <TableCell>
-                                                            <div className="flex items-center gap-2">
-                                                                <FallbackAvatar name={d.name || "Director"} />
-                                                                <div className="grid">
-                                                                    <span className="font-medium">{d.name || "—"}</span>
-                                                                    <span className="text-xs text-muted-foreground">
-                                                                        {d.email || "—"}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </TableCell>
-
-                                                        <TableCell>{(d.role?.id) || "—"}</TableCell>
-                                                        <TableCell>{d.shares || "—"}</TableCell>
-                                                        <TableCell>{d.isLegalPerson?.value || "—"}</TableCell>
-                                                        <TableCell>{d.status || "—"}</TableCell>
+                                    {formData?.legalDirectors && formData.legalDirectors.length > 0 ? (
+                                        <div className="rounded-md border">
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead className="w-[30%]">Director</TableHead>
+                                                        <TableHead className="w-[18%]">Role</TableHead>
+                                                        <TableHead className="w-[18%]">Shares</TableHead>
+                                                        <TableHead className="w-[15%]">Legal Person</TableHead>
+                                                        <TableHead className="w-[10%]">Status</TableHead>
+                                                        {isEditing && isAdmin && <TableHead className="w-[9%]">Actions</TableHead>}
                                                     </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </div>
+                                                </TableHeader>
+
+                                                <TableBody>
+                                                    {formData.legalDirectors.map((d: any, idx: number) => (
+                                                        <TableRow key={d.__key ?? idx}>
+                                                            <TableCell>
+                                                                <div className="flex items-center gap-2">
+                                                                    <FallbackAvatar name={d.name || "Director"} />
+                                                                    <div className="grid gap-1">
+                                                                        {isAdmin && isEditing ? (
+                                                                            <>
+                                                                                <Input
+                                                                                    className="h-8"
+                                                                                    placeholder="Name"
+                                                                                    value={d.name || ""}
+                                                                                    onClick={(e) => e.stopPropagation()}
+                                                                                    onChange={(e) =>
+                                                                                        updateLegalDirectorAt(idx, { name: e.target.value })
+                                                                                    }
+                                                                                />
+                                                                                <Input
+                                                                                    className="h-7 text-xs"
+                                                                                    type="email"
+                                                                                    placeholder="Email"
+                                                                                    value={d.email || ""}
+                                                                                    onClick={(e) => e.stopPropagation()}
+                                                                                    onChange={(e) =>
+                                                                                        updateLegalDirectorAt(idx, { email: e.target.value })
+                                                                                    }
+                                                                                />
+                                                                            </>
+                                                                        ) : (
+                                                                            <>
+                                                                                <span className="font-medium">{d.name || "—"}</span>
+                                                                                <span className="text-xs text-muted-foreground">
+                                                                                    {d.email || "—"}
+                                                                                </span>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {isAdmin && isEditing ? (
+                                                                    <div onClick={(e) => e.stopPropagation()}>
+                                                                        <Select
+                                                                            value={d.role?.id || ""}
+                                                                            onValueChange={(id) => {
+                                                                                const selected =
+                                                                                    ROLE_OPTIONS.find((r) => r.id === id) ||
+                                                                                    { id: "", value: "" };
+                                                                                updateLegalDirectorAt(idx, { role: selected });
+                                                                            }}
+                                                                        >
+                                                                            <SelectTrigger className="h-8">
+                                                                                <SelectValue placeholder="Select" />
+                                                                            </SelectTrigger>
+                                                                            <SelectContent>
+                                                                                {ROLE_OPTIONS.map((r) => (
+                                                                                    <SelectItem key={r.id} value={r.id}>
+                                                                                        {t(r.value)}
+                                                                                    </SelectItem>
+                                                                                ))}
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </div>
+                                                                ) : (
+                                                                    (d.role?.id) || "—"
+                                                                )}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {isAdmin && isEditing ? (
+                                                                    <Input
+                                                                        className="h-8"
+                                                                        type="number"
+                                                                        placeholder="Shares"
+                                                                        value={d.shares ?? ""}
+                                                                        onClick={(e) => e.stopPropagation()}
+                                                                        onChange={(e) => {
+                                                                            const raw = e.target.value;
+                                                                            const val = raw === "" ? undefined : Number(raw);
+                                                                            updateLegalDirectorAt(idx, { shares: val });
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    d.shares || "—"
+                                                                )}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {isAdmin && isEditing ? (
+                                                                    <div onClick={(e) => e.stopPropagation()}>
+                                                                        <Select
+                                                                            value={typeof d.isLegalPerson === "string" ? d.isLegalPerson : d.isLegalPerson?.id || ""}
+                                                                            onValueChange={(val) =>
+                                                                                updateLegalDirectorAt(idx, {
+                                                                                    isLegalPerson: {
+                                                                                        id: val,
+                                                                                        value: val === "yes" ? "Yes" : "No",
+                                                                                    },
+                                                                                })
+                                                                            }
+                                                                        >
+                                                                            <SelectTrigger className="h-8">
+                                                                                <SelectValue placeholder="Select" />
+                                                                            </SelectTrigger>
+                                                                            <SelectContent>
+                                                                                <SelectItem value="yes">Yes</SelectItem>
+                                                                                <SelectItem value="no">No</SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                    </div>
+                                                                ) : (
+                                                                    d.isLegalPerson?.id || "—"
+                                                                )}
+                                                            </TableCell>
+                                                            <TableCell>{d.status || "—"}</TableCell>
+                                                            {isEditing && isAdmin && (
+                                                                <TableCell>
+                                                                    <Button
+                                                                        variant="destructive"
+                                                                        size="sm"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            deleteLegalDirectorAt(idx);
+                                                                        }}
+                                                                    >
+                                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                                    </Button>
+                                                                </TableCell>
+                                                            )}
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                    ) : (
+                                        <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+                                            No legal directors added.
+                                        </div>
+                                    )}
+                                    {isEditing && isAdmin && (
+                                        <div className="mt-4">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={addNewLegalDirector}
+                                                className="flex items-center gap-2"
+                                            >
+                                                <span className="text-lg leading-none">+</span>
+                                                Add Legal Director
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
+                            ) : null}
                         </div>
 
                         {/* RIGHT */}
@@ -1299,21 +1553,25 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 </div>
             </TabsContent>
 
-            {user?.role !== "user" && (
-                <TabsContent value="Memos" className="p-6">
-                    <div className="space-y-6">
-                        <MemoApp id={id} />
-                    </div>
-                </TabsContent>
-            )}
+            {
+                user?.role !== "user" && (
+                    <TabsContent value="Memos" className="p-6">
+                        <div className="space-y-6">
+                            <MemoApp id={id} />
+                        </div>
+                    </TabsContent>
+                )
+            }
 
-            {user?.role !== "user" && (
-                <TabsContent value="Projects" className="p-6">
-                    <div className="space-y-6">
-                        <AdminProject id={id} />
-                    </div>
-                </TabsContent>
-            )}
+            {
+                user?.role !== "user" && (
+                    <TabsContent value="Projects" className="p-6">
+                        <div className="space-y-6">
+                            <AdminProject id={id} />
+                        </div>
+                    </TabsContent>
+                )
+            }
 
             <TabsContent value="Checklist" className="p-6">
                 <ChecklistHistory id={id} items={[[], []]} />
@@ -1349,14 +1607,16 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     />
                 )
             }
-            {memType == "PA_Individual" && isDialogOpen && (
-                <DetailPAShareHolderDialog
-                    isOpen={isDialogOpen}
-                    onClose={() => setIsDialogOpen(false)}
-                    userData={selectedData}
-                />
-            )}
-        </Tabs>
+            {
+                memType == "PA_Individual" && isDialogOpen && (
+                    <DetailPAShareHolderDialog
+                        isOpen={isDialogOpen}
+                        onClose={() => setIsDialogOpen(false)}
+                        userData={selectedData}
+                    />
+                )
+            }
+        </Tabs >
     );
 };
 
