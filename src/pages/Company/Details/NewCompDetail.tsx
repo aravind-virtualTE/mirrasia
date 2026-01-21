@@ -48,6 +48,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { applicantRoles, incorporationPurposeKeys, currencyOptions, capitalAmountOptions, shareCountOptions, finYearOptions, bookKeepingCycleOptions, yesNoOtherOptions } from "../NewHKForm/hkIncorpo";
 
 export type Party = {
+  __key?: string;
   name: string;
   email?: string;
   phone?: string;
@@ -64,7 +65,8 @@ export type PartyRowProps = {
   p: Party;
   totalShares?: number;
   onClick?: (p: Party) => void;
-  onSendInvite?: (p: Party) => void; // new
+  onSendInvite?: (p: Party) => void;
+  onDelete?: () => void;
   isEditing?: boolean;
   isAdmin?: boolean;
   onChange?: (patch: Partial<Party>) => void;
@@ -203,7 +205,7 @@ function StepRail({ stepIdx }: { stepIdx: number }) {
   );
 }
 
-function PartyRow({ p, totalShares, onClick, onSendInvite, isEditing, isAdmin, onChange, }: PartyRowProps) {
+function PartyRow({ p, totalShares, onClick, onSendInvite, onDelete, isEditing, isAdmin, onChange, }: PartyRowProps) {
   const pct =
     p.shares && totalShares
       ? Math.round((p.shares / totalShares) * 1000) / 10
@@ -226,6 +228,7 @@ function PartyRow({ p, totalShares, onClick, onSendInvite, isEditing, isAdmin, o
                 onChange={(e) =>
                   onChange?.({ name: e.target.value })
                 }
+                onClick={(e) => e.stopPropagation()}
               />
             ) : (
               p.name || "—"
@@ -411,6 +414,19 @@ function PartyRow({ p, totalShares, onClick, onSendInvite, isEditing, isAdmin, o
               <span className="hidden sm:inline">Remind</span>
             </Button>
           )}
+          {isEditing && isAdmin && onDelete && (
+            <Button
+              variant="destructive"
+              size="sm"
+              className="flex items-center gap-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          )}
         </div>
       </TableCell>
     </TableRow>
@@ -444,8 +460,20 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
         const companyData = await getHkIncorpoData(id);
         // console.log("companyData", companyData);
 
-        setAdminAssigned(companyData.assignedTo ?? "");
-        setData(companyData);
+        const withKeys = {
+          ...companyData,
+          parties: (companyData.parties ?? []).map((p: Party) => ({
+            ...p,
+            __key:
+              p.__key ??
+              (typeof crypto !== "undefined" && "randomUUID" in crypto
+                ? crypto.randomUUID()
+                : `${Date.now()}-${Math.random()}`),
+          })),
+        };
+
+        setAdminAssigned(withKeys.assignedTo ?? "");
+        setData(withKeys);
 
         const usersResponse = await fetchUsers();
         const adminUsers = usersResponse.filter((e: { role: string }) => e.role === "admin" || e.role === "master");
@@ -476,7 +504,11 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
     if (!data) return;
     try {
       setIsSaving(true);
-      const result = await saveIncorporationData(data);
+      const payload: OnboardingRecord = {
+        ...data,
+        parties: (data.parties ?? []).map(({ __key, ...rest }) => rest),
+      };
+      const result = await saveIncorporationData(payload);
       // console.log("result", result)
       const ok = (typeof result === "object" && result !== null)
 
@@ -608,6 +640,37 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
       if (!prev) return prev;
       const parties = prev.parties ? [...prev.parties] : [];
       parties[idx] = { ...parties[idx], ...patch };
+      return { ...prev, parties };
+    });
+  };
+
+  const addNewParty = () => {
+    setData((prev) => {
+      if (!prev) return prev;
+      const newParty: Party = {
+        __key:
+          typeof crypto !== "undefined" && "randomUUID" in crypto
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random()}`,
+        name: "",
+        email: "",
+        phone: "",
+        isCorp: false,
+        isDirector: false,
+        shares: undefined,
+        typeOfShare: "Ordinary",
+        status: "Not invited",
+        isDcp: false,
+      };
+      const parties = prev.parties ? [...prev.parties, newParty] : [newParty];
+      return { ...prev, parties };
+    });
+  };
+
+  const deletePartyAt = (idx: number) => {
+    setData((prev) => {
+      if (!prev) return prev;
+      const parties = prev.parties ? prev.parties.filter((_, i) => i !== idx) : [];
       return { ...prev, parties };
     });
   };
@@ -811,22 +874,22 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                           ))}
                         </div>
                       )}
-                    </LabelValue> 
+                    </LabelValue>
 
                     <LabelValue label="Industry">
                       {isEditing ? (
                         <div className="max-w-sm">
                           <SearchSelect
-                            items={businessNatureList.map(i=>({...i,label:t(i.label,i.label)}))}
-                            placeholder={t("common.select","Select")}
-                            selectedItem={f.industry ? (businessNatureList.find(i => i.code === f.industry) ? {...businessNatureList.find(i => i.code === f.industry)!, label: t(businessNatureList.find(i => i.code === f.industry)!.label as any, businessNatureList.find(i => i.code === f.industry)!.label)} : null) : null}
-                            onSelect={(it:any)=>patchForm("industry", it.code)}
+                            items={businessNatureList.map(i => ({ ...i, label: t(i.label, i.label) }))}
+                            placeholder={t("common.select", "Select")}
+                            selectedItem={f.industry ? (businessNatureList.find(i => i.code === f.industry) ? { ...businessNatureList.find(i => i.code === f.industry)!, label: t(businessNatureList.find(i => i.code === f.industry)!.label as any, businessNatureList.find(i => i.code === f.industry)!.label) } : null) : null}
+                            onSelect={(it: any) => patchForm("industry", it.code)}
                           />
                         </div>
                       ) : (
                         t(businessNatureList.find(e => e.code == f.industry)?.label || "", "")
                       )}
-                    </LabelValue> 
+                    </LabelValue>
 
                     <LabelValue label="Purpose">
                       {isEditing ? (
@@ -858,11 +921,11 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                           ))}
                         </div>
                       )}
-                    </LabelValue> 
+                    </LabelValue>
 
                     <LabelValue label="Business Description">
                       {isEditing ? (
-                        <Textarea value={f.bizdesc || ""} onChange={(e)=>patchForm("bizdesc", e.target.value)} rows={4} />
+                        <Textarea value={f.bizdesc || ""} onChange={(e) => patchForm("bizdesc", e.target.value)} rows={4} />
                       ) : (
                         f.bizdesc || "—"
                       )}
@@ -870,11 +933,11 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
                     <LabelValue label="Notes">
                       {isEditing ? (
-                        <Input value={f.softNote || ""} onChange={(e)=>patchForm("softNote", e.target.value)} className="h-8" />
+                        <Input value={f.softNote || ""} onChange={(e) => patchForm("softNote", e.target.value)} className="h-8" />
                       ) : (
                         f.softNote || "—"
                       )}
-                    </LabelValue> 
+                    </LabelValue>
                   </div>
 
                   <Separator />
@@ -883,12 +946,12 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <LabelValue label="Currency">
                       {isEditing ? (
-                        <Select value={String(f.currency ?? "")} onValueChange={(v)=>patchForm("currency", v)}>
+                        <Select value={String(f.currency ?? "")} onValueChange={(v) => patchForm("currency", v)}>
                           <SelectTrigger className="h-8">
-                            <SelectValue placeholder={t("common.select","Select")} />
+                            <SelectValue placeholder={t("common.select", "Select")} />
                           </SelectTrigger>
                           <SelectContent>
-                            {currencyOptions.map((o)=> (
+                            {currencyOptions.map((o) => (
                               <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
                             ))}
                           </SelectContent>
@@ -900,12 +963,12 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
                     <LabelValue label="Declared Capital">
                       {isEditing ? (
-                        <Select value={String(f.capAmount ?? "")} onValueChange={(v)=>patchForm("capAmount", v)}>
+                        <Select value={String(f.capAmount ?? "")} onValueChange={(v) => patchForm("capAmount", v)}>
                           <SelectTrigger className="h-8">
-                            <SelectValue placeholder={t("common.select","Select")} />
+                            <SelectValue placeholder={t("common.select", "Select")} />
                           </SelectTrigger>
                           <SelectContent>
-                            {capitalAmountOptions.map((o)=> (
+                            {capitalAmountOptions.map((o) => (
                               <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
                             ))}
                           </SelectContent>
@@ -917,12 +980,12 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
                     <LabelValue label="Total Shares">
                       {isEditing ? (
-                        <Select value={String(f.shareCount ?? "")} onValueChange={(v)=>patchForm("shareCount", v)}>
+                        <Select value={String(f.shareCount ?? "")} onValueChange={(v) => patchForm("shareCount", v)}>
                           <SelectTrigger className="h-8">
-                            <SelectValue placeholder={t("common.select","Select")} />
+                            <SelectValue placeholder={t("common.select", "Select")} />
                           </SelectTrigger>
                           <SelectContent>
-                            {shareCountOptions.map((o)=> (
+                            {shareCountOptions.map((o) => (
                               <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
                             ))}
                           </SelectContent>
@@ -933,12 +996,12 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                     </LabelValue>
                     <LabelValue label="Financial Year End">
                       {isEditing ? (
-                        <Select value={String(f.finYrEnd ?? "")} onValueChange={(v)=>patchForm("finYrEnd", v)}>
+                        <Select value={String(f.finYrEnd ?? "")} onValueChange={(v) => patchForm("finYrEnd", v)}>
                           <SelectTrigger className="h-8">
-                            <SelectValue placeholder={t("common.select","Select")} />
+                            <SelectValue placeholder={t("common.select", "Select")} />
                           </SelectTrigger>
                           <SelectContent>
-                            {finYearOptions.map((o)=> (
+                            {finYearOptions.map((o) => (
                               <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
                             ))}
                           </SelectContent>
@@ -949,8 +1012,8 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                     </LabelValue>
                     <LabelValue label="Bookkeeping Cycle">
                       {isEditing ? (
-                        <RadioGroup value={String(f.bookKeepingCycle ?? "")} onValueChange={(v)=>patchForm("bookKeepingCycle", v)} className="flex flex-col gap-2">
-                          {bookKeepingCycleOptions.map((o)=> (
+                        <RadioGroup value={String(f.bookKeepingCycle ?? "")} onValueChange={(v) => patchForm("bookKeepingCycle", v)} className="flex flex-col gap-2">
+                          {bookKeepingCycleOptions.map((o) => (
                             <label key={o.value} className="flex items-center gap-2">
                               <RadioGroupItem value={o.value} id={`bk-${o.value}`} />
                               <span className="text-sm">{t(o.label as any, o.label)}</span>
@@ -962,8 +1025,8 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                       )}
                     </LabelValue>
                     <LabelValue label="Xero">{isEditing ? (
-                      <RadioGroup value={String(f.xero ?? "")} onValueChange={(v)=>patchForm("xero", v)} className="flex flex-col gap-2">
-                        {yesNoOtherOptions.map((o)=> (
+                      <RadioGroup value={String(f.xero ?? "")} onValueChange={(v) => patchForm("xero", v)} className="flex flex-col gap-2">
+                        {yesNoOtherOptions.map((o) => (
                           <label key={o.value} className="flex items-center gap-2">
                             <RadioGroupItem value={o.value} id={`xero-${o.value}`} />
                             <span className="text-sm">{t(o.label as any, o.label)}</span>
@@ -1000,7 +1063,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                         <TableBody>
                           {data.parties.map((p, i) => (
                             <PartyRow
-                              key={p.name + i}
+                              key={p.__key ?? i}
                               p={p}
                               totalShares={totalShares}
                               isEditing={isEditing}
@@ -1008,6 +1071,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                               onClick={(party) => showMemberDetails(party.email)}
                               onSendInvite={(party) => sendInviteToMembers(party)}
                               onChange={(patch) => updatePartyAt(i, patch)}
+                              onDelete={() => deletePartyAt(i)}
                             />
                           ))}
                         </TableBody>
@@ -1015,6 +1079,19 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                     </div>
                   ) : (
                     <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">No parties added.</div>
+                  )}
+                  {isEditing && isAdmin && (
+                    <div className="mt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={addNewParty}
+                        className="flex items-center gap-2"
+                      >
+                        <span className="text-lg leading-none">+</span>
+                        Add Party
+                      </Button>
+                    </div>
                   )}
                   <Separator />
                   {/* Incorporation date + AML/CDD toggle */}
@@ -1265,7 +1342,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
             </div>
 
             {/* Sticky save bar */}
-           {isAdmin && <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            {isAdmin && <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
                 <div className="text-xs text-muted-foreground">
                   Status: <strong>{data?.incorporationStatus || "Pending"}</strong>
