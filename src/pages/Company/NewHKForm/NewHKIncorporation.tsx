@@ -2544,9 +2544,9 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
       if (stepIdx == 2) {
         const parties = Array.isArray(app?.parties) ? app.parties : [];
 
-        const hasNonDcp = parties.some((p: any) => p?.isDcp !== true);
+        const hasNonDcp = parties.some((p: any) => p?.isDcp == true);
 
-        if (hasNonDcp) {
+        if (!hasNonDcp) {
           toast({
             title: "DCP selection Pending",
             description: "Please select atleast one DCP in Shareholders/Directors before proceeding to Next.",

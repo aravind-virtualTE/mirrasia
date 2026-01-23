@@ -3253,6 +3253,17 @@ const PanamaIncorporationForm: React.FC = () => {
             }
         }
         if (stepIdx == 2) {
+            console.log("form?.shareHolders",form?.shareHolders)       
+            const parties = Array.isArray(form?.shareHolders) ? form.shareHolders : [];
+            const hasNonDcp = parties.some((p: any) => p?.isDcp == true);
+
+            if (!hasNonDcp) {
+                toast({
+                    title: "DCP selection Pending",
+                    description: "Please select atleast one DCP in Shareholders/Directors before proceeding to Next.",
+                });
+                return;
+            }
             if (!form.partyInvited) {
                 toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
                 return

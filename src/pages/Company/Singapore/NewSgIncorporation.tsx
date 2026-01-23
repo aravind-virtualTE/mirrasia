@@ -3265,6 +3265,17 @@ const SgIncorpForm: React.FC = () => {
         }
         console.log("stepIdx", stepIdx)
         if (stepIdx == 2) {
+            const parties = Array.isArray(form?.parties) ? form.parties : [];
+
+            const hasNonDcp = parties.some((p: any) => p?.isDcp == true);
+
+            if (!hasNonDcp) {
+                toast({
+                    title: "DCP selection Pending",
+                    description: "Please select atleast one DCP in Shareholders/Directors before proceeding to Next.",
+                });
+                return;
+            }
             if (!form.partyInvited) {
                 toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
                 return

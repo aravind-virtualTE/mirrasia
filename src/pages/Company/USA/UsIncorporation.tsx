@@ -3028,43 +3028,6 @@ function PaymentStep() {
     );
 }
 
-// function CongratsStep() {
-//     const navigate = useNavigate();
-
-//     const navigateRoute = () => {
-//         localStorage.removeItem("companyRecordId");
-//         const decodedToken = jwtDecode<any>(token);
-//         if (["admin", "master"].includes(decodedToken.role)) navigate("/admin-dashboard");
-//         else navigate("/dashboard");
-//     };
-
-//     return (
-//         <div className="grid place-items-center gap-4 text-center py-6">
-//             <h2 className="text-xl font-extrabold">{t("newHk.congrats.title")}</h2>
-//             {/* <p className="text-sm">
-//         {t("newHk.congrats.thankYou", { name: namePart })}
-//       </p>
-
-//       <div className="grid gap-3 w-full max-w-3xl text-left">
-//         {steps.map((x, i) => (
-//           <div key={i} className="grid grid-cols-[12px_1fr] gap-3 text-sm">
-//             <div className="mt-2 w-3 h-3 rounded-full bg-sky-500" />
-//             <div>
-//               <b>{x.t}</b>
-//               <br />
-//               <span className="text-muted-foreground">{x.s}</span>
-//             </div>
-//           </div>
-//         ))}
-//       </div> */}
-
-//             <div className="flex items-center gap-2 justify-center">
-//                 <Button onClick={navigateRoute}>{t("newHk.congrats.buttons.dashboard")}</Button>
-//             </div>
-//         </div>
-//     );
-// }
-
 function CongratsStep() {
     const [app,] = useAtom(usaAppWithResetAtom)
     const { t } = useTranslation();
@@ -4002,8 +3965,9 @@ export default function ConfigDrivenUSAForm() {
                 // Same user — keep as is or update (your choice)
             }
         }
-        console.log("idx", idx)
+        // console.log("idx", idx)
         if (idx === 1) payload.isDisabled = true;
+
         // console.log("formdata", formData)
 
         try {
@@ -4075,6 +4039,16 @@ export default function ConfigDrivenUSAForm() {
             const emptyNameShareholders = form.shareHolders.filter(
                 (shareholder: any) => !shareholder.name.trim()
             );
+            const parties = Array.isArray(form?.shareHolders) ? form.shareHolders : [];
+            const hasNonDcp = parties.some((p: any) => p?.isDcp == true);
+
+            if (!hasNonDcp) {
+                toast({
+                    title: "DCP selection Pending",
+                    description: "Please select atleast one DCP in Shareholders/Directors before proceeding to Next.",
+                });
+                return;
+            }
             if (!form.partyInvited) {
                 toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
                 return
