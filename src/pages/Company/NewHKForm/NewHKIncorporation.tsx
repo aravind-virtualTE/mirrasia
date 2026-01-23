@@ -17,7 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ChevronDown, ChevronUp, Info, Send, UserIcon, Users, X } from "lucide-react";
 import { FPSForm } from "../payment/FPSForm";
 //updateInvoicePaymentIntent,
-import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent,  uploadIncorpoPaymentBankProof, applicantRoles, incorporationPurposeKeys, currencyOptions, capitalAmountOptions, shareCountOptions, finYearOptions, bookKeepingCycleOptions, yesNoOtherOptions } from "./hkIncorpo";
+import { AppDoc, createInvoicePaymentIntent, deleteIncorpoPaymentBankProof, FieldBase, FormConfig, hkAppAtom, Party, saveIncorporationData, Step, updateCorporateInvoicePaymentIntent, uploadIncorpoPaymentBankProof, applicantRoles, incorporationPurposeKeys, currencyOptions, capitalAmountOptions, shareCountOptions, finYearOptions, bookKeepingCycleOptions, yesNoOtherOptions } from "./hkIncorpo";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -2334,13 +2334,13 @@ function TopBar({ title, totalSteps, idx }: { title: string; totalSteps: number;
 function Sidebar({
   steps,
   idx,
-  // goto,
+  goto,
   canProceedFromCurrent,
   paymentStatus = "unpaid",
 }: {
   steps: Step[];
   idx: number;
-  // goto: (i: number) => void;
+  goto: (i: number) => void;
   canProceedFromCurrent: boolean; // derived from requiredMissing => canNext
   paymentStatus?: string;         // "paid" or anything else
 }) {
@@ -2357,34 +2357,42 @@ function Sidebar({
     return true;
   };
 
-  // const onTryGoto = (target: number) => {
-  //   if (target === idx) return;
+  const onTryGoto = (target: number) => {
+    if (target < idx) {
+      goto(target);
+      return;
+    }
+    if (paymentStatus !== "paid") {
+      toast({
+        title: t("newHk.sidebar.toasts.paymentReqTitle"),
+        description: t("newHk.sidebar.toasts.paymentReqDesc")
+      });
+      return;
+    }
+    if (target === idx) return;
 
-  //   // If going backward, always allow
-  //   if (target < idx) {
-  //     goto(target);
-  //     return;
-  //   }
+    // If going backward, always allow
 
-  //   // Forward navigation checks
-  //   if (!canProceedFromCurrent) {
-  //     toast({
-  //       title: t("newHk.sidebar.toasts.completeStepTitle"),
-  //       description: t("newHk.sidebar.toasts.completeStepDesc")
-  //     });
-  //     return;
-  //   }
 
-  //   if (paymentStatus !== "paid" && target > 7) {
-  //     toast({
-  //       title: t("newHk.sidebar.toasts.paymentReqTitle"),
-  //       description: t("newHk.sidebar.toasts.paymentReqDesc")
-  //     });
-  //     return;
-  //   }
+    // Forward navigation checks
+    if (!canProceedFromCurrent) {
+      toast({
+        title: t("newHk.sidebar.toasts.completeStepTitle"),
+        description: t("newHk.sidebar.toasts.completeStepDesc")
+      });
+      return;
+    }
 
-  //   goto(target);
-  // };
+    if (paymentStatus !== "paid" && target > 7) {
+      toast({
+        title: t("newHk.sidebar.toasts.paymentReqTitle"),
+        description: t("newHk.sidebar.toasts.paymentReqDesc")
+      });
+      return;
+    }
+
+    goto(target);
+  };
 
   return (
     <aside className="space-y-4 sticky top-0 h-[calc(100vh-2rem)] overflow-auto p-0 lg:block">
@@ -2415,7 +2423,7 @@ function Sidebar({
           return (
             <button
               key={s.id}
-              // onClick={() => onTryGoto(i)}
+              onClick={() => onTryGoto(i)}
               disabled={!enabled}
               className={classNames(
                 "w-full text-left rounded-lg border p-2 sm:p-3 transition touch-manipulation",
@@ -2534,6 +2542,18 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
         }
       }
       if (stepIdx == 2) {
+        const parties = Array.isArray(app?.parties) ? app.parties : [];
+
+        const hasNonDcp = parties.some((p: any) => p?.isDcp !== true);
+
+        if (hasNonDcp) {
+          toast({
+            title: "DCP selection Pending",
+            description: "Please select atleast one DCP in Shareholders/Directors before proceeding to Next.",
+          });
+          return;
+        }
+
         if (!app.partyInvited) {
           toast({ title: "Shareholders/Directors Members Invitation Pending", description: "Please invite Shareholders/Directors Members before proceeding Next" });
           return
@@ -2627,7 +2647,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
               <Sidebar
                 steps={config.steps}
                 idx={stepIdx}
-                // goto={goto}
+                goto={goto}
                 canProceedFromCurrent={canNext}
                 paymentStatus={app.paymentStatus || "unpaid"}
               />
@@ -2640,7 +2660,7 @@ function ConfigForm({ config, existing }: { config: FormConfig; existing?: Parti
           <Sidebar
             steps={config.steps}
             idx={stepIdx}
-            // goto={goto}
+            goto={goto}
             canProceedFromCurrent={canNext}
             paymentStatus={app.paymentStatus || "unpaid"}
           />
