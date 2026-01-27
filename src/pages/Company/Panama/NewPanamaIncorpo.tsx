@@ -3715,7 +3715,7 @@ const PanamaIncorporationForm: React.FC = () => {
             toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
             return;
         }
-        console.log("stepIdx", stepIdx)
+        // console.log("stepIdx", stepIdx)
         // console.log("form", form)
         if (stepIdx == 1) {
             const q1 = form.annualRenewalConsent
