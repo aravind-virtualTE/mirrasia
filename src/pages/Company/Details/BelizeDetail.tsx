@@ -174,8 +174,8 @@ const BelizeDetail: React.FC<{ id: string }> = ({ id }) => {
             status: s.status,
             paymentId: s.paymentId,
           });
-        } catch (e){
-            console.log("error",e)
+        } catch (e) {
+          console.log("error", e)
         }
       }
 
@@ -249,7 +249,7 @@ const BelizeDetail: React.FC<{ id: string }> = ({ id }) => {
   const onDelete = async () => {
     try {
       const resp = await deleteCommonIncorpo(COUNTRY_CODE, id);
-      console.log("resp",resp)
+      console.log("resp", resp)
       toast({ title: "Success", description: "Company record deleted." });
       if (isAdmin) navigate("/admin-dashboard");
       else navigate("/dashboard");
@@ -382,6 +382,9 @@ const BelizeDetail: React.FC<{ id: string }> = ({ id }) => {
             className="flex items-center gap-2"
           >
             Company Docs
+          </Button>
+          <Button onClick={() => navigate(-1)} size="sm" className="flex items-center gap-2">
+            Return to Previous Details
           </Button>
         </div>
 

@@ -175,7 +175,7 @@ const EstoniaDetail: React.FC<{ id: string }> = ({ id }) => {
             status: s.status,
             paymentId: s.paymentId,
           });
-        } catch(e) {console.log("err",e)}
+        } catch (e) { console.log("err", e) }
       }
 
       const u = await fetchUsers();
@@ -381,6 +381,9 @@ const EstoniaDetail: React.FC<{ id: string }> = ({ id }) => {
             className="flex items-center gap-2"
           >
             Company Docs
+          </Button>
+          <Button onClick={() => navigate(-1)} size="sm" className="flex items-center gap-2">
+            Return to Previous Details
           </Button>
         </div>
 
