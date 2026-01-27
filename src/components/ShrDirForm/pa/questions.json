@@ -211,8 +211,16 @@
           "label": "Shareholder's proxy (trustee acting on behalf of shareholder)"
         },
         {
-          "value": "move",
-          "label": "Move"
+          "value": "dirPresident",
+          "label": "Director (President)"
+        },
+        {
+          "value": "dirTreasurer",
+          "label": "Director (Treasurer)"
+        },
+        {
+          "value": "dirSecretary",
+          "label": "Director (Secretary)"
         },
         {
           "value": "directorProxy",
