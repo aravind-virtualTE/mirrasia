@@ -387,6 +387,9 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
           <Button onClick={() => navigate(`/company-documents/SG/${id}`)} size="sm" className="flex items-center gap-2">
             Company Docs
           </Button>
+          <Button onClick={() => navigate(-1)} size="sm" className="flex items-center gap-2">
+            Return to Previous Details
+          </Button>
         </div>
 
         <div className="mx-auto grid max-width gap-6 p-4 lg:grid-cols-3 pb-24">
@@ -762,20 +765,20 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                     )}
                                   </div>
                                 </TableCell>
-                                 {isEditing && isAdmin && (
-                                   <TableCell>
-                                     <Button
-                                       variant="destructive"
-                                       size="sm"
-                                       onClick={(e) => {
-                                         e.stopPropagation();
-                                         deletePartyAt(index);
-                                       }}
-                                     >
-                                       <Trash2 className="h-3.5 w-3.5" />
-                                     </Button>
-                                   </TableCell>
-                                 )}
+                                {isEditing && isAdmin && (
+                                  <TableCell>
+                                    <Button
+                                      variant="destructive"
+                                      size="sm"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        deletePartyAt(index);
+                                      }}
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </TableCell>
+                                )}
                               </TableRow>
                             ))}
                           </TableBody>

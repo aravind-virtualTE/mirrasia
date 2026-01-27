@@ -707,6 +707,9 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
             <Button onClick={() => navigate(`/company-documents/HK/${data._id}`)} size="sm" className="flex items-center gap-2">
               Company Docs
             </Button>
+            <Button onClick={() => navigate(-1)} size="sm" className="flex items-center gap-2">
+              Return to Previous Details
+            </Button>
           </div>
 
           <div className="mx-auto grid max-width gap-6 p-4 lg:grid-cols-3 pb-24">

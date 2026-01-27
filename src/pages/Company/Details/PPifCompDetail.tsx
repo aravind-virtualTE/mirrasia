@@ -443,6 +443,9 @@ export default function PPifCompDetail({ id }: { id: string }) {
                         >
                             Company Docs
                         </Button>
+                        <Button onClick={() => navigate(-1)} size="sm" className="flex items-center gap-2">
+                            Return to Previous Details
+                        </Button>
                     </div>
                     <div className="mx-auto grid max-width gap-6 p-4 lg:grid-cols-3 pb-24">
                         {/* LEFT */}
@@ -724,91 +727,91 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         </div>
 
                                         {(data as any)?.councilMode === "ind3" && Array.isArray((data as any)?.councilIndividuals) && (
-                                                <div className="overflow-x-auto rounded-md border overflow-hidden">
-                                                    <div className="min-w-[700px] p-3">
-                                                        {isAdmin && isEditing && (
-                                                            <div className="flex justify-end mb-2">
-                                                                <Button size="sm" variant="outline" onClick={addCouncilIndividual}>{t("common.add","Add")}</Button>
-                                                            </div>
-                                                        )}
-                                                        <Table>
-                                                            <TableHeader>
-                                                                <TableRow>
-                                                                    <TableHead className="w-[12%]">Type</TableHead>
-                                                                    <TableHead className="w-[24%]">Name</TableHead>
-                                                                    <TableHead className="w-[16%]">ID</TableHead>
-                                                                    <TableHead className="w-[14%]">Status</TableHead>
-                                                                    <TableHead className="w-[20%]">Email</TableHead>
-                                                                    <TableHead className="w-[14%]">Phone</TableHead>
-                                                                    <TableHead className="w-[10%]">Actions</TableHead>
+                                            <div className="overflow-x-auto rounded-md border overflow-hidden">
+                                                <div className="min-w-[700px] p-3">
+                                                    {isAdmin && isEditing && (
+                                                        <div className="flex justify-end mb-2">
+                                                            <Button size="sm" variant="outline" onClick={addCouncilIndividual}>{t("common.add", "Add")}</Button>
+                                                        </div>
+                                                    )}
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead className="w-[12%]">Type</TableHead>
+                                                                <TableHead className="w-[24%]">Name</TableHead>
+                                                                <TableHead className="w-[16%]">ID</TableHead>
+                                                                <TableHead className="w-[14%]">Status</TableHead>
+                                                                <TableHead className="w-[20%]">Email</TableHead>
+                                                                <TableHead className="w-[14%]">Phone</TableHead>
+                                                                <TableHead className="w-[10%]">Actions</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {(data as any).councilIndividuals.map((m: any, i: number) => (
+                                                                <TableRow key={"ind-" + i} className={`align-top ${!isEditing && m?.email ? 'cursor-pointer hover:bg-slate-50' : ''}`} onClick={() => { if (!isEditing && m?.email) showMemberDetails(m?.email, m?.type); }}>
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={m?.type || "individual"} onChange={(e) => updateCouncilIndividualAt(i, { type: e.target.value })} />
+                                                                        ) : (
+                                                                            <span>{m?.type || "individual"}</span>
+                                                                        )}
+                                                                    </TableCell>
+
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={m?.name || ""} onChange={(e) => updateCouncilIndividualAt(i, { name: e.target.value })} />
+                                                                        ) : (
+                                                                            <span className="font-medium">{m?.name || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={m?.id || ""} onChange={(e) => updateCouncilIndividualAt(i, { id: e.target.value })} />
+                                                                        ) : (
+                                                                            <span>{m?.id || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8" value={m?.status || ""} onChange={(e) => updateCouncilIndividualAt(i, { status: e.target.value })} />
+                                                                        ) : (
+                                                                            <span>{m?.status || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <Input className="h-8 min-w-[220px]" type="email" value={m?.email || ""} onChange={(e) => updateCouncilIndividualAt(i, { email: e.target.value })} />
+                                                                        ) : (
+                                                                            <span className="text-xs text-muted-foreground">{m?.email || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <div className="overflow-x-auto">
+                                                                                <Input className="h-8 min-w-[160px] w-full" value={m?.tel || ""} onChange={(e) => updateCouncilIndividualAt(i, { tel: e.target.value })} />
+                                                                            </div>
+                                                                        ) : (
+                                                                            <span>{m?.tel || "—"}</span>
+                                                                        )}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        {isAdmin && isEditing ? (
+                                                                            <div className="flex justify-end">
+                                                                                <Button size="sm" variant="ghost" onClick={() => removeCouncilIndividualAt(i)}><Trash2 className="mr-2 h-4 w-4" /></Button>
+                                                                            </div>
+                                                                        ) : null}
+                                                                    </TableCell>
                                                                 </TableRow>
-                                                            </TableHeader>
-                                                            <TableBody>
-                                                                {(data as any).councilIndividuals.map((m: any, i: number) => (
-                                                                    <TableRow key={"ind-" + i} className={`align-top ${!isEditing && m?.email ? 'cursor-pointer hover:bg-slate-50' : ''}`} onClick={() => { if (!isEditing && m?.email) showMemberDetails(m?.email, m?.type); }}>
-                                                                        <TableCell>
-                                                                            {isAdmin && isEditing ? (
-                                                                                <Input className="h-8" value={m?.type || "individual"} onChange={(e) => updateCouncilIndividualAt(i, { type: e.target.value })} />
-                                                                            ) : (
-                                                                                <span>{m?.type || "individual"}</span>
-                                                                            )}
-                                                                        </TableCell>
-
-                                                                        <TableCell>
-                                                                            {isAdmin && isEditing ? (
-                                                                                <Input className="h-8" value={m?.name || ""} onChange={(e) => updateCouncilIndividualAt(i, { name: e.target.value })} />
-                                                                            ) : (
-                                                                                <span className="font-medium">{m?.name || "—"}</span>
-                                                                            )}
-                                                                        </TableCell>
-
-                                                                        <TableCell>
-                                                                            {isAdmin && isEditing ? (
-                                                                                <Input className="h-8" value={m?.id || ""} onChange={(e) => updateCouncilIndividualAt(i, { id: e.target.value })} />
-                                                                            ) : (
-                                                                                <span>{m?.id || "—"}</span>
-                                                                            )}
-                                                                        </TableCell>
-
-                                                                        <TableCell>
-                                                                            {isAdmin && isEditing ? (
-                                                                                <Input className="h-8" value={m?.status || ""} onChange={(e) => updateCouncilIndividualAt(i, { status: e.target.value })} />
-                                                                            ) : (
-                                                                                <span>{m?.status || "—"}</span>
-                                                                            )}
-                                                                        </TableCell>
-
-                                                                        <TableCell>
-                                                                            {isAdmin && isEditing ? (
-                                                                                <Input className="h-8 min-w-[220px]" type="email" value={m?.email || ""} onChange={(e) => updateCouncilIndividualAt(i, { email: e.target.value })} />
-                                                                            ) : (
-                                                                                <span className="text-xs text-muted-foreground">{m?.email || "—"}</span>
-                                                                            )}
-                                                                        </TableCell>
-
-                                                                        <TableCell>
-                                                                            {isAdmin && isEditing ? (
-                                                                                <div className="overflow-x-auto">
-                                                                                    <Input className="h-8 min-w-[160px] w-full" value={m?.tel || ""} onChange={(e) => updateCouncilIndividualAt(i, { tel: e.target.value })} />
-                                                                                </div>
-                                                                            ) : (
-                                                                                <span>{m?.tel || "—"}</span>
-                                                                            )}
-                                                                        </TableCell>
-                                                                        <TableCell>
-                                                                            {isAdmin && isEditing ? (
-                                                                                <div className="flex justify-end">
-                                                                                    <Button size="sm" variant="ghost" onClick={() => removeCouncilIndividualAt(i)}><Trash2 className="mr-2 h-4 w-4" /></Button>
-                                                                                </div>
-                                                                            ) : null}
-                                                                        </TableCell>
-                                                                    </TableRow>
-                                                                ))}
-                                                            </TableBody>
-                                                        </Table>
-                                                    </div>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
                                                 </div>
-                                            )}
+                                            </div>
+                                        )}
 
                                         {(data as any)?.councilMode === "corp1" && (data as any)?.councilCorporate && (
                                             <div className="overflow-x-auto rounded-md border overflow-hidden">
@@ -880,7 +883,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 <div className="min-w-[700px] p-3">
                                                     {isAdmin && isEditing && (
                                                         <div className="flex justify-end mb-2">
-                                                            <Button size="sm" variant="outline" onClick={addProtector}>{t("common.add","Add")}</Button>
+                                                            <Button size="sm" variant="outline" onClick={addProtector}>{t("common.add", "Add")}</Button>
                                                         </div>
                                                     )}
                                                     <Table>
@@ -937,7 +940,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 <div className="min-w-[700px] p-3">
                                                     {isAdmin && isEditing && (
                                                         <div className="flex justify-end mb-2">
-                                                            <Button size="sm" variant="outline" onClick={addBeneficiary}>{t("common.add","Add")}</Button>
+                                                            <Button size="sm" variant="outline" onClick={addBeneficiary}>{t("common.add", "Add")}</Button>
                                                         </div>
                                                     )}
                                                     <Table>

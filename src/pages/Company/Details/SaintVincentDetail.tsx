@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -175,7 +175,7 @@ const SaintVincentDetail: React.FC<{ id: string }> = ({ id }) => {
             status: s.status,
             paymentId: s.paymentId,
           });
-        } catch(e) {console.log("err",e)}
+        } catch (e) { console.log("err", e) }
       }
 
       const u = await fetchUsers();
@@ -381,6 +381,9 @@ const SaintVincentDetail: React.FC<{ id: string }> = ({ id }) => {
             className="flex items-center gap-2"
           >
             Company Docs
+          </Button>
+          <Button onClick={() => navigate(-1)} size="sm" className="flex items-center gap-2">
+            Return to Previous Details
           </Button>
         </div>
 

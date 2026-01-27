@@ -123,7 +123,6 @@ const PRICE_NS = 1300;
 const PRICE_EMI = 400;
 const PRICE_BANK = 2000;
 const PRICE_CBI = 3880;
-const PRICE_MIRR_STORAGE = 350; // Mirr storage service fee
 const BASE_SETUP_CORP = 3000; // Mirr Asia setup fee + first-year services (corp)
 
 type PanamaQuotePricing = {
@@ -133,9 +132,10 @@ type PanamaQuotePricing = {
     optEmi: boolean;         // EMI account opening
     optBank: boolean;        // Panama local bank account opening
     optCbi: boolean;         // Puerto Rico CBI account opening
-    optMirrStorage: boolean; // Mirr storage service option
+    optMirrStorage?: boolean; // Mirr storage service option
     nd3ReasonSetup?: string; // reason for selecting 3 NDs
     total: number;           // computed setup total
+    
 };
 const ND_PRICES: Record<number, number> = {
     0: 0,
@@ -1285,7 +1285,7 @@ const CompanyInfoStep = () => {
 
 
 
-function computePanamaSetupTotal(p: PanamaQuotePricing): number {
+function computePanamaSetupTotal(p: PanamaQuotePricing, useMirrStorage: boolean = false): number {
     return (
         p.setupBase +
         ND_PRICES[p.ndSetup] +
@@ -1293,13 +1293,14 @@ function computePanamaSetupTotal(p: PanamaQuotePricing): number {
         (p.optEmi ? PRICE_EMI : 0) +
         (p.optBank ? PRICE_BANK : 0) +
         (p.optCbi ? PRICE_CBI : 0) +
-        (p.optMirrStorage ? PRICE_MIRR_STORAGE : 0)
+        (useMirrStorage ? 350 : 0)
     );
 }
 
 
 const PanamaQuoteSetupStep = () => {
     const [form, setForm] = useAtom(paFormWithResetAtom1);
+    const useMirrStorage = form?.recordStorageUseMirr ?? false;
 
     // lock if already paid (optional – keep if you use this flag)
     const isLocked = form?.paymentStatus === "paid";
@@ -1312,7 +1313,6 @@ const PanamaQuoteSetupStep = () => {
             optEmi: false,
             optBank: false,
             optCbi: false,
-            optMirrStorage: false,
             nd3ReasonSetup: "",
             total: BASE_SETUP_CORP,
         }),
@@ -1327,8 +1327,6 @@ const PanamaQuoteSetupStep = () => {
         const optEmi = src.optEmi ?? initialPricing.optEmi;
         const optBank = src.optBank ?? initialPricing.optBank;
         const optCbi = src.optCbi ?? initialPricing.optCbi;
-        // Sync optMirrStorage with form.recordStorageUseMirr from AccountingRecordsStep
-        const optMirrStorage = Boolean(form?.recordStorageUseMirr) || src.optMirrStorage || initialPricing.optMirrStorage;
         const nd3ReasonSetup = src.nd3ReasonSetup ?? initialPricing.nd3ReasonSetup;
 
         const total = computePanamaSetupTotal({
@@ -1338,10 +1336,10 @@ const PanamaQuoteSetupStep = () => {
             optEmi,
             optBank,
             optCbi,
-            optMirrStorage,
             nd3ReasonSetup,
             total: 0,
-        });
+            optMirrStorage: false
+        }, useMirrStorage);
 
         return {
             setupBase,
@@ -1350,11 +1348,10 @@ const PanamaQuoteSetupStep = () => {
             optEmi,
             optBank,
             optCbi,
-            optMirrStorage,
             nd3ReasonSetup,
             total,
         };
-    }, [form?.panamaQuote, form?.recordStorageUseMirr, initialPricing]);
+    }, [form?.panamaQuote, initialPricing, useMirrStorage]);
 
 
     const updatePricing = <K extends keyof PanamaQuotePricing>(
@@ -1363,22 +1360,18 @@ const PanamaQuoteSetupStep = () => {
     ) => {
         if (isLocked) return;
         const next: PanamaQuotePricing = { ...pricing, [key]: value };
-        next.total = computePanamaSetupTotal(next);
+        next.total = computePanamaSetupTotal(next, useMirrStorage);
         setForm((prev: any) => ({
             ...prev,
             panamaQuote: next,
         }));
     };
-    console.log("pricing", form)
-    // Ensure total and optMirrStorage are synced on mount/atom change
+    // console.log("pricing", form)
+    // Ensure total is synced on mount/atom change
     React.useEffect(() => {
-        const computed = computePanamaSetupTotal(pricing);
-        const currentQuote = form?.panamaQuote || {};
-        // Check if pricing needs to be synced (total changed or optMirrStorage changed)
-        const needsSync = computed !== pricing.total ||
-            currentQuote.optMirrStorage !== pricing.optMirrStorage;
-
-        if (needsSync) {
+        const computed = computePanamaSetupTotal(pricing, useMirrStorage);
+        // console.log("computed",computed)
+        if (computed !== pricing.total) {
             setForm((prev: any) => ({
                 ...prev,
                 totalOriginal: pricing.total,
@@ -1386,7 +1379,7 @@ const PanamaQuoteSetupStep = () => {
             }));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pricing]);
+    }, [pricing, useMirrStorage]);
 
 
     // --- Dynamic Currency Display Logic ---
@@ -1418,6 +1411,8 @@ const PanamaQuoteSetupStep = () => {
     };
 
     const totalSetup = pricing.total;
+    const { t } = useTranslation();
+
     // console.log("testing--->", form.totalOriginal, pricing)
     return (
         <div className="p-4 space-y-4">
@@ -1567,20 +1562,13 @@ const PanamaQuoteSetupStep = () => {
                 <span className="text-sm font-semibold">{fmt(PRICE_CBI)}</span>
             </div>
 
-            {/* MIRR Storage Service (synced from Accounting Records Step) */}
-            {pricing.optMirrStorage && (
+            {/* Record Storage Fee */}
+            {useMirrStorage && (
                 <div className="flex items-center justify-between gap-3 py-1 border-b border-dashed border-slate-200">
-                    <div className="flex items-center gap-2">
-                        <Checkbox
-                            id="opt-mirr-storage"
-                            checked={pricing.optMirrStorage}
-                            disabled={true}
-                        />
-                        <Label htmlFor="opt-mirr-storage" className="text-sm">
-                            {t("panama.quoteSetup.optional.mirrStorage", "Mirr Storage Service")}
-                        </Label>
-                    </div>
-                    <span className="text-sm font-semibold">{fmt(PRICE_MIRR_STORAGE)}</span>
+                    <span className="text-sm">
+                        {t("ppif.invoice.setup.storage.label", "Record Storage (Mirr)")}
+                    </span>
+                    <span className="text-sm font-semibold">{fmt(350)}</span>
                 </div>
             )}
 
