@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Plus, ChevronDown, ChevronUp, HelpCircle, Info, Landmark, Scale, Send, UserIcon, Users, X } from "lucide-react";
+import { Plus, ChevronDown, ChevronUp, HelpCircle, Info, Landmark, Scale, Send, UserIcon, Users, X, AlertCircle } from "lucide-react";
 import CommonServiceAgrementTxt from "../CommonServiceAgrementTxt";
 // import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -123,6 +123,7 @@ const PRICE_NS = 1300;
 const PRICE_EMI = 400;
 const PRICE_BANK = 2000;
 const PRICE_CBI = 3880;
+const PRICE_MIRR_STORAGE = 350; // Mirr storage service fee
 const BASE_SETUP_CORP = 3000; // Mirr Asia setup fee + first-year services (corp)
 
 type PanamaQuotePricing = {
@@ -132,6 +133,7 @@ type PanamaQuotePricing = {
     optEmi: boolean;         // EMI account opening
     optBank: boolean;        // Panama local bank account opening
     optCbi: boolean;         // Puerto Rico CBI account opening
+    optMirrStorage: boolean; // Mirr storage service option
     nd3ReasonSetup?: string; // reason for selecting 3 NDs
     total: number;           // computed setup total
 };
@@ -1290,7 +1292,8 @@ function computePanamaSetupTotal(p: PanamaQuotePricing): number {
         (p.nsSetup ? PRICE_NS : 0) +
         (p.optEmi ? PRICE_EMI : 0) +
         (p.optBank ? PRICE_BANK : 0) +
-        (p.optCbi ? PRICE_CBI : 0)
+        (p.optCbi ? PRICE_CBI : 0) +
+        (p.optMirrStorage ? PRICE_MIRR_STORAGE : 0)
     );
 }
 
@@ -1309,6 +1312,7 @@ const PanamaQuoteSetupStep = () => {
             optEmi: false,
             optBank: false,
             optCbi: false,
+            optMirrStorage: false,
             nd3ReasonSetup: "",
             total: BASE_SETUP_CORP,
         }),
@@ -1323,6 +1327,8 @@ const PanamaQuoteSetupStep = () => {
         const optEmi = src.optEmi ?? initialPricing.optEmi;
         const optBank = src.optBank ?? initialPricing.optBank;
         const optCbi = src.optCbi ?? initialPricing.optCbi;
+        // Sync optMirrStorage with form.recordStorageUseMirr from AccountingRecordsStep
+        const optMirrStorage = Boolean(form?.recordStorageUseMirr) || src.optMirrStorage || initialPricing.optMirrStorage;
         const nd3ReasonSetup = src.nd3ReasonSetup ?? initialPricing.nd3ReasonSetup;
 
         const total = computePanamaSetupTotal({
@@ -1332,6 +1338,7 @@ const PanamaQuoteSetupStep = () => {
             optEmi,
             optBank,
             optCbi,
+            optMirrStorage,
             nd3ReasonSetup,
             total: 0,
         });
@@ -1343,10 +1350,12 @@ const PanamaQuoteSetupStep = () => {
             optEmi,
             optBank,
             optCbi,
+            optMirrStorage,
             nd3ReasonSetup,
             total,
         };
-    }, [form?.panamaQuote, initialPricing]);
+    }, [form?.panamaQuote, form?.recordStorageUseMirr, initialPricing]);
+
 
     const updatePricing = <K extends keyof PanamaQuotePricing>(
         key: K,
@@ -1361,11 +1370,15 @@ const PanamaQuoteSetupStep = () => {
         }));
     };
     console.log("pricing", form)
-    // Ensure total is synced on mount/atom change
+    // Ensure total and optMirrStorage are synced on mount/atom change
     React.useEffect(() => {
         const computed = computePanamaSetupTotal(pricing);
-        // console.log("computed",computed)
-        if (computed !== pricing.total) {
+        const currentQuote = form?.panamaQuote || {};
+        // Check if pricing needs to be synced (total changed or optMirrStorage changed)
+        const needsSync = computed !== pricing.total ||
+            currentQuote.optMirrStorage !== pricing.optMirrStorage;
+
+        if (needsSync) {
             setForm((prev: any) => ({
                 ...prev,
                 totalOriginal: pricing.total,
@@ -1374,6 +1387,7 @@ const PanamaQuoteSetupStep = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pricing]);
+
 
     // --- Dynamic Currency Display Logic ---
     const [displayRate, setDisplayRate] = React.useState(1);
@@ -1553,7 +1567,25 @@ const PanamaQuoteSetupStep = () => {
                 <span className="text-sm font-semibold">{fmt(PRICE_CBI)}</span>
             </div>
 
+            {/* MIRR Storage Service (synced from Accounting Records Step) */}
+            {pricing.optMirrStorage && (
+                <div className="flex items-center justify-between gap-3 py-1 border-b border-dashed border-slate-200">
+                    <div className="flex items-center gap-2">
+                        <Checkbox
+                            id="opt-mirr-storage"
+                            checked={pricing.optMirrStorage}
+                            disabled={true}
+                        />
+                        <Label htmlFor="opt-mirr-storage" className="text-sm">
+                            {t("panama.quoteSetup.optional.mirrStorage", "Mirr Storage Service")}
+                        </Label>
+                    </div>
+                    <span className="text-sm font-semibold">{fmt(PRICE_MIRR_STORAGE)}</span>
+                </div>
+            )}
+
             {/* Total Setup */}
+
             <div className="mt-4 flex flex-col gap-2 rounded-xl bg-[#0e3a8a] text-white px-3 py-2">
                 <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
@@ -2361,6 +2393,426 @@ function CongratsStep() {
     );
 }
 
+/* ---------- Added Components for Ported Sections ---------- */
+
+/* ---------- Compact tokens ---------- */
+const inputSm = "h-9 text-sm"
+const labelSm = "text-[13px] font-medium"
+function InfoBox({ children }: { children: React.ReactNode }) {
+    return (
+        <div className="rounded-md border bg-muted/40 p-2.5">
+            <div className="flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                <div className="text-[13px] leading-relaxed text-foreground">{children}</div>
+            </div>
+        </div>
+    )
+}
+
+function BylawsStep() {
+    const { t } = useTranslation();
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
+
+    return (
+        <div className="space-y-3">
+            <RadioGroup
+                value={form.bylawsMode || "standard"}
+                onValueChange={(v: "standard" | "custom") => setForm({ ...form, bylawsMode: v })}
+                className="flex gap-6"
+            >
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <RadioGroupItem value="standard" id="bylaws-standard" />
+                    <Label htmlFor="bylaws-standard" className="cursor-pointer">
+                        {t("ppif.bylaws.modes.standard")}
+                    </Label>
+                </label>
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <RadioGroupItem value="custom" id="bylaws-custom" />
+                    <Label htmlFor="bylaws-custom" className="cursor-pointer">
+                        {t("ppif.bylaws.modes.custom")}
+                    </Label>
+                </label>
+            </RadioGroup>
+
+            {form.bylawsMode === "custom" && (
+                <div className="grid md:grid-cols-2 gap-3">
+                    <div className="grid gap-1.5">
+                        <Label className={labelSm}>{t("ppif.bylaws.fields.powers.label")}</Label>
+                        <Textarea
+                            className="text-sm"
+                            placeholder={t("ppif.bylaws.fields.powers.placeholder")}
+                            value={form.bylawsPowers}
+                            onChange={(e) => setForm({ ...form, bylawsPowers: e.target.value })}
+                        />
+                    </div>
+
+                    <div className="grid gap-1.5">
+                        <Label className={labelSm}>{t("ppif.bylaws.fields.admin.label")}</Label>
+                        <Textarea
+                            className="text-sm"
+                            placeholder={t("ppif.bylaws.fields.admin.placeholder")}
+                            value={form.bylawsAdmin}
+                            onChange={(e) => setForm({ ...form, bylawsAdmin: e.target.value })}
+                        />
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function EntitySample() {
+    return (
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="flex items-start gap-3">
+                <div className="mt-1 h-9 w-9 shrink-0 rounded-lg bg-orange-50 flex items-center justify-center">
+                    <span className="text-orange-600 text-lg leading-none">i</span>
+                </div>
+
+                <div className="min-w-0">
+                    <h3 className="text-sm font-semibold text-slate-900">
+                        Economic Substance (ES) Check — Panama
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-6 text-slate-700">
+                        Panama does not generally apply a single “economic substance test” to every
+                        company like some offshore jurisdictions. However, substance may be relevant
+                        depending on your setup—especially if you:
+                    </p>
+
+                    <ul className="mt-3 space-y-2 text-sm text-slate-700">
+                        <li className="flex gap-2">
+                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                            <span>apply for a special regime (e.g., SEM / licensed activities), or</span>
+                        </li>
+                        <li className="flex gap-2">
+                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                            <span>want to support tax residency / management &amp; control in Panama, or</span>
+                        </li>
+                        <li className="flex gap-2">
+                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                            <span>need to meet banking / counterparties’ compliance expectations.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function BankingStep() {
+    const { t } = useTranslation();
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
+    const showGuide = form.bankingNeed === "need";
+
+    return (
+        <div className="space-y-3">
+            <div className="grid md:grid-cols-2 gap-3">
+                {/* Need to open an account */}
+                <div className="grid gap-1.5">
+                    <Label className={labelSm}>
+                        {t("ppif.banking.need.label")}
+                        <span className="text-destructive">{t("ppif.validation.requiredAsterisk")}</span>
+                    </Label>
+
+                    <RadioGroup
+                        value={form.bankingNeed || ""}
+                        onValueChange={(v: "need" | "none" | "later") => setForm({ ...form, bankingNeed: v })}
+                        className="flex gap-6"
+                    >
+                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                            <RadioGroupItem value="need" id="bank-need-yes" />
+                            <span>{t("ppif.banking.need.options.need")}</span>
+                        </label>
+                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                            <RadioGroupItem value="none" id="bank-need-no" />
+                            <span>{t("ppif.banking.need.options.none")}</span>
+                        </label>
+                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                            <RadioGroupItem value="later" id="bank-need-later" />
+                            <span>{t("ppif.banking.need.options.later")}</span>
+                        </label>
+                    </RadioGroup>
+                </div>
+
+                {/* Business activity type */}
+                <div className="grid gap-1.5">
+                    <Label className={labelSm}>{t("ppif.banking.bizType.label")}</Label>
+
+                    <Select
+                        value={form.bankingBizType || undefined}
+                        onValueChange={(v) => setForm({ ...form, bankingBizType: v })}
+                    >
+                        <SelectTrigger className={inputSm}>
+                            {/* reuse shared Select placeholder from profile */}
+                            <SelectValue placeholder={t("ppif.profile.sourceOfFunds.placeholder")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="consulting">{t("ppif.banking.bizType.options.consulting")}</SelectItem>
+                            <SelectItem value="ecommerce">{t("ppif.banking.bizType.options.ecommerce")}</SelectItem>
+                            <SelectItem value="investment">{t("ppif.banking.bizType.options.investment")}</SelectItem>
+                            <SelectItem value="crypto">{t("ppif.banking.bizType.options.crypto")}</SelectItem>
+                            <SelectItem value="manufacturing">{t("ppif.banking.bizType.options.manufacturing")}</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+
+            {/* Guidance box */}
+            {showGuide && (
+                <div className="space-y-2">
+                    <div className="rounded-md border border-border p-2.5 text-[13px] bg-muted/30">
+                        <b>{t("ppif.banking.guide.title")}</b>
+                        <ul className="list-disc ml-6 mt-1.5 space-y-1">
+                            <li>{t("ppif.banking.guide.list.panama")}</li>
+                            <li><b>{t("ppif.banking.bizType.options.crypto")}</b>: {t("ppif.banking.guide.list.crypto")}</li>
+                            <li>{t("ppif.banking.guide.list.emi")}</li>
+                        </ul>
+                    </div>
+
+                    {form.bankingBizType && (
+                        <div className="text-[13px] text-muted-foreground">
+                            {t("ppif.banking.guide.activityLabel")} {t(`ppif.banking.hints.${form.bankingBizType}`)}
+                        </div>
+                    )}
+
+                    <div className="text-[12px] text-muted-foreground">
+                        {t("ppif.banking.guide.docsNote")}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function DeliverablesStep() {
+    const { t } = useTranslation();
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
+    const set = (patch: any) => setForm({ ...form, ...patch });
+
+    const items: Array<string> = [
+        "publicDeed",
+        "publicDeedTranslation",
+        "registryCert",
+        "registryCertTranslation",
+        "foundationCert",
+        "foundationCertTranslation",
+        "councilRegister",
+        "councilAcceptance",
+        "bylaws",
+        "boardMeeting",
+        "incumbencyCert",
+        "nomineeAgreement",
+        "companyChop"
+    ];
+
+    return (
+        <div className="grid md:grid-cols-2 gap-3">
+            {/* Left: Deliverables list with collapsibles */}
+            <div className="space-y-2">
+                <div className="font-medium text-foreground">
+                    {t("ppif.deliverables.left.title")}
+                </div>
+
+                <div className="rounded-md border p-2.5 text-[13px] text-muted-foreground dl-list">
+                    {items.map((k) => (
+                        <details className="mb-1.5" key={k}>
+                            <summary className="cursor-pointer">
+                                {t(`ppif.deliverables.left.items.${k}.title`)}
+                            </summary>
+                            <div>
+                                {t(`ppif.deliverables.left.items.${k}.desc`)}
+                            </div>
+                        </details>
+                    ))}
+                </div>
+            </div>
+
+            {/* Right: Original Shipping Details */}
+            <div className="space-y-3">
+                <div className="text-[13px] text-muted-foreground">
+                    <span className="font-medium text-foreground">
+                        {t("ppif.deliverables.right.title")}
+                    </span>{" "}
+                    <span className="text-xs">
+                        {t("ppif.deliverables.right.note")}
+                    </span>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-3">
+                    <div className="grid gap-1.5">
+                        <Label className={labelSm}>
+                            {t("ppif.deliverables.right.fields.recipientCompany.label")}
+                            <span className="text-destructive">
+                                {t("ppif.validation.requiredAsterisk")}
+                            </span>
+                        </Label>
+                        <Input
+                            className={inputSm}
+                            value={form.shippingRecipientCompany || ""}
+                            onChange={(e) => set({ shippingRecipientCompany: e.target.value })}
+                            placeholder={t("ppif.deliverables.right.fields.recipientCompany.placeholder")}
+                        />
+                    </div>
+
+                    <div className="grid gap-1.5">
+                        <Label className={labelSm}>
+                            {t("ppif.deliverables.right.fields.contactPerson.label")}
+                            <span className="text-destructive">
+                                {t("ppif.validation.requiredAsterisk")}
+                            </span>
+                        </Label>
+                        <Input
+                            className={inputSm}
+                            value={form.shippingContactPerson || ""}
+                            onChange={(e) => set({ shippingContactPerson: e.target.value })}
+                            placeholder={t("ppif.deliverables.right.fields.contactPerson.placeholder")}
+                        />
+                    </div>
+
+                    <div className="grid gap-1.5">
+                        <Label className={labelSm}>
+                            {t("ppif.deliverables.right.fields.phone.label")}
+                            <span className="text-destructive">
+                                {t("ppif.validation.requiredAsterisk")}
+                            </span>
+                        </Label>
+                        <Input
+                            className={inputSm}
+                            type="tel"
+                            value={form.shippingPhone || ""}
+                            onChange={(e) => set({ shippingPhone: e.target.value })}
+                            placeholder={t("ppif.deliverables.right.fields.phone.placeholder")}
+                        />
+                    </div>
+
+                    <div className="grid gap-1.5">
+                        <Label className={labelSm}>
+                            {t("ppif.deliverables.right.fields.postalCode.label")}
+                            <span className="text-destructive">
+                                {t("ppif.validation.requiredAsterisk")}
+                            </span>
+                        </Label>
+                        <Input
+                            className={inputSm}
+                            value={form.shippingPostalCode || ""}
+                            onChange={(e) => set({ shippingPostalCode: e.target.value })}
+                            placeholder={t("ppif.deliverables.right.fields.postalCode.placeholder")}
+                        />
+                    </div>
+                </div>
+
+                <div className="grid gap-1.5">
+                    <Label className={labelSm}>
+                        {t("ppif.deliverables.right.fields.address.label")}
+                        <span className="text-destructive">
+                            {t("ppif.validation.requiredAsterisk")}
+                        </span>
+                    </Label>
+                    <Textarea
+                        className="text-sm"
+                        rows={4}
+                        placeholder={t("ppif.deliverables.right.fields.address.placeholder")}
+                        value={form.shippingAddress || ""}
+                        onChange={(e) => set({ shippingAddress: e.target.value })}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function AccountingRecordsStep() {
+    const { t } = useTranslation();
+    const [form, setForm] = useAtom(paFormWithResetAtom1);
+    const set = (patch: any) => setForm({ ...form, ...patch });
+
+    const usingMirr = Boolean(form.recordStorageUseMirr);
+
+    const handleUseMirrToggle = (v: boolean | "indeterminate") => {
+        const next = Boolean(v);
+        // When using Mirr, clear manual fields to avoid stale values
+        set({
+            recordStorageUseMirr: next,
+            ...(next
+                ? {
+                    recordStorageAddress: "",
+                    recordStorageResponsiblePerson: "",
+                }
+                : {}), // keep as-is when unchecking
+        });
+    };
+
+    return (
+        <div className="space-y-3">
+            <InfoBox>{t("ppif.accounting.info")}</InfoBox>
+
+            <div className="grid md:grid-cols-2 gap-3">
+                {/* Address */}
+                <div className="md:col-span-2 grid gap-1.5">
+                    <Label className={labelSm}>
+                        {t("ppif.accounting.fields.address.label")}
+                        {!usingMirr && (
+                            <span className="text-destructive">
+                                {t("ppif.validation.requiredAsterisk")}
+                            </span>
+                        )}
+                    </Label>
+                    <Textarea
+                        className={`text-sm ${usingMirr ? "opacity-60 cursor-not-allowed" : ""}`}
+                        rows={4}
+                        placeholder={t("ppif.accounting.fields.address.placeholder")}
+                        value={form.recordStorageAddress || ""}
+                        onChange={(e) => set({ recordStorageAddress: e.target.value })}
+                        disabled={usingMirr}
+                        aria-disabled={usingMirr}
+                    />
+                </div>
+
+                {/* Responsible person */}
+                <div className="grid gap-1.5">
+                    <Label className={labelSm}>
+                        {t("ppif.accounting.fields.responsible.label")}
+                        {!usingMirr && (
+                            <span className="text-destructive">
+                                {t("ppif.validation.requiredAsterisk")}
+                            </span>
+                        )}
+                    </Label>
+                    <Input
+                        className={`${inputSm} ${usingMirr ? "opacity-60 cursor-not-allowed" : ""}`}
+                        placeholder={t("ppif.accounting.fields.responsible.placeholder")}
+                        value={form.recordStorageResponsiblePerson || ""}
+                        onChange={(e) => set({ recordStorageResponsiblePerson: e.target.value })}
+                        disabled={usingMirr}
+                        aria-disabled={usingMirr}
+                    />
+                </div>
+
+                {/* Use Mirr checkbox */}
+                <div className="flex items-start gap-3">
+                    <Checkbox
+                        id="recordStorageUseMirr"
+                        checked={usingMirr}
+                        onCheckedChange={handleUseMirrToggle}
+                    />
+                    <Label
+                        htmlFor="recordStorageUseMirr"
+                        className={`${labelSm} leading-relaxed cursor-pointer`}
+                    >
+                        {t("ppif.accounting.fields.useMirr.label")}
+                        {usingMirr && (
+                            <div className="text-xs text-muted-foreground mt-1">
+                                {t("ppif.accounting.fields.useMirr.helper", "We'll store records at our registered office and handle the responsible officer.")}
+                            </div>
+                        )}
+                    </Label>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 const CONFIG: FormConfig = {
     title: "panama.title",
     steps: [
@@ -2612,18 +3064,52 @@ const CONFIG: FormConfig = {
                 "usa.steps.agreement.description",
             render: CommonServiceAgrementTxt
         },
-        // {
-        //     id: "services",
-        //     title: "usa.steps.step5",
-        //     description:
-        //         "usa.steps.services.description",
-        //     render: SgServiceSelectionStep,
-        // },
+        {
+            id: "bylaws",
+            title: "ppif.section7",
+            render: BylawsStep
+        },
+        {
+            id: "es",
+            title: "ppif.section8",
+            description: "ppif.es.description",
+            render: EntitySample
+        },
+        {
+            id: "banking",
+            title: "ppif.section9",
+            render: BankingStep
+        },
+        {
+            id: "pep",
+            title: "ppif.section10",
+            fields: [
+                {
+                    type: "radio-group",
+                    name: "pepAny",
+                    label: "ppif.pep.label",
+                    colSpan: 2,
+                    options: [
+                        { label: "ppif.pep.options.yes", value: "yes" },
+                        { label: "ppif.pep.options.no", value: "no" }
+                    ]
+                }
+            ]
+        },
+        {
+            id: "deliverables",
+            title: "ppif.section12",
+            render: DeliverablesStep
+        },
+        {
+            id: "accounting",
+            title: "ppif.section13",
+            render: AccountingRecordsStep
+        },
         {
             id: "invoice",
             title: "usa.steps.step6",
-            description:
-                "usa.steps.invoice.description",
+            description: "usa.steps.invoice.description",
             render: PanamaQuoteSetupStep,
         },
         {
@@ -3253,7 +3739,7 @@ const PanamaIncorporationForm: React.FC = () => {
             }
         }
         if (stepIdx == 2) {
-            console.log("form?.shareHolders",form?.shareHolders)       
+            // console.log("form?.shareHolders",form?.shareHolders)       
             const parties = Array.isArray(form?.shareHolders) ? form.shareHolders : [];
             const hasNonDcp = parties.some((p: any) => p?.isDcp == true);
 
@@ -3269,7 +3755,7 @@ const PanamaIncorporationForm: React.FC = () => {
                 return
             }
         }
-        if (stepIdx == 6 && form.paymentStatus !== "paid") {
+        if (stepIdx == 12 && form.paymentStatus !== "paid") {
             toast({ title: "Payment Pending", description: "Please complete the payment before proceeding Next" });
             return
         }

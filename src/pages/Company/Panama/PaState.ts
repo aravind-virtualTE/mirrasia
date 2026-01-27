@@ -96,6 +96,22 @@ export interface PaFormData {
   mobileOtpVerified?: boolean;
   emailOtpVerified?: boolean;
 
+  // --- New Ported Fields ---
+  bylawsMode?: "standard" | "custom";
+  bylawsPowers?: string;
+  bylawsAdmin?: string;
+  bankingNeed?: "need" | "none" | "later" | "";
+  bankingBizType?: string;
+  pepAny?: "yes" | "no" | "";
+  shippingRecipientCompany?: string;
+  shippingContactPerson?: string;
+  shippingPhone?: string;
+  shippingPostalCode?: string;
+  shippingAddress?: string;
+  recordStorageUseMirr?: boolean;
+  recordStorageAddress?: string;
+  recordStorageResponsiblePerson?: string;
+
   [key: string]: any;
 }
 
@@ -164,6 +180,22 @@ const initialFormState: PaFormData = {
   hasLegalEthicalIssues: { id: '', value: '' },
   mobileOtpVerified: false,
   emailOtpVerified: false,
+
+  // --- New Ported Fields ---
+  bylawsMode: "standard",
+  bylawsPowers: "",
+  bylawsAdmin: "",
+  bankingNeed: "",
+  bankingBizType: "",
+  pepAny: "no",
+  shippingRecipientCompany: "",
+  shippingContactPerson: "",
+  shippingPhone: "",
+  shippingPostalCode: "",
+  shippingAddress: "",
+  recordStorageUseMirr: false,
+  recordStorageAddress: "",
+  recordStorageResponsiblePerson: "",
 
 };
 
