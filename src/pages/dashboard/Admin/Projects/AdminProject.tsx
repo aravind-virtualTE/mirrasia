@@ -274,7 +274,7 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                   <TableHead className="w-12 px-2 py-1 text-center">No</TableHead>
 
                   {/* Project Name: wider + higher priority */}
-                  <TableHead className="px-2 py-1 min-w-[280px] md:min-w-[340px]">
+                  <TableHead className="px-2 py-1 min-w-[250px] md:min-w-[340px]">
                     <button
                       type="button"
                       onClick={() => toggleSort("projectName")}
@@ -284,7 +284,7 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                     </button>
                   </TableHead>
 
-                  <TableHead className="px-2 py-1 min-w-[200px]">
+                  <TableHead className="px-2 py-1 min-w-[180px]">
                     <button
                       type="button"
                       onClick={() => toggleSort("companyName")}
@@ -294,14 +294,14 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                     </button>
                   </TableHead>
 
-                  <TableHead className="px-2 py-1 min-w-[200px]">Email</TableHead>
-                  <TableHead className="px-2 py-1 min-w-[100px]">Contact</TableHead>
-                  <TableHead className="px-2 py-1 min-w-[100px]">Jurisdiction</TableHead>
+                  <TableHead className="px-2 py-1 min-w-[180px]">Email</TableHead>
+                  <TableHead className="px-2 py-1 min-w-[90px]">Contact</TableHead>
+                  <TableHead className="px-2 py-1 min-w-[90px]">Jurisdiction</TableHead>
 
                   {/* Description: flexible, takes remaining space */}
-                  <TableHead className="px-2 py-1 min-w-[200px] w-full">Description</TableHead>
+                  <TableHead className="px-2 py-1 min-w-[180px] w-full">Description</TableHead>
 
-                  <TableHead className="px-2 py-1 w-[110px] whitespace-nowrap">Updated At</TableHead>
+                  <TableHead className="px-2 py-1 w-[80px] whitespace-nowrap">Updated At</TableHead>
                   <TableHead className="px-2 py-1 w-[90px] text-right whitespace-nowrap">Actions</TableHead>
                 </TableRow>
               </TableHeader>

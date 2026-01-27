@@ -22,6 +22,7 @@ import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { paFormWithResetAtom1 } from "@/pages/Company/Panama/PaState";
 import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
 import { pifFormWithResetAtom } from "@/pages/Company/PanamaFoundation/PaState";
+import { costaRicaFormAtom } from "@/pages/Company/CostaRica/costaState";
 
 interface NavbarProps {
     onMenuToggle: () => void;
@@ -37,6 +38,7 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
     const [, setPA] = useAtom(paFormWithResetAtom1);
     const [, setPAF] = useAtom(pifFormWithResetAtom);
     const [, setSG] = useAtom(sgFormWithResetAtom1);
+    const [, setCR] = useAtom(costaRicaFormAtom)
     const resetAllForms = useResetAllForms();
     const token = localStorage.getItem('token') as string;
     if (!token) return <Navigate to="/" replace />
@@ -61,6 +63,7 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
         setPAF('reset')
         setSG('reset')
         setUSForm('reset')
+        setCR("reset")
         if (['admin', 'master'].includes(decodedToken.role)) {
             navigate('/admin-dashboard');
         }
@@ -86,6 +89,7 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
         setPA('reset')
         setPAF('reset')
         setSG('reset')
+        setCR("reset")
     };
 
     return (

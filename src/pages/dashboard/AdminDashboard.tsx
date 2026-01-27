@@ -42,6 +42,7 @@ import SearchBox from "../MasterTodo/SearchBox";
 import { normalize } from "@/middleware";
 import EnquiryCard from "./Admin/Enquiry/EnquiryCard";
 import ReqForQuoteCard from "./Admin/ReqForQuote/ReqForQuoteCard";
+import { costaRicaFormAtom } from "../Company/CostaRica/costaState";
 
 type CanonStatus =
   | "Pending"
@@ -103,6 +104,7 @@ const AdminDashboard = () => {
   const [, setPA] = useAtom(paFormWithResetAtom1);
   const [, setPAF] = useAtom(pifFormWithResetAtom);
   const [, setSG] = useAtom(sgFormWithResetAtom1);
+  const [, setCR] = useAtom(costaRicaFormAtom)
   const resetAllForms = useResetAllForms();
 
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "ascending" | "descending" } | null>(null);
@@ -125,6 +127,7 @@ const AdminDashboard = () => {
     setPA("reset");
     setPAF("reset");
     setSG("reset");
+    setCR("reset")
 
     async function fetchData() {
       const [result, count] = await Promise.all([getIncorporationList(), getCurrentClientsCount()]);

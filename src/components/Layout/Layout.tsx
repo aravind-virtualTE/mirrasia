@@ -32,8 +32,9 @@ import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
 import SocialMediaWidget from "../SocialMedia";
 import TopNav from "./Navbar";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
+import {costaRicaFormAtom} from "@/pages/Company/CostaRica/costaState";
 
-type Role = "user" | "admin" | "master" | "hk_shdr" | "us_shdr";
+type Role = "user" | "admin" | "master"
 type DecodedToken = { role?: Role };
 
 interface SidebarItemCfg {
@@ -109,6 +110,7 @@ const Layout: React.FC = () => {
   const [, setPA] = useAtom(paFormWithResetAtom1);
   const [, setSG] = useAtom(sgFormWithResetAtom1);
   const [, setHK] = useAtom(hkAppAtom)
+  const [, setCR] = useAtom(costaRicaFormAtom)
 
 
 
@@ -121,6 +123,7 @@ const Layout: React.FC = () => {
     setUS("reset");
     setPA("reset");
     setSG("reset");
+    setCR("reset")
     setHK(null)
     try {
       localStorage.removeItem("companyRecordId");
@@ -213,7 +216,7 @@ const Layout: React.FC = () => {
         id: "home",
         icon: Home,
         label: t("sideItems.Home"),
-        roles: ["user", "admin", "master", "hk_shdr", "us_shdr"],
+        roles: ["user", "admin", "master"],
         onClick: () => {
           hardReset();
           navigate(["admin", "master"].includes(role) ? "/admin-dashboard" : "/dashboard");

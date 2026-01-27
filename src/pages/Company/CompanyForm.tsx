@@ -33,7 +33,9 @@ import { getPaFIncorpoData, pifFormWithResetAtom } from './PanamaFoundation/PaSt
 import ConfigDrivenUSAForm from './USA/UsIncorporation';
 import SgIncorpForm from './Singapore/NewSgIncorporation';
 import PanamaIncorporationForm from './Panama/NewPanamaIncorpo';
-
+import { CostaIncorporationForm } from './CostaRica/CostaIncorporationForm';
+import {getCommonIncorpoDataById} from '@/services/dataFetch';
+import { costaRicaFormAtom } from './CostaRica/costaState';
 const CompanyRegistration = () => {
     const { t } = useTranslation();
     const [countryState, setCountryState] = useAtom(countryAtom);
@@ -49,27 +51,12 @@ const CompanyRegistration = () => {
     const [, setSgFormData] = useAtom(sgFormWithResetAtom1);
     const [, setHkInfoData] = useAtom(hkAppAtom);
     const [, setPpiF] = useAtom(pifFormWithResetAtom);
+    const [, setCRFormData] = useAtom(costaRicaFormAtom)
     useEffect(() => {
         if (id && countryCode == "HK") {
 
             if (!id || !decodedToken?.userId) return;
-            (async () => {
-                // Fetch all companies
-                // const result = await getIncorporationListByUserId(`${decodedToken.userId}`, `${decodedToken.role}`);
-                // setCompaniesList(result.companies.mergedList);
-                // // Find the current company from fetched list
-                // const company = result.companies.mergedList.find((c: { _id: string; }) => c._id === id);
-                // const cntry = company?.country as Record<string, string | undefined>;
-                // if (company) setCountryState(cntry);
-                // // Fetch and update incorporation details for this specific company
-                // const compData = await getIncorporationListByCompId(`${id}`);
-                // if (compData && compData.length > 0) {
-                //     setApplicantHkInfoData(compData[0].applicantInfoForm);
-                //     updateCompanyData(compData[0]);
-                // //   console.log("resultIncorporation--->", compData);
-                // } else {
-                //   console.warn("No incorporation data found for id:", id);
-                // }
+            (async () => {               
                 const result = await getHkIncorpoData(id)
                 // console.log("result-->", result);
                 setHkInfoData(result)
@@ -77,7 +64,6 @@ const CompanyRegistration = () => {
             })();
         }
         else if (id && countryCode == "US") {
-
             async function getUsData() {
                 return await getUsIncorpoDataById(`${id}`)
             }
@@ -90,7 +76,6 @@ const CompanyRegistration = () => {
             });
         }
         else if (id && countryCode == "PA") {
-
             async function getPAData() {
                 return await getPaIncorpoDataById(`${id}`)
             }
@@ -118,6 +103,15 @@ const CompanyRegistration = () => {
                 setCountryState({ code: 'PPIF', name: 'Panama Foundation' });
             })();
         }
+        else if(id && countryCode == "CR") {
+            (async () => {
+                const result = await getCommonIncorpoDataById('CR',id)
+                console.log("result-->", result);
+                setCRFormData(result)
+                setCountryState({ code: 'CR', name: 'Costa Rica' });
+            })();
+        }
+
     }, []);
 
     const countries = [
@@ -127,6 +121,7 @@ const CompanyRegistration = () => {
         // { code: 'UK', name: t('countrySelection.uk') },
         { code: 'PA', name: t('countrySelection.pa') },
         { code: 'PPIF', name: t('countrySelection.pafn') },
+        { code: 'CR', name: t('countrySelection.cr', "Costa Rica") },
         // Add more countries as needed
     ];
 
@@ -160,6 +155,8 @@ const CompanyRegistration = () => {
                 
             case 'PPIF':
                 return <PanamaFoundation />
+            case "CR":
+                return <CostaIncorporationForm />
             default:
                 return <div>Registration form for {countryState.name} is not available yet.</div>;
         }
