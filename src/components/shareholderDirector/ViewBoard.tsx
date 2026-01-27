@@ -20,6 +20,7 @@ import SgIndividualShrDetail from './SgIndividualDetail';
 import SgCorporateMemberDetail from './SgCorporateView';
 import UsIndividualShdrDetail from './UsIndividualDetail';
 import DetailPACorporateShareHolderDialog from './PaCorpMemberDetail';
+import CrMemberDetail from './CrMemberDetail';
 
 export default function ViewBoard() {
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ export default function ViewBoard() {
   const [selectedData, setsSelectedData] = useState<any>(null)
   const [country, setCountry] = useState<string>('HK')
   const [multiData, setMultiData] = useAtom<any>(multiShrDirResetAtom)
-
+  // console.log("multiData",multiData)
   const [fState, setFState] = useState([{
     companyName: "" as string, fullName: "" as string, significantController: "" as string, _id: "" as string
   }])
@@ -53,6 +54,9 @@ export default function ViewBoard() {
   const [pifState, setPifState] = useState([{
     companyName: "" as string, name: "" as string, contribution: "" as string, _id: "" as string, corporation: "" as string
   }])
+  const [crState, setCrState] = useState([{
+    companyName: "" as string, fullName: "" as string, investmentAmount: "" as string, _id: "" as string, corporation: "" as string
+  }])
   const token = localStorage.getItem('token') as string;
   const decodedToken = jwtDecode<TokenData>(token);
   useEffect(() => {
@@ -74,6 +78,7 @@ export default function ViewBoard() {
         setPifState(data.pifShrData)
         setSgCorpShrState(data.sgCorpData)
         setMultiData(multiData)
+        setCrState(data.crMemberData)
       } catch (error) {
         console.error("Error fetching data:", error)
       }
@@ -88,7 +93,7 @@ export default function ViewBoard() {
     setIsDialogOpen(true)
     setCountry(country)
   }
-  // console.log('pifState', pifState, country)
+  // console.log('crState', crState, country)
   return (
     <div className="flex-1 py-4">
       {/* defaultValue={["registration-table", "associated-companies"]} */}
@@ -548,6 +553,50 @@ export default function ViewBoard() {
                   </div>
                 </div>
               )}
+              {crState.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3 text-primary">Costa rica member</h4>
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-10">S.No</TableHead>
+                          <TableHead className="w-48">{t("company.name")}</TableHead>
+                          <TableHead className="w-48">{t("shldr_viewboard.fullName")}</TableHead>
+                          <TableHead className="min-w-[300px]">Amount Invested & Shares</TableHead>
+                          <TableHead className="w-16 text-center">{t("shldr_viewboard.edit")}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {crState.map((company, index) => {                          
+                          const shrId = multiData.find((item: { shrDirId: string; }) => item.shrDirId == company._id)
+                          return (
+                          <TableRow
+                            key={`${index}-${company.companyName}-${index}`}
+                            onClick={() => handleShowClick(company)}
+                            className="cursor-pointer"
+                          >
+                            <TableCell className="font-medium">{index + 1}</TableCell>
+                            <TableCell className="font-medium">{shrId?.companyName}</TableCell>
+                            <TableCell>{company.fullName}</TableCell>
+                            <TableCell className="whitespace-normal">{company.investmentAmount}</TableCell>
+                            <TableCell className="text-center">
+                              <button onClick={(e) => {
+                                e.stopPropagation()
+                                localStorage.setItem('shdrItem', shrId._id)
+                                localStorage.setItem('country', 'CR')
+                                navigate(`/registrationForm/${company._id}`)
+                              }}>
+                                <Pencil size={16} />
+                              </button>
+                            </TableCell>
+                          </TableRow>
+                        )})}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              )}
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -562,6 +611,7 @@ export default function ViewBoard() {
       {country == 'PPIF' && <PPifDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} userData={selectedData} />}
       {country == 'SG_Individual' && <SgIndividualShrDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} data={selectedData} />}
       {country == 'SG_Corporate' && <SgCorporateMemberDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} data={selectedData} />}
+      {country == 'CR' && <CrMemberDetail isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} data={selectedData} />}
 
     </div>
   )

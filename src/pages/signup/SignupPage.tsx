@@ -190,26 +190,46 @@ const SignupPage = () => {
     }
 
     try {
-      setAuth((prev) => ({ ...prev, loading: true }));
+      setAuth((prev) => ({ ...prev, loading: true, error: null }));
+
       const response = await signupWithEmail(
         formData.fullName,
         formData.email,
         formData.password
-        // formData.phone
       );
-      const { token, user } = response;
+
+      // console.log("Signup response:", response);
+
+      if (response?.success === false) {
+        setAuth((prev) => ({
+          ...prev,
+          loading: false,
+          error: response.message || "Signup not allowed",
+        }));
+        return;
+      }
+
+      const { token, user, } = response;
+
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      setAuth({ user, isAuthenticated: true, loading: false, error: null });
       localStorage.setItem("isAuthenticated", "true");
+
+      setAuth({
+        user,
+        isAuthenticated: true,
+        loading: false,
+        error: null,
+      });
+
       navigate(user.role === "admin" ? "/admin-dashboard" : "/dashboard");
     } catch (error) {
+      console.error(error);
       setAuth((prev) => ({
         ...prev,
         loading: false,
         error: "Signup failed. Please try again.",
       }));
-      console.log(error);
     }
   };
 

@@ -18,6 +18,7 @@ import CuracaoDetail from "./CuracaoDetail";
 import EstoniaDetail from "./EstoniaDetail";
 import SaintVincentDetail from "./SaintVincentDetail";
 import UaeDetail from "./UaeDetail";
+import CostaRicaCompanyDetails from './CostaIncorporationDetails'
 
 const CompanyDetail = () => {
     const { countryCode, id } = useParams();
@@ -64,6 +65,8 @@ const CompanyDetail = () => {
                 return <SaintVincentDetail id={id ?? ""} />;
             case "AE": // Saint Vincent and the Grenadines
                 return <UaeDetail id={id ?? ""} />;
+            case "CR": // Saint Vincent and the Grenadines
+                return <CostaRicaCompanyDetails id={id ?? ""} />;
             
             default:
                 return <p> Not Found... </p>

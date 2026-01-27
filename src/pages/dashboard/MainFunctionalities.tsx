@@ -11,6 +11,7 @@ import { hkAppAtom } from '../Company/NewHKForm/hkIncorpo';
 import { paFormWithResetAtom1 } from '../Company/Panama/PaState';
 import { sgFormWithResetAtom1 } from '../Company/Singapore/SgState';
 import { pifFormWithResetAtom } from '../Company/PanamaFoundation/PaState';
+import { costaRicaFormAtom } from '../Company/CostaRica/costaState';
 
 const MainFunctionalities: React.FC = () => {
     const resetAllForms = useResetAllForms();
@@ -21,6 +22,7 @@ const MainFunctionalities: React.FC = () => {
     const [, setPA] = useAtom(paFormWithResetAtom1);
     const [, setPAF] = useAtom(pifFormWithResetAtom);
     const [, setSG] = useAtom(sgFormWithResetAtom1);
+    const [, setCR] = useAtom(costaRicaFormAtom)
     
     const { t } = useTranslation();
 
@@ -28,6 +30,7 @@ const MainFunctionalities: React.FC = () => {
         setAllList('reset')
         setUSForm('reset')
         setPAF("reset");
+        setCR("reset")
         resetAllForms();
         localStorage.removeItem('companyRecordId')
         navigate('/company-register');
@@ -40,6 +43,7 @@ const MainFunctionalities: React.FC = () => {
         setSG("reset");
         setPAF("reset");
         navigate('/pba-forms');
+        setCR("reset")
     };
     const handleServicesCard = () => {
         resetAllForms();
@@ -49,6 +53,7 @@ const MainFunctionalities: React.FC = () => {
         setSG("reset");
         setPAF("reset");
         navigate('/switch-services');
+        setCR("reset")
     };
 
     const handleProjectCard = () => {
@@ -59,6 +64,7 @@ const MainFunctionalities: React.FC = () => {
         setSG("reset");
         setPAF("reset");
         navigate('/accounting-services');
+        setCR("reset")
     }
 
     const mainFunctionalities = [

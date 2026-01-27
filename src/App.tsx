@@ -61,6 +61,7 @@ import EnquiryList from './pages/dashboard/Admin/Enquiry/EnquiryList';
 import ReqForQuoteList from './pages/dashboard/Admin/ReqForQuote/ReqForQuoteList';
 // import NewSgIncorporation from './pages/Company/Singapore/NewSgIncorporation';
 import ReqForQuotation from './components/reqForQuotation/ReqForQuotation';
+import CRMemberRegistration from './components/ShrDirForm/cr/CrMemberRegistration';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -140,6 +141,7 @@ const App: React.FC = () => {
                       <Route path='/registrationForm' element={<CountryWiseShareholder />} />
                       <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
                       <Route path="/quotation-request" element={<ReqForQuotation />} />
+                      <Route path="/testing" element={<CRMemberRegistration />} />
                       
                     </Route>
                   </Route>
@@ -168,16 +170,7 @@ const App: React.FC = () => {
                       
                     </Route>
                   </Route>
-
-                  {/* <Route element={<ProtectedRoute allowedRoles={["hk_shdr", 'us_shdr', 'pa_shdr']} />}>
-                    <Route element={<Layout />}>
-                      <Route path="/viewboard" element={<ViewBoard />} />
-                      <Route path='/registrationForm' element={<CountryWiseShareholder />} />
-                      <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
-                      <Route path="/profile" element={<Profile />} />
-                    </Route>
-                  </Route> */}
-
+                 
                   {/* Protected routes for User */}
                   <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
                     <Route element={<Layout />}>

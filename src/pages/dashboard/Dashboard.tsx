@@ -38,6 +38,8 @@ import { hkAppAtom } from "../Company/NewHKForm/hkIncorpo";
 import { paFormWithResetAtom1 } from "../Company/Panama/PaState";
 import { sgFormWithResetAtom1 } from "../Company/Singapore/SgState";
 import { pifFormWithResetAtom } from "../Company/PanamaFoundation/PaState";
+import { costaRicaFormAtom } from "../Company/CostaRica/costaState";
+
 
 import SearchBox from "../MasterTodo/SearchBox";
 import { normalize } from "@/middleware";
@@ -59,6 +61,7 @@ const Dashboard = () => {
   const [, setPAF] = useAtom(pifFormWithResetAtom);
   const [, setSG] = useAtom(sgFormWithResetAtom1);
   const [, setPifFormData] = useAtom(pifFormWithResetAtom);
+  const [, setCR] = useAtom(costaRicaFormAtom)
 
   const token = useMemo(() => ((localStorage.getItem("token") as string) ?? ""), []);
   const { userId, role } = useMemo(() => {
@@ -105,6 +108,7 @@ const Dashboard = () => {
     setSG("reset");
     setUsaReset("reset");
     setPifFormData("reset");
+    setCR("reset")
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
