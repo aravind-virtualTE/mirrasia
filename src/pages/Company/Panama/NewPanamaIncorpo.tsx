@@ -123,7 +123,9 @@ const PRICE_NS = 1300;
 const PRICE_EMI = 400;
 const PRICE_BANK = 2000;
 const PRICE_CBI = 3880;
+const PRICE_MIRR_STORAGE = 350; // Mirr storage service fee
 const BASE_SETUP_CORP = 3000; // Mirr Asia setup fee + first-year services (corp)
+
 
 type PanamaQuotePricing = {
     setupBase: number;       // base setup for corp (3,000)
@@ -135,7 +137,7 @@ type PanamaQuotePricing = {
     optMirrStorage?: boolean; // Mirr storage service option
     nd3ReasonSetup?: string; // reason for selecting 3 NDs
     total: number;           // computed setup total
-    
+
 };
 const ND_PRICES: Record<number, number> = {
     0: 0,
@@ -1293,7 +1295,7 @@ function computePanamaSetupTotal(p: PanamaQuotePricing, useMirrStorage: boolean 
         (p.optEmi ? PRICE_EMI : 0) +
         (p.optBank ? PRICE_BANK : 0) +
         (p.optCbi ? PRICE_CBI : 0) +
-        (useMirrStorage ? 350 : 0)
+        (useMirrStorage ? PRICE_MIRR_STORAGE : 0)
     );
 }
 
@@ -1935,9 +1937,23 @@ function asNum(v: any) {
 }
 
 function computeSgGrandTotal(app: any): number {
-    // Subtotal is whatever the invoice last wrote
-    // console.log("App--->",app)
-    const subtotal = asNum(app.panamaQuote?.total ?? 0);
+    // Get subtotal from panamaQuote if available
+    let subtotal = asNum(app.panamaQuote?.total ?? 0);
+
+    // If subtotal is 0, compute it directly from the form data
+    if (subtotal === 0) {
+        const quote = app.panamaQuote || {};
+        const useMirrStorage = Boolean(app.recordStorageUseMirr);
+
+        // Compute the total using the same logic as computePanamaSetupTotal
+        subtotal = BASE_SETUP_CORP +
+            (ND_PRICES[quote.ndSetup] || 0) +
+            (quote.nsSetup ? PRICE_NS : 0) +
+            (quote.optEmi ? PRICE_EMI : 0) +
+            (quote.optBank ? PRICE_BANK : 0) +
+            (quote.optCbi ? PRICE_CBI : 0) +
+            (useMirrStorage ? PRICE_MIRR_STORAGE : 0);
+    }
 
     const currency = app.stripeCurrency;
     const cardFeeRate = currency && String(currency).toUpperCase() == "USD" ? 0.06 : 0.035;
@@ -1946,6 +1962,7 @@ function computeSgGrandTotal(app: any): number {
     const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
     return Math.round(total * 100) / 100; // cents-safe
 }
+
 
 const PaymentStep = () => {
     const [form, setForm] = useAtom(paFormWithResetAtom1);

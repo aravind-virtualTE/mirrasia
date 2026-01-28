@@ -223,8 +223,8 @@
           "label": "Director (Secretary)"
         },
         {
-          "value": "directorProxy",
-          "label": "Director's proxy (an agent who registers and acts on behalf of a director)"
+          "value": "directorOnly",
+          "label": "Director only"
         },
         {
           "value": "designatedContact",
