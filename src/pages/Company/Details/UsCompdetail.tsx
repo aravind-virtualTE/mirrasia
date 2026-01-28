@@ -47,7 +47,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Tabs,
   TabsContent,
@@ -80,7 +79,6 @@ import { getShrMemberData, STATUS_OPTIONS } from "./detailData";
 import UsIndividualShdrDetail from "@/components/shareholderDirector/UsIndividualDetail";
 import UsCorporateShdrDetailDialog from "@/components/shareholderDirector/UsCorporateDetail";
 import { InvoiceUsStep } from "../USA/UsIncorporation";
-import { usaList, entity_types, service_list } from "../USA/constants";
 
 // -------- helpers --------
 function fmtDate(d?: string | Date) {
@@ -197,22 +195,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       label: t("usa.AppInfo.consultationRequired", "Consultation required"),
     },
   ];
-  const toggleServiceItem = (id: string) => {
-    setForm((prev: any) => {
-      const current = Array.isArray(prev.serviceItemsSelected)
-        ? [...prev.serviceItemsSelected]
-        : [];
-      const exists = current.includes(id);
-      const updated = exists
-        ? current.filter((item) => item !== id)
-        : [...current, id];
-      return { ...prev, serviceItemsSelected: updated };
-    });
-  };
-  const getServiceLabel = (id: string) => {
-    const service = service_list.find((item) => item.id === id);
-    return service ? t(service.key, service.key) : id;
-  };
+
   const getComplianceLabel = (value?: string) => {
     if (!value) return "";
     const option = complianceSelectOptions.find((opt) => opt.value === value);

@@ -30,10 +30,8 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import InvoicePreview from "../NewHKForm/NewInvoicePreview";
 import DetailShdHk from "@/components/shareholderDirector/detailShddHk";
