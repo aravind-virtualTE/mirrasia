@@ -8,9 +8,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
-import { Banknote, Building2, ShieldCheck, ReceiptText, Mail, Phone, CheckCircle2, Circle, Save, Trash2 } from "lucide-react";
+import { Banknote, Building2, ReceiptText, Mail, Phone, CheckCircle2, Circle, Save, Trash2 } from "lucide-react";
 import { createOrUpdatePaFIncorpo, getPaFIncorpoData } from "../PanamaFoundation/PaState";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MemoApp from "./MemosHK";
@@ -44,6 +46,7 @@ export type PIFRecord = {
     createdAt?: string;
     updatedAt?: string;
     incorporationStatus?: string;
+    incorporationDate?: string;
     // Declarations
     truthOk?: boolean;
     taxOk?: boolean;
@@ -68,9 +71,46 @@ export type PIFRecord = {
 
     // System fields
     status?: string;
+    assignedTo?: string;
+    shippingRecipientCompany?: string;
+    shippingContactPerson?: string;
+    shippingPhone?: string;
+    shippingPostalCode?: string;
+    shippingAddress?: string;
+    registeredAddressMode?: "mirr" | "own" | "";
+    ownRegisteredAddress?: string;
 };
 
 // ----------------- Constants & helpers -----------------
+const INDUSTRY_OPTIONS = [
+    { key: "trading", labelKey: "ppif.profile.businessActivities.industries.options.trading" },
+    { key: "wholesale", labelKey: "ppif.profile.businessActivities.industries.options.wholesale" },
+    { key: "consulting", labelKey: "ppif.profile.businessActivities.industries.options.consulting" },
+    { key: "manufacturing", labelKey: "ppif.profile.businessActivities.industries.options.manufacturing" },
+    { key: "finance", labelKey: "ppif.profile.businessActivities.industries.options.finance" },
+    { key: "online", labelKey: "ppif.profile.businessActivities.industries.options.online" },
+    { key: "it", labelKey: "ppif.profile.businessActivities.industries.options.it" },
+    { key: "crypto", labelKey: "ppif.profile.businessActivities.industries.options.crypto" },
+    { key: "other", labelKey: "ppif.profile.businessActivities.industries.options.other" },
+] as const;
+
+const splitPurposes = (value?: string) =>
+    (value || "")
+        .split(",")
+        .map((v) => v.trim())
+        .filter(Boolean);
+
+const normalizePurposeText = (raw: string) =>
+    Array.from(new Set(splitPurposes(raw))).join(", ").slice(0, 280);
+
+const COMPLIANCE_QUESTIONS = [
+    { key: "legalAndEthicalConcern", label: "ppif.aml.q1.label", hint: undefined },
+    { key: "q_country", label: "ppif.aml.q2.label", hint: undefined },
+    { key: "sanctionsExposureDeclaration", label: "ppif.aml.q3.label", hint: undefined },
+    { key: "crimeaSevastapolPresence", label: "ppif.aml.q4.label", hint: undefined },
+    { key: "russianEnergyPresence", label: "ppif.aml.q5.label", hint: "ppif.aml.q5.examples" },
+] as const;
+
 const steps = [
     "Applicant",
     "Names",
@@ -181,8 +221,8 @@ export default function PPifCompDetail({ id }: { id: string }) {
         name2: data?.foundationNameEs || "",
         name3: data?.altName1 || "",
         cname1: data?.altName2 || "",
-        industry: data?.industries?.join(", ") || "",
-        purpose: data?.purposeSummary ? [data?.purposeSummary] : [],
+        industries: data?.industries || [],
+        purpose: splitPurposes(data?.purposeSummary || ""),
         bizdesc: data?.bizDesc || "",
         currency: data?.pricing?.currency,
         finalAmount: data?.pricing?.total,
@@ -200,12 +240,21 @@ export default function PPifCompDetail({ id }: { id: string }) {
         crimeaSevastapolPresence: data?.crimeaSevastapolPresence || "",
         russianEnergyPresence: data?.russianEnergyPresence || "",
         eSign: data?.signName ? `${data.signName} • ${fmtDate(data?.signDate)}` : "",
+        shippingRecipientCompany: data?.shippingRecipientCompany || "",
+        shippingContactPerson: data?.shippingContactPerson || "",
+        shippingPhone: data?.shippingPhone || "",
+        shippingPostalCode: data?.shippingPostalCode || "",
+        shippingAddress: data?.shippingAddress || "",
+        registeredAddressMode: (data as any)?.registeredAddressMode || "",
     }), [data]);
     React.useEffect(() => {
         const fetchData = async () => {
             const result = await getPaFIncorpoData(id);
             console.log("result-->", result);
-            if (result) setData(result);
+            if (result) {
+                setData(result);
+                setAdminAssigned(result.assignedTo || "");
+            }
             const usersResponse = await fetchUsers();
             const adminUsers = usersResponse.filter((e: { role: string }) => e.role === "admin" || e.role === "master");
             setUsers(adminUsers);
@@ -213,7 +262,26 @@ export default function PPifCompDetail({ id }: { id: string }) {
         fetchData();
     }, []);
 
-    const patchCompany = (key: keyof PIFRecord, value: any) => setData(prev => ({ ...prev, [key]: value }));
+    const patchCompany = (key: keyof PIFRecord, value: any) => setData(prev => prev ? ({ ...prev, [key]: value }) : prev);
+
+    const toggleIndustrySelection = (key: string, checked: boolean) => {
+        setData((prev) => {
+            if (!prev) return prev;
+            const list = Array.isArray(prev.industries) ? [...prev.industries] : [];
+            const idx = list.indexOf(key);
+            if (checked) {
+                if (idx === -1) list.push(key);
+            } else if (idx >= 0) {
+                list.splice(idx, 1);
+            }
+            return { ...prev, industries: list };
+        });
+    };
+
+    const handlePurposeChange = (raw: string) => {
+        patchCompany("purposeSummary", normalizePurposeText(raw));
+    };
+
 
     const updateFounderAt = (index: number, patch: any) => {
         setData(prev => {
@@ -352,19 +420,27 @@ export default function PPifCompDetail({ id }: { id: string }) {
     };
 
     const onSave = async () => {
+        if (!data) return;
         setIsSaving(true);
-        const result = await createOrUpdatePaFIncorpo(data);
-        if (result) {
+        try {
+            const result = await createOrUpdatePaFIncorpo(data);
+            if (result) {
+                toast({ title: "Success", description: "Company details saved." });
+                setIsEditing(false);
+                return true;
+            } else {
+                toast({ title: "Error", description: "Failed to save company details.", variant: "destructive" });
+            }
+        } finally {
             setIsSaving(false);
-            toast({ title: "Success", description: "Company details saved." });
-            return true;
-        } else {
-            toast({ title: "Error", description: "Failed to save company details.", variant: "destructive" });
         }
     };
 
     const AssignAdmin = () => {
-        const handleAssign = (value: string) => setAdminAssigned(value);
+        const handleAssign = (value: string) => {
+            setAdminAssigned(value);
+            patchCompany("assignedTo", value);
+        };
         return (
             <div className="flex items-center gap-4">
                 <span className="text-sm font-medium">Assign Admin:</span>
@@ -474,23 +550,44 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                     <div className="mt-2 flex flex-wrap items-center gap-2">
                                                         <Badge variant="secondary" className="text-muted-foreground">{steps[data?.stepIdx ?? 0] || "—"}</Badge>
                                                         <div className="flex items-center gap-2">
-                                                            <span className="text-xs text-muted-foreground">Incorporation Status</span>
+                                                            <span className="text-xs text-muted-foreground">Status</span>
                                                             {user.role !== "user" ? (
-                                                                <Select
-                                                                    value={data?.status || ""}
-                                                                    onValueChange={(val) => patchCompany("incorporationStatus", val)}
-                                                                >
-                                                                    <SelectTrigger className="h-7 w-[220px]">
-                                                                        <SelectValue placeholder="Select status" />
-                                                                    </SelectTrigger>
-                                                                    <SelectContent>
-                                                                        {STATUS_OPTIONS.map((s) => (
-                                                                            <SelectItem key={s} value={s}>
-                                                                                {s}
-                                                                            </SelectItem>
-                                                                        ))}
-                                                                    </SelectContent>
-                                                                </Select>
+                                                                <div className="flex items-center gap-2">
+                                                                    <Select
+                                                                        value={data?.status || ""}
+                                                                        onValueChange={(val) => patchCompany("incorporationStatus", val)}
+                                                                    >
+                                                                        <SelectTrigger className="h-7 w-[220px]">
+                                                                            <SelectValue placeholder="Select status" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            {STATUS_OPTIONS.map((s) => (
+                                                                                <SelectItem key={s} value={s}>
+                                                                                    {s}
+                                                                                </SelectItem>
+                                                                            ))}
+                                                                        </SelectContent>
+                                                                    </Select>
+
+                                                                    <LabelValue label="Incorporation Date">
+                                                                        {isEditing && isAdmin ? (
+                                                                            <Input
+                                                                                type="date"
+                                                                                value={
+                                                                                    data?.incorporationDate
+                                                                                        ? String(data.incorporationDate).slice(0, 10)
+                                                                                        : ""
+                                                                                }
+                                                                                onChange={(e) =>
+                                                                                    patchCompany("incorporationDate", e.target.value)
+                                                                                }
+                                                                                className="h-8 w-44"
+                                                                            />
+                                                                        ) : (
+                                                                            <span>{data?.incorporationDate ? fmtDate(data.incorporationDate) : "—"}</span>
+                                                                        )}
+                                                                    </LabelValue>
+                                                                </div>
                                                             ) : (
                                                                 <Badge variant="default">{data?.status || "Pending"}</Badge>
                                                             )}
@@ -557,61 +654,217 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 </div>
                                             )}
                                         </LabelValue>
-                                        <LabelValue label="Industry">{dataMemo.industry || "—"}</LabelValue>
-                                        <LabelValue label="Purpose">
-                                            <div className="flex flex-wrap gap-2">
-                                                {(dataMemo.purpose?.length ? dataMemo.purpose : ["—"]).map((p, i) => (
-                                                    <Badge key={p + i} variant="secondary">{p}</Badge>
-                                                ))}
-                                            </div>
+                                        <LabelValue label={t("ppif.profile.businessActivities.industries.label")}>
+                                            {isEditing ? (
+                                                <div className="space-y-3 text-sm text-muted-foreground">
+                                                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                                                        {INDUSTRY_OPTIONS.map((option) => {
+                                                            const selected = data?.industries?.includes(option.key);
+                                                            return (
+                                                                <label
+                                                                    key={option.key}
+                                                                    className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-xs font-medium transition hover:bg-muted"
+                                                                >
+                                                                    <Checkbox
+                                                                        checked={selected}
+                                                                        onCheckedChange={(checked) =>
+                                                                            toggleIndustrySelection(option.key, checked === true)
+                                                                        }
+                                                                    />
+                                                                    <span className="truncate">
+                                                                        {t(option.labelKey)}
+                                                                    </span>
+                                                                </label>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {dataMemo.industries.length ? (
+                                                        dataMemo.industries.map((k) => (
+                                                            <Badge key={k} variant="secondary">
+                                                                {t(`ppif.profile.businessActivities.industries.options.${k}`) || k}
+                                                            </Badge>
+                                                        ))
+                                                    ) : (
+                                                        <span className="text-muted-foreground">—</span>
+                                                    )}
+                                                </div>
+                                            )}
                                         </LabelValue>
-                                        <LabelValue label="Business Description">{dataMemo.bizdesc || "—"}</LabelValue>
+                                        <LabelValue label={t("ppif.profile.purpose.label")}>
+                                            {isEditing ? (
+                                                <Textarea
+                                                    className="h-24"
+                                                    value={data?.purposeSummary || ""}
+                                                    onChange={(e) => handlePurposeChange(e.target.value)}
+                                                    placeholder={t("ppif.profile.purpose.placeholder")}
+                                                />
+                                            ) : (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {(dataMemo.purpose.length ? dataMemo.purpose : ["—"]).map((item, idx) => (
+                                                        <Badge key={item + idx} variant="secondary">
+                                                            {item}
+                                                        </Badge>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </LabelValue>
+                                        <LabelValue label={t("ppif.profile.businessActivities.description.label")}>
+                                            {isEditing ? (
+                                                <Textarea
+                                                    className="h-24"
+                                                    value={data?.bizDesc || ""}
+                                                    onChange={(e) => patchCompany("bizDesc", e.target.value)}
+                                                    placeholder={t("ppif.profile.businessActivities.description.placeholder")}
+                                                />
+                                            ) : (
+                                                dataMemo.bizdesc || "—"
+                                            )}
+                                        </LabelValue>
                                     </div>
                                     <Separator />
                                     <div className="grid gap-5">
                                         <div className="text-sm font-semibold">A. Establishment</div>
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <LabelValue label="Initial Endowment">
-                                                {(data as any)?.initialEndowment || "—"}
+                                                {isEditing ? (
+                                                    <Input
+                                                        value={(data as any)?.initialEndowment || ""}
+                                                        onChange={(e) => patchCompany("initialEndowment" as keyof PIFRecord, e.target.value)}
+                                                        className="h-8"
+                                                        placeholder="Amount"
+                                                    />
+                                                ) : (
+                                                    (data as any)?.initialEndowment || "—"
+                                                )}
                                             </LabelValue>
                                             <LabelValue label="Source of Funds">
-                                                {(data as any)?.sourceOfFunds || (data as any)?.sourceOfFundsOther || "—"}
+                                                {isEditing ? (
+                                                    <Input
+                                                        value={(data as any)?.sourceOfFunds || ""}
+                                                        onChange={(e) => patchCompany("sourceOfFunds" as keyof PIFRecord, e.target.value)}
+                                                        className="h-8"
+                                                        placeholder="Source"
+                                                    />
+                                                ) : (
+                                                    (data as any)?.sourceOfFunds || (data as any)?.sourceOfFundsOther || "—"
+                                                )}
                                             </LabelValue>
                                             <LabelValue label="Registered Address Mode">
-                                                {(() => {
-                                                    const need = (data as any)?.registeredAddressMode;
-                                                    return need == "mirr" ? "opted for MIRRASIA address"
-                                                        : need === "own" ? "Manage own address"
-                                                            : "—";
-                                                })()}
+                                                {isEditing ? (
+                                                    <Select
+                                                        value={(data as any)?.registeredAddressMode || ""}
+                                                        onValueChange={(val) =>
+                                                            patchCompany(
+                                                                "registeredAddressMode" as keyof PIFRecord,
+                                                                val,
+                                                            )
+                                                        }
+                                                    >
+                                                        <SelectTrigger className="h-8 w-full">
+                                                            <SelectValue placeholder="Mode" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="mirr">
+                                                                {t("ppif.profile.registeredAddress.options.mirr")}
+                                                            </SelectItem>
+                                                            <SelectItem value="own">
+                                                                {t("ppif.profile.registeredAddress.options.own")}
+                                                            </SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                ) : (
+                                                    (() => {
+                                                        const need = (data as any)?.registeredAddressMode;
+                                                        return need == "mirr" ? "opted for MIRRASIA address"
+                                                            : need === "own" ? "Manage own address"
+                                                                : "—";
+                                                    })()
+                                                )}
                                             </LabelValue>
                                             {(data as any)?.registeredAddressMode === "own" && (
                                                 <LabelValue label="Registered Address">
-                                                    {(data as any)?.ownRegisteredAddress || "—"}
+                                                    {isEditing ? (
+                                                        <Input
+                                                            value={(data as any)?.ownRegisteredAddress || ""}
+                                                            onChange={(e) =>
+                                                                patchCompany("ownRegisteredAddress" as keyof PIFRecord, e.target.value)
+                                                            }
+                                                            className="h-8"
+                                                            placeholder="Own address"
+                                                        />
+                                                    ) : (
+                                                        (data as any)?.ownRegisteredAddress || "—"
+                                                    )}
                                                 </LabelValue>
                                             )}
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <LabelValue label="Purpose of Establishment">
-                                                {(data as any)?.purposeSummary || "—"}
+                                                {isEditing ? (
+                                                    <Textarea
+                                                        className="h-24"
+                                                        value={data?.purposeSummary || ""}
+                                                        onChange={(e) => handlePurposeChange(e.target.value)}
+                                                        placeholder={t("ppif.profile.purpose.placeholder")}
+                                                    />
+                                                ) : (
+                                                    (data as any)?.purposeSummary || "—"
+                                                )}
                                             </LabelValue>
                                             <LabelValue label="Main Industries">
-                                                <div className="flex flex-wrap gap-2">
-                                                    {Array.isArray((data as any)?.industries) && (data as any).industries.length
-                                                        ? (data as any).industries.map((ind: string, i: number) => (
-                                                            <Badge key={ind + i} variant="secondary">{ind}</Badge>
-                                                        ))
-                                                        : "—"}
-                                                </div>
+                                                {isEditing ? (
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {INDUSTRY_OPTIONS.map((option) => {
+                                                            const selected = data?.industries?.includes(option.key);
+                                                            return (
+                                                                <Badge key={option.key} variant={selected ? "secondary" : "outline"}>
+                                                                    {t(option.labelKey)}
+                                                                </Badge>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {Array.isArray((data as any)?.industries) && (data as any).industries.length
+                                                            ? (data as any).industries.map((ind: string, i: number) => (
+                                                                <Badge key={ind + i} variant="secondary">
+                                                                    {ind}
+                                                                </Badge>
+                                                            ))
+                                                            : "—"}
+                                                    </div>
+                                                )}
                                             </LabelValue>
                                             <LabelValue label="Countries of Activity (planned)">
-                                                {(data as any)?.geoCountries || "—"}
+                                                {isEditing ? (
+                                                    <Input
+                                                        value={(data as any)?.geoCountries || ""}
+                                                        onChange={(e) =>
+                                                            patchCompany("geoCountries" as keyof PIFRecord, e.target.value)
+                                                        }
+                                                        className="h-8"
+                                                        placeholder="Countries"
+                                                    />
+                                                ) : (
+                                                    (data as any)?.geoCountries || "—"
+                                                )}
                                             </LabelValue>
-                                            {(data as any)?.foundationNameEs && (
-                                                <LabelValue label="Spanish Name">
-                                                    {(data as any)?.foundationNameEs}
-                                                </LabelValue>
-                                            )}
+                                            <LabelValue label="Spanish Name">
+                                                {isEditing ? (
+                                                    <Input
+                                                        value={dataMemo.name2 || ""}
+                                                        onChange={(e) =>
+                                                            patchCompany("foundationNameEs" as keyof PIFRecord, e.target.value)
+                                                        }
+                                                        className="h-8"
+                                                    />
+                                                ) : (
+                                                    (data as any)?.foundationNameEs || "—"
+                                                )}
+                                            </LabelValue>
                                         </div>
                                     </div>
                                     <Separator />
@@ -1006,14 +1259,91 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     <Separator />
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">H. Shipping / Delivery</div>
-                                        <div className="grid md:grid-cols-3 gap-4">
-                                            <LabelValue label="Recipient Company">{(data as any)?.shippingRecipientCompany || "—"}</LabelValue>
-                                            <LabelValue label="Contact Person">{(data as any)?.shippingContactPerson || "—"}</LabelValue>
-                                            <LabelValue label="Contact Phone">{(data as any)?.shippingPhone || "—"}</LabelValue>
-                                            <LabelValue label="Postal Code">{(data as any)?.shippingPostalCode || "—"}</LabelValue>
-                                            <LabelValue label="Address">{(data as any)?.shippingAddress || "—"}</LabelValue>
-                                        </div>
+                                        <>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <LabelValue label="Recipient Company">
+                                                    {isEditing ? (
+                                                        <Input
+                                                            value={data?.shippingRecipientCompany || ""}
+                                                            onChange={(e) =>
+                                                                patchCompany(
+                                                                    "shippingRecipientCompany" as keyof PIFRecord,
+                                                                    e.target.value,
+                                                                )
+                                                            }
+                                                            className="h-8"
+                                                        />
+                                                    ) : (
+                                                        (data as any)?.shippingRecipientCompany || "—"
+                                                    )}
+                                                </LabelValue>
+                                                <LabelValue label="Contact Person">
+                                                    {isEditing ? (
+                                                        <Input
+                                                            value={data?.shippingContactPerson || ""}
+                                                            onChange={(e) =>
+                                                                patchCompany(
+                                                                    "shippingContactPerson" as keyof PIFRecord,
+                                                                    e.target.value,
+                                                                )
+                                                            }
+                                                            className="h-8"
+                                                        />
+                                                    ) : (
+                                                        (data as any)?.shippingContactPerson || "—"
+                                                    )}
+                                                </LabelValue>
+                                                <LabelValue label="Phone">
+                                                    {isEditing ? (
+                                                        <Input
+                                                            value={data?.shippingPhone || ""}
+                                                            onChange={(e) =>
+                                                                patchCompany("shippingPhone" as keyof PIFRecord, e.target.value)
+                                                            }
+                                                            className="h-8"
+                                                        />
+                                                    ) : (
+                                                        (data as any)?.shippingPhone || "—"
+                                                    )}
+                                                </LabelValue>
+                                                <LabelValue label="Postal Code">
+                                                    {isEditing ? (
+                                                        <Input
+                                                            value={data?.shippingPostalCode || ""}
+                                                            onChange={(e) =>
+                                                                patchCompany(
+                                                                    "shippingPostalCode" as keyof PIFRecord,
+                                                                    e.target.value,
+                                                                )
+                                                            }
+                                                            className="h-8"
+                                                        />
+                                                    ) : (
+                                                        (data as any)?.shippingPostalCode || "—"
+                                                    )}
+                                                </LabelValue>
+                                            </div>
+                                            <div className="grid grid-cols-1 gap-3 mt-3">
+                                                <LabelValue label="Delivery Address">
+                                                    {isEditing ? (
+                                                        <Textarea
+                                                            value={data?.shippingAddress || ""}
+                                                            onChange={(e) =>
+                                                                patchCompany(
+                                                                    "shippingAddress" as keyof PIFRecord,
+                                                                    e.target.value,
+                                                                )
+                                                            }
+                                                            className="h-24"
+                                                        />
+                                                    ) : (
+                                                        (data as any)?.shippingAddress || "—"
+                                                    )}
+                                                </LabelValue>
+                                            </div>
+                                        </>
                                     </div>
+
                                     <Separator />
                                     <div className="grid gap-3">
                                         <div className="text-sm font-semibold">I. Banking</div>
@@ -1224,30 +1554,48 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                 </div>
                                             </div>
                                         </CardHeader>
-                                        <div className="grid grid-cols-1 gap-2 text-sm">
-                                            {([
-                                                ["Legal or Ethical Concern (money laundering etc)", "legalAndEthicalConcern"],
-                                                ["Sanctioned Countries Activity (Iran, Sudan, NK, Syria, Cuba, Belarus, Zimbabwe)", "q_country"],
-                                                ["Sanctions Exposure (UN, EU, UKHMT, HKMA, OFAC, etc.)", "sanctionsExposureDeclaration"],
-                                                ["Crimea/Sevastopol Presence", "crimeaSevastapolPresence"],
-                                                ["Russian Energy Presence", "russianEnergyPresence"],
-                                            ] as const).map(([label, key]) => {
-                                                const raw = (dataMemo as any)[key];
-                                                const val = raw ? String(raw).toLowerCase() : "";
-                                                const isYes = val === "yes";
+                                        <div className="grid grid-cols-1 gap-2">
+                                            {COMPLIANCE_QUESTIONS.map(({ key, label, hint }) => {
+                                                const value = ((data as any)?.[key] as string) || "";
+                                                const normalized = value.toLowerCase();
+                                                const isYes = normalized === "yes";
                                                 return (
-                                                    <div key={key} className="flex items-center justify-between gap-3">
-                                                        <span>{label}</span>
-                                                        <Badge
-                                                            variant={isYes ? "destructive" : "default"}
-                                                            className={
-                                                                isYes
-                                                                    ? ""
-                                                                    : "bg-green-100 text-green-800 border border-green-200 hover:bg-green-100"
-                                                            }
-                                                        >
-                                                            {raw ? String(raw).toUpperCase() : "—"}
-                                                        </Badge>
+                                                    <div key={key} className="rounded-lg border p-3 text-sm">
+                                                        <div className="flex items-center justify-between gap-3">
+                                                            <span>{t(label)}</span>
+                                                            {isEditing ? (
+                                                                <Select
+                                                                    value={value}
+                                                                    onValueChange={(val) =>
+                                                                        patchCompany(key as keyof PIFRecord, val)
+                                                                    }
+                                                                >
+                                                                    <SelectTrigger className="h-8 w-32">
+                                                                        <SelectValue placeholder={t("common.select", "Select")} />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        <SelectItem value="yes">
+                                                                            {t("ppif.pep.options.yes")}
+                                                                        </SelectItem>
+                                                                        <SelectItem value="no">
+                                                                            {t("ppif.pep.options.no")}
+                                                                        </SelectItem>
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            ) : (
+                                                                <Badge
+                                                                    variant={isYes ? "destructive" : "outline"}
+                                                                    className={isYes ? "" : "text-muted-foreground"}
+                                                                >
+                                                                    {value ? value.toUpperCase() : "—"}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                        {hint && (
+                                                            <div className="text-xs text-muted-foreground mt-1">
+                                                                {t(hint)}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 );
                                             })}
@@ -1255,32 +1603,80 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                     </div>
                                 </CardContent>
                                 <Separator />
-                                <CardHeader>
-                                    <div className="flex items-start gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                                            <ShieldCheck className="h-5 w-5 text-primary" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <CardTitle className="text-base">Declarations & e-Sign</CardTitle>
-                                        </div>
-                                    </div>
-                                </CardHeader>
-                                <CardContent>
-                                    {/* Row 2: Declarations (only these belong to declarations) */}
-                                    <div className="grid grid-cols-1 gap-3">
+                                <CardContent className="grid gap-4">
+                                    <div className="grid gap-3">
                                         <div className="text-xs text-muted-foreground">Declarations</div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                            <LabelValue label="Truthfulness">
-                                                <BoolPill value={!!dataMemo.truthfulnessDeclaration} />
+                                            <LabelValue label={t("ppif.declarations.checks.truthOk")}>
+                                                {isEditing ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <Checkbox
+                                                            checked={!!data?.truthOk}
+                                                            onCheckedChange={(checked) =>
+                                                                patchCompany("truthOk", checked === true)
+                                                            }
+                                                        />
+                                                        <span className="text-sm">{data?.truthOk ? "Yes" : "No"}</span>
+                                                    </div>
+                                                ) : (
+                                                    <BoolPill value={!!data?.truthOk} />
+                                                )}
                                             </LabelValue>
-                                            <LabelValue label="Legal Terms">
-                                                <BoolPill value={!!dataMemo.legalTermsAcknowledgment} />
+                                            <LabelValue label={t("ppif.declarations.checks.privacyOk")}>
+                                                {isEditing ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <Checkbox
+                                                            checked={!!data?.privacyOk}
+                                                            onCheckedChange={(checked) =>
+                                                                patchCompany("privacyOk", checked === true)
+                                                            }
+                                                        />
+                                                        <span className="text-sm">{data?.privacyOk ? "Yes" : "No"}</span>
+                                                    </div>
+                                                ) : (
+                                                    <BoolPill value={!!data?.privacyOk} />
+                                                )}
                                             </LabelValue>
-                                            <LabelValue label="Compliance Precondition">
-                                                <BoolPill value={!!dataMemo.compliancePreconditionAcknowledgment} />
+                                            <LabelValue label={t("ppif.declarations.checks.taxOk")}>
+                                                {isEditing ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <Checkbox
+                                                            checked={!!data?.taxOk}
+                                                            onCheckedChange={(checked) =>
+                                                                patchCompany("taxOk", checked === true)
+                                                            }
+                                                        />
+                                                        <span className="text-sm">{data?.taxOk ? "Yes" : "No"}</span>
+                                                    </div>
+                                                ) : (
+                                                    <BoolPill value={!!data?.taxOk} />
+                                                )}
                                             </LabelValue>
-                                            <LabelValue label="e-Sign">
-                                                {dataMemo.eSign || "—"}
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <LabelValue label={t("ppif.declarations.fields.signName.label")}>
+                                                {isEditing ? (
+                                                    <Input
+                                                        className="h-8"
+                                                        value={data?.signName || ""}
+                                                        onChange={(e) => patchCompany("signName", e.target.value)}
+                                                    />
+                                                ) : (
+                                                    data?.signName || "—"
+                                                )}
+                                            </LabelValue>
+                                            <LabelValue label={t("ppif.declarations.fields.signDate.label")}>
+                                                {isEditing ? (
+                                                    <Input
+                                                        type="date"
+                                                        value={
+                                                            data?.signDate ? String(data.signDate).slice(0, 10) : ""
+                                                        }
+                                                        onChange={(e) => patchCompany("signDate", e.target.value)}
+                                                    />
+                                                ) : (
+                                                    fmtDate(data?.signDate)
+                                                )}
                                             </LabelValue>
                                         </div>
                                     </div>

@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -35,10 +36,8 @@ import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Sheet,
@@ -48,6 +47,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Tabs,
   TabsContent,
@@ -80,6 +80,7 @@ import { getShrMemberData, STATUS_OPTIONS } from "./detailData";
 import UsIndividualShdrDetail from "@/components/shareholderDirector/UsIndividualDetail";
 import UsCorporateShdrDetailDialog from "@/components/shareholderDirector/UsCorporateDetail";
 import { InvoiceUsStep } from "../USA/UsIncorporation";
+import { usaList, entity_types, service_list } from "../USA/constants";
 
 // -------- helpers --------
 function fmtDate(d?: string | Date) {
@@ -132,6 +133,14 @@ const BoolPill: React.FC<{ value?: boolean }> = ({ value }) => (
   </Badge>
 );
 
+const US_COMPLIANCE_FIELDS = [
+  { key: "legalAndEthicalConcern", labelKey: "newHk.steps.compliance.questions.legalAndEthicalConcern" },
+  { key: "q_country", labelKey: "newHk.steps.compliance.questions.q_country" },
+  { key: "sanctionsExposureDeclaration", labelKey: "newHk.steps.compliance.questions.sanctionsExposureDeclaration" },
+  { key: "crimeaSevastapolPresence", labelKey: "newHk.steps.compliance.questions.crimeaSevastapolPresence" },
+  { key: "russianEnergyPresence", labelKey: "newHk.steps.compliance.questions.russianEnergyPresence" },
+] as const;
+
 // -------- types --------
 export type SessionData = {
   _id: string;
@@ -172,6 +181,43 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
     ? JSON.parse(localStorage.getItem("user") as string)
     : null;
   const isAdmin = user?.role !== "user";
+
+  const complianceSelectOptions = [
+    { value: "yes", label: t("newHk.steps.compliance.options.yes", "Yes") },
+    { value: "no", label: t("newHk.steps.compliance.options.no", "No") },
+    { value: "unsure", label: t("newHk.steps.compliance.options.unsure", "Unsure") },
+  ];
+  const annualRenewalOptions = [
+    { value: "yes", label: t("newHk.steps.compliance.options.yes", "Yes") },
+    { value: "no", label: t("newHk.steps.compliance.options.no", "No") },
+    { value: "self_handle", label: t("usa.AppInfo.handleOwnIncorpo", "Handle myself") },
+    { value: "no_if_fixed_cost", label: t("usa.AppInfo.didntIntedEveryYear", "Not every year") },
+    {
+      value: "consultation_required",
+      label: t("usa.AppInfo.consultationRequired", "Consultation required"),
+    },
+  ];
+  const toggleServiceItem = (id: string) => {
+    setForm((prev: any) => {
+      const current = Array.isArray(prev.serviceItemsSelected)
+        ? [...prev.serviceItemsSelected]
+        : [];
+      const exists = current.includes(id);
+      const updated = exists
+        ? current.filter((item) => item !== id)
+        : [...current, id];
+      return { ...prev, serviceItemsSelected: updated };
+    });
+  };
+  const getServiceLabel = (id: string) => {
+    const service = service_list.find((item) => item.id === id);
+    return service ? t(service.key, service.key) : id;
+  };
+  const getComplianceLabel = (value?: string) => {
+    if (!value) return "";
+    const option = complianceSelectOptions.find((opt) => opt.value === value);
+    return option ? option.label : value.toUpperCase();
+  };
 
   // ---- bootstrap ----
   useEffect(() => {
@@ -245,7 +291,6 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const onSave = async () => {
     try {
       setIsSaving(true);
-      // backend originally expected `companyName` array.
       const payload = JSON.stringify({
         company: {
           id: form._id,
@@ -259,6 +304,49 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
           companyName_3: form.companyName_3,
           paymentStatus: form.paymentStatus,
           shareHolders: form.shareHolders,
+          // Add all editable fields
+          name: form.name,
+          email: form.email,
+          phoneNum: form.phoneNum,
+          selectedState: form.selectedState,
+          selectedEntity: form.selectedEntity,
+          selectedIndustry: form.selectedIndustry,
+          purposeOfEstablishmentCompany: form.purposeOfEstablishmentCompany,
+          descriptionOfBusiness: form.descriptionOfBusiness,
+          descriptionOfProducts: form.descriptionOfProducts,
+          otherIndustryText: form.otherIndustryText,
+          otherCompanyPurposeText: form.otherCompanyPurposeText,
+          webAddress: form.webAddress,
+          establishedRelationshipType: form.establishedRelationshipType,
+          totalCapital: form.totalCapital,
+          companyExecutives: form.companyExecutives,
+          localCompanyRegistration: form.localCompanyRegistration,
+          businessAddress: form.businessAddress,
+          noOfShareholders: form.noOfShareholders,
+          noOfOfficers: form.noOfOfficers,
+          accountingDataAddress: form.accountingDataAddress,
+          designatedContact: form.designatedContact,
+          beneficialOwner: form.beneficialOwner,
+          serviceItemsSelected: form.serviceItemsSelected,
+          paymentOption: form.paymentOption,
+          postIncorporationCapabilities: form.postIncorporationCapabilities,
+          serviceAgreementConsent: form.serviceAgreementConsent,
+          annualRenewalConsent: form.annualRenewalConsent,
+          legalAndEthicalConcern: form.legalAndEthicalConcern,
+          q_country: form.q_country,
+          sanctionsExposureDeclaration: form.sanctionsExposureDeclaration,
+          crimeaSevastapolPresence: form.crimeaSevastapolPresence,
+          russianEnergyPresence: form.russianEnergyPresence,
+          truthfulnessDeclaration: form.truthfulnessDeclaration,
+          legalTermsAcknowledgment: form.legalTermsAcknowledgment,
+          compliancePreconditionAcknowledgment: form.compliancePreconditionAcknowledgment,
+          eSign: form.eSign,
+          sns: form.sns,
+          snsPlatform: form.snsPlatform,
+          snsHandle: form.snsHandle,
+          snsId: form.snsId,
+          totalDiscounted: form.totalDiscounted,
+          expiresAt: form.expiresAt,
         },
         session: {
           id: session._id,
@@ -271,6 +359,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
       const resp = await updateEditValues(payload);
       if (resp?.success) {
         toast({ description: "Record updated successfully" });
+        setIsEditing(false);
       } else {
         toast({
           description: "Update failed. Please try again.",
@@ -538,7 +627,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-muted-foreground">
-                              Incorporation Status
+                              Status
                             </span>
 
                             {isAdmin ? (
@@ -564,6 +653,26 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             ) : (
                               <Badge variant="default">{currentStatus}</Badge>
                             )}
+                            <LabelValue label={t("usa.bInfo.incorporationDate.label", "Incorporation Date")}>
+                              {isEditing ? (
+                                <Input
+                                  type="date"
+                                  value={
+                                    form?.incorporationDate
+                                      ? String(form.incorporationDate).slice(0, 10)
+                                      : ""
+                                  }
+                                  onChange={(e) =>
+                                    patchForm("incorporationDate", e.target.value)
+                                  }
+                                  className="h-8"
+                                />
+                              ) : (
+                                <span>
+                                  {form?.incorporationDate ? fmtDate(form.incorporationDate) : "—"}
+                                </span>
+                              )}
+                            </LabelValue>
                           </div>
                         </div>
                       </div>
@@ -595,46 +704,58 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
               <CardContent className="grid gap-5">
                 {/* Basic applicant / contact / relationship / business */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <LabelValue label="Applicant">
-                    <div className="flex items-center gap-2">
-                      <FallbackAvatar name={String(contactName)} />
-                      <span className="font-medium">
-                        {contactName || "—"}
-                      </span>
-                    </div>
+                  <LabelValue label={t("usa.bInfo.applicantName.label", "Applicant")}>
+                    {isEditing ? (
+                      <Input
+                        value={contactName}
+                        onChange={(e) => patchForm("name", e.target.value)}
+                        placeholder={t("usa.bInfo.applicantName.placeholder", "Contact person name")}
+                        className="h-8"
+                      />
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <FallbackAvatar name={String(contactName)} />
+                        <span className="font-medium">
+                          {contactName || "—"}
+                        </span>
+                      </div>
+                    )}
                   </LabelValue>
 
-                  {/* <LabelValue label="Dcp Name">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{dcpName || "—"}</span>
-                    </div>
-                  </LabelValue>
-                  <LabelValue label="Dcp Email">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{dcpEmail || "—"}</span>
-                    </div>
-                  </LabelValue>
-                  <LabelValue label="Dcp Number">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{dcpNumber || "—"}</span>
-                    </div>
-                  </LabelValue> */}
-
-                  <LabelValue label="Contact">
-                    <div className="grid gap-2">
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-3.5 w-3.5" />
-                        <span className="text-sm">{emailVal || "—"}</span>
+                  <LabelValue label={t("ApplicantInfoForm.contactInfo", "Contact")}>
+                    {isEditing ? (
+                      <div className="grid gap-2">
+                        <Input
+                          type="email"
+                          value={emailVal}
+                          onChange={(e) => patchForm("email", e.target.value)}
+                          placeholder={t("ApplicantInfoForm.email", "Email address")}
+                          className="h-8"
+                        />
+                        <Input
+                          type="tel"
+                          value={phoneVal}
+                          onChange={(e) => patchForm("phoneNum", e.target.value)}
+                          placeholder={t("ApplicantInfoForm.phoneNum", "Phone number")}
+                          className="h-8"
+                        />
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-3.5 w-3.5" />
-                        <span className="text-sm">{phoneVal || "—"}</span>
+                    ) : (
+                      <div className="grid gap-2">
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-3.5 w-3.5" />
+                          <span className="text-sm">{emailVal || "—"}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-3.5 w-3.5" />
+                          <span className="text-sm">{phoneVal || "—"}</span>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </LabelValue>
 
                   {/* Alt / Local Names now uses companyName_2 and companyName_3 */}
-                  <LabelValue label="Alt / Local Names">
+                  <LabelValue label={t("usa.bInfo.altLocalNames.label", "Alt / Local Names")}>
                     {isEditing ? (
                       <div className="grid grid-cols-2 gap-2">
                         <Input
@@ -642,7 +763,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                           onChange={(e) =>
                             patchForm("companyName_2", e.target.value)
                           }
-                          placeholder="Alt Name 1"
+                          placeholder={t("usa.bInfo.altLocalNames.placeholder1", "Alt Name 1")}
                           className="h-8"
                         />
                         <Input
@@ -650,7 +771,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                           onChange={(e) =>
                             patchForm("companyName_3", e.target.value)
                           }
-                          placeholder="Alt Name 2"
+                          placeholder={t("usa.bInfo.altLocalNames.placeholder2", "Alt Name 2")}
                           className="h-8"
                         />
                       </div>
@@ -667,72 +788,97 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     )}
                   </LabelValue>
 
-                  <LabelValue label="Relationships">
-                    {(form.establishedRelationshipType || []).length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {form.establishedRelationshipType!.map(
-                          (r: any, i: number) => (
-                            <Badge key={r + i} variant="outline">
-                              {r}
+                  <LabelValue label={t("usa.bInfo.relationships.label", "Relationships")}>
+                    {isEditing ? (
+                      <Input
+                        value={(form.establishedRelationshipType || []).join(", ")}
+                        onChange={(e) => patchForm("establishedRelationshipType", e.target.value.split(",").map(s => s.trim()))}
+                        placeholder={t("usa.bInfo.relationships.placeholder", "Comma-separated relationships")}
+                        className="h-8"
+                      />
+                    ) : (
+                      (form.establishedRelationshipType || []).length ? (
+                        <div className="flex flex-wrap gap-2">
+                          {form.establishedRelationshipType!.map(
+                            (r: any, i: number) => (
+                              <Badge key={r + i} variant="outline">
+                                {r}
+                              </Badge>
+                            )
+                          )}
+                        </div>
+                      ) : (
+                        "—"
+                      )
+                    )}
+                  </LabelValue>
+
+                  <LabelValue label={t("usa.bInfo.industry.label", "Industry")}>
+                    {isEditing ? (
+                      <Input
+                        value={(industries || []).join(", ")}
+                        onChange={(e) => patchForm("selectedIndustry", e.target.value.split(",").map(s => s.trim()))}
+                        placeholder={t("usa.bInfo.industry.placeholder", "Comma-separated industries")}
+                        className="h-8"
+                      />
+                    ) : (
+                      industries.length ? (
+                        <div className="flex flex-wrap gap-2">
+                          {industries.map((it, i) => (
+                            <Badge key={it + i} variant="secondary">
+                              {it}
                             </Badge>
-                          )
-                        )}
-                      </div>
-                    ) : (
-                      "—"
+                          ))}
+                        </div>
+                      ) : (
+                        "—"
+                      )
                     )}
                   </LabelValue>
 
-                  <LabelValue label="Industry">
-                    {industries.length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {industries.map((it, i) => (
-                          <Badge key={it + i} variant="secondary">
-                            {it}
-                          </Badge>
-                        ))}
-                      </div>
+                  <LabelValue label={t("usa.bInfo.purpose.label", "Purpose")}>
+                    {isEditing ? (
+                      <Input
+                        value={(purposes || []).join(", ")}
+                        onChange={(e) => patchForm("purposeOfEstablishmentCompany", e.target.value.split(",").map(s => s.trim()))}
+                        placeholder={t("usa.bInfo.purpose.placeholder", "Comma-separated purposes")}
+                        className="h-8"
+                      />
                     ) : (
-                      "—"
+                      purposes.length ? (
+                        <div className="flex flex-wrap gap-2">
+                          {purposes.map((p, i) => (
+                            <Badge key={p + i} variant="secondary">
+                              {p}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        "—"
+                      )
                     )}
                   </LabelValue>
 
-                  <LabelValue label="Purpose">
-                    {purposes.length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {purposes.map((p, i) => (
-                          <Badge key={p + i} variant="secondary">
-                            {p}
-                          </Badge>
-                        ))}
-                      </div>
+                  <LabelValue label={t("usa.bInfo.businessDesc.label", "Business Description")}>
+                    {isEditing ? (
+                      <Textarea
+                        value={bizDesc}
+                        onChange={(e) => patchForm("descriptionOfBusiness", e.target.value)}
+                        placeholder={t("usa.bInfo.businessDesc.placeholder", "Describe business activities")}
+                        className="h-20"
+                      />
                     ) : (
-                      "—"
+                      <span>{bizDesc || "—"}</span>
                     )}
-                  </LabelValue>
-
-                  <LabelValue label="Business Description">
-                    {bizDesc || "—"}
-                  </LabelValue>
-
-                  <LabelValue label="Annual Renewal Terms">
-                    {t(renderVal((form as any)?.annualRenewalTermsAgreement)) ||
-                      "—"}
-                  </LabelValue>
-                  <LabelValue label="U.S. local company registration address">
-                    {t(renderVal((form as any)?.localCompanyRegistration)) ||
-                      "—"}
-                  </LabelValue>
-                  <LabelValue label="Business address within the United States">
-                    {t(renderVal((form as any)?.businessAddress)) ||
-                      "—"}
                   </LabelValue>
                 </div>
+
                 <Separator />
+
                 {/* Shareholders / directors */}
                 <div className="space-y-3">
                   <div className="text-sm font-medium">
-                    Shareholders / Directors / DCP
+                    {t("usa.bInfo.shrldSection.shareholderOfficer", "Shareholders / Directors / DCP")}
                   </div>
                   {Array.isArray(form?.shareHolders) &&
                     form.shareHolders.length ? (
@@ -940,80 +1086,178 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                   )}
                 </div>
                 <Separator />
-                {/* Incorporation date + AML/CDD toggle */}
+                {/* Toggles */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <LabelValue label="Incorporation Date">
+                  <LabelValue label={t("usa.bInfo.amlCdd.label", "AML/CDD Edit")}>
                     <div className="flex items-center gap-2">
-                      <span>
-                        {form?.incorporationDate
-                          ? fmtDate(form.incorporationDate)
-                          : "—"}
-                      </span>
-                      {isAdmin && (
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button variant="outline" size="sm">
-                              Edit
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>
-                                Edit Incorporation Date
-                              </DialogTitle>
-                              <DialogDescription>
-                                Set the date when the company was officially
-                                registered.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-2">
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label
-                                  htmlFor="incorporationDate"
-                                  className="text-right"
-                                >
-                                  Date
-                                </Label>
-                                <Input
-                                  id="incorporationDate"
-                                  type="date"
-                                  value={
-                                    form?.incorporationDate
-                                      ? String(form.incorporationDate).slice(
-                                        0,
-                                        10
-                                      )
-                                      : ""
-                                  }
-                                  onChange={(e) =>
-                                    patchForm(
-                                      "incorporationDate",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="col-span-3"
-                                />
-                              </div>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      )}
-                    </div>
-                  </LabelValue>
-
-                  <LabelValue label="AML/CDD Edit">
-                    <div className="flex items-center gap-2">
-                      <BoolPill value={!form?.isDisabled} />
-                      {isAdmin && (
+                      {!isEditing ? (
+                        <BoolPill value={!form?.isDisabled} />
+                      ) : (
                         <Switch
                           checked={!form?.isDisabled}
-                          onCheckedChange={(checked) =>
-                            patchForm("isDisabled", !checked)
-                          }
+                          onCheckedChange={(checked) => patchForm("isDisabled", !checked)}
                         />
                       )}
                     </div>
                   </LabelValue>
+                </div>
+                <Separator />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <LabelValue label={t("usa.bInfo.descProductName", "Product Description")}>
+                    {isEditing ? (
+                      <Textarea
+                        value={form.descriptionOfProducts || ""}
+                        onChange={(e) => patchForm("descriptionOfProducts", e.target.value)}
+                        placeholder={t("usa.bInfo.descProductName", "Describe products")}
+                        className="h-24"
+                      />
+                    ) : (
+                      <span>{form.descriptionOfProducts || ""}</span>
+                    )}
+                  </LabelValue>
+                  <LabelValue label={t("usa.bInfo.enterWeb", "Website")}>
+                    {isEditing ? (
+                      <Input
+                        value={form.webAddress || ""}
+                        onChange={(e) => patchForm("webAddress", e.target.value)}
+                        placeholder="https://"
+                        className="h-8"
+                      />
+                    ) : form.webAddress ? (
+                      <a
+                        href={form.webAddress}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-sm text-primary underline"
+                      >
+                        {form.webAddress}
+                      </a>
+                    ) : (
+                      ""
+                    )}
+                  </LabelValue>
+
+                  <LabelValue label={"Other Industry Details"}>
+                    {isEditing ? (
+                      <Input
+                        value={form.otherIndustryText || ""}
+                        onChange={(e) => patchForm("otherIndustryText", e.target.value)}
+                        placeholder={t("usa.bInfo.pList.8", "Describe other industry")}
+                        className="h-8"
+                      />
+                    ) : (
+                      <span>{form.otherIndustryText || ""}</span>
+                    )}
+                  </LabelValue>
+                  <LabelValue label={"Other Purpose Details"}>
+                    {isEditing ? (
+                      <Input
+                        value={form.otherCompanyPurposeText || ""}
+                        onChange={(e) => patchForm("otherCompanyPurposeText", e.target.value)}
+                        placeholder={t("usa.bInfo.pList.8", "Describe other purpose")}
+                        className="h-8"
+                      />
+                    ) : (
+                      <span>{form.otherCompanyPurposeText || ""}</span>
+                    )}
+                  </LabelValue>
+
+                  <LabelValue label={t("usa.regDetails.totalPaid", "Total Paid-in Capital")}>
+                    {isEditing ? (
+                      <Input
+                        type="number"
+                        value={form.totalCapital ?? ""}
+                        onChange={(e) => patchForm("totalCapital", e.target.value)}
+                        className="h-8"
+                      />
+                    ) : (
+                      <span>{form.totalCapital || ""}</span>
+                    )}
+                  </LabelValue>
+                  <LabelValue label={t("usa.regDetails.executiveTeam", "Company Executives")}>
+                    {isEditing ? (
+                      <Input
+                        value={form.companyExecutives || ""}
+                        onChange={(e) => patchForm("companyExecutives", e.target.value)}
+                        placeholder={t("usa.regDetails.executiveTeam", "Executive team")}
+                        className="h-8"
+                      />
+                    ) : (
+                      <span>{form.companyExecutives || ""}</span>
+                    )}
+                  </LabelValue>
+
+                  <LabelValue label={t("usa.regDetails.usLocalReg", "US Local Registration")}>
+                    {isEditing ? (
+                      <Input
+                        value={form.localCompanyRegistration || ""}
+                        onChange={(e) => patchForm("localCompanyRegistration", e.target.value)}
+                        className="h-8"
+                      />
+                    ) : (
+                      <span>{form.localCompanyRegistration || ""}</span>
+                    )}
+                  </LabelValue>
+                  <LabelValue label={t("usa.regDetails.enterUsAddress", "Business Address")}>
+                    {isEditing ? (
+                      <Textarea
+                        value={form.businessAddress || ""}
+                        onChange={(e) => patchForm("businessAddress", e.target.value)}
+                        className="h-20"
+                      />
+                    ) : (
+                      <span>{form.businessAddress || ""}</span>
+                    )}
+                  </LabelValue>
+
+                  <div className="md:col-span-2">
+                    <LabelValue label={t("usa.bInfo.enterAddress", "Accounting Data Address")}>
+                      {isEditing ? (
+                        <Textarea
+                          value={form.accountingDataAddress || ""}
+                          onChange={(e) => patchForm("accountingDataAddress", e.target.value)}
+                          className="h-24"
+                        />
+                      ) : (
+                        <span>{form.accountingDataAddress || ""}</span>
+                      )}
+                    </LabelValue>
+                  </div>
+
+
+                  <div className="md:col-span-2">
+                    <LabelValue label="Post-incorporation Capabilities">
+                      {isEditing ? (
+                        <Textarea
+                          value={form.postIncorporationCapabilities || ""}
+                          onChange={(e) =>
+                            patchForm("postIncorporationCapabilities", e.target.value)
+                          }
+                          className="h-20"
+                        />
+                      ) : (
+                        <span>{form.postIncorporationCapabilities || ""}</span>
+                      )}
+                    </LabelValue>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <LabelValue label="Service Agreement Consent">
+                      <div className="flex items-center gap-2">
+                        {!isEditing ? (
+                          <BoolPill value={!!form.serviceAgreementConsent} />
+                        ) : (
+                          <Switch
+                            checked={!!form.serviceAgreementConsent}
+                            onCheckedChange={(checked) =>
+                              patchForm("serviceAgreementConsent", checked)
+                            }
+                          />
+                        )}
+                      </div>
+                    </LabelValue>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -1141,52 +1385,64 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 {/* Amount / Expires / Payment Status / View Receipt */}
                 <div className="grid gap-4 py-4">
                   {/* Amount */}
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label className="text-right">Amount</Label>
-                    <div className="col-span-3 text-sm font-medium">
-                      {session.amount
-                        ? `${session.amount} ${session.currency || "USD"}`
-                        : form.stripeAmountCents
-                          ? `${(form.stripeAmountCents / 100).toFixed(2)} ${form.stripeCurrency
-                            ? form.stripeCurrency.toUpperCase()
-                            : "USD"
-                          }`
-                          : "—"}
+                  <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                    <Label className="md:text-right">{t("newHk.payment.amount.label", "Amount")}</Label>
+                    <div className="col-span-1 md:col-span-3 text-sm font-medium">
+                      {isEditing && isAdmin ? (
+                        <Input
+                          type="number"
+                          value={form.totalDiscounted || session.amount || 0}
+                          onChange={(e) => patchForm("totalDiscounted", Number(e.target.value))}
+                          className="h-8"
+                        />
+                      ) : (
+                        <span>
+                          {session.amount
+                            ? `${session.amount} ${session.currency || "USD"}`
+                            : form.stripeAmountCents
+                              ? `${(form.stripeAmountCents / 100).toFixed(2)} ${form.stripeCurrency
+                                ? form.stripeCurrency.toUpperCase()
+                                : "USD"
+                              }`
+                              : "—"}
+                        </span>
+                      )}
                     </div>
                   </div>
 
                   {/* ExpiresAt (Stripe session or company-level expiresAt) */}
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="expiresAt" className="text-right">
-                      Expires
+                  <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                    <Label htmlFor="expiresAt" className="md:text-right">
+                      {t("newHk.payment.expires.label", "Expires")}
                     </Label>
 
-                    {isAdmin ? (
-                      <Input
-                        id="expiresAt"
-                        type="date"
-                        value={
-                          effectiveExpiresAt
-                            ? effectiveExpiresAt.slice(0, 10)
-                            : ""
-                        }
-                        onChange={(e) => {
-                          // prefer to patch session first if we have a session
-                          if (session._id) {
-                            patchSession("expiresAt", e.target.value);
-                          } else {
-                            patchForm("expiresAt", e.target.value);
+                    <div className="col-span-1 md:col-span-3">
+                      {isAdmin && isEditing ? (
+                        <Input
+                          id="expiresAt"
+                          type="date"
+                          value={
+                            effectiveExpiresAt
+                              ? effectiveExpiresAt.slice(0, 10)
+                              : ""
                           }
-                        }}
-                        className="col-span-3"
-                      />
-                    ) : (
-                      <div className="col-span-3 text-sm">
-                        {effectiveExpiresAt
-                          ? fmtDate(effectiveExpiresAt)
-                          : "—"}
-                      </div>
-                    )}
+                          onChange={(e) => {
+                            if (session._id) {
+                              patchSession("expiresAt", e.target.value);
+                            } else {
+                              patchForm("expiresAt", e.target.value);
+                            }
+                          }}
+                          className="h-8"
+                        />
+                      ) : (
+                        <div className="text-sm">
+                          {effectiveExpiresAt
+                            ? fmtDate(effectiveExpiresAt)
+                            : "—"}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Admin-only Payment Status select if not already rendered above */}
@@ -1197,33 +1453,37 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                       form.stripeReceiptUrl
                     ) &&
                     isAdmin && (
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label className="text-right">Payment Status</Label>
-                        <div className="col-span-3">
-                          <Select
-                            value={form.paymentStatus || "unpaid"}
-                            onValueChange={(val) =>
-                              patchForm("paymentStatus", val)
-                            }
-                          >
-                            <SelectTrigger className="w-48">
-                              <SelectValue placeholder="Select status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="unpaid">Pending</SelectItem>
-                              <SelectItem value="paid">Paid</SelectItem>
-                              <SelectItem value="rejected">Rejected</SelectItem>
-                            </SelectContent>
-                          </Select>
+                      <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                        <Label className="md:text-right">{t("newHk.payment.status.label", "Payment Status")}</Label>
+                        <div className="col-span-1 md:col-span-3">
+                          {isEditing ? (
+                            <Select
+                              value={form.paymentStatus || "unpaid"}
+                              onValueChange={(val) =>
+                                patchForm("paymentStatus", val)
+                              }
+                            >
+                              <SelectTrigger className="w-48">
+                                <SelectValue placeholder={t("common.select", "Select status")} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="unpaid">{t("newHk.payment.status.pending", "Pending")}</SelectItem>
+                                <SelectItem value="paid">{t("newHk.payment.status.paid", "Paid")}</SelectItem>
+                                <SelectItem value="rejected">{t("newHk.payment.status.rejected", "Rejected")}</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <span>{form.paymentStatus || "—"}</span>
+                          )}
                         </div>
                       </div>
                     )}
 
                   {/* View Receipt button / sheet */}
                   {(form.uploadReceiptUrl) && (
-                    <div className="grid grid-cols-4 items-start gap-4">
-                      <Label className="text-right">Receipt</Label>
-                      <div className="col-span-3">
+                    <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-4">
+                      <Label className="md:text-right">{t("newHk.payment.receipt.label", "Receipt")}</Label>
+                      <div className="col-span-1 md:col-span-3">
                         <Sheet
                           open={isSheetOpen}
                           onOpenChange={setIsSheetOpen}
@@ -1287,88 +1547,189 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
                 </div>
               </CardHeader>
 
-              <CardContent className="grid gap-4">
-                <div className="grid grid-cols-2 gap-3">
+              <CardContent className="grid gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <LabelValue label="Truthfulness">
-                    <BoolPill value={!!form.truthfulnessDeclaration} />
+                    {isEditing ? (
+                      <Switch
+                        checked={!!form.truthfulnessDeclaration}
+                        onCheckedChange={(checked) =>
+                          patchForm("truthfulnessDeclaration", checked)
+                        }
+                      />
+                    ) : (
+                      <BoolPill value={!!form.truthfulnessDeclaration} />
+                    )}
                   </LabelValue>
                   <LabelValue label="Legal Terms">
-                    <BoolPill value={!!form.legalTermsAcknowledgment} />
+                    {isEditing ? (
+                      <Switch
+                        checked={!!form.legalTermsAcknowledgment}
+                        onCheckedChange={(checked) =>
+                          patchForm("legalTermsAcknowledgment", checked)
+                        }
+                      />
+                    ) : (
+                      <BoolPill value={!!form.legalTermsAcknowledgment} />
+                    )}
                   </LabelValue>
                   <LabelValue label="Compliance Precondition">
-                    <BoolPill
-                      value={!!form.compliancePreconditionAcknowledgment}
-                    />
+                    {isEditing ? (
+                      <Switch
+                        checked={!!form.compliancePreconditionAcknowledgment}
+                        onCheckedChange={(checked) =>
+                          patchForm(
+                            "compliancePreconditionAcknowledgment",
+                            checked
+                          )
+                        }
+                      />
+                    ) : (
+                      <BoolPill
+                        value={!!form.compliancePreconditionAcknowledgment}
+                      />
+                    )}
                   </LabelValue>
-                  <LabelValue label="e-Sign">
-                    {form.eSign || "—"}
+                  <LabelValue label={t("newHk.review.esign.label", "e-Sign")}>
+                    {isEditing ? (
+                      <Input
+                        value={form.eSign || ""}
+                        onChange={(e) => patchForm("eSign", e.target.value)}
+                        className="h-8"
+                      />
+                    ) : (
+                      form.eSign || ""
+                    )}
                   </LabelValue>
                 </div>
 
                 <Separator />
 
-                <div className="grid grid-cols-1 gap-3">
+                <div className="grid gap-3">
                   <div className="text-xs text-muted-foreground">
-                    Sanctions / Restrictions
+                    {t(
+                      "newHk.steps.compliance.description",
+                      "Sanctions / Restrictions"
+                    )}
                   </div>
-
-                  <div className="grid grid-cols-1 gap-2 text-sm">
-                    {[
-                      [
-                        "Legal or Ethical Concern(money laundering etc)",
-                        (form.legalAndEthicalConcern || "")
-                          .toLowerCase()
-                          .includes("yes"),
-                      ],
-                      [
-                        "Sanctioned Countries Activity (iran, sudan, NK, syria, cuba,belarus, zimbabwe",
-                        (form.q_country || "")
-                          .toLowerCase()
-                          .includes("yes"),
-                      ],
-                      [
-                        "Sanctions Exposure (involved in above countries or under sanctions by  UN, EU, UKHMT, HKMA, OFAC,)",
-                        (form.sanctionsExposureDeclaration || "")
-                          .toLowerCase()
-                          .includes("yes"),
-                      ],
-                      [
-                        "Crimea/Sevastopol Presence",
-                        (form.crimeaSevastapolPresence || "")
-                          .toLowerCase()
-                          .includes("yes"),
-                      ],
-                      [
-                        "Russian Energy Presence",
-                        (form.russianEnergyPresence || "")
-                          .toLowerCase()
-                          .includes("yes"),
-                      ],
-                    ].map(([label, flagged], i) => (
-                      <div
-                        key={String(label) + i}
-                        className="flex items-center justify-between gap-3"
-                      >
-                        <span>{label as string}</span>
-                        <Badge
-                          variant={flagged ? "destructive" : "outline"}
-                          className={flagged ? "" : "text-muted-foreground"}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {US_COMPLIANCE_FIELDS.map((field) => {
+                      const rawValue = (form as any)[field.key];
+                      return (
+                        <LabelValue
+                          key={field.key}
+                          label={t(field.labelKey as any, field.labelKey)}
                         >
-                          {flagged ? "YES" : "NO"}
-                        </Badge>
-                      </div>
-                    ))}
+                          {isEditing ? (
+                            <Select
+                              value={rawValue || ""}
+                              onValueChange={(val) =>
+                                patchForm(field.key, val)
+                              }
+                            >
+                              <SelectTrigger className="h-8 w-full">
+                                <SelectValue
+                                  placeholder={t("common.select", "Select")}
+                                />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {complianceSelectOptions.map((option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Badge
+                              variant={
+                                rawValue === "yes" ? "destructive" : "outline"
+                              }
+                              className={
+                                rawValue === "yes"
+                                  ? ""
+                                  : "text-muted-foreground"
+                              }
+                            >
+                              {getComplianceLabel(rawValue)}
+                            </Badge>
+                          )}
+                        </LabelValue>
+                      );
+                    })}
+
+                    <LabelValue
+                      label={t(
+                        "usa.AppInfo.amlUsEstablishment",
+                        "Annual Renewal Consent"
+                      )}
+                    >
+                      {isEditing ? (
+                        <Select
+                          value={form.annualRenewalConsent || ""}
+                          onValueChange={(val) =>
+                            patchForm("annualRenewalConsent", val)
+                          }
+                        >
+                          <SelectTrigger className="h-8 w-full">
+                            <SelectValue
+                              placeholder={t("common.select", "Select")}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {annualRenewalOptions.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <span>
+                          {
+                            annualRenewalOptions.find(
+                              (option) =>
+                                option.value === form.annualRenewalConsent
+                            )?.label || ""
+                          }
+                        </span>
+                      )}
+                    </LabelValue>
                   </div>
                 </div>
 
                 <Separator />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <LabelValue label="Social App">
-                    {form.snsPlatform || form.sns || "—"}
+                    {isEditing ? (
+                      <Input
+                        value={form.snsPlatform || form.sns || ""}
+                        onChange={(e) =>
+                          patchForm("snsPlatform", e.target.value)
+                        }
+                        className="h-8"
+                      />
+                    ) : (
+                      form.snsPlatform || form.sns || ""
+                    )}
                   </LabelValue>
                   <LabelValue label="Handle / ID">
-                    {form.snsHandle || form.snsId || "—"}
+                    {isEditing ? (
+                      <Input
+                        value={form.snsHandle || form.snsId || ""}
+                        onChange={(e) => patchForm("snsHandle", e.target.value)}
+                        className="h-8"
+                      />
+                    ) : (
+                      form.snsHandle || form.snsId || ""
+                    )}
                   </LabelValue>
                 </div>
               </CardContent>

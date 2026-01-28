@@ -187,11 +187,11 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const isAdmin = user?.role !== "user";
 
     // derived view model for convenience
-const f = useMemo(() => {
-    const d = formData || ({} as PaFormData);
-    const dAny = d as any;
+    const f = useMemo(() => {
+        const d = formData || ({} as PaFormData);
+        const dAny = d as any;
 
-    return {
+        return {
             // ► Company names – prefer companyName_1/2/3 from sample, fallback to array
             name1: dAny.companyName_1 || d?.companyName?.[0] || "",
             name2: dAny.companyName_2 || d?.companyName?.[1] || "",
@@ -247,37 +247,37 @@ const f = useMemo(() => {
 
             // meta
             stepIdx: 0,
-    };
-}, [formData]);
-
-const industrySelection = Array.isArray(formData?.selectedIndustry) ? formData.selectedIndustry : [];
-const purposeSelection = Array.isArray(formData?.establishmentPurpose) ? formData.establishmentPurpose : [];
-
-const updateField = (key: string, value: any) => {
-    setFormData((prev: any) => {
-        if (!prev) return prev;
-        return {
-            ...prev,
-            [key]: value,
         };
-    });
-};
+    }, [formData]);
 
-const handleArrayToggle = (field: string, otherField: string | null, id: string, checked: boolean, current: string[]) => {
-    const next = checked ? Array.from(new Set([...current, id])) : current.filter((item) => item !== id);
-    updateField(field, next);
-    if (!checked && id === "other" && otherField) updateField(otherField, "");
-};
+    const industrySelection = Array.isArray(formData?.selectedIndustry) ? formData.selectedIndustry : [];
+    const purposeSelection = Array.isArray(formData?.establishmentPurpose) ? formData.establishmentPurpose : [];
 
-const toggleIndustrySelection = (id: string, checked: boolean) => {
-    handleArrayToggle("selectedIndustry", "otherIndustryText", id, checked, industrySelection);
-};
+    const updateField = (key: string, value: any) => {
+        setFormData((prev: any) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                [key]: value,
+            };
+        });
+    };
 
-const togglePurposeSelection = (id: string, checked: boolean) => {
-    handleArrayToggle("establishmentPurpose", "otherEstablishmentPurpose", id, checked, purposeSelection);
-};
+    const handleArrayToggle = (field: string, otherField: string | null, id: string, checked: boolean, current: string[]) => {
+        const next = checked ? Array.from(new Set([...current, id])) : current.filter((item) => item !== id);
+        updateField(field, next);
+        if (!checked && id === "other" && otherField) updateField(otherField, "");
+    };
 
-const currentStep = "Panama Incorporation";
+    const toggleIndustrySelection = (id: string, checked: boolean) => {
+        handleArrayToggle("selectedIndustry", "otherIndustryText", id, checked, industrySelection);
+    };
+
+    const togglePurposeSelection = (id: string, checked: boolean) => {
+        handleArrayToggle("establishmentPurpose", "otherEstablishmentPurpose", id, checked, purposeSelection);
+    };
+
+    const currentStep = "Panama Incorporation";
 
     useEffect(() => {
         async function load() {
@@ -618,7 +618,7 @@ const currentStep = "Panama Incorporation";
                                                         </Badge>
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-xs text-muted-foreground">
-                                                                Incorporation Status
+                                                                Status
                                                             </span>
                                                             {user?.role !== "user" ? (
                                                                 <Select
@@ -642,6 +642,20 @@ const currentStep = "Panama Incorporation";
                                                                 </Badge>
                                                             )}
                                                         </div>
+                                                        <LabelValue label="Incorporation Date">
+                                                            {isEditing && isAdmin ? (
+                                                                <Input
+                                                                    type="date"
+                                                                    value={formData?.incorporationDate?.slice(0, 10) || ""}
+                                                                    onChange={(e) =>
+                                                                        patchCompany("incorporationDate", e.target.value)
+                                                                    }
+                                                                    className="h-8 w-44"
+                                                                />
+                                                            ) : (
+                                                                <span>{formData?.incorporationDate ? fmtDate(formData.incorporationDate) : "—"}</span>
+                                                            )}
+                                                        </LabelValue>
                                                     </div>
                                                 </div>
                                                 {/* Edit toggle */}
@@ -778,7 +792,7 @@ const currentStep = "Panama Incorporation";
                                                             <Badge key={id} variant="secondary">
                                                                 {t(
                                                                     INDUSTRY_OPTIONS.find((opt) => opt.id === id)?.label ||
-                                                                        id,
+                                                                    id,
                                                                 )}
                                                             </Badge>
                                                         ))
@@ -828,11 +842,11 @@ const currentStep = "Panama Incorporation";
                                             ) : (
                                                 <div className="flex flex-wrap gap-2">
                                                     {f.purpose?.length ? (
-                                                        f.purpose.map((purpose:any) => (
+                                                        f.purpose.map((purpose: any) => (
                                                             <Badge key={purpose} variant="secondary">
                                                                 {t(
                                                                     PURPOSE_OPTIONS.find((opt) => opt.id === purpose)?.label ||
-                                                                        purpose,
+                                                                    purpose,
                                                                 )}
                                                             </Badge>
                                                         ))
@@ -874,36 +888,7 @@ const currentStep = "Panama Incorporation";
                                             )}
                                         </LabelValue>
 
-                                        <LabelValue label="Incorporation Date">
-                                            {formData?.incorporationDate ? (
-                                                <div className="flex items-center gap-3">
-                                                    <span>
-                                                        {fmtDate(formData.incorporationDate)}
-                                                    </span>
-                                                    {user?.role !== "user" && (
-                                                        <Input
-                                                            type="date"
-                                                            value={formData.incorporationDate.slice(0, 10)}
-                                                            onChange={(e) =>
-                                                                patchCompany("incorporationDate", e.target.value)
-                                                            }
-                                                            className="h-8 w-44"
-                                                        />
-                                                    )}
-                                                </div>
-                                            ) : user?.role !== "user" ? (
-                                                <Input
-                                                    type="date"
-                                                    value={formData?.incorporationDate?.slice(0, 10) || ""}
-                                                    onChange={(e) =>
-                                                        patchCompany("incorporationDate", e.target.value)
-                                                    }
-                                                    className="h-8 w-44"
-                                                />
-                                            ) : (
-                                                "—"
-                                            )}
-                                        </LabelValue>
+
                                     </div>
 
                                     <Separator />
@@ -1778,8 +1763,8 @@ const currentStep = "Panama Incorporation";
                                                 <span className="text-sm text-muted-foreground">
                                                     {t(
                                                         SNS_OPTIONS.find((opt) => opt.id === f.sns)?.label ||
-                                                            f.sns ||
-                                                            "—",
+                                                        f.sns ||
+                                                        "—",
                                                     )}
                                                 </span>
                                             )}
