@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
-import { fetchUsers, getPaIncorpoDataById, markDeleteCompanyRecord, updateEditValues } from "@/services/dataFetch";
+import { fetchUsers, getPaIncorpoDataById, markDeleteCompanyRecord, saveOrUpdatePaComp } from "@/services/dataFetch";
 import { getExchangeRate } from "@/services/exchangeRate";
 
 import { paFormWithResetAtom1, PaFormData } from "../Panama/PaState";
@@ -16,7 +16,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -94,6 +96,74 @@ const StepRail: React.FC<{ stepIdx?: number }> = ({ stepIdx = 0 }) => (
     </div>
 );
 
+const INDUSTRY_OPTIONS = [
+    { id: "trade", label: "Singapore.industries.i1" },
+    { id: "wholesale", label: "Singapore.industries.i2" },
+    { id: "consulting", label: "Singapore.industries.i3" },
+    { id: "manufacturing", label: "Singapore.industries.i4" },
+    { id: "investment", label: "Singapore.industries.i5" },
+    { id: "ecommerce", label: "Singapore.industries.i6" },
+    { id: "online-purchase", label: "Singapore.industries.i7" },
+    { id: "it-software", label: "Singapore.industries.i8" },
+    { id: "crypto", label: "Singapore.industries.i9" },
+    { id: "other", label: "InformationIncorporation.paymentOption_other" },
+];
+
+const PURPOSE_OPTIONS = [
+    { id: "entry-expansion", label: "Singapore.purpose.p1" },
+    { id: "asset-management", label: "Singapore.purpose.p2" },
+    { id: "holding-company", label: "Singapore.purpose.p3" },
+    { id: "proposal", label: "Singapore.purpose.p4" },
+    { id: "geographical-benefits", label: "Singapore.purpose.p5" },
+    { id: "business-diversification", label: "Singapore.purpose.p6" },
+    { id: "competitive-advantage", label: "Singapore.purpose.p7" },
+    { id: "capital-gain", label: "Singapore.purpose.p9" },
+    { id: "other", label: "InformationIncorporation.paymentOption_other" },
+];
+
+const SNS_OPTIONS = [
+    { id: "WhatsApp", label: "newHk.steps.applicant.fields.sns.options.WhatsApp" },
+    { id: "WeChat", label: "newHk.steps.applicant.fields.sns.options.WeChat" },
+    { id: "Line", label: "newHk.steps.applicant.fields.sns.options.Line" },
+    { id: "KakaoTalk", label: "newHk.steps.applicant.fields.sns.options.KakaoTalk" },
+    { id: "Telegram", label: "newHk.steps.applicant.fields.sns.options.Telegram" },
+];
+
+const CURRENCY_OPTIONS = [
+    { value: "HKD", label: "newHk.company.fields.currency.options.HKD" },
+    { value: "USD", label: "newHk.company.fields.currency.options.USD" },
+    { value: "CNY", label: "newHk.company.fields.currency.options.CNY" },
+];
+
+const COMPLIANCE_QUESTIONS = [
+    {
+        key: "legalAndEthicalConcern",
+        label: "newHk.steps.compliance.questions.legalAndEthicalConcern",
+    },
+    {
+        key: "q_country",
+        label: "Singapore.singFollowingCompaniesActivity",
+    },
+    {
+        key: "sanctionsExposureDeclaration",
+        label: "newHk.steps.compliance.questions.sanctionsExposureDeclaration",
+    },
+    {
+        key: "crimeaSevastapolPresence",
+        label: "newHk.steps.compliance.questions.crimeaSevastapolPresence",
+    },
+    {
+        key: "russianEnergyPresence",
+        label: "newHk.steps.compliance.questions.russianEnergyPresence",
+    },
+];
+
+const COMPLIANCE_SELECT_OPTIONS = [
+    { value: "yes", label: "newHk.steps.compliance.options.yes" },
+    { value: "no", label: "newHk.steps.compliance.options.no" },
+    { value: "unsure", label: "newHk.steps.compliance.options.unsure" },
+];
+
 const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -117,11 +187,11 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const isAdmin = user?.role !== "user";
 
     // derived view model for convenience
-    const f = useMemo(() => {
-        const d = formData || ({} as PaFormData);
-        const dAny = d as any;
+const f = useMemo(() => {
+    const d = formData || ({} as PaFormData);
+    const dAny = d as any;
 
-        return {
+    return {
             // ► Company names – prefer companyName_1/2/3 from sample, fallback to array
             name1: dAny.companyName_1 || d?.companyName?.[0] || "",
             name2: dAny.companyName_2 || d?.companyName?.[1] || "",
@@ -177,10 +247,37 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
             // meta
             stepIdx: 0,
-        };
-    }, [formData]);
+    };
+}, [formData]);
 
-    const currentStep = "Panama Incorporation";
+const industrySelection = Array.isArray(formData?.selectedIndustry) ? formData.selectedIndustry : [];
+const purposeSelection = Array.isArray(formData?.establishmentPurpose) ? formData.establishmentPurpose : [];
+
+const updateField = (key: string, value: any) => {
+    setFormData((prev: any) => {
+        if (!prev) return prev;
+        return {
+            ...prev,
+            [key]: value,
+        };
+    });
+};
+
+const handleArrayToggle = (field: string, otherField: string | null, id: string, checked: boolean, current: string[]) => {
+    const next = checked ? Array.from(new Set([...current, id])) : current.filter((item) => item !== id);
+    updateField(field, next);
+    if (!checked && id === "other" && otherField) updateField(otherField, "");
+};
+
+const toggleIndustrySelection = (id: string, checked: boolean) => {
+    handleArrayToggle("selectedIndustry", "otherIndustryText", id, checked, industrySelection);
+};
+
+const togglePurposeSelection = (id: string, checked: boolean) => {
+    handleArrayToggle("establishmentPurpose", "otherEstablishmentPurpose", id, checked, purposeSelection);
+};
+
+const currentStep = "Panama Incorporation";
 
     useEffect(() => {
         async function load() {
@@ -259,7 +356,10 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
     };
 
     const AssignAdmin = () => {
-        const handleAssign = (value: string) => setAdminAssigned(value);
+        const handleAssign = (value: string) => {
+            setAdminAssigned(value);
+            updateField("assignedTo", value);
+        };
         return (
             <div className="flex items-center gap-4">
                 <span className="text-sm font-medium">Assign Admin:</span>
@@ -281,27 +381,21 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
     const onSave = async () => {
         if (!formData) return;
-        console.log("formDta", formData.paymentStatus)
         try {
             setIsSaving(true);
-            const payload = JSON.stringify({
-                company: {
-                    id: (formData as any)._id,
-                    status: formData.status,
-                    incorporationStatus: formData.incorporationStatus,
-                    isDisabled: formData.isDisabled,
-                    incorporationDate: formData.incorporationDate,
-                    country: "PA",
-                    companyName_1: formData.companyName_1,
-                    companyName_2: formData.companyName_2,
-                    companyName_3: formData.companyName_3,
-                    paymentStatus: formData.paymentStatus
-                },
-                assignedTo: adminAssigned,
-            });
+            const payload = {
+                ...formData,
+                assignedTo: adminAssigned || formData.assignedTo,
+            };
 
-            const res = await updateEditValues(payload);
-            if (res.success) toast({ description: "Record updated successfully" });
+            const res = await saveOrUpdatePaComp(payload);
+            if (res?.success) {
+                const updated = res.data as PaFormData;
+                setFormData(updated);
+                setAdminAssigned(updated.assignedTo || "");
+                toast({ description: "Record updated successfully" });
+                setIsEditing(false);
+            }
         } finally {
             setIsSaving(false);
         }
@@ -644,26 +738,140 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                             )}
                                         </LabelValue>
 
-                                        <LabelValue label="Industry">
-                                            {f.industry || "—"}
+                                        <LabelValue label={t("usa.bInfo.selectIndustryItems")}>
+                                            {isEditing ? (
+                                                <div className="space-y-3 text-sm text-muted-foreground">
+                                                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                                                        {INDUSTRY_OPTIONS.map((option) => {
+                                                            const selected = industrySelection.includes(option.id);
+                                                            return (
+                                                                <label
+                                                                    key={option.id}
+                                                                    className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-xs font-medium transition hover:bg-muted"
+                                                                >
+                                                                    <Checkbox
+                                                                        checked={selected}
+                                                                        onCheckedChange={(checked) =>
+                                                                            toggleIndustrySelection(option.id, checked === true)
+                                                                        }
+                                                                    />
+                                                                    <span className="truncate">{t(option.label)}</span>
+                                                                </label>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                    {industrySelection.includes("other") && (
+                                                        <Input
+                                                            placeholder={t("common.enterValue", "Please specify")}
+                                                            value={formData?.otherIndustryText || ""}
+                                                            onChange={(e) =>
+                                                                updateField("otherIndustryText", e.target.value)
+                                                            }
+                                                            className="max-w-md h-8"
+                                                        />
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {industrySelection.length ? (
+                                                        industrySelection.map((id: string) => (
+                                                            <Badge key={id} variant="secondary">
+                                                                {t(
+                                                                    INDUSTRY_OPTIONS.find((opt) => opt.id === id)?.label ||
+                                                                        id,
+                                                                )}
+                                                            </Badge>
+                                                        ))
+                                                    ) : (
+                                                        <span className="text-muted-foreground">—</span>
+                                                    )}
+                                                    {formData?.otherIndustryText && (
+                                                        <Badge variant="outline">{formData.otherIndustryText}</Badge>
+                                                    )}
+                                                </div>
+                                            )}
                                         </LabelValue>
 
-                                        <LabelValue label="Purpose">
-                                            <div className="flex flex-wrap gap-2">
-                                                {(f.purpose?.length ? f.purpose : ["—"]).map((p: string, i: number) => (
-                                                    <Badge key={String(p) + i} variant="secondary">
-                                                        {p}
-                                                    </Badge>
-                                                ))}
-                                            </div>
+                                        <LabelValue label={t("Singapore.purposeEstablisSingapore")}>
+                                            {isEditing ? (
+                                                <div className="space-y-3 text-sm text-muted-foreground">
+                                                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                                                        {PURPOSE_OPTIONS.map((option) => {
+                                                            const selected = purposeSelection.includes(option.id);
+                                                            return (
+                                                                <label
+                                                                    key={option.id}
+                                                                    className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-xs font-medium transition hover:bg-muted"
+                                                                >
+                                                                    <Checkbox
+                                                                        checked={selected}
+                                                                        onCheckedChange={(checked) =>
+                                                                            togglePurposeSelection(option.id, checked === true)
+                                                                        }
+                                                                    />
+                                                                    <span className="truncate">{t(option.label)}</span>
+                                                                </label>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                    {purposeSelection.includes("other") && (
+                                                        <Input
+                                                            placeholder={t("common.enterValue", "Please specify")}
+                                                            value={formData?.otherEstablishmentPurpose || ""}
+                                                            onChange={(e) =>
+                                                                updateField("otherEstablishmentPurpose", e.target.value)
+                                                            }
+                                                            className="max-w-md h-8"
+                                                        />
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {f.purpose?.length ? (
+                                                        f.purpose.map((purpose:any) => (
+                                                            <Badge key={purpose} variant="secondary">
+                                                                {t(
+                                                                    PURPOSE_OPTIONS.find((opt) => opt.id === purpose)?.label ||
+                                                                        purpose,
+                                                                )}
+                                                            </Badge>
+                                                        ))
+                                                    ) : (
+                                                        <span className="text-muted-foreground">—</span>
+                                                    )}
+                                                    {formData?.otherEstablishmentPurpose && (
+                                                        <Badge variant="outline">
+                                                            {formData.otherEstablishmentPurpose}
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                            )}
                                         </LabelValue>
 
-                                        <LabelValue label="Business Description">
-                                            {f.bizdesc || "—"}
+                                        <LabelValue label={t("Singapore.bInfoDescProdName")}>
+                                            {isEditing ? (
+                                                <Textarea
+                                                    value={formData?.productDescription || ""}
+                                                    onChange={(e) => updateField("productDescription", e.target.value)}
+                                                    className="h-24"
+                                                    placeholder={t("common.enterValue", "Your answer")}
+                                                />
+                                            ) : (
+                                                f.bizdesc || "—"
+                                            )}
                                         </LabelValue>
 
-                                        <LabelValue label="Notes">
-                                            {f.softNote || "—"}
+                                        <LabelValue label={t("newHk.steps.acct.fields.softNote.label")}>
+                                            {isEditing ? (
+                                                <Textarea
+                                                    value={formData?.softNote || ""}
+                                                    onChange={(e) => updateField("softNote", e.target.value)}
+                                                    className="h-24"
+                                                    placeholder={t("newHk.steps.acct.fields.softNote.placeholder")}
+                                                />
+                                            ) : (
+                                                f.softNote || "—"
+                                            )}
                                         </LabelValue>
 
                                         <LabelValue label="Incorporation Date">
@@ -702,16 +910,50 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                                     {/* Finance & accounting */}
                                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                                        <LabelValue label="Currency">
-                                            <Badge variant="outline">
-                                                {f.currency || "—"}
-                                            </Badge>
+                                        <LabelValue label={t("newHk.company.fields.currency.label")}>
+                                            {isEditing ? (
+                                                <Select
+                                                    value={formData?.currency || ""}
+                                                    onValueChange={(val) => updateField("currency", val)}
+                                                >
+                                                    <SelectTrigger className="h-8 rounded-md">
+                                                        <SelectValue placeholder={t("common.select", "Select")} />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {CURRENCY_OPTIONS.map((option) => (
+                                                            <SelectItem key={option.value} value={option.value}>
+                                                                {t(option.label)}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            ) : (
+                                                <Badge variant="outline">{f.currency || "—"}</Badge>
+                                            )}
                                         </LabelValue>
-                                        <LabelValue label="Declared Capital">
-                                            {f.capAmount || "—"}
+                                        <LabelValue label={t("newHk.company.fields.capAmount.label")}>
+                                            {isEditing ? (
+                                                <Input
+                                                    type="number"
+                                                    value={formData?.capAmount ?? ""}
+                                                    onChange={(e) => updateField("capAmount", e.target.value)}
+                                                    className="h-8"
+                                                />
+                                            ) : (
+                                                f.capAmount || "—"
+                                            )}
                                         </LabelValue>
-                                        <LabelValue label="Total Shares">
-                                            {f.shareCount || "—"}
+                                        <LabelValue label={t("newHk.company.fields.shareCount.label")}>
+                                            {isEditing ? (
+                                                <Input
+                                                    type="number"
+                                                    value={formData?.shareCount ?? ""}
+                                                    onChange={(e) => updateField("shareCount", e.target.value)}
+                                                    className="h-8"
+                                                />
+                                            ) : (
+                                                f.shareCount || "—"
+                                            )}
                                         </LabelValue>
                                     </div>
 
@@ -1456,15 +1698,11 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                 </CardHeader>
                                 <CardContent className="grid gap-4">
                                     <div className="grid grid-cols-2 gap-3">
-                                        <LabelValue label="Annual renewal terms agreement">
-                                            <BoolPill
-                                                value={
-                                                    !!f.compliancePreconditionAcknowledgment
-                                                }
-                                            />
+                                        <LabelValue label={t("Singapore.clientAnnualRenew")}>
+                                            <BoolPill value={!!f.compliancePreconditionAcknowledgment} />
                                         </LabelValue>
                                         <LabelValue label="Service agreement consent">
-                                            {f.serviceAgreementConsent || "—"}
+                                            {f.serviceAgreementConsent ? "Accepted" : "—"}
                                         </LabelValue>
                                     </div>
 
@@ -1475,53 +1713,41 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                             Sanctions / Restrictions
                                         </div>
                                         <div className="grid grid-cols-1 gap-2 text-sm">
-                                            {[
-                                                [
-                                                    "Legal or Ethical Concern(money laundering etc)",
-                                                    "legalAndEthicalConcern",
-                                                ],
-                                                [
-                                                    "Sanctioned Countries Activity (iran, sudan, NK, syria, cuba,belarus, zimbabwe",
-                                                    "q_country",
-                                                ],
-                                                [
-                                                    "Sanctions Exposure (involved in above countries or under sanctions by  UN, EU, UKHMT, HKMA, OFAC,)",
-                                                    "sanctionsExposureDeclaration",
-                                                ],
-                                                [
-                                                    "Crimea/Sevastopol Presence",
-                                                    "crimeaSevastapolPresence",
-                                                ],
-                                                [
-                                                    "Russian Energy Presence",
-                                                    "russianEnergyPresence",
-                                                ],
-                                            ].map(([label, key]) => {
-                                                const val = (f as any)[key];
-                                                const isYes =
-                                                    String(val || "").toLowerCase() === "yes";
+                                            {COMPLIANCE_QUESTIONS.map(({ key, label }) => {
+                                                const value = (formData as any)?.[key] || "";
+                                                const normalized = value.toString() || "";
+                                                const displayValue = normalized ? normalized.toUpperCase() : "—";
+                                                const isYes = normalized.toLowerCase() === "yes";
                                                 return (
                                                     <div
                                                         key={key}
                                                         className="flex items-center justify-between gap-3"
                                                     >
-                                                        <span>{label}</span>
-                                                        <Badge
-                                                            variant={
-                                                                isYes
-                                                                    ? "destructive"
-                                                                    : "outline"
-                                                            }
-                                                            className={
-                                                                isYes
-                                                                    ? ""
-                                                                    : "text-muted-foreground"
-                                                            }
-                                                        >
-                                                            {(val || "—")
-                                                                .toString()
-                                                                .toUpperCase()}
-                                                        </Badge>
+                                                        <span>{t(label)}</span>
+                                                        {isEditing ? (
+                                                            <Select
+                                                                value={normalized}
+                                                                onValueChange={(val) => updateField(key, val)}
+                                                            >
+                                                                <SelectTrigger className="h-8 w-32">
+                                                                    <SelectValue placeholder={t("common.select", "Select")} />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    {COMPLIANCE_SELECT_OPTIONS.map((option) => (
+                                                                        <SelectItem key={option.value} value={option.value}>
+                                                                            {t(option.label)}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                        ) : (
+                                                            <Badge
+                                                                variant={isYes ? "destructive" : "outline"}
+                                                                className={isYes ? "" : "text-muted-foreground"}
+                                                            >
+                                                                {displayValue}
+                                                            </Badge>
+                                                        )}
                                                     </div>
                                                 );
                                             })}
@@ -1531,11 +1757,43 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                     <Separator />
 
                                     <div className="grid grid-cols-2 gap-4">
-                                        <LabelValue label="Social App">
-                                            {f.sns || "—"}
+                                        <LabelValue label={t("newHk.steps.applicant.fields.sns.label")}>
+                                            {isEditing ? (
+                                                <Select
+                                                    value={formData?.sns || ""}
+                                                    onValueChange={(val) => updateField("sns", val)}
+                                                >
+                                                    <SelectTrigger className="h-8">
+                                                        <SelectValue placeholder={t("common.select", "Select")} />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {SNS_OPTIONS.map((option) => (
+                                                            <SelectItem key={option.id} value={option.id}>
+                                                                {t(option.label)}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            ) : (
+                                                <span className="text-sm text-muted-foreground">
+                                                    {t(
+                                                        SNS_OPTIONS.find((opt) => opt.id === f.sns)?.label ||
+                                                            f.sns ||
+                                                            "—",
+                                                    )}
+                                                </span>
+                                            )}
                                         </LabelValue>
-                                        <LabelValue label="Handle / ID">
-                                            {f.snsId || "—"}
+                                        <LabelValue label={t("newHk.steps.applicant.fields.snsId.label")}>
+                                            {isEditing ? (
+                                                <Input
+                                                    value={formData?.snsId || ""}
+                                                    onChange={(e) => updateField("snsId", e.target.value)}
+                                                    className="h-8"
+                                                />
+                                            ) : (
+                                                f.snsId || "—"
+                                            )}
                                         </LabelValue>
                                     </div>
                                 </CardContent>

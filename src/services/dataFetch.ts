@@ -139,6 +139,15 @@ export const updateEditValues = async (data: string) => {
   }
 }
 
+export const saveOrUpdatePaComp = async (data: any) => {
+  try {
+    const response = await api.post('company/pa-form', data);
+    return response.data;
+  } catch (error) {
+    console.error("Error saving Panama form data:", error);
+  }
+}
+
 
 export const saveShrDirRegData = async (data: ShareHolderRegistrationForm, id?: string) => {
   try {
