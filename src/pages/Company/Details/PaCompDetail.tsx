@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { fetchUsers, getPaIncorpoDataById, markDeleteCompanyRecord, updateEditValues } from "@/services/dataFetch";
-import { paymentApi } from "@/lib/api/payment";
+import { getExchangeRate } from "@/services/exchangeRate";
 
 import { paFormWithResetAtom1, PaFormData } from "../Panama/PaState";
 import MemoApp from "./MemosHK";
@@ -47,14 +47,7 @@ import { PanamaQuoteSetupStep } from "../Panama/NewPanamaIncorpo";
 import DetailPAShareHolderDialog from "@/components/shareholderDirector/detailShrPa";
 import DetailPACorporateShareHolderDialog from "@/components/shareholderDirector/PaCorpMemberDetail";
 
-type SessionData = {
-    _id: string;
-    amount: number;
-    currency: string;
-    expiresAt: string;
-    status: string;
-    paymentId: string;
-};
+
 
 function fmtDate(d?: string | Date) {
     if (!d) return "—";
@@ -109,14 +102,6 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [users, setUsers] = useState<User[]>([]);
     const [adminAssigned, setAdminAssigned] = useState("");
-    const [session, setSession] = useState<SessionData>({
-        _id: "",
-        amount: 0,
-        currency: "",
-        expiresAt: "",
-        status: "",
-        paymentId: "",
-    });
 
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -126,6 +111,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
     const [isDialogOpen, setIsDialogOpen] = React.useState(false)
     const [selectedData, setSelectedData] = React.useState<any>(null);
     const [memType, setMemType] = React.useState<any>(null);
+    const [displayRate, setDisplayRate] = useState(1);
 
     const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
     const isAdmin = user?.role !== "user";
@@ -163,13 +149,13 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
             shareCount: dAny.shareCount || dAny.noOfSharesIssued || "",
 
             // receipts / payment
-            stripeLastStatus: session.status === "completed" ? "succeeded" : "",
+            stripeLastStatus: dAny.paymentStatus === "paid" ? "succeeded" : "",
             stripeReceiptUrl: d?.receiptUrl || "",
             uploadReceiptUrl: d?.receiptUrl || "",
             // prefer new payMethod, fallback to old shareCapitalPayment.id
             payMethod: dAny.payMethod || dAny.shareCapitalPayment?.id || "",
             bankRef: "",
-            finalAmount: session?.amount || "",
+            finalAmount: dAny.total || "",
 
             // compliance – prefer new yes/no flat fields, fallback to old nested objects
             compliancePreconditionAcknowledgment:
@@ -192,7 +178,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
             // meta
             stepIdx: 0,
         };
-    }, [formData, session]);
+    }, [formData]);
 
     const currentStep = "Panama Incorporation";
 
@@ -201,18 +187,6 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
             const data = await getPaIncorpoDataById(`${id}`);
             setAdminAssigned(data.assignedTo || "");
             // console.log("data", data)
-            if (data.sessionId) {
-                const s = await paymentApi.getSession(data.sessionId);
-                const transformed: SessionData = {
-                    _id: s._id,
-                    amount: s.amount,
-                    currency: s.currency,
-                    expiresAt: s.expiresAt,
-                    status: s.status,
-                    paymentId: s.paymentId,
-                };
-                setSession(transformed);
-            }
 
             const response = await fetchUsers();
             const filtered = response.filter((e: { role: string }) => e.role === "admin" || e.role === "master");
@@ -241,6 +215,23 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
+    useEffect(() => {
+        async function fetchRate() {
+            const currency = formData.stripeCurrency || "USD";
+            if (currency.toUpperCase() === "USD") {
+                setDisplayRate(1);
+                return;
+            }
+            try {
+                const r = await getExchangeRate("USD", currency.toUpperCase());
+                setDisplayRate(r);
+            } catch (err) {
+                console.error("Failed to fetch rate for display", err);
+            }
+        }
+        fetchRate();
+    }, [formData.stripeCurrency]);
+
     // ► keep companyName array AND companyName_1/2/3 in sync
     const patchForm = (key: "name1" | "name2" | "name3", val: string) => {
         if (!formData) return;
@@ -264,14 +255,6 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
         val: string
     ) => {
         if (!formData) return;
-        if (key === "expiresAt") {
-            setSession({ ...session, expiresAt: val });
-            return;
-        }
-        if (key === "paymentStatus") {
-            setSession({ ...session, status: val });
-            return;
-        }
         setFormData({ ...(formData as any), [key]: val } as any);
     };
 
@@ -313,11 +296,6 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     companyName_2: formData.companyName_2,
                     companyName_3: formData.companyName_3,
                     paymentStatus: formData.paymentStatus
-                },
-                session: {
-                    id: session._id,
-                    expiresAt: session.expiresAt,
-                    status: session.status,
                 },
                 assignedTo: adminAssigned,
             });
@@ -1354,11 +1332,44 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                         <div className="grid grid-cols-4 items-center gap-4">
                                             <Label className="text-right">Amount</Label>
                                             <div className="col-span-3 text-sm font-medium">
-                                                {formData.panamaQuote
-                                                    ? `${formData.panamaQuote?.total} USD`
-                                                    : session.amount
-                                                        ? `${session.amount} ${session.currency || "USD"}`
-                                                        : "—"}
+                                                {(() => {
+                                                    // Compute the amount using the same logic as NewPanamaIncorpo
+                                                    const quote = formData.panamaQuote || {};
+                                                    let subtotal = Number(quote.total) || 0;
+
+                                                    // If subtotal is 0, compute from individual options
+                                                    if (subtotal === 0) {
+                                                        const BASE_SETUP_CORP = 3000;
+                                                        const ND_PRICES: Record<number, number> = { 0: 0, 1: 1200, 2: 1700, 3: 2200 };
+                                                        const PRICE_NS = 1300;
+                                                        const PRICE_EMI = 400;
+                                                        const PRICE_BANK = 2000;
+                                                        const PRICE_CBI = 3880;
+                                                        const PRICE_MIRR_STORAGE = 350;
+
+                                                        subtotal = BASE_SETUP_CORP +
+                                                            (ND_PRICES[quote.ndSetup] || 0) +
+                                                            (quote.nsSetup ? PRICE_NS : 0) +
+                                                            (quote.optEmi ? PRICE_EMI : 0) +
+                                                            (quote.optBank ? PRICE_BANK : 0) +
+                                                            (quote.optCbi ? PRICE_CBI : 0) +
+                                                            (formData.recordStorageUseMirr ? PRICE_MIRR_STORAGE : 0);
+                                                    }
+
+                                                    // Apply card fee if payment method is card
+                                                    const currency = formData.stripeCurrency || "USD";
+                                                    const cardFeeRate = currency.toUpperCase() === "USD" ? 0.06 : 0.035;
+                                                    const needsCardFee = formData.payMethod === "card";
+                                                    const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
+                                                    const finalTotal = Math.round(total * 100) / 100;
+
+                                                    // Apply currency conversion
+                                                    const displayedTotal = finalTotal * displayRate;
+
+                                                    return finalTotal > 0
+                                                        ? `${displayedTotal.toFixed(2)} ${currency.toUpperCase()}`
+                                                        : "—";
+                                                })()}
                                             </div>
                                         </div>
 

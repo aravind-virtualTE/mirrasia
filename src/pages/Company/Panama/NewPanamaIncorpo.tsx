@@ -1315,6 +1315,7 @@ const PanamaQuoteSetupStep = () => {
             optEmi: false,
             optBank: false,
             optCbi: false,
+            optMirrStorage: false,
             nd3ReasonSetup: "",
             total: BASE_SETUP_CORP,
         }),
@@ -1340,7 +1341,7 @@ const PanamaQuoteSetupStep = () => {
             optCbi,
             nd3ReasonSetup,
             total: 0,
-            optMirrStorage: false
+            optMirrStorage: useMirrStorage
         }, useMirrStorage);
 
         return {
@@ -1350,6 +1351,7 @@ const PanamaQuoteSetupStep = () => {
             optEmi,
             optBank,
             optCbi,
+            optMirrStorage: useMirrStorage,
             nd3ReasonSetup,
             total,
         };
