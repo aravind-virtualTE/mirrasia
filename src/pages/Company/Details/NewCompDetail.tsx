@@ -30,10 +30,8 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import InvoicePreview from "../NewHKForm/NewInvoicePreview";
 import DetailShdHk from "@/components/shareholderDirector/detailShddHk";
@@ -740,7 +738,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                           <div className="mt-2 flex flex-wrap items-center gap-2">
                             <Badge variant="secondary" className="text-muted-foreground">{currentStep}</Badge>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground">Incorporation Status</span>
+                              <span className="text-xs text-muted-foreground">Status</span>
                               {user.role !== "user" ? (
                                 <Select
                                   value={data?.incorporationStatus || "Pending"}
@@ -761,6 +759,18 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                                 <Badge variant="default">{data?.incorporationStatus || "Pending"}</Badge>
                               )}
                             </div>
+                            <LabelValue label="Incorporation Date">
+                              {isEditing && isAdmin ? (
+                                <Input
+                                  type="date"
+                                  value={data.incorporationDate ? String(data.incorporationDate).slice(0, 10) : ""}
+                                  onChange={(e) => patchCompany("incorporationDate", e.target.value)}
+                                  className="h-8"
+                                />
+                              ) : (
+                                <span>{data.incorporationDate ? fmtDate(data.incorporationDate) : "—"}</span>
+                              )}
+                            </LabelValue>
                           </div>
                         </div>
 
@@ -1099,56 +1109,6 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                   <Separator />
                   {/* Incorporation date + AML/CDD toggle */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <LabelValue label="Incorporation Date">
-                      <div className="flex items-center gap-2">
-                        <span>
-                          {data.incorporationDate
-                            ? fmtDate(data.incorporationDate)
-                            : "—"}
-                        </span>
-                        {isAdmin && (
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                Edit
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Edit Incorporation Date</DialogTitle>
-                                <DialogDescription>
-                                  Set the date when the company was officially registered.
-                                </DialogDescription>
-                              </DialogHeader>
-                              <div className="grid gap-4 py-2">
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label
-                                    htmlFor="incorporationDate"
-                                    className="text-right"
-                                  >
-                                    Date
-                                  </Label>
-                                  <Input
-                                    id="incorporationDate"
-                                    type="date"
-                                    value={
-                                      data.incorporationDate
-                                        ? String(data.incorporationDate).slice(0, 10)
-                                        : ""
-                                    }
-                                    onChange={(e) =>
-                                      patchCompany("incorporationDate", e.target.value)
-                                    }
-                                    className="col-span-3"
-                                  />
-                                </div>
-                              </div>
-                            </DialogContent>
-                          </Dialog>
-                        )}
-                      </div>
-                    </LabelValue>
-
                     <LabelValue label="AML/CDD Edit">
                       <div className="flex items-center gap-2">
                         {/* true = enabled => !isDisabled */}

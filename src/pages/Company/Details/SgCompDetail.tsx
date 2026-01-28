@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { fetchUsers, getSgIncorpoDataById, markDeleteCompanyRecord, sendInviteToShDir, updateEditValues } from "@/services/dataFetch";
 import { paymentApi } from "@/lib/api/payment";
@@ -17,9 +18,10 @@ import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,7 +35,6 @@ import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { User } from "@/components/userList/UsersList";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { getShrMemberData, STATUS_OPTIONS } from "./detailData";
-import { t } from "i18next";
 import { InvoiceSgStep } from "../Singapore/NewSgIncorporation";
 import SgCorporateMemberDetail from "@/components/shareholderDirector/SgCorporateView";
 import SgIndividualShrDetail from "@/components/shareholderDirector/SgIndividualDetail";
@@ -107,6 +108,7 @@ const fieldsFromNames = (arr: string[]) => ({
 const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [form, setForm] = useAtom(sgFormWithResetAtom1);
   const [users, setUsers] = useState<User[]>([]);
@@ -199,6 +201,27 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
           parties: form.parties,
           // send explicit fields (new schema)
           ...nameFields,
+          // Add all editable fields
+          designatedContactPerson: form.designatedContactPerson,
+          designatedContact: form.designatedContact,
+          name: form.name,
+          email: form.email,
+          phoneNum: form.phoneNum,
+          selectedIndustry: form.selectedIndustry,
+          establishmentPurpose: form.establishmentPurpose,
+          productDescription: form.productDescription,
+          businessDescription: form.businessDescription,
+          annualRenewalConsent: form.annualRenewalConsent,
+          annualRenewalTermsAgreement: form.annualRenewalTermsAgreement,
+          // Compliance fields
+          legalAndEthicalConcern: form.legalAndEthicalConcern,
+          restrictedCountriesWithActivity: form.restrictedCountriesWithActivity,
+          sanctionsExposureDeclaration: form.sanctionsExposureDeclaration,
+          crimeaSevastapolPresence: form.crimeaSevastapolPresence,
+          russianEnergyPresence: form.russianEnergyPresence,
+          sns: form.sns,
+          snsId: form.snsId,
+          snsAccountId: form.snsAccountId,
         },
         session: {
           id: session._id,
@@ -211,6 +234,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
       const resp = await updateEditValues(payload);
       if (resp?.success) {
         toast({ description: "Record updated successfully" });
+        setIsEditing(false);
       } else {
         toast({ description: "Update failed. Please try again.", variant: "destructive" });
       }
@@ -426,7 +450,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-muted-foreground">
-                              Incorporation Status
+                              Status
                             </span>
 
                             {user?.role !== "user" ? (
@@ -452,6 +476,29 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                             ) : (
                               <Badge variant="default">{currentStatus}</Badge>
                             )}
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <LabelValue label={t("newHk.incorporation.fields.incorporationDate.label", "Incorporation Date")}>
+                              {isEditing ? (
+                                <Input
+                                  type="date"
+                                  value={
+                                    form?.incorporationDate
+                                      ? String(form.incorporationDate).slice(0, 10)
+                                      : ""
+                                  }
+                                  onChange={(e) =>
+                                    patchForm("incorporationDate", e.target.value)
+                                  }
+                                  className="h-8"
+                                />
+                              ) : (
+                                <span>
+                                  {form?.incorporationDate ? fmtDate(form.incorporationDate) : "—"}
+                                </span>
+                              )}
+                            </LabelValue>
+
                           </div>
                         </div>
                       </div>
@@ -494,39 +541,69 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
               <CardContent className="grid gap-5 min-w-0">
                 {/* Basic info */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <LabelValue label="Applicant">
-                    <div className="flex items-center gap-2">
-                      <FallbackAvatar name={contactName} />
-                      <span className="font-medium">{contactName || "—"}</span>
-                    </div>
+                  <LabelValue label={t("newHk.company.fields.applicantName.label", "Applicant")}>
+                    {isEditing ? (
+                      <div className="flex items-center gap-2">
+                        <Input
+                          value={contactName}
+                          onChange={(e) => patchForm("designatedContactPerson", e.target.value)}
+                          placeholder={t("newHk.company.fields.applicantName.placeholder", "Contact person name")}
+                          className="h-8"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <FallbackAvatar name={contactName} />
+                        <span className="font-medium">{contactName || "—"}</span>
+                      </div>
+                    )}
                   </LabelValue>
 
-                  <LabelValue label="Contact">
-                    <div className="grid gap-2">
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-3.5 w-3.5" />
-                        <span className="text-sm">{email || "—"}</span>
+                  <LabelValue label={t("newHk.company.fields.email.label", "Email & Phone")}>
+                    {isEditing ? (
+                      <div className="grid gap-2">
+                        <Input
+                          type="email"
+                          value={email}
+                          onChange={(e) => patchForm("email", e.target.value)}
+                          placeholder={t("newHk.company.fields.email.placeholder", "Email address")}
+                          className="h-8"
+                        />
+                        <Input
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => patchForm("phoneNum", e.target.value)}
+                          placeholder={t("newHk.company.fields.phoneNum.placeholder", "Phone number")}
+                          className="h-8"
+                        />
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-3.5 w-3.5" />
-                        <span className="text-sm">{phone || "—"}</span>
+                    ) : (
+                      <div className="grid gap-2">
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-3.5 w-3.5" />
+                          <span className="text-sm">{email || "—"}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-3.5 w-3.5" />
+                          <span className="text-sm">{phone || "—"}</span>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </LabelValue>
 
-                  <LabelValue label="Alternative Names (2/3)">
+                  <LabelValue label={t("newHk.incorporation.fields.altNames.label", "Alternative Names (2/3)")}>
                     {isEditing ? (
                       <div className="grid grid-cols-2 gap-2">
                         <Input
                           value={alt1}
                           onChange={(e) => patchNames(1, e.target.value)}
-                          placeholder="Name 2"
+                          placeholder={t("newHk.incorporation.fields.altNames.placeholder2", "Name 2")}
                           className="h-8"
                         />
                         <Input
                           value={alt2}
                           onChange={(e) => patchNames(2, e.target.value)}
-                          placeholder="Name 3"
+                          placeholder={t("newHk.incorporation.fields.altNames.placeholder3", "Name 3")}
                           className="h-8"
                         />
                       </div>
@@ -545,52 +622,105 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     )}
                   </LabelValue>
 
-                  <LabelValue label="Relationships">
-                    {(form.establishedRelationshipType || []).length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {form.establishedRelationshipType!.map((r: any, i: any) => (
-                          <Badge key={r + i} variant="outline">
-                            {r}
-                          </Badge>
-                        ))}
-                      </div>
+                  <LabelValue label={t("newHk.incorporation.fields.relationships.label", "Relationships")}>
+                    {isEditing ? (
+                      <Input
+                        value={(form.establishedRelationshipType || []).join(", ")}
+                        onChange={(e) => patchForm("establishedRelationshipType", e.target.value.split(",").map(s => s.trim()))}
+                        placeholder={t("newHk.incorporation.fields.relationships.placeholder", "Comma-separated relationships")}
+                        className="h-8"
+                      />
                     ) : (
-                      "—"
+                      (form.establishedRelationshipType || []).length ? (
+                        <div className="flex flex-wrap gap-2">
+                          {form.establishedRelationshipType!.map((r: any, i: any) => (
+                            <Badge key={r + i} variant="outline">
+                              {r}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        "—"
+                      )
                     )}
                   </LabelValue>
 
-                  <LabelValue label="Industry">
-                    {industries.length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {industries.map((it, i) => (
-                          <Badge key={it + i} variant="secondary">
-                            {it}
-                          </Badge>
-                        ))}
-                      </div>
+                  <LabelValue label={t("newHk.incorporation.fields.industry.label", "Industry")}>
+                    {isEditing ? (
+                      <Input
+                        value={(industries || []).join(", ")}
+                        onChange={(e) => patchForm("selectedIndustry", e.target.value.split(",").map(s => s.trim()))}
+                        placeholder={t("newHk.incorporation.fields.industry.placeholder", "Comma-separated industries")}
+                        className="h-8"
+                      />
                     ) : (
-                      "—"
+                      industries.length ? (
+                        <div className="flex flex-wrap gap-2">
+                          {industries.map((it, i) => (
+                            <Badge key={it + i} variant="secondary">
+                              {it}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        "—"
+                      )
                     )}
                   </LabelValue>
 
-                  <LabelValue label="Purpose">
-                    {purposes.length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {purposes.map((p, i) => (
-                          <Badge key={p + i} variant="secondary">
-                            {p}
-                          </Badge>
-                        ))}
-                      </div>
+                  <LabelValue label={t("newHk.incorporation.fields.purpose.label", "Purpose")}>
+                    {isEditing ? (
+                      <Input
+                        value={(purposes || []).join(", ")}
+                        onChange={(e) => patchForm("establishmentPurpose", e.target.value.split(",").map(s => s.trim()))}
+                        placeholder={t("newHk.incorporation.fields.purpose.placeholder", "Comma-separated purposes")}
+                        className="h-8"
+                      />
                     ) : (
-                      "—"
+                      purposes.length ? (
+                        <div className="flex flex-wrap gap-2">
+                          {purposes.map((p, i) => (
+                            <Badge key={p + i} variant="secondary">
+                              {p}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        "—"
+                      )
                     )}
                   </LabelValue>
 
-                  <LabelValue label="Business Description">{bizDesc || "—"}</LabelValue>
+                  <LabelValue label={t("newHk.incorporation.fields.businessDesc.label", "Business Description")}>
+                    {isEditing ? (
+                      <Textarea
+                        value={bizDesc}
+                        onChange={(e) => patchForm("productDescription", e.target.value)}
+                        placeholder={t("newHk.incorporation.fields.businessDesc.placeholder", "Describe business activities")}
+                        className="h-20"
+                      />
+                    ) : (
+                      <span>{bizDesc || "—"}</span>
+                    )}
+                  </LabelValue>
 
-                  <LabelValue label="Annual Renewal Terms / Consent">
-                    {annualRenewalTermsText || "—"}
+                  <LabelValue label={t("newHk.incorporation.fields.annualRenewal.label", "Annual Renewal Terms / Consent")}>
+                    {isEditing ? (
+                      <Select
+                        value={String(form?.annualRenewalConsent ?? annualRenewalTermsText)}
+                        onValueChange={(v) => patchForm("annualRenewalConsent", v)}
+                      >
+                        <SelectTrigger className="h-8">
+                          <SelectValue placeholder={t("common.select", "Select...")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="yes">{t("common.yes", "Yes")}</SelectItem>
+                          <SelectItem value="no">{t("common.no", "No")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <span>{annualRenewalTermsText || "—"}</span>
+                    )}
                   </LabelValue>
                 </div>
 
@@ -810,55 +940,11 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                 {/* Dates & toggles */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <LabelValue label="Incorporation Date">
+                  <LabelValue label={t("newHk.compliance.fields.amlCdd.label", "AML/CDD Edit")}>
                     <div className="flex items-center gap-2">
-                      <span>
-                        {form?.incorporationDate ? fmtDate(form.incorporationDate) : "—"}
-                      </span>
-                      {isAdmin && (
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button variant="outline" size="sm">
-                              Edit
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Edit Incorporation Date</DialogTitle>
-                              <DialogDescription>
-                                Set the date when the company was officially registered.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-2">
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="incorporationDate" className="text-right">
-                                  Date
-                                </Label>
-                                <Input
-                                  id="incorporationDate"
-                                  type="date"
-                                  value={
-                                    form?.incorporationDate
-                                      ? String(form.incorporationDate).slice(0, 10)
-                                      : ""
-                                  }
-                                  onChange={(e) =>
-                                    patchForm("incorporationDate", e.target.value)
-                                  }
-                                  className="col-span-3"
-                                />
-                              </div>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      )}
-                    </div>
-                  </LabelValue>
-
-                  <LabelValue label="AML/CDD Edit">
-                    <div className="flex items-center gap-2">
-                      <BoolPill value={!form?.isDisabled} />
-                      {isAdmin && (
+                      {!isEditing ? (
+                        <BoolPill value={!form?.isDisabled} />
+                      ) : (
                         <Switch
                           checked={!form?.isDisabled}
                           onCheckedChange={(checked) => patchForm("isDisabled", !checked)}
@@ -882,7 +968,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     <Banknote className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-base">Payment</CardTitle>
+                    <CardTitle className="text-base">{t("newHk.payment.title", "Payment")}</CardTitle>
                     <div className="mt-1 flex flex-wrap items-center gap-2">
                       <Badge variant="secondary" className="gap-1">
                         <ReceiptText className="h-3.5 w-3.5" />
@@ -900,7 +986,7 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
               <CardContent className="grid gap-4">
                 {/* Receipt / Proof */}
                 <div className="grid gap-2">
-                  <div className="text-xs text-muted-foreground">Receipt / Proof</div>
+                  <div className="text-xs text-muted-foreground">{t("newHk.payment.receipt.label", "Receipt / Proof")}</div>
 
                   {form.paymentStatus === "paid" &&
                     form.stripeLastStatus === "succeeded" &&
@@ -919,15 +1005,15 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                       {isAdmin && (
                         <div className="flex items-center gap-3">
-                          <Label className="text-sm font-medium">Payment Status:</Label>
+                          <Label className="text-sm font-medium">{t("newHk.payment.status.label", "Payment Status")}:</Label>
                           <Select value={form?.paymentStatus || "unpaid"} onValueChange={(val) => patchForm("paymentStatus", val as any)}>
                             <SelectTrigger className="w-32">
-                              <SelectValue placeholder="Status" />
+                              <SelectValue placeholder={t("common.select", "Status")} />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="unpaid">Pending</SelectItem>
-                              <SelectItem value="paid">Paid</SelectItem>
-                              <SelectItem value="rejected">Rejected</SelectItem>
+                              <SelectItem value="unpaid">{t("newHk.payment.status.pending", "Pending")}</SelectItem>
+                              <SelectItem value="paid">{t("newHk.payment.status.paid", "Paid")}</SelectItem>
+                              <SelectItem value="rejected">{t("newHk.payment.status.rejected", "Rejected")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -940,38 +1026,51 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                 {/* Amount + Expiry */}
                 <div className="grid gap-4 py-2">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label className="text-right">Amount</Label>
-                    <div className="col-span-3 text-sm font-medium">
-                      {form.totalDiscounted
-                        ? `${form.totalDiscounted} USD`
-                        : session.amount
-                          ? `${session.amount} ${session.currency || "USD"}`
-                          : "—"}
+                  <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                    <Label className="md:text-right">{t("newHk.payment.amount.label", "Amount")}</Label>
+                    <div className="col-span-1 md:col-span-3 text-sm font-medium">
+                      {isEditing && isAdmin ? (
+                        <Input
+                          type="number"
+                          value={form.totalDiscounted || session.amount || 0}
+                          onChange={(e) => patchForm("totalDiscounted", Number(e.target.value))}
+                          className="h-8"
+                        />
+                      ) : (
+                        <span>
+                          {form.totalDiscounted
+                            ? `${form.totalDiscounted} USD`
+                            : session.amount
+                              ? `${session.amount} ${session.currency || "USD"}`
+                              : "—"}
+                        </span>
+                      )}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="expiresAt" className="text-right">Expires</Label>
-                    {isAdmin ? (
-                      <Input
-                        id="expiresAt"
-                        type="date"
-                        value={form.sessionExpiresAt ? String(form.sessionExpiresAt).slice(0, 10) : ""}
-                        onChange={(e) => patchForm("sessionExpiresAt" as any, e.target.value)}
-                        className="col-span-3"
-                      />
-                    ) : (
-                      <div className="col-span-3 text-sm">
-                        {form.sessionExpiresAt ? fmtDate(form.sessionExpiresAt) : "—"}
-                      </div>
-                    )}
+                  <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                    <Label htmlFor="expiresAt" className="md:text-right">{t("newHk.payment.expires.label", "Expires")}</Label>
+                    <div className="col-span-1 md:col-span-3">
+                      {isAdmin && isEditing ? (
+                        <Input
+                          id="expiresAt"
+                          type="date"
+                          value={form.sessionExpiresAt ? String(form.sessionExpiresAt).slice(0, 10) : ""}
+                          onChange={(e) => patchForm("sessionExpiresAt" as any, e.target.value)}
+                          className="h-8"
+                        />
+                      ) : (
+                        <div className="text-sm">
+                          {form.sessionExpiresAt ? fmtDate(form.sessionExpiresAt) : "—"}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {form.receiptUrl && (
-                    <div className="grid grid-cols-4 items-start gap-4">
-                      <Label className="text-right">Receipt</Label>
-                      <div className="col-span-3">
+                    <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-4">
+                      <Label className="md:text-right">{t("newHk.payment.receipt.label", "Receipt")}</Label>
+                      <div className="col-span-1 md:col-span-3">
                         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                           <SheetTrigger asChild>
                             <Button variant="outline" size="sm">View Receipt</Button>
@@ -1009,34 +1108,136 @@ const SgCompdetail: React.FC<{ id: string }> = ({ id }) => {
                     <ShieldCheck className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-base">Compliance & Declarations</CardTitle>
+                    <CardTitle className="text-base">{t("newHk.compliance.title", "Compliance & Declarations")}</CardTitle>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="grid gap-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <LabelValue label="Legal & Ethical Concern">
-                    <BoolPill value={toYesNoBool(form?.legalAndEthicalConcern ?? form?.hasLegalEthicalIssues)} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <LabelValue label={t("newHk.compliance.fields.legalEthicalConcern.label", "Legal & Ethical Concern")}>
+                    {isEditing ? (
+                      <Select
+                        value={String(toYesNoBool(form?.legalAndEthicalConcern ?? form?.hasLegalEthicalIssues) ?? "")}
+                        onValueChange={(v) => patchForm("legalAndEthicalConcern", v === "true")}
+                      >
+                        <SelectTrigger className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="false">{t("common.no", "No")}</SelectItem>
+                          <SelectItem value="true">{t("common.yes", "Yes")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <BoolPill value={toYesNoBool(form?.legalAndEthicalConcern ?? form?.hasLegalEthicalIssues)} />
+                    )}
                   </LabelValue>
-                  <LabelValue label="Sanctioned Countries Activity">
-                    <BoolPill value={toYesNoBool(form?.restrictedCountriesWithActivity ?? form?.q_country)} />
+
+                  <LabelValue label={t("newHk.compliance.fields.sanctionedCountries.label", "Sanctioned Countries Activity")}>
+                    {isEditing ? (
+                      <Select
+                        value={String(toYesNoBool(form?.restrictedCountriesWithActivity ?? form?.q_country) ?? "")}
+                        onValueChange={(v) => patchForm("restrictedCountriesWithActivity", v === "true")}
+                      >
+                        <SelectTrigger className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="false">{t("common.no", "No")}</SelectItem>
+                          <SelectItem value="true">{t("common.yes", "Yes")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <BoolPill value={toYesNoBool(form?.restrictedCountriesWithActivity ?? form?.q_country)} />
+                    )}
                   </LabelValue>
-                  <LabelValue label="Sanctions Exposure">
-                    <BoolPill value={toYesNoBool(form?.sanctionsExposureDeclaration ?? form?.sanctionedTiesPresent)} />
+
+                  <LabelValue label={t("newHk.compliance.fields.sanctionsExposure.label", "Sanctions Exposure")}>
+                    {isEditing ? (
+                      <Select
+                        value={String(toYesNoBool(form?.sanctionsExposureDeclaration ?? form?.sanctionedTiesPresent) ?? "")}
+                        onValueChange={(v) => patchForm("sanctionsExposureDeclaration", v === "true")}
+                      >
+                        <SelectTrigger className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="false">{t("common.no", "No")}</SelectItem>
+                          <SelectItem value="true">{t("common.yes", "Yes")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <BoolPill value={toYesNoBool(form?.sanctionsExposureDeclaration ?? form?.sanctionedTiesPresent)} />
+                    )}
                   </LabelValue>
-                  <LabelValue label="Crimea/Sevastopol Presence">
-                    <BoolPill value={toYesNoBool(form?.crimeaSevastapolPresence ?? form?.businessInCrimea)} />
+
+                  <LabelValue label={t("newHk.compliance.fields.crimea.label", "Crimea/Sevastopol Presence")}>
+                    {isEditing ? (
+                      <Select
+                        value={String(toYesNoBool(form?.crimeaSevastapolPresence ?? form?.businessInCrimea) ?? "")}
+                        onValueChange={(v) => patchForm("crimeaSevastapolPresence", v === "true")}
+                      >
+                        <SelectTrigger className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="false">{t("common.no", "No")}</SelectItem>
+                          <SelectItem value="true">{t("common.yes", "Yes")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <BoolPill value={toYesNoBool(form?.crimeaSevastapolPresence ?? form?.businessInCrimea)} />
+                    )}
                   </LabelValue>
-                  <LabelValue label="Russian Energy/Defense Presence">
-                    <BoolPill value={toYesNoBool(form?.russianEnergyPresence ?? form?.involvedInRussianEnergyDefense)} />
+
+                  <LabelValue label={t("newHk.compliance.fields.russianEnergy.label", "Russian Energy/Defense Presence")}>
+                    {isEditing ? (
+                      <Select
+                        value={String(toYesNoBool(form?.russianEnergyPresence ?? form?.involvedInRussianEnergyDefense) ?? "")}
+                        onValueChange={(v) => patchForm("russianEnergyPresence", v === "true")}
+                      >
+                        <SelectTrigger className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="false">{t("common.no", "No")}</SelectItem>
+                          <SelectItem value="true">{t("common.yes", "Yes")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <BoolPill value={toYesNoBool(form?.russianEnergyPresence ?? form?.involvedInRussianEnergyDefense)} />
+                    )}
                   </LabelValue>
                 </div>
 
                 <Separator />
 
-                <div className="grid grid-cols-2 gap-4">
-                  <LabelValue label="Social App">{form?.sns || "—"}</LabelValue>
-                  <LabelValue label="Handle / ID">{form?.snsId || form?.snsAccountId?.value || "—"}</LabelValue>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <LabelValue label={t("newHk.compliance.fields.socialApp.label", "Social App")}>
+                    {isEditing ? (
+                      <Input
+                        value={form?.sns || ""}
+                        onChange={(e) => patchForm("sns", e.target.value)}
+                        placeholder={t("newHk.compliance.fields.socialApp.placeholder", "App/Platform name")}
+                        className="h-8"
+                      />
+                    ) : (
+                      <span>{form?.sns || "—"}</span>
+                    )}
+                  </LabelValue>
+
+                  <LabelValue label={t("newHk.compliance.fields.handle.label", "Handle / ID")}>
+                    {isEditing ? (
+                      <Input
+                        value={form?.snsId || form?.snsAccountId?.value || ""}
+                        onChange={(e) => patchForm("snsId", e.target.value)}
+                        placeholder={t("newHk.compliance.fields.handle.placeholder", "Account handle or ID")}
+                        className="h-8"
+                      />
+                    ) : (
+                      <span>{form?.snsId || form?.snsAccountId?.value || "—"}</span>
+                    )}
+                  </LabelValue>
                 </div>
               </CardContent>
             </Card>
