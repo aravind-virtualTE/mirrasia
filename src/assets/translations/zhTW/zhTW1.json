@@ -1,0 +1,992 @@
+{
+    "ppif": {
+        "heading": "巴拿馬私人利益基金會 (PIF) — 申請",
+        "section1": "申請人詳情",
+        "section2": "基金會概況",
+        "section3": "創辦人",
+        "section4": "基金會委員會 — 組成",
+        "section5": "保護人（可選）",
+        "section6": "受益人",
+        "section7": "內部規章",
+        "section8": "經濟實質 (ES) 檢查",
+        "section9": "銀行業務",
+        "section10": "政治公眾人物 (PEP)",
+        "section11": "反洗錢 (AML) 及制裁",
+        "section12": "註冊後交付文件與運送",
+        "section13": "會計記錄儲存及負責人",
+        "section14": "發票及報價",
+        "section15": "付款",
+        "section16": "聲明及電子簽署",
+        "congrats": "恭喜",
+        "topbar": {
+            "defaultTitle": "公司註冊成立 — 巴拿馬私人利益基金會"
+        },
+        "applicant": {
+            "description": "我們將通過以下電子郵件發送文件、發票和狀態更新。",
+            "fields": {
+                "email": {
+                    "label": "電子郵件",
+                    "placeholder": "you@example.com"
+                },
+                "contactName": {
+                    "label": "聯絡人（全名）",
+                    "placeholder": "John Smith"
+                },
+                "phone": {
+                    "label": "電話 / 即時通訊",
+                    "placeholder": "+82 ..."
+                },
+                "contactPref": {
+                    "label": "偏好聯絡時間 / 方式",
+                    "placeholder": "例如：平日 10:00–18:00，首選電子郵件"
+                }
+            }
+        },
+        "es": {
+            "description": "巴拿馬尚未實施一般性的 ES 制度；ES 主要適用於某些特殊制度（例如：跨國公司總部 SEM）。實際上，一般 PIF 不直接受 ES 要求約束（稅務/報告義務應單獨審查）。※ 其他國家的稅務居住地和活動可能會觸發徵稅/CRS 影響 — 請逐案審查。"
+        },
+        "pep": {
+            "title": "J. 政治公眾人物 (PEP)",
+            "label": "PEP 是現任/前任高級公職人員及其家屬/親密夥伴。在此我們僅確認是否有 PIF 參與者屬於 PEP。詳細檢查將在個人入職表格中進行。",
+            "options": {
+                "yes": "是",
+                "no": "否"
+            }
+        },
+        "placeholders": {
+            "select": "選擇"
+        },
+        "save": {
+            "successTitle": "已儲存",
+            "successDesc": "您的申請資料已儲存。",
+            "errorTitle": "錯誤",
+            "errorDesc": "儲存申請失敗。請重試。"
+        },
+        "footer": {
+            "copyright": "© Mirr Asia · 巴拿馬 PIF – 資訊及接收表格"
+        },
+        "validation": {
+            "requiredFieldsPrefix": "必填欄位："
+        },
+        "profile": {
+            "namingGuidelines": {
+                "title": "命名指引",
+                "body": "名稱中必須包含 **“Foundation”** 或 **“Fundación”**。相同或可能造成混淆的相似名稱無法註冊。請提供第一/第二/第三選擇；我們將會檢查可用性。",
+                "smallNote": "請提供第一/第二/第三選擇；我們將會檢查可用性。"
+            },
+            "nameChoices": {
+                "first": {
+                    "label": "第一選擇",
+                    "placeholder": "例如：MIRR ASIA FOUNDATION"
+                },
+                "second": {
+                    "label": "第二選擇"
+                },
+                "third": {
+                    "label": "第三選擇"
+                },
+                "spanish": {
+                    "label": "西班牙語名稱（可選）",
+                    "placeholder": "Fundación …"
+                }
+            },
+            "endowmentInfo": {
+                "title": "初始捐贈",
+                "body": "通常記錄為「初始資本 / 捐贈」。名義最低金額為 **USD 10,000**，且沒有立即的注資義務（它在憲章中記錄為承諾，可稍後注資/調整）。"
+            },
+            "endowmentFields": {
+                "amount": {
+                    "label": "初始捐贈（美元）",
+                    "placeholder": "例如：10000"
+                },
+                "payer": {
+                    "label": "初始捐贈支付人（姓名/實體）"
+                }
+            },
+            "sourceOfFunds": {
+                "label": "資金來源",
+                "placeholder": "選擇",
+                "options": {
+                    "Employment Income": "受僱收入",
+                    "Savings/Deposits": "儲蓄/存款",
+                    "Investment Income (stocks/bonds/funds)": "投資收入（股票/債券/基金）",
+                    "Loan": "貸款",
+                    "Proceeds from Sale of Company/Shares": "出售公司/股份所得",
+                    "Business Income/Dividends": "業務收入/股息",
+                    "Inheritance/Gift": "繼承/贈與",
+                    "other": "其他"
+                }
+            },
+            "registeredAddress": {
+                "label": "註冊地址（巴拿馬）",
+                "options": {
+                    "mirr": "使用 Mirr Asia 註冊地址（無額外費用）",
+                    "own": "我有自己的註冊地址（在下方提供）"
+                },
+                "own": {
+                    "label": "單獨的註冊地址（英文）",
+                    "placeholder": "收件人 / 聯絡人 / 地址 / 郵政編碼（建議英文）"
+                }
+            },
+            "purpose": {
+                "label": "設立目的",
+                "placeholder": "例如：資產保護、繼承與慈善分配、海外股權持有與股息管理等",
+                "helper": "結合關鍵詞或自由書寫。",
+                "chips": {
+                    "Asset Protection": {
+                        "label": "資產保護",
+                        "text": "持有房地產、金融資產、股權和數位資產；通過基金會建立資產保護"
+                    },
+                    "Succession Planning": {
+                        "label": "繼承規劃",
+                        "text": "通過基金會持有和營運資產並規劃代際繼承"
+                    },
+                    "Hold & Manage Investment Interests": {
+                        "label": "持有和管理投資權益",
+                        "text": "持有和管理投資權益"
+                    },
+                    "Dividend & Interest Income Management": {
+                        "label": "股息及利息收入管理",
+                        "text": "管理股息及利息收入"
+                    },
+                    "Charitable Purposes": {
+                        "label": "慈善目的",
+                        "text": "為慈善或宗教目的營運資金"
+                    },
+                    "Family-Trust Structure": {
+                        "label": "家族信託結構",
+                        "text": "以家族信託式載體架構和營運"
+                    },
+                    "Blockchain Token-Related": {
+                        "label": "區塊鏈代幣相關",
+                        "text": "發行代幣以支持區塊鏈生態系統"
+                    }
+                }
+            },
+            "businessActivities": {
+                "sectionLabel": "業務 / 活動",
+                "industries": {
+                    "label": "主要行業（多選）",
+                    "options": {
+                        "trading": "貿易",
+                        "wholesale": "批發/零售/分銷",
+                        "consulting": "諮詢",
+                        "manufacturing": "製造",
+                        "finance": "金融/投資/諮詢",
+                        "online": "線上服務/電子商務",
+                        "it": "IT/軟體/區塊鏈",
+                        "crypto": "數位資產",
+                        "other": "其他"
+                    }
+                },
+                "countries": {
+                    "label": "活動國家（計劃）",
+                    "placeholder": "例如：PA, US, EU, HK, KR ..."
+                },
+                "description": {
+                    "label": "主要註冊後活動及說明",
+                    "placeholder": "例如：持有外國股權並收取股息、營運線上服務和支付處理、分配慈善基金等"
+                }
+            }
+        },
+        "founders": {
+            "title": "創辦人 #{{n}}",
+            "removeAria": "移除創辦人 #{{n}}",
+            "removeTitle": "移除",
+            "type": {
+                "label": "創辦人類型",
+                "options": {
+                    "individual": "個人",
+                    "corporate": "法人實體"
+                }
+            },
+            "name": {
+                "label": "完整姓名 / 法人名稱",
+                "placeholder": "輸入完整姓名或法人名稱"
+            },
+            "id": {
+                "label": "護照 / 註冊號碼",
+                "placeholder": "輸入護照或註冊號碼"
+            },
+            "email": {
+                "label": "電子郵件",
+                "placeholder": "email@example.com"
+            },
+            "phone": {
+                "label": "電話",
+                "placeholder": "輸入電話號碼"
+            },
+            "info": {
+                "title": "創辦人數量",
+                "body": "巴拿馬 PIF（私人利益基金會）可由一位或多位人士（個人或法人實體）創立。請添加所需的成員。"
+            },
+            "buttons": {
+                "addFounder": "新增創辦人",
+                "invite": "邀請創辦人成員"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "邀請函已發送",
+                        "desc": "已成功發送 {{count}} 份邀請函。"
+                    },
+                    "alreadyExists": {
+                        "title": "邀請函已發送",
+                        "desc": "已向該電子郵件地址發送 {{count}} 份邀請函。"
+                    },
+                    "none": {
+                        "title": "未發送邀請函",
+                        "desc": "請確保創辦人擁有有效的電子郵件地址。"
+                    }
+                }
+            }
+        },
+        "council": {
+            "composition": {
+                "title": "D. 基金會委員會 — 組成",
+                "modes": {
+                    "ind3": "三位個人",
+                    "corp1": "一位法人實體"
+                }
+            },
+            "individuals": {
+                "title": "D-1. 三位個人委員會成員",
+                "note": "每位成員需提交單獨的「**成員註冊表格**」。如需要，可提供名義董事服務。",
+                "memberCardTitle": "委員會成員 #{{n}} – 快速資訊",
+                "fields": {
+                    "name": {
+                        "label": "全名"
+                    },
+                    "id": {
+                        "label": "護照 / 身份證號碼"
+                    },
+                    "email": {
+                        "label": "電子郵件"
+                    },
+                    "phone": {
+                        "label": "電話"
+                    }
+                },
+                "nominee": {
+                    "askLabel": "使用名義董事服務？",
+                    "checkboxLabel": "使用名義董事服務",
+                    "infoTitle": "名義董事 — 詳情",
+                    "infoBody": "高級職員詳情可在公共登記處查閱；如需要，我們可以列出名義人。名義人**不**行使控制/管理權，也**不**主張所有權。銀行/交易所仍需要進行 **UBO/重要控制人驗證**。我們根據反洗錢法律進行面對面/視訊 KYC 並保存記錄。費用（年費）：1人 USD 1,200，2人 USD 1,700，3人 USD 2,200（建議提供理由）。名義股東：USD 1,300。",
+                    "countLabel": "名義董事 — 人數",
+                    "options": {
+                        "1": "1人 (USD 1,200)",
+                        "2": "2人 (USD 1,700)",
+                        "3": "3人 (USD 2,200) — 建議提供理由"
+                    }
+                }
+            },
+            "corporate": {
+                "title": "D-2. 通過一位法人實體組成的委員會 — 基本資訊",
+                "note": "這是一種不常見的結構。即使法人實體擔任委員會，仍需對人類簽署人進行 KYC 檢查。",
+                "fields": {
+                    "corpMain": {
+                        "label": "實體名稱 / 註冊號碼 / 管轄區",
+                        "placeholder": "範例: ABC TRUSTEES LTD / 123456 / PA"
+                    },
+                    "addrRep": {
+                        "label": "註冊地址 / 代表人"
+                    },
+                    "signatory": {
+                        "label": "授權簽署人（可選）",
+                        "placeholder": "姓名 · 職位 · 聯絡方式"
+                    },
+                    "email": {
+                        "label": "聯絡電子郵件"
+                    }
+                }
+            },
+            "buttons": {
+                "invite": "邀請委員會成員"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "邀請函已發送",
+                        "desc": "已邀請委員會成員填寫其入職表格。"
+                    },
+                    "alreadyExists": {
+                        "title": "邀請函已發送",
+                        "desc": "已向該電子郵件地址發送 {{count}} 份邀請函。"
+                    },
+                    "none": {
+                        "title": "未發送邀請函",
+                        "desc": "請確保委員會成員擁有有效的電子郵件地址。"
+                    }
+                }
+            }
+        },
+        "shared": {
+            "repeater": {
+                "title": "{{title}} #{{n}}",
+                "removeAria": "移除 {{title}} #{{n}}",
+                "removeTitle": "移除",
+                "fields": {
+                    "name": {
+                        "label": "姓名 / 法人名稱 / 類別"
+                    },
+                    "contact": {
+                        "label": "電子郵件",
+                        "placeholder": "email@example.com"
+                    }
+                }
+            }
+        },
+        "protectors": {
+            "info": {
+                "body": "保護人不負責日常營運，但會批准/監督重大決策。",
+                "examples": "範例：批准委員會成員的任命/罷免、批准內部規章的變更、同意某些分配指引等。可以任命多位保護人。"
+            },
+            "controls": {
+                "appoint": "任命",
+                "doNotAppoint": "不任命",
+                "add": "+ 新增"
+            },
+            "itemTitle": "保護人",
+            "buttons": {
+                "invite": "邀請保護人"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "邀請函已發送",
+                        "desc": "已成功發送 {{count}} 份邀請函。"
+                    },
+                    "alreadyExists": {
+                        "title": "邀請函已發送",
+                        "desc": "已向該電子郵件地址發送 {{count}} 份邀請函。"
+                    },
+                    "none": {
+                        "title": "未發送邀請函",
+                        "desc": "請確保保護人擁有有效的電子郵件地址。"
+                    }
+                }
+            }
+        },
+        "beneficiaries": {
+            "info": {
+                "designTitle": "設計方式",
+                "designBody": "① 固定名單（具名） ② 按類別（配偶/直系後裔/監護人等） ③ 混合。為保護隱私和靈活性，按類別方式較為常見。",
+                "lowTitle": "意願書 (Letter of Wishes)",
+                "lowBody": "意願書提供遺囑指引（誰/何時/多少）並在實際操作中被依賴。"
+            },
+            "modes": {
+                "fixed": "固定名單",
+                "class": "按類別",
+                "mixed": "混合"
+            },
+            "controls": {
+                "add": "+ 新增受益人"
+            },
+            "itemTitle": "受益人",
+            "letterOfWishes": {
+                "label": "意願書",
+                "placeholder": "（可選）關於分配、優先順序、時間安排等的遺囑指引"
+            },
+            "buttons": {
+                "invite": "邀請受益人"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "邀請函已發送",
+                        "desc": "已成功發送 {{count}} 份邀請函。"
+                    },
+                    "alreadyExists": {
+                        "title": "邀請函已發送",
+                        "desc": "已向該電子郵件地址發送 {{count}} 份邀請函。"
+                    },
+                    "none": {
+                        "title": "未發送邀請函",
+                        "desc": "請確保受益人擁有有效的電子郵件地址。"
+                    }
+                }
+            }
+        },
+        "bylaws": {
+            "modes": {
+                "standard": "套用標準範本",
+                "custom": "填寫自訂詳情"
+            },
+            "fields": {
+                "powers": {
+                    "label": "權力分配（委員會 vs 保護人）",
+                    "placeholder": "簽署權限 / 批准權 / 罷免權等"
+                },
+                "admin": {
+                    "label": "記錄保存 / 審計 / 報告 · 解散條件",
+                    "placeholder": "保留期限、審計週期、報告路線 / 特定事件及投票要求等"
+                }
+            }
+        },
+        "banking": {
+            "need": {
+                "label": "需要開立帳戶嗎？",
+                "options": {
+                    "need": "是",
+                    "none": "否",
+                    "later": "稍後決定"
+                }
+            },
+            "bizType": {
+                "label": "業務活動類型（供參考）",
+                "options": {
+                    "consulting": "一般諮詢 / 控股",
+                    "ecommerce": "線上服務 / 電子商務",
+                    "investment": "投資 / 股權持有",
+                    "crypto": "虛擬資產相關",
+                    "manufacturing": "製造 / 貿易"
+                }
+            },
+            "guide": {
+                "title": "銀行 / 電子貨幣發行機構 (EMI)（供參考）",
+                "list": {
+                    "panama": "巴拿馬本地銀行通常要求非居民/基金會帳戶進行面對面訪談和提供 UBO 證明。",
+                    "crypto": "加密貨幣友好：Towerbank（視政策和風險偏好而定）。",
+                    "emi": "EMI/外國機構對「基金會 (Foundation)」的接受度不一 — 需預先檢查。"
+                },
+                "activityLabel": "活動指引：",
+                "docsNote": "指示性文件：基金會憲章/註冊、委員會登記冊及接受書、UBO 圖表、創辦人/董事護照及地址證明、資金來源、業務描述/合約、稅務 ID/居留證明、推薦信、面談等。"
+            },
+            "hints": {
+                "consulting": "一般諮詢/控股：中等風險。預計需提供收入/合約/組織及 UBO 的清晰資訊。遠端開戶選擇有限。",
+                "ecommerce": "線上服務/電子商務：需提供支付流程、客戶國家/地區、退款政策。除銀行帳戶外，考慮 PSP/EMI。",
+                "investment": "投資/股權持有：如果主要是被動活動，銀行興趣可能較低。考慮經紀/託管帳戶。",
+                "crypto": "虛擬資產：許多銀行限制。考慮加密貨幣友好銀行（如 Towerbank）或 VASP/EMI 組合。",
+                "manufacturing": "製造/貿易：需要實質證明文件（供應協議、運輸文件）。貿易融資另行評估。"
+            }
+        },
+        "aml": {
+            "info": "請依據 FATF、UN、EU、OFAC、UK HMT、HKMA 等機構的規範，確認是否有與受制裁國家/人士進行交易。",
+            "q1": {
+                "label": "目前或計劃與伊朗、蘇丹、南蘇丹、北韓、敘利亞、古巴、白俄羅斯、辛巴威、俄羅斯或烏克蘭政府控制區以外的地區進行業務往來嗎？",
+                "field": "legalAndEthicalConcern"
+            },
+            "q2": {
+                "label": "任何相關人士居住在上述國家或受到 UN、EU、UK HMT、HKMA 或 OFAC 制裁的國家（或烏克蘭政府控制區以外的地區）嗎？",
+                "field": "q_country"
+            },
+            "q3": {
+                "label": "該 PIF 是否或將會由受制裁人士/實體或位於阿富汗、白俄羅斯、古巴、伊朗、北韓、俄羅斯、敘利亞或烏克蘭政府控制區以外地區的人士擁有、控制或為其服務？",
+                "field": "sanctionsExposureDeclaration"
+            },
+            "q4": {
+                "label": "任何相關人士目前或計劃在克里米亞或塞瓦斯托波爾營運嗎？",
+                "field": "crimeaSevastapolPresence"
+            },
+            "q5": {
+                "label": "該 PIF/控股公司/集團/附屬公司目前或計劃在石油、天然氣、能源、軍事或國防部門（包括關鍵貨物）營運嗎？",
+                "examples": "範例：爆炸物、潤滑劑、感測器、微電子產品、通訊模組、被動元件、導航、電氣零件、PCB 生產/品管工具、CNC 機床/零件。",
+                "field": "russianEnergyPresence"
+            }
+        },
+        "deliverables": {
+            "left": {
+                "title": "交付文件（點擊展開）",
+                "items": {
+                    "publicDeed": {
+                        "title": "公開契據",
+                        "desc": "經公證的成立契據；包括目的、委員會、註冊代理人等。"
+                    },
+                    "publicDeedTranslation": {
+                        "title": "公開契據翻譯本",
+                        "desc": "翻譯本（用於申請／提交）。"
+                    },
+                    "registryCert": {
+                        "title": "公共登記處證書",
+                        "desc": "由公共登記處頒發的證書（法律存在）。"
+                    },
+                    "registryCertTranslation": {
+                        "title": "公共登記處證書翻譯本",
+                        "desc": "登記證書翻譯本。"
+                    },
+                    "foundationCert": {
+                        "title": "基金會證書",
+                        "desc": "概述基金會的證書。"
+                    },
+                    "foundationCertTranslation": {
+                        "title": "基金會證書翻譯本",
+                        "desc": "證書翻譯本。"
+                    },
+                    "councilRegister": {
+                        "title": "委員會成員登記冊",
+                        "desc": "委員會成員名單（3位個人／1位法人實體）。"
+                    },
+                    "councilAcceptance": {
+                        "title": "委員會接受函",
+                        "desc": "接受職位。"
+                    },
+                    "bylaws": {
+                        "title": "規章（內部規章）",
+                        "desc": "私密內部規章：權力、程序、分配、記錄、解散等。"
+                    },
+                    "boardMeeting": {
+                        "title": "董事會會議",
+                        "desc": "決議／會議記錄樣本。"
+                    },
+                    "incumbencyCert": {
+                        "title": "在職證明書",
+                        "desc": "現任高級職員證明書。"
+                    },
+                    "nomineeAgreement": {
+                        "title": "名義人協議（如適用）",
+                        "desc": "名義人服務協議。"
+                    },
+                    "companyChop": {
+                        "title": "公司印章",
+                        "desc": "官方印章。"
+                    }
+                }
+            },
+            "right": {
+                "title": "文件正本運送詳情",
+                "note": "(如果地址不是以英文書寫，請務必同時提供當地語言的版本。)",
+                "fields": {
+                    "recipientCompany": {
+                        "label": "收件公司",
+                        "placeholder": "公司／基金會名稱"
+                    },
+                    "contactPerson": {
+                        "label": "聯絡人",
+                        "placeholder": "全名"
+                    },
+                    "phone": {
+                        "label": "電話",
+                        "placeholder": "+82 ..."
+                    },
+                    "postalCode": {
+                        "label": "郵政編碼",
+                        "placeholder": "例如：12345"
+                    },
+                    "address": {
+                        "label": "地址",
+                        "placeholder": "街道／大樓／單位等"
+                    }
+                }
+            }
+        },
+        "accounting": {
+            "info": "法規要求公開會計記錄的存放地址。您可以提供辦公室或住宅地址。若使用我們的地址，則每年費用為 **USD 350**；您必須定期向我們提供記錄。",
+            "fields": {
+                "address": {
+                    "label": "會計記錄存放地址（英文）",
+                    "placeholder": "以英文輸入完整地址"
+                },
+                "responsible": {
+                    "label": "負責人（英文全名）",
+                    "placeholder": "例如：John Smith"
+                },
+                "useMirr": {
+                    "label": "使用 Mirr Asia 記錄存放地址（每年 USD 350）"
+                }
+            }
+        },
+        "invoice": {
+            "title": "發票與報價 — 巴拿馬 PIF（僅限設立）",
+            "setup": {
+                "title": "設立 (第 1 年)",
+                "entity": {
+                    "label": "Mirr Asia 設立費 + 第一年服務",
+                    "tooltip": {
+                        "aria": "設立套裝（全包）詳情",
+                        "title": "設立套裝（全包）",
+                        "body": "包括政府規費（公司 USD 300 / PIF 另計）、常駐代理和註冊辦事處。"
+                    }
+                },
+                "ndSetup": {
+                    "label": "名義董事 — 設立",
+                    "options": {
+                        "0": "無 (0)",
+                        "1": "1 人 (+{{price}})",
+                        "2": "2 人 (+{{price}})",
+                        "3": "3 人 (+{{price}})"
+                    },
+                    "reason": {
+                        "label": "選擇 3 位名義董事的理由 (設立)",
+                        "placeholder": "請說明為何需要 3 位名義董事。",
+                        "hint": "* 我們建議在選擇 3 位時提供理由。"
+                    }
+                },
+                "nsSetup": {
+                    "label": "名義股東 (設立) (+{{price}})"
+                },
+                "optional": {
+                    "title": "可選服務 (設立)",
+                    "emi": "EMI 帳戶開立 (+{{price}})",
+                    "bank": "巴拿馬本地銀行帳戶開立 (+{{price}})",
+                    "cbi": "波多黎各 CBI 帳戶開立 (+{{price}})"
+                },
+                "totals": {
+                    "setupY1": "設立 (第 1 年) 總計"
+                }
+            },
+            "includes": {
+                "title": "設立套裝包含（PIF）：",
+                "items": {
+                    "i1": "基金會憲章草稿（英/西）",
+                    "i2": "創辦人提名",
+                    "i3": "憲章公證和註冊",
+                    "i4": "成立費用和註冊稅",
+                    "i5": "成立證書",
+                    "i6": "組織基金會委員會的決議",
+                    "i7": "任命保護人/受益人的決議",
+                    "i8": "規章起草",
+                    "i9": "公證翻譯本",
+                    "i10": "在職證明書",
+                    "i11": "註冊辦事處（1 年）",
+                    "i12": "註冊代理/秘書（1 年）",
+                    "i13": "KYC/盡職調查",
+                    "i14": "國際快遞"
+                },
+                "note": "備註：不包括會計費用；簿記/審計/稅務申報將另行報價。"
+            }
+        },
+        "payment": {
+            "stripe": {
+                "form": {
+                    "success": {
+                        "title": "付款成功",
+                        "amountLabel": "金額：",
+                        "receiptLabel": "收據：",
+                        "viewReceipt": "查看 Stripe 收據",
+                        "doneBtn": "完成"
+                    },
+                    "processing": {
+                        "title": "付款正在處理中",
+                        "msg": "您的付款正在處理中。交易確認後，您將會收到一張收據。",
+                        "closeBtn": "關閉"
+                    },
+                    "errors": {
+                        "confirmGeneric": "確認付款時發生了一些錯誤。",
+                        "failedGeneric": "付款失敗。請再試一次。",
+                        "backendReceiptMissing": "付款已確認，但我們無法從伺服器檢索收據。如果您沒有收到電子郵件，請聯絡支援團隊。",
+                        "backendSaveFailed": "付款已確認，但將付款資訊儲存到伺服器失敗。我們將很快透過電子郵件發送您的收據，或請聯絡支援團隊。",
+                        "statusPrefix": "付款狀態：{{status}}。如果問題持續存在，請聯絡支援團隊。"
+                    },
+                    "controls": {
+                        "cancel": "取消",
+                        "payNow": "立即付款",
+                        "processing": "正在處理..."
+                    }
+                },
+                "drawer": {
+                    "title": "Stripe 信用卡付款",
+                    "description": "總金額: {{amount}} {{note}}",
+                    "cardFeeNote": "(含 3.5% 信用卡手續費)",
+                    "preparing": "正在準備安全付款..."
+                }
+            },
+            "step": {
+                "banners": {
+                    "received": {
+                        "title": "已收到付款",
+                        "amountLabel": "金額：",
+                        "receiptLabel": "收據：",
+                        "view": "查看"
+                    },
+                    "expiredBox": {
+                        "expiredTitle": "此報價已過期。",
+                        "windowTitle": "付款期間"
+                    }
+                },
+                "alerts": {
+                    "alreadyPaid": "已付款。",
+                    "expiredGuard": "此報價已過期。請重新整理或聯絡我們。",
+                    "cardInitError": "無法初始化卡片付款。請再試一次。"
+                },
+                "iframe": {
+                    "paymentProofTitle": "付款證明"
+                }
+            }
+        },
+        "declarations": {
+            "checks": {
+                "taxOk": "我確認遵守適用的稅務義務，並確認該 PIF 並非用於非法/受制裁目的。",
+                "truthOk": "我確認所提供資訊的準確性和完整性。",
+                "privacyOk": "我同意為 KYC/制裁篩選和服務交付處理個人數據。"
+            },
+            "fields": {
+                "signName": {
+                    "label": "簽名（輸入您的姓名）",
+                    "placeholder": "輸入您的全名"
+                },
+                "signDate": {
+                    "label": "日期"
+                },
+                "signTitle": {
+                    "label": "職稱 / 身份",
+                    "placeholder": "例如：創辦人、授權代表"
+                }
+            },
+            "footnote": "※ 此表格僅用於審查/報價/KYC 的初步資訊收集，不構成法律或稅務建議。"
+        },
+        "steps": {
+            "1": {
+                "t": "步驟 1 — 合規審查",
+                "s": "我們的合規官將審查您的 KYC/CDD 和股權資訊。預計完成時間：1–2 個工作日。"
+            },
+            "2": {
+                "t": "步驟 2 — 向公司註冊處提交文件",
+                "s": "我們將提交公司設立文件。"
+            },
+            "3": {
+                "t": "步驟 3 — 註冊證書",
+                "s": "預計：公司註冊證書和商業登記證將在 3-4 個工作週內發出。"
+            },
+            "4": {
+                "t": "步驟 4 — 銀行/EMI 帳戶",
+                "s": "如果選擇了此項服務，我們將安排您與首選銀行/EMI 開立帳戶。"
+            }
+        }
+    },
+    "ppifMember": {
+        "header": {
+            "title": "巴拿馬私人利益基金會 – 成員註冊表",
+            "intro": "此表格用於收集 PIF 參與者（創辦人、委員會、保護人、受益人等）的個人註冊所需資訊。個人使用此表格；法人實體需使用單獨的表格。",
+            "note": "※ 這是 KYC/AML 和法規遵循的基礎資訊。請準確填寫所有必填欄位。"
+        },
+        "toolbar": {
+            "save": "儲存"
+        },
+        "toasts": {
+            "save": {
+                "successTitle": "成功",
+                "successDesc": "成員資訊已成功儲存。",
+                "errorTitle": "錯誤",
+                "errorDesc": "請稍後再試。"
+            },
+            "fetch": {
+                "errorTitle": "錯誤",
+                "errorDesc": "擷取數據時發生意外錯誤。"
+            },
+            "validate": {
+                "title": "缺少必填欄位",
+                "descPrefix": "請完成填寫："
+            }
+        },
+        "common": {
+            "select": "選擇",
+            "yes": "是",
+            "no": "否",
+            "requiredAsterisk": "*"
+        },
+        "sections": {
+            "basic": {
+                "title": "1) 基本資訊",
+                "fields": {
+                    "email": {
+                        "label": "電子郵件地址（使用您收到邀請函的同一電子郵件）",
+                        "placeholder": "you@example.com"
+                    },
+                    "fullName": {
+                        "label": "全名",
+                        "placeholder": "John Smith"
+                    },
+                    "renamed": {
+                        "label": "姓名變更（是否曾更改您的法定姓名？）",
+                        "hint": "如果「是」，請在下方備註欄中加入您以前的英文全名。"
+                    },
+                    "dob": {
+                        "label": "出生日期"
+                    },
+                    "pob": {
+                        "label": "出生地",
+                        "placeholder": "例如：Seoul, Republic of Korea"
+                    },
+                    "maritalStatus": {
+                        "label": "婚姻狀況",
+                        "options": {
+                            "Married": "已婚",
+                            "Single": "單身",
+                            "Other": "其他"
+                        }
+                    },
+                    "nationality": {
+                        "label": "國籍",
+                        "placeholder": "例如：Republic of Korea"
+                    },
+                    "passport": {
+                        "label": "護照號碼"
+                    },
+                    "occupation": {
+                        "label": "職業",
+                        "placeholder": "例如：律師 / 企業家"
+                    },
+                    "mobile": {
+                        "label": "手機號碼（可聯繫）",
+                        "placeholder": "+82 ..."
+                    },
+                    "residentialAddress": {
+                        "label": "居住地址",
+                        "placeholder": "首選英文地址"
+                    },
+                    "postalAddress": {
+                        "label": "郵寄地址（如不同）"
+                    }
+                }
+            },
+            "founder": {
+                "title": "2) 創辦人身份與出資",
+                "isFounder": {
+                    "label": "您是將要成立的 PIF 的創辦人嗎？"
+                },
+                "contribution": {
+                    "label": "（如果為創辦人）出資金額（美元）",
+                    "placeholder": "例如：10000",
+                    "note": "※ 在巴拿馬慣例中顯示為「初始捐贈 (Initial Endowment)」。法定最低金額為 USD 10,000（不強制要求提供資金）。"
+                },
+                "sof": {
+                    "label": "出資資金來源（選擇所有適用項）",
+                    "otherLabel": "其他 – 詳情",
+                    "otherPlaceholder": "請指明其他資金來源",
+                    "chips": {
+                        "salary": "僱傭收入||薪水、獎金等",
+                        "savings": "儲蓄 / 存款||長期個人儲蓄",
+                        "invest": "投資收入||房地產、股票、債券、基金",
+                        "loan": "貸款||向金融機構借款",
+                        "disposal": "業務/股份處置||出售業務或股份的收益",
+                        "bizdiv": "業務收入 / 股息||營運利潤、股息收入",
+                        "inherit": "繼承 / 贈與||遺贈、生前贈與",
+                        "other": "其他||請在下方具體說明"
+                    }
+                },
+                "inflowCountries": {
+                    "label": "資金流入國家/地區",
+                    "placeholder": "例如：KR, HK, SG"
+                },
+                "remarks": {
+                    "label": "備註（以前的英文姓名 / 補充說明）",
+                    "placeholder": "可選"
+                }
+            },
+            "tax": {
+                "title": "3) 稅務資訊",
+                "fields": {
+                    "taxResidence": {
+                        "label": "稅務居住國家/地區",
+                        "placeholder": "例如：Republic of Korea"
+                    },
+                    "tin": {
+                        "label": "納稅人識別號碼 (TIN)",
+                        "placeholder": "如果沒有，請提供當地同等號碼"
+                    }
+                },
+                "note": "※ 「稅務居住地」通常指您每年在該司法管轄區居住 ≥183 天或負有其他所得稅責任的地方。"
+            },
+            "roles": {
+                "title": "4) 在基金會中的角色（選擇所有適用項）",
+                "chips": {
+                    "president": "主席 (委員會)",
+                    "secretary": "秘書 (委員會)",
+                    "treasurer": "財務 (委員會)",
+                    "protector": "保護人",
+                    "beneficiary": "受益人",
+                    "nominee": "名義人 / 代表",
+                    "dcp": "指定聯絡人"
+                },
+                "note": "<b>保護人</b>：可能擁有監督/批准權（例如：委員會成員的任命/罷免、內部規章修訂）。<br /><b>受益人</b>：獲得經濟利益。為保護隱私，受益人詳情可透過內部規章 / 意願書安排。"
+            },
+            "futureFunds": {
+                "title": "5) 未來流入/產生至 PIF 的資金",
+                "chips": {
+                    "pif_income": "PIF 產生的收入",
+                    "addl_contrib": "對 PIF 的額外出資",
+                    "interest": "利息收入",
+                    "investment": "投資收入",
+                    "disposal": "業務/股份處置收益",
+                    "inheritance": "繼承/贈與",
+                    "loans": "貸款/託管/存款",
+                    "other": "其他"
+                }
+            },
+            "pep": {
+                "title": "6) 政治公眾人物 (PEP) 檢查",
+                "note": "<b>PEP</b>：包括現任/前任高級公職人員、高級政黨官員、國有企業高管和國際組織高級官員，以及他們的<u>家庭成員和密切夥伴</u>（根據 FATF 指引）。",
+                "detailLabel": "如果「是」，請描述詳情",
+                "detailPlaceholder": "全名 / 職位 / 關係 / 期間等"
+            },
+            "docs": {
+                "title": "7) 所需文件清單",
+                "note": "所有文件應為**最近 3 個月內簽發**。非英文文件可能需要經認證的翻譯。經認證的護照副本可向當地機關索取。",
+                "items": {
+                    "doc_passport": "護照副本 + 護照副本證明書（公證/認證）",
+                    "doc_bank": "最近 12 個月的銀行對帳單或銀行推薦信",
+                    "doc_address": "地址證明（例如：居民登記摘錄 / 公用事業帳單）",
+                    "doc_profref": "專業推薦信（律師/會計師/銀行家；關係 ≥2 年）",
+                    "doc_cv": "履歷表（英文）",
+                    "doc_other": "其他（如適用）：額外證明文件"
+                }
+            },
+            "bo": {
+                "title": "8) 實益擁有人 (BO) 確認",
+                "note": "<b>定義摘要</b>：最終**擁有或控制**該法律安排的**自然人**（FATF/OECD）。",
+                "fields": {
+                    "lastIncome": {
+                        "label": "去年收入（美元）"
+                    },
+                    "netWorth": {
+                        "label": "目前淨資產（美元）"
+                    }
+                },
+                "bands": {
+                    "under25": "低於 25,000",
+                    "25_39": "25,000 - 39,999",
+                    "40_49": "40,000 - 49,999",
+                    "50_64": "50,000 - 64,999",
+                    "65_124": "65,000 - 124,999",
+                    "125_499": "125,000 - 499,999",
+                    "500_999": "500,000 - 999,999",
+                    "over1m": "超過 100 萬"
+                }
+            },
+            "decls": {
+                "title": "9) 聲明與同意",
+                "textHtml": "本人特此確認並同意以下事項：<br /><br />① 此處所述的資金**為本人所有**，且本人擁有將其轉移至 PIF 的**全部權力**。<br />② PIF 的資產、淨資產、收入或活動**與**非法武器/大規模殺傷性武器、洗錢、非法麻醉品或任何被視為**非法**的活動**無關**。<br />③ 本人在本次申請之前已獲得或有機會獲得**適當的法律和/或稅務建議**。<br />④ 本人確認**有義務支付年費**，並同意使用**電子通訊**接收通知和確認。",
+                "agree": "我已閱讀並同意以上所有內容。"
+            }
+        },
+        "radios": {
+            "renamed": {
+                "yes": "是",
+                "no": "否"
+            },
+            "is_founder": {
+                "yes": "是",
+                "no": "否"
+            },
+            "pep": {
+                "yes": "是",
+                "no": "否"
+            },
+            "is_bo": {
+                "yes": "是",
+                "no": "否"
+            }
+        },
+        "requiredLabels": {
+            "email": "電子郵件地址",
+            "fullName": "全名",
+            "renamed": "姓名變更",
+            "dob": "出生日期",
+            "pob": "出生地",
+            "maritalStatus": "婚姻狀況",
+            "nationality": "國籍",
+            "passport": "護照號碼",
+            "occupation": "職業",
+            "mobile": "手機號碼（可聯繫）",
+            "residentialAddress": "居住地址",
+            "inflowCountries": "資金流入國家/地區",
+            "taxResidence": "稅務居住國家/地區",
+            "tin": "納稅人識別號碼 (TIN)",
+            "pep": "政治公眾人物 (PEP)",
+            "is_bo": "實益擁有人 (BO) 確認",
+            "agreeAll": "聲明與同意",
+            "pepDetail": "政治公眾人物 (PEP) 詳情",
+            "contribution": "出資金額（美元）"
+        }
+    }
+}

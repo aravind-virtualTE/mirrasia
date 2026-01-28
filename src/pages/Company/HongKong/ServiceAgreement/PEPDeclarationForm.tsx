@@ -1,37 +1,57 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import InlineSignatureCreator from "../../SignatureComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SignatureModal from "@/components/pdfPage/SignatureModal";
+import { serviceAgreement } from "@/store/hongkong";
+import { useAtom } from "jotai";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-function PEPDeclarationForm() {
-  const [docSigned,] = useState('2024-12-12')
+function PEPDeclarationForm({editable}: {editable: boolean}) {
+  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
 
-  const [signature, setSignature] = useState<string | null>(null);
-  const [signEdit, setSignEdit] = useState(false)
-
-  const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
-    setSignEdit(false);
-    setSignature(signature)
-  };
-  const handleClear = () => {
-    setSignature(null);
-  };
-
+  const [signature, setSignature] = useState<string | "">("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setSignEdit(true);
-    }
+    if(signature == "" || signature == null)   setIsModalOpen(true);
   };
 
-  const formData = {
-    name: "AHMED, SHAHAD"
+  const handleSelectSignature = (selectedSignature: string | "") => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
+    setServiceAgrement({...serviceAgrementDetails, 
+      pedSignature: selectedSignature
+    });
+  };
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+      if(serviceAgrementDetails.directorList){
+        setSignature(serviceAgrementDetails.directorList?.[0]?.signature || "")
+        setName(serviceAgrementDetails.directorList?.[0]?.name || "")
+      }
+    }, [serviceAgrementDetails])
+
+  const handleNotPEPChange = (checked: boolean) => {
+    setServiceAgrement({
+      ...serviceAgrementDetails,politicallyNotExposed: checked,})
+  };
+  
+  const handleIsPEPChange = (checked: boolean) => {
+    setServiceAgrement({
+      ...serviceAgrementDetails,politicallyExposed: checked,})
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setServiceAgrement(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
   return (
-    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none">
+    // w-full max-w-[800px] mx-auto
+    <Card className=" p-6 print:p-0 rounded-none">
       <CardHeader>
         <CardTitle className="text-xl text-center font-bold underline">
           Politically Exposed Person Self-Declaration Form
@@ -78,11 +98,17 @@ function PEPDeclarationForm() {
 
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Checkbox id="not-pep" />
+              <Checkbox className="rounded-none h-4 w-4" id="not-pep"
+                checked={serviceAgrementDetails.politicallyNotExposed}
+                onCheckedChange={handleNotPEPChange}
+                 />
               <label htmlFor="not-pep">I am NOT a Politically Exposed Person (PEP)</label>
             </div>
             <div className="flex items-center gap-2">
-              <Checkbox id="is-pep" />
+              <Checkbox className="rounded-none h-4 w-4" id="is-pep"
+                checked={serviceAgrementDetails.politicallyExposed}
+                onCheckedChange={handleIsPEPChange}
+                />
               <label htmlFor="is-pep">I am a Politically Exposed Person (PEP)</label>
             </div>
           </div>
@@ -94,14 +120,8 @@ function PEPDeclarationForm() {
         </p>
 
         <div className="pt-6 space-y-4 w-64">
-        <p>Name:<span className="pl-4">{formData.name}</span></p>
-          {signEdit ? (
-            <InlineSignatureCreator
-              onSignatureCreate={handleSignature}
-              maxWidth={256}
-              maxHeight={100}
-            />
-          ) : (
+          <p>Name:<span className="pl-4">{name}</span></p>
+          <div className="w-64 pt-2">
             <div
               onClick={handleBoxClick}
               className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -109,18 +129,31 @@ function PEPDeclarationForm() {
               {signature ? (
                 <img
                   src={signature}
-                  alt="Member's signature"
+                  alt="Selected signature"
                   className="max-h-20 max-w-full object-contain"
                 />
               ) : (
                 <p className="text-gray-400">Click to sign</p>
               )}
             </div>
-          )}
-          <div className="border-t border-black w-48">
-           
-           
-            <p>Date: <span className="underline">{docSigned}</span></p>
+            {isModalOpen && (
+              <SignatureModal
+                onSelectSignature={handleSelectSignature}
+                onClose={() => setIsModalOpen(false)}
+              />
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="pedDate" className="text-sm">Date:</Label>
+            <Input
+              type="date"
+              id="pedDate"
+              name="pedDate"
+              value={serviceAgrementDetails.pedDate}
+              onChange={handleChange}
+              className="w-40"
+              disabled={editable}
+            />
           </div>
         </div>
       </CardContent>

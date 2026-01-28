@@ -27,7 +27,10 @@ export const initialFormState: Partial<hkFormItem> = {
   },
   shareHolderDirectorController: {
     shareHolderDirectorNameSharesNumAtom: '',
-    significantControllerAtom: '',
+    significantControllerAtom: [{
+        value: "",
+        label: ""
+    }],
     designatedContactPersonAtom: '',
     shareHolders: [],
   },
@@ -76,3 +79,5 @@ export const resetFormDataAtom = atom(
     set(formDataAtom, initialFormState); // Reset the form data atom to its initial state
   }
 );
+
+export const statusHkAtom = atom<'pending' | 'completed' | 'expired'>('pending');

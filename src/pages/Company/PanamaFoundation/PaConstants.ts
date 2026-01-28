@@ -1,0 +1,39 @@
+import { NdCount, PanamaPIFForm, PIFPricing } from "./PaState"
+
+export const ND_PRICES: Record<NdCount, number> = { 0: 0, 1: 1200, 2: 1700, 3: 2200 }
+export const PRICE_NS  = 1300
+export const PRICE_EMI = 400
+export const PRICE_BANK= 2000
+export const PRICE_CBI = 3880
+
+export const money = (n: number, c: "USD" = "USD") =>
+  new Intl.NumberFormat("en-US", { style: "currency", currency: c }).format(n)
+
+const PRICE_RECORD_STORAGE = 350;
+
+export function computePIFSetupTotal(p: PIFPricing) {
+  // console.log("p--->", p)
+  return (
+    p.setupBase +
+    ND_PRICES[p.ndSetup] +
+    (p.nsSetup ? PRICE_NS : 0) +
+    (p.optEmi ? PRICE_EMI : 0) +
+    (p.optBank ? PRICE_BANK : 0) +
+    (p.optCbi ? PRICE_CBI : 0)  +
+    (p.recordStorageUseMirr ? PRICE_RECORD_STORAGE : 0)
+  )
+}
+
+export function computePIFBaseTotal(form: PanamaPIFForm) {
+  // For setup-only invoice, the "base total" is the setup total we computed.
+  return computePIFSetupTotal(form.pricing) + (form.recordStorageUseMirr ? PRICE_RECORD_STORAGE : 0)
+}
+
+export function computePIFGrandTotal(form: PanamaPIFForm) {
+  const base = computePIFBaseTotal(form)
+  const pay = form.payMethod || "card"
+  const currency = form.stripeCurrency
+  const surchargePct = pay === "card" ? (currency && String(currency).toUpperCase() == "USD" ? 0.06 : 0.035) : 0
+  const surcharge = base * surchargePct
+  return Number((base + surcharge).toFixed(2))
+}

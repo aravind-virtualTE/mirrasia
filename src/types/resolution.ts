@@ -1,5 +1,5 @@
 export interface CompanyDetails {
-    name: string;
+    name: string | undefined;
     jurisdiction: string;
   }
   
@@ -17,7 +17,7 @@ export interface CompanyDetails {
   
   export interface ResolutionData {
     company: CompanyDetails;
-    director: DirectorInfo;
+    // director: DirectorInfo;
     secretary: SecretaryInfo;
     address: AddressInfo;
   }

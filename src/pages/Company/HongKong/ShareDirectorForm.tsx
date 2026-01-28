@@ -7,6 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAtom } from 'jotai';
 import { shareHolderDirectorControllerAtom } from '@/lib/atom';
+import { isValidEmail } from '@/middleware';
+import { sendInviteToShDir } from '@/services/dataFetch';
+import CustomLoader from '@/components/ui/customLoader';
+import { useToast } from "@/hooks/use-toast"
+import { useTranslation } from "react-i18next";
 
 interface ShareholderDirectorProps {
   name: string;
@@ -18,6 +23,7 @@ interface ShareholderDirectorProps {
   onDelete: () => void;
   onUpdate: (updates: Partial<Omit<ShareholderDirectorProps, 'onDelete' | 'onUpdate'>>) => void;
   isRemovable: boolean;
+  canEdit?: boolean;
 }
 
 const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
@@ -30,11 +36,12 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
   onDelete,
   onUpdate,
   isRemovable,
+  canEdit
 }) => {
   // Validation states
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
-
+  const { t } = useTranslation();
   // Email validation
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -69,15 +76,16 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
     <Card className="mb-4 pt-4">
       <CardContent className="grid grid-cols-3 gap-4">
         <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">Shareholder(s) / Director(s) Name:</Label>
+          <Label className="font-medium">{t('CompanyInformation.shareDirName')}:</Label>
           <Input
             type="text"
             className="input col-span-2"
             placeholder="Name on passport/official documents"
             value={name}
             onChange={(e) => onUpdate({ name: e.target.value })}
+            disabled={!canEdit}
           />
-          <Label className="font-medium">Ownership Rate</Label>
+          <Label className="font-medium">{t('CompanyInformation.ownerShpRte')}</Label>
           <Input
             type="number"
             className="input"
@@ -86,11 +94,12 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             step={0.01}
             value={ownershipRate}
             onChange={(e) => onUpdate({ ownershipRate: parseFloat(e.target.value) })}
+            disabled={!canEdit}
           />
         </div>
 
         <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">Email:</Label>
+          <Label className="font-medium">{t('ApplicantInfoForm.email')}:</Label>
           <div className="col-span-2">
             <Input
               type="email"
@@ -102,11 +111,12 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                 validateEmail(newEmail);
                 onUpdate({ email: newEmail });
               }}
+              disabled={!canEdit}
             />
             {emailError && <span className="text-red-500 text-sm">{emailError}</span>}
           </div>
 
-          <Label className="font-medium">Phone:</Label>
+          <Label className="font-medium">{t('ApplicantInfoForm.phoneNum')}:</Label>
           <div>
             <Input
               type="tel"
@@ -118,23 +128,25 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
                 validatePhone(newPhone);
                 onUpdate({ phone: newPhone });
               }}
+              disabled={!canEdit}
             />
             {phoneError && <span className="text-red-500 text-sm">{phoneError}</span>}
           </div>
         </div>
 
         <div className="col-span-3 grid grid-cols-5 gap-4 items-center">
-          <Label className="font-medium">Act as a director?</Label>
+          <Label className="font-medium">{t('CompanyInformation.actDirector')}</Label>
           <Select
             value={isDirector.toString()}
             onValueChange={(value) => {
               const newIsDirector = value === 'true';
-              onUpdate({ 
+              onUpdate({
                 isDirector: newIsDirector,
                 // If setting as director, automatically set legal person to false
-                ...(newIsDirector ? { isLegalPerson: false } : {})
+                // ...(newIsDirector ? { isLegalPerson: false } : {})
               });
             }}
+            disabled={!canEdit}
           >
             <SelectTrigger className="input">
               <SelectValue>{isDirector ? 'Yes' : 'No'}</SelectValue>
@@ -145,13 +157,13 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             </SelectContent>
           </Select>
 
-          <Label className="font-medium">Legal Person?</Label>
+          <Label className="font-medium">{t('CompanyInformation.isLegal')}</Label>
           <Select
             value={isLegalPerson.toString()}
             onValueChange={(value) => onUpdate({ isLegalPerson: value === 'true' })}
-            disabled={isDirector}
+          disabled={!canEdit}
           >
-            <SelectTrigger className={`input ${isDirector ? 'opacity-50' : ''}`}>
+            <SelectTrigger className="input">
               <SelectValue>{isLegalPerson ? 'Yes' : 'No'}</SelectValue>
             </SelectTrigger>
             <SelectContent>
@@ -164,6 +176,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
             <button
               className="btn btn-icon text-red-500 hover:text-red-700"
               onClick={onDelete}
+              disabled={!canEdit}
             >
               <Trash2 />
             </button>
@@ -174,7 +187,7 @@ const ShareholderDirector: React.FC<ShareholderDirectorProps> = ({
   );
 };
 
-const ShareholderDirectorForm: React.FC = () => {
+const ShareholderDirectorForm: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
   const [atomShareHolderState, setShareDirControllerInfo] = useAtom(shareHolderDirectorControllerAtom);
   const [shareholders, setShareholders] = useState<ShareholderDirectorProps[]>([
     {
@@ -184,25 +197,27 @@ const ShareholderDirectorForm: React.FC = () => {
       ownershipRate: 0,
       isDirector: false,
       isLegalPerson: false,
-      onDelete: () => {},
-      onUpdate: () => {},
+      onDelete: () => { },
+      onUpdate: () => { },
       isRemovable: false,
     },
   ]);
   const [totalOwnership, setTotalOwnership] = useState(0);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast()
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (atomShareHolderState.shareHolders && atomShareHolderState.shareHolders.length > 0) {
       const hydratedShareholders = atomShareHolderState.shareHolders.map((shareholder, index) => ({
         ...shareholder,
-        onDelete: () => {},
-        onUpdate: () => {},
+        onDelete: () => { },
+        onUpdate: () => { },
         isRemovable: index !== 0, // First shareholder is not removable
       }));
       setShareholders(hydratedShareholders);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -216,7 +231,7 @@ const ShareholderDirectorForm: React.FC = () => {
     }));
     setShareDirControllerInfo((prev) => ({ ...prev, shareHolders: filteredArray }));
   }, [shareholders, setShareDirControllerInfo]);
-  
+
   useEffect(() => {
     const total = shareholders.reduce((sum, shareholder) => sum + shareholder.ownershipRate, 0);
     setTotalOwnership(total);
@@ -232,8 +247,8 @@ const ShareholderDirectorForm: React.FC = () => {
         ownershipRate: 0,
         isDirector: false,
         isLegalPerson: false,
-        onDelete: () => {},
-        onUpdate: () => {},
+        onDelete: () => { },
+        onUpdate: () => { },
         isRemovable: true,
       },
     ]);
@@ -253,11 +268,69 @@ const ShareholderDirectorForm: React.FC = () => {
     setShareholders(newShareholders);
   };
 
+  const sendMailFunction = async () => {
+    try {
+      setIsLoading(true);
+      const extractedData = shareholders.map(item => {
+        const { name, email } = item;
+
+        if (!isValidEmail(email)) {
+          alert(`Invalid email format for ${name}: ${email}`);
+        }
+
+        return { name, email };
+      });
+      const docId = localStorage.getItem('companyRecordId');
+      const payload = { _id: docId, inviteData: extractedData, country: 'HK' };
+      // console.log("send mail function", payload)
+      const response = await sendInviteToShDir(payload);
+      // console.log("send mail response", response)
+      if (response.summary.successful > 0) {
+        toast({
+          title: 'Success',
+          description: `Successfully sent invitation mail to ${response.summary.successful} people`,
+        })
+      }
+      if (response.summary.alreadyExists > 0) {
+        toast({
+          title: 'Success',
+          description: `Invite sent to member/director`,
+        })
+      }
+      if (response.summary.failed > 0) {
+        toast({
+          title: 'Failed',
+          description: `Some Invitations Failed`,
+        })
+      }
+      console.log("send mail response", response)
+      setIsLoading(false);
+
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   return (
     <div className="flex flex-col">
+      {totalOwnership === 0 && (
+        <div className="text-red-500 mb-4 text-center">
+          {t('usa.bInfo.shrldSection.ownerShp0')}
+        </div>
+      )}
+      {totalOwnership > 0 && totalOwnership < 100 && (
+        <div className="text-red-500 mb-4 text-center">
+          {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%
+        </div>
+      )}
+      {totalOwnership === 100 && (
+        <div className="text-green-600 font-medium mb-4 text-center">
+          ✅{t('usa.bInfo.shrldSection.ownerShip100')}
+        </div>
+      )}
       {totalOwnership > 100 && (
         <div className="text-red-500 mb-4 text-center">
-          Total ownership cannot exceed 100%. Current total: {totalOwnership.toFixed(2)}%
+          {t('CompanyInformation.totalShrldrName')}: {totalOwnership.toFixed(2)}%
         </div>
       )}
       <div>
@@ -267,16 +340,28 @@ const ShareholderDirectorForm: React.FC = () => {
             {...shareholder}
             onDelete={() => deleteShareholder(index)}
             onUpdate={(updates) => updateShareholder(index, updates)}
+            canEdit={canEdit}
           />
         ))}
       </div>
-      <div className="flex justify-center mt-4">
-        <Button 
-          className="btn btn-primary w-fit" 
+      <div className="flex justify-around mt-4">
+        <Button onClick={sendMailFunction}
+          disabled={isLoading}
+          className="flex items-center"
+          aria-busy={isLoading}
+          aria-live="polite"
+        >{isLoading ? (
+          <>
+            <CustomLoader />
+            <span className="ml-2">Processing...</span>
+          </>
+        ) : (<span>{t("CompanyInformation.sendInvitation")}</span>)}</Button>
+        <Button
+          className="btn btn-primary w-fit"
           onClick={addShareholder}
-          // disabled={totalOwnership >= 100}
+         disabled={totalOwnership >= 100 || !canEdit}
         >
-          Add Shareholder/director
+          {t('CompanyInformation.addShldrDir')}
         </Button>
       </div>
     </div>

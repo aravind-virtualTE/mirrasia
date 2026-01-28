@@ -1,3 +1,4 @@
+import { Option } from '@/components/MultiSelectInput';
 import { atom } from 'jotai';
 import { atomWithReset, useResetAtom } from 'jotai/utils';
 // company Incorporation
@@ -20,9 +21,11 @@ export type FormDataType = {
   snsPlatform: string;
   email: string;
   phoneNumber: string;
+  mobileOtpVerified?: boolean;
+  emailOtpVerified?: boolean;
   companyName: string[];
+  chinaCompanyName: string[]
 };
-
 // corporate incorporation applicant info (section 1)
 export const applicantInfoFormAtom = atomWithReset<FormDataType>({
   name: '',
@@ -32,8 +35,12 @@ export const applicantInfoFormAtom = atomWithReset<FormDataType>({
   snsPlatform: '',
   phoneNumber: '',
   email: '',
-  companyName: ["", "", ""]
+  mobileOtpVerified: false,
+  emailOtpVerified: false,
+  companyName: ["", "", ""],
+  chinaCompanyName: ["", "", ""],
 });
+
 
 // corporate incorporation aml/cdd legal ethical assessment (section 2)
 export const businessInfoHkCompanyAtom = atomWithReset<Record<string, string | undefined>>({
@@ -65,8 +72,8 @@ interface RegCompanyInfo {
   registerShareTypeAtom: string[];
   registerPaymentShare?: string;
   registerCurrencyAtom?: string;
-  registerAmountAtom?: string;
-  registerNumSharesAtom?: string;
+  registerAmountAtom?: string | number;
+  registerNumSharesAtom?: string | number;
 }
 
 // corporate incorporation Company Information (section 3.2)  
@@ -83,8 +90,8 @@ interface ShareHolderDirectorController {
   numShareHoldersAtom?: string;
   numDirectorsAtom?: string;
   shareHolderDirectorNameSharesNumAtom: string;
-  significantControllerAtom: string
-  designatedContactPersonAtom: string,
+  significantControllerAtom: Option[];
+  designatedContactPersonAtom: string | number,
   shareHolders: {
     name: string;
     email: string;
@@ -101,7 +108,7 @@ export const shareHolderDirectorControllerAtom = atomWithReset<ShareHolderDirect
   numShareHoldersAtom: undefined,
   numDirectorsAtom: undefined,
   shareHolderDirectorNameSharesNumAtom: '',
-  significantControllerAtom: '',
+  significantControllerAtom: [{ value: "", label: "" }],
   designatedContactPersonAtom: '',
   shareHolders: [{
     "name": "",
@@ -114,7 +121,7 @@ export const shareHolderDirectorControllerAtom = atomWithReset<ShareHolderDirect
 });
 
 interface AccountingTaxInfo {
-  finYearEnd?: string;
+  finYearEnd?: string | number;
   bookKeepCycle?: string;
   implementSoftware?: string;
   anySoftwareInUse: string;
@@ -123,7 +130,7 @@ interface AccountingTaxInfo {
 // corporate incorporation Accounting Tax Information (section 5)  
 
 export const accountingTaxInfoAtom = atomWithReset<AccountingTaxInfo>({
-  finYearEnd: undefined,
+  finYearEnd: "",
   bookKeepCycle: undefined,
   implementSoftware: undefined,
   anySoftwareInUse: ""
@@ -133,6 +140,7 @@ export const companyServiceAgreementConsentAtom = atomWithReset(false);
 
 export const PaymentSessionId = atomWithReset("");
 export const paymentId = atomWithReset("");
+export const isDisabled = atomWithReset(false);
 export const icorporationDoc = atomWithReset("");
 // type AnyObject = Record<string, unknown>;
 
@@ -141,11 +149,26 @@ export interface ServiceSelectionState {
   selectedServices: string[];
   correspondenceCount: number;
 }
+
+export interface CompanyDocManager {
+  docName: string;
+  docUrl: string;
+  id: string;
+}
+
+export const companyDocManager = atomWithReset<CompanyDocManager[]>([]);
 export const serviceSelectionStateAtom = atomWithReset<ServiceSelectionState | null>(null);
+export const receiptUrl = atomWithReset("");
+export const assignedTo = atomWithReset("");
+export const isDeleted = atomWithReset(false);
+export const companyUserIdAtom = atomWithReset<string>('');
+export const companyStatusAtom = atomWithReset<string>('Pending');
+// hong kong company incorporation Atom for state management
 export const companyIncorporationAtom = atom((get) => ({
-  userId: '',
-  status: 'Pending',
+  userId: get(companyUserIdAtom),          // was: ''
+  status: get(companyStatusAtom),
   is_draft: false,
+  isDisabled: get(isDisabled),
   country: get(countryAtom),
   applicantInfoForm: get(applicantInfoFormAtom),
   businessInfoHkCompany: get(businessInfoHkCompanyAtom),
@@ -158,8 +181,11 @@ export const companyIncorporationAtom = atom((get) => ({
   sessionId: get(PaymentSessionId),
   paymentId: get(paymentId),
   icorporationDoc: get(icorporationDoc),
-  serviceSelectionState: get(serviceSelectionStateAtom)
-
+  serviceSelectionState: get(serviceSelectionStateAtom),
+  companyDocs: get(companyDocManager),
+  receiptUrl: get(receiptUrl),
+  assignedTo: get(assignedTo),
+  isDeleted: get(isDeleted),
 }));
 
 
@@ -174,8 +200,16 @@ export const useResetAllForms = () => {
   const resetCountry = useResetAtom(countryAtom);
   const resetSessionPayment = useResetAtom(PaymentSessionId);
   const resetPaymentID = useResetAtom(paymentId);
+  const resetisDisabled = useResetAtom(isDisabled);
   const resetcompPaymentDetails = useResetAtom(serviceSelectionStateAtom);
   const reseticorporationDoc = useResetAtom(icorporationDoc)
+  const resetCompanyDocManager = useResetAtom(companyDocManager)
+  const resetReceiptUrl = useResetAtom(receiptUrl)
+  const resetAssignedTo = useResetAtom(assignedTo)
+  const resetIsDeleted = useResetAtom(isDeleted)
+  const resetcompanyUserIdAtom = useResetAtom(companyUserIdAtom)
+  const resetcompanyStatusAtom = useResetAtom(companyStatusAtom)
+
 
 
   const resetAll = () => {
@@ -191,6 +225,13 @@ export const useResetAllForms = () => {
     resetPaymentID()
     resetcompPaymentDetails()
     reseticorporationDoc()
+    resetisDisabled()
+    resetCompanyDocManager()
+    resetReceiptUrl()
+    resetAssignedTo()
+    resetIsDeleted()
+    resetcompanyUserIdAtom()
+    resetcompanyStatusAtom()
   };
 
   return resetAll;
@@ -203,6 +244,8 @@ export const updateCompanyIncorporationAtom = atom(
     _get,
     set,
     updates: Partial<{
+      userId: typeof companyUserIdAtom['init']; 
+      status: typeof companyStatusAtom['init']; 
       country: Record<string, string | undefined>;
       applicantInfoForm: typeof applicantInfoFormAtom['init'];
       businessInfoHkCompany: typeof businessInfoHkCompanyAtom['init'];
@@ -213,16 +256,38 @@ export const updateCompanyIncorporationAtom = atom(
       serviceAgreementConsent: boolean;
       sessionId: string;
       paymentId: string;
+      isDisabled: boolean;
       serviceSelectionState: typeof serviceSelectionStateAtom['init'];
       icorporationDoc: typeof icorporationDoc['init']
-
+      companyDocs: typeof companyDocManager['init']
+      receiptUrl: string;
+      assignedTo: string
+      isDeleted: boolean
     }>
   ) => {
+    if ('userId' in updates) {
+      set(companyUserIdAtom, updates.userId as string);
+    }
+    if ('status' in updates) {
+      set(companyStatusAtom, updates.status as string);
+    }
     if (updates.country) {
       set(countryAtom, updates.country);
     }
     if (updates.icorporationDoc) {
       set(icorporationDoc, updates.icorporationDoc);
+    }
+    if (updates.receiptUrl) {
+      set(receiptUrl, updates.receiptUrl);
+    }
+    if (updates.assignedTo) {
+      set(assignedTo, updates.assignedTo);
+    }
+    if (updates.isDeleted) {
+      set(isDeleted, updates.isDeleted);
+    }
+    if (updates.companyDocs) {
+      set(companyDocManager, updates.companyDocs);
     }
     if (updates.serviceSelectionState) {
       set(serviceSelectionStateAtom, updates.serviceSelectionState);
@@ -232,6 +297,9 @@ export const updateCompanyIncorporationAtom = atom(
     }
     if (updates.paymentId) {
       set(paymentId, updates.paymentId);
+    }
+    if (updates.isDisabled) {
+      set(isDisabled, updates.isDisabled);
     }
     if (updates.applicantInfoForm) {
       set(applicantInfoFormAtom, updates.applicantInfoForm);

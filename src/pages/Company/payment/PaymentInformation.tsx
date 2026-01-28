@@ -1,6 +1,4 @@
-import { useEffect, 
-  // useRef,
-   useState } from "react";
+import { useEffect,useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { PaymentMethods } from './PaymentMethods';
@@ -13,7 +11,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { companyIncorporateInvoiceAtom } from "@/services/state";
 import { InvoiceData } from "../HongKong/Invoice";
 import { companyIncorporationAtom, PaymentSessionId } from "@/lib/atom";
-
+import { useTranslation } from "react-i18next";
 export function PaymentInformation() {
   const [sessionId, setSessionId] = useState<PaymentSession['id']>('');
   const [isLoading, setIsLoading] = useState(true);
@@ -22,16 +20,14 @@ export function PaymentInformation() {
   const invoiceData = corpoInvoiceAtom[0] as unknown as InvoiceData;
   const [finalForm,] = useAtom(companyIncorporationAtom);
   const updateCompanyData = useSetAtom(PaymentSessionId)
-
-  // const hasFetchedData = useRef(false);
   const amount = parseFloat(invoiceData.totals.discounted.replace(/[^0-9.]/g, ''));
+  const { t } = useTranslation();
   useEffect(() => {
     const initializePaymentSession = async () => {
       try {
         setIsLoading(true);
         const docId = localStorage.getItem('companyRecordId');
-        // creating the payment session in the backend
-        const sessionData = await paymentApi.createSession(amount, 'USD', docId!); // Amount and currency as needed
+        const sessionData = await paymentApi.createSession(amount, 'USD', docId!, 'HK'); // Amount and currency as needed
         const session = sessionData.session._id;
         setSessionId(session);
         updateCompanyData(session)
@@ -45,8 +41,7 @@ export function PaymentInformation() {
     const updateSession = async () => {
       try {
         setIsLoading(true);
-        const sessionData = await paymentApi.updateSession(finalForm.sessionId, amount, 'USD');
-        console.log("sessionData", sessionData)
+        await paymentApi.updateSession(finalForm.sessionId, amount, 'USD');
       } catch (err) {
         console.error('Payment session update failed:', err);
         setError('Failed to update payment session');
@@ -56,10 +51,8 @@ export function PaymentInformation() {
     }
     if (finalForm.sessionId == "") {
       initializePaymentSession();
-      // hasFetchedData.current = true;
     }
     else {
-      console.log("finalForm.sessionId", finalForm.sessionId)
       if (finalForm.sessionId) {
         setSessionId(finalForm.sessionId)
         updateSession()
@@ -67,7 +60,6 @@ export function PaymentInformation() {
     }
     setIsLoading(false);
   }, []);
-  console.log("invoiceData", finalForm)
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto p-6">
@@ -81,7 +73,6 @@ export function PaymentInformation() {
       </div>
     );
   }
-  console.log(sessionId, "error", error)
 
   if (error || !sessionId) {
     return (
@@ -94,25 +85,19 @@ export function PaymentInformation() {
     );
   }
 
-  // const handlePaymentCompleted = () => {
-  //   setPaymentStatus("completed");
-  // };
-
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">      
      <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary">Payment Information</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">{t('payment.pInfo')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <PaymentTimer sessionId={sessionId}
-          // status={paymentStatus} 
           />
           <Separator />
           <PaymentMethods sessionId={sessionId}
             amount={amount}
-          // onPaymentCompleted={handlePaymentCompleted} 
           />
           <Separator />
           <PaymentConditions />
@@ -122,11 +107,3 @@ export function PaymentInformation() {
     </div>
   );
 }
-
-
-{/* <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="ml-2">
-              All payments are NON-REFUNDABLE. The remitter bears all charges of payment, which includes the remittance amount, beneficiary bank's charges, as well as all the other banks' fees (intermediary bank, etc).
-            </AlertDescription>
-          </Alert> */}

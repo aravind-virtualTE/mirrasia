@@ -1,0 +1,993 @@
+{
+    "ppif": {
+        "heading": "Panama Private Interest Foundation (PIF) — Application",
+        "section1": "Applicant Details",
+        "section2": "Foundation Profile",
+        "section3": "Founder(s)",
+        "section4": "Foundation Council — Composition",
+        "section5": "Protector (optional)",
+        "section6": "Beneficiaries",
+        "section7": "By-Laws",
+        "section8": "Economic Substance (ES) Check",
+        "section9": "Banking",
+        "section10": "Politically Exposed Person (PEP)",
+        "section11": "AML & Sanctions",
+        "section12": "Post-Incorporation Deliverables & Shipping",
+        "section13": "Accounting Record Storage & Responsible Person",
+        "section14": "Invoice & Quote",
+        "section15": "Payment",
+        "section16": "Declarations & e-Sign",
+        "congrats": "Congratulations",
+        "topbar": {
+            "defaultTitle": "Company Incorporation — Panama Private Interest Foundation"
+        },
+        "applicant": {
+            "description": "We’ll send documents, invoices, and status updates to the email below.",
+            "fields": {
+                "email": {
+                    "label": "Email",
+                    "placeholder": "you@example.com"
+                },
+                "contactName": {
+                    "label": "Contact Person (Full Name)",
+                    "placeholder": "John Smith"
+                },
+                "phone": {
+                    "label": "Phone / Messenger",
+                    "placeholder": "+82 ..."
+                },
+                "contactPref": {
+                    "label": "Preferred Contact Time / Method",
+                    "placeholder": "e.g., Weekdays 10:00–18:00, email preferred"
+                }
+            }
+        },
+        "es": {
+            "description": "Panama has not implemented a general ES regime; ES applies mainly to certain special regimes (e.g., Multinational Headquarters SEM). In practice, General PIFs are not directly subject to ES requirements (tax/reporting obligations should be reviewed separately).※ Tax residence & activity in other countries may trigger taxation/CRS impacts — review case-by-case."
+        },
+        "pep": {
+            "title": "J. Politically Exposed Person (PEP)",
+            "label": "A PEP is a current/former senior public official and their family/close associates. Here we only confirm whether any PIF participant is a PEP. Detailed checks are performed in the individual onboarding forms.",
+            "options": {
+                "yes": "Yes",
+                "no": "No"
+            }
+        },
+        "placeholders": {
+            "select": "Select"
+        },
+        "save": {
+            "successTitle": "Saved",
+            "successDesc": "Your application data has been saved.",
+            "errorTitle": "Error",
+            "errorDesc": "Failed to save application. Please try again."
+        },
+        "footer": {
+            "copyright": "© Mirr Asia · Panama PIF – Information & Intake Form"
+        },
+        "validation": {
+            "requiredFieldsPrefix": "Required fields:",
+            "requiredAsterisk": "*"
+        },
+        "profile": {
+            "namingGuidelines": {
+                "title": "Naming Guidelines",
+                "body": "The name must contain “Foundation” or “Fundación”. Identical or confusingly similar names cannot be registered. Please provide 1st/2nd/3rd choices; we will check availability.",
+                "smallNote": "Please provide 1st/2nd/3rd choices; we will check availability."
+            },
+            "nameChoices": {
+                "first": {
+                    "label": "1st Choice",
+                    "placeholder": "e.g., MIRR ASIA FOUNDATION"
+                },
+                "second": {
+                    "label": "2nd Choice"
+                },
+                "third": {
+                    "label": "3rd Choice"
+                },
+                "spanish": {
+                    "label": "Spanish Name (Optional)",
+                    "placeholder": "Fundación …"
+                }
+            },
+            "endowmentInfo": {
+                "title": "Initial Endowment",
+                "body": "Often recorded as “Initial Capital / Endowment”. Nominal minimum is USD 10,000 and there is no immediate funding obligation (it is recorded in the Charter as a commitment and can be funded/adjusted later)."
+            },
+            "endowmentFields": {
+                "amount": {
+                    "label": "Initial Endowment (USD)",
+                    "placeholder": "e.g., 10000"
+                },
+                "payer": {
+                    "label": "Payer of Initial Endowment (Name/Entity)"
+                }
+            },
+            "sourceOfFunds": {
+                "label": "Source of Funds",
+                "placeholder": "Select",
+                "options": {
+                    "Employment Income": "Employment Income",
+                    "Savings/Deposits": "Savings/Deposits",
+                    "Investment Income (stocks/bonds/funds)": "Investment Income (stocks/bonds/funds)",
+                    "Loan": "Loan",
+                    "Proceeds from Sale of Company/Shares": "Proceeds from Sale of Company/Shares",
+                    "Business Income/Dividends": "Business Income/Dividends",
+                    "Inheritance/Gift": "Inheritance/Gift",
+                    "other": "Other"
+                }
+            },
+            "registeredAddress": {
+                "label": "Registered Address (Panama)",
+                "options": {
+                    "mirr": "Use Mirr Asia registered address (no extra charge)",
+                    "own": "I have my own registered address (provide below)"
+                },
+                "own": {
+                    "label": "Separate Registered Address (English)",
+                    "placeholder": "Addressee / Contact / Address / Postal Code (English recommended)"
+                }
+            },
+            "purpose": {
+                "label": "Purpose of Establishment",
+                "placeholder": "e.g., Asset protection, succession and charitable allocation, overseas shareholding and dividend management, etc.",
+                "helper": "Combine the keywords or write freely.",
+                "chips": {
+                    "Asset Protection": {
+                        "label": "Asset Protection",
+                        "text": "Hold real estate, financial assets, equities, and digital assets; establish asset protection via a foundation"
+                    },
+                    "Succession Planning": {
+                        "label": "Succession Planning",
+                        "text": "Hold and operate assets through the foundation and plan intergenerational succession"
+                    },
+                    "Hold & Manage Investment Interests": {
+                        "label": "Hold & Manage Investment Interests",
+                        "text": "Hold and manage investment interests"
+                    },
+                    "Dividend & Interest Income Management": {
+                        "label": "Dividend & Interest Income Management",
+                        "text": "Manage dividend and interest income"
+                    },
+                    "Charitable Purposes": {
+                        "label": "Charitable Purposes",
+                        "text": "Operate funds for charitable or religious purposes"
+                    },
+                    "Family-Trust Structure": {
+                        "label": "Family-Trust Structure",
+                        "text": "Structure and operate as a family-trust style vehicle"
+                    },
+                    "Blockchain Token-Related": {
+                        "label": "Blockchain Token-Related",
+                        "text": "Issue tokens to support a blockchain ecosystem"
+                    }
+                }
+            },
+            "businessActivities": {
+                "sectionLabel": "Business / Activities",
+                "industries": {
+                    "label": "Main Industries (multi-select)",
+                    "options": {
+                        "trading": "Trading",
+                        "wholesale": "Wholesale/Retail/Distribution",
+                        "consulting": "Consulting",
+                        "manufacturing": "Manufacturing",
+                        "finance": "Finance/Investment/Advisory",
+                        "online": "Online Services/e-Commerce",
+                        "it": "IT/Software/Blockchain",
+                        "crypto": "Digital Assets",
+                        "other": "Other"
+                    }
+                },
+                "countries": {
+                    "label": "Countries of Activity (planned)",
+                    "placeholder": "e.g., PA, US, EU, HK, KR ..."
+                },
+                "description": {
+                    "label": "Key Post-Incorporation Activities & Description",
+                    "placeholder": "e.g., Hold foreign equity and receive dividends, operate online services and payment processing, allocate charitable funds, etc."
+                }
+            }
+        },
+        "founders": {
+            "title": "Founder #{{n}}",
+            "removeAria": "Remove founder #{{n}}",
+            "removeTitle": "Remove",
+            "type": {
+                "label": "Founder Type",
+                "options": {
+                    "individual": "Individual",
+                    "corporate": "Corporate"
+                }
+            },
+            "name": {
+                "label": "Full Name / Corporate Name",
+                "placeholder": "Enter full or corporate name"
+            },
+            "id": {
+                "label": "Passport / Reg. No.",
+                "placeholder": "Enter passport or registration number"
+            },
+            "email": {
+                "label": "Email",
+                "placeholder": "email@example.com"
+            },
+            "phone": {
+                "label": "Phone",
+                "placeholder": "Enter phone number"
+            },
+            "info": {
+                "title": "Number of Founders",
+                "body": "A Panama PIF can be founded by one or more persons (individual or corporate). Add required members."
+            },
+            "buttons": {
+                "addFounder": "Add Founder",
+                "invite": "Invite Founder Members"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "Invitations sent",
+                        "desc": "{{count}} invitation(s) successfully sent."
+                    },
+                    "alreadyExists": {
+                        "title": "Invitations sent",
+                        "desc": "{{count}} invitation(s) sent to the email address."
+                    },
+                    "none": {
+                        "title": "No invitations sent",
+                        "desc": "Please ensure founders have valid email addresses."
+                    }
+                }
+            }
+        },
+        "council": {
+            "composition": {
+                "title": "D. Foundation Council — Composition",
+                "modes": {
+                    "ind3": "Three Individuals",
+                    "corp1": "One Corporate"
+                }
+            },
+            "individuals": {
+                "title": "D-1. Three Individual Council Members",
+                "note": "Each member files a separate Member Registration Form. Nominee Director service is available if needed.",
+                "memberCardTitle": "Council Member #{{n}} – Quick Info",
+                "fields": {
+                    "name": {
+                        "label": "Full Name"
+                    },
+                    "id": {
+                        "label": "Passport / ID No."
+                    },
+                    "email": {
+                        "label": "Email"
+                    },
+                    "phone": {
+                        "label": "Phone"
+                    }
+                },
+                "nominee": {
+                    "askLabel": "Use Nominee Director Service?",
+                    "checkboxLabel": "Use Nominee Director Service",
+                    "infoTitle": "Nominee Director — Details",
+                    "infoBody": "Officer details are viewable at the public registry; we can list nominees if needed. Nominees do not exercise control/management nor claim ownership. UBO/significant controller verification is still required for banks/exchanges. We perform in-person/video KYC and keep records per AML laws. Fees (annual): 1 person USD 1,200, 2 persons USD 1,700, 3 persons USD 2,200 (justification recommended). Nominee shareholder: USD 1,300.",
+                    "countLabel": "Nominee Director — Number of Persons",
+                    "options": {
+                        "1": "1 person (USD 1,200)",
+                        "2": "2 persons (USD 1,700)",
+                        "3": "3 persons (USD 2,200) — justification recommended"
+                    }
+                }
+            },
+            "corporate": {
+                "title": "D-2. Council via One Corporate — Basic Info",
+                "note": "Uncommon structure. Even if a corporate acts as Council, KYC of human signatory(ies) is still required.",
+                "fields": {
+                    "corpMain": {
+                        "label": "Entity Name / Reg. No. / Jurisdiction",
+                        "placeholder": "EX: ABC TRUSTEES LTD / 123456 / PA"
+                    },
+                    "addrRep": {
+                        "label": "Registered Address / Representative"
+                    },
+                    "signatory": {
+                        "label": "Authorized Signatory (Optional)",
+                        "placeholder": "Name · Title · Contact"
+                    },
+                    "email": {
+                        "label": "Contact Email"
+                    }
+                }
+            },
+            "buttons": {
+                "invite": "Invite Council Members"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "Invitations sent",
+                        "desc": "Council members have been invited to complete their onboarding forms."
+                    },
+                    "alreadyExists": {
+                        "title": "Invitations sent",
+                        "desc": "{{count}} invitation(s) sent to the email address."
+                    },
+                    "none": {
+                        "title": "No invitations sent",
+                        "desc": "Please ensure council members have valid email addresses."
+                    }
+                }
+            }
+        },
+        "shared": {
+            "repeater": {
+                "title": "{{title}} #{{n}}",
+                "removeAria": "Remove {{title}} #{{n}}",
+                "removeTitle": "Remove",
+                "fields": {
+                    "name": {
+                        "label": "Name / Corporate / Class"
+                    },
+                    "contact": {
+                        "label": "Email",
+                        "placeholder": "email@example.com"
+                    }
+                }
+            }
+        },
+        "protectors": {
+            "info": {
+                "body": "A Protector does not run daily operations but approves/oversees major decisions.",
+                "examples": "Examples: approval for appointment/removal of council members, approval of by-laws changes, consent to certain distribution guidelines, etc. Multiple protectors may be appointed."
+            },
+            "controls": {
+                "appoint": "Appoint",
+                "doNotAppoint": "Do not appoint",
+                "add": "+ Add"
+            },
+            "itemTitle": "Protector",
+            "buttons": {
+                "invite": "Invite Protector"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "Invitations sent",
+                        "desc": "{{count}} invitation(s) successfully sent."
+                    },
+                    "alreadyExists": {
+                        "title": "Invitations sent",
+                        "desc": "{{count}} invitation(s) sent to the email address."
+                    },
+                    "none": {
+                        "title": "No invitations sent",
+                        "desc": "Please ensure protectors have valid email addresses."
+                    }
+                }
+            }
+        },
+        "beneficiaries": {
+            "info": {
+                "designTitle": "Design",
+                "designBody": "① Fixed list (named) ② By class (spouse/descendants/guardians, etc.) ③ Hybrid. For privacy/flexibility, class-based is common.",
+                "lowTitle": "Letter of Wishes",
+                "lowBody": "A Letter of Wishes gives testamentary guidance (who/when/how much) and is relied on in practice."
+            },
+            "modes": {
+                "fixed": "Fixed List",
+                "class": "By Class",
+                "mixed": "Hybrid"
+            },
+            "controls": {
+                "add": "+ Add Beneficiary"
+            },
+            "itemTitle": "Beneficiary",
+            "letterOfWishes": {
+                "label": "Letter of Wishes",
+                "placeholder": "(Optional) Testamentary guidance for distributions, priorities, timing, etc."
+            },
+            "buttons": {
+                "invite": "Invite Beneficiaries"
+            },
+            "toasts": {
+                "invite": {
+                    "success": {
+                        "title": "Invitations sent",
+                        "desc": "{{count}} invitation(s) successfully sent."
+                    },
+                    "alreadyExists": {
+                        "title": "Invitations sent",
+                        "desc": "{{count}} invitation(s) sent to the email address."
+                    },
+                    "none": {
+                        "title": "No invitations sent",
+                        "desc": "Please ensure beneficiaries have valid email addresses."
+                    }
+                }
+            }
+        },
+        "bylaws": {
+            "modes": {
+                "standard": "Apply Standard Template",
+                "custom": "Write Custom Details"
+            },
+            "fields": {
+                "powers": {
+                    "label": "Allocation of Powers (Council vs Protector)",
+                    "placeholder": "Signing authority / approval rights / removal powers, etc."
+                },
+                "admin": {
+                    "label": "Recordkeeping / Audit / Reporting · Dissolution Conditions",
+                    "placeholder": "Retention periods, audit cycles, reporting lines / specific events & voting requirements, etc."
+                }
+            }
+        },
+        "banking": {
+            "need": {
+                "label": "Need to open an account?",
+                "options": {
+                    "need": "Yes",
+                    "none": "No",
+                    "later": "Decide Later"
+                }
+            },
+            "bizType": {
+                "label": "Business Activity Type (for guidance)",
+                "options": {
+                    "consulting": "General Consulting / Holding",
+                    "ecommerce": "Online Service / E-commerce",
+                    "investment": "Investment / Equity Holding",
+                    "crypto": "Virtual Assets Related",
+                    "manufacturing": "Manufacturing / Trade"
+                }
+            },
+            "guide": {
+                "title": "Banks / EMIs (for reference)",
+                "list": {
+                    "panama": "Panama local banks often require in-person interview & UBO evidence for non-resident/foundation accounts.",
+                    "crypto": "Crypto-friendly: Towerbank (subject to policies & risk appetite).",
+                    "emi": "EMI/foreign acceptance of “Foundation” varies — pre-check required."
+                },
+                "activityLabel": "Activity guidance:",
+                "docsNote": "Indicative documents: Foundation charter/registration, council register & acceptances, UBO chart, founders'/directors' passport & address proof, source of funds, business description/contracts, tax ID/residence proof, references, interview, etc."
+            },
+            "hints": {
+                "consulting": "General consulting/holding: mid risk. Expect clarity on revenue/contracts/organization & UBO. Remote onboarding limited.",
+                "ecommerce": "Online service/e-commerce: payment flows, customer countries, refund policy required. Consider PSP/EMI alongside bank account.",
+                "investment": "Investment/equity holding: if largely passive, banks may be less keen. Consider brokerage/custody accounts.",
+                "crypto": "Virtual assets: many banks restrict. Consider crypto-friendly banks (e.g., Towerbank) or VASP/EMI combinations.",
+                "manufacturing": "Manufacturing/trade: require substance docs (supply agreements, shipping docs). Trade finance assessed separately."
+            }
+        },
+        "aml": {
+            "info": "In line with FATF, UN, EU, OFAC, UK HMT, HKMA, etc., confirm any dealings with sanctioned countries/persons.",
+            "q1": {
+                "label": "Operate now / plan to operate with Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, Zimbabwe, Russia, or areas in Ukraine outside government control?",
+                "field": "legalAndEthicalConcern"
+            },
+            "q2": {
+                "label": "Any related persons reside in those countries or in a country sanctioned by UN, EU, UK HMT, HKMA, or OFAC (or Ukrainian areas outside government control)?",
+                "field": "q_country"
+            },
+            "q3": {
+                "label": "Is / will the PIF be owned, controlled, or acting for sanctioned persons/entities or persons in Afghanistan, Belarus, Cuba, Iran, North Korea, Russia, Syria, or Ukrainian areas outside government control?",
+                "field": "sanctionsExposureDeclaration"
+            },
+            "q4": {
+                "label": "Any related persons currently operate or plan to operate in Crimea or Sevastopol?",
+                "field": "crimeaSevastapolPresence"
+            },
+            "q5": {
+                "label": "Do the PIF/holding/group/affiliates operate now or plan to operate in oil, gas, energy, military, or defense sectors (including critical goods)?",
+                "examples": "Examples: explosives, lubricants, sensors, micro-electronics, communications modules, passive components, navigation, electrical parts, PCB production/QC tools, CNC machines/parts.",
+                "field": "russianEnergyPresence"
+            }
+        },
+        "deliverables": {
+            "left": {
+                "title": "Deliverables (click to expand)",
+                "items": {
+                    "publicDeed": {
+                        "title": "Public Deed",
+                        "desc": "Notarized deed for formation; includes purpose, council, registered agent, etc."
+                    },
+                    "publicDeedTranslation": {
+                        "title": "Public Deed Translation",
+                        "desc": "Translation (for requests/submissions)."
+                    },
+                    "registryCert": {
+                        "title": "Certificate of Public Registry",
+                        "desc": "Certificate issued by the Public Registry (legal existence)."
+                    },
+                    "registryCertTranslation": {
+                        "title": "Certificate of Public Registry Translation",
+                        "desc": "Translation of the registry certificate."
+                    },
+                    "foundationCert": {
+                        "title": "Foundation Certificate",
+                        "desc": "Certificate summarizing the foundation."
+                    },
+                    "foundationCertTranslation": {
+                        "title": "Foundation Certificate Translation",
+                        "desc": "Translation of the certificate."
+                    },
+                    "councilRegister": {
+                        "title": "Register of Council Members",
+                        "desc": "List of council members (3 individuals / 1 corporate)."
+                    },
+                    "councilAcceptance": {
+                        "title": "Council’s Acceptance Letter",
+                        "desc": "Acceptance of office."
+                    },
+                    "bylaws": {
+                        "title": "Regulations (By-Laws)",
+                        "desc": "Private internal regulations: powers, procedures, distribution, records, dissolution, etc."
+                    },
+                    "boardMeeting": {
+                        "title": "Meeting of the Board",
+                        "desc": "Sample resolutions/minutes."
+                    },
+                    "incumbencyCert": {
+                        "title": "Certificate of Incumbency",
+                        "desc": "Certificate of current officers."
+                    },
+                    "nomineeAgreement": {
+                        "title": "Nominee Agreement (if applicable)",
+                        "desc": "Agreement for nominee services."
+                    },
+                    "companyChop": {
+                        "title": "Company Chop",
+                        "desc": "Official seal."
+                    }
+                }
+            },
+            "right": {
+                "title": "Original Shipping Details",
+                "note": "(If the address is written in a language other than English, please also provide it in the local language.)",
+                "fields": {
+                    "recipientCompany": {
+                        "label": "Recipient Company",
+                        "placeholder": "Company / Foundation name"
+                    },
+                    "contactPerson": {
+                        "label": "Contact Person",
+                        "placeholder": "Full name"
+                    },
+                    "phone": {
+                        "label": "Phone",
+                        "placeholder": "+82 ..."
+                    },
+                    "postalCode": {
+                        "label": "Postal Code",
+                        "placeholder": "e.g., 12345"
+                    },
+                    "address": {
+                        "label": "Address",
+                        "placeholder": "Street / Building / Unit, etc."
+                    }
+                }
+            }
+        },
+        "accounting": {
+            "info": "Regulations require disclosing the address where accounting records are stored. You may provide an office or residential address. If you use our address, USD 350 per year applies; records must be provided to us periodically.",
+            "fields": {
+                "address": {
+                    "label": "Accounting Record Storage Address (English)",
+                    "placeholder": "Full address in English"
+                },
+                "responsible": {
+                    "label": "Responsible Person (English Full Name)",
+                    "placeholder": "e.g., John Smith"
+                },
+                "useMirr": {
+                    "label": "Use Mirr Asia record-storage address (USD 350/yr)"
+                }
+            }
+        },
+        "invoice": {
+            "title": "Invoice & Quote — Panama PIF (Setup Only)",
+            "setup": {
+                "title": "Setup (Year 1)",
+                "entity": {
+                    "label": "Mirr Asia setup fee + first-year services",
+                    "tooltip": {
+                        "aria": "Setup package (all-in) details",
+                        "title": "Setup package (all-in)",
+                        "body": "Includes government fees (corporation USD 300 / PIF separate), Resident Agent, and Registered Office."
+                    }
+                },
+                "ndSetup": {
+                    "label": "Nominee Director(s) — setup",
+                    "options": {
+                        "0": "None (0)",
+                        "1": "1 person (+{{price}})",
+                        "2": "2 people (+{{price}})",
+                        "3": "3 people (+{{price}})"
+                    },
+                    "reason": {
+                        "label": "Reason for selecting 3 nominee directors (setup)",
+                        "placeholder": "Please state why 3 nominee directors are needed.",
+                        "hint": "* We recommend providing a reason when selecting 3."
+                    }
+                },
+                "nsSetup": {
+                    "label": "Nominee Shareholder (setup) (+{{price}})"
+                },
+                "optional": {
+                    "title": "Optional services (setup)",
+                    "emi": "EMI account opening (+{{price}})",
+                    "bank": "Panama local bank account opening (+{{price}})",
+                    "cbi": "Puerto Rico CBI account opening (+{{price}})"
+                },
+                "totals": {
+                    "setupY1": "Setup (Year 1) total"
+                }
+            },
+            "includes": {
+                "title": "Setup package includes (PIF):",
+                "items": {
+                    "i1": "Draft foundation charter (EN/ES)",
+                    "i2": "Founder nomination",
+                    "i3": "Notarization and registration of the charter",
+                    "i4": "Incorporation fees and registry taxes",
+                    "i5": "Certificate of Establishment",
+                    "i6": "Resolution organizing the foundation council",
+                    "i7": "Resolutions appointing Protector/beneficiaries",
+                    "i8": "Drafting of regulations",
+                    "i9": "Notarized translations",
+                    "i10": "Certificate of Incumbency",
+                    "i11": "Registered office (1 year)",
+                    "i12": "Registered agent/secretary (1 year)",
+                    "i13": "KYC/Due Diligence",
+                    "i14": "International courier"
+                },
+                "note": "Note: Accounting fees are not included; bookkeeping/audit/tax filings are quoted separately."
+            }
+        },
+        "payment": {
+            "stripe": {
+                "form": {
+                    "success": {
+                        "title": "Payment successful",
+                        "amountLabel": "Amount:",
+                        "receiptLabel": "Receipt:",
+                        "viewReceipt": "View Stripe receipt",
+                        "doneBtn": "Done"
+                    },
+                    "processing": {
+                        "title": "Payment is processing",
+                        "msg": "Your payment is processing. You’ll receive a receipt once the transaction is confirmed.",
+                        "closeBtn": "Close"
+                    },
+                    "errors": {
+                        "confirmGeneric": "Something went wrong while confirming payment.",
+                        "failedGeneric": "Payment failed. Please try again.",
+                        "backendReceiptMissing": "Payment confirmed, but we couldn’t retrieve the receipt from the server. Please contact support if you didn’t receive an email.",
+                        "backendSaveFailed": "Payment confirmed, but saving the payment on the server failed. We’ll email your receipt soon or contact support.",
+                        "statusPrefix": "Payment status: {{status}}. If this persists, contact support."
+                    },
+                    "controls": {
+                        "cancel": "Cancel",
+                        "payNow": "Pay now",
+                        "processing": "Processing…"
+                    }
+                },
+                "drawer": {
+                    "title": "Stripe Card Payment",
+                    "description": "Grand Total: {{amount}} {{note}}",
+                    "cardFeeNote": "(incl. 3.5% card fee)",
+                    "preparing": "Preparing secure payment…"
+                }
+            },
+            "step": {
+                "banners": {
+                    "received": {
+                        "title": "Payment received",
+                        "amountLabel": "Amount:",
+                        "receiptLabel": "Receipt:",
+                        "view": "View"
+                    },
+                    "expiredBox": {
+                        "expiredTitle": "This quote has expired.",
+                        "windowTitle": "Payment window"
+                    }
+                },
+                "alerts": {
+                    "alreadyPaid": "Already paid.",
+                    "expiredGuard": "This quote expired. Please refresh or contact us.",
+                    "cardInitError": "Could not initialize card payment. Please try again."
+                },
+                "iframe": {
+                    "paymentProofTitle": "Payment Proof"
+                }
+            }
+        },
+        "declarations": {
+            "checks": {
+                "taxOk": "I confirm compliance with applicable tax obligations and that the PIF is not intended for unlawful/sanctioned purposes.",
+                "truthOk": "I confirm the accuracy and completeness of the information provided.",
+                "privacyOk": "I consent to the processing of personal data for KYC/sanctions screening and service delivery."
+            },
+            "fields": {
+                "signName": {
+                    "label": "Signature (type your name)",
+                    "placeholder": "Type your full name"
+                },
+                "signDate": {
+                    "label": "Date"
+                },
+                "signTitle": {
+                    "label": "Title / Capacity",
+                    "placeholder": "e.g., Founder, Authorized Representative"
+                }
+            },
+            "footnote": "※ This form is for preliminary information gathering for review/quotation/KYC and does not constitute legal or tax advice."
+        },
+        "steps": {
+            "1": {
+                "t": "Step 1 — Compliance review",
+                "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1–2 business days."
+            },
+            "2": {
+                "t": "Step 2 — Filing with Companies Registry",
+                "s": "We will file the incorporation documents."
+            },
+            "3": {
+                "t": "Step 3 — Registration certificates",
+                "s": "Expected: Certificate of Incorporation & Business Registration within 3-4 business weeks."
+            },
+            "4": {
+                "t": "Step 4 — Bank/EMI account",
+                "s": "If selected, we arrange an account opening with your preferred bank/EMI."
+            }
+        }
+    },
+    "ppifMember": {
+        "header": {
+            "title": "Panama Private Interest Foundation – Member Registration Form",
+            "intro": "This form collects required information for the individual registration of PIF participants (Founder, Council, Protector, Beneficiary, etc.). Individuals use this form; a separate form applies to corporates.",
+            "note": "※ This is baseline information for KYC/AML and regulatory compliance. Please complete all required fields accurately."
+        },
+        "toolbar": {
+            "save": "Save"
+        },
+        "toasts": {
+            "save": {
+                "successTitle": "Success",
+                "successDesc": "Member information saved successfully.",
+                "errorTitle": "Error",
+                "errorDesc": "Please try again later."
+            },
+            "fetch": {
+                "errorTitle": "Error",
+                "errorDesc": "An unexpected error occurred while fetching data."
+            },
+            "validate": {
+                "title": "Missing required fields",
+                "descPrefix": "Please complete:"
+            }
+        },
+        "common": {
+            "select": "Select",
+            "yes": "Yes",
+            "no": "No",
+            "requiredAsterisk": "*"
+        },
+        "sections": {
+            "basic": {
+                "title": "1) Basic Information",
+                "fields": {
+                    "email": {
+                        "label": "Email Address (use the same email where you receieved invite)",
+                        "placeholder": "you@example.com"
+                    },
+                    "fullName": {
+                        "label": "Full Name",
+                        "placeholder": "John Smith"
+                    },
+                    "renamed": {
+                        "label": "Name Change (ever changed your legal name?)",
+                        "hint": "If yes, please add your former English full name in the remarks below."
+                    },
+                    "dob": {
+                        "label": "Date of Birth"
+                    },
+                    "pob": {
+                        "label": "Place of Birth",
+                        "placeholder": "e.g., Seoul, Republic of Korea"
+                    },
+                    "maritalStatus": {
+                        "label": "Marital Status",
+                        "options": {
+                            "Married": "Married",
+                            "Single": "Single",
+                            "Other": "Other"
+                        }
+                    },
+                    "nationality": {
+                        "label": "Nationality",
+                        "placeholder": "e.g., Republic of Korea"
+                    },
+                    "passport": {
+                        "label": "Passport Number"
+                    },
+                    "occupation": {
+                        "label": "Occupation",
+                        "placeholder": "e.g., Attorney / Entrepreneur"
+                    },
+                    "mobile": {
+                        "label": "Mobile Phone (reachable)",
+                        "placeholder": "+82 ..."
+                    },
+                    "residentialAddress": {
+                        "label": "Residential Address",
+                        "placeholder": "English address preferred"
+                    },
+                    "postalAddress": {
+                        "label": "Postal Address (if different)"
+                    }
+                }
+            },
+            "founder": {
+                "title": "2) Founder Status & Contribution",
+                "isFounder": {
+                    "label": "Are you a Founder of the PIF to be established?"
+                },
+                "contribution": {
+                    "label": "(If Founder) Contribution Amount (USD)",
+                    "placeholder": "e.g., 10000",
+                    "note": "※ In Panamanian practice it is shown as “Initial Endowment”. Lawful minimum USD 10,000 (no mandatory funding required)."
+                },
+                "sof": {
+                    "label": "Source of Funds for Contribution (select all that apply)",
+                    "otherLabel": "Other – details",
+                    "otherPlaceholder": "Please specify the other source of funds",
+                    "chips": {
+                        "salary": "Employment Income||Salary, bonus, etc.",
+                        "savings": "Savings / Deposits||Long-term personal savings",
+                        "invest": "Investment Income||Real estate, equities, bonds, funds",
+                        "loan": "Loans||Borrowings from financial institutions",
+                        "disposal": "Business/Share Disposal||Proceeds from sale of business or shares",
+                        "bizdiv": "Business Income / Dividends||Operating profits, dividend income",
+                        "inherit": "Inheritance / Gift||Bequests, inter vivos gifts",
+                        "other": "Other||Please specify below"
+                    }
+                },
+                "inflowCountries": {
+                    "label": "Country(ies) of Funds Inflow",
+                    "placeholder": "e.g., KR, HK, SG"
+                },
+                "remarks": {
+                    "label": "Remarks (former English name / additional notes)",
+                    "placeholder": "Optional"
+                }
+            },
+            "tax": {
+                "title": "3) Tax Information",
+                "fields": {
+                    "taxResidence": {
+                        "label": "Tax Residence Country",
+                        "placeholder": "e.g., Republic of Korea"
+                    },
+                    "tin": {
+                        "label": "Taxpayer Identification Number (TIN)",
+                        "placeholder": "If unavailable, provide local equivalent"
+                    }
+                },
+                "note": "※ “Tax residence” generally refers to the jurisdiction where you spend ≥183 days/year or are otherwise liable to income tax."
+            },
+            "roles": {
+                "title": "4) Role(s) in the Foundation (select all that apply)",
+                "chips": {
+                    "president": "President (Council)",
+                    "secretary": "Secretary (Council)",
+                    "treasurer": "Treasurer (Council)",
+                    "protector": "Protector",
+                    "beneficiary": "Beneficiary",
+                    "nominee": "Nominee / Representative",
+                    "dcp": "Designated Contact Person"
+                },
+                "note": "<b>Protector</b>: may hold oversight/approval rights (e.g., appointment/removal of council, by-laws amendments).<br /><b>Beneficiary</b>: receives economic benefits. For privacy, beneficiary details can be structured via By-Laws / Letter of Wishes."
+            },
+            "futureFunds": {
+                "title": "5) Future Funds Inflow/Generation to the PIF",
+                "chips": {
+                    "pif_income": "Income generated by the PIF",
+                    "addl_contrib": "Additional contributions to the PIF",
+                    "interest": "Interest income",
+                    "investment": "Investment income",
+                    "disposal": "Business/share disposal proceeds",
+                    "inheritance": "Inheritance/gifts",
+                    "loans": "Loans/escrow/deposits",
+                    "other": "Other"
+                }
+            },
+            "pep": {
+                "title": "6) Politically Exposed Person (PEP) Check",
+                "note": "<b>PEP</b>: includes current/former senior public officials, senior political party officials, SOE executives, and senior officials of international organizations, as well as their <u>family members and close associates</u> (per FATF guidance).",
+                "detailLabel": "If Yes, please describe",
+                "detailPlaceholder": "Full name / position / relationship / period, etc."
+            },
+            "docs": {
+                "title": "7) Required Documents Checklist",
+                "note": "All documents should be <b>issued within the last 3 months</b>. Non-English documents may require certified translation. Certified passport copies can be obtained from local authorities.",
+                "items": {
+                    "doc_passport": "Passport copy + Certificate of Passport Copy (notarized/certified)",
+                    "doc_bank": "Bank statement(s) for the last 12 months or a Bank Reference Letter",
+                    "doc_address": "Proof of address (e.g., resident register extract / utility bill)",
+                    "doc_profref": "Professional reference (lawyer/accountant/banker; ≥2 years relationship)",
+                    "doc_cv": "Curriculum Vitae (English)",
+                    "doc_other": "Others (if applicable): additional supporting documents"
+                }
+            },
+            "bo": {
+                "title": "8) Beneficial Owner (BO) Confirmation",
+                "note": "<b>Summary Definition</b>: the <u>natural person(s)</u> who ultimately <u>owns or controls</u> the legal arrangement (FATF/OECD).",
+                "fields": {
+                    "lastIncome": {
+                        "label": "Last Year’s Income (USD)"
+                    },
+                    "netWorth": {
+                        "label": "Current Net Worth (USD)"
+                    }
+                },
+                "bands": {
+                    "under25": "Under 25,000",
+                    "25_39": "25,000 - 39,999",
+                    "40_49": "40,000 - 49,999",
+                    "50_64": "50,000 - 64,999",
+                    "65_124": "65,000 - 124,999",
+                    "125_499": "125,000 - 499,999",
+                    "500_999": "500,000 - 999,999",
+                    "over1m": "Over 1 Million"
+                }
+            },
+            "decls": {
+                "title": "9) Declarations & Consents",
+                "textHtml": "I hereby confirm and agree to the following:<br /><br />① The funds stated herein are <b>owned by me</b> and I have <b>full authority</b> to transfer them to the PIF.<br />② The assets, net worth, income, or activities of the PIF are <b>not connected</b> to illicit weapons/WMD, money laundering, illegal narcotics, or any activity deemed <b>unlawful</b>.<br />③ I have obtained, or had access to, <b>appropriate legal and/or tax advice</b> prior to this application.<br />④ I acknowledge the <b>obligation to pay annual fees</b> and consent to <b>electronic communications</b> for notices and confirmations.",
+                "agree": "I have read and agree to all of the above."
+            }
+        },
+        "radios": {
+            "renamed": {
+                "yes": "Yes",
+                "no": "No"
+            },
+            "is_founder": {
+                "yes": "Yes",
+                "no": "No"
+            },
+            "pep": {
+                "yes": "Yes",
+                "no": "No"
+            },
+            "is_bo": {
+                "yes": "Yes",
+                "no": "No"
+            }
+        },
+        "requiredLabels": {
+            "email": "Email Address",
+            "fullName": "Full Name",
+            "renamed": "Name Change",
+            "dob": "Date of Birth",
+            "pob": "Place of Birth",
+            "maritalStatus": "Marital Status",
+            "nationality": "Nationality",
+            "passport": "Passport Number",
+            "occupation": "Occupation",
+            "mobile": "Mobile Phone (reachable)",
+            "residentialAddress": "Residential Address",
+            "inflowCountries": "Country(ies) of Funds Inflow",
+            "taxResidence": "Tax Residence Country",
+            "tin": "Taxpayer Identification Number (TIN)",
+            "pep": "PEP",
+            "is_bo": "Beneficial Owner (BO) Confirmation",
+            "agreeAll": "Declarations & Consents",
+            "pepDetail": "PEP Details",
+            "contribution": "Contribution Amount (USD)"
+        }
+    }
+}

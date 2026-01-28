@@ -1,0 +1,2525 @@
+{
+  "landingPage": {
+    "leftHeading": "Start Your Business the Smart Way",
+    "leftHDesc": "Register a Company and Open Business Account — Fast, Simple & Online!",
+    "rightHeading": "Already have a company?",
+    "leftText": "Avoid paperwork, long wait times, and confusion. With our all-in-one company registration service, you can register a company in just a few clicks — backed by expert guidance every step of the way.",
+    "rightSubHeading": "Get Started Today",
+    "rightP": "Register your company in minutes and get everything you need to stay compliant and confident!",
+    "registerNow": "Register now",
+    "contactUs": "Contact us",
+    "TransferBtn": "Transfer to Mirr Asia",
+    "title": "Request a Free Consultation",
+    "subtitle": "Required fields are marked with •. Our team will contact you shortly.",
+    "honeypot": {
+      "label": "Leave this field blank"
+    },
+    "name": {
+      "label": "Full Name •",
+      "error": "Please enter your name."
+    },
+    "phone": {
+      "label": "Phone",
+      "error": "Use only numbers, spaces, parentheses, or hyphens."
+    },
+    "email": {
+      "label": "Email •",
+      "error": "Please enter a valid email address."
+    },
+    "message": {
+      "label": "Message •",
+      "helper": "Please provide enough detail for a helpful reply.",
+      "counterAria": "Character count",
+      "error": "Message must be at least 10 characters."
+    },
+    "consent": {
+      "checkboxLabel": "(Required) I agree to the collection and use of my personal data.",
+      "policyLinkText": "View Privacy Policy",
+      "error": "You must agree before submitting."
+    },
+    "recaptcha": {
+      "groupLabel": "Captcha",
+      "envWarning": "Please set VITE_RECAPTCHA_SITE_KEY in your .env.",
+      "srOnly": "Please complete the reCAPTCHA verification."
+    },
+    "actions": {
+      "disclaimer": "* By submitting, you consent to being contacted for consultation.",
+      "submit": "Send",
+      "submitting": "Submitting..."
+    },
+    "success": "Your enquiry has been received. Thank you!",
+    "errors": {
+      "global": "Something went wrong. Please try again."
+    }
+  },
+  "company": {
+    "name": "Company Name",
+    "industry": "Industry"
+  },
+  "buttons": {
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "sideItems": {
+    "Home": "Home",
+    "userList": "Users List",
+    "regComp": "Register Company",
+    "compDocs": "Company Documents",
+    "switchServices": "Switch Services List",
+    "accountList": "Accounting List",
+    "bankServices": "Bank Services",
+    "signDocs": "Sign Docs",
+    "mirrChat": "MirrAsia Chat"
+  },
+  "dashboard": {
+    "project": "Projects",
+    "projectDesc": "Manage your projects efficiently.",
+    "welcome": "Welcome, ",
+    "welcome1": "Here's what you can do to get started.",
+    "companiesH": "Your Companies",
+    "tCompName": "Company Name",
+    "tcountry": "Country",
+    "status": "Status",
+    "incorpoDate": "Incorporation Date",
+    "fservices": "Featured Services",
+    "accountSupport": "Accounting support",
+    "accountText": "View available accounting services anytime you need it.",
+    "getQuote": "GET A QUOTE",
+    "needHelp": "Need Help? Contact Our Support Team!",
+    "expIssue": "Experiencing issues? Our support team is ready to assist you.",
+    "kakaoT": "Kakao Talk",
+    "wechat": "WeChat",
+    "kakaChannel": "Kakao Channel",
+    "clickHere": "Click Here",
+    "Website": "Website",
+    "solutions": "Our Main Solutions",
+    "startNew": "Start New Company",
+    "regComp": "Register your new business entity quickly and efficiently",
+    "openComp": "Open HK Personal Bank Account",
+    "streamlined": "Streamlined process for setting up personal banking in Hong Kong",
+    "switchServices": "Switch to Our Services",
+    "SserDesc": "Seamless transition to our comprehensive business solutions"
+  },
+  "dashServices": {
+    "vaTtitle": "Virtual Asset License",
+    "vaDesc": "Obtain the necessary licensing for virtual asset operations.",
+    "game": "iGaming License",
+    "secureLis": "Secure a license to operate online gaming platforms.",
+    "importExprt": "Import/Export License",
+    "international": "Facilitate international trade with an import/export license.",
+    "metaPack": "Meta Package",
+    "metaDesc": "Comprehensive service package tailored for your business needs.",
+    "cayman": "Cayman Fund",
+    "caymanDesc": "Set up and manage funds in the Cayman Islands efficiently."
+  },
+  "countrySelection": {
+    "title": "Select Country for Registration",
+    "hk": "Hong Kong",
+    "us": "United States",
+    "sg": "Singapore",
+    "uk": "United Kingdom",
+    "pa": "Panama",
+    "pafn": "Panama Foundation"
+  },
+  "compFormation": {
+    "appInfo": "Applicant\ninformation",
+    "amlcd": "AML\nCDD",
+    "compInfo": "Company\ninformation",
+    "serviceAgrmt": "Service Agreement",
+    "serviceSelect": "Services to Select",
+    "invoice": "Invoice",
+    "payment": "Payment",
+    "inforIncorpo": "Information For Incorporation",
+    "incorpo": "Incorporation",
+    "legalPersons": "Legal Persons",
+    "individuals": "Individuals"
+  },
+  "ApplicantInfoForm": {
+    "goodToKnow": "Good to know",
+    "goodDesc": "Enter different variations of your company name in order of preference. Mirr Asia will help you obtain final confirmation prior to incorporation.",
+    "heading": "Applicant Information",
+    "paragraph": "This form must be filled out by the representative of the Hong Kong company. The information will be kept as KYC and Client Due Diligence documents.",
+    "nameHeading": "Name of applicant",
+    "relationHeading": "Relationship between the above applicant and the Hong Kong company to be established",
+    "relationSelect": "Please select all that apply.",
+    "relationList1": "Director of the Hong Kong company",
+    "relationList2": "Delegated by the director of the Hong Kong company",
+    "relationList3": "Shareholder of the Hong Kong company holding majority of the shares",
+    "relationList4": "A professional(e.g. lawyer, accountant) who provides incorporation advice to the Hong Kong company",
+    "relationList5": "Other...",
+    "applicantName": "Name of the Applicant",
+    "compName": "Name of the Hong Kong company you wish to register",
+    "compChinaName": "You Can Enter Optional Chinese names for your company below",
+    "contactInfo": "Contact information of the above applicant",
+    "phoneNum": "Phone Number",
+    "phoneNumInfo": "Enter phone number with country code",
+    "address": "Address",
+    "email": "Email",
+    "emailInfo": "Enter your active email to receive OTP.",
+    "snsId": "SNS Account ID",
+    "snsPlatform": "SNS Platform",
+    "compNameInfo": "The company name must be in English as a minimum requirement, and can also be in Chinese(traditional Chinese only; simplified Chinese is not allowed). However, a combination of English and Chinese (except for English abbreviations such as HK) is not allowed, and must be written as Limited in full at the end of the English name, and must be written as 有限公司 at the end of the Chinese name. The company name can be a combination of uppercase letters/lowercase letters/numbers/periods/commas/parentheses, and other special characters are not allowed. International can be abbreviated as Int'l. The company name cannot be registered if there is a company previously registered under the same or similar company name. Accordingly, if you enter the three different company names you wish to register in the order of 1st / 2nd / 3rd preference, we will check the names and register in the order of your preferences."
+  },
+  "CompanyInformation": {
+    "businessNatureList": [
+      {
+        "name": "Crop and animal production, hunting and related service activities",
+        "val": "001"
+      },
+      {
+        "name": "Forestry activities",
+        "val": "002"
+      },
+      {
+        "name": "Fishing and aquaculture",
+        "val": "003"
+      },
+      {
+        "name": "Mining of coal and lignite",
+        "val": "005"
+      },
+      {
+        "name": "Extraction of crude petroleum and natural gas",
+        "val": "006"
+      },
+      {
+        "name": "Mining of metal ores",
+        "val": "007"
+      },
+      {
+        "name": "Quarrying and other mining of non-metal ores",
+        "val": "008"
+      },
+      {
+        "name": "Mining support service activities",
+        "val": "009"
+      },
+      {
+        "name": "Manufacture of food products",
+        "val": "010"
+      },
+      {
+        "name": "Manufacture of beverages",
+        "val": "011"
+      },
+      {
+        "name": "Manufacture of tobacco products",
+        "val": "012"
+      },
+      {
+        "name": "Manufacture of textiles",
+        "val": "013"
+      },
+      {
+        "name": "Manufacture of wearing apparel",
+        "val": "014"
+      },
+      {
+        "name": "Manufacture of leather and related products",
+        "val": "015"
+      },
+      {
+        "name": "Manufacture of wood and of products of wood and cork, articles of straw and plaiting materials (except furniture and toys)",
+        "val": "016"
+      },
+      {
+        "name": "Manufacture of paper and paper products",
+        "val": "017"
+      },
+      {
+        "name": "Printing and reproduction of recorded media",
+        "val": "018"
+      },
+      {
+        "name": "Manufacture of coke and refined petroleum products",
+        "val": "019"
+      },
+      {
+        "name": "Manufacture of chemicals and chemical products",
+        "val": "020"
+      },
+      {
+        "name": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
+        "val": "021"
+      },
+      {
+        "name": "Manufacture of rubber and plastics products (except furniture, toys, sports goods and stationery)",
+        "val": "022"
+      },
+      {
+        "name": "Manufacture of other non-metallic mineral products",
+        "val": "023"
+      },
+      {
+        "name": "Manufacture of basic metals",
+        "val": "024"
+      },
+      {
+        "name": "Manufacture of fabricated metal products (except machinery and equipment)",
+        "val": "025"
+      },
+      {
+        "name": "Manufacture of computer, electronic and optical products",
+        "val": "026"
+      },
+      {
+        "name": "Manufacture of electrical equipment",
+        "val": "027"
+      },
+      {
+        "name": "Manufacture of machinery and equipment n.e.c.",
+        "val": "028"
+      },
+      {
+        "name": "Body assembly of motor vehicles",
+        "val": "029"
+      },
+      {
+        "name": "Manufacture of other transport equipment",
+        "val": "030"
+      },
+      {
+        "name": "Manufacture of furniture",
+        "val": "031"
+      },
+      {
+        "name": "Other manufacturing",
+        "val": "032"
+      },
+      {
+        "name": "Repair and installation of machinery and equipment",
+        "val": "033"
+      },
+      {
+        "name": "Electricity and gas supply",
+        "val": "035"
+      },
+      {
+        "name": "Water collection, treatment and supply",
+        "val": "036"
+      },
+      {
+        "name": "Sewerage",
+        "val": "037"
+      },
+      {
+        "name": "Waste collection, treatment and disposal activities; materials recovery",
+        "val": "038"
+      },
+      {
+        "name": "Remediation activities and other waste management services",
+        "val": "039"
+      },
+      {
+        "name": "Construction of buildings",
+        "val": "041"
+      },
+      {
+        "name": "Civil engineering",
+        "val": "042"
+      },
+      {
+        "name": "Specialised construction activities",
+        "val": "043"
+      },
+      {
+        "name": "Import and export trade",
+        "val": "045"
+      },
+      {
+        "name": "Wholesale",
+        "val": "046"
+      },
+      {
+        "name": "Retail trade",
+        "val": "047"
+      },
+      {
+        "name": "Land transport",
+        "val": "049"
+      },
+      {
+        "name": "Water transport",
+        "val": "050"
+      },
+      {
+        "name": "Air transport",
+        "val": "051"
+      },
+      {
+        "name": "Warehousing and support activities for transportation",
+        "val": "052"
+      },
+      {
+        "name": "Postal and courier activities",
+        "val": "053"
+      },
+      {
+        "name": "Short term accommodation activities",
+        "val": "055"
+      },
+      {
+        "name": "Food and beverage service activities",
+        "val": "056"
+      },
+      {
+        "name": "Publishing activities",
+        "val": "058"
+      },
+      {
+        "name": "Motion picture, video and television programme production, sound recording and music publishing activities",
+        "val": "059"
+      },
+      {
+        "name": "Programming and broadcasting activities",
+        "val": "060"
+      },
+      {
+        "name": "Telecommunications",
+        "val": "061"
+      },
+      {
+        "name": "Information technology service activities",
+        "val": "062"
+      },
+      {
+        "name": "Information service activities",
+        "val": "063"
+      },
+      {
+        "name": "Financial service activities, including investment and holding companies, and the activities of trusts, funds and similar financial entities.",
+        "val": "064"
+      },
+      {
+        "name": "Insurance (including pension funding)",
+        "val": "065"
+      },
+      {
+        "name": "Activities auxiliary to financial service and insurance activities",
+        "val": "066"
+      },
+      {
+        "name": "Real estate activities",
+        "val": "068"
+      },
+      {
+        "name": "Legal and accounting activities",
+        "val": "069"
+      },
+      {
+        "name": "Activities of head offices; management and management consultancy activities",
+        "val": "070"
+      },
+      {
+        "name": "Architecture and engineering activities, technical testing and analysis",
+        "val": "071"
+      },
+      {
+        "name": "Scientific research and development",
+        "val": "072"
+      },
+      {
+        "name": "Veterinary activities",
+        "val": "073"
+      },
+      {
+        "name": "Advertising and market research",
+        "val": "074"
+      },
+      {
+        "name": "Other professional, scientific and technical activities",
+        "val": "075"
+      },
+      {
+        "name": "Rental and leasing activities",
+        "val": "077"
+      },
+      {
+        "name": "Employment activities",
+        "val": "078"
+      },
+      {
+        "name": "Travel agency, reservation service and related activities",
+        "val": "079"
+      },
+      {
+        "name": "Security and investigation activities",
+        "val": "080"
+      },
+      {
+        "name": "Services to buildings and landscape care activities",
+        "val": "081"
+      },
+      {
+        "name": "Office administrative, office support and other business support activities",
+        "val": "082"
+      },
+      {
+        "name": "Public administration",
+        "val": "084"
+      },
+      {
+        "name": "Education",
+        "val": "085"
+      },
+      {
+        "name": "Human health activities",
+        "val": "086"
+      },
+      {
+        "name": "Residential care activities",
+        "val": "087"
+      },
+      {
+        "name": "Social work activities without accommodation",
+        "val": "088"
+      },
+      {
+        "name": "Creative and performing arts activities",
+        "val": "090"
+      },
+      {
+        "name": "Libraries, archives, museums and other cultural activities",
+        "val": "091"
+      },
+      {
+        "name": "Activities of amusement parks and theme parks",
+        "val": "092"
+      },
+      {
+        "name": "Sports and other entertainment activities",
+        "val": "093"
+      },
+      {
+        "name": "Activities of membership organisations",
+        "val": "094"
+      },
+      {
+        "name": "Repair of motor vehicles, motorcycles, computers, personal and household goods",
+        "val": "095"
+      },
+      {
+        "name": "Other personal service activities",
+        "val": "096"
+      },
+      {
+        "name": "Activities of households as employers of domestic personnel",
+        "val": "097"
+      },
+      {
+        "name": "Goods- and services-producing activities of private households for own use",
+        "val": "098"
+      },
+      {
+        "name": "Activities of extraterritorial organisations and bodies",
+        "val": "099"
+      }
+    ],
+    "businessInfoHead": "Business Information of the Hong Kong company",
+    "businessInfoSubHeading": "In this section please provide information of the Hong Kong Company and related business to be established",
+    "selectBusinessIndustry": "Select Business Industry",
+    "descriptionOfProduct": "Description of the product name, product type, service content, service type, etc. to be transacted after incorporation",
+    "purposeOfEstablishment": "Purpose of the establishment of the Hong Kong company and expected effects",
+    "purposeOptions": {
+      "enteringBusiness": "Entering business in Hong Kong and Greater China",
+      "assetManagement": "Asset management by investing in real estate or financial assets",
+      "managingThroughInvesting": "Managing through investing in a subsidiary or affiliated company as a holding company",
+      "investorProposed": "Investor or business counterparty proposed you to establish a Singapore company",
+      "geographicalBenefits": "Geographical benefits for international transactions",
+      "diversificationDueToRegulations": "Pursuing diversification of business due to relaxed regulations",
+      "competitiveAdvantage": "Pursuit of Competitive Advantage through relaxed financial regulations",
+      "increaseTransactionalVolume": "Increase transactional volume due to low tax rate and non-transactional tax (Non-VAT)",
+      "investmentProfit": "Pursuit of investment profit due to No Capital Gain Tax"
+    },
+    "shareholders": "Shareholders",
+    "directors": "Directors",
+    "ofHKCompany": "of the Hong Kong company",
+    "shHlderSubHeading": "Please provide information on the shareholders, directors, significant controllers, and designated contact persons of the Hong Kong company.",
+    "typeOfShares": " Type of share(s) to be issued",
+    "typeShareInfo": "In the case of issuing preference shares or corporate bonds, pre-advice may be required before proceeding, such as reviewing articles of associations and legal regulations.",
+    "significantController": "Significant Controller(s)",
+    "typeOfShare": {
+      "ordinaryShares": "Ordinary Shares",
+      "preferenceShares": "Preference Shares"
+    },
+    "designatedContactPerson": "Designated Contact Person",
+    "designateToolTipInfo": "You need to delegate a person('designated contact person')                      who will be incharge of contacting in relation to your company's business, incorporation and renewal of your company, registration of documents, confirmations of the required information, and communications for various matters in respect of our services. Appointment of the designated contact person is free for up to 1 person, and if you would like to delegate 2 or more designated contact persons, an annual fee of HKD2,000 per person will be charged. The designated contact person will be delegated by your company and should be registered separately with us to protect your company's information, reduce business confusion, and prevent identity fraud. (The designated contact person must go through the same procedures as the shareholders/directors by submitting the passport copy, address proof, and personal verification.",
+    "totalShrldrName": "Total ownership cannot exceed 100%. Current total",
+    "addShldrDir": "Add Shareholder/director",
+    "sendInvitation": "Send Invitation Mail to Shareholder/Director",
+    "shareDirName": "Shareholder(s) / Director(s) Name",
+    "ownerShpRte": "Ownership Rate (%)",
+    "actDirector": "Act as a director?",
+    "isLegal": "Legal Entity(Company, Foundation)?",
+    "conditionSignificantControl": "Conditions for significant control over the Company; A person has significant control over a company if one or more of the following 5 conditions are met – 1.The person holds, directly or indirectly, more than 25% of the issued shares in the Company or, if the Company does not have a share capital, the person holds, directly or indirectly, a right to share in more than 25% of the capital or profits of the Company ; 2.The person holds, directly or indirectly, more than 25% of the voting rights of the Company ; 3.The person holds, directly or indirectly, the right to appoint or remove a majority of the board of directors of the Company ; 4.The person has the right to exercise, or actually exercises, significant influence or control over the Company ; 5.The person has the right to exercise, or actually exercises, significant influence or control over the activities of a trust or a firm that is not a legal person, but whose trustees or members satisfy any of the first four conditions (in their capacity as such) in relation to the Company.",
+    "accountHeading": "Accounting and taxation",
+    "accountingPara": "Please provide information on accounting and tax matters.",
+    "finYearEnd": "The financial year-end date of the Hong Kong company.",
+    "finYearEndTtip": " The first financial year can be set freely within 18 months from the date of incorporation. According to Article 51, Paragraph 2 of the Hong Kong Tax Law (Inland Revenue Ordinance), a profit tax return (taxable) must be filed within 4 months from the financial year-end date.",
+    "bookCycle": "Bookkeeping cycle.",
+    "implementSoftware": "Would you like to implement online accounting software - Xero?",
+    "implementSoftwaretTip": " When Xero is implemented, data created by POS or other software can be imported in CSV format to make bookkeeping and financial statements, and cash flow statements are also supported. In addition, it is helpful in preparing consolidated financial statements between holding companies and subsidiaries, as well as other functions such as inventory management, cost management, and sales management.",
+    "doYouUseSoftware": "Do you currently use or have a separate accounting software you would like to use? (if any)"
+  },
+  "AmlCdd": {
+    "legal_assessment_title": "Legal and Ethical Assessment",
+    "legal_assessment_description": "Are there any legal or ethical issues such as money laundering, gambling, tax evasion, asset concealment, avoidance of illegal business, fraud, etc.?",
+    "business_information_title": "Business Information of the Hong Kong company",
+    "business_information_description": "In this section, please provide information of the Hong Kong Company and related business to be established",
+    "dialog_initial_title": "Important Notice",
+    "dialog_initial_message": "All fields must be filled out carefully. Once completed, this form will not be editable.",
+    "dialog_button": "Got it",
+    "dialog_acknowledgement_title": "Is the data you entered correct? Please confirm.",
+    "dialog_acknowledgement_message": "I confirm that the data entered is correct.",
+    "dialog_consultation_title": "Consultation required before proceeding",
+    "dialog_consultation_message": "It seems that you will need to consult before proceeding. We will check the contents of your reply and our consultant will contact you shortly. Thank you.",
+    "dialog_consultation_button": "OK",
+    "options": {
+      "yes": "Yes",
+      "no": "No",
+      "unknown": "I/We have no idea",
+      "legal-advice": "Consider legal advice"
+    },
+    "questions": {
+      "sanctioned_countries": "Does the Hong Kong company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)?",
+      "sanctions_presence": "To the best of your knowledge, does the Hong Kong company or any of the company's connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by sanctions administered by the following bodies: UN, EU, UN/HMT, HKMA, OFAC, or as part of local sanctions law?",
+      "crimea_presence": "To the best of your knowledge, does the Hong Kong company or any of its connected or other related parties have any current or planned business activities in Crimea/Sevastopol Regions?",
+      "russian_business_presence": "To the best of your knowledge, does the Hong Kong company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
+    },
+    "acknowledgement_error": "Please accept the legal acknowledgement before proceeding.",
+    "success_message": "Company incorporation request submitted successfully!",
+    "error_message": "An error occurred while submitting the request."
+  },
+  "ServiceAgreementDocument": {
+    "title": "Company Services Agreement",
+    "section1Title": "1. Purpose of Service Agreement",
+    "section1Content": "The purpose of this agreement is to prevent any misunderstandings or disputes that may arise regarding the scope of services provided by MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED (“MIRR ASIA”) and its limitations in relation to your company, which will be incorporated soon in the HKSAR (”Client”).",
+    "section2Title": "2. Role of Hong Kong Company Secretary and Limitation of Liability",
+    "section2Content": "(Applicable only to Clients who use secretarial services provided by MIRR ASIA)",
+    "section2_1": "2.1",
+    "section2_1Content": "MIRR ASIA will be registered as a secretary in the Client’s files in accordance with the Hong Kong Companies Ordinance (Cap 622) and the Articles of Association of the Client.",
+    "section2_2": "2.2",
+    "section2_2Content": "Secretarial services provided by MIRR ASIA are basic registration requirements stipulated in the Hong Kong Companies Ordinance (Cap 622) and may be different from the general meaning of an employed secretary.",
+    "section3Title": "3. Providing Registered Address and Its Limitations of Liability",
+    "section3Content": "(Applicable only to Clients who use the registered address service provided by MIRR ASIA)",
+    "section3_1": "3.1",
+    "section3_1Content": "The address registered in the Client shall be the registered address in Hong Kong provided by MIRR ASIA. If the Client wishes to change this registered address, the Client shall notify MIRR ASIA in writing or by email.",
+    "section3_2": "3.2",
+    "section3_2Content": "The registered address provided by MIRR ASIA is for registration purposes only and does not include business or physical space for the Client.",
+    "section3_3": "3.3",
+    "section3_3Content": "The Client must not use the registered address for abusive or illegal purposes, nor falsely represent it as the Client’s actual business area.",
+    "section3_4": "3.4",
+    "section3_4Content": "Client’s incoming mail will be opened and scanned by MIRR ASIA according to the Letter of Consent during the service period, and the scanned files will be emailed to the Client. If the Client wishes to terminate the service, the Client shall notify MIRR ASIA in writing or by email in advance. If the Client has more than two directors, at least two directors according to the quorum in the Articles of Association shall sign all relevant documents.",
+    "section3_5": "3.5",
+    "section3_5Content": "The Client shall not send or request third parties to send parcels and goods to the registered address provided by MIRR ASIA without prior consent. Unagreed deliveries will be returned to the sender.",
+    "section4Title": "4. Scope of Services",
+    "section4Content": "MIRR ASIA shall provide the following services from the date of incorporation to the first anniversary date of the Client:",
+    "section4Services": {
+      "1": "Company Secretary Registration (Applicable for using the secretarial services)",
+      "2": "Maintaining statutory records of the company, including minutes of meetings and documents (Applicable for using the registered address service)",
+      "3": "Providing HK address and mailing service, including scanning and emailing (Applicable for using the registered address service)",
+      "4": "Handling Employer's Return for the first 2 employees (subject to HKD300 postal charge) (Applicable for using the secretarial services)",
+      "5": "Handling mandatory Survey of Company Information (Applicable for using the secretarial services)",
+      "6": "Preparation of Annual Return form and maintaining the copy of the Renewal form after signing by a director and being registered in the Client’s Companies Registry (Applicable for using the secretarial services after renewal)",
+      "7": "Filing and maintaining the Significant Controllers Register (Applicable for using both secretarial and registered address services)",
+      "8": "Filing and maintaining Register of Members/Directors/Secretary and Organisation Chart (Applicable for using both secretarial and registered address services)",
+      "9": "Filing and maintaining Minutes of Annual General Meeting (AGM) (Applicable for using both secretarial and registered address services)",
+      "10": "Maintaining the Business Registration Certificate at the registered office (Applicable for using the registered address service)",
+      "11": "Brief business and operational advice (Applicable for using the secretarial services)"
+    },
+    "section4_1": "4.1",
+    "section4_1Content": "The Client shall cooperate with MIRR ASIA in good faith, providing all necessary information and documents required for the Services. MIRR ASIA is not obliged to assist or advise on unlawful matters.",
+    "section4_2": "4.2",
+    "section4_2Content": "The brief business and operational advice services provided by MIRR ASIA are for the Client’s convenience; however, MIRR ASIA holds no legal responsibility for this advice.",
+    "section5Title": "5. Service Fee",
+    "section5Content": "The Client shall pay the amount specified in the payment section upon signing this agreement. The service fee does not include accounting, auditing, taxation services, bank account opening advice, or any third-party charges such as bank charges, government fees, taxes, and courier fees.",
+    "section6Title": "6. Assignment and Subcontractors",
+    "section6Content": "Neither the Client nor MIRR ASIA shall assign or transfer its rights, duties, and obligations under this Agreement without prior written consent from the other party.",
+    "section7Title": "7. Confidentiality",
+    "section7Content": "Both parties shall hold confidential all business or technical information obtained under this Agreement. This obligation does not apply to information in the public domain or obtained lawfully from others.",
+    "section8Title": "8. Integration",
+    "section8Content": "This Agreement represents the final and complete understanding between the Client and MIRR ASIA, superseding all prior communications concerning the subject matter. This Agreement takes precedence over any preprinted terms and conditions in any purchase order or other communications between the parties.",
+    "section9Title": "9. Severability",
+    "section9Content": "Any invalid or unenforceable provisions in this Agreement shall be deemed stricken, while the remaining provisions shall continue to be valid and binding. The parties shall attempt in good faith to replace any invalid provisions with those that are valid and express the original intent.",
+    "section10Title": "10. No Third Party Beneficiaries",
+    "section10Content": "This Agreement does not create any rights or benefits for third parties unless authorized in writing by MIRR ASIA.",
+    "section11Title": "11. Governing Law and Remedies",
+    "section11Content": "This Agreement shall be governed by the laws of the Hong Kong Special Administrative Region. Any disputes shall be submitted to binding arbitration in accordance with the rules of the Hong Kong Arbitration Association.",
+    "section12Title": "12. Attorney's Fees",
+    "section12Content": "In the event of mediation, arbitration, or litigation arising out of this Agreement, the prevailing party shall be entitled to reasonable costs and attorney’s fees. The Client also agrees to pay all costs incurred by MIRR ASIA in responding to any lawful demands for information, testimony, or documents.",
+    "section13Title": "13. Confirmation and Declaration",
+    "section13Content": "The Client confirms and declares that the services provided by MIRR ASIA will not be used for illegal purposes. Any changes to the information provided by Client must be notified immediately to MIRR ASIA. The Client confirms that all details provided are true and correct.",
+    "section13_1": "13.1",
+    "section13_1Content": "The Client agrees to provide necessary documentation for conducting Services and confirms that the purpose of the organization is lawful. MIRR ASIA reserves the right to discontinue Services if any illegal activity is suspected, without prior notice."
+  },
+  "ServiceSelection": {
+    "HongKongCompanyIncorporation": "Hong Kong Company Incorporation",
+    "HongKongRegistrarOfCompaniesFee": "Hong Kong Company Incorporation Government Fee to Companies Registry",
+    "BusinessRegistrationFee": "Business Registration (government) fee",
+    "CompanySecretaryAnnualServiceCharge": "Company Secretary Annual Service Charge",
+    "FiftyPercentOffFirstYear": "(50% off for 1st year)",
+    "RegisteredOfficeAddressAnnualFee": "Annual service fee for registered office address",
+    "KYCFee": "KYC / Due Diligence fee",
+    "KYCFeeLegalPerson": "KYC / Due Diligence fee For Legal Person",
+    "BankAccountOpeningFee": "Bank Account Opening Arrangement Fee",
+    "CompanyKitProducingCost": "Company Kit Producing cost",
+    "CorrespondenceAddressFee": "Correspondence Address Annual Service fee per person (optional)",
+    "BankEMIAccountOpeningFee": "Bank/EMI Account opening arrangement (optional)",
+    "IncorporationAndFees": "Incorporation and First Year Annual Fees Details",
+    "ServiceDescription": "Service Description",
+    "OriginalPrice": "Original Price",
+    "DiscountedPrice": "Discounted Price",
+    "TotalCost": "Total Cost",
+    "FREE": "FREE"
+  },
+  "InformationIncorporation": {
+    "registrationDetails": "Registration details of the Hong Kong company",
+    "registrationDescription": "In this section, please provide information on the shares, shareholders, and directors to be filed in the Hong Kong company.",
+    "paymentOfShareCapital": "Payment of the share capital",
+    "paymentTooltip": "Hong Kong is subject to the New Companies Ordinance (Cap. 622) revised as of March 3, 2014...",
+    "paymentOption_deposit": "Payment amount of the share capital will be deposited to the bank account after opening the corporate account",
+    "paymentOption_pettyCash": "Payment amount of the share capital will be made in cash, and it will be held as petty cash in the company and used for expenses when incurred",
+    "paymentOption_other": "Other",
+    "baseCurrency": "The base currency of the share capital",
+    "currencyTooltip": "It is recommended that the currency of the share capital be the same as the functional currency...",
+    "currencyOption_HKD": "HKD",
+    "currencyOption_USD": "USD",
+    "currencyOption_CNY": "CNY",
+    "currencyOption_Other": "Other",
+    "shareCapitalAmount": "The total amount of the share capital to be paid",
+    "amountTooltip": "This is the amount according to the above base currency. Example) USD 1,000",
+    "numShares": "Total number of shares to be issued (at least 1 share)",
+    "numSharesTooltip": "After establishment, capital increases such as the issuance of new shares...",
+    "amountOption_1": "1",
+    "amountOption_100": "100",
+    "amountOption_1000": "1,000",
+    "amountOption_10000": "10,000",
+    "sharesOption_total_capital_divided_by_1_par_value_per_share_1_general_convention_to_issue_the_share_in_hk": "Total capital divided by $1 (par value per share = $1; general convention to issue the share in HK)",
+    "sharesOption_1_share_at_least_1_share_to_be_issued_1_share_price_total_capital": "1 share (at least 1 share to be issued) (1 share price = total capital)",
+    "sharesOption_100_shares": "100 shares",
+    "sharesOption_1000_shares": "1,000 shares",
+    "sharesOption_10000_shares": "10,000 shares",
+    "sharesOption_others": "Others",
+    "dec31": "December 31",
+    "mar31": "March 31 (Hong Kong's fiscal year-end date)",
+    "accSoftwareCharge": "Yes (Software cost: estimated as HKD400 per month)",
+    "recRequired": "Recommendation required",
+    "bookCycle1": "Monthly",
+    "bookCycle2": "Quarterly",
+    "bookCycle3": "Half-annually (every 6 months)",
+    "bookCycle4": "Annually (every 12 months) *the lowest cost"
+  },
+  "invoice": {
+    "desc": "Description",
+    "originalPrice": "Original Price",
+    "discPrice": "Discounted Price",
+    "notes": "Notes",
+    "total": "Total (Original)",
+    "totalDisc": "Total (Discounted)",
+    "legalPersons": "Legal Persons"
+  },
+  "InfoIncorpo": {
+    "regDetails": "Registration details of the Hong Kong company",
+    "regDetailPara": "In this section, please provide information on the shares, shareholders, and directors to be filed in the Hong Kong company.",
+    "paymentOfShCap": "Payment of the share capital",
+    "payshCapttip": "Hong Kong is subject to the New Companies Ordinance (Cap. 622) revised as of March 3, 2014, so all share capitals are payable in full. As Hong Kong does not have a separate capital account like other countries, you can deposit the share capital amount after opening a corporate account. If the opening of a corporate account is delayed or there is no corporate account, the director(or a person in charge of your company's cash) can keep the capital amount and use it for the company's expenditures (as a petty cash account), and submit supporting documents of the expenditures such as expense receipts and etc. However, this is the capital payment method based on Hong Kong, and procedures and reporting obligations under the Foreign Direct Investment and Foreign Exchange Transaction Act in other countries must be separately checked and processed. In some countries, you may report the foreign direct investment through your foreign exchange bank or through the relevant government department.",
+    "baseCurrency": "The base currency of the share capital",
+    "baseCurrencytTip": " It is recommended that the currency of the share capital be the same as the functional currency to be used for accounting purposes. For example, if you trade both purchases and sales in USD, setting the share capital in USD is convenient for accounting. If this is not the case, all currencies of translations must be converted to the base currency for accounting. Please note that the currency of the share capital cannot be changed to another currency after the incorporation.  (Example: Share Capital issued in HKD cannot be changed to USD)",
+    "totalAmount": "The total amount of the share capital to be paid",
+    "totalAmtTip": "This is the amount according to the above base currency. Example) USD 1,000",
+    "numShares": "Total number of shares to be issued (at least 1 share)",
+    "numSharestTip": "After establishment, capital increases such as the issuance of new shares and transfer of shares incur additional expenses, so please carefully determine the number of shares and amount of capital. If you plan to transfer shares in the future, it is recommended that the number of shares is efficient enough in order to divide the shares according to the desired ratio. For example, issuing 10 shares at the time of incorporation, but if you want to transfer 33.33% of the total shares to another partner, the process will become complicated as it required to issue additional shares to match the proportion you wish to divide. In addition, if you wish to have a difference (eg HKD5) on the par value per share to the future investor after issuing the par value per share as HKD1 at the time of incorporation, it is recommended to consider this before you decide to issue the shares."
+  },
+  "businessIndustry": {
+    "empty": "",
+    "cropAnimalProduction": "Crop and animal production, hunting and related service activities",
+    "forestryActivities": "Forestry activities",
+    "fishingAndAquaculture": "Fishing and aquaculture",
+    "miningCoalLignite": "Mining of coal and lignite",
+    "extractionCrudePetroleumNaturalGas": "Extraction of crude petroleum and natural gas",
+    "miningMetalOres": "Mining of metal ores",
+    "quarryingNonMetalOres": "Quarrying and other mining of non-metal ores",
+    "miningSupportServices": "Mining support service activities",
+    "manufactureFoodProducts": "Manufacture of food products",
+    "manufactureBeverages": "Manufacture of beverages",
+    "manufactureTobaccoProducts": "Manufacture of tobacco products",
+    "manufactureTextiles": "Manufacture of textiles",
+    "manufactureWearingApparel": "Manufacture of wearing apparel",
+    "manufactureLeatherProducts": "Manufacture of leather and related products",
+    "manufactureWoodCorkStraw": "Manufacture of wood and of products of wood and cork, articles of straw and plaiting materials (except furniture and toys)",
+    "manufacturePaperProducts": "Manufacture of paper and paper products",
+    "printingMedia": "Printing and reproduction of recorded media",
+    "manufactureCokePetroleum": "Manufacture of coke and refined petroleum products",
+    "manufactureChemicals": "Manufacture of chemicals and chemical products",
+    "manufacturePharmaceuticals": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
+    "manufactureRubberPlastics": "Manufacture of rubber and plastics products (except furniture, toys, sports goods and stationery)",
+    "manufactureNonMetallicMinerals": "Manufacture of other non-metallic mineral products",
+    "manufactureBasicMetals": "Manufacture of basic metals",
+    "manufactureFabricatedMetals": "Manufacture of fabricated metal products (except machinery and equipment)",
+    "manufactureElectronics": "Manufacture of computer, electronic and optical products",
+    "manufactureElectricalEquipment": "Manufacture of electrical equipment",
+    "manufactureMachinery": "Manufacture of machinery and equipment n.e.c.",
+    "motorVehicleAssembly": "Body assembly of motor vehicles",
+    "manufactureOtherTransport": "Manufacture of other transport equipment",
+    "manufactureFurniture": "Manufacture of furniture",
+    "otherManufacturing": "Other manufacturing",
+    "repairMachinery": "Repair and installation of machinery and equipment",
+    "electricityGasSupply": "Electricity and gas supply",
+    "waterSupply": "Water collection, treatment and supply",
+    "sewerage": "Sewerage",
+    "wasteManagement": "Waste collection, treatment and disposal activities; materials recovery",
+    "remediationServices": "Remediation activities and other waste management services",
+    "constructionBuildings": "Construction of buildings",
+    "civilEngineering": "Civil engineering",
+    "specialisedConstruction": "Specialised construction activities",
+    "importExportTrade": "Import and export trade",
+    "wholesale": "Wholesale",
+    "retailTrade": "Retail trade",
+    "landTransport": "Land transport",
+    "waterTransport": "Water transport",
+    "airTransport": "Air transport",
+    "warehousingTransportSupport": "Warehousing and support activities for transportation",
+    "postalCourier": "Postal and courier activities",
+    "shortTermAccommodation": "Short term accommodation activities",
+    "foodBeverageServices": "Food and beverage service activities",
+    "publishingActivities": "Publishing activities",
+    "motionPictureAndMusic": "Motion picture, video and television programme production, sound recording and music publishing activities",
+    "broadcastingActivities": "Programming and broadcasting activities",
+    "telecommunications": "Telecommunications",
+    "itServices": "Information technology service activities",
+    "informationServices": "Information service activities",
+    "financialServices": "Financial service activities, including investment and holding companies, and the activities of trusts, funds and similar financial entities.",
+    "insurance": "Insurance (including pension funding)",
+    "financialAuxiliaryActivities": "Activities auxiliary to financial service and insurance activities",
+    "realEstate": "Real estate activities",
+    "legalAccounting": "Legal and accounting activities",
+    "managementConsultancy": "Activities of head offices; management and management consultancy activities",
+    "architectureEngineering": "Architecture and engineering activities, technical testing and analysis",
+    "scientificResearch": "Scientific research and development",
+    "veterinaryActivities": "Veterinary activities",
+    "advertisingMarketResearch": "Advertising and market research",
+    "otherProfessionalTechnical": "Other professional, scientific and technical activities",
+    "rentalLeasing": "Rental and leasing activities",
+    "employmentActivities": "Employment activities",
+    "travelAgency": "Travel agency, reservation service and related activities",
+    "securityInvestigation": "Security and investigation activities",
+    "buildingLandscapeServices": "Services to buildings and landscape care activities",
+    "officeAdminSupport": "Office administrative, office support and other business support activities",
+    "publicAdministration": "Public administration",
+    "education": "Education",
+    "healthActivities": "Human health activities",
+    "residentialCare": "Residential care activities",
+    "socialWork": "Social work activities without accommodation",
+    "creativeArts": "Creative and performing arts activities",
+    "culturalActivities": "Libraries, archives, museums and other cultural activities",
+    "themeParks": "Activities of amusement parks and theme parks",
+    "sportsEntertainment": "Sports and other entertainment activities",
+    "membershipOrganisations": "Activities of membership organisations",
+    "repairServices": "Repair of motor vehicles, motorcycles, computers, personal and household goods",
+    "personalServices": "Other personal service activities",
+    "householdEmployment": "Activities of households as employers of domestic personnel",
+    "householdProduction": "Goods- and services-producing activities of private households for own use",
+    "extraterritorialActivities": "Activities of extraterritorial organisations and bodies"
+  },
+  "currencies": {
+    "AED": "United Arab Emirates Dirham",
+    "AUD": "Australian Dollars",
+    "BHD": "Bahraina Dinar",
+    "BMD": "Bermudian Dollar",
+    "BND": "Brunei Dollars",
+    "BRL": "Brazilian Real",
+    "BSD": "Bahamas Dollars",
+    "CAD": "Canadian Dollars",
+    "CHF": "Swiss Francs",
+    "CLP": "Chilean Peso",
+    "CYP": "Cyprus Pound",
+    "CZK": "Czech Koruna",
+    "DKK": "Danish Kroners",
+    "ETB": "Ethiopian Birr",
+    "EUR": "Euro",
+    "FJD": "Fiji Dollar",
+    "GBP": "Sterling",
+    "HKD": "Hong Kong Dollar",
+    "HUF": "Hungarian Forint",
+    "IDR": "Indonesian Rupiah",
+    "INR": "Indian Rupees",
+    "JPY": "Japanese Yen",
+    "KHR": "Cambodian Riel",
+    "LKR": "Sri Lankan Rupee",
+    "MNT": "Mongolian Tugrik",
+    "MOP": "Macau Pataka",
+    "MUR": "Mauritian Rupee",
+    "MXN": "Mexican Peso",
+    "MYR": "Malaysian Ringgit",
+    "NIS": "New Israeli Shekel",
+    "NOK": "Norwegian Kroners",
+    "NPR": "Nepalese Rupee",
+    "NZD": "New Zealand Dollars",
+    "PHP": "Philippine Pesos",
+    "PKR": "Pakistan Rupees",
+    "PLN": "Polish Zloty",
+    "QAR": "Qatari Rial",
+    "RMB": "Ren Min Bi",
+    "RUB": "Russian Ruble",
+    "SAR": "Saudi Arabian Riyal",
+    "SEK": "Swedish Kroners",
+    "SGD": "Singapore Dollars",
+    "THB": "Thai Bahts",
+    "TK": "Currency of Bangladesh",
+    "TRY": "New Turkish Lira",
+    "USD": "United States Dollar",
+    "UYU": "Peso Uruguayo",
+    "VND": "Vietnam Dong",
+    "WON": "Korean Won",
+    "XCD": "East Caribbean Dollar",
+    "XOF": "West African CFA",
+    "XPF": "CFP Franc",
+    "ZAR": "C. South African Rand"
+  },
+  "payment": {
+    "paymentCalc": "Payment Amount Calculation",
+    "processCreditFee": "Includes a (3.5% for HKD, 6% for USD) Stripe credit card processing fee.",
+    "fnlAmtCharged": "Final Amount Charged",
+    "successPayment": "Payment successful! Thank you for your purchase.",
+    "cardDesc": "Stripe Payments (3.5% for HKD, 6% for USD)",
+    "bankDesc": "Direct bank transfer with receipt upload",
+    "fpsDesc": "Direct bank transfer via FPS",
+    "otherDesc": "Other(Cash Payment) with receipt upload",
+    "pMethods": "Payment Methods",
+    "bankDetails": "Bank Details",
+    "uploadReceipt": "Upload Receipt",
+    "pNoteCharges": "Note: All bank charges are borne by the remitter",
+    "uploadPReceipt": "Upload Payment Receipt",
+    "uploadPReceiptSuccess": "Receipt uploaded successfully. Our team will verify it shortly.",
+    "cardPayment": "Card Payment",
+    "bankTransfer": "Bank Transfer",
+    "fps": "Fast Payment System (FPS)",
+    "other": "Other Method",
+    "pInfo": "Payment Information",
+    "psExpired": "Payment Session Expired",
+    "psExpiredDesc": "Please contact support to create a new payment session",
+    "psContactSupport": "Contact Support",
+    "pCompleted": "Payment Completed",
+    "pMessage": "Thank you for your payment!",
+    "receiptEval": "Checking the Payment.",
+    "pTimer": "Payment Timer",
+    "pRemaining": "Time remaining",
+    "pContactSupport": "Need Help? Contact Our Support Team!",
+    "pContactDesc": "Are you experiencing issues with the incorporation procedures on our website? Our dedicated Help Center staff is here to assist you!",
+    "pDescription": "Our team is on hand during our opening hours to ensure that you have a smooth and enjoyable experience. Don't hesitate to reach out with any questions or concerns. We're here to help!",
+    "paymentConditions": "Payment Conditions",
+    "100CentAdvance": "100% advance payment",
+    "paymentConditionsDesc": "All payments are NON-REFUNDABLE. The remitter bears all charges of payment, which includes the remittance amount, beneficiary bank's charges, as well as all the other banks' fees (intermediary bank, etc)."
+  },
+  "usa": {
+    "title": "Company Incorporation — USA",
+    "steps": {
+      "step1": "Applicant information",
+      "step2": "AML Questions",
+      "step3": "Company Information",
+      "step4": "Service Agreement",
+      "step5": "Service Selection",
+      "step6": "Invoice",
+      "step7": "Payment",
+      "step8": "Information For Incorporation",
+      "step9": "Incorporation"
+    },
+    "usCompanyEntity": "What type of entity would you like to establish as a US company?",
+    "Section2StateQuestion": "Select the state in which you would like to incorporate your US company",
+    "Section2StateOptions": {
+      "Delaware": "Delaware",
+      "Wyoming": "Wyoming",
+      "California": "California",
+      "New York": "New York",
+      "Washington": "Washington",
+      "Washington D.C.": "Washington D.C.",
+      "State of Texas": "State of Texas",
+      "Nevada": "Nevada",
+      "Florida": "Florida",
+      "Georgia": "Georgia",
+      "UAB":"UAB",
+      "Other": "Other"
+    },
+    "AppInfo": {
+      "appInfohead": "Application for incorporation of a US company (LLC-Limited Liability Company/Corp-Corporation)",
+      "aInfPopup": "This application form must be written directly by an officer of the U.S. company (or one to be established in the future) who is the key controller in establishing the U.S. company, or must be authorized by such officer to accurately enter all information. Later, this application form will be prepared as a separate application form document when establishing the U.S. company, and the officer to be registered in the U.S. company must sign the document directly. (Proxy signature is not allowed.)  This application form and the application form documents to be signed later will be kept by our company as legal procedures for performing KYC (Know Your Customer) and Client's Due Diligence (due diligence and verification of customers) in accordance with the TCSP license and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act) and will be kept as statutory documents in the future. Therefore, please be careful not to create any distortion or errors in the content you write.",
+      "nameOfApplicant": " Name of the Applicant",
+      "emailPlaceholder": "Valid email",
+      "namePlaceholder": "Your answer",
+      "usCompName": " Proposed US company name (Please provide at least three proposed company names.)",
+      "usCompNamePopup": " The company name must be written in English, and LLC must end with “LLC” in English. For CORPORATION, please select from “Corporation”, “Incorporated”, “Limited”, “Corp.”, or “Inc.” and write it after the English name. The company name can be a combination of uppercase/lowercase/numbers/periods/commas/parentheses, and cannot contain any special characters. If there is an existing company with the same or similar company name, the company cannot be established. Accordingly, if you list three possible company names in the order of 1st/2nd/3rd choice below, we will search the registration and apply the possible company names to the registration documents in the order of your choice.",
+      "relationBtw": "Relationship between the above applicant and the US company to be established",
+      "otherInputPopUp": "you can type in the empty space inside the select box to enter custom value",
+      "PlzSelectAllApply": "Please select all that apply.",
+      "telegram": "Telegram",
+      "whatsapp": "WhatsApp",
+      "handleOwnIncorpo": "I/We can handle on our own after incorporation",
+      "didntIntedEveryYear": "If a fixed cost would be incurred every year after incorporation, I don't intend to incorporate",
+      "consultationRequired": "Consultation required before proceeding",
+      "amlCddPopup": "This section is prepared to minimize misunderstandings between us in the future by understanding the customer's business intentions and checking in advance whether the service we provide matches them. If you answer the questions accurately, we will provide advice or suggest services accordingly.",
+      "amlLegalThings": " Are there any legal or ethical issues such as money laundering, gambling, tax evasion, concealment of assets, avoidance of illegal business, bribery, fraud, etc.?",
+      "amlUsEstablishment": "After the establishment of the US company, annual renewal(registered agent, registered address service) will occur every year, and all these tasks are accompanied by an obligation to provide related expenses and documentations. Do you agree with this?",
+      "amlCddQuestion": "Questions on the subject of transaction sanctions",
+      "amlCddQPara": "This section is about whether there are transactions with countries subject to sanctions stipulated or recommended by FATF, UNGC, OFAC, etc. Please make sure to answer the related questions without any distortion or error.",
+      "plannedBusinessActivity": " Does the proposed US company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)?",
+      "otherPresence": "To the best of your knowledge, does the proposed US company or any of the company's connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by sanctions administered by the following bodies: UN, EU, UKHMT, HKMA, OFAC, or as part of local sanctions law?",
+      "planBusinesInCrimea": " To the best of your knowledge, does the proposed US company or any of its connected or other related parties have any current or planned business activities in Crimea/Sevastopol Regions?",
+      "energyPresence": "To the best of your knowledge, does the proposed US company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
+    },
+    "compInfo": {
+      "infoHeading": "Differences Between Corporations and LLCs",
+      "llc": "LLC (limited liability company)",
+      "corporation": "Corporation",
+      "ConsultationRequired": "Consultation required before proceeding",
+      "stateSelection": "State Selection",
+      "corpandLlc": "Corporation vs LLC: Key Differences",
+      "fundamentalDiff": "Understand the fundamental differences between Corporations and Limited Liability Companies",
+      "close": "Close",
+      "category": "Category",
+      "definition": "Definition",
+      "knownAsCorpo": "Known as Corporation in the U.S. and Private Limited Company in the UK.",
+      "llcProprietoryPartner": "A limited liability company, similar to a sole proprietorship or partnership (a concept not present in Korea).",
+      "corporateTax": " Corporate tax rates are fixed, and in countries with dividend taxes (e.g., U.S., Korea), double taxation (corporate tax + dividend tax) applies.",
+      "llcIncome": " In countries like the U.S., LLCs are often established to avoid double taxation. LLC income is recognized as personal income based on ownership shares, avoiding double taxation.",
+      "profitRealiz": "Profit Realization",
+      "profitDividend": "Profits are realized through dividends.",
+      "noDividend": "There is no dividend concept. Profits are recognized as personal income based on ownership shares.",
+      "retainedEarning": "Retained Earnings",
+      "dividentTaxed": "In countries where dividends are taxed, profits can be retained as retained earnings for long-term asset management, generating additional income for future tax planning.",
+      "profitPersonalIncome": "Since profits are recognized as personal income, retained earnings cannot be set aside.",
+      "otherConsideration": "Other Considerations",
+      "koreanConsideration": "For Korean residents, forming a corporation may result in double taxation (local corporate tax + Korean dividend tax). Tax planning, such as splitting dividends or reinvesting retained earnings, may be necessary.",
+      "koreanLlcRule": "For Korean residents, LLC income is recognized as personal income and reported comprehensively. Local tax rates and expected profits should be reviewed.",
+      "spclCase": "Special Cases (Crypto Industry)",
+      "cryptoLegalBusiness": "For crypto-related businesses, legal regulations and accounting standards for cryptocurrencies need to be reviewed. Some countries may tax cryptocurrencies as assets.",
+      "cryptoNotTaxed": "In some countries, cryptocurrencies are not taxed, and they may be recognized as assets. Local tax rates and withholding taxes should be reviewed.",
+      "tax": "Taxation"
+    },
+    "relation": {
+      "director-officer": "Director/Officer of the proposed US company",
+      "delegated-by-the-director": "Delegated by the director of the proposed US company",
+      "shareholder-holding-majority": "Shareholder of the proposed US company holding majority of the shares",
+      "a-pro-lawyer-accountant": "A professional(e.g. lawyer, accountant) who provides incorporation advice to the US company"
+    },
+    "bInfo": {
+      "bInfoHeading": "Business information of the proposed US company.",
+      "bInfoPara": "In this section, you can enter information about the U.S. company you wish to establish and related business.",
+      "selectIndustryItems": "Select industry (check all relevant items)",
+      "descProductName": "Description of the product name, product type, service content, service type, etc. to be transacted after incorporation",
+      "descBusinessInfo": "Description of the business activities of the proposed US company (at least 50 characters) ",
+      "enterWeb": "Enter your website address (if available)",
+      "purposeEstablish": "Purpose of establishing a US company and expected future effects",
+      "pList": {
+        "1": "Business diversification through regulatory relief",
+        "2": "A legal advisor, investor or business partner suggests forming a US company.",
+        "3": "Expanding business into various overseas countries (international business)",
+        "4": "Asset management by investing in real estate or financial assets",
+        "5": "As a holding company, the purpose is to invest in and manage subsidiaries or affiliated companies.",
+        "6": "Pursuing competitive advantage through liberal financial policies",
+        "7": "Increased transaction volume due to low tax rate and non-VAT",
+        "8": "other"
+      },
+      "iList": {
+        "1": "Cryptocurrency-related (cryptocurrency issuance, sale, donation, ICO, exchange, wallet service, etc.)",
+        "2": "Development of IT, blockchain, software, etc.",
+        "3": "Cryptocurrency-based investment-related business",
+        "4": "Cryptocurrency-based games",
+        "5": "Foreign exchange trading",
+        "6": "Finance, investment, advisory, loan business, etc.",
+        "7": "Trade industry",
+        "8": "Wholesale/retail distribution industry",
+        "9": "Consulting",
+        "10": "Manufacturing",
+        "11": "Online service industry (e-commerce)",
+        "12": "Online direct purchase/delivery/purchase agency"
+      },
+      "shrldSection": {
+        "heading": "Shareholders/officers of the proposed US company",
+        "para": "In this section, you must provide information about the members (shareholders), executives, and contact persons of the U.S. company you wish to establish.",
+        "desgContact": "Designated Contact Person",
+        "benificialOwner": "Benifical Owner",
+        "desgnToolTip": "You must designate a designated contact person to handle company-related communications. This designated contact person will be responsible for all major communications with our company, including inquiries about the company and business matters, progress checks, and registered documents. The designated contact person will have access to your company's information and documents, including mail. The designation of one contact person is free of charge. For two or more persons, there will be a fee of USD 250 per person per year. The designated contact person, designated by your company and separately registered with us, serves to protect your company's information and prevent confusion in business. (The designated contact person must submit a copy of their passport, proof of address, and undergo a verification process, similar to shareholders and officers.)",
+        "selectSignificantController": "Select significant Controller",
+        "selectBenificial": "Select Benificial Owner",
+        "selectDesignatedContact": "Enter Designated Contact Person",
+        "shareholderOfficer": "Shareholder(s) / Officer(s) Name:",
+        "ownerShp0": "Ownership is currently 0%. Please assign ownership.",
+        "ownerShip100": "Ownership perfectly distributed at 100%"
+      },
+      "accountHeading": "The location where the accounting/financial data of the proposed US company will be kept",
+      "accountingAddress": "If you store accounting statements, financial data, contracts, invoices, etc. in a country other than the United States, please enter your address below.",
+      "enterAddress": "Please enter the address where the accounting and financial data of the proposed US company will be kept."
+    },
+    "serviceSelection": {
+      "heading": "Incorporation and First Year Annual Fees Details",
+      "col1": "Service Description",
+      "col2": "Original Price",
+      "col3": "Discounted Price",
+      "totalCost": "Total Cost",
+      "otherEmi": "Other EMI(Digital Bank) account opening arrangement",
+      "usCompanyFormation": "US company formation + Company maintenance until the renewal date or anniversary date of its incorporation (standard service)",
+      "airwallex": "Airwallex Account opening arrangement",
+      "payoneer": "Payoneer Account opening arrangement",
+      "bankAdvice": "Bank account opening application and advice (separate quotation after review of business documents)",
+      "usLegalOpinion": "US legal opinion (separate quote after review of white paper)",
+      "stockLegalOpinion": "Legal opinion for listing on domestic stock exchanges (separate quote after review of white paper)",
+      "consulting": "Consulting services such as business regulatory confirmation, feasibility review, document preparation and operational advice (separate quotation)"
+    },
+    "regDetails": {
+      "heading": "Registration details of the proposed US company",
+      "htoolTip": "In this section, you can provide information such as investment capital, members (shareholders), executives, and companies to be registered in the U.S. company you are establishing.",
+      "totalPaid": "Total capital to be paid (in USD)",
+      "totalPaidTtip": "The minimum capital is USD 1, and there is no obligation to pay capital. If there are multiple shareholders or you wish to split/transfer/sell part of the capital investment ratio, please set the amount to support the number of the desired ratio (e.g. 49.99%). If you need further explanation, please contact us.",
+      "executiveTeam": "Composition of the executive team of the U.S. company you are establishing",
+      "executiveTeamTtip": "In U.S. companies, other corporations can be registered as executives, and when making decisions, representatives delegated by the corporation can participate in decision-making. In this case, you must provide a board resolution and proxy document prepared by the relevant corporation. (Due to the complexity of the document process when making decisions, it is not recommended for small companies or companies without separate experts.) A U.S. company must have at least one natural person (meaning an ordinary individual, the opposite of a legal person). must be appointed as an executive.",
+      "usLocalReg": "U.S. local company registration address",
+      "usLocalRegTtip": "To establish and maintain a U.S. company, you must have a commercial address in the state you wish to establish. Our company provides address services for use in registration purposes, and this service includes registration address and mail processing services. (It may be difficult to register the address of a residential or lodging business as a company address.)",
+      "enterUsAddress": "Please enter your business address within the United States.",
+      "totalNumShares": "Total number of shares to be issued (minimum 1 share)",
+      "additionalCosts": "Since additional costs will be incurred when issuing new stocks or acquiring shares after establishment, please carefully decide on the capital and number of shares."
+    }
+  },
+  "SwitchService": {
+    "ApplicantInfoForm": {
+      "heading": "Applicant Information",
+      "paragraph1": "This application form must be completed by the Hong Kong company's representative who is the main controller of the Hong Kong company's operations, or must be authorised by the representative to accurately enter all information.",
+      "paragraph2": "This application form and the documents you sign later will be kept by us as statutory documents and as legal procedures for conducting KYC and due diligence for our clients in accordance with the TCSP license and AMLO (Cap. 615 AMLO) guidelines. Therefore, please be careful not to create any distortion or errors in the content you fill out.",
+      "nameHeading": "Name of applicant",
+      "relationHeading": "Relationship between the above author and the Hong Kong corporation",
+      "relationSelect": "Please select all that apply.",
+      "relationList1": "Representative Director of Hong Kong Corporation",
+      "relationList2": "A person authorized by the representative director of the Hong Kong corporation",
+      "relationList3": "Major shareholder of Hong Kong corporation",
+      "relationList4": "A professional (lawyer, accountant, administrative scrivener, tax accountant, etc.) who provides advice on behalf of the representative director of a Hong Kong corporation",
+      "relationList5": "Other...",
+      "applicantName": "Name",
+      "compChinaName": "Enter chinese names for your company below (optional)",
+      "contactInfo": "Contact information of the above writer (phone number, email, SNS account ID, etc.)",
+      "phoneNum": "Phone Number",
+      "email": "Email",
+      "snsId": "SNS Account ID",
+      "snsPlatform": "SNS Platform",
+      "designatedContact": "Designated contact person",
+      "designatedContactPara": "You must designate a contact person to be in charge of your company's business contacts. This contact person will be in charge of major business contacts with our company, and will be in charge of contacting you regarding corporate and business-related inquiries, progress confirmation, and registration documents. This contact person will be able to view your company's information and documents, and will also be able to view your company's mailed documents. Designating a contact person is free of charge for up to one person, and for two or more, an annual fee of HKD2,000 will be charged per person. Your company will designate a designated contact person and register them separately with our company to protect your company's information and reduce confusion in business. (The designated contact person must submit a copy of their passport and proof of address/verify their identity in the same way as shareholders/directors.)",
+      "designatedContact1": "(Sole director concurrently serves as the designated contact person) There is one director registered with the Hong Kong corporation, and the director concurrently serves as the designated contact person",
+      "designatedContact2": "(One of the directors concurrently serves as the designated contact person) There are two or more directors registered with the Hong Kong corporation, and one of them concurrently serves as the designated contact person"
+    },
+    "Intenstions": {
+      "heading": "Confirmation of customer's business intentions",
+      "para": "This section is intended to help us understand your business intentions and to check in advance whether the services we provide are compatible with them, thereby reducing any misunderstandings between us in the future. If you answer your questions accurately, we will provide you with advice or suggest services accordingly.",
+      "legalIssues": "Does the purpose of operating the Hong Kong corporation have the potential to raise legal or ethical issues such as money laundering, gambling, tax evasion, asset concealment, evasion of the law for illegal business, or fraud?",
+      "legalIssuesYes": "yes",
+      "legalIssuesNo": "no",
+      "legalIssuesIDK": "I don't know",
+      "legalIssuesAdvice": "Consider legal advice",
+      "legalIssuesOther": "Other",
+      "maintenanceCost": "In order to maintain a Hong Kong corporation, tasks such as annual renewal, secretary service renewal, business renewal, and accounting/taxation occur every year, and all of these tasks entail related costs and obligations to provide information. Do you agree to this?",
+      "maintenanceCostYes": "yes",
+      "maintenanceCostNo": "no",
+      "maintenanceCostCanResolve": "Can be resolved in-house",
+      "maintenanceCostEveryYear": "If fixed costs are incurred every year, there is no intention to maintain it.",
+      "maintenanceCostAdvice": "Advice required before proceeding",
+      "documentsSubmission": "When conducting accounting/tax affairs for a Hong Kong corporation, you must submit all bank transaction statements, purchase data, sales data, expenditure evidence, and salary payment evidence for the accounting period without any falsification or distortion. We cannot process these documents arbitrarily or falsily. Do you agree to this?",
+      "documentsYes": "Yes (I can afford the audit costs and inquiries from the IRS regarding the overseas income claim)",
+      "documentsNo": "No (Accounting/taxes are handled in the usual way)",
+      "documentsCanResolve": "Can be resolved in-house",
+      "documentsAdive": "Advice required before proceeding",
+      "taxExemption": "Are you planning to claim tax exemption on the profits of your Hong Kong corporation by claiming offshore income?",
+      "taxExemptionPara": "Hong Kong maintains a tax-free policy for income generated outside Hong Kong by applying the territorial principle in tax policy. However, in relation to this, the country where the business is actually conducted (e.g. Korea) may impose corporate tax and transaction tax, and if you claim overseas income for tax exemption in Hong Kong, it may take considerable time and money to process the increased accounting audit costs and the investigation inquiry letter from the Hong Kong Inland Revenue Department (IRD). Therefore, if you plan to report overseas income, please prepare with this in mind.",
+      "taxExemptionYes": "Yes (I can afford the audit costs and inquiries from the IRS regarding the overseas income claim)",
+      "taxExemptionNo": "No (Accounting/taxes are handled in the usual way)",
+      "taxExemptionCanResolve": "Can be resolved in-house",
+      "taxExemptionAdvice": "Advice required before proceeding",
+      "falsifyTax": "Have you ever heard from an acquaintance that Hong Kong corporations can file tax returns without any actual (false) information, and that Hong Kong corporations do not have to pay taxes if they do not conduct business in Hong Kong? Do you have any plans to do so?",
+      "falsifyTaxPara1": "According to Article 14 of the Hong Kong Income Tax Act, income that is not generated or derived within Hong Kong is not subject to taxation within Hong Kong. However, in such cases, a separate claim must be made for overseas income, and the IAQ also requests confirmation of whether the income was generated or derived in a country other than Hong Kong, and whether tax returns and taxes were paid in that country.",
+      "falsifyTaxPara2": "In the past, a considerable number of unprofessional/unethical companies have advised their customers on this, and we have witnessed many cases where customers have filed tax returns in error and suffered significant disadvantages such as tax audits, additional taxes, surcharges, or bank account closures.",
+      "falsifyTaxPara3": "We have encountered many cases where companies that have contacted us or transferred management from other companies have had problems due to improper processing of past tax returns. Unfortunately, we cannot take on such cases, so we have not been able to provide much help. Currently, regulations on overseas tax evasion, money laundering, transfer pricing issues, and multilateral financial information exchange agreements are continuously being strengthened, and if tax returns or accounting documents are falsified, not only will we not be able to take on the case, but it will also be difficult for the client to continue to conduct business.",
+      "falsifyTaxYes": "Yes (but it is important to pay taxes, so even if there are transactions, we will proceed with tax reporting without actually operating in Hong Kong)",
+      "falsifyTaxNo": "No (I will proceed with tax reporting in the normal way and will seek advice from Mir Asia as needed)",
+      "falsifyTaxCanResolve": "Can be resolved in-house",
+      "falsifyTaxNoPlan": "I have heard of these things, but I have no plans to falsify my tax or accounting records.",
+      "falsifyTaxAdvice": "Advice required before proceeding",
+      "falsifyTaxOther": "Other"
+    },
+    "Consultation": {
+      "heading": "Consultation required before proceeding with work",
+      "para1": "I think I need some advice before proceeding with the work.",
+      "para2": "I will check the information you provided and have the person in charge contact you as soon as possible",
+      "thanks": "Thank you."
+    }
+  },
+  "serviceAgreement": {
+    "purpose1": "1. Purpose of Service Agreement",
+    "purposePara": "The purpose of this agreement is to avoid any misunderstanding or dispute that may arise regarding the scope of services provided by MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED ('MIRR ASIA') and its limitations in relation to your entity, which will be incorporated soon('Client').",
+    "rolesOfSec": "2. Roles of Company Secretary",
+    "usClientsApplicability": "(Applicable only to Clients using secretarial services provided by MIRR ASIA)",
+    "mirrSecretary": "MIRR ASIA will be registered as a secretary in the Client's files in accordance with the local regulations of entities.",
+    "secreterialServices": "Secretarial services provided by MIRR ASIA are basic registration requirements stipulated in the local law and may differ from the general meaning of an employed secretary.",
+    "regAdressProvision": "3. Provision of Registered Address",
+    "applicableRegClients": "(Applicable only to Clients who use the Registered Address service provided by MIRR ASIA)",
+    "regAddressJurisdriction": "The address registered in the Client shall be the registered address in the jurisdiction where the Client is incorporated. If the Client wishes to change this registered address, the Client shall notify MIRR ASIA in writing or by email.",
+    "restrictionsRedAdress": "The registered address provided by MIRR ASIA is for registration purposes only and does not include any business or physical premises of the Client.",
+    "clientRegAdressRestriction": "The Client shall not use the registered address for any abusive or illegal purpose or falsely represent it as the Customer's actual place of business.",
+    "clientNotsendParcels": "The Client shall not send any parcels or goods to the registered address provided by MIRR ASIA without prior consent, nor shall the Client authorise any third party to do so. Unauthorised deliveries will be returned to the sender.",
+    "scopeServices": "4. Scope of Services",
+    "mirrAsiaScopes": " MIRR ASIA will provide the following services and the services may be provided in collaboration with a local professional firm at the discretion of MIRR ASIA.",
+    "compFormReg": "Company Formation/Registration",
+    "compSec1Year": "Company Secretary Registration for 1 year",
+    "appUsSecretServices": "(Applicable for use of secretarial services)",
+    "maintenanceClientRec": "Maintenance of client records",
+    "applicableUsRegAdd": "(Applicable for use of registered address service)",
+    "provOfRegAddress": "Provision of registered address and mailing service for 1 year",
+    "excludeJunk": ", but may exclude junk and private mail.",
+    "useRegAddressService": "(Applicable for use of registered address service)",
+    "obtainEin": "Obtaining EIN,",
+    "irsProcessing": " but the processing time will depend on IRS work processing and delivery of the mail. MIRR ASIA does not guarantee the processing time which is beyond the control of MIRR ASIA.",
+    "briefBussiness": "Brief business and operational advice",
+    "clientCooperation": "The Client shall cooperate with MIRR ASIA in good faith and provide all necessary information and documents required for the Services. MIRR ASIA shall not be obliged to assist or advise on illegal matters.",
+    "clientAccuracyData": "The Client shall ensure the accuracy of the personal data provided to MIRR ASIA in connection with this agreement and shall provide MIRR ASIA with all legal documents required by MIRR ASIA.",
+    "briefBusinessOp": " The brief business and operational advice provided by MIRR ASIA is for the convenience of the Client, however, MIRR ASIA does not assume any legal responsibility for such advice.",
+    "serviceFee": "5. Service Fee",
+    "clientPayAmount": "The Client shall pay the amount specified in the payment section upon signing this agreement. Unless the service is deemed to be difficult to perform from a reasonable and objective perspective, or MIRR ASIA refuses the service at its own discretion in relation to this agreement, the service fee already paid will not be refunded.",
+    "assignSubContractor": "6. Assignment and Subcontractors",
+    "neitherClientMirrasia": "Neither the Client nor MIRR ASIA shall assign or transfer its rights, duties and obligations under this agreement without the prior written consent of the other party.",
+    "confidentiality": "7. Confidentiality",
+    "partiesConfidential": " Both parties shall keep confidential any business or technical information obtained under this agreement. This obligation does not apply to information in the public domain or lawfully obtained from others.",
+    "entireAgreement": "8. Entire Agreement",
+    "agreementConstitues": " This agreement constitutes the entire agreement between the parties with respect to the subject matter hereof and supersedes all prior and contemporaneous understandings between the parties, whether written or oral, with respect to the subject matter hereof, except that the representations and warranties made by the company members/directors in the registration application required by MIRR ASIA shall be classified separately from this agreement and shall remain in full force and effect in accordance with the current compliance policy.",
+    "severability": "9. Severability",
+    "provisionAgreementBreach": "Any provision of this agreement that is in breach of any law or regulation shall be deemed severable and all remaining provisions shall remain valid and binding on the parties. The Client and MIRR ASIA will attempt in good faith to replace any invalid or unenforceable provision of this agreement with a valid and enforceable provision that comes as close as possible to the intent of the original provision.",
+    "thirdNoParty": "10. No Third-Party Beneficiaries",
+    "agrementNoRightsBenifit": "This agreement does not create any rights or benefits for third parties unless authorised in writing by MIRR ASIA.",
+    "limitationLiability": "11. Limitation of Liability",
+    "clientSufferDamage": "If the Client suffers damage due to the fault of MIRR ASIA in connection with this agreement, MIRR ASIA shall only be liable for direct damage suffered by the Client and the limit of liability shall be limited to the amount paid by the Client in connection with the Service. MIRR ASIA shall not be liable for any delay or failure to perform due to force majeure.",
+    "forceMaj": "12. Force Majeure",
+    "performanceAgrementImposible": "If performance of the agreement is impossible due to force majeure, such as acts of God, war, riot or government regulation, both parties shall be relieved of liability.",
+    "independentContractor": "13. Independent Contractor",
+    "zindipendentMirrasiaContract": "MIRR ASIA is an independent contractor and nothing in this agreement shall be construed to create an employer-employee relationship between Client and MIRR ASIA.",
+    "amendMents": "14. Amendments",
+    "amendtoAgrement": "Amendments to this agreement may only be made by written agreement of both parties. Express agreement by email, social media or instant messaging shall also be deemed written agreement.",
+    "noticeCommunication": "15. Notices and Communications",
+    "allNoticesAgreementShall": "All notices relating to this agreement shall be in writing and sent to the other party's address or email address. Communications by email, social media or instant messaging are legally binding and will be considered part of the agreement. Both parties are obliged to regularly check the email or social media accounts with which they have agreed to communicate or with which they have consistently communicated.",
+    "governLawRemedy": "16. Governing Law and Remedies",
+    "unlessOtherwiseSchdule": " Unless otherwise provided in an Schedule, this agreement shall be governed by and construed in accordance with the laws of the Hong Kong Special Administrative Region without regard to its conflict of laws provisions. In the event of any claim, dispute or other matter in dispute between the parties, the Client and MIRR ASIA agree to submit the matter to binding arbitration in accordance with the then existing rules of the Hong Kong International Arbitration Centre (HKIAC).",
+    "attorneyFee": "17. Attorney's Fees",
+    "mediationArbitration": "In the event of any mediation, arbitration or litigation arising out of this agreement, the prevailing party shall be entitled to reasonable costs and attorneys' fees. The Client also agrees to pay all costs incurred by MIRR ASIA in responding to any lawful request for information, testimony or documents.",
+    "confirmDeclaration": "18. Confirmations and declarations",
+    "clientConfirmPurpose": "The Client confirms that the purpose of the request for this service and the funds to be received in the future are not related to or derived from illegal activities such as illegal weapons, money laundering, terrorist financing, illegal drugs or fraud. MIRR ASIA reserves the right to suspend the service without prior notice if any illegal activity is suspected. The Customer agrees to provide the necessary documents and information in connection with this Service and agrees that such documents and information may be provided to institutions, government agencies and companies that are essential to the provision of the Service.",
+    "checkBox": "I have read and agree to the terms and conditions outlined in this Service Agreement. I understand that by checking this box and clicking 'Accept Agreement', I am entering into a legally binding agreement with MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED.",
+    "agreeSa": "Accept Agreement"
+  },
+  "finalMsg": {
+    "congrats": "Congratulations!",
+    "usPara": "Thank you for completing the USA company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.",
+    "hkPara": "Thank you for completing the Hong Kong company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.",
+    "sgPara": "Thank you for completing the Singapore company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.",
+    "returntoDash": "Go to Dashboard"
+  },
+  "hk_shldr": {
+    "heading": "Registration form for HK company's director/member/controller",
+    "p1": "If an individual is registered as a shareholder/director of a Hong Kong company, please fill out this application form.",
+    "p2": " This application was written in the form of a questionnaire about the necessary information for the registration of members of the Hong Kong company (shareholders, directors, significant controllers,contact persons, etc.). If, like a holding company, the shareholders of a Hong Kong company are not natural persons, Please fill out the company application form.",
+    "p3": "The questions may be difficult for some customers, or it may take some time to answer. Accordingly, we ask that you answer step-by-step when you have the time available and submit the relevant documents.",
+    "p4": "If you have any difficulties or do not understand well in writing, please contact us at the contact information below.",
+    "compName": "Company Name to be registered/appointed",
+    "compNamePlaceholder": "Enter company name",
+    "rolesPlayed": "Roles to be played by the Hong Kong company (multiple possible)",
+    "rolesPlayedInfo": " The designated contact person is responsible for contacting the company's main business, and the person is in charge of contacting company and business related inquiries, confirmation of progress, and registration documents. Your company must delegate at least one contact person who will be in charge of business contact, and the contact person can access your company's information and documents, as well as your mail contents. Appointment of contact person is free for up to 1 person, and in case of 2 or more people, an annual fee of HKD2,000 per person is incurred. The designated contact person is designated by your company and registered separately with us to protect your company's information and reduce confusion. (The designated contact person must go through the same procedure as the shareholders/directors to submit passport copies and proof of address documents/personal verification.)",
+    "signiControl": "Significant Controller",
+    "signiControlInfo": "The significant controller refers to a person who is the largest shareholder or can exert a corresponding influence compared to other shareholders even if he or she owns 25% or more of the company's shares or less than that.",
+    "fullName": "Full Name",
+    "fNamPlacHldr": "Your full name",
+    "mobilHlder": "Your mobile phone number",
+    "kakaoHlder": "Your KakaoTalk ID",
+    "wechatHldr": "Your WeChat ID",
+    "passport": "Upload passport copy",
+    "passportInfo": "Upload 1 supported file: PDF, drawing, or image. Max 10 MB.",
+    "certifiedPass": "Upload Certified True Copy of Passport (within 3 months from issuance date)",
+    "chooseHead": "Choose one of the following documents:",
+    "chList1": "Take a photo with your passport and upload it.",
+    "chList2": "Get a Certificate of Passport Copy from the ward office and upload it.",
+    "chList3": "Go to the notary office and notarize your passport and upload it.",
+    "chList4": "Visit Mirr Asia Seoul office (near Nonhyeon Station) and authenticate a copy of your passport.",
+    "chList5": "Upload up to 5 supported files: PDF, drawing, or image. Max 10 MB per file.",
+    "uploadProof": "Upload proof of address (within 3 months from issuance date)",
+    "upHead": "Choose one of the following documents:",
+    "up1": "English translation for overseas residents",
+    "up2": "Driver's license translated into English and notarized",
+    "up3": "Utility Bill or Bank Statement for overseas residents",
+    "up4": "Other officially certifying address English documents or English translation notarized",
+    "upPara": "Upload up to 5 supported files: PDF, drawing, or image. Max 10 MB per file.",
+    "first4Pass": "First 4 digits of passport number",
+    "first4PassInfo": "Enter the first 4 digits",
+    "countryBirth": "Country of birth",
+    "countryBirthInfo": "Enter your country of birth",
+    "currentRedsidency": "Current country of residence",
+    "cRInfo": "Enter your current country of residence",
+    "participateNominee": "Are you planning to participate as the nominee or trustee on behalf of or on behalf of the actual owner or representative of the Hong Kong company you wish to establish?",
+    "whatAddress": "What address do you want to register as a Correspondence Address that is open to the public?",
+    "whatAddressInfo": "The residence address of the individual director is registered as private information, and only the communication address is disclosed to the public.",
+    "overSeasResident": "Are you an overseas resident other than Hong Kong and are you subject to reporting of overseas corporation establishment or foreign direct investment?",
+    "osRGuide": "See the guide slide below",
+    "foreignDirectRep": " Have you filed a foreign direct investment report or are you planning to proceed with the above information?",
+    "accordanceLaws": "In accordance with the laws of your country, you might be obligated to report foreign direct investment as a resident of your country. However, we are a company located in Hong Kong, and as we provide service related to establishing a company in Hong Kong, we are not responsible for direct or indirect responsibility of reporting foreign direct investment issue. Do you agree with this?",
+    "politicalExposePersn": "Politically Exposed Person",
+    "ppExpInfo": "Political key figures are those who have political or social influence in their own country or internationally in the present or in the past, or their immediate family members. For example, high-ranking managers of government agencies, political parties, social groups, international NGOs, international organizations or state-owned enterprises, or their immediate family members are all political figures. In accordance with the recently strengthened anti-money laundering laws, those who are politically important should clearly inform them.",
+    "politicalExplainDetails": "If you are a political person, please provide details of the position held and association",
+    "ppEInfo": "Describe your position, affiliation, length of service, or family relationship",
+    "pendingThretenClaim": "Do you have any pending or threatened claims or have you ever been convicted of any crimes/fraud under a court of law or under any investigation of any nature or involved in legal proceedings?",
+    "youCitizen": "Are you a citizen, permanent resident, or resident of the United States?",
+    "iitnNum": "If applicable to the above, fill in the relevant information such as ITIN number, Visa number, Green Card number, etc.",
+    "iitnInfo": "Enter relevant information",
+    "natureOfFunds": "After the establishment of this Hong Kong company, what is the nature of the funds you will accumulate business capital or deposit to your bank account in the future and the main sources of the funds? (Multiple selection possible)",
+    "sourceOfFunds": " What is the source of the funds you would like to invest or lend to a company or deposit in a Hong Kong company's bank account after the establishment of this Hong Kong company?",
+    "countryFundsFlow": "Please write down the country from which the fund flows from the two questions above.",
+    "ccFInfo": "Enter country of fund origin",
+    "isBankrupt": "Are you currently undischarged bankrupt?",
+    "isBnkInfo": "In accordance with Article 480, Paragraph 1 of the Company Ordinance (Cap.622), persons in the process of defaulting on debt shall not participate in the company's management, either directly or indirectly, as a director of the company without permission from the court. Violations of these provisions may result in a fine of HK$700,000 and imprisonment of two years upon prosecution and, on summary conviction, to a fine of $150,000 and to imprisonment for 12 months.",
+    "violatedLaw": "In the past, have you established/joined/participated in a company/organization/business/joint venture/branch/contact office as a director/shareholder/cooperative/individual business entity in Hong Kong or have you ever violated company ordinances/tax ordinances/other laws due to refusal to subpoena a court subpoena, false report of submitted documents, etc., or have you ever been forcibly dissolved in accordance with a court order due to prosecution/bankruptcy/criminal violations?",
+    "anyQuestionsApply": "If any of the above questions apply, please describe your company name and related information.",
+    "enterDetails": "Enter details",
+    "agreeDocsInfo": "You agree to provide documents and information for our business in connection with this service, and in connection with this service, you agree that the purpose of establishing and operating the company is legitimate and for legitimate business. In operation after the establishment of a company, the Company is not obligated to provide assistance or advice on matters that violate the law, and if it is judged that there is a legal violation or related intention, the Company will suspend the service after a certain period of notice. You have the right to do it. You and the signatory of this application declare that all statements are true, complete, and correct to the best of my knowledge. Do you agree with this?",
+    "thankYu": "Thank you! We will check the contents of your reply and our consultant will contact you shortly.",
+    "complete": "Complete"
+  },
+  "shldr_viewboard": {
+    "viewTitle": "Shareholder/Director Registration",
+    "viewDesc": "Important information about your role",
+    "viewPara": "You have been allotted as a shareholder/director. Please register your details to proceed.",
+    "associatedComp": "All Associated Companies",
+    "associatedDescComp": "Complete list of all companies you're associated with",
+    "action": "Action",
+    "register": "Register",
+    "fullName": "Full Name",
+    "signiControl": "Significant Controller",
+    "edit": "Edit"
+  },
+  "shldrOptions": {
+    "roleMaj": "Major shareholder (holding the largest stake)",
+    "roleGs": "General shareholder",
+    "roleNs": "Nominee Shareholder",
+    "roleCeo": "CEO",
+    "roleGen": "General executive director",
+    "roleNd": "Nominee Director",
+    "roleDcp": "Designated Contact Person",
+    "roleEtc": "ETC",
+    "sigNiConS1": "Holds 25% or more of the company's total shares",
+    "sigNiConS2": "Holds less than 25% of the company's total shares, but has a higher stake than other shareholders (largest shareholder)",
+    "sigNiConS3": "Holds less than 25% of the company's total shares, but the same as the share of other shareholders (e.g., 20% of shares out of 5 shareholders)",
+    "sigNiConS4": "The entire share of the company is owned by another holding company, and I own 25% or more of the holding company.",
+    "sigNiConS5": "The entire stake of the company is owned by another holding company, and I own less than 25% of the holding company, but the share is higher than other shareholders (the largest shareholder of the holding company).",
+    "sigNiConS6": "The entire share of the company is owned by another holding company, and I own less than 25% of the holding company, but the same as the share of other shareholders (e.g., 20% of the holding company, 5 shareholders).",
+    "sigNiConS7": "Do not know or do not understand",
+    "coresAddres": "Use residential address as the correspondence address",
+    "coresAddres1": "Use registered business address as a correspondence address (annual service fee of HKD 500 / billed per person)",
+    "coresAddress2": "Use a different address as a correspondence address (requires proof of address)",
+    "dontKnow": "Do not know",
+    "handleIssue": "I can handle this issue",
+    "consultationReq": "Consultation required",
+    "pep1": "If you have worked for a current or past public office, or if there is such a person in your family",
+    "pep2": "If you worked as a senior manager at a government agency, political party, social group, international NGO, etc.",
+    "pep3": "Present or past politically or socially influential person, or someone in your family",
+    "pepNone": "None",
+    "optionsDoNotProvide": "I do not want to provide information",
+    "natureFunds": "After the establishment of the company, profits will be generated through business such as sales",
+    "fundsFromSales": "After incorporation or registration, the funds for the sale of assets will flow into the account",
+    "ownerInvestLoad": "After incorporation or registration, the actual owner will deposit investment or loan funds",
+    "groupParentInvestment": "After incorporation or registration, the group or parent company will pay investment funds",
+    "sourceFunds": "Investments or loans will be paid to the Hong Kong company, and these funds are profits from other businesses in the past.",
+    "assetSaleFunds": "Investments or loans will be paid to the Hong Kong company, which is generated from the sale of assets owned by the company in the past.",
+    "borrowedFunds": "Investment funds or loans will be paid to the Hong Kong company, and these funds are loans (borrowed) from others.",
+    "ownerPaidFunds": "Investments or loans will be paid to the Hong Kong company, and these are funds that other substantial owners wish to pay through their own.",
+    "earnedIncome": "Investments or loans will be paid to the Hong Kong company, which is earned income from past tenure.",
+    "affiliatedCompFunds": "Investments or loans will be paid to the Hong Kong company, and these funds are paid by the company or group to which the person is affiliated.",
+    "bankOwnedFunds": "Investments or loans will be paid to the Hong Kong company, and these funds were deposited in and owned by the bank.",
+    "noPlanSmallAmount": "There is no plan to pay investment or loans to the Hong Kong company, and even if there is, it is a small amount, so this will be paid from the funds deposited in the bank."
+  },
+  "Singapore": {
+    "company": "Company Name",
+    "relationBtwcompApplicant": "Relationship between the above applicant and the Singapore company to be established",
+    "headingInfor": "The form must be filled out by the representative of the Singapore company (which will be established later; hereinafter stated as 'the Singapore company'), who is the significant controller in establishing the Singapore company or has been commissioned by the representative to enter all information correctly.This form with your answers will be kept in our company as the KYC and Client Due Diligence documents. Therefore, please be careful not to cause any distortion or errors in your answers.",
+    "compInfo": " The company name must be written in basic English, and end with 'Pte. Ltd.'. If there is a previously established company with the same or similar corporate name, it cannot be accepted. Accordingly, if you enter the three possible company names at the bottom in the order of 1st choice, 2nd choice, 3rd choice, we will check the registration and apply the possible company names to the registered document in the order of your choice.",
+    "rList": {
+      "r1": "Director of the Singapore company",
+      "r2": "Delegated by the director of the Singapore company",
+      "r3": "Shareholder of the Singapore company holding majority of the shares",
+      "r4": "A professional(e.g. lawyer, accountant) who provides incorporation advice to the Singapore company"
+    },
+    "amlCddHeading": "Confirmation of client's business intention",
+    "amlCddInfo": "This section is intended to reduce misunderstandings between each other in the future by identifying the client's business intentions and checking in advance whether they match the services we provide. Please answer the questions accurately and we will offer our services accordingly.",
+    "clientPurpose": "Does the purpose of incorporating a Singapore company raise legal or ethical issues such as money laundering, gambling, tax evasion, asset concealment, evasion of the law for illegal business, fraud, etc.?",
+    "clientAnnualRenew": "After the incorporation of a Singapore corporation, there will be tasks such as annual renewal, secretary service renewal, business renewal, accounting/taxation, etc., and all of these tasks entail related costs and obligations to provide information. Do you agree to this?",
+    "clientAccountTax": "When conducting accounting/tax affairs for a Singapore corporation, you must submit all bank transaction statements, purchase data, sales data, expenditure evidence, and salary payment evidence for the accounting period without any falsification or distortion. We cannot process these documents arbitrarily or falsily. Do you agree to this?",
+    "singFollowingCompaniesActivity": "Does the Singapore company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)?",
+    "SgIsConnectedIranSudanetc": "To the best of your knowledge, does the Singapore company or any of the company’s connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by the following bodies: UN, EU, UKHMT, HKMA, OFAC, as part of local sanctions law?",
+    "SgCrimeaSevastapl": "To the best of your knowledge, does the Singapore company have any current or planned business activities connected or other related parties in Crimea/Sevastopol Regions?",
+    "sgRussiaEnergy": "To the best of your knowledge, does the Singapore company have any current or planned exposure to Russia in the energy (oil/gas) sector, the military, or defense?",
+    "bInfoSgComp": "Business information of the Singapore company",
+    "bInfoPara": "In this section, please provide information of the Singapore company and related businesses to be established.",
+    "bInfoDescProdName": "Description of the product name, product type, service content, service type, etc. to be transacted after incorporation",
+    "bInfoSingSecondIndustries": "Please list the Singapore corporation's main and secondary industries.",
+    "purposeEstablisSingapore": "Purpose of the establishment of the Singapore company and expected effects",
+    "bInfoAddressReg": "Business address as registered in Singapore",
+    "bInfoAddRegParaInfo": "A Singapore corporation must have a commercial address in Singapore to establish and maintain a corporation. We provide a registered address service, which includes a registered address and mail handling service. (Residential or accommodation addresses cannot be registered as corporate addresses.)",
+    "shareHldrDirec": "Shareholders/Directors of the Singapore company",
+    "shrContrlParaInfo": "The significant controller is the person who has the final and practical decision-making power of the company.",
+    "designatedContInfo": "You need to delegate a person('designated contact person') who will be in charge of contacting in relation to your company's business, incorporation and renewal of your company, registration of documents, confirmations of the required information, and communications for various matters in respect of our services. Appointment of the designated contact person is free for up to 1 person, and if you would like to delegate 2 or more designated contact persons, an annual fee of USD250 per person will be charged. The designated contact person will be delegated by your company and should be registered separately with us to protect your company's information, reduce business confusion, and prevent identity fraud. (The designated contact person must go through the same procedures as the shareholders/directors by submitting the passport copy, address proof, and personal verification.)",
+    "plzFillShrDir": "Please Fill Shareholder/Director",
+    "legalEntityF": "Legal Entity Company/ Foundation?",
+    "actions": "Actions",
+    "add": "Add",
+    "industries": {
+      "i1": "Trade",
+      "i2": "Wholesale/retail distribution business",
+      "i3": "Consulting",
+      "i4": "Manufacturing",
+      "i5": "Investment and advisory business",
+      "i6": "E-commerce",
+      "i7": "Online direct purchase/shipment/purchase agency",
+      "i8": "IT and software development",
+      "i9": "Cryptocurrency related business (ICO, exchange, wallet service, etc.)"
+    },
+    "purpose": {
+      "p1": "Business entry and expansion",
+      "p2": "Asset management by investing in real estate or financial assets",
+      "p3": "Managing through investing in a subsidiary or affiliated company as a holding company",
+      "p4": "Investor or business counterparty proposed you to establish a Singapore company",
+      "p5": "Geographical benefits for international transactions",
+      "p6": "Pursuing diversification of business due to relaxed regulations",
+      "p7": "Pursuit of Competitive Advantage through relaxed financial regulations",
+      "p8": "Increase transactional volume due to low tax rate and non-transactional tax (Non-VAT)",
+      "p9": "Pursuit of investment profit due to No Capital Gain Tax"
+    },
+    "mirraddress": "Use of Mir Asia’s Singapore Corporation Registration Address Service",
+    "ownAddress": "Have a separate address to use as your business address in Singapore (does not use Mir Asia's registered address service)",
+    "fyEndSgComp": "The financial year end date(FYE) of the Singapore company",
+    "fyEndSgCompInfo": "Important dates related to accounting and tax reporting: 1) Deadline for preparation of Accounting and Audit Report (S201): Within 3 months from the financial year end 2) Deadline for submission of Estimated Chargeable Income (ECI) Submission to Income Tax (IRAS): Within 3 months from the financial year end 3) Annual General Meeting (S175): To be held within 6 months from the financial year end* 4) ACRA Annual Return (S197): To be registered within 1 month from the AGM date 5) IRAS Company Tax Filing (Form C or CS for the last financial year end): To be filed by 30 November every year * The first AGM must be held within 18 months from the date of incorporation. ** The interval between AGMs should not exceed 15 months.",
+    "regBsnsService": "Registered business address service for one year",
+    "crpSecAnnualServ": "Corporate Secretary annual service",
+    "accPackageSixMonths": "Accounting package for 6 months (No of transaction is less than 120) - Prepayment",
+    "sgCompIncorporation": "Singapore company incorporation",
+    "nomineeDirectorService": "Nominee director annual service(Renewed every year *Registration of local directors required)",
+    "infoRegSingaComp": "Information on the registry of your Singapore company",
+    "infoRegSingaCompPara": "A Singapore company is obligated to pay the capital established at the time of incorporation. In Singapore, there is no separate capital account, so you can deposit the set-up capital in a bank or keep it in cash and spend it when expenses arise. However, this is the capital payment method based on Singapore.",
+    "baseCurrencyInfo": "It is recommended that the currency of the share capital be the same as the functional currency to be used for accounting purposes. For example, if you trade both purchases and sales in USD, setting the share capital in USD is convenient for accounting. If this is not the case, all currencies of translations must be converted to the base currency for accounting. Please note that the currency of the share capital cannot be changed to another currency after the incorporation.  (Example: Share Capital issued in HKD cannot be changed to USD)",
+    "shareCapitalAmountInfo": "Additional costs are incurred for capital increase such as issuance of new shares and transfer of shares after incorporation. If you plan to transfer shares in the future, it is recommended that you divide the number of shares according to the desired ratio. For example, after issuing 10 stocks at the time of incorporation, if you want to transfer 33.33% of the total to another person, the process becomes complicated, such as having to issue new stocks to match the number of stocks. Also, after issuing the par value of SGD1 at the time of incorporation, if you want to provide a difference (eg SGD5) for the par price per share for future investors, it is recommended to issue this in consideration.",
+    "totalCapPaid": "Total capital to be paid",
+    "totalCapPaidInfo": "The universal capital is SGD1,000, and the amount of capital can be set according to the operating situation of the company. The established capital must be paid to the company account within one year after incorporation, and this must be recognized in the financial statements for compliance with regulations. (Capital increase and transfer/acquisition separate charge can be processed)",
+    "shreHldrStructure": "Shareholders and governance structure of the Singapore corporation to be established",
+    "shrHldrStructureInfo": " If an individual owns shares in a corporation called A, it is called a single layer structure. If corporation A owns more than half of the shares in corporation B, it is called a double layer structure. Also, if corporation B owns more than half of the shares in corporation C, it is called a triple layer structure. In cases where multiple complex hierarchies are formed in this way, it becomes considerably difficult to open a bank account.",
+    "payMntOpt1": "Payment amount of the share capital will be deposited to the bank account after opening the bank account",
+    "payMntOpt2": "Payment amount of the share capital will be made in cash, and it will be held as petty cash in the company and used for expenses when incurred",
+    "infoRegSingComp": "Information on the registry of your Singapore company",
+    "bkeepop1": "One individual owns 100% of the shares (single structure)",
+    "bkeepop2": "Two or more individuals own 100% of the shares (single structure)",
+    "bkeepop3": "Korean corporation owns 100% of the shares as a holding company (single structure)",
+    "bkeepop4": "A (foreign) corporation established in a country other than Korea owns 100% of the shares as a holding company (single structure)",
+    "bkeepop5": "Corporations and individuals own shares of a Singapore corporation as shareholders (single structure)",
+    "bkeepop6": "The holding company is structured in a double layer structure",
+    "bkeepop7": "The holding company is structured in a triple layer structure",
+    "finalSgTake": "Thank you for completing the Singapore company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.",
+    "congrats": {
+      "steps": {
+        "1": {
+          "t": "Step 1 — Compliance review",
+          "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1–2 business days."
+        },
+        "2": {
+          "t": "Step 2 — Filing with Companies Registry",
+          "s": "We will file the incorporation documents."
+        },
+        "3": {
+          "t": "Step 3 — Registration certificates",
+          "s": "Expected: Certificate of Incorporation & Business Registration within a week."
+        },
+        "4": {
+          "t": "Step 4 — Bank/EMI account",
+          "s": "If selected, we arrange an account opening with your preferred bank/EMI."
+        }
+      }
+    },
+     "serviceSelection": {
+      "cardTitle": "Pricing & Quote",
+
+      "preQuestions": {
+        "title": "Pre-Questions (auto-applies to the quote below)",
+        "q1": {
+          "label": "Do you have a Singapore-based individual who can act as your company’s local director?",
+          "yes": "Yes, we can appoint an internal local director",
+          "no": "No, nominee director is required"
+        },
+        "q2": {
+          "label": "Security Deposit for nominee director:",
+          "deposit": "Security deposit USD 2,000",
+          "prepay": "Prepay accounting/tax USD 2,000"
+        },
+        "helper": "Choices above will toggle the security/prepay options in the initial cost below."
+      },
+
+      "table": {
+        "title": "Incorporation + First Year",
+        "columns": {
+          "item": "Item",
+          "price": "Price",
+          "selected": "Selected"
+        },
+        "rows": {
+          "companyIncorporation": "Company Incorporation (filing)",
+          "companySecretary": "Company Secretary (1 year)",
+          "registeredAddress": "Registered Address (1 year)",
+          "nomineeDirector": "Nominee Director (1 year)",
+
+          "acctTaxPrepayTitle": "[Optional] Accounting/Tax Prepayment",
+          "acctTaxPrepayDesc": "(i) Bookkeeping & CIT filing for the first YA. Alternative to a nominee director deposit.",
+
+          "ndDepositTitle": "[Optional] Nominee Director Deposit",
+          "ndDepositDesc": "(i) Refundable upon 1-month prior written termination notice.",
+
+          "bankAdvisory": "Bank Account Advisory (optional)",
+          "emiAccount": "EMI e-Account Opening (basic) Free",
+
+          "initialMandatoryTotal": "Initial mandatory total",
+          "totalInclOptions": "Total incl. options",
+          "footnote": "Assumes standard profile (≤5 individual shareholders). Notarization/translation/apostille & complex KYC are extra."
+        }
+      },
+
+      "toast": {
+        "sessionTitle": "Payment Session Initiated",
+        "sessionDesc": "Can't select extra items once payment session initiated"
+      }
+    }
+  },
+  "mirrasisaSSL": "MIRR ASIA BUSINESS ADVISORY & SECRETARIAL SERVICES LIMITED",
+  "aml": {
+    "amlEstablishment": "After the establishment of the company, annual renewal(registered agent, registered address service) will occur every year, and all these tasks are accompanied by an obligation to provide related expenses and documentations. Do you agree with this?",
+    "plannedBusinessActivity": " Does the proposed company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)?",
+    "otherPresence": "To the best of your knowledge, does the proposed company or any of the company's connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by sanctions administered by the following bodies: UN, EU, UKHMT, HKMA, OFAC, or as part of local sanctions law?",
+    "planBusinesInCrimea": " To the best of your knowledge, does the proposed company or any of its connected or other related parties have any current or planned business activities in Crimea/Sevastopol Regions?",
+    "energyPresence": "To the best of your knowledge, does the proposed company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
+  },
+  "panama": {
+    "title":"Company Incorporation — Panama",
+    "rolesWarning": "Invalid Roles",
+    "rolesWarningInfo": "Please ensure that the roles of President, Treasurer, and Secretary are assigned correctly.",
+    "headInfo": "This application must be completed or authorised by the principal of the company (being formed) who is the primary controller of the company to ensure that all information is entered correctly. This application will be prepared as a separate application form document when the company is being formed and signed by the principal of the company.This application form and the subsequent application form documents to be signed will be kept on file with us as statutory documents for the purpose of conducting KYC and due diligence on you in accordance with the TCSP Licence and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act; Cap. 615 AMLO) guidelines, so please ensure that there are no distortions or errors in the information provided.",
+    "compNameInfo": "The name must end with the words 'Sociedad Anonima', 'Corporation', 'Incorporated' or their abbreviations 'S.A.', 'Corp.', 'Inc.' and if there is an existing company with the same or similar name, it will not be possible to incorporate. Accordingly, please list three possible company names in the order of your first, second and third choice and we will use the possible company names in the order of your choice on the registered documents.",
+    "applicantLegalEntity": "Applicant's current legal entity, if any",
+    "residencalAddress": "Applicant's residential address",
+    "businessInfoHeader": "Business information about the Panama company you are setting up",
+    "tradeafterDesc": " A description of what you will be trading after incorporation, including the name of the goods, type of goods, content of the service, and form of service.",
+    "purposeSetting": "Purpose of setting up a Panama company and what you can expect to get out of it",
+    "businessTransactions": "Please list the countries where your business transactions will take place after incorporation in Panama.",
+    "btInfo": " Please list the countries where your business transactions will take place after incorporation in Panama.",
+    "sourceOfFund": "Please select the source of funding for your Panama incorporated business from the following",
+    "sofInfo": "Please select details of the source of funding for the Ultimate Beneficial Owner (UBO), who is the principal or beneficial (direct or indirect) owner of the entity, and the source of funding that will be used to start the company.",
+    "shldrsPanama": "Shareholders of the Panama company",
+    "localNominee": "If you would like to use a local nominee service, please select",
+    "lNInfo": " Mandatory members (3 persons): President, Secretary, Treasurer Minimum nominee service period: 1 year Panama does provide a local nominee service to protect publicly available registry information. However, this is primarily for the purpose of protecting publicly available information and does not involve or represent the local nominee in all or any part of the foundation's operations. In addition, in accordance with KYC/CDD regulations, you must inform us, the virtual asset exchange or financial institution, etc. the information of the actual operator and UBO(Ultimate Beneficial Owner). In general, it is common to provide the services of two nominee directors in addition to the name of one client, as it can be generally interpreted that the foundation does not have any scam or impure purpose and is operated under the supervision of one representative. Cost of nominee director service (1 year): USD1,200 for 1 nominee / USD1,700 for 2 nominees / USD2,200 for 3 nominees",
+    "addLegalD": "Add local Nominee",
+    "relPanamaEntity": "The relationship between the Panama entity you are establishing and your group companies",
+    "panamaEntity": "Is the Panama entity you are forming part of a group or will you be buying or selling entities or assets in connection with the group?",
+    "descPanamaEntity": "Describe how the Panamanian entity you are establishing and the group company (or related companies) are connected in business (outsourcing, simple foreign affiliation, etc.)",
+    "purposeLis": {
+      "1": "Expanding into the Americas and Europe",
+      "2": "Invest in and operate real estate or financial assets",
+      "3": "To invest in and manage subsidiaries or affiliated companies as a holding company",
+      "4": "An investor or business partner suggests incorporating in Panama",
+      "5": "For international transactions",
+      "6": "Diversify your business as regulations loosen",
+      "7": "Increase trading volume due to lower tax rates",
+      "8": "Pursuing investment gains with No Capital Gain Tax"
+    },
+    "sourceList": {
+      "1": "Income from labour",
+      "2": "Deposits, savings",
+      "3": "Income from stocks or other investment property",
+      "4": "Loans",
+      "5": "Proceeds from the sale of a company or shareholding",
+      "6": "Business income/dividends",
+      "7": "Inheritance"
+    },
+    "sharehldrs": "Shareholder(s)",
+    "role": "Role",
+    "rOptions": {
+      "1": "Representative",
+      "2": "Financial Officer",
+      "3": "Secretary",
+      "4": "President",
+      "5": "Treasurer"
+    },
+    "nomineDir": "NOMINEE DIRECTOR SERVICE",
+    "shldrNominee": "NOMINEE SHAREHOLDER WITH OWNERSHIP",
+    "panam1stYrDesc": "PANAMA CORPORATION FORMATION AND FIRST-YEAR CORPORATE SERVICES",
+    "details": {
+      "1": "All applicable Registration and Government Fees (Registro Publico)",
+      "2": "Preparing the Incorporation Deed and Articles of Incorporation (Spanish)",
+      "3": "Acting as the First Subscriber and executing the Incorporation Deed before Notary",
+      "4": "All applicable Notary Fees",
+      "5": "Filing the Incorporation's Notarial Deed with the Commercial Register",
+      "6": "Preparing Subscriber's Resolution for the Appointment of Directors and Resignation of Subscriber's Rights",
+      "7": "Preparing the Company Bylaws",
+      "8": "Providing the Certificate of Juristic Person, and Company Extract issued by the Registro Publico",
+      "9": "Providing a Certified English Translation of the Corporate Documents",
+      "10": "Preparing the First Board Meeting Minutes for the allotment of Shares, the Appointment of Directors, Registered Agent and office, and other related matters",
+      "11": "Preparing the Share Register Book",
+      "12": "Preparing the Share Certificates",
+      "13": "Preparing and executing a Certificate of Incumbency",
+      "14": "Providing Registered Office Services, including business address, for one year",
+      "15": "Providing Registered Agent Services for one year",
+      "16": "Providing Notarized and Apostilled copies of the Corporate Documents"
+    },
+    "mirrBsnsAdvcmpLtd": "MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED",
+    "qty": "Quantity",
+    "unitPrice": "Unit Price",
+    "discount": "Discount",
+    "amtUsd": "Amount USD",
+    "ttlUsd": "Total USD",
+    "incorpoHeading": "Information on the registry of your Panama company",
+    "totalAmountCap": "Total amount of capital (in USD)",
+    "totalOtherCap": "If your capital is in another currency, please fill in the Other field.",
+    "thereAnyProvision": "If there are any specific provisions, requirements, by-laws, etc. that need to be included in the articles of association regarding the operation of the entity, please describe them.",
+    "regAddress": "Registered address of the company",
+    "panamaRegInfo": "A Panamanian company must have a registered business address in Panama to be incorporated and maintained. We offer a registered address service, which includes a registered address and mailing services. (Residential or hotel addresses are not registered as corporate addresses.) Under the Panama Companies Act, corporate documents such as directors‘ and shareholders’ lists and resolutions must be kept at the registered business address.",
+    "useRegMirProide": "Use the Registered Address Service that Mirr Asia provides",
+    "haveSepAddress": "I have a separate address in Panama to use as the company's address (not using Mirr Asia's registered address service)",
+    "finalMsg": "Thank you for completing the Panama company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.",
+    "quoteSetup": {
+      "title": "Cost Quote (Total incl. Government Fees)",
+      "initialSetupTitle": "Initial Setup Costs",
+      "lockedMessage": "Payment completed. Quote options are now locked.",
+
+      "base": {
+        "label": "Mirr Asia setup fee + first-year services",
+        "note": "(includes government fees, Resident Agent, Registered Office)"
+      },
+
+      "ndSetup": {
+        "label": "Nominee Director (setup stage)",
+        "placeholder": "Select",
+        "options": {
+          "0": "None (0)",
+          "1": "1 person (+USD 1,200)",
+          "2": "2 people (+USD 1,700)",
+          "3": "3 people (+USD 2,200)"
+        }
+      },
+
+      "nd3Reason": {
+        "label": "(Setup) Please state why 3 nominee directors are needed.",
+        "placeholder": "Briefly state why 3 nominee directors are needed.",
+        "hint": "* We recommend providing a reason when selecting 3."
+      },
+
+      "nsSetup": {
+        "label": "Nominee Shareholder (setup)"
+      },
+
+      "optional": {
+        "title": "Optional services (setup stage)",
+        "emi": "EMI account opening",
+        "bank": "Panama local bank account opening (high difficulty)",
+        "cbi": "Puerto Rico CBI account opening"
+      },
+
+      "totals": {
+        "setupY1": "Setup (Year 1) total"
+      },
+
+      "includes": {
+        "title": "Setup package includes (Corporation):",
+        "items": {
+          "i1": "Company registration and government fees (Registro Público)",
+          "i2": "Preparation of articles of incorporation and bylaws (Spanish)",
+          "i3": "First Subscriber (founding shareholder) role and notarization",
+          "i4": "Notarial fees related to incorporation",
+          "i5": "Submission to the Commercial Registry",
+          "i6": "Resolutions appointing directors and resigning founding shareholder",
+          "i7": "Company bylaws",
+          "i8": "Attorney's certificate and company extract",
+          "i9": "Notarized English translations",
+          "i10": "First board minutes",
+          "i11": "Share register & share certificates",
+          "i12": "Certificate of Incumbency",
+          "i13": "Registered office address (1 year)",
+          "i14": "Resident agent appointment (1 year)",
+          "i15": "Document notarization and copies",
+          "i16": "KYC/Due Diligence",
+          "i17": "International courier"
+        }
+      }
+    },
+     "congrats": {
+      "steps": {
+        "1": {
+          "t": "Step 1 — Compliance review",
+          "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1–2 business days."
+        },
+        "2": {
+          "t": "Step 2 — Filing with Companies Registry",
+          "s": "We will file the incorporation documents."
+        },
+        "3": {
+          "t": "Step 3 — Registration certificates",
+          "s": "Expected: Certificate of Incorporation & Business Registration within 1-3 business weeks."
+        },
+        "4": {
+          "t": "Step 4 — Bank/EMI account",
+          "s": "If selected, we arrange an account opening with your preferred bank/EMI."
+        }
+      }
+    }    
+  },
+  "newHk": {
+    "hkTitle": "Company Incorporation — Hong Kong",
+    "infoHelpIcon": "Complete each step. Helpful tips (ⓘ) appear where terms may be unclear.",
+    "topbar": {
+      "stepOf": "Step {{current}} of {{total}}"
+    },
+    "sidebar": {
+      "brand": "MIRR ASIA — Incorporation",
+      "badges": {
+        "ssl": "🔒 SSL Secured",
+        "registry": "🏛️ Registry Compliant",
+        "aml": "🧑‍⚖️ AML/CFT Ready"
+      },
+      "done": "Done",
+      "needHelp": "Need help?",
+      "chatCta": "MirrAsia Chat",
+      "toasts": {
+        "completeStepTitle": "Complete this step",
+        "completeStepDesc": "Please fill all required fields before continuing.",
+        "paymentReqTitle": "Payment required",
+        "paymentReqDesc": "Please complete the payment before proceeding to later steps, if you upload receipt wait for confirmation."
+      },
+      "stepsMenu": "Steps",
+      "close": "✕"
+    },
+    "buttons": {
+      "stepsMenu": "Steps Menu",
+      "back": "← Back",
+      "next": "Next →",
+      "saving": "Saving…"
+    },
+    "toasts": {
+      "paymentRequiredTitle": "Payment required",
+      "paymentRequiredDesc": "Please complete the payment to continue.",
+      "incompleteTitle": "Incomplete",
+      "incompleteDesc": "Please confirm all declarations and enter your electronic signature (full legal name).",
+      "errorTitle": "Error",
+      "errorSaveDesc": "Could not save draft. Please try again.",
+      "contactTitle": "Contact us",
+      "contactDesc": "Updating soon."
+    },
+    "terms": {
+      "intro": "Please review the terms below. You will confirm acceptance at the Review & e-Sign step.",
+      "items": {
+        "1": {
+          "t": "1. Purpose of this Agreement",
+          "c": "The purpose of this agreement is to prevent misunderstandings about the scope and limitations of services provided by MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED (\"Mirr Asia\") to the client company to be incorporated in the HKSAR (the \"Client\")."
+        },
+        "2": {
+          "t": "2. Role of Hong Kong Company Secretary & Limitation of Liability",
+          "c": "Mirr Asia will be appointed as company secretary in accordance with the Companies Ordinance (Cap 622) and the Client’s Articles of Association. Secretarial services are statutory in nature and differ from the role of an employed administrative secretary."
+        },
+        "3": {
+          "t": "3. Registered Address & Limitations",
+          "c": "The Client may use Mirr Asia’s registered address in Hong Kong for statutory registration. Changes require written notice. The registered address is for registration and mail handling only; it is not a physical office. The Client must not use the address for unlawful purposes or misrepresent it as a place of business. Incoming mail may be opened and scanned under the Letter of Consent and forwarded by email. If the Client has more than two directors, at least two directors (per quorum) shall sign relevant documents. Parcels and goods should not be sent to the registered address without prior consent; unapproved deliveries may be returned."
+        },
+        "4": {
+          "t": "4. Scope of Services (Year 1)",
+          "c": "Company secretary registration and maintenance of statutory records. Business Registration and Companies Registry filings (as applicable). Handling Employer’s Return for the first two employees (postage surcharge may apply). Handling the mandatory Survey of Company Information. Preparation and filing of Annual Return; keeping copies of renewal forms. Maintaining the Significant Controllers Register. Maintaining Registers of Members/Directors/Secretary and Organisation Chart. Maintaining AGM minutes templates and related records. Maintaining the Business Registration Certificate at the registered office (if applicable). Brief business/operational advice (non-legal, best-effort only). Client cooperation: The Client will provide all information/documents required. Mirr Asia is not obliged to assist with unlawful matters."
+        },
+        "5": {
+          "t": "5. Term",
+          "c": "This Agreement shall be effective from the date of its execution upon full payment and shall remain in force for a period of one year. The agreement may be extended or adjusted for some services by agreement of both parties."
+        },
+        "6": {
+          "t": "6. Fees & Exclusions",
+          "c": "The Client shall pay the amount shown in the payment section. Fees may exclude accounting, audit, tax filings, bank account opening advice, and third-party charges (e.g., bank charges, government fees, taxes, courier)."
+        },
+        "7": {
+          "t": "7. Termination",
+          "c": "The Client may terminate this Agreement by giving Mirr Asia 15 days written notice, but Mirr Asia may not terminate this Agreement arbitrarily before the services under this Agreement have been performed. However, if the Client is deemed to be in breach of its obligations under this Agreement or there is a significant legal risk, Mirr Asia may terminate the services after a certain period of notice, after consulting with the Client as much as possible. The prepaid service fee will not be refunded if the client terminates this contract. However, if this contract is terminated due to Mirr Asia's fault, the client may receive a refund only for the work scope that the consultant did not perform."
+        },
+        "8": {
+          "t": "8. Mirr Asia's Obligations",
+          "c": "Mirr Asia shall perform the Services with professionalism and due care, and shall report to the Client by email or other electronic means any changes in the progress of the work set out in this Agreement. Mirr Asia shall promptly notify the Client of any legal or administrative issues that arise in the course of performing the work under this Agreement."
+        },
+        "9": {
+          "t": "9. Client's Obligations",
+          "c": "The Client shall provide the information and materials required for Mirr Asia to perform the work in a timely manner and shall pay the fees agreed upon in this Agreement within the time limit. The Client shall ensure the accuracy of the personal information provided to Mirr Asia in connection with the work under this Agreement and shall provide any power of attorney or legal documents required by Mirr Asia."
+        },
+        "10": {
+          "t": "10. Limitation of Liability",
+          "c": "Mirr Asia shall not be liable for any consequences resulting from the direct or indirect actions of the client, regardless of whether Mirr Asia could have foreseen such damages. Mirr Asia's liability for breach of contract shall be limited to remuneration and may not be increased for any reason."
+        },
+        "11": {
+          "t": "11. Force Majeure",
+          "c": "If performance of the Agreement is impossible due to force majeure, such as acts of God, war, riot, or government regulation, both parties are relieved of liability."
+        },
+        "12": {
+          "t": "12. Assignment & Subcontractors",
+          "c": "Neither party may assign or transfer its rights/obligations without prior written consent of the other."
+        },
+        "13": {
+          "t": "13. Confidentiality",
+          "c": "Both parties will keep confidential any non-public business or technical information obtained under this Agreement, except where disclosure is required by law or the information is already public."
+        },
+        "14": {
+          "t": "14. Entire Agreement",
+          "c": "This Agreement constitutes the entire agreement between the parties with respect to the subject matter hereof and supersedes all prior and contemporaneous understandings between the parties, whether written or oral, with respect thereto, except that the representations and warranties made by Company Members/Directors in the application for registration requested by Mirr Asia shall be separately classified from this Agreement and remain in full force and effect in accordance with the current Compliance Policy."
+        },
+        "15": {
+          "t": "15. Amendments",
+          "c": "Amendments to this Agreement may only be made by written agreement of both parties. Express agreement via email or social media is also considered as written agreement."
+        },
+        "16": {
+          "t": "16. Notices and Communications",
+          "c": "All notices relating to this Agreement shall be in writing and shall be sent to the other party's address or sent to the other party's email address. Communications via email or social media are legally binding and shall be considered part of the Agreement. Emails or social media communications regarding important decisions, approvals, or contract changes have the same effect as written notifications. Both parties are obliged to regularly check the email or social media accounts with which they have agreed to communicate with each other or with which they have consistently communicated. Mirr Asia must periodically report to the client on the progress of the work under this Agreement, and instructions or approvals from the client via email are considered official decisions. Both parties must confirm important decisions by email."
+        },
+        "17": {
+          "t": "17. Independent Contractor",
+          "c": "Mirr Asia is an independent contractor and nothing in this Agreement shall be construed to create an employer-employee relationship between Client and Mirr Asia."
+        },
+        "18": {
+          "t": "18. Severability",
+          "c": "Any provisions of this Agreement held in violation of any law or ordinance shall be deemed stricken and all remaining provisions shall continue valid and binding upon the parties. The Client and Mirr Asia shall attempt in good faith to replace any invalid or unenforceable provisions of this Agreement with provisions which are valid and enforceable and which come as close as possible to expressing the intention of the original provisions."
+        },
+        "19": {
+          "t": "19. No Third-party Beneficiaries",
+          "c": "No rights are created for third parties unless authorized in writing by Mirr Asia."
+        },
+        "20": {
+          "t": "20. Governing Law and Remedies",
+          "c": "Unless otherwise provided in an attachment, this Agreement shall be performed and construed under the laws of Hong Kong Special Administrative Region without regard to the conflict of laws’ provisions. In the event of any claim, dispute or other matter in question between the parties, the Client and Mirr Asia agree to submit the matter to binding arbitration in accordance with the then-existing rules of the Hong Kong International Arbitration Centre (HKIAC)."
+        },
+        "21": {
+          "t": "21. Costs & Attorney’s Fees",
+          "c": "The prevailing party in any dispute (mediation, arbitration, or litigation) may recover reasonable costs and attorney’s fees. The Client will also pay Mirr Asia’s reasonable costs of responding to lawful demands for information or documents."
+        },
+        "22": {
+          "t": "22. Client Confirmation & Declaration",
+          "c": "The Client confirms that the purpose of the request for this service and the funds to be received in the future are not related to or derived from illegal activities such as illegal weapons, money laundering, terrorist financing, illegal drugs, or fraud. The Client agrees to provide the necessary documents and information in connection with this service, and agrees that such information may be provided to institutions, government agencies, and companies that are essential to the provision of the service. The Client shall promptly notify Mirr Asia of any changes. Mirr Asia has a right to discontinue services if illegal activity is suspected."
+        }
+      }
+    },
+    "steps": {
+      "applicant": {
+        "title": "Applicant & Proposed Company Names",
+        "description": "Provide your contact details and propose up to three English names (and optional Chinese names) in order of preference. This helps us obtain quick name pre-screening before filing.",
+        "fields": {
+          "applicantName": {
+            "label": "Applicant's Full Name",
+            "placeholder": "e.g., Jane Doe",
+            "tooltip": "The person responsible for this application. Must be authorized to submit KYC and CDD documents."
+          },
+          "email": {
+            "label": "Email",
+            "placeholder": "Primary Email (verification required)"
+          },
+          "phone": {
+            "label": "Mobile (with country code)",
+            "placeholder": "+852 1234 5678"
+          },
+          "name1": {
+            "label": "Proposed English Name — 1st"
+          },
+          "name2": {
+            "label": "Proposed English Name — 2nd"
+          },
+          "name3": {
+            "label": "Proposed English Name — 3rd"
+          },
+          "cname1": {
+            "label": "Chinese Name — 1st (optional)"
+          },
+          "cname2": {
+            "label": "Chinese Name — 2nd (optional)"
+          },
+          "roles": {
+            "label": "Role in the Company",
+            "tooltip": "Multiple choices allowed.",
+            "options": {
+              "Director": "Director",
+              "Shareholder": "Shareholder",
+              "Authorized": "Authorized Representative",
+              "Professional": "Professional Advisor",
+              "Other": "Other"
+            }
+          },
+          "sns": {
+            "label": "SNS Platform (optional)",
+            "placeholder": "Select SNS Platform",
+            "options": {
+              "WhatsApp": "WhatsApp",
+              "WeChat": "WeChat",
+              "Line": "Line",
+              "KakaoTalk": "KakaoTalk",
+              "Telegram": "Telegram"
+            }
+          },
+          "snsId": {
+            "label": "SNS Account ID",
+            "placeholder": "e.g., wechat_id"
+          }
+        }
+      },
+      "compliance": {
+        "title": "Compliance & Ethical Assessment (AML / CDD)",
+        "description": "Answer accurately based on your current knowledge. Select ‘Unsure’ if you need help.",
+        "options": {
+          "yes": "Yes",
+          "no": "No",
+          "unsure": "Unsure"
+        },
+        "questions": {
+          "legalAndEthicalConcern": "Are there any legal or ethical concerns related to the business (e.g., money laundering, gambling, tax evasion, asset concealment, fraud)?",
+          "q_country": "Does the Hong Kong company have any current or planned business activity in the following countries/regions: Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus, or Zimbabwe?",
+          "sanctionsExposureDeclaration": "Sanctions exposure: Do the company or any connected parties have a presence in, dealings with, or ownership ties to sanctioned persons or entities under UN, EU, UK HMT, HKMA, OFAC (US) or local sanctions law?",
+          "crimeaSevastapolPresence": "Any current or planned business in Crimea/Sevastopol Regions?",
+          "russianEnergyPresence": "Any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
+        }
+      },
+      "company": {
+        "title": "Company Information"
+      },
+      "acct": {
+        "title": "Accounting & Taxation",
+        "fields": {
+          "finYrEnd": {
+            "label": "Financial year-end date of the Hong Kong company",
+            "options": {
+              "December 31": "December 31",
+              "March 31": "March 31",
+              "June 30": "June 30",
+              "September 30": "September 30"
+            }
+          },
+          "bookKeepingCycle": {
+            "label": "Bookkeeping cycle",
+            "options": {
+              "Monthly": "Monthly (recommended for > ~50 txns/mo)",
+              "Quarterly": "Quarterly",
+              "Half-annually": "Half-annually (every 6 months)",
+              "Annually": "Annually (every 12 months) — lowest cost"
+            }
+          },
+          "xero": {
+            "label": "Would you like to implement online accounting software (e.g., Xero)?",
+            "options": {
+              "Yes": "Yes (≈HKD 400/mo)",
+              "No": "No",
+              "Recommendation required": "Recommendation required — we will suggest based on industry & volume",
+              "Other": "Other"
+            }
+          },
+          "softNote": {
+            "label": "Do you currently use/prefer another accounting software? (optional)",
+            "placeholder": "e.g., QuickBooks Online, Wave, or leave blank"
+          }
+        }
+      },
+      "termsStep": {
+        "title": "Engagement Terms & Service Agreement"
+      },
+      "fees": {
+        "title": "Incorporation Package & Optional Add-ons"
+      },
+      "invoice": {
+        "title": "Invoice — Preview"
+      },
+      "payment": {
+        "title": "Payment"
+      },
+      "review": {
+        "title": "Review & e-Sign"
+      },
+      "congrats": {
+        "title": "Confirmation"
+      }
+    },
+    "validation": {
+      "requiredFieldsPrefix": "Required fields:"
+    },
+    "payment": {
+      "alerts": {
+        "alreadyPaid": "Payment already completed.",
+        "expiredGuard": "Payment window expired. Please contact support to re-enable payment.",
+        "initFailedTitle": "Error",
+        "initFailedDesc": "Could not initialize card payment. Please try again.",
+        "prepareFailedDesc": "Failed to prepare payment. Please try again."
+      },
+      "success": {
+        "title": "Payment successful",
+        "amountLabel": "Amount:",
+        "receiptLabel": "Receipt:",
+        "viewStripeReceipt": "View Stripe receipt"
+      },
+      "expiryBanner": {
+        "expiredMessage": "Payment window expired. Please contact support to re-enable payment.",
+        "timerTitle": "Payment Timer",
+        "timeRemaining": "Time remaining: {{time}}"
+      },
+      "methods": {
+        "title": "Payment Methods",
+        "options": {
+          "card": {
+            "label": "Card Payment — Stripe (3.5% for HKD, 6% for USD)",
+            "tip": "Convenient for international cards. A processing fee is added to the invoice."
+          },
+          "fps": {
+            "label": "Fast Payment System (FPS)"
+          },
+          "bank": {
+            "label": "Bank Transfer — direct transfer with receipt upload"
+          },
+          "other": {
+            "label": "Other (cash) — with receipt upload"
+          }
+        },
+        "statusNote": {
+          "paid": "Payment completed.",
+          "expired": "Payment is disabled because the window has expired."
+        }
+      },
+      "conditions": {
+        "title": "Payment Conditions",
+        "text": "100% advance payment. All payments are non-refundable. The remitter bears all bank charges (including intermediary bank fees)."
+      },
+      "bankUpload": {
+        "refLabel": "Upload transfer reference",
+        "refPlaceholder": "e.g., HSBC TT reference",
+        "proofLabel": "Upload payment proof (PDF/JPG/PNG)",
+        "submit": "Submit",
+        "uploading": "Uploading…",
+        "previewTitle": "Payment proof preview",
+        "openInNewTab": "Open in new tab",
+        "delete": "Delete"
+      },
+      "card": {
+        "proceed": "Proceed Card Payment",
+        "preparing": "Preparing…",
+        "drawerNote": "A secure Stripe card drawer will open to complete your payment.",
+        "disabledExpired": "Payment disabled — window expired."
+      },
+      "fps": {
+        "title": "FPS Payment"
+      },
+      "totals": {
+        "grandTotal": "Grand Total: {{currency}} {{amount}}"
+      }
+    },
+    "common": {
+      "select": "Select"
+    },
+    "fees": {
+      "table": {
+        "headers": {
+          "description": "Service Description",
+          "original": "Original",
+          "amount": "Amount",
+          "select": "Select"
+        },
+        "totalLabel": "Total: USD {{amount}}",
+        "note": "Government fees are statutory and payable by all companies. Optional items can be toggled before payment."
+      },
+      "items": {
+        "cr_fee": {
+          "label": "HK Company Incorporation Government Fee to Companies Registry",
+          "info": "Statutory filing fee payable to the Companies Registry."
+        },
+        "br_fee": {
+          "label": "Business Registration (government) fee",
+          "info": "Annual Business Registration levy."
+        },
+        "inc_service": {
+          "label": "Hong Kong Company Incorporation — service fee (discounted)",
+          "info": "Mirr Asia incorporation service — fully discounted in the package."
+        },
+        "sec_annual": {
+          "label": "Company Secretary Annual Service Charge",
+          "info": "Includes statutory record keeping and filings."
+        },
+        "kyc": {
+          "label": "KYC / Due Diligence fee (1st year)",
+          "info": "Included for the first year."
+        },
+        "reg_office": {
+          "label": "Registered Office Address (annual, optional)",
+          "info": "50% off for the first year."
+        },
+        "bank_arr": {
+          "label": "Bank/EMI Account Opening Arrangement (optional)",
+          "info": "Introduction and scheduling support."
+        },
+        "kit": {
+          "label": "Company Kit Producing cost (optional)",
+          "info": "Company chop, share certificates, etc."
+        },
+        "corr_addr": {
+          "label": "Correspondence Address Annual Service (optional)",
+          "info": "Mail handling for directors/shareholders."
+        }
+      },
+      "richTips": {
+        "reg_office": {
+          "title": "Registered Office Address",
+          "mandatoryTitle": "Mandatory:",
+          "mandatoryText": "Every Hong Kong company must have a registered office address in Hong Kong.",
+          "purposeTitle": "Purpose:",
+          "bullets": [
+            "This is the official legal address kept at the Companies Registry.",
+            "All official government correspondence (e.g. Companies Registry, Inland Revenue Department, courts) is served to this address.",
+            "Must be a physical address in Hong Kong (not a PO Box)."
+          ]
+        },
+        "corr_addr": {
+          "title": "Correspondence Address",
+          "p1": "This is an alternative mailing address for the directors, company secretary, or designated representatives.",
+          "p2": "It is used when someone does not want their residential address made public in the Companies Registry records.",
+          "p3": "Since 2018, Hong Kong allows directors to file a “correspondence address” instead of disclosing their full usual residential address on the public register.",
+          "p4": "The residential address is still filed with the Companies Registry, but kept in a “protected” part of the register (only accessible to regulators and certain professionals).",
+          "p5": "On the public records, only the correspondence address appears."
+        }
+      }
+    },
+    "invoice": {
+      "currencyBadge": "USD",
+      "aria": {
+        "moreInfo": "More info"
+      },
+      "compact": {
+        "qty": "Qty",
+        "original": "Original",
+        "youPay": "You pay",
+        "free": "FREE",
+        "lineTotal": "Line total"
+      },
+      "sections": {
+        "government": {
+          "title": "Government Fees",
+          "badge": "Mandatory",
+          "description": "These are statutory fees collected by the authorities and payable by all companies.",
+          "subtotal": "Government Fees Subtotal"
+        },
+        "service": {
+          "title": "Our Service Fees",
+          "badge": "company incorporation package + 1st year services",
+          "description": "Core compliance services are required by law; selected add-ons are shown below.",
+          "subtotal": "Service Fees Subtotal"
+        },
+        "grandTotal": "Total Cost"
+      },
+      "table": {
+        "headers": {
+          "serviceDescription": "Service Description",
+          "qty": "Qty",
+          "original": "Original",
+          "amount": "Amount",
+          "total": "Total"
+        }
+      },
+      "footnote": "Prices are in USD for convenience. Government fees may change based on official notices. Optional items can be added/removed before payment. Accounting/taxation services are not included here.",
+      "surcharge": {
+        "cardFee": "Card processing fee (3.5% for HKD, 6% for USD)"
+      },
+      "info": {
+        "cr_fee": "Mandatory filing fee to the Companies Registry when establishing a new company.",
+        "br_fee": "Annual Business Registration fee payable to the Inland Revenue Department (valid for 1 year).",
+        "inc_service": "Preparation of incorporation documents, name check, filing and liaison with Companies Registry until formation.",
+        "sec_annual": "We act as your company secretary: maintain registers, prepare & file annual returns, and manage routine filings.",
+        "kyc": "Mandatory KYC/AML checks for shareholders and directors in line with regulations and our obligations.",
+        "reg_office": "Registered office address for statutory records and official correspondence.",
+        "bank_arr": "Introduction and scheduling support with the selected bank/EMI.",
+        "kit": "Company chop, share certificates, and related items.",
+        "corr_addr": "Mail handling for directors/shareholders."
+      },
+      "common": {
+        "subtotal": "Subtotal"
+      }
+    },
+    "review": {
+      "labels": {
+        "applicant": "Applicant",
+        "proposedNames": "Proposed Names",
+        "chinesePrefix": "Chinese:",
+        "industry": "Industry",
+        "description": "Description",
+        "shareCapital": "Share Capital",
+        "owners": "Owners",
+        "acctPrefs": "Accounting Preferences",
+        "totalAmount": "Total Amount",
+        "fyEnd": "Financial year-end:",
+        "bookkeeping": "Bookkeeping:",
+        "software": "Software:",
+        "prefers": "Prefers:",
+        "base": "Base:",
+        "payment": "Payment:",
+        "grand": "Grand:"
+      },
+      "placeholders": {
+        "tbd": "(TBD)",
+        "notProvided": "(not provided)",
+        "dash": "-",
+        "unknownParty": "Unknown",
+        "signaturePlaceholder": "Type your full legal name here (e.g., JANE DOE)"
+      },
+      "currency": {
+        "default": "HKD",
+        "usd": "USD"
+      },
+      "tags": {
+        "director": " (Director)",
+        "corporate": " (Corporate)"
+      },
+      "declarations": {
+        "title": "Declarations & Agreement",
+        "truth": "I confirm that the information provided is true, complete, and accurate.",
+        "terms": "I have read and agree to the Engagement Terms & Registered Address terms.",
+        "compliance": "I understand that incorporation is subject to successful compliance review (KYC/CDD and sanctions checks)."
+      },
+      "esign": {
+        "label": "Electronic signature",
+        "helper": "Your typed name will be recorded as an electronic signature with timestamp."
+      }
+    },
+    "congrats": {
+      "title": "Congratulations!",
+      "thankYou": "Thank you{{name}}! Your application has been successfully submitted.",
+      "thankYouName": ", {{applicantName}}",
+      "steps": {
+        "1": {
+          "t": "Step 1 — Compliance review",
+          "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1–2 business days."
+        },
+        "2": {
+          "t": "Step 2 — Filing with Companies Registry",
+          "s": "We will file the incorporation documents (NNC1, Articles, etc.)."
+        },
+        "3": {
+          "t": "Step 3 — Registration certificates",
+          "s": "Expected: Certificate of Incorporation & Business Registration within ~5 business days."
+        },
+        "4": {
+          "t": "Step 4 — Bank/EMI account",
+          "s": "If selected, we arrange an account opening with your preferred bank/EMI."
+        }
+      },
+      "buttons": {
+        "print": "Print / Save Summary as PDF",
+        "dashboard": "Go to Dashboard"
+      }
+    },
+    "company": {
+      "sections": {
+        "a": "A. Business Details",
+        "b": "B. Share Capital",
+        "c": "C. Shareholders / Directors"
+      },
+      "fields": {
+        "industry": {
+          "label": "Business Industry",
+          "placeholder": "Select an industry"
+        },
+        "purpose": {
+          "label": "Purpose of Incorporation",
+          "options": {
+            "operateHK": "Operate business in Hong Kong & Greater China",
+            "assetMgmt": "Asset management / investment",
+            "holdingCo": "Holding company for subsidiaries",
+            "crossBorder": "Cross-border trade advantages",
+            "taxNeutral": "Tax neutrality (no capital gains tax)"
+          }
+        },
+        "bizdesc": {
+          "label": "Description",
+          "placeholder": "Short description of the product/service and planned activities",
+          "tooltip": "Describe the product name, service type, and main activities after incorporation. Example: B2B IT consulting for ERP integration; secondary: SaaS subscription."
+        },
+        "currency": {
+          "label": "Base currency",
+          "options": {
+            "HKD": "HKD",
+            "USD": "USD",
+            "CNY": "CNY"
+          }
+        },
+        "capAmount": {
+          "label": "Total share capital",
+          "options": {
+            "1": "1",
+            "10": "10",
+            "100": "100",
+            "1000": "1,000",
+            "10000": "10,000",
+            "100000": "100,000",
+            "other": "Other (enter amount)"
+          }
+        },
+        "capOther": {
+          "label": "Enter total capital",
+          "placeholder": "e.g., 25000"
+        },
+        "shareCount": {
+          "label": "Total number of shares (min 1)",
+          "options": {
+            "1": "1",
+            "10": "10",
+            "100": "100",
+            "1000": "1,000",
+            "10000": "10,000",
+            "100000": "100,000",
+            "other": "Other (enter quantity)"
+          }
+        },
+        "shareOther": {
+          "label": "Enter number of shares",
+          "placeholder": "e.g., 5000"
+        },
+        "parValue": {
+          "label": "Calculated par value (read-only)",
+          "hint": "Par value = total share capital ÷ number of shares."
+        },
+        "inviteText":"Invite Shareholders/Directors Members before proceeding Next",
+        "isDcp": {
+          "label": "Will this person act as DCP?",
+          "tip": "A DCP is an individual authorized to liaise with Mirr Asia on behalf of the company for secretarial matters. This can be a director, shareholder, or an external representative."
+        },
+        "dcpName": {
+          "label": "Designated Contact Person",
+          "placeholder": "Enter name"
+        },
+        "dcpEmail":{
+          "label": "Designated Contact Person Email",
+          "placeholder": "Enter email"
+        },
+        "dcpNumber": {
+          "label": "Designated Contact Person Phone Number",
+          "placeholder": "Enter phone number"
+      }
+    }
+    },
+    "parties": {
+      "title": "Shareholders / Directors / DCP",
+      "banner": {
+        "ok": "All good — total number of shares allocated equals the company’s issued shares.",
+        "err": "Error: The total allocated shares must equal the company’s total number of shares. Please revise entries.",
+        "locked": "Payment completed. Details can no longer be edited."
+      },
+      "fields": {
+        "name": {
+          "label": "Full name / Entity name",
+          "example": "Examples: <b>Jane Doe</b> (individual) or <b>ABC Holdings Limited</b> (corporate shareholder)."
+        },
+        "email": {
+          "label": "Email"
+        },
+        "phone": {
+          "label": "Phone"
+        },
+        "isCorp": {
+          "label": "Is this shareholder a corporate entity?",
+          "tip": "Select ‘Yes’ if the shareholder is a company (corporate shareholder). Select ‘No’ for an individual.",
+          "options": {
+            "no": "No — Individual",
+            "yes": "Yes — Corporate shareholder"
+          }
+        },
+        "isDirector": {
+          "label": "Will this person also act as a director?",
+          "tip": "Directors manage the company and sign statutory filings. At least one individual director is required by law.",
+          "options": {
+            "yes": "Yes",
+            "no": "No"
+          }
+        },
+        "shares": {
+          "label": "Number of shares"
+        },
+        "pct": {
+          "label": "Shareholding % (auto)"
+        },
+        "type": {
+          "label": "Type of shares"
+        }
+      },
+      "shareTypes": {
+        "ORD": "Ordinary",
+        "PREF": "Preference",
+        "NONVOT": "Non-voting",
+        "REDEEM": "Redeemable"
+      },
+      "buttons": {
+        "remove": "Remove",
+        "add": "+ Add shareholder / director",
+        "invite": "Send Invitation"
+      },
+      "totals": "Total shares: {{total}} • Assigned: {{assigned}}",
+      "toasts": {
+        "invalidEmail": {
+          "title": "Error",
+          "desc": "Invalid email format for {{name}}: {{email}}"
+        },
+        "invite": {
+          "success": {
+            "title": "Success",
+            "desc": "Successfully sent invitation mail to people"
+          },
+          "exists": {
+            "title": "Success",
+            "desc": "Invite sent to member/director"
+          },
+          "failed": {
+            "title": "Failed",
+            "desc": "Some Invitations Failed"
+          }
+        }
+      }
+    }
+  },
+  "reqForQuote": {
+    "title": "Request for Quotation",
+    "contact": {
+      "title": "Request for Quotation",
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+      "personNameLabel": "Name of person in charge",
+      "personNamePlaceholder": "Enter full name",
+      "personTitleLabel": "Person in charge's title",
+      "personTitlePlaceholder": "e.g. CEO, Director, Manager",
+      "personPhoneLabel": "Person in charge's phone number",
+      "personPhonePlaceholder": "Include country code if possible",
+      "snsTypeLabel": "SNS Platform",
+      "snsTypePlaceholder": "e.g. KakaoTalk, WhatsApp, Telegram",
+      "snsIdLabel": "KakaoTalk (or other SNS account) ID",
+      "snsIdPlaceholder": "KakaoTalk ID or other SNS ID"
+    },
+    "country": {
+      "title": "Select the country in which you wish to establish the corporation (multiple selections possible)",
+      "options": {
+        "hk": "Establishment of a Hong Kong corporation + 1 year of management",
+        "sg": "Establishment of a Singapore corporation + 1 year of management",
+        "us-de": "(USA) Delaware Corporation Establishment + 1 year of management",
+        "us-ny": "(USA) New York Corporation Establishment + 1 year of management",
+        "us-wy": "(USA) Wyoming Corporation Establishment + 1 Year Management",
+        "us-ca": "(USA) California Corporation Establishment + 1 year of management",
+        "us-wa": "(USA) Washington Corporation Establishment + 1 year of management",
+        "us-dc": "(USA) Washington DC Corporation Establishment + 1 year of management",
+        "uk": "UK incorporation + 1 year of management",
+        "ch": "Swiss incorporation + 1 year of management",
+        "ie": "Irish incorporation + 1 year of management",
+        "ee": "Establishment of an Estonian corporation + 1 year of management",
+        "lt": "Establishment of a Lithuanian corporation + 1 year of management",
+        "ge": "Establishment of a Georgia corporation + 1 year of management",
+        "bg": "Establishment of a Bulgarian corporation + 1 year of management",
+        "mt": "Establishment of a Maltese corporation + 1 year of management",
+        "ca": "Canadian corporation establishment + 1 year of management",
+        "ae-ifza": "Establishment of Dubai IFZA Corporation + 1 year of management",
+        "ae-ad": "Establishment of Abu Dhabi Corporation + 1 year of management",
+        "ae-rak": "Ras Al Khaimah Corporation Establishment + 1 Year Management",
+        "vc-llc": "Establishment of St. Vincent Limited Liability Company (LLC) + 2-year calendar year management",
+        "vc-guarantee": "Establishment of St. Vincent Guarantee Limited (non-profit) + 2-year calendar year management",
+        "vc-bc": "Establishment of St. Vincent Business Company + 2-year calendar year management",
+        "bvi": "Establishment of a BVI (British Virgin Islands) corporation + 1 year of management",
+        "il": "Establishment of an Israeli corporation + 1 year of management",
+        "kr": "Establishment of a Korean corporation + 1 year of management",
+        "sc": "Seychelles company establishment + 1 year of management",
+        "pa-foundation": "Establishment of the Panama Foundation (non-profit foundation) + 1-year management",
+        "ck-foundation": "Establishment of the Cook Islands Foundation (non-profit foundation) + 1-year management",
+        "bz": "Belize Corporation Incorporation + 1 Year Management",
+        "cn": "Establishment of a Chinese corporation + 1 year of management",
+        "vn": "Establishment of a Vietnamese corporation + 1 year of management",
+        "cw": "Establishment of a Curaçao corporation + 1 year of management",
+        "kz": "Establishment of a Kazakhstani corporation + 1 year of management",
+        "tw": "Establishment of Taiwanese corporation + 1 year of management",
+        "ph": "Establishment of a Philippine corporation + 1 year of management",
+        "mn": "Establishment of a Mongolian corporation + 1 year of management",
+        "other": "Other:"
+      }
+    },
+    "industry": {
+      "title": "Select your industry (check all relevant items)",
+      "options": {
+        "trade": "trade industry",
+        "wholesale": "Wholesale/retail distribution",
+        "consulting": "Consulting",
+        "manufacturing": "manufacturing",
+        "online-service": "Online service industry (e-commerce)",
+        "online-direct": "Online direct purchase/delivery service/purchasing agency",
+        "utility-token": "Utility token issuance",
+        "utility-token-listing": "Utility Token Exchange Listing/Sales",
+        "security-token": "Security token issuance/exchange listing/sale",
+        "crypto-exchange": "cryptocurrency exchange",
+        "other-virtual": "Other virtual currency-related businesses",
+        "it-dev": "Development of IT, blockchain, software, etc.",
+        "crypto-finance": "Cryptocurrency-based investment/loan/finance-related businesses",
+        "crypto-games": "Cryptocurrency-based games",
+        "fx-trading": "Foreign exchange trading",
+        "finance": "Finance, investment, consulting, lending, etc.",
+        "holding": "Investment Holdings (holding company)",
+        "other": "Other:"
+      }
+    },
+    "services": {
+      "title": "Service items you require (check all that apply)",
+      "options": {
+        "incorporation-standard": "Incorporation + Post-incorporation maintenance (Standard Service)",
+        "emi-list": "EMI (Electronic Money Institution) List (Free to Customers Using Our Service)",
+        "emi-account": "EMI (Electronic Money Institution) account opening application and consultation (separate quote after business confirmation)",
+        "bank-account": "Bank account opening application and consultation (separate quote after business confirmation)",
+        "legal-opinion-local": "Legal Opinion at the local location of the corporation (quote after review of white paper)",
+        "legal-opinion-domestic": "Legal Opinion for listing on domestic exchanges (quote after review of white paper)",
+        "legal-opinion-other": "Legal Opinion for other countries (quote after reviewing white paper)",
+        "consulting-reg": "Consulting services including regulatory review, feasibility review, document preparation, and operational consulting for business (separate quote)",
+        "local-registration": "Local registration service (provided when required by local regulations or for special reasons)",
+        "vasp-licenses": "Virtual asset exchange licenses (Lithuania, Israel, Estonia)",
+        "emi-license-lt": "EMI License (Lithuania)",
+        "dpt-license-sg": "Digital Payment Token License (Singapore)",
+        "token-swap-license": "Licenses related to payment tokens and swaps",
+        "self-regulatory-ch": "Voluntary regulatory body membership and consultation (Switzerland)",
+        "other": "Other:"
+      }
+    },
+    "product": {
+      "title": "Description of the product name, product type, service content, service type, etc. to be traded after the corporation is established",
+      "descriptionLabel": "Example) Daily necessities, automobile parts and supplies, construction supplies, F&B, travel-related services, etc.",
+      "descriptionPlaceholder": "Describe the main products/services, type, and business model after incorporation."
+    },
+    "vasp": {
+      "title": "Are you interested in acquiring a VASP licensed entity?",
+      "options": {
+        "yes": "yes",
+        "no": "No, not related",
+        "apply-again": "We hope to apply again in a country where it is easy to obtain and operate a license.",
+        "no-reg": "Hope for a country without VASP regulations"
+      }
+    },
+    "structure": {
+      "title": "Information about the corporation you wish to establish – Shareholders and governance structure of the corporation to be established",
+      "helperText": "Multiple, complex hierarchical structures (double / triple layer) make bank account opening significantly more difficult.",
+      "options": {
+        "single-1-individual": "One individual owns 100% of the shares (single structure)",
+        "single-2-individuals": "Two or more individuals own 100% of the shares (single structure)",
+        "single-kr-holding": "Korean corporation owns 100% of the shares as a holding company (single structure)",
+        "single-foreign-holding": "A (foreign) corporation established in a country other than Korea holds 100% of the shares as a holding company (single structure)",
+        "single-mixed": "Corporations and individuals own shares of a Hong Kong corporation as shareholders (single structure)",
+        "double-layer": "The holding company is structured in a double layer structure.",
+        "double-or-more-layer": "The holding company is structured in a double layer or higher structure.",
+        "other": "Other:"
+      }
+    },
+    "materials": {
+      "title": "Presentable business-related materials",
+      "options": {
+        "website": "Website address",
+        "whitepaper-ko": "White Paper (Korean)",
+        "whitepaper-en": "White Paper (English)",
+        "bp-ko": "Business Plan (Korean)",
+        "bp-en": "Business Plan (English)",
+        "token-ecosystem": "Token Ecosystem",
+        "other": "Other:"
+      }
+    }
+  }
+}

@@ -35,10 +35,15 @@ export interface Country {
   }
   
   export interface ShareHolderDirectorController {
-    shareHolderDirectorNameSharesNumAtom: string;
-    significantControllerAtom: string;
-    designatedContactPersonAtom: string;
     shareHolders: ShareHolder[];
+    numShareHoldersAtom?: string;
+      numDirectorsAtom?: string;
+      shareHolderDirectorNameSharesNumAtom: string;
+      significantControllerAtom:  {
+        value: string
+        label: string
+    }[];
+      designatedContactPersonAtom: string | number,
   }
   
   export interface AccountingTaxInfo {
@@ -82,4 +87,85 @@ export interface Country {
     businessInfoHkCompany: BusinessInfoHkCompany;
     serviceSelection: AnyObject[]; 
     serviceSelectionState: ServiceSelectionState;
+  }
+
+
+  export interface ShareEntry {
+    date?: string ;
+    acquired: {
+      certificateNumber: string ;
+      distinctiveNumber: {
+        from: string | number;
+        to: string | number;
+      };
+      numberOfShares:string | number ;
+      considerationPaid: string |number ;
+    };
+    transferred: {
+      certificateNumber: string ;
+      considerationPaid: string | number;
+      numberOfTransfer: string ;
+      distinctiveNumber: {
+        from: string | number;
+        to: string | number;
+      };
+      numberOfShares:string | number ;
+    };
+    totalSharesHeld:string | number ;
+    remarks: string ;
+    entryMadeBy: string ;
+  }
+  
+  export interface ShareClass {
+    type: string ;
+    valuePerShare:string | number ;
+  }
+
+  export interface RegisterMembers {
+    name: string ;
+    occupation: string ;
+    correspondenceAddress: string ;
+    residentialAddress: string ;
+    dateEntered: string ;
+    dateCeasing: string ;
+    entries : ShareEntry[];
+    shareClass: ShareClass;
+  }
+
+
+  export interface ShareHolderRegistrationForm {
+    _id: string;
+    email: string;
+    companyName: string;
+    companyId: string;
+    roles: string[];
+    significantController: string;
+    fullName: string;
+    mobileNumber: string;
+    kakaoTalkId: string;
+    weChatId: string;
+    passportCopy: string| Blob;
+    personalCertificate: string| Blob;
+    proofOfAddress: string| Blob;
+    passportDigits: string;
+    birthCountry: string;
+    currentResidence: string;
+    nomineeParticipation: string;
+    correspondenceAddress: string;
+    overseasResidentStatus: string;
+    foreignInvestmentReport: string;
+    foreignInvestmentAgreement: string;
+    politicallyExposedStatus: string;
+    politicalDetails: string;
+    legalIssuesStatus: string;
+    usResidencyStatus: string;
+    usResidencyDetails: string;
+    natureOfFunds: string[];
+    sourceOfFunds: string[];
+    countryOfFundOrigin: string;
+    undischargedBankruptcy: string;
+    pastParticipation: string;
+    additionalInfo: string;
+    agreementDeclaration: string;
+    regId : string;
   }

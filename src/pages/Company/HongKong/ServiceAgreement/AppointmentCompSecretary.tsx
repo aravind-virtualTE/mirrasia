@@ -1,59 +1,126 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card"
-import { useState } from "react"
-import InlineSignatureCreator from "../../SignatureComponent"
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import SignatureModal from "@/components/pdfPage/SignatureModal";
 // import { Button } from "@/components/ui/button";
+import { useAtom } from "jotai";
+import { serviceAgreement } from "@/store/hongkong";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function AppointmentLetter() {
-
-  const [details,
-    // setDetails
-  ] = useState({
-    ubiNo: '',
-    companyName: '',
-    directorName: '',
-    companyAddress: '',
-  })
-  const [signature, setSignature] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const handleSignature = (signature: string) => {
-    setIsEditing(false);
-    setSignature(signature)
-  };
-
-
-  const handleClear = () => {
-    setSignature(null);
-  };
-
+export default function AppointmentLetter({ editable }: { editable: boolean }) {
+  const [directorName, setDetails] = useState("");
+  const [signature, setSignature] = useState<string | "">("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [serviceAgrementDetails, setServiceAgrement] = useAtom(serviceAgreement);
+  const [showInstructions, setShowInstructions] = useState(true);
   const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setIsEditing(true);
-    }
+    setIsModalOpen(true);
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowInstructions(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // console.log("serviceAgrementDetails",serviceAgrementDetails)
+
+  useEffect(() => {
+    if (serviceAgrementDetails.directorList) {
+      setSignature(serviceAgrementDetails.directorList?.[0]?.signature || "");
+      setDetails(serviceAgrementDetails.directorList?.[0]?.name || "")
+    }
+  }, [serviceAgrementDetails]);
+
+
+  const handleSelectSignature = (selectedSignature: string | "") => {
+    setSignature(selectedSignature);
+    setServiceAgrement({
+      ...serviceAgrementDetails,
+      directorList: serviceAgrementDetails.directorList
+        ? [
+          { ...serviceAgrementDetails.directorList[0], signature: selectedSignature, },
+          ...serviceAgrementDetails.directorList.slice(1),
+        ]
+        : [{ name: "", signature: "" }],
+    });
+
+    setIsModalOpen(false);
+  };
+  // const setDirectorName = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDetails(e.target.value);
+  //   setServiceAgrement({
+  //     ...serviceAgrementDetails,
+  //     directorList: [{ name: e.target.value, signature: signature }],
+  //   });
+  // };
+
+  const dirShrList = serviceAgrementDetails.directorList?.map(item => {
+    return ({
+      key: item.name,
+      value: item.name
+    })
+  })
+
+  const handleSelectChange = (value: string) => {
+    // console.log("value", value, 'key')
+    setDetails(value);
+    setServiceAgrement({
+      ...serviceAgrementDetails,
+      directorList: [{ name: value, signature: signature }],
+    });
+  }
   return (
-    <Card className="max-w-4xl mx-auto p-8 rounded-none">
+    <Card className="p-8 rounded-none">
       <CardHeader className="space-y-6 p-0">
         <div className="flex justify-between">
           <div className="space-y-1">
-            <span className="font-semibold">Date:</span>
+            <span className="font-semibold">
+              Date:
+              <input
+                disabled={editable}
+                className="border-b"
+                placeholder="Enter Date"
+                value={serviceAgrementDetails.appointmentDate}
+                onChange={(e) =>
+                  setServiceAgrement({
+                    ...serviceAgrementDetails,
+                    appointmentDate: e.target.value,
+                  })
+                }
+              />
+            </span>
           </div>
           <div className="space-x-4">
-            <span className="font-semibold">UBI NO.:</span>
+            <span className="font-semibold">
+              BRN .:{" "}
+              <input
+                disabled={editable}
+                className="border-b "
+                placeholder="Enter BRN"
+                value={serviceAgrementDetails.brnNo}
+                onChange={(e) =>
+                  setServiceAgrement({
+                    ...serviceAgrementDetails,
+                    brnNo: e.target.value,
+                  })
+                }
+              />
+            </span>
           </div>
           <div className="space-x-4">
             <span className="text-sm">(Registered in Hong Kong)</span>
           </div>
         </div>
 
-        <div className="space-y-1">
-          <h1 className="font-bold text-lg uppercase">
+        <div className="font-bold text-sm font-serif space-y-1">
+          <h1 className=" uppercase">
             MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED
           </h1>
           <div className="space-y-0.5">
@@ -74,42 +141,56 @@ export default function AppointmentLetter() {
           </h2>
 
           <p className="text-justify">
-            We are pleased to appoint you to act the secretary of our company with the following name and address in order to
-            comply with the requirements of the Companies Ordinance.
+            We are pleased to appoint you to act the secretary of our company
+            with the following name and address in order to comply with the
+            requirements of the Companies Ordinance.
           </p>
 
-          <div className="border-t border-b py-4">
-            <div className="flex justify-between">
-              <span className="uppercase font-bold">{details.companyName}</span>
-              <span>(Company&quot;)</span>
-            </div>
+          <div className="w-full flex flex-col">
+            <p className="text-lg font-serif mb-2 text-center">
+              {serviceAgrementDetails.companyName} <span>(Company)</span>
+            </p>
+            <div className="w-full border-b-2 border-black"></div>
             <p className="mt-2">
-              {details.companyAddress}
+              located in{" "}
+              <span className="font-bold text-sm font-serif">
+                <input
+                  disabled={editable}
+                  className="font-bold underline border-b w-3/4"
+                  placeholder="Enter Company Address"
+                  value={serviceAgrementDetails.companyAddress}
+                  onChange={(e) =>
+                    setServiceAgrement({
+                      ...serviceAgrementDetails,
+                      companyAddress: e.target.value,
+                    })
+                  }
+                />
+              </span>
             </p>
           </div>
 
           <p className="text-justify">
-            We shall indemnify you and/or any of your directors and officers from and against all actions, claims and demands
-            which may be made against you and/or any of your directors and officers directly or indirectly by reason of your
-            acting as the Company Secretary of the Company and to pay all liabilities, costs and expenses which you and/or any
-            of your directors and officers may incur in connection therewith.
+            We shall indemnify you and/or any of your directors and officers
+            from and against all actions, claims and demands which may be made
+            against you and/or any of your directors and officers directly or
+            indirectly by reason of your acting as the Company Secretary of the
+            Company and to pay all liabilities, costs and expenses which you
+            and/or any of your directors and officers may incur in connection
+            therewith.
           </p>
 
           <div className="space-y-2">
             <p>Yours faithfully,</p>
-            <p className="italic">For and on behalf of</p>
-            <p className="font-bold">{details.companyName}</p>
+            <br />
+            <br />
+            <p className="italic font-serif">For and on behalf of</p>
+            <p className="font-serif">{serviceAgrementDetails.companyName}</p>
           </div>
 
           <div className="space-y-4">
             <div className=" w-64 pt-2">
-              {isEditing ? (
-                <InlineSignatureCreator
-                  onSignatureCreate={handleSignature}
-                  maxWidth={256}
-                  maxHeight={100}
-                />
-              ) : (
+              <div className="w-64 pt-2 pb-3">
                 <div
                   onClick={handleBoxClick}
                   className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -117,21 +198,59 @@ export default function AppointmentLetter() {
                   {signature ? (
                     <img
                       src={signature}
-                      alt="Director's signature"
+                      alt="Selected signature"
                       className="max-h-20 max-w-full object-contain"
                     />
                   ) : (
                     <p className="text-gray-400">Click to sign</p>
                   )}
                 </div>
-              )}
-              <p className="font-bold border-t border-black">{details.directorName}</p>
-              <p className="italic">Director</p>
+                {isModalOpen && (
+                  <SignatureModal
+                    onSelectSignature={handleSelectSignature}
+                    onClose={() => setIsModalOpen(false)}
+                  />
+                )}
+              </div>
+
+              <Select
+                value={directorName}
+                onValueChange={handleSelectChange}
+              >
+                <SelectTrigger id="dirShrList" className="w-full">
+                  <SelectValue placeholder="Select Director" />
+                </SelectTrigger>
+                <SelectContent>
+                  {dirShrList &&
+                    dirShrList
+                      .filter((platform) => platform.key !== "")
+                      .map((platform) => (
+                        <SelectItem key={platform.key} value={platform.key}>
+                          {platform.value}
+                        </SelectItem>
+                      ))}
+                </SelectContent>
+              </Select>
+
+              {/* <input
+                type="text"
+                value={directorName}
+                className="border-b"
+                placeholder="Enter Director Name"
+                onChange={setDirectorName}
+              /> */}
+              <Tooltip open={showInstructions}>
+                <TooltipTrigger asChild>
+                  <p className="italic">Director</p>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Select director name here</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-

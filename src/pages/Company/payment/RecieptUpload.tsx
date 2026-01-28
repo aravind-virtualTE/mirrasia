@@ -1,41 +1,64 @@
-import React,{ useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { paymentApi } from '@/lib/api/payment';
-
+import { useAtom, useSetAtom } from 'jotai';
+import { companyIncorporationAtom, updateCompanyIncorporationAtom } from '@/lib/atom';
+import { usePaymentSession } from '@/hooks/usePaymentSession';
+import { useTranslation } from "react-i18next";
 interface ReceiptUploadProps {
-    sessionId: string;
-  }
+  sessionId: string;
+}
 
 export function ReceiptUpload({ sessionId }: ReceiptUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+  const [formData] = useAtom(companyIncorporationAtom);
+  const updateCompanyData = useSetAtom(updateCompanyIncorporationAtom);
+  const { status } = usePaymentSession(sessionId);
+  const { t } = useTranslation();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
-    if (selectedFile)  setFile(selectedFile);
+    if (selectedFile) setFile(selectedFile);
   };
 
   const handleUpload = async () => {
     if (!file) return;
 
+    const docId = localStorage.getItem('companyRecordId');
+    if (!docId) {
+      console.error('Company record ID is not set');
+      return;
+    }
+
     setUploadStatus('uploading');
-    // Simulate upload - replace with actual upload logic
-    await paymentApi.uploadReceipt(sessionId, file);
+    const output = await paymentApi.uploadReceipt(sessionId, docId, file, 'hk');
+    // console.log("data---->", output)
+    if (output.message == "Receipt uploaded successfully") updateCompanyData(output.result)
     setTimeout(() => {
       setUploadStatus('success');
     }, 2000);
   };
-
+  // console.log("formData.receiptUrl",formData)
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Upload Payment Receipt</CardTitle>
+        <CardTitle className="text-lg">{t('payment.uploadPReceipt')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="border-2 border-dashed border-gray-200 rounded-lg p-6">
+        {formData.receiptUrl && (
+          <div className="border p-2 rounded-lg">
+            <iframe
+              src={formData.receiptUrl}
+              className="w-full h-64 border rounded-lg"
+              title="Payment Receipt"
+            />
+          </div>
+        )}
+        {status !== "completed" && (<div className="border-2 border-dashed border-gray-200 rounded-lg p-6">
           <Input
             type="file"
             accept="image/*,.pdf"
@@ -52,23 +75,24 @@ export function ReceiptUpload({ sessionId }: ReceiptUploadProps) {
               {file ? file.name : 'Click to upload receipt'}
             </span>
           </label>
-        </div>
-        
+        </div>)}
+
+
         {file && (
           <Button
             onClick={handleUpload}
             className="w-full"
             disabled={uploadStatus === 'uploading'}
           >
-            {uploadStatus === 'uploading' ? 'Uploading...' : 
-             uploadStatus === 'success' ? 'Upload Successful' : 
-             'Submit Receipt'}
+            {uploadStatus === 'uploading' ? 'Uploading...' :
+              uploadStatus === 'success' ? 'Upload Successful' :
+                'Submit Receipt'}
           </Button>
         )}
-        
+
         {uploadStatus === 'success' && (
           <p className="text-sm text-green-600 text-center">
-            Receipt uploaded successfully. Our team will verify it shortly.
+            {t('payment.uploadPReceiptSuccess')}
           </p>
         )}
       </CardContent>

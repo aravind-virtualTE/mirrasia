@@ -1,60 +1,63 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
-import InlineSignatureCreator from "../../SignatureComponent";
+import { useEffect, useState } from "react";
+import SignatureModal from "@/components/pdfPage/SignatureModal";
+import { serviceAgreement } from "@/store/hongkong";
+import { useAtom } from "jotai";
+import { formatDateIfMatches } from "@/middleware";
 
 export default function CompanyResolutiontwo() {
 
-  const [docSigned,] = useState('2024-12-12')
+  const [serviceAgrementDetails,] = useAtom(serviceAgreement);
+  // const [docSigned, setDocSigned] = useState("")
+  const [directorName, setDetails] = useState("");
 
   const [signature, setSignature] = useState<string | null>(null);
-  const [signEdit, setSignEdit] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSignature = (signature: string) => {
-    // console.log("Received signature:", signature);
-    setSignEdit(false);
-    setSignature(signature)
-  };
-  const handleClear = () => {
-    setSignature(null);
-  };
-
+  useEffect(() => {
+      if (serviceAgrementDetails.directorList) {
+        setSignature(serviceAgrementDetails.directorList?.[0]?.signature || "");
+        setDetails(serviceAgrementDetails.directorList?.[0]?.name || "")
+      }
+    }, [serviceAgrementDetails]);
+    
   const handleBoxClick = () => {
-    if (signature) {
-      handleClear();
-    } else {
-      setSignEdit(true);
-    }
+    setIsModalOpen(true);
   };
+
+  const founderName = serviceAgrementDetails.articleAssociation?.founderMembers[0]?.name || "";
+  const founderShare = serviceAgrementDetails.articleAssociation?.founderMembers[0]?.noOfShares || "";
+
+  // console.log('serviceAgrementDetails', serviceAgrementDetails)
+
+  const handleSelectSignature = (selectedSignature: string | null) => {
+    setSignature(selectedSignature);
+    setIsModalOpen(false);
+  };
+
   const resolutionData = {
-    company: {
-      name: "TRUSTPAY AI SYSTEMS LIMITED",
-      jurisdiction: "Hong Kong SAR"
-    },
     representative: {
       name: "MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED"
     },
     financialYear: {
       end: "31 December",
       firstAccounts: "31 December 2025"
-    },
-    founder: {
-      name: "AHMED, SHAHAD",
-      shares: 100
-    }
+    },   
   };
 
   return (
-
-    <Card className="w-full max-w-[800px] mx-auto p-6 print:p-0 rounded-none">
+    // w-full max-w-[800px] mx-auto
+    <Card className=" p-6 print:p-0 rounded-none">
       <CardContent className="p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-xl font-bold mb-2">{resolutionData.company.name}</h1>
-          <p className="text-sm text-gray-600">(incorporated in {resolutionData.company.jurisdiction})</p>
+          <h1 className="text-xl font-bold mb-2">{serviceAgrementDetails.companyName}</h1>
+          <p className="text-sm text-gray-600">(incorporated in Hong Kong SAR)</p>
           <p className="mt-4 text-sm">
             Written Resolutions of the Sole Director of the Company made pursuant to the Company's Articles of
             Association and Section 548 of The Companies Ordinance
           </p>
+          <div className="w-full border-b-2 border-black"></div>
         </div>
 
         {/* Resolution Sections */}
@@ -117,8 +120,8 @@ export default function CompanyResolutiontwo() {
                 the Articles of Association of the Company had taken up the following shares: -
               </p>
               <p className="mb-4">
-                <span className=" px-2">{resolutionData.founder.name}</span> had taken up{" "}
-                <span className=" px-2">{resolutionData.founder.shares}</span> shares.
+                <span className=" px-2">{founderName}</span> had taken up{" "}
+                <span className=" px-2">{founderShare}</span> shares.
               </p>
               <p className="mb-2 font-medium">Resolved</p>
               <p className="mb-4">
@@ -152,14 +155,17 @@ export default function CompanyResolutiontwo() {
 
           {/* Signature Section */}
           <div className="pt-6 space-y-4 w-64">
-            <p >Date: <span className="underline">{docSigned}</span></p>
-            {signEdit ? (
-              <InlineSignatureCreator
-                onSignatureCreate={handleSignature}
-                maxWidth={256}
-                maxHeight={100}
-              />
-            ) : (
+            <p >Date: <span className="underline">
+              {formatDateIfMatches(serviceAgrementDetails.consentSignDate || "")}
+              {/* <input
+                type="date"
+                value={docSigned}
+                placeholder="dd/mm/yyyy"
+                onChange={(e) => setDocSigned(e.target.value)}
+                disabled={editable}
+              /> */}
+            </span></p>
+            <div className="w-64 pt-2">
               <div
                 onClick={handleBoxClick}
                 className="h-24 w-full border border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
@@ -167,16 +173,22 @@ export default function CompanyResolutiontwo() {
                 {signature ? (
                   <img
                     src={signature}
-                    alt="Member's signature"
+                    alt="Selected signature"
                     className="max-h-20 max-w-full object-contain"
                   />
                 ) : (
                   <p className="text-gray-400">Click to sign</p>
                 )}
               </div>
-            )}
+              {isModalOpen && (
+                <SignatureModal
+                  onSelectSignature={handleSelectSignature}
+                  onClose={() => setIsModalOpen(false)}
+                />
+              )}
+            </div>
             <div className="border-t border-black w-48">
-              <p className="font-medium">TestChairman</p>
+              <p className="font-medium">{directorName}</p>
               <p className=" italic">Chairman</p>
             </div>
           </div>

@@ -1,0 +1,2506 @@
+{
+  "company": {
+    "name": "회사 이름",
+    "industry": "산업"
+  },
+  "buttons": {
+    "next": "다음",
+    "previous": "이전"
+  },
+  "sideItems": {
+    "Home": "홈",
+    "userList": "사용자 목록",
+    "regComp": "회사 등록",
+    "compDocs": "회사 문서",
+    "switchServices": "서비스 전환 목록",
+    "bankServices": "은행 서비스",
+    "accountList": "회계 목록",
+    "signDocs": "문서 서명",
+    "mirrChat": "MirrAsia 채팅"
+  },
+  "dashboard": {
+    "welcome": "환영합니다, ",
+    "welcome1": "시작하기 위해 할 수 있는 작업은 다음과 같습니다.",
+    "companiesH": "귀사의 회사들",
+    "tCompName": "회사명",
+    "tcountry": "국가",
+    "status": "상태",
+    "incorpoDate": "설립일",
+    "fservices": "주요 서비스",
+    "accountSupport": "회계 지원",
+    "accountText": "필요할 때 언제든지 이용 가능한 회계 서비스를 확인하세요.",
+    "getQuote": "견적 받기",
+    "needHelp": "도움이 필요하신가요? 지원팀에 문의하세요!",
+    "expIssue": "문제가 발생했나요? 지원팀이 도와드릴 준비가 되어 있습니다.",
+    "kakaoT": "카카오톡",
+    "wechat": "위챗",
+    "kakaChannel": "카카오 채널",
+    "clickHere": "여기를 클릭하세요",
+    "Website": "웹사이트",
+    "solutions": "우리의 주요 솔루션",
+    "startNew": "새 회사 시작",
+    "regComp": "신규 사업체를 빠르고 효율적으로 등록하세요",
+    "openComp": "홍콩 개인 은행 계좌 개설",
+    "streamlined": "간소화된 홍콩 개인 은행 계좌 개설 절차",
+    "switchServices": "저희 서비스로 전환",
+    "SserDesc": "저희의 포괄적인 비즈니스 솔루션으로 원활하게 전환"
+  },
+  "dashServices": {
+    "vaTtitle": "가상 자산 라이선스",
+    "vaDesc": "가상 자산 운영에 필요한 라이선스를 취득하세요.",
+    "game": "아이게이밍 라이선스",
+    "secureLis": "온라인 게임 플랫폼 운영 라이선스를 확보하세요.",
+    "importExprt": "수입/수출 라이선스",
+    "international": "수입/수출 라이선스로 국제 무역을 용이하게 하세요.",
+    "metaPack": "메타 패키지",
+    "metaDesc": "귀사의 비즈니스 요구에 맞춘 포괄적인 서비스 패키지입니다.",
+    "cayman": "케이맨 펀드",
+    "caymanDesc": "케이맨 제도에서 효율적으로 펀드를 설정하고 관리하세요."
+  },
+  "countrySelection": {
+    "title": "등록할 국가를 선택하세요",
+    "hk": "홍콩",
+    "us": "미국",
+    "sg": "싱가포르",
+    "uk": "영국",
+    "pa": "파나마",
+    "pafn": "파나마 재단"
+  },
+  "landingPage": {
+    "leftHeading": "빠르고 간편하게 회사 등록 및 비즈니스 계좌 개설!",
+    "rightHeading": "이미 회사가 있으신가요?",
+    "leftText": "스트레스 없는 서비스와 전문가 지원을 받아 회사를 빠르고 디지털하게 등록 및 관리하세요!",
+    "rightSubHeading": "귀하는 비즈니스에 집중하세요, 저희는 회계와 규정 준수를 관리합니다.",
+    "rightP": "장부 관리부터 급여, 법무까지, 전문가와 함께 백오피스에 마음의 평화를 가져오세요!",
+    "registerNow": "지금 등록하기",
+    "contactUs": "문의하기",
+    "TransferBtn": "Mirr Asia로 이전",
+    "title": "무료 상담 요청",
+    "subtitle": "필수 입력란은 •로 표시되어 있습니다. 담당자가 곧 연락드리겠습니다.",
+    "honeypot": {
+      "label": "이 필드를 비워 두세요"
+    },
+    "name": {
+      "label": "성명 •",
+      "error": "이름을 입력해 주세요."
+    },
+    "phone": {
+      "label": "전화번호",
+      "error": "숫자, 공백, 괄호 또는 하이픈만 사용하세요."
+    },
+    "email": {
+      "label": "이메일 •",
+      "error": "유효한 이메일 주소를 입력해 주세요."
+    },
+    "message": {
+      "label": "메시지 •",
+      "helper": "도움이 되는 답변을 위해 충분한 세부 정보를 제공해 주세요.",
+      "counterAria": "글자 수",
+      "error": "메시지는 최소 10자 이상이어야 합니다."
+    },
+    "consent": {
+      "checkboxLabel": "(필수) 개인정보 수집 및 이용에 동의합니다.",
+      "policyLinkText": "개인정보 처리방침 보기",
+      "error": "제출하기 전에 동의해야 합니다."
+    },
+    "recaptcha": {
+      "groupLabel": "캡차",
+      "envWarning": ".env 파일에 VITE_RECAPTCHA_SITE_KEY를 설정해 주세요.",
+      "srOnly": "reCAPTCHA 인증을 완료해 주세요."
+    },
+    "actions": {
+      "disclaimer": "* 제출 시, 상담을 위한 연락에 동의하는 것입니다.",
+      "submit": "보내기",
+      "submitting": "제출 중..."
+    },
+    "success": "문의가 접수되었습니다. 감사합니다!",
+    "errors": {
+      "global": "문제가 발생했습니다. 다시 시도해 주세요."
+    }
+  },
+  "compFormation": {
+    "appInfo": "신청자\n정보",
+    "amlcd": "AML\nCDD",
+    "compInfo": "회사\n정보",
+    "serviceAgrmt": "서비스 계약",
+    "serviceSelect": "선택할 서비스",
+    "invoice": "청구서",
+    "payment": "결제",
+    "inforIncorpo": "회사 설립 정보",
+    "incorpo": "회사 설립"
+  },
+  "ApplicantInfoForm": {
+    "goodToKnow": "알아두면 좋아요",
+    "goodDesc": "선호도 순으로 회사 이름의 여러 가지 변형을 입력하세요. Mirr Asia에서 회사 설립 전에 최종 확인을 도와드릴 것입니다.",
+    "heading": "신청인 정보",
+    "paragraph": "이 양식은 홍콩 회사의 대표자가 작성해야 합니다. 제공된 정보는 KYC 및 고객 실사 문서로 보관됩니다.",
+    "nameHeading": "신청인 이름",
+    "relationHeading": "상기 신청인과 설립 예정인 홍콩 회사의 관계",
+    "relationSelect": "해당되는 모든 항목을 선택하세요.",
+    "relationList1": "홍콩 회사의 이사",
+    "relationList2": "홍콩 회사 이사의 위임을 받은 자",
+    "relationList3": "홍콩 회사의 다수 지분을 보유한 주주",
+    "relationList4": "홍콩 회사에 설립 자문을 제공하는 전문가(변호사, 회계사 등)",
+    "relationList5": "기타...",
+    "applicantName": "신청자 이름",
+    "compName": "등록하려는 홍콩 회사 이름",
+    "compChinaName": "아래에 회사의 중국어 이름을 선택적으로 입력할 수 있습니다.",
+    "contactInfo": "상기 신청인의 연락처",
+    "phoneNum": "전화번호",
+    "phoneNumInfo": "국가 번호를 포함한 전화번호를 입력하세요.",
+    "address": "주소",
+    "email": "이메일",
+    "emailInfo": "OTP를 받을 활성 이메일을 입력하세요.",
+    "snsId": "SNS 계정 ID",
+    "snsPlatform": "SNS 플랫폼",
+    "compNameInfo": "회사명은 반드시 영어로 작성해야 하며, 중국어도 가능합니다(번체자만 가능, 간체자 불가). 단, 영어와 중국어의 조합(HK 등 영문 약어 제외)은 허용되지 않으며, 반드시 영문명 끝에 Limited로 표기하고, 한문 끝에 有限公主로 표기해야 한다. 이름. 회사명은 대문자/소문자/숫자/마침표/쉼표/괄호를 조합하여 사용할 수 있으며, 기타 특수문자는 허용되지 않습니다. International은 Int'l로 약칭할 수 있습니다. 동일 또는 유사한 회사명으로 이미 등록된 회사가 있는 경우에는 회사명을 등록할 수 없습니다. 따라서 등록을 원하시는 회사명 3개를 1순위 / 2순위 / 3순위 순으로 입력해주시면 당사에서 이름을 확인하여 선호하는 순서대로 등록해 드립니다."
+  },
+  "CompanyInformation": {
+    "businessNatureList": [
+      {
+        "name": "Crop and animal production, hunting and related service activities",
+        "val": "001"
+      },
+      {
+        "name": "Forestry activities",
+        "val": "002"
+      },
+      {
+        "name": "Fishing and aquaculture",
+        "val": "003"
+      },
+      {
+        "name": "Mining of coal and lignite",
+        "val": "005"
+      },
+      {
+        "name": "Extraction of crude petroleum and natural gas",
+        "val": "006"
+      },
+      {
+        "name": "Mining of metal ores",
+        "val": "007"
+      },
+      {
+        "name": "Quarrying and other mining of non-metal ores",
+        "val": "008"
+      },
+      {
+        "name": "Mining support service activities",
+        "val": "009"
+      },
+      {
+        "name": "Manufacture of food products",
+        "val": "010"
+      },
+      {
+        "name": "Manufacture of beverages",
+        "val": "011"
+      },
+      {
+        "name": "Manufacture of tobacco products",
+        "val": "012"
+      },
+      {
+        "name": "Manufacture of textiles",
+        "val": "013"
+      },
+      {
+        "name": "Manufacture of wearing apparel",
+        "val": "014"
+      },
+      {
+        "name": "Manufacture of leather and related products",
+        "val": "015"
+      },
+      {
+        "name": "Manufacture of wood and of products of wood and cork, articles of straw and plaiting materials (except furniture and toys)",
+        "val": "016"
+      },
+      {
+        "name": "Manufacture of paper and paper products",
+        "val": "017"
+      },
+      {
+        "name": "Printing and reproduction of recorded media",
+        "val": "018"
+      },
+      {
+        "name": "Manufacture of coke and refined petroleum products",
+        "val": "019"
+      },
+      {
+        "name": "Manufacture of chemicals and chemical products",
+        "val": "020"
+      },
+      {
+        "name": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
+        "val": "021"
+      },
+      {
+        "name": "Manufacture of rubber and plastics products (except furniture, toys, sports goods and stationery)",
+        "val": "022"
+      },
+      {
+        "name": "Manufacture of other non-metallic mineral products",
+        "val": "023"
+      },
+      {
+        "name": "Manufacture of basic metals",
+        "val": "024"
+      },
+      {
+        "name": "Manufacture of fabricated metal products (except machinery and equipment)",
+        "val": "025"
+      },
+      {
+        "name": "Manufacture of computer, electronic and optical products",
+        "val": "026"
+      },
+      {
+        "name": "Manufacture of electrical equipment",
+        "val": "027"
+      },
+      {
+        "name": "Manufacture of machinery and equipment n.e.c.",
+        "val": "028"
+      },
+      {
+        "name": "Body assembly of motor vehicles",
+        "val": "029"
+      },
+      {
+        "name": "Manufacture of other transport equipment",
+        "val": "030"
+      },
+      {
+        "name": "Manufacture of furniture",
+        "val": "031"
+      },
+      {
+        "name": "Other manufacturing",
+        "val": "032"
+      },
+      {
+        "name": "Repair and installation of machinery and equipment",
+        "val": "033"
+      },
+      {
+        "name": "Electricity and gas supply",
+        "val": "035"
+      },
+      {
+        "name": "Water collection, treatment and supply",
+        "val": "036"
+      },
+      {
+        "name": "Sewerage",
+        "val": "037"
+      },
+      {
+        "name": "Waste collection, treatment and disposal activities; materials recovery",
+        "val": "038"
+      },
+      {
+        "name": "Remediation activities and other waste management services",
+        "val": "039"
+      },
+      {
+        "name": "Construction of buildings",
+        "val": "041"
+      },
+      {
+        "name": "Civil engineering",
+        "val": "042"
+      },
+      {
+        "name": "Specialised construction activities",
+        "val": "043"
+      },
+      {
+        "name": "Import and export trade",
+        "val": "045"
+      },
+      {
+        "name": "Wholesale",
+        "val": "046"
+      },
+      {
+        "name": "Retail trade",
+        "val": "047"
+      },
+      {
+        "name": "Land transport",
+        "val": "049"
+      },
+      {
+        "name": "Water transport",
+        "val": "050"
+      },
+      {
+        "name": "Air transport",
+        "val": "051"
+      },
+      {
+        "name": "Warehousing and support activities for transportation",
+        "val": "052"
+      },
+      {
+        "name": "Postal and courier activities",
+        "val": "053"
+      },
+      {
+        "name": "Short term accommodation activities",
+        "val": "055"
+      },
+      {
+        "name": "Food and beverage service activities",
+        "val": "056"
+      },
+      {
+        "name": "Publishing activities",
+        "val": "058"
+      },
+      {
+        "name": "Motion picture, video and television programme production, sound recording and music publishing activities",
+        "val": "059"
+      },
+      {
+        "name": "Programming and broadcasting activities",
+        "val": "060"
+      },
+      {
+        "name": "Telecommunications",
+        "val": "061"
+      },
+      {
+        "name": "Information technology service activities",
+        "val": "062"
+      },
+      {
+        "name": "Information service activities",
+        "val": "063"
+      },
+      {
+        "name": "Financial service activities, including investment and holding companies, and the activities of trusts, funds and similar financial entities.",
+        "val": "064"
+      },
+      {
+        "name": "Insurance (including pension funding)",
+        "val": "065"
+      },
+      {
+        "name": "Activities auxiliary to financial service and insurance activities",
+        "val": "066"
+      },
+      {
+        "name": "Real estate activities",
+        "val": "068"
+      },
+      {
+        "name": "Legal and accounting activities",
+        "val": "069"
+      },
+      {
+        "name": "Activities of head offices; management and management consultancy activities",
+        "val": "070"
+      },
+      {
+        "name": "Architecture and engineering activities, technical testing and analysis",
+        "val": "071"
+      },
+      {
+        "name": "Scientific research and development",
+        "val": "072"
+      },
+      {
+        "name": "Veterinary activities",
+        "val": "073"
+      },
+      {
+        "name": "Advertising and market research",
+        "val": "074"
+      },
+      {
+        "name": "Other professional, scientific and technical activities",
+        "val": "075"
+      },
+      {
+        "name": "Rental and leasing activities",
+        "val": "077"
+      },
+      {
+        "name": "Employment activities",
+        "val": "078"
+      },
+      {
+        "name": "Travel agency, reservation service and related activities",
+        "val": "079"
+      },
+      {
+        "name": "Security and investigation activities",
+        "val": "080"
+      },
+      {
+        "name": "Services to buildings and landscape care activities",
+        "val": "081"
+      },
+      {
+        "name": "Office administrative, office support and other business support activities",
+        "val": "082"
+      },
+      {
+        "name": "Public administration",
+        "val": "084"
+      },
+      {
+        "name": "Education",
+        "val": "085"
+      },
+      {
+        "name": "Human health activities",
+        "val": "086"
+      },
+      {
+        "name": "Residential care activities",
+        "val": "087"
+      },
+      {
+        "name": "Social work activities without accommodation",
+        "val": "088"
+      },
+      {
+        "name": "Creative and performing arts activities",
+        "val": "090"
+      },
+      {
+        "name": "Libraries, archives, museums and other cultural activities",
+        "val": "091"
+      },
+      {
+        "name": "Activities of amusement parks and theme parks",
+        "val": "092"
+      },
+      {
+        "name": "Sports and other entertainment activities",
+        "val": "093"
+      },
+      {
+        "name": "Activities of membership organisations",
+        "val": "094"
+      },
+      {
+        "name": "Repair of motor vehicles, motorcycles, computers, personal and household goods",
+        "val": "095"
+      },
+      {
+        "name": "Other personal service activities",
+        "val": "096"
+      },
+      {
+        "name": "Activities of households as employers of domestic personnel",
+        "val": "097"
+      },
+      {
+        "name": "Goods- and services-producing activities of private households for own use",
+        "val": "098"
+      },
+      {
+        "name": "Activities of extraterritorial organisations and bodies",
+        "val": "099"
+      }
+    ],
+    "businessInfoHead": "홍콩 회사의 사업 정보",
+    "businessInfoSubHeading": "이 섹션에서는 설립될 홍콩 회사 및 관련 사업에 대한 정보를 제공하십시오.",
+    "selectBusinessIndustry": "업종 선택",
+    "descriptionOfProduct": "법인설립 후 거래되는 상품명, 상품종류, 서비스 내용, 서비스 종류 등에 대한 설명",
+    "purposeOfEstablishment": "홍콩법인 설립목적 및 기대효과",
+    "purposeOptions": {
+      "enteringBusiness": "홍콩 및 대중국 비즈니스 진출",
+      "assetManagement": "부동산 또는 금융 자산 투자를 통한 자산 관리",
+      "managingThroughInvesting": "지주회사로서 자회사 또는 계열사에 투자하여 관리",
+      "investorProposed": "투자자 또는 비즈니스 상대방이 싱가포르 회사 설립을 제안함",
+      "geographicalBenefits": "국제 거래를 위한 지리적 이점",
+      "diversificationDueToRegulations": "완화된 규제로 인한 비즈니스 다각화 추구",
+      "competitiveAdvantage": "완화된 금융 규제를 통한 경쟁 우위 추구",
+      "increaseTransactionalVolume": "낮은 세율 및 비거래세(Non-VAT)로 인한 거래량 증가",
+      "investmentProfit": "자본 이득세 없음으로 인한 투자 수익 추구"
+    },
+    "shareholders": "주주",
+    "directors": "이사",
+    "ofHKCompany": "홍콩 회사의",
+    "shHlderSubHeading": "홍콩 회사의 주주, 이사, 중요한 통제자 및 지정된 연락 담당자에 대한 정보를 제공하십시오.",
+    "typeOfShares": "발행할 주식의 종류",
+    "typeShareInfo": "우선주나 회사채 발행의 경우, 정관 및 법규 검토 등 진행 전 사전 자문이 필요할 수 있습니다.",
+    "significantController": "주요 컨트롤러",
+    "typeOfShare": {
+      "ordinaryShares": "보통주",
+      "preferenceShares": "우선주"
+    },
+    "designatedContactPerson": "지정된 담당자",
+    "designateToolTipInfo": "회사의 업무에 관한 연락, 회사의 법인설립 및 갱신, 서류등록, 필수정보 확인, 제반사항에 대한 의사소통 등을 담당할 자(“지정연락인”)를 위임해야 합니다. 우리의 서비스. 지정담당자의 지정은 1명까지 무료이며, 2명 이상 지정연락자를 위임하고자 할 경우 1인당 연회비 HKD2,000가 부과됩니다. 지정된 담당자는 귀사에서 위임하며, 귀사 정보 보호, 업무 혼란 감소, 신원 사기 방지를 위해 별도로 등록하셔야 합니다. (지정된 담당자는 여권 사본, 주소 증명, 본인 확인서를 제출하여 주주/이사와 동일한 절차를 거쳐야 합니다.",
+    "totalShrldrName": "총 소유권은 100%를 초과할 수 없습니다. 현재 합계",
+    "addShldrDir": "주주/이사 추가",
+    "sendInvitation": "주주/이사에게 초대메일 발송",
+    "shareDirName": "주주/이사 이름",
+    "ownerShpRte": "소유율(%)",
+    "actDirector": "감독으로 활동하나요?",
+    "isLegal": "법인(회사, 재단)?",
+    "conditionSignificantControl": "회사에 대한 중요한 통제 조건: 다음 5가지 조건 중 하나 이상을 충족하는 경우 해당 개인은 회사에 대해 중요한 통제권을 가지고 있습니다 – 1. 해당 개인이 직접 또는 간접적으로 회사의 발행된 주식의 25% 이상을 보유하거나, 만약 회사가 자본금을 보유하지 않은 경우, 해당 개인이 직접 또는 간접적으로 회사의 자본 또는 이익의 25% 이상을 분배받을 권리를 보유하는 경우; 2. 해당 개인이 직접 또는 간접적으로 회사의 의결권의 25% 이상을 보유하는 경우; 3. 해당 개인이 직접 또는 간접적으로 회사의 이사회 과반수를 임명하거나 해임할 권리를 보유하는 경우; 4. 해당 개인이 회사에 대해 중요한 영향력이나 통제권을 행사할 권리가 있거나 실제로 행사하는 경우; 5. 해당 개인이 신뢰재단 또는 법인이 아닌 단체의 활동에 대해 중요한 영향력이나 통제권을 행사할 권리가 있거나 실제로 행사하며, 해당 신뢰재단 또는 단체의 신탁인 또는 구성원이 첫 네 가지 조건 중 하나를 충족하는 경우 (그 역할에서).",
+    "accountHeading": "회계 및 세무",
+    "accountingPara": "회계 및 세무 관련 정보를 제공해 주십시오.",
+    "finYearEnd": "홍콩 회사의 회계연도 종료일",
+    "finYearEndTtip": "첫 번째 회계연도는 설립일로부터 18개월 이내로 자유롭게 설정할 수 있습니다. 홍콩 세법(내륙세법) 제51조 2항에 따르면, 회계연도 종료일로부터 4개월 이내에 법인세 신고서(과세 대상)를 제출해야 합니다.",
+    "bookCycle": "장부 작성 주기",
+    "implementSoftware": "온라인 회계 소프트웨어 - Xero를 도입하시겠습니까?",
+    "implementSoftwaretTip": "Xero를 도입하면 POS 또는 기타 소프트웨어에서 생성된 데이터를 CSV 형식으로 가져와 장부 작성 및 재무제표, 현금 흐름표를 지원할 수 있습니다. 또한, 지주회사와 자회사 간 연결 재무제표 작성에도 유용하며, 재고 관리, 비용 관리, 판매 관리 등 다양한 기능을 제공합니다.",
+    "doYouUseSoftware": "현재 사용 중이거나 별도로 사용하고자 하는 회계 소프트웨어가 있습니까? (있는 경우)"
+  },
+  "AmlCdd": {
+    "legal_assessment_title": "법적 및 윤리적 평가",
+    "legal_assessment_description": "돈세탁, 도박, 세금 회피, 자산 은닉, 불법 비즈니스 회피, 사기 등과 같은 법적 또는 윤리적 문제가 홍콩 회사 또는 그와 관련된 다른 당사자에게 있는지 확인해주세요?",
+    "business_information_title": "홍콩 회사의 비즈니스 정보",
+    "business_information_description": "이 섹션에서는 홍콩 회사 및 설립 예정인 관련 비즈니스 정보를 제공해주세요.",
+    "dialog_initial_title": "중요 공지",
+    "dialog_initial_message": "모든 필드를 신중하게 작성해야 합니다. 작성이 완료되면 이 양식은 수정할 수 없습니다.",
+    "dialog_button": "확인",
+    "dialog_acknowledgement_title": "입력한 데이터가 정확한지 확인해주세요. 확인 부탁드립니다.",
+    "dialog_acknowledgement_message": "입력한 데이터가 정확하다고 확인합니다.",
+    "dialog_consultation_title": "진행 전에 상담이 필요합니다.",
+    "dialog_consultation_message": "진행하기 전에 상담이 필요할 것 같습니다. 귀하의 답변 내용을 확인 후, 상담원이 연락을 드릴 것입니다. 감사합니다.",
+    "dialog_consultation_button": "확인",
+    "options": {
+      "yes": "예",
+      "no": "아니요",
+      "unknown": "모르겠다",
+      "legal-advice": "법적 자문 고려"
+    },
+    "questions": {
+      "sanctioned_countries": "홍콩 회사가 현재 또는 계획 중인 비즈니스 활동이 아래 국가/지역(이란, 수단, 북한, 시리아, 쿠바, 남수단, 벨라루스 또는 짐바브웨)에 있는지 아십니까?",
+      "sanctions_presence": "홍콩 회사나 회사의 연결된 기타 관련 당사자가 이란, 수단, 북한, 시리아, 쿠바에 존재하거나 UN, EU, UN/HMT, HKMA, OFAC 또는 현지 제재법에 의해 제재 대상인 경우가 있는지 아십니까?",
+      "crimea_presence": "홍콩 회사나 그와 연결된 기타 관련 당사자가 크리미아/세바스토폴 지역에서 현재 또는 계획 중인 비즈니스 활동이 있는지 아십니까?",
+      "russian_business_presence": "홍콩 회사가 에너지/석유/가스 분야 또는 군사 및 방위와 관련된 비즈니스 활동에 러시아와의 연관이 있는지 아십니까?"
+    },
+    "acknowledgement_error": "진행하기 전에 법적 확인을 받아주세요.",
+    "success_message": "회사 설립 요청이 성공적으로 제출되었습니다!",
+    "error_message": "요청 제출 중 오류가 발생했습니다."
+  },
+  "ServiceAgreementDocument": {
+    "title": "회사 서비스 계약",
+    "section1Title": "1. 서비스 계약의 목적",
+    "section1Content": "이 계약의 목적은 MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED(“MIRR ASIA”)가 제공하는 서비스의 범위와 한계에 대해 발생할 수 있는 오해 또는 분쟁을 방지하는 것입니다. 이는 홍콩 특별행정구(HKSAR)에 곧 설립될 귀사의 회사(“클라이언트”)와 관련이 있습니다.",
+    "section2Title": "2. 홍콩 회사 서기의 역할 및 책임 한계",
+    "section2Content": "(MIRR ASIA가 제공하는 서기 서비스를 이용하는 클라이언트에게만 적용됨)",
+    "section2_1": "2.1",
+    "section2_1Content": "MIRR ASIA는 홍콩 회사 법령(Cap 622) 및 클라이언트의 정관에 따라 클라이언트의 파일에 서기로 등록됩니다.",
+    "section2_2": "2.2",
+    "section2_2Content": "MIRR ASIA가 제공하는 서기 서비스는 홍콩 회사 법령(Cap 622)에 규정된 기본 등록 요건이며, 일반적인 의미의 고용된 서기와는 다를 수 있습니다.",
+    "section3Title": "3. 등록 주소 제공 및 책임 한계",
+    "section3Content": "(MIRR ASIA가 제공하는 등록 주소 서비스를 이용하는 클라이언트에게만 적용됨)",
+    "section3_1": "3.1",
+    "section3_1Content": "클라이언트에 등록된 주소는 MIRR ASIA가 제공하는 홍콩 내 등록 주소입니다. 클라이언트가 이 등록 주소를 변경하려는 경우, 클라이언트는 MIRR ASIA에 서면 또는 이메일로 통지해야 합니다.",
+    "section3_2": "3.2",
+    "section3_2Content": "MIRR ASIA가 제공하는 등록 주소는 등록 목적으로만 사용되며, 클라이언트의 사업 또는 물리적 공간을 포함하지 않습니다.",
+    "section3_3": "3.3",
+    "section3_3Content": "클라이언트는 등록 주소를 악의적이거나 불법적인 목적으로 사용하거나, 이를 클라이언트의 실제 사업 지역으로 허위로 표시해서는 안 됩니다.",
+    "section3_4": "3.4",
+    "section3_4Content": "클라이언트의 수신 메일은 서비스 기간 동안 동의서에 따라 MIRR ASIA에 의해 개봉 및 스캔되며, 스캔된 파일은 클라이언트에게 이메일로 전송됩니다. 클라이언트가 서비스를 종료하려는 경우, 클라이언트는 사전에 MIRR ASIA에 서면 또는 이메일로 통지해야 합니다. 클라이언트가 두 명 이상의 이사를 보유하고 있는 경우, 정관에 따른 정족수에 따라 최소 두 명의 이사가 모든 관련 문서에 서명해야 합니다.",
+    "section3_5": "3.5",
+    "section3_5Content": "클라이언트는 사전 동의 없이 MIRR ASIA가 제공한 등록 주소로 소포 및 물품을 보내거나 제3자에게 보내도록 요청해서는 안 됩니다. 동의되지 않은 배송물은 발송인에게 반송됩니다.",
+    "section4Title": "4. 서비스 범위",
+    "section4Content": "MIRR ASIA는 클라이언트의 설립일로부터 첫 주년까지 다음 서비스를 제공합니다:",
+    "section4Services": {
+      "1": "회사 서기 등록 (서기 서비스 이용 시 적용)",
+      "2": "회사의 법정 기록 유지, 회의록 및 문서 포함 (등록 주소 서비스 이용 시 적용)",
+      "3": "홍콩 주소 및 메일링 서비스 제공, 스캔 및 이메일 전송 포함 (등록 주소 서비스 이용 시 적용)",
+      "4": "최초 2명의 직원에 대한 고용주 신고서 처리 (HKD300 우편 요금 적용) (서기 서비스 이용 시 적용)",
+      "5": "회사 정보 조사 의무 처리 (서기 서비스 이용 시 적용)",
+      "6": "연간 보고서 양식 준비 및 갱신 양식 사본 유지 (갱신 후 서기 서비스 이용 시 적용)",
+      "7": "중요한 지배자 등록부 제출 및 유지 (서기 및 등록 주소 서비스 모두 이용 시 적용)",
+      "8": "회원/이사/서기 등록부 및 조직도 제출 및 유지 (서기 및 등록 주소 서비스 모두 이용 시 적용)",
+      "9": "연차 총회(AGM) 회의록 제출 및 유지 (서기 및 등록 주소 서비스 모두 이용 시 적용)",
+      "10": "등록 사무소에서 사업자 등록증 유지 (등록 주소 서비스 이용 시 적용)",
+      "11": "간단한 사업 및 운영 조언 (서기 서비스 이용 시 적용)"
+    },
+    "section4_1": "4.1",
+    "section4_1Content": "클라이언트는 MIRR ASIA와 성실히 협력하여 서비스에 필요한 모든 정보와 문서를 제공해야 합니다. MIRR ASIA는 불법적인 사항에 대해 지원하거나 조언할 의무가 없습니다.",
+    "section4_2": "4.2",
+    "section4_2Content": "MIRR ASIA가 제공하는 간단한 사업 및 운영 조언은 클라이언트의 편의를 위한 것이며, MIRR ASIA는 이 조언에 대해 법적 책임을 지지 않습니다.",
+    "section5Title": "5. 서비스 요금",
+    "section5Content": "클라이언트는 이 계약서 서명 시 결제 섹션에 명시된 금액을 지불해야 합니다. 서비스 요금에는 회계, 감사, 세무 서비스, 은행 계좌 개설 조언 또는 은행 수수료, 정부 요금, 세금 및 택배 요금과 같은 제3자 요금이 포함되지 않습니다.",
+    "section6Title": "6. 양도 및 하도급",
+    "section6Content": "클라이언트 또는 MIRR ASIA는 상대방의 사전 서면 동의 없이 이 계약에 따른 권리, 의무 및 책임을 양도하거나 이전할 수 없습니다.",
+    "section7Title": "7. 기밀 유지",
+    "section7Content": "양측은 이 계약에 따라 얻은 모든 비즈니스 또는 기술 정보를 기밀로 유지해야 합니다. 이 의무는 공개된 정보 또는 합법적으로 타인으로부터 얻은 정보에는 적용되지 않습니다.",
+    "section8Title": "8. 통합",
+    "section8Content": "이 계약은 클라이언트와 MIRR ASIA 간의 최종 및 완전한 합의를 나타내며, 이전의 모든 커뮤니케이션을 대체합니다. 이 계약은 양측 간의 구매 주문서 또는 기타 커뮤니케이션에 포함된 인쇄된 약관보다 우선합니다.",
+    "section9Title": "9. 분리 가능성",
+    "section9Content": "이 계약의 무효 또는 강제 불가능한 조항은 삭제된 것으로 간주되며, 나머지 조항은 계속 유효하고 구속력을 가집니다. 양측은 무효 조항을 원래 의도를 반영하는 유효한 조항으로 대체하기 위해 성실히 노력해야 합니다.",
+    "section10Title": "10. 제3자 수혜자 없음",
+    "section10Content": "이 계약은 MIRR ASIA의 서면 승인 없이는 제3자에게 어떠한 권리나 이익을 생성하지 않습니다.",
+    "section11Title": "11. 준거법 및 구제 조치",
+    "section11Content": "이 계약은 홍콩 특별행정구의 법률에 의해 규율됩니다. 모든 분쟁은 홍콩 중재 협회의 규칙에 따라 중재에 회부됩니다.",
+    "section12Title": "12. 변호사 수수료",
+    "section12Content": "이 계약으로 인해 발생하는 중재, 조정 또는 소송의 경우, 승소한 당사자는 합리적인 비용 및 변호사 수수료를 청구할 권리가 있습니다. 클라이언트는 또한 MIRR ASIA가 정보, 증언 또는 문서 요청에 응답하는 데 발생한 모든 비용을 지불하는 데 동의합니다.",
+    "section13Title": "13. 확인 및 선언",
+    "section13Content": "클라이언트는 MIRR ASIA가 제공하는 서비스를 불법적인 목적으로 사용하지 않을 것을 확인하고 선언합니다. 클라이언트가 제공한 정보에 변경 사항이 있는 경우 즉시 MIRR ASIA에 통지해야 합니다. 클라이언트는 제공한 모든 정보가 사실이고 정확함을 확인합니다.",
+    "section13_1": "13.1",
+    "section13_1Content": "클라이언트는 서비스 수행을 위해 필요한 문서를 제공하는 데 동의하며, 조직의 목적이 합법적임을 확인합니다. MIRR ASIA는 불법 활동이 의심되는 경우 사전 통지 없이 서비스를 중단할 권리를 보유합니다."
+  },
+  "ServiceSelection": {
+    "HongKongCompanyIncorporation": "홍콩 회사 설립",
+    "HongKongRegistrarOfCompaniesFee": "홍콩 회사 등록부 등록 (정부) 수수료",
+    "BusinessRegistrationFee": "사업자 등록 (정부) 수수료",
+    "CompanySecretaryAnnualServiceCharge": "회사 비서 연간 서비스 요금",
+    "FiftyPercentOffFirstYear": "첫 해 50% 할인",
+    "RegisteredOfficeAddressAnnualFee": "등록된 사무소 주소 연간 서비스 요금",
+    "KYCFee": "KYC / 실사 수수료",
+    "KYCFeeLegalPerson": "KYC / 법인 실사 수수료",
+    "BankAccountOpeningFee": "은행 계좌 개설 준비 수수료",
+    "CompanyKitProducingCost": "회사 키트 제작 비용",
+    "CorrespondenceAddressFee": "편지 수신 주소 연간 서비스 요금 (선택 사항)",
+    "BankEMIAccountOpeningFee": "은행/EMI 계좌 개설 준비 수수료 (선택 사항)",
+    "IncorporationAndFees": "설립 및 첫 해 연간 수수료 세부 사항",
+    "ServiceDescription": "서비스 설명",
+    "OriginalPrice": "원래 가격",
+    "DiscountedPrice": "할인 가격",
+    "TotalCost": "총 비용",
+    "FREE": "무료"
+  },
+  "InformationIncorporation": {
+    "registrationDetails": "홍콩 회사의 등록 세부 정보",
+    "registrationDescription": "이 섹션에서는 홍콩 회사에 제출할 주식, 주주 및 이사의 정보를 제공해주세요.",
+    "paymentOfShareCapital": "주식 자본의 지급",
+    "paymentTooltip": "홍콩은 2014년 3월 3일 개정된 새로운 회사법(Cap. 622)에 따라 모든 주식 자본이 전액 지급되어야 합니다. 홍콩은 다른 나라와 달리 별도의 자본 계좌가 없으므로, 회사 계좌 개설 후 주식 자본 금액을 예치할 수 있습니다. 계좌 개설이 지연되거나 회사 계좌가 없는 경우, 이사는(또는 회사의 자금을 담당하는 사람이) 자본 금액을 보관하고 회사 지출에 사용할 수 있습니다(소액 현금 계좌로). 그러나 이는 홍콩의 자본 지급 방식이며, 다른 국가에서는 외국인 직접 투자 및 외환 거래법에 따른 절차 및 보고 의무가 별도로 확인되어야 합니다. 일부 국가에서는 외환 은행을 통해 또는 해당 정부 부처를 통해 외국인 직접 투자를 보고할 수 있습니다.",
+    "baseCurrency": "주식 자본의 기준 통화",
+    "currencyTooltip": "주식 자본의 통화는 회계 목적으로 사용할 기능 통화와 동일하는 것이 좋습니다. 예를 들어, 구매 및 판매가 모두 USD로 이루어지면, 주식 자본을 USD로 설정하는 것이 회계에 편리합니다. 그렇지 않은 경우, 모든 통화는 회계 목적으로 기준 통화로 변환되어야 합니다. 주식 자본의 통화는 설립 후 변경할 수 없으므로 주의하세요. (예: HKD로 발행된 주식 자본은 USD로 변경할 수 없습니다.)",
+    "shareCapitalAmount": "지급할 주식 자본 금액",
+    "amountTooltip": "이 금액은 위의 기준 통화에 따라 설정됩니다. 예) USD 1,000",
+    "numShares": "발행할 주식의 총 수(최소 1주)",
+    "numSharesTooltip": "설립 후, 새로운 주식 발행 및 주식 양도는 추가 비용이 발생하므로 주식의 수와 자본 금액을 신중하게 결정해야 합니다. 향후 주식을 양도할 계획이 있으면, 원하는 비율로 주식을 나누기 위해 주식 수가 충분히 효율적인지 고려해야 합니다. 예를 들어, 설립 시 10주를 발행했지만, 향후 33.33%의 주식을 다른 파트너에게 양도하려면, 이를 맞추기 위해 추가적인 주식 발행이 필요할 수 있습니다. 또한, 발행된 주식의 액면가를 나중에 변경하고자 할 경우(예: HKD1에서 HKD5로 변경), 이 점을 고려해야 합니다.",
+    "shareholdersOfCompany": "홍콩 회사의 주주들",
+    "directorsOfCompany": "홍콩 회사의 이사들",
+    "companyAddress": "등록할 홍콩 회사의 주소",
+    "paymentOption_deposit": "주식 자본의 납입 금액은 법인 계좌를 개설한 후 은행 계좌로 입금될 예정입니다.",
+    "paymentOption_pettyCash": "주식 자본의 납입 금액은 현금으로 지급되며, 회사 내에서 잡금으로 보관되고 필요 시 비용으로 사용될 예정입니다.",
+    "paymentOption_other": "기타",
+    "amountOption_1": "1",
+    "amountOption_100": "100",
+    "amountOption_1000": "1,000",
+    "amountOption_10000": "10,000",
+    "sharesOption_total_capital_divided_by_1_par_value_per_share_1_general_convention_to_issue_the_share_in_hk": "총 자본금 / $1 (주당 액면가 = $1; 홍콩에서 주식 발행의 일반적인 관례)",
+    "sharesOption_1_share_at_least_1_share_to_be_issued_1_share_price_total_capital": "1주 (최소 1주 발행) (1주 가격 = 총 자본금)",
+    "sharesOption_100_shares": "100주",
+    "sharesOption_1000_shares": "1,000주",
+    "sharesOption_10000_shares": "10,000주",
+    "sharesOption_others": "기타",
+    "dec31": "12월 31일",
+    "mar31": "3월 31일 (홍콩 회계연도 마감일)",
+    "accSoftwareCharge": "예 (소프트웨어 비용: 월 HKD 400으로 예상)",
+    "recRequired": "추천 필요",
+    "bookCycle1": "매월",
+    "bookCycle2": "분기별",
+    "bookCycle3": "반기별 (6개월마다)",
+    "bookCycle4": "매년 (12개월마다) *최저 비용"
+  },
+  "invoice": {
+    "desc": "설명",
+    "originalPrice": "원가",
+    "discPrice": "할인가",
+    "notes": "참고 사항",
+    "total": "총액 (원가)",
+    "totalDisc": "총액 (할인가)",
+    "legalPersons": "법인",
+    "individuals": "개인"
+  },
+  "InfoIncorpo": {
+    "regDetails": "홍콩 회사의 등록 세부 정보",
+    "regDetailPara": "이 섹션에서는 홍콩 회사에 등록할 주식, 주주 및 이사에 대한 정보를 제공해 주십시오.",
+    "paymentOfShCap": "자본금 납입",
+    "payshCapttip": "홍콩은 2014년 3월 3일 개정된 새로운 회사법(New Companies Ordinance, Cap. 622)에 따라 모든 자본금은 전액 납입해야 합니다. 홍콩에는 다른 국가와 같은 별도의 자본 계정이 없으므로 법인 계좌를 개설한 후 자본금을 입금할 수 있습니다. 법인 계좌 개설이 지연되거나 법인 계좌가 없는 경우, 이사(또는 귀사의 현금을 관리하는 사람)가 자본금을 보관하고 회사의 지출(예: 소액 현금 계정)로 사용할 수 있으며, 지출 증빙 자료(예: 영수증 등)를 제출하면 됩니다. 그러나 이는 홍콩 기준의 자본금 납입 방법이며, 외국인 직접 투자 및 외환거래법에 따른 절차와 보고 의무는 별도로 확인하고 처리해야 합니다. 일부 국가에서는 외환 은행 또는 관련 정부 부처를 통해 외국인 직접 투자를 보고해야 할 수 있습니다.",
+    "baseCurrency": "자본금의 기준 통화",
+    "baseCurrencytTip": "자본금의 통화는 회계 목적으로 사용할 기능 통화와 동일하게 설정하는 것이 좋습니다. 예를 들어, 구매와 판매 모두 USD로 거래하는 경우 자본금을 USD로 설정하면 회계 처리가 편리합니다. 그렇지 않은 경우 모든 통화는 회계 처리를 위해 기준 통화로 환산되어야 합니다. 자본금의 통화는 설립 후 다른 통화로 변경할 수 없으므로 주의하시기 바랍니다. (예: HKD로 발행된 자본금은 USD로 변경할 수 없음)",
+    "totalAmount": "납입할 자본금 총액",
+    "totalAmtTip": "이는 위의 기준 통화에 따른 금액입니다. 예) USD 1,000",
+    "numShares": "발행할 총 주식 수 (최소 1주 이상)",
+    "numSharestTip": "설립 후 신주 발행 및 주식 양도와 같은 자본 증가에는 추가 비용이 발생하므로 주식 수와 자본금을 신중히 결정하시기 바랍니다. 향후 주식을 양도할 계획이 있는 경우 원하는 비율로 주식을 나눌 수 있도록 주식 수를 효율적으로 설정하는 것이 좋습니다. 예를 들어, 설립 시 10주를 발행한 경우, 전체 주식의 33.33%를 다른 파트너에게 양도하려면 비율에 맞게 추가 주식을 발행해야 하므로 과정이 복잡해질 수 있습니다. 또한 설립 시 주당 액면가를 HKD 1로 발행한 후 미래 투자자에게 HKD 5 차이를 두고 싶다면 이를 미리 고려하시기 바랍니다."
+  },
+  "businessIndustry": {
+    "empty": "",
+    "cropAnimalProduction": "작물 및 동물 생산, 수렵 및 관련 서비스 활동",
+    "forestryActivities": "임업 활동",
+    "fishingAndAquaculture": "어업 및 양식업",
+    "miningCoalLignite": "석탄 및 갈탄 채굴",
+    "extractionCrudePetroleumNaturalGas": "원유 및 천연가스 추출",
+    "miningMetalOres": "금속 광물 채굴",
+    "quarryingNonMetalOres": "비금속 광물 채굴 및 기타 광업",
+    "miningSupportServices": "광업 지원 서비스 활동",
+    "manufactureFoodProducts": "식료품 제조업",
+    "manufactureBeverages": "음료 제조업",
+    "manufactureTobaccoProducts": "담배 제품 제조업",
+    "manufactureTextiles": "섬유 제조업",
+    "manufactureWearingApparel": "의류 제조업",
+    "manufactureLeatherProducts": "가죽 및 관련 제품 제조업",
+    "manufactureWoodCorkStraw": "목재 및 목재 제품, 코르크, 짚 및 엮는 재료 제품 제조업 (가구 및 완구 제외)",
+    "manufacturePaperProducts": "종이 및 종이 제품 제조업",
+    "printingMedia": "인쇄 및 기록 매체 복제업",
+    "manufactureCokePetroleum": "코크스 및 정제 석유 제품 제조업",
+    "manufactureChemicals": "화학 물질 및 화학 제품 제조업",
+    "manufacturePharmaceuticals": "의약품, 의약용 화학 물질 및 식물성 제품 제조업",
+    "manufactureRubberPlastics": "고무 및 플라스틱 제품 제조업 (가구, 완구, 운동 용품 및 문구류 제외)",
+    "manufactureNonMetallicMinerals": "기타 비금속 광물 제품 제조업",
+    "manufactureBasicMetals": "기초 금속 제조업",
+    "manufactureFabricatedMetals": "금속 가공 제품 제조업 (기계 및 장비 제외)",
+    "manufactureElectronics": "컴퓨터, 전자 및 광학 제품 제조업",
+    "manufactureElectricalEquipment": "전기 장비 제조업",
+    "manufactureMachinery": "기타 분류 안된 기계 및 장비 제조업",
+    "motorVehicleAssembly": "자동차 차체 조립",
+    "manufactureOtherTransport": "기타 운송 장비 제조업",
+    "manufactureFurniture": "가구 제조업",
+    "otherManufacturing": "기타 제조업",
+    "repairMachinery": "기계 및 장비 수리 및 설치업",
+    "electricityGasSupply": "전기 및 가스 공급업",
+    "waterSupply": "수도, 하수 및 폐기물 처리",
+    "sewerage": "하수도업",
+    "wasteManagement": "폐기물 수집, 처리 및 폐기 활동; 물질 재활용",
+    "remediationServices": "환경 정화 활동 및 기타 폐기물 관리 서비스",
+    "constructionBuildings": "건물 건설업",
+    "civilEngineering": "토목 공사업",
+    "specialisedConstruction": "전문 건설 활동",
+    "importExportTrade": "수출입업",
+    "wholesale": "도매업",
+    "retailTrade": "소매업",
+    "landTransport": "육상 운송업",
+    "waterTransport": "수상 운송업",
+    "airTransport": "항공 운송업",
+    "warehousingTransportSupport": "창고 및 운송 지원 활동",
+    "postalCourier": "우편 및 택배업",
+    "shortTermAccommodation": "단기 숙박 시설 운영업",
+    "foodBeverageServices": "음식 및 음료 서비스업",
+    "publishingActivities": "출판업",
+    "motionPictureAndMusic": "영화, 비디오 및 텔레비전 프로그램 제작, 음반 녹음 및 음악 출판 활동",
+    "broadcastingActivities": "프로그램 제작 및 방송업",
+    "telecommunications": "통신업",
+    "itServices": "정보 기술 서비스 활동",
+    "informationServices": "정보 서비스 활동",
+    "financialServices": "투자 및 지주 회사, 신탁, 펀드 및 유사 금융 기관의 활동을 포함한 금융 서비스 활동",
+    "insurance": "보험업 (연금 기금 포함)",
+    "financialAuxiliaryActivities": "금융 및 보험 관련 보조 활동",
+    "realEstate": "부동산업",
+    "legalAccounting": "법률 및 회계 활동",
+    "managementConsultancy": "본사 활동; 경영 및 경영 컨설팅 활동",
+    "architectureEngineering": "건축 및 엔지니어링 활동, 기술 시험 및 분석",
+    "scientificResearch": "과학 연구 및 개발",
+    "veterinaryActivities": "수의 활동",
+    "advertisingMarketResearch": "광고 및 시장 조사",
+    "otherProfessionalTechnical": "기타 전문, 과학 및 기술 활동",
+    "rentalLeasing": "임대 및 리스 활동",
+    "employmentActivities": "고용 활동",
+    "travelAgency": "여행사, 예약 서비스 및 관련 활동",
+    "securityInvestigation": "보안 및 조사 활동",
+    "buildingLandscapeServices": "건물 및 조경 관리 서비스",
+    "officeAdminSupport": "사무 관리, 사무 지원 및 기타 사업 지원 활동",
+    "publicAdministration": "공공 행정",
+    "education": "교육",
+    "healthActivities": "인간 보건 활동",
+    "residentialCare": "거주 시설 간호 활동",
+    "socialWork": "숙박 시설을 제외한 사회 복지 활동",
+    "creativeArts": "창작 및 공연 예술 활동",
+    "culturalActivities": "도서관, 기록 보관소, 박물관 및 기타 문화 활동",
+    "themeParks": "놀이공원 및 테마파크 운영업",
+    "sportsEntertainment": "스포츠 및 기타 엔터테인먼트 활동",
+    "membershipOrganisations": "회원제 단체 활동",
+    "repairServices": "자동차, 오토바이, 컴퓨터, 개인 및 가정용품 수리업",
+    "personalServices": "기타 개인 서비스 활동",
+    "householdEmployment": "가정부를 고용하는 가구의 활동",
+    "householdProduction": "자가 소비를 위한 가구의 재화 및 서비스 생산 활동",
+    "extraterritorialActivities": "국외 조직 및 기관의 활동"
+  },
+  "currencies": {
+    "AED": "아랍에미리트 디르함",
+    "AUD": "호주 달러",
+    "BHD": "바레인 디나르",
+    "BMD": "버뮤다 달러",
+    "BND": "브루나이 달러",
+    "BRL": "브라질 헤알",
+    "BSD": "바하마 달러",
+    "CAD": "캐나다 달러",
+    "CHF": "스위스 프랑",
+    "CLP": "칠레 페소",
+    "CYP": "키프로스 파운드",
+    "CZK": "체코 코루나",
+    "DKK": "덴마크 크로네",
+    "ETB": "에티오피아 비르",
+    "EUR": "유로",
+    "FJD": "피지 달러",
+    "GBP": "영국 파운드 스털링",
+    "HKD": "홍콩 달러",
+    "HUF": "헝가리 포린트",
+    "IDR": "인도네시아 루피아",
+    "INR": "인도 루피",
+    "JPY": "일본 엔",
+    "KHR": "캄보디아 리엘",
+    "LKR": "스리랑카 루피",
+    "MNT": "몽골 투그릭",
+    "MOP": "마카오 파타카",
+    "MUR": "모리셔스 루피",
+    "MXN": "멕시코 페소",
+    "MYR": "말레이시아 링깃",
+    "NIS": "이스라엘 신 셰켈",
+    "NOK": "노르웨이 크로네",
+    "NPR": "네팔 루피",
+    "NZD": "뉴질랜드 달러",
+    "PHP": "필리핀 페소",
+    "PKR": "파키스탄 루피",
+    "PLN": "폴란드 즈워티",
+    "QAR": "카타르 리알",
+    "RMB": "중국 위안",
+    "RUB": "러시아 루블",
+    "SAR": "사우디아라비아 리얄",
+    "SEK": "스웨덴 크로나",
+    "SGD": "싱가포르 달러",
+    "THB": "태국 바트",
+    "TK": "방글라데시 타카",
+    "TRY": "튀르키예 리라",
+    "USD": "미국 달러",
+    "UYU": "우루과이 페소",
+    "VND": "베트남 동",
+    "WON": "대한민국 원",
+    "XCD": "동카리브 달러",
+    "XOF": "서아프리카 CFA 프랑",
+    "XPF": "CFP 프랑",
+    "ZAR": "남아프리카 공화국 랜드"
+  },
+  "payment": {
+    "paymentCalc": "결제 금액 계산",
+    "processCreditFee": "Stripe 카드 결제 수수료(HKD 결제 시 3.5%, USD 결제 시 6%)가 포함되어 있습니다.",
+    "fnlAmtCharged": "최종 청구 금액",
+    "successPayment": "결제가 성공적으로 완료되었습니다! 구매해 주셔서 감사합니다.",
+    "cardDesc": "Stripe 결제 (HKD 결제 시 3.5%, USD 결제 시 6%)",
+    "bankDesc": "영수증 업로드를 통한 직접 은행 송금",
+    "fpsDesc": "FPS를 통한 직접 은행 송금",
+    "otherDesc": "기타 (현금 결제) 및 영수증 업로드",
+    "pMethods": "결제 방법",
+    "bankDetails": "은행 정보",
+    "uploadReceipt": "영수증 업로드",
+    "pNoteCharges": "참고: 모든 은행 수수료는 송금인이 부담합니다.",
+    "uploadPReceipt": "결제 영수증 업로드",
+    "uploadPReceiptSuccess": "영수증이 성공적으로 업로드되었습니다. 곧 저희 팀에서 확인하겠습니다.",
+    "cardPayment": "카드 결제",
+    "bankTransfer": "은행 송금",
+    "fps": "빠른 결제 시스템 (FPS)",
+    "other": "기타 방법",
+    "pInfo": "결제 정보",
+    "psExpired": "결제 세션이 만료되었습니다.",
+    "psExpiredDesc": "새 결제 세션을 생성하려면 지원팀에 문의하십시오.",
+    "psContactSupport": "지원팀에 문의하기",
+    "pCompleted": "결제 완료",
+    "pMessage": "결제해 주셔서 감사합니다!",
+    "receiptEval": "결제 확인 중",
+    "pTimer": "결제 타이머",
+    "pRemaining": "남은 시간",
+    "pContactSupport": "도움이 필요하신가요? 지원팀에 문의하세요!",
+    "pContactDesc": "저희 웹사이트에서 회사 설립 절차에 문제가 있으신가요? 저희 헬프 센터의 전문 스태프가 도와드리겠습니다!",
+    "pDescription": "저희 팀은 운영 시간 동안 원활하고 즐거운 경험을 하실 수 있도록 대기하고 있습니다. 궁금한 점이나 우려 사항이 있으시면 언제든지 문의하십시오. 저희가 도와드리겠습니다!",
+    "paymentConditions": "결제 조건",
+    "100CentAdvance": "100% 선결제",
+    "paymentConditionsDesc": "모든 결제는 환불되지 않습니다. 송금인은 송금액, 수취인 은행 수수료 및 기타 모든 은행 수수료(중개 은행 등)를 포함한 모든 결제 수수료를 부담합니다."
+  },
+  "usa": {
+    "title": "미국 법인 설립",
+    "steps": {
+      "step1": "신청자 정보",
+      "step2": "AML 관련 질문",
+      "step3": "회사 정보",
+      "step4": "서비스 계약",
+      "step5": "서비스 선택",
+      "step6": "청구서",
+      "step7": "결제",
+      "step8": "설립 정보",
+      "step9": "설립"
+    },
+    "usCompanyEntity": "미국 회사로서 어떤 유형의 법인을 설립하고 싶으신가요?",
+    "Section2StateQuestion": "미국 회사를 설립하고자 하는 주를 선택하세요",
+    "Section2StateOptions": {
+      "Delaware": "델라웨어",
+      "Wyoming": "와이오밍",
+      "California": "캘리포니아",
+      "New York": "뉴욕",
+      "Washington": "워싱턴",
+      "Washington D.C.": "워싱턴 D.C.",
+      "State of Texas": "텍사스주",
+      "Nevada": "네바다",
+      "Florida": "플로리다",
+      "Georgia": "조지아",
+      "UAB":"UAB",
+      "Other": "기타"
+    },
+    "AppInfo": {
+      "appInfohead": "미국 회사(LLC-유한 책임 회사/Corp-법인) 설립 신청",
+      "aInfPopup": "본 신청서는 미국 회사 설립에 있어 주요 관리자이신 미국 회사 (또는 장래에 설립될 회사)의 임원이 직접 작성하거나, 해당 임원으로부터 권한을 위임받아 모든 정보를 정확하게 입력해야 합니다. 향후 본 신청서 내용은 미국 회사 설립 시 별도의 신청서류 문서로 작성될 예정이며, 미국 회사에 등재될 임원이 해당 문서에 직접 서명해야 합니다. (대리 서명은 불가합니다.) 본 신청서와 추후 서명할 신청서류 문서는 당사의 TCSP 라이선스 및 AMLO(자금세탁 방지 및 테러 자금 조달 방지법)에 따라 KYC(Know Your Customer) 및 Client's Due Diligence(고객 실사 및 확인) 수행을 위한 법적 절차에 따라 당사에서 보관하게 되며, 향후 법정 문서로 보관됩니다. 따라서 작성하시는 내용에 어떠한 왜곡이나 오류가 발생하지 않도록 주의해주시기 바랍니다.",
+      "nameOfApplicant": "신청자 성명",
+      "emailPlaceholder": "유효한 이메일 주소",
+      "namePlaceholder": "답변 입력",
+      "usCompName": "제안하는 미국 회사 이름 (최소 3개의 제안 회사 이름을 제공하십시오.)",
+      "usCompNamePopup": "회사 이름은 영어로 작성되어야 하며, LLC는 반드시 영어로 “LLC”로 끝나야 합니다. CORPORATION의 경우 “Corporation”, “Incorporated”, “Limited”, “Corp.”, 또는 “Inc.” 중에서 선택하여 영어 이름 뒤에 작성하십시오. 회사 이름은 대문자/소문자/숫자/마침표/쉼표/괄호의 조합으로 구성될 수 있으며, 특수 문자를 포함할 수 없습니다. 동일하거나 유사한 회사 이름이 이미 존재하는 경우 회사를 설립할 수 없습니다. 따라서 아래에 1지망/2지망/3지망 순서로 가능한 회사 이름을 세 가지 기재하시면, 저희가 등록 가능성을 검색하고 귀하가 선택한 순서대로 가능한 회사 이름을 등록 서류에 적용해드리겠습니다.",
+      "relationBtw": "위 신청인과 설립될 미국 회사 간의 관계",
+      "otherInputPopUp": "선택 상자 안의 빈 공간에 직접 입력하여 사용자 정의 값을 입력할 수 있습니다.",
+      "PlzSelectAllApply": "해당하는 모든 항목을 선택하십시오.",
+      "telegram": "텔레그램",
+      "whatsapp": "왓츠앱",
+      "handleOwnIncorpo": "설립 후 자체적으로 처리할 수 있습니다.",
+      "didntIntedEveryYear": "설립 후 매년 고정 비용이 발생한다면, 설립할 의향이 없습니다.",
+      "consultationRequired": "진행 전 상담 필요",
+      "amlCddPopup": "본 섹션은 고객의 사업 의도를 이해하고 당사가 제공하는 서비스와 일치하는지 사전에 확인함으로써 향후 당사 간의 오해를 최소화하기 위해 준비되었습니다. 질문에 정확하게 답변해주시면 그에 따라 조언을 제공하거나 서비스를 제안해드리겠습니다.",
+      "amlLegalThings": "자금 세탁, 도박, 탈세, 자산 은닉, 불법 사업 회피, 뇌물 수수, 사기 등과 같은 법적 또는 윤리적 문제가 있습니까?",
+      "amlUsEstablishment": "미국 회사 설립 후 매년 연간 갱신(등록된 에이전트, 등록된 주소 서비스)이 발생하며, 이 모든 업무에는 관련 비용 및 서류 제공 의무가 수반됩니다. 이에 동의하십니까?",
+      "amlCddQuestion": "거래 제재 대상 관련 질문",
+      "amlCddQPara": "본 섹션은 FATF, UNGC, OFAC 등에서 규정하거나 권고한 제재 대상 국가와의 거래 여부에 관한 내용입니다. 관련 질문에 어떠한 왜곡이나 오류 없이 정확하게 답변해주시기 바랍니다.",
+      "plannedBusinessActivity": "귀하가 아는 한, 제안하는 미국 회사가 다음 국가/지역(이란, 수단, 북한, 시리아, 쿠바, 남수단, 벨라루스 또는 짐바브웨)에서 현재 또는 계획된 사업 활동이 있습니까?",
+      "otherPresence": "귀하가 아는 한, 제안하는 미국 회사 또는 회사의 관련 당사자나 기타 관련 당사자가 이란, 수단, 북한, 시리아 또는 쿠바에 주재하고 있거나, 다음 기관(UN, EU, UKHMT, HKMA, OFAC 또는 현지 제재 법률에 따라)에서 관리하는 제재 대상에 현재 포함되어 있습니까?",
+      "planBusinesInCrimea": "귀하가 아는 한, 제안하는 미국 회사 또는 관련 당사자나 기타 관련 당사자가 크림/세바스토폴 지역에서 현재 또는 계획된 사업 활동이 있습니까?",
+      "energyPresence": "귀하가 아는 한, 제안하는 미국 회사가 러시아의 에너지/석유/가스 부문, 군사 또는 국방 분야에 현재 또는 계획된 노출이 있습니까?"
+    },
+    "compInfo": {
+      "infoHeading": "주식회사와 유한 책임 회사의 차이점",
+      "llc": "LLC (유한 책임 회사)",
+      "corporation": "주식회사",
+      "ConsultationRequired": "진행 전 상담 필요",
+      "stateSelection": "주 선택",
+      "corpandLlc": "주식회사 vs LLC: 주요 차이점",
+      "fundamentalDiff": "주식회사와 유한 책임 회사의 근본적인 차이점을 이해하십시오.",
+      "close": "닫기",
+      "category": "구분",
+      "definition": "정의",
+      "knownAsCorpo": "미국에서는 주식회사, 영국에서는 Private Limited Company로 알려져 있습니다.",
+      "llcProprietoryPartner": "한국에는 없는 개념으로, 개인 사업자 또는 파트너십과 유사한 유한 책임 회사입니다.",
+      "corporateTax": "법인세율은 고정되어 있으며, 배당세가 있는 국가(예: 미국, 한국)에서는 이중 과세(법인세 + 배당세)가 적용됩니다.",
+      "llcIncome": "미국과 같은 국가에서는 이중 과세를 피하기 위해 LLC를 설립하는 경우가 많습니다. LLC 소득은 지분율에 따라 개인 소득으로 인식되어 이중 과세가 방지됩니다.",
+      "profitRealiz": "이익 실현",
+      "profitDividend": "이익은 배당을 통해 실현됩니다.",
+      "noDividend": "배당 개념이 없습니다. 이익은 지분율에 따라 개인 소득으로 인식됩니다.",
+      "retainedEarning": "유보 이익",
+      "dividentTaxed": "배당이 과세되는 국가에서는 장기적인 자산 관리를 위해 이익을 유보 이익으로 남겨둘 수 있으며, 향후 세금 계획을 위한 추가 소득을 창출합니다.",
+      "profitPersonalIncome": "이익이 개인 소득으로 인식되므로 유보 이익을 따로 설정할 수 없습니다.",
+      "otherConsideration": "기타 고려 사항",
+      "koreanConsideration": "한국 거주자의 경우, 주식회사를 설립하면 이중 과세(현지 법인세 + 한국 배당세)가 발생할 수 있습니다. 배당 분할 또는 유보 이익 재투자 등 세금 계획이 필요할 수 있습니다.",
+      "koreanLlcRule": "한국 거주자의 경우, LLC 소득은 개인 소득으로 인식되어 종합 신고됩니다. 현지 세율 및 예상 이익을 검토해야 합니다.",
+      "spclCase": "특별 사례 (암호화폐 산업)",
+      "cryptoLegalBusiness": "암호화폐 관련 사업의 경우, 암호화폐에 대한 법적 규제 및 회계 기준을 검토해야 합니다. 일부 국가에서는 암호화폐를 자산으로 과세할 수 있습니다.",
+      "cryptoNotTaxed": "일부 국가에서는 암호화폐에 대해 과세하지 않으며, 자산으로 인식될 수 있습니다. 현지 세율 및 원천징수세를 검토해야 합니다.",
+      "tax": "세금"
+    },
+    "relation": {
+      "director-officer": "제안하는 미국 회사의 이사/임원",
+      "delegated-by-the-director": "제안하는 미국 회사의 이사로부터 위임받은 자",
+      "shareholder-holding-majority": "제안하는 미국 회사의 다수 지분 보유 주주",
+      "a-pro-lawyer-accountant": "미국 회사 설립 자문을 제공하는 전문가(예: 변호사, 회계사)"
+    },
+    "bInfo": {
+      "bInfoHeading": "제안하는 미국 회사의 사업 정보.",
+      "bInfoPara": "본 섹션에서는 설립하려는 미국 회사 및 관련 사업에 대한 정보를 입력할 수 있습니다.",
+      "selectIndustryItems": "산업 선택 (관련 항목 모두 체크)",
+      "descProductName": "설립 후 거래할 제품명, 제품 유형, 서비스 내용, 서비스 유형 등에 대한 설명",
+      "descBusinessInfo": "제안하는 미국 회사의 사업 활동 설명 (최소 50자)",
+      "enterWeb": "웹사이트 주소를 입력하십시오 (가능한 경우)",
+      "purposeEstablish": "미국 회사 설립 목적 및 예상되는 미래 효과",
+      "pList": {
+        "1": "규제 완화를 통한 사업 다각화",
+        "2": "법률 고문, 투자자 또는 비즈니스 파트너가 미국 회사 설립을 제안합니다.",
+        "3": "다양한 해외 국가로 사업 확장 (국제 사업)",
+        "4": "부동산 또는 금융 자산 투자 자산 관리",
+        "5": "지주 회사로서 자회사 또는 계열사 투자 및 관리 목적.",
+        "6": "자유로운 금융 정책을 통한 경쟁 우위 추구",
+        "7": "낮은 세율 및 비VAT로 인한 거래량 증가",
+        "8": "기타"
+      },
+      "iList": {
+        "1": "암호화폐 관련 (암호화폐 발행, 판매, 기부, ICO, 거래소, 지갑 서비스 등)",
+        "2": "IT, 블록체인, 소프트웨어 등의 개발",
+        "3": "암호화폐 기반 투자 관련 사업",
+        "4": "암호화폐 기반 게임",
+        "5": "외환 거래",
+        "6": "금융, 투자, 자문, 대출 사업 등",
+        "7": "무역 산업",
+        "8": "도매/소매 유통 산업",
+        "9": "컨설팅",
+        "10": "제조업",
+        "11": "온라인 서비스 산업 (전자 상거래)",
+        "12": "온라인 직접 구매/배송/구매 대행"
+      },
+      "shrldSection": {
+        "heading": "제안하는 미국 회사의 주주/임원",
+        "para": "본 섹션에서는 설립하려는 미국 회사의 구성원 (주주), 임원 및 연락 담당자에 대한 정보를 제공해야 합니다.",
+        "desgContact": "지정 연락 담당자",
+        "benificialOwner": "실제 소유자",
+        "selectBenificial": "실제 소유자 선택",
+        "desgnToolTip": "회사 관련 연락을 담당할 지정 연락 담당자를 지정해야 합니다. 이 지정 연락 담당자는 회사 및 사업 관련 문의, 진행 상황 확인, 등록 서류 등 당사와의 모든 주요 연락을 담당하게 됩니다. 지정 연락 담당자는 우편물을 포함하여 회사 정보 및 문서에 접근할 수 있습니다. 연락 담당자 지정은 1명까지 무료입니다. 2명 이상부터는 연간 1인당 USD 250의 수수료가 부과됩니다. 회사에서 지정하고 당사에 별도로 등록하는 지정 연락 담당자는 회사 정보를 보호하고 업무 혼동을 방지하는 역할을 합니다. (지정 연락 담당자는 주주 및 임원과 동일한 방식으로 여권 사본, 주소 증명 서류를 제출하고 본인 확인 절차를 거쳐야 합니다.)",
+        "selectSignificantController": "주요 통제자 선택",
+        "selectDesignatedContact": "지정 연락 담당자 입력",
+        "shareholderOfficer": "주주 / 임원 성함:",
+        "ownerShp0": "소유권이 현재 0%입니다. 소유권을 할당하십시오.",
+        "ownerShip100": "소유권이 100%로 완벽하게 분배되었습니다."
+      },
+      "accountHeading": "제안하는 미국 회사의 회계/재무 데이터 보관 장소",
+      "accountingAddress": "회계 장부, 재무 자료, 계약서, 송장 등을 미국 외 다른 국가에 보관하는 경우 아래에 주소를 입력하십시오.",
+      "enterAddress": "제안하는 미국 회사의 회계 및 재무 데이터가 보관될 주소를 입력하십시오."
+    },
+    "serviceSelection": {
+      "heading": "법인 설립 및 첫 해 연간 비용 상세",
+      "col1": "서비스 설명",
+      "col2": "원가",
+      "col3": "할인 가격",
+      "totalCost": "총 비용",
+      "otherEmi": "기타 EMI(디지털 은행) 계좌 개설 지원",
+      "usCompanyFormation": "미국 회사 설립 + 설립 갱신일 또는 기념일까지의 회사 유지 (표준 서비스)",
+      "airwallex": "Airwallex 계좌 개설 지원",
+      "payoneer": "Payoneer 계좌 개설 지원",
+      "bankAdvice": "은행 계좌 개설 신청 및 자문 (사업 서류 검토 후 별도 견적)",
+      "usLegalOpinion": "미국 법률 의견 (백서 검토 후 별도 견적)",
+      "stockLegalOpinion": "국내 증권 시장 상장 법률 의견 (백서 검토 후 별도 견적)",
+      "consulting": "사업 규제 확인, 타당성 검토, 서류 준비 및 운영 자문 등 컨설팅 서비스 (별도 견적)"
+    },
+    "regDetails": {
+      "heading": "제안하는 미국 회사의 등록 정보",
+      "htoolTip": "본 섹션에서는 설립하려는 미국 회사의 투자 자본, 구성원 (주주), 임원 및 등록될 회사 등 정보를 제공할 수 있습니다.",
+      "totalPaid": "총 납입할 자본금 (USD)",
+      "totalPaidTtip": "최소 자본금은 USD 1이며, 자본 납입 의무는 없습니다. 여러 주주가 있거나 자본 투자 비율의 일부를 분할/이전/판매하려는 경우, 원하는 비율의 숫자를 지원하는 금액으로 설정하십시오 (예: 49.99%). 더 자세한 설명이 필요한 경우 문의하십시오.",
+      "executiveTeam": "설립하려는 미국 회사의 경영진 구성",
+      "executiveTeamTtip": "미국 회사에서는 다른 법인을 임원으로 등록할 수 있으며, 의사 결정 시 해당 법인에서 위임된 대표자가 의사 결정에 참여할 수 있습니다. 이 경우 해당 법인에서 준비한 이사회 결의서 및 위임장 서류를 제출해야 합니다. (의사 결정 시 서류 절차의 복잡성으로 인해 소규모 회사나 별도의 전문가가 없는 회사에는 권장되지 않습니다.) 미국 회사는 최소 한 명의 자연인 (일반 개인을 의미하며, 법인과 반대되는 개념)을 임원으로 지정해야 합니다.",
+      "usLocalReg": "미국 현지 회사 등록 주소",
+      "usLocalRegTtip": "미국 회사를 설립하고 유지하려면 설립하려는 주에 상업 주소가 있어야 합니다. 당사는 등록 목적으로 사용할 수 있는 주소 서비스를 제공하며, 이 서비스에는 등록 주소 및 우편물 처리 서비스가 포함됩니다. (주거지나 숙박 시설의 주소를 회사 주소로 등록하는 것은 어려울 수 있습니다.)",
+      "enterUsAddress": "미국 내 사업장 주소를 입력하십시오.",
+      "totalNumShares": "발행할 총 주식 수 (최소 1주)",
+      "additionalCosts": "설립 후 신주 발행 또는 주식 취득 시 추가 비용이 발생하므로 자본금 및 주식 수를 신중하게 결정하십시오."
+    }
+  },
+  "SwitchService": {
+    "ApplicantInfoForm": {
+      "heading": "신청자 정보",
+      "paragraph1": "본 신청서는 홍콩 회사 운영의 주요 통제자인 홍콩 회사 대표가 직접 작성하거나, 대표로부터 모든 정보를 정확하게 입력하도록 권한을 위임받아야 합니다.",
+      "paragraph2": "본 신청서와 나중에 서명할 문서는 TCSP 라이선스 및 AMLO (Cap. 615 AMLO) 지침에 따라 고객을 위한 KYC 및 실사를 수행하기 위한 법적 절차로서 당사가 법정 문서로 보관합니다. 따라서 작성하시는 내용에 어떠한 왜곡이나 오류가 발생하지 않도록 주의해주시기 바랍니다.",
+      "nameHeading": "신청자 성명",
+      "relationHeading": "위 작성자와 홍콩 법인 간의 관계",
+      "relationSelect": "해당하는 모든 항목을 선택하십시오.",
+      "relationList1": "홍콩 법인 대표이사",
+      "relationList2": "홍콩 법인 대표이사로부터 권한을 위임받은 자",
+      "relationList3": "홍콩 법인 주요 주주",
+      "relationList4": "홍콩 법인 대표를 대리하여 조언을 제공하는 전문가 (변호사, 회계사, 행정 서사, 세무사 등)",
+      "relationList5": "기타...",
+      "applicantName": "이름",
+      "compChinaName": "아래에 회사 선택적 중국어 이름을 입력할 수 있습니다.",
+      "contactInfo": "위 작성자의 연락처 정보 (전화번호, 이메일, SNS 계정 ID 등)",
+      "phoneNum": "전화번호",
+      "email": "이메일",
+      "snsId": "SNS 계정 ID",
+      "snsPlatform": "SNS 플랫폼",
+      "designatedContact": "지정 연락 담당자",
+      "designatedContactPara": "회사 업무 연락을 담당할 연락 담당자를 지정해야 합니다. 이 연락 담당자는 당사와의 주요 업무 연락을 담당하며, 회사 및 사업 관련 문의, 진행 상황 확인, 등록 서류 등에 대해 연락을 담당하게 됩니다. 이 연락 담당자는 회사 정보 및 문서를 열람할 수 있으며, 회사 우편물 문서도 열람할 수 있습니다. 연락 담당자 지정은 1명까지 무료이며, 2명 이상부터는 1인당 연간 HKD2,000의 수수료가 부과됩니다. 회사는 회사 정보 보호 및 업무 혼동 감소를 위해 지정 연락 담당자를 지정하고 당사에 별도로 등록해야 합니다. (지정 연락 담당자는 주주/이사님과 동일한 방식으로 여권 사본과 주소 증명/신분 확인 서류를 제출해야 합니다.)",
+      "designatedContact1": "(단독 이사 겸직 지정 연락 담당자) 홍콩 법인에 등록된 이사가 1명이며, 해당 이사가 지정 연락 담당자를 겸직합니다.",
+      "designatedContact2": "(이사 중 1인 겸직 지정 연락 담당자) 홍콩 법인에 등록된 이사가 2명 이상이며, 그 중 1명이 지정 연락 담당자를 겸직합니다."
+    },
+    "Intenstions": {
+      "heading": "고객의 사업 의도 확인",
+      "para": "본 섹션은 고객의 사업 의도를 이해하고 당사가 제공하는 서비스와 일치하는지 사전에 확인함으로써 향후 당사 간의 오해를 줄이기 위해 마련되었습니다. 질문에 정확하게 답변해주시면 그에 따라 조언을 제공하거나 서비스를 제안해드리겠습니다.",
+      "legalIssues": "홍콩 법인 운영 목적이 자금 세탁, 도박, 탈세, 자산 은닉, 불법 사업 회피를 위한 법률 회피, 사기 등과 같은 법적 또는 윤리적 문제를 야기할 가능성이 있습니까?",
+      "legalIssuesYes": "예",
+      "legalIssuesNo": "아니오",
+      "legalIssuesIDK": "모르겠습니다",
+      "legalIssuesAdvice": "법률 자문 고려",
+      "legalIssuesOther": "기타",
+      "maintenanceCost": "홍콩 법인 유지를 위해서는 매년 연간 갱신, 비서 서비스 갱신, 사업자 갱신, 회계/세무 등의 업무가 발생하며, 이 모든 업무에는 관련 비용 및 정보 제공 의무가 수반됩니다. 이에 동의하십니까?",
+      "maintenanceCostYes": "예",
+      "maintenanceCostNo": "아니오",
+      "maintenanceCostCanResolve": "내부에서 해결 가능",
+      "maintenanceCostEveryYear": "매년 고정 비용이 발생한다면, 유지할 의향이 없습니다.",
+      "maintenanceCostAdvice": "진행 전 상담 필요",
+      "documentsSubmission": "홍콩 법인 회계/세무 업무를 진행할 때, 회계 기간 동안의 모든 은행 거래 내역, 구매 자료, 판매 자료, 지출 증빙, 급여 지급 증빙 등을 어떠한 위조나 왜곡 없이 제출해야 합니다. 당사는 이러한 문서를 임의로 처리하거나 위조할 수 없습니다. 이에 동의하십니까?",
+      "documentsYes": "예 (해외 소득 주장에 대한 감사 비용 및 국세청 문의 비용을 부담할 수 있습니다)",
+      "documentsNo": "아니오 (회계/세무는 통상적인 방식으로 처리됩니다)",
+      "documentsCanResolve": "내부에서 해결 가능",
+      "documentsAdive": "진행 전 상담 필요",
+      "taxExemption": "홍콩 법인의 이익에 대해 역외 소득을 주장하여 세금 면제를 신청할 계획이 있습니까?",
+      "taxExemptionPara": "홍콩은 세금 정책에서 속지주의를 적용하여 홍콩 외 지역에서 발생한 소득에 대해 비과세 정책을 유지하고 있습니다. 그러나 이와 관련하여 사업이 실제로 수행되는 국가(예: 한국)에서 법인세 및 거래세를 부과할 수 있으며, 홍콩에서 세금 면제를 위해 해외 소득을 주장하는 경우 회계 감사 비용 증가와 홍콩 세무국(IRD)의 조사 문의서 처리에 상당한 시간과 비용이 소요될 수 있습니다. 따라서 해외 소득을 보고할 계획이라면 이를 염두에 두고 준비하시기 바랍니다.",
+      "taxExemptionYes": "예 (해외 소득 주장에 대한 감사 비용 및 국세청 문의 비용을 부담할 수 있습니다)",
+      "taxExemptionNo": "아니오 (회계/세무는 통상적인 방식으로 처리됩니다)",
+      "taxExemptionCanResolve": "내부에서 해결 가능",
+      "taxExemptionAdvice": "진행 전 상담 필요",
+      "falsifyTax": "지인으로부터 홍콩 법인은 실제 거래가 없더라도(허위) 세금 신고를 할 수 있으며, 홍콩에서 사업을 하지 않으면 세금을 내지 않아도 된다는 이야기를 들은 적이 있습니까? 그렇게 할 계획이 있습니까?",
+      "falsifyTaxPara1": "홍콩 소득세법 제14조에 따르면, 홍콩 내에서 발생하거나 파생되지 않은 소득은 홍콩 내에서 과세 대상이 아닙니다. 그러나 이러한 경우 해외 소득에 대해 별도의 주장을 해야 하며, IAQ 또한 소득이 홍콩 외 국가에서 발생하거나 파생되었는지, 해당 국가에서 세금 신고 및 세금이 납부되었는지에 대한 확인을 요청합니다.",
+      "falsifyTaxPara2": "과거에는 상당수의 비전문적/비윤리적인 회사들이 고객에게 이러한 조언을 제공했으며, 고객들이 잘못된 세금 신고로 인해 세무 조사, 추가 세금, 가산세, 은행 계좌 폐쇄 등 상당한 불이익을 겪는 많은 사례를 목격했습니다.",
+      "falsifyTaxPara3": "당사에 연락하거나 다른 회사에서 관리 이전을 받은 회사 중 과거 세금 신고 부적절 처리로 인해 문제가 발생한 사례를 많이 접했습니다. 안타깝게도 이러한 경우는 당사에서 맡을 수 없어 많은 도움을 드리지 못했습니다. 현재 해외 탈세, 자금 세탁, 이전 가격 문제, 다자간 금융 정보 교환 협정에 대한 규제가 지속적으로 강화되고 있으며, 세금 신고나 회계 서류를 위조하는 경우 당사에서 사건을 맡을 수 없을 뿐만 아니라 고객이 사업을 계속하는 것도 어려워질 것입니다.",
+      "falsifyTaxYes": "예 (하지만 세금 납부가 중요하므로 거래가 있더라도 실제로 홍콩에서 운영하지 않더라도 세금 신고를 진행하겠습니다)",
+      "falsifyTaxNo": "아니오 (정상적인 방식으로 세금 신고를 진행하고 필요에 따라 미르 아시아에 조언을 구하겠습니다)",
+      "falsifyTaxCanResolve": "내부에서 해결 가능",
+      "falsifyTaxNoPlan": "이러한 이야기를 들어본 적은 있지만, 세금 또는 회계 기록을 위조할 계획은 없습니다.",
+      "falsifyTaxAdvice": "진행 전 상담 필요",
+      "falsifyTaxOther": "기타"
+    },
+    "Consultation": {
+      "heading": "업무 진행 전 상담 필요",
+      "para1": "업무를 진행하기 전에 일부 조언이 필요한 것 같습니다.",
+      "para2": "제공해주신 정보를 확인하고 담당자가 최대한 빨리 연락드리겠습니다.",
+      "thanks": "감사합니다."
+    }
+  },
+  "serviceAgreement": {
+    "purpose1": "1. 서비스 계약의 목적",
+    "purposePara": "본 계약의 목적은 (주)미르아시아 비즈니스 자문 & 법인 비서 서비스 ('미르아시아')가 귀하의 곧 설립될 법인('고객')과 관련하여 제공하는 서비스의 범위 및 그 한계에 대해 발생할 수 있는 오해나 분쟁을 방지하는 것입니다.",
+    "rolesOfSec": "2. 법인 비서의 역할",
+    "usClientsApplicability": "(미르아시아가 제공하는 비서 서비스 이용 고객에게만 해당)",
+    "mirrSecretary": "미르아시아는 법인의 현지 규정에 따라 고객의 파일에 비서로 등록됩니다.",
+    "secreterialServices": "미르아시아가 제공하는 비서 서비스는 현지 법에 규정된 기본적인 등록 요건이며, 일반적인 고용된 비서의 의미와 다를 수 있습니다.",
+    "regAdressProvision": "3. 등록 주소 제공",
+    "applicableRegClients": "(미르아시아가 제공하는 등록 주소 서비스 이용 고객에게만 해당)",
+    "regAddressJurisdriction": "고객에게 등록된 주소는 고객이 설립된 관할권의 등록 주소가 됩니다. 고객이 이 등록 주소를 변경하고자 하는 경우, 고객은 미르아시아에게 서면 또는 이메일로 통지해야 합니다.",
+    "restrictionsRedAdress": "미르아시아가 제공하는 등록 주소는 등록 목적만을 위한 것이며, 고객의 사업장이나 실제 물리적 장소를 포함하지 않습니다.",
+    "clientRegAdressRestriction": "고객은 등록 주소를 남용하거나 불법적인 목적으로 사용하거나, 고객의 실제 사업장으로 허위로 나타내서는 안 됩니다.",
+    "clientNotsendParcels": "고객은 사전 동의 없이 미르아시아가 제공하는 등록 주소로 소포나 상품을 보내거나 제3자가 그렇게 하도록 허가해서는 안 됩니다. 승인되지 않은 배송물은 발송인에게 반송됩니다.",
+    "scopeServices": "4. 서비스 범위",
+    "mirrAsiaScopes": " 미르아시아는 다음 서비스를 제공할 예정이며, 서비스는 미르아시아의 재량에 따라 현지 전문 기관과 협력하여 제공될 수 있습니다.",
+    "compFormReg": "법인 설립/등록",
+    "compSec1Year": "법인 비서 등록 (1년)",
+    "appUsSecretServices": "(비서 서비스 이용 시 적용)",
+    "maintenanceClientRec": "고객 기록 유지",
+    "applicableUsRegAdd": "(등록 주소 서비스 이용 시 적용)",
+    "provOfRegAddress": "등록 주소 및 우편물 서비스 제공 (1년)",
+    "excludeJunk": "단, 광고성 우편 및 사적 우편은 제외될 수 있습니다.",
+    "useRegAddressService": "(등록 주소 서비스 이용 시 적용)",
+    "obtainEin": "EIN (사업자 등록 번호) 취득,",
+    "irsProcessing": "단, 처리 시간은 IRS 업무 처리 및 우편물 배송에 따라 달라집니다. 미르아시아는 통제할 수 없는 처리 시간을 보장하지 않습니다.",
+    "briefBussiness": "간단한 사업 및 운영 자문",
+    "clientCooperation": "고객은 미르아시아와 성실히 협력하고 서비스에 필요한 모든 정보 및 서류를 제공해야 합니다. 미르아시아는 불법적인 사항에 대해 지원하거나 자문할 의무가 없습니다.",
+    "clientAccuracyData": "고객은 본 계약과 관련하여 미르아시아에게 제공하는 개인 정보의 정확성을 보장해야 하며, 미르아시아가 요구하는 모든 법적 서류를 제공해야 합니다.",
+    "briefBusinessOp": " 미르아시아가 제공하는 간단한 사업 및 운영 자문은 고객의 편의를 위한 것이며, 미르아시아는 그러한 자문에 대해 어떠한 법적 책임도 지지 않습니다.",
+    "serviceFee": "5. 서비스 수수료",
+    "clientPayAmount": "고객은 본 계약 서명 시 결제 섹션에 명시된 금액을 지불해야 합니다. 합리적이고 객관적인 관점에서 서비스 수행이 어렵다고 판단되거나, 미르아시아가 본 계약과 관련하여 자체 재량으로 서비스를 거부하지 않는 한, 이미 지불된 서비스 수수료는 환불되지 않습니다.",
+    "assignSubContractor": "6. 양도 및 하도급",
+    "neitherClientMirrasia": "고객과 미르아시아는 상대방의 사전 서면 동의 없이 본 계약에 따른 권리, 의무 및 책임을 양도하거나 이전할 수 없습니다.",
+    "confidentiality": "7. 기밀 유지",
+    "partiesConfidential": "양 당사자는 본 계약에 따라 획득한 사업적 또는 기술적 정보를 기밀로 유지해야 합니다. 본 의무는 공개된 정보 또는 타인으로부터 합법적으로 획득한 정보에는 적용되지 않습니다.",
+    "entireAgreement": "8. 완전 합의",
+    "agreementConstitues": " 본 계약은 본 계약의 주제와 관련하여 당사자 간의 완전한 합의를 구성하며, 미르아시아가 요구하는 등록 신청서에 회사 구성원/이사가 진술하고 보증한 사항은 본 계약과 별도로 분류되며 현재 컴플라이언스 정책에 따라 완전한 효력을 유지한다는 점을 제외하고, 본 계약의 주제와 관련하여 당사자 간의 모든 사전 및 현재의 구두 또는 서면 합의를 대체합니다.",
+    "severability": "9. 분리 가능성",
+    "provisionAgreementBreach": "본 계약의 어떠한 조항이 법률 또는 규정을 위반하는 경우 해당 조항은 분리 가능한 것으로 간주되며, 나머지 모든 조항은 유효하고 당사자에게 구속력을 유지합니다. 고객과 미르아시아는 본 계약의 무효하거나 시행 불가능한 조항을 원래 조항의 의도에 최대한 가까운 유효하고 시행 가능한 조항으로 성실하게 대체하려고 노력할 것입니다.",
+    "thirdNoParty": "10. 제3자 수익자 없음",
+    "agrementNoRightsBenifit": "본 계약은 미르아시아의 서면 승인 없이는 제3자에게 어떠한 권리나 이익을 생성하지 않습니다.",
+    "limitationLiability": "11. 책임의 제한",
+    "clientSufferDamage": "고객이 본 계약과 관련하여 미르아시아의 과실로 인해 손해를 입은 경우, 미르아시아는 고객이 입은 직접적인 손해에 대해서만 책임을 지며, 책임 한도는 고객이 서비스와 관련하여 지불한 금액으로 제한됩니다. 미르아시아는 불가항력으로 인한 지연 또는 불이행에 대해 책임을 지지 않습니다.",
+    "forceMaj": "12. 불가항력",
+    "performanceAgrementImposible": "천재지변, 전쟁, 폭동 또는 정부 규제 등 불가항력으로 인해 계약 이행이 불가능한 경우, 양 당사자는 책임에서 면제됩니다.",
+    "independentContractor": "13. 독립 계약자",
+    "zindipendentMirrasiaContract": "미르아시아는 독립 계약자이며, 본 계약의 어떠한 내용도 고객과 미르아시아 사이에 고용주-피고용인 관계를 생성하는 것으로 해석되지 않습니다.",
+    "amendMents": "14. 수정",
+    "amendtoAgrement": "본 계약의 수정은 양 당사자의 서면 합의에 의해서만 가능합니다. 이메일, 소셜 미디어 또는 인스턴트 메시지를 통한 명시적 합의도 서면 합의로 간주됩니다. 양 당사자는 합의했거나 일관되게 소통해 온 이메일 또는 소셜 미디어 계정을 정기적으로 확인할 의무가 있습니다.",
+    "noticeCommunication": "15. 통지 및 커뮤니케이션",
+    "allNoticesAgreementShall": "본 계약과 관련된 모든 통지는 서면으로 작성되어 상대방의 주소 또는 이메일 주소로 발송되어야 합니다. 이메일, 소셜 미디어 또는 인스턴트 메시지를 통한 커뮤니케이션은 법적 구속력이 있으며 계약의 일부로 간주됩니다. 양 당사자는 합의했거나 일관되게 소통해 온 이메일 또는 소셜 미디어 계정을 정기적으로 확인할 의무가 있습니다.",
+    "governLawRemedy": "16. 준거법 및 구제 수단",
+    "unlessOtherwiseSchdule": " 별도의 Schedule에 규정되지 않는 한, 본 계약은 법률 충돌 조항에 관계없이 홍콩 특별 행정구의 법률에 따라 규율되고 해석됩니다. 당사자 간에 어떠한 청구, 분쟁 또는 기타 분쟁 사항이 발생하는 경우, 고객과 미르아시아는 홍콩 국제 중재 센터(HKIAC)의 당시 존재 규칙에 따라 해당 사항을 구속력 있는 중재에 회부하는 데 동의합니다.",
+    "attorneyFee": "17. 변호사 수수료",
+    "mediationArbitration": "본 계약으로 인해 발생하는 조정, 중재 또는 소송의 경우, 승소한 당사자는 합리적인 비용 및 변호사 수수료를 받을 자격이 있습니다. 고객은 또한 정보, 증언 또는 서류에 대한 합법적인 요청에 응하는 데 미르아시아가 발생하는 모든 비용을 지불하는 데 동의합니다.",
+    "confirmDeclaration": "18. 확인 및 선언",
+    "clientConfirmPurpose": "고객은 본 서비스 요청의 목적과 향후 수령할 자금이 불법 무기, 자금 세탁, 테러 자금 조달, 불법 마약 또는 사기와 같은 불법 활동과 관련이 없거나 그로부터 파생되지 않았음을 확인합니다. 미르아시아는 불법 활동이 의심되는 경우 사전 통지 없이 서비스를 중단할 권리가 있습니다. 고객은 본 서비스와 관련하여 필요한 서류 및 정보를 제공하는 데 동의하며, 그러한 서류 및 정보가 서비스 제공에 필수적인 기관, 정부 기관 및 회사에 제공될 수 있음에 동의합니다.",
+    "checkBox": "본 서비스 계약에 명시된 약관을 읽고 동의합니다. 본 상자를 체크하고 '계약 동의'를 클릭함으로써 (주)미르아시아 비즈니스 자문 & 법인 비서 서비스와 법적 구속력이 있는 계약을 체결하는 것임을 이해합니다.",
+    "agreeSa": "계약 동의"
+  },
+  "finalMsg": {
+    "congrats": "축하합니다!",
+    "usPara": "저희와 함께 미국 회사 설립 절차를 완료해 주셔서 감사합니다. 귀하의 답변 내용을 검토한 후 담당 컨설턴트가 곧 연락드릴 것입니다.",
+    "hkPara": "저희와 함께 홍콩 회사 설립 절차를 완료해 주셔서 감사합니다. 귀하의 답변 내용을 검토한 후 담당 컨설턴트가 곧 연락드릴 것입니다.",
+    "sgPara": "저희와 함께 싱가포르 회사 설립 절차를 완료해 주셔서 감사합니다. 귀하의 답변 내용을 검토한 후 담당 컨설턴트가 곧 연락드릴 것입니다.",
+    "returntoDash": "대시보드로 이동"
+  },
+  "hk_shldr": {
+    "heading": "홍콩 법인 이사/구성원/지배인 등록 양식",
+    "p1": "개인이 홍콩 법인의 주주/이사로 등록되는 경우, 본 신청서를 작성해 주십시오.",
+    "p2": "본 신청서는 홍콩 법인의 구성원(주주, 이사, 중요 지배인, 연락 담당자 등) 등록에 필요한 정보에 대한 설문 형식으로 작성되었습니다. 만약 지주회사와 같이 홍콩 법인의 주주가 자연인이 아닌 경우, 법인 신청서를 작성해 주십시오.",
+    "p3": "일부 고객에게는 질문이 어렵거나 답변에 시간이 걸릴 수 있습니다. 따라서 시간적 여유가 있을 때 단계별로 답변해 주시고 관련 서류를 제출해 주시기 바랍니다.",
+    "p4": "작성 중 어려움이 있거나 잘 이해되지 않는 부분이 있으시면 아래 연락처로 문의해 주십시오.",
+    "compName": "등록/지명될 회사명",
+    "compNamePlaceholder": "회사명을 입력하세요",
+    "rolesPlayed": "홍콩 법인에서 수행할 역할 (복수 선택 가능)",
+    "rolesPlayedInfo": "지정된 연락 담당자는 회사의 주요 업무 연락을 담당하며, 회사 및 사업 관련 문의, 진행 상황 확인, 등록 서류 등의 연락을 책임집니다. 귀사는 업무 연락을 담당할 연락 담당자를 최소 1명 이상 지정해야 하며, 연락 담당자는 귀사의 정보 및 서류, 그리고 귀사의 메일 내용에 접근할 수 있습니다. 연락 담당자 지정은 1명까지 무료이며, 2명 이상인 경우 1인당 연간 HKD2,000의 수수료가 발생합니다. 지정된 연락 담당자는 귀사에서 지정하며, 귀사의 정보 보호 및 혼선 방지를 위해 당사에 별도로 등록됩니다. (지정된 연락 담당자는 주주/이사와 동일한 절차를 거쳐 여권 사본 및 주소 증빙 서류/개인 인증을 제출해야 합니다.)",
+    "signiControl": "중요 지배인",
+    "signiControlInfo": "중요 지배인이란 회사 지분의 25% 이상을 소유하거나 그 이하를 소유하더라도 다른 주주에 비해 상응하는 영향력을 행사할 수 있는 최대 주주 또는 그에 준하는 자를 말합니다.",
+    "fullName": "성명",
+    "fNamPlacHldr": "귀하의 성명",
+    "mobilHlder": "귀하의 휴대폰 번호",
+    "kakaoHlder": "귀하의 카카오톡 ID",
+    "wechatHlder": "귀하의 위챗 ID",
+    "passport": "여권 사본 업로드",
+    "passportInfo": "지원되는 파일 1개 업로드: PDF, 그림 또는 이미지. 최대 10MB.",
+    "certifiedPass": "여권 공증 사본 업로드 (발급일로부터 3개월 이내)",
+    "chooseHead": "다음 서류 중 하나를 선택하십시오:",
+    "chList1": "여권과 함께 사진을 찍어 업로드하십시오.",
+    "chList2": "구청에서 여권 사본 증명서를 발급받아 업로드하십시오.",
+    "chList3": "공증 사무소에 가서 여권을 공증받아 업로드하십시오.",
+    "chList4": "미르 아시아 서울 사무소(논현역 근처)를 방문하여 여권 사본을 인증하십시오.",
+    "chList5": "지원되는 파일 최대 5개 업로드: PDF, 그림 또는 이미지. 파일당 최대 10MB.",
+    "uploadProof": "주소 증빙 서류 업로드 (발급일로부터 3개월 이내)",
+    "upHead": "다음 서류 중 하나를 선택하십시오:",
+    "up1": "해외 거주자를 위한 영문 번역본",
+    "up2": "영문으로 번역 및 공증된 운전면허증",
+    "up3": "해외 거주자를 위한 공과금 청구서 또는 은행 잔고 증명서",
+    "up4": "기타 공식적으로 주소를 증명하는 영문 서류 또는 영문 번역 공증본",
+    "upPara": "지원되는 파일 최대 5개 업로드: PDF, 그림 또는 이미지. 파일당 최대 10MB.",
+    "first4Pass": "여권 번호 앞 4자리",
+    "first4PassInfo": "앞 4자리를 입력하세요",
+    "countryBirth": "출생 국가",
+    "countryBirthInfo": "출생 국가를 입력하세요",
+    "currentRedsidency": "현재 거주 국가",
+    "cRInfo": "현재 거주 국가를 입력하세요",
+    "participateNominee": "설립하고자 하는 홍콩 법인의 실제 소유주 또는 대표자를 대신하여 지명인 또는 수탁인으로 참여할 계획이십니까?",
+    "whatAddress": "공개되는 통신 주소로 어떤 주소를 등록하시겠습니까?",
+    "whatAddressInfo": "개인 이사의 거주지 주소는 개인 정보로 등록되며, 통신 주소만 공개됩니다.",
+    "overSeasResident": "홍콩 이외의 해외 거주자로서 해외 법인 설립 또는 해외 직접 투자 신고 대상에 해당하십니까?",
+    "osRGuide": "아래 안내 슬라이드를 참조하십시오.",
+    "foreignDirectRep": "해외 직접 투자 신고를 하셨거나 위 정보로 진행할 계획이십니까?",
+    "accordanceLaws": "귀국의 법률에 따라 귀국의 거주자로서 해외 직접 투자를 신고할 의무가 있을 수 있습니다. 그러나 당사는 홍콩에 위치한 회사이며, 홍콩 법인 설립과 관련된 서비스를 제공하므로 해외 직접 투자 신고 문제에 대한 직간접적인 책임을 지지 않습니다. 이에 동의하십니까?",
+    "politicalExposePersn": "정치적 주요 인물",
+    "ppExpInfo": "정치적 주요 인물이란 현재 또는 과거에 자국 또는 국제적으로 정치적 또는 사회적 영향력을 가진 자 또는 그 직계 가족을 말합니다. 예를 들어, 정부 기관, 정당, 사회 단체, 국제 NGO, 국제기구 또는 국영 기업의 고위 관리자 또는 그 직계 가족은 모두 정치적 인물에 해당합니다. 최근 강화된 자금세탁방지법에 따라 정치적으로 중요한 인물은 그 사실을 명확히 알려야 합니다.",
+    "politicalExplainDetails": "정치적 인물인 경우, 맡았던 직위 및 소속에 대한 자세한 내용을 제공해 주십시오.",
+    "ppEInfo": "직위, 소속, 재직 기간 또는 가족 관계를 설명하십시오.",
+    "pendingThretenClaim": "계류 중이거나 위협받고 있는 소송이 있거나, 법원 판결에 따라 범죄/사기 혐의로 유죄 판결을 받은 적이 있거나, 어떤 성격의 조사 대상이거나 법적 절차에 연루된 적이 있습니까?",
+    "youCitizen": "미국 시민, 영주권자 또는 거주자이십니까?",
+    "iitnNum": "위에 해당하는 경우 ITIN 번호, 비자 번호, 영주권 번호 등 관련 정보를 기입하십시오.",
+    "iitnInfo": "관련 정보를 입력하세요",
+    "natureOfFunds": "본 홍콩 법인 설립 후, 향후 사업 자본을 축적하거나 은행 계좌에 예치할 자금의 성격과 주요 자금 출처는 무엇입니까? (복수 선택 가능)",
+    "sourceOfFunds": "본 홍콩 법인 설립 후, 회사에 투자하거나 대출하거나 홍콩 법인 은행 계좌에 예치하고자 하는 자금의 출처는 무엇입니까?",
+    "countryFundsFlow": "위 두 질문에서 자금이 유입되는 국가를 기재해 주십시오.",
+    "ccFInfo": "자금 출처 국가를 입력하세요",
+    "isBankrupt": "현재 미면책 파산 상태이십니까?",
+    "isBnkInfo": "회사 조례(Cap.622) 제480조 제1항에 따라, 채무 불이행 과정에 있는 자는 법원의 허가 없이 회사 이사로서 직간접적으로 회사 경영에 참여할 수 없습니다. 이러한 규정 위반 시 기소 시 HK$700,000의 벌금과 2년의 징역, 약식 유죄 판결 시 $150,000의 벌금과 12개월의 징역에 처해질 수 있습니다.",
+    "violatedLaw": "과거에 홍콩에서 이사/주주/협동조합/개인 사업체로서 회사/조직/사업/합작 투자/지점/연락 사무소를 설립/가입/참여한 적이 있거나, 법원 소환장 거부, 제출 서류 허위 보고 등으로 회사 조례/세법/기타 법률을 위반한 적이 있거나, 기소/파산/형사 위반으로 인해 법원 명령에 따라 강제 해산된 적이 있습니까?",
+    "anyQuestionsApply": "위 질문 중 해당되는 사항이 있는 경우, 회사명 및 관련 정보를 설명해 주십시오.",
+    "enterDetails": "세부 정보를 입력하세요",
+    "agreeDocsInfo": "귀하는 본 서비스와 관련하여 당사의 사업을 위한 서류 및 정보 제공에 동의하며, 본 서비스와 관련하여 회사 설립 및 운영 목적이 합법적이고 합법적인 사업을 위한 것임에 동의합니다. 회사 설립 후 운영에 있어, 회사는 법률 위반 사항 또는 관련 의도가 있다고 판단되는 경우 일정 기간의 통지 후 서비스를 중단할 권리가 있으며, 법률 위반 사항에 대한 지원이나 자문을 제공할 의무가 없습니다. 귀하와 본 신청서의 서명자는 모든 진술이 본인의 지식 범위 내에서 진실되고 완전하며 정확함을 선언합니다. 이에 동의하십니까?",
+    "thankYu": "감사합니다! 회신 내용을 확인한 후 곧 컨설턴트가 연락드리겠습니다.",
+    "complete": "완료"
+  },
+  "shldr_viewboard": {
+    "viewTitle": "주주/이사 등록",
+    "viewDesc": "귀하의 역할에 대한 중요 정보",
+    "viewPara": "귀하는 주주/이사로 지정되셨습니다. 진행하려면 귀하의 세부 정보를 등록하십시오.",
+    "associatedComp": "모든 관련 회사",
+    "associatedDescComp": "귀하와 관련된 모든 회사의 전체 목록",
+    "action": "조치",
+    "register": "등록",
+    "fullName": "성명",
+    "signiControl": "중요 지배인",
+    "edit": "편집"
+  },
+  "shldrOptions": {
+    "roleMaj": "주요 주주 (최대 지분 보유)",
+    "roleGs": "일반 주주",
+    "roleNs": "지명 주주",
+    "roleCeo": "대표이사 (CEO)",
+    "roleGen": "일반 집행 이사",
+    "roleNd": "지명 이사",
+    "roleDcp": "지정 연락 담당자",
+    "roleEtc": "기타",
+    "sigNiConS1": "회사 총 주식의 25% 이상 보유",
+    "sigNiConS2": "회사 총 주식의 25% 미만 보유, 그러나 다른 주주보다 지분율이 높음 (최대 주주)",
+    "sigNiConS3": "회사 총 주식의 25% 미만 보유, 그러나 다른 주주와 지분율이 동일 (예: 주주 5명 중 각 20% 지분)",
+    "sigNiConS4": "회사의 전체 지분을 다른 지주회사가 소유하고 있으며, 본인은 해당 지주회사의 25% 이상을 소유",
+    "sigNiConS5": "회사의 전체 지분을 다른 지주회사가 소유하고 있으며, 본인은 해당 지주회사의 25% 미만을 소유하나, 다른 주주보다 지분율이 높음 (해당 지주회사의 최대 주주)",
+    "sigNiConS6": "회사의 전체 지분을 다른 지주회사가 소유하고 있으며, 본인은 해당 지주회사의 25% 미만을 소유하나, 다른 주주와 지분율이 동일 (예: 지주회사 지분 20%, 주주 5명)",
+    "sigNiConS7": "모르거나 이해하지 못함",
+    "coresAddres": "거주지 주소를 통신 주소로 사용",
+    "coresAddres1": "등록된 사업장 주소를 통신 주소로 사용 (연간 서비스료 HKD 500 / 인당 청구)",
+    "coresAddress2": "다른 주소를 통신 주소로 사용 (주소 증빙 필요)",
+    "dontKnow": "모름",
+    "handleIssue": "이 문제를 처리할 수 있음",
+    "consultationReq": "상담 필요",
+    "pep1": "현재 또는 과거 공직에 근무했거나, 가족 중에 그러한 사람이 있는 경우",
+    "pep2": "정부 기관, 정당, 사회 단체, 국제 NGO 등에서 고위 관리자로 근무한 경우",
+    "pep3": "현재 또는 과거 정치적 또는 사회적으로 영향력 있는 인물이거나, 가족 중에 그러한 사람이 있는 경우",
+    "pepNone": "해당 없음",
+    "optionsDoNotProvide": "정보를 제공하고 싶지 않음",
+    "natureFunds": "회사 설립 후, 매출 등 사업을 통해 이익이 발생할 것임",
+    "fundsFromSales": "법인 설립 또는 등록 후, 자산 매각 자금이 계좌로 유입될 것임",
+    "ownerInvestLoad": "법인 설립 또는 등록 후, 실제 소유주가 투자금 또는 대출금을 예치할 것임",
+    "groupParentInvestment": "법인 설립 또는 등록 후, 그룹 또는 모회사가 투자금을 지급할 것임",
+    "sourceFunds": "홍콩 회사에 투자금 또는 대출금이 지급될 것이며, 이 자금은 과거 다른 사업에서 발생한 이익임",
+    "assetSaleFunds": "홍콩 회사에 투자금 또는 대출금이 지급될 것이며, 이는 과거 회사가 소유한 자산 매각으로 발생한 자금임",
+    "borrowedFunds": "홍콩 회사에 투자금 또는 대출금이 지급될 것이며, 이 자금은 타인으로부터 차입(빌린)한 자금임",
+    "ownerPaidFunds": "홍콩 회사에 투자금 또는 대출금이 지급될 것이며, 이는 다른 실질 소유주가 본인을 통해 지급하고자 하는 자금임",
+    "earnedIncome": "홍콩 회사에 투자금 또는 대출금이 지급될 것이며, 이는 과거 재직 기간 동안의 근로 소득임",
+    "affiliatedCompFunds": "홍콩 회사에 투자금 또는 대출금이 지급될 것이며, 이 자금은 본인이 소속된 회사 또는 그룹에서 지급하는 자금임",
+    "bankOwnedFunds": "홍콩 회사에 투자금 또는 대출금이 지급될 것이며, 이 자금은 은행에 예치되어 소유하고 있던 자금임",
+    "noPlanSmallAmount": "홍콩 회사에 투자금 또는 대출금을 지급할 계획이 없으며, 있더라도 소액이므로 은행에 예치된 자금에서 지급할 것임"
+  },
+  "Singapore": {
+    "company": "회사명",
+    "relationBtwcompApplicant": "위 신청인과 설립될 싱가포르 법인의 관계",
+    "headingInfor": "본 양식은 싱가포르 법인 설립 시 중요 지배인이거나 대표로부터 모든 정보를 정확하게 입력하도록 위임받은 싱가포르 법인(추후 설립 예정, 이하 '싱가포르 법인')의 대표가 작성해야 합니다. 귀하의 답변이 포함된 이 양식은 당사의 KYC 및 고객 실사 문서로 보관됩니다. 따라서 답변에 왜곡이나 오류가 발생하지 않도록 주의해 주시기 바랍니다.",
+    "compInfo": "회사명은 기본적으로 영문으로 작성해야 하며, 'Pte. Ltd.'로 끝나야 합니다. 만약 동일하거나 유사한 법인명을 가진 회사가 이미 설립되어 있는 경우, 해당 이름은 승인되지 않을 수 있습니다. 따라서 아래에 가능한 회사명 세 가지를 1지망, 2지망, 3지망 순서로 입력해 주시면, 저희가 등록 가능 여부를 확인하고 귀하가 선택한 순서대로 가능한 회사명을 등록 서류에 적용할 것입니다.",
+    "rList": {
+      "r1": "싱가포르 법인의 이사",
+      "r2": "싱가포르 법인의 이사로부터 위임받음",
+      "r3": "과반수 지분을 보유한 싱가포르 법인의 주주",
+      "r4": "싱가포르 법인에 설립 자문을 제공하는 전문가 (예: 변호사, 회계사)"
+    },
+    "amlCddHeading": "고객의 사업 의도 확인",
+    "amlCddInfo": "본 섹션은 고객의 사업 의도를 파악하고, 저희가 제공하는 서비스와 부합하는지 사전에 확인함으로써 향후 발생할 수 있는 상호 간의 오해를 줄이기 위해 마련되었습니다. 질문에 정확하게 답변해 주시면 그에 맞춰 저희 서비스를 제공해 드리겠습니다.",
+    "clientPurpose": "싱가포르 법인 설립 목적이 자금 세탁, 도박, 탈세, 자산 은닉, 불법 사업을 위한 법규 회피, 사기 등과 같은 법적 또는 윤리적 문제를 야기합니까?",
+    "clientAnnualRenew": "싱가포르 법인 설립 후에는 연차 보고, 간사 서비스 갱신, 사업 갱신, 회계/세무 등과 같은 업무가 발생하며, 이 모든 업무에는 관련 비용과 정보 제공 의무가 따릅니다. 이에 동의하십니까?",
+    "clientAccountTax": "싱가포르 법인의 회계/세무 업무를 수행할 때, 회계 기간에 대한 모든 은행 거래 내역서, 구매 데이터, 판매 데이터, 지출 증빙, 급여 지급 증빙을 위조나 왜곡 없이 제출해야 합니다. 저희는 이 서류들을 임의로 또는 허위로 처리할 수 없습니다. 이에 동의하십니까?",
+    "singFollowingCompaniesActivity": "귀하가 아는 한, 싱가포르 법인이 다음 국가/지역(이란, 수단, 북한, 시리아, 쿠바, 남수단, 벨라루스 또는 짐바브웨)에서 현재 또는 계획된 사업 활동이 있습니까?",
+    "SgIsConnectedIranSudanetc": "귀하가 아는 한, 싱가포르 법인 또는 그와 연결되거나 관련된 당사자가 이란, 수단, 북한, 시리아 또는 쿠바에 사업장을 두고 있거나, 현지 제재법의 일환으로 현재 UN, EU, UKHMT, HKMA, OFAC 등 기관의 제재 대상입니까?",
+    "SgCrimeaSevastapl": "귀하가 아는 한, 싱가포르 법인이 크림/세바스토폴 지역에서 현재 또는 계획된 사업 활동이나 관련된 당사자가 있습니까?",
+    "sgRussiaEnergy": "귀하가 아는 한, 싱가포르 법인이 에너지(석유/가스) 부문, 군사 또는 국방 분야에서 러시아와 현재 또는 계획된 관련이 있습니까?",
+    "bInfoSgComp": "싱가포르 법인의 사업 정보",
+    "bInfoPara": "이 섹션에서는 설립될 싱가포르 법인 및 관련 사업에 대한 정보를 제공해 주십시오.",
+    "bInfoDescProdName": "법인 설립 후 거래될 제품명, 제품 유형, 서비스 내용, 서비스 유형 등에 대한 설명",
+    "bInfoSingSecondIndustries": "싱가포르 법인의 주업종 및 부업종을 기재해 주십시오.",
+    "purposeEstablisSingapore": "싱가포르 법인 설립 목적 및 기대 효과",
+    "bInfoAddressReg": "싱가포르에 등록된 사업장 주소",
+    "bInfoAddRegParaInfo": "싱가포르 법인은 법인 설립 및 유지를 위해 싱가포르 내 상업용 주소를 보유해야 합니다. 저희는 등록 주소 및 우편물 처리 서비스를 포함하는 등록 주소 서비스를 제공합니다. (거주지나 숙박 주소는 법인 주소로 등록할 수 없습니다.)",
+    "shareHldrDirec": "싱가포르 법인의 주주/이사",
+    "shrContrlParaInfo": "중요 지배인은 회사의 최종적이고 실질적인 의사 결정권을 가진 사람입니다.",
+    "designatedContInfo": "귀사는 회사 사업, 법인 설립 및 갱신, 서류 등록, 필요 정보 확인 및 당사 서비스와 관련된 다양한 사안에 대한 연락을 담당할 담당자('지정 연락 담당자')를 지정해야 합니다. 지정 연락 담당자는 1명까지 무료로 지정할 수 있으며, 2명 이상을 지정하고자 하는 경우 1인당 연간 250달러의 수수료가 부과됩니다. 지정 연락 담당자는 귀사에서 지정하며, 회사 정보 보호, 업무 혼선 감소 및 신원 도용 방지를 위해 당사에 별도로 등록되어야 합니다. (지정 연락 담당자는 주주/이사와 동일한 절차를 거쳐 여권 사본, 주소 증빙 및 개인 인증을 제출해야 합니다.)",
+    "plzFillShrDir": "주주/이사를 기입해 주십시오",
+    "legalEntityF": "법인/재단",
+    "actions": "조치 / 활동",
+    "add": "추가",
+    "industries": {
+      "i1": "무역",
+      "i2": "도매/소매 유통업",
+      "i3": "컨설팅",
+      "i4": "제조업",
+      "i5": "투자 및 자문업",
+      "i6": "전자상거래",
+      "i7": "온라인 직구/배송/구매 대행",
+      "i8": "IT 및 소프트웨어 개발",
+      "i9": "가상화폐 관련 사업 (ICO, 거래소, 지갑 서비스 등)"
+    },
+    "purpose": {
+      "p1": "사업 진출 및 확장",
+      "p2": "부동산 또는 금융 자산 투자를 통한 자산 관리",
+      "p3": "지주회사로서 자회사 또는 계열사 투자 통한 관리",
+      "p4": "투자자 또는 사업 상대방이 싱가포르 법인 설립을 제안",
+      "p5": "국제 거래에 대한 지리적 이점",
+      "p6": "규제 완화를 통한 사업 다각화 추진",
+      "p7": "금융 규제 완화를 통한 경쟁력 확보",
+      "p8": "낮은 세율과 비거래세(Non-VAT)로 인한 거래량 증가",
+      "p9": "양도소득세(No Capital Gain Tax) 부재로 인한 투자 수익 추구"
+    },
+    "mirraddress": "미르 아시아의 싱가포르 법인 등록 주소 서비스 이용",
+    "ownAddress": "싱가포르에서 사업 주소로 사용할 별도의 주소 보유 (미르 아시아의 등록 주소 서비스 이용하지 않음)",
+    "fyEndSgComp": "싱가포르 법인의 회계연도 종료일 (FYE)",
+    "fyEndSgCompInfo": "회계 및 세금 보고 관련 주요 날짜: 1) 회계 및 감사 보고서(S201) 준비 마감일: 회계연도 종료일로부터 3개월 이내 2) 예상 과세 소득(ECI) 국세청(IRAS) 제출 마감일: 회계연도 종료일로부터 3개월 이내 3) 연례 주주총회(S175): 회계연도 종료일로부터 6개월 이내 개최* 4) ACRA 연례 보고서(S197): 주주총회일로부터 1개월 이내 등록 5) IRAS 법인세 신고 (지난 회계연도에 대한 Form C 또는 CS): 매년 11월 30일까지 신고 * 첫 주주총회는 법인 설립일로부터 18개월 이내에 개최되어야 합니다. ** 주주총회 간 간격은 15개월을 초과해서는 안 됩니다.",
+    "regBsnsService": "등록 사업 주소 서비스 1년",
+    "crpSecAnnualServ": "법인 비서 연간 서비스",
+    "accPackageSixMonths": "6개월 회계 패키지 (거래 수 120건 미만) - 선불",
+    "sgCompIncorporation": "싱가포르 법인 설립",
+    "nomineeDirectorService": "명의 이사 연간 서비스 (매년 갱신 *현지 이사 등록 필요)",
+    "infoRegSingaComp": "싱가포르 회사 등록 정보",
+    "infoRegSingaCompPara": "싱가포르 회사는 설립 시점에 정한 자본금을 납입할 의무가 있습니다. 싱가포르에서는 별도의 자본금 계정이 없으므로, 설정된 자본금을 은행에 예금하거나 현금으로 보유하고 있다가 경비가 발생했을 때 지출할 수 있습니다. 다만, 이는 싱가포르를 기준으로 한 자본금 납입 방식입니다.",
+    "baseCurrencyInfo": "회계 목적으로 사용될 기능 통화와 주식 자본금의 통화가 동일하도록 설정하는 것을 권장합니다. 예를 들어, 매입과 매출 모두 USD로 거래하는 경우, 주식 자본금을 USD로 설정하면 회계 처리가 편리합니다. 그렇지 않은 경우, 모든 거래 통화를 회계 처리를 위해 기본 통화로 환산해야 합니다. 주식 자본금의 통화는 법인 설립 후 다른 통화로 변경할 수 없다는 점에 유의하십시오. (예: HKD로 발행된 주식 자본금은 USD로 변경할 수 없습니다.)",
+    "shareCapitalAmountInfo": "법인 설립 후 신주 발행이나 주식 양도 등 자본금 증자에 추가 비용이 발생합니다. 향후 주식 양도를 계획하고 있다면, 원하는 비율에 맞춰 주식 수를 세분화하여 발행하는 것을 권장합니다. 예를 들어, 설립 시점에 10주를 발행한 후 총 주식의 33.33%를 타인에게 양도하려면, 주식 수를 맞추기 위해 신주를 발행해야 하는 등 절차가 복잡해집니다. 또한, 설립 시점에 액면가 SGD1로 발행한 후 향후 투자자에게 주당 액면 가격에 대한 차액(예: SGD5)을 제공하고자 한다면, 이를 고려하여 발행하는 것이 좋습니다.",
+    "totalCapPaid": "납입될 총 자본금",
+    "totalCapPaidInfo": "통상적인 자본금은 SGD1,000이며, 자본금 금액은 회사의 운영 상황에 따라 설정할 수 있습니다. 설정된 자본금은 법인 설립 후 1년 이내에 회사 계좌로 납입되어야 하며, 이는 규정 준수를 위해 재무제표에 인식되어야 합니다. (자본금 증자 및 양도/인수 별도 처리 가능)",
+    "shreHldrStructure": "설립될 싱가포르 법인의 주주 및 지배 구조",
+    "shrHldrStructureInfo": "개인이 A라는 법인의 주식을 소유하는 경우 단일 레이어 구조라고 합니다. 법인 A가 법인 B 주식의 절반 이상을 소유하는 경우 이중 레이어 구조라고 합니다. 또한, 법인 B가 법인 C 주식의 절반 이상을 소유하는 경우 삼중 레이어 구조라고 합니다. 이처럼 여러 복잡한 계층 구조가 형성되는 경우, 은행 계좌 개설이 상당히 어려워집니다.",
+    "payMntOpt1": "은행 계좌 개설 후 주식 자본금 납입액이 은행 계좌로 입금됩니다.",
+    "payMntOpt2": "주식 자본금 납입액이 현금으로 납입되며, 회사 내 현금으로 보유되었다가 경비 발생 시 사용됩니다.",
+    "infoRegSingComp": "싱가포르 회사 등록 정보",
+    "bkeepop1": "개인 1인이 주식 100%를 소유 (단일 구조)",
+    "bkeepop2": "개인 2인 이상이 주식 100%를 소유 (단일 구조)",
+    "bkeepop3": "한국 법인이 지주회사로서 주식 100%를 소유 (단일 구조)",
+    "bkeepop4": "한국 외 다른 국가에서 설립된 (해외) 법인이 지주회사로서 주식 100%를 소유 (단일 구조)",
+    "bkeepop5": "법인 및 개인이 주주로서 싱가포르 법인 주식을 소유 (단일 구조)",
+    "bkeepop6": "지주회사가 이중 레이어 구조로 구성됨",
+    "bkeepop7": "지주회사가 삼중 레이어 구조로 구성됨",
+    "finalSgTake": "저희와 함께 싱가포르 법인 설립 절차를 완료해 주셔서 감사합니다. 고객님의 답변 내용을 검토한 후 담당 컨설턴트가 곧 연락드리겠습니다.",
+    "congrats": {
+      "steps": {
+        "1": {
+          "t": "1단계 — 규정 준수 검토",
+          "s": "당사의 준법감시인(compliance officer)이 귀하의 KYC/CDD 및 주주 정보를 검토합니다. 예상 소요 시간: 영업일 기준 1~2일."
+        },
+        "2": {
+          "t": "2단계 — 회사 등록국 서류 제출",
+          "s": "법인 설립 서류를 제출할 것입니다."
+        },
+        "3": {
+          "t": "3단계 — 등록 증명서 발급",
+          "s": "예상: 법인 설립 증명서 및 사업자 등록이 일주일 이내에 발급됩니다."
+        },
+        "4": {
+          "t": "4단계 — 은행/EMI 계좌 개설",
+          "s": "선택한 경우, 귀하가 선호하는 은행/EMI와의 계좌 개설을 주선합니다."
+        }
+      }
+    },
+    "serviceSelection": {
+      "cardTitle": "가격 및 견적",
+      "preQuestions": {
+        "title": "사전 질문 (아래 견적에 자동 적용됨)",
+        "q1": {
+          "label": "귀사 현지 이사 역할을 수행할 수 있는 싱가포르 거주자가 있습니까?",
+          "yes": "예, 내부 현지 이사를 선임할 수 있습니다",
+          "no": "아니요, 명목상 이사가 필요합니다 (Nominee Director)"
+        },
+        "q2": {
+          "label": "명목상 이사에 대한 보증금:",
+          "deposit": "보증금 미화 2,000달러",
+          "prepay": "회계/세금 선납 미화 2,000달러"
+        },
+        "helper": "위의 선택 사항은 아래 초기 비용의 보증금/선납 옵션을 전환합니다."
+      },
+      "table": {
+        "title": "법인 설립 + 첫 1년",
+        "columns": {
+          "item": "항목",
+          "price": "가격",
+          "selected": "선택됨"
+        },
+        "rows": {
+          "companyIncorporation": "회사 설립 (신고)",
+          "companySecretary": "회사 비서 (1년)",
+          "registeredAddress": "등록 주소 (1년)",
+          "nomineeDirector": "명목상 이사 (1년)",
+          "acctTaxPrepayTitle": "[선택 사항] 회계/세금 선납",
+          "acctTaxPrepayDesc": "(i) 첫 YA에 대한 장부 정리 및 CIT 신고. 명목상 이사 보증금의 대체 옵션.",
+          "ndDepositTitle": "[선택 사항] 명목상 이사 보증금",
+          "ndDepositDesc": "(i) 1개월 전 서면 해지 통지 시 환불 가능.",
+          "bankAdvisory": "은행 계좌 자문 (선택 사항)",
+          "emiAccount": "EMI 전자 계좌 개설 (기본) 무료",
+          "initialMandatoryTotal": "초기 필수 총액",
+          "totalInclOptions": "옵션 포함 총액",
+          "footnote": "표준 프로필 (개인 주주 5명 이하) 기준. 공증/번역/아포스티유 및 복잡한 KYC는 별도 비용입니다."
+        }
+      },
+      "toast": {
+        "sessionTitle": "결제 세션 시작됨",
+        "sessionDesc": "결제 세션이 시작되면 추가 항목을 선택할 수 없습니다."
+      }
+    }
+  },
+  "mirrasisaSSL": "미르 아시아 비즈니스 자문 및 비서 서비스 리미티드",
+  "aml": {
+    "amlEstablishment": "회사 설립 후 매년 연간 갱신(등록 대리인, 등록 주소 서비스)이 발생하며, 이 모든 업무에는 관련 비용 및 서류 제공 의무가 수반됩니다. 이에 동의하십니까?",
+    "plannedBusinessActivity": "귀하의 지식 범위 내에서 제안된 회사가 다음 국가/지역(이란, 수단, 북한, 시리아, 쿠바, 남수단, 벨라루스 또는 짐바브웨)에서 현재 또는 계획된 사업 활동을 가지고 있습니까?",
+    "otherPresence": "귀하의 지식 범위 내에서 제안된 회사 또는 회사의 관련 당사자가 이란, 수단, 북한, 시리아 또는 쿠바에 존재하거나, 유엔(UN), 유럽연합(EU), 영국 재무부(UKHMT), 홍콩 통화청(HKMA), 미국 재무부 해외자산통제국(OFAC) 또는 현지 제재법에 따라 현재 제재 대상입니까?",
+    "planBusinesInCrimea": "귀하의 지식 범위 내에서 제안된 회사 또는 그 관련 당사자가 크림반도/세바스토폴 지역에서 현재 또는 계획된 사업 활동을 가지고 있습니까?",
+    "energyPresence": "귀하의 지식 범위 내에서 제안된 회사가 러시아의 에너지/석유/가스 부문, 군사 또는 국방 분야에 현재 또는 계획된 노출이 있습니까?"
+  },
+  "panama": {
+    "title": "파나마 법인 설립",
+    "rolesWarning": "유효하지 않은 역할",
+    "rolesWarningInfo": "회장, 회계 담당자, 비서 역할을 올바르게 지정했는지 확인해 주세요.",
+    "headInfo": "본 신청서는 모든 정보가 정확하게 입력되었는지 확인하기 위해 회사(설립 중)의 주된 관리자인 법인의 주요 책임자가 작성하거나 승인해야 합니다. 본 신청서는 회사가 설립될 때 별도의 신청서 문서로 준비되어 회사의 주요 책임자가 서명하게 됩니다. 이 신청서 양식과 서명될 후속 신청서 양식 문서는 TCSP 라이선스 및 AMLO(자금세탁방지 및 테러자금 조달 금지에 관한 법률; Cap. 615 AMLO) 지침에 따라 고객님에 대한 KYC(고객 알기 제도) 및 실사 수행을 위한 법정 문서로 당사에 보관될 예정이오니, 제공된 정보에 왜곡이나 오류가 없도록 주의해 주십시오.",
+    "compNameInfo": "회사 이름은 'Sociedad Anonima', 'Corporation', 'Incorporated' 또는 해당 약어 'S.A.', 'Corp.', 'Inc.'로 끝나야 하며, 동일하거나 유사한 이름의 기존 회사가 있는 경우 설립이 불가능합니다. 따라서 희망하는 회사 이름 세 가지를 1순위, 2순위, 3순위 순서로 기재해 주시면, 등록 서류에 고객님이 선택하신 순서대로 가능한 회사 이름을 사용하겠습니다.",
+    "applicantLegalEntity": "신청인의 현재 법인격 (해당하는 경우)",
+    "residencalAddress": "신청인의 거주지 주소",
+    "businessInfoHeader": "설립 중인 파나마 회사에 대한 사업 정보",
+    "tradeafterDesc": "법인 설립 후 거래할 내용에 대한 설명 (상품명, 상품 유형, 서비스 내용 및 서비스 형태 포함)",
+    "purposeSetting": "파나마 회사 설립 목적 및 기대 효과",
+    "businessTransactions": "파나마 법인 설립 후 사업 거래가 이루어질 국가를 나열해 주십시오.",
+    "btInfo": "파나마 법인 설립 후 사업 거래가 이루어질 국가를 나열해 주십시오.",
+    "sourceOfFund": "다음 중 파나마 법인 사업의 자금 출처를 선택해 주십시오.",
+    "sofInfo": "법인의 주요 또는 실질적(직접 또는 간접) 소유자인 최종 실소유자(UBO)의 자금 출처와 회사 설립에 사용될 자금 출처에 대한 세부 정보를 선택해 주십시오.",
+    "shldrsPanama": "파나마 회사의 주주",
+    "localNominee": "현지 명의 이사 서비스를 이용하시려면 선택해 주십시오.",
+    "lNInfo": "필수 구성원 (3인): 회장, 비서, 회계 책임자 최소 명의 서비스 기간: 1년 파나마는 공개적으로 이용 가능한 등기 정보를 보호하기 위해 현지 명의 서비스는 제공합니다. 그러나 이는 주로 공개 정보 보호를 위한 목적이며, 재단의 모든 또는 일부 운영에 현지 명의자가 관여하거나 대표하지 않습니다. 또한, KYC/CDD 규정에 따라 실제 운영자 및 UBO(최종 실소유자)의 정보를 당사, 가상자산 거래소 또는 금융 기관 등에 알려야 합니다. 일반적으로 재단이 사기나 불순한 목적이 없으며 한 명의 대표자의 감독 하에 운영된다고 일반적으로 해석될 수 있으므로, 한 명의 고객 이름 외에 두 명의 명의 이사 서비스를 제공하는 것이 일반적입니다. 명의 이사 서비스 비용 (1년): 명의 이사 1인당 USD1,200 / 명의 이사 2인당 USD1,700 / 명의 이사 3인당 USD2,200",
+    "addLegalD": "현지 명의인 추가",
+    "relPanamaEntity": "설립 중인 파나마 법인과 귀하의 그룹 회사 간의 관계",
+    "panamaEntity": "설립 중인 파나마 법인이 그룹의 일부입니까, 아니면 그룹과 관련하여 법인이나 자산을 매매할 예정입니까?",
+    "descPanamaEntity": "설립 중인 파나마 법인과 그룹 회사(또는 관련 회사)가 사업적으로 어떻게 연결되어 있는지 설명하십시오 (예: 아웃소싱, 단순 해외 제휴 등)",
+    "purposeLis": {
+      "1": "아메리카 및 유럽으로 사업 확장",
+      "2": "부동산 또는 금융 자산 투자 및 운영",
+      "3": "지주회사로서 자회사 또는 계열사 투자 및 관리",
+      "4": "투자자 또는 사업 파트너가 파나마 법인 설립 제안",
+      "5": "국제 거래 목적",
+      "6": "규제 완화에 따른 사업 다각화",
+      "7": "낮은 세율로 인한 거래량 증가",
+      "8": "양도소득세(No Capital Gain Tax) 부재로 인한 투자 수익 추구"
+    },
+    "sourceList": {
+      "1": "근로 소득",
+      "2": "예금, 저축",
+      "3": "주식 또는 기타 투자 자산 소득",
+      "4": "대출",
+      "5": "회사 또는 주식 매각 대금",
+      "6": "사업 소득/배당금",
+      "7": "상속"
+    },
+    "sharehldrs": "주주",
+    "role": "역할",
+    "rOptions": {
+      "1": "대표자",
+      "2": "재무 담당자",
+      "3": "비서",
+      "4": "회장",
+      "5": "회계 담당자"
+    },
+    "nomineDir": "명의 이사 서비스",
+    "shldrNominee": "소유권이 있는 명의 주주",
+    "panam1stYrDesc": "파나마 법인 설립 및 첫 해 법인 서비스",
+    "details": {
+      "1": "모든 해당 등록 및 정부 수수료 (공공 등기소)",
+      "2": "설립 증서 및 정관 준비 (스페인어)",
+      "3": "최초 구독자로서 공증인 앞에서 설립 증서 집행",
+      "4": "모든 해당 공증 수수료",
+      "5": "상업 등기소에 설립 공증 증서 제출",
+      "6": "이사회 이사 임명 및 구독자 권리 포기를 위한 구독자 결의안 준비",
+      "7": "회사 정관 준비",
+      "8": "공공 등기소에서 발행한 법인 증명서 및 회사 발췌본 제공",
+      "9": "법인 문서의 공증된 영어 번역본 제공",
+      "10": "주식 할당, 이사 임명, 등록 대리인 및 사무실, 기타 관련 사항을 위한 첫 이사회 의사록 준비",
+      "11": "주주명부 작성",
+      "12": "주식 증명서 준비",
+      "13": "재직 증명서 준비 및 집행",
+      "14": "사업 주소를 포함한 등록 사무실 서비스 1년 제공",
+      "15": "등록 대리인 서비스 1년 제공",
+      "16": "법인 문서의 공증 및 아포스티유 사본 제공"
+    },
+    "mirrBsnsAdvcmpLtd": "미르 아시아 비즈니스 자문 및 비서 서비스 리미티드",
+    "qty": "수량",
+    "unitPrice": "단가",
+    "discount": "할인",
+    "amtUsd": "금액 (USD)",
+    "ttlUsd": "총계 (USD)",
+    "incorpoHeading": "설립 중인 파나마 회사의 등기 정보",
+    "totalAmountCap": "총 자본금 (USD)",
+    "totalOtherCap": "자본금이 다른 통화인 경우, 기타 필드를 작성해 주십시오.",
+    "thereAnyProvision": "법인 운영과 관련하여 정관에 포함되어야 할 특정 조항, 요건, 세칙 등이 있다면 설명해 주십시오.",
+    "regAddress": "회사의 등록 주소",
+    "panamaRegInfo": "파나마 회사는 설립 및 유지를 위해 파나마 내 등록 사업 주소를 보유해야 합니다. 당사는 등록 주소 및 우편물 발송 서비스를 포함한 등록 주소 서비스를 제공합니다. (주거지 또는 호텔 주소는 법인 주소로 등록되지 않습니다.) 파나마 회사법에 따라 이사 및 주주 명부, 결의안 등과 같은 법인 문서는 등록 사업 주소에 보관되어야 합니다.",
+    "useRegMirProide": "미르 아시아가 제공하는 등록 주소 서비스를 이용합니다.",
+    "haveSepAddress": "회사의 주소로 사용할 파나마 내 별도의 주소가 있습니다 (미르 아시아의 등록 주소 서비스 이용 안 함)",
+    "finalMsg": "저희와 함께 파나마 법인 설립 절차를 완료해 주셔서 감사합니다. 고객님의 답변 내용을 검토한 후 담당 컨설턴트가 곧 연락드리겠습니다.",
+    "quoteSetup": {
+      "title": "비용 견적 (정부 수수료 포함 총액)",
+      "initialSetupTitle": "초기 설정 비용",
+      "lockedMessage": "결제가 완료되었습니다. 견적 옵션은 이제 잠금 상태입니다.",
+      "base": {
+        "label": "Mirr Asia 설정 수수료 + 첫해 서비스",
+        "note": "(정부 수수료, 거주 에이전트, 등록 사무소 포함)"
+      },
+      "ndSetup": {
+        "label": "명목상 이사 (설정 단계)",
+        "placeholder": "선택",
+        "options": {
+          "0": "없음 (0)",
+          "1": "1명 (+USD 1,200)",
+          "2": "2명 (+USD 1,700)",
+          "3": "3명 (+USD 2,200)"
+        }
+      },
+      "nd3Reason": {
+        "label": "(설정) 명목상 이사 3명이 필요한 이유를 명시하십시오.",
+        "placeholder": "명목상 이사 3명이 필요한 이유를 간략하게 명시하십시오.",
+        "hint": "* 3명 선택 시 이유를 제공하는 것을 권장합니다."
+      },
+      "nsSetup": {
+        "label": "명목상 주주 (설정)"
+      },
+      "optional": {
+        "title": "선택 서비스 (설정 단계)",
+        "emi": "EMI 계좌 개설",
+        "bank": "파나마 현지 은행 계좌 개설 (난이도 높음)",
+        "cbi": "푸에르토리코 CBI 계좌 개설"
+      },
+      "totals": {
+        "setupY1": "설정 (1년차) 총액"
+      },
+      "includes": {
+        "title": "설정 패키지 포함 사항 (법인):",
+        "items": {
+          "i1": "회사 등록 및 정부 수수료 (Registro Público)",
+          "i2": "정관 및 내부 규정 준비 (스페인어)",
+          "i3": "최초 설립 주주(Founding Shareholder) 역할 및 공증",
+          "i4": "설립 관련 공증 수수료",
+          "i5": "상업 등기소 제출",
+          "i6": "이사 임명 및 최초 설립 주주 사임 결의",
+          "i7": "회사 내부 규정",
+          "i8": "변호사 증명서 및 회사 요약",
+          "i9": "공증된 영어 번역본",
+          "i10": "최초 이사회 의사록",
+          "i11": "주주 명부 및 주식 증서",
+          "i12": "현직 증명서 (Certificate of Incumbency)",
+          "i13": "등록 사무실 주소 (1년)",
+          "i14": "거주 에이전트 임명 (1년)",
+          "i15": "문서 공증 및 사본",
+          "i16": "KYC/실사 (Due Diligence)",
+          "i17": "국제 택배"
+        }
+      }
+    },
+    "congrats": {
+      "steps": {
+        "1": {
+          "t": "1단계 — 규정 준수 검토",
+          "s": "당사의 준법감시인(compliance officer)이 귀하의 KYC/CDD 및 주주 정보를 검토합니다. 예상 소요 시간: 영업일 기준 1~2일."
+        },
+        "2": {
+          "t": "2단계 — 회사 등록국 서류 제출",
+          "s": "법인 설립 서류를 제출할 것입니다."
+        },
+        "3": {
+          "t": "3단계 — 등록 증명서 발급",
+          "s": "예상: 영업일 기준 1~3주 이내에 법인 설립 증명서 및 사업자 등록증 발급."
+        },
+        "4": {
+          "t": "4단계 — 은행/EMI 계좌 개설",
+          "s": "선택한 경우, 귀하가 선호하는 은행/EMI와의 계좌 개설을 주선합니다."
+        }
+      }
+    }
+  },
+  "newHk": {
+    "hkTitle": "회사 설립 - 홍콩",
+    "infoHelpIcon": "각 단계를 완료하세요. 용어가 불분명한 곳에는 유용한 팁(ⓘ)이 나타납니다.",
+    "topbar": {
+      "stepOf": "단계 {{current}} / {{total}}"
+    },
+    "sidebar": {
+      "brand": "미르 아시아 - 법인 설립",
+      "badges": {
+        "ssl": "🔒 SSL 보안",
+        "registry": "🏛️ 등기소 규정 준수",
+        "aml": "🧑‍⚖️ AML/CFT 준비 완료"
+      },
+      "done": "완료",
+      "needHelp": "도움이 필요하신가요?",
+      "chatCta": "미르 아시아 채팅",
+      "toasts": {
+        "completeStepTitle": "이 단계 완료하기",
+        "completeStepDesc": "계속하려면 모든 필수 항목을 작성해 주십시오.",
+        "paymentReqTitle": "결제 필요",
+        "paymentReqDesc": "나중 단계로 진행하기 전에 결제를 완료해 주십시오. 영수증을 업로드하신 경우 확인을 기다려 주십시오."
+      },
+      "stepsMenu": "단계",
+      "close": "✕"
+    },
+    "buttons": {
+      "stepsMenu": "단계 메뉴",
+      "back": "← 이전",
+      "next": "다음 →",
+      "saving": "저장 중…"
+    },
+    "toasts": {
+      "paymentRequiredTitle": "결제 필요",
+      "paymentRequiredDesc": "계속하려면 결제를 완료해 주십시오.",
+      "incompleteTitle": "미완료",
+      "incompleteDesc": "계속하려면 모든 동의 사항을 확인하고 전자 서명(전체 법적 이름)을 입력해 주십시오.",
+      "errorTitle": "오류",
+      "errorSaveDesc": "초안을 저장할 수 없습니다. 다시 시도해 주십시오.",
+      "contactTitle": "문의하기",
+      "contactDesc": "곧 업데이트 예정."
+    },
+    "terms": {
+      "intro": "아래 약관을 검토해 주십시오. '검토 및 전자 서명' 단계에서 동의를 확인하게 됩니다.",
+      "items": {
+        "1": {
+          "t": "1. 본 계약의 목적",
+          "c": "본 계약의 목적은 MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED(\"Mirr Asia\")가 HKSAR에 설립될 고객 회사(\"고객\")에게 제공하는 서비스의 범위와 한계에 대한 오해를 방지하는 것입니다."
+        },
+        "2": {
+          "t": "2. 홍콩 회사 비서의 역할 및 책임의 한계",
+          "c": "Mirr Asia는 회사 조례(Cap 622) 및 고객의 정관에 따라 회사 비서로 임명됩니다. 비서 서비스는 법규상의 성격을 가지며 고용된 일반 행정 비서의 역할과 다릅니다."
+        },
+        "3": {
+          "t": "3. 등록 주소 및 제한 사항",
+          "c": "고객은 법규상 등록을 위해 Mirr Asia의 홍콩 등록 주소를 사용할 수 있습니다. 주소 변경은 서면 통지가 필요합니다. 등록 주소는 등록 및 우편물 처리를 위해서만 사용되며 실제 사무실이 아닙니다. 고객은 해당 주소를 불법적인 목적으로 사용하거나 사업장으로 오인하게 표현해서는 안 됩니다. 수신되는 우편물은 동의서에 따라 개봉 및 스캔되어 이메일로 전달될 수 있습니다. 고객에게 이사가 두 명 이상인 경우, 최소 두 명의 이사(정족수 기준)가 관련 문서에 서명해야 합니다. 사전 동의 없이 소포나 물품을 등록 주소로 보내서는 안 되며, 승인되지 않은 배송은 반송될 수 있습니다."
+        },
+        "4": {
+          "t": "4. 서비스 범위 (1년차)",
+          "c": "회사 비서 등록 및 법정 기록 유지. 사업자 등록 및 회사 등록국 서류 제출 (해당하는 경우). 첫 두 명의 직원에 대한 고용주 신고서 처리 (우편 요금 추가가 발생할 수 있음). 의무적인 회사 정보 조사서 처리. 연간 보고서 준비 및 제출; 갱신 양식 사본 보관. 중대한 지배인 등록부 유지. 주주/이사/비서 등록부 및 조직도 유지. 주주총회 의사록 템플릿 및 관련 기록 유지. 등록 사무소에 사업자 등록증 유지 (해당하는 경우). 간략한 사업/운영 조언 (비법률적, 최선의 노력만 제공). 고객 협조: 고객은 필요한 모든 정보/문서를 제공해야 합니다. Mirr Asia는 불법적인 사항에 대해 지원할 의무가 없습니다."
+        },
+        "5": {
+          "t": "5. 기간",
+          "c": "본 계약은 전액 지불 시점에 발효되며 1년 동안 유효합니다. 일부 서비스에 대해 양 당사자의 합의에 따라 계약이 연장되거나 조정될 수 있습니다."
+        },
+        "6": {
+          "t": "6. 수수료 및 제외 사항",
+          "c": "고객은 결제 섹션에 명시된 금액을 지불해야 합니다. 수수료에는 회계, 감사, 세금 신고, 은행 계좌 개설 자문, 제3자 비용(예: 은행 수수료, 정부 수수료, 세금, 택배)이 포함되지 않을 수 있습니다."
+        },
+        "7": {
+          "t": "7. 계약 해지",
+          "c": "고객은 Mirr Asia에 15일 전에 서면 통지함으로써 본 계약을 해지할 수 있으나, Mirr Asia는 본 계약에 따른 서비스가 이행되기 전에 임의로 본 계약을 해지할 수 없습니다. 다만, 고객이 본 계약상의 의무를 위반했다고 간주되거나 중대한 법적 위험이 있는 경우, Mirr Asia는 고객과 최대한 협의한 후 일정 기간의 통지 후 서비스를 해지할 수 있습니다. 고객의 귀책 사유로 본 계약이 해지될 경우, 선납된 서비스 수수료는 환불되지 않습니다. 다만, Mirr Asia의 귀책 사유로 본 계약이 해지되는 경우, 고객은 컨설턴트가 수행하지 않은 업무 범위에 한해서만 환불을 받을 수 있습니다."
+        },
+        "8": {
+          "t": "8. Mirr Asia의 의무",
+          "c": "Mirr Asia는 전문성과 상당한 주의를 기울여 서비스를 수행해야 하며, 본 계약에 명시된 작업 진행 상황의 변경 사항을 이메일 또는 기타 전자적 수단을 통해 고객에게 보고해야 합니다. Mirr Asia는 본 계약에 따른 업무를 수행하는 과정에서 발생하는 법적 또는 행정적 문제를 고객에게 즉시 통지해야 합니다."
+        },
+        "9": {
+          "t": "9. 고객의 의무",
+          "c": "고객은 Mirr Asia가 업무를 수행하는 데 필요한 정보와 자료를 적시에 제공해야 하며, 본 계약에서 합의된 수수료를 기한 내에 지불해야 합니다. 고객은 본 계약에 따른 업무와 관련하여 Mirr Asia에 제공된 개인 정보의 정확성을 보장해야 하며, Mirr Asia가 요구하는 위임장 또는 법적 문서를 제공해야 합니다."
+        },
+        "10": {
+          "t": "10. 책임의 한계",
+          "c": "Mirr Asia는 그러한 손해를 예측할 수 있었는지 여부와 관계없이 고객의 직접적 또는 간접적인 조치로 인해 발생하는 어떠한 결과에 대해서도 책임을 지지 않습니다. 계약 위반에 대한 Mirr Asia의 책임은 보수로 제한되며 어떠한 이유로도 증액될 수 없습니다."
+        },
+        "11": {
+          "t": "11. 불가항력",
+          "c": "천재지변, 전쟁, 폭동 또는 정부 규제와 같은 불가항력으로 인해 계약 이행이 불가능해진 경우, 양 당사자는 책임에서 면제됩니다."
+        },
+        "12": {
+          "t": "12. 양도 및 하청업체",
+          "c": "어느 당사자도 상대방의 사전 서면 동의 없이 자신의 권리/의무를 양도하거나 이전할 수 없습니다."
+        },
+        "13": {
+          "t": "13. 기밀 유지",
+          "c": "양 당사자는 법률상 공개가 요구되거나 해당 정보가 이미 공개된 경우가 아닌 한, 본 계약에 따라 얻은 비공개 사업 또는 기술 정보를 기밀로 유지합니다."
+        },
+        "14": {
+          "t": "14. 완전한 합의",
+          "c": "본 계약은 본 계약의 주제에 관하여 양 당사자 간의 완전한 합의를 구성하며, 이에 관하여 이전에 있었던 모든 서면 또는 구두 이해 및 합의를 대체합니다. 단, Mirr Asia가 요청한 등록 신청서에서 회사 구성원/이사들이 한 진술 및 보증은 본 계약과 별도로 분류되며 현행 준수 정책에 따라 완전한 효력을 유지합니다."
+        },
+        "15": {
+          "t": "15. 수정",
+          "c": "본 계약의 수정은 양 당사자의 서면 합의에 의해서만 이루어질 수 있습니다. 이메일 또는 소셜 미디어를 통한 명시적 합의도 서면 합의로 간주됩니다."
+        },
+        "16": {
+          "t": "16. 통지 및 커뮤니케이션",
+          "c": "본 계약과 관련된 모든 통지는 서면으로 작성되어 상대방의 주소로 발송되거나 상대방의 이메일 주소로 전송되어야 합니다. 이메일 또는 소셜 미디어를 통한 커뮤니케이션은 법적 구속력이 있으며 계약의 일부로 간주됩니다. 중요한 결정, 승인 또는 계약 변경에 관한 이메일 또는 소셜 미디어 커뮤니케이션은 서면 통지와 동일한 효력을 가집니다. 양 당사자는 상호 간 소통하기로 합의했거나 지속적으로 소통해 온 이메일 또는 소셜 미디어 계정을 정기적으로 확인할 의무가 있습니다. Mirr Asia는 본 계약에 따른 업무 진행 상황을 고객에게 주기적으로 보고해야 하며, 이메일을 통한 고객의 지침 또는 승인은 공식적인 결정으로 간주됩니다. 양 당사자는 중요한 결정을 이메일로 확인해야 합니다."
+        },
+        "17": {
+          "t": "17. 독립 계약자",
+          "c": "Mirr Asia는 독립 계약자이며, 본 계약의 어떠한 내용도 고객과 Mirr Asia 사이에 고용주-직원 관계를 형성하는 것으로 해석되어서는 안 됩니다."
+        },
+        "18": {
+          "t": "18. 분리 가능성",
+          "c": "본 계약의 조항 중 법률 또는 조례를 위반하는 것으로 판명된 조항은 삭제된 것으로 간주되며, 나머지 모든 조항은 계속해서 유효하며 양 당사자를 구속합니다. 고객과 Mirr Asia는 본 계약의 무효하거나 집행 불가능한 조항을 유효하고 집행 가능하며 원래 조항의 의도를 최대한 반영하는 조항으로 대체하기 위해 선의로 노력해야 합니다."
+        },
+        "19": {
+          "t": "19. 제3자 수혜자 없음",
+          "c": "Mirr Asia의 서면 승인이 없는 한, 제3자를 위한 권리는 창출되지 않습니다."
+        },
+        "20": {
+          "t": "20. 준거법 및 구제책",
+          "c": "첨부 문서에 달리 규정된 경우를 제외하고, 본 계약은 법률 상충 조항에 관계없이 홍콩 특별행정구의 법률에 따라 이행되고 해석됩니다. 양 당사자 간에 발생하는 모든 청구, 분쟁 또는 기타 문제에 대해 고객과 Mirr Asia는 홍콩국제중재센터(HKIAC)의 당시 존재 규칙에 따라 구속력 있는 중재에 문제를 회부하는 데 동의합니다."
+        },
+        "21": {
+          "t": "21. 비용 및 변호사 수수료",
+          "c": "모든 분쟁(조정, 중재 또는 소송)에서 승소한 당사자는 합리적인 비용 및 변호사 수수료를 회수할 수 있습니다. 고객은 또한 정보 또는 문서를 요구하는 법적 요청에 응답하는 Mirr Asia의 합리적인 비용을 지불해야 합니다."
+        },
+        "22": {
+          "t": "22. 고객 확인 및 선언",
+          "c": "고객은 본 서비스 요청의 목적과 향후 수령할 자금이 불법 무기, 자금 세탁, 테러 자금 조달, 불법 마약 또는 사기와 같은 불법 활동과 관련이 없거나 거기에서 파생된 것이 아님을 확인합니다. 고객은 본 서비스와 관련하여 필요한 문서 및 정보를 제공하는 데 동의하며, 그러한 정보가 서비스 제공에 필수적인 기관, 정부 기관 및 회사에 제공될 수 있음에 동의합니다. 고객은 변경 사항이 있을 경우 Mirr Asia에 즉시 통지해야 합니다. Mirr Asia는 불법 활동이 의심되는 경우 서비스 중단 권한이 있습니다."
+        }
+      }
+    },
+    "steps": {
+      "applicant": {
+        "title": "신청자 및 제안된 회사 이름",
+        "description": "연락처 정보를 제공하고, 선호도 순서대로 최대 3개의 영어 이름(선택 사항으로 중국어 이름)을 제안해 주십시오. 이는 서류 제출 전 신속한 이름 사전 심사를 하는 데 도움이 됩니다.",
+        "fields": {
+          "applicantName": {
+            "label": "신청자 전체 이름",
+            "placeholder": "예: Jane Doe",
+            "tooltip": "이 신청서의 책임자입니다. KYC 및 CDD 서류 제출 권한이 있어야 합니다."
+          },
+          "email": {
+            "label": "이메일",
+            "placeholder": "기본 이메일 (인증 필요)"
+          },
+          "phone": {
+            "label": "휴대폰 (국가 번호 포함)",
+            "placeholder": "+852 1234 5678"
+          },
+          "name1": {
+            "label": "제안된 영어 이름 - 1순위"
+          },
+          "name2": {
+            "label": "제안된 영어 이름 - 2순위"
+          },
+          "name3": {
+            "label": "제안된 영어 이름 - 3순위"
+          },
+          "cname1": {
+            "label": "중국어 이름 - 1순위 (선택 사항)"
+          },
+          "cname2": {
+            "label": "중국어 이름 - 2순위 (선택 사항)"
+          },
+          "roles": {
+            "label": "회사에서의 역할",
+            "tooltip": "복수 선택 가능.",
+            "options": {
+              "Director": "이사",
+              "Shareholder": "주주",
+              "Authorized": "공인 대리인",
+              "Professional": "전문 고문",
+              "Other": "기타"
+            }
+          },
+          "sns": {
+            "label": "SNS 플랫폼 (선택 사항)",
+            "placeholder": "SNS 플랫폼 선택",
+            "options": {
+              "WhatsApp": "WhatsApp",
+              "WeChat": "WeChat",
+              "Line": "Line",
+              "KakaoTalk": "카카오톡",
+              "Telegram": "텔레그램"
+            }
+          },
+          "snsId": {
+            "label": "SNS 계정 ID",
+            "placeholder": "예: wechat_id"
+          }
+        }
+      },
+      "compliance": {
+        "title": "규정 준수 및 윤리 평가 (AML / CDD)",
+        "description": "현재 지식에 따라 정확하게 답변해 주십시오. 도움이 필요한 경우 '잘 모르겠습니다'를 선택해 주십시오.",
+        "options": {
+          "yes": "예",
+          "no": "아니요",
+          "unsure": "잘 모르겠습니다"
+        },
+        "questions": {
+          "legalAndEthicalConcern": "사업과 관련된 법적 또는 윤리적 문제(예: 자금 세탁, 도박, 탈세, 자산 은닉, 사기)가 있습니까?",
+          "q_country": "홍콩 회사가 다음 국가/지역(이란, 수단, 북한, 시리아, 쿠바, 남수단, 벨라루스, 짐바브웨)에서 현재 또는 계획된 사업 활동을 가지고 있습니까?",
+          "sanctionsExposureDeclaration": "제재 노출: 회사 또는 관련 당사자가 유엔(UN), 유럽연합(EU), 영국 재무부(UK HMT), 홍콩 통화청(HKMA), 미국 재무부 해외자산통제국(OFAC) 또는 현지 제재법에 따른 제재 대상자나 법인과 관계, 거래 또는 소유권 관계가 있습니까?",
+          "crimeaSevastapolPresence": "크림반도/세바스토폴 지역에서 현재 또는 계획된 사업이 있습니까?",
+          "russianEnergyPresence": "러시아의 에너지/석유/가스 부문, 군사 또는 국방 분야에 현재 또는 계획된 노출이 있습니까?"
+        }
+      },
+      "company": {
+        "title": "회사 정보"
+      },
+      "acct": {
+        "title": "회계 및 세무",
+        "fields": {
+          "finYrEnd": {
+            "label": "홍콩 회사의 회계연도 종료일",
+            "options": {
+              "December 31": "12월 31일",
+              "March 31": "3월 31일",
+              "June 30": "6월 30일",
+              "September 30": "9월 30일"
+            }
+          },
+          "bookKeepingCycle": {
+            "label": "기장 주기",
+            "options": {
+              "Monthly": "월별 (거래 건수 월 50건 초과 시 권장)",
+              "Quarterly": "분기별",
+              "Half-annually": "반기별 (6개월마다)",
+              "Annually": "연간 (12개월마다) - 최저 비용"
+            }
+          },
+          "xero": {
+            "label": "온라인 회계 소프트웨어(예: Xero)를 사용하시겠습니까?",
+            "options": {
+              "Yes": "예 (약 HKD 400/월)",
+              "No": "아니요",
+              "Recommendation required": "권장 사항 필요 - 업종 및 거래량에 따라 추천해 드립니다",
+              "Other": "기타"
+            }
+          },
+          "softNote": {
+            "label": "현재 사용 중이거나 선호하는 다른 회계 소프트웨어가 있습니까? (선택 사항)",
+            "placeholder": "예: QuickBooks Online, Wave 또는 빈칸으로 두기"
+          }
+        }
+      },
+      "termsStep": {
+        "title": "계약 조건 및 서비스 약관"
+      },
+      "fees": {
+        "title": "법인 설립 패키지 및 선택 추가 서비스"
+      },
+      "invoice": {
+        "title": "청구서 - 미리보기"
+      },
+      "payment": {
+        "title": "결제"
+      },
+      "review": {
+        "title": "검토 및 전자 서명"
+      },
+      "congrats": {
+        "title": "확인"
+      }
+    },
+    "validation": {
+      "requiredFieldsPrefix": "필수 항목:"
+    },
+    "payment": {
+      "alerts": {
+        "alreadyPaid": "결제가 이미 완료되었습니다.",
+        "expiredGuard": "결제 가능 시간이 만료되었습니다. 결제를 다시 활성화하려면 지원팀에 문의해 주십시오.",
+        "initFailedTitle": "오류",
+        "initFailedDesc": "카드 결제를 초기화할 수 없습니다. 다시 시도해 주십시오.",
+        "prepareFailedDesc": "결제 준비에 실패했습니다. 다시 시도해 주십시오."
+      },
+      "success": {
+        "title": "결제 성공",
+        "amountLabel": "금액:",
+        "receiptLabel": "영수증:",
+        "viewStripeReceipt": "Stripe 영수증 보기"
+      },
+      "expiryBanner": {
+        "expiredMessage": "결제 가능 시간이 만료되었습니다. 결제를 다시 활성화하려면 지원팀에 문의해 주십시오.",
+        "timerTitle": "결제 타이머",
+        "timeRemaining": "남은 시간: {{time}}"
+      },
+      "methods": {
+        "title": "결제 방법",
+        "options": {
+          "card": {
+            "label": "카드 결제 - Stripe (HKD 결제 시 3.5%, USD 결제 시 6%)",
+            "tip": "해외 카드에 편리합니다. 수수료가 청구서에 추가됩니다."
+          },
+          "fps": {
+            "label": "간편 결제 시스템 (FPS)"
+          },
+          "bank": {
+            "label": "은행 이체 - 영수증 업로드 후 직접 이체"
+          },
+          "other": {
+            "label": "기타 (현금) - 영수증 업로드"
+          }
+        },
+        "statusNote": {
+          "paid": "결제 완료.",
+          "expired": "결제 가능 시간이 만료되어 결제가 비활성화되었습니다."
+        }
+      },
+      "conditions": {
+        "title": "결제 조건",
+        "text": "100% 선불 결제. 모든 결제는 환불되지 않습니다. 송금인은 모든 은행 수수료(중개 은행 수수료 포함)를 부담합니다."
+      },
+      "bankUpload": {
+        "refLabel": "이체 참조 번호 업로드",
+        "refPlaceholder": "예: HSBC TT 참조 번호",
+        "proofLabel": "결제 증빙 자료 업로드 (PDF/JPG/PNG)",
+        "submit": "제출",
+        "uploading": "업로드 중...",
+        "previewTitle": "결제 증빙 자료 미리보기",
+        "openInNewTab": "새 탭에서 열기",
+        "delete": "삭제"
+      },
+      "card": {
+        "proceed": "카드 결제 진행",
+        "preparing": "준비 중...",
+        "drawerNote": "안전한 Stripe 카드 결제창이 열려 결제를 완료합니다.",
+        "disabledExpired": "결제 비활성화됨 - 시간 만료."
+      },
+      "fps": {
+        "title": "FPS 결제"
+      },
+      "totals": {
+        "grandTotal": "총액: {{currency}} {{amount}}"
+      }
+    },
+    "common": {
+      "select": "선택"
+    },
+    "fees": {
+      "table": {
+        "headers": {
+          "description": "서비스 설명",
+          "original": "정가",
+          "amount": "금액",
+          "select": "선택"
+        },
+        "totalLabel": "총계: USD {{amount}}",
+        "note": "정부 수수료는 법정 수수료이며 모든 회사가 납부해야 합니다. 선택 항목은 결제 전에 전환할 수 있습니다."
+      },
+      "items": {
+        "cr_fee": {
+          "label": "홍콩 회사 등기소 정부 법인 설립 수수료",
+          "info": "회사 등기소에 납부하는 법정 서류 제출 수수료."
+        },
+        "br_fee": {
+          "label": "사업자 등록 (정부) 수수료",
+          "info": "연간 사업자 등록 부과금."
+        },
+        "inc_service": {
+          "label": "홍콩 법인 설립 - 서비스 수수료 (할인)",
+          "info": "미르 아시아 법인 설립 서비스 - 패키지에 포함되어 전액 할인됩니다."
+        },
+        "sec_annual": {
+          "label": "회사 비서 연간 서비스 요금",
+          "info": "법정 기록 보관 및 서류 제출 포함."
+        },
+        "kyc": {
+          "label": "KYC / 실사 수수료 (1년 차)",
+          "info": "1년 차에는 포함됩니다."
+        },
+        "reg_office": {
+          "label": "등록 사무소 주소 (연간, 선택 사항)",
+          "info": "첫 해 50% 할인."
+        },
+        "bank_arr": {
+          "label": "은행/EMI 계좌 개설 지원 (선택 사항)",
+          "info": "소개 및 일정 관리 지원."
+        },
+        "kit": {
+          "label": "회사 키트 제작 비용 (선택 사항)",
+          "info": "회사 직인, 주식 증명서 등."
+        },
+        "corr_addr": {
+          "label": "연락 주소 연간 서비스 (선택 사항)",
+          "info": "이사/주주를 위한 우편물 처리."
+        }
+      },
+      "richTips": {
+        "reg_office": {
+          "title": "등록 사무소 주소",
+          "mandatoryTitle": "필수:",
+          "mandatoryText": "모든 홍콩 회사는 홍콩 내에 등록 사무소 주소를 보유해야 합니다.",
+          "purposeTitle": "목적:",
+          "bullets": [
+            "이는 회사 등기소에 보관되는 공식 법정 주소입니다.",
+            "모든 공식 정부 서신(예: 회사 등기소, 내국세 수입국, 법원)은 이 주소로 전달됩니다.",
+            "홍콩 내 실제 주소여야 합니다 (사서함은 불가)."
+          ]
+        },
+        "corr_addr": {
+          "title": "연락 주소",
+          "p1": "이는 이사, 회사 비서 또는 지정된 대리인을 위한 대체 우편물 주소입니다.",
+          "p2": "누군가 자신의 거주지 주소를 회사 등기소 기록에 공개하는 것을 원치 않을 때 사용됩니다.",
+          "p3": "2018년부터 홍콩에서는 이사가 전체 일반 거주지 주소를 공개 등록부에 공개하는 대신 '연락 주소'를 제출할 수 있도록 허용하고 있습니다.",
+          "p4": "거주지 주소는 여전히 회사 등기소에 제출되지만, 등록부의 '보호된' 부분에 보관됩니다 (규제 기관 및 특정 전문가만 접근 가능).",
+          "p5": "공개 기록에는 연락 주소만 표시됩니다."
+        }
+      }
+    },
+    "invoice": {
+      "currencyBadge": "USD",
+      "aria": {
+        "moreInfo": "더 많은 정보"
+      },
+      "compact": {
+        "qty": "수량",
+        "original": "정가",
+        "youPay": "지불 금액",
+        "free": "무료",
+        "lineTotal": "합계"
+      },
+      "sections": {
+        "government": {
+          "title": "정부 수수료",
+          "badge": "필수",
+          "description": "이 수수료는 정부 기관이 징수하며 모든 회사가 납부해야 하는 법정 수수료입니다.",
+          "subtotal": "정부 수수료 소계"
+        },
+        "service": {
+          "title": "당사의 서비스 수수료",
+          "badge": "회사 설립 패키지 + 1년차 서비스",
+          "description": "핵심 규정 준수 서비스는 법적으로 요구됩니다. 선택한 추가 서비스는 아래에 표시됩니다.",
+          "subtotal": "서비스 수수료 소계"
+        },
+        "grandTotal": "총 비용"
+      },
+      "table": {
+        "headers": {
+          "serviceDescription": "서비스 설명",
+          "qty": "수량",
+          "original": "정가",
+          "amount": "금액",
+          "total": "합계"
+        }
+      },
+      "footnote": "가격은 편의상 USD로 표시되었습니다. 정부 수수료는 공식 고지에 따라 변경될 수 있습니다. 선택 항목은 결제 전에 추가/제거할 수 있습니다. 회계/세무 서비스는 여기에 포함되지 않습니다.",
+      "surcharge": {
+        "cardFee": "카드 수수료 (HKD 결제 시 3.5%, USD 결제 시 6%)"
+      },
+      "info": {
+        "cr_fee": "새 회사를 설립할 때 회사 등기소에 납부하는 필수 서류 제출 수수료입니다.",
+        "br_fee": "내국세 수입국에 납부하는 연간 사업자 등록 수수료 (1년간 유효).",
+        "inc_service": "설립 문서 준비, 이름 확인, 서류 제출 및 회사 설립까지 회사 등기소와의 연락.",
+        "sec_annual": "저희는 귀사의 회사 비서 역할을 수행하며, 등기부 관리, 연례 보고서 준비 및 제출, 일상적인 서류 제출을 관리합니다.",
+        "kyc": "규제 및 당사 의무에 따라 주주 및 이사에 대한 필수 KYC/AML 확인.",
+        "reg_office": "법정 기록 및 공식 서신을 위한 등록 사무소 주소.",
+        "bank_arr": "선택한 은행/EMI와의 소개 및 일정 관리 지원.",
+        "kit": "회사 직인, 주식 증명서 및 관련 품목.",
+        "corr_addr": "이사/주주를 위한 우편물 처리."
+      },
+      "common": {
+        "subtotal": "소계"
+      }
+    },
+    "review": {
+      "labels": {
+        "applicant": "신청자",
+        "proposedNames": "제안된 이름",
+        "chinesePrefix": "중국어:",
+        "industry": "산업",
+        "description": "설명",
+        "shareCapital": "자본금",
+        "owners": "소유자",
+        "acctPrefs": "회계 선호 사항",
+        "totalAmount": "총 금액",
+        "fyEnd": "회계 연도 종료일:",
+        "bookkeeping": "기장:",
+        "software": "소프트웨어:",
+        "prefers": "선호:",
+        "base": "기준:",
+        "payment": "결제:",
+        "grand": "총:"
+      },
+      "placeholders": {
+        "tbd": "(미정)",
+        "notProvided": "(제공되지 않음)",
+        "dash": "-",
+        "unknownParty": "알 수 없음",
+        "signaturePlaceholder": "귀하의 전체 법적 이름을 여기에 입력하십시오 (예: JANE DOE)"
+      },
+      "currency": {
+        "default": "HKD",
+        "usd": "USD"
+      },
+      "tags": {
+        "director": " (이사)",
+        "corporate": " (법인)"
+      },
+      "declarations": {
+        "title": "선언 및 동의",
+        "truth": "제공된 정보가 사실이며 완전하고 정확함을 확인합니다.",
+        "terms": "저는 참여 약관 및 등록 주소 약관을 읽고 동의합니다.",
+        "compliance": "법인 설립은 성공적인 규정 준수 검토(KYC/CDD 및 제재 확인)에 따라 진행됨을 이해합니다."
+      },
+      "esign": {
+        "label": "전자 서명",
+        "helper": "입력하신 이름은 타임스탬프와 함께 전자 서명으로 기록됩니다."
+      }
+    },
+    "congrats": {
+      "title": "축하합니다!",
+      "thankYou": "감사합니다{{name}}! 신청서가 성공적으로 제출되었습니다.",
+      "thankYouName": ", {{applicantName}}님",
+      "steps": {
+        "1": {
+          "t": "1단계 — 규정 준수 검토",
+          "s": "저희 규정 준수 담당자가 귀하의 KYC/CDD 및 지분 정보를 검토할 것입니다. 예상 소요 시간: 1-2영업일."
+        },
+        "2": {
+          "t": "2단계 — 회사 등기소 서류 제출",
+          "s": "법인 설립 서류(NNC1, 정관 등)를 제출할 것입니다."
+        },
+        "3": {
+          "t": "3단계 — 등록 증명서",
+          "s": "예상: 회사 설립 증명서 및 사업자 등록증이 약 5영업일 이내에 발급됩니다."
+        },
+        "4": {
+          "t": "4단계 — 은행/EMI 계좌",
+          "s": "선택하신 경우, 선호하는 은행/EMI의 계좌 개설을 주선해 드립니다."
+        }
+      },
+      "buttons": {
+        "print": "요약 PDF로 인쇄 / 저장",
+        "dashboard": "대시보드로 이동"
+      }
+    },
+    "company": {
+      "sections": {
+        "a": "A. 사업 세부 정보",
+        "b": "B. 자본금",
+        "c": "C. 주주 / 이사"
+      },
+      "fields": {
+        "industry": {
+          "label": "사업 산업",
+          "placeholder": "산업 선택"
+        },
+        "purpose": {
+          "label": "법인 설립 목적",
+          "options": {
+            "operateHK": "홍콩 및 중화권에서 사업 운영",
+            "assetMgmt": "자산 관리 / 투자",
+            "holdingCo": "자회사용 지주 회사",
+            "crossBorder": "국경 간 무역 이점",
+            "taxNeutral": "세금 중립성 (양도 소득세 없음)"
+          }
+        },
+        "bizdesc": {
+          "label": "설명",
+          "placeholder": "제품/서비스 및 계획된 활동에 대한 간략한 설명",
+          "tooltip": "법인 설립 후의 제품명, 서비스 유형, 주요 활동을 설명하십시오. 예시: ERP 통합을 위한 B2B IT 컨설팅; 부차적 활동: SaaS 구독."
+        },
+        "currency": {
+          "label": "기본 통화",
+          "options": {
+            "HKD": "HKD",
+            "USD": "USD",
+            "CNY": "CNY"
+          }
+        },
+        "capAmount": {
+          "label": "총 자본금",
+          "options": {
+            "1": "1",
+            "10": "10",
+            "100": "100",
+            "1000": "1,000",
+            "10000": "10,000",
+            "100000": "100,000",
+            "other": "기타 (금액 입력)"
+          }
+        },
+        "capOther": {
+          "label": "총 자본금 입력",
+          "placeholder": "예: 25000"
+        },
+        "shareCount": {
+          "label": "총 주식 수 (최소 1개)",
+          "options": {
+            "1": "1",
+            "10": "10",
+            "100": "100",
+            "1000": "1,000",
+            "10000": "10,000",
+            "100000": "100,000",
+            "other": "기타 (수량 입력)"
+          }
+        },
+        "shareOther": {
+          "label": "주식 수 입력",
+          "placeholder": "예: 5000"
+        },
+        "parValue": {
+          "label": "계산된 액면가 (읽기 전용)",
+          "hint": "액면가 = 총 자본금 ÷ 주식 수."
+        },
+        "inviteText": "다음으로 진행하기 전에 주주/이사 구성원을 초대하십시오.",
+        "isDcp": {
+          "label": "이 사람이 지정 연락 담당자(DCP) 역할을 수행합니까?",
+          "tip": "DCP는 비서 업무에 관해 회사를 대신하여 Mirr Asia와 연락할 권한이 있는 개인입니다. 이는 이사, 주주 또는 외부 대리인이 될 수 있습니다."
+        },
+        "dcpName": {
+          "label": "지정된 연락 담당자",
+          "placeholder": "이름 입력"
+        },
+        "dcpEmail": {
+          "label": "지정된 연락 담당자 이메일",
+          "placeholder": "이메일 입력"
+        },
+        "dcpNumber": {
+          "label": "지정된 연락 담당자 전화번호",
+          "placeholder": "전화번호 입력"
+        }
+      }
+    },
+    "parties": {
+      "title":"주주 / 이사 / DCP",
+      "banner": {
+        "ok": "모두 정상입니다 - 할당된 총 주식 수가 회사의 발행 주식 수와 일치합니다.",
+        "err": "오류: 할당된 총 주식 수는 회사의 총 주식 수와 일치해야 합니다. 항목을 수정해 주십시오.",
+        "locked": "결제가 완료되었습니다. 더 이상 세부 정보를 수정할 수 없습니다."
+      },
+      "fields": {
+        "name": {
+          "label": "전체 이름 / 법인명",
+          "example": "예: <b>Jane Doe</b> (개인) 또는 <b>ABC Holdings Limited</b> (법인 주주)."
+        },
+        "email": {
+          "label": "이메일"
+        },
+        "phone": {
+          "label": "전화번호"
+        },
+        "isCorp": {
+          "label": "이 주주는 법인입니까?",
+          "tip": "주주가 회사인 경우 '예'를 선택하십시오. 개인인 경우 '아니요'를 선택하십시오.",
+          "options": {
+            "no": "아니요 - 개인",
+            "yes": "예 - 법인 주주"
+          }
+        },
+        "isDirector": {
+          "label": "이 사람이 이사 역할도 수행할 예정입니까?",
+          "tip": "이사는 회사를 관리하고 법정 서류 제출에 서명합니다. 법적으로 최소 한 명의 개인 이사가 필요합니다.",
+          "options": {
+            "yes": "예",
+            "no": "아니요"
+          }
+        },
+        "shares": {
+          "label": "주식 수"
+        },
+        "pct": {
+          "label": "지분율 % (자동)"
+        },
+        "type": {
+          "label": "주식 유형"
+        }
+      },
+      "shareTypes": {
+        "ORD": "보통주",
+        "PREF": "우선주",
+        "NONVOT": "무의결권주",
+        "REDEEM": "상환주"
+      },
+      "buttons": {
+        "remove": "삭제",
+        "add": "+ 주주 / 이사 추가",
+        "invite": "초대 보내기"
+      },
+      "totals": "총 주식 수: {{total}} • 할당됨: {{assigned}}",
+      "toasts": {
+        "invalidEmail": {
+          "title": "오류",
+          "desc": "{{name}}의 이메일 형식 오류: {{email}}"
+        },
+        "invite": {
+          "success": {
+            "title": "성공",
+            "desc": "명에게 초대 이메일을 성공적으로 보냈습니다."
+          },
+          "exists": {
+            "title": "성공",
+            "desc": "회원/이사에게 초대장을 보냈습니다."
+          },
+          "failed": {
+            "title": "실패",
+            "desc": "일부 초대 실패"
+          }
+        }
+      }
+    }
+  },
+  "reqForQuote": {
+    "title": "견적 요청서",
+    "contact": {
+      "title": "견적 요청서",
+      "emailLabel": "이메일",
+      "emailPlaceholder": "your@email.com",
+      "personNameLabel": "담당자 성함",
+      "personNamePlaceholder": "전체 이름 입력",
+      "personTitleLabel": "담당자 직함",
+      "personTitlePlaceholder": "예: CEO, 이사, 매니저",
+      "personPhoneLabel": "담당자 전화번호",
+      "personPhonePlaceholder": "가능하다면 국가번호 포함",
+      "snsTypeLabel": "SNS 플랫폼",
+      "snsTypePlaceholder": "예: 카카오톡, WhatsApp, 텔레그램",
+      "snsIdLabel": "카카오톡 (또는 기타 SNS 계정) ID",
+      "snsIdPlaceholder": "카카오톡 ID 또는 기타 SNS ID"
+    },
+    "country": {
+      "title": "법인 설립을 희망하는 국가를 선택하십시오 (복수 선택 가능)",
+      "options": {
+        "hk": "홍콩 법인 설립 + 1년 관리",
+        "sg": "싱가포르 법인 설립 + 1년 관리",
+        "us-de": "(미국) 델라웨어 법인 설립 + 1년 관리",
+        "us-ny": "(미국) 뉴욕 법인 설립 + 1년 관리",
+        "us-wy": "(미국) 와이오밍 법인 설립 + 1년 관리",
+        "us-ca": "(미국) 캘리포니아 법인 설립 + 1년 관리",
+        "us-wa": "(미국) 워싱턴 법인 설립 + 1년 관리",
+        "us-dc": "(미국) 워싱턴 DC 법인 설립 + 1년 관리",
+        "uk": "영국 법인 설립 + 1년 관리",
+        "ch": "스위스 법인 설립 + 1년 관리",
+        "ie": "아일랜드 법인 설립 + 1년 관리",
+        "ee": "에스토니아 법인 설립 + 1년 관리",
+        "lt": "리투아니아 법인 설립 + 1년 관리",
+        "ge": "조지아 법인 설립 + 1년 관리",
+        "bg": "불가리아 법인 설립 + 1년 관리",
+        "mt": "몰타 법인 설립 + 1년 관리",
+        "ca": "캐나다 법인 설립 + 1년 관리",
+        "ae-ifza": "두바이 IFZA 법인 설립 + 1년 관리",
+        "ae-ad": "아부다비 법인 설립 + 1년 관리",
+        "ae-rak": "라스 알 카이마 법인 설립 + 1년 관리",
+        "vc-llc": "세인트빈센트 유한책임회사(LLC) 설립 + 2개 역년 관리",
+        "vc-guarantee": "세인트빈센트 보증 유한회사(비영리) 설립 + 2개 역년 관리",
+        "vc-bc": "세인트빈센트 사업회사 설립 + 2개 역년 관리",
+        "bvi": "BVI (영국령 버진 아일랜드) 법인 설립 + 1년 관리",
+        "il": "이스라엘 법인 설립 + 1년 관리",
+        "kr": "한국 법인 설립 + 1년 관리",
+        "sc": "세이셸 법인 설립 + 1년 관리",
+        "pa-foundation": "파나마 재단 설립 (비영리 재단) + 1년 관리",
+        "ck-foundation": "쿡 제도 재단 설립 (비영리 재단) + 1년 관리",
+        "bz": "벨리즈 법인 설립 + 1년 관리",
+        "cn": "중국 법인 설립 + 1년 관리",
+        "vn": "베트남 법인 설립 + 1년 관리",
+        "cw": "퀴라소 법인 설립 + 1년 관리",
+        "kz": "카자흐스탄 법인 설립 + 1년 관리",
+        "tw": "대만 법인 설립 + 1년 관리",
+        "ph": "필리핀 법인 설립 + 1년 관리",
+        "mn": "몽골 법인 설립 + 1년 관리",
+        "other": "기타:"
+      }
+    },
+    "industry": {
+      "title": "귀사의 산업 분야를 선택하십시오 (해당되는 모든 항목을 체크)",
+      "options": {
+        "trade": "무역업",
+        "wholesale": "도매/소매 유통업",
+        "consulting": "컨설팅",
+        "manufacturing": "제조업",
+        "online-service": "온라인 서비스업 (전자상거래)",
+        "online-direct": "온라인 직구/배송대행/구매대행",
+        "utility-token": "유틸리티 토큰 발행",
+        "utility-token-listing": "유틸리티 토큰 거래소 상장/판매",
+        "security-token": "증권형 토큰 발행/거래소 상장/판매",
+        "crypto-exchange": "가상화폐 거래소",
+        "other-virtual": "기타 가상화폐 관련 사업",
+        "it-dev": "IT, 블록체인, 소프트웨어 개발 등",
+        "crypto-finance": "가상화폐 기반 투자/대출/금융 관련 사업",
+        "crypto-games": "가상화폐 기반 게임",
+        "fx-trading": "외환 거래",
+        "finance": "금융, 투자, 컨설팅, 대부업 등",
+        "holding": "투자 지주 (지주회사)",
+        "other": "기타:"
+      }
+    },
+    "services": {
+      "title": "필요하신 서비스 항목 (해당되는 모든 항목을 체크)",
+      "options": {
+        "incorporation-standard": "법인 설립 + 설립 후 유지관리 (표준 서비스)",
+        "emi-list": "EMI (전자화폐 기관) 리스트 제공 (당사 서비스 이용 고객 무료)",
+        "emi-account": "EMI (전자화폐 기관) 계좌 개설 신청 및 상담 (사업 확정 후 별도 견적)",
+        "bank-account": "은행 계좌 개설 신청 및 상담 (사업 확정 후 별도 견적)",
+        "legal-opinion-local": "법인 현지 법률 의견서 (백서 검토 후 견적)",
+        "legal-opinion-domestic": "국내 거래소 상장을 위한 법률 의견서 (백서 검토 후 견적)",
+        "legal-opinion-other": "기타 국가 법률 의견서 (백서 검토 후 견적)",
+        "consulting-reg": "사업 관련 규제 검토, 타당성 검토, 문서 작성, 운영 컨설팅을 포함한 컨설팅 서비스 (별도 견적)",
+        "local-registration": "현지 등록 서비스 (현지 규정상 필요하거나 특별한 사유가 있을 경우 제공)",
+        "vasp-licenses": "가상자산 거래소 라이선스 (리투아니아, 이스라엘, 에스토니아)",
+        "emi-license-lt": "EMI 라이선스 (리투아니아)",
+        "dpt-license-sg": "디지털 결제 토큰 라이선스 (싱가포르)",
+        "token-swap-license": "결제 토큰 및 스왑 관련 라이선스",
+        "self-regulatory-ch": "자율 규제 기구 회원 가입 및 상담 (스위스)",
+        "other": "기타:"
+      }
+    },
+    "product": {
+      "title": "법인 설립 후 거래할 상품명, 상품 유형, 서비스 내용, 서비스 유형 등에 대한 설명",
+      "descriptionLabel": "예) 생활용품, 자동차 부품 및 용품, 건설 용품, F&B, 여행 관련 서비스 등",
+      "descriptionPlaceholder": "법인 설립 후 주요 상품/서비스, 유형 및 사업 모델을 설명해 주십시오."
+    },
+    "vasp": {
+      "title": "VASP 라이선스 보유 법인 인수에 관심이 있으십니까?",
+      "options": {
+        "yes": "예",
+        "no": "아니요, 관련 없음",
+        "apply-again": "라이선스 획득 및 운영이 쉬운 국가로 재신청을 희망합니다.",
+        "no-reg": "VASP 규제가 없는 국가 희망"
+      }
+    },
+    "structure": {
+      "title": "설립 희망 법인 정보 – 설립할 법인의 주주 및 지배구조",
+      "helperText": "복잡하고 계층적인 구조(이중/삼중 레이어)는 은행 계좌 개설을 상당히 어렵게 만듭니다.",
+      "options": {
+        "single-1-individual": "개인 1명이 주식 100% 소유 (단일 구조)",
+        "single-2-individuals": "개인 2인 이상이 주식 100% 소유 (단일 구조)",
+        "single-kr-holding": "한국 법인이 지주회사로서 주식 100% 소유 (단일 구조)",
+        "single-foreign-holding": "한국 외 다른 국가에 설립된 (해외) 법인이 지주회사로서 주식 100% 소유 (단일 구조)",
+        "single-mixed": "법인과 개인이 홍콩 법인의 주식을 주주로 소유 (단일 구조)",
+        "double-layer": "지주회사가 이중 레이어 구조로 구성됨",
+        "double-or-more-layer": "지주회사가 이중 레이어 이상 구조로 구성됨",
+        "other": "기타:"
+      }
+    },
+    "materials": {
+      "title": "제시 가능한 사업 관련 자료",
+      "options": {
+        "website": "웹사이트 주소",
+        "whitepaper-ko": "백서 (한국어)",
+        "whitepaper-en": "백서 (영어)",
+        "bp-ko": "사업계획서 (한국어)",
+        "bp-en": "사업계획서 (영어)",
+        "token-ecosystem": "토큰 생태계",
+        "other": "기타:"
+      }
+    }
+  }
+}
