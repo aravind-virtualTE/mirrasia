@@ -67,13 +67,35 @@ const CurrentCorporateClientList: React.FC = () => {
     return String(v);
   };
 
-  const requestSort = (key: string) => {
-    let direction: "ascending" | "descending" = "ascending";
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
+  const getStatusLabel = (company: any) =>
+    company?.status ?? company?.incorporationStatus ?? "N/A";
+
+  const getSortableFieldValue = (company: any, key: string) => {
+    switch (key) {
+      case "companyName":
+        return resolveCompanyName(company).toLowerCase();
+      case "applicantName":
+        return (company?.applicantName || "N/A").toLowerCase();
+      case "country":
+        return (company?.country?.name || "N/A").toLowerCase();
+      case "status":
+        return getStatusLabel(company).toLowerCase();
+      case "incorporationDate":
+        return normalizeDateForSort(company?.incorporationDate) || "";
+      case "assignedTo":
+        return (company?.assignedTo || "N/A").toLowerCase();
+      default:
+        return String(company?.[key] ?? "").toLowerCase();
     }
-    setSortConfig({ key, direction });
   };
+
+    const requestSort = (key: string) => {
+      let direction: "ascending" | "descending" = "ascending";
+      if (sortConfig && sortConfig.key === key && sortConfig.direction === "ascending") {
+        direction = "descending";
+      }
+      setSortConfig({ key, direction });
+    };
 
   const sortIcon = (key: string) => {
     if (!sortConfig || sortConfig.key !== key) return null;
@@ -111,42 +133,23 @@ const CurrentCorporateClientList: React.FC = () => {
     setDisplayList(filtered);
   };
 
-  const getSortedData = () => {
-    const rows = [...(searchQuery ? displayList : allList)];
+    const getSortedData = () => {
+      const rows = [...(searchQuery ? displayList : allList)];
 
-    if (sortConfig) {
-      rows.sort((a: any, b: any) => {
-        let aValue: any = "";
-        let bValue: any = "";
+      if (sortConfig) {
+        rows.sort((a: any, b: any) => {
+          const aValue = getSortableFieldValue(a, sortConfig.key);
+          const bValue = getSortableFieldValue(b, sortConfig.key);
+          const comparison = aValue.localeCompare(bValue, undefined, {
+            numeric: true,
+            sensitivity: "base",
+          });
+          return sortConfig.direction === "ascending" ? comparison : -comparison;
+        });
+      }
 
-        if (sortConfig.key === "companyName") {
-          aValue = resolveCompanyName(a).toLowerCase();
-          bValue = resolveCompanyName(b).toLowerCase();
-        } else if (sortConfig.key === "applicantName") {
-          aValue = (a.applicantName || "").toLowerCase();
-          bValue = (b.applicantName || "").toLowerCase();
-        } else if (sortConfig.key === "country") {
-          aValue = (a?.country?.name || "").toLowerCase();
-          bValue = (b?.country?.name || "").toLowerCase();
-        } else if (sortConfig.key === "incorporationDate") {
-          aValue = normalizeDateForSort(a?.incorporationDate);
-          bValue = normalizeDateForSort(b?.incorporationDate);
-        } else if (sortConfig.key === "assignedTo") {
-          aValue = (a.assignedTo || "").toLowerCase();
-          bValue = (b.assignedTo || "").toLowerCase();
-        } else {
-          aValue = a[sortConfig.key] || "";
-          bValue = b[sortConfig.key] || "";
-        }
-
-        if (aValue < bValue) return sortConfig.direction === "ascending" ? -1 : 1;
-        if (aValue > bValue) return sortConfig.direction === "ascending" ? 1 : -1;
-        return 0;
-      });
-    }
-
-    return rows;
-  };
+      return rows;
+    };
 
   // ---------- fetch ----------
   useEffect(() => {
@@ -394,13 +397,7 @@ const CurrentCorporateClientList: React.FC = () => {
           // Smooth horizontal scroll on trackpads
           "scrollbar-thin"
         )}
-      >
-        {/* 
-        Create a “sheet-like” fixed table width so columns remain compact on large screens:
-        - table uses fixed layout
-        - explicit col widths via inline styles on heads/cells
-        - wrapper enables horizontal scroll when needed
-      */}
+      >      
         <Table className="table-fixed text-[12px] leading-4">
           <TableHeader className="sticky top-0 z-10 bg-background">
             <TableRow className="h-9">
@@ -444,7 +441,7 @@ const CurrentCorporateClientList: React.FC = () => {
               <EmptyRow msg="No records found." />
             ) : (
               sortedRows.map((company: any, idx: number) => {
-                const status = company?.status ?? company?.incorporationStatus ?? "N/A";
+                const status = getStatusLabel(company);
                 const date = formatIncorpDate(company?.incorporationDate);
 
                 return (
