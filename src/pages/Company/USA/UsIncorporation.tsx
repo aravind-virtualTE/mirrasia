@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -1835,7 +1834,6 @@ export function InvoiceUsStep() {
     const fmtFx = (usd: number) => {
         if (selectedCurrency === "USD") return `USD ${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         const val = usd * displayRate;
-        // eslint-disable-next-line
         return `${selectedCurrency.toUpperCase()} ${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
 
