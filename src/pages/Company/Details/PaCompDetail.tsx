@@ -622,7 +622,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                             </span>
                                                             {user?.role !== "user" ? (
                                                                 <Select
-                                                                    value={formData?.status || ""}
+                                                                    value={formData?.incorporationStatus || ""}
                                                                     onValueChange={(val) => patchCompany("incorporationStatus", val)}
                                                                 >
                                                                     <SelectTrigger className="h-7 w-[220px]">
@@ -638,7 +638,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
                                                                 </Select>
                                                             ) : (
                                                                 <Badge variant="default">
-                                                                    {formData?.status || "Pending"}
+                                                                    {formData?.incorporationStatus || "Pending"}
                                                                 </Badge>
                                                             )}
                                                         </div>
