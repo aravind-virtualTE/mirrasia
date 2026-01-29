@@ -106,7 +106,9 @@ export type OnboardingRecord = {
     bizdesc?: string;
     currency?: string;
     capAmount?: string;
+    capOther?: string;
     shareCount?: string;
+    shareOther?: string;
     stripeLastStatus?: string;
     stripeReceiptUrl?: string;
     finalAmount?: string;
@@ -976,35 +978,56 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
                     <LabelValue label="Declared Capital">
                       {isEditing ? (
-                        <Select value={String(f.capAmount ?? "")} onValueChange={(v) => patchForm("capAmount", v)}>
-                          <SelectTrigger className="h-8">
-                            <SelectValue placeholder={t("common.select", "Select")} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {capitalAmountOptions.map((o) => (
-                              <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        f.capAmount || "—"
+                        <div className="space-y-2">
+                          <Select value={String(f.capAmount ?? "")} onValueChange={(v) => patchForm("capAmount", v)}>
+                            <SelectTrigger className="h-8">
+                              <SelectValue placeholder={t("common.select", "Select")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {capitalAmountOptions.map((o) => (
+                                <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {f.capAmount === "other" && (
+                            <Input
+                              type="number"
+                              placeholder={t("newHk.company.fields.capOther.placeholder", "Enter custom capital amount")}
+                              value={(data?.form as any)?.capOther ?? ""}
+                              onChange={(e) => patchForm("capOther", e.target.value)}
+                              className="h-8"
+                            />
+                          )}
+                        </div>
+                      ) : (                       
+                       f.capAmount == "other" ? `${(data?.form as any)?.capOther ?? ""}`:""
                       )}
                     </LabelValue>
-
                     <LabelValue label="Total Shares">
                       {isEditing ? (
-                        <Select value={String(f.shareCount ?? "")} onValueChange={(v) => patchForm("shareCount", v)}>
-                          <SelectTrigger className="h-8">
-                            <SelectValue placeholder={t("common.select", "Select")} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {shareCountOptions.map((o) => (
-                              <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="space-y-2">
+                          <Select value={String(f.shareCount ?? "")} onValueChange={(v) => patchForm("shareCount", v)}>
+                            <SelectTrigger className="h-8">
+                              <SelectValue placeholder={t("common.select", "Select")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {shareCountOptions.map((o) => (
+                                <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {f.shareCount === "other" && (
+                            <Input
+                              type="number"
+                              placeholder={t("newHk.company.fields.shareOther.placeholder", "Enter custom share count")}
+                              value={(data?.form as any)?.shareOther ?? ""}
+                              onChange={(e) => patchForm("shareOther", e.target.value)}
+                              className="h-8"
+                            />
+                          )}
+                        </div>
                       ) : (
-                        f.shareCount || "—"
+                        f.shareCount == "other" ? `${(data?.form as any)?.shareOther ?? ""}`:""
                       )}
                     </LabelValue>
                     <LabelValue label="Financial Year End">
