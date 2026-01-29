@@ -290,9 +290,19 @@ function PartyRow({ p, totalShares, onClick, onSendInvite, onDelete, isEditing, 
         <div className="flex flex-col gap-2">
           {/* Type + Director badge/toggle */}
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary">
-              {p.isCorp ? "Corporate" : "Individual"}
-            </Badge>
+            {isEditing ? (
+              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <Badge variant="secondary">{p.isCorp ? "Corporate" : "Individual"}</Badge>
+                <Switch
+                  checked={!!p.isCorp}
+                  onCheckedChange={(checked) => onChange?.({ isCorp: checked })}
+                />
+              </div>
+            ) : (
+              <Badge variant="secondary">
+                {p.isCorp ? "Corporate" : "Individual"}
+              </Badge>
+            )}
 
             {isEditing ? (
               <div
