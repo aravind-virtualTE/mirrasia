@@ -23,17 +23,18 @@ export type McapFees = {
 
 export type McapField = {
   type:
-    | "text"
-    | "email"
-    | "number"
-    | "textarea"
-    | "select"
-    | "radio"
-    | "radio-group"
-    | "checkbox"
-    | "checkbox-group"
-    | "derived"
-    | "info";
+  | "text"
+  | "email"
+  | "number"
+  | "textarea"
+  | "select"
+  | "radio"
+  | "radio-group"
+  | "checkbox"
+  | "checkbox-group"
+  | "derived"
+  | "search-select"
+  | "info";
   name?: string;
   label?: string;
   placeholder?: string;
@@ -42,6 +43,7 @@ export type McapField = {
   defaultValue?: any;
   colSpan?: 1 | 2;
   options?: McapFieldOption[];
+  items?: any[];
   rows?: number;
   condition?: (data: Record<string, any>) => boolean;
   compute?: (data: Record<string, any>, entityMeta?: Record<string, any> | null) => string;

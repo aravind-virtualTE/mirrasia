@@ -16,7 +16,7 @@ import {
   Users,
   UserPlus,
   Building2,
-  FileText,
+  FileText, DollarSign,
   type LucideIcon,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -194,15 +194,23 @@ const Layout: React.FC = () => {
             roles: ["user", "admin", "master"],
             to: "/quotation-request",
           },
+          {
+            id: "quotation-request1",
+            icon: FileText,
+            label: "Quotation v1.0 (in devlopment)",
+            roles: ["admin", "master"],
+            to: "/quote-enquiry",
+          },
+
         ],
       },
       {
         id: "mcap-services",
         icon: Briefcase,
-        label: "mcapServices",
-        roles: [ "admin", "master"],
+        label: "mcap(v1.0 in development)",
+        roles: ["admin", "master"],
         children: [
-           {
+          {
             id: "mcap-dashboard",
             icon: Home,
             label: "Mcap Dashboard",
@@ -223,6 +231,14 @@ const Layout: React.FC = () => {
             roles: ["user", "admin", "master"],
             to: "/mcap-parties",
           },
+          {
+            id: "mcap-pricing",
+            icon: DollarSign,
+            label: "Mcap Pricing",
+            roles: ["user", "admin", "master"],
+            to: "/mcap-pricing",
+          },
+
         ],
       },
     ],
@@ -297,6 +313,14 @@ const Layout: React.FC = () => {
         roles: ["admin", "master"],
         to: "/admin-companies-list",
       },
+      {
+        id: "letter-generator",
+        icon: Building2,
+        label: "Letter Generator",
+        roles: ["user", "admin", "master"],
+        to: "/letter-generator",
+      },
+
     ],
     [t, role, navigate, hardReset]
   );
@@ -431,7 +455,7 @@ const Layout: React.FC = () => {
         </main>
       </div>
       <SocialMediaWidget />
-      <McapBotWidget />
+      {["admin", "master"].includes(role) && <McapBotWidget />}
     </div>
   );
 };

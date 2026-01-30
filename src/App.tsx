@@ -63,6 +63,9 @@ import McapDashboard from './mcap/McapDashboard';
 import McapUserDashboard from './mcap/McapUserDashboard';
 import McapCompanyDetail from './mcap/McapCompanyDetail';
 import McapParties from './mcap/McapParties';
+import ProfessionalLetterGenerator from './components/refLetter/ProfessionalLetterGenerator';
+import QuoteEnquiry from './components/quoteService/quoteService';
+import PricingDashboard from './mcap/pricing/PricingDashboard';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -141,6 +144,9 @@ const App: React.FC = () => {
                         <Route path='/registrationForm' element={<CountryWiseShareholder />} />
                         <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
                         <Route path="/quotation-request" element={<ReqForQuotation />} />
+                        <Route path="/letter-generator" element={<ProfessionalLetterGenerator />} />
+                        <Route path="/quote-enquiry" element={<QuoteEnquiry />} />
+
 
                       </Route>
                     </Route>
@@ -169,6 +175,7 @@ const App: React.FC = () => {
                       <Route path="/mcap-dashboard" element={<McapUserDashboard />} />
                       <Route path="/mcap-detail/:id" element={<McapCompanyDetail />} />
                       <Route path="/mcap-parties" element={<McapParties />} />
+                      <Route path="/mcap-pricing" element={<PricingDashboard />} />
 
                     </Route>
                   </Route>
