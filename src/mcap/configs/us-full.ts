@@ -1,5 +1,5 @@
 import type { McapConfig } from "./types";
-import { service_list, getEntityBasicPrice } from "@/pages/Company/USA/constants";
+import { service_list, getEntityBasicPrice, usaList } from "@/pages/Company/USA/constants";
 
 export const US_FULL_CONFIG: McapConfig = {
   id: "us-full",
@@ -152,10 +152,29 @@ export const US_FULL_CONFIG: McapConfig = {
           colSpan: 2,
         },
         {
-          type: "text",
+          type: "search-select",
           name: "selectedState",
           label: "usa.Section2StateQuestion",
           placeholder: "common.select",
+          required: true,
+          items: usaList,
+          colSpan: 2,
+        },
+        {
+          type: "text",
+          name: "businessAddress",
+          label: "usa.regDetails.enterUsAddress",
+          placeholder: "Street, City, State, ZIP",
+          condition: (data) =>
+            data.localCompanyRegistration ===
+            "There is a separate address to use as a business address in the United States (do not use Mir Asia’s registered address service)",
+          colSpan: 2,
+        },
+        {
+          type: "text",
+          name: "beneficialOwner",
+          label: "usa.bInfo.shrldSection.benificialOwner",
+          placeholder: "usa.bInfo.shrldSection.selectBenificial",
           required: true,
           colSpan: 2,
         },
@@ -308,6 +327,107 @@ export const US_FULL_CONFIG: McapConfig = {
           government: 0,
         };
       },
+    },
+    {
+      id: "registration-details",
+      title: "usa.steps.step8",
+      description: "usa.steps.info.description",
+      fields: [
+        {
+          type: "select",
+          name: "totalCapital",
+          label: "usa.regDetails.totalPaid",
+          tooltip: "usa.regDetails.totalPaidTtip",
+          required: true,
+          options: ["1", "100", "1000", "10000"].map(opt => ({ label: opt, value: opt })),
+          colSpan: 1,
+        },
+        {
+          type: "select",
+          name: "companyExecutives",
+          label: "usa.regDetails.executiveTeam",
+          tooltip: "usa.regDetails.executiveTeamTtip",
+          required: true,
+          options: [
+            "1 person",
+            "2 or more individuals",
+            "Corporation (agent participates in the decision-making of the U.S. company) + individual",
+          ].map(opt => ({ label: opt, value: opt })),
+          colSpan: 1,
+        },
+        {
+          type: "select",
+          name: "noOfSharesSelected",
+          label: "usa.regDetails.totalNumShares",
+          tooltip: "usa.regDetails.additionalCosts",
+          required: true,
+          options: [
+            "Total capital divided by $1 (1 share price = $1; universal method)",
+            "1 share (minimum) (1 share price = total capital)",
+            "100",
+            "1,000",
+            "10,000",
+          ].map(opt => ({ label: opt, value: opt })),
+          colSpan: 2,
+        },
+        {
+          type: "select",
+          name: "localCompanyRegistration",
+          label: "usa.regDetails.usLocalReg",
+          tooltip: "usa.regDetails.usLocalRegTtip",
+          required: true,
+          options: [
+            "Use MirAsia’s U.S. company registration address service",
+            "There is a separate address to use as a business address in the United States (do not use Mir Asia’s registered address service)",
+          ].map(opt => ({ label: opt, value: opt })),
+          colSpan: 2,
+        },
+        {
+          type: "text",
+          name: "businessAddress",
+          label: "usa.regDetails.enterUsAddress",
+          placeholder: "Street, City, State, ZIP",
+          condition: (data) =>
+            data.localCompanyRegistration ===
+            "There is a separate address to use as a business address in the United States (do not use Mir Asia’s registered address service)",
+          colSpan: 2,
+        },
+        {
+          type: "info",
+          label: "newHk.review.declarations.title",
+          colSpan: 2,
+        },
+        {
+          type: "checkbox",
+          name: "truthfulnessDeclaration",
+          label: "newHk.review.declarations.truth",
+          required: true,
+          colSpan: 2,
+        },
+        {
+          type: "checkbox",
+          name: "legalTermsAcknowledgment",
+          label: "newHk.review.declarations.terms",
+          required: true,
+          colSpan: 2,
+        },
+        {
+          type: "checkbox",
+          name: "compliancePreconditionAcknowledgment",
+          label: "newHk.review.declarations.compliance",
+          required: true,
+          colSpan: 2,
+        },
+        {
+          type: "text",
+          name: "eSign",
+          label: "newHk.review.esign.label",
+          tooltip: "newHk.review.esign.helper",
+          placeholder: "newHk.review.placeholders.signaturePlaceholder",
+          required: true,
+          colSpan: 2,
+        },
+      ],
     },
   ],
 };

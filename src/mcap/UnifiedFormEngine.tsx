@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { UnifiedTextField } from "./fields/TextField";
 import { UnifiedSelectField } from "./fields/SelectField";
+import { UnifiedSearchSelectField } from "./fields/SearchSelectField";
 import { PartyWidget } from "./fields/PartyWidget";
 import { PaymentWidget } from "./fields/PaymentWidget";
 import { Loader2, CheckCircle2 } from "lucide-react";
@@ -281,6 +282,9 @@ export const UnifiedFormEngine = ({
         }
         if (field.type === "radio-group") {
             return <UnifiedSelectField key={fieldKey} {...commonProps} />;
+        }
+        if (field.type === "search-select") {
+            return <UnifiedSearchSelectField key={fieldKey} {...commonProps} />;
         }
         if (field.type === "checkbox") {
             return (
