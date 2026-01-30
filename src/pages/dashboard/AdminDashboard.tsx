@@ -19,7 +19,7 @@ import {
   XCircle,
   Trash2,
 } from "lucide-react";
-import { deleteCompanyRecord, getCurrentClientsCount, getIncorporationList, markDeleteCompanyRecord } from "@/services/dataFetch";
+import { deleteCompanyRecord, getCurrentClientsCount, getIncorporationList, getMcapCompanies, markDeleteCompanyRecord } from "@/services/dataFetch";
 import { useAtom, useSetAtom } from "jotai";
 import { allCompListAtom, companyIncorporationList } from "@/services/state";
 import { cn } from "@/lib/utils";
@@ -130,10 +130,33 @@ const AdminDashboard = () => {
     setCR("reset")
 
     async function fetchData() {
-      const [result, count] = await Promise.all([getIncorporationList(), getCurrentClientsCount()]);
+      const [result, count, mcapResult] = await Promise.all([
+        getIncorporationList(),
+        getCurrentClientsCount(),
+        getMcapCompanies(),
+      ]);
       setCccCount(count.count || 0);
       setCompIncList(result.companies);
-      setAllList(result.allCompanies);
+      const mcapMapped = Array.isArray(mcapResult)
+        ? mcapResult.map((c: any) => ({
+            _id: c._id,
+            country: { code: "MCAP", name: c.countryName || c.countryCode || "MCAP" },
+            incorporationStatus: c.incorporationStatus || c.status || "Pending",
+            status: c.status || "Pending",
+            companyName:
+              c?.data?.companyName1 ||
+              c?.data?.companyName_1 ||
+              c?.data?.name1 ||
+              c?.data?.companyName ||
+              "N/A",
+            applicantName: c?.data?.applicantName || c?.data?.name || "",
+            incorporationDate: c?.incorporationDate || null,
+            assignedTo: c?.assignedTo || "",
+            lastLogin: null,
+            createdAt: c?.createdAt || null,
+          }))
+        : [];
+      setAllList([...(result.allCompanies || []), ...mcapMapped]);
       setCurrentPage(1);
     }
     fetchData();

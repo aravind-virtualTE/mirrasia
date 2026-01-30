@@ -1930,7 +1930,8 @@
         "title": "Invoice — Preview"
       },
       "payment": {
-        "title": "Payment"
+        "title": "Payment",
+        "description": "Review your invoice and complete payment to proceed."
       },
       "review": {
         "title": "Review & e-Sign"
@@ -2021,6 +2022,7 @@
           "amount": "Amount",
           "select": "Select"
         },
+        "optionalTitle": "Optional Services",
         "totalLabel": "Total: USD {{amount}}",
         "note": "Government fees are statutory and payable by all companies. Optional items can be toggled before payment."
       },
@@ -2060,6 +2062,10 @@
         "corr_addr": {
           "label": "Correspondence Address Annual Service (optional)",
           "info": "Mail handling for directors/shareholders."
+        },
+        "extra_kyc": {
+          "label": "Additional KYC / Due Diligence fee",
+          "info": "Applied when extra parties require KYC beyond the included quota."
         }
       },
       "richTips": {
