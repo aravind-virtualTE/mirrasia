@@ -32,7 +32,8 @@ import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
 import SocialMediaWidget from "../SocialMedia";
 import TopNav from "./Navbar";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
-import {costaRicaFormAtom} from "@/pages/Company/CostaRica/costaState";
+import { costaRicaFormAtom } from "@/pages/Company/CostaRica/costaState";
+import { McapBotWidget } from '@/mcap/bot/McapBotWidget';
 
 type Role = "user" | "admin" | "master"
 type DecodedToken = { role?: Role };
@@ -130,7 +131,7 @@ const Layout: React.FC = () => {
     } catch {
       /* no-op */
     }
-  }, [resetAllForms, setUS, setPA, setSG,setHK]);
+  }, [resetAllForms, setUS, setPA, setSG, setHK]);
 
   const baseItem =
     "w-full inline-flex items-center h-10 rounded-md px-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400";
@@ -186,12 +187,41 @@ const Layout: React.FC = () => {
             roles: ["user", "admin", "master"],
             to: "/member-director-change",
           },
-           {
+          {
             id: "quotation-request",
             icon: FileText,
             label: "Quotation Request",
             roles: ["user", "admin", "master"],
             to: "/quotation-request",
+          },
+        ],
+      },
+      {
+        id: "mcap-services",
+        icon: Briefcase,
+        label: "mcapServices",
+        roles: [ "admin", "master"],
+        children: [
+           {
+            id: "mcap-dashboard",
+            icon: Home,
+            label: "Mcap Dashboard",
+            roles: ["user", "admin", "master"],
+            to: "/mcap-dashboard",
+          },
+          {
+            id: "mcap-demo",
+            icon: RefreshCw,
+            label: "Mcap Demo",
+            roles: ["user", "admin", "master"],
+            to: "/mcap",
+          },
+          {
+            id: "mcap-parties",
+            icon: Briefcase,
+            label: "Mcap Parties",
+            roles: ["user", "admin", "master"],
+            to: "/mcap-parties",
           },
         ],
       },
@@ -401,6 +431,7 @@ const Layout: React.FC = () => {
         </main>
       </div>
       <SocialMediaWidget />
+      <McapBotWidget />
     </div>
   );
 };

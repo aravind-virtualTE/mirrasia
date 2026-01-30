@@ -616,3 +616,15 @@ export const deleteCommonIncorpo = async (countryCode: string, id: string) => {
     console.error("Error deleting common company data:", error);
   }
 };
+
+export const getMcapCompanies = async (params?: { userId?: string }) => {
+  try {
+    const response = await api.get("mcap/companies", {
+      params: params || {},
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching MCAP companies:", error);
+    return [];
+  }
+};

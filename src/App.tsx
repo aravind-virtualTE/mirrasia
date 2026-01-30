@@ -31,6 +31,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import CompanyDocumentManager from './components/companyDocumentManager/CompanyDocumentManager';
 import { useAuthSync } from './hooks/useAuthSync';
 import PublicRoute from './middleware/PublicRoute';
+import KycGuard from './middleware/KycGuard';
 import BankForms from './pages/BankForms/BankForms';
 import SwitchServices from './pages/SwitchServices/SwitchServices';
 import AccountingForms from './pages/AccountingForms/AccountingForms';
@@ -54,14 +55,14 @@ import QuoteBuilder from './components/InvoiceManager/InvoiceQuotation';
 import HKAccountingEstimator from './components/InvoiceManager/AccTaxEstimator';
 import MemberDirectorManager from './components/memDirManager/MemberDirectorManager';
 import ConfigDrivenHKForm from './pages/Company/NewHKForm/NewHKIncorporation';
-import HKCompDetailSummary from './pages/Company/Details/NewCompDetail';
-import ConfigDrivenUSAForm from './pages/Company/USA/UsIncorporation';
 import ServicesPage from './pages/Landing/ServicesPage';
 import EnquiryList from './pages/dashboard/Admin/Enquiry/EnquiryList';
 import ReqForQuoteList from './pages/dashboard/Admin/ReqForQuote/ReqForQuoteList';
-// import NewSgIncorporation from './pages/Company/Singapore/NewSgIncorporation';
 import ReqForQuotation from './components/reqForQuotation/ReqForQuotation';
-import CRMemberRegistration from './components/ShrDirForm/cr/CrMemberRegistration';
+import McapDashboard from './mcap/McapDashboard';
+import McapUserDashboard from './mcap/McapUserDashboard';
+import McapCompanyDetail from './mcap/McapCompanyDetail';
+import McapParties from './mcap/McapParties';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -116,33 +117,32 @@ const App: React.FC = () => {
                   </Route>
 
                   <Route element={<ProtectedRoute allowedRoles={["admin", "user", "master"]} />}>
-                    <Route element={<Layout />}>
-                      <Route path="/company-register/" element={<CompanyRegistration />} />
-                      <Route path="/company-register/:countryCode/:id" element={<CompanyRegistration />} />
-                      <Route path="/company-register/:id" element={<CompanyRegistration />} />
-                      <Route path="/company-documents" element={<CompanyDocumentManager />} />
-                      <Route path="/company-documents/:countryCode/:id" element={<CompanyDocumentManager />} />
-                      <Route path="/pba-forms" element={<BankForms />} />
-                      <Route path="/switch-services" element={<SwitchServices />} />
-                      <Route path="/switch-services/:countryCode/:id" element={<SwitchServices />} />
-                      <Route path="/accounting-services" element={<AccountingForms />} />
-                      <Route path="/accounting-services/:countryCode/:id" element={<AccountingForms />} />
-                      <Route path="/hk-bank-account-list" element={<BkFrmList />} />
-                      <Route path="/switch-services-list" element={<SwitchServicesList />} />
-                      <Route path="/accounting-support-list" element={<AccountingHkList />} />
-                      <Route path="/member-registration" element={<InviteUsaDirShir />} />
-                      <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
-                      <Route path="/company-details/:id" element={<CompanyDetail />} />
-                      <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
-                      <Route path="/member-director-change" element={<MemberDirectorManager />} />
-                      <Route path="/new-form-layout" element={<ConfigDrivenHKForm />} />
-                      <Route path="/new-company-detail" element={<HKCompDetailSummary id='68bedb5ee164e67b5fd3afa8' />} />
-                      <Route path="/new-usa-form" element={<ConfigDrivenUSAForm  />} />
-                      <Route path='/registrationForm' element={<CountryWiseShareholder />} />
-                      <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
-                      <Route path="/quotation-request" element={<ReqForQuotation />} />
-                      <Route path="/testing" element={<CRMemberRegistration />} />
-                      
+                    <Route element={<KycGuard />}>
+                      <Route element={<Layout />}>
+                        <Route path="/company-register/" element={<CompanyRegistration />} />
+                        <Route path="/company-register/:countryCode/:id" element={<CompanyRegistration />} />
+                        <Route path="/company-register/:id" element={<CompanyRegistration />} />
+                        <Route path="/company-documents" element={<CompanyDocumentManager />} />
+                        <Route path="/company-documents/:countryCode/:id" element={<CompanyDocumentManager />} />
+                        <Route path="/pba-forms" element={<BankForms />} />
+                        <Route path="/switch-services" element={<SwitchServices />} />
+                        <Route path="/switch-services/:countryCode/:id" element={<SwitchServices />} />
+                        <Route path="/accounting-services" element={<AccountingForms />} />
+                        <Route path="/accounting-services/:countryCode/:id" element={<AccountingForms />} />
+                        <Route path="/hk-bank-account-list" element={<BkFrmList />} />
+                        <Route path="/switch-services-list" element={<SwitchServicesList />} />
+                        <Route path="/accounting-support-list" element={<AccountingHkList />} />
+                        <Route path="/member-registration" element={<InviteUsaDirShir />} />
+                        <Route path="/service-agreement-sign-docs" element={<ServiceAgreementSignDocs />} />
+                        <Route path="/company-details/:id" element={<CompanyDetail />} />
+                        <Route path="/company-details/:countryCode/:id" element={<CompanyDetail />} />
+                        <Route path="/member-director-change" element={<MemberDirectorManager />} />
+                        <Route path="/new-form-layout" element={<ConfigDrivenHKForm />} />
+                        <Route path='/registrationForm' element={<CountryWiseShareholder />} />
+                        <Route path="/registrationForm/:id" element={<CountryWiseShareholder />} />
+                        <Route path="/quotation-request" element={<ReqForQuotation />} />
+
+                      </Route>
                     </Route>
                   </Route>
 
@@ -160,30 +160,35 @@ const App: React.FC = () => {
                       <Route path="/current-corporate-client" element={<CurrentCorporateClientList />} />
                       <Route path="/sms-management" element={<SMSTracker />} />
                       <Route path="/invoice-management" element={<InvoiceManager />} />
-                      <Route path="/admin-companies-list" element={<ViewBoard />} /> 
-                      <Route path="/enquiries" element={<EnquiryList />} /> 
-                      <Route path="/quote-enquiries" element={<ReqForQuoteList />} /> 
-                      
-                      {/* <Route path="/newSingapore" element={<NewSgIncorporation />} /> */}
-                      
-                      {/* Add more admin-specific routes here */}
-                      
+                      <Route path="/admin-companies-list" element={<ViewBoard />} />
+                      <Route path="/enquiries" element={<EnquiryList />} />
+                      <Route path="/quote-enquiries" element={<ReqForQuoteList />} />
+
+                      {/* MCAP Routes */}
+                      <Route path="/mcap" element={<McapDashboard />} />
+                      <Route path="/mcap-dashboard" element={<McapUserDashboard />} />
+                      <Route path="/mcap-detail/:id" element={<McapCompanyDetail />} />
+                      <Route path="/mcap-parties" element={<McapParties />} />
+
                     </Route>
                   </Route>
-                 
+
                   {/* Protected routes for User */}
                   <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
-                    <Route element={<Layout />}>
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      {/* Add more user-specific routes here */}
-                      <Route path='/QuatationForm' element={<QuatationForm />} />
-                      <Route path='/RenewalReqForm' element={<RenewalRequestForm />} />
-                      <Route path='/TransferManagementInfo' element={<TransferManagementInfo />} />
-                      <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm />} />
-                      <Route path="/viewboard" element={<ViewBoard />} />
-                     
+                    <Route element={<KycGuard />}>
+                      <Route element={<Layout />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        {/* Add more user-specific routes here */}
+                        <Route path='/QuatationForm' element={<QuatationForm />} />
+                        <Route path='/RenewalReqForm' element={<RenewalRequestForm />} />
+                        <Route path='/TransferManagementInfo' element={<TransferManagementInfo />} />
+                        <Route path='/AccountingTaxWorkForm' element={< AccountingTaxForm />} />
+                        <Route path="/viewboard" element={<ViewBoard />} />
+                        <Route path="/mcap-dashboard" element={<McapUserDashboard />} />
+                        <Route path="/mcap-parties" element={<McapParties />} />
+                      </Route>
+                      <Route path="/docslayout" element={<DocsLayout />} />
                     </Route>
-                    <Route path="/docslayout" element={<DocsLayout />} />
                   </Route>
                 </Routes>
                 {/* <ReactQueryDevtools initialIsOpen={false} /> */}

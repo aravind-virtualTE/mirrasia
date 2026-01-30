@@ -6,8 +6,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { HelpCircle, Pencil, ShieldAlert, X, ChevronUp, ChevronDown } from "lucide-react";
+import { HelpCircle, Pencil, ChevronUp, ChevronDown } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -43,6 +42,7 @@ import { costaRicaFormAtom } from "../Company/CostaRica/costaState";
 
 import SearchBox from "../MasterTodo/SearchBox";
 import { normalize } from "@/middleware";
+import { parseStoredUser } from "@/lib/kyc";
 
 type SortKey = "companyName" | "country" | "status" | "incorporationDate";
 type SortConfig = { key: SortKey; direction: "ascending" | "descending" } | null;
@@ -73,9 +73,6 @@ const Dashboard = () => {
     }
   }, [token]);
 
-  const [showKycBanner, setShowKycBanner] = useState(true);
-  const dismissKycBanner = () => setShowKycBanner(false);
-  const goToKyc = () => navigate("/profile");
 
   // ---- Added (sort + search) ----
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
@@ -162,16 +159,8 @@ const Dashboard = () => {
       });
     }
   };
-
-  const tasks = (() => {
-    const uStr = localStorage.getItem("user");
-    try {
-      const u = uStr ? JSON.parse(uStr) : null;
-      return u?.tasks || [];
-    } catch {
-      return [];
-    }
-  })();
+  const storedUser = parseStoredUser();
+  const tasks = storedUser?.tasks ?? [];
 
   const resolveCompanyName = (company: any): string => {
     const cn = company?.companyName;
@@ -249,46 +238,6 @@ const Dashboard = () => {
           {t("dashboard.welcome")}User {t("dashboard.welcome1")}
         </h1>
 
-        {showKycBanner && (
-          <div
-            className={cn(
-              "w-full border rounded-lg p-3 md:p-4 mb-6",
-              "flex items-center gap-2 md:gap-3",
-              "bg-blue-50 border-blue-200 text-blue-900 dark:bg-blue-950 dark:border-blue-900 dark:text-blue-100"
-            )}
-          >
-            <ShieldAlert className="h-5 w-5 md:h-6 md:w-6 shrink-0" />
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium">
-                  Notice
-                </span>
-                <span className="font-semibold text-sm">KYC reminder</span>
-                <span className="text-sm">
-                  Please verify KYC in Profile. If uploaded, await approval. If approved, ignore.
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <Button size="sm" onClick={goToKyc} className="px-2 py-1 text-xs">
-                Go to KYC
-              </Button>
-              <Button size="sm" variant="ghost" onClick={dismissKycBanner} className="px-2 py-1 text-xs">
-                Dismiss
-              </Button>
-              <button
-                aria-label="Dismiss"
-                className="opacity-70 hover:opacity-100 transition p-1"
-                onClick={dismissKycBanner}
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
         <Accordion type="multiple" className="w-full space-y-4" defaultValue={["outstanding-tasks", "companies-list"]}>
           {/* Outstanding Tasks Accordion */}
           <AccordionItem value="outstanding-tasks" className="border rounded-lg">
@@ -310,7 +259,7 @@ const Dashboard = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {tasks.map((task: { label: string; _id: string }, index: number) => (
+                    {tasks.map((task: { label: string; checked?: boolean; _id?: string }, index: number) => (
                       <TableRow key={task._id || index}>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{task.label}</TableCell>

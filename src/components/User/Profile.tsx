@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
-  User, Shield, Settings, HelpCircle
+  User, Shield, Settings, HelpCircle, ShieldAlert
 } from "lucide-react"
 import { delProfileDoc, getUserById, updateProfileData } from "@/services/dataFetch"
 import { enable2FA, verify2FA, disable2FA, validateOtpforVerification, sendMobileOtpforVerification } from "@/hooks/useAuth"
@@ -322,6 +322,7 @@ export default function Profile() {
           });
         }
       } catch (err) {
+        console.log("err",err)
         toast({
           title: "Error",
           description: "Failed to delete file.",
@@ -520,12 +521,31 @@ export default function Profile() {
 
   return (
     <div className="container max-w-8xl mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2">
         <div>
           <h1 className="text-3xl font-bold">Profile Settings</h1>
           <p className="text-gray-600 mt-1">Manage your account information and security settings</p>
         </div>
+
+        <div
+          className="w-full border rounded-lg p-3 md:p-4 flex flex-col gap-2 md:flex-row md:items-center md:gap-3 bg-blue-50 border-blue-200 text-blue-900 dark:bg-blue-950 dark:border-blue-900 dark:text-blue-100"
+        >
+          <ShieldAlert className="h-5 w-5 md:h-6 md:w-6 shrink-0" />
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium">
+                Notice
+              </span>
+              <span className="font-semibold text-sm">KYC reminder</span>
+              <span className="text-sm">
+                Please verify KYC in Verification. If uploaded, await approval. If approved, ignore.
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
+
       <Tabs defaultValue="profile" className="w-full">
         <div className="flex w-full items-start mb-8">
           {/* Left: Tabs */}

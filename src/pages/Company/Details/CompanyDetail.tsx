@@ -67,7 +67,7 @@ const CompanyDetail = () => {
                 return <UaeDetail id={id ?? ""} />;
             case "CR": // Saint Vincent and the Grenadines
                 return <CostaRicaCompanyDetails id={id ?? ""} />;
-            
+
             default:
                 return <p> Not Found... </p>
         }
