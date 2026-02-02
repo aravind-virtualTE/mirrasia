@@ -30,9 +30,9 @@ export const isKycFullyApproved = (user: LocalDashboardUser | null) => {
   return (
     docs.addressProofStatus === "accepted" &&
     docs.passportStatus === "accepted" &&
-    docs.selfieStatus === "accepted" &&
     Boolean(docs.addressProofUrl) &&
-    Boolean(docs.passportUrl) &&
-    Boolean(docs.selfieUrl)
+    Boolean(docs.passportUrl)
+    // docs.selfieStatus === "accepted" &&
+    // Boolean(docs.selfieUrl)
   );
 };
