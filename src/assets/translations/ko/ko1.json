@@ -988,5 +988,1071 @@
             "pepDetail": "PEP 세부 정보",
             "contribution": "기여금 금액 (USD)"
         }
+    },
+    "panamaShrInvite": {
+        "title": "파나마 구성원 및 통제자 등록 양식",
+        "summary": {
+            "title": "귀하의 정보",
+            "success": "양식이 성공적으로 완료되었습니다!",
+            "edit": "답변 수정",
+            "submit": "양식 제출",
+            "clear": "모든 데이터 삭제",
+            "notAnswered": "답변하지 않음",
+            "optional": "(선택 사항)"
+        },
+        "navigation": {
+            "prev": "이전",
+            "continue": "계속하기",
+            "editHint": "수정하려면 위의 답변을 클릭하세요",
+            "editingLabel": "답변 수정 중",
+            "pagination": "질문 {{current}} / 전체 {{total}}",
+            "skip": "건너뛰기"
+        },
+        "upload": {
+            "click": "클릭하여 업로드",
+            "dragDrop": "또는 파일을 여기로 끌어다 놓으세요",
+            "types": "PNG, JPG 또는 PDF",
+            "openPdf": "PDF 열기",
+            "view": "보기",
+            "download": "다운로드",
+            "meta": "크기: {{size}} KB • 유형: {{type}}",
+            "pdfPreviewNote": "PDF 파일 - 보려면 \"PDF 열기\"를 클릭하세요"
+        },
+        "messages": {
+            "saved": "데이터 저장됨",
+            "savedDesc": "양식 데이터가 성공적으로 저장되었습니다",
+            "saveFailed": "저장 실패",
+            "saveFailedDesc": "양식 데이터를 저장하지 못했습니다",
+            "completed": "양식 완료!",
+            "completedDesc": "모든 정보를 제공해 주셔서 감사합니다.",
+            "required": "필수 필드",
+            "requiredDesc": "이 필드는 필수입니다",
+            "validationError": "유효성 검사 오류",
+            "specify": "상세 내용을 입력해 주세요...",
+            "other": "기타"
+        },
+        "questions": {
+            "name": {
+                "question": "귀하의 성함(풀네임)은 무엇입니까?",
+                "placeholder": "성함을 입력하세요",
+                "validation": "유효한 성함을 입력하세요"
+            },
+            "email": {
+                "question": "귀하의 이메일 주소는 무엇입니까?",
+                "placeholder": "이메일 주소를 입력하세요",
+                "validation": "유효한 이메일 주소를 입력하세요"
+            },
+            "nameChanged": {
+                "question": "이름을 개명한 적이 있습니까?",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "previousName": {
+                "question": "개명 전 이름은 무엇입니까?",
+                "placeholder": "이전 이름을 입력하세요",
+                "validation": "유효한 이름을 입력하세요"
+            },
+            "birthdate": {
+                "question": "생년월일은 언제입니까?",
+                "validation": "유효한 날짜를 입력하세요"
+            },
+            "maritalStatus": {
+                "question": "혼인 상태는 어떠합니까?",
+                "options": {
+                    "single": "미혼",
+                    "married": "기혼",
+                    "divorced": "이혼",
+                    "widowed": "사별",
+                    "separated": "별거"
+                }
+            },
+            "nationality": {
+                "question": "국적은 어디입니까?",
+                "placeholder": "국적을 입력하세요",
+                "validation": "유효한 국적을 입력하세요"
+            },
+            "passport": {
+                "question": "여권 번호는 무엇입니까?",
+                "placeholder": "여권 번호를 입력하세요",
+                "validation": "유효한 여권 번호를 입력하세요"
+            },
+            "job": {
+                "question": "직업은 무엇입니까?",
+                "placeholder": "직함/직업을 입력하세요",
+                "validation": "유효한 직업을 입력하세요"
+            },
+            "residenceAddress": {
+                "question": "거주지 주소는 어디입니까?",
+                "placeholder": "전체 거주지 주소를 입력하세요",
+                "validation": "전체 주소를 입력하세요"
+            },
+            "postalAddressSame": {
+                "question": "우편물 수령 주소가 거주지 주소와 동일합니까?",
+                "options": {
+                    "yes": "예, 동일합니다",
+                    "no": "아니요, 다릅니다"
+                }
+            },
+            "postalAddress": {
+                "question": "우편물 수령 주소는 어디입니까?",
+                "placeholder": "우편 주소를 입력하세요",
+                "validation": "전체 우편 주소를 입력하세요"
+            },
+            "phone": {
+                "question": "연락 가능한 휴대전화 번호는 무엇입니까?",
+                "placeholder": "휴대전화 번호를 입력하세요",
+                "validation": "유효한 전화번호를 입력하세요"
+            },
+            "companyName": {
+                "question": "설립 신청 중인 회사 명칭",
+                "placeholder": "이름 입력",
+                "validation": "회사 명칭을 입력하세요"
+            },
+            "corporationRelationship": {
+                "question": "설립하려는 법인과의 관계 (해당되는 항목 모두 선택)",
+                "info": "[지정 연락 담당자 안내] 귀하는 회사의 업무 연락을 담당할 지정 연락 담당자(DCP)를 지정해야 합니다. 지정 연락 담당자는 당사와의 주요 업무 연락을 담당하며, 그 의무에는 회사 및 비즈니스 관련 문의에 대한 연락, 진행 상황 확인 및 등록 서류 확인이 포함됩니다. 지정 연락 담당자는 귀하의 회사 정보 및 문서를 열람할 수 있으며, 회사 우편물도 열람할 수 있습니다. 1명의 연락 담당자 지정은 무료이며, 2명 이상인 경우 1인당 연간 미화 250달러의 수수료가 부과됩니다. 위임된 지정 연락 담당자는 귀하의 회사에서 지정하여 당사에 별도로 등록되며, 이를 통해 회사 정보를 보호하고 업무상의 혼선을 줄일 수 있습니다. (위임된 지정 연락 담당자는 신분증 앞뒷면 스캔본을 제출해야 합니다.) **주의: 지정 연락 담당자가 변경될 경우 즉시 당사에 연락하여 정보를 업데이트하고, 이 양식을 개별적으로 작성하여 필요한 서류를 제출해야 합니다.",
+                "options": {
+                    "shareholder": "주주",
+                    "ubo": {
+                        "label": "UBO (최종 실소유자)",
+                        "description": "주식의 25% 이상을 직접 또는 간접적으로 소유한 수익 소유자를 의미합니다."
+                    },
+                    "shareholderProxy": "주주 대리인 (주주를 대신하여 행동하는 수탁자)",
+                    "dirPresident": "이사 (회장/대표)",
+                    "dirTreasurer": "이사 (재무담당)",
+                    "dirSecretary": "이사 (비서)",
+                    "directorOnly": "이사 전용",
+                    "designatedContact": "지정 연락 담당자 (새 회사를 대신하여 당사와 소통할 대리인)"
+                },
+                "validation": "최소 하나 이상의 관계 유형을 선택하세요"
+            },
+            "investedAmount": {
+                "question": "설립될 법인에 투자될 금액 (USD)",
+                "placeholder": "금액 입력",
+                "validation": "금액을 입력하세요"
+            },
+            "sharesAcquired": {
+                "question": "취득할 주식 수",
+                "placeholder": "주식 수 입력",
+                "validation": "주식 수를 입력하세요"
+            },
+            "fundSource": {
+                "question": "설립될 법인에 투자될 자금의 출처",
+                "info": "향후 자금 출처를 증빙하는 서류가 필요할 수 있으므로 적절한 항목을 체크해 주십시오.",
+                "options": {
+                    "earnedIncome": "근로 소득",
+                    "despositSavings": "예금, 적금",
+                    "realEstateIncome": "부동산, 주식 및 기타 투자 자산 소득",
+                    "loan": "대출",
+                    "companyShareSale": "회사 또는 주식 매각 대금",
+                    "businessIncome": "사업 소득 / 배당금",
+                    "succession": "상속/승계",
+                    "parentCompanyInvested": "모기업 투자",
+                    "other": "기타"
+                },
+                "validation": "최소 하나 이상의 자금 출처를 선택하세요"
+            },
+            "originFundInvestFromCountry": {
+                "question": "위 항목에 대한 자금의 발생 국가 (해당되는 모든 국가 목록)",
+                "placeholder": "국가 입력",
+                "validation": "국가를 입력하세요"
+            },
+            "fundGenerated": {
+                "question": "향후 파나마 법인에서 발생하거나 수령할 것으로 예상되는 자금의 출처",
+                "options": {
+                    "businessIncome": "사업 소득",
+                    "intrestIncome": "이자 소득",
+                    "realEstateIncome": "부동산, 주식 및 기타 투자 자산 소득",
+                    "companyShareSale": "회사 또는 주식 매각 대금",
+                    "inheritanceGift": "상속/증여",
+                    "borrowingTrustDeposit": "차입/신탁/예치 등",
+                    "other": "기타"
+                },
+                "validation": "최소 하나 이상의 자금 출처를 선택하세요"
+            },
+            "originFundGenerateCountry": {
+                "question": "위 항목에 대한 자금의 발생 국가 (해당되는 모든 국가 목록)",
+                "placeholder": "국가 입력",
+                "validation": "국가를 입력하세요"
+            },
+            "taxCountry": {
+                "question": "과세 국가",
+                "info": "과세 국가란 현재 연간 183일 이상 거주하는 국가 또는 개인 소득(급여/임대 소득 등)에 대해 세금을 납부하는 국가를 의미합니다.",
+                "placeholder": "과세 국가 입력",
+                "validation": "과세 국가를 입력하세요"
+            },
+            "taxNumber": {
+                "question": "납세자 번호",
+                "info": "납세자 식별 번호(TIN)는 세금 납부 영수증에 기재되어 있습니다. 한국에 거주하며 한국에서 세금을 납부하지만 납세자 식별 번호를 모르는 경우, 주민등록번호를 입력할 수 있습니다.",
+                "placeholder": "납세자 번호 입력",
+                "validation": "납세자 번호를 입력하세요"
+            },
+            "annualSaleIncomePrevYr": {
+                "question": "전년도 대략적인 연간 매출 및 소득(USD 기준)을 선택해 주십시오.",
+                "options": {
+                    "businessIncome": "미화 25,000달러 미만",
+                    "intrestIncome": "미화 25,000 - 50,000달러",
+                    "realEstateIncome": "미화 50,001 - 100,000달러",
+                    "companyShareSale": "미화 100,001 - 500,000달러",
+                    "inheritanceGift": "미화 500,001 - 1,000,000달러",
+                    "borrowingTrustDeposit": "미화 100만 달러 초과"
+                },
+                "validation": "최소 하나 이상의 옵션을 선택하세요"
+            },
+            "currentNetWorth": {
+                "question": "대략적인 현재 순자산(USD 기준)을 선택해 주십시오.",
+                "options": {
+                    "businessIncome": "미화 25,000달러 미만",
+                    "intrestIncome": "미화 25,000 - 50,000달러",
+                    "realEstateIncome": "미화 50,001 - 100,000달러",
+                    "companyShareSale": "미화 100,001 - 500,000달러",
+                    "inheritanceGift": "미화 500,001 - 1,000,000달러",
+                    "borrowingTrustDeposit": "미화 100만 달러 초과"
+                },
+                "validation": "최소 하나 이상의 옵션을 선택하세요"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "귀하는 위에 설명된 정치적 주요 인물입니까? 또는 고위 공직자, 정치인, 정부 관리, 군인 또는 국제기구 관계자인 직계 가족이나 가까운 지인이 있습니까?",
+                "info": "정치적 노출 인물 (출처: FATF 지침) 1. 외국 정치적 노출 인물은 외국에서 현재 또는 과거에 정치적, 사회적 영향력을 가졌던 인물을 의미합니다 (예: 고위 공무원, 정당 간부, 국영 기업 관리자 등). 2. 국내 정치적 노출 인물은 국내에서 영향력을 가졌던 인물을 의미합니다. 3. 국제기구의 정치적 노출 인물은 국제기구의 이사, 임원 등 권한을 가진 인물을 의미합니다. 4. 가족 관계의 정치적 노출 인물은 부모, 형제자매, 배우자, 자녀 등을 의미합니다. 5. 가까운 관계의 인물은 정치적 주요 인물과 긴밀한 사회적 또는 비즈니스 관계를 맺고 있는 사람을 의미합니다.",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "귀하가 정치적 주요 인물인지 여부 또는 그러한 인물과의 관계를 자세히 설명해 주십시오.",
+                "placeholder": "설명 입력",
+                "validation": "설명을 입력하세요"
+            },
+            "passportId": {
+                "question": "여권 사본과 여권 사본 증명서(구청 발행)를 업로드해 주십시오.",
+                "info": "가까운 구청에서 여권 사본 증명서를 신청할 수 있습니다. 문서 명칭은 '여권 사본 증명서'입니다.",
+                "placeholder": "여권 이미지 파일 선택",
+                "validation": "유효한 이미지 파일(JPG, PNG, PDF)을 업로드하세요"
+            },
+            "bankStatement3Mnth": {
+                "question": "이름과 주소가 표시된 최근 3개월간의 은행 거래 내역서 또는 은행 추천서(Bank Reference Letter) 사본을 업로드해 주십시오. (문서가 영문이 아닌 경우 번역 공증이 필요하며, 추가 비용이 발생합니다.)",
+                "info": "법인 설립을 위한 필수 서류입니다. 이 서류 없이는 파나마 법인 설립을 진행할 수 없습니다.",
+                "placeholder": "은행 내역서 파일 선택",
+                "validation": "유효한 이미지 파일(JPG, PNG, PDF)을 업로드하세요"
+            },
+            "addressProof": {
+                "question": "거주지 증명 서류(영문) 사본을 업로드해 주십시오.",
+                "info": "가까운 주민센터, 무인민원발급기 또는 온라인(정부24 등)에서 발급받아 제출해 주십시오.",
+                "placeholder": "거주지 증명 파일 선택",
+                "validation": "유효한 이미지 파일(JPG, PNG, PDF)을 업로드하세요"
+            },
+            "profRefLetter": {
+                "question": "최소 2년 이상 비즈니스 관계를 유지해 온 전문가(변호사, 회계사, 법무사, 세무사, 은행원, 자산 관리자, 비즈니스 파트너, 고용주 등)의 추천서를 업로드해 주십시오.",
+                "info": "법인 설립을 위한 필수 서류입니다. 이 서류 없이는 파나마 법인 설립을 진행할 수 없습니다. *발행일로부터 3개월 이내의 서류여야 합니다.",
+                "placeholder": "전문가 추천서 파일 선택",
+                "validation": "유효한 이미지 파일(JPG, PNG, PDF)을 업로드하세요"
+            },
+            "engResume": {
+                "question": "영문 이력서를 업로드해 주십시오.",
+                "placeholder": "이력서 파일 선택",
+                "validation": "유효한 이미지 파일(JPG, PNG, PDF)을 업로드하세요"
+            },
+            "isCrimeConvitted": {
+                "question": "법을 위반하여 체포되거나 범죄로 유죄 판결을 받은 적이 있습니까?",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "lawEnforced": {
+                "question": "수사 기관(경찰, 검찰)이나 세무 당국의 조사를 받은 적이 있습니까?",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "isMoneyLaundered": {
+                "question": "귀하의 사업 또는 개인 자금과 관련하여 범죄, 자금 세탁, 뇌물 수수 또는 테러 활동에 연루되어 있습니까? 또는 그러한 활동에서 파생된 자금과 관련된 불법 활동에 연루되어 있습니까?",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "isBankRupted": {
+                "question": "개인적으로 파산이나 청산에 연루된 적이 있습니까?",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "isInvolvedBankRuptedOfficer": {
+                "question": "회사의 임원으로서 파산이나 청산에 연루된 적이 있습니까?",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "isPartnerOfOtherComp": {
+                "question": "다른 회사의 이사 / 주주 / 실소유자(UBO) / 관계자 / 파트너이거나 다른 조직 또는 협회의 관계자입니까?",
+                "info": "해당되는 경우 다음 섹션에 회사 이름, 소재 국가 및 직함을 기재해 주십시오.",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "otherPartnerOtherComp": {
+                "question": "이전 섹션에서 '예'를 선택한 경우 구체적인 내용을 제공해 주십시오.",
+                "placeholder": "상세 내용 입력",
+                "validation": "상세 내용을 입력하세요"
+            },
+            "declarationAgreement": {
+                "question": "본인이 아는 바에 의하면, 본 재단의 자산, 순자산, 소득 또는 활동은 불법 무기, 자금 세탁, 불법 마약 또는 기타 불법 통제 물질과 어떠한 방식으로도 관련이 없으며, 본인의 시민권 국가, 거주지 및/또는 설립 국가에서 불법으로 간주되는 활동과도 관련이 없습니다. 본인은 채권자를 방해, 지연 또는 기망하거나 채권자 또는 기타 당사자에 대해 불법적인 행위를 할 의도가 없으며, 이러한 활동을 촉진하기 위해 기업 서비스 제공업체의 서비스를 이용할 의도가 없습니다. 본인은 본 서비스와 관련하여 필요한 서류 및 정보를 제공하는 데 동의하며, 해당 정보가 서비스 제공에 필요한 기관, 당국 및 회사에 제공될 수 있음에 동의합니다. 본인은 이 선언서에 포함된 사실이나 진술이 나중에 허위이거나 중대하게 부정확한 것으로 판명됨으로써 발생하는 모든 종류의 책임으로부터 기업 서비스 제공업체와 그 관계자를 완전히 면책합니다. 위의 내용을 읽고 이에 동의하십니까?",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            }
+        }
+    },
+    "panamaCorporateShr": {
+        "title": "파나마 구성원 및 통제자 등록 양식",
+        "summary": {
+            "title": "귀하의 정보",
+            "success": "양식이 성공적으로 완료되었습니다!",
+            "edit": "답변 수정",
+            "submit": "양식 제출",
+            "clear": "모든 데이터 삭제",
+            "notAnswered": "답변하지 않음",
+            "optional": "(선택 사항)"
+        },
+        "navigation": {
+            "prev": "이전",
+            "continue": "계속하기",
+            "editHint": "수정하려면 위의 답변을 클릭하세요",
+            "editingLabel": "답변 수정 중",
+            "pagination": "질문 {{current}} / 전체 {{total}}",
+            "skip": "건너뛰기"
+        },
+        "upload": {
+            "click": "클릭하여 업로드",
+            "dragDrop": "또는 파일을 여기로 끌어다 놓으세요",
+            "types": "PNG, JPG 또는 PDF",
+            "openPdf": "PDF 열기",
+            "view": "보기",
+            "download": "다운로드",
+            "meta": "크기: {{size}} KB • 유형: {{type}}",
+            "pdfPreviewNote": "PDF 파일 - 보려면 \"PDF 열기\"를 클릭하세요"
+        },
+        "messages": {
+            "saved": "데이터 저장됨",
+            "savedDesc": "양식 데이터가 성공적으로 저장되었습니다",
+            "saveFailed": "저장 실패",
+            "saveFailedDesc": "양식 데이터를 저장하지 못했습니다",
+            "completed": "양식 완료!",
+            "completedDesc": "모든 정보를 제공해 주셔서 감사합니다.",
+            "required": "필수 필드",
+            "requiredDesc": "이 필드는 필수입니다",
+            "validationError": "유효성 검사 오류",
+            "specify": "상세 내용을 입력해 주세요...",
+            "other": "기타"
+        },
+        "questions": {
+            "name": {
+                "question": "대표자 성명",
+                "placeholder": "성함을 입력하세요",
+                "validation": "유효한 성함을 입력하세요"
+            },
+            "email": {
+                "question": "귀하의 이메일 주소는 무엇입니까?",
+                "placeholder": "이메일 주소를 입력하세요",
+                "validation": "유효한 이메일 주소를 입력하세요"
+            },
+            "companyName": {
+                "question": "설립 신청 중인 회사 명칭",
+                "placeholder": "이름 입력",
+                "validation": "회사 명칭을 입력하세요"
+            },
+            "dateOfEstablishment": {
+                "question": "설립일",
+                "validation": "유효한 날짜를 입력하세요"
+            },
+            "establishmentCountry": {
+                "question": "설립 국가",
+                "placeholder": "국가 입력",
+                "validation": "유효한 국가를 입력하세요"
+            },
+            "brnNumber": {
+                "question": "법인 등록 번호 또는 사업자 등록 번호",
+                "validation": "값을 입력하세요"
+            },
+            "listedOnStockExchange": {
+                "question": "증권 거래소 상장 여부",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요",
+                    "other": "기타"
+                }
+            },
+            "namesOfShareholders": {
+                "question": "주주/이사의 영문 성함 및 보유 주식 수",
+                "info": "우편번호와 거주 국가에서의 거주 기간을 함께 기재해 주십시오.",
+                "placeholder": "상세 내용을 입력하세요"
+            },
+            "businessAddress": {
+                "question": "사업장 주소",
+                "placeholder": "주소를 입력하세요",
+                "validation": "유효한 주소를 입력하세요"
+            },
+            "phoneNumber": {
+                "question": "연락 가능한 대표자 휴대전화 번호",
+                "placeholder": "휴대전화 번호를 입력하세요",
+                "validation": "유효한 휴대전화 번호를 입력하세요"
+            },
+            "kakaoTalkId": {
+                "question": "대표자 카카오톡 ID (있는 경우)",
+                "placeholder": "상세 내용 입력",
+                "validation": "있는 경우 입력해 주세요"
+            },
+            "otherSnsId": {
+                "question": "대표자 텔레그램, 위챗 또는 기타 SNS ID (있는 경우)",
+                "placeholder": "상세 내용 입력",
+                "validation": "있는 경우 입력해 주세요"
+            },
+            "corporationRelationship": {
+                "question": "설립될 파나마 법인과의 관계",
+                "options": {
+                    "shareholder": "주주",
+                    "trustee": "수탁자",
+                    "director": "이사",
+                    "designatedContact": "지정 연락 담당자 (새 회사를 대신하여 당사와 소통할 대리인)",
+                    "other": "기타"
+                },
+                "validation": "최소 하나 이상의 관계 유형을 선택하세요"
+            },
+            "investedAmount": {
+                "question": "설립될 파나마 법인에 투자될 지분 금액 (USD)",
+                "placeholder": "금액 입력",
+                "validation": "금액을 입력하세요"
+            },
+            "sourceInvestmentFunds": {
+                "question": "투자 자금 출처",
+                "info": "향후 자금 출처를 증빙하는 서류가 필요할 수 있으므로 적절한 항목을 체크해 주십시오.",
+                "options": {
+                    "shareholderCapitalLoans": "주주의 자본금 또는 대출금",
+                    "businessIncome": "사업 소득/배당금",
+                    "despositSavings": "예금, 적금",
+                    "realEstateIncome": "부동산, 주식 및 기타 투자 자산 소득",
+                    "loan": "대출",
+                    "companyShareSale": "회사 또는 주식 매각 대금",
+                    "shareholderDirectorFund": "주주/이사 또는 특수 관계인의 상속 자금",
+                    "other": "기타"
+                },
+                "validation": "최소 하나 이상의 관계 유형을 선택하세요"
+            },
+            "countryReceivingFunds": {
+                "question": "위 항목에 대한 자금을 수령하는 국가 (해당되는 모든 국가 목록)",
+                "placeholder": "국가 입력",
+                "validation": "국가를 입력하세요"
+            },
+            "fundGenerated": {
+                "question": "향후 파나마 법인에서 발생하거나 수령할 것으로 예상되는 자금의 출처",
+                "options": {
+                    "businessIncome": "사업 소득",
+                    "intrestIncome": "이자 소득",
+                    "realEstateIncome": "부동산, 주식 및 기타 투자 자산 소득",
+                    "companyShareSale": "회사 또는 주식 매각 대금",
+                    "inheritanceGift": "상속/증여",
+                    "borrowingTrustDeposit": "차입/신탁/예치 등",
+                    "other": "기타"
+                },
+                "validation": "최소 하나 이상의 관계 유형을 선택하세요"
+            },
+            "countriesReceivingFunds": {
+                "question": "위 항목에 대한 자금을 수령하는 국가 (해당되는 모든 국가 목록)",
+                "placeholder": "국가 입력",
+                "validation": "국가를 입력하세요"
+            },
+            "usCorporateUnderTaxLaw": {
+                "question": "귀하의 회사는 법적 목적으로 미국 관할권에 속해 있거나 세법상 미국 내 고정 사업장에 해당합니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요",
+                    "other": "기타"
+                }
+            },
+            "tinNumber": {
+                "question": "법적 목적으로 미국 관할권에 속하거나 세법상 미국 내 고정 사업장에 해당하는 경우, IRS 미국 납세자 식별 번호(TIN)를 입력해 주십시오.",
+                "placeholder": "TIN 번호 입력",
+                "validation": "TIN 번호를 입력하세요"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "귀하는 위에 설명된 정치적 주요 인물입니까? 또는 고위 공직자, 정치인, 정부 관리, 군인 또는 국제기구 관계자인 직계 가족이나 가까운 지인이 있습니까?",
+                "info": "정치적 노출 인물 (출처: FATF 지침) 1. 외국 정치적 노출 인물은 외국에서 현재 또는 과거에 정치적, 사회적 영향력을 가졌던 인물을 의미합니다. 2. 국내 정치적 노출 인물은 국내에서 영향력을 가졌던 인물을 의미합니다. 3. 국제기구의 정치적 노출 인물은 국제기구의 이사, 임원 또는 동등한 권한을 가진 인물을 의미합니다. 4. 가족 관계의 정치적 노출 인물은 부모, 형제자매, 배우자, 자녀 등을 의미합니다. 5. 가까운 관계의 인물은 정치적 주요 인물과 긴밀한 사회적 또는 비즈니스 관계를 맺고 있는 사람을 의미합니다.",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "귀하가 정치적 주요 인물인지 여부 또는 그러한 인물과의 관계를 자세히 설명해 주십시오.",
+                "placeholder": "설명 입력",
+                "validation": "설명을 입력하세요"
+            },
+            "anyOneInvestigatedByLawEnforcement": {
+                "question": "귀하의 회사 구성원 중 수사 기관(경찰, 검찰)이나 세무 당국의 조사를 받은 적이 있는 사람이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "employeeIllicitActivity": {
+                "question": "회사 직원 중 범죄 활동, 자금 세탁, 뇌물 수수 또는 테러 활동에 연루된 사람이 있습니까? 또는 사업 및 개인 자금과 관련된 기타 불법 활동에 연루된 사람이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "isAnyBankRupted": {
+                "question": "귀하의 회사 구성원 중 개인적으로 파산이나 청산에 연루된 적이 있는 사람이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "isAnyInvolvedBankRuptedOfficer": {
+                "question": "귀하의 회사 구성원 중 회사의 임원으로서 파산이나 청산에 연루된 적이 있는 사람이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "criminalDescriptionIfYes": {
+                "question": "위의 선언 섹션 중 하나라도 '예'를 선택한 경우, 구체적인 내용을 제공해 주십시오.",
+                "placeholder": "상세 내용 입력"
+            },
+            "declarationAgreement": {
+                "question": "본인이 아는 바에 의하면, 본 재단의 자산, 순자산, 소득 또는 활동은 불법 무기, 자금 세탁, 불법 마약 또는 기타 불법 통제 물질과 어떠한 방식으로도 관련이 없으며, 본인의 시민권 국가, 거주지 및/또는 설립 국가에서 불법으로 간주되는 활동과도 관련이 없습니다. 본인은 채권자를 방해, 지연 또는 기망하거나 채권자 또는 기타 당사자에 대해 불법적인 행위를 할 의도가 없으며, 이러한 활동을 촉진하기 위해 기업 서비스 제공업체의 서비스를 이용할 의도가 없습니다. 본인은 본 서비스와 관련하여 필요한 서류 및 정보를 제공하는 데 동의하며, 해당 정보가 서비스 제공에 필요한 기관, 당국 및 회사에 제공될 수 있음에 동의합니다. 본인은 이 선언서에 포함된 사실이나 진술이 나중에 허위이거나 중대하게 부정확한 것으로 판명됨으로써 발생하는 모든 종류의 책임으로부터 기업 서비스 제공업체와 그 관계자를 완전히 면책합니다. 위의 내용을 읽고 이에 동의하십니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            }
+        }
+    },
+    "saCorporate": {
+        "title": "싱가포르 회사 구성원 양식",
+        "summary": {
+            "title": "귀하의 정보",
+            "success": "양식이 성공적으로 완료되었습니다!",
+            "edit": "답변 수정",
+            "submit": "양식 제출",
+            "clear": "모든 데이터 지우기",
+            "notAnswered": "응답하지 않음",
+            "optional": "(선택 사항)"
+        },
+        "navigation": {
+            "prev": "이전",
+            "continue": "계속",
+            "editHint": "수정하려면 위의 답변을 클릭하세요",
+            "editingLabel": "답변 수정 중",
+            "pagination": "질문 {{current}} / {{total}}",
+            "skip": "건너뛰기"
+        },
+        "upload": {
+            "click": "클릭하여 업로드",
+            "dragDrop": "또는 드래그 앤 드롭",
+            "types": "PNG, JPG 또는 PDF",
+            "openPdf": "PDF 열기",
+            "view": "보기",
+            "download": "다운로드",
+            "meta": "크기: {{size}} KB • 유형: {{type}}",
+            "pdfPreviewNote": "PDF 파일 - 보려면 \"PDF 열기\"를 클릭하세요"
+        },
+        "messages": {
+            "saved": "데이터 저장됨",
+            "savedDesc": "양식 데이터가 성공적으로 저장되었습니다",
+            "saveFailed": "저장 실패",
+            "saveFailedDesc": "양식 데이터 저장에 실패했습니다",
+            "completed": "양식 완료!",
+            "completedDesc": "모든 정보를 제공해 주셔서 감사합니다.",
+            "required": "필수 필드",
+            "requiredDesc": "이 필드는 필수입니다",
+            "validationError": "유효성 검사 오류",
+            "specify": "상세 내용을 입력해 주세요...",
+            "other": "기타"
+        },
+        "questions": {
+            "email": {
+                "question": "이메일 주소는 무엇입니까?",
+                "placeholder": "이메일 주소를 입력하세요",
+                "validation": "유효한 이메일 주소를 입력하세요"
+            },
+            "companyName": {
+                "question": "설립 신청 중인 회사 이름",
+                "placeholder": "회사 이름을 입력하세요",
+                "validation": "회사 이름을 입력해 주세요"
+            },
+            "name": {
+                "question": "전체 성함은 무엇입니까?",
+                "placeholder": "성함을 입력하세요",
+                "validation": "유효한 성함을 입력하세요"
+            },
+            "nameChanged": {
+                "question": "이름을 변경한 적이 있습니까?",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "previousName": {
+                "question": "변경 전 이름은 무엇입니까?",
+                "placeholder": "이전 이름을 입력하세요",
+                "validation": "유효한 이름을 입력하세요"
+            },
+            "birthdate": {
+                "question": "생년월일은 언제입니까?",
+                "validation": "유효한 날짜를 입력하세요"
+            },
+            "nationality": {
+                "question": "국적은 어디입니까?",
+                "placeholder": "국적을 입력하세요",
+                "validation": "국적을 입력해 주세요"
+            },
+            "passport": {
+                "question": "여권 번호는 무엇입니까?",
+                "placeholder": "여권 번호를 입력하세요",
+                "validation": "유효한 여권 번호를 입력하세요"
+            },
+            "residenceAddress": {
+                "question": "거주지 주소는 어디입니까?",
+                "placeholder": "상세 거주지 주소를 입력하세요",
+                "validation": "정확한 주소를 입력해 주세요"
+            },
+            "postalAddressSame": {
+                "question": "우편물 수령 주소가 거주지 주소와 동일합니까?",
+                "options": {
+                    "yes": "예, 동일합니다",
+                    "no": "아니요, 다릅니다"
+                }
+            },
+            "postalAddress": {
+                "question": "우편물 수령 주소는 어디입니까?",
+                "placeholder": "우편 주소를 입력하세요",
+                "validation": "정확한 우편 주소를 입력해 주세요"
+            },
+            "phone": {
+                "question": "연락 가능한 휴대전화 번호는 무엇입니까?",
+                "placeholder": "휴대전화 번호를 입력하세요",
+                "validation": "유효한 전화번호를 입력하세요"
+            },
+            "kakaoId": {
+                "question": "카카오톡 ID (있는 경우)",
+                "placeholder": "있는 경우 ID를 입력하세요"
+            },
+            "otherSNSIds": {
+                "question": "텔레그램, 위챗 등 기타 SNS ID (있는 경우)",
+                "placeholder": "있는 경우 ID를 입력하세요"
+            },
+            "companyRelation": {
+                "question": "설립 예정인 싱가포르 회사와의 관계",
+                "info": "회사의 업무 연락 및 관리를 담당할 '지정된 연락 담당자'를 지정해야 합니다. 지정된 연락 담당자는 당사와의 주요 업무 연락을 담당하게 되며, 회사 및 업무 관련 문의에 대한 연락, 진행 상황 확인, 등록된 서류 관련 연락 등의 업무를 담당합니다. 지정된 연락 담당자는 귀사의 정보 및 서류에 액세스할 수 있으며 우편물도 수령할 수 있습니다. 1명의 지정된 연락 담당자 지정은 무료이며, 2명 이상의 경우 1인당 연간 USD 250의 비용이 발생합니다. 지정된 연락 담당자는 귀사에서 지정하며 귀사의 정보 보호 및 업무 혼선 방지를 위해 당사에 별도로 등록됩니다. (지정된 연락 담당자는 주주/임원과 동일하게 여권 사본, 주소 증명 서류를 제출하고 본인 확인 절차를 거쳐야 합니다.) **참고: 지정된 연락 담당자가 변경되는 경우 즉시 당사에 연락하여 업데이트해야 하며, 이 양식을 개별적으로 작성하고 필요한 서류를 제출해야 합니다.",
+                "options": {
+                    "shareholder": "주주",
+                    "officer": "임원 (Director)",
+                    "keyController": "주요 관리자 (지분을 직접 또는 간접적으로 25% 이상 소유하는 경우 해당)",
+                    "designatedContactPerson": "지정된 연락 담당자 *임원을 겸임할 수 있음",
+                    "officialPartner": "Mirr Asia에 등록된 공식 파트너",
+                    "other": "기타"
+                },
+                "validation": "최소 하나 이상의 관계 유형을 선택해 주세요"
+            },
+            "percentSharesHeld": {
+                "question": "설립 예정인 싱가포르 법인의 지분율 (%)",
+                "placeholder": "백분율 입력",
+                "validation": "백분율을 입력해 주세요"
+            },
+            "fundSource": {
+                "question": "싱가포르 회사에 출자할 자금의 출처",
+                "info": "자금 출처에 대한 증빙이 필요할 수 있으므로 해당되는 항목에 체크해 주시기 바랍니다.",
+                "options": {
+                    "earnedIncome": "근로 소득",
+                    "despositSavings": "예적금",
+                    "realEstateIncome": "부동산, 주식 등 기타 투자 자산으로부터의 소득",
+                    "loan": "대출",
+                    "companyShareSale": "회사 또는 지분 매각 대금",
+                    "businessIncome": "사업 소득 / 배당금",
+                    "succession": "상속/증여",
+                    "parentCompanyInvested": "모회사의 투자",
+                    "other": "기타"
+                },
+                "validation": "최소 하나 이상의 출처를 선택해 주세요"
+            },
+            "countryOriginFund": {
+                "question": "위 항목의 자금 원천 국가 (해당되는 모든 국가 기재)",
+                "placeholder": "국가 이름 입력",
+                "validation": "국가 이름을 입력해 주세요"
+            },
+            "fundGenerated": {
+                "question": "향후 싱가포르 법인에서 발생하거나 유입될 것으로 예상되는 자금 원천",
+                "info": "향후 자금 출처를 증명하는 서류가 필요할 수 있으므로 해당되는 항목에 체크해 주시기 바랍니다.",
+                "options": {
+                    "businessIncome": "사업 소득 및 배당",
+                    "earnedIncome": "근로 소득",
+                    "intrestIncome": "이자 소득",
+                    "realEstateIncome": "부동산, 주식 등 기타 투자 자산으로부터의 소득",
+                    "saleOfCompanyShares": "회사 또는 지분 매각 대금",
+                    "inheritanceGift": "상속/증여",
+                    "borrowingTrustDeposit": "차입/신탁/예치 등",
+                    "other": "기타"
+                },
+                "validation": "최소 하나 이상의 원천을 선택해 주세요"
+            },
+            "originFundGenerateCountry": {
+                "question": "위 항목의 자금이 유입되는 국가 (해당되는 모든 국가 기재)",
+                "placeholder": "국가 이름 입력",
+                "validation": "국가 이름을 입력해 주세요"
+            },
+            "netAssetValue": {
+                "question": "현재 순자산 가치 (USD 기준)",
+                "info": "이 질문은 싱가포르 주주에게 해당되며 나중에 증빙 서류 제출을 요청할 수 있습니다.",
+                "placeholder": "금액 입력",
+                "validation": "금액을 입력해 주세요"
+            },
+            "usTaxStatus": {
+                "question": "귀하는 미국 시민권자 또는 영주권자입니까? 아니면 세법상 미국 거주자입니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요",
+                    "other": "기타"
+                }
+            },
+            "usTIN": {
+                "question": "미국 시민권자, 영주권자 또는 세법상 미국 거주자인 경우, 미국 납세자 식별 번호(TIN)를 기재해 주세요.",
+                "placeholder": "미국 TIN 입력",
+                "validation": "유효한 미국 TIN을 입력하세요"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "귀하 또는 귀하의 직계 가족이나 측근이 고위 관리, 정치인, 공무원, 군인 또는 국제 기구의 임원과 같이 주요한 정치적 노출 인물(PEP)입니까?",
+                "info": "FATF 지침: 정치적 노출 인물(PEP):\n1. 외국 PEP: 외국에서 현재 또는 과거에 주요 공적 기능을 수행한 사람. 예: 국가 원수, 정부 수반, 고위 정치인, 고위 정부, 사법 또는 군사 공무원, 국영 기업의 고위 임원, 중요 정당 관계자 등.\n2. 국내 PEP: 국내에서 현재 또는 과거에 주요 공적 기능을 수행한 사람.\n3. 국제 기구 PEP: 국제 기구에서 이사, 차장 및 이사회의 구성원 또는 그에 상응하는 기능을 수행하는 사람 등 주요 직책을 맡고 있는 사람.\n4. 가족 구성원 및 협력자: 상기 인물의 부모, 형제자매, 배우자, 자녀 및 이들과 밀접한 사회적 또는 전문적 관계에 있는 사람.",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "귀하가 정치적 노출 인물인지 또는 그러한 인물과의 관계에 대해 자세히 설명해 주세요.",
+                "placeholder": "상세 내용 입력",
+                "validation": "상세 내용을 입력해 주세요"
+            },
+            "passportId": {
+                "question": "여권 사본과 여권 사본 증명서(구청 또는 온라인 발급)를 업로드해 주세요.",
+                "info": "여권 사본 증명서는 가까운 구청이나 온라인에서 발급받으실 수 있습니다.",
+                "placeholder": "여권 사본 파일 선택",
+                "validation": "유효한 이미지 파일(JPG, PNG, PDF)을 업로드해 주세요"
+            },
+            "addressProof": {
+                "question": "주소 증명 서류(영문 초본)를 업로드해 주세요.",
+                "info": "주민센터, 무인민원발급기 또는 온라인에서 영문 주민등록초본을 발급받아 제출해 주세요.",
+                "placeholder": "주소 증명 파일 선택",
+                "validation": "유효한 이미지 파일(JPG, PNG, PDF)을 업로드해 주세요"
+            },
+            "engResume": {
+                "question": "영문 이력서(Resume/CV)를 업로드해 주세요.",
+                "placeholder": "이력서 파일 선택",
+                "validation": "유효한 이미지 파일(JPG, PNG, PDF)을 업로드해 주세요"
+            },
+            "isCrimeConvitted": {
+                "question": "법을 어겨 체포되거나 유죄 판결을 받은 적이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "lawEnforced": {
+                "question": "수사 기관(경찰, 검찰)이나 세무 당국의 조사를 받은 적이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "isMoneyLaundered": {
+                "question": "귀하의 사업 또는 개인 자금과 관련하여 범죄, 자금 세탁, 뇌물 수수 또는 테러 활동에 연루된 적이 있습니까? 또는 그러한 활동에서 파생된 자금과 관련된 기타 불법 활동에 연루된 적이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "isBankRupted": {
+                "question": "개인적으로 파산이나 청산에 연루된 적이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "isInvolvedBankRuptedOfficer": {
+                "question": "회사의 임원으로서 파산이나 청산에 연루된 적이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "describeIfInvolvedBankRupted": {
+                "question": "위 선언 섹션에서 '예'를 선택한 경우, 그 상세 내용을 기재해 주세요.",
+                "placeholder": "답변 입력",
+                "validation": "답변을 입력해 주세요"
+            },
+            "declarationAgreement": {
+                "question": "귀하는 본 서비스와 관련하여 당사의 업무를 위해 서류와 정보를 제공하는 데 동의하며, 회사의 설립 및 운영 목적이 적법하고 합법적인 사업을 위한 것임에 동의합니다. 설립 후 회사는 법에 위배되는 사항에 대해 도움이나 조언을 제공할 의무가 없으며, 법을 위반하려는 의도가 있다고 판단되는 경우 서비스를 중단할 권리가 있습니다. 귀하는 본 신청서에 작성된 모든 내용이 본인이 아는 한 진실하고 완전하며 정확함을 선언합니다. 동의하십니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요",
+                    "other": "기타"
+                }
+            }
+        }
+    },
+    "saShareholder": {
+        "title": "싱가포르 회사 구성원 양식",
+        "summary": {
+            "title": "귀하의 정보",
+            "success": "양식이 성공적으로 완료되었습니다!",
+            "edit": "답변 수정",
+            "submit": "양식 제출",
+            "clear": "모든 데이터 지우기",
+            "notAnswered": "응답하지 않음",
+            "optional": "(선택 사항)"
+        },
+        "navigation": {
+            "prev": "이전",
+            "continue": "계속",
+            "editHint": "수정하려면 위의 답변을 클릭하세요",
+            "editingLabel": "답변 수정 중",
+            "pagination": "질문 {{current}} / {{total}}",
+            "skip": "건너뛰기"
+        },
+        "upload": {
+            "click": "클릭하여 업로드",
+            "dragDrop": "또는 드래그 앤 드롭",
+            "types": "PNG, JPG 또는 PDF",
+            "openPdf": "PDF 열기",
+            "view": "보기",
+            "download": "다운로드",
+            "meta": "크기: {{size}} KB • 유형: {{type}}",
+            "pdfPreviewNote": "PDF 파일 - 보려면 \"PDF 열기\"를 클릭하세요"
+        },
+        "messages": {
+            "saved": "데이터 저장됨",
+            "savedDesc": "양식 데이터가 성공적으로 저장되었습니다",
+            "saveFailed": "저장 실패",
+            "saveFailedDesc": "양식 데이터 저장에 실패했습니다",
+            "completed": "양식 완료!",
+            "completedDesc": "모든 정보를 제공해 주셔서 감사합니다.",
+            "required": "필수 필드",
+            "requiredDesc": "이 필드는 필수입니다",
+            "validationError": "유효성 검사 오류",
+            "specify": "상세 내용을 입력해 주세요...",
+            "other": "기타"
+        },
+        "questions": {
+            "email": {
+                "question": "이메일 주소는 무엇입니까?",
+                "placeholder": "이메일 주소를 입력하세요",
+                "validation": "유효한 이메일 주소를 입력하세요"
+            },
+            "companyName": {
+                "question": "설립 신청 중인 회사 이름",
+                "placeholder": "이름 입력",
+                "validation": "회사 이름을 입력해 주세요"
+            },
+            "name": {
+                "question": "전체 성함은 무엇입니까?",
+                "placeholder": "성함을 입력하세요",
+                "validation": "유효한 성함을 입력하세요"
+            },
+            "nameChanged": {
+                "question": "이름을 변경한 적이 있습니까?",
+                "options": {
+                    "no": "아니요",
+                    "yes": "예"
+                }
+            },
+            "previousName": {
+                "question": "변경 전 이름은 무엇입니까?",
+                "placeholder": "이전 이름을 입력하세요",
+                "validation": "유효한 이름을 입력하세요"
+            },
+            "birthdate": {
+                "question": "생년월일은 언제입니까?",
+                "validation": "유효한 날짜를 입력하세요"
+            },
+            "nationality": {
+                "question": "국적은 어디입니까?",
+                "placeholder": "국적을 입력하세요",
+                "validation": "국적을 입력해 주세요"
+            },
+            "passport": {
+                "question": "여권 번호는 무엇입니까?",
+                "placeholder": "여권 번호를 입력하세요",
+                "validation": "유효한 여권 번호를 입력하세요"
+            },
+            "residenceAddress": {
+                "question": "거주지 주소는 어디입니까?",
+                "placeholder": "상세 거주지 주소를 입력하세요",
+                "validation": "정확한 주소를 입력해 주세요"
+            },
+            "postalAddressSame": {
+                "question": "우편물 수령 주소가 거주지 주소와 동일합니까?",
+                "options": {
+                    "yes": "예, 동일합니다",
+                    "no": "아니요, 다릅니다"
+                }
+            },
+            "postalAddress": {
+                "question": "우편물 수령 주소는 어디입니까?",
+                "placeholder": "우편 주소를 입력하세요",
+                "validation": "정확한 우편 주소를 입력해 주세요"
+            },
+            "phone": {
+                "question": "연락 가능한 휴대전화 번호는 무엇입니까?",
+                "placeholder": "휴대전화 번호를 입력하세요",
+                "validation": "유효한 전화번호를 입력하세요"
+            },
+            "kakaoId": {
+                "question": "카카오톡 ID (있는 경우)",
+                "placeholder": "있는 경우 ID를 입력하세요"
+            },
+            "otherSNSIds": {
+                "question": "텔레그램, 위챗 등 기타 SNS ID (있는 경우)",
+                "placeholder": "있는 경우 ID를 입력하세요"
+            },
+            "companyRelation": {
+                "question": "설립 예정인 싱가포르 회사와의 관계",
+                "info": "설립 예정인 싱가포르 회사와의 관계를 선택해야 합니다. 귀사 사업, 설립 및 갱신, 서류 등록, 필요한 정보 확인 및 당사 서비스의 다양한 사항에 대한 연락을 담당할 '지정된 연락 담당자'를 1명 지정해야 합니다. 지정된 연락 담당자 지정은 1명까지 무료이며, 2명 이상을 지정하고자 하는 경우 인원당 연간 USD 250의 비용이 발생합니다. 지정된 연락 담당자는 귀사에서 지정하며, 귀사의 정보 보호 및 업무 혼선 방지, 명의 도용 방지를 위해 당사에 별도로 등록되어야 합니다. (지정된 연락 담당자는 신분증 앞뒷면 스캔본을 제출해야 합니다.)",
+                "options": {
+                    "shareholder": "주주",
+                    "director": "이사 (Director)",
+                    "designatedContactPerson": "지정된 연락 담당자 *임원을 겸임할 수 있음",
+                    "officialPartner": "Mirr Asia에 등록된 공식 파트너",
+                    "other": "기타"
+                },
+                "validation": "최소 하나 이상의 관계 유형을 선택해 주세요"
+            },
+            "amountContributed": {
+                "question": "설립 예정인 싱가포르 법인에 출자할 금액 (통화 및 금액 기재)",
+                "placeholder": "금액 입력",
+                "validation": "금액을 입력해 주세요"
+            },
+            "fundSource": {
+                "question": "싱가포르 회사에 출자할 자금의 출처",
+                "info": "자금 출처에 대한 증빙이 필요할 수 있으므로 적절한 항목에 체크해 주시기 바랍니다.",
+                "options": {
+                    "employedIncome": "근로 소득",
+                    "despositSavings": "예적금",
+                    "realEstateIncome": "부동산, 주식 등 기타 투자 자산으로부터의 소득",
+                    "loan": "대출",
+                    "companyShareSale": "회사 또는 지분 매각 대금",
+                    "businessIncome": "사업 소득 / 배당금",
+                    "inheritance": "상속",
+                    "parentCompanyInvested": "모회사의 투자",
+                    "other": "기타"
+                },
+                "validation": "최소 하나 이상의 출처를 선택해 주세요"
+            },
+            "originFundInvestFromCountry": {
+                "question": "위 투자 자금이 위치한 국가/지역 (해당되는 모든 국가 기재)",
+                "placeholder": "국가 입력",
+                "validation": "국가를 입력해 주세요"
+            },
+            "fundGenerated": {
+                "question": "향후 싱가포르 법인에서 발생하거나 유입될 주요 자금 원천",
+                "info": "향후 자금 출처를 증명하는 서류가 필요할 수 있으므로 해당되는 항목에 체크해 주시기 바랍니다.",
+                "options": {
+                    "businessIncome": "사업 소득 및 배당",
+                    "intrestIncome": "이자 소득",
+                    "realEstateIncome": "부동산, 주식 등 기타 투자 자산으로부터의 소득",
+                    "companyShareSale": "회사 또는 지분 매각 대금",
+                    "inheritanceEndowment": "상속/증여",
+                    "borrowingTrustDeposit": "차입/신탁/예치 등"
+                },
+                "validation": "최소 하나 이상의 원천을 선택해 주세요"
+            },
+            "originFundGenerateCountry": {
+                "question": "위 자금이 어디에서 발생할 것으로 예상됩니까? (해당되는 모든 국가 기재)",
+                "placeholder": "국가 입력",
+                "validation": "국가를 입력해 주세요"
+            },
+            "usTaxStatus": {
+                "question": "귀하는 미국 시민권자 또는 영주권자입니까? 아니면 세법상 미국 거주자입니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요",
+                    "other": "기타"
+                }
+            },
+            "usTIN": {
+                "question": "미국 시민권자, 영주권자 또는 세법상 미국 거주자인 경우, 미국 납세자 식별 번호(TIN)를 기재해 주세요.",
+                "placeholder": "미국 TIN 입력",
+                "validation": "유효한 미국 TIN을 입력하세요"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "귀하 또는 귀하의 직계 가족이나 측근이 고위 관리, 정치인, 공무원, 군인 또는 국제 기구의 임원과 같이 주요한 정치적 노출 인물(PEP)입니까?",
+                "info": "FATF 지침: 정치적 노출 인물(PEP):\n1. 외국 PEP: 외국에서 현재 또는 과거에 주요 공적 기능을 수행한 사람. 예: 국가 원수, 정부 수반, 고위 정치인, 고위 정부, 사법 또는 군사 공무원, 국영 기업의 고위 임원, 중요 정당 관계자 등.\n2. 국내 PEP: 국내에서 현재 또는 과거에 주요 공적 기능을 수행한 사람.\n3. 국제 기구 PEP: 국제 기구에서 이사, 차장 및 이사회의 구성원 또는 그에 상응하는 기능을 수행하는 사람 등 주요 직책을 맡고 있는 사람.\n4. 가족 구성원 및 협력자: 상기 인물의 부모, 형제자매, 배우자, 자녀 및 이들과 밀접한 사회적 또는 전문적 관계에 있는 사람.",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "귀하가 정치적 노출 인물인지 또는 그러한 인물과의 관계에 대해 자세히 설명해 주세요.",
+                "placeholder": "상세 내용 입력",
+                "validation": "상세 내용을 입력해 주세요"
+            },
+            "isCrimeConvitted": {
+                "question": "법을 어겨 체포되거나 유죄 판결을 받은 적이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "lawEnforced": {
+                "question": "수사 기관(경찰, 검찰)이나 세무 당국의 조사를 받은 적이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "isMoneyLaundered": {
+                "question": "귀하의 사업 또는 개인 자금과 관련하여 범죄, 자금 세탁, 뇌물 수수 또는 테러 활동에 연루된 적이 있습니까? 또는 그러한 활동에서 파생된 자금과 관련된 기타 불법 활동에 연루된 적이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "isBankRupted": {
+                "question": "개인적으로 파산이나 청산에 연루된 적이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "isInvolvedBankRuptedOfficer": {
+                "question": "회사의 임원으로서 파산이나 청산에 연루된 적이 있습니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요"
+                }
+            },
+            "describeIfInvolvedBankRupted": {
+                "question": "위 선언 섹션에서 '예'를 선택한 경우, 그 상세 내용을 기재해 주세요.",
+                "placeholder": "답변 입력",
+                "validation": "답변을 입력해 주세요"
+            },
+            "declarationAgreement": {
+                "question": "귀하는 본 서비스와 관련하여 당사의 업무를 위해 서류와 정보를 제공하는 데 동의하며, 회사의 설립 및 운영 목적이 적법하고 합법적인 사업을 위한 것임에 동의합니다. 설립 후 회사는 법에 위배되는 사항에 대해 도움이나 조언을 제공할 의무가 없으며, 법을 위반하려는 의도가 있다고 판단되는 경우 서비스를 중단할 권리가 있습니다. 귀하는 본 신청서에 작성된 모든 내용이 본인이 아는 한 진실하고 완전하며 정확함을 선언합니다. 동의하십니까?",
+                "options": {
+                    "yes": "예",
+                    "no": "아니요",
+                    "other": "기타"
+                }
+            }
+        }
     }
 }

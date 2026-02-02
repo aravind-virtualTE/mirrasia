@@ -988,5 +988,1071 @@
             "pepDetail": "政治公眾人物 (PEP) 詳情",
             "contribution": "出資金額（美元）"
         }
+    },
+    "panamaShrInvite": {
+        "title": "巴拿馬成員及控制人註冊表",
+        "summary": {
+            "title": "您的資訊",
+            "success": "表格已成功完成！",
+            "edit": "編輯答案",
+            "submit": "提交表格",
+            "clear": "清除所有數據",
+            "notAnswered": "未回答",
+            "optional": "(選填)"
+        },
+        "navigation": {
+            "prev": "上一步",
+            "continue": "繼續",
+            "editHint": "點擊上方任何答案即可進行編輯",
+            "editingLabel": "正在編輯答案",
+            "pagination": "問題 {{current}} / 共 {{total}}",
+            "skip": "跳過"
+        },
+        "upload": {
+            "click": "點擊上傳",
+            "dragDrop": "或拖放文件至此",
+            "types": "PNG, JPG 或 PDF",
+            "openPdf": "開啟 PDF",
+            "view": "檢視",
+            "download": "下載",
+            "meta": "大小: {{size}} KB • 類型: {{type}}",
+            "pdfPreviewNote": "PDF 文件 - 點擊「開啟 PDF」檢視"
+        },
+        "messages": {
+            "saved": "數據已儲存",
+            "savedDesc": "您的表格數據已成功儲存",
+            "saveFailed": "儲存失敗",
+            "saveFailedDesc": "無法儲存您的表格數據",
+            "completed": "表格已完成！",
+            "completedDesc": "感謝您提供所有資訊。",
+            "required": "必填欄位",
+            "requiredDesc": "此欄位為必填",
+            "validationError": "驗證錯誤",
+            "specify": "請說明詳情...",
+            "other": "其他"
+        },
+        "questions": {
+            "name": {
+                "question": "您的全名是？",
+                "placeholder": "請輸入您的全名",
+                "validation": "請輸入有效的姓名"
+            },
+            "email": {
+                "question": "您的電子郵件地址是？",
+                "placeholder": "請輸入您的電子郵件地址",
+                "validation": "請輸入有效的電子郵件地址"
+            },
+            "nameChanged": {
+                "question": "您是否曾更改過姓名？",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "previousName": {
+                "question": "您之前的姓名是？",
+                "placeholder": "請輸入您之前的姓名",
+                "validation": "請輸入有效的姓名"
+            },
+            "birthdate": {
+                "question": "您的出生日期是？",
+                "validation": "請輸入有效的日期"
+            },
+            "maritalStatus": {
+                "question": "您的婚姻狀況是？",
+                "options": {
+                    "single": "未婚",
+                    "married": "已婚",
+                    "divorced": "離婚",
+                    "widowed": "喪偶",
+                    "separated": "分居"
+                }
+            },
+            "nationality": {
+                "question": "您的國籍是？",
+                "placeholder": "請輸入您的國籍",
+                "validation": "請輸入有效的國籍"
+            },
+            "passport": {
+                "question": "您的護照號碼是？",
+                "placeholder": "請輸入您的護照號碼",
+                "validation": "請輸入有效的護照號碼"
+            },
+            "job": {
+                "question": "您的職業是？",
+                "placeholder": "請輸入您的職稱/職業",
+                "validation": "請輸入有效的職業"
+            },
+            "residenceAddress": {
+                "question": "您的居住地址是？",
+                "placeholder": "請輸入完整的居住地址",
+                "validation": "請輸入完整的地址"
+            },
+            "postalAddressSame": {
+                "question": "您的通訊地址是否與居住地址相同？",
+                "options": {
+                    "yes": "是，相同",
+                    "no": "否，不同"
+                }
+            },
+            "postalAddress": {
+                "question": "您的通訊地址是？",
+                "placeholder": "請輸入通訊地址",
+                "validation": "請輸入完整的通訊地址"
+            },
+            "phone": {
+                "question": "您的聯絡電話（手機）是？",
+                "placeholder": "請輸入您的手機號碼",
+                "validation": "請輸入有效的電話號碼"
+            },
+            "companyName": {
+                "question": "申請設立的公司名稱",
+                "placeholder": "輸入名稱",
+                "validation": "請輸入公司名稱"
+            },
+            "corporationRelationship": {
+                "question": "您與該設立法人的關係（請選擇所有適用項）",
+                "info": "[指定聯絡人說明] 您必須指定一名指定聯絡人（DCP）負責公司的業務聯絡。指定聯絡人將負責與本公司的主要業務聯繫，職責包括就公司及業務相關諮詢進行聯絡、檢查進度及查看註冊文件。指定聯絡人可以查看貴公司的資訊和文件，也可以查看貴公司的郵件。指定一名聯絡人是免費的，兩名或以上則每人每年收取 250 美元的費用。委派的指定聯絡人將由貴公司指定並在本公司另行註冊，從而保護貴公司的資訊並減少業務混淆。（委派的指定聯絡人必須提供其身份證正反面掃描副本。）**注意：如果指定聯絡人發生變更，您必須立即聯繫我們更新資訊，單獨填寫此表，並提交所需文件。",
+                "options": {
+                    "shareholder": "股東",
+                    "ubo": {
+                        "label": "UBO (最終受益人)",
+                        "description": "指直接或間接持有 25% 或以上股份的受益所有人。"
+                    },
+                    "shareholderProxy": "股東代理人 (代表股東行事的受託人)",
+                    "dirPresident": "董事 (董事長/總裁)",
+                    "dirTreasurer": "董事 (財務總監)",
+                    "dirSecretary": "董事 (秘書)",
+                    "directorOnly": "僅限董事",
+                    "designatedContact": "指定聯絡人 (代表新公司與我們溝通的人員)"
+                },
+                "validation": "請至少選擇一種關係類型"
+            },
+            "investedAmount": {
+                "question": "將投入該法人的投資金額 (USD)",
+                "placeholder": "輸入金額",
+                "validation": "請輸入金額"
+            },
+            "sharesAcquired": {
+                "question": "擬取得的股份數量",
+                "placeholder": "輸入股數",
+                "validation": "請輸入股數"
+            },
+            "fundSource": {
+                "question": "將投入該法人的資金來源",
+                "info": "請勾選適當選項，未來可能需要提供證明資金來源的文件。",
+                "options": {
+                    "earnedIncome": "工資收入",
+                    "despositSavings": "存款、儲蓄",
+                    "realEstateIncome": "來自房地產、股票及其他投資資產的收入",
+                    "loan": "貸款",
+                    "companyShareSale": "出售公司或股份的所得",
+                    "businessIncome": "業務收入 / 股息",
+                    "succession": "繼承/接替",
+                    "parentCompanyInvested": "母公司投資",
+                    "other": "其他"
+                },
+                "validation": "請至少選擇一種關係類型"
+            },
+            "originFundInvestFromCountry": {
+                "question": "上述項目的資金來源國（請列出所有相關國家）",
+                "placeholder": "輸入國家",
+                "validation": "請輸入國家"
+            },
+            "fundGenerated": {
+                "question": "預計未來巴拿馬公司產生或收到的資金來源",
+                "options": {
+                    "businessIncome": "業務收入",
+                    "intrestIncome": "利息收入",
+                    "realEstateIncome": "來自房地產、股票及其他投資資產的收入",
+                    "companyShareSale": "出售公司或股份的所得",
+                    "inheritanceGift": "遺產/贈與",
+                    "borrowingTrustDeposit": "借貸/信託/存款等",
+                    "other": "其他"
+                },
+                "validation": "請至少選擇一種關係類型"
+            },
+            "originFundGenerateCountry": {
+                "question": "上述項目的資金來源國（請列出所有相關國家）",
+                "placeholder": "輸入國家",
+                "validation": "請輸入國家"
+            },
+            "taxCountry": {
+                "question": "納稅國家",
+                "info": "納稅國家是指您目前每年居住超過 183 天的國家，或您就個人收入（工資/租金收入等）繳稅的國家。",
+                "placeholder": "輸入納稅國家",
+                "validation": "請輸入納稅國家"
+            },
+            "taxNumber": {
+                "question": "納稅人識別號碼",
+                "info": "納稅人識別號碼 (TIN) 通常列在您的繳稅收據上。如果您居住在韓國並在韓國繳稅但不知道納稅人識別號碼，可以輸入您的居民註冊號碼。",
+                "placeholder": "輸入稅號",
+                "validation": "請輸入稅號"
+            },
+            "annualSaleIncomePrevYr": {
+                "question": "請選擇您去年的大約年銷售額和收入（以美元 USD 為單位）。",
+                "options": {
+                    "businessIncome": "25,000 美元以下",
+                    "intrestIncome": "25,000 - 50,000 美元",
+                    "realEstateIncome": "50,001 - 100,000 美元",
+                    "companyShareSale": "100,001 - 500,000 美元",
+                    "inheritanceGift": "500,001 - 1,000,000 美元",
+                    "borrowingTrustDeposit": "100 萬美元以上"
+                },
+                "validation": "請至少選擇一個選項"
+            },
+            "currentNetWorth": {
+                "question": "請選擇您目前的大約淨資產（以美元 USD 為單位）",
+                "options": {
+                    "businessIncome": "25,000 美元以下",
+                    "intrestIncome": "25,000 - 50,000 美元",
+                    "realEstateIncome": "50,001 - 100,000 美元",
+                    "companyShareSale": "100,001 - 500,000 美元",
+                    "inheritanceGift": "500,001 - 1,000,000 美元",
+                    "borrowingTrustDeposit": "100 萬美元以上"
+                },
+                "validation": "請至少選擇一個選項"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "您是否為上述描述的政治重要人物？或者您的直系親屬或親密熟人中是否有人擔任高級公職、是政治家、政府官員、軍隊或國際組織官員，或者是政治重要人物？",
+                "info": "政治公眾人物 (PEP) (來源: FATF 指引) 1. 外國政治公眾人物是指目前或曾在國外具有政治或社會影響力的人。例如外國政府的高級官員、政黨高層或國營企業管理層。 2. 本國政治公眾人物是指目前或曾在國內具有政治或社會影響力的人。 3. 國際組織政治公眾人物是指在國際組織中具有影響力的人，例如董事、高層管理人員。 4. 具家庭關係的政治公眾人物是指父母、兄弟姊妹、配偶、子女或親屬。 5. 親密關係人士是指與政治重要人物有密切社會或商務關係的人。",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "請詳細描述您是否為政治重要人物，或您與此類人物的關係。",
+                "placeholder": "輸入描述",
+                "validation": "請輸入描述"
+            },
+            "passportId": {
+                "question": "請上傳您的護照副本及護照副本證明書（由區公所/相關部門簽發）。",
+                "info": "您可以向當地的相關部門申請護照副本證明書。文件名稱為「Certificate of Passport Copy」。",
+                "placeholder": "選擇護照圖像文件",
+                "validation": "請上傳有效的圖像文件 (JPG, PNG, PDF)"
+            },
+            "bankStatement3Mnth": {
+                "question": "請上傳您最近 3 個月的銀行對帳單或顯示您姓名和地址的銀行資信證明 (Bank Reference Letter) 副本。（如果文件非英文，則必須進行翻譯及公證，並將收取額外的翻譯和公證費用。）",
+                "info": "這是設立公司的必要文件。如果沒有此文件，將無法進行巴拿馬公司的設立。",
+                "placeholder": "選擇銀行對帳單文件",
+                "validation": "請上傳有效的圖像文件 (JPG, PNG, PDF)"
+            },
+            "addressProof": {
+                "question": "請上傳您的地址證明文件副本（英文副本）",
+                "info": "請從附近的社區中心、自助服務機或網上獲取並提交。",
+                "placeholder": "選擇地址證明文件",
+                "validation": "請上傳有效的圖像文件 (JPG, PNG, PDF)"
+            },
+            "profRefLetter": {
+                "question": "請上傳一份專業推薦信（可由律師、會計師、法律助理、稅務師、銀行家、資產經理、商業夥伴、雇主等提供），且您與該人已有至少 2 年的業務往來。",
+                "info": "這是設立公司的必要文件。如果沒有此文件，將無法進行巴拿馬公司的設立。*必須在簽發之日起 3 個月內簽發。",
+                "placeholder": "選擇專業推薦信文件",
+                "validation": "請上傳有效的圖像文件 (JPG, PNG, PDF)"
+            },
+            "engResume": {
+                "question": "請上傳您的英文履歷。",
+                "placeholder": "選擇履歷文件",
+                "validation": "請上傳有效的圖像文件 (JPG, PNG, PDF)"
+            },
+            "isCrimeConvitted": {
+                "question": "您是否曾因違反法律而被捕或被判有罪？",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "lawEnforced": {
+                "question": "您是否曾接受過執法機構（警察、檢察機關）或稅務機關的調查？",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "isMoneyLaundered": {
+                "question": "關於您的業務或個人資金，您是否涉及任何犯罪、洗錢、賄賂或恐怖活動，或者您是否涉及任何與此類活動所得資金有關的其他非法活動？",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "isBankRupted": {
+                "question": "您個人是否曾涉及破產或清算？",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "isInvolvedBankRuptedOfficer": {
+                "question": "您是否曾以公司負責人身份涉及破產或清算？",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "isPartnerOfOtherComp": {
+                "question": "您是否是另一家公司的董事 / 股東 / 受益人 (UBO) / 關聯人 / 合夥人，或另一組織或協會的成員？",
+                "info": "如果適用，請在以下部分列出您的公司名稱、所在地國家和職稱。",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "otherPartnerOtherComp": {
+                "question": "如果您在上一部分選擇了「是」，請提供具體詳情。",
+                "placeholder": "輸入詳情",
+                "validation": "請輸入詳情"
+            },
+            "declarationAgreement": {
+                "question": "據我所知，本基金會的資產、淨資產、收入或活動與非法武器、洗錢、非法麻醉品或其他非法受控物質，或在我具有公民身份、居住地及/或設立登記國被視為非法的任何活動均無任何關聯。我無意阻礙、拖延或欺詐我的債權人，或對債權人或任何其他方採取任何非法行動，且我無意利用公司服務提供商的服務來促進或參與任何此類活動。我同意提供與本服務相關的必要文件和資訊，並且這些資訊可能會提供給提供服務所需的機構、當局和公司。我完全免除公司服務提供商及其任何關聯人因依賴本聲明中包含的任何事實或陳述而產生的任何形式的責任，即使後來發現該等內容不真實或存在重大不準確。您是否已閱讀並同意上述內容？",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            }
+        }
+    },
+    "panamaCorporateShr": {
+        "title": "巴拿馬成員及控制人註冊表",
+        "summary": {
+            "title": "您的資訊",
+            "success": "表格已成功完成！",
+            "edit": "編輯答案",
+            "submit": "提交表格",
+            "clear": "清除所有數據",
+            "notAnswered": "未回答",
+            "optional": "(選填)"
+        },
+        "navigation": {
+            "prev": "上一步",
+            "continue": "繼續",
+            "editHint": "點擊上方任何答案即可進行編輯",
+            "editingLabel": "正在編輯答案",
+            "pagination": "問題 {{current}} / 共 {{total}}",
+            "skip": "跳過"
+        },
+        "upload": {
+            "click": "點擊上傳",
+            "dragDrop": "或拖放文件至此",
+            "types": "PNG, JPG 或 PDF",
+            "openPdf": "開啟 PDF",
+            "view": "檢視",
+            "download": "下載",
+            "meta": "大小: {{size}} KB • 類型: {{type}}",
+            "pdfPreviewNote": "PDF 文件 - 點擊「開啟 PDF」檢視"
+        },
+        "messages": {
+            "saved": "數據已儲存",
+            "savedDesc": "您的表格數據已成功儲存",
+            "saveFailed": "儲存失敗",
+            "saveFailedDesc": "無法儲存您的表格數據",
+            "completed": "表格已完成！",
+            "completedDesc": "感謝您提供所有資訊。",
+            "required": "必填欄位",
+            "requiredDesc": "此欄位為必填",
+            "validationError": "驗證錯誤",
+            "specify": "請說明詳情...",
+            "other": "其他"
+        },
+        "questions": {
+            "name": {
+                "question": "代表人姓名",
+                "placeholder": "請輸入您的全名",
+                "validation": "請輸入有效的姓名"
+            },
+            "email": {
+                "question": "您的電子郵件地址是？",
+                "placeholder": "請輸入您的電子郵件地址",
+                "validation": "請輸入有效的電子郵件地址"
+            },
+            "companyName": {
+                "question": "申請設立的公司名稱",
+                "placeholder": "輸入名稱",
+                "validation": "請輸入公司名稱"
+            },
+            "dateOfEstablishment": {
+                "question": "設立日期",
+                "validation": "請輸入有效的日期"
+            },
+            "establishmentCountry": {
+                "question": "設立國家",
+                "placeholder": "輸入國家",
+                "validation": "請輸入有效的國家"
+            },
+            "brnNumber": {
+                "question": "法人註冊編號或商業登記證號碼",
+                "validation": "請輸入數值"
+            },
+            "listedOnStockExchange": {
+                "question": "是否於證券交易所上市",
+                "options": {
+                    "yes": "是",
+                    "no": "否",
+                    "other": "其他"
+                }
+            },
+            "namesOfShareholders": {
+                "question": "股東/董事的英文姓名及持股比例",
+                "info": "請同時包含您的郵遞區號以及在居住國的居住時間。",
+                "placeholder": "請輸入詳情"
+            },
+            "businessAddress": {
+                "question": "營業地址",
+                "placeholder": "請輸入地址",
+                "validation": "請輸入有效的地址"
+            },
+            "phoneNumber": {
+                "question": "聯絡代表人手機號碼",
+                "placeholder": "請輸入您的手機號碼",
+                "validation": "請輸入有效的代表手機號碼"
+            },
+            "kakaoTalkId": {
+                "question": "代表人 KakaoTalk ID（如有）",
+                "placeholder": "輸入詳情",
+                "validation": "如有請輸入"
+            },
+            "otherSnsId": {
+                "question": "代表人 Telegram、WeChat 或其他 SNS ID（如有）",
+                "placeholder": "輸入詳情",
+                "validation": "如有請輸入"
+            },
+            "corporationRelationship": {
+                "question": "與該設立的巴拿馬法人關係",
+                "options": {
+                    "shareholder": "股東",
+                    "trustee": "受託人",
+                    "director": "董事",
+                    "designatedContact": "指定聯絡人（代表新公司與我們溝通的人員）",
+                    "other": "其他"
+                },
+                "validation": "請至少選擇一種關係類型"
+            },
+            "investedAmount": {
+                "question": "擬投入巴拿馬法人的股權金額 (USD)",
+                "placeholder": "輸入金額",
+                "validation": "請輸入金額"
+            },
+            "sourceInvestmentFunds": {
+                "question": "投資資金來源",
+                "info": "請勾選適當選項，未來可能需要提供證明資金來源的文件。",
+                "options": {
+                    "shareholderCapitalLoans": "股東資本或貸款",
+                    "businessIncome": "業務收入/股息",
+                    "despositSavings": "存款、儲蓄",
+                    "realEstateIncome": "來自房地產、股票及其他投資資產的收入",
+                    "loan": "貸款",
+                    "companyShareSale": "出售公司或股份的所得",
+                    "shareholderDirectorFund": "股東/董事或特定人士的繼承資金",
+                    "other": "其他"
+                },
+                "validation": "請至少選擇一種關係類型"
+            },
+            "countryReceivingFunds": {
+                "question": "接收上述項目資金的國家（請列出所有國家）",
+                "placeholder": "輸入國家",
+                "validation": "請輸入國家"
+            },
+            "fundGenerated": {
+                "question": "預計未來巴拿馬公司產生或收到的資金來源",
+                "options": {
+                    "businessIncome": "業務收入",
+                    "intrestIncome": "利息收入",
+                    "realEstateIncome": "來自房地產、股票及其他投資資產的收入",
+                    "companyShareSale": "出售公司或股份的所得",
+                    "inheritanceGift": "遺產/贈與",
+                    "borrowingTrustDeposit": "借貸/信託/存款等",
+                    "other": "其他"
+                },
+                "validation": "請至少選擇一種關係類型"
+            },
+            "countriesReceivingFunds": {
+                "question": "接收上述項目資金的國家（請列出所有國家）",
+                "placeholder": "輸入國家",
+                "validation": "請輸入國家"
+            },
+            "usCorporateUnderTaxLaw": {
+                "question": "貴公司在法律上是否受美國司法管轄，或是美國稅務上的永久設立登記？",
+                "options": {
+                    "yes": "是",
+                    "no": "否",
+                    "other": "其他"
+                }
+            },
+            "tinNumber": {
+                "question": "如果您在法律上受美國司法管轄，或有美國稅務永久設立登記，請提供您的美國國稅局 (IRS) 稅務識別號碼 (TIN)。",
+                "placeholder": "輸入 TIN 號碼",
+                "validation": "請輸入 TIN 號碼"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "您是否為上述描述的政治重要人物？或者您的直系親屬或親密熟人中是否有人擔任高級公職、是政治家、政府官員、軍隊或國際組織官員，或者是政治重要人物？",
+                "info": "政治公眾人物 (PEP) (來源: FATF 指引) 1. 外國政治公眾人物是指目前或曾在國外具有政治或社會影響力的人。 2. 本國政治公眾人物是指目前或曾在國內具有政治或社會影響力的人。 3. 國際組織政治公眾人物是指在國際組織中具有影響力的人，例如董事、高層管理人員。 4. 具家庭關係的政治公眾人物是指父母、兄弟姊妹、配偶、子女或親屬。 5. 親密關係人士是指與政治重要人物有密切社會或商務關係的人。",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "請詳細描述您是否為政治重要人物，或您與此類人物的關係。",
+                "placeholder": "輸入描述",
+                "validation": "請輸入描述"
+            },
+            "anyOneInvestigatedByLawEnforcement": {
+                "question": "貴公司是否有任何人員曾接受過執法機構（警察、檢察機關）或稅務機關的調查？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "employeeIllicitActivity": {
+                "question": "貴公司是否有任何員工涉及犯罪活動、洗錢、賄賂或恐怖活動，或者涉及與業務或個人資金有關的其他非法活動？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "isAnyBankRupted": {
+                "question": "貴公司是否有任何人員曾個人涉及破產或清算？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "isAnyInvolvedBankRuptedOfficer": {
+                "question": "貴公司是否有任何人員曾以公司主管身份涉及破產或清算？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "criminalDescriptionIfYes": {
+                "question": "如果您在上述任何聲明部分選擇了「是」，請提供具體詳情。",
+                "placeholder": "輸入詳情"
+            },
+            "declarationAgreement": {
+                "question": "據我所知，本基金會的資產、淨資產、收入或活動與非法武器、洗錢、非法麻醉品或其他非法受控物質，或在我具有公民身份、居住地及/或設立登記國被視為非法的任何活動均無任何關聯。我無意阻礙、拖延或欺詐我的債權人，或對債權人或任何其他方採取任何非法行動，且我無意利用公司服務提供商的服務來促進或參與任何此類活動。我同意提供與本服務相關的必要文件和資訊，並且這些資訊可能會提供給提供服務所需的機構、當局和公司。我完全免除公司服務提供商及其任何關聯人因依賴本聲明中包含的任何事實或陳述而產生的任何形式的責任，即使後來發現該等內容不真實或存在重大不準確。您是否已閱讀並同意上述內容？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            }
+        }
+    },
+    "saCorporate": {
+        "title": "新加坡公司成員表單",
+        "summary": {
+            "title": "您的資訊",
+            "success": "表單已成功完成！",
+            "edit": "編輯回答",
+            "submit": "提交表單",
+            "clear": "清除所有數據",
+            "notAnswered": "未回答",
+            "optional": "(可選)"
+        },
+        "navigation": {
+            "prev": "上一步",
+            "continue": "繼續",
+            "editHint": "點擊上方任何回答即可編輯",
+            "editingLabel": "正在編輯回答",
+            "pagination": "第 {{current}} 題，共 {{total}} 題",
+            "skip": "跳過"
+        },
+        "upload": {
+            "click": "點擊上傳",
+            "dragDrop": "或拖放文件",
+            "types": "PNG, JPG 或 PDF",
+            "openPdf": "打開 PDF",
+            "view": "查看",
+            "download": "下載",
+            "meta": "大小: {{size}} KB • 類型: {{type}}",
+            "pdfPreviewNote": "PDF 文件 - 點擊「打開 PDF」查看"
+        },
+        "messages": {
+            "saved": "數據已保存",
+            "savedDesc": "您的表單數據已成功保存",
+            "saveFailed": "保存失敗",
+            "saveFailedDesc": "無法保存您的表單數據",
+            "completed": "表單已完成！",
+            "completedDesc": "感謝您提供所有資訊。",
+            "required": "必填欄位",
+            "requiredDesc": "此欄位為必填",
+            "validationError": "驗證錯誤",
+            "specify": "請說明...",
+            "other": "其他"
+        },
+        "questions": {
+            "email": {
+                "question": "您的電子郵件地址是什麼？",
+                "placeholder": "輸入您的電子郵件地址",
+                "validation": "請輸入有效的電子郵件地址"
+            },
+            "companyName": {
+                "question": "申請設立的公司名稱",
+                "placeholder": "輸入名稱",
+                "validation": "請輸入公司名稱"
+            },
+            "name": {
+                "question": "您的全名是什麼？",
+                "placeholder": "輸入您的全名",
+                "validation": "請輸入有效的姓名"
+            },
+            "nameChanged": {
+                "question": "您是否曾更改過姓名？",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "previousName": {
+                "question": "您的原名是什麼？",
+                "placeholder": "輸入您的原名",
+                "validation": "請輸入有效的姓名"
+            },
+            "birthdate": {
+                "question": "您的出生日期是什麼？",
+                "validation": "請輸入有效的日期"
+            },
+            "nationality": {
+                "question": "您的國籍是什麼？",
+                "placeholder": "輸入您的國籍",
+                "validation": "請輸入有效的國籍"
+            },
+            "passport": {
+                "question": "您的護照號碼是什麼？",
+                "placeholder": "輸入您的護照號碼",
+                "validation": "請輸入有效的護照號碼"
+            },
+            "residenceAddress": {
+                "question": "您的居住地址是什麼？",
+                "placeholder": "輸入您的完整居住地址",
+                "validation": "請輸入完整的地址"
+            },
+            "postalAddressSame": {
+                "question": "您的郵寄地址是否與居住地址相同？",
+                "options": {
+                    "yes": "是，相同",
+                    "no": "否，不同"
+                }
+            },
+            "postalAddress": {
+                "question": "您的郵寄地址是什麼？",
+                "placeholder": "輸入您的郵寄地址",
+                "validation": "請輸入完整的郵寄地址"
+            },
+            "phone": {
+                "question": "您的聯絡手機號碼是什麼？",
+                "placeholder": "輸入您的手機號碼",
+                "validation": "請輸入有效的電話號碼"
+            },
+            "kakaoId": {
+                "question": "KakaoTalk ID (如有)",
+                "placeholder": "如有，請輸入 ID"
+            },
+            "otherSNSIds": {
+                "question": "Telegram, WeChat 等其他 SNS ID (如有)",
+                "placeholder": "如有，請輸入 ID"
+            },
+            "companyRelation": {
+                "question": "與待設立新加坡公司的關係",
+                "info": "您必須指定一名指定聯絡人負責公司的業務聯絡。指定聯絡人將負責與本公司的主要業務聯絡，其職責包括聯絡您有關公司和業務相關的查詢、檢查進度以及聯絡您有關註冊文件等。指定聯絡人可以訪問貴公司的資訊和文件，也可以訪問您的郵件。指定一名聯絡人是免費的，對於兩名或以上，每人每年將收取 250 美元的費用。指定聯絡人由貴公司指定並另行在本公司註冊，以保護貴公司的資訊並減少業務混亂。（指定聯絡人必須提交護照複印件、地址證明，並以與股東/管理人員相同的方式進行身份驗證過程。）**注意：如果指定聯絡人發生變更，您必須立即聯絡我們進行更新，並單獨填寫此表單並提交所需文件。",
+                "options": {
+                    "shareholder": "股東",
+                    "officer": "管理人員",
+                    "keyController": "主要控制者 (如果您直接或間接持有超過 25% 的股份則適用)",
+                    "designatedContactPerson": "指定聯絡人 *可兼任執行人員",
+                    "officialPartner": "Mirr Asia 註冊的正式合作夥伴",
+                    "other": "其他"
+                },
+                "validation": "請選擇至少一種關係類型"
+            },
+            "percentSharesHeld": {
+                "question": "在待設立新加坡法人的持股比例 (%)",
+                "placeholder": "輸入百分比",
+                "validation": "請輸入百分比"
+            },
+            "fundSource": {
+                "question": "向新加坡公司出資的資金來源",
+                "info": "您可能需要資金來源證明，因此請相應勾選。",
+                "options": {
+                    "earnedIncome": "薪資收入",
+                    "despositSavings": "存款、儲蓄",
+                    "realEstateIncome": "來自房地產、股票和其他投資資產的收入",
+                    "loan": "貸款",
+                    "companyShareSale": "出售公司或股權的付款",
+                    "businessIncome": "業務收入 / 股息",
+                    "succession": "繼承/贈與",
+                    "parentCompanyInvested": "母公司投資",
+                    "other": "其他"
+                },
+                "validation": "請選擇至少一種來源類型"
+            },
+            "countryOriginFund": {
+                "question": "上述項目的資金來源國 (列出所有相關國家)",
+                "placeholder": "輸入國家",
+                "validation": "請輸入國家"
+            },
+            "fundGenerated": {
+                "question": "預計未來新加坡法人產生或發生的資金來源",
+                "info": "由於將來可能需要證明資金來源的文件，請勾選適當的方框。",
+                "options": {
+                    "businessIncome": "業務收入和分配",
+                    "earnedIncome": "薪資收入",
+                    "intrestIncome": "利息收入",
+                    "realEstateIncome": "來自房地產、股票和其他投資資產的收入",
+                    "saleOfCompanyShares": "出售公司或股份所得",
+                    "inheritanceGift": "繼承/贈與",
+                    "borrowingTrustDeposit": "借入/信託/存款等",
+                    "other": "其他"
+                },
+                "validation": "請選擇至少一種來源類型"
+            },
+            "originFundGenerateCountry": {
+                "question": "上述項目的資金來源國 (列出所有相關國家)",
+                "placeholder": "輸入國家",
+                "validation": "請輸入國家"
+            },
+            "netAssetValue": {
+                "question": "目前的淨資產價值，以美元計",
+                "info": "此問題適用於新加坡股東，我們稍後可能會要求您提供證明文件。",
+                "placeholder": "輸入數值",
+                "validation": "請輸入數值"
+            },
+            "usTaxStatus": {
+                "question": "您是美國公民、美國永久居民，還是稅法規定的美國居民？",
+                "options": {
+                    "yes": "是",
+                    "no": "否",
+                    "other": "其他"
+                }
+            },
+            "usTIN": {
+                "question": "如果您是美國公民、永久居民或根據稅務法生活在美國，請註明 IRS 美國稅務識別號碼 (TIN)。",
+                "placeholder": "輸入您的美國 TIN",
+                "validation": "請輸入有效的美國 TIN"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "您是否是上述說明中的政治敏感人物，或者您的直系親屬或親密熟人是否為主要的政治敏感人物，例如高級官員、政治、政府官員、軍事或國際組織官員？",
+                "info": "FATF 指引：政治敏感人物 (Rec 12 和 22)：\n1. 外國政治敏感人物是指目前或過去在國外具有政治/社會影響力的人。例如，指外國政府、司法、國防或其他政府機構的高級管理人員，外國主要政黨的高級管理人員，或外國國有企業的管理人員。\n2. 國內政治敏感人物是指目前或過去在國內具有政治/社會影響力的人。例如，國內政府、司法、國防或其他政府機構的高級管理人員，國內主要政黨的高級管理人員，或外國國有企業的管理人員。\n3. 國際組織中的政治敏感人物是指影響國際組織的人，例如董事、秘書或董事會成員、高級管理人員或具有同等權力的人。\n4. 家庭關係中的政治敏感人物是指父母、兄弟姐妹、配偶、子女、血親或姻親。\n5. 與政治人物密切相關的人是指與政治人物在社會或專業上有關係的人。",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "請詳細描述您是否為政治敏感人物，或您與此類人士的關係。",
+                "placeholder": "輸入描述",
+                "validation": "請輸入描述"
+            },
+            "passportId": {
+                "question": "請上傳護照影本及護照影本證明書 (由區公所簽發)。",
+                "info": "您可以向當地的區公所申請護照副本證明。文件標題為「護照複印件證明」。",
+                "placeholder": "選擇護照圖像文件",
+                "validation": "請上傳有效的圖像文件 (JPG, PNG, PDF)"
+            },
+            "addressProof": {
+                "question": "請上傳您的地址證明文件影本 (英文副本)",
+                "info": "請在附近的社區中心、無人發放機或在線獲取並提交。",
+                "placeholder": "選擇地址證明圖像文件",
+                "validation": "請上傳有效的圖像文件 (JPG, PNG, PDF)"
+            },
+            "engResume": {
+                "question": "請上傳您的英文履歷。",
+                "placeholder": "選擇履歷圖像文件",
+                "validation": "請上傳有效的圖像文件 (JPG, PNG, PDF)"
+            },
+            "isCrimeConvitted": {
+                "question": "您是否曾因違法行為被捕或被定罪？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "lawEnforced": {
+                "question": "您是否曾接受過執法機構 (警察、檢察官) 或稅務機關的調查？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "isMoneyLaundered": {
+                "question": "您是否涉及任何與您的業務或個人資金有關的犯罪、洗錢、賄賂或恐怖活動，或者您是否涉及任何其他涉及源自此類活動的資金的非法活動？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "isBankRupted": {
+                "question": "您是否曾個人涉及破產或清算？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "isInvolvedBankRuptedOfficer": {
+                "question": "您是否曾以公司主管身份涉及破產或清算？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "describeIfInvolvedBankRupted": {
+                "question": "如果您在聲明部分選擇了「是」，請指出具體情況。",
+                "placeholder": "您的回答",
+                "validation": "請輸入回答"
+            },
+            "declarationAgreement": {
+                "question": "您同意為我們與此服務相關的業務提供文件和資訊，並且與此服務相關，您同意建立和營運公司的目的是正當且為了合法的業務。註冊成立後，公司沒有義務對違反法律的事項提供幫助或建議，如果確定有違反法律或相關事項的意圖，公司保留停止服務的權利。您在此聲明，本申請書上填寫的所有內容根據您的了解均屬真實、完整且準確。您是否同意？",
+                "options": {
+                    "yes": "是",
+                    "no": "否",
+                    "other": "其他"
+                }
+            }
+        }
+    },
+    "saShareholder": {
+        "title": "新加坡公司成員表單",
+        "summary": {
+            "title": "您的資訊",
+            "success": "表單已成功完成！",
+            "edit": "編輯回答",
+            "submit": "提交表單",
+            "clear": "清除所有數據",
+            "notAnswered": "未回答",
+            "optional": "(可選)"
+        },
+        "navigation": {
+            "prev": "上一步",
+            "continue": "繼續",
+            "editHint": "點擊上方任何回答即可編輯",
+            "editingLabel": "正在編輯回答",
+            "pagination": "第 {{current}} 題，共 {{total}} 題",
+            "skip": "跳過"
+        },
+        "upload": {
+            "click": "點擊上傳",
+            "dragDrop": "或拖放文件",
+            "types": "PNG, JPG 或 PDF",
+            "openPdf": "打開 PDF",
+            "view": "查看",
+            "download": "下載",
+            "meta": "大小: {{size}} KB • 類型: {{type}}",
+            "pdfPreviewNote": "PDF 文件 - 點擊「打開 PDF」查看"
+        },
+        "messages": {
+            "saved": "數據已保存",
+            "savedDesc": "您的表單數據已成功保存",
+            "saveFailed": "保存失敗",
+            "saveFailedDesc": "無法保存您的表單數據",
+            "completed": "表單已完成！",
+            "completedDesc": "感謝您提供所有資訊。",
+            "required": "必填欄位",
+            "requiredDesc": "此欄位為必填",
+            "validationError": "驗證錯誤",
+            "specify": "請說明...",
+            "other": "其他"
+        },
+        "questions": {
+            "email": {
+                "question": "您的電子郵件地址是什麼？",
+                "placeholder": "輸入您的電子郵件地址",
+                "validation": "請輸入有效的電子郵件地址"
+            },
+            "companyName": {
+                "question": "申請設立的公司名稱",
+                "placeholder": "輸入名稱",
+                "validation": "請輸入公司名稱"
+            },
+            "name": {
+                "question": "您的全名是什麼？",
+                "placeholder": "輸入您的全名",
+                "validation": "請輸入有效的姓名"
+            },
+            "nameChanged": {
+                "question": "您是否曾更改過姓名？",
+                "options": {
+                    "no": "否",
+                    "yes": "是"
+                }
+            },
+            "previousName": {
+                "question": "您的原名是什麼？",
+                "placeholder": "輸入您的原名",
+                "validation": "請輸入有效的姓名"
+            },
+            "birthdate": {
+                "question": "您的出生日期是什麼？",
+                "validation": "請輸入有效的日期"
+            },
+            "nationality": {
+                "question": "您的國籍是什麼？",
+                "placeholder": "輸入您的國籍",
+                "validation": "請輸入有效的國籍"
+            },
+            "passport": {
+                "question": "您的護照號碼是什麼？",
+                "placeholder": "輸入您的護照號碼",
+                "validation": "請輸入有效的護照號碼"
+            },
+            "residenceAddress": {
+                "question": "您的居住地址是什麼？",
+                "placeholder": "輸入您的完整居住地址",
+                "validation": "請輸入完整的地址"
+            },
+            "postalAddressSame": {
+                "question": "您的郵寄地址是否與居住地址相同？",
+                "options": {
+                    "yes": "是，相同",
+                    "no": "否，不同"
+                }
+            },
+            "postalAddress": {
+                "question": "您的郵寄地址是什麼？",
+                "placeholder": "輸入您的郵寄地址",
+                "validation": "請輸入完整的郵寄地址"
+            },
+            "phone": {
+                "question": "您的聯絡手機號碼是什麼？",
+                "placeholder": "輸入您的手機號碼",
+                "validation": "請輸入有效的電話號碼"
+            },
+            "kakaoId": {
+                "question": "KakaoTalk ID (如有)",
+                "placeholder": "如有，請輸入 ID"
+            },
+            "otherSNSIds": {
+                "question": "Telegram, WeChat 等其他 SNS ID (如有)",
+                "placeholder": "如有，請輸入 ID"
+            },
+            "companyRelation": {
+                "question": "與待設立新加坡公司的關係",
+                "info": "您應選擇與待設立新加坡公司的關係。您必須委派一名「指定聯絡人」，負責與貴公司業務、註冊成立和更新、文件註冊、所需資訊確認以及我們服務各個事項的溝通。委派指定聯絡人最多 1 人免費，如果您想委派 2 名或更多指定聯絡人，每人每年將收取 250 美元的費用。指定聯絡人由貴公司委派，並應單獨向我們註冊，以保護貴公司的資訊、減少業務混亂並防止身份欺詐。（指定聯絡人必須提供身份證正反面掃描件。）",
+                "options": {
+                    "shareholder": "股東",
+                    "director": "董事",
+                    "designatedContactPerson": "指定聯絡人 *可兼任執行人員",
+                    "officialPartner": "Mirr Asia 註冊的正式合作夥伴",
+                    "other": "其他"
+                },
+                "validation": "請選擇至少一種關係類型"
+            },
+            "amountContributed": {
+                "question": "擬向待設立新加坡公司出資的金額 (註明幣種和金額)",
+                "placeholder": "輸入金額",
+                "validation": "請輸入金額"
+            },
+            "fundSource": {
+                "question": "向新加坡公司出資的資金來源",
+                "info": "您英勾選適當項目，因為可能需要資金來源證明。",
+                "options": {
+                    "employedIncome": "薪資收入",
+                    "despositSavings": "存款、儲蓄",
+                    "realEstateIncome": "來自房地產、股票和其他投資資產的收入",
+                    "loan": "貸款",
+                    "companyShareSale": "出售公司或股權的付款",
+                    "businessIncome": "業務收入 / 股息",
+                    "inheritance": "繼承",
+                    "parentCompanyInvested": "母公司投資",
+                    "other": "其他"
+                },
+                "validation": "請選擇至少一種來源類型"
+            },
+            "originFundInvestFromCountry": {
+                "question": "上述投資資金所在的國家/地區 (列出所有相關國家)",
+                "placeholder": "輸入國家",
+                "validation": "請輸入國家"
+            },
+            "fundGenerated": {
+                "question": "預計未來新加坡法人產生或發生的主要資金來源",
+                "info": "由於將來可能需要證明資金來源的文件，請勾選適當的方框。",
+                "options": {
+                    "businessIncome": "業務收入和分配",
+                    "intrestIncome": "利息收入",
+                    "realEstateIncome": "來自房地產、股票和其他投資資產的收入",
+                    "companyShareSale": "出售公司或股份所得",
+                    "inheritanceEndowment": "繼承/贈與",
+                    "borrowingTrustDeposit": "借入/信託/存款等"
+                },
+                "validation": "請選擇至少一種來源類型"
+            },
+            "originFundGenerateCountry": {
+                "question": "預計上述產生的資金將來源於哪個國家 (列出所有相關國家)",
+                "placeholder": "輸入國家",
+                "validation": "請輸入國家"
+            },
+            "usTaxStatus": {
+                "question": "您是美國公民、美國永久居民，還是稅法規定的美國居民？",
+                "options": {
+                    "yes": "是",
+                    "no": "否",
+                    "other": "其他"
+                }
+            },
+            "usTIN": {
+                "question": "如果您是美國公民、永久居民或根據稅務法生活在美國，請註明 IRS 美國稅務識別號碼 (TIN)。",
+                "placeholder": "輸入您的美國 TIN",
+                "validation": "請輸入有效的美國 TIN"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "您是否是上述說明中的政治敏感人物，或者您的直系親屬或親密熟人是否為主要的政治敏感人物，例如高級官員、政治、政府官員、軍事或國際組織官員？",
+                "info": "FATF 指引：政治敏感人物 (Rec 12 和 22)：\n1. 外國政治敏感人物是指目前或過去在國外具有政治/社會影響力的人。例如，指外國政府、司法、國防或其他政府機構的高級管理人員，外國主要政黨的高級管理人員，或外國國有企業的管理人員。\n2. 國內政治敏感人物是指目前或過去在國內具有政治/社會影響力的人. 例如，國內政府、司法、國防或其他政府機構的高級管理人員，國內主要政黨的高級管理人員，或外國國有企業的管理人員。\n3. 國際組織中的政治敏感人物是指影響國際組織的人，例如董事、秘書或董事會成員、高級管理人員或具有同等權力的人。\n4. 家庭關係中的政治敏感人物是指父母、兄弟姐妹、配偶、子女、血親或姻親。\n5. 與政治人物密切相關的人是指與政治人物在社會或專業上有關係的人。",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "請詳細描述您是否為政治敏感人物，或您與此類人士的關係。",
+                "placeholder": "輸入描述",
+                "validation": "請輸入描述"
+            },
+            "isCrimeConvitted": {
+                "question": "您是否曾因違法行為被捕或被定罪？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "lawEnforced": {
+                "question": "您是否曾接受過執法機構 (警察、檢察官) 或稅務機關的調查？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "isMoneyLaundered": {
+                "question": "您是否涉及任何與您的業務或個人資金有關的犯罪、洗錢、賄賂或恐怖活動，或者您是否涉及任何其他涉及源自此類活動의 資金的非法活動？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "isBankRupted": {
+                "question": "您是否曾個人涉及破產或清算？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "isInvolvedBankRuptedOfficer": {
+                "question": "您是否曾以公司主管身份涉及破產或清算？",
+                "options": {
+                    "yes": "是",
+                    "no": "否"
+                }
+            },
+            "describeIfInvolvedBankRupted": {
+                "question": "如果您在聲明部分選擇了「是」，請指出具體情況。",
+                "placeholder": "您的回答",
+                "validation": "請輸入回答"
+            },
+            "declarationAgreement": {
+                "question": "您同意為我們與此服務相關的業務提供文件和資訊，並且與此服務相關，您同意建立和營運公司的目的是正當且為了合法的業務。註冊成立後，公司沒有義務對違反法律的事項提供幫助或建議，如果確定有違反法律或相關事項的意圖，公司保留停止服務的權利。您在此聲明，本申請書上填寫的所有內容根據您的了解均屬真實、完整且準確。您是否同意？",
+                "options": {
+                    "yes": "是",
+                    "no": "否",
+                    "other": "其他"
+                }
+            }
+        }
     }
 }

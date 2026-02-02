@@ -15,6 +15,7 @@ import {
     saveShrCorporatePanamaInviteData,
     getCorporatePanamaShareHlderData
 } from './PanamaShratoms';
+import { useTranslation } from 'react-i18next';
 import { multiShrDirResetAtom } from '@/components/shareholderDirector/constants';
 import { useParams } from 'react-router-dom';
 
@@ -28,6 +29,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [otherInputValues, setOtherInputValues] = useState<Record<string, string>>({});
     const { toast } = useToast();
+    const { t } = useTranslation();
     const currentQuestion = filteredQuestions[currentQuestionIndex] || null;
     const isLastQuestion = currentQuestionIndex === filteredQuestions.length - 1;
     const [multiData,] = useAtom<any>(multiShrDirResetAtom)
@@ -60,7 +62,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
             ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
             : null;
         if (findData) {
-            setFormData({ ...formData, email: findData.email, companyName: findData.companyName, companyId: findData.companyId  })
+            setFormData({ ...formData, email: findData.email, companyName: findData.companyName, companyId: findData.companyId })
         }
         // console.log("multiShId",findData)
     }, [])
@@ -83,14 +85,14 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
             // console.log("result", result)const result =
 
             toast({
-                title: "Data saved",
-                description: "Your form data has been saved successfully",
+                title: t('panamaCorporateShr.messages.saved'),
+                description: t('panamaCorporateShr.messages.savedDesc'),
             });
         } catch (error) {
             console.error('Error saving form data:', error);
             toast({
-                title: "Save failed",
-                description: "Failed to save your form data",
+                title: t('panamaCorporateShr.messages.saveFailed'),
+                description: t('panamaCorporateShr.messages.saveFailedDesc'),
                 variant: "destructive",
             });
         }
@@ -199,8 +201,8 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
     const validateAnswer = (question: Question, value: string): boolean => {
         if (question.required && !value.trim()) {
             toast({
-                title: "Required field",
-                description: "This field is required",
+                title: t('panamaCorporateShr.messages.required'),
+                description: t('panamaCorporateShr.messages.requiredDesc'),
                 variant: "destructive",
             });
             return false;
@@ -211,8 +213,8 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
 
             if (minLength && value.length < minLength) {
                 toast({
-                    title: "Validation error",
-                    description: message,
+                    title: t('panamaCorporateShr.messages.validationError'),
+                    description: t(message, message),
                     variant: "destructive",
                 });
                 return false;
@@ -220,8 +222,8 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
 
             if (pattern && !new RegExp(pattern).test(value)) {
                 toast({
-                    title: "Validation error",
-                    description: message,
+                    title: t('panamaCorporateShr.messages.validationError'),
+                    description: t(message, message),
                     variant: "destructive",
                 });
                 return false;
@@ -244,8 +246,8 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
         if (isLastQuestion) {
             setIsCompleted(true);
             toast({
-                title: "Form completed!",
-                description: "Thank you for providing all the information.",
+                title: t('panamaCorporateShr.messages.completed'),
+                description: t('panamaCorporateShr.messages.completedDesc'),
             });
         } else {
             setCurrentQuestionIndex(prev => prev + 1);
@@ -304,8 +306,8 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
         if (isLastQuestion) {
             setIsCompleted(true);
             toast({
-                title: "Form completed!",
-                description: "Thank you for providing all the information.",
+                title: t('panamaCorporateShr.messages.completed'),
+                description: t('panamaCorporateShr.messages.completedDesc'),
             });
         } else {
             setCurrentQuestionIndex(prev => prev + 1);
@@ -335,9 +337,9 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                 const option = question.options?.find(opt => opt.value === val);
                 if (option?.allowOther && val === 'other') {
                     const otherValue = formData.otherInputs[`${question.id}-${val}`];
-                    return otherValue ? `Other: ${otherValue}` : option.label;
+                    return otherValue ? `${t('panamaCorporateShr.messages.other')}: ${otherValue}` : t(option.label, option.label);
                 }
-                return option?.label || val;
+                return t(option?.label || '', option?.label || val);
             }).join(', ');
         }
 
@@ -345,9 +347,9 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
             const option = question.options?.find(opt => opt.value === value);
             if (option?.allowOther && value === 'other') {
                 const otherValue = formData.otherInputs[`${question.id}-${value}`];
-                return otherValue ? `Other: ${otherValue}` : option.label;
+                return otherValue ? `${t('panamaCorporateShr.messages.other')}: ${otherValue}` : t(option.label, option.label);
             }
-            return option?.label || value;
+            return t(option?.label || '', option?.label || value);
         }
 
         return String(value);
@@ -385,7 +387,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                             onClick={() => window.open(fileUrl, '_blank')}
                         >
                             <Eye className="h-3 w-3 mr-1" />
-                            {isPDF ? 'Open PDF' : 'View'}
+                            {isPDF ? t('panamaCorporateShr.upload.openPdf') : t('panamaCorporateShr.upload.view')}
                         </Button>
                         <Button
                             size="sm"
@@ -398,7 +400,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                             }}
                         >
                             <Download className="h-3 w-3 mr-1" />
-                            Download
+                            {t('panamaCorporateShr.upload.download')}
                         </Button>
                     </div>
                 </div>
@@ -424,8 +426,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                 )}
 
                 <div className="text-xs text-muted-foreground mt-1">
-                    {fileSize && `Size: ${(fileSize / 1024).toFixed(1)} KB • `}
-                    {fileType && `Type: ${fileType}`}
+                    {fileSize && `${t('panamaCorporateShr.upload.meta', { size: (fileSize / 1024).toFixed(1), type: fileType })}`}
                     {isUrl && !isFile && 'External file'}
                 </div>
             </div>
@@ -446,13 +447,13 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                     className="w-full justify-start h-auto p-4 text-left option-button"
                                     onClick={() => handleOptionSelect(option.value)}
                                 >
-                                    {option.label}
+                                    {t(option.label)}
                                 </Button>
                                 {option.allowOther && currentAnswer === option.value && (
                                     <Input
                                         value={otherInputValues[option.value] || ''}
                                         onChange={(e) => handleOtherInputChange(option.value, e.target.value)}
-                                        placeholder="Please specify..."
+                                        placeholder={t('panamaCorporateShr.messages.specify')}
                                         className="ml-4"
                                     />
                                 )}
@@ -467,18 +468,18 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                         <Textarea
                             value={currentAnswer}
                             onChange={(e) => handleInputChange(e.target.value)}
-                            placeholder={currentQuestion.placeholder}
+                            placeholder={currentQuestion.placeholder ? t(currentQuestion.placeholder) : ''}
                             className="min-h-[100px] resize-none"
                         />
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             {currentAnswer && (
                                 <Button onClick={handleNext} className="flex-1 option-button">
-                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                    {t('panamaCorporateShr.navigation.continue')} <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                             {!currentQuestion.required && !currentAnswer && (
                                 <Button onClick={handleSkip} className="flex-1 option-button">
-                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                    {t('panamaCorporateShr.navigation.skip')} <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                         </div>
@@ -515,10 +516,10 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                                 {isSelected && <CheckCircle className="w-3 h-3 text-primary-foreground" />}
                                             </div>
                                             <div>
-                                                <div>{option.label}</div>
+                                                <div>{t(option.label)}</div>
                                                 {option.description && (
                                                     <div className="text-xs text-muted-foreground mt-1">
-                                                        {option.description}
+                                                        {t(option.description)}
                                                     </div>
                                                 )}
                                             </div>
@@ -528,22 +529,22 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                         <Input
                                             value={otherInputValues[option.value] || ''}
                                             onChange={(e) => handleOtherInputChange(option.value, e.target.value)}
-                                            placeholder="Please specify..."
+                                            placeholder={t('panamaCorporateShr.messages.specify')}
                                             className="ml-8"
                                         />
                                     )}
                                 </div>
                             );
                         })}
-                        <div className="flex gap-2 mt-4">
+                        <div className="flex flex-col sm:flex-row gap-2 mt-4">
                             {currentAnswer && (
                                 <Button onClick={handleNext} className="flex-1 option-button">
-                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                    {t('panamaCorporateShr.navigation.continue')} <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                             {!currentQuestion.required && !currentAnswer && (
                                 <Button onClick={handleSkip} className="flex-1 option-button">
-                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                    {t('panamaCorporateShr.navigation.skip')} <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                         </div>
@@ -569,10 +570,10 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                                 {isSelected && <div className="w-2 h-2 bg-primary-foreground rounded-full" />}
                                             </div>
                                             <div>
-                                                <div>{option.label}</div>
+                                                <div>{t(option.label)}</div>
                                                 {option.description && (
                                                     <div className="text-xs text-muted-foreground mt-1">
-                                                        {option.description}
+                                                        {t(option.description)}
                                                     </div>
                                                 )}
                                             </div>
@@ -582,22 +583,22 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                         <Input
                                             value={otherInputValues[option.value] || ''}
                                             onChange={(e) => handleOtherInputChange(option.value, e.target.value)}
-                                            placeholder="Please specify..."
+                                            placeholder={t('panamaCorporateShr.messages.specify')}
                                             className="ml-8"
                                         />
                                     )}
                                 </div>
                             );
                         })}
-                        <div className="flex gap-2 mt-4">
+                        <div className="flex flex-col sm:flex-row gap-2 mt-4">
                             {currentAnswer && (
                                 <Button onClick={handleNext} className="flex-1 option-button">
-                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                    {t('panamaCorporateShr.navigation.continue')} <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                             {!currentQuestion.required && !currentAnswer && (
                                 <Button onClick={handleSkip} className="flex-1 option-button">
-                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                    {t('panamaCorporateShr.navigation.skip')} <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                         </div>
@@ -614,9 +615,9 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                     </svg>
                                     <p className="mb-2 text-sm text-muted-foreground">
-                                        <span className="font-semibold">Click to upload</span> or drag and drop
+                                        <span className="font-semibold">{t('panamaCorporateShr.upload.click')}</span> {t('panamaCorporateShr.upload.dragDrop')}
                                     </p>
-                                    <p className="text-xs text-muted-foreground">PNG, JPG or PDF</p>
+                                    <p className="text-xs text-muted-foreground">{t('panamaCorporateShr.upload.types')}</p>
                                 </div>
                                 <input
                                     id="file-upload"
@@ -634,15 +635,15 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                             </label>
                         </div>
                         {currentFile && renderFilePreview(currentFile)}
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             {currentAnswer && (
                                 <Button onClick={handleNext} className="flex-1 option-button">
-                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                    {t('panamaCorporateShr.navigation.continue')} <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                             {!currentQuestion.required && !currentAnswer && (
                                 <Button onClick={handleSkip} className="flex-1 option-button">
-                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                    {t('panamaCorporateShr.navigation.skip')} <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                         </div>
@@ -656,18 +657,18 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                             type={currentQuestion.type}
                             value={currentAnswer}
                             onChange={(e) => handleInputChange(e.target.value)}
-                            placeholder={currentQuestion.placeholder}
+                            placeholder={currentQuestion.placeholder ? t(currentQuestion.placeholder) : ''}
                             className="w-full"
                         />
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             {currentAnswer && (
                                 <Button onClick={handleNext} className="flex-1 option-button">
-                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                    {t('panamaCorporateShr.navigation.continue')} <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                             {!currentQuestion.required && !currentAnswer && (
                                 <Button onClick={handleSkip} className="flex-1 option-button">
-                                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                    {t('panamaCorporateShr.navigation.continue')} <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                         </div>
@@ -679,34 +680,36 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
     const renderCompletedAnswers = () => {
         return (
             <div className="space-y-4">
-                <div className="text-center mb-6">
-                    <h2 className="summary-title">Your Information</h2>
-                    <div className="flex items-center justify-center gap-2 text-primary mb-4">
-                        <CheckCircle className="h-5 w-5" />
-                        <span className="font-medium">Form Completed Successfully!</span>
-                    </div>
-                    <div className="flex gap-3 justify-center">
-                        <Button
-                            variant="outline"
-                            onClick={() => setIsCompleted(false)}
-                            className="text-sm hover:bg-accent hover:text-accent-foreground transition-smooth"
-                        >
-                            <Edit3 className="h-4 w-4 mr-2" />
-                            Edit Answers
-                        </Button>
-                        <Button
-                            onClick={handleSubmit}
-                            className="text-sm option-button"
-                        >
-                            Submit Form
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={clearFormData}
-                            className="text-sm"
-                        >
-                            Clear All Data
-                        </Button>
+                <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-4 mb-6 border-b border-border shadow-sm -mx-4 px-4 sm:-mx-8 sm:px-8">
+                    <div className="text-center">
+                        <h2 className="summary-title">{t('panamaCorporateShr.summary.title')}</h2>
+                        <div className="flex items-center justify-center gap-2 text-primary mb-4">
+                            <CheckCircle className="h-5 w-5" />
+                            <span className="font-medium">{t('panamaCorporateShr.summary.success')}</span>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center">
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsCompleted(false)}
+                                className="text-sm hover:bg-accent hover:text-accent-foreground transition-smooth"
+                            >
+                                <Edit3 className="h-4 w-4 mr-2" />
+                                {t('panamaCorporateShr.summary.edit')}
+                            </Button>
+                            <Button
+                                onClick={handleSubmit}
+                                className="text-sm option-button"
+                            >
+                                {t('panamaCorporateShr.summary.submit')}
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                onClick={clearFormData}
+                                className="text-sm"
+                            >
+                                {t('panamaCorporateShr.summary.clear')}
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
@@ -724,12 +727,12 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
                                         <div className="text-sm text-muted-foreground mb-1">
-                                            {question.question}
-                                            {!question.required && <span className="text-xs ml-1">(Optional)</span>}
+                                            {t(question.question)}
+                                            {!question.required && <span className="text-xs ml-1">{t('panamaCorporateShr.summary.optional')}</span>}
                                         </div>
                                         <div className="font-medium">
                                             {hasAnswer ? getDisplayValue(question.id, question) :
-                                                <span className="text-muted-foreground italic">Not answered</span>}
+                                                <span className="text-muted-foreground italic">{t('panamaCorporateShr.summary.notAnswered')}</span>}
                                         </div>
                                         {question.type === 'file' && value && (
                                             renderFilePreview(value as string)
@@ -763,12 +766,12 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                             <div className="flex items-start justify-between">
                                 <div className="flex-1">
                                     <div className="text-sm text-muted-foreground mb-1">
-                                        {question.question}
-                                        {!question.required && <span className="text-xs ml-1">(Optional)</span>}
+                                        {t(question.question)}
+                                        {!question.required && <span className="text-xs ml-1">{t('panamaCorporateShr.summary.optional')}</span>}
                                     </div>
                                     <div className="font-medium">
                                         {hasAnswer ? getDisplayValue(question.id, question) :
-                                            <span className="text-muted-foreground italic">Not answered</span>}
+                                            <span className="text-muted-foreground italic">{t('panamaCorporateShr.summary.notAnswered')}</span>}
                                     </div>
                                     {question.type === 'file' && value && (
                                         renderFilePreview(value as string)
@@ -789,11 +792,11 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
             <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
                 <div className="max-width w-full space-y-6">
                     <div className="text-center">
-                        <h1 className="decorative-heading">Panama member and controller registration form</h1>
+                        <h1 className="decorative-heading">{t('panamaCorporateShr.title')}</h1>
                         <div className="w-3/4 h-1 bg-primary mx-auto rounded-full"></div>
                     </div>
 
-                    <Card className="p-8 shadow-warm">
+                    <Card className="p-4 sm:p-6 md:p-8 shadow-warm">
                         {renderCompletedAnswers()}
                     </Card>
                 </div>
@@ -805,7 +808,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
         <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
             <div className="max-width w-full space-y-6">
                 <div className="text-center">
-                    <h1 className="decorative-heading">Panama member and controller registration form</h1>
+                    <h1 className="decorative-heading">{t('panamaCorporateShr.title')}</h1>
                     <div className="w-3/4 h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
 
@@ -822,7 +825,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                     <div className="flex-1">
                                         <div className="bg-question text-question-foreground rounded-2xl p-4 max-w-md">
                                             <div className="flex items-center gap-2">
-                                                <p className="question-title">{currentQuestion.question}</p>
+                                                <p className="question-title">{t(currentQuestion.question)}</p>
                                                 {currentQuestion.infoText && (
                                                     <TooltipProvider>
                                                         <Tooltip>
@@ -830,7 +833,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                                                 <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                                                             </TooltipTrigger>
                                                             <TooltipContent side="right" className="max-w-sm p-4">
-                                                                <p className="text-sm whitespace-pre-wrap">{currentQuestion.infoText}</p>
+                                                                <p className="text-sm whitespace-pre-wrap">{currentQuestion.infoText ? t(currentQuestion.infoText) : ''}</p>
                                                             </TooltipContent>
                                                         </Tooltip>
                                                     </TooltipProvider>
@@ -850,7 +853,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                             onClick={handleNext}
                                             className="w-full option-button"
                                         >
-                                            Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                            {t('panamaCorporateShr.navigation.continue')} <ArrowRight className="ml-2 h-4 w-4" />
                                         </Button>
                                     )}
 
@@ -861,7 +864,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                             onClick={handleNext}
                                             className="w-full option-button"
                                         >
-                                            Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                            {t('panamaCorporateShr.navigation.continue')} <ArrowRight className="ml-2 h-4 w-4" />
                                         </Button>
                                     )}
 
@@ -873,10 +876,10 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                                             className="text-sm hover:bg-muted transition-smooth"
                                         >
                                             <ArrowLeft className="h-4 w-4 mr-2" />
-                                            Previous
+                                            {t('panamaCorporateShr.navigation.prev')}
                                         </Button>
                                         <span className="text-xs text-muted-foreground">
-                                            {isEditing ? 'Editing answer' : 'Click any answer above to edit'}
+                                            {isEditing ? t('panamaCorporateShr.navigation.editingLabel') : t('panamaCorporateShr.navigation.editHint')}
                                         </span>
                                     </div>
                                 )}
@@ -886,7 +889,7 @@ const PanamaCorporateShareholderInvite: React.FC = () => {
                 </div>
 
                 <div className="text-center text-sm text-muted-foreground">
-                    Question {currentQuestionIndex + 1} of {filteredQuestions.length}
+                    {t('panamaCorporateShr.navigation.pagination', { current: currentQuestionIndex + 1, total: filteredQuestions.length })}
                 </div>
             </div>
         </div>

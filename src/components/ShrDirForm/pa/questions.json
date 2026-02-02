@@ -3,38 +3,38 @@
     {
       "id": "name",
       "type": "text",
-      "question": "What is your full name?",
-      "placeholder": "Enter your full name",
+      "question": "panamaShrInvite.questions.name.question",
+      "placeholder": "panamaShrInvite.questions.name.placeholder",
       "required": false,
       "validation": {
         "minLength": 2,
         "pattern": "^[a-zA-Z\\s]+$",
-        "message": "Please enter a valid name"
+        "message": "panamaShrInvite.questions.name.validation"
       }
     },
     {
       "id": "email",
       "type": "email",
-      "question": "What is your email address?",
-      "placeholder": "Enter your email address",
+      "question": "panamaShrInvite.questions.email.question",
+      "placeholder": "panamaShrInvite.questions.email.placeholder",
       "required": true,
       "validation": {
         "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
-        "message": "Please enter a valid email address"
+        "message": "panamaShrInvite.questions.email.validation"
       }
     },
     {
       "id": "nameChanged",
       "type": "select",
-      "question": "Have you ever changed your name?",
+      "question": "panamaShrInvite.questions.nameChanged.question",
       "options": [
         {
           "value": "no",
-          "label": "No"
+          "label": "panamaShrInvite.questions.nameChanged.options.no"
         },
         {
           "value": "yes",
-          "label": "Yes"
+          "label": "panamaShrInvite.questions.nameChanged.options.yes"
         }
       ],
       "required": true
@@ -42,8 +42,8 @@
     {
       "id": "previousName",
       "type": "text",
-      "question": "What was your previous name?",
-      "placeholder": "Enter your previous name",
+      "question": "panamaShrInvite.questions.previousName.question",
+      "placeholder": "panamaShrInvite.questions.previousName.placeholder",
       "required": true,
       "showIf": {
         "questionId": "nameChanged",
@@ -52,42 +52,42 @@
       "validation": {
         "minLength": 2,
         "pattern": "^[a-zA-Z\\s]+$",
-        "message": "Please enter a valid name"
+        "message": "panamaShrInvite.questions.previousName.validation"
       }
     },
     {
       "id": "birthdate",
       "type": "date",
-      "question": "What is your date of birth?",
+      "question": "panamaShrInvite.questions.birthdate.question",
       "required": true,
       "validation": {
-        "message": "Please enter a valid date"
+        "message": "panamaShrInvite.questions.birthdate.validation"
       }
     },
     {
       "id": "maritalStatus",
       "type": "select",
-      "question": "What is your marital status?",
+      "question": "panamaShrInvite.questions.maritalStatus.question",
       "options": [
         {
           "value": "single",
-          "label": "Single"
+          "label": "panamaShrInvite.questions.maritalStatus.options.single"
         },
         {
           "value": "married",
-          "label": "Married"
+          "label": "panamaShrInvite.questions.maritalStatus.options.married"
         },
         {
           "value": "divorced",
-          "label": "Divorced"
+          "label": "panamaShrInvite.questions.maritalStatus.options.divorced"
         },
         {
           "value": "widowed",
-          "label": "Widowed"
+          "label": "panamaShrInvite.questions.maritalStatus.options.widowed"
         },
         {
           "value": "separated",
-          "label": "Separated"
+          "label": "panamaShrInvite.questions.maritalStatus.options.separated"
         }
       ],
       "required": true
@@ -95,59 +95,59 @@
     {
       "id": "nationality",
       "type": "text",
-      "question": "What is your nationality?",
-      "placeholder": "Enter your nationality",
+      "question": "panamaShrInvite.questions.nationality.question",
+      "placeholder": "panamaShrInvite.questions.nationality.placeholder",
       "required": true,
       "validation": {
         "minLength": 2,
-        "message": "Please enter a valid nationality"
+        "message": "panamaShrInvite.questions.nationality.validation"
       }
     },
     {
       "id": "passport",
       "type": "text",
-      "question": "What is your passport number?",
-      "placeholder": "Enter your passport number",
+      "question": "panamaShrInvite.questions.passport.question",
+      "placeholder": "panamaShrInvite.questions.passport.placeholder",
       "required": true,
       "validation": {
         "minLength": 6,
-        "message": "Please enter a valid passport number"
+        "message": "panamaShrInvite.questions.passport.validation"
       }
     },
     {
       "id": "job",
       "type": "text",
-      "question": "What is your occupation?",
-      "placeholder": "Enter your job title/occupation",
+      "question": "panamaShrInvite.questions.job.question",
+      "placeholder": "panamaShrInvite.questions.job.placeholder",
       "required": true,
       "validation": {
         "minLength": 2,
-        "message": "Please enter a valid occupation"
+        "message": "panamaShrInvite.questions.job.validation"
       }
     },
     {
       "id": "residenceAddress",
       "type": "textarea",
-      "question": "What is your residential address?",
-      "placeholder": "Enter your full residential address",
+      "question": "panamaShrInvite.questions.residenceAddress.question",
+      "placeholder": "panamaShrInvite.questions.residenceAddress.placeholder",
       "required": true,
       "validation": {
         "minLength": 10,
-        "message": "Please enter a complete address"
+        "message": "panamaShrInvite.questions.residenceAddress.validation"
       }
     },
     {
       "id": "postalAddressSame",
       "type": "select",
-      "question": "Is your postal address the same as your residential address?",
+      "question": "panamaShrInvite.questions.postalAddressSame.question",
       "options": [
         {
           "value": "yes",
-          "label": "Yes, it's the same"
+          "label": "panamaShrInvite.questions.postalAddressSame.options.yes"
         },
         {
           "value": "no",
-          "label": "No, it's different"
+          "label": "panamaShrInvite.questions.postalAddressSame.options.no"
         }
       ],
       "required": true
@@ -155,8 +155,8 @@
     {
       "id": "postalAddress",
       "type": "textarea",
-      "question": "What is your postal address?",
-      "placeholder": "Enter your postal address",
+      "question": "panamaShrInvite.questions.postalAddress.question",
+      "placeholder": "panamaShrInvite.questions.postalAddress.placeholder",
       "required": true,
       "showIf": {
         "questionId": "postalAddressSame",
@@ -164,317 +164,317 @@
       },
       "validation": {
         "minLength": 10,
-        "message": "Please enter a complete postal address"
+        "message": "panamaShrInvite.questions.postalAddress.validation"
       }
     },
     {
       "id": "phone",
       "type": "tel",
-      "question": "What is your contactable mobile phone number?",
-      "placeholder": "Enter your mobile phone number",
+      "question": "panamaShrInvite.questions.phone.question",
+      "placeholder": "panamaShrInvite.questions.phone.placeholder",
       "required": true,
       "validation": {
         "pattern": "^[+]?[0-9\\s\\-\\(\\)]+$",
         "minLength": 10,
-        "message": "Please enter a valid phone number"
+        "message": "panamaShrInvite.questions.phone.validation"
       }
     },
     {
       "id": "companyName",
       "type": "text",
-      "question": "Name of the Company applying for establishment",
-      "placeholder": "Enter Name",
+      "question": "panamaShrInvite.questions.companyName.question",
+      "placeholder": "panamaShrInvite.questions.companyName.placeholder",
       "required": true,
       "validation": {
         "minLength": 2,
-        "message": "Please enter Company Name"
+        "message": "panamaShrInvite.questions.companyName.validation"
       }
     },
     {
       "id": "corporationRelationship",
       "type": "checkbox",
-      "question": "Relationship with the corporation you are establishing (select all that apply)",
+      "question": "panamaShrInvite.questions.corporationRelationship.question",
       "required": true,
-      "infoText": "[Description of Designated Contact Person] You must designate a designated contact person to be in charge of the company's business contact. The designated contact person will be in charge of major business contact with our company, and their duties include contacting you regarding company and business-related inquiries, checking progress, and registered documents. The designated contact person can view your company's information and documents, and can also view your company's mail. Designating one contact person is free of charge, and for two or more, an annual fee of USD 250 will be charged per person. The delegated designated contact person will be designated by your company and registered separately with our company, thereby protecting your company's information and reducing confusion in business. (The delegated designated contact person must provide a scanned copy of the front and back of their ID.) **Note: If the designated contact person changes, you must immediately contact us to update this information, fill out this form individually, and submit the required documents.",
+      "infoText": "panamaShrInvite.questions.corporationRelationship.info",
       "options": [
         {
           "value": "shareholder",
-          "label": "Shareholder"
+          "label": "panamaShrInvite.questions.corporationRelationship.options.shareholder"
         },
         {
           "value": "ubo",
-          "label": "UBO (Ultimate Beneficiary Owner)",
-          "description": "Refers to a beneficial owner who directly or indirectly owns 25% or more of the shares."
+          "label": "panamaShrInvite.questions.corporationRelationship.options.ubo.label",
+          "description": "panamaShrInvite.questions.corporationRelationship.options.ubo.description"
         },
         {
           "value": "shareholderProxy",
-          "label": "Shareholder's proxy (trustee acting on behalf of shareholder)"
+          "label": "panamaShrInvite.questions.corporationRelationship.options.shareholderProxy"
         },
         {
           "value": "dirPresident",
-          "label": "Director (President)"
+          "label": "panamaShrInvite.questions.corporationRelationship.options.dirPresident"
         },
         {
           "value": "dirTreasurer",
-          "label": "Director (Treasurer)"
+          "label": "panamaShrInvite.questions.corporationRelationship.options.dirTreasurer"
         },
         {
           "value": "dirSecretary",
-          "label": "Director (Secretary)"
+          "label": "panamaShrInvite.questions.corporationRelationship.options.dirSecretary"
         },
         {
           "value": "directorOnly",
-          "label": "Director only"
+          "label": "panamaShrInvite.questions.corporationRelationship.options.directorOnly"
         },
         {
           "value": "designatedContact",
-          "label": "Designated contact person (a representative who will communicate with us on behalf of the new company)"
+          "label": "panamaShrInvite.questions.corporationRelationship.options.designatedContact"
         }
       ],
       "validation": {
-        "message": "Please select at least one relationship type"
+        "message": "panamaShrInvite.questions.corporationRelationship.validation"
       }
     },
     {
       "id": "investedAmount",
       "type": "text",
-      "question": "Amount to be invested in the corporation to be established (USD)",
-      "placeholder": "Enter Amount",
+      "question": "panamaShrInvite.questions.investedAmount.question",
+      "placeholder": "panamaShrInvite.questions.investedAmount.placeholder",
       "required": true,
       "validation": {
         "minLength": 2,
-        "message": "Please enter Amount"
+        "message": "panamaShrInvite.questions.investedAmount.validation"
       }
     },
     {
       "id": "sharesAcquired",
       "type": "text",
-      "question": "Number of shares to be acquired",
-      "placeholder": "Enter Shares",
+      "question": "panamaShrInvite.questions.sharesAcquired.question",
+      "placeholder": "panamaShrInvite.questions.sharesAcquired.placeholder",
       "required": true,
       "validation": {
         "minLength": 2,
-        "message": "Please enter Shares"
+        "message": "panamaShrInvite.questions.sharesAcquired.validation"
       }
     },
     {
       "id": "fundSource",
       "type": "checkbox",
-      "question": "Source of funds to be invested in the corporation to be established",
+      "question": "panamaShrInvite.questions.fundSource.question",
       "required": true,
-      "infoText": "Please check the appropriate box as documentation proving the source of funds may be required in the future.",
+      "infoText": "panamaShrInvite.questions.fundSource.info",
       "options": [
         {
           "value": "earnedIncome",
-          "label": "Earned income"
+          "label": "panamaShrInvite.questions.fundSource.options.earnedIncome"
         },
         {
           "value": "despositSavings",
-          "label": "Deposits, savings"
+          "label": "panamaShrInvite.questions.fundSource.options.despositSavings"
         },
         {
           "value": "realEstateIncome",
-          "label": "Income from real estate, stocks, and other investment assets"
+          "label": "panamaShrInvite.questions.fundSource.options.realEstateIncome"
         },
         {
           "value": "loan",
-          "label": "Loan"
+          "label": "panamaShrInvite.questions.fundSource.options.loan"
         },
         {
           "value": "companyShareSale",
-          "label": "Proceeds from the sale of a company or shares"
+          "label": "panamaShrInvite.questions.fundSource.options.companyShareSale"
         },
         {
           "value": "businessIncome",
-          "label": "Business Income / Dividends"
+          "label": "panamaShrInvite.questions.fundSource.options.businessIncome"
         },
         {
           "value": "succession",
-          "label": "succession"
+          "label": "panamaShrInvite.questions.fundSource.options.succession"
         },
         {
           "value": "parentCompanyInvested",
-          "label": "Parent company invested"
+          "label": "panamaShrInvite.questions.fundSource.options.parentCompanyInvested"
         },
         {
           "value": "other",
-          "label": "Other",
+          "label": "panamaShrInvite.questions.fundSource.options.other",
           "allowOther": true
         }
       ],
       "validation": {
-        "message": "Please select at least one relationship type"
+        "message": "panamaShrInvite.questions.fundSource.validation"
       }
     },
     {
       "id": "originFundInvestFromCountry",
       "type": "text",
-      "question": "Country of origin of funds for the above items (list all relevant countries)",
-      "placeholder": "Enter Countries",
+      "question": "panamaShrInvite.questions.originFundInvestFromCountry.question",
+      "placeholder": "panamaShrInvite.questions.originFundInvestFromCountry.placeholder",
       "required": false,
       "validation": {
         "minLength": 2,
-        "message": "Please enter Countries"
+        "message": "panamaShrInvite.questions.originFundInvestFromCountry.validation"
       }
     },
     {
       "id": "fundGenerated",
       "type": "checkbox",
-      "question": "Sources of funds expected to be generated or received by the Panama Corporation in the future",
+      "question": "panamaShrInvite.questions.fundGenerated.question",
       "required": true,
       "options": [
         {
           "value": "businessIncome",
-          "label": "Business income"
+          "label": "panamaShrInvite.questions.fundGenerated.options.businessIncome"
         },
         {
           "value": "intrestIncome",
-          "label": "Interest income"
+          "label": "panamaShrInvite.questions.fundGenerated.options.intrestIncome"
         },
         {
           "value": "realEstateIncome",
-          "label": "Income from real estate, stocks, and other investment assets"
+          "label": "panamaShrInvite.questions.fundGenerated.options.realEstateIncome"
         },
         {
           "value": "companyShareSale",
-          "label": "Proceeds from the sale of a company or shares"
+          "label": "panamaShrInvite.questions.fundGenerated.options.companyShareSale"
         },
         {
           "value": "inheritanceGift",
-          "label": "Inheritance/Gift"
+          "label": "panamaShrInvite.questions.fundGenerated.options.inheritanceGift"
         },
         {
           "value": "borrowingTrustDeposit",
-          "label": "Borrowing/trusting/depositing, etc."
+          "label": "panamaShrInvite.questions.fundGenerated.options.borrowingTrustDeposit"
         },
         {
           "value": "other",
-          "label": "Other",
+          "label": "panamaShrInvite.questions.fundGenerated.options.other",
           "allowOther": true
         }
       ],
       "validation": {
-        "message": "Please select at least one relationship type"
+        "message": "panamaShrInvite.questions.fundGenerated.validation"
       }
     },
     {
       "id": "originFundGenerateCountry",
       "type": "text",
-      "question": "Country of origin of funds for the above items (list all relevant countries)",
-      "placeholder": "Enter Countries",
+      "question": "panamaShrInvite.questions.originFundGenerateCountry.question",
+      "placeholder": "panamaShrInvite.questions.originFundGenerateCountry.placeholder",
       "required": true,
       "validation": {
         "minLength": 2,
-        "message": "Please enter Countries"
+        "message": "panamaShrInvite.questions.originFundGenerateCountry.validation"
       }
     },
     {
       "id": "taxCountry",
       "type": "text",
-      "question": "Taxing country",
-      "infoText": "A taxing country is a country in which you currently reside for more than 183 days per year or a country in which you pay taxes on your personal income (salary/rental income, etc.).",
-      "placeholder": "Enter Tax Country",
+      "question": "panamaShrInvite.questions.taxCountry.question",
+      "infoText": "panamaShrInvite.questions.taxCountry.info",
+      "placeholder": "panamaShrInvite.questions.taxCountry.placeholder",
       "required": true,
       "validation": {
         "minLength": 2,
-        "message": "Please enter Tax Country"
+        "message": "panamaShrInvite.questions.taxCountry.validation"
       }
     },
     {
       "id": "taxNumber",
       "type": "text",
-      "question": "Taxpayer Number",
-      "infoText": " The Taxpayer Identification Number (TIN) is also called the Tax Identification Number (TIN) and is usually listed on your tax payment receipt. If you live in Korea and pay taxes in Korea but do not know your taxpayer identification number, you can enter your Resident Registration Number.",
-      "placeholder": "Enter Tax Number",
+      "question": "panamaShrInvite.questions.taxNumber.question",
+      "infoText": "panamaShrInvite.questions.taxNumber.info",
+      "placeholder": "panamaShrInvite.questions.taxNumber.placeholder",
       "required": true,
       "validation": {
         "minLength": 2,
-        "message": "Please enter Tax Number"
+        "message": "panamaShrInvite.questions.taxNumber.validation"
       }
     },
     {
       "id": "annualSaleIncomePrevYr",
       "type": "checkbox",
-      "question": "Please select your approximate annual sales and income (in USD) for the previous year.",
+      "question": "panamaShrInvite.questions.annualSaleIncomePrevYr.question",
       "required": true,
       "options": [
         {
           "value": "businessIncome",
-          "label": "Under  USD 25,000.00"
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.businessIncome"
         },
         {
           "value": "intrestIncome",
-          "label": "USD 25,000 - 50,000"
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.intrestIncome"
         },
         {
           "value": "realEstateIncome",
-          "label": "USD 50,001 - 100,000"
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.realEstateIncome"
         },
         {
           "value": "companyShareSale",
-          "label": "USD 100,001-500,000"
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.companyShareSale"
         },
         {
           "value": "inheritanceGift",
-          "label": "USD 500,001-1,000,000"
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.inheritanceGift"
         },
         {
           "value": "borrowingTrustDeposit",
-          "label": "USD Over 1 Million"
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.borrowingTrustDeposit"
         }
       ],
       "validation": {
-        "message": "Please select at least one option"
+        "message": "panamaShrInvite.questions.annualSaleIncomePrevYr.validation"
       }
     },
     {
       "id": "currentNetWorth",
       "type": "checkbox",
-      "question": "Please select your approximate current net worth (in USD)",
+      "question": "panamaShrInvite.questions.currentNetWorth.question",
       "required": true,
       "options": [
         {
           "value": "businessIncome",
-          "label": "Under  USD 25,000.00"
+          "label": "panamaShrInvite.questions.currentNetWorth.options.businessIncome"
         },
         {
           "value": "intrestIncome",
-          "label": "USD 25,000 - 50,000"
+          "label": "panamaShrInvite.questions.currentNetWorth.options.intrestIncome"
         },
         {
           "value": "realEstateIncome",
-          "label": "USD 50,001 - 100,000"
+          "label": "panamaShrInvite.questions.currentNetWorth.options.realEstateIncome"
         },
         {
           "value": "companyShareSale",
-          "label": "USD 100,001-500,000"
+          "label": "panamaShrInvite.questions.currentNetWorth.options.companyShareSale"
         },
         {
           "value": "inheritanceGift",
-          "label": "USD 500,001-1,000,000"
+          "label": "panamaShrInvite.questions.currentNetWorth.options.inheritanceGift"
         },
         {
           "value": "borrowingTrustDeposit",
-          "label": "USD Over 1 Million"
+          "label": "panamaShrInvite.questions.currentNetWorth.options.borrowingTrustDeposit"
         }
       ],
       "validation": {
-        "message": "Please select at least one option"
+        "message": "panamaShrInvite.questions.currentNetWorth.validation"
       }
     },
     {
       "id": "isPoliticallyProminentFig",
       "type": "select",
-      "question": "Are you a politically prominent figure who fits the description above, or do you have an immediate family member or close acquaintance who holds a high-ranking public office, is a politician, government official, military or international organization official, or is a politically prominent figure?",
-      "infoText": "Politically Exposed Person (Source: FATF Guidance: Politically Exposed Persons (Rec 12 and 22)) 1. A foreign politically exposed person means a person who currently or has had political or social influence in a foreign country. For example, a senior official in the executive, judicial, defense, or other government agencies of a foreign government, a senior official in a major foreign political party, or a manager in a foreign state-owned enterprise. 2. A domestic politically exposed person means a person who currently or has had political or social influence in a domestic country. (For example, a senior official in the executive, judicial, defense, or other government agencies of a domestic government, a senior official in a major domestic political party, or a manager in a foreign state-owned enterprise.) 3. A politically exposed person of an international organization means a person who has influence in an international organization, for example, a director, officer, member of the board of directors, senior management, or a person with equivalent authority. 4. A politically exposed person in a family relationship means a parent, sibling, spouse, child, or relative by blood or marriage. 5. A close politically important person refers to a person who has a close social or business relationship with a politically important person.",
+      "question": "panamaShrInvite.questions.isPoliticallyProminentFig.question",
+      "infoText": "panamaShrInvite.questions.isPoliticallyProminentFig.info",
       "options": [
         {
           "value": "no",
-          "label": "No"
+          "label": "panamaShrInvite.questions.isPoliticallyProminentFig.options.no"
         },
         {
           "value": "yes",
-          "label": "Yes"
+          "label": "panamaShrInvite.questions.isPoliticallyProminentFig.options.yes"
         }
       ],
       "required": true
@@ -482,8 +482,8 @@
     {
       "id": "descPoliticImpRel",
       "type": "text",
-      "question": "Please describe in detail whether you are a politically important figure or your relationship with such a person.",
-      "placeholder": "Enter Description",
+      "question": "panamaShrInvite.questions.descPoliticImpRel.question",
+      "placeholder": "panamaShrInvite.questions.descPoliticImpRel.placeholder",
       "required": false,
       "showIf": {
         "questionId": "isPoliticallyProminentFig",
@@ -492,75 +492,75 @@
       "validation": {
         "minLength": 2,
         "pattern": "^[a-zA-Z\\s]+$",
-        "message": "Please enter Description"
+        "message": "panamaShrInvite.questions.descPoliticImpRel.validation"
       }
     },
     {
       "id": "passportId",
       "type": "file",
-      "question": "Please upload a copy of your passport and a passport copy certificate (issued by the district office).",
-      "infoText": "You can apply for a passport copy certificate at your local district office. The document title is Certificate of Passport Copy.",
-      "placeholder": "Choose passport image file",
+      "question": "panamaShrInvite.questions.passportId.question",
+      "infoText": "panamaShrInvite.questions.passportId.info",
+      "placeholder": "panamaShrInvite.questions.passportId.placeholder",
       "required": true,
       "validation": {
-        "message": "Please upload a valid image file (JPG, PNG, PDF)"
+        "message": "panamaShrInvite.questions.passportId.validation"
       }
     },
     {
       "id": "bankStatement3Mnth",
       "type": "file",
-      "question": "Please upload a copy of your most recent 3-month bank statement or Bank Reference Letter that shows your name and address. (If the document is not in English, it must be translated and notarized, and additional translation and notarization fees will apply.)",
-      "infoText": "This is a required document for incorporation. Without this document, the establishment of a Panamanian corporation cannot proceed.",
-      "placeholder": "Choose BankStatement image file",
+      "question": "panamaShrInvite.questions.bankStatement3Mnth.question",
+      "infoText": "panamaShrInvite.questions.bankStatement3Mnth.info",
+      "placeholder": "panamaShrInvite.questions.bankStatement3Mnth.placeholder",
       "required": true,
       "validation": {
-        "message": "Please upload a valid image file (JPG, PNG, PDF)"
+        "message": "panamaShrInvite.questions.bankStatement3Mnth.validation"
       }
     },
     {
       "id": "addressProof",
       "type": "file",
-      "question": "Please upload a copy of your address proof document (English copy)",
-      "infoText": "Please obtain it at a nearby community center, an unmanned issuance machine, or online and submit it.",
-      "placeholder": "Choose Address Proof image file",
+      "question": "panamaShrInvite.questions.addressProof.question",
+      "infoText": "panamaShrInvite.questions.addressProof.info",
+      "placeholder": "panamaShrInvite.questions.addressProof.placeholder",
       "required": true,
       "validation": {
-        "message": "Please upload a valid image file (JPG, PNG, PDF)"
+        "message": "panamaShrInvite.questions.addressProof.validation"
       }
     },
     {
       "id": "profRefLetter",
       "type": "file",
-      "question": "Please upload a professional reference letter (can be provided by a lawyer, accountant, paralegal, tax accountant, banker, asset manager, business partner, employer, etc.) with whom you have been in business for at least 2 years.",
-      "infoText": "This is a required document for incorporation. Without this document, the incorporation of a Panama corporation cannot proceed. * It must be issued within 3 months of the date of issue.",
-      "placeholder": "Choose professional reference letter image file",
+      "question": "panamaShrInvite.questions.profRefLetter.question",
+      "infoText": "panamaShrInvite.questions.profRefLetter.info",
+      "placeholder": "panamaShrInvite.questions.profRefLetter.placeholder",
       "required": true,
       "validation": {
-        "message": "Please upload a valid image file (JPG, PNG, PDF)"
+        "message": "panamaShrInvite.questions.profRefLetter.validation"
       }
     },
     {
       "id": "engResume",
       "type": "file",
-      "question": "Please upload your English resume.",
-      "placeholder": "Choose Resume image file",
+      "question": "panamaShrInvite.questions.engResume.question",
+      "placeholder": "panamaShrInvite.questions.engResume.placeholder",
       "required": true,
       "validation": {
-        "message": "Please upload a valid image file (JPG, PNG, PDF)"
+        "message": "panamaShrInvite.questions.engResume.validation"
       }
     },
     {
       "id": "isCrimeConvitted",
       "type": "select",
-      "question": "Have you ever been arrested or convicted of a crime against the law?",
+      "question": "panamaShrInvite.questions.isCrimeConvitted.question",
       "options": [
         {
           "value": "no",
-          "label": "No"
+          "label": "panamaShrInvite.questions.isCrimeConvitted.options.no"
         },
         {
           "value": "yes",
-          "label": "Yes"
+          "label": "panamaShrInvite.questions.isCrimeConvitted.options.yes"
         }
       ],
       "required": true
@@ -568,15 +568,15 @@
     {
       "id": "lawEnforced",
       "type": "select",
-      "question": "Have you ever been investigated by law enforcement agencies (police, prosecutors) or tax authorities?",
+      "question": "panamaShrInvite.questions.lawEnforced.question",
       "options": [
         {
           "value": "no",
-          "label": "No"
+          "label": "panamaShrInvite.questions.lawEnforced.options.no"
         },
         {
           "value": "yes",
-          "label": "Yes"
+          "label": "panamaShrInvite.questions.lawEnforced.options.yes"
         }
       ],
       "required": true
@@ -584,15 +584,15 @@
     {
       "id": "isMoneyLaundered",
       "type": "select",
-      "question": "Are you involved in any criminal, money laundering, bribery or terrorist activity with respect to your business or personal funds, or are you involved in any other illegal activity involving funds derived from such activities?",
+      "question": "panamaShrInvite.questions.isMoneyLaundered.question",
       "options": [
         {
           "value": "no",
-          "label": "No"
+          "label": "panamaShrInvite.questions.isMoneyLaundered.options.no"
         },
         {
           "value": "yes",
-          "label": "Yes"
+          "label": "panamaShrInvite.questions.isMoneyLaundered.options.yes"
         }
       ],
       "required": true
@@ -600,15 +600,15 @@
     {
       "id": "isBankRupted",
       "type": "select",
-      "question": "Have you ever been personally involved in a bankruptcy or liquidation?",
+      "question": "panamaShrInvite.questions.isBankRupted.question",
       "options": [
         {
           "value": "no",
-          "label": "No"
+          "label": "panamaShrInvite.questions.isBankRupted.options.no"
         },
         {
           "value": "yes",
-          "label": "Yes"
+          "label": "panamaShrInvite.questions.isBankRupted.options.yes"
         }
       ],
       "required": true
@@ -616,15 +616,15 @@
     {
       "id": "isInvolvedBankRuptedOfficer",
       "type": "select",
-      "question": "Have you ever been involved in a bankruptcy or liquidation as an officer of a company?",
+      "question": "panamaShrInvite.questions.isInvolvedBankRuptedOfficer.question",
       "options": [
         {
           "value": "no",
-          "label": "No"
+          "label": "panamaShrInvite.questions.isInvolvedBankRuptedOfficer.options.no"
         },
         {
           "value": "yes",
-          "label": "Yes"
+          "label": "panamaShrInvite.questions.isInvolvedBankRuptedOfficer.options.yes"
         }
       ],
       "required": true
@@ -632,16 +632,16 @@
     {
       "id": "isPartnerOfOtherComp",
       "type": "select",
-      "question": "Are you a director / shareholder / beneficial owner (UBO) / associate / partner of another company or an associate of another organization or association?",
-      "infoText": "If applicable, please list your company name, country of location, and job title in the following sections.",
+      "question": "panamaShrInvite.questions.isPartnerOfOtherComp.question",
+      "infoText": "panamaShrInvite.questions.isPartnerOfOtherComp.info",
       "options": [
         {
           "value": "no",
-          "label": "No"
+          "label": "panamaShrInvite.questions.isPartnerOfOtherComp.options.no"
         },
         {
           "value": "yes",
-          "label": "Yes"
+          "label": "panamaShrInvite.questions.isPartnerOfOtherComp.options.yes"
         }
       ],
       "required": true
@@ -649,8 +649,8 @@
     {
       "id": "otherPartnerOtherComp",
       "type": "text",
-      "question": "If you selected 'Yes' to previous section, please provide specific details.",
-      "placeholder": "Enter Details",
+      "question": "panamaShrInvite.questions.otherPartnerOtherComp.question",
+      "placeholder": "panamaShrInvite.questions.otherPartnerOtherComp.placeholder",
       "required": true,
       "showIf": {
         "questionId": "isPartnerOfOtherComp",
@@ -659,21 +659,21 @@
       "validation": {
         "minLength": 2,
         "pattern": "^[a-zA-Z\\s]+$",
-        "message": "Please enter details"
+        "message": "panamaShrInvite.questions.otherPartnerOtherComp.validation"
       }
     },
     {
       "id": "declarationAgreement",
       "type": "select",
-      "question": "To the best of my knowledge, the assets, net worth, income or activities of the Foundation are not in any way connected with illegal weapons, money laundering, illegal narcotics or other illegal controlled substances or any activity that I know to be illegal in my country of citizenship, residence and/or incorporation.I do not intend to obstruct, delay or defraud my creditors or to do anything illegal with respect to creditors or any other party, and I do not intend to use the services of the Corporate Service Provider to facilitate or otherwise engage in any such activity.I agree to provide the necessary documentation and information in connection with this Service and that such information may be provided to agencies, authorities and companies necessary to provide the Service.I fully release the Corporate Service Provider and any of its associates from any and all liability of any kind whatsoever arising from reliance on any fact or statement contained in this Declaration that may later be found to be untrue or materially inaccurate.Do you have read and agree to the above?",
+      "question": "panamaShrInvite.questions.declarationAgreement.question",
       "options": [
         {
           "value": "no",
-          "label": "No"
+          "label": "panamaShrInvite.questions.declarationAgreement.options.no"
         },
         {
           "value": "yes",
-          "label": "Yes"
+          "label": "panamaShrInvite.questions.declarationAgreement.options.yes"
         }
       ],
       "required": true
