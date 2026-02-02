@@ -744,20 +744,20 @@ const SaIndividualRegForm: React.FC = () => {
                         className="text-sm hover:bg-accent hover:text-accent-foreground transition-smooth"
                     >
                         <Edit3 className="h-4 w-4 mr-2" />
-                        {t('saShareholder.summary.editAnswers')}
+                        {t('saShareholder.summary.edit')}
                     </Button>
                     <Button
                         onClick={handleSubmit}
                         className="text-sm option-button"
                     >
-                        {t('saShareholder.summary.submitForm')}
+                        {t('saShareholder.summary.submit')}
                     </Button>
                     <Button
                         variant="destructive"
                         onClick={clearFormData}
                         className="text-sm"
                     >
-                        {t('saShareholder.summary.clearData')}
+                        {t('saShareholder.summary.clear')}
                     </Button>
                 </div>
             </div>
