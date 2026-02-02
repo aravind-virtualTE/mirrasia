@@ -3,49 +3,49 @@
         {
             "id": "email",
             "type": "email",
-            "question": "What is your email address?",
-            "placeholder": "Enter your email address",
+            "question": "saShareholder.questions.email.question",
+            "placeholder": "saShareholder.questions.email.placeholder",
             "required": true,
             "validation": {
                 "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
-                "message": "Please enter a valid email address"
+                "message": "saShareholder.questions.email.validation"
             }
         },
         {
             "id": "companyName",
             "type": "text",
-            "question": "Name of the Company applying for establishment",
-            "placeholder": "Enter Name",
+            "question": "saShareholder.questions.companyName.question",
+            "placeholder": "saShareholder.questions.companyName.placeholder",
             "required": true,
             "validation": {
                 "minLength": 2,
-                "message": "Please enter Company Name"
+                "message": "saShareholder.questions.companyName.validation"
             }
         },
         {
             "id": "name",
             "type": "text",
-            "question": "What is your full name?",
-            "placeholder": "Enter your full name",
+            "question": "saShareholder.questions.name.question",
+            "placeholder": "saShareholder.questions.name.placeholder",
             "required": true,
             "validation": {
                 "minLength": 2,
                 "pattern": "^[a-zA-Z\\s]+$",
-                "message": "Please enter a valid name"
+                "message": "saShareholder.questions.name.validation"
             }
         },
         {
             "id": "nameChanged",
             "type": "select",
-            "question": "Have you ever changed your name?",
+            "question": "saShareholder.questions.nameChanged.question",
             "options": [
                 {
                     "value": "no",
-                    "label": "No"
+                    "label": "saShareholder.questions.nameChanged.options.no"
                 },
                 {
                     "value": "yes",
-                    "label": "Yes"
+                    "label": "saShareholder.questions.nameChanged.options.yes"
                 }
             ],
             "required": true
@@ -53,8 +53,8 @@
         {
             "id": "previousName",
             "type": "text",
-            "question": "What was your previous name?",
-            "placeholder": "Enter your previous name",
+            "question": "saShareholder.questions.previousName.question",
+            "placeholder": "saShareholder.questions.previousName.placeholder",
             "required": true,
             "showIf": {
                 "questionId": "nameChanged",
@@ -63,63 +63,63 @@
             "validation": {
                 "minLength": 2,
                 "pattern": "^[a-zA-Z\\s]+$",
-                "message": "Please enter a valid name"
+                "message": "saShareholder.questions.previousName.validation"
             }
         },
         {
             "id": "birthdate",
             "type": "date",
-            "question": "What is your date of birth?",
+            "question": "saShareholder.questions.birthdate.question",
             "required": true,
             "validation": {
-                "message": "Please enter a valid date"
+                "message": "saShareholder.questions.birthdate.validation"
             }
         },
         {
             "id": "nationality",
             "type": "text",
-            "question": "What is your nationality?",
-            "placeholder": "Enter your nationality",
+            "question": "saShareholder.questions.nationality.question",
+            "placeholder": "saShareholder.questions.nationality.placeholder",
             "required": true,
             "validation": {
                 "minLength": 2,
-                "message": "Please enter a valid nationality"
+                "message": "saShareholder.questions.nationality.validation"
             }
         },
         {
             "id": "passport",
             "type": "text",
-            "question": "What is your passport number?",
-            "placeholder": "Enter your passport number",
+            "question": "saShareholder.questions.passport.question",
+            "placeholder": "saShareholder.questions.passport.placeholder",
             "required": true,
             "validation": {
                 "minLength": 6,
-                "message": "Please enter a valid passport number"
+                "message": "saShareholder.questions.passport.validation"
             }
         },
         {
             "id": "residenceAddress",
             "type": "textarea",
-            "question": "What is your residential address?",
-            "placeholder": "Enter your full residential address",
+            "question": "saShareholder.questions.residenceAddress.question",
+            "placeholder": "saShareholder.questions.residenceAddress.placeholder",
             "required": true,
             "validation": {
                 "minLength": 10,
-                "message": "Please enter a complete address"
+                "message": "saShareholder.questions.residenceAddress.validation"
             }
         },
         {
             "id": "postalAddressSame",
             "type": "select",
-            "question": "Is your postal address the same as your residential address?",
+            "question": "saShareholder.questions.postalAddressSame.question",
             "options": [
                 {
                     "value": "yes",
-                    "label": "Yes, it's the same"
+                    "label": "saShareholder.questions.postalAddressSame.options.yes"
                 },
                 {
                     "value": "no",
-                    "label": "No, it's different"
+                    "label": "saShareholder.questions.postalAddressSame.options.no"
                 }
             ],
             "required": true
@@ -127,8 +127,8 @@
         {
             "id": "postalAddress",
             "type": "textarea",
-            "question": "What is your postal address?",
-            "placeholder": "Enter your postal address",
+            "question": "saShareholder.questions.postalAddress.question",
+            "placeholder": "saShareholder.questions.postalAddress.placeholder",
             "required": true,
             "showIf": {
                 "questionId": "postalAddressSame",
@@ -136,60 +136,60 @@
             },
             "validation": {
                 "minLength": 10,
-                "message": "Please enter a complete postal address"
+                "message": "saShareholder.questions.postalAddress.validation"
             }
         },
         {
             "id": "phone",
             "type": "tel",
-            "question": "What is your contactable mobile phone number?",
-            "placeholder": "Enter your mobile phone number",
+            "question": "saShareholder.questions.phone.question",
+            "placeholder": "saShareholder.questions.phone.placeholder",
             "required": true,
             "validation": {
                 "pattern": "^[+]?[0-9\\s\\-\\(\\)]+$",
                 "minLength": 10,
-                "message": "Please enter a valid phone number"
+                "message": "saShareholder.questions.phone.validation"
             }
         },
         {
             "id": "kakaoId",
             "type": "text",
-            "question": "KakaoTalk ID (if any)",
-            "placeholder": "Enter Id if available",
+            "question": "saShareholder.questions.kakaoId.question",
+            "placeholder": "saShareholder.questions.kakaoId.placeholder",
             "required": false
         },
         {
             "id": "otherSNSIds",
             "type": "text",
-            "question": "Telegram, WeChat, etc. Other SNS IDs (if any)",
-            "placeholder": "Enter Id if available",
+            "question": "saShareholder.questions.otherSNSIds.question",
+            "placeholder": "saShareholder.questions.otherSNSIds.placeholder",
             "required": false
         },
         {
             "id": "companyRelation",
             "type": "checkbox",
-            "question": "Relationship with Singapore Company to be established",
-            "infoText": "You need to delegate a person('Designated contact person') who will be in charge of contacting in relation to your company's business, incorporation and renewal of your company, registration of documents, confirmations of the required information, and communications for various matters in respect of our services. Appointment of the designated contact person is free for up to 1 person, and if you would like to delegate 2 or more designated contact persons, an annual fee of USD250 per person will be charged. The designated contact person will be delegated by your company and should be registered separately with us to protect your company's information, reduce business confusion, and prevent identity fraud. (The Designated Contact Person must provide a scanned copy of the front and back of the ID.)",
+            "question": "saShareholder.questions.companyRelation.question",
+            "infoText": "saShareholder.questions.companyRelation.info",
             "options": [
                 {
                     "value": "shareholder",
-                    "label": "Shareholder"
+                    "label": "saShareholder.questions.companyRelation.options.shareholder"
                 },
                 {
                     "value": "director",
-                    "label": "Director"
+                    "label": "saShareholder.questions.companyRelation.options.director"
                 },
                 {
                     "value": "designatedContactPerson",
-                    "label": "Designated Contact Person (can also be acted as a director)"
+                    "label": "saShareholder.questions.companyRelation.options.designatedContactPerson"
                 },
                 {
                     "value": "officialPartner",
-                    "label": "Official Partner Registered with Mirr Asia"
+                    "label": "saShareholder.questions.companyRelation.options.officialPartner"
                 },
                 {
                     "value": "other",
-                    "label": "Other",
+                    "label": "saShareholder.questions.companyRelation.options.other",
                     "allowOther": true
                 }
             ],
@@ -198,137 +198,137 @@
         {
             "id": "amountContributed",
             "type": "text",
-            "question": "Amount contributed to Singapore Company (usd)",
-            "placeholder": "Enter Amount",
+            "question": "saShareholder.questions.amountContributed.question",
+            "placeholder": "saShareholder.questions.amountContributed.placeholder",
             "required": true,
             "validation": {
                 "minLength": 2,
-                "message": "Please enter Amount"
+                "message": "saShareholder.questions.amountContributed.validation"
             }
         },
         {
             "id": "fundSource",
             "type": "checkbox",
-            "question": "Source of funds to contribute to Singapore Company",
+            "question": "saShareholder.questions.fundSource.question",
             "required": true,
-            "infoText": "You may need proof of the source of the funds, so please check it accordingly.",
+            "infoText": "saShareholder.questions.fundSource.info",
             "options": [
                 {
                     "value": "employedIncome",
-                    "label": "Employment income"
+                    "label": "saShareholder.questions.fundSource.options.employedIncome"
                 },
                 {
                     "value": "despositSavings",
-                    "label": "Deposit/Fixed deposit"
+                    "label": "saShareholder.questions.fundSource.options.despositSavings"
                 },
                 {
                     "value": "realEstateIncome",
-                    "label": "Income from real estate, stocks, and other investment assets"
+                    "label": "saShareholder.questions.fundSource.options.realEstateIncome"
                 },
                 {
                     "value": "loan",
-                    "label": "Loans"
+                    "label": "saShareholder.questions.fundSource.options.loan"
                 },
                 {
                     "value": "companyShareSale",
-                    "label": "Payment for sale of company or equity"
+                    "label": "saShareholder.questions.fundSource.options.companyShareSale"
                 },
                 {
                     "value": "businessIncome",
-                    "label": "Business Income / Dividends"
+                    "label": "saShareholder.questions.fundSource.options.businessIncome"
                 },
                 {
                     "value": "inheritance",
-                    "label": "Inheritance"
+                    "label": "saShareholder.questions.fundSource.options.inheritance"
                 },
                 {
                     "value": "parentCompanyInvested",
-                    "label": "Contributing by the parent company"
+                    "label": "saShareholder.questions.fundSource.options.parentCompanyInvested"
                 },
                 {
                     "value": "other",
-                    "label": "Other",
+                    "label": "saShareholder.questions.fundSource.options.other",
                     "allowOther": true
                 }
             ],
             "validation": {
-                "message": "Please select at least one relationship type"
+                "message": "saShareholder.questions.companyRelation.validation"
             }
         },
         {
             "id": "originFundInvestFromCountry",
             "type": "text",
-            "question": "Countries in which funds flow into the above items (all applicable countries)",
-            "placeholder": "Enter Countries",
+            "question": "saShareholder.questions.originFundInvestFromCountry.question",
+            "placeholder": "saShareholder.questions.originFundInvestFromCountry.placeholder",
             "required": false,
             "validation": {
                 "minLength": 2,
-                "message": "Please enter Countries"
+                "message": "saShareholder.questions.originFundInvestFromCountry.validation"
             }
         },
         {
             "id": "fundGenerated",
             "type": "checkbox",
-            "question": "Sources of funds that are expected to be generated or introduced by Singapore Company in the future",
-            "infoText": "Documents proving the source of funds may be required in the future, so please check accordingly.",
+            "question": "saShareholder.questions.fundGenerated.question",
+            "infoText": "saShareholder.questions.fundGenerated.info",
             "required": true,
             "options": [
                 {
                     "value": "businessIncome",
-                    "label": "Business income"
+                    "label": "saShareholder.questions.fundGenerated.options.businessIncome"
                 },
                 {
                     "value": "intrestIncome",
-                    "label": "Interest income"
+                    "label": "saShareholder.questions.fundGenerated.options.intrestIncome"
                 },
                 {
                     "value": "realEstateIncome",
-                    "label": "Income from real estate, stocks, and other investment assets"
+                    "label": "saShareholder.questions.fundGenerated.options.realEstateIncome"
                 },
                 {
                     "value": "companyShareSale",
-                    "label": "Amount of Company or Share Sale Held"
+                    "label": "saShareholder.questions.fundGenerated.options.companyShareSale"
                 },
                 {
                     "value": "inheritanceEndowment",
-                    "label": "Inheritance/Endowment"
+                    "label": "saShareholder.questions.fundGenerated.options.inheritanceEndowment"
                 },
                 {
                     "value": "borrowingTrustDeposit",
-                    "label": "Borrowing/trusting/depositing, etc."
+                    "label": "saShareholder.questions.fundGenerated.options.borrowingTrustDeposit"
                 }
             ],
             "validation": {
-                "message": "Please select at least one relationship type"
+                "message": "saShareholder.questions.companyRelation.validation"
             }
         },
         {
             "id": "originFundGenerateCountry",
             "type": "text",
-            "question": "Countries in which funds flow into the above items ",
-            "placeholder": "Enter Countries",
+            "question": "saShareholder.questions.originFundGenerateCountry.question",
+            "placeholder": "saShareholder.questions.originFundGenerateCountry.placeholder",
             "required": true,
             "validation": {
                 "minLength": 2,
-                "message": "Please enter Countries"
+                "message": "saShareholder.questions.originFundGenerateCountry.validation"
             }
         },
         {
             "id": "usTaxStatus",
             "type": "radio",
-            "question": "Are you a U.S. citizen or permanent resident of the United States, or are you a resident of the United States under tax law?",
+            "question": "saShareholder.questions.usTaxStatus.question",
             "options": [
                 {
                     "value": "yes",
-                    "label": "Yes"
+                    "label": "saShareholder.questions.usTaxStatus.options.yes"
                 },
                 {
                     "value": "no",
-                    "label": "No"
+                    "label": "saShareholder.questions.usTaxStatus.options.no"
                 },
                 {
                     "value": "other",
-                    "label": "Other",
+                    "label": "saShareholder.questions.usTaxStatus.options.other",
                     "allowOther": true
                 }
             ],
@@ -337,8 +337,8 @@
         {
             "id": "usTIN",
             "type": "text",
-            "question": "If you are a U.S. citizen, permanent resident, or are living in the U.S. under tax law, please state the IRS U.S. Tax Identification Number (TIN).",
-            "placeholder": "Enter your U.S. TIN",
+            "question": "saShareholder.questions.usTIN.question",
+            "placeholder": "saShareholder.questions.usTIN.placeholder",
             "required": false,
             "showIf": {
                 "questionId": "usTaxStatus",
@@ -346,22 +346,22 @@
             },
             "validation": {
                 "minLength": 6,
-                "message": "Please enter a valid U.S. TIN"
+                "message": "saShareholder.questions.usTIN.validation"
             }
         },
         {
             "id": "isPoliticallyProminentFig",
             "type": "radio",
-            "question": "Are you a politically exposed person in the above description, or are your immediate family members or close acquaintances a major politically exposed person, such as a high-ranking official, political, government official, military or international organization official?",
-            "infoText": "FATF Guidance: Politically Exposed Persons (Rec 12 and 22):    1. Foreign politically exposed persons are those who have political/social influence in foreign countries at present or in the past. For example, it means a high-ranking administrator of a foreign government, judicial, national defense, or other government agency, a high-ranking administrator of a major foreign political party, or a manager of a foreign state-owned enterprise.2. Domestic politically exposed persons are those who have political/social influence in the country at present or in the past. For example, a high-ranking administrator of a domestic government, judicial, national defense, or other government agency, a high-ranking administrator of a major domestic political party, or a manager of a foreign state-owned enterprise.3. A politically exposed person  in an international organization means a person who influences an international organization, for example, a director, a clerk or a member of the board of directors, senior management, or a person with equal authority.4. Politically exposed persons in a family relationship refer to parents, siblings, spouses, children, relatives by blood or marriage.5. A person who is closely related to a political person means a person who is socially or professionally related to a political person.",
+            "question": "saShareholder.questions.isPoliticallyProminentFig.question",
+            "infoText": "saShareholder.questions.isPoliticallyProminentFig.info",
             "options": [
                 {
                     "value": "yes",
-                    "label": "Yes"
+                    "label": "saShareholder.questions.isPoliticallyProminentFig.options.yes"
                 },
                 {
                     "value": "no",
-                    "label": "No"
+                    "label": "saShareholder.questions.isPoliticallyProminentFig.options.no"
                 }
             ],
             "required": true
@@ -369,8 +369,8 @@
         {
             "id": "descPoliticImpRel",
             "type": "text",
-            "question": "Please describe in detail whether you are a politically important figure or your relationship with such a person.",
-            "placeholder": "Enter Description",
+            "question": "saShareholder.questions.descPoliticImpRel.question",
+            "placeholder": "saShareholder.questions.descPoliticImpRel.placeholder",
             "required": false,
             "showIf": {
                 "questionId": "isPoliticallyProminentFig",
@@ -379,21 +379,21 @@
             "validation": {
                 "minLength": 2,
                 "pattern": "^[a-zA-Z\\s]+$",
-                "message": "Please enter Description"
+                "message": "saShareholder.questions.descPoliticImpRel.validation"
             }
         },
         {
             "id": "isCrimeConvitted",
             "type": "radio",
-            "question": "Have you ever been arrested or convicted of a crime against the law?",
+            "question": "saShareholder.questions.isCrimeConvitted.question",
             "options": [
                 {
-                    "value": "no",
-                    "label": "No"
+                    "value": "yes",
+                    "label": "saShareholder.questions.isCrimeConvitted.options.yes"
                 },
                 {
-                    "value": "yes",
-                    "label": "Yes"
+                    "value": "no",
+                    "label": "saShareholder.questions.isCrimeConvitted.options.no"
                 }
             ],
             "required": true
@@ -401,15 +401,15 @@
         {
             "id": "lawEnforced",
             "type": "radio",
-            "question": "Have you ever been investigated by law enforcement agencies (police, prosecutors) or tax authorities?",
+            "question": "saShareholder.questions.lawEnforced.question",
             "options": [
                 {
-                    "value": "no",
-                    "label": "No"
+                    "value": "yes",
+                    "label": "saShareholder.questions.lawEnforced.options.yes"
                 },
                 {
-                    "value": "yes",
-                    "label": "Yes"
+                    "value": "no",
+                    "label": "saShareholder.questions.lawEnforced.options.no"
                 }
             ],
             "required": true
@@ -417,15 +417,15 @@
         {
             "id": "isMoneyLaundered",
             "type": "radio",
-            "question": "Are you involved in any criminal, money laundering, bribery or terrorist activity with respect to your business or personal funds, or are you involved in any other illegal activity involving funds derived from such activities?",
+            "question": "saShareholder.questions.isMoneyLaundered.question",
             "options": [
                 {
                     "value": "yes",
-                    "label": "Yes"
+                    "label": "saShareholder.questions.isMoneyLaundered.options.yes"
                 },
                 {
                     "value": "no",
-                    "label": "No"
+                    "label": "saShareholder.questions.isMoneyLaundered.options.no"
                 }
             ],
             "required": true
@@ -433,15 +433,15 @@
         {
             "id": "isBankRupted",
             "type": "radio",
-            "question": "Have you ever been personally involved in a bankruptcy or liquidation?",
+            "question": "saShareholder.questions.isBankRupted.question",
             "options": [
                 {
                     "value": "yes",
-                    "label": "Yes"
+                    "label": "saShareholder.questions.isBankRupted.options.yes"
                 },
                 {
                     "value": "no",
-                    "label": "No"
+                    "label": "saShareholder.questions.isBankRupted.options.no"
                 }
             ],
             "required": true
@@ -449,15 +449,15 @@
         {
             "id": "isInvolvedBankRuptedOfficer",
             "type": "radio",
-            "question": "Have you ever been involved in a bankruptcy or liquidation as an officer of a company?",
+            "question": "saShareholder.questions.isInvolvedBankRuptedOfficer.question",
             "options": [
                 {
                     "value": "yes",
-                    "label": "Yes"
+                    "label": "saShareholder.questions.isInvolvedBankRuptedOfficer.options.yes"
                 },
                 {
                     "value": "no",
-                    "label": "No"
+                    "label": "saShareholder.questions.isInvolvedBankRuptedOfficer.options.no"
                 }
             ],
             "required": true
@@ -465,30 +465,30 @@
         {
             "id": "describeIfInvolvedBankRupted",
             "type": "text",
-            "question": "If you have selected 'Yes' in the Declaration section, please state the specifics about it.",
-            "placeholder": "Your Answer",
+            "question": "saShareholder.questions.describeIfInvolvedBankRupted.question",
+            "placeholder": "saShareholder.questions.describeIfInvolvedBankRupted.placeholder",
             "required": false,
             "validation": {
                 "minLength": 2,
-                "message": "Please enter Answer"
+                "message": "saShareholder.questions.describeIfInvolvedBankRupted.validation"
             }
         },
         {
             "id": "declarationAgreement",
             "type": "radio",
-            "question": "You agree to provide documents and information for our business in relation to this service, and in relation to this service, you agree that the purpose of establishing and operating the company is just and for legitimate business. After incorporation, the Company is not obligated to provide help or advice on matters that violate the law, and the Company reserves the right to discontinue the service if it is determined that there is an intention to violate the law or related matters. You hereby declare that everything written on this application is true, complete and accurate to the best of your knowledge. Do you agree?",
+            "question": "saShareholder.questions.declarationAgreement.question",
             "options": [
                 {
                     "value": "yes",
-                    "label": "Yes"
+                    "label": "saShareholder.questions.declarationAgreement.options.yes"
                 },
                 {
                     "value": "no",
-                    "label": "No"
+                    "label": "saShareholder.questions.declarationAgreement.options.no"
                 },
                 {
                     "value": "other",
-                    "label": "Other",
+                    "label": "saShareholder.questions.declarationAgreement.options.other",
                     "allowOther": true
                 }
             ],

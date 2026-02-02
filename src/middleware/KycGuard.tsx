@@ -4,8 +4,8 @@ import { isKycFullyApproved, parseStoredUser } from "@/lib/kyc";
 const KycGuard = () => {
   const location = useLocation();
   const storedUser = parseStoredUser();
-  console.log("storedUser",storedUser)
-  if(storedUser && (storedUser?.role==='admin' || storedUser?.role==='master')){
+  // console.log("storedUser",storedUser)
+  if (storedUser && (storedUser?.role === 'admin' || storedUser?.role === 'master')) {
     return <Outlet />;
   }
   if (!storedUser || !isKycFullyApproved(storedUser)) {

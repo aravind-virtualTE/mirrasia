@@ -989,5 +989,1071 @@
             "pepDetail": "PEP Details",
             "contribution": "Contribution Amount (USD)"
         }
+    },
+    "panamaShrInvite": {
+        "title": "Panama member and controller registration form",
+        "summary": {
+            "title": "Your Information",
+            "success": "Form Completed Successfully!",
+            "edit": "Edit Answers",
+            "submit": "Submit Form",
+            "clear": "Clear All Data",
+            "notAnswered": "Not answered",
+            "optional": "(Optional)"
+        },
+        "navigation": {
+            "prev": "Previous",
+            "continue": "Continue",
+            "editHint": "Click any answer above to edit",
+            "editingLabel": "Editing answer",
+            "pagination": "Question {{current}} of {{total}}",
+            "skip": "Skip"
+        },
+        "upload": {
+            "click": "Click to upload",
+            "dragDrop": "or drag and drop",
+            "types": "PNG, JPG or PDF",
+            "openPdf": "Open PDF",
+            "view": "View",
+            "download": "Download",
+            "meta": "Size: {{size}} KB • Type: {{type}}",
+            "pdfPreviewNote": "PDF file - Click \"Open PDF\" to view"
+        },
+        "messages": {
+            "saved": "Data saved",
+            "savedDesc": "Your form data has been saved successfully",
+            "saveFailed": "Save failed",
+            "saveFailedDesc": "Failed to save your form data",
+            "completed": "Form completed!",
+            "completedDesc": "Thank you for providing all the information.",
+            "required": "Required field",
+            "requiredDesc": "This field is required",
+            "validationError": "Validation error",
+            "specify": "Please specify...",
+            "other": "Other"
+        },
+        "questions": {
+            "name": {
+                "question": "What is your full name?",
+                "placeholder": "Enter your full name",
+                "validation": "Please enter a valid name"
+            },
+            "email": {
+                "question": "What is your email address?",
+                "placeholder": "Enter your email address",
+                "validation": "Please enter a valid email address"
+            },
+            "nameChanged": {
+                "question": "Have you ever changed your name?",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "previousName": {
+                "question": "What was your previous name?",
+                "placeholder": "Enter your previous name",
+                "validation": "Please enter a valid name"
+            },
+            "birthdate": {
+                "question": "What is your date of birth?",
+                "validation": "Please enter a valid date"
+            },
+            "maritalStatus": {
+                "question": "What is your marital status?",
+                "options": {
+                    "single": "Single",
+                    "married": "Married",
+                    "divorced": "Divorced",
+                    "widowed": "Widowed",
+                    "separated": "Separated"
+                }
+            },
+            "nationality": {
+                "question": "What is your nationality?",
+                "placeholder": "Enter your nationality",
+                "validation": "Please enter a valid nationality"
+            },
+            "passport": {
+                "question": "What is your passport number?",
+                "placeholder": "Enter your passport number",
+                "validation": "Please enter a valid passport number"
+            },
+            "job": {
+                "question": "What is your occupation?",
+                "placeholder": "Enter your job title/occupation",
+                "validation": "Please enter a valid occupation"
+            },
+            "residenceAddress": {
+                "question": "What is your residential address?",
+                "placeholder": "Enter your full residential address",
+                "validation": "Please enter a complete address"
+            },
+            "postalAddressSame": {
+                "question": "Is your postal address the same as your residential address?",
+                "options": {
+                    "yes": "Yes, it's the same",
+                    "no": "No, it's different"
+                }
+            },
+            "postalAddress": {
+                "question": "What is your postal address?",
+                "placeholder": "Enter your postal address",
+                "validation": "Please enter a complete postal address"
+            },
+            "phone": {
+                "question": "What is your contactable mobile phone number?",
+                "placeholder": "Enter your mobile phone number",
+                "validation": "Please enter a valid phone number"
+            },
+            "companyName": {
+                "question": "Name of the Company applying for establishment",
+                "placeholder": "Enter Name",
+                "validation": "Please enter Company Name"
+            },
+            "corporationRelationship": {
+                "question": "Relationship with the corporation you are establishing (select all that apply)",
+                "info": "[Description of Designated Contact Person] You must designate a designated contact person to be in charge of the company's business contact. The designated contact person will be in charge of major business contact with our company, and their duties include contacting you regarding company and business-related inquiries, checking progress, and registered documents. The designated contact person can view your company's information and documents, and can also view your company's mail. Designating one contact person is free of charge, and for two or more, an annual fee of USD 250 will be charged per person. The delegated designated contact person will be designated by your company and registered separately with our company, thereby protecting your company's information and reducing confusion in business. (The delegated designated contact person must provide a scanned copy of the front and back of their ID.) **Note: If the designated contact person changes, you must immediately contact us to update this information, fill out this form individually, and submit the required documents.",
+                "options": {
+                    "shareholder": "Shareholder",
+                    "ubo": {
+                        "label": "UBO (Ultimate Beneficiary Owner)",
+                        "description": "Refers to a beneficial owner who directly or indirectly owns 25% or more of the shares."
+                    },
+                    "shareholderProxy": "Shareholder's proxy (trustee acting on behalf of shareholder)",
+                    "dirPresident": "Director (President)",
+                    "dirTreasurer": "Director (Treasurer)",
+                    "dirSecretary": "Director (Secretary)",
+                    "directorOnly": "Director only",
+                    "designatedContact": "Designated contact person (a representative who will communicate with us on behalf of the new company)"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "investedAmount": {
+                "question": "Amount to be invested in the corporation to be established (USD)",
+                "placeholder": "Enter Amount",
+                "validation": "Please enter Amount"
+            },
+            "sharesAcquired": {
+                "question": "Number of shares to be acquired",
+                "placeholder": "Enter Shares",
+                "validation": "Please enter Shares"
+            },
+            "fundSource": {
+                "question": "Source of funds to be invested in the corporation to be established",
+                "info": "Please check the appropriate box as documentation proving the source of funds may be required in the future.",
+                "options": {
+                    "earnedIncome": "Earned income",
+                    "despositSavings": "Deposits, savings",
+                    "realEstateIncome": "Income from real estate, stocks, and other investment assets",
+                    "loan": "Loan",
+                    "companyShareSale": "Proceeds from the sale of a company or shares",
+                    "businessIncome": "Business Income / Dividends",
+                    "succession": "succession",
+                    "parentCompanyInvested": "Parent company invested",
+                    "other": "Other"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "originFundInvestFromCountry": {
+                "question": "Country of origin of funds for the above items (list all relevant countries)",
+                "placeholder": "Enter Countries",
+                "validation": "Please enter Countries"
+            },
+            "fundGenerated": {
+                "question": "Sources of funds expected to be generated or received by the Panama Corporation in the future",
+                "options": {
+                    "businessIncome": "Business income",
+                    "intrestIncome": "Interest income",
+                    "realEstateIncome": "Income from real estate, stocks, and other investment assets",
+                    "companyShareSale": "Proceeds from the sale of a company or shares",
+                    "inheritanceGift": "Inheritance/Gift",
+                    "borrowingTrustDeposit": "Borrowing/trusting/depositing, etc.",
+                    "other": "Other"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "originFundGenerateCountry": {
+                "question": "Country of origin of funds for the above items (list all relevant countries)",
+                "placeholder": "Enter Countries",
+                "validation": "Please enter Countries"
+            },
+            "taxCountry": {
+                "question": "Taxing country",
+                "info": "A taxing country is a country in which you currently reside for more than 183 days per year or a country in which you pay taxes on your personal income (salary/rental income, etc.).",
+                "placeholder": "Enter Tax Country",
+                "validation": "Please enter Tax Country"
+            },
+            "taxNumber": {
+                "question": "Taxpayer Number",
+                "info": " The Taxpayer Identification Number (TIN) is also called the Tax Identification Number (TIN) and is usually listed on your tax payment receipt. If you live in Korea and pay taxes in Korea but do not know your taxpayer identification number, you can enter your Resident Registration Number.",
+                "placeholder": "Enter Tax Number",
+                "validation": "Please enter Tax Number"
+            },
+            "annualSaleIncomePrevYr": {
+                "question": "Please select your approximate annual sales and income (in USD) for the previous year.",
+                "options": {
+                    "businessIncome": "Under  USD 25,000.00",
+                    "intrestIncome": "USD 25,000 - 50,000",
+                    "realEstateIncome": "USD 50,001 - 100,000",
+                    "companyShareSale": "USD 100,001-500,000",
+                    "inheritanceGift": "USD 500,001-1,000,000",
+                    "borrowingTrustDeposit": "USD Over 1 Million"
+                },
+                "validation": "Please select at least one option"
+            },
+            "currentNetWorth": {
+                "question": "Please select your approximate current net worth (in USD)",
+                "options": {
+                    "businessIncome": "Under  USD 25,000.00",
+                    "intrestIncome": "USD 25,000 - 50,000",
+                    "realEstateIncome": "USD 50,001 - 100,000",
+                    "companyShareSale": "USD 100,001-500,000",
+                    "inheritanceGift": "USD 500,001-1,000,000",
+                    "borrowingTrustDeposit": "USD Over 1 Million"
+                },
+                "validation": "Please select at least one option"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "Are you a politically prominent figure who fits the description above, or do you have an immediate family member or close acquaintance who holds a high-ranking public office, is a politician, government official, military or international organization official, or is a politically prominent figure?",
+                "info": "Politically Exposed Person (Source: FATF Guidance: Politically Exposed Persons (Rec 12 and 22)) 1. A foreign politically exposed person means a person who currently or has had political or social influence in a foreign country. For example, a senior official in the executive, judicial, defense, or other government agencies of a foreign government, a senior official in a major foreign political party, or a manager in a foreign state-owned enterprise. 2. A domestic politically exposed person means a person who currently or has had political or social influence in a domestic country. (For example, a senior official in the executive, judicial, defense, or other government agencies of a domestic government, a senior official in a major domestic political party, or a manager in a foreign state-owned enterprise.) 3. A politically exposed person of an international organization means a person who has influence in an international organization, for example, a director, officer, member of the board of directors, senior management, or a person with equivalent authority. 4. A politically exposed person in a family relationship means a parent, sibling, spouse, child, or relative by blood or marriage. 5. A close politically important person refers to a person who has a close social or business relationship with a politically important person.",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "Please describe in detail whether you are a politically important figure or your relationship with such a person.",
+                "placeholder": "Enter Description",
+                "validation": "Please enter Description"
+            },
+            "passportId": {
+                "question": "Please upload a copy of your passport and a passport copy certificate (issued by the district office).",
+                "info": "You can apply for a passport copy certificate at your local district office. The document title is Certificate of Passport Copy.",
+                "placeholder": "Choose passport image file",
+                "validation": "Please upload a valid image file (JPG, PNG, PDF)"
+            },
+            "bankStatement3Mnth": {
+                "question": "Please upload a copy of your most recent 3-month bank statement or Bank Reference Letter that shows your name and address. (If the document is not in English, it must be translated and notarized, and additional translation and notarization fees will apply.)",
+                "info": "This is a required document for incorporation. Without this document, the establishment of a Panamanian corporation cannot proceed.",
+                "placeholder": "Choose BankStatement image file",
+                "validation": "Please upload a valid image file (JPG, PNG, PDF)"
+            },
+            "addressProof": {
+                "question": "Please upload a copy of your address proof document (English copy)",
+                "info": "Please obtain it at a nearby community center, an unmanned issuance machine, or online and submit it.",
+                "placeholder": "Choose Address Proof image file",
+                "validation": "Please upload a valid image file (JPG, PNG, PDF)"
+            },
+            "profRefLetter": {
+                "question": "Please upload a professional reference letter (can be provided by a lawyer, accountant, paralegal, tax accountant, banker, asset manager, business partner, employer, etc.) with whom you have been in business for at least 2 years.",
+                "info": "This is a required document for incorporation. Without this document, the incorporation of a Panama corporation cannot proceed. * It must be issued within 3 months of the date of issue.",
+                "placeholder": "Choose professional reference letter image file",
+                "validation": "Please upload a valid image file (JPG, PNG, PDF)"
+            },
+            "engResume": {
+                "question": "Please upload your English resume.",
+                "placeholder": "Choose Resume image file",
+                "validation": "Please upload a valid image file (JPG, PNG, PDF)"
+            },
+            "isCrimeConvitted": {
+                "question": "Have you ever been arrested or convicted of a crime against the law?",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "lawEnforced": {
+                "question": "Have you ever been investigated by law enforcement agencies (police, prosecutors) or tax authorities?",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "isMoneyLaundered": {
+                "question": "Are you involved in any criminal, money laundering, bribery or terrorist activity with respect to your business or personal funds, or are you involved in any other illegal activity involving funds derived from such activities?",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "isBankRupted": {
+                "question": "Have you ever been personally involved in a bankruptcy or liquidation?",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "isInvolvedBankRuptedOfficer": {
+                "question": "Have you ever been involved in a bankruptcy or liquidation as an officer of a company?",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "isPartnerOfOtherComp": {
+                "question": "Are you a director / shareholder / beneficial owner (UBO) / associate / partner of another company or an associate of another organization or association?",
+                "info": "If applicable, please list your company name, country of location, and job title in the following sections.",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "otherPartnerOtherComp": {
+                "question": "If you selected 'Yes' to previous section, please provide specific details.",
+                "placeholder": "Enter Details",
+                "validation": "Please enter details"
+            },
+            "declarationAgreement": {
+                "question": "To the best of my knowledge, the assets, net worth, income or activities of the Foundation are not in any way connected with illegal weapons, money laundering, illegal narcotics or other illegal controlled substances or any activity that I know to be illegal in my country of citizenship, residence and/or incorporation.I do not intend to obstruct, delay or defraud my creditors or to do anything illegal with respect to creditors or any other party, and I do not intend to use the services of the Corporate Service Provider to facilitate or otherwise engage in any such activity.I agree to provide the necessary documentation and information in connection with this Service and that such information may be provided to agencies, authorities and companies necessary to provide the Service.I fully release the Corporate Service Provider and any of its associates from any and all liability of any kind whatsoever arising from reliance on any fact or statement contained in this Declaration that may later be found to be untrue or materially inaccurate.Do you have read and agree to the above?",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            }
+        }
+    },
+    "panamaCorporateShr": {
+        "title": "Panama member and controller registration form",
+        "summary": {
+            "title": "Your Information",
+            "success": "Form Completed Successfully!",
+            "edit": "Edit Answers",
+            "submit": "Submit Form",
+            "clear": "Clear All Data",
+            "notAnswered": "Not answered",
+            "optional": "(Optional)"
+        },
+        "navigation": {
+            "prev": "Previous",
+            "continue": "Continue",
+            "editHint": "Click any answer above to edit",
+            "editingLabel": "Editing answer",
+            "pagination": "Question {{current}} of {{total}}",
+            "skip": "Skip"
+        },
+        "upload": {
+            "click": "Click to upload",
+            "dragDrop": "or drag and drop",
+            "types": "PNG, JPG or PDF",
+            "openPdf": "Open PDF",
+            "view": "View",
+            "download": "Download",
+            "meta": "Size: {{size}} KB • Type: {{type}}",
+            "pdfPreviewNote": "PDF file - Click \"Open PDF\" to view"
+        },
+        "messages": {
+            "saved": "Data saved",
+            "savedDesc": "Your form data has been saved successfully",
+            "saveFailed": "Save failed",
+            "saveFailedDesc": "Failed to save your form data",
+            "completed": "Form completed!",
+            "completedDesc": "Thank you for providing all the information.",
+            "required": "Required field",
+            "requiredDesc": "This field is required",
+            "validationError": "Validation error",
+            "specify": "Please specify...",
+            "other": "Other"
+        },
+        "questions": {
+            "name": {
+                "question": "Representative name",
+                "placeholder": "Enter your full name",
+                "validation": "Please enter a valid name"
+            },
+            "email": {
+                "question": "What is your email address?",
+                "placeholder": "Enter your email address",
+                "validation": "Please enter a valid email address"
+            },
+            "companyName": {
+                "question": "Name of the Company applying for establishment",
+                "placeholder": "Enter Name",
+                "validation": "Please enter Company Name"
+            },
+            "dateOfEstablishment": {
+                "question": "Date of establishment",
+                "validation": "Please enter a valid date"
+            },
+            "establishmentCountry": {
+                "question": "Country of establishment",
+                "placeholder": "Enter country",
+                "validation": "Please enter a valid country"
+            },
+            "brnNumber": {
+                "question": "Corporate registration number or business registration number",
+                "validation": "Please enter value"
+            },
+            "listedOnStockExchange": {
+                "question": "Whether listed on a stock exchange",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No",
+                    "other": "Other"
+                }
+            },
+            "namesOfShareholders": {
+                "question": "English names of shareholders/directors and shares held",
+                "info": "Please also include your zip code and the length of time you have resided in your country of residence.",
+                "placeholder": "Enter your Details"
+            },
+            "businessAddress": {
+                "question": "Business address?",
+                "placeholder": "Enter your Address",
+                "validation": "Please enter a valid address"
+            },
+            "phoneNumber": {
+                "question": "Contactable representative mobile phone number",
+                "placeholder": "Enter your mobile phone number",
+                "validation": "Please enter a valid mobile phone number"
+            },
+            "kakaoTalkId": {
+                "question": "Representative KakaoTalk ID (if available)",
+                "placeholder": "Enter Details",
+                "validation": "Please enter a if avilable"
+            },
+            "otherSnsId": {
+                "question": "Representative Telegram, WeChat, or other SNS ID (if available)",
+                "placeholder": "Enter Details",
+                "validation": "Please enter a if avilable"
+            },
+            "corporationRelationship": {
+                "question": "Relationship with the Panamanian corporation to be established",
+                "options": {
+                    "shareholder": "Shareholder",
+                    "trustee": "trustee",
+                    "director": "Director",
+                    "designatedContact": "Designated contact person (a representative who will communicate with us on behalf of the new company)",
+                    "other": "Other"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "investedAmount": {
+                "question": "Amount of equity to be invested in the Panamanian corporation to be established (USD)",
+                "placeholder": "Enter Amount",
+                "validation": "Please enter Amount"
+            },
+            "sourceInvestmentFunds": {
+                "question": "Source of investment funds",
+                "info": "Please check the appropriate box as documentation proving the source of funds may be required in the future.",
+                "options": {
+                    "shareholderCapitalLoans": "Shareholders' capital or loans",
+                    "businessIncome": "Business income/dividends",
+                    "despositSavings": "Deposits, savings",
+                    "realEstateIncome": "Income from real estate, stocks, and other investment assets",
+                    "loan": "Loan",
+                    "companyShareSale": "Proceeds from the sale of a company or shares",
+                    "shareholderDirectorFund": "Inheritance funds of shareholders/directors or special persons",
+                    "other": "Other"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "countryReceivingFunds": {
+                "question": "Countries receiving funds for the above items (list all countries)",
+                "placeholder": "Enter Countries",
+                "validation": "Please enter Countries"
+            },
+            "fundGenerated": {
+                "question": "Sources of funds expected to be generated or received by the Panama Corporation in the future",
+                "options": {
+                    "businessIncome": "Business income",
+                    "intrestIncome": "Interest income",
+                    "realEstateIncome": "Income from real estate, stocks, and other investment assets",
+                    "companyShareSale": "Proceeds from the sale of a company or shares",
+                    "inheritanceGift": "Inheritance/Gift",
+                    "borrowingTrustDeposit": "Borrowing/trusting/depositing, etc.",
+                    "other": "Other"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "countriesReceivingFunds": {
+                "question": "Countries receiving funds for the above items (list all countries)",
+                "placeholder": "Enter Countries",
+                "validation": "Please enter Countries"
+            },
+            "usCorporateUnderTaxLaw": {
+                "question": "Is your company under U.S. jurisdiction for legal purposes or a U.S. permanent establishment for tax purposes?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No",
+                    "other": "Other"
+                }
+            },
+            "tinNumber": {
+                "question": "If you are under U.S. jurisdiction for legal purposes or have a U.S. permanent establishment for tax purposes, please provide your IRS U.S. Tax Identification Number (TIN).",
+                "placeholder": "Enter TIN Number",
+                "validation": "Please enter TIN Number"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "Are you a politically prominent figure who fits the description above, or do you have an immediate family member or close acquaintance who holds a high-ranking public office, is a politician, government official, military or international organization official, or is a politically prominent figure?",
+                "info": "Politically Exposed Person (Source: FATF Guidance: Politically Exposed Persons (Rec 12 and 22)) 1. A foreign politically exposed person means a person who currently or has had political or social influence in a foreign country. For example, a senior official in the executive, judicial, defense, or other government agencies of a foreign government, a senior official in a major foreign political party, or a manager in a foreign state-owned enterprise. 2. A domestic politically exposed person means a person who currently or has had political or social influence in a domestic country. (For example, a senior official in the executive, judicial, defense, or other government agencies of a domestic government, a senior official in a major domestic political party, or a manager in a foreign state-owned enterprise.) 3. A politically exposed person of an international organization means a person who has influence in an international organization, for example, a director, officer, member of the board of directors, senior management, or a person with equivalent authority. 4. A politically exposed person in a family relationship means a parent, sibling, spouse, child, or relative by blood or marriage. 5. A close politically important person refers to a person who has a close social or business relationship with a politically important person.",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "Please describe in detail whether you are a politically important figure or your relationship with such a person.",
+                "placeholder": "Enter Description",
+                "validation": "Please enter Description"
+            },
+            "anyOneInvestigatedByLawEnforcement": {
+                "question": "Has anyone from your company ever been investigated by law enforcement (police, prosecutors) or tax authorities?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "employeeIllicitActivity": {
+                "question": "Are any of your company's employees involved in criminal activity, money laundering, bribery, or terrorist activity, or have any other illicit activities related to business or personal funds?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "isAnyBankRupted": {
+                "question": "Has anyone from your company ever been personally involved in or involved in bankruptcy or liquidation?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "isAnyInvolvedBankRuptedOfficer": {
+                "question": "Has anyone from your company ever been involved in or involved in bankruptcy or liquidation as an executive of the company?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "criminalDescriptionIfYes": {
+                "question": "If you selected 'Yes' to any of the declaration sections, please provide specific details.",
+                "placeholder": "Enter Details"
+            },
+            "declarationAgreement": {
+                "question": "To the best of my knowledge, the assets, net worth, income or activities of the Foundation are not in any way connected with illegal weapons, money laundering, illegal narcotics or other illegal controlled substances or any activity that I know to be illegal in my country of citizenship, residence and/or incorporation.I do not intend to obstruct, delay or defraud my creditors or to do anything illegal with respect to creditors or any other party, and I do not intend to use the services of the Corporate Service Provider to facilitate or otherwise engage in any such activity.I agree to provide the necessary documentation and information in connection with this Service and that such information may be provided to agencies, authorities and companies necessary to provide the Service.I fully release the Corporate Service Provider and any of its associates from any and all liability of any kind whatsoever arising from reliance on any fact or statement contained in this Declaration that may later be found to be untrue or materially inaccurate.Do you have read and agree to the above?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            }
+        }
+    },
+    "saCorporate": {
+        "title": "Singapore company member form",
+        "summary": {
+            "title": "Your Information",
+            "success": "Form Completed Successfully!",
+            "edit": "Edit Answers",
+            "submit": "Submit Form",
+            "clear": "Clear All Data",
+            "notAnswered": "Not answered",
+            "optional": "(Optional)"
+        },
+        "navigation": {
+            "prev": "Previous",
+            "continue": "Continue",
+            "editHint": "Click any answer above to edit",
+            "editingLabel": "Editing answer",
+            "pagination": "Question {{current}} of {{total}}",
+            "skip": "Skip"
+        },
+        "upload": {
+            "click": "Click to upload",
+            "dragDrop": "or drag and drop",
+            "types": "PNG, JPG or PDF",
+            "openPdf": "Open PDF",
+            "view": "View",
+            "download": "Download",
+            "meta": "Size: {{size}} KB • Type: {{type}}",
+            "pdfPreviewNote": "PDF file - Click \"Open PDF\" to view"
+        },
+        "messages": {
+            "saved": "Data saved",
+            "savedDesc": "Your form data has been saved successfully",
+            "saveFailed": "Save failed",
+            "saveFailedDesc": "Failed to save your form data",
+            "completed": "Form completed!",
+            "completedDesc": "Thank you for providing all the information.",
+            "required": "Required field",
+            "requiredDesc": "This field is required",
+            "validationError": "Validation error",
+            "specify": "Please specify...",
+            "other": "Other"
+        },
+        "questions": {
+            "email": {
+                "question": "What is your email address?",
+                "placeholder": "Enter your email address",
+                "validation": "Please enter a valid email address"
+            },
+            "companyName": {
+                "question": "Name of the Company applying for establishment",
+                "placeholder": "Enter Name",
+                "validation": "Please enter Company Name"
+            },
+            "name": {
+                "question": "What is your full name?",
+                "placeholder": "Enter your full name",
+                "validation": "Please enter a valid name"
+            },
+            "nameChanged": {
+                "question": "Have you ever changed your name?",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "previousName": {
+                "question": "What was your previous name?",
+                "placeholder": "Enter your previous name",
+                "validation": "Please enter a valid name"
+            },
+            "birthdate": {
+                "question": "What is your date of birth?",
+                "validation": "Please enter a valid date"
+            },
+            "nationality": {
+                "question": "What is your nationality?",
+                "placeholder": "Enter your nationality",
+                "validation": "Please enter a valid nationality"
+            },
+            "passport": {
+                "question": "What is your passport number?",
+                "placeholder": "Enter your passport number",
+                "validation": "Please enter a valid passport number"
+            },
+            "residenceAddress": {
+                "question": "What is your residential address?",
+                "placeholder": "Enter your full residential address",
+                "validation": "Please enter a complete address"
+            },
+            "postalAddressSame": {
+                "question": "Is your postal address the same as your residential address?",
+                "options": {
+                    "yes": "Yes, it's the same",
+                    "no": "No, it's different"
+                }
+            },
+            "postalAddress": {
+                "question": "What is your postal address?",
+                "placeholder": "Enter your postal address",
+                "validation": "Please enter a complete postal address"
+            },
+            "phone": {
+                "question": "What is your contactable mobile phone number?",
+                "placeholder": "Enter your mobile phone number",
+                "validation": "Please enter a valid phone number"
+            },
+            "kakaoId": {
+                "question": "KakaoTalk ID (if any)",
+                "placeholder": "Enter Id if available"
+            },
+            "otherSNSIds": {
+                "question": "Telegram, WeChat, etc. Other SNS IDs (if any)",
+                "placeholder": "Enter Id if available"
+            },
+            "companyRelation": {
+                "question": "Relationship with Singapore Company to be established",
+                "info": "You must designate a designated contact person to be in charge of the company's business contacts. The designated contact person will be in charge of major business contacts with our company, and their duties include contacting you regarding company and business-related inquiries, checking progress, and contacting you regarding registered documents, etc. The designated contact person can access your company's information and documents, and can also access your mail. Designating one contact person is free of charge, and for two or more, an annual fee of USD 250 will be charged per person. The designated contact person is designated by your company and registered separately with our company to protect your company's information and reduce confusion in business. (The designated contact person must submit a copy of their passport, proof of address, and go through the identity verification process in the same way as shareholders/executives.) **Note: If there is a change in the designated contact person, you must immediately contact us to update it, and fill out this form individually and submit the required documents.",
+                "options": {
+                    "shareholder": "Shareholder",
+                    "officer": "Officer",
+                    "keyController": "Key controller (applicable if you directly or indirectly own more than 25% of the shares)",
+                    "designatedContactPerson": "Designated Contact Person *May concurrently serve as an executive officer",
+                    "officialPartner": "Official Partner Registered with Mirr Asia",
+                    "other": "Other"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "percentSharesHeld": {
+                "question": "Percentage of shares held in the Singapore corporation to be established (%)",
+                "placeholder": "Enter Percentage",
+                "validation": "Please enter Percentage"
+            },
+            "fundSource": {
+                "question": "Source of funds to contribute to Singapore Company",
+                "info": "You may need proof of the source of the funds, so please check it accordingly.",
+                "options": {
+                    "earnedIncome": "Earned income",
+                    "despositSavings": "Deposits, savings",
+                    "realEstateIncome": "Income from real estate, stocks, and other investment assets",
+                    "loan": "Loans",
+                    "companyShareSale": "Payment for sale of company or equity",
+                    "businessIncome": "Business Income / Dividends",
+                    "succession": "Succession",
+                    "parentCompanyInvested": "Parent company invested",
+                    "other": "Other"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "countryOriginFund": {
+                "question": "Country of origin of funds for the above items (list all relevant countries)",
+                "placeholder": "Enter Countries",
+                "validation": "Please enter Countries"
+            },
+            "fundGenerated": {
+                "question": "Sources of funds expected to be generated or incurred by the Singapore corporation in the future",
+                "info": "Please check the appropriate box as documentation proving the source of funds may be required in the future.",
+                "options": {
+                    "businessIncome": "Business income and distribution",
+                    "earnedIncome": "Earned income",
+                    "intrestIncome": "Interest income",
+                    "realEstateIncome": "Income from real estate, stocks, and other investment assets",
+                    "saleOfCompanyShares": "Proceeds from the sale of a company or shares",
+                    "inheritanceGift": "Inheritance/Gift",
+                    "borrowingTrustDeposit": "Borrowing/trusting/depositing, etc.",
+                    "other": "Other"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "originFundGenerateCountry": {
+                "question": "Country of origin of funds for the above items (list all relevant countries)",
+                "placeholder": "Enter Countries",
+                "validation": "Please enter Countries"
+            },
+            "netAssetValue": {
+                "question": "The current net asset value is stated in USD",
+                "info": "This question applies to Singapore shareholders and we may request you to provide supporting documentation at a later date.",
+                "placeholder": "Enter Value",
+                "validation": "Please enter Value"
+            },
+            "usTaxStatus": {
+                "question": "Are you a U.S. citizen or permanent resident of the United States, or are you a resident of the United States under tax law?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No",
+                    "other": "Other"
+                }
+            },
+            "usTIN": {
+                "question": "If you are a U.S. citizen, permanent resident, or are living in the U.S. under tax law, please state the IRS U.S. Tax Identification Number (TIN).",
+                "placeholder": "Enter your U.S. TIN",
+                "validation": "Please enter a valid U.S. TIN"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "Are you a politically exposed person in the above description, or are your immediate family members or close acquaintances a major politically exposed person, such as a high-ranking official, political, government official, military or international organization official?",
+                "info": "FATF Guidance: Politically Exposed Persons (Rec 12 and 22):    1. Foreign politically exposed persons are those who have political/social influence in foreign countries at present or in the past. For example, it means a high-ranking administrator of a foreign government, judicial, national defense, or other government agency, a high-ranking administrator of a major foreign political party, or a manager in a foreign state-owned enterprise.2. Domestic politically exposed persons are those who have political/social influence in the country at present or in the past. For example, a high-ranking administrator of a domestic government, judicial, national defense, or other government agency, a high-ranking administrator of a major domestic political party, or a manager of a foreign state-owned enterprise.3. A politically exposed person  in an international organization means a person who influences an international organization, for example, a director, a clerk or a member of the board of directors, senior management, or a person with equal authority.4. Politically exposed persons in a family relationship refer to parents, siblings, spouses, children, relatives by blood or marriage.5. A person who is closely related to a political person means a person who is socially or professionally related to a political person.",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "Please describe in detail whether you are a politically important figure or your relationship with such a person.",
+                "placeholder": "Enter Description",
+                "validation": "Please enter Description"
+            },
+            "passportId": {
+                "question": "Please upload a copy of your passport and a passport copy certificate (issued by the district office).",
+                "info": "You can apply for a passport copy certificate at your local district office. The document title is Certificate of Passport Copy.",
+                "placeholder": "Choose passport image file",
+                "validation": "Please upload a valid image file (JPG, PNG, PDF)"
+            },
+            "addressProof": {
+                "question": "Please upload a copy of your address proof document (English copy)",
+                "info": "Please obtain it at a nearby community center, an unmanned issuance machine, or online and submit it.",
+                "placeholder": "Choose Address Proof image file",
+                "validation": "Please upload a valid image file (JPG, PNG, PDF)"
+            },
+            "engResume": {
+                "question": "Please upload your English resume.",
+                "placeholder": "Choose Resume image file",
+                "validation": "Please upload a valid image file (JPG, PNG, PDF)"
+            },
+            "isCrimeConvitted": {
+                "question": "Have you ever been arrested or convicted of a crime against the law?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "lawEnforced": {
+                "question": "Have you ever been investigated by law enforcement agencies (police, prosecutors) or tax authorities?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "isMoneyLaundered": {
+                "question": "Are you involved in any criminal, money laundering, bribery or terrorist activity with respect to your business or personal funds, or are you involved in any other illegal activity involving funds derived from such activities?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "isBankRupted": {
+                "question": "Have you ever been personally involved in a bankruptcy or liquidation?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "isInvolvedBankRuptedOfficer": {
+                "question": "Have you ever been involved in a bankruptcy or liquidation as an officer of a company?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "describeIfInvolvedBankRupted": {
+                "question": "If you have selected 'Yes' in the Declaration section, please state the specifics about it.",
+                "placeholder": "Your Answer",
+                "validation": "Please enter Answer"
+            },
+            "declarationAgreement": {
+                "question": "You agree to provide documents and information for our business in relation to this service, and in relation to this service, you agree that the purpose of establishing and operating the company is just and for legitimate business. After incorporation, the Company is not obligated to provide help or advice on matters that violate the law, and the Company reserves the right to discontinue the service if it is determined that there is an intention to violate the law or related matters. You hereby declare that everything written on this application is true, complete and accurate to the best of your knowledge. Do you agree?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No",
+                    "other": "Other"
+                }
+            }
+        }
+    },
+    "saShareholder": {
+        "title": "Singapore company member form",
+        "summary": {
+            "title": "Your Information",
+            "success": "Form Completed Successfully!",
+            "edit": "Edit Answers",
+            "submit": "Submit Form",
+            "clear": "Clear All Data",
+            "notAnswered": "Not answered",
+            "optional": "(Optional)"
+        },
+        "navigation": {
+            "prev": "Previous",
+            "continue": "Continue",
+            "editHint": "Click any answer above to edit",
+            "editingLabel": "Editing answer",
+            "pagination": "Question {{current}} of {{total}}",
+            "skip": "Skip"
+        },
+        "upload": {
+            "click": "Click to upload",
+            "dragDrop": "or drag and drop",
+            "types": "PNG, JPG or PDF",
+            "openPdf": "Open PDF",
+            "view": "View",
+            "download": "Download",
+            "meta": "Size: {{size}} KB • Type: {{type}}",
+            "pdfPreviewNote": "PDF file - Click \"Open PDF\" to view"
+        },
+        "messages": {
+            "saved": "Data saved",
+            "savedDesc": "Your form data has been saved successfully",
+            "saveFailed": "Save failed",
+            "saveFailedDesc": "Failed to save your form data",
+            "completed": "Form completed!",
+            "completedDesc": "Thank you for providing all the information.",
+            "required": "Required field",
+            "requiredDesc": "This field is required",
+            "validationError": "Validation error",
+            "specify": "Please specify...",
+            "other": "Other"
+        },
+        "questions": {
+            "email": {
+                "question": "What is your email address?",
+                "placeholder": "Enter your email address",
+                "validation": "Please enter a valid email address"
+            },
+            "companyName": {
+                "question": "Name of the Company applying for establishment",
+                "placeholder": "Enter Name",
+                "validation": "Please enter Company Name"
+            },
+            "name": {
+                "question": "What is your full name?",
+                "placeholder": "Enter your full name",
+                "validation": "Please enter a valid name"
+            },
+            "nameChanged": {
+                "question": "Have you ever changed your name?",
+                "options": {
+                    "no": "No",
+                    "yes": "Yes"
+                }
+            },
+            "previousName": {
+                "question": "What was your previous name?",
+                "placeholder": "Enter your previous name",
+                "validation": "Please enter a valid name"
+            },
+            "birthdate": {
+                "question": "What is your date of birth?",
+                "validation": "Please enter a valid date"
+            },
+            "nationality": {
+                "question": "What is your nationality?",
+                "placeholder": "Enter your nationality",
+                "validation": "Please enter a valid nationality"
+            },
+            "passport": {
+                "question": "What is your passport number?",
+                "placeholder": "Enter your passport number",
+                "validation": "Please enter a valid passport number"
+            },
+            "residenceAddress": {
+                "question": "What is your residential address?",
+                "placeholder": "Enter your full residential address",
+                "validation": "Please enter a complete address"
+            },
+            "postalAddressSame": {
+                "question": "Is your postal address the same as your residential address?",
+                "options": {
+                    "yes": "Yes, it's the same",
+                    "no": "No, it's different"
+                }
+            },
+            "postalAddress": {
+                "question": "What is your postal address?",
+                "placeholder": "Enter your postal address",
+                "validation": "Please enter a complete postal address"
+            },
+            "phone": {
+                "question": "What is your contactable mobile phone number?",
+                "placeholder": "Enter your mobile phone number",
+                "validation": "Please enter a valid phone number"
+            },
+            "kakaoId": {
+                "question": "KakaoTalk ID (if any)",
+                "placeholder": "Enter Id if available"
+            },
+            "otherSNSIds": {
+                "question": "Telegram, WeChat, etc. Other SNS IDs (if any)",
+                "placeholder": "Enter Id if available"
+            },
+            "companyRelation": {
+                "question": "Relationship with Singapore Company to be established",
+                "info": "You should choose the relationship with the Singapore company to be established. You must delegate a person('Designated contact person') who will be in charge of contacting in relation to your company's business, incorporation and renewal of your company, registration of documents, confirmations of the required information, and communications for various matters in respect of our services. Appointment of the designated contact person is free for up to 1 person, and if you would like to delegate 2 or more designated contact persons, an annual fee of USD250 per person will be charged. The designated contact person will be delegated by your company and should be registered separately with us to protect your company's information, reduce business confusion, and prevent identity fraud. (The Designated Contact Person must provide a scanned copy of the front and back of the ID.)",
+                "options": {
+                    "shareholder": "Shareholder",
+                    "director": "Director",
+                    "designatedContactPerson": "Designated Contact Person *May concurrently serve as an executive officer",
+                    "officialPartner": "Official Partner Registered with Mirr Asia",
+                    "other": "Other"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "amountContributed": {
+                "question": "Amount intended to be contributed to the Singapore company to be established (expressed in currency and amount)",
+                "placeholder": "Enter amount",
+                "validation": "Please enter amount"
+            },
+            "fundSource": {
+                "question": "Source of funds to contribute to Singapore Company",
+                "info": "You should check the appropriate items as proof of the source of the funds may be required.",
+                "options": {
+                    "employedIncome": "Employed Income",
+                    "despositSavings": "Deposits, savings",
+                    "realEstateIncome": "Income from real estate, stocks, and other investment assets",
+                    "loan": "Loans",
+                    "companyShareSale": "Payment for sale of company or equity",
+                    "businessIncome": "Business Income / Dividends",
+                    "inheritance": "Inheritance",
+                    "parentCompanyInvested": "Parent company invested",
+                    "other": "Other"
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "originFundInvestFromCountry": {
+                "question": "Country level where the above investment funds are held (list all relevant countries)",
+                "placeholder": "Enter Countries",
+                "validation": "Please enter Countries"
+            },
+            "fundGenerated": {
+                "question": "Main source of funds expected to be generated or incurred by the Singapore corporation in the future",
+                "info": "Please check the appropriate box as documentation proving the source of funds may be required in the future.",
+                "options": {
+                    "businessIncome": "Business income and distribution",
+                    "intrestIncome": "Interest income",
+                    "realEstateIncome": "Income from real estate, stocks, and other investment assets",
+                    "companyShareSale": "Proceeds from the sale of a company or shares",
+                    "inheritanceEndowment": "Inheritance/Endowment",
+                    "borrowingTrustDeposit": "Borrowing/trusting/depositing, etc."
+                },
+                "validation": "Please select at least one relationship type"
+            },
+            "originFundGenerateCountry": {
+                "question": "Expected country from which the above-generated funds will be derived (list all relevant countries)",
+                "placeholder": "Enter Countries",
+                "validation": "Please enter Countries"
+            },
+            "usTaxStatus": {
+                "question": "Are you a U.S. citizen or permanent resident of the United States, or are you a resident of the United States under tax law?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No",
+                    "other": "Other"
+                }
+            },
+            "usTIN": {
+                "question": "If you are a U.S. citizen, permanent resident, or are living in the U.S. under tax law, please state the IRS U.S. Tax Identification Number (TIN).",
+                "placeholder": "Enter your U.S. TIN",
+                "validation": "Please enter a valid U.S. TIN"
+            },
+            "isPoliticallyProminentFig": {
+                "question": "Are you a politically exposed person in the above description, or are your immediate family members or close acquaintances a major politically exposed person, such as a high-ranking official, political, government official, military or international organization official?",
+                "info": "FATF Guidance: Politically Exposed Persons (Rec 12 and 22):    1. Foreign politically exposed persons are those who have political/social influence in foreign countries at present or in the past. For example, it means a high-ranking administrator of a foreign government, judicial, national defense, or other government agency, a high-ranking administrator of a major foreign political party, or a manager in a foreign state-owned enterprise.2. Domestic politically exposed persons are those who have political/social influence in the country at present or in the past. For example, a high-ranking administrator of a domestic government, judicial, national defense, or other government agency, a high-ranking administrator of a major domestic political party, or a manager of a foreign state-owned enterprise.3. A politically exposed person  in an international organization means a person who influences an international organization, for example, a director, a clerk or a member of the board of directors, senior management, or a person with equal authority.4. Politically exposed persons in a family relationship refer to parents, siblings, spouses, children, relatives by blood or marriage.5. A person who is closely related to a political person means a person who is socially or professionally related to a political person.",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "descPoliticImpRel": {
+                "question": "Please describe in detail whether you are a politically important figure or your relationship with such a person.",
+                "placeholder": "Enter Description",
+                "validation": "Please enter Description"
+            },
+            "isCrimeConvitted": {
+                "question": "Have you ever been arrested or convicted of a crime against the law?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "lawEnforced": {
+                "question": "Have you ever been investigated by law enforcement agencies (police, prosecutors) or tax authorities?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "isMoneyLaundered": {
+                "question": "Are you involved in any criminal, money laundering, bribery or terrorist activity with respect to your business or personal funds, or are you involved in any other illegal activity involving funds derived from such activities?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "isBankRupted": {
+                "question": "Have you ever been personally involved in a bankruptcy or liquidation?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "isInvolvedBankRuptedOfficer": {
+                "question": "Have you ever been involved in a bankruptcy or liquidation as an officer of a company?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No"
+                }
+            },
+            "describeIfInvolvedBankRupted": {
+                "question": "If you have selected 'Yes' in the Declaration section, please state the specifics about it.",
+                "placeholder": "Your Answer",
+                "validation": "Please enter Answer"
+            },
+            "declarationAgreement": {
+                "question": "You agree to provide documents and information for our business in relation to this service, and in relation to this service, you agree that the purpose of establishing and operating the company is just and for legitimate business. After incorporation, the Company is not obligated to provide help or advice on matters that violate the law, and the Company reserves the right to discontinue the service if it is determined that there is an intention to violate the law or related matters. You hereby declare that everything written on this application is true, complete and accurate to the best of your knowledge. Do you agree?",
+                "options": {
+                    "yes": "Yes",
+                    "no": "No",
+                    "other": "Other"
+                }
+            }
+        }
     }
 }

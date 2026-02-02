@@ -8,12 +8,14 @@ import { Card } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { CheckCircle, ArrowRight, ArrowLeft, Edit3, Info, Eye, Download, FileText } from 'lucide-react';
 import questionsData from './questions.json';
-import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import { formDataAtom, type Question, saveShrSgInviteData, getSgShareHlderData } from './SaShrAtom';
 import { useParams } from 'react-router-dom';
 import { multiShrDirResetAtom } from '@/components/shareholderDirector/constants';
+import { useToast } from '@/hooks/use-toast';
 
 const SaIndividualRegForm: React.FC = () => {
+    const { t } = useTranslation('en1');
     const [formData, setFormData] = useAtom(formDataAtom);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [currentAnswer, setCurrentAnswer] = useState('');
@@ -56,7 +58,7 @@ const SaIndividualRegForm: React.FC = () => {
             ? multiData.find((item: { _id: string | null; }) => item._id === multiShId)
             : null;
         if (findData) {
-            setFormData({ ...formData, email: findData.email, companyName: findData.companyName, companyId: findData.companyId  })
+            setFormData({ ...formData, email: findData.email, companyName: findData.companyName, companyId: findData.companyId })
         }
         // console.log("multiShId",findData)
     }, [])
@@ -77,14 +79,14 @@ const SaIndividualRegForm: React.FC = () => {
 
             await saveShrSgInviteData(formData, id);
             toast({
-                title: "Data saved",
-                description: "Your form data has been saved successfully",
+                title: t('saShareholder.messages.saved'),
+                description: t('saShareholder.messages.savedDesc'),
             });
         } catch (error) {
             console.error('Error saving form data:', error);
             toast({
-                title: "Save failed",
-                description: "Failed to save your form data",
+                title: t('saShareholder.messages.saveFailed'),
+                description: t('saShareholder.messages.saveFailedDesc'),
                 variant: "destructive",
             });
         }
@@ -220,8 +222,8 @@ const SaIndividualRegForm: React.FC = () => {
     const validateAnswer = (question: Question, value: string): boolean => {
         if (question.required && !value.trim()) {
             toast({
-                title: "Required field",
-                description: "This field is required",
+                title: t('saShareholder.messages.required'),
+                description: t('saShareholder.messages.requiredDesc'),
                 variant: "destructive",
             });
             return false;
@@ -232,8 +234,8 @@ const SaIndividualRegForm: React.FC = () => {
 
             if (minLength && value.length < minLength) {
                 toast({
-                    title: "Validation error",
-                    description: message,
+                    title: t('saShareholder.messages.validationError'),
+                    description: t(message as string),
                     variant: "destructive",
                 });
                 return false;
@@ -241,8 +243,8 @@ const SaIndividualRegForm: React.FC = () => {
 
             if (pattern && !new RegExp(pattern).test(value)) {
                 toast({
-                    title: "Validation error",
-                    description: message,
+                    title: t('saShareholder.messages.validationError'),
+                    description: t(message as string),
                     variant: "destructive",
                 });
                 return false;
@@ -265,8 +267,8 @@ const SaIndividualRegForm: React.FC = () => {
         if (isLastQuestion) {
             setIsCompleted(true);
             toast({
-                title: "Form completed!",
-                description: "Thank you for providing all the information.",
+                title: t('saShareholder.messages.completed'),
+                description: t('saShareholder.messages.completedDesc'),
             });
         } else {
             setCurrentQuestionIndex(prev => prev + 1);
@@ -323,8 +325,8 @@ const SaIndividualRegForm: React.FC = () => {
         if (isLastQuestion) {
             setIsCompleted(true);
             toast({
-                title: "Form completed!",
-                description: "Thank you for providing all the information.",
+                title: t('saShareholder.messages.completed'),
+                description: t('saShareholder.messages.completedDesc'),
             });
         } else {
             setCurrentQuestionIndex(prev => prev + 1);
@@ -354,9 +356,9 @@ const SaIndividualRegForm: React.FC = () => {
                 const option = question.options?.find(opt => opt.value === val);
                 if (option?.allowOther && val === 'other') {
                     const otherValue = formData.otherInputs[`${question.id}-${val}`];
-                    return otherValue ? `Other: ${otherValue}` : option.label;
+                    return otherValue ? `${t('saShareholder.messages.other')}: ${otherValue}` : t(option.label);
                 }
-                return option?.label || val;
+                return t(option?.label || val);
             }).join(', ');
         }
 
@@ -364,9 +366,9 @@ const SaIndividualRegForm: React.FC = () => {
             const option = question.options?.find(opt => opt.value === value);
             if (option?.allowOther && value === 'other') {
                 const otherValue = formData.otherInputs[`${question.id}-${value}`];
-                return otherValue ? `Other: ${otherValue}` : option.label;
+                return otherValue ? `${t('saShareholder.messages.other')}: ${otherValue}` : t(option.label);
             }
-            return option?.label || value;
+            return t(option?.label || value);
         }
 
         return String(value);
@@ -403,7 +405,7 @@ const SaIndividualRegForm: React.FC = () => {
                             onClick={() => window.open(fileUrl, '_blank')}
                         >
                             <Eye className="h-3 w-3 mr-1" />
-                            {isPDF ? 'Open PDF' : 'View'}
+                            {isPDF ? t('saShareholder.upload.openPdf') : t('saShareholder.upload.view')}
                         </Button>
                         <Button
                             size="sm"
@@ -416,7 +418,7 @@ const SaIndividualRegForm: React.FC = () => {
                             }}
                         >
                             <Download className="h-3 w-3 mr-1" />
-                            Download
+                            {t('saShareholder.upload.download')}
                         </Button>
                     </div>
                 </div>
@@ -437,13 +439,12 @@ const SaIndividualRegForm: React.FC = () => {
                 {isPDF && (
                     <div className="mt-2 p-2 bg-background rounded border text-center">
                         <FileText className="h-8 w-8 mx-auto mb-1 text-muted-foreground" />
-                        <p className="text-xs text-muted-foreground">PDF file - Click "Open PDF" to view</p>
+                        <p className="text-xs text-muted-foreground">{t('saShareholder.upload.pdfPreviewNote')}</p>
                     </div>
                 )}
 
                 <div className="text-xs text-muted-foreground mt-1">
-                    {fileSize && `Size: ${(fileSize / 1024).toFixed(1)} KB • `}
-                    {fileType && `Type: ${fileType}`}
+                    {fileSize && `${t('saShareholder.upload.meta', { size: (fileSize / 1024).toFixed(1), type: fileType })}`}
                     {isUrl && !isFile && 'External file'}
                 </div>
             </div>
@@ -464,13 +465,13 @@ const SaIndividualRegForm: React.FC = () => {
                                     className="w-full justify-start h-auto p-4 text-left option-button"
                                     onClick={() => handleOptionSelect(option.value)}
                                 >
-                                    {option.label}
+                                    {t(option.label)}
                                 </Button>
                                 {option.allowOther && currentAnswer === option.value && (
                                     <Input
                                         value={otherInputValues[option.value] || ''}
                                         onChange={(e) => handleOtherInputChange(option.value, e.target.value)}
-                                        placeholder="Please specify..."
+                                        placeholder={t('saShareholder.messages.specify')}
                                         className="ml-4"
                                     />
                                 )}
@@ -632,9 +633,9 @@ const SaIndividualRegForm: React.FC = () => {
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                     </svg>
                                     <p className="mb-2 text-sm text-muted-foreground">
-                                        <span className="font-semibold">Click to upload</span> or drag and drop
+                                        <span className="font-semibold">{t('saShareholder.upload.click')}</span> {t('saShareholder.upload.dragDrop')}
                                     </p>
-                                    <p className="text-xs text-muted-foreground">PNG, JPG or PDF</p>
+                                    <p className="text-xs text-muted-foreground">{t('saShareholder.upload.types')}</p>
                                 </div>
                                 <input
                                     id="file-upload"
@@ -698,10 +699,10 @@ const SaIndividualRegForm: React.FC = () => {
         return (
             <div className="space-y-4">
                 <div className="text-center mb-6">
-                    <h2 className="summary-title">Your Information</h2>
+                    <h2 className="summary-title">{t('saShareholder.summary.title')}</h2>
                     <div className="flex items-center justify-center gap-2 text-primary mb-4">
                         <CheckCircle className="h-5 w-5" />
-                        <span className="font-medium">Form Completed Successfully!</span>
+                        <span className="font-medium">{t('saShareholder.summary.success')}</span>
                     </div>
                 </div>
 
@@ -719,12 +720,12 @@ const SaIndividualRegForm: React.FC = () => {
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
                                         <div className="text-sm text-muted-foreground mb-1">
-                                            {question.question}
-                                            {!question.required && <span className="text-xs ml-1">(Optional)</span>}
+                                            {t(question.question)}
+                                            {!question.required && <span className="text-xs ml-1">({t('saShareholder.summary.optional')})</span>}
                                         </div>
                                         <div className="font-medium">
                                             {hasAnswer ? getDisplayValue(question.id, question) :
-                                                <span className="text-muted-foreground italic">Not answered</span>}
+                                                <span className="text-muted-foreground italic">{t('saShareholder.summary.notAnswered')}</span>}
                                         </div>
                                         {question.type === 'file' && value && (
                                             renderFilePreview(value as string)
@@ -743,20 +744,20 @@ const SaIndividualRegForm: React.FC = () => {
                         className="text-sm hover:bg-accent hover:text-accent-foreground transition-smooth"
                     >
                         <Edit3 className="h-4 w-4 mr-2" />
-                        Edit Answers
+                        {t('saShareholder.summary.editAnswers')}
                     </Button>
                     <Button
                         onClick={handleSubmit}
                         className="text-sm option-button"
                     >
-                        Submit Form
+                        {t('saShareholder.summary.submitForm')}
                     </Button>
                     <Button
                         variant="destructive"
                         onClick={clearFormData}
                         className="text-sm"
                     >
-                        Clear All Data
+                        {t('saShareholder.summary.clearData')}
                     </Button>
                 </div>
             </div>
@@ -781,12 +782,12 @@ const SaIndividualRegForm: React.FC = () => {
                             <div className="flex items-start justify-between">
                                 <div className="flex-1">
                                     <div className="text-sm text-muted-foreground mb-1">
-                                        {question.question}
-                                        {!question.required && <span className="text-xs ml-1">(Optional)</span>}
+                                        {t(question.question)}
+                                        {!question.required && <span className="text-xs ml-1">({t('saShareholder.summary.optional')})</span>}
                                     </div>
                                     <div className="font-medium">
                                         {hasAnswer ? getDisplayValue(question.id, question) :
-                                            <span className="text-muted-foreground italic">Not answered</span>}
+                                            <span className="text-muted-foreground italic">{t('saShareholder.summary.notAnswered')}</span>}
                                     </div>
                                     {question.type === 'file' && value && (
                                         renderFilePreview(value as string)
@@ -805,8 +806,8 @@ const SaIndividualRegForm: React.FC = () => {
         return (
             <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
                 <div className="max-width w-full space-y-6">
-                    <div className="text-center">
-                        <h1 className="decorative-heading">Singapore Company shareholder/director registration application form</h1>
+                    <div className="text-center sticky top-0 z-10 bg-background/80 backdrop-blur-md p-4 rounded-xl border-b shadow-sm mb-6">
+                        <h1 className="decorative-heading">{t('saShareholder.title')}</h1>
                         <div className="w-full h-1 bg-primary mx-auto rounded-full"></div>
                     </div>
 
@@ -822,7 +823,7 @@ const SaIndividualRegForm: React.FC = () => {
         <div className="min-h-screen bg-gradient-primary p-4 flex items-center justify-center">
             <div className="max-width w-full space-y-6">
                 <div className="text-center">
-                    <h1 className="decorative-heading">Singapore Company shareholder/director registration application form</h1>
+                    <h1 className="decorative-heading">{t('saShareholder.title')}</h1>
                     <div className="w-full h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
 
@@ -839,14 +840,14 @@ const SaIndividualRegForm: React.FC = () => {
                                     <div className="flex-1">
                                         <div className="bg-question text-question-foreground rounded-2xl p-4 max-w-md">
                                             <div className="flex items-center gap-2">
-                                                <p className="question-title">{currentQuestion.question}</p>
+                                                <p className="question-title">{t(currentQuestion.question)}</p>
                                                 {currentQuestion.infoText && (
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
                                                             <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                                                         </TooltipTrigger>
                                                         <TooltipContent side="right" className="max-w-sm p-4">
-                                                            <p className="text-sm whitespace-pre-wrap">{currentQuestion.infoText}</p>
+                                                            <p className="text-sm whitespace-pre-wrap">{t(currentQuestion.infoText)}</p>
                                                         </TooltipContent>
                                                     </Tooltip>
                                                 )}
@@ -865,7 +866,7 @@ const SaIndividualRegForm: React.FC = () => {
                                             onClick={handleNext}
                                             className="w-full option-button"
                                         >
-                                            Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                            {t('saShareholder.navigation.continue')} <ArrowRight className="ml-2 h-4 w-4" />
                                         </Button>
                                     )}
 
@@ -876,7 +877,7 @@ const SaIndividualRegForm: React.FC = () => {
                                             onClick={handleNext}
                                             className="w-full option-button"
                                         >
-                                            Continue <ArrowRight className="ml-2 h-4 w-4" />
+                                            {t('saShareholder.navigation.continue')} <ArrowRight className="ml-2 h-4 w-4" />
                                         </Button>
                                     )}
 
@@ -888,10 +889,10 @@ const SaIndividualRegForm: React.FC = () => {
                                             className="text-sm hover:bg-muted transition-smooth"
                                         >
                                             <ArrowLeft className="h-4 w-4 mr-2" />
-                                            Previous
+                                            {t('saShareholder.navigation.previous')}
                                         </Button>
                                         <span className="text-xs text-muted-foreground">
-                                            {isEditing ? 'Editing answer' : 'Click any answer above to edit'}
+                                            {isEditing ? t('saShareholder.navigation.editing') : t('saShareholder.navigation.editNotice')}
                                         </span>
                                     </div>
                                 )}
@@ -901,7 +902,7 @@ const SaIndividualRegForm: React.FC = () => {
                 </div>
 
                 <div className="text-center text-sm text-muted-foreground">
-                    Question {currentQuestionIndex + 1} of {filteredQuestions.length}
+                    {t('saShareholder.messages.progress', { current: currentQuestionIndex + 1, total: filteredQuestions.length })}
                 </div>
             </div>
         </div>
