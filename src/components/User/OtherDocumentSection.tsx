@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import { t } from "i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Plus,
@@ -69,16 +70,16 @@ export function OtherDocumentsSection({
         files.forEach((file) => {
             if (!allowedTypes.includes(file.type)) {
                 toast({
-                    title: "Invalid file type",
-                    description: `${file.name} is not supported. Use JPEG, PNG, or PDF.`,
+                    title: t("userProfile.messages.invalidFile"),
+                    description: t("userProfile.messages.fileSupported", { name: file.name }),
                     variant: "destructive",
                 });
                 return;
             }
             if (file.size > maxSize) {
                 toast({
-                    title: "File too large",
-                    description: `${file.name} exceeds 5MB limit.`,
+                    title: t("userProfile.messages.fileTooLarge"),
+                    description: t("userProfile.messages.fileExceeds", { name: file.name }),
                     variant: "destructive",
                 });
                 return;
@@ -141,10 +142,10 @@ export function OtherDocumentsSection({
                     </div>
                     <div>
                         <h3 className="font-display font-semibold text-foreground">
-                            Other Documents
+                            {t("userProfile.verification.otherDocs")}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                            Upload additional supporting documents
+                            {t("userProfile.verification.otherDocsDesc")}
                         </p>
                     </div>
                 </div>
@@ -153,7 +154,7 @@ export function OtherDocumentsSection({
                     className="gap-2"
                 >
                     <Plus className="w-4 h-4" />
-                    Add Document
+                    {t("userProfile.actions.addDocument")}
                 </Button>
             </div>
 
@@ -207,7 +208,7 @@ export function OtherDocumentsSection({
                                                 onClick={() => setPreviewDoc(doc)}
                                             >
                                                 <Eye className="w-3.5 h-3.5" />
-                                                View
+                                                {t("userProfile.actions.view")}
                                             </Button>
                                             <Button
                                                 size="sm"
@@ -216,7 +217,7 @@ export function OtherDocumentsSection({
                                                 onClick={() => onRemoveDocument(doc.id)}
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
-                                                Delete
+                                                {t("userProfile.actions.delete")}
                                             </Button>
                                         </div>
                                     </div>
@@ -259,17 +260,17 @@ export function OtherDocumentsSection({
                     </div>
 
                     <p className="font-medium text-foreground mb-1">
-                        {isDragging ? "Drop files here" : "Drag & drop multiple files"}
+                        {isDragging ? t("userProfile.upload.drop") : t("userProfile.upload.dragDropMultiple")}
                     </p>
                     <p className="text-sm text-muted-foreground mb-3">
-                        or click to browse from your device
+                        {t("userProfile.upload.browse")}
                     </p>
 
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <span className="px-2 py-1 rounded-md bg-muted">JPEG</span>
                         <span className="px-2 py-1 rounded-md bg-muted">PNG</span>
                         <span className="px-2 py-1 rounded-md bg-muted">PDF</span>
-                        <span>up to 5MB each</span>
+                        <span>{t("userProfile.upload.upToEach", { size: 5 })}</span>
                     </div>
                 </motion.div>
             </div>

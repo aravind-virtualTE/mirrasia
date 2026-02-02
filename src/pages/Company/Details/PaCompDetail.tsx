@@ -389,7 +389,8 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
             };
 
             const res = await saveOrUpdatePaComp(payload);
-            if (res?.success) {
+            // console.log("res", res)
+            if (res?.data) {
                 const updated = res.data as PaFormData;
                 setFormData(updated);
                 setAdminAssigned(updated.assignedTo || "");

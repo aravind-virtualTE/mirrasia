@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useRef, useCallback,useState } from "react"
+import { useRef, useCallback, useState } from "react"
 import Webcam from 'react-webcam'
-import { FileText,Shield, CheckCircle, AlertCircle,Clock, Camera, RotateCcw,X, IdCard, Home, Eye, Trash2,
+import {
+    FileText, Shield, CheckCircle, AlertCircle, Clock, Camera, RotateCcw, X, IdCard, Home, Eye, Trash2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,6 +17,7 @@ import { OtherDocumentsSection } from "./OtherDocumentSection";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { DialogHeader } from "../ui/dialog";
+import { t } from "i18next";
 
 interface KYCDocument {
     file: File | null
@@ -47,9 +49,9 @@ interface KYCVerificationCardProps {
 }
 
 const tabVariants = {
-  hidden: { opacity: 0, x: 20 },
-  visible: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: -20 },
+    hidden: { opacity: 0, x: 20 },
+    visible: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -20 },
 };
 
 export function KYCVerificationCard({
@@ -73,7 +75,7 @@ export function KYCVerificationCard({
 }: KYCVerificationCardProps) {
     const webcamRef = useRef(null)
     const [activeTab, setActiveTab] = useState("documents");
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const videoConstraints = {
         width: 1280,
         height: 720,
@@ -126,13 +128,13 @@ export function KYCVerificationCard({
                         </div>
                         <div>
                             <h2 className="font-display text-2xl font-bold gradient-text">
-                                Identity Verification
+                                {t("userProfile.verification.title")}
                             </h2>
                             <p className="text-muted-foreground">
-                                Secure your account with verified documents
+                                {t("userProfile.verification.subtitle")}
                             </p>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
             </CardHeader>
 
@@ -141,11 +143,11 @@ export function KYCVerificationCard({
                     <TabsList className="grid w-full grid-cols-2 p-1 bg-muted/50 rounded-xl mb-6">
                         <TabsTrigger value="documents" className="tab-futuristic">
                             <FileText className="w-4 h-4 mr-2" />
-                            Documents
+                            {t("userProfile.verification.documents")}
                         </TabsTrigger>
                         <TabsTrigger value="selfie" className="tab-futuristic">
                             <Camera className="w-4 h-4 mr-2" />
-                            Selfie
+                            {t("userProfile.verification.selfie")}
                         </TabsTrigger>
                     </TabsList>
 
@@ -162,8 +164,8 @@ export function KYCVerificationCard({
                             >
                                 {/* Passport Section */}
                                 <DocumentUploadCard
-                                    title="Passport / Government ID"
-                                    description="Upload a clear photo of your passport or national ID"
+                                    title={t("userProfile.verification.passportId")}
+                                    description={t("userProfile.verification.passportDesc")}
                                     icon={<IdCard className="w-5 h-5 text-primary-foreground" />}
                                     documents={passportDocs}
                                     existingUrl={profile.kycDocuments?.passportUrl}
@@ -178,8 +180,8 @@ export function KYCVerificationCard({
 
                                 {/* Address Proof Section */}
                                 <DocumentUploadCard
-                                    title="Address Proof"
-                                    description="Utility bill, bank statement, or lease agreement"
+                                    title={t("userProfile.verification.addressProof")}
+                                    description={t("userProfile.verification.addressDesc")}
                                     icon={<Home className="w-5 h-5 text-primary-foreground" />}
                                     documents={addressDocs}
                                     existingUrl={profile.kycDocuments?.addressProofUrl}
@@ -219,9 +221,9 @@ export function KYCVerificationCard({
                                                     <CheckCircle className="w-5 h-5 text-success-foreground" />
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-display font-semibold">Selfie Captured</h3>
+                                                    <h3 className="font-display font-semibold">{t("userProfile.verification.selfieCaptured")}</h3>
                                                     <p className="text-sm text-muted-foreground">
-                                                        Your selfie has been submitted for verification
+                                                        {t("userProfile.verification.selfieSubmitted")}
                                                     </p>
                                                 </div>
                                             </div>
@@ -244,8 +246,7 @@ export function KYCVerificationCard({
                                                 {profile.kycDocuments.selfieStatus === "pending" && (
                                                     <Clock className="w-3.5 h-3.5" />
                                                 )}
-                                                {profile.kycDocuments.selfieStatus.charAt(0).toUpperCase() +
-                                                    profile.kycDocuments.selfieStatus.slice(1)}
+                                                {t(`userProfile.verification.status.${profile.kycDocuments.selfieStatus}`)}
                                             </div>
                                         </div>
                                         <div className="relative rounded-xl overflow-hidden">
@@ -262,7 +263,7 @@ export function KYCVerificationCard({
                                                     onClick={() => setPreviewUrl(profile.kycDocuments.selfieUrl)}
                                                 >
                                                     <Eye className="w-4 h-4" />
-                                                    View Full
+                                                    {t("userProfile.actions.view")}
                                                 </Button>
                                                 <Button
                                                     variant="destructive"
@@ -277,7 +278,7 @@ export function KYCVerificationCard({
                                                     }
                                                 >
                                                     <Trash2 className="w-4 h-4" />
-                                                    Delete
+                                                    {t("userProfile.actions.delete")}
                                                 </Button>
                                             </div>
                                         </div>
@@ -289,11 +290,10 @@ export function KYCVerificationCard({
                                                 <Camera className="w-8 h-8 text-primary-foreground" />
                                             </div>
                                             <h3 className="font-display text-xl font-bold mb-2">
-                                                Selfie Verification
+                                                {t("userProfile.verification.selfieVerification")}
                                             </h3>
                                             <p className="text-muted-foreground max-w-md mx-auto">
-                                                Take a clear selfie holding your passport next to your face
-                                                for identity verification
+                                                {t("userProfile.verification.selfieInstruction")}
                                             </p>
                                         </div>
 
@@ -316,7 +316,7 @@ export function KYCVerificationCard({
                                                             <div className="text-center">
                                                                 <Camera className="w-12 h-12 mx-auto mb-2 text-muted-foreground animate-pulse" />
                                                                 <p className="text-muted-foreground">
-                                                                    Initializing camera...
+                                                                    {t("userProfile.verification.initializingCamera")}
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -362,11 +362,11 @@ export function KYCVerificationCard({
                                                             className="gap-2"
                                                         >
                                                             <X className="w-4 h-4" />
-                                                            Retake Photo
+                                                            {t("userProfile.actions.retake")}
                                                         </Button>
                                                         <Button className="gap-2 bg-gradient-to-r from-success to-success/80">
                                                             <CheckCircle className="w-4 h-4" />
-                                                            Use This Photo
+                                                            {t("userProfile.actions.usePhoto")}
                                                         </Button>
                                                     </div>
                                                 </>
@@ -374,9 +374,9 @@ export function KYCVerificationCard({
                                         </div>
 
                                         <div className="text-center space-y-2 text-sm text-muted-foreground">
-                                            <p>• Ensure good lighting and a clear background</p>
-                                            <p>• Hold your passport visible next to your face</p>
-                                            <p>• Use the rotate button to switch cameras</p>
+                                            <p>• {t("userProfile.verification.guidelines.lighting")}</p>
+                                            <p>• {t("userProfile.verification.guidelines.passport")}</p>
+                                            <p>• {t("userProfile.verification.guidelines.rotate")}</p>
                                         </div>
                                     </div>
                                 )}
@@ -391,7 +391,7 @@ export function KYCVerificationCard({
             <Dialog open={!!previewUrl} onOpenChange={() => setPreviewUrl(null)}>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
                     <DialogHeader>
-                        <DialogTitle>Document Preview</DialogTitle>
+                        <DialogTitle>{t("userProfile.verification.preview")}</DialogTitle>
                     </DialogHeader>
                     {previewUrl && (
                         <iframe

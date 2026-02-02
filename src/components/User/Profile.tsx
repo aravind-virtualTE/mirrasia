@@ -13,9 +13,9 @@ import { enable2FA, verify2FA, disable2FA, validateOtpforVerification, sendMobil
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { toast } from "@/hooks/use-toast"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
-import { t } from "i18next"
 import { KYCVerificationCard } from "./KYCVerificationCard"
 import { SettingsCard } from "./SettingsCard"
+import { useTranslation } from "react-i18next"
 
 interface KYCDocument {
   file: File | null
@@ -44,7 +44,7 @@ export default function Profile() {
   const [editing, setEditing] = useState(false)
   const [loading, setLoading] = useState(false)
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null
-
+  const { t } = useTranslation();
   // 2FA States
   const [show2FADialog, setShow2FADialog] = useState(false)
   const [twoFASetup, setTwoFASetup] = useState<TwoFASetup | null>(null)
@@ -136,8 +136,8 @@ export default function Profile() {
     } catch (err) {
       console.error('Error enabling 2FA:', err)
       toast({
-        title: "Error",
-        description: "Failed to setup Two-Factor Authentication. Please try again.",
+        title: t("Common.error"),
+        description: t("userProfile.messages.twoFactorSetupError"),
         variant: "destructive",
       })
     } finally {
@@ -148,8 +148,8 @@ export default function Profile() {
   const handleVerify2FA = async () => {
     if (!verificationCode || verificationCode.length !== 6) {
       toast({
-        title: "Error",
-        description: "Please enter a valid 6-digit code.",
+        title: t("Common.error"),
+        description: t("userProfile.messages.validCodeRequired"),
         variant: "destructive",
       })
       return
@@ -164,22 +164,22 @@ export default function Profile() {
         setShow2FADialog(false)
         setVerificationCode("")
         toast({
-          title: "Success",
-          description: "Two-Factor Authentication has been enabled successfully!",
+          title: t("Common.success"),
+          description: t("userProfile.messages.twoFactorEnabled"),
           variant: "destructive",
         })
       } else {
         toast({
-          title: "Error",
-          description: "Invalid verification code. Please try again.",
+          title: t("Common.error"),
+          description: t("userProfile.messages.invalidCode"),
           variant: "destructive",
         })
       }
     } catch (err) {
       console.error('Error verifying 2FA:', err)
       toast({
-        title: "Error",
-        description: "Failed to verify Two-Factor Authentication code. Please try again.",
+        title: t("Common.error"),
+        description: t("userProfile.messages.twoFactorVerifyError"),
         variant: "destructive",
       })
     } finally {
@@ -190,8 +190,8 @@ export default function Profile() {
   const handleDisable2FA = async () => {
     if (!disableCode || disableCode.length !== 6) {
       toast({
-        title: "Error",
-        description: "Please enter a valid 6-digit code.",
+        title: t("Common.error"),
+        description: t("userProfile.messages.validCodeRequired"),
         variant: "destructive",
       })
       return
@@ -205,8 +205,8 @@ export default function Profile() {
         setProfile(prev => ({ ...prev, twoFactorEnabled: false }))
         setShowDisable2FADialog(false)
         toast({
-          title: "Success",
-          description: "Two-Factor Authentication has been disabled.",
+          title: t("Common.success"),
+          description: t("userProfile.messages.twoFactorDisabled"),
           variant: "destructive",
         })
         setDisableCode("")
@@ -220,8 +220,8 @@ export default function Profile() {
     } catch (err) {
       console.error('Error disabling 2FA:', err)
       toast({
-        title: "Error",
-        description: "Failed to disable Two-Factor Authentication. Please try again.",
+        title: t("Common.error"),
+        description: t("userProfile.messages.twoFactorDisableError"),
         variant: "destructive",
       })
     } finally {
@@ -232,8 +232,8 @@ export default function Profile() {
   const handleFileUpload = (documentType: "passport" | "addressProof", file: File) => {
     if (file.size > 5 * 1024 * 1024) {
       toast({
-        title: "Error",
-        description: "File size must be less than 5MB.",
+        title: t("Common.error"),
+        description: t("userProfile.messages.fileSizeError"),
         variant: "destructive",
       })
       return
@@ -242,8 +242,8 @@ export default function Profile() {
     const allowedTypes = ["image/jpeg", "image/png", "application/pdf"]
     if (!allowedTypes.includes(file.type)) {
       toast({
-        title: "Error",
-        description: "Only JPEG, PNG, and PDF files are allowed.",
+        title: t("Common.error"),
+        description: t("userProfile.messages.fileTypeError"),
         variant: "destructive",
       })
       return
@@ -317,15 +317,15 @@ export default function Profile() {
           setOtherDocuments((prev) => prev.filter((d) => d.id !== docId));
 
           toast({
-            title: "Success",
-            description: "Successfully deleted file.",
+            title: t("Common.success"),
+            description: t("userProfile.messages.deleteSuccess"),
           });
         }
       } catch (err) {
-        console.log("err",err)
+        console.log("err", err)
         toast({
-          title: "Error",
-          description: "Failed to delete file.",
+          title: t("Common.error"),
+          description: t("userProfile.messages.deleteError"),
           variant: "destructive",
         });
       }
@@ -364,15 +364,15 @@ export default function Profile() {
       setOtherDocuments(hydrateOtherDocuments(result.updatedUser.otherDocuments || []));
       setEditing(false)
       toast({
-        title: "Success",
-        description: "Profile updated successfully!",
+        title: t("Common.success"),
+        description: t("userProfile.messages.profileUpdated"),
       })
 
     } catch (err) {
       console.error(err)
       toast({
-        title: "Error",
-        description: "Failed to update profile.",
+        title: t("Common.error"),
+        description: t("userProfile.messages.profileUpdateError"),
         variant: "destructive",
       })
     } finally {
@@ -386,8 +386,8 @@ export default function Profile() {
     if (result) {
       setProfile(result.result)
       toast({
-        title: "Success",
-        description: "Successfully deleted file.",
+        title: t("Common.success"),
+        description: t("userProfile.messages.deleteSuccess"),
         variant: "destructive",
       })
     }
@@ -400,8 +400,8 @@ export default function Profile() {
 
   const handleWebcamError = useCallback((error: any) => {
     toast({
-      title: "Error",
-      description: 'Failed to access camera. Please check permissions.',
+      title: t("Common.error"),
+      description: t("userProfile.messages.cameraError"),
       variant: "destructive",
     })
     console.error('Webcam error:', error);
@@ -424,8 +424,8 @@ export default function Profile() {
   const handleSendOtp = async () => {
     if (!profile.phone) {
       toast({
-        title: "Missing Number",
-        description: "Phone Number is required",
+        title: t("userProfile.messages.phoneRequired"),
+        description: t("userProfile.messages.phoneRequired"),
         variant: "default"
       })
       return;
@@ -435,8 +435,8 @@ export default function Profile() {
     }
     if (otpSession.sms != null) {
       toast({
-        title: "Error",
-        description: "Verify the otp sent already",
+        title: t("Common.error"),
+        description: t("userProfile.messages.verifySentOtp"),
         variant: "destructive"
       })
       return
@@ -449,8 +449,8 @@ export default function Profile() {
       setResendTimer(60);
       setOtpSession((s) => ({ ...s, sms: result.id }));
       toast({
-        title: "Success",
-        description: "OTP sent successfully",
+        title: t("Common.success"),
+        description: t("userProfile.messages.otpSent"),
         variant: "default"
       })
     } else {
@@ -459,8 +459,8 @@ export default function Profile() {
       setResendTimer(0);
       setOtpSession((s) => ({ ...s, sms: null }));
       toast({
-        title: "Error",
-        description: "Failed to send OTP. Please enter proper phonenumber along with country code.",
+        title: t("Common.error"),
+        description: t("userProfile.messages.otpSendError"),
         variant: "destructive"
       })
     }
@@ -469,8 +469,8 @@ export default function Profile() {
   const handleVerifyOtp = async () => {
     if (!otp.trim()) {
       toast({
-        title: "Error",
-        description: "Please enter OTP",
+        title: t("Common.error"),
+        description: t("userProfile.messages.otpRequired"),
         variant: "destructive"
       })
       return;
@@ -486,8 +486,8 @@ export default function Profile() {
       setOtpSession((s) => ({ ...s, sms: null }));
     } else {
       toast({
-        title: "Error",
-        description: "Invalid OTP",
+        title: t("Common.error"),
+        description: t("userProfile.messages.otpVerifyError"),
         variant: "destructive"
       })
     }
@@ -523,27 +523,39 @@ export default function Profile() {
     <div className="container max-w-8xl mx-auto p-6 space-y-6">
       <div className="flex flex-col gap-2">
         <div>
-          <h1 className="text-3xl font-bold">Profile Settings</h1>
-          <p className="text-gray-600 mt-1">Manage your account information and security settings</p>
+          <h1 className="text-3xl font-bold">{t("userProfile.title")}</h1>
+          <p className="text-gray-600 mt-1">{t("userProfile.subtitle")}</p>
         </div>
 
         <div
-          className="w-full border rounded-lg p-3 md:p-4 flex flex-col gap-2 md:flex-row md:items-center md:gap-3 bg-blue-50 border-blue-200 text-blue-900 dark:bg-blue-950 dark:border-blue-900 dark:text-blue-100"
+          className="w-full border rounded-lg p-3 md:p-4 flex flex-col gap-2 md:flex-row md:items-start md:gap-3 bg-blue-50 border-blue-200 text-blue-900 dark:bg-blue-950 dark:border-blue-900 dark:text-blue-100"
         >
-          <ShieldAlert className="h-5 w-5 md:h-6 md:w-6 shrink-0" />
+          <ShieldAlert className="h-5 w-5 md:h-6 md:w-6 shrink-0 mt-0.5" />
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium">
-                Notice
+                {t("userProfile.notice.title")}
               </span>
-              <span className="font-semibold text-sm">KYC reminder</span>
-              <span className="text-sm">
-                Please verify KYC in Verification. If uploaded, await approval. If approved, ignore.
-              </span>
+              <span className="font-semibold text-sm">{t("userProfile.notice.kycRequired")}</span>
             </div>
+
+            <p className="text-sm mt-1">
+              {t("userProfile.notice.instruction")}
+            </p>
+
+            <ul className="mt-2 text-sm list-disc pl-5 space-y-1">
+              <li><span className="font-medium">{t("userProfile.notice.selfie")}</span> {t("userProfile.notice.selfieNote")}</li>
+              <li><span className="font-medium">{t("userProfile.notice.addressProof")}</span> {t("userProfile.notice.addressProofNote")}</li>
+              <li><span className="font-medium">{t("userProfile.notice.passport")}</span> {t("userProfile.notice.passportNote")}</li>
+            </ul>
+
+            <p className="text-xs mt-2 text-blue-800/90 dark:text-blue-100/80">
+              {t("userProfile.notice.tip")}
+            </p>
           </div>
         </div>
+
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
@@ -552,15 +564,15 @@ export default function Profile() {
           <TabsList className="grid grid-cols-3 max-w-md">
             <TabsTrigger value="profile">
               <User className="h-4 w-4 mr-2" />
-              Profile
+              {t("userProfile.tabs.profile")}
             </TabsTrigger>
             <TabsTrigger value="verification">
               <Shield className="h-4 w-4 mr-2" />
-              Verification
+              {t("userProfile.tabs.verification")}
             </TabsTrigger>
             <TabsTrigger value="settings">
               <Settings className="h-4 w-4 mr-2" />
-              Settings
+              {t("userProfile.tabs.settings")}
             </TabsTrigger>
           </TabsList>
 
@@ -570,12 +582,12 @@ export default function Profile() {
               variant="outline"
               className="ml-auto"
             >
-              Edit Profile
+              {t("userProfile.actions.edit")}
             </Button>
           ) : (
             <div className="flex gap-2 ml-auto">
               <Button type="submit" disabled={loading} onClick={handleProfileUpdate}>
-                {loading ? "Saving..." : "Save"}
+                {loading ? t("userProfile.actions.saving") : t("userProfile.actions.save")}
               </Button>
               <Button
                 type="button"
@@ -583,7 +595,7 @@ export default function Profile() {
                 onClick={() => setEditing(false)}
                 disabled={loading}
               >
-                Cancel
+                {t("userProfile.actions.cancel")}
               </Button>
             </div>
           )}
@@ -594,7 +606,7 @@ export default function Profile() {
               <CardHeader className="flex flex-row items-center space-y-0 pb-4">
                 <div className="flex items-center space-x-2">
                   <User className="h-5 w-5 text-blue-600" />
-                  <CardTitle>Personal Information</CardTitle>
+                  <CardTitle>{t("userProfile.personalInfo.title")}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
@@ -609,7 +621,7 @@ export default function Profile() {
                   <div className="flex-1">
                     <h2 className="text-xl font-semibold">{profile.fullName}</h2>
                     <p className="text-gray-600">{profile.email}</p>
-                    <p className="text-sm text-gray-500 mt-1">Signed in with {profile.provider}</p>
+                    <p className="text-sm text-gray-500 mt-1">{t("userProfile.personalInfo.signedInWith", { provider: profile.provider })}</p>
                   </div>
 
                 </div>
@@ -619,7 +631,7 @@ export default function Profile() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Full name */}
                       <div>
-                        <Label htmlFor="fullName">Full Name</Label>
+                        <Label htmlFor="fullName">{t("userProfile.personalInfo.fullName")}</Label>
                         <Input
                           id="fullName"
                           value={profile.fullName}
@@ -627,7 +639,7 @@ export default function Profile() {
                             const next = e.target.value;
                             setProfile({ ...profile, fullName: next });
                             if (!isEnglishName(next)) {
-                              setNameError("Please enter your name in English letters only (A–Z, space, . ' -).");
+                              setNameError(t("userProfile.messages.nameError"));
                             } else {
                               setNameError("");
                             }
@@ -635,7 +647,7 @@ export default function Profile() {
                           onBlur={(e) => {
                             const next = e.target.value.trim();
                             if (!isEnglishName(next)) {
-                              setNameError("Please enter your name in English letters only (A–Z, space, . ' -).");
+                              setNameError(t("userProfile.messages.nameError"));
                             } else {
                               setNameError("");
                             }
@@ -652,7 +664,7 @@ export default function Profile() {
 
                       {/* Date of birth */}
                       <div>
-                        <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                        <Label htmlFor="dateOfBirth">{t("userProfile.personalInfo.dob")}</Label>
                         <Input
                           id="dateOfBirth"
                           type="date"
@@ -663,18 +675,18 @@ export default function Profile() {
 
                       {/* Email */}
                       <div>
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email">{t("userProfile.personalInfo.email")}</Label>
                         <Input id="email" type="email" value={profile.email} disabled className="bg-gray-50" />
                       </div>
 
                       {/* Address */}
                       <div>
-                        <Label htmlFor="address">Address</Label>
+                        <Label htmlFor="address">{t("userProfile.personalInfo.address")}</Label>
                         <Input
                           id="address"
                           value={profile.address}
                           onChange={(e) => setProfile({ ...profile, address: e.target.value })}
-                          placeholder="Enter your full address"
+                          placeholder={t("userProfile.personalInfo.addressPlaceholder")}
                         />
                       </div>
 
@@ -708,7 +720,7 @@ export default function Profile() {
                                 setProfile({ ...profile, phone: raw });
 
                                 if (!isValidIntlPhone(raw)) {
-                                  setPhoneError("Enter a valid international number. It must not start with 0 (e.g., +85212345678).");
+                                  setPhoneError(t("userProfile.messages.phoneError"));
                                 } else {
                                   setPhoneError("");
                                 }
@@ -716,7 +728,7 @@ export default function Profile() {
                               onBlur={(e) => {
                                 const raw = e.target.value.replace(/[\s-]+/g, "");
                                 if (!isValidIntlPhone(raw)) {
-                                  setPhoneError("Enter a valid international number. It must not start with 0 (e.g., +85212345678).");
+                                  setPhoneError(t("userProfile.messages.phoneError"));
                                 } else {
                                   setPhoneError("");
                                 }
@@ -739,7 +751,7 @@ export default function Profile() {
                                 disabled={resendTimer > 0 || !profile.phone}
                                 aria-live="polite"
                               >
-                                {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Send OTP"}
+                                {resendTimer > 0 ? t("userProfile.actions.resendIn", { seconds: resendTimer }) : t("userProfile.actions.verify")}
                               </Button>
                             )}
                           </div>
@@ -748,7 +760,7 @@ export default function Profile() {
                           {profile.mobileOtpVerified && (
                             <div className="text-green-700 text-sm flex items-center gap-2">
                               <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 font-medium ring-1 ring-inset ring-green-600/20">
-                                {profile.phone} • Verified
+                                {profile.phone} • {t("userProfile.personalInfo.verified")}
                               </span>
                               <span aria-hidden>✔️</span>
                             </div>
@@ -775,7 +787,7 @@ export default function Profile() {
                                     onClick={handleVerifyOtp}
                                   // disabled={!otp || otp.length < 6}
                                   >
-                                    Verify
+                                    {t("userProfile.actions.verify")}
                                   </Button>
                                   <button
                                     type="button"
@@ -783,13 +795,13 @@ export default function Profile() {
                                     disabled={resendTimer > 0}
                                     className="text-sm underline disabled:no-underline disabled:text-muted-foreground"
                                   >
-                                    {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend code"}
+                                    {resendTimer > 0 ? t("userProfile.actions.resendIn", { seconds: resendTimer }) : t("userProfile.actions.resend")}
                                   </button>
                                 </div>
                               </div>
 
                               <p className="text-xs text-muted-foreground mt-1">
-                                Enter the 6-digit code we sent to <span className="font-medium">{profile.phone}</span>.
+                                {t("userProfile.messages.otpVerifyInstruction", { phone: profile.phone })}
                               </p>
                             </div>
                           )}
@@ -801,16 +813,16 @@ export default function Profile() {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="font-medium text-gray-700">Phone:</span>
-                      <p className="text-gray-900">{profile.phone || "Not provided"}</p>
+                      <span className="font-medium text-gray-700">{t("userProfile.personalInfo.phone")}:</span>
+                      <p className="text-gray-900">{profile.phone || t("userProfile.personalInfo.notProvided")}</p>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-700">Date of Birth:</span>
-                      <p className="text-gray-900">{profile.dateOfBirth || "Not provided"}</p>
+                      <span className="font-medium text-gray-700">{t("userProfile.personalInfo.dob")}:</span>
+                      <p className="text-gray-900">{profile.dateOfBirth || t("userProfile.personalInfo.notProvided")}</p>
                     </div>
                     <div className="md:col-span-2">
-                      <span className="font-medium text-gray-700">Address:</span>
-                      <p className="text-gray-900">{profile.address || "Not provided"}</p>
+                      <span className="font-medium text-gray-700">{t("userProfile.personalInfo.address")}:</span>
+                      <p className="text-gray-900">{profile.address || t("userProfile.personalInfo.notProvided")}</p>
                     </div>
                   </div>
                 )}
