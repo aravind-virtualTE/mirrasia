@@ -1408,10 +1408,30 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                         ) : (
                                             <div className="grid md:grid-cols-2 gap-4">
                                                 <LabelValue label="Storage Address">
-                                                    {(data as any)?.recordStorageAddress || "—"}
+                                                    {isEditing ? (
+                                                        <Textarea
+                                                            value={(data as any)?.recordStorageAddress || ""}
+                                                            onChange={(e) =>
+                                                                patchCompany("recordStorageAddress" as keyof PIFRecord, e.target.value)
+                                                            }
+                                                            className="h-20"
+                                                        />
+                                                    ) : (
+                                                        (data as any)?.recordStorageAddress || "—"
+                                                    )}
                                                 </LabelValue>
                                                 <LabelValue label="Responsible Person">
-                                                    {(data as any)?.recordStorageResponsiblePerson || "—"}
+                                                    {isEditing ? (
+                                                        <Input
+                                                            value={(data as any)?.recordStorageResponsiblePerson || ""}
+                                                            onChange={(e) =>
+                                                                patchCompany("recordStorageResponsiblePerson" as keyof PIFRecord, e.target.value)
+                                                            }
+                                                            className="h-8"
+                                                        />
+                                                    ) : (
+                                                        (data as any)?.recordStorageResponsiblePerson || "—"
+                                                    )}
                                                 </LabelValue>
                                             </div>
                                         )}
