@@ -1,4 +1,147 @@
 {
+  "userProfile": {
+    "title": "個人資料設定",
+    "subtitle": "管理您的帳戶資訊與安全性設定",
+    "notice": {
+      "title": "公告",
+      "kycRequired": "登入後須進行 KYC 驗證",
+      "instruction": "登入後，您必須在「驗證」分頁上傳以下文件以完成 KYC：",
+      "selfie": "清晰的自拍照",
+      "selfieNote": "（使用視訊鏡頭拍攝自拍）",
+      "addressProof": "有效的地址證明",
+      "addressProofNote": "（近期的公共事業帳單 / 銀行對帳單）",
+      "passport": "護照掃描副本",
+      "passportNote": "（照片頁面）",
+      "tip": "提示：上傳後請點擊「編輯個人資料」並點擊「儲存」。若您的 KYC 已通過審核，請忽略此公告。"
+    },
+    "tabs": {
+      "profile": "個人資料",
+      "verification": "驗證",
+      "settings": "設定"
+    },
+    "actions": {
+      "edit": "編輯個人資料",
+      "save": "儲存",
+      "saving": "儲存中...",
+      "cancel": "取消",
+      "addDocument": "新增文件",
+      "view": "檢視",
+      "delete": "刪除",
+      "retake": "重新拍攝",
+      "usePhoto": "使用此照片",
+      "verify": "驗證",
+      "resend": "重新發送代碼",
+      "resendIn": "{{seconds}} 秒後重新發送",
+      "enable2fa": "啟用雙重認證",
+      "disable": "停用",
+      "copy": "複製",
+      "setup2fa": "驗證並啟用",
+      "verifying": "驗證中...",
+      "disabling": "停用中..."
+    },
+    "personalInfo": {
+      "title": "個人資訊",
+      "signedInWith": "已透過 {{provider}} 登入",
+      "fullName": "全名",
+      "dob": "出生日期",
+      "email": "電子郵件",
+      "address": "地址",
+      "addressPlaceholder": "請輸入您的完整地址",
+      "phone": "電話號碼",
+      "phonePlaceholder": "請輸入包含國家代碼的電話號碼",
+      "verified": "已驗證",
+      "notProvided": "未提供"
+    },
+    "verification": {
+      "title": "身分驗證",
+      "subtitle": "使用驗證文件保護您的帳戶安全",
+      "documents": "文件",
+      "selfie": "自拍照",
+      "passportId": "護照 / 政府核發身分證",
+      "passportDesc": "請上傳清晰的護照或國民身分證照片",
+      "addressProof": "地址證明",
+      "addressDesc": "公共事業帳單、銀行對帳單或租賃合約",
+      "otherDocs": "其他文件",
+      "otherDocsDesc": "上傳額外的證明文件",
+      "selfieCaptured": "已拍攝自拍",
+      "selfieSubmitted": "您的自拍照已提交進行驗證",
+      "status": {
+        "pending": "審核中",
+        "uploaded": "已上傳",
+        "accepted": "已接受",
+        "rejected": "已拒絕",
+        "verified": "已驗證"
+      },
+      "selfieVerification": "自拍驗證",
+      "selfieInstruction": "請手持護照靠近臉部拍攝一張清晰的自拍照以進行身分驗證",
+      "initializingCamera": "相機啟動中...",
+      "guidelines": {
+        "lighting": "確保光線充足且背景清晰",
+        "passport": "將護照保持在臉部旁清晰可見",
+        "rotate": "使用旋轉按鈕切換相機"
+      },
+      "preview": "文件預覽"
+    },
+    "settings": {
+      "title": "安全性設定",
+      "subtitle": "管理您的帳戶安全與雙重認證",
+      "twoFactor": "雙重認證 (2FA)",
+      "twoFactorDesc": "為您的帳戶增加額外的安全防護",
+      "status": {
+        "enabled": "已啟用",
+        "disabled": "已停用"
+      },
+      "setup": {
+        "title": "設定雙重認證",
+        "instruction": "使用您的認證應用程式 (Authenticator) 掃描 QR Code，然後輸入驗證碼。",
+        "manual": "或手動輸入此代碼：",
+        "enterCode": "請輸入應用程式顯示的驗證碼："
+      },
+      "disable": {
+        "title": "停用雙重認證",
+        "instruction": "請輸入認證應用程式的驗證碼以停用 2FA。"
+      }
+    },
+    "messages": {
+      "profileUpdated": "個人資料更新成功！",
+      "profileUpdateError": "更新個人資料失敗。",
+      "fileSizeError": "檔案大小必須小於 5MB。",
+      "fileTypeError": "僅允許 JPEG、PNG 和 PDF 檔案。",
+      "invalidFile": "無效的檔案類型",
+      "fileTooLarge": "檔案過大",
+      "fileSupported": "不支援 {{name}}。請使用 JPEG、PNG 或 PDF。",
+      "fileExceeds": "{{name}} 超過 5MB 的限制。",
+      "deleteSuccess": "已成功刪除檔案。",
+      "deleteError": "刪除檔案失敗。",
+      "otpSent": "OTP 驗證碼已成功發送",
+      "otpSendError": "發送 OTP 失敗。請輸入包含國家代碼的正確電話號碼。",
+      "otpVerifyError": "OTP 無效",
+      "otpRequired": "請輸入 OTP 驗證碼",
+      "phoneRequired": "必須填寫電話號碼",
+      "nameError": "請僅使用英文字母輸入您的姓名 (A–Z, 空格, . ' -)。",
+      "phoneError": "請輸入有效的國際電話號碼。號碼不可由 0 開頭 (例如: +85212345678)。",
+      "cameraError": "無法存取相機。請檢查權限設定。",
+      "twoFactorSetupError": "雙重認證設定失敗。請再試一次。",
+      "twoFactorVerifyError": "雙重認證代碼驗證失敗。請再試一次。",
+      "twoFactorDisableError": "雙重認證停用失敗。請再試一次。",
+      "invalidCode": "驗證碼無效。請再試一次。",
+      "validCodeRequired": "請輸入有效的 6 位數代碼。",
+      "twoFactorEnabled": "雙重認證已成功啟用！",
+      "twoFactorDisabled": "雙重認證已停用。",
+      "copied": "已複製到剪貼簿！",
+      "otpVerifyInstruction": "請輸入發送至 {{phone}} 的 6 位數代碼。"
+    },
+    "upload": {
+      "drop": "將檔案拖放到此處",
+      "dragDrop": "拖放檔案",
+      "dragDropMultiple": "拖放多個檔案",
+      "browse": "或點擊從裝置瀏覽",
+      "upTo": "最高 {{size}}MB",
+      "upToEach": "每個最高 {{size}}MB",
+      "submitted": "文件已提交",
+      "submittedDesc": "點擊以檢視或刪除"
+    }
+  },
   "company": {
     "name": "公司名稱",
     "industry": "產業"
@@ -16,7 +159,8 @@
     "bankServices": "銀行服務",
     "accountList": "會計列表",
     "signDocs": "簽署文件",
-    "mirrChat": "MirrAsia 聊天室"
+    "mirrChat": "MirrAsia 聊天室",
+    "quotationrequest": "報價請求"
   },
   "dashboard": {
     "welcome": "歡迎，",

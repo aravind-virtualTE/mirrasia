@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { toast } from "@/hooks/use-toast"
+import { t } from "i18next"
 
 interface SettingsCardProps {
   profile: any
@@ -48,8 +49,8 @@ export function SettingsCard({
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
     toast({
-      title: "Success",
-      description: "Copied to clipboard!",
+      title: t("Common.success"),
+      description: t("userProfile.messages.copied"),
       variant: "destructive",
     })
   }
@@ -61,8 +62,8 @@ export function SettingsCard({
           <div className="flex items-center space-x-2">
             <Smartphone className="h-5 w-5 text-blue-600" />
             <div>
-              <CardTitle>Security Settings</CardTitle>
-              <CardDescription>Manage your account security and two-factor authentication</CardDescription>
+              <CardTitle>{t("userProfile.settings.title")}</CardTitle>
+              <CardDescription>{t("userProfile.settings.subtitle")}</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -71,15 +72,15 @@ export function SettingsCard({
             <div className="flex items-center space-x-3">
               <Smartphone className="h-5 w-5 text-blue-600" />
               <div>
-                <h3 className="font-medium">Two-Factor Authentication</h3>
+                <h3 className="font-medium">{t("userProfile.settings.twoFactor")}</h3>
                 <p className="text-sm text-gray-600">
-                  Add an extra layer of security to your account
+                  {t("userProfile.settings.twoFactorDesc")}
                 </p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <Badge variant={profile.twoFactorEnabled ? "default" : "secondary"}>
-                {profile.twoFactorEnabled ? "Enabled" : "Disabled"}
+                {profile.twoFactorEnabled ? t("userProfile.settings.status.enabled") : t("userProfile.settings.status.disabled")}
               </Badge>
               {profile.twoFactorEnabled ? (
                 <div className="space-x-2">
@@ -98,7 +99,7 @@ export function SettingsCard({
                   disabled={twoFALoading}
                   size="sm"
                 >
-                  {twoFALoading ? "Setting up..." : "Enable 2FA"}
+                  {twoFALoading ? t("Common.loading") : t("userProfile.actions.enable2fa")}
                 </Button>
               )}
             </div>
@@ -110,9 +111,9 @@ export function SettingsCard({
       <Dialog open={show2FADialog} onOpenChange={onShow2FADialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Setup Two-Factor Authentication</DialogTitle>
+            <DialogTitle>{t("userProfile.settings.setup.title")}</DialogTitle>
             <DialogDescription>
-              Scan the QR code with your authenticator app, then enter the verification code.
+              {t("userProfile.settings.setup.instruction")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -126,7 +127,7 @@ export function SettingsCard({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Or enter this code manually:</Label>
+                  <Label>{t("userProfile.settings.setup.manual")}</Label>
                   <div className="flex items-center space-x-2">
                     <Input
                       value={twoFASetup.secret}
@@ -143,7 +144,7 @@ export function SettingsCard({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Enter verification code from your app:</Label>
+                  <Label>{t("userProfile.settings.setup.enterCode")}</Label>
                   <Input
                     placeholder="000000"
                     value={verificationCode}
@@ -157,14 +158,14 @@ export function SettingsCard({
                     disabled={twoFALoading || verificationCode.length !== 6}
                     className="flex-1"
                   >
-                    {twoFALoading ? "Verifying..." : "Verify & Enable"}
+                    {twoFALoading ? t("userProfile.actions.verifying") : t("userProfile.actions.setup2fa")}
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => onShow2FADialog(false)}
                     disabled={twoFALoading}
                   >
-                    Cancel
+                    {t("userProfile.actions.cancel")}
                   </Button>
                 </div>
               </>
@@ -177,14 +178,14 @@ export function SettingsCard({
       <Dialog open={showDisable2FADialog} onOpenChange={onShowDisable2FADialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Disable Two-Factor Authentication</DialogTitle>
+            <DialogTitle>{t("userProfile.settings.disable.title")}</DialogTitle>
             <DialogDescription>
-              Enter a verification code from your authenticator app to disable 2FA.
+              {t("userProfile.settings.disable.instruction")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Verification Code:</Label>
+              <Label>{t("userProfile.settings.disable.verificationCode")}</Label>
               <Input
                 placeholder="000000"
                 value={disableCode}
@@ -199,14 +200,14 @@ export function SettingsCard({
                 disabled={twoFALoading || disableCode.length !== 6}
                 className="flex-1"
               >
-                {twoFALoading ? "Disabling..." : "Disable 2FA"}
+                {twoFALoading ? t("userProfile.actions.disabling") : t("userProfile.actions.disable")}
               </Button>
               <Button
                 variant="outline"
                 onClick={() => onShowDisable2FADialog(false)}
                 disabled={twoFALoading}
               >
-                Cancel
+                {t("userProfile.actions.cancel")}
               </Button>
             </div>
           </div>
