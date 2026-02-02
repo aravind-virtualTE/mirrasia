@@ -271,39 +271,55 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
             <Table className="min-w-full w-full table-auto text-xs text-left lg:min-w-[1100px]">
               <TableHeader className="sticky top-0 z-10 bg-background">
                 <TableRow className="h-9">
-                  <TableHead className="w-12 px-2 py-1 text-center">No</TableHead>
+                  <TableHead className="w-10 px-2 py-1 text-center whitespace-nowrap">No</TableHead>
 
-                  {/* Project Name: wider + higher priority */}
-                  <TableHead className="px-2 py-1 min-w-[200px] md:min-w-[340px]">
+                  {/* Project Name: biggest share */}
+                  <TableHead className="w-[22%] px-2 py-1">
                     <button
                       type="button"
                       onClick={() => toggleSort("projectName")}
-                      className="inline-flex items-center gap-1 hover:opacity-80"
+                      className="inline-flex items-center gap-1 hover:opacity-80 w-full"
                     >
-                      Project Name <SortIcon active={sortKey === "projectName"} />
+                      <span className="truncate">Project Name</span>
+                      <SortIcon active={sortKey === "projectName"} />
                     </button>
                   </TableHead>
 
-                  <TableHead className="px-2 py-1 min-w-[160px]">
+                  {/* Company Name: second biggest */}
+                  <TableHead className="w-[18%] px-2 py-1">
                     <button
                       type="button"
                       onClick={() => toggleSort("companyName")}
-                      className="inline-flex items-center gap-1 hover:opacity-80"
+                      className="inline-flex items-center gap-1 hover:opacity-80 w-full"
                     >
-                      Company Name <SortIcon active={sortKey === "companyName"} />
+                      <span className="truncate">Company Name</span>
+                      <SortIcon active={sortKey === "companyName"} />
                     </button>
                   </TableHead>
 
-                  <TableHead className="px-2 py-1 min-w-[160px]">Email</TableHead>
-                  <TableHead className="px-2 py-1 min-w-[90px]">Contact</TableHead>
-                  <TableHead className="px-2 py-1 min-w-[90px]">Jurisdiction</TableHead>
+                  {/* Medium columns */}
+                  <TableHead className="w-[16%] px-2 py-1">
+                    <span className="truncate block">Email</span>
+                  </TableHead>
 
-                  {/* Description: flexible, takes remaining space */}
-                  <TableHead className="px-2 py-1 min-w-[150px]">Description</TableHead>
+                  <TableHead className="w-[10%] px-2 py-1">
+                    <span className="truncate block">Contact</span>
+                  </TableHead>
 
-                  <TableHead className="px-2 py-1 w-[80px] whitespace-nowrap">Updated At</TableHead>
-                  <TableHead className="px-2 py-1 w-[90px] text-right whitespace-nowrap">Actions</TableHead>
+                  <TableHead className="w-[10%] px-2 py-1">
+                    <span className="truncate block">Jurisdiction</span>
+                  </TableHead>
+
+                  {/* Description: remaining flexible */}
+                  <TableHead className="w-[14%] px-2 py-1">
+                    <span className="truncate block">Description</span>
+                  </TableHead>
+
+                  {/* Fixed small columns */}
+                  <TableHead className="w-28 px-2 py-1 whitespace-nowrap">Updated</TableHead>
+                  <TableHead className="w-24 px-2 py-1 text-right whitespace-nowrap">Actions</TableHead>
                 </TableRow>
+
               </TableHeader>
 
               <TableBody>
