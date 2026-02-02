@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Smartphone, Copy } from "lucide-react"
+import { Copy, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -57,26 +57,25 @@ export function SettingsCard({
 
   return (
     <>
-      <Card>
+      <Card className="border-0 shadow-sm ring-1 ring-border/50">
         <CardHeader>
-          <div className="flex items-center space-x-2">
-            <Smartphone className="h-5 w-5 text-blue-600" />
-            <div>
-              <CardTitle>{t("userProfile.settings.title")}</CardTitle>
-              <CardDescription>{t("userProfile.settings.subtitle")}</CardDescription>
-            </div>
-          </div>
+          <CardTitle>{t("userProfile.settings.title")}</CardTitle>
+          <CardDescription>{t("userProfile.settings.subtitle")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div className="flex items-center space-x-3">
-              <Smartphone className="h-5 w-5 text-blue-600" />
-              <div>
-                <h3 className="font-medium">{t("userProfile.settings.twoFactor")}</h3>
-                <p className="text-sm text-gray-600">
-                  {t("userProfile.settings.twoFactorDesc")}
-                </p>
+          <div className="flex items-center justify-between p-4 border rounded-xl bg-card hover:bg-accent/5 transition-colors">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className={`p-2 rounded-full ${profile.twoFactorEnabled ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}>
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <h3 className="font-medium text-base">{t("userProfile.settings.twoFactor")}</h3>
               </div>
+              <p className="text-sm text-muted-foreground pl-11">
+                {profile.twoFactorEnabled
+                  ? t("userProfile.settings.twoFactorEnabled")
+                  : t("userProfile.settings.twoFactorDisabled")}
+              </p>
             </div>
             <div className="flex items-center space-x-3">
               <Badge variant={profile.twoFactorEnabled ? "default" : "secondary"}>
