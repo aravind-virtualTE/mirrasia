@@ -73,8 +73,8 @@ export function SettingsCard({
               </div>
               <p className="text-sm text-muted-foreground pl-11">
                 {profile.twoFactorEnabled
-                  ? t("userProfile.settings.twoFactorEnabled")
-                  : t("userProfile.settings.twoFactorDisabled")}
+                  ? t("userProfile.messages.twoFactorEnabled")
+                  : t("userProfile.messages.twoFactorDisabled")}
               </p>
             </div>
             <div className="flex items-center space-x-3">
@@ -89,7 +89,7 @@ export function SettingsCard({
                     onClick={() => onShowDisable2FADialog(true)}
                     disabled={twoFALoading}
                   >
-                    Disable
+                    {t("userProfile.actions.disable")}
                   </Button>
                 </div>
               ) : (
