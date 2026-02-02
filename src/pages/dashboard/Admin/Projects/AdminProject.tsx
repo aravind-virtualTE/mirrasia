@@ -269,13 +269,11 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
         // Scroll container with sticky header
         <div className="mt-6 w-full">
           <div className="rounded-md border w-full overflow-x-auto">
-            <Table className="min-w-full w-full table-auto text-xs text-left">
+            <Table className="w-full table-fixed text-xs text-left">
               <TableHeader className="sticky top-0 z-10 bg-background">
                 <TableRow className="h-8">
-                  <TableHead className="w-10 px-1.5 py-0.5 text-center whitespace-nowrap">No</TableHead>
-
-                  {/* Project Name: biggest share */}
-                  <TableHead className="w-[28%] px-1.5 py-0.5">
+                  <TableHead className="w-[5%] px-1.5 py-0.5 text-center">No</TableHead>
+                  <TableHead className="w-[25%] px-1.5 py-0.5">
                     <button
                       type="button"
                       onClick={() => toggleSort("projectName")}
@@ -285,9 +283,7 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                       <SortIcon active={sortKey === "projectName"} />
                     </button>
                   </TableHead>
-
-                  {/* Company Name: second biggest */}
-                  <TableHead className="w-[16%] px-1.5 py-0.5">
+                  <TableHead className="w-[15%] px-1.5 py-0.5">
                     <button
                       type="button"
                       onClick={() => toggleSort("companyName")}
@@ -297,28 +293,20 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                       <SortIcon active={sortKey === "companyName"} />
                     </button>
                   </TableHead>
-
-                  {/* Medium columns */}
-                  <TableHead className="w-[14%] px-1.5 py-0.5">
+                  <TableHead className="w-[15%] px-1.5 py-0.5">
                     <span className="truncate block">Email</span>
                   </TableHead>
-
-                  <TableHead className="w-[9%] px-1.5 py-0.5">
+                  <TableHead className="w-[10%] px-1.5 py-0.5">
                     <span className="truncate block">Contact</span>
                   </TableHead>
-
-                  <TableHead className="w-[9%] px-1.5 py-0.5">
+                  <TableHead className="w-[10%] px-1.5 py-0.5">
                     <span className="truncate block">Jurisdiction</span>
                   </TableHead>
-
-                  {/* Description: remaining flexible */}
-                  <TableHead className="w-[12%] px-1.5 py-0.5">
+                  <TableHead className="w-[10%] px-1.5 py-0.5">
                     <span className="truncate block">Description</span>
                   </TableHead>
-
-                  {/* Fixed small columns */}
-                  <TableHead className="w-20 px-1.5 py-0.5 whitespace-nowrap">Updated</TableHead>
-                  <TableHead className="w-20 px-1.5 py-0.5 text-right whitespace-nowrap">Actions</TableHead>
+                  <TableHead className="w-[5%] px-1.5 py-0.5 whitespace-nowrap">Updated</TableHead>
+                  <TableHead className="w-[5%] px-1.5 py-0.5 text-right whitespace-nowrap">Actions</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -329,43 +317,29 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                     className="h-8 cursor-pointer hover:bg-muted/50"
                     onClick={() => handleNavigate(project)}
                   >
-                    <TableCell className="w-12 px-1.5 py-0.5 text-center whitespace-nowrap">
-                      {idx + 1}
+                    <TableCell className="px-1.5 py-0.5 text-center">{idx + 1}</TableCell>
+                    <TableCell className="px-1.5 py-0.5 font-medium">
+                      <div className="truncate">{project.projectName || "-"}</div>
                     </TableCell>
-
-                    {/* Project name: allow a bit more visible text */}
-                    <TableCell className="px-1.5 py-0.5 font-medium min-w-[300px] md:min-w-[400px]">
-                      <div className="truncate">
-                        {project.projectName || "-"}
-                      </div>
-                    </TableCell>
-
                     <TableCell className="px-1.5 py-0.5">
                       <div className="truncate">{project.company?.name || "-"}</div>
                     </TableCell>
-
                     <TableCell className="px-1.5 py-0.5 whitespace-nowrap">
                       <div className="truncate">{project.email || "-"}</div>
                     </TableCell>
-
                     <TableCell className="px-1.5 py-0.5 whitespace-nowrap">
                       <div className="truncate">{project.contactName || "-"}</div>
                     </TableCell>
-
                     <TableCell className="px-1.5 py-0.5 whitespace-nowrap">
                       <div className="truncate">{project.jurisdiction || "-"}</div>
                     </TableCell>
-
-                    {/* Description: flexible, still truncates */}
                     <TableCell className="px-1.5 py-0.5 whitespace-nowrap">
                       <div className="truncate">{project.description || "-"}</div>
                     </TableCell>
-
                     <TableCell className="px-1.5 py-0.5 whitespace-nowrap tabular-nums">
                       {project.updatedAt ? format(new Date(project.updatedAt), "yyyy-MM-dd") : "-"}
                     </TableCell>
-
-                    <TableCell className="px-1.5 py-0.5 w-[80px] text-right">
+                    <TableCell className="px-1.5 py-0.5 text-right">
                       <div className="flex justify-end space-x-1">
                         <Button
                           variant="ghost"
@@ -378,7 +352,6 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                         >
                           <Pencil className="h-3 w-3" />
                         </Button>
-
                         <Button
                           variant="ghost"
                           size="icon"
