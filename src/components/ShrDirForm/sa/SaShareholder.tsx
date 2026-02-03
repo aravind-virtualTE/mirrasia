@@ -486,7 +486,7 @@ const SaIndividualRegForm: React.FC = () => {
                         <Textarea
                             value={currentAnswer}
                             onChange={(e) => handleInputChange(e.target.value)}
-                            placeholder={currentQuestion.placeholder}
+                            placeholder={"Please Enter details"}
                             className="min-h-[100px] resize-none"
                         />
                         <div className="flex gap-2">
@@ -534,10 +534,10 @@ const SaIndividualRegForm: React.FC = () => {
                                                 {isSelected && <CheckCircle className="w-3 h-3 text-primary-foreground" />}
                                             </div>
                                             <div>
-                                                <div>{option.label}</div>
+                                                <div>{t(option.label)}</div>
                                                 {option.description && (
                                                     <div className="text-xs text-muted-foreground mt-1">
-                                                        {option.description}
+                                                        {t(option.description)}
                                                     </div>
                                                 )}
                                             </div>
@@ -588,10 +588,10 @@ const SaIndividualRegForm: React.FC = () => {
                                                 {isSelected && <div className="w-2 h-2 bg-primary-foreground rounded-full" />}
                                             </div>
                                             <div>
-                                                <div>{option.label}</div>
+                                                <div>{t(option.label)}</div>
                                                 {option.description && (
                                                     <div className="text-xs text-muted-foreground mt-1">
-                                                        {option.description}
+                                                        {t(option.description)}
                                                     </div>
                                                 )}
                                             </div>
@@ -675,7 +675,7 @@ const SaIndividualRegForm: React.FC = () => {
                             type={currentQuestion.type}
                             value={currentAnswer}
                             onChange={(e) => handleInputChange(e.target.value)}
-                            placeholder={currentQuestion.placeholder}
+                            placeholder={"Please Enter details"}
                             className="w-full"
                         />
                         <div className="flex gap-2">
@@ -889,10 +889,10 @@ const SaIndividualRegForm: React.FC = () => {
                                             className="text-sm hover:bg-muted transition-smooth"
                                         >
                                             <ArrowLeft className="h-4 w-4 mr-2" />
-                                            {t('saShareholder.navigation.previous')}
+                                            {t('saShareholder.navigation.prev')}
                                         </Button>
                                         <span className="text-xs text-muted-foreground">
-                                            {isEditing ? t('saShareholder.navigation.editing') : t('saShareholder.navigation.editNotice')}
+                                            {isEditing ? t('saShareholder.navigation.editingLabel') : t('saShareholder.navigation.editNotice')}
                                         </span>
                                     </div>
                                 )}
@@ -901,9 +901,9 @@ const SaIndividualRegForm: React.FC = () => {
                     )}
                 </div>
 
-                <div className="text-center text-sm text-muted-foreground">
+                {/* <div className="text-center text-sm text-muted-foreground">
                     {t('saShareholder.messages.progress', { current: currentQuestionIndex + 1, total: filteredQuestions.length })}
-                </div>
+                </div> */}
             </div>
         </div>
     );

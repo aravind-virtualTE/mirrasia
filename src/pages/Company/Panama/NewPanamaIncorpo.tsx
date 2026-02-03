@@ -3127,7 +3127,7 @@ const CONFIG: FormConfig = {
         },
         {
             id: "incorp",
-            title: "usa.steps.step9",
+            title: "ppif.congrats",
             description: "usa.steps.incorp.description",
             render: CongratsStep,
         },
