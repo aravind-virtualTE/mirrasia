@@ -501,7 +501,7 @@
       "question": "panamaShrInvite.questions.passportId.question",
       "infoText": "panamaShrInvite.questions.passportId.info",
       "placeholder": "panamaShrInvite.questions.passportId.placeholder",
-      "required": true,
+      "required": false,
       "validation": {
         "message": "panamaShrInvite.questions.passportId.validation"
       }
@@ -512,7 +512,7 @@
       "question": "panamaShrInvite.questions.bankStatement3Mnth.question",
       "infoText": "panamaShrInvite.questions.bankStatement3Mnth.info",
       "placeholder": "panamaShrInvite.questions.bankStatement3Mnth.placeholder",
-      "required": true,
+      "required": false,
       "validation": {
         "message": "panamaShrInvite.questions.bankStatement3Mnth.validation"
       }
@@ -523,7 +523,7 @@
       "question": "panamaShrInvite.questions.addressProof.question",
       "infoText": "panamaShrInvite.questions.addressProof.info",
       "placeholder": "panamaShrInvite.questions.addressProof.placeholder",
-      "required": true,
+      "required": false,
       "validation": {
         "message": "panamaShrInvite.questions.addressProof.validation"
       }
@@ -534,7 +534,7 @@
       "question": "panamaShrInvite.questions.profRefLetter.question",
       "infoText": "panamaShrInvite.questions.profRefLetter.info",
       "placeholder": "panamaShrInvite.questions.profRefLetter.placeholder",
-      "required": true,
+      "required": false,
       "validation": {
         "message": "panamaShrInvite.questions.profRefLetter.validation"
       }
@@ -544,7 +544,7 @@
       "type": "file",
       "question": "panamaShrInvite.questions.engResume.question",
       "placeholder": "panamaShrInvite.questions.engResume.placeholder",
-      "required": true,
+      "required": false,
       "validation": {
         "message": "panamaShrInvite.questions.engResume.validation"
       }

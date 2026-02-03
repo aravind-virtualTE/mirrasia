@@ -118,7 +118,7 @@
       "otpVerifyError": "Invalid OTP",
       "otpRequired": "Please enter OTP",
       "phoneRequired": "Phone Number is required",
-      "nameError": "Please enter your name in English letters only (Aâ€“Z, space, . ' -).",
+      "nameError": "Please enter your name in English letters only (A“Z, space, . ' -).",
       "phoneError": "Enter a valid international number. It must not start with 0 (e.g., +85212345678).",
       "cameraError": "Failed to access camera. Please check permissions.",
       "twoFactorSetupError": "Failed to setup Two-Factor Authentication. Please try again.",
@@ -144,21 +144,21 @@
   },
   "landingPage": {
     "leftHeading": "Start Your Business the Smart Way",
-    "leftHDesc": "Register a Company and Open Business Account â€” Fast, Simple & Online!",
+    "leftHDesc": "Register a Company and Open Business Account ” Fast, Simple & Online!",
     "rightHeading": "Already have a company?",
-    "leftText": "Avoid paperwork, long wait times, and confusion. With our all-in-one company registration service, you can register a company in just a few clicks â€” backed by expert guidance every step of the way.",
+    "leftText": "Avoid paperwork, long wait times, and confusion. With our all-in-one company registration service, you can register a company in just a few clicks ” backed by expert guidance every step of the way.",
     "rightSubHeading": "Get Started Today",
     "rightP": "Register your company in minutes and get everything you need to stay compliant and confident!",
     "registerNow": "Register now",
     "contactUs": "Contact us",
     "TransferBtn": "Transfer to Mirr Asia",
     "title": "Request a Free Consultation",
-    "subtitle": "Required fields are marked with â€¢. Our team will contact you shortly.",
+    "subtitle": "Required fields are marked with ¢. Our team will contact you shortly.",
     "honeypot": {
       "label": "Leave this field blank"
     },
     "name": {
-      "label": "Full Name â€¢",
+      "label": "Full Name ¢",
       "error": "Please enter your name."
     },
     "phone": {
@@ -166,11 +166,11 @@
       "error": "Use only numbers, spaces, parentheses, or hyphens."
     },
     "email": {
-      "label": "Email â€¢",
+      "label": "Email ¢",
       "error": "Please enter a valid email address."
     },
     "message": {
-      "label": "Message â€¢",
+      "label": "Message ¢",
       "helper": "Please provide enough detail for a helpful reply.",
       "counterAria": "Character count",
       "error": "Message must be at least 10 characters."
@@ -695,7 +695,7 @@
     "ownerShpRte": "Ownership Rate (%)",
     "actDirector": "Act as a director?",
     "isLegal": "Legal Entity(Company, Foundation)?",
-    "conditionSignificantControl": "Conditions for significant control over the Company; A person has significant control over a company if one or more of the following 5 conditions are met â€“ 1.The person holds, directly or indirectly, more than 25% of the issued shares in the Company or, if the Company does not have a share capital, the person holds, directly or indirectly, a right to share in more than 25% of the capital or profits of the Company ; 2.The person holds, directly or indirectly, more than 25% of the voting rights of the Company ; 3.The person holds, directly or indirectly, the right to appoint or remove a majority of the board of directors of the Company ; 4.The person has the right to exercise, or actually exercises, significant influence or control over the Company ; 5.The person has the right to exercise, or actually exercises, significant influence or control over the activities of a trust or a firm that is not a legal person, but whose trustees or members satisfy any of the first four conditions (in their capacity as such) in relation to the Company.",
+    "conditionSignificantControl": "Conditions for significant control over the Company; A person has significant control over a company if one or more of the following 5 conditions are met “ 1.The person holds, directly or indirectly, more than 25% of the issued shares in the Company or, if the Company does not have a share capital, the person holds, directly or indirectly, a right to share in more than 25% of the capital or profits of the Company ; 2.The person holds, directly or indirectly, more than 25% of the voting rights of the Company ; 3.The person holds, directly or indirectly, the right to appoint or remove a majority of the board of directors of the Company ; 4.The person has the right to exercise, or actually exercises, significant influence or control over the Company ; 5.The person has the right to exercise, or actually exercises, significant influence or control over the activities of a trust or a firm that is not a legal person, but whose trustees or members satisfy any of the first four conditions (in their capacity as such) in relation to the Company.",
     "accountHeading": "Accounting and taxation",
     "accountingPara": "Please provide information on accounting and tax matters.",
     "finYearEnd": "The financial year-end date of the Hong Kong company.",
@@ -737,11 +737,11 @@
   "ServiceAgreementDocument": {
     "title": "Company Services Agreement",
     "section1Title": "1. Purpose of Service Agreement",
-    "section1Content": "The purpose of this agreement is to prevent any misunderstandings or disputes that may arise regarding the scope of services provided by MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED (â€œMIRR ASIAâ€) and its limitations in relation to your company, which will be incorporated soon in the HKSAR (â€Clientâ€).",
+    "section1Content": "The purpose of this agreement is to prevent any misunderstandings or disputes that may arise regarding the scope of services provided by MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED (œMIRR ASIA) and its limitations in relation to your company, which will be incorporated soon in the HKSAR (Client).",
     "section2Title": "2. Role of Hong Kong Company Secretary and Limitation of Liability",
     "section2Content": "(Applicable only to Clients who use secretarial services provided by MIRR ASIA)",
     "section2_1": "2.1",
-    "section2_1Content": "MIRR ASIA will be registered as a secretary in the Clientâ€™s files in accordance with the Hong Kong Companies Ordinance (Cap 622) and the Articles of Association of the Client.",
+    "section2_1Content": "MIRR ASIA will be registered as a secretary in the Client™s files in accordance with the Hong Kong Companies Ordinance (Cap 622) and the Articles of Association of the Client.",
     "section2_2": "2.2",
     "section2_2Content": "Secretarial services provided by MIRR ASIA are basic registration requirements stipulated in the Hong Kong Companies Ordinance (Cap 622) and may be different from the general meaning of an employed secretary.",
     "section3Title": "3. Providing Registered Address and Its Limitations of Liability",
@@ -751,9 +751,9 @@
     "section3_2": "3.2",
     "section3_2Content": "The registered address provided by MIRR ASIA is for registration purposes only and does not include business or physical space for the Client.",
     "section3_3": "3.3",
-    "section3_3Content": "The Client must not use the registered address for abusive or illegal purposes, nor falsely represent it as the Clientâ€™s actual business area.",
+    "section3_3Content": "The Client must not use the registered address for abusive or illegal purposes, nor falsely represent it as the Client™s actual business area.",
     "section3_4": "3.4",
-    "section3_4Content": "Clientâ€™s incoming mail will be opened and scanned by MIRR ASIA according to the Letter of Consent during the service period, and the scanned files will be emailed to the Client. If the Client wishes to terminate the service, the Client shall notify MIRR ASIA in writing or by email in advance. If the Client has more than two directors, at least two directors according to the quorum in the Articles of Association shall sign all relevant documents.",
+    "section3_4Content": "Client™s incoming mail will be opened and scanned by MIRR ASIA according to the Letter of Consent during the service period, and the scanned files will be emailed to the Client. If the Client wishes to terminate the service, the Client shall notify MIRR ASIA in writing or by email in advance. If the Client has more than two directors, at least two directors according to the quorum in the Articles of Association shall sign all relevant documents.",
     "section3_5": "3.5",
     "section3_5Content": "The Client shall not send or request third parties to send parcels and goods to the registered address provided by MIRR ASIA without prior consent. Unagreed deliveries will be returned to the sender.",
     "section4Title": "4. Scope of Services",
@@ -764,7 +764,7 @@
       "3": "Providing HK address and mailing service, including scanning and emailing (Applicable for using the registered address service)",
       "4": "Handling Employer's Return for the first 2 employees (subject to HKD300 postal charge) (Applicable for using the secretarial services)",
       "5": "Handling mandatory Survey of Company Information (Applicable for using the secretarial services)",
-      "6": "Preparation of Annual Return form and maintaining the copy of the Renewal form after signing by a director and being registered in the Clientâ€™s Companies Registry (Applicable for using the secretarial services after renewal)",
+      "6": "Preparation of Annual Return form and maintaining the copy of the Renewal form after signing by a director and being registered in the Client™s Companies Registry (Applicable for using the secretarial services after renewal)",
       "7": "Filing and maintaining the Significant Controllers Register (Applicable for using both secretarial and registered address services)",
       "8": "Filing and maintaining Register of Members/Directors/Secretary and Organisation Chart (Applicable for using both secretarial and registered address services)",
       "9": "Filing and maintaining Minutes of Annual General Meeting (AGM) (Applicable for using both secretarial and registered address services)",
@@ -774,7 +774,7 @@
     "section4_1": "4.1",
     "section4_1Content": "The Client shall cooperate with MIRR ASIA in good faith, providing all necessary information and documents required for the Services. MIRR ASIA is not obliged to assist or advise on unlawful matters.",
     "section4_2": "4.2",
-    "section4_2Content": "The brief business and operational advice services provided by MIRR ASIA are for the Clientâ€™s convenience; however, MIRR ASIA holds no legal responsibility for this advice.",
+    "section4_2Content": "The brief business and operational advice services provided by MIRR ASIA are for the Client™s convenience; however, MIRR ASIA holds no legal responsibility for this advice.",
     "section5Title": "5. Service Fee",
     "section5Content": "The Client shall pay the amount specified in the payment section upon signing this agreement. The service fee does not include accounting, auditing, taxation services, bank account opening advice, or any third-party charges such as bank charges, government fees, taxes, and courier fees.",
     "section6Title": "6. Assignment and Subcontractors",
@@ -790,7 +790,7 @@
     "section11Title": "11. Governing Law and Remedies",
     "section11Content": "This Agreement shall be governed by the laws of the Hong Kong Special Administrative Region. Any disputes shall be submitted to binding arbitration in accordance with the rules of the Hong Kong Arbitration Association.",
     "section12Title": "12. Attorney's Fees",
-    "section12Content": "In the event of mediation, arbitration, or litigation arising out of this Agreement, the prevailing party shall be entitled to reasonable costs and attorneyâ€™s fees. The Client also agrees to pay all costs incurred by MIRR ASIA in responding to any lawful demands for information, testimony, or documents.",
+    "section12Content": "In the event of mediation, arbitration, or litigation arising out of this Agreement, the prevailing party shall be entitled to reasonable costs and attorney™s fees. The Client also agrees to pay all costs incurred by MIRR ASIA in responding to any lawful demands for information, testimony, or documents.",
     "section13Title": "13. Confirmation and Declaration",
     "section13Content": "The Client confirms and declares that the services provided by MIRR ASIA will not be used for illegal purposes. Any changes to the information provided by Client must be notified immediately to MIRR ASIA. The Client confirms that all details provided are true and correct.",
     "section13_1": "13.1",
@@ -1056,7 +1056,7 @@
     "paymentConditionsDesc": "All payments are NON-REFUNDABLE. The remitter bears all charges of payment, which includes the remittance amount, beneficiary bank's charges, as well as all the other banks' fees (intermediary bank, etc)."
   },
   "usa": {
-    "title": "Company Incorporation â€” USA",
+    "title": "Company Incorporation ” USA",
     "steps": {
       "step1": "Applicant information",
       "step2": "AML Questions",
@@ -1091,7 +1091,7 @@
       "emailPlaceholder": "Valid email",
       "namePlaceholder": "Your answer",
       "usCompName": " Proposed US company name (Please provide at least three proposed company names.)",
-      "usCompNamePopup": " The company name must be written in English, and LLC must end with â€œLLCâ€ in English. For CORPORATION, please select from â€œCorporationâ€, â€œIncorporatedâ€, â€œLimitedâ€, â€œCorp.â€, or â€œInc.â€ and write it after the English name. The company name can be a combination of uppercase/lowercase/numbers/periods/commas/parentheses, and cannot contain any special characters. If there is an existing company with the same or similar company name, the company cannot be established. Accordingly, if you list three possible company names in the order of 1st/2nd/3rd choice below, we will search the registration and apply the possible company names to the registration documents in the order of your choice.",
+      "usCompNamePopup": " The company name must be written in English, and LLC must end with œLLC in English. For CORPORATION, please select from œCorporation, œIncorporated, œLimited, œCorp., or œInc. and write it after the English name. The company name can be a combination of uppercase/lowercase/numbers/periods/commas/parentheses, and cannot contain any special characters. If there is an existing company with the same or similar company name, the company cannot be established. Accordingly, if you list three possible company names in the order of 1st/2nd/3rd choice below, we will search the registration and apply the possible company names to the registration documents in the order of your choice.",
       "relationBtw": "Relationship between the above applicant and the US company to be established",
       "otherInputPopUp": "you can type in the empty space inside the select box to enter custom value",
       "PlzSelectAllApply": "Please select all that apply.",
@@ -1495,7 +1495,7 @@
     "clientAnnualRenew": "After the incorporation of a Singapore corporation, there will be tasks such as annual renewal, secretary service renewal, business renewal, accounting/taxation, etc., and all of these tasks entail related costs and obligations to provide information. Do you agree to this?",
     "clientAccountTax": "When conducting accounting/tax affairs for a Singapore corporation, you must submit all bank transaction statements, purchase data, sales data, expenditure evidence, and salary payment evidence for the accounting period without any falsification or distortion. We cannot process these documents arbitrarily or falsily. Do you agree to this?",
     "singFollowingCompaniesActivity": "Does the Singapore company, to the best of your knowledge, have any current or planned business activity in the following countries/regions (Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus or Zimbabwe)?",
-    "SgIsConnectedIranSudanetc": "To the best of your knowledge, does the Singapore company or any of the companyâ€™s connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by the following bodies: UN, EU, UKHMT, HKMA, OFAC, as part of local sanctions law?",
+    "SgIsConnectedIranSudanetc": "To the best of your knowledge, does the Singapore company or any of the company™s connected or other related parties have a presence in Iran, Sudan, North Korea, Syria or Cuba, and/or are currently targeted by the following bodies: UN, EU, UKHMT, HKMA, OFAC, as part of local sanctions law?",
     "SgCrimeaSevastapl": "To the best of your knowledge, does the Singapore company have any current or planned business activities connected or other related parties in Crimea/Sevastopol Regions?",
     "sgRussiaEnergy": "To the best of your knowledge, does the Singapore company have any current or planned exposure to Russia in the energy (oil/gas) sector, the military, or defense?",
     "bInfoSgComp": "Business information of the Singapore company",
@@ -1534,7 +1534,7 @@
       "p8": "Increase transactional volume due to low tax rate and non-transactional tax (Non-VAT)",
       "p9": "Pursuit of investment profit due to No Capital Gain Tax"
     },
-    "mirraddress": "Use of Mir Asiaâ€™s Singapore Corporation Registration Address Service",
+    "mirraddress": "Use of Mir Asia™s Singapore Corporation Registration Address Service",
     "ownAddress": "Have a separate address to use as your business address in Singapore (does not use Mir Asia's registered address service)",
     "fyEndSgComp": "The financial year end date(FYE) of the Singapore company",
     "fyEndSgCompInfo": "Important dates related to accounting and tax reporting: 1) Deadline for preparation of Accounting and Audit Report (S201): Within 3 months from the financial year end 2) Deadline for submission of Estimated Chargeable Income (ECI) Submission to Income Tax (IRAS): Within 3 months from the financial year end 3) Annual General Meeting (S175): To be held within 6 months from the financial year end* 4) ACRA Annual Return (S197): To be registered within 1 month from the AGM date 5) IRAS Company Tax Filing (Form C or CS for the last financial year end): To be filed by 30 November every year * The first AGM must be held within 18 months from the date of incorporation. ** The interval between AGMs should not exceed 15 months.",
@@ -1565,19 +1565,19 @@
     "congrats": {
       "steps": {
         "1": {
-          "t": "Step 1 â€” Compliance review",
-          "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1â€“2 business days."
+          "t": "Step 1 ” Compliance review",
+          "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1“2 business days."
         },
         "2": {
-          "t": "Step 2 â€” Filing with Companies Registry",
+          "t": "Step 2 ” Filing with Companies Registry",
           "s": "We will file the incorporation documents."
         },
         "3": {
-          "t": "Step 3 â€” Registration certificates",
+          "t": "Step 3 ” Registration certificates",
           "s": "Expected: Certificate of Incorporation & Business Registration within a week."
         },
         "4": {
-          "t": "Step 4 â€” Bank/EMI account",
+          "t": "Step 4 ” Bank/EMI account",
           "s": "If selected, we arrange an account opening with your preferred bank/EMI."
         }
       }
@@ -1588,7 +1588,7 @@
       "preQuestions": {
         "title": "Pre-Questions (auto-applies to the quote below)",
         "q1": {
-          "label": "Do you have a Singapore-based individual who can act as your companyâ€™s local director?",
+          "label": "Do you have a Singapore-based individual who can act as your company™s local director?",
           "yes": "Yes, we can appoint an internal local director",
           "no": "No, nominee director is required"
         },
@@ -1643,7 +1643,7 @@
     "energyPresence": "To the best of your knowledge, does the proposed company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
   },
   "panama": {
-    "title":"Company Incorporation â€” Panama",
+    "title":"Company Incorporation ” Panama",
     "rolesWarning": "Invalid Roles",
     "rolesWarningInfo": "Please ensure that the roles of President, Treasurer, and Secretary are assigned correctly.",
     "headInfo": "This application must be completed or authorised by the principal of the company (being formed) who is the primary controller of the company to ensure that all information is entered correctly. This application will be prepared as a separate application form document when the company is being formed and signed by the principal of the company.This application form and the subsequent application form documents to be signed will be kept on file with us as statutory documents for the purpose of conducting KYC and due diligence on you in accordance with the TCSP Licence and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act; Cap. 615 AMLO) guidelines, so please ensure that there are no distortions or errors in the information provided.",
@@ -1724,7 +1724,7 @@
     "totalOtherCap": "If your capital is in another currency, please fill in the Other field.",
     "thereAnyProvision": "If there are any specific provisions, requirements, by-laws, etc. that need to be included in the articles of association regarding the operation of the entity, please describe them.",
     "regAddress": "Registered address of the company",
-    "panamaRegInfo": "A Panamanian company must have a registered business address in Panama to be incorporated and maintained. We offer a registered address service, which includes a registered address and mailing services. (Residential or hotel addresses are not registered as corporate addresses.) Under the Panama Companies Act, corporate documents such as directorsâ€˜ and shareholdersâ€™ lists and resolutions must be kept at the registered business address.",
+    "panamaRegInfo": "A Panamanian company must have a registered business address in Panama to be incorporated and maintained. We offer a registered address service, which includes a registered address and mailing services. (Residential or hotel addresses are not registered as corporate addresses.) Under the Panama Companies Act, corporate documents such as directors˜ and shareholders™ lists and resolutions must be kept at the registered business address.",
     "useRegMirProide": "Use the Registered Address Service that Mirr Asia provides",
     "haveSepAddress": "I have a separate address in Panama to use as the company's address (not using Mirr Asia's registered address service)",
     "finalMsg": "Thank you for completing the Panama company incorporation process with us. We will review the content of your response and our consultant will contact you shortly.",
@@ -1796,36 +1796,36 @@
      "congrats": {
       "steps": {
         "1": {
-          "t": "Step 1 â€” Compliance review",
-          "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1â€“2 business days."
+          "t": "Step 1 ” Compliance review",
+          "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1“2 business days."
         },
         "2": {
-          "t": "Step 2 â€” Filing with Companies Registry",
+          "t": "Step 2 ” Filing with Companies Registry",
           "s": "We will file the incorporation documents."
         },
         "3": {
-          "t": "Step 3 â€” Registration certificates",
+          "t": "Step 3 ” Registration certificates",
           "s": "Expected: Certificate of Incorporation & Business Registration within 1-3 business weeks."
         },
         "4": {
-          "t": "Step 4 â€” Bank/EMI account",
+          "t": "Step 4 ” Bank/EMI account",
           "s": "If selected, we arrange an account opening with your preferred bank/EMI."
         }
       }
     }    
   },
   "newHk": {
-    "hkTitle": "Company Incorporation â€” Hong Kong",
+    "hkTitle": "Company Incorporation ” Hong Kong",
     "infoHelpIcon": "Complete each step. Helpful tips (â“˜) appear where terms may be unclear.",
     "topbar": {
       "stepOf": "Step {{current}} of {{total}}"
     },
     "sidebar": {
-      "brand": "MIRR ASIA â€” Incorporation",
+      "brand": "MIRR ASIA ” Incorporation",
       "badges": {
         "ssl": "ðŸ”’ SSL Secured",
         "registry": "ðŸ›ï¸ Registry Compliant",
-        "aml": "ðŸ§‘â€âš–ï¸ AML/CFT Ready"
+        "aml": "ðŸ§‘âš–ï¸ AML/CFT Ready"
       },
       "done": "Done",
       "needHelp": "Need help?",
@@ -1843,7 +1843,7 @@
       "stepsMenu": "Steps Menu",
       "back": "â† Back",
       "next": "Next â†’",
-      "saving": "Savingâ€¦"
+      "saving": "Saving¦"
     },
     "toasts": {
       "paymentRequiredTitle": "Payment required",
@@ -1864,15 +1864,15 @@
         },
         "2": {
           "t": "2. Role of Hong Kong Company Secretary & Limitation of Liability",
-          "c": "Mirr Asia will be appointed as company secretary in accordance with the Companies Ordinance (Cap 622) and the Clientâ€™s Articles of Association. Secretarial services are statutory in nature and differ from the role of an employed administrative secretary."
+          "c": "Mirr Asia will be appointed as company secretary in accordance with the Companies Ordinance (Cap 622) and the Client™s Articles of Association. Secretarial services are statutory in nature and differ from the role of an employed administrative secretary."
         },
         "3": {
           "t": "3. Registered Address & Limitations",
-          "c": "The Client may use Mirr Asiaâ€™s registered address in Hong Kong for statutory registration. Changes require written notice. The registered address is for registration and mail handling only; it is not a physical office. The Client must not use the address for unlawful purposes or misrepresent it as a place of business. Incoming mail may be opened and scanned under the Letter of Consent and forwarded by email. If the Client has more than two directors, at least two directors (per quorum) shall sign relevant documents. Parcels and goods should not be sent to the registered address without prior consent; unapproved deliveries may be returned."
+          "c": "The Client may use Mirr Asia™s registered address in Hong Kong for statutory registration. Changes require written notice. The registered address is for registration and mail handling only; it is not a physical office. The Client must not use the address for unlawful purposes or misrepresent it as a place of business. Incoming mail may be opened and scanned under the Letter of Consent and forwarded by email. If the Client has more than two directors, at least two directors (per quorum) shall sign relevant documents. Parcels and goods should not be sent to the registered address without prior consent; unapproved deliveries may be returned."
         },
         "4": {
           "t": "4. Scope of Services (Year 1)",
-          "c": "Company secretary registration and maintenance of statutory records. Business Registration and Companies Registry filings (as applicable). Handling Employerâ€™s Return for the first two employees (postage surcharge may apply). Handling the mandatory Survey of Company Information. Preparation and filing of Annual Return; keeping copies of renewal forms. Maintaining the Significant Controllers Register. Maintaining Registers of Members/Directors/Secretary and Organisation Chart. Maintaining AGM minutes templates and related records. Maintaining the Business Registration Certificate at the registered office (if applicable). Brief business/operational advice (non-legal, best-effort only). Client cooperation: The Client will provide all information/documents required. Mirr Asia is not obliged to assist with unlawful matters."
+          "c": "Company secretary registration and maintenance of statutory records. Business Registration and Companies Registry filings (as applicable). Handling Employer™s Return for the first two employees (postage surcharge may apply). Handling the mandatory Survey of Company Information. Preparation and filing of Annual Return; keeping copies of renewal forms. Maintaining the Significant Controllers Register. Maintaining Registers of Members/Directors/Secretary and Organisation Chart. Maintaining AGM minutes templates and related records. Maintaining the Business Registration Certificate at the registered office (if applicable). Brief business/operational advice (non-legal, best-effort only). Client cooperation: The Client will provide all information/documents required. Mirr Asia is not obliged to assist with unlawful matters."
         },
         "5": {
           "t": "5. Term",
@@ -1936,11 +1936,11 @@
         },
         "20": {
           "t": "20. Governing Law and Remedies",
-          "c": "Unless otherwise provided in an attachment, this Agreement shall be performed and construed under the laws of Hong Kong Special Administrative Region without regard to the conflict of lawsâ€™ provisions. In the event of any claim, dispute or other matter in question between the parties, the Client and Mirr Asia agree to submit the matter to binding arbitration in accordance with the then-existing rules of the Hong Kong International Arbitration Centre (HKIAC)."
+          "c": "Unless otherwise provided in an attachment, this Agreement shall be performed and construed under the laws of Hong Kong Special Administrative Region without regard to the conflict of laws™ provisions. In the event of any claim, dispute or other matter in question between the parties, the Client and Mirr Asia agree to submit the matter to binding arbitration in accordance with the then-existing rules of the Hong Kong International Arbitration Centre (HKIAC)."
         },
         "21": {
-          "t": "21. Costs & Attorneyâ€™s Fees",
-          "c": "The prevailing party in any dispute (mediation, arbitration, or litigation) may recover reasonable costs and attorneyâ€™s fees. The Client will also pay Mirr Asiaâ€™s reasonable costs of responding to lawful demands for information or documents."
+          "t": "21. Costs & Attorney™s Fees",
+          "c": "The prevailing party in any dispute (mediation, arbitration, or litigation) may recover reasonable costs and attorney™s fees. The Client will also pay Mirr Asia™s reasonable costs of responding to lawful demands for information or documents."
         },
         "22": {
           "t": "22. Client Confirmation & Declaration",
@@ -1967,19 +1967,19 @@
             "placeholder": "+852 1234 5678"
           },
           "name1": {
-            "label": "Proposed English Name â€” 1st"
+            "label": "Proposed English Name ” 1st"
           },
           "name2": {
-            "label": "Proposed English Name â€” 2nd"
+            "label": "Proposed English Name ” 2nd"
           },
           "name3": {
-            "label": "Proposed English Name â€” 3rd"
+            "label": "Proposed English Name ” 3rd"
           },
           "cname1": {
-            "label": "Chinese Name â€” 1st (optional)"
+            "label": "Chinese Name ” 1st (optional)"
           },
           "cname2": {
-            "label": "Chinese Name â€” 2nd (optional)"
+            "label": "Chinese Name ” 2nd (optional)"
           },
           "roles": {
             "label": "Role in the Company",
@@ -2011,7 +2011,7 @@
       },
       "compliance": {
         "title": "Compliance & Ethical Assessment (AML / CDD)",
-        "description": "Answer accurately based on your current knowledge. Select â€˜Unsureâ€™ if you need help.",
+        "description": "Answer accurately based on your current knowledge. Select ˜Unsure™ if you need help.",
         "options": {
           "yes": "Yes",
           "no": "No",
@@ -2046,7 +2046,7 @@
               "Monthly": "Monthly (recommended for > ~50 txns/mo)",
               "Quarterly": "Quarterly",
               "Half-annually": "Half-annually (every 6 months)",
-              "Annually": "Annually (every 12 months) â€” lowest cost"
+              "Annually": "Annually (every 12 months) ” lowest cost"
             }
           },
           "xero": {
@@ -2054,7 +2054,7 @@
             "options": {
               "Yes": "Yes (â‰ˆHKD 400/mo)",
               "No": "No",
-              "Recommendation required": "Recommendation required â€” we will suggest based on industry & volume",
+              "Recommendation required": "Recommendation required ” we will suggest based on industry & volume",
               "Other": "Other"
             }
           },
@@ -2071,7 +2071,7 @@
         "title": "Incorporation Package & Optional Add-ons"
       },
       "invoice": {
-        "title": "Invoice â€” Preview"
+        "title": "Invoice ” Preview"
       },
       "payment": {
         "title": "Payment",
@@ -2110,17 +2110,17 @@
         "title": "Payment Methods",
         "options": {
           "card": {
-            "label": "Card Payment â€” Stripe (3.5% for HKD, 6% for USD)",
+            "label": "Card Payment ” Stripe (3.5% for HKD, 6% for USD)",
             "tip": "Convenient for international cards. A processing fee is added to the invoice."
           },
           "fps": {
             "label": "Fast Payment System (FPS)"
           },
           "bank": {
-            "label": "Bank Transfer â€” direct transfer with receipt upload"
+            "label": "Bank Transfer ” direct transfer with receipt upload"
           },
           "other": {
-            "label": "Other (cash) â€” with receipt upload"
+            "label": "Other (cash) ” with receipt upload"
           }
         },
         "statusNote": {
@@ -2137,16 +2137,16 @@
         "refPlaceholder": "e.g., HSBC TT reference",
         "proofLabel": "Upload payment proof (PDF/JPG/PNG)",
         "submit": "Submit",
-        "uploading": "Uploadingâ€¦",
+        "uploading": "Uploading¦",
         "previewTitle": "Payment proof preview",
         "openInNewTab": "Open in new tab",
         "delete": "Delete"
       },
       "card": {
         "proceed": "Proceed Card Payment",
-        "preparing": "Preparingâ€¦",
+        "preparing": "Preparing¦",
         "drawerNote": "A secure Stripe card drawer will open to complete your payment.",
-        "disabledExpired": "Payment disabled â€” window expired."
+        "disabledExpired": "Payment disabled ” window expired."
       },
       "fps": {
         "title": "FPS Payment"
@@ -2180,8 +2180,8 @@
           "info": "Annual Business Registration levy."
         },
         "inc_service": {
-          "label": "Hong Kong Company Incorporation â€” service fee (discounted)",
-          "info": "Mirr Asia incorporation service â€” fully discounted in the package."
+          "label": "Hong Kong Company Incorporation ” service fee (discounted)",
+          "info": "Mirr Asia incorporation service ” fully discounted in the package."
         },
         "sec_annual": {
           "label": "Company Secretary Annual Service Charge",
@@ -2228,8 +2228,8 @@
           "title": "Correspondence Address",
           "p1": "This is an alternative mailing address for the directors, company secretary, or designated representatives.",
           "p2": "It is used when someone does not want their residential address made public in the Companies Registry records.",
-          "p3": "Since 2018, Hong Kong allows directors to file a â€œcorrespondence addressâ€ instead of disclosing their full usual residential address on the public register.",
-          "p4": "The residential address is still filed with the Companies Registry, but kept in a â€œprotectedâ€ part of the register (only accessible to regulators and certain professionals).",
+          "p3": "Since 2018, Hong Kong allows directors to file a œcorrespondence address instead of disclosing their full usual residential address on the public register.",
+          "p4": "The residential address is still filed with the Companies Registry, but kept in a œprotected part of the register (only accessible to regulators and certain professionals).",
           "p5": "On the public records, only the correspondence address appears."
         }
       }
@@ -2340,19 +2340,19 @@
       "thankYouName": ", {{applicantName}}",
       "steps": {
         "1": {
-          "t": "Step 1 â€” Compliance review",
-          "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1â€“2 business days."
+          "t": "Step 1 ” Compliance review",
+          "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1“2 business days."
         },
         "2": {
-          "t": "Step 2 â€” Filing with Companies Registry",
+          "t": "Step 2 ” Filing with Companies Registry",
           "s": "We will file the incorporation documents (NNC1, Articles, etc.)."
         },
         "3": {
-          "t": "Step 3 â€” Registration certificates",
+          "t": "Step 3 ” Registration certificates",
           "s": "Expected: Certificate of Incorporation & Business Registration within ~5 business days."
         },
         "4": {
-          "t": "Step 4 â€” Bank/EMI account",
+          "t": "Step 4 ” Bank/EMI account",
           "s": "If selected, we arrange an account opening with your preferred bank/EMI."
         }
       },
@@ -2453,8 +2453,8 @@
     "parties": {
       "title": "Shareholders / Directors / DCP",
       "banner": {
-        "ok": "All good â€” total number of shares allocated equals the companyâ€™s issued shares.",
-        "err": "Error: The total allocated shares must equal the companyâ€™s total number of shares. Please revise entries.",
+        "ok": "All good ” total number of shares allocated equals the company™s issued shares.",
+        "err": "Error: The total allocated shares must equal the company™s total number of shares. Please revise entries.",
         "locked": "Payment completed. Details can no longer be edited."
       },
       "fields": {
@@ -2470,10 +2470,10 @@
         },
         "isCorp": {
           "label": "Is this shareholder a corporate entity?",
-          "tip": "Select â€˜Yesâ€™ if the shareholder is a company (corporate shareholder). Select â€˜Noâ€™ for an individual.",
+          "tip": "Select ˜Yes™ if the shareholder is a company (corporate shareholder). Select ˜No™ for an individual.",
           "options": {
-            "no": "No â€” Individual",
-            "yes": "Yes â€” Corporate shareholder"
+            "no": "No ” Individual",
+            "yes": "Yes ” Corporate shareholder"
           }
         },
         "isDirector": {
@@ -2505,7 +2505,7 @@
         "add": "+ Add shareholder / director",
         "invite": "Send Invitation"
       },
-      "totals": "Total shares: {{total}} â€¢ Assigned: {{assigned}}",
+      "totals": "Total shares: {{total}} ¢ Assigned: {{assigned}}",
       "toasts": {
         "invalidEmail": {
           "title": "Error",
@@ -2646,7 +2646,7 @@
       }
     },
     "structure": {
-      "title": "Information about the corporation you wish to establish â€“ Shareholders and governance structure of the corporation to be established",
+      "title": "Information about the corporation you wish to establish “ Shareholders and governance structure of the corporation to be established",
       "helperText": "Multiple, complex hierarchical structures (double / triple layer) make bank account opening significantly more difficult.",
       "options": {
         "single-1-individual": "One individual owns 100% of the shares (single structure)",
