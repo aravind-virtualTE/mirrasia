@@ -144,9 +144,9 @@
   },
   "landingPage": {
     "leftHeading": "Start Your Business the Smart Way",
-    "leftHDesc": "Register a Company and Open Business Account ” Fast, Simple & Online!",
+    "leftHDesc": "Register a Company and Open Business Account Fast, Simple & Online!",
     "rightHeading": "Already have a company?",
-    "leftText": "Avoid paperwork, long wait times, and confusion. With our all-in-one company registration service, you can register a company in just a few clicks ” backed by expert guidance every step of the way.",
+    "leftText": "Avoid paperwork, long wait times, and confusion. With our all-in-one company registration service, you can register a company in just a few clicks backed by expert guidance every step of the way.",
     "rightSubHeading": "Get Started Today",
     "rightP": "Register your company in minutes and get everything you need to stay compliant and confident!",
     "registerNow": "Register now",
@@ -1056,7 +1056,7 @@
     "paymentConditionsDesc": "All payments are NON-REFUNDABLE. The remitter bears all charges of payment, which includes the remittance amount, beneficiary bank's charges, as well as all the other banks' fees (intermediary bank, etc)."
   },
   "usa": {
-    "title": "Company Incorporation ” USA",
+    "title": "Company Incorporation USA",
     "steps": {
       "step1": "Applicant information",
       "step2": "AML Questions",
@@ -1565,19 +1565,19 @@
     "congrats": {
       "steps": {
         "1": {
-          "t": "Step 1 ” Compliance review",
+          "t": "Step 1 Compliance review",
           "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1“2 business days."
         },
         "2": {
-          "t": "Step 2 ” Filing with Companies Registry",
+          "t": "Step 2 Filing with Companies Registry",
           "s": "We will file the incorporation documents."
         },
         "3": {
-          "t": "Step 3 ” Registration certificates",
+          "t": "Step 3 Registration certificates",
           "s": "Expected: Certificate of Incorporation & Business Registration within a week."
         },
         "4": {
-          "t": "Step 4 ” Bank/EMI account",
+          "t": "Step 4 Bank/EMI account",
           "s": "If selected, we arrange an account opening with your preferred bank/EMI."
         }
       }
@@ -1643,7 +1643,7 @@
     "energyPresence": "To the best of your knowledge, does the proposed company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
   },
   "panama": {
-    "title":"Company Incorporation ” Panama",
+    "title":"Company Incorporation Panama",
     "rolesWarning": "Invalid Roles",
     "rolesWarningInfo": "Please ensure that the roles of President, Treasurer, and Secretary are assigned correctly.",
     "headInfo": "This application must be completed or authorised by the principal of the company (being formed) who is the primary controller of the company to ensure that all information is entered correctly. This application will be prepared as a separate application form document when the company is being formed and signed by the principal of the company.This application form and the subsequent application form documents to be signed will be kept on file with us as statutory documents for the purpose of conducting KYC and due diligence on you in accordance with the TCSP Licence and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act; Cap. 615 AMLO) guidelines, so please ensure that there are no distortions or errors in the information provided.",
@@ -1796,36 +1796,36 @@
      "congrats": {
       "steps": {
         "1": {
-          "t": "Step 1 ” Compliance review",
+          "t": "Step 1 Compliance review",
           "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1“2 business days."
         },
         "2": {
-          "t": "Step 2 ” Filing with Companies Registry",
+          "t": "Step 2 Filing with Companies Registry",
           "s": "We will file the incorporation documents."
         },
         "3": {
-          "t": "Step 3 ” Registration certificates",
+          "t": "Step 3 Registration certificates",
           "s": "Expected: Certificate of Incorporation & Business Registration within 1-3 business weeks."
         },
         "4": {
-          "t": "Step 4 ” Bank/EMI account",
+          "t": "Step 4 Bank/EMI account",
           "s": "If selected, we arrange an account opening with your preferred bank/EMI."
         }
       }
     }    
   },
   "newHk": {
-    "hkTitle": "Company Incorporation ” Hong Kong",
+    "hkTitle": "Company Incorporation Hong Kong",
     "infoHelpIcon": "Complete each step. Helpful tips (â“˜) appear where terms may be unclear.",
     "topbar": {
       "stepOf": "Step {{current}} of {{total}}"
     },
     "sidebar": {
-      "brand": "MIRR ASIA ” Incorporation",
+      "brand": "MIRR ASIA Incorporation",
       "badges": {
-        "ssl": "ðŸ”’ SSL Secured",
-        "registry": "ðŸ›ï¸ Registry Compliant",
-        "aml": "ðŸ§‘âš–ï¸ AML/CFT Ready"
+        "ssl": " SSL Secured",
+        "registry": "Registry Compliant",
+        "aml": "AML/CFT Ready"
       },
       "done": "Done",
       "needHelp": "Need help?",
@@ -1967,19 +1967,19 @@
             "placeholder": "+852 1234 5678"
           },
           "name1": {
-            "label": "Proposed English Name ” 1st"
+            "label": "Proposed English Name 1st"
           },
           "name2": {
-            "label": "Proposed English Name ” 2nd"
+            "label": "Proposed English Name 2nd"
           },
           "name3": {
-            "label": "Proposed English Name ” 3rd"
+            "label": "Proposed English Name 3rd"
           },
           "cname1": {
-            "label": "Chinese Name ” 1st (optional)"
+            "label": "Chinese Name 1st (optional)"
           },
           "cname2": {
-            "label": "Chinese Name ” 2nd (optional)"
+            "label": "Chinese Name 2nd (optional)"
           },
           "roles": {
             "label": "Role in the Company",
@@ -2046,7 +2046,7 @@
               "Monthly": "Monthly (recommended for > ~50 txns/mo)",
               "Quarterly": "Quarterly",
               "Half-annually": "Half-annually (every 6 months)",
-              "Annually": "Annually (every 12 months) ” lowest cost"
+              "Annually": "Annually (every 12 months) lowest cost"
             }
           },
           "xero": {
@@ -2054,7 +2054,7 @@
             "options": {
               "Yes": "Yes (â‰ˆHKD 400/mo)",
               "No": "No",
-              "Recommendation required": "Recommendation required ” we will suggest based on industry & volume",
+              "Recommendation required": "Recommendation required we will suggest based on industry & volume",
               "Other": "Other"
             }
           },
@@ -2071,7 +2071,7 @@
         "title": "Incorporation Package & Optional Add-ons"
       },
       "invoice": {
-        "title": "Invoice ” Preview"
+        "title": "Invoice Preview"
       },
       "payment": {
         "title": "Payment",
@@ -2110,17 +2110,17 @@
         "title": "Payment Methods",
         "options": {
           "card": {
-            "label": "Card Payment ” Stripe (3.5% for HKD, 6% for USD)",
+            "label": "Card Payment Stripe (3.5% for HKD, 6% for USD)",
             "tip": "Convenient for international cards. A processing fee is added to the invoice."
           },
           "fps": {
             "label": "Fast Payment System (FPS)"
           },
           "bank": {
-            "label": "Bank Transfer ” direct transfer with receipt upload"
+            "label": "Bank Transfer direct transfer with receipt upload"
           },
           "other": {
-            "label": "Other (cash) ” with receipt upload"
+            "label": "Other (cash) with receipt upload"
           }
         },
         "statusNote": {
@@ -2146,7 +2146,7 @@
         "proceed": "Proceed Card Payment",
         "preparing": "Preparing¦",
         "drawerNote": "A secure Stripe card drawer will open to complete your payment.",
-        "disabledExpired": "Payment disabled ” window expired."
+        "disabledExpired": "Payment disabled window expired."
       },
       "fps": {
         "title": "FPS Payment"
@@ -2180,8 +2180,8 @@
           "info": "Annual Business Registration levy."
         },
         "inc_service": {
-          "label": "Hong Kong Company Incorporation ” service fee (discounted)",
-          "info": "Mirr Asia incorporation service ” fully discounted in the package."
+          "label": "Hong Kong Company Incorporation service fee (discounted)",
+          "info": "Mirr Asia incorporation service fully discounted in the package."
         },
         "sec_annual": {
           "label": "Company Secretary Annual Service Charge",
@@ -2340,19 +2340,19 @@
       "thankYouName": ", {{applicantName}}",
       "steps": {
         "1": {
-          "t": "Step 1 ” Compliance review",
+          "t": "Step 1 Compliance review",
           "s": "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1“2 business days."
         },
         "2": {
-          "t": "Step 2 ” Filing with Companies Registry",
+          "t": "Step 2 Filing with Companies Registry",
           "s": "We will file the incorporation documents (NNC1, Articles, etc.)."
         },
         "3": {
-          "t": "Step 3 ” Registration certificates",
+          "t": "Step 3 Registration certificates",
           "s": "Expected: Certificate of Incorporation & Business Registration within ~5 business days."
         },
         "4": {
-          "t": "Step 4 ” Bank/EMI account",
+          "t": "Step 4 Bank/EMI account",
           "s": "If selected, we arrange an account opening with your preferred bank/EMI."
         }
       },
@@ -2453,7 +2453,7 @@
     "parties": {
       "title": "Shareholders / Directors / DCP",
       "banner": {
-        "ok": "All good ” total number of shares allocated equals the company™s issued shares.",
+        "ok": "All good total number of shares allocated equals the company™s issued shares.",
         "err": "Error: The total allocated shares must equal the company™s total number of shares. Please revise entries.",
         "locked": "Payment completed. Details can no longer be edited."
       },
@@ -2472,8 +2472,8 @@
           "label": "Is this shareholder a corporate entity?",
           "tip": "Select ˜Yes™ if the shareholder is a company (corporate shareholder). Select ˜No™ for an individual.",
           "options": {
-            "no": "No ” Individual",
-            "yes": "Yes ” Corporate shareholder"
+            "no": "No Individual",
+            "yes": "Yes Corporate shareholder"
           }
         },
         "isDirector": {
