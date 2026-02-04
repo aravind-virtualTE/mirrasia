@@ -41,6 +41,7 @@ interface DocumentUploadCardProps {
   onRemove: (id: string) => void;
   onDelete?: (url: string) => void;
   onView?: (url: string) => void;
+  uploadLabel?: string;
 }
 
 const statusConfig = {
@@ -80,6 +81,7 @@ export function DocumentUploadCard({
   onRemove,
   onDelete,
   onView,
+  uploadLabel,
 }: DocumentUploadCardProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [previewDoc, setPreviewDoc] = useState<UploadedDocument | null>(null);
@@ -129,9 +131,9 @@ export function DocumentUploadCard({
     return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
   };
 
-  console.log("status", existingStatus)
   const status = statusConfig[existingStatus as keyof typeof statusConfig] || statusConfig.pending;
   const StatusIcon = status.icon;
+  // console.log("status", status)
 
   return (
     <motion.div
@@ -229,7 +231,7 @@ export function DocumentUploadCard({
               <Upload className="w-8 h-8 text-primary" />
             </div>
             <p className="font-medium text-foreground mb-1">
-              {isDragging ? t("userProfile.upload.drop") : t("userProfile.upload.dragDrop")}
+              {isDragging ? t("userProfile.upload.drop") : (uploadLabel || t("userProfile.upload.dragDrop"))}
             </p>
             <p className="text-sm text-muted-foreground mb-4">
               {t("userProfile.upload.browse")}
