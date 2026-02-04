@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     CheckCircle, Camera, RotateCcw, IdCard, Upload, Smartphone,
 } from "lucide-react"
