@@ -80,7 +80,7 @@ export function KYCVerificationCard({
         if (livenessMode === "qr") {
             // 1. Generate Token if missing
             if (!qrToken) {
-                generateUploadToken().then(data => {
+                generateUploadToken().then((data:any) => {
                     if (data?.token) {
                         setQrToken(data.token)
                     } else {
