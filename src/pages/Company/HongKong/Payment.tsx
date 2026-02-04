@@ -46,7 +46,7 @@ export default function PaymentForm() {
                 >
                   <CreditCard className="mb-3 h-6 w-6" />
                   Card
-                  <span className="text-xs text-muted-foreground mt-1">(3.5% fee)</span>
+                  <span className="text-xs text-muted-foreground mt-1">(4% fee)</span>
                 </Label>
               </div>
 
@@ -160,7 +160,7 @@ export default function PaymentForm() {
                 <h3 className="font-semibold">1. Payment Condition</h3>
                 <p>100% in advance</p>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold">2. Processing Fees</h3>
                 <ul className="list-disc pl-6 space-y-1">

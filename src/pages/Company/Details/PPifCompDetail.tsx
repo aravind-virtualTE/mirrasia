@@ -1529,7 +1529,7 @@ export default function PPifCompDetail({ id }: { id: string }) {
                                                     (() => {
                                                         const base = dataMemo.finalAmount;
                                                         const surcharge =
-                                                            dataMemo.payMethod === "card" ? base * 0.035 : 0;
+                                                            dataMemo.payMethod === "card" ? base * 0.04 : 0;
                                                         const total = (base + surcharge).toFixed(2);
 
                                                         return `${total} ${dataMemo.currency || "USD"}`;

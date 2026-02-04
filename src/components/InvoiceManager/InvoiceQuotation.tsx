@@ -428,7 +428,7 @@ export default function QuoteBuilder({
         "• EMI account opening support: USD 400\n• Current account opening service (example): 1 person USD 1,200 / 2 persons USD 1,700\n• Bookkeeping: quoted separately after transaction review"
     );
     const [legal, setLegal] = useState<string>(
-        "Payment: Overseas transfer or card (3.5% surcharge for cards)\nNotice: Work proceeds after KYC/Due Diligence; service acceptance is at our discretion."
+        "Payment: Overseas transfer or card (4% for HKD, 6% for USD fee )\nNotice: Work proceeds after KYC/Due Diligence; service acceptance is at our discretion."
     );
     const pdfRef = React.useRef<HTMLDivElement>(null)
 

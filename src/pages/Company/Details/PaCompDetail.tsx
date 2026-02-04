@@ -1586,7 +1586,7 @@ const PaCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
                                                     // Apply card fee if payment method is card
                                                     const currency = formData.stripeCurrency || "USD";
-                                                    const cardFeeRate = currency.toUpperCase() === "USD" ? 0.06 : 0.035;
+                                                    const cardFeeRate = currency.toUpperCase() === "USD" ? 0.06 : 0.04;
                                                     const needsCardFee = formData.payMethod === "card";
                                                     const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
                                                     const finalTotal = Math.round(total * 100) / 100;

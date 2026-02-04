@@ -1079,10 +1079,10 @@
   },
   "payment": {
     "paymentCalc": "Payment Amount Calculation",
-    "processCreditFee": "Includes a (3.5% for HKD, 6% for USD) Stripe credit card processing fee.",
+    "processCreditFee": "Includes a (4% for HKD, 6% for USD) Stripe credit card processing fee.",
     "fnlAmtCharged": "Final Amount Charged",
     "successPayment": "Payment successful! Thank you for your purchase.",
-    "cardDesc": "Stripe Payments (3.5% for HKD, 6% for USD)",
+    "cardDesc": "Stripe Payments (4% for HKD, 6% for USD)",
     "bankDesc": "Direct bank transfer with receipt upload",
     "fpsDesc": "Direct bank transfer via FPS",
     "otherDesc": "Other(Cash Payment) with receipt upload",
@@ -2095,7 +2095,7 @@
           "xero": {
             "label": "Would you like to implement online accounting software (e.g., Xero)?",
             "options": {
-              "Yes": "Yes (â‰ˆHKD 400/mo)",
+              "Yes": "Yes (HKD 400/mo)",
               "No": "No",
               "Recommendation required": "Recommendation required we will suggest based on industry & volume",
               "Other": "Other"
@@ -2153,7 +2153,7 @@
         "title": "Payment Methods",
         "options": {
           "card": {
-            "label": "Card Payment Stripe (3.5% for HKD, 6% for USD)",
+            "label": "Card Payment Stripe (4% for HKD, 6% for USD)",
             "tip": "Convenient for international cards. A processing fee is added to the invoice."
           },
           "fps": {
@@ -2315,7 +2315,7 @@
       },
       "footnote": "Prices are in USD for convenience. Government fees may change based on official notices. Optional items can be added/removed before payment. Accounting/taxation services are not included here.",
       "surcharge": {
-        "cardFee": "Card processing fee (3.5% for HKD, 6% for USD)"
+        "cardFee": "Card processing fee (4% for HKD, 6% for USD)"
       },
       "info": {
         "cr_fee": "Mandatory filing fee to the Companies Registry when establishing a new company.",

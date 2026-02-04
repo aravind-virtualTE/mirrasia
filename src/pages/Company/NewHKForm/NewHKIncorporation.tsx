@@ -320,10 +320,10 @@ const computeBaseTotal = (app: AppDoc) => {
 };
 
 const getCardFeePct = (currency?: string) => {
-  // Card fees: HKD -> 3.5% (0.035), USD -> 6% (0.06), default to 3.5%
-  if (!currency) return 0.035;
+  // Card fees: HKD -> 4% (0.04), USD -> 6% (0.06), default to 4%
+  if (!currency) return 0.04;
   if (String(currency).toUpperCase() === "USD") return 0.06;
-  return 0.035;
+  return 0.04;
 };
 
 const computeGrandTotal = (app: AppDoc) => {

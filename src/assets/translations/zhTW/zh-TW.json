@@ -1075,10 +1075,10 @@
   },
   "payment": {
     "paymentCalc": "付款金額計算",
-    "processCreditFee": "已包含 Stripe 信用卡手續費 (HKD 3.5%, USD 6%)。",
+    "processCreditFee": "已包含 Stripe 信用卡手續費 (HKD 4%, USD 6%)。",
     "fnlAmtCharged": "最終收取金額",
     "successPayment": "付款成功！感謝您的購買。",
-    "cardDesc": "Stripe Payments(港幣 HKD 為 3.5%，美金 USD 為 6%)）",
+    "cardDesc": "Stripe Payments(港幣 HKD 為 4%，美金 USD 為 6%)）",
     "bankDesc": "直接銀行轉帳並上傳收據",
     "fpsDesc": "透過 FPS 直接銀行轉帳",
     "otherDesc": "其他（現金支付）並上傳收據",
@@ -2148,7 +2148,7 @@
         "title": "付款方式",
         "options": {
           "card": {
-            "label": "信用卡付款 — Stripe(港幣 HKD 為 3.5%，美金 USD 為 6%)",
+            "label": "信用卡付款 — Stripe(港幣 HKD 為 4%，美金 USD 為 6%)",
             "tip": "適用於國際卡片。處理費將會加入發票中。"
           },
           "fps": {
@@ -2305,7 +2305,7 @@
       },
       "footnote": "為方便起見，價格以美元計價。政府費用可能隨官方公告變動。可選項目可在付款前增減。此處不包含會計/稅務服務。",
       "surcharge": {
-        "cardFee": "信用卡處理費 (港幣 HKD 為 3.5%，美金 USD 為 6%)"
+        "cardFee": "信用卡處理費 (港幣 HKD 為 4%，美金 USD 為 6%)"
       },
       "info": {
         "cr_fee": "新公司成立時，必須向公司註冊處支付的法定登記費。",

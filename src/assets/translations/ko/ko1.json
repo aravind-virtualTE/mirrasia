@@ -676,7 +676,7 @@
                 "drawer": {
                     "title": "Stripe 카드 결제",
                     "description": "총액: {{amount}} {{note}}",
-                    "cardFeeNote": "(카드 수수료 3.5% 포함)",
+                    "cardFeeNote": "(HKD 결제 시 4%, USD 결제 시 6%)",
                     "preparing": "보안 결제 준비 중…"
                 }
             },

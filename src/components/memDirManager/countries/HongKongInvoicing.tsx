@@ -69,8 +69,8 @@ const STRIPE_CLIENT_ID =
   import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
 
 const stripePromise = loadStripe(STRIPE_CLIENT_ID);
-// Card fee rate (3.5%)
-const CARD_FEE_RATE = 0.035;
+// Card fee rate (4%)
+const CARD_FEE_RATE = 0.04;
 
 // ----------------- Payment Form -----------------
 
