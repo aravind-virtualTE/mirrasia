@@ -17,7 +17,8 @@
     "tabs": {
       "profile": "Profile",
       "verification": "Verification",
-      "settings": "Settings"
+      "settings": "Settings",
+      "overview": "Overview"
     },
     "actions": {
       "edit": "Edit Profile",
@@ -37,7 +38,11 @@
       "copy": "Copy",
       "setup2fa": "Verify & Enable",
       "verifying": "Verifying...",
-      "disabling": "Disabling..."
+      "disabling": "Disabling...",
+      "discard": "Discard",
+      "retakeReplace": "Retake / Replace",
+      "success": "Success",
+      "error": "Error"
     },
     "personalInfo": {
       "title": "Personal Information",
@@ -50,11 +55,16 @@
       "phone": "Phone",
       "phonePlaceholder": "Enter phone number with country code",
       "verified": "Verified",
-      "notProvided": "Not provided"
+      "notProvided": "Not provided",
+      "emailImmutable": "Email cannot be changed.",
+      "subtitle": "Manage your personal details and contact info.",
+      "placeholder": {
+        "address": "Full residential address"
+      }
     },
     "verification": {
-      "title": "Identity Verification",
-      "subtitle": "Secure your account with verified documents",
+      "title": "KYC Verification",
+      "subtitle": "Please upload the required documents to verify your identity.",
       "documents": "Documents",
       "selfie": "Selfie",
       "passportId": "Passport / Government ID",
@@ -80,7 +90,30 @@
         "passport": "Hold your passport visible next to your face",
         "rotate": "Use the rotate button to switch cameras"
       },
-      "preview": "Document Preview"
+      "preview": "Document Preview",
+      "tabs": {
+        "documents": "Documents",
+        "liveness": "Liveness Check"
+      },
+      "liveness": {
+        "title": "Selfie Verification",
+        "subtitle": "Take a clear photo of yourself to verify your identity.",
+        "captured": "Captured",
+        "modes": {
+          "webcam": "Use Webcam",
+          "upload": "Upload File"
+        },
+        "qr": {
+          "title": "Scan with your mobile",
+          "instruction": "Open the camera on your phone and scan the code to securely upload your selfie.",
+          "waiting": "Waiting for upload...",
+          "generating": "Generating secure QR code..."
+        },
+        "upload": {
+          "title": "Click to Upload",
+          "desc": "Support format: JPG, PNG. Max size: 5MB"
+        }
+      }
     },
     "settings": {
       "title": "Security Settings",
@@ -129,7 +162,9 @@
       "twoFactorEnabled": "Two-Factor Authentication has been enabled successfully!",
       "twoFactorDisabled": "Two-Factor Authentication has been disabled.",
       "copied": "Copied to clipboard!",
-      "otpVerifyInstruction": "Enter the 6-digit code we sent to {{phone}}."
+      "otpVerifyInstruction": "Enter the 6-digit code we sent to {{phone}}.",
+      "changesDiscarded": "Changes discarded",
+      "otpVerified": "OTP Verified successfully"
     },
     "upload": {
       "drop": "Drop your file here",
@@ -139,7 +174,29 @@
       "upTo": "up to {{size}}MB",
       "upToEach": "up to {{size}}MB each",
       "submitted": "Document Submitted",
-      "submittedDesc": "Click to view or delete"
+      "submittedDesc": "Click to view or delete",
+      "passport": "Upload a clear copy of your passport",
+      "addressProof": "Upload a recent utility bill or bank statement",
+      "document": "Document"
+    },
+    "overview": {
+      "welcome": "Welcome back, {{name}}!",
+      "accountStatus": "Account Status:",
+      "kycInstruction": "Complete your KYC verification to utilize app features.",
+      "steps": {
+        "profile": {
+          "title": "Profile",
+          "desc": "Update your personal and contact details."
+        },
+        "documents": {
+          "title": "Documents",
+          "desc": "Upload Passport and Proof of Address."
+        },
+        "verification": {
+          "title": "Verification",
+          "desc": "Selfie identity check."
+        }
+      }
     }
   },
   "landingPage": {
@@ -213,7 +270,7 @@
     "bankServices": "Bank Services",
     "signDocs": "Sign Docs",
     "mirrChat": "MirrAsia Chat",
-    "quotationrequest":"Quotation Request"
+    "quotationrequest": "Quotation Request"
   },
   "dashboard": {
     "project": "Projects",
@@ -1081,7 +1138,7 @@
       "Nevada": "Nevada",
       "Florida": "Florida",
       "Georgia": "Georgia",
-      "UAB":"UAB",
+      "UAB": "UAB",
       "Other": "Other"
     },
     "AppInfo": {
@@ -1582,9 +1639,8 @@
         }
       }
     },
-     "serviceSelection": {
+    "serviceSelection": {
       "cardTitle": "Pricing & Quote",
-
       "preQuestions": {
         "title": "Pre-Questions (auto-applies to the quote below)",
         "q1": {
@@ -1599,7 +1655,6 @@
         },
         "helper": "Choices above will toggle the security/prepay options in the initial cost below."
       },
-
       "table": {
         "title": "Incorporation + First Year",
         "columns": {
@@ -1612,22 +1667,17 @@
           "companySecretary": "Company Secretary (1 year)",
           "registeredAddress": "Registered Address (1 year)",
           "nomineeDirector": "Nominee Director (1 year)",
-
           "acctTaxPrepayTitle": "[Optional] Accounting/Tax Prepayment",
           "acctTaxPrepayDesc": "(i) Bookkeeping & CIT filing for the first YA. Alternative to a nominee director deposit.",
-
           "ndDepositTitle": "[Optional] Nominee Director Deposit",
           "ndDepositDesc": "(i) Refundable upon 1-month prior written termination notice.",
-
           "bankAdvisory": "Bank Account Advisory (optional)",
           "emiAccount": "EMI e-Account Opening (basic) Free",
-
           "initialMandatoryTotal": "Initial mandatory total",
           "totalInclOptions": "Total incl. options",
           "footnote": "Assumes standard profile (â‰¤5 individual shareholders). Notarization/translation/apostille & complex KYC are extra."
         }
       },
-
       "toast": {
         "sessionTitle": "Payment Session Initiated",
         "sessionDesc": "Can't select extra items once payment session initiated"
@@ -1643,7 +1693,7 @@
     "energyPresence": "To the best of your knowledge, does the proposed company have any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"
   },
   "panama": {
-    "title":"Company Incorporation Panama",
+    "title": "Company Incorporation Panama",
     "rolesWarning": "Invalid Roles",
     "rolesWarningInfo": "Please ensure that the roles of President, Treasurer, and Secretary are assigned correctly.",
     "headInfo": "This application must be completed or authorised by the principal of the company (being formed) who is the primary controller of the company to ensure that all information is entered correctly. This application will be prepared as a separate application form document when the company is being formed and signed by the principal of the company.This application form and the subsequent application form documents to be signed will be kept on file with us as statutory documents for the purpose of conducting KYC and due diligence on you in accordance with the TCSP Licence and AMLO (Anti-Money Laundering and Counter-Terrorist Financing Act; Cap. 615 AMLO) guidelines, so please ensure that there are no distortions or errors in the information provided.",
@@ -1732,12 +1782,10 @@
       "title": "Cost Quote (Total incl. Government Fees)",
       "initialSetupTitle": "Initial Setup Costs",
       "lockedMessage": "Payment completed. Quote options are now locked.",
-
       "base": {
         "label": "Mirr Asia setup fee + first-year services",
         "note": "(includes government fees, Resident Agent, Registered Office)"
       },
-
       "ndSetup": {
         "label": "Nominee Director (setup stage)",
         "placeholder": "Select",
@@ -1748,28 +1796,23 @@
           "3": "3 people (+USD 2,200)"
         }
       },
-
       "nd3Reason": {
         "label": "(Setup) Please state why 3 nominee directors are needed.",
         "placeholder": "Briefly state why 3 nominee directors are needed.",
         "hint": "* We recommend providing a reason when selecting 3."
       },
-
       "nsSetup": {
         "label": "Nominee Shareholder (setup)"
       },
-
       "optional": {
         "title": "Optional services (setup stage)",
         "emi": "EMI account opening",
         "bank": "Panama local bank account opening (high difficulty)",
         "cbi": "Puerto Rico CBI account opening"
       },
-
       "totals": {
         "setupY1": "Setup (Year 1) total"
       },
-
       "includes": {
         "title": "Setup package includes (Corporation):",
         "items": {
@@ -1793,7 +1836,7 @@
         }
       }
     },
-     "congrats": {
+    "congrats": {
       "steps": {
         "1": {
           "t": "Step 1 Compliance review",
@@ -1812,11 +1855,11 @@
           "s": "If selected, we arrange an account opening with your preferred bank/EMI."
         }
       }
-    }    
+    }
   },
   "newHk": {
     "hkTitle": "Company Incorporation Hong Kong",
-    "infoHelpIcon": "Complete each step. Helpful tips (â“˜) appear where terms may be unclear.",
+    "infoHelpIcon": "Complete each step. Helpful tips (!) appear where terms may be unclear.",
     "topbar": {
       "stepOf": "Step {{current}} of {{total}}"
     },
@@ -2431,7 +2474,7 @@
           "label": "Calculated par value (read-only)",
           "hint": "Par value = total share capital Ã· number of shares."
         },
-        "inviteText":"Invite Shareholders/Directors Members before proceeding Next",
+        "inviteText": "Invite Shareholders/Directors Members before proceeding Next",
         "isDcp": {
           "label": "Will this person act as DCP?",
           "tip": "A DCP is an individual authorized to liaise with Mirr Asia on behalf of the company for secretarial matters. This can be a director, shareholder, or an external representative."
@@ -2440,15 +2483,15 @@
           "label": "Designated Contact Person",
           "placeholder": "Enter name"
         },
-        "dcpEmail":{
+        "dcpEmail": {
           "label": "Designated Contact Person Email",
           "placeholder": "Enter email"
         },
         "dcpNumber": {
           "label": "Designated Contact Person Phone Number",
           "placeholder": "Enter phone number"
+        }
       }
-    }
     },
     "parties": {
       "title": "Shareholders / Directors / DCP",

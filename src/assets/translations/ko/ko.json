@@ -3,31 +3,32 @@
     "title": "프로필 설정",
     "subtitle": "계정 정보 및 보안 설정을 관리하세요",
     "notice": {
-      "title": "공지사항",
-      "kycRequired": "로그인 후 KYC 인증 필요",
-      "instruction": "로그인 후, KYC를 완료하려면 '인증' 탭에서 다음 서류를 업로드해야 합니다:",
+      "title": "알림",
+      "kycRequired": "로그인 후 KYC 인증이 필요합니다",
+      "instruction": "로그인 후, KYC 인증을 완료하려면 '인증' 탭에서 다음 서류를 업로드해야 합니다:",
       "selfie": "선명한 셀카 사진",
-      "selfieNote": "(웹캠을 사용하여 촬영)",
+      "selfieNote": "(웹캠을 사용하여 셀카 촬영)",
       "addressProof": "유효한 거주지 증명서",
-      "addressProofNote": "(최근 공공요금 청구서 / 은행 거래 내역서)",
+      "addressProofNote": "(최근 공공요금 고지서 / 은행 거래 내역서)",
       "passport": "여권 스캔본",
-      "passportNote": "(사진이 포함된 면)",
-      "tip": "팁: 업로드 후 '프로필 수정'을 클릭하고 '저장'을 누르세요. 이미 KYC 승인을 받았다면 이 공지를 무시하셔도 됩니다."
+      "passportNote": "(사진이 있는 페이지)",
+      "tip": "팁: 업로드 후 '프로필 수정'을 클릭하고 '저장'을 누르세요. 이미 KYC가 승인된 경우 이 알림은 무시하셔도 됩니다."
     },
     "tabs": {
       "profile": "프로필",
       "verification": "인증",
-      "settings": "설정"
+      "settings": "설정",
+      "overview": "개요"
     },
     "actions": {
       "edit": "프로필 수정",
       "save": "저장",
       "saving": "저장 중...",
       "cancel": "취소",
-      "addDocument": "문서 추가",
+      "addDocument": "서류 추가",
       "view": "보기",
       "delete": "삭제",
-      "retake": "다시 촬영",
+      "retake": "재촬영",
       "usePhoto": "이 사진 사용",
       "verify": "인증하기",
       "resend": "코드 재전송",
@@ -36,32 +37,41 @@
       "disable": "비활성화",
       "copy": "복사",
       "setup2fa": "인증 및 활성화",
-      "verifying": "확인 중...",
-      "disabling": "비활성화 중..."
+      "verifying": "인증 중...",
+      "disabling": "비활성화 중...",
+      "discard": "삭제",
+      "retakeReplace": "재촬영 / 교체",
+      "success": "성공",
+      "error": "오류"
     },
     "personalInfo": {
       "title": "개인 정보",
       "signedInWith": "{{provider}}(으)로 로그인함",
-      "fullName": "성함",
+      "fullName": "성명",
       "dob": "생년월일",
       "email": "이메일",
       "address": "주소",
       "addressPlaceholder": "전체 주소를 입력하세요",
       "phone": "전화번호",
-      "phonePlaceholder": "국가번호를 포함한 전화번호를 입력하세요",
+      "phonePlaceholder": "국가 코드를 포함한 전화번호 입력",
       "verified": "인증됨",
-      "notProvided": "제공되지 않음"
+      "notProvided": "제공되지 않음",
+      "emailImmutable": "이메일은 변경할 수 없습니다.",
+      "subtitle": "개인 정보 및 연락처를 관리하세요.",
+      "placeholder": {
+        "address": "실제 거주지 주소 전체"
+      }
     },
     "verification": {
-      "title": "신원 인증",
-      "subtitle": "인증된 문서로 계정 보안을 강화하세요",
-      "documents": "문서",
+      "title": "KYC 인증",
+      "subtitle": "신원 확인을 위해 필요한 서류를 업로드해 주세요.",
+      "documents": "서류",
       "selfie": "셀카",
       "passportId": "여권 / 정부 발행 신분증",
-      "passportDesc": "여권이나 신분증의 선명한 사진을 업로드하세요",
+      "passportDesc": "여권 또는 주민등록증의 선명한 사진을 업로드하세요",
       "addressProof": "거주지 증명",
-      "addressDesc": "공공요금 청구서, 은행 거래 내역서 또는 임대 계약서",
-      "otherDocs": "기타 문서",
+      "addressDesc": "공공요금 고지서, 은행 거래 내역서 또는 임대차 계약서",
+      "otherDocs": "기타 서류",
       "otherDocsDesc": "추가 증빙 서류 업로드",
       "selfieCaptured": "셀카 촬영 완료",
       "selfieSubmitted": "셀카가 인증을 위해 제출되었습니다",
@@ -70,36 +80,59 @@
         "uploaded": "업로드됨",
         "accepted": "승인됨",
         "rejected": "거절됨",
-        "verified": "인증됨"
+        "verified": "인증 완료"
       },
       "selfieVerification": "셀카 인증",
-      "selfieInstruction": "본인 확인을 위해 신분증을 얼굴 옆에 들고 선명한 셀카를 촬영하세요",
+      "selfieInstruction": "신원 확인을 위해 여권을 얼굴 옆에 대고 선명하게 셀카를 촬영하세요",
       "initializingCamera": "카메라 초기화 중...",
       "guidelines": {
-        "lighting": "밝은 조명과 깨끗한 배경에서 촬영하세요",
-        "passport": "신분증이 얼굴 옆에 잘 보이도록 들어주세요",
-        "rotate": "회전 버튼을 눌러 카메라를 전환하세요"
+        "lighting": "밝은 조명과 깨끗한 배경을 확인하세요",
+        "passport": "여권이 얼굴 옆에 잘 보이도록 하세요",
+        "rotate": "회전 버튼을 사용하여 카메라를 전환하세요"
       },
-      "preview": "문서 미리보기"
+      "preview": "서류 미리보기",
+      "tabs": {
+        "documents": "서류",
+        "liveness": "실시간 확인"
+      },
+      "liveness": {
+        "title": "셀카 인증",
+        "subtitle": "신원 확인을 위해 본인의 선명한 사진을 촬영하세요.",
+        "captured": "촬영됨",
+        "modes": {
+          "webcam": "웹캠 사용",
+          "upload": "파일 업로드"
+        },
+        "qr": {
+          "title": "모바일로 스캔",
+          "instruction": "휴대폰 카메라를 열어 코드를 스캔하고 셀카를 안전하게 업로드하세요.",
+          "waiting": "업로드 대기 중...",
+          "generating": "보안 QR 코드 생성 중..."
+        },
+        "upload": {
+          "title": "클릭하여 업로드",
+          "desc": "지원 형식: JPG, PNG. 최대 크기: 5MB"
+        }
+      }
     },
     "settings": {
       "title": "보안 설정",
       "subtitle": "계정 보안 및 2단계 인증을 관리하세요",
-      "twoFactor": "2단계 인증",
-      "twoFactorDesc": "계정에 보안 계층을 추가하세요",
+      "twoFactor": "2단계 인증 (2FA)",
+      "twoFactorDesc": "계정에 보안 레이어를 추가하세요",
       "status": {
         "enabled": "활성화됨",
         "disabled": "비활성화됨"
       },
       "setup": {
         "title": "2단계 인증 설정",
-        "instruction": "인증 앱(Authenticator)으로 QR 코드를 스캔한 후 인증 코드를 입력하세요.",
-        "manual": "또는 다음 코드를 직접 입력하세요:",
+        "instruction": "인증 앱으로 QR 코드를 스캔한 후 인증 코드를 입력하세요.",
+        "manual": "또는 이 코드를 수동으로 입력하세요:",
         "enterCode": "앱에 표시된 인증 코드를 입력하세요:"
       },
       "disable": {
         "title": "2단계 인증 비활성화",
-        "instruction": "2단계 인증을 비활성화하려면 인증 앱의 코드를 입력하세요."
+        "instruction": "2단계 인증을 해제하려면 인증 앱의 코드를 입력하세요."
       }
     },
     "messages": {
@@ -107,39 +140,63 @@
       "profileUpdateError": "프로필 업데이트에 실패했습니다.",
       "fileSizeError": "파일 크기는 5MB 미만이어야 합니다.",
       "fileTypeError": "JPEG, PNG, PDF 파일만 허용됩니다.",
-      "invalidFile": "잘못된 파일 형식",
-      "fileTooLarge": "파일 용량이 너무 큽니다",
-      "fileSupported": "{{name}}은(는) 지원되지 않는 형식입니다. JPEG, PNG 또는 PDF를 사용하세요.",
-      "fileExceeds": "{{name}} 파일이 5MB 제한을 초과했습니다.",
+      "invalidFile": "유효하지 않은 파일 형식",
+      "fileTooLarge": "파일이 너무 큽니다",
+      "fileSupported": "{{name}}은(는) 지원되지 않습니다. JPEG, PNG 또는 PDF를 사용하세요.",
+      "fileExceeds": "{{name}}이(가) 5MB 제한을 초과합니다.",
       "deleteSuccess": "파일을 성공적으로 삭제했습니다.",
       "deleteError": "파일 삭제에 실패했습니다.",
       "otpSent": "OTP가 성공적으로 전송되었습니다",
-      "otpSendError": "OTP 전송 실패. 국가번호를 포함한 정확한 전화번호를 입력해 주세요.",
-      "otpVerifyError": "잘못된 OTP입니다",
+      "otpSendError": "OTP 전송 실패. 국가 코드를 포함한 올바른 전화번호를 입력하세요.",
+      "otpVerifyError": "유효하지 않은 OTP",
       "otpRequired": "OTP를 입력해 주세요",
-      "phoneRequired": "전화번호는 필수 항목입니다",
-      "nameError": "이름은 영문자로만 입력해 주세요 (A-Z, 공백, . ' -).",
+      "phoneRequired": "전화번호가 필요합니다",
+      "nameError": "이름은 영문자만 입력 가능합니다 (A-Z, 공백, . ' -).",
       "phoneError": "유효한 국제 전화번호를 입력하세요. 0으로 시작할 수 없습니다 (예: +85212345678).",
-      "cameraError": "카메라에 접근할 수 없습니다. 권한 설정을 확인해 주세요.",
-      "twoFactorSetupError": "2단계 인증 설정에 실패했습니다. 다시 시도해 주세요.",
-      "twoFactorVerifyError": "2단계 인증 코드 확인에 실패했습니다. 다시 시도해 주세요.",
-      "twoFactorDisableError": "2단계 인증 비활성화에 실패했습니다. 다시 시도해 주세요.",
-      "invalidCode": "잘못된 인증 코드입니다. 다시 시도해 주세요.",
+      "cameraError": "카메라 접근 실패. 권한을 확인하세요.",
+      "twoFactorSetupError": "2단계 인증 설정 실패. 다시 시도하세요.",
+      "twoFactorVerifyError": "2단계 인증 코드 확인 실패. 다시 시도하세요.",
+      "twoFactorDisableError": "2단계 인증 비활성화 실패. 다시 시도하세요.",
+      "invalidCode": "유효하지 않은 인증 코드입니다. 다시 시도하세요.",
       "validCodeRequired": "유효한 6자리 코드를 입력하세요.",
       "twoFactorEnabled": "2단계 인증이 성공적으로 활성화되었습니다!",
       "twoFactorDisabled": "2단계 인증이 비활성화되었습니다.",
       "copied": "클립보드에 복사되었습니다!",
-      "otpVerifyInstruction": "{{phone}}(으)로 전송된 6자리 코드를 입력하세요."
+      "otpVerifyInstruction": "{{phone}}번으로 전송된 6자리 코드를 입력하세요.",
+      "changesDiscarded": "변경 사항이 취소되었습니다",
+      "otpVerified": "OTP 인증 성공"
     },
     "upload": {
       "drop": "여기에 파일을 놓으세요",
       "dragDrop": "파일을 끌어서 놓으세요",
       "dragDropMultiple": "여러 파일을 끌어서 놓으세요",
-      "browse": "또는 클릭하여 기기에서 파일 선택",
+      "browse": "또는 클릭하여 기기에서 찾아보기",
       "upTo": "최대 {{size}}MB",
-      "upToEach": "각 파일 최대 {{size}}MB",
-      "submitted": "문서 제출됨",
-      "submittedDesc": "클릭하여 보기 또는 삭제"
+      "upToEach": "각 파일당 최대 {{size}}MB",
+      "submitted": "서류 제출됨",
+      "submittedDesc": "클릭하여 보기 또는 삭제",
+      "passport": "여권의 선명한 사본을 업로드하세요",
+      "addressProof": "최근 공공요금 고지서 또는 은행 거래 내역서를 업로드하세요",
+      "document": "서류"
+    },
+    "overview": {
+      "welcome": "{{name}}님, 다시 오신 것을 환영합니다!",
+      "accountStatus": "계정 상태:",
+      "kycInstruction": "앱 기능을 사용하려면 KYC 인증을 완료하세요.",
+      "steps": {
+        "profile": {
+          "title": "프로필",
+          "desc": "개인 정보 및 연락처를 업데이트하세요."
+        },
+        "documents": {
+          "title": "서류",
+          "desc": "여권 및 거주지 증명서를 업로드하세요."
+        },
+        "verification": {
+          "title": "인증",
+          "desc": "셀카 본인 확인."
+        }
+      }
     }
   },
   "company": {
@@ -1076,7 +1133,7 @@
       "Nevada": "네바다",
       "Florida": "플로리다",
       "Georgia": "조지아",
-      "UAB":"UAB",
+      "UAB": "UAB",
       "Other": "기타"
     },
     "AppInfo": {
@@ -2426,7 +2483,7 @@
       }
     },
     "parties": {
-      "title":"주주 / 이사 / DCP",
+      "title": "주주 / 이사 / DCP",
       "banner": {
         "ok": "모두 정상입니다 - 할당된 총 주식 수가 회사의 발행 주식 수와 일치합니다.",
         "err": "오류: 할당된 총 주식 수는 회사의 총 주식 수와 일치해야 합니다. 항목을 수정해 주십시오.",

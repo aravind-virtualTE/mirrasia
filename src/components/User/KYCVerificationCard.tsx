@@ -1,34 +1,27 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useRef, useCallback, useState } from "react"
-import Webcam from 'react-webcam'
 import {
-    CheckCircle,Camera, RotateCcw, IdCard, Home} from "lucide-react"
+    CheckCircle, Camera, RotateCcw, IdCard, Upload, Smartphone,
+} from "lucide-react"
+// Home, QrCode,
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { OtherDocument } from "./Profile"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+// import { OtherDocument } from "./Profile"
 import { DocumentUploadCard } from "./DocumentUploadCard";
 import { OtherDocumentsSection } from "./OtherDocumentSection";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { DialogHeader } from "../ui/dialog";
-import { t } from "i18next";
-
-interface KYCDocument {
-    file: File | null
-    preview: string | null
-    status: "pending" | "uploaded" | "verified" | "rejected"
-}
+import Webcam from "react-webcam"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input";
+import { generateUploadToken } from "@/services/dataFetch"
+import { useTranslation } from "react-i18next";
+import { useState, useRef, useEffect } from "react";
 
 interface KYCVerificationCardProps {
     profile: any
-    kycDocuments: {
-        passport: KYCDocument
-        addressProof: KYCDocument
-    }
-    otherDocuments: OtherDocument[];
+    kycDocuments: any
+    otherDocuments: any[]
     capturedImage: string | null
     isWebcamReady: boolean
     facingMode: string
-    onFileUpload: (documentType: "passport" | "addressProof", file: File) => void
+    onFileUpload: (documentType: "passport" | "addressProof" | "selfie", file: File) => void
     onRemoveDocument: (documentType: "passport" | "addressProof" | "selfie") => void
     onDeleteDocument: (url: string, id: string, type: string) => void
     onWebcamReady: () => void
@@ -37,8 +30,9 @@ interface KYCVerificationCardProps {
     onRetake: () => void
     onSwitchCamera: () => void
     onCapturedImageChange: (image: string | null) => void
-    onAddOtherDocuments: (files: File[]) => void;
-    onRemoveOtherDocument: (id: string) => void;
+    onAddOtherDocuments: (files: File[]) => void
+    onRemoveOtherDocument: (docId: string) => void
+    onRefreshProfile: () => Promise<void>
 }
 
 export function KYCVerificationCard({
@@ -59,190 +53,308 @@ export function KYCVerificationCard({
     onCapturedImageChange,
     onAddOtherDocuments,
     onRemoveOtherDocument,
+    onRefreshProfile
 }: KYCVerificationCardProps) {
-    const webcamRef = useRef(null)
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const videoConstraints = {
-        width: 1280,
-        height: 720,
-        facingMode: facingMode
-    }
+    const { t } = useTranslation()
+    const [livenessMode, setLivenessMode] = useState<"webcam" | "upload" | "qr">("webcam")
+    const [qrToken, setQrToken] = useState<string | null>(null)
+    const webcamRef = useRef<Webcam>(null)
 
-    const handleCapture = useCallback(() => {
-        if (webcamRef.current) {
-            const imageSrc = (webcamRef.current as any).getScreenshot();
-            onCapturedImageChange(imageSrc);
-            onCapture();
+    // Poll for QR updates
+    useEffect(() => {
+        let interval: NodeJS.Timeout
+
+        async function checkStatus() {
+            await onRefreshProfile()
+            // If the profile updates to "image_captured" or "uploaded"
+            if (
+                profile.kycDocuments?.selfieStatus === "image_captured" ||
+                profile.kycDocuments?.selfieStatus === "uploaded"
+            ) {
+                // Stop polling and switch mode or show success
+                setLivenessMode("webcam") // Or stay on QR but show success message
+            }
         }
-    }, [onCapture, onCapturedImageChange]);
 
-    // Helpers to normalize existing component props
-    const passportDocs = kycDocuments.passport.file
-        ? [{
-            id: "passport-new",
-            file: kycDocuments.passport.file,
-            preview: kycDocuments.passport.preview || "",
-            status: kycDocuments.passport.status,
-            name: kycDocuments.passport.file.name,
-            size: kycDocuments.passport.file.size,
-            type: kycDocuments.passport.file.type,
-        }]
-        : [];
+        if (livenessMode === "qr") {
+            // 1. Generate Token if missing
+            if (!qrToken) {
+                generateUploadToken().then(data => {
+                    if (data?.token) {
+                        setQrToken(data.token)
+                    } else {
+                        console.error("Failed to generate upload token", data);
+                    }
+                }).catch(err => console.error("Error generating token:", err))
+            }
 
-    const addressDocs = kycDocuments.addressProof.file
-        ? [{
-            id: "address-new",
-            file: kycDocuments.addressProof.file,
-            preview: kycDocuments.addressProof.preview || "",
-            status: kycDocuments.addressProof.status,
-            name: kycDocuments.addressProof.file.name,
-            size: kycDocuments.addressProof.file.size,
-            type: kycDocuments.addressProof.file.type,
-        }]
-        : [];
+            // 2. Start Polling
+            interval = setInterval(checkStatus, 3000)
+        } else {
+            setQrToken(null)
+        }
+
+        return () => clearInterval(interval)
+    }, [livenessMode, qrToken, onRefreshProfile, profile.kycDocuments?.selfieStatus])
+
+    const qrCodeUrl = qrToken
+        ? `${window.location.origin}/mobile-upload?token=${qrToken}`
+        : ""
+
+    const getDraftDocs = (type: "passport" | "addressProof") => {
+        const doc = kycDocuments[type];
+        if (doc && doc.file) {
+            return [{
+                id: type,
+                file: doc.file,
+                preview: doc.preview,
+                status: "pending" as const,
+                name: doc.file.name,
+                size: doc.file.size,
+                type: doc.file.type
+            }];
+        }
+        return [];
+    };
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col gap-2">
-                <h2 className="text-2xl font-bold">{t("userProfile.verification.title")}</h2>
-                <p className="text-muted-foreground">{t("userProfile.verification.subtitle")}</p>
-            </div>
+        <Card className="w-full">
+            <CardHeader>
+                <CardTitle>{t("userProfile.verification.title")}</CardTitle>
+                <CardDescription>
+                    {t("userProfile.verification.subtitle")}
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Tabs defaultValue="documents" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-6">
+                        <TabsTrigger value="documents" className="flex items-center gap-2">
+                            <IdCard className="w-4 h-4" />
+                            {t("userProfile.verification.tabs.documents")}
+                        </TabsTrigger>
+                        <TabsTrigger value="liveness" className="flex items-center gap-2">
+                            <Camera className="w-4 h-4" />
+                            {t("userProfile.verification.tabs.liveness")}
+                        </TabsTrigger>
+                    </TabsList>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-                {/* 1. Identity Document */}
-                <div className="md:col-span-2 lg:col-span-1">
-                    <DocumentUploadCard
-                        title={t("userProfile.verification.passportId")}
-                        description={t("userProfile.verification.passportDesc")}
-                        icon={<IdCard className="w-5 h-5 text-primary-foreground" />}
-                        documents={passportDocs}
-                        existingUrl={profile.kycDocuments?.passportUrl}
-                        existingStatus={profile.kycDocuments?.passportStatus}
-                        onUpload={(files) => onFileUpload("passport", files[0])}
-                        onRemove={() => onRemoveDocument("passport")}
-                        onDelete={(url) => onDeleteDocument(url, profile._id, "passport")}
-                        onView={(url) => setPreviewUrl(url)}
-                    />
-                </div>
+                    {/* DOCUMENTS TAB */}
+                    <TabsContent value="documents" className="space-y-6">
+                        <DocumentUploadCard
+                            title={t("userProfile.verification.passportId")}
+                            description={t("userProfile.upload.passport")}
+                            uploadLabel={t("userProfile.verification.passportId")}
+                            // Existing Server Data
+                            existingUrl={profile.kycDocuments?.passportUrl}
+                            existingStatus={profile.kycDocuments?.passportStatus}
+                            onDelete={(url) => onDeleteDocument(url, profile._id, "passport")}
+                            // Draft Data
+                            documents={getDraftDocs("passport")}
+                            onUpload={(files) => files[0] && onFileUpload("passport", files[0])}
+                            onRemove={() => onRemoveDocument("passport")}
 
-                {/* 2. Address Proof */}
-                <div className="md:col-span-2 lg:col-span-1">
-                    <DocumentUploadCard
-                        title={t("userProfile.verification.addressProof")}
-                        description={t("userProfile.verification.addressDesc")}
-                        icon={<Home className="w-5 h-5 text-primary-foreground" />}
-                        documents={addressDocs}
-                        existingUrl={profile.kycDocuments?.addressProofUrl}
-                        existingStatus={profile.kycDocuments?.addressProofStatus}
-                        onUpload={(files) => onFileUpload("addressProof", files[0])}
-                        onRemove={() => onRemoveDocument("addressProof")}
-                        onDelete={(url) => onDeleteDocument(url, profile._id, "address")}
-                        onView={(url) => setPreviewUrl(url)}
-                    />
-                </div>
+                            accept=".pdf,.jpg,.jpeg,.png"
+                        />
+                        <DocumentUploadCard
+                            title={t("userProfile.verification.addressProof")}
+                            description={t("userProfile.upload.addressProof")}
+                            uploadLabel={t("userProfile.verification.addressProof")}
+                            // Existing Server Data
+                            existingUrl={profile.kycDocuments?.addressProofUrl}
+                            existingStatus={profile.kycDocuments?.addressProofStatus}
+                            onDelete={(url) => onDeleteDocument(url, profile._id, "addressProof")}
+                            // Draft Data
+                            documents={getDraftDocs("addressProof")}
+                            onUpload={(files) => files[0] && onFileUpload("addressProof", files[0])}
+                            onRemove={() => onRemoveDocument("addressProof")}
 
-                {/* 3. Liveness / Selfie Check */}
-                <div className="md:col-span-2">
-                    <Card className="glass-card border-0 overflow-hidden">
-                        <CardHeader className="pb-2">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                                    <Camera className="w-5 h-5" />
-                                </div>
-                                <h3 className="font-semibold text-lg">{t("userProfile.verification.selfie")}</h3>
-                            </div>
-                            <p className="text-sm text-muted-foreground">{t("userProfile.verification.selfieInstruction")}</p>
-                        </CardHeader>
-                        <CardContent>
-                            {profile.kycDocuments?.selfieUrl ? (
-                                <div className="flex flex-col md:flex-row gap-6 items-start">
-                                    <div className="relative rounded-xl overflow-hidden border w-full md:w-64 aspect-video bg-muted">
-                                        <img
-                                            src={profile.kycDocuments.selfieUrl}
-                                            alt="Selfie"
-                                            className="w-full h-full object-cover"
-                                        />
-                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                                            <Button variant="secondary" size="sm" onClick={() => setPreviewUrl(profile.kycDocuments.selfieUrl)}>View</Button>
+                            accept=".pdf,.jpg,.jpeg,.png"
+                        />
+                        <OtherDocumentsSection
+                            documents={otherDocuments}
+                            onAddDocuments={onAddOtherDocuments}
+                            onRemoveDocument={onRemoveOtherDocument}
+                        />
+                    </TabsContent>
+
+                    {/* LIVENESS CHECK TAB */}
+                    <TabsContent value="liveness" className="space-y-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">{t("userProfile.verification.liveness.title")}</CardTitle>
+                                <CardDescription>
+                                    {t("userProfile.verification.liveness.subtitle")}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                {/* Captured Image Preview (Draft or Server) */}
+                                {(capturedImage || kycDocuments.selfie.file || profile.kycDocuments?.selfieUrl) ? (
+                                    <div className="flex flex-col items-center gap-4">
+                                        <div className="relative aspect-square w-full max-w-sm overflow-hidden rounded-lg border-2 border-dashed bg-muted">
+                                            <img
+                                                src={
+                                                    capturedImage ||
+                                                    (kycDocuments.selfie.file ? URL.createObjectURL(kycDocuments.selfie.file) : null) ||
+                                                    profile.kycDocuments?.selfieUrl
+                                                }
+                                                alt="Selfie"
+                                                className="h-full w-full object-cover"
+                                            />
+                                            <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                                                <CheckCircle className="w-3 h-3" />
+                                                {profile.kycDocuments?.selfieUrl ? t("userProfile.verification.status.uploaded") : t("userProfile.verification.liveness.captured")}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="space-y-4 flex-1">
-                                        <div className="flex items-center gap-2 text-green-600 bg-green-50 px-3 py-1.5 rounded-full w-fit">
-                                            <CheckCircle className="w-4 h-4" />
-                                            <span className="text-sm font-medium">Selfie Captured</span>
-                                        </div>
-
-                                        <div className="flex gap-3">
-                                            <Button variant="outline" size="sm" onClick={() => onDeleteDocument(profile.kycDocuments.selfieUrl, profile._id, "selfie")} className="text-destructive hover:bg-destructive/10">
-                                                Retake / Delete
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => {
+                                                    onRetake();
+                                                    onCapturedImageChange(null);
+                                                    if (kycDocuments.selfie.file) onRemoveDocument("selfie");
+                                                    // If server image exists, we might need a way to delete it? 
+                                                    // For now, assuming "Retake" just clears local preview to allow new capture.
+                                                    // If user wants to replace server image, they just upload new one.
+                                                }}
+                                                className="text-destructive hover:bg-destructive/10"
+                                            >
+                                                {t("userProfile.actions.retakeReplace")}
                                             </Button>
                                         </div>
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="bg-muted/30 rounded-xl p-6 text-center border-2 border-dashed border-muted-foreground/20">
-                                    {!capturedImage ? (
-                                        <div className="max-w-md mx-auto space-y-4">
-                                            <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
-                                                <Webcam
-                                                    ref={webcamRef}
-                                                    audio={false}
-                                                    screenshotFormat="image/jpeg"
-                                                    videoConstraints={videoConstraints}
-                                                    onLoadedData={onWebcamReady}
-                                                    onUserMediaError={onWebcamError}
-                                                    className="w-full h-full object-cover"
-                                                    mirrored={facingMode === "user"}
+                                ) : (
+                                    <div className="space-y-6">
+                                        {/* Mode Selection */}
+                                        <div className="flex items-center justify-center gap-4">
+                                            <Button
+                                                variant={livenessMode === "webcam" ? "default" : "outline"}
+                                                onClick={() => setLivenessMode("webcam")}
+                                                className="flex items-center gap-2"
+                                            >
+                                                <Camera className="w-4 h-4" />
+                                                {t("userProfile.verification.liveness.modes.webcam")}
+                                            </Button>
+                                            <Button
+                                                variant={livenessMode === "upload" ? "default" : "outline"}
+                                                onClick={() => setLivenessMode("upload")}
+                                                className="flex items-center gap-2"
+                                            >
+                                                <Upload className="w-4 h-4" />
+                                                {t("userProfile.verification.liveness.modes.upload")}
+                                            </Button>
+                                            {/* <Button
+                                                variant={livenessMode === "qr" ? "default" : "outline"}
+                                                onClick={() => setLivenessMode("qr")}
+                                                className="flex items-center gap-2"
+                                            >
+                                                <QrCode className="w-4 h-4" />
+                                                Scan QR Code
+                                            </Button> */}
+                                        </div>
+
+                                        {/* QR View */}
+                                        {livenessMode === "qr" && (
+                                            <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-8 bg-muted/30">
+                                                {qrToken ? (
+                                                    <>
+                                                        <img
+                                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrCodeUrl)}`}
+                                                            alt="Scan to upload"
+                                                            className="w-40 h-40 mb-4 border rounded-lg shadow-sm"
+                                                        />
+                                                        <p className="font-medium text-lg mb-2">{t("userProfile.verification.liveness.qr.title")}</p>
+                                                        <p className="text-sm text-muted-foreground text-center max-w-xs mb-4">
+                                                            {t("userProfile.verification.liveness.qr.instruction")}
+                                                        </p>
+                                                        <div className="flex items-center gap-2 text-xs text-muted-foreground bg-primary/5 px-3 py-1 rounded-full animate-pulse">
+                                                            <Smartphone className="w-3 h-3" />
+                                                            {t("userProfile.verification.liveness.qr.waiting")}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div className="flex flex-col items-center py-8">
+                                                        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+                                                        <p className="text-sm text-muted-foreground">{t("userProfile.verification.liveness.qr.generating")}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* Upload View */}
+                                        {livenessMode === "upload" && (
+                                            <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-12 bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer relative">
+                                                <Input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) onFileUpload("selfie", file);
+                                                    }}
                                                 />
-                                                {!isWebcamReady && <div className="absolute inset-0 flex items-center justify-center text-white">Initializing Camera...</div>}
+                                                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                                                    <Upload className="w-8 h-8 text-primary" />
+                                                </div>
+                                                <p className="font-medium text-lg mb-2">{t("userProfile.verification.liveness.upload.title")}</p>
+                                                <p className="text-sm text-muted-foreground text-center max-w-xs">
+                                                    {t("userProfile.verification.liveness.upload.desc")}
+                                                </p>
                                             </div>
-                                            <div className="flex justify-center gap-4">
-                                                <Button onClick={onSwitchCamera} variant="outline" size="icon"><RotateCcw className="w-4 h-4" /></Button>
-                                                <Button onClick={handleCapture}>Capture Photo</Button>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="max-w-md mx-auto space-y-4">
-                                            <div className="relative aspect-video rounded-lg overflow-hidden">
-                                                <img src={capturedImage} className="w-full h-full object-cover" />
-                                            </div>
-                                            <div className="flex justify-center gap-4">
-                                                <Button variant="ghost" onClick={onRetake}>Retake</Button>
-                                                <Button onClick={() => {/* Confirm logic usually handled by parent capture state, but here just visual */ }} className="bg-green-600 hover:bg-green-700">Use this Photo</Button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </div>
+                                        )}
 
-                {/* 4. Other Documents */}
-                <div className="md:col-span-2">
-                    <OtherDocumentsSection
-                        documents={otherDocuments}
-                        onAddDocuments={onAddOtherDocuments}
-                        onRemoveDocument={onRemoveOtherDocument}
-                    />
-                </div>
-            </div>
-
-            {/* Preview Modal */}
-            <Dialog open={!!previewUrl} onOpenChange={() => setPreviewUrl(null)}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
-                    <DialogHeader>
-                        <DialogTitle>{t("userProfile.verification.preview")}</DialogTitle>
-                    </DialogHeader>
-                    {previewUrl && (
-                        <iframe
-                            src={previewUrl}
-                            className="w-full h-[70vh] rounded-lg"
-                            title="Document Preview"
-                        />
-                    )}
-                </DialogContent>
-            </Dialog>
-        </div>
-    );
+                                        {/* Webcam View */}
+                                        {livenessMode === "webcam" && (
+                                            <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-black">
+                                                <>
+                                                    <Webcam
+                                                        audio={false}
+                                                        ref={webcamRef}
+                                                        width="100%"
+                                                        height="100%"
+                                                        className={!isWebcamReady ? "opacity-0 absolute inset-0" : ""}
+                                                        videoConstraints={{ facingMode }}
+                                                        onUserMedia={onWebcamReady}
+                                                        onUserMediaError={(err) => {
+                                                            console.error("Webcam user media error:", err);
+                                                            onWebcamError(err);
+                                                        }}
+                                                        screenshotFormat="image/jpeg"
+                                                    />
+                                                    {!isWebcamReady && (
+                                                        <div className="absolute inset-0 flex items-center justify-center text-white">
+                                                            <p>{t("userProfile.verification.liveness.webcam.initializing", "Initializing camera...")}</p>
+                                                        </div>
+                                                    )}
+                                                    {isWebcamReady && (
+                                                        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
+                                                            <Button
+                                                                onClick={() => {
+                                                                    onCapture();
+                                                                    const imageSrc = webcamRef.current?.getScreenshot();
+                                                                    onCapturedImageChange(imageSrc || null);
+                                                                }}
+                                                                className="rounded-full w-12 h-12 p-0 bg-red-500 hover:bg-red-600 border-4 border-white"
+                                                            />
+                                                            <Button
+                                                                size="icon"
+                                                                variant="secondary"
+                                                                onClick={onSwitchCamera}
+                                                                className="rounded-full"
+                                                            >
+                                                                <RotateCcw className="w-4 h-4" />
+                                                            </Button>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                </Tabs>
+            </CardContent>
+        </Card>
+    )
 }

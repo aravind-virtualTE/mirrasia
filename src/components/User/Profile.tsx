@@ -95,9 +95,10 @@ export default function Profile() {
   const [nameError, setNameError] = useState<string>("")
   const [phoneError, setPhoneError] = useState<string>("")
 
-  const initialData: { passport: KYCDocument; addressProof: KYCDocument } = {
+  const initialData: { passport: KYCDocument; addressProof: KYCDocument; selfie: KYCDocument } = {
     passport: { file: null, preview: null, status: "pending" },
     addressProof: { file: null, preview: null, status: "pending" },
+    selfie: { file: null, preview: null, status: "pending" },
   }
 
   const hydrateOtherDocuments = (docs: any[] = []) =>
@@ -106,7 +107,7 @@ export default function Profile() {
       file: null,
       preview: d.url || "",
       url: d.url || "",
-      name: d.name || "Document",
+      name: d.name || t("userProfile.upload.document"),
       size: Number(d.size || 0),
       type: d.type || "application/octet-stream",
       uploadedAt: d.uploadedAt ? new Date(d.uploadedAt) : new Date(),
@@ -116,6 +117,7 @@ export default function Profile() {
   const [kycDocuments, setKycDocuments] = useState<{
     passport: KYCDocument
     addressProof: KYCDocument
+    selfie: KYCDocument
   }>(initialData)
 
   const [otherDocuments, setOtherDocuments] = useState<OtherDocument[]>([])
@@ -134,6 +136,8 @@ export default function Profile() {
     draftProfile.mobileOtpVerified !== profile.mobileOtpVerified ||
     kycDocuments.passport.file !== null ||
     kycDocuments.addressProof.file !== null ||
+    kycDocuments.selfie.file !== null ||
+    (capturedImage !== null && capturedImage !== "") ||
     otherDocuments.some((d) => d.file !== null)
 
   // Effects
@@ -143,15 +147,18 @@ export default function Profile() {
     return () => clearTimeout(timer)
   }, [resendTimer])
 
-  useEffect(() => {
-    const fetchdata = async () => {
-      const data = await getUserById(user?.id || "")
+  const refreshProfile = useCallback(async () => {
+    if (!user?.id) return
+    const data = await getUserById(user.id)
+    if (data) {
       setProfile(data)
       setOtherDocuments(hydrateOtherDocuments(data.otherDocuments || []))
     }
-    fetchdata()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user?.id])
+
+  useEffect(() => {
+    refreshProfile()
+  }, [refreshProfile])
 
   // ✅ Sync draft when server profile loads/changes (including mobileOtpVerified)
   useEffect(() => {
@@ -163,6 +170,10 @@ export default function Profile() {
     profile.dateOfBirth,
     profile.mobileOtpVerified,
   ])
+
+  // ... (rest of the file until return)
+
+
 
   const isEnglishName = (val: string) => {
     if (!val) return false
@@ -216,8 +227,9 @@ export default function Profile() {
     setDraftProfile(profile)
     setKycDocuments(initialData)
     setOtherDocuments(hydrateOtherDocuments(profile.otherDocuments || []))
+    setCapturedImage(null) // Reset captured image
     resetOtpUi()
-    toast({ title: t("info"), description: "Changes discarded" })
+    toast({ title: t("userProfile.notice.title"), description: t("userProfile.messages.changesDiscarded") })
   }
 
   // Submit Handler (Smart Save)
@@ -236,6 +248,16 @@ export default function Profile() {
       if (kycDocuments.passport.file) formData.append("passport", kycDocuments.passport.file)
       if (kycDocuments.addressProof.file) formData.append("addressProof", kycDocuments.addressProof.file)
 
+      // Append Selfie (from upload or webcam)
+      if (kycDocuments.selfie.file) {
+        formData.append("selfie", kycDocuments.selfie.file)
+      } else if (capturedImage) {
+        // Convert base64 to blob
+        const fetchRes = await fetch(capturedImage)
+        const blob = await fetchRes.blob()
+        formData.append("selfie", blob, "selfie.jpg")
+      }
+
       // Append Other Documents
       otherDocuments.forEach((doc) => {
         if (doc.file) formData.append("otherDocuments", doc.file)
@@ -246,8 +268,12 @@ export default function Profile() {
       setProfile(result.updatedUser)
       setDraftProfile(result.updatedUser)
 
+      setProfile(result.updatedUser)
+      setDraftProfile(result.updatedUser)
+
       // Reset local file states
       setKycDocuments(initialData)
+      setCapturedImage(null) // Reset captured image
       setOtherDocuments(hydrateOtherDocuments(result.updatedUser.otherDocuments || []))
 
       toast({
@@ -337,9 +363,9 @@ export default function Profile() {
         setProfile((prev) => ({ ...prev, twoFactorEnabled: false }))
         setShowDisable2FADialog(false)
         setDisableCode("")
-        toast({ title: t("success"), description: t("userProfile.messages.twoFactorDisabled") })
+        toast({ title: t("userProfile.messages.success"), description: t("userProfile.messages.twoFactorDisabled") })
       } else {
-        toast({ title: "Error", description: "Invalid verification code. Please try again.", variant: "destructive" })
+        toast({ title: t("error"), description: t("userProfile.messages.invalidCode"), variant: "destructive" })
       }
     } catch (err) {
       console.error("Error disabling 2FA:", err)
@@ -354,7 +380,7 @@ export default function Profile() {
   }
 
   // Document Handlers
-  const handleFileUpload = (documentType: "passport" | "addressProof", file: File) => {
+  const handleFileUpload = (documentType: "passport" | "addressProof" | "selfie", file: File) => {
     if (file.size > 5 * 1024 * 1024) {
       toast({ title: t("error"), description: t("userProfile.messages.fileSizeError"), variant: "destructive" })
       return
@@ -551,7 +577,7 @@ export default function Profile() {
                   disabled={!isDirty || loading}
                   className="text-muted-foreground hover:text-foreground disabled:opacity-30"
                 >
-                  Discard
+                  {t("userProfile.actions.discard")}
                 </Button>
                 <Button
                   size="sm"
@@ -573,7 +599,7 @@ export default function Profile() {
                   className="px-4 py-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none rounded-none transition-all"
                 >
                   <LayoutDashboard className="w-4 h-4 mr-2" />
-                  {t("userProfile.tabs.overview", "Overview")}
+                  {t("userProfile.tabs.overview")}
                 </TabsTrigger>
                 <TabsTrigger
                   value="personal"
@@ -609,7 +635,7 @@ export default function Profile() {
               <Card className="bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
                 <CardHeader>
                   <CardTitle className="gradient-text text-2xl">
-                    Welcome back, {profile.fullName.split(" ")[0]}!
+                    {t("userProfile.overview.welcome", { name: profile?.fullName?.split(" ")[0] })}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -620,10 +646,10 @@ export default function Profile() {
                       </div>
                       <div>
                         <p className="font-medium">
-                          Account Status: <span className="capitalize">{profile.status}</span>
+                          {t("userProfile.overview.accountStatus")} <span className="capitalize">{t(profile.status)}</span>
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Complete your KYC verification to utilize app features.
+                          {t("userProfile.overview.kycInstruction")}
                         </p>
                       </div>
                     </div>
@@ -634,10 +660,10 @@ export default function Profile() {
                           <span className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px]">
                             1
                           </span>
-                          Profile
+                          {t("userProfile.overview.steps.profile.title")}
                         </h4>
                         <p className="text-[11px] text-muted-foreground leading-tight">
-                          Update your personal and contact details.
+                          {t("userProfile.overview.steps.profile.desc")}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -645,10 +671,10 @@ export default function Profile() {
                           <span className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px]">
                             2
                           </span>
-                          Documents
+                          {t("userProfile.overview.steps.documents.title")}
                         </h4>
                         <p className="text-[11px] text-muted-foreground leading-tight">
-                          Upload Passport and Proof of Address.
+                          {t("userProfile.overview.steps.documents.desc")}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -656,10 +682,10 @@ export default function Profile() {
                           <span className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px]">
                             3
                           </span>
-                          Verification
+                          {t("userProfile.overview.steps.verification.title")}
                         </h4>
                         <p className="text-[11px] text-muted-foreground leading-tight">
-                          Selfie identity check.
+                          {t("userProfile.overview.steps.verification.desc")}
                         </p>
                       </div>
                     </div>
@@ -673,7 +699,7 @@ export default function Profile() {
             <Card className="border-0 shadow-sm ring-1 ring-border/50">
               <CardHeader>
                 <CardTitle>{t("userProfile.personalInfo.title")}</CardTitle>
-                <CardDescription>Manage your personal details and contact info.</CardDescription>
+                <CardDescription>{t("userProfile.personalInfo.subtitle")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Avatar Section */}
@@ -714,7 +740,7 @@ export default function Profile() {
                   <div className="space-y-2">
                     <Label>{t("userProfile.personalInfo.email")}</Label>
                     <Input value={draftProfile.email} disabled className="bg-muted/50" />
-                    <p className="text-[10px] text-muted-foreground">Email cannot be changed.</p>
+                    <p className="text-[10px] text-muted-foreground">{t("userProfile.personalInfo.emailImmutable")}</p>
                   </div>
 
                   <div className="space-y-2">
@@ -722,7 +748,7 @@ export default function Profile() {
                     <Input
                       value={draftProfile.address}
                       onChange={(e) => handleFieldChange("address", e.target.value)}
-                      placeholder="Full residential address"
+                      placeholder={t("userProfile.personalInfo.placeholder.address")}
                     />
                   </div>
 
@@ -831,6 +857,7 @@ export default function Profile() {
               onCapturedImageChange={setCapturedImage}
               onAddOtherDocuments={handleAddOtherDocuments}
               onRemoveOtherDocument={handleRemoveOtherDocument}
+              onRefreshProfile={refreshProfile}
             />
           </TabsContent>
 
