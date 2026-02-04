@@ -676,7 +676,7 @@
                 "drawer": {
                     "title": "Stripe 信用卡付款",
                     "description": "總金額: {{amount}} {{note}}",
-                    "cardFeeNote": "(含 3.5% 信用卡手續費)",
+                    "cardFeeNote": "(港幣 HKD 為 4%，美金 USD 為 6%)",
                     "preparing": "正在準備安全付款..."
                 }
             },

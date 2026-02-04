@@ -10,7 +10,7 @@ const PaymentMethd: React.FC = () => {
     const [selectPayment, setPaymntOption] = useState<Option[]>([]);
 
 
-    const sList = ["Korean account transfer (based on remittance exchange rate)", "International remittance to Hong Kong account (all fees are borne by the remitter)", "Deposit to Hong Kong account (cash deposit, FPS, check deposit, account transfer, etc.)","Card payment (3.5% fee)", "USDT"].map((item) => ({ label: item, value: item }))
+    const sList = ["Korean account transfer (based on remittance exchange rate)", "International remittance to Hong Kong account (all fees are borne by the remitter)", "Deposit to Hong Kong account (cash deposit, FPS, check deposit, account transfer, etc.)", "Card payment (4% for HKD, 6% for USD fee )", "USDT"].map((item) => ({ label: item, value: item }))
 
 
     const handlePurposeChange = (selections: Option[]) => {
@@ -37,7 +37,7 @@ const PaymentMethd: React.FC = () => {
                                     <HelpCircle className="h-4 w-4 inline ml-2 text-gray-500 cursor-pointer" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-md text-sm">
-                                If a refund is issued for the cost, fees for card or remittance will not be refunded.
+                                    If a refund is issued for the cost, fees for card or remittance will not be refunded.
                                 </TooltipContent>
                             </Tooltip>
                         </Label>

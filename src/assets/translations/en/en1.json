@@ -677,7 +677,7 @@
                 "drawer": {
                     "title": "Stripe Card Payment",
                     "description": "Grand Total: {{amount}} {{note}}",
-                    "cardFeeNote": "(incl. 3.5% card fee)",
+                    "cardFeeNote": "(4% for HKD, 6% for USD)",
                     "preparing": "Preparing secure payment…"
                 }
             },

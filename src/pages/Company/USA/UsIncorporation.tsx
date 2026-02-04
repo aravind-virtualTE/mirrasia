@@ -2021,7 +2021,7 @@ function computeUsGrandTotal(app: any): number {
 
     const subtotal = basePrice + addonsTotal;
     const currency = app.stripeCurrency;
-    const cardFeeRate = currency && String(currency).toUpperCase() === "USD" ? 0.06 : 0.035;
+    const cardFeeRate = currency && String(currency).toUpperCase() === "USD" ? 0.06 : 0.04;
     const grand =
         app.payMethod === "card"
             ? subtotal * (1 + cardFeeRate)
