@@ -1675,7 +1675,7 @@
           "emiAccount": "EMI e-Account Opening (basic) Free",
           "initialMandatoryTotal": "Initial mandatory total",
           "totalInclOptions": "Total incl. options",
-          "footnote": "Assumes standard profile (â‰¤5 individual shareholders). Notarization/translation/apostille & complex KYC are extra."
+          "footnote": "Assumes standard profile (5 individual shareholders). Notarization/translation/apostille & complex KYC are extra."
         }
       },
       "toast": {
@@ -1880,12 +1880,12 @@
         "paymentReqDesc": "Please complete the payment before proceeding to later steps, if you upload receipt wait for confirmation."
       },
       "stepsMenu": "Steps",
-      "close": "âœ•"
+      "close": "close"
     },
     "buttons": {
       "stepsMenu": "Steps Menu",
-      "back": "â† Back",
-      "next": "Next â†’",
+      "back": "Back",
+      "next": "Next",
       "saving": "Saving¦"
     },
     "toasts": {
