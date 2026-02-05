@@ -11,10 +11,10 @@ import {
 } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { businessNatureList } from "@/pages/Company/HongKong/constants";
 const yesNoOther = [
-            { label: "newHk.steps.compliance.options.yes", value: "yes" },
-            { label: "newHk.steps.compliance.options.no", value: "no" },
-            { label: "newHk.steps.compliance.options.unsure", value: "unsure" }
-          ]
+  { label: "newHk.steps.compliance.options.yes", value: "yes" },
+  { label: "newHk.steps.compliance.options.no", value: "no" },
+  { label: "newHk.steps.compliance.options.unsure", value: "unsure" }
+]
 
 const purposeOptions = incorporationPurposeKeys.map((key) => ({
   label: `newHk.company.fields.purpose.options.${key}`,
@@ -23,23 +23,87 @@ const purposeOptions = incorporationPurposeKeys.map((key) => ({
 
 const HK_FEES = {
   government: [
-    { id: "cr_fee", label: "newHk.fees.items.cr_fee.label", amount: 221, mandatory: true },
-    { id: "br_fee", label: "newHk.fees.items.br_fee.label", amount: 283, mandatory: true },
+    {
+      id: "cr_fee",
+      label: "newHk.fees.items.cr_fee.label",
+      original: 221,
+      amount: 221,
+      mandatory: true,
+      info: "Statutory filing fee payable to the Companies Registry.",
+    },
+    {
+      id: "br_fee",
+      label: "newHk.fees.items.br_fee.label",
+      original: 283,
+      amount: 283,
+      mandatory: true,
+      info: "Annual Business Registration levy.",
+    },
   ],
   service: [
-    { id: "inc_service", label: "newHk.fees.items.inc_service.label", amount: 0, mandatory: true },
-    { id: "sec_annual", label: "newHk.fees.items.sec_annual.label", amount: 225, mandatory: true },
-    { id: "kyc", label: "newHk.fees.items.kyc.label", amount: 0, mandatory: true },
-    { id: "reg_office", label: "newHk.fees.items.reg_office.label", amount: 161, mandatory: false },
-    { id: "bank_arr", label: "newHk.fees.items.bank_arr.label", amount: 400, mandatory: false },
-    { id: "kit", label: "newHk.fees.items.kit.label", amount: 70, mandatory: false },
-    { id: "corr_addr", label: "newHk.fees.items.corr_addr.label", amount: 65, mandatory: false },
+    {
+      id: "inc_service",
+      label: "newHk.fees.items.inc_service.label",
+      original: 219,
+      amount: 0,
+      mandatory: true,
+      info: "Mirr Asia incorporation service — fully discounted in the package.",
+    },
+    {
+      id: "sec_annual",
+      label: "newHk.fees.items.sec_annual.label",
+      original: 450,
+      amount: 225,
+      mandatory: true,
+      info: "Includes statutory record keeping and filings.",
+    },
+    {
+      id: "kyc",
+      label: "newHk.fees.items.kyc.label",
+      original: 65,
+      amount: 0,
+      mandatory: true,
+      info: "Included for the first year.",
+    },
+    {
+      id: "reg_office",
+      label: "newHk.fees.items.reg_office.label",
+      original: 322,
+      amount: 161,
+      mandatory: false,
+      info: "50% off for the first year.",
+    },
+    {
+      id: "bank_arr",
+      label: "newHk.fees.items.bank_arr.label",
+      original: 400,
+      amount: 400,
+      mandatory: false,
+      info: "Introduction and scheduling support.",
+    },
+    {
+      id: "kit",
+      label: "newHk.fees.items.kit.label",
+      original: 70,
+      amount: 70,
+      mandatory: false,
+      info: "Company chop, share certificates, etc.",
+    },
+    {
+      id: "corr_addr",
+      label: "newHk.fees.items.corr_addr.label",
+      original: 65,
+      amount: 65,
+      mandatory: false,
+      info: "Mail handling for directors/shareholders.",
+    },
   ],
 };
 
 const computeKycExtras = (parties: any[]) => {
   const list = Array.isArray(parties) ? parties : [];
-  const legalPersonCount = list.filter((p: any) => p?.type === "entity").length;
+  // Support both old "isCorp" and new "type: entity" formats
+  const legalPersonCount = list.filter((p: any) => p?.isCorp === true || p?.type === "entity").length;
   const individualCount = list.length - legalPersonCount;
   const LEGAL_PERSON_KYC_FEE = 130;
   const INDIVIDUAL_KYC_SLOT_FEE = 65;
@@ -59,6 +123,16 @@ export const HK_FULL_CONFIG: McapConfig = {
   countryName: "Hong Kong",
   currency: "HKD",
   title: "newHk.hkTitle",
+  entityMeta: {
+    fees: {
+      government: HK_FEES.government,
+      service: HK_FEES.service,
+    },
+    cardFeePctByCountry: {
+      HKD: 0.04,
+      USD: 0.06,
+    },
+  },
   steps: [
     {
       id: "applicant",
@@ -66,11 +140,11 @@ export const HK_FULL_CONFIG: McapConfig = {
       description: "newHk.steps.applicant.description",
       fields: [
         { type: "text", name: "applicantName", label: "newHk.steps.applicant.fields.applicantName.label", required: true },
-        { type: "email", name: "email", label: "newHk.steps.applicant.fields.email.label", required: true },
-        { type: "text", name: "phone", label: "newHk.steps.applicant.fields.phone.label", required: true },
-        { type: "text", name: "name1", label: "newHk.steps.applicant.fields.name1.label", required: true, colSpan: 2 },
-        { type: "text", name: "name2", label: "newHk.steps.applicant.fields.name2.label", colSpan: 2 },
-        { type: "text", name: "name3", label: "newHk.steps.applicant.fields.name3.label", colSpan: 2 },
+        { type: "email", name: "applicantEmail", label: "newHk.steps.applicant.fields.email.label", required: true },
+        { type: "text", name: "applicantPhone", label: "newHk.steps.applicant.fields.phone.label", required: true },
+        { type: "text", name: "companyName1", label: "newHk.steps.applicant.fields.name1.label", required: true, colSpan: 2 },
+        { type: "text", name: "companyName2", label: "newHk.steps.applicant.fields.name2.label", colSpan: 2 },
+        { type: "text", name: "companyName3", label: "newHk.steps.applicant.fields.name3.label", colSpan: 2 },
         { type: "text", name: "cname1", label: "newHk.steps.applicant.fields.cname1.label" },
         { type: "text", name: "cname2", label: "newHk.steps.applicant.fields.cname2.label" },
         {
@@ -182,6 +256,17 @@ export const HK_FULL_CONFIG: McapConfig = {
         },
         {
           type: "select",
+          name: "paymentCurrency",
+          label: "newHk.company.fields.paymentCurrency.label",
+          options: [
+            { label: "HKD", value: "HKD" },
+            { label: "USD", value: "USD" },
+          ],
+          required: true,
+          colSpan: 2,
+        },
+        {
+          type: "select",
           name: "capAmount",
           label: "newHk.company.fields.capAmount.label",
           options: capitalAmountOptions,
@@ -218,20 +303,84 @@ export const HK_FULL_CONFIG: McapConfig = {
       requirePartyInvite: true,
     },
     {
-      id: "fees",
+      id: "services",
       title: "newHk.steps.fees.title",
-      fields: [
-        {
-          type: "checkbox-group",
-          name: "optionalFeeIds",
-          label: "newHk.fees.table.optionalTitle",
-          options: HK_FEES.service.filter((item) => !item.mandatory).map((item) => ({
-            label: item.label,
-            value: item.id,
+      widget: "ServiceSelectionWidget",
+      serviceItems: [
+        ...HK_FEES.service.map((f) => ({
+          id: f.id,
+          label: f.label,
+          amount: f.amount,
+          original: f.original,
+          info: f.info,
+          mandatory: f.mandatory,
+          currency: "USD",
+        })),
+      ]
+    },
+    {
+      id: "invoice",
+      title: "newHk.steps.invoice.title",
+      description: "newHk.steps.invoice.description",
+      widget: "InvoiceWidget",
+      computeFees: (data: any) => {
+        const selectedIds = new Set(Array.isArray(data.optionalFeeIds) ? data.optionalFeeIds : []);
+        const parties = Array.isArray(data.parties) ? data.parties : [];
+        const extraKyc = computeKycExtras(parties);
+
+        const items = [
+          ...HK_FEES.government.filter((f) => f.mandatory).map((f) => ({
+            id: f.id,
+            label: f.label,
+            amount: f.amount,
+            original: f.original,
+            info: f.info,
+            kind: "government" as const,
           })),
-          colSpan: 2,
-        },
-      ],
+          ...HK_FEES.service.filter((f) => f.mandatory || selectedIds.has(f.id)).map((f) => ({
+            id: f.id,
+            label: f.label,
+            amount: f.amount,
+            original: f.original,
+            info: f.info,
+            kind: "service" as const,
+          })),
+        ];
+
+        if (extraKyc > 0) {
+          items.push({
+            id: "extra_kyc",
+            label: "newHk.fees.items.extra_kyc.label",
+            amount: extraKyc,
+            original: extraKyc,
+            info: "Additional KYC fees for corporate shareholders and extra individual shareholders.",
+            kind: "service" as const,
+          });
+        }
+
+        const government = items
+          .filter((i) => i.kind === "government")
+          .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const service = items
+          .filter((i) => i.kind !== "government")
+          .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const total = government + service;
+
+        // Card fee surcharge (currency-based)
+        const paymentCurrency = data.paymentCurrency || data.currency || "HKD";
+        const cardFeePct = paymentCurrency === "USD" ? 0.06 : 0.04;
+
+        return {
+          currency: "USD",
+          items,
+          government,
+          service,
+          total,
+          cardFeePct,
+          cardFeeSurcharge: total * cardFeePct,
+          grandTotal: total + (total * cardFeePct),
+        };
+      },
     },
     {
       id: "acct",
@@ -265,80 +414,65 @@ export const HK_FULL_CONFIG: McapConfig = {
         { type: "text", name: "softNote", label: "newHk.steps.acct.fields.softNote.label", colSpan: 2 },
       ],
     },
-   
+
     {
       id: "payment",
       title: "newHk.steps.payment.title",
       description: "newHk.steps.payment.description",
       widget: "PaymentWidget",
       supportedCurrencies: ["HKD", "USD"],
-      computeFees: (data) => {
-        const selectedIds = new Set(Array.isArray(data.optionalFeeIds) ? data.optionalFeeIds : []);
-        const parties = Array.isArray(data.parties) ? data.parties : [];
-        const extraKyc = computeKycExtras(parties);
-
-        const items = [
-          ...HK_FEES.government.filter((f) => f.mandatory).map((f) => ({
-            id: f.id,
-            label: f.label,
-            amount: f.amount,
-            kind: "government" as const,
-          })),
-          ...HK_FEES.service.filter((f) => f.mandatory || selectedIds.has(f.id)).map((f) => ({
-            id: f.id,
-            label: f.label,
-            amount: f.amount,
-            kind: "service" as const,
-          })),
-        ];
-
-        if (extraKyc > 0) {
-          items.push({
-            id: "extra_kyc",
-            label: "newHk.fees.items.extra_kyc.label",
-            amount: extraKyc,
-            kind: "service" as const,
-          });
-        }
-
-        const government = items
-          .filter((i) => i.kind === "government")
-          .reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        const service = items
-          .filter((i) => i.kind !== "government")
-          .reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        const total = government + service;
-
-        return {
-          currency: "USD",
-          items,
-          government,
-          service,
-          total,
-        };
-      },
+      fields: [
+        {
+          type: "radio-group",
+          name: "payMethod",
+          label: "newHk.steps.payment.fields.payMethod.label",
+          required: true,
+          options: [
+            { label: "newHk.steps.payment.payMethod.card", value: "card" },
+            { label: "newHk.steps.payment.payMethod.bank", value: "bank" },
+            { label: "newHk.steps.payment.payMethod.other", value: "other" },
+          ],
+          colSpan: 2,
+        },
+      ],
     },
-     {
+    {
       id: "review",
       title: "newHk.steps.review.title",
       fields: [
+        {
+          type: "info",
+          content: "Review all information before submission. Ensure all required fields are completed correctly.",
+          colSpan: 2,
+        },
+        {
+          type: "checkbox",
+          name: "legalTermsAcknowledgment",
+          label: "newHk.review.declarations.terms",
+          required: true,
+          colSpan: 2,
+        },
         {
           type: "checkbox",
           name: "truthfulnessDeclaration",
           label: "newHk.review.declarations.truth",
           required: true,
+          colSpan: 2,
         },
         {
           type: "checkbox",
           name: "compliancePreconditionAcknowledgment",
           label: "newHk.review.declarations.compliance",
           required: true,
+          colSpan: 2,
         },
         {
           type: "text",
           name: "eSign",
           label: "newHk.review.esign.label",
+          placeholder: "Your Full Name (Electronic Signature)",
           required: true,
+          colSpan: 2,
         },
       ],
     },

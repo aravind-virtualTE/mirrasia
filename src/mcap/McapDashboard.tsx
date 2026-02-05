@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import api from "@/services/fetch";
 import { toast } from "@/hooks/use-toast";
 import { t } from "i18next";
+import jwtDecode from "jwt-decode";
 
 export default function McapDashboard() {
   const [selectedConfig, setSelectedConfig] = useState<McapConfig | null>(null);
@@ -23,6 +24,29 @@ export default function McapDashboard() {
   const [initialCompanyId, setInitialCompanyId] = useState<string | null>(null);
   const [initialStepIdx, setInitialStepIdx] = useState<number | undefined>(undefined);
   const [isLoadingCompany, setIsLoadingCompany] = useState(false);
+  const [accessDenied, setAccessDenied] = useState<string | null>(null);
+
+  const token = useMemo(() => (localStorage.getItem("token") as string) ?? "", []);
+  const decoded = useMemo(() => {
+    try {
+      return jwtDecode<{ userId?: string; role?: string; email?: string }>(token);
+    } catch {
+      return {};
+    }
+  }, [token]);
+
+  const storedUser = useMemo(() => {
+    try {
+      const raw = localStorage.getItem("user");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }, []);
+
+  const currentUserId = storedUser?.id || storedUser?._id || decoded?.userId || "";
+  const currentEmail = (storedUser?.email || decoded?.email || "").toLowerCase();
+  const currentRole = storedUser?.role || decoded?.role || "";
 
   const requestedConfig = useMemo(() => {
     const id = searchParams.get("country");
@@ -31,6 +55,10 @@ export default function McapDashboard() {
   }, [searchParams]);
 
   const requestedCompanyId = useMemo(() => searchParams.get("companyId"), [searchParams]);
+
+  useEffect(() => {
+    if (!requestedCompanyId) setAccessDenied(null);
+  }, [requestedCompanyId]);
 
   useEffect(() => {
     if (!requestedCompanyId) return;
@@ -43,10 +71,46 @@ export default function McapDashboard() {
         if (!payload?._id) throw new Error("Company not found");
         const cfg = MCAP_CONFIG_MAP[payload.countryCode] || null;
         if (!cfg) throw new Error("Unsupported country configuration");
+        const ownerId = payload.userId?._id || payload.userId;
+        const isApplicant = currentUserId && ownerId && String(ownerId) === String(currentUserId);
+        const isDcp =
+          currentEmail &&
+          (payload.parties || []).some(
+            (p: any) =>
+              Array.isArray(p.roles) &&
+              p.roles.includes("dcp") &&
+              p.email &&
+              String(p.email).toLowerCase() === currentEmail
+          );
+        const isAdmin = ["admin", "master"].includes(String(currentRole || "").toLowerCase());
+        if (!isApplicant && !isDcp && !isAdmin) {
+          setAccessDenied("You do not have access to this incorporation form.");
+          setSelectedConfig(null);
+          setInitialCompanyId(null);
+          setInitialData(null);
+          setInitialParties([]);
+          setInitialStepIdx(undefined);
+          return;
+        }
         if (!active) return;
+        setAccessDenied(null);
         setSelectedConfig(cfg);
         setInitialCompanyId(payload._id);
-        setInitialData(payload.data || {});
+        const mergedData = { ...(payload.data || {}) };
+        const paymentMeta = {
+          paymentStatus: payload.paymentStatus,
+          payMethod: payload.payMethod,
+          paymentIntentId: payload.paymentIntentId,
+          stripeLastStatus: payload.stripeLastStatus,
+          stripeReceiptUrl: payload.stripeReceiptUrl,
+          stripeAmountCents: payload.stripeAmountCents,
+          stripeCurrency: payload.stripeCurrency,
+          uploadReceiptUrl: payload.uploadReceiptUrl,
+        };
+        Object.entries(paymentMeta).forEach(([key, value]) => {
+          if (value !== undefined) mergedData[key] = value;
+        });
+        setInitialData(mergedData);
         setInitialParties(payload.parties || []);
         setInitialStepIdx(typeof payload.stepIdx === "number" ? payload.stepIdx : 0);
       } catch (err: any) {
@@ -65,7 +129,9 @@ export default function McapDashboard() {
       setSelectedConfig(requestedConfig);
     }
   }, [requestedConfig]);
-
+  console.log("selectedConfig",selectedConfig)
+  console.log("initialData",initialData)
+  console.log("initialParties",initialParties)
   if (selectedConfig) {
     return (
       <div className="p-6">
@@ -91,6 +157,24 @@ export default function McapDashboard() {
           initialStepIdx={initialStepIdx}
           isLoading={isLoadingCompany}
         />
+      </div>
+    );
+  }
+
+  if (accessDenied) {
+    return (
+      <div className="max-width mx-auto p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Access restricted</CardTitle>
+            <CardDescription>{accessDenied}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => navigate(basePath)} variant="outline">
+              Back to Dashboard
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }

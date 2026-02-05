@@ -33,32 +33,13 @@ export const PPIF_FULL_CONFIG: McapConfig = {
       title: "ppif.section2",
       description: "ppif.profile.description",
       fields: [
-        { type: "text", name: "foundationNameEn", label: "ppif.profile.fields.foundationNameEn.label", required: true, colSpan: 2 },
-        { type: "text", name: "altName1", label: "ppif.profile.fields.altName1.label", required: true, colSpan: 2 },
-        { type: "text", name: "altName2", label: "ppif.profile.fields.altName2.label", required: true, colSpan: 2 },
-        { type: "text", name: "foundationNameEs", label: "ppif.profile.fields.foundationNameEs.label", colSpan: 2 },
-        { type: "textarea", name: "purposeSummary", label: "ppif.profile.purpose.label", required: true, colSpan: 2, rows: 3 },
-        {
-          type: "select",
-          name: "duration",
-          label: "ppif.profile.duration.label",
-          options: [
-            { label: "ppif.profile.duration.options.perpetual", value: "perpetual" },
-            { label: "ppif.profile.duration.options.fixed", value: "fixed" },
-          ],
-        },
-        {
-          type: "select",
-          name: "baseCurrency",
-          label: "ppif.profile.baseCurrency.label",
-          options: [
-            { label: "USD", value: "USD" },
-            { label: "HKD", value: "HKD" },
-            { label: "EUR", value: "EUR" },
-            { label: "Other", value: "Other" },
-          ],
-        },
-        { type: "text", name: "initialEndowment", label: "ppif.profile.initialEndowment.label", colSpan: 2 },
+        { type: "info", label: "ppif.profile.namingGuidelines.title", content: "ppif.profile.namingGuidelines.body", colSpan: 2 },
+        { type: "text", name: "foundationNameEn", label: "ppif.profile.nameChoices.first.label", required: true, colSpan: 2 },
+        { type: "text", name: "altName1", label: "ppif.profile.nameChoices.second.label", required: true, colSpan: 2 },
+        { type: "text", name: "altName2", label: "ppif.profile.nameChoices.third.label", required: true, colSpan: 2 },
+        { type: "text", name: "foundationNameEs", label: "ppif.profile.nameChoices.spanish.label", colSpan: 2 },
+        { type: "info", label: "ppif.profile.endowmentInfo.title", content: "ppif.profile.endowmentInfo.body", colSpan: 2 },
+        { type: "text", name: "initialEndowment", label: "ppif.profile.endowmentFields.amount.label", colSpan: 2 },
         {
           type: "select",
           name: "sourceOfFunds",
@@ -82,7 +63,7 @@ export const PPIF_FULL_CONFIG: McapConfig = {
           condition: (f) => f.sourceOfFunds === "other",
           colSpan: 2,
         },
-        { type: "text", name: "endowmentPayer", label: "ppif.profile.endowmentPayer.label", required: true, colSpan: 2 },
+        { type: "text", name: "endowmentPayer", label: "ppif.profile.endowmentFields.payer.label", required: true, colSpan: 2 },
         {
           type: "radio-group",
           name: "registeredAddressMode",
@@ -95,23 +76,27 @@ export const PPIF_FULL_CONFIG: McapConfig = {
           ],
         },
         {
-          type: "text",
+          type: "textarea",
           name: "ownRegisteredAddress",
-          label: "ppif.profile.ownRegisteredAddress.label",
+          label: "ppif.profile.registeredAddress.own.label",
           condition: (f) => f.registeredAddressMode === "own",
           colSpan: 2,
+          rows: 3,
         },
+        { type: "textarea", name: "purposeSummary", label: "ppif.profile.purpose.label", required: true, colSpan: 2, rows: 4 },
         {
           type: "checkbox-group",
           name: "industries",
           label: "ppif.profile.businessActivities.industries.label",
           colSpan: 2,
           options: [
-            { label: "ppif.profile.businessActivities.industries.options.trade", value: "trade" },
+            { label: "ppif.profile.businessActivities.industries.options.trading", value: "trading" },
+            { label: "ppif.profile.businessActivities.industries.options.wholesale", value: "wholesale" },
             { label: "ppif.profile.businessActivities.industries.options.consulting", value: "consulting" },
             { label: "ppif.profile.businessActivities.industries.options.manufacturing", value: "manufacturing" },
+            { label: "ppif.profile.businessActivities.industries.options.finance", value: "finance" },
+            { label: "ppif.profile.businessActivities.industries.options.online", value: "online" },
             { label: "ppif.profile.businessActivities.industries.options.it", value: "it" },
-            { label: "ppif.profile.businessActivities.industries.options.investment", value: "investment" },
             { label: "ppif.profile.businessActivities.industries.options.crypto", value: "crypto" },
             { label: "ppif.profile.businessActivities.industries.options.other", value: "other" },
           ],
@@ -121,83 +106,397 @@ export const PPIF_FULL_CONFIG: McapConfig = {
       ],
     },
     {
-      id: "parties",
+      id: "founders",
       title: "ppif.section3",
-      description: "ppif.parties.description",
-      widget: "PartiesManager",
-      minParties: 1,
-      requireDcp: false,
-      requirePartyInvite: true,
+      widget: "RepeatableSection",
+      widgetConfig: {
+        preFields: [
+          { type: "info", label: "ppif.founders.info.title", content: "ppif.founders.info.body", colSpan: 2 },
+        ],
+        sections: [
+          {
+            kind: "list",
+            fieldName: "founders",
+            title: "ppif.section3",
+            minItems: 1,
+            addLabel: "ppif.founders.buttons.addFounder",
+            itemLabel: "ppif.founders.title",
+            itemFields: [
+              {
+                type: "radio-group",
+                name: "type",
+                label: "ppif.founders.type.label",
+                required: true,
+                options: [
+                  { label: "ppif.founders.type.options.individual", value: "individual" },
+                  { label: "ppif.founders.type.options.corporate", value: "corporate" },
+                ],
+              },
+              { type: "text", name: "name", label: "ppif.founders.name.label", required: true },
+              { type: "text", name: "id", label: "ppif.founders.id.label", required: true },
+              { type: "email", name: "email", label: "ppif.founders.email.label" },
+              { type: "text", name: "tel", label: "ppif.founders.phone.label" },
+            ],
+          },
+        ],
+      },
     },
     {
-      id: "compliance",
-      title: "ppif.section11",
-      description: "newHk.steps.compliance.description",
+      id: "council",
+      title: "ppif.section4",
+      widget: "RepeatableSection",
+      widgetConfig: {
+        preFields: [
+          {
+            type: "radio-group",
+            name: "councilMode",
+            label: "ppif.council.composition.title",
+            required: true,
+            options: [
+              { label: "ppif.council.composition.modes.ind3", value: "ind3" },
+              { label: "ppif.council.composition.modes.corp1", value: "corp1" },
+            ],
+            colSpan: 2,
+          },
+          { type: "info", label: "ppif.council.individuals.title", content: "ppif.council.individuals.note", colSpan: 2, condition: (f) => f.councilMode !== "corp1" },
+          { type: "info", label: "ppif.council.corporate.title", content: "ppif.council.corporate.note", colSpan: 2, condition: (f) => f.councilMode === "corp1" },
+          {
+            type: "checkbox",
+            name: "useNomineeDirector",
+            label: "ppif.council.individuals.nominee.checkboxLabel",
+            colSpan: 2,
+            condition: (f) => f.councilMode === "ind3",
+          },
+          {
+            type: "select",
+            name: "nomineePersons",
+            label: "ppif.council.individuals.nominee.countLabel",
+            condition: (f) => f.councilMode === "ind3" && f.useNomineeDirector,
+            options: [
+              { label: "ppif.council.individuals.nominee.options.1", value: "1" },
+              { label: "ppif.council.individuals.nominee.options.2", value: "2" },
+              { label: "ppif.council.individuals.nominee.options.3", value: "3" },
+            ],
+          },
+        ],
+        modeField: "councilMode",
+        modes: [
+          {
+            value: "ind3",
+            label: "ppif.council.composition.modes.ind3",
+            sections: [
+              {
+                kind: "list",
+                fieldName: "councilIndividuals",
+                title: "ppif.council.individuals.title",
+                minItems: 3,
+                addLabel: "ppif.council.buttons.add",
+                itemLabel: "ppif.council.individuals.memberCardTitle",
+                allowRemove: false,
+                itemFields: [
+                  { type: "text", name: "name", label: "ppif.council.individuals.fields.name.label", required: true },
+                  { type: "text", name: "id", label: "ppif.council.individuals.fields.id.label", required: true },
+                  { type: "email", name: "email", label: "ppif.council.individuals.fields.email.label" },
+                  { type: "text", name: "tel", label: "ppif.council.individuals.fields.phone.label" },
+                  {
+                    type: "select",
+                    name: "isDcp",
+                    label: "newHk.company.fields.isDcp.label",
+                    options: [
+                      { label: "newHk.parties.fields.isDirector.options.yes", value: "true" },
+                      { label: "newHk.parties.fields.isDirector.options.no", value: "false" },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            value: "corp1",
+            label: "ppif.council.composition.modes.corp1",
+            sections: [
+              {
+                kind: "object",
+                fieldName: "councilCorporate",
+                title: "ppif.council.corporate.title",
+                itemFields: [
+                  { type: "text", name: "corpMain", label: "ppif.council.corporate.fields.corpMain.label", required: true },
+                  { type: "text", name: "addrRep", label: "ppif.council.corporate.fields.addrRep.label", required: true },
+                  { type: "text", name: "signatory", label: "ppif.council.corporate.fields.signatory.label" },
+                  { type: "email", name: "email", label: "ppif.council.corporate.fields.email.label" },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      id: "protectors",
+      title: "ppif.section5",
+      widget: "RepeatableSection",
+      widgetConfig: {
+        preFields: [
+          {
+            type: "radio-group",
+            name: "protectorsEnabled",
+            label: "ppif.protectors.controls.label",
+            required: true,
+            options: [
+              { label: "ppif.protectors.controls.appoint", value: "yes" },
+              { label: "ppif.protectors.controls.doNotAppoint", value: "no" },
+            ],
+            colSpan: 2,
+          },
+        ],
+        sections: [
+          {
+            kind: "list",
+            fieldName: "protectors",
+            title: "ppif.protectors.itemTitle",
+            minItems: 1,
+            addLabel: "ppif.protectors.controls.add",
+            itemLabel: "ppif.shared.repeater.title",
+            condition: (f) => f.protectorsEnabled === "yes",
+            itemFields: [
+              { type: "text", name: "name", label: "ppif.shared.repeater.fields.name.label", required: true },
+              { type: "text", name: "contact", label: "ppif.shared.repeater.fields.contact.label" },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      id: "beneficiaries",
+      title: "ppif.section6",
+      widget: "RepeatableSection",
+      widgetConfig: {
+        preFields: [
+          {
+            type: "radio-group",
+            name: "beneficiariesMode",
+            label: "ppif.beneficiaries.modes.label",
+            required: true,
+            options: [
+              { label: "ppif.beneficiaries.modes.fixed", value: "fixed" },
+              { label: "ppif.beneficiaries.modes.class", value: "class" },
+              { label: "ppif.beneficiaries.modes.mixed", value: "mixed" },
+            ],
+            colSpan: 2,
+          },
+          {
+            type: "textarea",
+            name: "letterOfWishes",
+            label: "ppif.beneficiaries.letterOfWishes.label",
+            colSpan: 2,
+            rows: 4,
+          },
+        ],
+        sections: [
+          {
+            kind: "list",
+            fieldName: "beneficiaries",
+            title: "ppif.beneficiaries.itemTitle",
+            minItems: 1,
+            addLabel: "ppif.beneficiaries.controls.add",
+            itemLabel: "ppif.shared.repeater.title",
+            condition: (f) => f.beneficiariesMode !== "class",
+            itemFields: [
+              { type: "text", name: "name", label: "ppif.shared.repeater.fields.name.label", required: true },
+              { type: "text", name: "contact", label: "ppif.shared.repeater.fields.contact.label" },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      id: "bylaws",
+      title: "ppif.section7",
       fields: [
         {
           type: "radio-group",
-          name: "legalAndEthicalConcern",
-          label: "newHk.steps.compliance.questions.legalAndEthicalConcern",
+          name: "bylawsMode",
+          label: "ppif.bylaws.modes.label",
           required: true,
           colSpan: 2,
           options: [
-            { label: "newHk.steps.compliance.options.yes", value: "yes" },
-            { label: "newHk.steps.compliance.options.no", value: "no" },
+            { label: "ppif.bylaws.modes.standard", value: "standard" },
+            { label: "ppif.bylaws.modes.custom", value: "custom" },
           ],
         },
         {
+          type: "textarea",
+          name: "bylawsPowers",
+          label: "ppif.bylaws.fields.powers.label",
+          condition: (f) => f.bylawsMode === "custom",
+          colSpan: 2,
+          rows: 4,
+        },
+        {
+          type: "textarea",
+          name: "bylawsAdmin",
+          label: "ppif.bylaws.fields.admin.label",
+          condition: (f) => f.bylawsMode === "custom",
+          colSpan: 2,
+          rows: 4,
+        },
+      ],
+    },
+    {
+      id: "es",
+      title: "ppif.section8",
+      fields: [
+        { type: "info", label: "ppif.section8", content: "ppif.es.description", colSpan: 2 },
+      ],
+    },
+    {
+      id: "banking",
+      title: "ppif.section9",
+      fields: [
+        {
           type: "radio-group",
-          name: "q_country",
-          label: "newHk.steps.compliance.questions.q_country",
+          name: "bankingNeed",
+          label: "ppif.banking.need.label",
           required: true,
           colSpan: 2,
           options: [
-            { label: "newHk.steps.compliance.options.yes", value: "yes" },
-            { label: "newHk.steps.compliance.options.no", value: "no" },
+            { label: "ppif.banking.need.options.need", value: "need" },
+            { label: "ppif.banking.need.options.none", value: "none" },
+            { label: "ppif.banking.need.options.later", value: "later" },
           ],
         },
         {
-          type: "radio-group",
-          name: "sanctionsExposureDeclaration",
-          label: "newHk.steps.compliance.questions.sanctionsExposureDeclaration",
-          required: true,
-          colSpan: 2,
+          type: "select",
+          name: "bankingBizType",
+          label: "ppif.banking.bizType.label",
           options: [
-            { label: "newHk.steps.compliance.options.yes", value: "yes" },
-            { label: "newHk.steps.compliance.options.no", value: "no" },
+            { label: "ppif.banking.bizType.options.consulting", value: "consulting" },
+            { label: "ppif.banking.bizType.options.ecommerce", value: "ecommerce" },
+            { label: "ppif.banking.bizType.options.investment", value: "investment" },
+            { label: "ppif.banking.bizType.options.crypto", value: "crypto" },
+            { label: "ppif.banking.bizType.options.manufacturing", value: "manufacturing" },
           ],
         },
-        {
-          type: "radio-group",
-          name: "crimeaSevastapolPresence",
-          label: "newHk.steps.compliance.questions.crimeaSevastapolPresence",
-          required: true,
-          colSpan: 2,
-          options: [
-            { label: "newHk.steps.compliance.options.yes", value: "yes" },
-            { label: "newHk.steps.compliance.options.no", value: "no" },
-          ],
-        },
-        {
-          type: "radio-group",
-          name: "russianEnergyPresence",
-          label: "newHk.steps.compliance.questions.russianEnergyPresence",
-          required: true,
-          colSpan: 2,
-          options: [
-            { label: "newHk.steps.compliance.options.yes", value: "yes" },
-            { label: "newHk.steps.compliance.options.no", value: "no" },
-          ],
-        },
+      ],
+    },
+    {
+      id: "pep",
+      title: "ppif.section10",
+      fields: [
         {
           type: "radio-group",
           name: "pepAny",
           label: "ppif.pep.label",
+          required: true,
           colSpan: 2,
           options: [
             { label: "ppif.pep.options.yes", value: "yes" },
             { label: "ppif.pep.options.no", value: "no" },
           ],
+        },
+      ],
+    },
+    {
+      id: "compliance",
+      title: "ppif.section11",
+      fields: [
+        { type: "info", label: "ppif.section11", content: "ppif.aml.info", colSpan: 2 },
+        {
+          type: "radio-group",
+          name: "legalAndEthicalConcern",
+          label: "ppif.aml.q1.label",
+          required: true,
+          colSpan: 2,
+          options: [
+            { label: "ppif.pep.options.yes", value: "yes" },
+            { label: "ppif.pep.options.no", value: "no" },
+          ],
+        },
+        {
+          type: "radio-group",
+          name: "q_country",
+          label: "ppif.aml.q2.label",
+          required: true,
+          colSpan: 2,
+          options: [
+            { label: "ppif.pep.options.yes", value: "yes" },
+            { label: "ppif.pep.options.no", value: "no" },
+          ],
+        },
+        {
+          type: "radio-group",
+          name: "sanctionsExposureDeclaration",
+          label: "ppif.aml.q3.label",
+          required: true,
+          colSpan: 2,
+          options: [
+            { label: "ppif.pep.options.yes", value: "yes" },
+            { label: "ppif.pep.options.no", value: "no" },
+          ],
+        },
+        {
+          type: "radio-group",
+          name: "crimeaSevastapolPresence",
+          label: "ppif.aml.q4.label",
+          required: true,
+          colSpan: 2,
+          options: [
+            { label: "ppif.pep.options.yes", value: "yes" },
+            { label: "ppif.pep.options.no", value: "no" },
+          ],
+        },
+        {
+          type: "radio-group",
+          name: "russianEnergyPresence",
+          label: "ppif.aml.q5.label",
+          required: true,
+          colSpan: 2,
+          options: [
+            { label: "ppif.pep.options.yes", value: "yes" },
+            { label: "ppif.pep.options.no", value: "no" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "deliverables",
+      title: "ppif.section12",
+      fields: [
+        { type: "info", label: "ppif.deliverables.right.title", content: "ppif.deliverables.right.note", colSpan: 2 },
+        { type: "text", name: "shippingRecipientCompany", label: "ppif.deliverables.right.fields.recipientCompany.label", required: true, colSpan: 2 },
+        { type: "text", name: "shippingContactPerson", label: "ppif.deliverables.right.fields.contactPerson.label", required: true, colSpan: 2 },
+        { type: "text", name: "shippingPhone", label: "ppif.deliverables.right.fields.phone.label", required: true, colSpan: 2 },
+        { type: "text", name: "shippingPostalCode", label: "ppif.deliverables.right.fields.postalCode.label", required: true, colSpan: 2 },
+        { type: "textarea", name: "shippingAddress", label: "ppif.deliverables.right.fields.address.label", required: true, colSpan: 2, rows: 4 },
+      ],
+    },
+    {
+      id: "accounting-records",
+      title: "ppif.section13",
+      fields: [
+        { type: "info", label: "ppif.section13", content: "ppif.accounting.info", colSpan: 2 },
+        {
+          type: "checkbox",
+          name: "recordStorageUseMirr",
+          label: "ppif.accounting.fields.useMirr.label",
+          colSpan: 2,
+        },
+        {
+          type: "textarea",
+          name: "recordStorageAddress",
+          label: "ppif.accounting.fields.address.label",
+          required: true,
+          condition: (f) => !f.recordStorageUseMirr,
+          colSpan: 2,
+          rows: 4,
+        },
+        {
+          type: "text",
+          name: "recordStorageResponsiblePerson",
+          label: "ppif.accounting.fields.responsible.label",
+          required: true,
+          condition: (f) => !f.recordStorageUseMirr,
+          colSpan: 2,
         },
       ],
     },
@@ -209,6 +508,7 @@ export const PPIF_FULL_CONFIG: McapConfig = {
           type: "select",
           name: "pif_ndSetup",
           label: "ppif.invoice.setup.ndSetup.label",
+          defaultValue: "0",
           options: [
             { label: "ppif.invoice.setup.ndSetup.options.0", value: "0" },
             { label: "ppif.invoice.setup.ndSetup.options.1", value: "1" },
@@ -216,23 +516,30 @@ export const PPIF_FULL_CONFIG: McapConfig = {
             { label: "ppif.invoice.setup.ndSetup.options.3", value: "3" },
           ],
         },
+        {
+          type: "textarea",
+          name: "pif_nd3ReasonSetup",
+          label: "ppif.invoice.setup.ndSetup.reason.label",
+          condition: (f) => String(f.pif_ndSetup || "0") === "3",
+          colSpan: 2,
+          rows: 3,
+        },
         { type: "checkbox", name: "pif_nsSetup", label: "ppif.invoice.setup.nsSetup.label" },
         { type: "checkbox", name: "pif_optEmi", label: "ppif.invoice.setup.optional.emi" },
         { type: "checkbox", name: "pif_optBank", label: "ppif.invoice.setup.optional.bank" },
         { type: "checkbox", name: "pif_optCbi", label: "ppif.invoice.setup.optional.cbi" },
-        { type: "checkbox", name: "pif_recordStorage", label: "ppif.invoice.setup.storage.label" },
       ],
     },
     {
       id: "declarations",
       title: "ppif.section16",
       fields: [
-        { type: "checkbox", name: "taxOk", label: "ppif.declarations.taxOk" },
-        { type: "checkbox", name: "truthOk", label: "ppif.declarations.truthOk" },
-        { type: "checkbox", name: "privacyOk", label: "ppif.declarations.privacyOk" },
-        { type: "text", name: "signName", label: "ppif.declarations.signName", colSpan: 2 },
-        { type: "text", name: "signTitle", label: "ppif.declarations.signTitle", colSpan: 2 },
-        { type: "text", name: "signDate", label: "ppif.declarations.signDate", colSpan: 2 },
+        { type: "checkbox", name: "taxOk", label: "ppif.declarations.checks.taxOk", required: true },
+        { type: "checkbox", name: "truthOk", label: "ppif.declarations.checks.truthOk", required: true },
+        { type: "checkbox", name: "privacyOk", label: "ppif.declarations.checks.privacyOk", required: true },
+        { type: "text", name: "signName", label: "ppif.declarations.fields.signName.label", required: true, colSpan: 2 },
+        { type: "text", name: "signDate", label: "ppif.declarations.fields.signDate.label", required: true, colSpan: 2 },
+        { type: "text", name: "signTitle", label: "ppif.declarations.fields.signTitle.label", colSpan: 2 },
       ],
     },
     {
@@ -246,7 +553,7 @@ export const PPIF_FULL_CONFIG: McapConfig = {
         const optEmi = Boolean(data.pif_optEmi);
         const optBank = Boolean(data.pif_optBank);
         const optCbi = Boolean(data.pif_optCbi);
-        const recordStorage = Boolean(data.pif_recordStorage);
+        const recordStorage = Boolean(data.recordStorageUseMirr);
 
         const items = [
           { id: "base", label: "ppif.invoice.setup.entity.label", amount: PIF_PRICES.base, kind: "service" as const },
@@ -259,12 +566,19 @@ export const PPIF_FULL_CONFIG: McapConfig = {
         ];
 
         const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const cardFeePct = 0.06; // Standard Panama card fee
+        const cardFeeSurcharge = data.payMethod === "card" ? total * cardFeePct : 0;
+        const grandTotal = total + cardFeeSurcharge;
+
         return {
           currency: "USD",
           items,
           total,
           service: total,
           government: 0,
+          cardFeePct,
+          cardFeeSurcharge,
+          grandTotal,
         };
       },
     },

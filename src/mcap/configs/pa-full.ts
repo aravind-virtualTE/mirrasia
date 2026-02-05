@@ -21,12 +21,12 @@ export const PA_FULL_CONFIG: McapConfig = {
       id: "applicant",
       title: "ppif.section1",
       fields: [
-        { type: "text", name: "name", label: "newHk.steps.applicant.fields.applicantName.label", required: true, colSpan: 2 },
-        { type: "email", name: "email", label: "newHk.steps.applicant.fields.email.label", required: true, colSpan: 2 },
-        { type: "text", name: "phoneNum", label: "newHk.steps.applicant.fields.phone.label", colSpan: 2 },
-        { type: "text", name: "companyName_1", label: "Company Name (1st Choice)", required: true, colSpan: 2 },
-        { type: "text", name: "companyName_2", label: "Company Name (2nd Choice)", colSpan: 2 },
-        { type: "text", name: "companyName_3", label: "Company Name (3rd Choice)", colSpan: 2 },
+        { type: "text", name: "applicantName", label: "newHk.steps.applicant.fields.applicantName.label", required: true, colSpan: 2 },
+        { type: "email", name: "applicantEmail", label: "newHk.steps.applicant.fields.email.label", required: true, colSpan: 2 },
+        { type: "text", name: "applicantPhone", label: "newHk.steps.applicant.fields.phone.label", colSpan: 2 },
+        { type: "text", name: "companyName1", label: "Company Name (1st Choice)", required: true, colSpan: 2 },
+        { type: "text", name: "companyName2", label: "Company Name (2nd Choice)", colSpan: 2 },
+        { type: "text", name: "companyName3", label: "Company Name (3rd Choice)", colSpan: 2 },
         {
           type: "select",
           name: "sns",
@@ -438,12 +438,19 @@ export const PA_FULL_CONFIG: McapConfig = {
         ];
 
         const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const cardFeePct = 0.06; // Standard US/PA card fee
+        const cardFeeSurcharge = data.payMethod === "card" ? total * cardFeePct : 0;
+        const grandTotal = total + cardFeeSurcharge;
+
         return {
           currency: "USD",
           items,
           total,
           service: total,
           government: 0,
+          cardFeePct,
+          cardFeeSurcharge,
+          grandTotal,
         };
       },
     },

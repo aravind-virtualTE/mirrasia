@@ -911,6 +911,31 @@
     "bookCycle4": "Annually (every 12 months) *the lowest cost"
   },
   "invoice": {
+    "title": "Order Summary",
+    "subtotal": "Subtotal",
+    "cardFee": "Card Processing Fee",
+    "grandTotal": "Total Due",
+    "proceed": "Proceed to Payment",
+    "disclaimer": "By proceeding, you agree to our Terms of Service and Refund Policy.",
+    "sections": {
+      "government": {
+        "title": "Government Fees",
+        "badge": "Mandatory",
+        "description": "Standard government filing and registration fees."
+      },
+      "service": {
+        "title": "Our Service Fees",
+        "badge": "Service",
+        "description": "Professional services and support for your incorporation."
+      }
+    },
+    "table": {
+      "description": "Service Description",
+      "qty": "Qty",
+      "original": "Original",
+      "amount": "Amount",
+      "total": "Total"
+    },
     "desc": "Description",
     "originalPrice": "Original Price",
     "discPrice": "Discounted Price",
@@ -2062,7 +2087,7 @@
         },
         "questions": {
           "legalAndEthicalConcern": "Are there any legal or ethical concerns related to the business (e.g., money laundering, gambling, tax evasion, asset concealment, fraud)?",
-          "q_country": "Does the Hong Kong company have any current or planned business activity in the following countries/regions: Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus, or Zimbabwe?",
+          "q_country": "Does the Current company have any current or planned business activity in the following countries/regions: Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus, or Zimbabwe?",
           "sanctionsExposureDeclaration": "Sanctions exposure: Do the company or any connected parties have a presence in, dealings with, or ownership ties to sanctioned persons or entities under UN, EU, UK HMT, HKMA, OFAC (US) or local sanctions law?",
           "crimeaSevastapolPresence": "Any current or planned business in Crimea/Sevastopol Regions?",
           "russianEnergyPresence": "Any current or planned exposure to Russia in the energy/oil/gas sector, the military, or defense?"

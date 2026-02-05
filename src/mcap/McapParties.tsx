@@ -1,4 +1,5 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import api from "@/services/fetch";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Trash2, Save, Plus, Pencil, X } from "lucide-react";
+import McapPartyKyc from "./McapPartyKyc";
 
 type PartyDraft = {
   name: string;
@@ -26,6 +28,9 @@ type Party = {
 };
 
 export default function McapParties() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const partyId = searchParams.get("partyId");
+  const mode = searchParams.get("mode") === "detail" ? "detail" : "edit";
   const [parties, setParties] = useState<Party[]>([]);
   const [loading, setLoading] = useState(true);
   const [newParty, setNewParty] = useState<PartyDraft>({ ...emptyParty });
@@ -47,6 +52,16 @@ export default function McapParties() {
   useEffect(() => {
     fetchParties();
   }, []);
+
+  if (partyId) {
+    return (
+      <McapPartyKyc
+        partyId={partyId}
+        mode={mode}
+        onModeChange={(next) => setSearchParams({ partyId, mode: next })}
+      />
+    );
+  }
 
   const handleCreate = async () => {
     if (!newParty.name && !newParty.email) {

@@ -33,6 +33,7 @@ import MemoApp from "@/pages/Company/Details/MemosHK";
 import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { Banknote, Building2, Mail, Phone, ReceiptText, Send, ShieldCheck } from "lucide-react";
+import McapPartyKycModal from "@/mcap/McapPartyKycModal";
 
 type McapParty = {
   _id?: string;
@@ -45,13 +46,25 @@ type McapParty = {
   shareType?: string;
   invited?: boolean;
   status?: string;
+  inviteStatus?: string;
+  inviteExpiresAt?: string;
+  inviteAcceptedAt?: string;
   kycStatus?: string;
+  kycExpiresAt?: string;
+  kycOverrideReason?: string;
 };
 
 type McapCompany = {
   _id: string;
   countryCode: string;
   countryName?: string;
+
+  // Elevated Core Fields
+  companyName?: string;
+  applicantName?: string;
+  applicantEmail?: string;
+  applicantPhone?: string;
+
   status?: string;
   incorporationStatus?: string;
   incorporationDate?: string;
@@ -61,12 +74,19 @@ type McapCompany = {
   kycStatus?: string;
   data?: Record<string, any>;
   parties?: McapParty[];
+  roleStatus?: { missing?: string[]; summary?: Record<string, string> };
   paymentIntentId?: string;
   stripeLastStatus?: string;
   stripeReceiptUrl?: string;
   stripeAmountCents?: number;
   stripeCurrency?: string;
   uploadReceiptUrl?: string;
+
+  // Renewal Tracking
+  renewalDate?: string;
+  lastRenewalDate?: string;
+  renewalStatus?: string;
+
   expiresAt?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -82,40 +102,32 @@ const fmtDate = (d?: string | Date) => {
   return dt.toISOString().slice(0, 10);
 };
 
-const getCompanyName = (data: Record<string, any>) => {
-  return (
-    data?.companyName_1 ||
-    data?.name1 ||
-    data?.companyName ||
-    data?.companyName1 ||
-    data?.desiredCompanyName ||
-    data?.companyNamePrimary ||
-    ""
-  );
+const getCompanyName = (company: McapCompany) => {
+  return company.companyName || company.data?.companyName1 || company.data?.companyName_1 || company.data?.name1 || company.data?.companyName || company.data?.desiredCompanyName || company.data?.companyNamePrimary || "";
 };
 
 const getAltCompanyNames = (data: Record<string, any>) => {
   const raw = [
+    data?.companyName2,
+    data?.companyName3,
     data?.companyName_2,
     data?.companyName_3,
     data?.name2,
     data?.name3,
-    data?.companyName2,
-    data?.companyName3,
   ];
   return raw.filter((v) => !!v);
 };
 
-const getApplicant = (data: Record<string, any>) => {
-  return data?.applicantName || data?.name || data?.contactName || data?.primaryContactName || "";
+const getApplicant = (company: McapCompany) => {
+  return company.applicantName || company.data?.applicantName || company.data?.name || company.data?.contactName || company.data?.primaryContactName || "";
 };
 
-const getEmail = (data: Record<string, any>) => {
-  return data?.email || data?.applicantEmail || data?.applicantEmailAddress || data?.contactEmail || "";
+const getEmail = (company: McapCompany) => {
+  return company.applicantEmail || company.data?.applicantEmail || company.data?.email || company.data?.applicantEmailAddress || company.data?.contactEmail || "";
 };
 
-const getPhone = (data: Record<string, any>) => {
-  return data?.phone || data?.phoneNum || data?.contactPhone || "";
+const getPhone = (company: McapCompany) => {
+  return company.applicantPhone || company.data?.applicantPhone || company.data?.phoneNum || company.data?.phone || company.data?.contactPhone || "";
 };
 
 const toDisplayValue = (val: any) => {
@@ -147,6 +159,8 @@ const McapCompanyDetail: React.FC = () => {
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [adminAssigned, setAdminAssigned] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [partyModalOpen, setPartyModalOpen] = useState(false);
+  const [selectedPartyId, setSelectedPartyId] = useState<string | null>(null);
 
   const fetchCompany = async () => {
     if (!id) return;
@@ -155,7 +169,7 @@ const McapCompanyDetail: React.FC = () => {
       const payload = res.data.data as McapCompany;
       setCompany(payload);
       setAdminAssigned(payload.assignedTo || "");
-      const primaryEmail = getEmail(payload?.data || {});
+      const primaryEmail = getEmail(payload);
       setEmailTo(primaryEmail || "");
     }
   };
@@ -216,7 +230,7 @@ const McapCompanyDetail: React.FC = () => {
         setCompany((prev) => {
           if (!prev) return prev;
           const updated = (prev.parties || []).map((p) =>
-            p._id === party._id ? { ...p, invited: true, status: "Invited" } : p
+            p._id === party._id ? { ...p, invited: true, status: "Invited", inviteStatus: "sent" } : p
           );
           return { ...prev, parties: updated };
         });
@@ -226,6 +240,39 @@ const McapCompanyDetail: React.FC = () => {
     } catch (err) {
       toast({ title: "Invite failed", description: "Unable to send invite.", variant: "destructive" });
     }
+  };
+
+  const handleKycStatus = async (party: McapParty, status: string, reason = "") => {
+    if (!party?._id) return;
+    try {
+      const res = await api.post(`/mcap/parties/${party._id}/kyc-status`, { status, reason });
+      if (res?.data?.success) {
+        toast({ title: "KYC updated", description: `Status set to ${status}.` });
+        const updatedParty = res.data.data;
+        setCompany((prev) => {
+          if (!prev) return prev;
+          const updated = (prev.parties || []).map((p) =>
+            p._id === party._id ? { ...p, ...updatedParty } : p
+          );
+          return { ...prev, parties: updated };
+        });
+      } else {
+        toast({ title: "Update failed", description: res?.data?.message || "Unable to update KYC.", variant: "destructive" });
+      }
+    } catch (err) {
+      toast({ title: "Update failed", description: "Unable to update KYC.", variant: "destructive" });
+    }
+  };
+
+  const openPartyModal = (partyId?: string) => {
+    if (!partyId) return;
+    setSelectedPartyId(partyId);
+    setPartyModalOpen(true);
+  };
+
+  const handlePartyModalChange = (open: boolean) => {
+    setPartyModalOpen(open);
+    if (!open) setSelectedPartyId(null);
   };
 
   const config = useMemo(() => {
@@ -238,10 +285,8 @@ const McapCompanyDetail: React.FC = () => {
     if (code === "HK") return [hkIncorporationItems, hkRenewalList];
     if (code === "US") return [usIncorporationItems, usRenewalList];
     if (code === "SG") return [singaporeUkChecklistItems, []];
-    if (code === "PA") return [multiJurisdictionChecklistItems, []];
-    if (code === "PPIF") return [multiJurisdictionChecklistItems, []];
-    if (code === "CR") return [multiJurisdictionChecklistItems, []];
-    if (code === "AE") return [multiJurisdictionChecklistItems, []];
+
+    // Default fallback for any other country
     return [multiJurisdictionChecklistItems, []];
   }, [company?.countryCode]);
 
@@ -315,11 +360,11 @@ const McapCompanyDetail: React.FC = () => {
   }
 
   const data = company.data || {};
-  const companyName = getCompanyName(data) || "Untitled Company";
+  const companyName = getCompanyName(company) || "Untitled Company";
   const altNames = getAltCompanyNames(data);
-  const applicantName = getApplicant(data);
-  const applicantEmail = getEmail(data);
-  const applicantPhone = getPhone(data);
+  const applicantName = getApplicant(company);
+  const applicantEmail = getEmail(company);
+  const applicantPhone = getPhone(company);
   const companyNameKey = resolveFieldKey(data, ["companyName_1", "name1"], "companyName_1");
   const companyAlt1Key = resolveFieldKey(data, ["companyName_2", "name2"], "companyName_2");
   const companyAlt2Key = resolveFieldKey(data, ["companyName_3", "name3"], "companyName_3");
@@ -330,6 +375,7 @@ const McapCompanyDetail: React.FC = () => {
   const pct = Math.min(100, Math.max(0, Math.round(((company.stepIdx || 0) / (stepsCount - 1 || 1)) * 100)));
 
   return (
+    <>
     <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
         <TabsTrigger value="details" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
@@ -446,6 +492,16 @@ const McapCompanyDetail: React.FC = () => {
                         )}
                         <div>Created: {fmtDate(company.createdAt)}</div>
                         <div>Updated: {fmtDate(company.updatedAt)}</div>
+                        {company.renewalDate && (
+                          <div className="flex items-center gap-1 mt-1 text-primary font-medium">
+                            <span>Renewal: {fmtDate(company.renewalDate)}</span>
+                            {company.renewalStatus && (
+                              <Badge variant="outline" className="text-[10px] h-4 px-1 leading-none uppercase">
+                                {company.renewalStatus}
+                              </Badge>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -552,6 +608,13 @@ const McapCompanyDetail: React.FC = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Parties (Shareholders/Directors/DCP)</CardTitle>
+                {company.roleStatus?.missing?.length ? (
+                  <div className="text-xs text-destructive">
+                    Missing required roles: {company.roleStatus.missing.join(", ")}
+                  </div>
+                ) : (
+                  <div className="text-xs text-muted-foreground">All mandatory roles present</div>
+                )}
               </CardHeader>
               <CardContent>
                 {company.parties?.length ? (
@@ -559,11 +622,13 @@ const McapCompanyDetail: React.FC = () => {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-[30%]">Party</TableHead>
-                          <TableHead className="w-[20%]">Roles</TableHead>
-                          <TableHead className="w-[15%]">Shares</TableHead>
+                          <TableHead className="w-[25%]">Party</TableHead>
+                          <TableHead className="w-[18%]">Roles</TableHead>
+                          <TableHead className="w-[12%]">Shares</TableHead>
                           <TableHead className="w-[15%]">KYC</TableHead>
-                          <TableHead className="w-[20%]">Invite</TableHead>
+                          <TableHead className="w-[15%]">Invite</TableHead>
+                          <TableHead className="w-[10%]">View</TableHead>
+                          {isAdmin && <TableHead className="w-[15%]">Actions</TableHead>}
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -577,10 +642,24 @@ const McapCompanyDetail: React.FC = () => {
                               {(p.roles || []).join(", ") || "N/A"}
                             </TableCell>
                             <TableCell className="text-sm">{p.shares ?? "N/A"}</TableCell>
-                            <TableCell>
-                              <Badge variant={p.kycStatus === "verified" ? "default" : "outline"} className={p.kycStatus === "verified" ? "" : "text-muted-foreground"}>
+                            <TableCell className="space-y-1">
+                              <Badge
+                                variant={
+                                  p.kycStatus === "approved"
+                                    ? "default"
+                                    : p.kycStatus === "expired" || p.kycStatus === "rejected"
+                                    ? "destructive"
+                                    : "outline"
+                                }
+                                className="capitalize"
+                              >
                                 {p.kycStatus || "pending"}
                               </Badge>
+                              {p.kycExpiresAt && (
+                                <div className="text-[11px] text-muted-foreground">
+                                  Exp: {fmtDate(p.kycExpiresAt)}
+                                </div>
+                              )}
                             </TableCell>
                             <TableCell>
                               {isAdmin ? (
@@ -589,9 +668,43 @@ const McapCompanyDetail: React.FC = () => {
                                   {p.invited ? "Remind" : "Invite"}
                                 </Button>
                               ) : (
-                                <Badge variant="secondary">{p.invited ? "Invited" : "Not invited"}</Badge>
+                                <div className="space-y-1">
+                                  <Badge variant="secondary" className="capitalize">
+                                    {p.inviteStatus || (p.invited ? "sent" : "pending")}
+                                  </Badge>
+                                  {p.inviteExpiresAt && (
+                                    <div className="text-[11px] text-muted-foreground">
+                                      Expires: {fmtDate(p.inviteExpiresAt)}
+                                    </div>
+                                  )}
+                                </div>
                               )}
                             </TableCell>
+                            <TableCell>
+                              <Button variant="outline" size="sm" onClick={() => openPartyModal(p._id)} disabled={!p._id}>
+                                View
+                              </Button>
+                            </TableCell>
+                            {isAdmin && (
+                              <TableCell className="space-y-1">
+                                <div className="flex flex-wrap gap-2">
+                                  <Button variant="outline" size="sm" onClick={() => handleKycStatus(p, "approved")}>
+                                    Mark Approved
+                                  </Button>
+                                  <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "expired")}>
+                                    Mark Expired
+                                  </Button>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "submitted")}>
+                                    Flag Submitted
+                                  </Button>
+                                  <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "rejected")}>
+                                    Reject
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            )}
                           </TableRow>
                         ))}
                       </TableBody>
@@ -808,6 +921,13 @@ const McapCompanyDetail: React.FC = () => {
         </Card>
       </TabsContent>
     </Tabs>
+    <McapPartyKycModal
+      partyId={selectedPartyId}
+      open={partyModalOpen}
+      onOpenChange={handlePartyModalChange}
+      onSaved={fetchCompany}
+    />
+    </>
   );
 };
 

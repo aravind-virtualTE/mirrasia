@@ -13,12 +13,12 @@ export const US_FULL_CONFIG: McapConfig = {
       title: "usa.steps.step1",
       description: "usa.steps.applicant.description",
       fields: [
-        { type: "text", name: "name", label: "newHk.steps.applicant.fields.applicantName.label", required: true, colSpan: 2 },
-        { type: "email", name: "email", label: "newHk.steps.applicant.fields.email.label", required: true, colSpan: 2 },
-        { type: "text", name: "phoneNum", label: "newHk.steps.applicant.fields.phone.label", colSpan: 2 },
-        { type: "text", name: "companyName_1", label: "usa.AppInfo.usCompName", required: true, colSpan: 2 },
-        { type: "text", name: "companyName_2", label: "newHk.steps.applicant.fields.name2.label", colSpan: 2 },
-        { type: "text", name: "companyName_3", label: "newHk.steps.applicant.fields.name3.label", colSpan: 2 },
+        { type: "text", name: "applicantName", label: "newHk.steps.applicant.fields.applicantName.label", required: true, colSpan: 2 },
+        { type: "email", name: "applicantEmail", label: "newHk.steps.applicant.fields.email.label", required: true, colSpan: 2 },
+        { type: "text", name: "applicantPhone", label: "newHk.steps.applicant.fields.phone.label", colSpan: 2 },
+        { type: "text", name: "companyName1", label: "usa.AppInfo.usCompName", required: true, colSpan: 2 },
+        { type: "text", name: "companyName2", label: "newHk.steps.applicant.fields.name2.label", colSpan: 2 },
+        { type: "text", name: "companyName3", label: "newHk.steps.applicant.fields.name3.label", colSpan: 2 },
         {
           type: "checkbox-group",
           name: "establishedRelationshipType",
@@ -137,7 +137,6 @@ export const US_FULL_CONFIG: McapConfig = {
     {
       id: "company",
       title: "usa.steps.step3",
-      description: "usa.steps.company.description",
       fields: [
         {
           type: "select",
@@ -155,19 +154,8 @@ export const US_FULL_CONFIG: McapConfig = {
           type: "search-select",
           name: "selectedState",
           label: "usa.Section2StateQuestion",
-          placeholder: "common.select",
           required: true,
           items: usaList,
-          colSpan: 2,
-        },
-        {
-          type: "text",
-          name: "businessAddress",
-          label: "usa.regDetails.enterUsAddress",
-          placeholder: "Street, City, State, ZIP",
-          condition: (data) =>
-            data.localCompanyRegistration ===
-            "There is a separate address to use as a business address in the United States (do not use Mir Asia’s registered address service)",
           colSpan: 2,
         },
         {
@@ -318,6 +306,9 @@ export const US_FULL_CONFIG: McapConfig = {
         ];
 
         const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const cardFeePct = 0.06; // Standard US card fee
+        const cardFeeSurcharge = data.payMethod === "card" ? total * cardFeePct : 0;
+        const grandTotal = total + cardFeeSurcharge;
 
         return {
           currency: "USD",
@@ -325,13 +316,15 @@ export const US_FULL_CONFIG: McapConfig = {
           total,
           service: total,
           government: 0,
+          cardFeePct,
+          cardFeeSurcharge,
+          grandTotal,
         };
       },
     },
     {
       id: "registration-details",
       title: "usa.steps.step8",
-      description: "usa.steps.info.description",
       fields: [
         {
           type: "select",

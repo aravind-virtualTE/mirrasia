@@ -1,0 +1,682 @@
+{
+  "questions": [
+    {
+      "id": "name",
+      "type": "text",
+      "question": "panamaShrInvite.questions.name.question",
+      "placeholder": "panamaShrInvite.questions.name.placeholder",
+      "required": false,
+      "validation": {
+        "minLength": 2,
+        "pattern": "^[a-zA-Z\\s]+$",
+        "message": "panamaShrInvite.questions.name.validation"
+      }
+    },
+    {
+      "id": "email",
+      "type": "email",
+      "question": "panamaShrInvite.questions.email.question",
+      "placeholder": "panamaShrInvite.questions.email.placeholder",
+      "required": true,
+      "validation": {
+        "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+        "message": "panamaShrInvite.questions.email.validation"
+      }
+    },
+    {
+      "id": "nameChanged",
+      "type": "select",
+      "question": "panamaShrInvite.questions.nameChanged.question",
+      "options": [
+        {
+          "value": "no",
+          "label": "panamaShrInvite.questions.nameChanged.options.no"
+        },
+        {
+          "value": "yes",
+          "label": "panamaShrInvite.questions.nameChanged.options.yes"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "previousName",
+      "type": "text",
+      "question": "panamaShrInvite.questions.previousName.question",
+      "placeholder": "panamaShrInvite.questions.previousName.placeholder",
+      "required": true,
+      "showIf": {
+        "questionId": "nameChanged",
+        "value": "yes"
+      },
+      "validation": {
+        "minLength": 2,
+        "pattern": "^[a-zA-Z\\s]+$",
+        "message": "panamaShrInvite.questions.previousName.validation"
+      }
+    },
+    {
+      "id": "birthdate",
+      "type": "date",
+      "question": "panamaShrInvite.questions.birthdate.question",
+      "required": true,
+      "validation": {
+        "message": "panamaShrInvite.questions.birthdate.validation"
+      }
+    },
+    {
+      "id": "maritalStatus",
+      "type": "select",
+      "question": "panamaShrInvite.questions.maritalStatus.question",
+      "options": [
+        {
+          "value": "single",
+          "label": "panamaShrInvite.questions.maritalStatus.options.single"
+        },
+        {
+          "value": "married",
+          "label": "panamaShrInvite.questions.maritalStatus.options.married"
+        },
+        {
+          "value": "divorced",
+          "label": "panamaShrInvite.questions.maritalStatus.options.divorced"
+        },
+        {
+          "value": "widowed",
+          "label": "panamaShrInvite.questions.maritalStatus.options.widowed"
+        },
+        {
+          "value": "separated",
+          "label": "panamaShrInvite.questions.maritalStatus.options.separated"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "nationality",
+      "type": "text",
+      "question": "panamaShrInvite.questions.nationality.question",
+      "placeholder": "panamaShrInvite.questions.nationality.placeholder",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "message": "panamaShrInvite.questions.nationality.validation"
+      }
+    },
+    {
+      "id": "passport",
+      "type": "text",
+      "question": "panamaShrInvite.questions.passport.question",
+      "placeholder": "panamaShrInvite.questions.passport.placeholder",
+      "required": true,
+      "validation": {
+        "minLength": 6,
+        "message": "panamaShrInvite.questions.passport.validation"
+      }
+    },
+    {
+      "id": "job",
+      "type": "text",
+      "question": "panamaShrInvite.questions.job.question",
+      "placeholder": "panamaShrInvite.questions.job.placeholder",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "message": "panamaShrInvite.questions.job.validation"
+      }
+    },
+    {
+      "id": "residenceAddress",
+      "type": "textarea",
+      "question": "panamaShrInvite.questions.residenceAddress.question",
+      "placeholder": "panamaShrInvite.questions.residenceAddress.placeholder",
+      "required": true,
+      "validation": {
+        "minLength": 10,
+        "message": "panamaShrInvite.questions.residenceAddress.validation"
+      }
+    },
+    {
+      "id": "postalAddressSame",
+      "type": "select",
+      "question": "panamaShrInvite.questions.postalAddressSame.question",
+      "options": [
+        {
+          "value": "yes",
+          "label": "panamaShrInvite.questions.postalAddressSame.options.yes"
+        },
+        {
+          "value": "no",
+          "label": "panamaShrInvite.questions.postalAddressSame.options.no"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "postalAddress",
+      "type": "textarea",
+      "question": "panamaShrInvite.questions.postalAddress.question",
+      "placeholder": "panamaShrInvite.questions.postalAddress.placeholder",
+      "required": true,
+      "showIf": {
+        "questionId": "postalAddressSame",
+        "value": "no"
+      },
+      "validation": {
+        "minLength": 10,
+        "message": "panamaShrInvite.questions.postalAddress.validation"
+      }
+    },
+    {
+      "id": "phone",
+      "type": "tel",
+      "question": "panamaShrInvite.questions.phone.question",
+      "placeholder": "panamaShrInvite.questions.phone.placeholder",
+      "required": true,
+      "validation": {
+        "pattern": "^[+]?[0-9\\s\\-\\(\\)]+$",
+        "minLength": 10,
+        "message": "panamaShrInvite.questions.phone.validation"
+      }
+    },
+    {
+      "id": "companyName",
+      "type": "text",
+      "question": "panamaShrInvite.questions.companyName.question",
+      "placeholder": "panamaShrInvite.questions.companyName.placeholder",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "message": "panamaShrInvite.questions.companyName.validation"
+      }
+    },
+    {
+      "id": "corporationRelationship",
+      "type": "checkbox",
+      "question": "panamaShrInvite.questions.corporationRelationship.question",
+      "required": true,
+      "infoText": "panamaShrInvite.questions.corporationRelationship.info",
+      "options": [
+        {
+          "value": "shareholder",
+          "label": "panamaShrInvite.questions.corporationRelationship.options.shareholder"
+        },
+        {
+          "value": "ubo",
+          "label": "panamaShrInvite.questions.corporationRelationship.options.ubo.label",
+          "description": "panamaShrInvite.questions.corporationRelationship.options.ubo.description"
+        },
+        {
+          "value": "shareholderProxy",
+          "label": "panamaShrInvite.questions.corporationRelationship.options.shareholderProxy"
+        },
+        {
+          "value": "dirPresident",
+          "label": "panamaShrInvite.questions.corporationRelationship.options.dirPresident"
+        },
+        {
+          "value": "dirTreasurer",
+          "label": "panamaShrInvite.questions.corporationRelationship.options.dirTreasurer"
+        },
+        {
+          "value": "dirSecretary",
+          "label": "panamaShrInvite.questions.corporationRelationship.options.dirSecretary"
+        },
+        {
+          "value": "directorOnly",
+          "label": "panamaShrInvite.questions.corporationRelationship.options.directorOnly"
+        },
+        {
+          "value": "designatedContact",
+          "label": "panamaShrInvite.questions.corporationRelationship.options.designatedContact"
+        }
+      ],
+      "validation": {
+        "message": "panamaShrInvite.questions.corporationRelationship.validation"
+      }
+    },
+    {
+      "id": "investedAmount",
+      "type": "text",
+      "question": "panamaShrInvite.questions.investedAmount.question",
+      "placeholder": "panamaShrInvite.questions.investedAmount.placeholder",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "message": "panamaShrInvite.questions.investedAmount.validation"
+      }
+    },
+    {
+      "id": "sharesAcquired",
+      "type": "text",
+      "question": "panamaShrInvite.questions.sharesAcquired.question",
+      "placeholder": "panamaShrInvite.questions.sharesAcquired.placeholder",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "message": "panamaShrInvite.questions.sharesAcquired.validation"
+      }
+    },
+    {
+      "id": "fundSource",
+      "type": "checkbox",
+      "question": "panamaShrInvite.questions.fundSource.question",
+      "required": true,
+      "infoText": "panamaShrInvite.questions.fundSource.info",
+      "options": [
+        {
+          "value": "earnedIncome",
+          "label": "panamaShrInvite.questions.fundSource.options.earnedIncome"
+        },
+        {
+          "value": "despositSavings",
+          "label": "panamaShrInvite.questions.fundSource.options.despositSavings"
+        },
+        {
+          "value": "realEstateIncome",
+          "label": "panamaShrInvite.questions.fundSource.options.realEstateIncome"
+        },
+        {
+          "value": "loan",
+          "label": "panamaShrInvite.questions.fundSource.options.loan"
+        },
+        {
+          "value": "companyShareSale",
+          "label": "panamaShrInvite.questions.fundSource.options.companyShareSale"
+        },
+        {
+          "value": "businessIncome",
+          "label": "panamaShrInvite.questions.fundSource.options.businessIncome"
+        },
+        {
+          "value": "succession",
+          "label": "panamaShrInvite.questions.fundSource.options.succession"
+        },
+        {
+          "value": "parentCompanyInvested",
+          "label": "panamaShrInvite.questions.fundSource.options.parentCompanyInvested"
+        },
+        {
+          "value": "other",
+          "label": "panamaShrInvite.questions.fundSource.options.other",
+          "allowOther": true
+        }
+      ],
+      "validation": {
+        "message": "panamaShrInvite.questions.fundSource.validation"
+      }
+    },
+    {
+      "id": "originFundInvestFromCountry",
+      "type": "text",
+      "question": "panamaShrInvite.questions.originFundInvestFromCountry.question",
+      "placeholder": "panamaShrInvite.questions.originFundInvestFromCountry.placeholder",
+      "required": false,
+      "validation": {
+        "minLength": 2,
+        "message": "panamaShrInvite.questions.originFundInvestFromCountry.validation"
+      }
+    },
+    {
+      "id": "fundGenerated",
+      "type": "checkbox",
+      "question": "panamaShrInvite.questions.fundGenerated.question",
+      "required": true,
+      "options": [
+        {
+          "value": "businessIncome",
+          "label": "panamaShrInvite.questions.fundGenerated.options.businessIncome"
+        },
+        {
+          "value": "intrestIncome",
+          "label": "panamaShrInvite.questions.fundGenerated.options.intrestIncome"
+        },
+        {
+          "value": "realEstateIncome",
+          "label": "panamaShrInvite.questions.fundGenerated.options.realEstateIncome"
+        },
+        {
+          "value": "companyShareSale",
+          "label": "panamaShrInvite.questions.fundGenerated.options.companyShareSale"
+        },
+        {
+          "value": "inheritanceGift",
+          "label": "panamaShrInvite.questions.fundGenerated.options.inheritanceGift"
+        },
+        {
+          "value": "borrowingTrustDeposit",
+          "label": "panamaShrInvite.questions.fundGenerated.options.borrowingTrustDeposit"
+        },
+        {
+          "value": "other",
+          "label": "panamaShrInvite.questions.fundGenerated.options.other",
+          "allowOther": true
+        }
+      ],
+      "validation": {
+        "message": "panamaShrInvite.questions.fundGenerated.validation"
+      }
+    },
+    {
+      "id": "originFundGenerateCountry",
+      "type": "text",
+      "question": "panamaShrInvite.questions.originFundGenerateCountry.question",
+      "placeholder": "panamaShrInvite.questions.originFundGenerateCountry.placeholder",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "message": "panamaShrInvite.questions.originFundGenerateCountry.validation"
+      }
+    },
+    {
+      "id": "taxCountry",
+      "type": "text",
+      "question": "panamaShrInvite.questions.taxCountry.question",
+      "infoText": "panamaShrInvite.questions.taxCountry.info",
+      "placeholder": "panamaShrInvite.questions.taxCountry.placeholder",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "message": "panamaShrInvite.questions.taxCountry.validation"
+      }
+    },
+    {
+      "id": "taxNumber",
+      "type": "text",
+      "question": "panamaShrInvite.questions.taxNumber.question",
+      "infoText": "panamaShrInvite.questions.taxNumber.info",
+      "placeholder": "panamaShrInvite.questions.taxNumber.placeholder",
+      "required": true,
+      "validation": {
+        "minLength": 2,
+        "message": "panamaShrInvite.questions.taxNumber.validation"
+      }
+    },
+    {
+      "id": "annualSaleIncomePrevYr",
+      "type": "checkbox",
+      "question": "panamaShrInvite.questions.annualSaleIncomePrevYr.question",
+      "required": true,
+      "options": [
+        {
+          "value": "businessIncome",
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.businessIncome"
+        },
+        {
+          "value": "intrestIncome",
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.intrestIncome"
+        },
+        {
+          "value": "realEstateIncome",
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.realEstateIncome"
+        },
+        {
+          "value": "companyShareSale",
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.companyShareSale"
+        },
+        {
+          "value": "inheritanceGift",
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.inheritanceGift"
+        },
+        {
+          "value": "borrowingTrustDeposit",
+          "label": "panamaShrInvite.questions.annualSaleIncomePrevYr.options.borrowingTrustDeposit"
+        }
+      ],
+      "validation": {
+        "message": "panamaShrInvite.questions.annualSaleIncomePrevYr.validation"
+      }
+    },
+    {
+      "id": "currentNetWorth",
+      "type": "checkbox",
+      "question": "panamaShrInvite.questions.currentNetWorth.question",
+      "required": true,
+      "options": [
+        {
+          "value": "businessIncome",
+          "label": "panamaShrInvite.questions.currentNetWorth.options.businessIncome"
+        },
+        {
+          "value": "intrestIncome",
+          "label": "panamaShrInvite.questions.currentNetWorth.options.intrestIncome"
+        },
+        {
+          "value": "realEstateIncome",
+          "label": "panamaShrInvite.questions.currentNetWorth.options.realEstateIncome"
+        },
+        {
+          "value": "companyShareSale",
+          "label": "panamaShrInvite.questions.currentNetWorth.options.companyShareSale"
+        },
+        {
+          "value": "inheritanceGift",
+          "label": "panamaShrInvite.questions.currentNetWorth.options.inheritanceGift"
+        },
+        {
+          "value": "borrowingTrustDeposit",
+          "label": "panamaShrInvite.questions.currentNetWorth.options.borrowingTrustDeposit"
+        }
+      ],
+      "validation": {
+        "message": "panamaShrInvite.questions.currentNetWorth.validation"
+      }
+    },
+    {
+      "id": "isPoliticallyProminentFig",
+      "type": "select",
+      "question": "panamaShrInvite.questions.isPoliticallyProminentFig.question",
+      "infoText": "panamaShrInvite.questions.isPoliticallyProminentFig.info",
+      "options": [
+        {
+          "value": "no",
+          "label": "panamaShrInvite.questions.isPoliticallyProminentFig.options.no"
+        },
+        {
+          "value": "yes",
+          "label": "panamaShrInvite.questions.isPoliticallyProminentFig.options.yes"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "descPoliticImpRel",
+      "type": "text",
+      "question": "panamaShrInvite.questions.descPoliticImpRel.question",
+      "placeholder": "panamaShrInvite.questions.descPoliticImpRel.placeholder",
+      "required": false,
+      "showIf": {
+        "questionId": "isPoliticallyProminentFig",
+        "value": "yes"
+      },
+      "validation": {
+        "minLength": 2,
+        "pattern": "^[a-zA-Z\\s]+$",
+        "message": "panamaShrInvite.questions.descPoliticImpRel.validation"
+      }
+    },
+    {
+      "id": "passportId",
+      "type": "file",
+      "question": "panamaShrInvite.questions.passportId.question",
+      "infoText": "panamaShrInvite.questions.passportId.info",
+      "placeholder": "panamaShrInvite.questions.passportId.placeholder",
+      "required": false,
+      "validation": {
+        "message": "panamaShrInvite.questions.passportId.validation"
+      }
+    },
+    {
+      "id": "bankStatement3Mnth",
+      "type": "file",
+      "question": "panamaShrInvite.questions.bankStatement3Mnth.question",
+      "infoText": "panamaShrInvite.questions.bankStatement3Mnth.info",
+      "placeholder": "panamaShrInvite.questions.bankStatement3Mnth.placeholder",
+      "required": false,
+      "validation": {
+        "message": "panamaShrInvite.questions.bankStatement3Mnth.validation"
+      }
+    },
+    {
+      "id": "addressProof",
+      "type": "file",
+      "question": "panamaShrInvite.questions.addressProof.question",
+      "infoText": "panamaShrInvite.questions.addressProof.info",
+      "placeholder": "panamaShrInvite.questions.addressProof.placeholder",
+      "required": false,
+      "validation": {
+        "message": "panamaShrInvite.questions.addressProof.validation"
+      }
+    },
+    {
+      "id": "profRefLetter",
+      "type": "file",
+      "question": "panamaShrInvite.questions.profRefLetter.question",
+      "infoText": "panamaShrInvite.questions.profRefLetter.info",
+      "placeholder": "panamaShrInvite.questions.profRefLetter.placeholder",
+      "required": false,
+      "validation": {
+        "message": "panamaShrInvite.questions.profRefLetter.validation"
+      }
+    },
+    {
+      "id": "engResume",
+      "type": "file",
+      "question": "panamaShrInvite.questions.engResume.question",
+      "placeholder": "panamaShrInvite.questions.engResume.placeholder",
+      "required": false,
+      "validation": {
+        "message": "panamaShrInvite.questions.engResume.validation"
+      }
+    },
+    {
+      "id": "isCrimeConvitted",
+      "type": "select",
+      "question": "panamaShrInvite.questions.isCrimeConvitted.question",
+      "options": [
+        {
+          "value": "no",
+          "label": "panamaShrInvite.questions.isCrimeConvitted.options.no"
+        },
+        {
+          "value": "yes",
+          "label": "panamaShrInvite.questions.isCrimeConvitted.options.yes"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "lawEnforced",
+      "type": "select",
+      "question": "panamaShrInvite.questions.lawEnforced.question",
+      "options": [
+        {
+          "value": "no",
+          "label": "panamaShrInvite.questions.lawEnforced.options.no"
+        },
+        {
+          "value": "yes",
+          "label": "panamaShrInvite.questions.lawEnforced.options.yes"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "isMoneyLaundered",
+      "type": "select",
+      "question": "panamaShrInvite.questions.isMoneyLaundered.question",
+      "options": [
+        {
+          "value": "no",
+          "label": "panamaShrInvite.questions.isMoneyLaundered.options.no"
+        },
+        {
+          "value": "yes",
+          "label": "panamaShrInvite.questions.isMoneyLaundered.options.yes"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "isBankRupted",
+      "type": "select",
+      "question": "panamaShrInvite.questions.isBankRupted.question",
+      "options": [
+        {
+          "value": "no",
+          "label": "panamaShrInvite.questions.isBankRupted.options.no"
+        },
+        {
+          "value": "yes",
+          "label": "panamaShrInvite.questions.isBankRupted.options.yes"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "isInvolvedBankRuptedOfficer",
+      "type": "select",
+      "question": "panamaShrInvite.questions.isInvolvedBankRuptedOfficer.question",
+      "options": [
+        {
+          "value": "no",
+          "label": "panamaShrInvite.questions.isInvolvedBankRuptedOfficer.options.no"
+        },
+        {
+          "value": "yes",
+          "label": "panamaShrInvite.questions.isInvolvedBankRuptedOfficer.options.yes"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "isPartnerOfOtherComp",
+      "type": "select",
+      "question": "panamaShrInvite.questions.isPartnerOfOtherComp.question",
+      "infoText": "panamaShrInvite.questions.isPartnerOfOtherComp.info",
+      "options": [
+        {
+          "value": "no",
+          "label": "panamaShrInvite.questions.isPartnerOfOtherComp.options.no"
+        },
+        {
+          "value": "yes",
+          "label": "panamaShrInvite.questions.isPartnerOfOtherComp.options.yes"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "otherPartnerOtherComp",
+      "type": "text",
+      "question": "panamaShrInvite.questions.otherPartnerOtherComp.question",
+      "placeholder": "panamaShrInvite.questions.otherPartnerOtherComp.placeholder",
+      "required": true,
+      "showIf": {
+        "questionId": "isPartnerOfOtherComp",
+        "value": "yes"
+      },
+      "validation": {
+        "minLength": 2,
+        "pattern": "^[a-zA-Z\\s]+$",
+        "message": "panamaShrInvite.questions.otherPartnerOtherComp.validation"
+      }
+    },
+    {
+      "id": "declarationAgreement",
+      "type": "select",
+      "question": "panamaShrInvite.questions.declarationAgreement.question",
+      "options": [
+        {
+          "value": "no",
+          "label": "panamaShrInvite.questions.declarationAgreement.options.no"
+        },
+        {
+          "value": "yes",
+          "label": "panamaShrInvite.questions.declarationAgreement.options.yes"
+        }
+      ],
+      "required": true
+    }
+  ]
+}
