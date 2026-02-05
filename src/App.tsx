@@ -66,6 +66,7 @@ import McapParties from './mcap/McapParties';
 import ProfessionalLetterGenerator from './components/refLetter/ProfessionalLetterGenerator';
 import QuoteEnquiry from './components/quoteService/quoteService';
 import PricingDashboard from './mcap/pricing/PricingDashboard';
+import MobileUpload from './pages/MobileUpload/MobileUpload';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -107,6 +108,7 @@ const App: React.FC = () => {
                     {/* <Route path="/reqForQuotation" element={<ReqForQuotation />} />  */}
                     <Route path="/login" element={<LoginComponent />} />
                     <Route path="/signup" element={<SignupPage />} />
+                    <Route path="/mobile-upload" element={<MobileUpload />} />
                     {/* <Route path="/test" element={<UsCorporateShdr />} /> */}
                   </Route>
                   <Route path="/unauthorized" element={<Unauthorized />} />
@@ -146,7 +148,12 @@ const App: React.FC = () => {
                         <Route path="/quotation-request" element={<ReqForQuotation />} />
                         <Route path="/letter-generator" element={<ProfessionalLetterGenerator />} />
                         <Route path="/quote-enquiry" element={<QuoteEnquiry />} />
-
+                        {/* MCAP Routes */}
+                        <Route path="/mcap" element={<McapDashboard />} />
+                        <Route path="/mcap-dashboard" element={<McapUserDashboard />} />
+                        <Route path="/mcap-detail/:id" element={<McapCompanyDetail />} />
+                        <Route path="/mcap-parties" element={<McapParties />} />
+                        <Route path="/mcap-pricing" element={<PricingDashboard />} />
 
                       </Route>
                     </Route>
@@ -170,12 +177,7 @@ const App: React.FC = () => {
                       <Route path="/enquiries" element={<EnquiryList />} />
                       <Route path="/quote-enquiries" element={<ReqForQuoteList />} />
 
-                      {/* MCAP Routes */}
-                      <Route path="/mcap" element={<McapDashboard />} />
-                      <Route path="/mcap-dashboard" element={<McapUserDashboard />} />
-                      <Route path="/mcap-detail/:id" element={<McapCompanyDetail />} />
-                      <Route path="/mcap-parties" element={<McapParties />} />
-                      <Route path="/mcap-pricing" element={<PricingDashboard />} />
+
 
                     </Route>
                   </Route>

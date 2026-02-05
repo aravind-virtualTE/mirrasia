@@ -1,0 +1,498 @@
+{
+    "questions": [
+        {
+            "id": "email",
+            "type": "email",
+            "question": "saShareholder.questions.email.question",
+            "placeholder": "saShareholder.questions.email.placeholder",
+            "required": true,
+            "validation": {
+                "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+                "message": "saShareholder.questions.email.validation"
+            }
+        },
+        {
+            "id": "companyName",
+            "type": "text",
+            "question": "saShareholder.questions.companyName.question",
+            "placeholder": "saShareholder.questions.companyName.placeholder",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "saShareholder.questions.companyName.validation"
+            }
+        },
+        {
+            "id": "name",
+            "type": "text",
+            "question": "saShareholder.questions.name.question",
+            "placeholder": "saShareholder.questions.name.placeholder",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "pattern": "^[a-zA-Z\\s]+$",
+                "message": "saShareholder.questions.name.validation"
+            }
+        },
+        {
+            "id": "nameChanged",
+            "type": "select",
+            "question": "saShareholder.questions.nameChanged.question",
+            "options": [
+                {
+                    "value": "no",
+                    "label": "saShareholder.questions.nameChanged.options.no"
+                },
+                {
+                    "value": "yes",
+                    "label": "saShareholder.questions.nameChanged.options.yes"
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "previousName",
+            "type": "text",
+            "question": "saShareholder.questions.previousName.question",
+            "placeholder": "saShareholder.questions.previousName.placeholder",
+            "required": true,
+            "showIf": {
+                "questionId": "nameChanged",
+                "value": "yes"
+            },
+            "validation": {
+                "minLength": 2,
+                "pattern": "^[a-zA-Z\\s]+$",
+                "message": "saShareholder.questions.previousName.validation"
+            }
+        },
+        {
+            "id": "birthdate",
+            "type": "date",
+            "question": "saShareholder.questions.birthdate.question",
+            "required": true,
+            "validation": {
+                "message": "saShareholder.questions.birthdate.validation"
+            }
+        },
+        {
+            "id": "nationality",
+            "type": "text",
+            "question": "saShareholder.questions.nationality.question",
+            "placeholder": "saShareholder.questions.nationality.placeholder",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "saShareholder.questions.nationality.validation"
+            }
+        },
+        {
+            "id": "passport",
+            "type": "text",
+            "question": "saShareholder.questions.passport.question",
+            "placeholder": "saShareholder.questions.passport.placeholder",
+            "required": true,
+            "validation": {
+                "minLength": 6,
+                "message": "saShareholder.questions.passport.validation"
+            }
+        },
+        {
+            "id": "residenceAddress",
+            "type": "textarea",
+            "question": "saShareholder.questions.residenceAddress.question",
+            "placeholder": "saShareholder.questions.residenceAddress.placeholder",
+            "required": true,
+            "validation": {
+                "minLength": 10,
+                "message": "saShareholder.questions.residenceAddress.validation"
+            }
+        },
+        {
+            "id": "postalAddressSame",
+            "type": "select",
+            "question": "saShareholder.questions.postalAddressSame.question",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "saShareholder.questions.postalAddressSame.options.yes"
+                },
+                {
+                    "value": "no",
+                    "label": "saShareholder.questions.postalAddressSame.options.no"
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "postalAddress",
+            "type": "textarea",
+            "question": "saShareholder.questions.postalAddress.question",
+            "placeholder": "saShareholder.questions.postalAddress.placeholder",
+            "required": true,
+            "showIf": {
+                "questionId": "postalAddressSame",
+                "value": "no"
+            },
+            "validation": {
+                "minLength": 10,
+                "message": "saShareholder.questions.postalAddress.validation"
+            }
+        },
+        {
+            "id": "phone",
+            "type": "tel",
+            "question": "saShareholder.questions.phone.question",
+            "placeholder": "saShareholder.questions.phone.placeholder",
+            "required": true,
+            "validation": {
+                "pattern": "^[+]?[0-9\\s\\-\\(\\)]+$",
+                "minLength": 10,
+                "message": "saShareholder.questions.phone.validation"
+            }
+        },
+        {
+            "id": "kakaoId",
+            "type": "text",
+            "question": "saShareholder.questions.kakaoId.question",
+            "placeholder": "saShareholder.questions.kakaoId.placeholder",
+            "required": false
+        },
+        {
+            "id": "otherSNSIds",
+            "type": "text",
+            "question": "saShareholder.questions.otherSNSIds.question",
+            "placeholder": "saShareholder.questions.otherSNSIds.placeholder",
+            "required": false
+        },
+        {
+            "id": "companyRelation",
+            "type": "checkbox",
+            "question": "saShareholder.questions.companyRelation.question",
+            "infoText": "saShareholder.questions.companyRelation.info",
+            "options": [
+                {
+                    "value": "shareholder",
+                    "label": "saShareholder.questions.companyRelation.options.shareholder"
+                },
+                {
+                    "value": "director",
+                    "label": "saShareholder.questions.companyRelation.options.director"
+                },
+                {
+                    "value": "designatedContactPerson",
+                    "label": "saShareholder.questions.companyRelation.options.designatedContactPerson"
+                },
+                {
+                    "value": "officialPartner",
+                    "label": "saShareholder.questions.companyRelation.options.officialPartner"
+                },
+                {
+                    "value": "other",
+                    "label": "saShareholder.questions.companyRelation.options.other",
+                    "allowOther": true
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "amountContributed",
+            "type": "text",
+            "question": "saShareholder.questions.amountContributed.question",
+            "placeholder": "saShareholder.questions.amountContributed.placeholder",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "saShareholder.questions.amountContributed.validation"
+            }
+        },
+        {
+            "id": "fundSource",
+            "type": "checkbox",
+            "question": "saShareholder.questions.fundSource.question",
+            "required": true,
+            "infoText": "saShareholder.questions.fundSource.info",
+            "options": [
+                {
+                    "value": "employedIncome",
+                    "label": "saShareholder.questions.fundSource.options.employedIncome"
+                },
+                {
+                    "value": "despositSavings",
+                    "label": "saShareholder.questions.fundSource.options.despositSavings"
+                },
+                {
+                    "value": "realEstateIncome",
+                    "label": "saShareholder.questions.fundSource.options.realEstateIncome"
+                },
+                {
+                    "value": "loan",
+                    "label": "saShareholder.questions.fundSource.options.loan"
+                },
+                {
+                    "value": "companyShareSale",
+                    "label": "saShareholder.questions.fundSource.options.companyShareSale"
+                },
+                {
+                    "value": "businessIncome",
+                    "label": "saShareholder.questions.fundSource.options.businessIncome"
+                },
+                {
+                    "value": "inheritance",
+                    "label": "saShareholder.questions.fundSource.options.inheritance"
+                },
+                {
+                    "value": "parentCompanyInvested",
+                    "label": "saShareholder.questions.fundSource.options.parentCompanyInvested"
+                },
+                {
+                    "value": "other",
+                    "label": "saShareholder.questions.fundSource.options.other",
+                    "allowOther": true
+                }
+            ],
+            "validation": {
+                "message": "saShareholder.questions.companyRelation.validation"
+            }
+        },
+        {
+            "id": "originFundInvestFromCountry",
+            "type": "text",
+            "question": "saShareholder.questions.originFundInvestFromCountry.question",
+            "placeholder": "saShareholder.questions.originFundInvestFromCountry.placeholder",
+            "required": false,
+            "validation": {
+                "minLength": 2,
+                "message": "saShareholder.questions.originFundInvestFromCountry.validation"
+            }
+        },
+        {
+            "id": "fundGenerated",
+            "type": "checkbox",
+            "question": "saShareholder.questions.fundGenerated.question",
+            "infoText": "saShareholder.questions.fundGenerated.info",
+            "required": true,
+            "options": [
+                {
+                    "value": "businessIncome",
+                    "label": "saShareholder.questions.fundGenerated.options.businessIncome"
+                },
+                {
+                    "value": "intrestIncome",
+                    "label": "saShareholder.questions.fundGenerated.options.intrestIncome"
+                },
+                {
+                    "value": "realEstateIncome",
+                    "label": "saShareholder.questions.fundGenerated.options.realEstateIncome"
+                },
+                {
+                    "value": "companyShareSale",
+                    "label": "saShareholder.questions.fundGenerated.options.companyShareSale"
+                },
+                {
+                    "value": "inheritanceEndowment",
+                    "label": "saShareholder.questions.fundGenerated.options.inheritanceEndowment"
+                },
+                {
+                    "value": "borrowingTrustDeposit",
+                    "label": "saShareholder.questions.fundGenerated.options.borrowingTrustDeposit"
+                }
+            ],
+            "validation": {
+                "message": "saShareholder.questions.companyRelation.validation"
+            }
+        },
+        {
+            "id": "originFundGenerateCountry",
+            "type": "text",
+            "question": "saShareholder.questions.originFundGenerateCountry.question",
+            "placeholder": "saShareholder.questions.originFundGenerateCountry.placeholder",
+            "required": true,
+            "validation": {
+                "minLength": 2,
+                "message": "saShareholder.questions.originFundGenerateCountry.validation"
+            }
+        },
+        {
+            "id": "usTaxStatus",
+            "type": "radio",
+            "question": "saShareholder.questions.usTaxStatus.question",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "saShareholder.questions.usTaxStatus.options.yes"
+                },
+                {
+                    "value": "no",
+                    "label": "saShareholder.questions.usTaxStatus.options.no"
+                },
+                {
+                    "value": "other",
+                    "label": "saShareholder.questions.usTaxStatus.options.other",
+                    "allowOther": true
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "usTIN",
+            "type": "text",
+            "question": "saShareholder.questions.usTIN.question",
+            "placeholder": "saShareholder.questions.usTIN.placeholder",
+            "required": false,
+            "showIf": {
+                "questionId": "usTaxStatus",
+                "value": "yes"
+            },
+            "validation": {
+                "minLength": 6,
+                "message": "saShareholder.questions.usTIN.validation"
+            }
+        },
+        {
+            "id": "isPoliticallyProminentFig",
+            "type": "radio",
+            "question": "saShareholder.questions.isPoliticallyProminentFig.question",
+            "infoText": "saShareholder.questions.isPoliticallyProminentFig.info",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "saShareholder.questions.isPoliticallyProminentFig.options.yes"
+                },
+                {
+                    "value": "no",
+                    "label": "saShareholder.questions.isPoliticallyProminentFig.options.no"
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "descPoliticImpRel",
+            "type": "text",
+            "question": "saShareholder.questions.descPoliticImpRel.question",
+            "placeholder": "saShareholder.questions.descPoliticImpRel.placeholder",
+            "required": false,
+            "showIf": {
+                "questionId": "isPoliticallyProminentFig",
+                "value": "yes"
+            },
+            "validation": {
+                "minLength": 2,
+                "pattern": "^[a-zA-Z\\s]+$",
+                "message": "saShareholder.questions.descPoliticImpRel.validation"
+            }
+        },
+        {
+            "id": "isCrimeConvitted",
+            "type": "radio",
+            "question": "saShareholder.questions.isCrimeConvitted.question",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "saShareholder.questions.isCrimeConvitted.options.yes"
+                },
+                {
+                    "value": "no",
+                    "label": "saShareholder.questions.isCrimeConvitted.options.no"
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "lawEnforced",
+            "type": "radio",
+            "question": "saShareholder.questions.lawEnforced.question",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "saShareholder.questions.lawEnforced.options.yes"
+                },
+                {
+                    "value": "no",
+                    "label": "saShareholder.questions.lawEnforced.options.no"
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "isMoneyLaundered",
+            "type": "radio",
+            "question": "saShareholder.questions.isMoneyLaundered.question",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "saShareholder.questions.isMoneyLaundered.options.yes"
+                },
+                {
+                    "value": "no",
+                    "label": "saShareholder.questions.isMoneyLaundered.options.no"
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "isBankRupted",
+            "type": "radio",
+            "question": "saShareholder.questions.isBankRupted.question",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "saShareholder.questions.isBankRupted.options.yes"
+                },
+                {
+                    "value": "no",
+                    "label": "saShareholder.questions.isBankRupted.options.no"
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "isInvolvedBankRuptedOfficer",
+            "type": "radio",
+            "question": "saShareholder.questions.isInvolvedBankRuptedOfficer.question",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "saShareholder.questions.isInvolvedBankRuptedOfficer.options.yes"
+                },
+                {
+                    "value": "no",
+                    "label": "saShareholder.questions.isInvolvedBankRuptedOfficer.options.no"
+                }
+            ],
+            "required": true
+        },
+        {
+            "id": "describeIfInvolvedBankRupted",
+            "type": "text",
+            "question": "saShareholder.questions.describeIfInvolvedBankRupted.question",
+            "placeholder": "saShareholder.questions.describeIfInvolvedBankRupted.placeholder",
+            "required": false,
+            "validation": {
+                "minLength": 2,
+                "message": "saShareholder.questions.describeIfInvolvedBankRupted.validation"
+            }
+        },
+        {
+            "id": "declarationAgreement",
+            "type": "radio",
+            "question": "saShareholder.questions.declarationAgreement.question",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "saShareholder.questions.declarationAgreement.options.yes"
+                },
+                {
+                    "value": "no",
+                    "label": "saShareholder.questions.declarationAgreement.options.no"
+                },
+                {
+                    "value": "other",
+                    "label": "saShareholder.questions.declarationAgreement.options.other",
+                    "allowOther": true
+                }
+            ],
+            "required": true
+        }
+    ]
+}

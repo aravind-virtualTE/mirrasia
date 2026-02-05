@@ -90,7 +90,7 @@ export const formConfig: FormStep[] = [
         options: [{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }, { label: "Don't Know", value: 'unknown' }]
       },
       { id: 'legalAndEthicalConcern', type: 'radio', label: 'Are there any legal or ethical concerns related to the business (e.g., money laundering, gambling, tax evasion, asset concealment, fraud)?', required: true, options: [{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }, { label: "Don't Know", value: 'unknown' }] },
-      { id: 'q_country', type: 'radio', label: 'Does the Hong Kong company have any current or planned business activity in the following countries/regions: Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus, or Zimbabwe?', required: true, options: [{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }, { label: "Don't Know", value: 'unknown' }] },
+      { id: 'q_country', type: 'radio', label: 'Does the costa rica company have any current or planned business activity in the following countries/regions: Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus, or Zimbabwe?', required: true, options: [{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }, { label: "Don't Know", value: 'unknown' }] },
       {
         id: 'crimeaSevastapolPresence',
         type: 'radio-group',

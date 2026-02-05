@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { McapConfig, McapFeeItem } from "./types";
 
 const SG_BASE_MANDATORY = [
@@ -13,21 +14,24 @@ const SG_OPTIONALS = [
 
 export const SG_FULL_CONFIG: McapConfig = {
   id: "sg-full",
+  currency: "SGD",
   countryCode: "SG",
   countryName: "Singapore",
-  currency: "SGD",
   title: "Singapore.sgCompIncorporation",
+  entityMeta: {
+    cardFeePctByCountry: { SGD: 0.04, USD: 0.06 },
+  },
   steps: [
     {
       id: "applicant",
       title: "ppif.section1",
       fields: [
-        { type: "text", name: "name", label: "newHk.steps.applicant.fields.applicantName.label", required: true, colSpan: 2 },
-        { type: "email", name: "email", label: "newHk.steps.applicant.fields.email.label", required: true, colSpan: 2 },
-        { type: "text", name: "phoneNum", label: "newHk.steps.applicant.fields.phone.label", colSpan: 2 },
-        { type: "text", name: "companyName_1", label: "Company Name (1st Choice)", required: true, colSpan: 2 },
-        { type: "text", name: "companyName_2", label: "Company Name (2nd Choice)", colSpan: 2 },
-        { type: "text", name: "companyName_3", label: "Company Name (3rd Choice)", colSpan: 2 },
+        { type: "text", name: "applicantName", label: "newHk.steps.applicant.fields.applicantName.label", required: true, colSpan: 2 },
+        { type: "email", name: "applicantEmail", label: "newHk.steps.applicant.fields.email.label", required: true, colSpan: 2 },
+        { type: "text", name: "applicantPhone", label: "newHk.steps.applicant.fields.phone.label", colSpan: 2 },
+        { type: "text", name: "companyName1", label: "Company Name (1st Choice)", required: true, colSpan: 2 },
+        { type: "text", name: "companyName2", label: "Company Name (2nd Choice)", colSpan: 2 },
+        { type: "text", name: "companyName3", label: "Company Name (3rd Choice)", colSpan: 2 },
         {
           type: "checkbox-group",
           name: "establishedRelationshipType",
@@ -450,12 +454,19 @@ export const SG_FULL_CONFIG: McapConfig = {
         });
 
         const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const cardFeePct = (SG_FULL_CONFIG as any).entityMeta?.cardFeePctByCountry?.[data.paymentCurrency || SG_FULL_CONFIG.currency] || 0.04;
+        const cardFeeSurcharge = data.payMethod === "card" ? total * cardFeePct : 0;
+        const grandTotal = total + cardFeeSurcharge;
+
         return {
-          currency: "USD",
+          currency: data.paymentCurrency || SG_FULL_CONFIG.currency,
           items,
           total,
           service: total,
           government: 0,
+          cardFeePct,
+          cardFeeSurcharge,
+          grandTotal,
         };
       },
     },

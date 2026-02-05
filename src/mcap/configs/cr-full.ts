@@ -17,9 +17,9 @@ export const CR_FULL_CONFIG: McapConfig = {
       title: "Applicant Details",
       description: "Provide your personal information and company name choices",
       fields: [
-        { type: "text", name: "name", label: "Full Name", required: true, colSpan: 2 },
-        { type: "email", name: "email", label: "Email", required: true, colSpan: 2 },
-        { type: "text", name: "phoneNum", label: "Phone Number", required: true, colSpan: 2 },
+        { type: "text", name: "applicantName", label: "Full Name", required: true, colSpan: 2 },
+        { type: "email", name: "applicantEmail", label: "Email", required: true, colSpan: 2 },
+        { type: "text", name: "applicantPhone", label: "Phone Number", required: true, colSpan: 2 },
         {
           type: "select",
           name: "sns",
@@ -39,9 +39,9 @@ export const CR_FULL_CONFIG: McapConfig = {
           condition: (f) => !!f.sns,
         },
         { type: "text", name: "address", label: "Place of Residence", required: true, colSpan: 2 },
-        { type: "text", name: "companyName_1", label: "Company Name (1st Choice)", required: true, colSpan: 2 },
-        { type: "text", name: "companyName_2", label: "Company Name (2nd Choice)", required: true, colSpan: 2 },
-        { type: "text", name: "companyName_3", label: "Company Name (3rd Choice)", required: true, colSpan: 2 },
+        { type: "text", name: "companyName1", label: "Company Name (1st Choice)", required: true, colSpan: 2 },
+        { type: "text", name: "companyName2", label: "Company Name (2nd Choice)", required: true, colSpan: 2 },
+        { type: "text", name: "companyName3", label: "Company Name (3rd Choice)", required: true, colSpan: 2 },
       ],
     },
     {
@@ -350,7 +350,20 @@ export const CR_FULL_CONFIG: McapConfig = {
           items.push({ id: "shareholderNominee", label: "Nominee Shareholder", amount: CR_PRICES.nominee, kind: "optional" as const });
         }
         const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        return { currency: "USD", items, total, service: total, government: 0 };
+        const cardFeePct = 0.06; // Standard CR card fee
+        const cardFeeSurcharge = data.payMethod === "card" ? total * cardFeePct : 0;
+        const grandTotal = total + cardFeeSurcharge;
+
+        return {
+          currency: "USD",
+          items,
+          total,
+          service: total,
+          government: 0,
+          cardFeePct,
+          cardFeeSurcharge,
+          grandTotal,
+        };
       },
     },
   ],

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactNode } from "react";
 
 export type McapFieldOption = {
@@ -55,13 +56,43 @@ export type McapStep = {
   title: string;
   description?: string;
   fields?: McapField[];
-  widget?: "PartiesManager" | "PaymentWidget";
+  widget?: "PartiesManager" | "PaymentWidget" | "RepeatableSection" | "ServiceSelectionWidget" | "InvoiceWidget";
   minParties?: number;
   requireDcp?: boolean;
   requirePartyInvite?: boolean;
   fees?: McapFees;
   computeFees?: (data: Record<string, any>, entityMeta?: Record<string, any> | null) => McapFees;
   supportedCurrencies?: string[];
+  serviceItems?: any[];
+  widgetConfig?: RepeatableSectionWidgetConfig;
+};
+
+export type RepeatableSection = {
+  kind: "list" | "object";
+  fieldName?: string;
+  title?: string;
+  description?: string;
+  minItems?: number;
+  addLabel?: string;
+  itemLabel?: string;
+  allowRemove?: boolean;
+  itemFields: McapField[];
+  condition?: (data: Record<string, any>) => boolean;
+};
+
+export type RepeatableSectionMode = {
+  value: string;
+  label: string;
+  sections: RepeatableSection[];
+};
+
+export type RepeatableSectionWidgetConfig = {
+  title?: string;
+  description?: string;
+  preFields?: McapField[];
+  sections?: RepeatableSection[];
+  modeField?: string;
+  modes?: RepeatableSectionMode[];
 };
 
 export type McapConfig = {

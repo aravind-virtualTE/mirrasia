@@ -20,14 +20,7 @@ const buildAgreementStep = (): McapStep => ({
       type: "info",
       content: React.createElement(CommonServiceAgrementTxt),
       colSpan: 2,
-    },
-    {
-      type: "checkbox",
-      name: "legalTermsAcknowledgment",
-      label: "newHk.review.declarations.terms",
-      required: true,
-      colSpan: 2,
-    },
+    }    
   ],
 });
 
@@ -114,8 +107,19 @@ const reorderSteps = (steps: McapStep[]) => {
   const weights = (step: McapStep) => {
     if (step.id === "applicant") return 10;
     if (step.id === "compliance") return 20;
+    if (step.id === "pep") return 25;
     if (step.id === "company" || step.id === "profile") return 30;
-    if (step.id === "accounting" || step.id === "acct") return 40;
+    if ([
+      "founders",
+      "council",
+      "protectors",
+      "beneficiaries",
+      "bylaws",
+      "es",
+      "banking",
+      "deliverables",
+    ].includes(step.id)) return 35;
+    if (step.id === "accounting" || step.id === "acct" || step.id === "accounting-records") return 40;
     if (step.id === "service-agreement") return 50;
     if (step.id === "services" || step.id === "fees" || step.id === "invoice") return 60;
     if (step.id === "payment" || step.widget === "PaymentWidget") return 70;
