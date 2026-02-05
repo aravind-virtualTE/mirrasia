@@ -16,7 +16,7 @@ import {
   getPanamaShareHlderData
 } from './PanamaShratoms';
 import { multiShrDirResetAtom } from '@/components/shareholderDirector/constants';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 
 const PanamaShareholderInvite: React.FC = () => {
@@ -34,7 +34,7 @@ const PanamaShareholderInvite: React.FC = () => {
   const isLastQuestion = currentQuestionIndex === filteredQuestions.length - 1;
   const [multiData,] = useAtom<any>(multiShrDirResetAtom)
   const { id } = useParams();
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -82,14 +82,16 @@ const PanamaShareholderInvite: React.FC = () => {
 
   const saveFormData = async () => {
     try {
+      const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null
 
-      await saveShrPanamaInviteData(formData, id)
-      // console.log("result", result)const result =
-
+      const result = await saveShrPanamaInviteData(formData, id)
       toast({
         title: t("panamaShrInvite.messages.saved"),
         description: t("panamaShrInvite.messages.savedDesc"),
       });
+      console.log("result", result)
+      navigate(user.role === "admin" ? "/admin-dashboard" : "/dashboard");
+
     } catch (error) {
       console.error('Error saving form data:', error);
       toast({
