@@ -154,6 +154,7 @@ export default function Profile() {
       setProfile(data)
       setOtherDocuments(hydrateOtherDocuments(data.otherDocuments || []))
     }
+    return data
   }, [user?.id])
 
   useEffect(() => {
@@ -236,6 +237,7 @@ export default function Profile() {
   const handleSmartSave = async () => {
     try {
       setLoading(true)
+      const attemptedSelfie = !!kycDocuments.selfie.file || !!capturedImage
 
       const formData = new FormData()
       formData.append("fullName", draftProfile.fullName)
@@ -265,16 +267,33 @@ export default function Profile() {
 
       const result = await updateProfileData(formData, user.id)
 
-      setProfile(result.updatedUser)
-      setDraftProfile(result.updatedUser)
-
-      setProfile(result.updatedUser)
-      setDraftProfile(result.updatedUser)
+      if (result?.updatedUser) {
+        setProfile(result.updatedUser)
+        setDraftProfile(result.updatedUser)
+        setOtherDocuments(hydrateOtherDocuments(result.updatedUser.otherDocuments || []))
+      }
 
       // Reset local file states
       setKycDocuments(initialData)
       setCapturedImage(null) // Reset captured image
-      setOtherDocuments(hydrateOtherDocuments(result.updatedUser.otherDocuments || []))
+
+      const refreshed = await refreshProfile()
+
+      const latestSelfieUrl =
+        refreshed?.kycDocuments?.selfieUrl ||
+        result?.updatedUser?.kycDocuments?.selfieUrl ||
+        ""
+
+      if (attemptedSelfie && !latestSelfieUrl) {
+        toast({
+          title: t("error"),
+          description: t(
+            "userProfile.messages.selfieMissing",
+            "Selfie was saved but no image was returned. Please retry."
+          ),
+          variant: "destructive",
+        })
+      }
 
       toast({
         title: t("success"),
@@ -389,6 +408,9 @@ export default function Profile() {
     if (!allowedTypes.includes(file.type)) {
       toast({ title: t("error"), description: t("userProfile.messages.fileTypeError"), variant: "destructive" })
       return
+    }
+    if (documentType === "selfie") {
+      setCapturedImage(null)
     }
     const reader = new FileReader()
     reader.onload = (e) => {

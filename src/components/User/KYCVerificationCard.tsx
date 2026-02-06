@@ -98,9 +98,36 @@ export function KYCVerificationCard({
         return () => clearInterval(interval)
     }, [livenessMode, qrToken, onRefreshProfile, profile.kycDocuments?.selfieStatus])
 
+    const handleDeleteSelfie = async () => {
+        try {
+            const profileId = profile._id;
+            const selfieUrl = profile.kycDocuments?.selfieUrl;
+
+            if (profileId && selfieUrl) {
+                await onDeleteDocument(selfieUrl, profileId, "selfie");
+                await onRefreshProfile();
+            }
+        } catch (err) {
+            console.error("Error deleting selfie:", err);
+        } finally {
+            onCapturedImageChange(null);
+            onRemoveDocument("selfie");
+            onRetake();
+        }
+    };
+
     const qrCodeUrl = qrToken
         ? `${window.location.origin}/mobile-upload?token=${qrToken}`
         : ""
+
+    const serverSelfieUrl = profile.kycDocuments?.selfieUrl
+        ? encodeURI(profile.kycDocuments.selfieUrl).replace(/\+/g, "%2B")
+        : null
+    const selfiePreview =
+        capturedImage ||
+        kycDocuments.selfie.preview ||
+        serverSelfieUrl ||
+        null
 
     const getDraftDocs = (type: "passport" | "addressProof") => {
         const doc = kycDocuments[type];
@@ -117,7 +144,7 @@ export function KYCVerificationCard({
         }
         return [];
     };
-
+    // console.log("selfiePreview",selfiePreview)
     return (
         <Card className="w-full">
             <CardHeader>
@@ -189,15 +216,11 @@ export function KYCVerificationCard({
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Captured Image Preview (Draft or Server) */}
-                                {(capturedImage || kycDocuments.selfie.file || profile.kycDocuments?.selfieUrl) ? (
+                                {selfiePreview ? (
                                     <div className="flex flex-col items-center gap-4">
-                                        <div className="relative aspect-square w-full max-w-sm overflow-hidden rounded-lg border-2 border-dashed bg-muted">
+                                    <div className="relative aspect-square w-full max-w-sm overflow-hidden rounded-lg border-2 border-dashed bg-muted">
                                             <img
-                                                src={
-                                                    capturedImage ||
-                                                    (kycDocuments.selfie.file ? URL.createObjectURL(kycDocuments.selfie.file) : null) ||
-                                                    profile.kycDocuments?.selfieUrl
-                                                }
+                                                src={selfiePreview || ""}
                                                 alt="Selfie"
                                                 className="h-full w-full object-cover"
                                             />
@@ -206,20 +229,32 @@ export function KYCVerificationCard({
                                                 {profile.kycDocuments?.selfieUrl ? t("userProfile.verification.status.uploaded") : t("userProfile.verification.liveness.captured")}
                                             </div>
                                         </div>
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2 flex-wrap justify-center">
                                             <Button
                                                 variant="outline"
                                                 onClick={() => {
                                                     onRetake();
                                                     onCapturedImageChange(null);
                                                     if (kycDocuments.selfie.file) onRemoveDocument("selfie");
-                                                    // If server image exists, we might need a way to delete it? 
-                                                    // For now, assuming "Retake" just clears local preview to allow new capture.
-                                                    // If user wants to replace server image, they just upload new one.
                                                 }}
-                                                className="text-destructive hover:bg-destructive/10"
+                                                className="flex items-center gap-2"
                                             >
+                                                <RotateCcw className="w-4 h-4" />
                                                 {t("userProfile.actions.retakeReplace")}
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                onClick={async () => {
+                                                    if (profile.kycDocuments?.selfieUrl) {
+                                                        await handleDeleteSelfie();
+                                                    }
+                                                    onCapturedImageChange(null);
+                                                    onRetake();
+                                                    if (kycDocuments.selfie.file) onRemoveDocument("selfie");
+                                                }}
+                                                className="text-destructive hover:bg-destructive/10 flex items-center gap-2"
+                                            >
+                                                {t("common.delete", "Delete")}
                                             </Button>
                                         </div>
                                     </div>
@@ -287,17 +322,20 @@ export function KYCVerificationCard({
                                                 <Input
                                                     type="file"
                                                     accept="image/*"
-                                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                                     onChange={(e) => {
                                                         const file = e.target.files?.[0];
-                                                        if (file) onFileUpload("selfie", file);
+                                                        if (file) {
+                                                            onCapturedImageChange(null);
+                                                            onFileUpload("selfie", file);
+                                                        }
                                                     }}
                                                 />
-                                                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                                                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 pointer-events-none">
                                                     <Upload className="w-8 h-8 text-primary" />
                                                 </div>
-                                                <p className="font-medium text-lg mb-2">{t("userProfile.verification.liveness.upload.title")}</p>
-                                                <p className="text-sm text-muted-foreground text-center max-w-xs">
+                                                <p className="font-medium text-lg mb-2 pointer-events-none">{t("userProfile.verification.liveness.upload.title")}</p>
+                                                <p className="text-sm text-muted-foreground text-center max-w-xs pointer-events-none">
                                                     {t("userProfile.verification.liveness.upload.desc")}
                                                 </p>
                                             </div>
