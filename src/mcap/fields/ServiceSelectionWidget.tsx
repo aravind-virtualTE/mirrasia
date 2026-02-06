@@ -14,7 +14,7 @@ interface ServiceSelectionWidgetProps {
     config: McapConfig;
     data: any;
     onChange: (data: any) => void;
-    items?: any[];
+    items?: any[] | ((data: any, entityMeta?: any) => any[]);
     currency?: string;
 }
 
@@ -26,14 +26,18 @@ export function ServiceSelectionWidget({
     currency = "USD"
 }: ServiceSelectionWidgetProps) {
     const { t } = useTranslation();
-    const selectedIds: string[] = Array.isArray(data.optionalFeeIds) ? data.optionalFeeIds : [];
-    const selectedCurrency = data.paymentCurrency || currency;
+    const optionalIds: string[] = Array.isArray(data.optionalFeeIds) ? data.optionalFeeIds : [];
+    const serviceIds: string[] = Array.isArray(data.serviceItemsSelected) ? data.serviceItemsSelected : [];
+    const selectedIds: string[] = Array.from(new Set([...optionalIds, ...serviceIds]));
+    const selectedCurrency = data.paymentCurrency || data.currency || currency;
     const isLocked = data.paymentStatus === "paid";
 
     // Extract fees from config or passed items
     const feesMeta = (config && (config as any).entityMeta && (config as any).entityMeta.fees) || null;
+    const resolvedItems = typeof items === "function" ? items(data, (config as any).entityMeta || null) : items;
     const govItems = feesMeta?.government || [];
-    const svcItemsMeta = (items && items.length > 0) ? items : (feesMeta?.service || []);
+    const svcItemsMeta = (resolvedItems && resolvedItems.length > 0) ? resolvedItems : (feesMeta?.service || []);
+    const enableKycExtras = !!(config as any)?.entityMeta?.enableKycExtras;
 
     // Auto-select mandatory items on mount
     useEffect(() => {
@@ -58,24 +62,32 @@ export function ServiceSelectionWidget({
         handleChange(selectedIds, newCurr);
     };
 
-    // Compute pricing and propagate as single source of truth
+    const sameSelection = (a: string[], b: string[]) =>
+        a.length === b.length && a.every(id => b.includes(id));
+
+    // Compute pricing and propagate as single source of truth (subtotal only)
     const handleChange = async (newIds: string[], payCurr: string) => {
+        const normalizedIds = Array.from(new Set(newIds));
         setIsConverting(true);
         try {
             const governmentTotalUsd = govItems.reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
             const mandatoryServiceTotalUsd = svcItemsMeta.filter((f: any) => f.mandatory).reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
-            const optionalSelectedTotalUsd = svcItemsMeta.filter((f: any) => newIds.includes(f.id)).reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
+            const optionalSelectedTotalUsd = svcItemsMeta
+                .filter((f: any) => !f.mandatory && normalizedIds.includes(f.id))
+                .reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
 
             // KYC extras based on parties
             const parties = Array.isArray(data.parties) ? data.parties : [];
             const legalPersonCount = parties.filter((p: any) => p?.isCorp === true || p?.type === "entity").length;
             const individualCount = Math.max(0, parties.length - legalPersonCount);
             let extraKycUsd = 0;
-            if (legalPersonCount > 0) extraKycUsd += legalPersonCount * 130;
-            if (individualCount > 2) {
-                const peopleNeedingKyc = individualCount - 2;
-                const kycSlots = Math.ceil(peopleNeedingKyc / 2);
-                extraKycUsd += kycSlots * 65;
+            if (enableKycExtras) {
+                if (legalPersonCount > 0) extraKycUsd += legalPersonCount * 130;
+                if (individualCount > 2) {
+                    const peopleNeedingKyc = individualCount - 2;
+                    const kycSlots = Math.ceil(peopleNeedingKyc / 2);
+                    extraKycUsd += kycSlots * 65;
+                }
             }
 
             const serviceTotalUsd = mandatoryServiceTotalUsd + optionalSelectedTotalUsd + extraKycUsd;
@@ -90,12 +102,6 @@ export function ServiceSelectionWidget({
                 rate = conv.rate;
             }
 
-            // Card fee
-            const cardPctByCountry = (config && (config as any).entityMeta && (config as any).entityMeta.cardFeePctByCountry) || { [payCurr]: 0.04 };
-            const cardFeePct = (cardPctByCountry && cardPctByCountry[payCurr]) || (payCurr === "USD" ? 0.06 : 0.04);
-            const cardFeeSurcharge = (data.payMethod === "card") ? finalSubtotal * cardFeePct : 0;
-            const grandTotal = finalSubtotal + cardFeeSurcharge;
-
             const computedFees = {
                 currency: payCurr,
                 items: [
@@ -107,7 +113,7 @@ export function ServiceSelectionWidget({
                         info: f.info,
                         kind: "government" as const,
                     })),
-                    ...svcItemsMeta.filter((f: any) => f.mandatory || newIds.includes(f.id)).map((f: any) => ({
+                    ...svcItemsMeta.filter((f: any) => f.mandatory || normalizedIds.includes(f.id)).map((f: any) => ({
                         id: f.id,
                         label: f.label,
                         amount: payCurr === "HKD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
@@ -127,25 +133,37 @@ export function ServiceSelectionWidget({
                 government: payCurr === "HKD" ? Number((governmentTotalUsd * (rate || 1)).toFixed(2)) : governmentTotalUsd,
                 service: payCurr === "HKD" ? Number((serviceTotalUsd * (rate || 1)).toFixed(2)) : serviceTotalUsd,
                 total: finalSubtotal,
-                cardFeePct,
-                cardFeeSurcharge,
-                grandTotal,
                 exchangeRateUsed: rate,
                 originalAmountUsd: subtotalUsd,
             };
 
-            onChange({
-                ...data,
-                optionalFeeIds: newIds,
-                paymentCurrency: payCurr,
-                computedFees
-            });
+            const feesChanged = JSON.stringify(data.computedFees || {}) !== JSON.stringify(computedFees);
+            const selectionChanged = !sameSelection(normalizedIds, selectedIds);
+            const currencyChanged = payCurr !== selectedCurrency;
+
+            if (feesChanged || selectionChanged || currencyChanged) {
+                onChange({
+                    ...data,
+                    optionalFeeIds: normalizedIds,
+                    serviceItemsSelected: normalizedIds,
+                    paymentCurrency: payCurr,
+                    computedFees
+                });
+            }
         } catch (err) {
             console.error("Fee computation error:", err);
         } finally {
             setIsConverting(false);
         }
     };
+
+    // Recompute totals when key pricing inputs change (e.g., base selection or parties)
+    useEffect(() => {
+        if (data.selectedState || data.selectedEntity || enableKycExtras) {
+            handleChange(selectedIds, selectedCurrency);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data.selectedState, data.selectedEntity, data.parties, enableKycExtras]);
 
     const formatPrice = (amount: number, curr: string) => {
         if (amount === 0) return t("common.free", "Included");
@@ -237,39 +255,43 @@ export function ServiceSelectionWidget({
     const legalPersonCount = parties.filter((p: any) => p?.isCorp === true || p?.type === "entity").length;
     const individualCount = Math.max(0, parties.length - legalPersonCount);
     let extraKycSubtotal = 0;
-    if (legalPersonCount > 0) extraKycSubtotal += legalPersonCount * 130;
-    if (individualCount > 2) {
-        const peopleNeedingKyc = individualCount - 2;
-        const kycSlots = Math.ceil(peopleNeedingKyc / 2);
-        extraKycSubtotal += kycSlots * 65;
+    if (enableKycExtras) {
+        if (legalPersonCount > 0) extraKycSubtotal += legalPersonCount * 130;
+        if (individualCount > 2) {
+            const peopleNeedingKyc = individualCount - 2;
+            const kycSlots = Math.ceil(peopleNeedingKyc / 2);
+            extraKycSubtotal += kycSlots * 65;
+        }
     }
 
     // Extra KYC items for table
     const extraKycItems: any[] = [];
-    for (let i = 0; i < legalPersonCount; i++) {
-        extraKycItems.push({
-            id: `kyc_legal_${i + 1}`,
-            label: "KYC / Due Diligence fee (Corporate Shareholder)",
-            original: 130,
-            amount: 130,
-            mandatory: true,
-            info: "KYC for corporate shareholders. Includes company documents, registers and UBO checks.",
-            category: "kyc",
-        });
-    }
-    if (individualCount > 2) {
-        const peopleNeedingKyc = individualCount - 2;
-        const kycSlots = Math.ceil(peopleNeedingKyc / 2);
-        for (let i = 0; i < kycSlots; i++) {
+    if (enableKycExtras) {
+        for (let i = 0; i < legalPersonCount; i++) {
             extraKycItems.push({
-                id: `kyc_extra_${i + 1}`,
-                label: "KYC / Due Diligence fee (Additional Individuals)",
-                original: 65,
-                amount: 65,
+                id: `kyc_legal_${i + 1}`,
+                label: "KYC / Due Diligence fee (Corporate Shareholder)",
+                original: 130,
+                amount: 130,
                 mandatory: true,
-                info: "Additional KYC for individual shareholders beyond the two included.",
+                info: "KYC for corporate shareholders. Includes company documents, registers and UBO checks.",
                 category: "kyc",
             });
+        }
+        if (individualCount > 2) {
+            const peopleNeedingKyc = individualCount - 2;
+            const kycSlots = Math.ceil(peopleNeedingKyc / 2);
+            for (let i = 0; i < kycSlots; i++) {
+                extraKycItems.push({
+                    id: `kyc_extra_${i + 1}`,
+                    label: "KYC / Due Diligence fee (Additional Individuals)",
+                    original: 65,
+                    amount: 65,
+                    mandatory: true,
+                    info: "Additional KYC for individual shareholders beyond the two included.",
+                    category: "kyc",
+                });
+            }
         }
     }
 

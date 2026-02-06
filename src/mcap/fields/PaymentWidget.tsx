@@ -294,15 +294,16 @@ export const PaymentWidget = ({
     // The previous steps (InvoiceWidget) finalized the currency and total.
     // Ideally 'fees' here is the final object { total, currency, items }.
     // If it's a number, we fallback.
+    const fallbackCurrency = data?.paymentCurrency || data?.currency || currency || "HKD";
     const finalFees = useMemo(() => {
-        if (typeof fees === "number") return { total: fees, currency: currency || "USD", items: [] };
-        if (fees && typeof fees.total === "number") return fees;
-        return { total: 0, currency: "USD", items: [] };
-    }, [fees, currency]);
+        if (typeof fees === "number") return { total: fees, currency: fallbackCurrency, items: [] };
+        if (fees && typeof fees.total === "number") return { ...fees, currency: fees.currency || fallbackCurrency };
+        return { total: 0, currency: fallbackCurrency, items: [] };
+    }, [fees, fallbackCurrency]);
 
-    const activeCurrency = finalFees.currency;
+    const activeCurrency = finalFees.currency || fallbackCurrency;
     const subtotal = finalFees.total;
-    const cardFeePct = activeCurrency.toUpperCase() === "USD" ? 0.06 : 0.04;
+    const cardFeePct = String(activeCurrency).toUpperCase() === "USD" ? 0.06 : 0.04;
 
     // If payMethod is card, use grandTotal (which includes surcharge). 
     // If payMethod is bank, use the base total (subtotal).

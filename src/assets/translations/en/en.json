@@ -917,6 +917,7 @@
     "grandTotal": "Total Due",
     "proceed": "Proceed to Payment",
     "disclaimer": "By proceeding, you agree to our Terms of Service and Refund Policy.",
+    "cardFeeNote": "Card processing fee is applied at payment: 6% (USD) / 4% (HKD).",
     "sections": {
       "government": {
         "title": "Government Fees",
@@ -2528,7 +2529,7 @@
       "fields": {
         "name": {
           "label": "Full name / Entity name",
-          "example": "Examples: <b>Jane Doe</b> (individual) or <b>ABC Holdings Limited</b> (corporate shareholder)."
+          "example": "Examples: Jane Doe (individual) or ABC Holdings Limited (corporate shareholder)."
         },
         "email": {
           "label": "Email"
@@ -2571,8 +2572,14 @@
       "buttons": {
         "remove": "Remove",
         "add": "+ Add shareholder / director",
+        "addMember": "Add shareholder/director/DCP member",
         "invite": "Send Invitation"
       },
+      "directory": {
+        "placeholder": "Select member",
+        "addSelected": "Add selected"
+      },
+      "empty": "No parties added yet. Click \"Add shareholder/director/DCP member\" to begin.",
       "totals": "Total shares: {{total}} ¢ Assigned: {{assigned}}",
       "toasts": {
         "invalidEmail": {

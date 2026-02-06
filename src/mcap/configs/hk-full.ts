@@ -128,6 +128,7 @@ export const HK_FULL_CONFIG: McapConfig = {
       government: HK_FEES.government,
       service: HK_FEES.service,
     },
+    enableKycExtras: true,
     cardFeePctByCountry: {
       HKD: 0.04,
       USD: 0.06,
@@ -254,17 +255,17 @@ export const HK_FULL_CONFIG: McapConfig = {
           options: currencyOptions,
           required: true,
         },
-        {
-          type: "select",
-          name: "paymentCurrency",
-          label: "newHk.company.fields.paymentCurrency.label",
-          options: [
-            { label: "HKD", value: "HKD" },
-            { label: "USD", value: "USD" },
-          ],
-          required: true,
-          colSpan: 2,
-        },
+        // {
+        //   type: "select",
+        //   name: "paymentCurrency",
+        //   label: "newHk.company.fields.paymentCurrency.label",
+        //   options: [
+        //     { label: "HKD", value: "HKD" },
+        //     { label: "USD", value: "USD" },
+        //   ],
+        //   required: true,
+        //   colSpan: 2,
+        // },
         {
           type: "select",
           name: "capAmount",

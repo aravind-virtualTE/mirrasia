@@ -905,12 +905,38 @@
     "bookCycle4": "매년 (12개월마다) *최저 비용"
   },
   "invoice": {
+    "title": "주문 내역",
+    "subtotal": "소계",
+    "cardFee": "카드 결제 수수료",
+    "grandTotal": "총 결제 금액",
+    "proceed": "결제 진행하기",
+    "disclaimer": "결제를 진행함으로써 귀하는 당사의 서비스 약관 및 환불 정책에 동의하게 됩니다.",
+    "cardFeeNote": "결제 시 카드 결제 수수료가 적용됩니다: 6% (USD) / 4% (HKD).",
+    "sections": {
+      "government": {
+        "title": "정부 수수료",
+        "badge": "필수",
+        "description": "표준 정부 신고 및 등록 수수료입니다."
+      },
+      "service": {
+        "title": "당사 서비스 수수료",
+        "badge": "서비스",
+        "description": "법인 설립을 위한 전문가 서비스 및 지원 비용입니다."
+      }
+    },
+    "table": {
+      "description": "서비스 내역",
+      "qty": "수량",
+      "original": "기존 가격",
+      "amount": "금액",
+      "total": "합계"
+    },
     "desc": "설명",
-    "originalPrice": "원가",
-    "discPrice": "할인가",
-    "notes": "참고 사항",
-    "total": "총액 (원가)",
-    "totalDisc": "총액 (할인가)",
+    "originalPrice": "기존 가격",
+    "discPrice": "할인 가격",
+    "notes": "비고",
+    "total": "합계 (기존)",
+    "totalDisc": "합계 (할인 적용)",
     "legalPersons": "법인",
     "individuals": "개인"
   },
@@ -927,7 +953,7 @@
     "numSharestTip": "설립 후 신주 발행 및 주식 양도와 같은 자본 증가에는 추가 비용이 발생하므로 주식 수와 자본금을 신중히 결정하시기 바랍니다. 향후 주식을 양도할 계획이 있는 경우 원하는 비율로 주식을 나눌 수 있도록 주식 수를 효율적으로 설정하는 것이 좋습니다. 예를 들어, 설립 시 10주를 발행한 경우, 전체 주식의 33.33%를 다른 파트너에게 양도하려면 비율에 맞게 추가 주식을 발행해야 하므로 과정이 복잡해질 수 있습니다. 또한 설립 시 주당 액면가를 HKD 1로 발행한 후 미래 투자자에게 HKD 5 차이를 두고 싶다면 이를 미리 고려하시기 바랍니다."
   },
   "businessIndustry": {
-    "empty": "",
+      "empty": "\uc544\uc9c1 \uad6c\uc131\uc6d0\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \"\uc8fc\uc8fc/\uc774\uc0ac/DCP \uad6c\uc131\uc6d0 \ucd94\uac00\"\ub97c \ud074\ub9ad\ud574 \uc2dc\uc791\ud558\uc138\uc694.",
     "cropAnimalProduction": "작물 및 동물 생산, 수렵 및 관련 서비스 활동",
     "forestryActivities": "임업 활동",
     "fishingAndAquaculture": "어업 및 양식업",
@@ -2492,7 +2518,7 @@
       "fields": {
         "name": {
           "label": "전체 이름 / 법인명",
-          "example": "예: <b>Jane Doe</b> (개인) 또는 <b>ABC Holdings Limited</b> (법인 주주)."
+          "example": "예:Jane Doe(개인) 또는 ABC Holdings Limited(법인 주주)."
         },
         "email": {
           "label": "이메일"
@@ -2535,8 +2561,14 @@
       "buttons": {
         "remove": "삭제",
         "add": "+ 주주 / 이사 추가",
+        "addMember": "\uc8fc\uc8fc/\uc774\uc0ac/DCP \uad6c\uc131\uc6d0 \ucd94\uac00",
         "invite": "초대 보내기"
       },
+      "directory": {
+        "placeholder": "\uad6c\uc131\uc6d0 \uc120\ud0dd",
+        "addSelected": "\uc120\ud0dd\ud55c \ud56d\ubaa9 \ucd94\uac00"
+      },
+      "empty": "\uc544\uc9c1 \uad6c\uc131\uc6d0\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \"\uc8fc\uc8fc/\uc774\uc0ac/DCP \uad6c\uc131\uc6d0 \ucd94\uac00\"\ub97c \ud074\ub9ad\ud574 \uc2dc\uc791\ud558\uc138\uc694.",
       "totals": "총 주식 수: {{total}} • 할당됨: {{assigned}}",
       "toasts": {
         "invalidEmail": {

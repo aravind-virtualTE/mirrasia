@@ -3,7 +3,6 @@ import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Receipt, HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -289,7 +288,7 @@ export function InvoiceWidget({
         };
     }, [fees]);
 
-    const { items, government, service, total, currency, cardFeePct, cardFeeSurcharge, grandTotal } = invoiceData;
+    const { items, government, service, total, currency } = invoiceData;
 
     // Group items by kind
     const govItems = items.filter((i) => i.kind === "government");
@@ -436,25 +435,12 @@ export function InvoiceWidget({
                         <span className="font-medium">{formatPrice(total)}</span>
                     </div>
 
-                    {/* Card Surcharge */}
-                    {cardFeeSurcharge && cardFeeSurcharge > 0 && (
-                        <div className="flex justify-between items-center text-sm">
-                            <span className="text-muted-foreground">
-                                {t("invoice.cardFee", "Card Processing Fee")}{" "}
-                                {cardFeePct && `(${(cardFeePct * 100).toFixed(0)}%)`}
-                            </span>
-                            <span className="font-medium">{formatPrice(cardFeeSurcharge)}</span>
-                        </div>
-                    )}
-
-                    <Separator />
-
                     {/* Grand Total */}
                     <div className="flex justify-between items-center">
                         <span className="text-lg font-bold">{t("invoice.grandTotal", "Total Due")}</span>
                         <div className="text-right">
                             <span className="text-2xl font-bold text-primary">
-                                {formatPrice(grandTotal ?? total)}
+                                {formatPrice(total)}
                             </span>
                             <span className="text-xs text-muted-foreground block uppercase">{currency}</span>
                         </div>
@@ -483,6 +469,9 @@ export function InvoiceWidget({
             {/* Disclaimer */}
             <p className="text-center text-xs text-muted-foreground max-w-md mx-auto">
                 {t("invoice.disclaimer", "By proceeding, you agree to our Terms of Service and Refund Policy.")}
+            </p>
+            <p className="text-center text-[10px] text-muted-foreground max-w-md mx-auto">
+                {t("invoice.cardFeeNote", "Card processing fee is applied at payment: 6% (USD) / 4% (HKD).")}
             </p>
         </div>
     );
