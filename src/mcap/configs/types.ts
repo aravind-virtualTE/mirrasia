@@ -13,6 +13,15 @@ export type McapFeeItem = {
   kind?: "government" | "service" | "optional" | "surcharge" | "other";
 };
 
+export type PartyFieldDef = {
+  key: string;
+  label: string;
+  type: "text" | "number" | "select" | "radio-group" | "checkbox";
+  options?: McapFieldOption[];
+  roles?: string[];
+  storage?: "root" | "details";
+};
+
 export type McapFees = {
   currency?: string;
   government?: number;
@@ -63,7 +72,8 @@ export type McapStep = {
   fees?: McapFees;
   computeFees?: (data: Record<string, any>, entityMeta?: Record<string, any> | null) => McapFees;
   supportedCurrencies?: string[];
-  serviceItems?: any[];
+  serviceItems?: any[] | ((data: Record<string, any>, entityMeta?: Record<string, any> | null) => any[]);
+  partyFields?: PartyFieldDef[];
   widgetConfig?: RepeatableSectionWidgetConfig;
 };
 

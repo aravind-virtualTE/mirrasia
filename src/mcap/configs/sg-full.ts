@@ -366,6 +366,30 @@ export const SG_FULL_CONFIG: McapConfig = {
       minParties: 1,
       requireDcp: true,
       requirePartyInvite: true,
+      partyFields: [
+        {
+          key: "shareType",
+          label: "newHk.parties.fields.type.label",
+          type: "radio-group",
+          options: [
+            { label: "CompanyInformation.typeOfShare.ordinaryShares", value: "ordinary" },
+            { label: "CompanyInformation.typeOfShare.preferredShares", value: "preferred" },
+          ],
+          roles: ["shareholder"],
+          storage: "root",
+        },
+        {
+          key: "isSignificant",
+          label: "newHk.parties.fields.isSignificant.label",
+          type: "select",
+          options: [
+            { label: "common.no", value: "false" },
+            { label: "common.yes", value: "true" },
+          ],
+          roles: ["shareholder"],
+          storage: "details",
+        },
+      ],
     },
     {
       id: "accounting",

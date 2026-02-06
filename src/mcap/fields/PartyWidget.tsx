@@ -10,6 +10,8 @@ import { Plus, Trash2, User, Building2, Send, CheckCircle2 } from "lucide-react"
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import api from "@/services/fetch";
+import { useTranslation } from "react-i18next";
+import type { PartyFieldDef } from "../configs/types";
 
 // This widget manages a list of parties (Shareholders/Directors)
 // conformant to the UnifiedParty model
@@ -17,11 +19,14 @@ export const PartyWidget = ({
     parties = [],
     onChange,
     companyId,
+    partyFields,
 }: {
     parties: any[];
     onChange: (p: any[]) => void;
     companyId?: string | null;
+    partyFields?: PartyFieldDef[];
 }) => {
+    const { t } = useTranslation();
     const [directory, setDirectory] = useState<any[]>([]);
     const [selectedDirectoryId, setSelectedDirectoryId] = useState<string>("");
 
@@ -48,6 +53,7 @@ export const PartyWidget = ({
             phone: "",
             roles: ["director"], // default role
             shares: 0,
+            shareType: "ordinary",
             details: {}
         };
         onChange([...parties, newParty]);
@@ -55,7 +61,11 @@ export const PartyWidget = ({
 
     const addFromDirectory = () => {
         if (!selectedDirectoryId) {
-            toast({ title: "Select a party", description: "Choose a party from your directory first.", variant: "destructive" });
+            toast({
+                title: t("newHk.parties.toasts.invalidEmail.title", "Select a party"),
+                description: t("newHk.parties.toasts.invalidEmail.desc", "Choose a party from your directory first."),
+                variant: "destructive",
+            });
             return;
         }
         const picked = directory.find((p) => p._id === selectedDirectoryId);
@@ -63,7 +73,11 @@ export const PartyWidget = ({
 
         const exists = parties.some((p) => p.email && picked.email && String(p.email).toLowerCase() === String(picked.email).toLowerCase());
         if (exists) {
-            toast({ title: "Already added", description: "This party is already in the list.", variant: "destructive" });
+            toast({
+                title: t("newHk.parties.toasts.invite.exists.title", "Already added"),
+                description: t("newHk.parties.toasts.invite.exists.desc", "This party is already in the list."),
+                variant: "destructive",
+            });
             return;
         }
 
@@ -76,6 +90,7 @@ export const PartyWidget = ({
             phone: picked.phone || "",
             roles: ["director"],
             shares: 0,
+            shareType: "ordinary",
             details: {},
         };
         onChange([...parties, newParty]);
@@ -106,13 +121,21 @@ export const PartyWidget = ({
 
     const inviteParty = async (idx: number) => {
         if (!companyId) {
-            toast({ title: "Save required", description: "Please save your application before inviting parties.", variant: "destructive" });
+            toast({
+                title: t("newHk.parties.toasts.invite.failed.title", "Save required"),
+                description: t("newHk.parties.toasts.invite.failed.desc", "Please save your application before inviting parties."),
+                variant: "destructive",
+            });
             return;
         }
 
         const target = parties[idx];
         if (!target?.email) {
-            toast({ title: "Missing email", description: "Please enter an email before sending an invite.", variant: "destructive" });
+            toast({
+                title: t("newHk.parties.toasts.invalidEmail.title", "Missing email"),
+                description: t("newHk.parties.toasts.invalidEmail.desc", "Please enter an email before sending an invite."),
+                variant: "destructive",
+            });
             return;
         }
 
@@ -131,39 +154,78 @@ export const PartyWidget = ({
                 const updated = [...parties];
                 updated[idx] = { ...updated[idx], ...(data.data?.party || {}), invited: true };
                 onChange(updated);
-                toast({ title: "Invite Sent", description: `KYC invite sent to ${target.email}` });
+                toast({
+                    title: t("newHk.parties.toasts.invite.success.title", "Invite Sent"),
+                    description: t("newHk.parties.toasts.invite.success.desc", `KYC invite sent to ${target.email}`),
+                });
             } else {
-                toast({ title: "Invite Failed", description: data?.message || "Could not send invite", variant: "destructive" });
+                toast({
+                    title: t("newHk.parties.toasts.invite.failed.title", "Invite Failed"),
+                    // description: t("newHk.parties.toasts.invite.failed.desc", data?.message || "Could not send invite"),
+                    variant: "destructive",
+                });
             }
         } catch (err) {
-            toast({ title: "Invite Failed", description: "Could not send invite", variant: "destructive" });
+            toast({
+                title: t("newHk.parties.toasts.invite.failed.title", "Invite Failed"),
+                description: t("newHk.parties.toasts.invite.failed.desc", "Could not send invite"),
+                variant: "destructive",
+            });
         }
+    };
+
+    const updatePartyField = (idx: number, field: PartyFieldDef, value: any) => {
+        const next = [...parties];
+        const target = { ...next[idx] };
+        if (field.storage === "root") {
+            target[field.key] = value;
+        } else {
+            const details = { ...(target.details || {}) };
+            details[field.key] = value;
+            target.details = details;
+        }
+        next[idx] = target;
+        onChange(next);
+    };
+
+    const getPartyFieldValue = (party: any, field: PartyFieldDef) => {
+        if (field.storage === "root") return party?.[field.key];
+        return party?.details?.[field.key];
+    };
+
+    const shouldRenderField = (party: any, field: PartyFieldDef) => {
+        if (!field.roles || field.roles.length === 0) return true;
+        const roles = party?.roles || [];
+        return field.roles.some((r) => roles.includes(r));
     };
 
     return (
         <div className="space-y-4">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <h3 className="text-lg font-medium">Parties List</h3>
+                <h3 className="text-lg font-medium">
+                    {t("newHk.parties.title", "Parties List")}
+                </h3>
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                     <div className="min-w-[240px]">
                         <Select value={selectedDirectoryId} onValueChange={setSelectedDirectoryId}>
                             <SelectTrigger className="h-9">
-                                <SelectValue placeholder="Add from directory" />
+                                <SelectValue placeholder={t("newHk.parties.directory.placeholder", "Select member")} />
                             </SelectTrigger>
                             <SelectContent>
                                 {directory.map((p) => (
                                     <SelectItem key={p._id} value={p._id}>
-                                        {p.name || p.email || "Unnamed"}
+                                        {p.name || p.email || t("newHk.parties.new", "Unnamed")}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                     </div>
                     <Button onClick={addFromDirectory} size="sm" variant="outline">
-                        Add Selected
+                        {t("newHk.parties.directory.addSelected", "Add selected")}
                     </Button>
                     <Button onClick={addParty} size="sm" variant="outline">
-                        <Plus className="w-4 h-4 mr-2" /> New Party
+                        <Plus className="w-4 h-4 mr-2" />
+                        {t("newHk.parties.buttons.addMember", "Add shareholder/director/DCP member")}
                     </Button>
                 </div>
             </div>
@@ -185,8 +247,8 @@ export const PartyWidget = ({
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="person">Individual</SelectItem>
-                                            <SelectItem value="entity">Corporate</SelectItem>
+                                            <SelectItem value="person">{t("newHk.parties.fields.isCorp.options.no", "Individual")}</SelectItem>
+                                            <SelectItem value="entity">{t("newHk.parties.fields.isCorp.options.yes", "Corporate")}</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -197,20 +259,20 @@ export const PartyWidget = ({
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Full Name / Company Name</Label>
+                                    <Label>{t("newHk.parties.fields.name.label", "Full Name / Company Name")}</Label>
                                     <Input
                                         value={party.name}
                                         onChange={(e) => updateParty(idx, "name", e.target.value)}
-                                        placeholder="Legal Name"
+                                        placeholder={t("newHk.parties.fields.name.example", "Legal Name")}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Email Address</Label>
+                                    <Label>{t("newHk.parties.fields.email.label", "Email Address")}</Label>
                                     <div className="flex gap-2">
                                         <Input
                                             value={party.email}
                                             onChange={(e) => updateParty(idx, "email", e.target.value)}
-                                            placeholder="Email for contact"
+                                            placeholder={t("newHk.parties.fields.email.label", "Email for contact")}
                                         />
                                         <Button
                                             size="sm"
@@ -218,16 +280,18 @@ export const PartyWidget = ({
                                             onClick={() => inviteParty(idx)}
                                         >
                                             {party.invited ? <CheckCircle2 className="w-4 h-4 mr-1" /> : <Send className="w-4 h-4 mr-1" />}
-                                            {party.invited ? "Sent" : "Invite"}
+                                            {party.invited
+                                                ? t("newHk.parties.buttons.invite", "Sent")
+                                                : t("newHk.parties.buttons.invite", "Invite")}
                                         </Button>
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Phone</Label>
+                                    <Label>{t("newHk.parties.fields.phone.label", "Phone")}</Label>
                                     <Input
                                         value={party.phone || ""}
                                         onChange={(e) => updateParty(idx, "phone", e.target.value)}
-                                        placeholder="Phone number"
+                                        placeholder={t("newHk.parties.fields.phone.label", "Phone number")}
                                     />
                                 </div>
                             </div>
@@ -235,7 +299,7 @@ export const PartyWidget = ({
                             <Separator className="my-4" />
 
                             <div className="space-y-2">
-                                <Label>Roles</Label>
+                                <Label>{t("newHk.parties.fields.isDirector.label", "Roles")}</Label>
                                 <div className="flex gap-4">
                                     {["director", "shareholder", "dcp"].map(role => (
                                         <label key={role} className="flex items-center gap-2 border p-2 rounded cursor-pointer hover:bg-muted">
@@ -245,7 +309,7 @@ export const PartyWidget = ({
                                                 onChange={() => toggleRole(idx, role)}
                                                 className="rounded border-gray-300"
                                             />
-                                            <span className="capitalize text-sm">{role}</span>
+                                            <span className="capitalize text-sm">{t(`newHk.parties.roles.${role}`, role)}</span>
                                         </label>
                                     ))}
                                 </div>
@@ -253,7 +317,7 @@ export const PartyWidget = ({
 
                             {(party.roles || []).includes("shareholder") && (
                                 <div className="mt-4 space-y-2">
-                                    <Label>Number of Shares</Label>
+                                    <Label>{t("newHk.parties.fields.shares.label", "Number of Shares")}</Label>
                                     <Input
                                         type="number"
                                         value={party.shares}
@@ -263,13 +327,94 @@ export const PartyWidget = ({
                                 </div>
                             )}
 
+                            {partyFields && partyFields.length > 0 && (
+                                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {partyFields
+                                        .filter((field) => shouldRenderField(party, field))
+                                        .map((field) => {
+                                            const value = getPartyFieldValue(party, field);
+                                            if (field.type === "select") {
+                                                return (
+                                                    <div key={field.key} className="space-y-2">
+                                                        <Label>{t(field.label, field.label)}</Label>
+                                                        <Select
+                                                            value={String(value ?? "")}
+                                                            onValueChange={(v) => updatePartyField(idx, field, v)}
+                                                        >
+                                                            <SelectTrigger className="h-9">
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {(field.options || []).map((opt) => (
+                                                                    <SelectItem key={opt.value} value={opt.value}>
+                                                                        {t(opt.label, opt.label)}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                );
+                                            }
+
+                                            if (field.type === "radio-group") {
+                                                return (
+                                                    <div key={field.key} className="space-y-2 md:col-span-2">
+                                                        <Label>{t(field.label, field.label)}</Label>
+                                                        <div className="flex gap-4">
+                                                            {(field.options || []).map((opt) => (
+                                                                <label key={opt.value} className="flex items-center gap-2">
+                                                                    <input
+                                                                        type="radio"
+                                                                        name={`${party.id || idx}-${field.key}`}
+                                                                        checked={String(value ?? "") === opt.value}
+                                                                        onChange={() => updatePartyField(idx, field, opt.value)}
+                                                                    />
+                                                                    <span className="text-sm">{t(opt.label, opt.label)}</span>
+                                                                </label>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+
+                                            if (field.type === "checkbox") {
+                                                return (
+                                                    <div key={field.key} className="space-y-2">
+                                                        <Label>{t(field.label, field.label)}</Label>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={!!value}
+                                                            onChange={(e) => updatePartyField(idx, field, e.target.checked)}
+                                                            className="rounded border-gray-300"
+                                                        />
+                                                    </div>
+                                                );
+                                            }
+
+                                            return (
+                                                <div key={field.key} className="space-y-2">
+                                                    <Label>{t(field.label, field.label)}</Label>
+                                                    <Input
+                                                        type={field.type === "number" ? "number" : "text"}
+                                                        value={value ?? ""}
+                                                        onChange={(e) => updatePartyField(idx, field, e.target.value)}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                </div>
+                            )}
+
                         </CardContent>
                     </Card>
                 ))}
 
                 {parties.length === 0 && (
                     <div className="text-center py-8 text-muted-foreground border border-dashed rounded-lg">
-                        No parties added yet. Click "Add Party" to begin.
+                        {t(
+                            "newHk.parties.empty",
+                            "No parties added yet. Click \"Add shareholder/director/DCP member\" to begin."
+                        )}
                     </div>
                 )}
             </div>

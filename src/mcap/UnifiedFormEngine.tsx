@@ -455,10 +455,10 @@ export const UnifiedFormEngine = ({
             const infoContent = typeof field.content === "string" ? t(field.content, field.content) : field.content;
             return (
                 <div key={infoKey} className={cn("rounded-md border border-dashed bg-muted/5 p-3 text-sm text-foreground", field.colSpan === 2 && "md:col-span-2")}>
-                        {field.label && <div className="font-semibold text-foreground mb-1">{t(field.label, field.label)}</div>}
-                        {infoContent}
-                    </div>
-                );
+                    {field.label && <div className="font-semibold text-foreground mb-1">{t(field.label, field.label)}</div>}
+                    {infoContent}
+                </div>
+            );
         }
         if (field.type === "derived") {
             const meta = getEntityMeta(dataContext.entityType ?? formData.entityType);
@@ -657,7 +657,12 @@ export const UnifiedFormEngine = ({
                                             {currentStep.fields?.map((field: any) => renderField(field))}
                                         </div>
                                     ) : null}
-                                    <PartyWidget parties={parties} onChange={setParties} companyId={companyId} />
+                                    <PartyWidget
+                                        parties={parties}
+                                        onChange={setParties}
+                                        companyId={companyId}
+                                        partyFields={currentStep.partyFields}
+                                    />
                                 </div>
                             ) : currentStep.widget === "PaymentWidget" ? (
                                 <PaymentWidget
@@ -671,13 +676,20 @@ export const UnifiedFormEngine = ({
                                     initialPaymentStatus={memoizedPaymentStatus}
                                 />
                             ) : currentStep.widget === "ServiceSelectionWidget" ? (
-                                <ServiceSelectionWidget
-                                    config={config}
-                                    data={formData}
-                                    onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
-                                    items={currentStep.serviceItems}
-                                    currency={config.currency}
-                                />
+                                <div className="space-y-6">
+                                    {currentStep.fields?.length ? (
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+                                            {currentStep.fields?.map((field: any) => renderField(field))}
+                                        </div>
+                                    ) : null}
+                                    <ServiceSelectionWidget
+                                        config={config}
+                                        data={formData}
+                                        onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
+                                        items={currentStep.serviceItems}
+                                        currency={config.currency}
+                                    />
+                                </div>
                             ) : currentStep.widget === "InvoiceWidget" ? (
                                 <InvoiceWidget
                                     fees={computedFees}
@@ -724,12 +736,12 @@ export const UnifiedFormEngine = ({
             </div>
 
             {/* Debug Info (Admin Only) */}
-            <div className="mt-8 p-4 bg-slate-100 rounded text-xs font-mono text-slate-500">
+            {/* <div className="mt-8 p-4 bg-slate-100 rounded text-xs font-mono text-slate-500">
                 <p className="font-bold">Form Data State:</p>
                 <pre>{JSON.stringify(formData, null, 2)}</pre>
                 <p className="font-bold mt-2">Parties State:</p>
                 <pre>{JSON.stringify(parties, null, 2)}</pre>
-            </div>
+            </div> */}
         </div>
     );
 };

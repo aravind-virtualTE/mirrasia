@@ -906,12 +906,38 @@
     "bookCycle4": "每年（每 12 個月）*成本最低"
   },
   "invoice": {
-    "desc": "描述",
+    "title": "訂單摘要",
+    "subtotal": "小計",
+    "cardFee": "信用卡手續費",
+    "grandTotal": "應付總額",
+    "proceed": "前往付款",
+    "disclaimer": "繼續操作即表示您同意我們的服務條款和退款政策。",
+    "cardFeeNote": "信用卡手續費將於付款時收取：6% (USD) / 4% (HKD)。",
+    "sections": {
+      "government": {
+        "title": "政府規費",
+        "badge": "強制性",
+        "description": "標準政府申報 및 註冊費用。"
+      },
+      "service": {
+        "title": "本公司服務費",
+        "badge": "服務",
+        "description": "為您的公司成立提供的專業服務與支援。"
+      }
+    },
+    "table": {
+      "description": "服務說明",
+      "qty": "數量",
+      "original": "原價",
+      "amount": "金額",
+      "total": "總計"
+    },
+    "desc": "說明",
     "originalPrice": "原價",
     "discPrice": "折扣價",
     "notes": "備註",
-    "total": "總計（原價）",
-    "totalDisc": "總計（折扣價）",
+    "total": "總計 (原價)",
+    "totalDisc": "總計 (折扣後)",
     "legalPersons": "法人",
     "individuals": "個人"
   },
@@ -2493,7 +2519,7 @@
       "fields": {
         "name": {
           "label": "完整姓名 / 實體名稱",
-          "example": "範例：<b>Jane Doe</b>（個人）或 <b>ABC Holdings Limited</b>（公司股東）。"
+          "example": "範例：Jane Doe（個人）或 ABC Holdings Limited（公司股東）。"
         },
         "email": {
           "label": "電子郵件"
@@ -2536,8 +2562,14 @@
       "buttons": {
         "remove": "移除",
         "add": "+ 新增股東 / 董事",
+        "addMember": "????/??/DCP ??",
         "invite": "發送邀請"
       },
+      "directory": {
+        "placeholder": "????",
+        "addSelected": "????"
+      },
+      "empty": "???????????????/??/DCP ??????",
       "totals": "總股數：{{total}} • 已分配：{{assigned}}",
       "toasts": {
         "invalidEmail": {

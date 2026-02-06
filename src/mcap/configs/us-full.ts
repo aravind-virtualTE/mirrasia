@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { McapConfig } from "./types";
 import { service_list, getEntityBasicPrice, usaList } from "@/pages/Company/USA/constants";
 
@@ -242,90 +243,6 @@ export const US_FULL_CONFIG: McapConfig = {
           condition: (f) => Array.isArray(f.purposeOfEstablishmentCompany) && f.purposeOfEstablishmentCompany.includes("other"),
           colSpan: 2,
         },
-      ],
-    },
-    {
-      id: "services",
-      title: "usa.steps.step5",
-      description: "usa.steps.services.description",
-      fields: [
-        {
-          type: "checkbox-group",
-          name: "serviceItemsSelected",
-          label: "usa.serviceSelection.heading",
-          options: service_list.map((svc) => ({ label: svc.key, value: svc.id })),
-          colSpan: 2,
-        },
-      ],
-    },
-    {
-      id: "parties",
-      title: "newHk.steps.company.sections.c",
-      description: "newHk.company.fields.inviteText",
-      widget: "PartiesManager",
-      minParties: 1,
-      requireDcp: true,
-      requirePartyInvite: true,
-    },
-    {
-      id: "accounting",
-      title: "newHk.steps.acct.title",
-      fields: [
-        {
-          type: "textarea",
-          name: "accountingDataAddress",
-          label: "usa.bInfo.enterAddress",
-          placeholder: "newHk.steps.acct.fields.softNote.placeholder",
-          colSpan: 2,
-          rows: 3,
-        },
-      ],
-    },
-    {
-      id: "payment",
-      title: "usa.steps.step7",
-      description: "usa.steps.payment.description",
-      widget: "PaymentWidget",
-      supportedCurrencies: ["USD", "HKD"],
-      computeFees: (data) => {
-        const base = getEntityBasicPrice(data.selectedState || "", data.selectedEntity || "");
-        const basePrice = Number(base?.price || 0);
-        const selected = Array.isArray(data.serviceItemsSelected) ? data.serviceItemsSelected : [];
-        const optionalItems = service_list
-          .filter((svc) => selected.includes(svc.id))
-          .map((svc) => ({ id: svc.id, label: svc.key, amount: Number(svc.price || 0), kind: "optional" as const }));
-
-        const items = [
-          {
-            id: "base",
-            label: `${data.selectedState || "State"} (${data.selectedEntity || "Entity"})`,
-            amount: basePrice,
-            kind: "service" as const,
-          },
-          ...optionalItems,
-        ];
-
-        const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        const cardFeePct = 0.06; // Standard US card fee
-        const cardFeeSurcharge = data.payMethod === "card" ? total * cardFeePct : 0;
-        const grandTotal = total + cardFeeSurcharge;
-
-        return {
-          currency: "USD",
-          items,
-          total,
-          service: total,
-          government: 0,
-          cardFeePct,
-          cardFeeSurcharge,
-          grandTotal,
-        };
-      },
-    },
-    {
-      id: "registration-details",
-      title: "usa.steps.step8",
-      fields: [
         {
           type: "select",
           name: "totalCapital",
@@ -363,6 +280,65 @@ export const US_FULL_CONFIG: McapConfig = {
           ].map(opt => ({ label: opt, value: opt })),
           colSpan: 2,
         },
+      ],
+    },
+    {
+      id: "services",
+      title: "usa.steps.step5",
+      description: "usa.steps.services.description",
+      widget: "ServiceSelectionWidget",
+      serviceItems: (data: any) => {
+        const base = getEntityBasicPrice(data.selectedState || "", data.selectedEntity || "");
+        const basePrice = Number(base?.price || 0);
+        const baseLabel = `${data.selectedState || "State"} (${data.selectedEntity || "Entity"})`;
+
+        const baseItem = {
+          id: "base",
+          label: baseLabel,
+          amount: basePrice,
+          original: basePrice,
+          info: base?.note,
+          mandatory: true,
+        };
+
+        const optionalItems = service_list.map((svc) => ({
+          id: svc.id,
+          label: svc.key,
+          amount: Number(svc.price || 0),
+          original: Number(svc.price || 0),
+          mandatory: false,
+        }));
+
+        return [baseItem, ...optionalItems];
+      },
+    },
+    {
+      id: "invoice",
+      title: "newHk.steps.invoice.title",
+      description: "newHk.steps.invoice.description",
+      widget: "InvoiceWidget",
+    },
+    {
+      id: "parties",
+      title: "newHk.steps.company.sections.c",
+      description: "newHk.company.fields.inviteText",
+      widget: "PartiesManager",
+      minParties: 1,
+      requireDcp: true,
+      requirePartyInvite: true,
+    },
+    {
+      id: "accounting",
+      title: "newHk.steps.acct.title",
+      fields: [
+        {
+          type: "textarea",
+          name: "accountingDataAddress",
+          label: "usa.bInfo.enterAddress",
+          placeholder: "newHk.steps.acct.fields.softNote.placeholder",
+          colSpan: 2,
+          rows: 3,
+        },
         {
           type: "select",
           name: "localCompanyRegistration",
@@ -385,42 +361,55 @@ export const US_FULL_CONFIG: McapConfig = {
             "There is a separate address to use as a business address in the United States (do not use Mir Asia’s registered address service)",
           colSpan: 2,
         },
-        {
-          type: "info",
-          label: "newHk.review.declarations.title",
-          colSpan: 2,
-        },
-        {
-          type: "checkbox",
-          name: "truthfulnessDeclaration",
-          label: "newHk.review.declarations.truth",
-          required: true,
-          colSpan: 2,
-        },
-        {
-          type: "checkbox",
-          name: "legalTermsAcknowledgment",
-          label: "newHk.review.declarations.terms",
-          required: true,
-          colSpan: 2,
-        },
-        {
-          type: "checkbox",
-          name: "compliancePreconditionAcknowledgment",
-          label: "newHk.review.declarations.compliance",
-          required: true,
-          colSpan: 2,
-        },
-        {
-          type: "text",
-          name: "eSign",
-          label: "newHk.review.esign.label",
-          tooltip: "newHk.review.esign.helper",
-          placeholder: "newHk.review.placeholders.signaturePlaceholder",
-          required: true,
-          colSpan: 2,
-        },
       ],
     },
+    {
+      id: "payment",
+      title: "usa.steps.step7",
+      description: "usa.steps.payment.description",
+      widget: "PaymentWidget",
+      supportedCurrencies: ["USD", "HKD"],
+    },
+    // {
+    //   id: "registration-details",
+    //   title: "usa.steps.step8",
+    //   fields: [
+    //     {
+    //       type: "info",
+    //       label: "newHk.review.declarations.title",
+    //       colSpan: 2,
+    //     },
+    //     {
+    //       type: "checkbox",
+    //       name: "truthfulnessDeclaration",
+    //       label: "newHk.review.declarations.truth",
+    //       required: true,
+    //       colSpan: 2,
+    //     },
+    //     {
+    //       type: "checkbox",
+    //       name: "legalTermsAcknowledgment",
+    //       label: "newHk.review.declarations.terms",
+    //       required: true,
+    //       colSpan: 2,
+    //     },
+    //     {
+    //       type: "checkbox",
+    //       name: "compliancePreconditionAcknowledgment",
+    //       label: "newHk.review.declarations.compliance",
+    //       required: true,
+    //       colSpan: 2,
+    //     },
+    //     {
+    //       type: "text",
+    //       name: "eSign",
+    //       label: "newHk.review.esign.label",
+    //       tooltip: "newHk.review.esign.helper",
+    //       placeholder: "newHk.review.placeholders.signaturePlaceholder",
+    //       required: true,
+    //       colSpan: 2,
+    //     },
+    //   ],
+    // },
   ],
 };
