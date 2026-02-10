@@ -53,7 +53,8 @@ export type McapField = {
   | "derived"
   | "search-select"
   | "info"
-  | "info-list";
+  | "info-list"
+  | "info-block";
   name?: string;
   label?: string;
   placeholder?: string;
@@ -86,7 +87,7 @@ export type McapStep = {
   serviceItems?: any[] | ((data: Record<string, any>, entityMeta?: Record<string, any> | null) => any[]);
   partyFields?: PartyFieldDef[];
   partyCoverageRules?: PartyCoverageRule[];
-  widgetConfig?: RepeatableSectionWidgetConfig;
+  widgetConfig?: any;
 };
 
 export type RepeatableSection = {
@@ -100,6 +101,19 @@ export type RepeatableSection = {
   allowRemove?: boolean;
   itemFields: McapField[];
   condition?: (data: Record<string, any>) => boolean;
+  invite?: {
+    role: string;
+    label?: string;
+    nameKey?: string;
+    emailKey?: string;
+    phoneKey?: string;
+    type?: "person" | "entity";
+    typeKey?: string;
+    entityValue?: string;
+    statusKey?: string;
+    includeDcpFromKey?: string;
+    detailsKeys?: string[];
+  };
 };
 
 export type RepeatableSectionMode = {

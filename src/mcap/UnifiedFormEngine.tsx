@@ -13,7 +13,7 @@ import { ServiceSelectionWidget } from "./fields/ServiceSelectionWidget";
 import { InvoiceWidget } from "./fields/InvoiceWidget";
 import { RepeatableSectionWidget } from "./fields/RepeatableSectionWidget";
 import { PanamaServiceSetupWidget } from "./fields/PanamaServiceSetupWidget";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -117,7 +117,7 @@ export const UnifiedFormEngine = ({
                     initial[cfg.modeField] = "";
                 }
                 applySectionDefaults(cfg.sections);
-                (cfg.modes || []).forEach((mode) => applySectionDefaults(mode.sections));
+                (cfg.modes || []).forEach((mode: any) => applySectionDefaults(mode.sections));
             }
         });
 
@@ -218,12 +218,12 @@ export const UnifiedFormEngine = ({
                 const modeValue = formData[cfg.modeField];
                 if (!modeValue) {
                     const modeLabel =
-                        cfg.preFields?.find((f) => f.name === cfg.modeField)?.label || cfg.modeField;
-                    missing.push(t(modeLabel, modeLabel));
+                        cfg.preFields?.find((f: any) => f.name === cfg.modeField)?.label || cfg.modeField;
+                    missing.push(String(t(String(modeLabel), String(modeLabel))));
                 }
-                const active = cfg.modes.find((m) => m.value === modeValue);
+                const active = cfg.modes.find((m: any) => m.value === modeValue);
                 const sections = active?.sections || [];
-                sections.forEach((section) => {
+                sections.forEach((section: any) => {
                     if (section.condition && !section.condition(formData)) return;
                     const title = section.title ? t(section.title, section.title) : section.fieldName || "Item";
 
@@ -248,7 +248,7 @@ export const UnifiedFormEngine = ({
                     }
                 });
             } else {
-                (cfg.sections || []).forEach((section) => {
+                (cfg.sections || []).forEach((section: any) => {
                     if (section.condition && !section.condition(formData)) return;
                     const title = section.title ? t(section.title, section.title) : section.fieldName || "Item";
 
@@ -413,7 +413,7 @@ export const UnifiedFormEngine = ({
         if (field.condition && !field.condition(dataContext)) return null;
 
         // Type guard: ensure field.name exists for fields that need it
-        if (!field.name && field.type !== "info" && field.type !== "info-list") return null;
+        if (!field.name && field.type !== "info" && field.type !== "info-list" && field.type !== "info-block") return null;
 
         const key = fieldKey || field.name || field.label || `field-${Math.random()}`;
 
@@ -488,6 +488,25 @@ export const UnifiedFormEngine = ({
                 <div key={infoKey} className={cn("rounded-md border border-dashed bg-muted/5 p-3 text-sm text-foreground", field.colSpan === 2 && "md:col-span-2")}>
                     {field.label && <div className="font-semibold text-foreground mb-1">{t(field.label, field.label)}</div>}
                     {infoContent}
+                </div>
+            );
+        }
+        if (field.type === "info-block") {
+            const listKeys = field.listItemKeys || [];
+            const prefix = field.listPrefix || "";
+            return (
+                <div key={key} className={cn("rounded-md border bg-muted/40 p-3 text-[13px] text-foreground", field.colSpan === 2 && "md:col-span-2")}>
+                    <div className="flex items-start gap-2">
+                        <AlertCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                        <div className="space-y-1 leading-relaxed">
+                            {listKeys.map((k) => (
+                                <div key={k}>
+                                    <span className="font-bold">{t(`${prefix}.${k}Title`)}</span>
+                                    {t(`${prefix}.${k}Body`)}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             );
         }
@@ -795,6 +814,7 @@ export const UnifiedFormEngine = ({
                                 <PanamaServiceSetupWidget
                                     data={formData}
                                     onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
+                                    config={currentStep.widgetConfig}
                                 />
                             ) : currentStep.widget === "InvoiceWidget" ? (
                                 <InvoiceWidget
@@ -808,6 +828,7 @@ export const UnifiedFormEngine = ({
                                     config={currentStep.widgetConfig}
                                     data={formData}
                                     onChange={setFormData}
+                                    companyId={companyId}
                                     renderField={renderFieldWithValue}
                                 />
                             ) : (
