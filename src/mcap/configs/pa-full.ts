@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { McapConfig } from "./types";
 
 const PA_PRICES = {
@@ -8,6 +9,51 @@ const PA_PRICES = {
   bank: 2000,
   cbi: 3880,
   recordStorage: 350,
+};
+
+const computePaFees = (data: Record<string, any>) => {
+  const ndSetup = Number(data.pa_ndSetup || 0) as 0 | 1 | 2 | 3;
+  const nsSetup = Boolean(data.pa_nsSetup);
+  const optEmi = Boolean(data.pa_optEmi);
+  const optBank = Boolean(data.pa_optBank);
+  const optCbi = Boolean(data.pa_optCbi);
+  const recordStorage = Boolean(data.recordStorageUseMirr ?? data.pa_recordStorage);
+  const paymentCurrency = String(data.paymentCurrency || data.stripeCurrency || "USD").toUpperCase();
+  const fxRate = paymentCurrency === "HKD"
+    ? Number(data.pa_exchangeRate || data.exchangeRateUsed || 7.8)
+    : 1;
+  const rate = Number.isFinite(fxRate) && fxRate > 0 ? fxRate : 1;
+  const convert = (amountUsd: number) => Number((amountUsd * rate).toFixed(2));
+
+  const itemsUsd = [
+    { id: "base", label: "panama.quoteSetup.base.label", amount: PA_PRICES.base, kind: "service" as const },
+    { id: "ndSetup", label: "panama.quoteSetup.ndSetup.label", amount: PA_PRICES.nd[ndSetup], kind: "service" as const },
+    ...(nsSetup ? [{ id: "nsSetup", label: "panama.quoteSetup.nsSetup.label", amount: PA_PRICES.ns, kind: "optional" as const }] : []),
+    ...(optEmi ? [{ id: "optEmi", label: "panama.quoteSetup.optional.emi", amount: PA_PRICES.emi, kind: "optional" as const }] : []),
+    ...(optBank ? [{ id: "optBank", label: "panama.quoteSetup.optional.bank", amount: PA_PRICES.bank, kind: "optional" as const }] : []),
+    ...(optCbi ? [{ id: "optCbi", label: "panama.quoteSetup.optional.cbi", amount: PA_PRICES.cbi, kind: "optional" as const }] : []),
+    ...(recordStorage ? [{ id: "recordStorage", label: "Record Storage (Mirr)", amount: PA_PRICES.recordStorage, kind: "optional" as const }] : []),
+  ];
+  const items = itemsUsd.map((item) => ({ ...item, amount: convert(item.amount) }));
+
+  const totalUsd = itemsUsd.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const total = Number(items.reduce((sum, item) => sum + Number(item.amount || 0), 0).toFixed(2));
+  const cardFeePct = paymentCurrency === "USD" ? 0.06 : 0.04;
+  const cardFeeSurcharge = data.payMethod === "card" ? Number((total * cardFeePct).toFixed(2)) : 0;
+  const grandTotal = Number((total + cardFeeSurcharge).toFixed(2));
+
+  return {
+    currency: paymentCurrency,
+    items,
+    total,
+    service: total,
+    government: 0,
+    cardFeePct,
+    cardFeeSurcharge,
+    grandTotal,
+    exchangeRateUsed: paymentCurrency === "HKD" ? rate : undefined,
+    originalAmountUsd: totalUsd,
+  };
 };
 
 export const PA_FULL_CONFIG: McapConfig = {
@@ -277,7 +323,6 @@ export const PA_FULL_CONFIG: McapConfig = {
             { label: "newHk.company.fields.currency.options.USD", value: "USD" },
             { label: "newHk.company.fields.currency.options.CNY", value: "CNY" },
             { label: "newHk.company.fields.currency.options.HKD", value: "HKD" },
-            { label: "newHk.company.fields.currency.options.EUR", value: "EUR" },
             { label: "InformationIncorporation.paymentOption_other", value: "Other" },
           ],
         },
@@ -337,24 +382,31 @@ export const PA_FULL_CONFIG: McapConfig = {
     {
       id: "services",
       title: "panama.quoteSetup.title",
-      description: "panama.quoteSetup.subtitle",
+      widget: "PanamaServiceSetupWidget",
       fields: [
         {
           type: "select",
           name: "pa_ndSetup",
-          label: "ppif.invoice.setup.ndSetup.label",
+          label: "panama.quoteSetup.ndSetup.label",
           options: [
-            { label: "ppif.invoice.setup.ndSetup.options.0", value: "0" },
-            { label: "ppif.invoice.setup.ndSetup.options.1", value: "1" },
-            { label: "ppif.invoice.setup.ndSetup.options.2", value: "2" },
-            { label: "ppif.invoice.setup.ndSetup.options.3", value: "3" },
+            { label: "panama.quoteSetup.ndSetup.options.0", value: "0" },
+            { label: "panama.quoteSetup.ndSetup.options.1", value: "1" },
+            { label: "panama.quoteSetup.ndSetup.options.2", value: "2" },
+            { label: "panama.quoteSetup.ndSetup.options.3", value: "3" },
           ],
         },
-        { type: "checkbox", name: "pa_nsSetup", label: "ppif.invoice.setup.nsSetup.label" },
-        { type: "checkbox", name: "pa_optEmi", label: "ppif.invoice.setup.optional.emi" },
-        { type: "checkbox", name: "pa_optBank", label: "ppif.invoice.setup.optional.bank" },
-        { type: "checkbox", name: "pa_optCbi", label: "ppif.invoice.setup.optional.cbi" },
-        { type: "checkbox", name: "pa_recordStorage", label: "ppif.invoice.setup.storage.label" },
+        {
+          type: "textarea",
+          name: "pa_nd3ReasonSetup",
+          label: "panama.quoteSetup.nd3Reason.label",
+          condition: (f) => String(f.pa_ndSetup || "0") === "3",
+          colSpan: 2,
+          rows: 3,
+        },
+        { type: "checkbox", name: "pa_nsSetup", label: "panama.quoteSetup.nsSetup.label" },
+        { type: "checkbox", name: "pa_optEmi", label: "panama.quoteSetup.optional.emi" },
+        { type: "checkbox", name: "pa_optBank", label: "panama.quoteSetup.optional.bank" },
+        { type: "checkbox", name: "pa_optCbi", label: "panama.quoteSetup.optional.cbi" },
       ],
     },
     {
@@ -362,12 +414,38 @@ export const PA_FULL_CONFIG: McapConfig = {
       title: "newHk.company.sections.c",
       description: "newHk.company.fields.inviteText",
       widget: "PartiesManager",
-      minParties: 1,
+      minParties: 3,
       requireDcp: true,
       requirePartyInvite: true,
+      partyFields: [
+        {
+          key: "officeRole",
+          label: "panama.role",
+          type: "select",
+          options: [
+            { label: "panama.rOptions.4", value: "president" },
+            { label: "panama.rOptions.5", value: "treasurer" },
+            { label: "panama.rOptions.3", value: "secretary" },
+          ],
+          storage: "details",
+        },
+      ],
+      partyCoverageRules: [
+        {
+          key: "officeRole",
+          storage: "details",
+          label: "panama.role",
+          requiredValues: ["president", "treasurer", "secretary"],
+          valueLabels: {
+            president: "panama.rOptions.4",
+            treasurer: "panama.rOptions.5",
+            secretary: "panama.rOptions.3",
+          },
+        },
+      ],
     },
     {
-      id: "accounting",
+      id: "acct",
       title: "newHk.steps.acct.title",
       fields: [
         {
@@ -414,45 +492,168 @@ export const PA_FULL_CONFIG: McapConfig = {
       ],
     },
     {
+      id: "bylaws",
+      title: "ppif.section7",
+      fields: [
+        {
+          type: "radio-group",
+          name: "bylawsMode",
+          label: "ppif.bylaws.modes.label",
+          required: true,
+          colSpan: 2,
+          options: [
+            { label: "ppif.bylaws.modes.standard", value: "standard" },
+            { label: "ppif.bylaws.modes.custom", value: "custom" },
+          ],
+        },
+        {
+          type: "textarea",
+          name: "bylawsPowers",
+          label: "ppif.bylaws.fields.powers.label",
+          condition: (f) => f.bylawsMode === "custom",
+          colSpan: 2,
+          rows: 4,
+        },
+        {
+          type: "textarea",
+          name: "bylawsAdmin",
+          label: "ppif.bylaws.fields.admin.label",
+          condition: (f) => f.bylawsMode === "custom",
+          colSpan: 2,
+          rows: 4,
+        },
+      ],
+    },
+    {
+      id: "es",
+      title: "ppif.section8",
+      fields: [
+        { type: "info", label: "ppif.section8", content: "ppif.es.description", colSpan: 2 },
+      ],
+    },
+    {
+      id: "banking",
+      title: "ppif.section9",
+      fields: [
+        {
+          type: "radio-group",
+          name: "bankingNeed",
+          label: "ppif.banking.need.label",
+          required: true,
+          colSpan: 2,
+          options: [
+            { label: "ppif.banking.need.options.need", value: "need" },
+            { label: "ppif.banking.need.options.none", value: "none" },
+            { label: "ppif.banking.need.options.later", value: "later" },
+          ],
+        },
+        {
+          type: "select",
+          name: "bankingBizType",
+          label: "ppif.banking.bizType.label",
+          options: [
+            { label: "ppif.banking.bizType.options.consulting", value: "consulting" },
+            { label: "ppif.banking.bizType.options.ecommerce", value: "ecommerce" },
+            { label: "ppif.banking.bizType.options.investment", value: "investment" },
+            { label: "ppif.banking.bizType.options.crypto", value: "crypto" },
+            { label: "ppif.banking.bizType.options.manufacturing", value: "manufacturing" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "pep",
+      title: "ppif.section10",
+      fields: [
+        {
+          type: "radio-group",
+          name: "pepAny",
+          label: "ppif.pep.label",
+          colSpan: 2,
+          options: [
+            { label: "ppif.pep.options.yes", value: "yes" },
+            { label: "ppif.pep.options.no", value: "no" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "deliverables",
+      title: "ppif.section12",
+      fields: [
+        {
+          type: "info-list",
+          label: "ppif.deliverables.left.title",
+          listPrefix: "ppif.deliverables.left.items",
+          listItemKeys: [
+            "publicDeed",
+            "publicDeedTranslation",
+            "registryCert",
+            "registryCertTranslation",
+            "foundationCert",
+            "foundationCertTranslation",
+            "councilRegister",
+            "councilAcceptance",
+            "bylaws",
+            "boardMeeting",
+            "incumbencyCert",
+            "nomineeAgreement",
+            "companyChop",
+          ],
+          colSpan: 2,
+        },
+        { type: "info", label: "ppif.deliverables.right.title", content: "ppif.deliverables.right.note", colSpan: 2 },
+        { type: "text", name: "shippingRecipientCompany", label: "ppif.deliverables.right.fields.recipientCompany.label", required: true, colSpan: 2 },
+        { type: "text", name: "shippingContactPerson", label: "ppif.deliverables.right.fields.contactPerson.label", required: true, colSpan: 2 },
+        { type: "text", name: "shippingPhone", label: "ppif.deliverables.right.fields.phone.label", required: true, colSpan: 2 },
+        { type: "text", name: "shippingPostalCode", label: "ppif.deliverables.right.fields.postalCode.label", required: true, colSpan: 2 },
+        { type: "textarea", name: "shippingAddress", label: "ppif.deliverables.right.fields.address.label", required: true, colSpan: 2, rows: 4 },
+      ],
+    },
+    {
+      id: "accounting",
+      title: "ppif.section13",
+      fields: [
+        { type: "info", label: "ppif.section13", content: "ppif.accounting.info", colSpan: 2 },
+        {
+          type: "checkbox",
+          name: "recordStorageUseMirr",
+          label: "ppif.accounting.fields.useMirr.label",
+          colSpan: 2,
+        },
+        {
+          type: "textarea",
+          name: "recordStorageAddress",
+          label: "ppif.accounting.fields.address.label",
+          required: true,
+          condition: (f) => !f.recordStorageUseMirr,
+          colSpan: 2,
+          rows: 4,
+        },
+        {
+          type: "text",
+          name: "recordStorageResponsiblePerson",
+          label: "ppif.accounting.fields.responsible.label",
+          required: true,
+          condition: (f) => !f.recordStorageUseMirr,
+          colSpan: 2,
+        },
+      ],
+    },
+    {
+      id: "invoice",
+      title: "usa.steps.step6",
+      description: "usa.steps.invoice.description",
+      widget: "InvoiceWidget",
+      computeFees: (data) => computePaFees(data),
+    },
+    {
       id: "payment",
       title: "usa.steps.step7",
       description: "usa.steps.payment.description",
       widget: "PaymentWidget",
       supportedCurrencies: ["USD", "HKD"],
-      computeFees: (data) => {
-        const ndSetup = Number(data.pa_ndSetup || 0) as 0 | 1 | 2 | 3;
-        const nsSetup = Boolean(data.pa_nsSetup);
-        const optEmi = Boolean(data.pa_optEmi);
-        const optBank = Boolean(data.pa_optBank);
-        const optCbi = Boolean(data.pa_optCbi);
-        const recordStorage = Boolean(data.pa_recordStorage);
-
-        const items = [
-          { id: "base", label: "panama.quoteSetup.base", amount: PA_PRICES.base, kind: "service" as const },
-          { id: "ndSetup", label: "ppif.invoice.setup.ndSetup.label", amount: PA_PRICES.nd[ndSetup], kind: "service" as const },
-          ...(nsSetup ? [{ id: "nsSetup", label: "ppif.invoice.setup.nsSetup.label", amount: PA_PRICES.ns, kind: "optional" as const }] : []),
-          ...(optEmi ? [{ id: "optEmi", label: "ppif.invoice.setup.optional.emi", amount: PA_PRICES.emi, kind: "optional" as const }] : []),
-          ...(optBank ? [{ id: "optBank", label: "ppif.invoice.setup.optional.bank", amount: PA_PRICES.bank, kind: "optional" as const }] : []),
-          ...(optCbi ? [{ id: "optCbi", label: "ppif.invoice.setup.optional.cbi", amount: PA_PRICES.cbi, kind: "optional" as const }] : []),
-          ...(recordStorage ? [{ id: "recordStorage", label: "ppif.invoice.setup.storage.label", amount: PA_PRICES.recordStorage, kind: "optional" as const }] : []),
-        ];
-
-        const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        const cardFeePct = 0.06; // Standard US/PA card fee
-        const cardFeeSurcharge = data.payMethod === "card" ? total * cardFeePct : 0;
-        const grandTotal = total + cardFeeSurcharge;
-
-        return {
-          currency: "USD",
-          items,
-          total,
-          service: total,
-          government: 0,
-          cardFeePct,
-          cardFeeSurcharge,
-          grandTotal,
-        };
-      },
+      computeFees: (data) => computePaFees(data),
     },
   ],
 };

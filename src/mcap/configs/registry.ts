@@ -67,6 +67,7 @@ const mergePartiesIntoCompany = (steps: McapStep[]) => {
   companyStep.requireDcp = partiesStep.requireDcp ?? companyStep.requireDcp;
   companyStep.requirePartyInvite = partiesStep.requirePartyInvite ?? companyStep.requirePartyInvite;
   companyStep.partyFields = partiesStep.partyFields ?? companyStep.partyFields;
+  companyStep.partyCoverageRules = partiesStep.partyCoverageRules ?? companyStep.partyCoverageRules;
   if (!companyStep.description && partiesStep.description) {
     companyStep.description = partiesStep.description;
   }

@@ -377,7 +377,7 @@ export function ServiceSelectionWidget({
                     <div className="flex items-center gap-4">
                         <div className="space-y-1">
                             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                                {t("service.paymentCurrency", "Payment Currency")}
+                                {t("service.paymentCurrency", "Payment Currency For Card Payment")}
                             </label>
                             <div className="flex items-center gap-2">
                                 <Select value={selectedCurrency} onValueChange={handleCurrencyChange} disabled={isLocked}>

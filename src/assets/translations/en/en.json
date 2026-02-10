@@ -1701,7 +1701,9 @@
           "emiAccount": "EMI e-Account Opening (basic) Free",
           "initialMandatoryTotal": "Initial mandatory total",
           "totalInclOptions": "Total incl. options",
-          "footnote": "Assumes standard profile (5 individual shareholders). Notarization/translation/apostille & complex KYC are extra."
+          "footnote": "Assumes standard profile (5 individual shareholders). Notarization/translation/apostille & complex KYC are extra.",
+          "securityPrepay": "Accounting/Tax Prepayment",
+          "securityDeposit": "Nominee Director Deposit"
         }
       },
       "toast": {
@@ -2553,6 +2555,7 @@
             "no": "No"
           }
         },
+        "roleSelectionPrompt": "Select the options that the member will be",
         "shares": {
           "label": "Number of shares"
         },
@@ -2655,7 +2658,7 @@
         "bz": "Belize Corporation Incorporation + 1 Year Management",
         "cn": "Establishment of a Chinese corporation + 1 year of management",
         "vn": "Establishment of a Vietnamese corporation + 1 year of management",
-        "cw": "Establishment of a CuraÃ§ao corporation + 1 year of management",
+        "cw": "Establishment of a CuraÃao corporation + 1 year of management",
         "kz": "Establishment of a Kazakhstani corporation + 1 year of management",
         "tw": "Establishment of Taiwanese corporation + 1 year of management",
         "ph": "Establishment of a Philippine corporation + 1 year of management",
@@ -2744,6 +2747,86 @@
         "bp-en": "Business Plan (English)",
         "token-ecosystem": "Token Ecosystem",
         "other": "Other:"
+      }
+    }
+  },
+  "service": {
+    "grandTotal": "Grand Total",
+    "note": "Government fees are statutory and mandatory. Optional services can be toggled to customize your package.",
+    "lockedNote": "After payment, selections are locked.",
+    "paymentCurrency": "Payment Currency For Card Payment",
+    "currencyNote": "All prices are originally computed in USD. Conversion rates are updated live."
+  },
+  "mcap": {
+    "payment": {
+      "securePayment": "Secure Payment",
+      "totalToPay": "Total to pay:",
+      "cancel": "Cancel",
+      "pay": "Pay {{amount}}",
+      "success": "Payment Successful!",
+      "successDesc": "Your payment has been processed and verified. Our accounting team has been notified.",
+      "paymentId": "Payment ID",
+      "amountPaid": "Amount Paid",
+      "status": "Status",
+      "paid": "Paid",
+      "rejected": "Rejected",
+      "pendingReview": "Pending Review",
+      "adminApproved": "Admin Approved",
+      "stripeStatus": "Stripe Status",
+      "receipt": "Receipt",
+      "viewReceipt": "View Receipt",
+      "refreshStatus": "Refresh Status",
+      "continue": "Continue to Next Step",
+      "proofSubmitted": "Proof Submitted",
+      "proofSubmittedDesc": "Your bank transfer proof has been uploaded. Our accounting team will verify the payment and update the status within 24 hours.",
+      "reference": "Reference",
+      "amountDue": "Amount Due",
+      "proofDocument": "Proof Document",
+      "viewProof": "View Proof",
+      "proofDenied": "Your previous proof was denied. Please upload a new receipt.",
+      "proofDeniedShort": "Your proof was denied. Please delete it and upload a new receipt.",
+      "proofDeleteNote": "If your proof is denied, you can delete it below and upload a new one.",
+      "deleteReupload": "Delete & Re-upload",
+      "waitingApproval": "Waiting for admin approval. You can continue after approval.",
+      "selectMethod": "Select Payment Method",
+      "cardPayment": "Card Payment",
+      "cardPaymentDesc": "Secure payment via Stripe",
+      "bankTransfer": "Bank Transfer",
+      "bankTransferDesc": "Wire transfer to our account",
+      "details": "Payment Details",
+      "cardRedirectNote": "You will be redirected to a secure payment drawer to complete your purchase using a credit or debit card.",
+      "subtotal": "Subtotal",
+      "cardFee": "Card Processing Fee",
+      "totalAmount": "Total Amount",
+      "proceedToPay": "Proceed to Pay",
+      "totalToTransfer": "Total Amount to Transfer",
+      "noCardFeeNote": "No card processing fees apply to bank transfers.",
+      "refNumber": "Reference Number (Optional)",
+      "refPlaceholder": "e.g. REF-123456",
+      "uploadProof": "Upload Receipt/Proof",
+      "supportedFormats": "Supported formats: PDF, JPG, PNG.",
+      "submitProof": "Submit Proof",
+      "errors": {
+        "confirmFailed": "Failed to confirm payment.",
+        "deleteFailed": "Failed to delete proof.",
+        "fetchFailed": "Failed to fetch payment status.",
+        "paymentFailed": "Payment failed. Please try again.",
+        "serverSyncFailed": "Payment confirmed but server communication failed.",
+        "unexpected": "An unexpected error occurred.",
+        "generic": "Error",
+        "notSaved": "Application not saved.",
+        "stripeInitFailed": "Could not initialize Stripe.",
+        "networkError": "Network error initializing payment.",
+        "uploadFailed": "Upload failed.",
+        "uploadException": "Upload exception."
+      },
+      "messages": {
+        "success": "Success",
+        "proofUploaded": "Proof uploaded successfully.",
+        "updated": "Updated",
+        "statusRefreshed": "Payment status refreshed.",
+        "deleted": "Deleted",
+        "proofRemoved": "Proof removed. Please upload a new file."
       }
     }
   }

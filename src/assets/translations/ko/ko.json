@@ -953,7 +953,7 @@
     "numSharestTip": "설립 후 신주 발행 및 주식 양도와 같은 자본 증가에는 추가 비용이 발생하므로 주식 수와 자본금을 신중히 결정하시기 바랍니다. 향후 주식을 양도할 계획이 있는 경우 원하는 비율로 주식을 나눌 수 있도록 주식 수를 효율적으로 설정하는 것이 좋습니다. 예를 들어, 설립 시 10주를 발행한 경우, 전체 주식의 33.33%를 다른 파트너에게 양도하려면 비율에 맞게 추가 주식을 발행해야 하므로 과정이 복잡해질 수 있습니다. 또한 설립 시 주당 액면가를 HKD 1로 발행한 후 미래 투자자에게 HKD 5 차이를 두고 싶다면 이를 미리 고려하시기 바랍니다."
   },
   "businessIndustry": {
-      "empty": "\uc544\uc9c1 \uad6c\uc131\uc6d0\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \"\uc8fc\uc8fc/\uc774\uc0ac/DCP \uad6c\uc131\uc6d0 \ucd94\uac00\"\ub97c \ud074\ub9ad\ud574 \uc2dc\uc791\ud558\uc138\uc694.",
+    "empty": "\uc544\uc9c1 \uad6c\uc131\uc6d0\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \"\uc8fc\uc8fc/\uc774\uc0ac/DCP \uad6c\uc131\uc6d0 \ucd94\uac00\"\ub97c \ud074\ub9ad\ud574 \uc2dc\uc791\ud558\uc138\uc694.",
     "cropAnimalProduction": "작물 및 동물 생산, 수렵 및 관련 서비스 활동",
     "forestryActivities": "임업 활동",
     "fishingAndAquaculture": "어업 및 양식업",
@@ -1696,7 +1696,9 @@
           "emiAccount": "EMI 전자 계좌 개설 (기본) 무료",
           "initialMandatoryTotal": "초기 필수 총액",
           "totalInclOptions": "옵션 포함 총액",
-          "footnote": "표준 프로필 (개인 주주 5명 이하) 기준. 공증/번역/아포스티유 및 복잡한 KYC는 별도 비용입니다."
+          "footnote": "표준 프로필 (개인 주주 5명 이하) 기준. 공증/번역/아포스티유 및 복잡한 KYC는 별도 비용입니다.",
+          "securityPrepay": "회계/세금 선납",
+          "securityDeposit": "명목상 이사 보증금"
         }
       },
       "toast": {
@@ -2542,6 +2544,7 @@
             "no": "아니요"
           }
         },
+        "roleSelectionPrompt": "\ud574\ub2f9 \uad6c\uc131\uc6d0\uc774 \ub9e1\uc744 \ud56d\ubaa9\uc744 \uc120\ud0dd\ud558\uc138\uc694",
         "shares": {
           "label": "주식 수"
         },
@@ -2735,5 +2738,87 @@
         "other": "기타:"
       }
     }
+  },
+  "service": {
+    "grandTotal": "총합계",
+    "note": "정부 수수료는 법정 필수 사항입니다. 선택 사항 서비스를 전환하여 패키지를 맞춤 설정할 수 있습니다.",
+    "lockedNote": "결제 후에는 선택 사항이 잠금 처리되어 수정할 수 없습니다.",
+    "paymentCurrency": "카드 결제 시 결제 통화",
+    "currencyNote": "모든 가격은 원래 USD로 계산됩니다. 환율은 실시간으로 업데이트됩니다."
+  },
+  "mcap": {
+    "payment": {
+      "securePayment": "보안 결제",
+      "totalToPay": "총 결제 금액:",
+      "cancel": "취소",
+      "pay": "{{amount}} 결제하기",
+      "success": "결제 성공!",
+      "successDesc": "결제가 처리 및 확인되었습니다. 당사 회계팀에 알림이 전송되었습니다.",
+      "paymentId": "결제 ID",
+      "amountPaid": "결제 금액",
+      "status": "상태",
+      "paid": "결제 완료",
+      "rejected": "거절됨",
+      "pendingReview": "검토 대기 중",
+      "adminApproved": "관리자 승인됨",
+      "stripeStatus": "Stripe 상태",
+      "receipt": "영수증",
+      "viewReceipt": "영수증 보기",
+      "refreshStatus": "상태 새로고침",
+      "continue": "다음 단계로 계속",
+      "proofSubmitted": "증빙 제출 완료",
+      "proofSubmittedDesc": "은행 송금 증빙이 업로드되었습니다. 회계팀에서 결제 확인 후 24시간 이내에 상태를 업데이트할 예정입니다.",
+      "reference": "참조 번호",
+      "amountDue": "미납 금액",
+      "proofDocument": "증빙 서류",
+      "viewProof": "증빙 보기",
+      "proofDenied": "이전 증빙이 거절되었습니다. 새 영수증을 업로드해 주세요.",
+      "proofDeniedShort": "증빙이 거절되었습니다. 기존 파일을 삭제하고 새 영수증을 업로드해 주세요.",
+      "proofDeleteNote": "증빙이 거절된 경우, 아래에서 삭제하고 새로 업로드할 수 있습니다.",
+      "deleteReupload": "삭제 후 재업로드",
+      "waitingApproval": "관리자 승인을 기다리는 중입니다. 승인 후 계속 진행할 수 있습니다.",
+      "selectMethod": "결제 수단 선택",
+      "cardPayment": "카드 결제",
+      "cardPaymentDesc": "Stripe를 통한 보안 결제",
+      "bankTransfer": "은행 송금",
+      "bankTransferDesc": "당사 계좌로 무통장 입금/해외 송금",
+      "details": "결제 상세 정보",
+      "cardRedirectNote": "신용카드 또는 체크카드로 구매를 완료할 수 있도록 보안 결제창으로 이동합니다.",
+      "subtotal": "소계",
+      "cardFee": "카드 결제 수수료",
+      "totalAmount": "총 금액",
+      "proceedToPay": "결제 진행",
+      "totalToTransfer": "총 송금 금액",
+      "noCardFeeNote": "은행 송금 시에는 카드 결제 수수료가 적용되지 않습니다.",
+      "refNumber": "참조 번호 (선택 사항)",
+      "refPlaceholder": "예: REF-123456",
+      "uploadProof": "영수증/증빙 업로드",
+      "supportedFormats": "지원 형식: PDF, JPG, PNG.",
+      "submitProof": "증빙 제출",
+      "errors": {
+        "confirmFailed": "결제 확인에 실패했습니다.",
+        "deleteFailed": "증빙 삭제에 실패했습니다.",
+        "fetchFailed": "결제 상태를 가져오지 못했습니다.",
+        "paymentFailed": "결제에 실패했습니다. 다시 시도해 주세요.",
+        "serverSyncFailed": "결제는 확인되었으나 서버 통신에 실패했습니다.",
+        "unexpected": "예기치 않은 오류가 발생했습니다.",
+        "generic": "오류",
+        "notSaved": "신청서가 저장되지 않았습니다.",
+        "stripeInitFailed": "Stripe를 초기화할 수 없습니다.",
+        "networkError": "결제 초기화 중 네트워크 오류가 발생했습니다.",
+        "uploadFailed": "업로드에 실패했습니다.",
+        "uploadException": "업로드 중 예외가 발생했습니다."
+      },
+      "messages": {
+        "success": "성공",
+        "proofUploaded": "증빙이 성공적으로 업로드되었습니다.",
+        "updated": "업데이트됨",
+        "statusRefreshed": "결제 상태가 새로고침되었습니다.",
+        "deleted": "삭제됨",
+        "proofRemoved": "증빙이 제거되었습니다. 새 파일을 업로드해 주세요."
+      }
+    }
   }
 }
+
+

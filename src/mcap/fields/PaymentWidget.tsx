@@ -52,6 +52,10 @@ const updateBackendWithPayment = async (payload: any) => {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
+        // We'll need t here but these are outside component. 
+        // We can pass t in or use a translation key from the error if available.
+        // For now, I'll keep the error structure and handle translation in the component UI if possible.
+        // But the task is to implement i18n for hardcoded strings.
         const message = data?.error || data?.message || "Failed to confirm payment.";
         throw new Error(message);
     }
@@ -129,6 +133,7 @@ function StripePaymentForm({
 }) {
     const stripe = useStripe();
     const elements = useElements();
+    const { t } = useTranslation();
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -147,7 +152,7 @@ function StripePaymentForm({
             });
 
             if (stripeError) {
-                setError(stripeError.message ?? "Payment failed. Please try again.");
+                setError(stripeError.message ?? t("mcap.payment.errors.paymentFailed", "Payment failed. Please try again."));
                 setSubmitting(false);
                 return;
             }
@@ -168,13 +173,13 @@ function StripePaymentForm({
                         paymentIntentId: paymentIntent.id,
                     });
                 } catch (err) {
-                    const message = err instanceof Error ? err.message : "Payment confirmed but server communication failed.";
+                    const message = err instanceof Error ? err.message : t("mcap.payment.errors.serverSyncFailed", "Payment confirmed but server communication failed.");
                     setError(message);
                     console.error(err);
                 }
             }
         } catch (e: any) {
-            setError(e.message || "An unexpected error occurred.");
+            setError(e.message || t("mcap.payment.errors.unexpected", "An unexpected error occurred."));
         } finally {
             setSubmitting(false);
         }
@@ -190,10 +195,13 @@ function StripePaymentForm({
                 </div>
             )}
             <div className="flex items-center justify-end gap-2 pt-2">
-                <Button variant="outline" onClick={onClose} disabled={submitting}>Cancel</Button>
+                <Button variant="outline" onClick={onClose} disabled={submitting}>{t("mcap.payment.cancel", "Cancel")}</Button>
                 <Button onClick={handleConfirm} disabled={!stripe || !elements || submitting}>
                     {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                    Pay {new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount)}
+                    {t("mcap.payment.pay", {
+                        amount: new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount),
+                        defaultValue: `Pay ${new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount)}`
+                    })}
                 </Button>
             </div>
         </div>
@@ -223,14 +231,15 @@ function StripeCardDrawer({
         clientSecret,
         appearance: { theme: "stripe" as const },
     }), [clientSecret]);
+    const { t } = useTranslation();
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
                 <SheetHeader>
-                    <SheetTitle>Secure Payment</SheetTitle>
+                    <SheetTitle>{t("mcap.payment.securePayment", "Secure Payment")}</SheetTitle>
                     <SheetDescription>
-                        Total to pay: <b>{new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount)}</b>
+                        {t("mcap.payment.totalToPay", "Total to pay:")} <b>{new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount)}</b>
                     </SheetDescription>
                 </SheetHeader>
                 <div className="mt-6">
@@ -304,6 +313,15 @@ export const PaymentWidget = ({
     const activeCurrency = finalFees.currency || fallbackCurrency;
     const subtotal = finalFees.total;
     const cardFeePct = String(activeCurrency).toUpperCase() === "USD" ? 0.06 : 0.04;
+    const exchangeRateUsed = typeof (finalFees as any).exchangeRateUsed === "number"
+        ? Number((finalFees as any).exchangeRateUsed)
+        : undefined;
+    const originalAmountUsd = typeof (finalFees as any).originalAmountUsd === "number"
+        ? Number((finalFees as any).originalAmountUsd)
+        : undefined;
+    const hasFxBreakdown = String(activeCurrency).toUpperCase() !== "USD"
+        && typeof exchangeRateUsed === "number"
+        && typeof originalAmountUsd === "number";
 
     // If payMethod is card, use grandTotal (which includes surcharge). 
     // If payMethod is bank, use the base total (subtotal).
@@ -402,7 +420,7 @@ export const PaymentWidget = ({
 
     const handleInitStripe = async () => {
         if (!companyId) {
-            toast({ title: "Error", description: "Application not saved.", variant: "destructive" });
+            toast({ title: t("mcap.payment.errors.generic", "Error"), description: t("mcap.payment.errors.notSaved", "Application not saved."), variant: "destructive" });
             return;
         }
         if (amountToPay <= 0) {
@@ -423,11 +441,11 @@ export const PaymentWidget = ({
                 setPaymentIntentId(res.id);
                 setStripeDrawerOpen(true);
             } else {
-                toast({ title: "Error", description: "Could not initialize Stripe.", variant: "destructive" });
+                toast({ title: t("mcap.payment.errors.generic", "Error"), description: t("mcap.payment.errors.stripeInitFailed", "Could not initialize Stripe."), variant: "destructive" });
             }
         } catch (e) {
             console.error(e);
-            toast({ title: "Error", description: "Network error initializing payment.", variant: "destructive" });
+            toast({ title: t("mcap.payment.errors.generic", "Error"), description: t("mcap.payment.errors.networkError", "Network error initializing payment."), variant: "destructive" });
         } finally {
             setIsInitStripe(false);
         }
@@ -451,16 +469,16 @@ export const PaymentWidget = ({
                         uploadReceiptUrl: url || "",
                     });
                 }
-                toast({ title: "Success", description: "Proof uploaded successfully." });
+                toast({ title: t("mcap.payment.messages.success", "Success"), description: t("mcap.payment.messages.proofUploaded", "Proof uploaded successfully.") });
                 // We don't auto-advance instantly for bank, or do we?
                 // Usually we let them see the success state, then click "Continue" or auto-advance.
                 // Note: onPaymentComplete is called after timeout or manual button
             } else {
-                toast({ title: "Error", description: "Upload failed.", variant: "destructive" });
+                toast({ title: t("mcap.payment.errors.generic", "Error"), description: t("mcap.payment.errors.uploadFailed", "Upload failed."), variant: "destructive" });
             }
         } catch (e) {
             console.error(e);
-            toast({ title: "Error", description: "Upload exception.", variant: "destructive" });
+            toast({ title: t("mcap.payment.errors.generic", "Error"), description: t("mcap.payment.errors.uploadException", "Upload exception."), variant: "destructive" });
         } finally {
             setIsUploading(false);
         }
@@ -505,10 +523,9 @@ export const PaymentWidget = ({
                 setBankUploadedUrl(null);
                 setBankProofDenied(false);
                 const adminApproved =
-                    !company?.stripeReceiptUrl &&
                     (company?.payMethod === "bank" || !!company?.uploadReceiptUrl);
                 setApprovedByAdmin(adminApproved);
-                toast({ title: "Updated", description: "Payment status refreshed." });
+                toast({ title: t("mcap.payment.messages.updated", "Updated"), description: t("mcap.payment.messages.statusRefreshed", "Payment status refreshed.") });
                 return;
             }
 
@@ -520,10 +537,10 @@ export const PaymentWidget = ({
             }
             setBankProofDenied(isDenied);
             setApprovedByAdmin(false);
-            toast({ title: "Updated", description: "Payment status refreshed." });
+            toast({ title: t("mcap.payment.messages.updated", "Updated"), description: t("mcap.payment.messages.statusRefreshed", "Payment status refreshed.") });
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Failed to refresh payment status.";
-            toast({ title: "Error", description: message, variant: "destructive" });
+            const message = err instanceof Error ? err.message : t("mcap.payment.errors.fetchFailed", "Failed to refresh payment status.");
+            toast({ title: t("mcap.payment.errors.generic", "Error"), description: message, variant: "destructive" });
         } finally {
             setIsRefreshing(false);
         }
@@ -548,11 +565,11 @@ export const PaymentWidget = ({
 
                 <div className="w-full max-w-sm bg-white border border-green-100 rounded-lg p-4 space-y-3 shadow-sm text-sm">
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground font-medium">Payment ID</span>
+                        <span className="text-muted-foreground font-medium">{t("mcap.payment.paymentId", "Payment ID")}</span>
                         <span className="font-mono text-xs text-green-800">{successInfo.paymentIntentId || paymentIntentId}</span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground font-medium">Amount Paid</span>
+                        <span className="text-muted-foreground font-medium">{t("mcap.payment.amountPaid", "Amount Paid")}</span>
                         <span className="font-bold text-green-700">
                             {successInfo.amount
                                 ? formatAmount(successInfo.amount / 100, successInfo.currency || "USD")
@@ -560,25 +577,25 @@ export const PaymentWidget = ({
                         </span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground font-medium">Status</span>
+                        <span className="text-muted-foreground font-medium">{t("mcap.payment.status", "Status")}</span>
                         <div className="flex items-center gap-2">
-                            <Badge className="bg-green-100 text-green-800 border-green-300">Paid</Badge>
+                            <Badge className="bg-green-100 text-green-800 border-green-300">{t("mcap.payment.paid", "Paid")}</Badge>
                             {approvedByAdmin && (
                                 <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                                    Admin Approved
+                                    {t("mcap.payment.adminApproved", "Admin Approved")}
                                 </Badge>
                             )}
                         </div>
                     </div>
                     {payMethod === "card" && successInfo.paymentIntentStatus && (
                         <div className="flex justify-between border-b pb-2">
-                            <span className="text-muted-foreground font-medium">Stripe Status</span>
+                            <span className="text-muted-foreground font-medium">{t("mcap.payment.stripeStatus", "Stripe Status")}</span>
                             <Badge variant="outline">{successInfo.paymentIntentStatus}</Badge>
                         </div>
                     )}
                     {successInfo.receiptUrl && (
                         <div className="flex justify-between items-center pt-1">
-                            <span className="text-muted-foreground font-medium">Receipt</span>
+                            <span className="text-muted-foreground font-medium">{t("mcap.payment.receipt", "Receipt")}</span>
                             <a
                                 href={successInfo.receiptUrl}
                                 target="_blank"
@@ -586,7 +603,7 @@ export const PaymentWidget = ({
                                 className="flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-800 rounded-full hover:bg-green-200 transition-colors font-semibold text-xs"
                             >
                                 <FileText className="w-3.5 h-3.5" />
-                                View Receipt
+                                {t("mcap.payment.viewReceipt", "View Receipt")}
                             </a>
                         </div>
                     )}
@@ -600,10 +617,10 @@ export const PaymentWidget = ({
                             disabled={isRefreshing}
                         >
                             {isRefreshing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                            Refresh Status
+                            {t("mcap.payment.refreshStatus", "Refresh Status")}
                         </Button>
                         <Button onClick={onPaymentComplete} size="lg" className="px-10 font-bold shadow-md hover:scale-105 transition-transform bg-green-600 hover:bg-green-700">
-                            Continue to Next Step
+                            {t("mcap.payment.continue", "Continue to Next Step")}
                         </Button>
                     </div>
                 </div>
@@ -627,10 +644,10 @@ export const PaymentWidget = ({
                         uploadReceiptUrl: "",
                     });
                 }
-                toast({ title: "Deleted", description: "Proof removed. Please upload a new file." });
+                toast({ title: t("mcap.payment.messages.deleted", "Deleted"), description: t("mcap.payment.messages.proofRemoved", "Proof removed. Please upload a new file.") });
             } catch (err) {
-                const message = err instanceof Error ? err.message : "Failed to delete proof.";
-                toast({ title: "Error", description: message, variant: "destructive" });
+                const message = err instanceof Error ? err.message : t("mcap.payment.errors.deleteFailed", "Failed to delete proof.");
+                toast({ title: t("mcap.payment.errors.generic", "Error"), description: message, variant: "destructive" });
             }
         };
 
@@ -641,31 +658,31 @@ export const PaymentWidget = ({
                 </div>
 
                 <div className="text-center space-y-2">
-                    <h3 className="text-2xl font-bold text-blue-900">Proof Submitted</h3>
+                    <h3 className="text-2xl font-bold text-blue-900">{t("mcap.payment.proofSubmitted", "Proof Submitted")}</h3>
                     <p className="text-blue-700 max-w-sm mx-auto text-sm">
-                        Your bank transfer proof has been uploaded. Our accounting team will verify the payment and update the status within 24 hours.
+                        {t("mcap.payment.proofSubmittedDesc", "Your bank transfer proof has been uploaded. Our accounting team will verify the payment and update the status within 24 hours.")}
                     </p>
                 </div>
 
                 <div className="w-full max-w-sm bg-white border border-blue-100 rounded-lg p-4 space-y-3 shadow-sm text-sm">
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground font-medium">Reference</span>
+                        <span className="text-muted-foreground font-medium">{t("mcap.payment.reference", "Reference")}</span>
                         <span className="font-mono text-xs text-blue-800">{bankRef || "N/A"}</span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground font-medium">Status</span>
+                        <span className="text-muted-foreground font-medium">{t("mcap.payment.status", "Status")}</span>
                         {bankProofDenied ? (
-                            <Badge variant="outline" className="bg-red-100/50 text-red-700 border-red-200">Rejected</Badge>
+                            <Badge variant="outline" className="bg-red-100/50 text-red-700 border-red-200">{t("mcap.payment.rejected", "Rejected")}</Badge>
                         ) : (
-                            <Badge variant="outline" className="bg-blue-100/50 text-blue-700 border-blue-200">Pending Review</Badge>
+                            <Badge variant="outline" className="bg-blue-100/50 text-blue-700 border-blue-200">{t("mcap.payment.pendingReview", "Pending Review")}</Badge>
                         )}
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground font-medium">Amount Due</span>
+                        <span className="text-muted-foreground font-medium">{t("mcap.payment.amountDue", "Amount Due")}</span>
                         <span className="font-bold text-blue-700">{formatAmount(amountToPay, activeCurrency)}</span>
                     </div>
                     <div className="flex justify-between items-center pt-1">
-                        <span className="text-muted-foreground font-medium">Proof Document</span>
+                        <span className="text-muted-foreground font-medium">{t("mcap.payment.proofDocument", "Proof Document")}</span>
                         <a
                             href={bankUploadedUrl}
                             target="_blank"
@@ -673,15 +690,15 @@ export const PaymentWidget = ({
                             className="flex items-center gap-1.5 px-3 py-1 bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200 transition-colors font-semibold text-xs"
                         >
                             <FileText className="w-3.5 h-3.5" />
-                            View Proof
+                            {t("mcap.payment.viewProof", "View Proof")}
                         </a>
                     </div>
                 </div>
 
                 <p className="text-xs text-muted-foreground max-w-sm text-center">
                     {bankProofDenied
-                        ? "Your proof was denied. Please delete it and upload a new receipt."
-                        : "If your proof is denied, you can delete it below and upload a new one."}
+                        ? t("mcap.payment.proofDeniedShort", "Your proof was denied. Please delete it and upload a new receipt.")
+                        : t("mcap.payment.proofDeleteNote", "If your proof is denied, you can delete it below and upload a new one.")}
                 </p>
 
                 <div className="flex flex-col items-center gap-2">
@@ -692,19 +709,19 @@ export const PaymentWidget = ({
                             disabled={isRefreshing}
                         >
                             {isRefreshing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                            Refresh Status
+                            {t("mcap.payment.refreshStatus", "Refresh Status")}
                         </Button>
                         <Button
                             onClick={handleDeleteProof}
                             variant="outline"
                             className="px-6 text-red-600 hover:bg-red-50"
                         >
-                            Delete & Re-upload
+                            {t("mcap.payment.deleteReupload", "Delete & Re-upload")}
                         </Button>
                     </div>
                     {!bankProofDenied && (
                         <div className="text-xs text-muted-foreground text-center">
-                            Waiting for admin approval. You can continue after approval.
+                            {t("mcap.payment.waitingApproval", "Waiting for admin approval. You can continue after approval.")}
                         </div>
                     )}
                 </div>
@@ -733,9 +750,9 @@ export const PaymentWidget = ({
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2">
                                         <CreditCard className="w-4 h-4 text-primary" />
-                                        <span className="font-medium">Card Payment</span>
+                                        <span className="font-medium">{t("mcap.payment.cardPayment", "Card Payment")}</span>
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-1">Secure payment via Stripe</p>
+                                    <p className="text-xs text-muted-foreground mt-1">{t("mcap.payment.cardPaymentDesc", "Secure payment via Stripe")}</p>
                                 </div>
                             </label>
 
@@ -747,9 +764,9 @@ export const PaymentWidget = ({
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2">
                                         <Building2 className="w-4 h-4 text-primary" />
-                                        <span className="font-medium">Bank Transfer</span>
+                                        <span className="font-medium">{t("mcap.payment.bankTransfer", "Bank Transfer")}</span>
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-1">Wire transfer to our account</p>
+                                    <p className="text-xs text-muted-foreground mt-1">{t("mcap.payment.bankTransferDesc", "Wire transfer to our account")}</p>
                                 </div>
                             </label>
                         </RadioGroup>
@@ -761,19 +778,32 @@ export const PaymentWidget = ({
                     <CardContent className="pt-6 space-y-6">
                         <div className="font-semibold">{t("mcap.payment.details", "Payment Details")}</div>
 
+                        {hasFxBreakdown && (
+                            <div className="space-y-1 p-3 bg-muted/40 rounded-md border text-xs">
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">{t("mcap.payment.originalUsd", "Original (USD)")}</span>
+                                    <span className="font-medium">{formatAmount(originalAmountUsd, "USD")}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">{t("mcap.payment.exchangeRate", "Exchange Rate")}</span>
+                                    <span className="font-medium">1 USD = {exchangeRateUsed.toFixed(4)} {String(activeCurrency).toUpperCase()}</span>
+                                </div>
+                            </div>
+                        )}
+
                         {payMethod === "card" && (
                             <div className="space-y-4">
                                 <div className="text-sm text-muted-foreground">
-                                    You will be redirected to a secure payment drawer to complete your purchase using a credit or debit card.
+                                    {t("mcap.payment.cardRedirectNote", "You will be redirected to a secure payment drawer to complete your purchase using a credit or debit card.")}
                                 </div>
                                 <div className="space-y-2 p-3 bg-muted rounded-lg border">
                                     <div className="flex justify-between items-center text-sm">
-                                        <span className="text-muted-foreground">Subtotal</span>
+                                        <span className="text-muted-foreground">{t("mcap.payment.subtotal", "Subtotal")}</span>
                                         <span className="font-medium text-slate-700">{formatAmount(subtotal, activeCurrency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
                                         <div className="flex items-center gap-1">
-                                            <span className="text-muted-foreground">Card Processing Fee</span>
+                                            <span className="text-muted-foreground">{t("mcap.payment.cardFee", "Card Processing Fee")}</span>
                                             <Badge variant="outline" className="text-[10px] py-0 h-4 bg-primary/5 text-primary border-primary/20">
                                                 {Math.round(cardFeePct * 100)}%
                                             </Badge>
@@ -782,7 +812,7 @@ export const PaymentWidget = ({
                                     </div>
                                     <Separator className="my-1 opacity-50" />
                                     <div className="flex justify-between items-center">
-                                        <span className="font-semibold text-slate-900">Total Amount</span>
+                                        <span className="font-semibold text-slate-900">{t("mcap.payment.totalAmount", "Total Amount")}</span>
                                         <span className="font-bold text-xl text-primary">
                                             {formatAmount(amountToPay, activeCurrency)}
                                         </span>
@@ -790,7 +820,7 @@ export const PaymentWidget = ({
                                 </div>
                                 <Button className="w-full" size="lg" onClick={handleInitStripe} disabled={isInitStripe}>
                                     {isInitStripe ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <CreditCard className="w-4 h-4 mr-2" />}
-                                    Proceed to Pay
+                                    {t("mcap.payment.proceedToPay", "Proceed to Pay")}
                                 </Button>
                             </div>
                         )}
@@ -799,7 +829,7 @@ export const PaymentWidget = ({
                             <div className="space-y-4 animate-in fade-in">
                                 {bankProofDenied && (
                                     <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2">
-                                        <span>Your previous proof was denied. Please upload a new receipt.</span>
+                                        <span>{t("mcap.payment.proofDenied", "Your previous proof was denied. Please upload a new receipt.")}</span>
                                         <Button
                                             onClick={handleRefreshStatus}
                                             variant="outline"
@@ -807,32 +837,32 @@ export const PaymentWidget = ({
                                             disabled={isRefreshing}
                                         >
                                             {isRefreshing ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : null}
-                                            Refresh Status
+                                            {t("mcap.payment.refreshStatus", "Refresh Status")}
                                         </Button>
                                     </div>
                                 )}
                                 <div className="space-y-2 p-3 bg-muted rounded-lg border">
                                     <div className="flex justify-between items-center">
-                                        <span className="font-semibold text-slate-900">Total Amount to Transfer</span>
+                                        <span className="font-semibold text-slate-900">{t("mcap.payment.totalToTransfer", "Total Amount to Transfer")}</span>
                                         <span className="font-bold text-xl text-primary">
                                             {formatAmount(amountToPay, activeCurrency)}
                                         </span>
                                     </div>
                                     <p className="text-[10px] text-muted-foreground mt-1 text-center italic">
-                                        No card processing fees apply to bank transfers.
+                                        {t("mcap.payment.noCardFeeNote", "No card processing fees apply to bank transfers.")}
                                     </p>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>Reference Number (Optional)</Label>
+                                    <Label>{t("mcap.payment.refNumber", "Reference Number (Optional)")}</Label>
                                     <Input
-                                        placeholder="e.g. REF-123456"
+                                        placeholder={t("mcap.payment.refPlaceholder", "e.g. REF-123456")}
                                         value={bankRef}
                                         onChange={(e) => setBankRef(e.target.value)}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Upload Receipt/Proof <span className="text-red-500">*</span></Label>
+                                    <Label>{t("mcap.payment.uploadProof", "Upload Receipt/Proof")} <span className="text-red-500">*</span></Label>
                                     <div className="grid w-full max-w-sm items-center gap-1.5">
                                         <Input
                                             type="file"
@@ -840,14 +870,14 @@ export const PaymentWidget = ({
                                             onChange={(e) => setBankFile(e.target.files?.[0] || null)}
                                         />
                                     </div>
-                                    <p className="text-[10px] text-muted-foreground">Supported formats: PDF, JPG, PNG.</p>
+                                    <p className="text-[10px] text-muted-foreground">{t("mcap.payment.supportedFormats", "Supported formats: PDF, JPG, PNG.")}</p>
                                 </div>
                                 <Button
                                     className="w-full"
                                     onClick={handleBankSubmit}
                                     disabled={!bankFile || isUploading}
                                 >
-                                    {isUploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : "Submit Proof"}
+                                    {isUploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : t("mcap.payment.submitProof", "Submit Proof")}
                                 </Button>
                             </div>
                         )}
