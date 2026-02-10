@@ -373,6 +373,7 @@
                 "designTitle": "Design",
                 "designBody": "① Fixed list (named) ② By class (spouse/descendants/guardians, etc.) ③ Hybrid. For privacy/flexibility, class-based is common.",
                 "lowTitle": "Letter of Wishes",
+                "lowSeparator": " — ",
                 "lowBody": "A Letter of Wishes gives testamentary guidance (who/when/how much) and is relied on in practice."
             },
             "modes": {
@@ -1845,7 +1846,7 @@
             "saveFailed": "Save failed",
             "saveFailedDesc": "Failed to save your form data",
             "completed": "Form completed!",
-            "completedDesc":"Thank you for providing all the information. Please submit the form.",
+            "completedDesc": "Thank you for providing all the information. Please submit the form.",
             "required": "Required field",
             "requiredDesc": "This field is required",
             "validationError": "Validation error",

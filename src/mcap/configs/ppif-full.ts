@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { McapConfig } from "./types";
 
 const PIF_PRICES = {
@@ -8,6 +9,51 @@ const PIF_PRICES = {
   bank: 2000,
   cbi: 3880,
   recordStorage: 350,
+};
+
+const computePpifFees = (data: Record<string, any>) => {
+  const ndSetup = Number(data.pa_ndSetup || 0) as 0 | 1 | 2 | 3;
+  const nsSetup = Boolean(data.pa_nsSetup);
+  const optEmi = Boolean(data.pa_optEmi);
+  const optBank = Boolean(data.pa_optBank);
+  const optCbi = Boolean(data.pa_optCbi);
+  const recordStorage = Boolean(data.recordStorageUseMirr ?? data.pa_recordStorage);
+  const paymentCurrency = String(data.paymentCurrency || data.stripeCurrency || "USD").toUpperCase();
+  const fxRate = paymentCurrency === "HKD"
+    ? Number(data.pa_exchangeRate || data.exchangeRateUsed || 7.8)
+    : 1;
+  const rate = Number.isFinite(fxRate) && fxRate > 0 ? fxRate : 1;
+  const convert = (amountUsd: number) => Number((amountUsd * rate).toFixed(2));
+
+  const itemsUsd = [
+    { id: "base", label: "ppif.invoice.setup.entity.label", amount: PIF_PRICES.base, kind: "service" as const },
+    { id: "ndSetup", label: "ppif.invoice.setup.ndSetup.label", amount: PIF_PRICES.nd[ndSetup], kind: "service" as const },
+    ...(nsSetup ? [{ id: "nsSetup", label: "ppif.invoice.setup.nsSetup.label", amount: PIF_PRICES.ns, kind: "optional" as const }] : []),
+    ...(optEmi ? [{ id: "optEmi", label: "ppif.invoice.setup.optional.emi", amount: PIF_PRICES.emi, kind: "optional" as const }] : []),
+    ...(optBank ? [{ id: "optBank", label: "ppif.invoice.setup.optional.bank", amount: PIF_PRICES.bank, kind: "optional" as const }] : []),
+    ...(optCbi ? [{ id: "optCbi", label: "ppif.invoice.setup.optional.cbi", amount: PIF_PRICES.cbi, kind: "optional" as const }] : []),
+    ...(recordStorage ? [{ id: "recordStorage", label: "ppif.accounting.fields.useMirr.label", amount: PIF_PRICES.recordStorage, kind: "optional" as const }] : []),
+  ];
+  const items = itemsUsd.map((item) => ({ ...item, amount: convert(item.amount) }));
+
+  const totalUsd = itemsUsd.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const total = Number(items.reduce((sum, item) => sum + Number(item.amount || 0), 0).toFixed(2));
+  const cardFeePct = paymentCurrency === "USD" ? 0.06 : 0.04;
+  const cardFeeSurcharge = data.payMethod === "card" ? Number((total * cardFeePct).toFixed(2)) : 0;
+  const grandTotal = Number((total + cardFeeSurcharge).toFixed(2));
+
+  return {
+    currency: paymentCurrency,
+    items,
+    total,
+    service: total,
+    government: 0,
+    cardFeePct,
+    cardFeeSurcharge,
+    grandTotal,
+    exchangeRateUsed: paymentCurrency === "HKD" ? rate : undefined,
+    originalAmountUsd: totalUsd,
+  };
 };
 
 export const PPIF_FULL_CONFIG: McapConfig = {
@@ -31,7 +77,6 @@ export const PPIF_FULL_CONFIG: McapConfig = {
     {
       id: "profile",
       title: "ppif.section2",
-      description: "ppif.profile.description",
       fields: [
         { type: "info", label: "ppif.profile.namingGuidelines.title", content: "ppif.profile.namingGuidelines.body", colSpan: 2 },
         { type: "text", name: "foundationNameEn", label: "ppif.profile.nameChoices.first.label", required: true, colSpan: 2 },
@@ -46,13 +91,13 @@ export const PPIF_FULL_CONFIG: McapConfig = {
           label: "ppif.profile.sourceOfFunds.label",
           required: true,
           options: [
-            { label: "ppif.profile.sourceOfFunds.options.employment", value: "Employment Income" },
-            { label: "ppif.profile.sourceOfFunds.options.savings", value: "Savings/Deposits" },
-            { label: "ppif.profile.sourceOfFunds.options.investment", value: "Investment Income (stocks/bonds/funds)" },
-            { label: "ppif.profile.sourceOfFunds.options.loan", value: "Loan" },
-            { label: "ppif.profile.sourceOfFunds.options.sale", value: "Proceeds from Sale of Company/Shares" },
-            { label: "ppif.profile.sourceOfFunds.options.business", value: "Business Income/Dividends" },
-            { label: "ppif.profile.sourceOfFunds.options.inheritance", value: "Inheritance/Gift" },
+            { label: "ppif.profile.sourceOfFunds.options.Employment Income", value: "Employment Income" },
+            { label: "ppif.profile.sourceOfFunds.options.Savings/Deposits", value: "Savings/Deposits" },
+            { label: "ppif.profile.sourceOfFunds.options.Investment Income (stocks/bonds/funds)", value: "Investment Income (stocks/bonds/funds)" },
+            { label: "ppif.profile.sourceOfFunds.options.Loan", value: "Loan" },
+            { label: "ppif.profile.sourceOfFunds.options.Proceeds from Sale of Company/Shares", value: "Proceeds from Sale of Company/Shares" },
+            { label: "ppif.profile.sourceOfFunds.options.Business Income/Dividends", value: "Business Income/Dividends" },
+            { label: "ppif.profile.sourceOfFunds.options.Inheritance/Gift", value: "Inheritance/Gift" },
             { label: "ppif.profile.sourceOfFunds.options.other", value: "other" },
           ],
         },
@@ -137,6 +182,17 @@ export const PPIF_FULL_CONFIG: McapConfig = {
               { type: "email", name: "email", label: "ppif.founders.email.label" },
               { type: "text", name: "tel", label: "ppif.founders.phone.label" },
             ],
+            invite: {
+              role: "founder",
+              label: "ppif.founders.buttons.invite",
+              nameKey: "name",
+              emailKey: "email",
+              phoneKey: "tel",
+              typeKey: "type",
+              entityValue: "corporate",
+              statusKey: "status",
+              detailsKeys: ["type", "id", "status"],
+            },
           },
         ],
       },
@@ -158,20 +214,20 @@ export const PPIF_FULL_CONFIG: McapConfig = {
             ],
             colSpan: 2,
           },
-          { type: "info", label: "ppif.council.individuals.title", content: "ppif.council.individuals.note", colSpan: 2, condition: (f) => f.councilMode !== "corp1" },
-          { type: "info", label: "ppif.council.corporate.title", content: "ppif.council.corporate.note", colSpan: 2, condition: (f) => f.councilMode === "corp1" },
+          { type: "info", label: "ppif.council.individuals.title", content: "ppif.council.individuals.note", colSpan: 2, condition: (f: { councilMode: string; }) => f.councilMode !== "corp1" },
+          { type: "info", label: "ppif.council.corporate.title", content: "ppif.council.corporate.note", colSpan: 2, condition: (f: { councilMode: string; }) => f.councilMode === "corp1" },
           {
             type: "checkbox",
             name: "useNomineeDirector",
             label: "ppif.council.individuals.nominee.checkboxLabel",
             colSpan: 2,
-            condition: (f) => f.councilMode === "ind3",
+            condition: (f: { councilMode: string; }) => f.councilMode === "ind3",
           },
           {
             type: "select",
             name: "nomineePersons",
             label: "ppif.council.individuals.nominee.countLabel",
-            condition: (f) => f.councilMode === "ind3" && f.useNomineeDirector,
+            condition: (f: { councilMode: string; useNomineeDirector: any; }) => f.councilMode === "ind3" && f.useNomineeDirector,
             options: [
               { label: "ppif.council.individuals.nominee.options.1", value: "1" },
               { label: "ppif.council.individuals.nominee.options.2", value: "2" },
@@ -208,6 +264,16 @@ export const PPIF_FULL_CONFIG: McapConfig = {
                     ],
                   },
                 ],
+                invite: {
+                  role: "council",
+                  label: "ppif.council.buttons.invite",
+                  nameKey: "name",
+                  emailKey: "email",
+                  phoneKey: "tel",
+                  statusKey: "status",
+                  includeDcpFromKey: "isDcp",
+                  detailsKeys: ["id", "isDcp", "status"],
+                },
               },
             ],
           },
@@ -225,6 +291,15 @@ export const PPIF_FULL_CONFIG: McapConfig = {
                   { type: "text", name: "signatory", label: "ppif.council.corporate.fields.signatory.label" },
                   { type: "email", name: "email", label: "ppif.council.corporate.fields.email.label" },
                 ],
+                invite: {
+                  role: "council",
+                  label: "ppif.council.buttons.invite",
+                  nameKey: "corpMain",
+                  emailKey: "email",
+                  type: "entity",
+                  statusKey: "status",
+                  detailsKeys: ["addrRep", "signatory", "status"],
+                },
               },
             ],
           },
@@ -240,7 +315,8 @@ export const PPIF_FULL_CONFIG: McapConfig = {
           {
             type: "radio-group",
             name: "protectorsEnabled",
-            label: "ppif.protectors.controls.label",
+            label: "ppif.protectors.info.body",
+            tooltip: "ppif.protectors.info.examples",
             required: true,
             options: [
               { label: "ppif.protectors.controls.appoint", value: "yes" },
@@ -257,11 +333,19 @@ export const PPIF_FULL_CONFIG: McapConfig = {
             minItems: 1,
             addLabel: "ppif.protectors.controls.add",
             itemLabel: "ppif.shared.repeater.title",
-            condition: (f) => f.protectorsEnabled === "yes",
+            condition: (f: { protectorsEnabled: string; }) => f.protectorsEnabled === "yes",
             itemFields: [
               { type: "text", name: "name", label: "ppif.shared.repeater.fields.name.label", required: true },
               { type: "text", name: "contact", label: "ppif.shared.repeater.fields.contact.label" },
             ],
+            invite: {
+              role: "protector",
+              label: "ppif.protectors.buttons.invite",
+              nameKey: "name",
+              emailKey: "contact",
+              statusKey: "status",
+              detailsKeys: ["status"],
+            },
           },
         ],
       },
@@ -273,9 +357,14 @@ export const PPIF_FULL_CONFIG: McapConfig = {
       widgetConfig: {
         preFields: [
           {
-            type: "radio-group",
+            type: "info-block",
+            listPrefix: "ppif.beneficiaries.info",
+            listItemKeys: ["design", "low"],
+            colSpan: 2,
+          },
+          {
+            type: "radio",
             name: "beneficiariesMode",
-            label: "ppif.beneficiaries.modes.label",
             required: true,
             options: [
               { label: "ppif.beneficiaries.modes.fixed", value: "fixed" },
@@ -300,11 +389,19 @@ export const PPIF_FULL_CONFIG: McapConfig = {
             minItems: 1,
             addLabel: "ppif.beneficiaries.controls.add",
             itemLabel: "ppif.shared.repeater.title",
-            condition: (f) => f.beneficiariesMode !== "class",
+            // condition: (f) => f.beneficiariesMode !== "class",
             itemFields: [
               { type: "text", name: "name", label: "ppif.shared.repeater.fields.name.label", required: true },
               { type: "text", name: "contact", label: "ppif.shared.repeater.fields.contact.label" },
             ],
+            invite: {
+              role: "beneficiary",
+              label: "ppif.beneficiaries.buttons.invite",
+              nameKey: "name",
+              emailKey: "contact",
+              statusKey: "status",
+              detailsKeys: ["status"],
+            },
           },
         ],
       },
@@ -316,7 +413,6 @@ export const PPIF_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "bylawsMode",
-          label: "ppif.bylaws.modes.label",
           required: true,
           colSpan: 2,
           options: [
@@ -462,6 +558,27 @@ export const PPIF_FULL_CONFIG: McapConfig = {
       id: "deliverables",
       title: "ppif.section12",
       fields: [
+        {
+          type: "info-list",
+          label: "ppif.deliverables.left.title",
+          listPrefix: "ppif.deliverables.left.items",
+          listItemKeys: [
+            "publicDeed",
+            "publicDeedTranslation",
+            "registryCert",
+            "registryCertTranslation",
+            "foundationCert",
+            "foundationCertTranslation",
+            "councilRegister",
+            "councilAcceptance",
+            "bylaws",
+            "boardMeeting",
+            "incumbencyCert",
+            "nomineeAgreement",
+            "companyChop",
+          ],
+          colSpan: 2,
+        },
         { type: "info", label: "ppif.deliverables.right.title", content: "ppif.deliverables.right.note", colSpan: 2 },
         { type: "text", name: "shippingRecipientCompany", label: "ppif.deliverables.right.fields.recipientCompany.label", required: true, colSpan: 2 },
         { type: "text", name: "shippingContactPerson", label: "ppif.deliverables.right.fields.contactPerson.label", required: true, colSpan: 2 },
@@ -502,13 +619,14 @@ export const PPIF_FULL_CONFIG: McapConfig = {
     },
     {
       id: "services",
-      title: "ppif.section14",
+      title: "ppif.invoice.title",
+      widget: "PanamaServiceSetupWidget",
+      widgetConfig: { basePrice: PIF_PRICES.base, tPrefix: "ppif.invoice" },
       fields: [
         {
           type: "select",
-          name: "pif_ndSetup",
+          name: "pa_ndSetup",
           label: "ppif.invoice.setup.ndSetup.label",
-          defaultValue: "0",
           options: [
             { label: "ppif.invoice.setup.ndSetup.options.0", value: "0" },
             { label: "ppif.invoice.setup.ndSetup.options.1", value: "1" },
@@ -518,16 +636,16 @@ export const PPIF_FULL_CONFIG: McapConfig = {
         },
         {
           type: "textarea",
-          name: "pif_nd3ReasonSetup",
+          name: "pa_nd3ReasonSetup",
           label: "ppif.invoice.setup.ndSetup.reason.label",
-          condition: (f) => String(f.pif_ndSetup || "0") === "3",
+          condition: (f) => String(f.pa_ndSetup || "0") === "3",
           colSpan: 2,
           rows: 3,
         },
-        { type: "checkbox", name: "pif_nsSetup", label: "ppif.invoice.setup.nsSetup.label" },
-        { type: "checkbox", name: "pif_optEmi", label: "ppif.invoice.setup.optional.emi" },
-        { type: "checkbox", name: "pif_optBank", label: "ppif.invoice.setup.optional.bank" },
-        { type: "checkbox", name: "pif_optCbi", label: "ppif.invoice.setup.optional.cbi" },
+        { type: "checkbox", name: "pa_nsSetup", label: "ppif.invoice.setup.nsSetup.label" },
+        { type: "checkbox", name: "pa_optEmi", label: "ppif.invoice.setup.optional.emi" },
+        { type: "checkbox", name: "pa_optBank", label: "ppif.invoice.setup.optional.bank" },
+        { type: "checkbox", name: "pa_optCbi", label: "ppif.invoice.setup.optional.cbi" },
       ],
     },
     {
@@ -543,44 +661,17 @@ export const PPIF_FULL_CONFIG: McapConfig = {
       ],
     },
     {
+      id: "invoice",
+      title: "ppif.section14",
+      widget: "InvoiceWidget",
+      computeFees: (data) => computePpifFees(data),
+    },
+    {
       id: "payment",
       title: "ppif.section15",
       widget: "PaymentWidget",
       supportedCurrencies: ["USD", "HKD"],
-      computeFees: (data) => {
-        const ndSetup = Number(data.pif_ndSetup || 0) as 0 | 1 | 2 | 3;
-        const nsSetup = Boolean(data.pif_nsSetup);
-        const optEmi = Boolean(data.pif_optEmi);
-        const optBank = Boolean(data.pif_optBank);
-        const optCbi = Boolean(data.pif_optCbi);
-        const recordStorage = Boolean(data.recordStorageUseMirr);
-
-        const items = [
-          { id: "base", label: "ppif.invoice.setup.entity.label", amount: PIF_PRICES.base, kind: "service" as const },
-          { id: "ndSetup", label: "ppif.invoice.setup.ndSetup.label", amount: PIF_PRICES.nd[ndSetup], kind: "service" as const },
-          ...(nsSetup ? [{ id: "nsSetup", label: "ppif.invoice.setup.nsSetup.label", amount: PIF_PRICES.ns, kind: "optional" as const }] : []),
-          ...(optEmi ? [{ id: "optEmi", label: "ppif.invoice.setup.optional.emi", amount: PIF_PRICES.emi, kind: "optional" as const }] : []),
-          ...(optBank ? [{ id: "optBank", label: "ppif.invoice.setup.optional.bank", amount: PIF_PRICES.bank, kind: "optional" as const }] : []),
-          ...(optCbi ? [{ id: "optCbi", label: "ppif.invoice.setup.optional.cbi", amount: PIF_PRICES.cbi, kind: "optional" as const }] : []),
-          ...(recordStorage ? [{ id: "recordStorage", label: "ppif.invoice.setup.storage.label", amount: PIF_PRICES.recordStorage, kind: "optional" as const }] : []),
-        ];
-
-        const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        const cardFeePct = 0.06; // Standard Panama card fee
-        const cardFeeSurcharge = data.payMethod === "card" ? total * cardFeePct : 0;
-        const grandTotal = total + cardFeeSurcharge;
-
-        return {
-          currency: "USD",
-          items,
-          total,
-          service: total,
-          government: 0,
-          cardFeePct,
-          cardFeeSurcharge,
-          grandTotal,
-        };
-      },
+      computeFees: (data) => computePpifFees(data),
     },
   ],
 };

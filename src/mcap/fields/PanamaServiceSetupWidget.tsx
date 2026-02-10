@@ -26,6 +26,10 @@ const ND_PRICES: Record<number, number> = {
 type PanamaServiceSetupWidgetProps = {
     data: Record<string, any>;
     onChange: (data: Record<string, any>) => void;
+    config?: {
+        basePrice?: number;
+        tPrefix?: string;
+    };
 };
 
 const round2 = (value: number) => Number((value || 0).toFixed(2));
@@ -37,7 +41,9 @@ const toCurrency = (amount: number, currency: string) => (
     }).format(round2(amount))
 );
 
-export function PanamaServiceSetupWidget({ data, onChange }: PanamaServiceSetupWidgetProps) {
+export function PanamaServiceSetupWidget({ data, onChange, config }: PanamaServiceSetupWidgetProps) {
+    const basePrice = config?.basePrice ?? BASE_SETUP_CORP;
+    const tPrefix = config?.tPrefix ?? "panama.quoteSetup";
     const { t } = useTranslation();
     const isLocked = data.paymentStatus === "paid";
     const selectedCurrency = String(data.paymentCurrency || data.stripeCurrency || "USD").toUpperCase();
@@ -104,14 +110,14 @@ export function PanamaServiceSetupWidget({ data, onChange }: PanamaServiceSetupW
     const optCbi = Boolean(data.pa_optCbi);
 
     const totalUsd = useMemo(() => {
-        return BASE_SETUP_CORP
+        return basePrice
             + ND_PRICES[ndSetup]
             + (nsSetup ? PRICE_NS : 0)
             + (optEmi ? PRICE_EMI : 0)
             + (optBank ? PRICE_BANK : 0)
             + (optCbi ? PRICE_CBI : 0)
             + (useMirrStorage ? PRICE_RECORD_STORAGE : 0);
-    }, [ndSetup, nsSetup, optEmi, optBank, optCbi, useMirrStorage]);
+    }, [basePrice, ndSetup, nsSetup, optEmi, optBank, optCbi, useMirrStorage]);
 
     const toDisplayAmount = (usdAmount: number) => (
         selectedCurrency === "HKD" ? round2(usdAmount * displayRate) : round2(usdAmount)
@@ -148,7 +154,7 @@ export function PanamaServiceSetupWidget({ data, onChange }: PanamaServiceSetupW
         <div className="space-y-4">
             {isLocked && (
                 <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-                    {t("panama.quoteSetup.lockedMessage")}
+                    {t(`${tPrefix}.lockedMessage`)}
                 </div>
             )}
 
@@ -156,45 +162,45 @@ export function PanamaServiceSetupWidget({ data, onChange }: PanamaServiceSetupW
                 <CardContent className="space-y-3 pt-4">
                     <div className="flex items-center justify-between border-b pb-2">
                         <div className="text-sm font-medium">
-                            {t("panama.quoteSetup.base.label", "Panama Incorporation Base Setup")}
+                            {t(`${tPrefix}.base.label`, "Panama Incorporation Base Setup")}
                             <span className="ml-1 text-xs text-muted-foreground">
-                                {t("panama.quoteSetup.base.note", "(includes government fees, Resident Agent, Registered Office)")}
+                                {t(`${tPrefix}.base.note`, "(includes government fees, Resident Agent, Registered Office)")}
                             </span>
                         </div>
-                        <div className="text-sm font-semibold">{formatAmount(BASE_SETUP_CORP)}</div>
+                        <div className="text-sm font-semibold">{formatAmount(basePrice)}</div>
                     </div>
 
                     <div className="grid gap-2 md:grid-cols-[1fr_240px] md:items-center">
-                        <Label className="text-sm">{t("panama.quoteSetup.ndSetup.label")}</Label>
+                        <Label className="text-sm">{t(`${tPrefix}.ndSetup.label`)}</Label>
                         <Select
                             value={String(data.pa_ndSetup ?? "0")}
                             onValueChange={(v) => setField("pa_ndSetup", v)}
                             disabled={isLocked}
                         >
                             <SelectTrigger className="h-9">
-                                <SelectValue placeholder={t("panama.quoteSetup.ndSetup.placeholder", "Select")} />
+                                <SelectValue placeholder={t(`${tPrefix}.ndSetup.placeholder`, "Select")} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="0">{t("panama.quoteSetup.ndSetup.options.0")}</SelectItem>
-                                <SelectItem value="1">{t("panama.quoteSetup.ndSetup.options.1", { price: formatAmount(ND_PRICES[1]) })}</SelectItem>
-                                <SelectItem value="2">{t("panama.quoteSetup.ndSetup.options.2", { price: formatAmount(ND_PRICES[2]) })}</SelectItem>
-                                <SelectItem value="3">{t("panama.quoteSetup.ndSetup.options.3", { price: formatAmount(ND_PRICES[3]) })}</SelectItem>
+                                <SelectItem value="0">{t(`${tPrefix}.ndSetup.options.0`)}</SelectItem>
+                                <SelectItem value="1">{t(`${tPrefix}.ndSetup.options.1`, { price: formatAmount(ND_PRICES[1]) })}</SelectItem>
+                                <SelectItem value="2">{t(`${tPrefix}.ndSetup.options.2`, { price: formatAmount(ND_PRICES[2]) })}</SelectItem>
+                                <SelectItem value="3">{t(`${tPrefix}.ndSetup.options.3`, { price: formatAmount(ND_PRICES[3]) })}</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
                     {String(data.pa_ndSetup || "0") === "3" && (
                         <div className="space-y-1">
-                            <Label className="text-sm">{t("panama.quoteSetup.nd3Reason.label")}</Label>
+                            <Label className="text-sm">{t(`${tPrefix}.ndSetup.reason.label`)}</Label>
                             <Textarea
                                 rows={3}
                                 value={String(data.pa_nd3ReasonSetup || "")}
                                 onChange={(e) => setField("pa_nd3ReasonSetup", e.target.value)}
                                 disabled={isLocked}
-                                placeholder={t("panama.quoteSetup.nd3Reason.placeholder", "")}
+                                placeholder={t(`${tPrefix}.ndSetup.reason.placeholder`, "")}
                             />
                             <p className="text-[11px] text-muted-foreground">
-                                {t("panama.quoteSetup.nd3Reason.hint", "")}
+                                {t(`${tPrefix}.ndSetup.reason.hint`, "")}
                             </p>
                         </div>
                     )}
@@ -203,7 +209,7 @@ export function PanamaServiceSetupWidget({ data, onChange }: PanamaServiceSetupW
                         <div className="flex items-center justify-between">
                             <label className="flex items-center gap-2 text-sm">
                                 <Checkbox checked={nsSetup} onCheckedChange={(v) => setField("pa_nsSetup", v === true)} disabled={isLocked} />
-                                <span>{t("panama.quoteSetup.nsSetup.label", { price: formatAmount(PRICE_NS) })}</span>
+                                <span>{t(`${tPrefix}.nsSetup.label`, { price: formatAmount(PRICE_NS) })}</span>
                             </label>
                             <span className="text-sm font-semibold">{formatAmount(PRICE_NS)}</span>
                         </div>
@@ -211,7 +217,7 @@ export function PanamaServiceSetupWidget({ data, onChange }: PanamaServiceSetupW
                         <div className="flex items-center justify-between">
                             <label className="flex items-center gap-2 text-sm">
                                 <Checkbox checked={optEmi} onCheckedChange={(v) => setField("pa_optEmi", v === true)} disabled={isLocked} />
-                                <span>{t("panama.quoteSetup.optional.emi", { price: formatAmount(PRICE_EMI) })}</span>
+                                <span>{t(`${tPrefix}.optional.emi`, { price: formatAmount(PRICE_EMI) })}</span>
                             </label>
                             <span className="text-sm font-semibold">{formatAmount(PRICE_EMI)}</span>
                         </div>
@@ -219,7 +225,7 @@ export function PanamaServiceSetupWidget({ data, onChange }: PanamaServiceSetupW
                         <div className="flex items-center justify-between">
                             <label className="flex items-center gap-2 text-sm">
                                 <Checkbox checked={optBank} onCheckedChange={(v) => setField("pa_optBank", v === true)} disabled={isLocked} />
-                                <span>{t("panama.quoteSetup.optional.bank", { price: formatAmount(PRICE_BANK) })}</span>
+                                <span>{t(`${tPrefix}.optional.bank`, { price: formatAmount(PRICE_BANK) })}</span>
                             </label>
                             <span className="text-sm font-semibold">{formatAmount(PRICE_BANK)}</span>
                         </div>
@@ -227,7 +233,7 @@ export function PanamaServiceSetupWidget({ data, onChange }: PanamaServiceSetupW
                         <div className="flex items-center justify-between">
                             <label className="flex items-center gap-2 text-sm">
                                 <Checkbox checked={optCbi} onCheckedChange={(v) => setField("pa_optCbi", v === true)} disabled={isLocked} />
-                                <span>{t("panama.quoteSetup.optional.cbi", { price: formatAmount(PRICE_CBI) })}</span>
+                                <span>{t(`${tPrefix}.optional.cbi`, { price: formatAmount(PRICE_CBI) })}</span>
                             </label>
                             <span className="text-sm font-semibold">{formatAmount(PRICE_CBI)}</span>
                         </div>
@@ -242,7 +248,7 @@ export function PanamaServiceSetupWidget({ data, onChange }: PanamaServiceSetupW
 
                     <div className="mt-2 rounded-lg bg-primary/10 p-3">
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">{t("panama.quoteSetup.totals.setupY1")}</span>
+                            <span className="text-sm font-medium">{t(`${tPrefix}.totals.setupY1`)}</span>
                             <span className="text-sm font-bold">{toCurrency(toDisplayAmount(totalUsd), selectedCurrency)}</span>
                         </div>
                     </div>
@@ -287,25 +293,25 @@ export function PanamaServiceSetupWidget({ data, onChange }: PanamaServiceSetupW
 
             <Card className="border">
                 <CardContent className="pt-4 text-xs">
-                    <div className="mb-2 font-semibold">{t("panama.quoteSetup.includes.title")}</div>
+                    <div className="mb-2 font-semibold">{t(`${tPrefix}.includes.title`)}</div>
                     <ol className="list-decimal space-y-1 pl-5">
-                        <li>{t("panama.quoteSetup.includes.items.i1")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i2")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i3")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i4")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i5")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i6")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i7")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i8")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i9")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i10")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i11")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i12")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i13")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i14")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i15")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i16")}</li>
-                        <li>{t("panama.quoteSetup.includes.items.i17")}</li>
+                        <li>{t(`${tPrefix}.includes.items.i1`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i2`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i3`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i4`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i5`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i6`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i7`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i8`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i9`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i10`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i11`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i12`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i13`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i14`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i15`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i16`)}</li>
+                        <li>{t(`${tPrefix}.includes.items.i17`)}</li>
                     </ol>
                 </CardContent>
             </Card>
