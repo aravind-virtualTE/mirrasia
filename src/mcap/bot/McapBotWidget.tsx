@@ -167,7 +167,7 @@ export function McapBotWidget() {
             })) || [];
 
             // Build enhanced system instruction with country context
-            const enhancedInstruction = systemInstruction + buildCountryContext() + `\n\nIMPORTANT: When users ask about incorporation in any country, always mention that they can start the incorporation process immediately by clicking the "Start Form" button that will appear, or by navigating to the MCAP dashboard at /mcap.`;
+            const enhancedInstruction = systemInstruction + buildCountryContext() + `\n\nIMPORTANT: When users ask about incorporation in any country, always mention that they can start the incorporation process immediately by clicking the "Start Form" button that will appear, or by navigating to the MCAP dashboard at /incorporation.`;
 
             const result = await genAI.models.generateContent({
                 // model: "gemini-3-flash-preview",Gemini 2.5 Flash Native Audio Dialog
@@ -353,7 +353,7 @@ export function McapBotWidget() {
                                 <div className="flex gap-2">
                                     <Button
                                         size="sm"
-                                        onClick={() => navigate(`/mcap?country=${suggestedConfigId}`)}
+                                        onClick={() => navigate(`/incorporation?country=${suggestedConfigId}`)}
                                         className="bg-purple-600 hover:bg-purple-700 text-white flex-1"
                                     >
                                         Start {MCAP_CONFIG_MAP[suggestedConfigId]?.countryName} Form
@@ -361,7 +361,7 @@ export function McapBotWidget() {
                                     <Button
                                         size="sm"
                                         variant="outline"
-                                        onClick={() => navigate('/mcap')}
+                                        onClick={() => navigate('/incorporation')}
                                         className="border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300"
                                     >
                                         View All Countries

@@ -95,7 +95,7 @@ export default function McapBot() {
                     action: "start_incorporation"
                 };
                 // Auto-redirect after delay
-                setTimeout(() => navigate("/mcap-demo"), 2000);
+                setTimeout(() => navigate("/incorporation-demo"), 2000);
             } else if (trigger.includes("faq")) {
                 botMsg = {
                     id: Date.now().toString(),
@@ -165,7 +165,7 @@ export default function McapBot() {
                                                 </div>
                                             )}
                                             {msg.action === "start_incorporation" && (
-                                                <Button className="w-full bg-green-600 hover:bg-green-700 text-white" onClick={() => navigate("/mcap-demo")}>
+                                                <Button className="w-full bg-green-600 hover:bg-green-700 text-white" onClick={() => navigate("/incorporation-demo")}>
                                                     Proceed to Form <ArrowRight className="w-4 h-4 ml-2" />
                                                 </Button>
                                             )}
