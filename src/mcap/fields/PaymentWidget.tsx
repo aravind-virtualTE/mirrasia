@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 // --- Constants & API ---
 const STRIPE_CLIENT_ID = import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
 const stripePromise = loadStripe(STRIPE_CLIENT_ID);
-const API_ORIGIN = import.meta.env.VITE_API_ORIGIN || "http://localhost:5000";
+const API_ORIGIN = import.meta.env.API_URL || "http://localhost:5000";
 
 const createPaymentIntent = async (payload: { amount: number; currency: string; companyId: string }) => {
     const token = localStorage.getItem("token");
