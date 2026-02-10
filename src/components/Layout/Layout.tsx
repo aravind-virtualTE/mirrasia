@@ -184,13 +184,13 @@ const Layout: React.FC = () => {
             id: "member-director",
             icon: UserPlus,
             label: "Member/Director Management",
-            roles: [ "admin", "master"],
+            roles: ["admin", "master"],
             to: "/member-director-change",
           },
           {
             id: "quotation-request",
             icon: FileText,
-            label:  t("sideItems.quotationrequest"),
+            label: t("sideItems.quotationrequest"),
             roles: ["user", "admin", "master"],
             to: "/quotation-request",
           },
@@ -207,7 +207,7 @@ const Layout: React.FC = () => {
       {
         id: "incorporation-services",
         icon: Briefcase,
-        label: "incorporation v1.0",
+        label: "MCAP v1.0",
         roles: ["user", "admin", "master"],
         children: [
           {
