@@ -197,7 +197,7 @@ const Layout: React.FC = () => {
           {
             id: "quotation-request1",
             icon: FileText,
-            label: "Quotation v1.0 (in devlopment)",
+            label: "Quotation v1.0",
             roles: ["admin", "master"],
             to: "/quote-enquiry",
           },
@@ -207,7 +207,7 @@ const Layout: React.FC = () => {
       {
         id: "incorporation-services",
         icon: Briefcase,
-        label: "incorporation(v1.0 in development)",
+        label: "incorporation v1.0",
         roles: ["user", "admin", "master"],
         children: [
           {
