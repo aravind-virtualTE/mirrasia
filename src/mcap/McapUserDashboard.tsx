@@ -27,7 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, ChevronRight, Loader2, Pencil } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ChevronLeft, ChevronRight, Loader2, Pencil, Search } from "lucide-react";
 import { getMcapCompanies } from "@/services/dataFetch";
 import { MCAP_CONFIG_MAP } from "@/mcap/configs/registry";
 import api from "@/services/fetch";
@@ -110,6 +111,27 @@ const resolveCompanyName = (entry: any) => {
   );
 };
 
+const resolveApplicantName = (entry: any) => {
+  const data = entry?.data || {};
+  return (
+    entry?.applicantName ||
+    data.applicantName ||
+    data.name ||
+    data.contactName ||
+    data.primaryContactName ||
+    data.fullName ||
+    ""
+  );
+};
+
+const matchesCompanySearch = (entry: any, query: string) => {
+  const keyword = query.trim().toLowerCase();
+  if (!keyword) return true;
+  const companyName = String(resolveCompanyName(entry) || "").toLowerCase();
+  const applicantName = String(resolveApplicantName(entry) || "").toLowerCase();
+  return companyName.includes(keyword) || applicantName.includes(keyword);
+};
+
 export default function McapUserDashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -118,6 +140,7 @@ export default function McapUserDashboard() {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [invites, setInvites] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingInvites, setIsLoadingInvites] = useState(true);
 
@@ -236,10 +259,10 @@ export default function McapUserDashboard() {
     return counts;
   }, [filters, items]);
 
-  const filteredItems = useMemo(
-    () => items.filter(activeFilterMeta.match),
-    [items, activeFilterMeta]
-  );
+  const filteredItems = useMemo(() => {
+    const byStatus = items.filter(activeFilterMeta.match);
+    return byStatus.filter((entry) => matchesCompanySearch(entry, searchQuery));
+  }, [items, activeFilterMeta, searchQuery]);
 
   const totalFiltered = filteredItems.length;
   const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
@@ -253,7 +276,7 @@ export default function McapUserDashboard() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeFilter]);
+  }, [activeFilter, searchQuery]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -299,13 +322,27 @@ export default function McapUserDashboard() {
                 })}
               </div>
               <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <div className="text-xs text-muted-foreground">
-                  {t("mcap.dashboard.filters.showing", "Showing {{start}}-{{end}} of {{filtered}} filtered ({{total}} total)", {
-                    start: pageStart,
-                    end: pageEnd,
-                    filtered: filteredItems.length,
-                    total: items.length,
-                  })}
+                <div className="space-y-2">
+                  <div className="relative w-full md:w-[360px]">
+                    <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") setCurrentPage(1);
+                      }}
+                      placeholder={t("mcap.dashboard.search.placeholder", "Search by company or applicant name")}
+                      className="h-9 pl-8 text-sm"
+                    />
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {t("mcap.dashboard.filters.showing", "Showing {{start}}-{{end}} of {{filtered}} filtered ({{total}} total)", {
+                      start: pageStart,
+                      end: pageEnd,
+                      filtered: filteredItems.length,
+                      total: items.length,
+                    })}
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2 self-start md:self-auto">
@@ -376,15 +413,26 @@ export default function McapUserDashboard() {
           ) : filteredItems.length === 0 ? (
             <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground space-y-3">
               <div>
-                {t("mcap.dashboard.filters.empty", "No applications found for {{filter}}.", {
-                  filter: activeFilterMeta.label,
-                })}
+                {searchQuery.trim()
+                  ? t("mcap.dashboard.search.empty", "No applications found for this search in {{filter}}.", {
+                    filter: activeFilterMeta.label,
+                  })
+                  : t("mcap.dashboard.filters.empty", "No applications found for {{filter}}.", {
+                    filter: activeFilterMeta.label,
+                  })}
               </div>
-              {activeFilter !== "all" && (
-                <Button variant="outline" size="sm" onClick={() => setActiveFilter("all")}>
-                  {t("mcap.dashboard.filters.reset", "Show all applications")}
-                </Button>
-              )}
+              <div className="flex flex-wrap justify-center gap-2">
+                {searchQuery.trim() && (
+                  <Button variant="outline" size="sm" onClick={() => setSearchQuery("")}>
+                    {t("mcap.dashboard.search.clear", "Clear search")}
+                  </Button>
+                )}
+                {activeFilter !== "all" && (
+                  <Button variant="outline" size="sm" onClick={() => setActiveFilter("all")}>
+                    {t("mcap.dashboard.filters.reset", "Show all applications")}
+                  </Button>
+                )}
+              </div>
             </div>
           ) : (
             <div className="rounded-md border">
@@ -541,4 +589,3 @@ export default function McapUserDashboard() {
     </div>
   );
 }
-
