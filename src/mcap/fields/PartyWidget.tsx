@@ -141,7 +141,7 @@ export const PartyWidget = ({
 
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${import.meta.env.VITE_API_ORIGIN || "http://localhost:5000"}/api/mcap/parties/invite`, {
+            const res = await fetch(`${import.meta.env.API_URL || "http://localhost:5000"}/api/mcap/parties/invite`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

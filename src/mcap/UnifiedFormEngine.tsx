@@ -27,7 +27,7 @@ import { buildDefaultsForFields, getDefaultValueForField } from "./fields/fieldD
 const saveToBackend = async (payload: any) => {
     // In real implementation, use the api service
     const token = localStorage.getItem("token");
-    const res = await fetch(`${import.meta.env.VITE_API_ORIGIN || "http://localhost:5000"}/api/mcap/companies`, {
+    const res = await fetch(`${import.meta.env.API_URL || "http://localhost:5000"}/api/mcap/companies`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
