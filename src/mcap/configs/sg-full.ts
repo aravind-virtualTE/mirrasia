@@ -326,11 +326,12 @@ export const SG_FULL_CONFIG: McapConfig = {
       id: "services",
       title: "Singapore.serviceSelection.cardTitle",
       description: "Singapore.serviceSelection.preQuestions.title",
+      widget: "ServiceSelectionWidget",
       fields: [
         {
           type: "radio-group",
           name: "sg_hasLocalDirector",
-          label: "Singapore.serviceSelection.preQuestions.hasLocalDir.label",
+          label: "Singapore.serviceSelection.preQuestions.q1.label",
           required: true,
           colSpan: 2,
           options: [
@@ -341,22 +342,91 @@ export const SG_FULL_CONFIG: McapConfig = {
         {
           type: "radio-group",
           name: "sg_ndSecurity",
-          label: "Singapore.serviceSelection.preQuestions.security.label",
+          label: "Singapore.serviceSelection.preQuestions.q2.label",
           colSpan: 2,
           condition: (f) => f.sg_hasLocalDirector === "no",
           options: [
-            { label: "Singapore.serviceSelection.preQuestions.security.deposit", value: "deposit" },
-            { label: "Singapore.serviceSelection.preQuestions.security.prepay", value: "prepay" },
+            { label: "Singapore.serviceSelection.preQuestions.q2.deposit", value: "deposit" },
+            { label: "Singapore.serviceSelection.preQuestions.q2.prepay", value: "prepay" },
           ],
         },
-        {
-          type: "checkbox-group",
-          name: "sg_optionalServices",
-          label: "Singapore.serviceSelection.table.optionalTitle",
-          colSpan: 2,
-          options: SG_OPTIONALS.map((opt) => ({ label: opt.label, value: opt.id })),
-        },
       ],
+      serviceItems: (data: any) => {
+        const hasLocalDir = data.sg_hasLocalDirector === "yes";
+        const ndSecurity = data.sg_ndSecurity || "deposit";
+
+        const items: any[] = [
+          // Base mandatory services
+          {
+            id: "companyIncorporation",
+            label: "Singapore.serviceSelection.table.rows.companyIncorporation",
+            amount: 350,
+            original: 350,
+            mandatory: true,
+            info: "Singapore company incorporation filing with ACRA.",
+          },
+          {
+            id: "companySecretary",
+            label: "Singapore.serviceSelection.table.rows.companySecretary",
+            amount: 480,
+            original: 480,
+            mandatory: true,
+            info: "First year company secretary service.",
+          },
+          {
+            id: "registeredAddress",
+            label: "Singapore.serviceSelection.table.rows.registeredAddress",
+            amount: 300,
+            original: 300,
+            mandatory: true,
+            info: "First year registered office address in Singapore.",
+          },
+        ];
+
+        // Conditional: Nominee Director & Security (only when no local director)
+        if (!hasLocalDir) {
+          items.push({
+            id: "nomineeDirector",
+            label: "Singapore.serviceSelection.table.rows.nomineeDirector",
+            amount: 2000,
+            original: 2000,
+            mandatory: true,
+            info: "Nominee Director service for companies without a local resident director.",
+          });
+          items.push({
+            id: "nomineeSecurity",
+            label: ndSecurity === "prepay"
+              ? "Singapore.serviceSelection.table.rows.acctTaxPrepayTitle"
+              : "Singapore.serviceSelection.table.rows.ndDepositTitle",
+            amount: 2000,
+            original: 2000,
+            mandatory: true,
+            info: ndSecurity === "prepay"
+              ? "Prepay for accounting/tax services (required for nominee director)."
+              : "Refundable security deposit for nominee director (returned after resignation).",
+          });
+        }
+
+        // Optional services
+        items.push({
+          id: "bankAccountAdvisory",
+          label: "Singapore.serviceSelection.table.rows.bankAdvisory",
+          amount: 1200,
+          original: 1200,
+          mandatory: false,
+          info: "Bank account opening advisory and introduction service.",
+        });
+        items.push({
+          id: "emiEAccount",
+          label: "Singapore.serviceSelection.table.rows.emiAccount",
+          amount: 0,
+          original: 0,
+          mandatory: false,
+          info: "Free EMI e-Account opening (basic tier).",
+        });
+
+        return items;
+      },
     },
     {
       id: "parties",
@@ -373,18 +443,18 @@ export const SG_FULL_CONFIG: McapConfig = {
           type: "radio-group",
           options: [
             { label: "CompanyInformation.typeOfShare.ordinaryShares", value: "ordinary" },
-            { label: "CompanyInformation.typeOfShare.preferredShares", value: "preferred" },
+            { label: "CompanyInformation.typeOfShare.preferenceShares", value: "preferred" },
           ],
           roles: ["shareholder"],
           storage: "root",
         },
         {
           key: "isSignificant",
-          label: "newHk.parties.fields.isSignificant.label",
+          label: "shldr_viewboard.signiControl",
           type: "select",
           options: [
-            { label: "common.no", value: "false" },
-            { label: "common.yes", value: "true" },
+            { label: "newHk.parties.fields.isDirector.options.no", value: "false" },
+            { label: "newHk.parties.fields.isDirector.options.yes", value: "true" },
           ],
           roles: ["shareholder"],
           storage: "details",
@@ -439,23 +509,28 @@ export const SG_FULL_CONFIG: McapConfig = {
       ],
     },
     {
-      id: "payment",
-      title: "usa.steps.step7",
-      description: "usa.steps.payment.description",
-      widget: "PaymentWidget",
-      supportedCurrencies: ["USD", "HKD"],
-      computeFees: (data) => {
-        const hasLocalDir = (data.sg_hasLocalDirector || "no") === "yes";
+      id: "invoice",
+      title: "usa.steps.step6",
+      description: "usa.steps.invoice.description",
+      widget: "InvoiceWidget",
+      computeFees: (data: any) => {
+        const hasLocalDir = data.sg_hasLocalDirector === "yes";
         const ndSecurity = data.sg_ndSecurity || "deposit";
-        const selectedOptionals = Array.isArray(data.sg_optionalServices) ? data.sg_optionalServices : [];
+        const selectedOptionals = Array.isArray(data.serviceItemsSelected) ? data.serviceItemsSelected : [];
 
-        const items: McapFeeItem[] = SG_BASE_MANDATORY.map((row) => ({
-          id: row.id,
-          label: row.label,
-          amount: row.price,
-          kind: "service" as const,
-        }));
+        const items: McapFeeItem[] = [];
 
+        // Base mandatory services
+        SG_BASE_MANDATORY.forEach((row) => {
+          items.push({
+            id: row.id,
+            label: row.label,
+            amount: row.price,
+            kind: "service" as const,
+          });
+        });
+
+        // Conditional: Nominee Director & Security
         if (!hasLocalDir) {
           items.push({
             id: "nomineeDirector",
@@ -466,31 +541,92 @@ export const SG_FULL_CONFIG: McapConfig = {
           items.push({
             id: "nomineeSecurity",
             label: ndSecurity === "prepay"
-              ? "Singapore.serviceSelection.table.rows.securityPrepay"
-              : "Singapore.serviceSelection.table.rows.securityDeposit",
+              ? "Singapore.serviceSelection.table.rows.acctTaxPrepayTitle"
+              : "Singapore.serviceSelection.table.rows.ndDepositTitle",
             amount: 2000,
             kind: "service" as const,
           });
         }
 
+        // Optional services (only if selected)
         SG_OPTIONALS.filter((opt) => selectedOptionals.includes(opt.id)).forEach((opt) => {
           items.push({ id: opt.id, label: opt.label, amount: opt.price, kind: "optional" as const });
         });
 
         const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        const cardFeePct = (SG_FULL_CONFIG as any).entityMeta?.cardFeePctByCountry?.[data.paymentCurrency || SG_FULL_CONFIG.currency] || 0.04;
-        const cardFeeSurcharge = data.payMethod === "card" ? total * cardFeePct : 0;
-        const grandTotal = total + cardFeeSurcharge;
+        const paymentCurrency = data.paymentCurrency || "USD";
+        const cardFeePct = paymentCurrency === "USD" ? 0.06 : 0.04;
 
         return {
-          currency: data.paymentCurrency || SG_FULL_CONFIG.currency,
+          currency: paymentCurrency,
           items,
           total,
           service: total,
           government: 0,
           cardFeePct,
-          cardFeeSurcharge,
-          grandTotal,
+          cardFeeSurcharge: total * cardFeePct,
+          grandTotal: total + (total * cardFeePct),
+        };
+      },
+    },
+    {
+      id: "payment",
+      title: "usa.steps.step7",
+      widget: "PaymentWidget",
+      supportedCurrencies: ["USD", "HKD"],
+      computeFees: (data: any) => {
+        const hasLocalDir = data.sg_hasLocalDirector === "yes";
+        const ndSecurity = data.sg_ndSecurity || "deposit";
+        const selectedOptionals = Array.isArray(data.serviceItemsSelected) ? data.serviceItemsSelected : [];
+
+        const items: McapFeeItem[] = [];
+
+        // Base mandatory services
+        SG_BASE_MANDATORY.forEach((row) => {
+          items.push({
+            id: row.id,
+            label: row.label,
+            amount: row.price,
+            kind: "service" as const,
+          });
+        });
+
+        // Conditional: Nominee Director & Security
+        if (!hasLocalDir) {
+          items.push({
+            id: "nomineeDirector",
+            label: "Singapore.serviceSelection.table.rows.nomineeDirector",
+            amount: 2000,
+            kind: "service" as const,
+          });
+          items.push({
+            id: "nomineeSecurity",
+            label: ndSecurity === "prepay"
+              ? "Singapore.serviceSelection.table.rows.acctTaxPrepayTitle"
+              : "Singapore.serviceSelection.table.rows.ndDepositTitle",
+            amount: 2000,
+            kind: "service" as const,
+          });
+        }
+
+        // Optional services (only if selected)
+        SG_OPTIONALS.filter((opt) => selectedOptionals.includes(opt.id)).forEach((opt) => {
+          items.push({ id: opt.id, label: opt.label, amount: opt.price, kind: "optional" as const });
+        });
+
+        const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const paymentCurrency = data.paymentCurrency || "USD";
+        const cardFeePct = paymentCurrency === "USD" ? 0.06 : 0.04;
+
+        return {
+          currency: paymentCurrency,
+          items,
+          total,
+          service: total,
+          government: 0,
+          cardFeePct,
+          cardFeeSurcharge: total * cardFeePct,
+          grandTotal: total + (total * cardFeePct),
         };
       },
     },

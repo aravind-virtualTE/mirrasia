@@ -299,7 +299,7 @@ export const PartyWidget = ({
                             <Separator className="my-4" />
 
                             <div className="space-y-2">
-                                <Label>{t("newHk.parties.fields.isDirector.label", "Roles")}</Label>
+                                <Label>{t("newHk.parties.fields.roleSelectionPrompt", "Select the options that the member will be")}</Label>
                                 <div className="flex gap-4">
                                     {["director", "shareholder", "dcp"].map(role => (
                                         <label key={role} className="flex items-center gap-2 border p-2 rounded cursor-pointer hover:bg-muted">

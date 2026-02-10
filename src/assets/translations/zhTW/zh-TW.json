@@ -1697,7 +1697,9 @@
           "emiAccount": "EMI 電子帳戶開立 (基本) 免費",
           "initialMandatoryTotal": "初始強制總計",
           "totalInclOptions": "總計 (包含選項)",
-          "footnote": "假設為標準資料 (≤5 名個人股東)。公證/翻譯/海牙認證及複雜的 KYC 需額外付費。"
+          "footnote": "假設為標準資料 (≤5 名個人股東)。公證/翻譯/海牙認證及複雜的 KYC 需額外付費。",
+          "securityPrepay": "會計/稅務預付款",
+          "securityDeposit": "名義董事保證金"
         }
       },
       "toast": {
@@ -2543,6 +2545,7 @@
             "no": "否"
           }
         },
+        "roleSelectionPrompt": "\u8acb\u9078\u64c7\u6b64\u6210\u54e1\u5c07\u64d4\u4efb\u7684\u9078\u9805",
         "shares": {
           "label": "股數"
         },
@@ -2736,5 +2739,86 @@
         "other": "其他:"
       }
     }
+  },
+  "service": {
+    "grandTotal": "總計",
+    "note": "政府費用為法定且強制性的。您可以切換可選服務以自定義您的方案。",
+    "lockedNote": "付款後，所選項目將被鎖定，無法更改。",
+    "paymentCurrency": "信用卡付款之結算貨幣",
+    "currencyNote": "所有價格最初以 USD 計算。匯率將實時更新。"
+  },
+  "mcap": {
+    "payment": {
+      "securePayment": "安全付款",
+      "totalToPay": "應付總額：",
+      "cancel": "取消",
+      "pay": "支付 {{amount}}",
+      "success": "付款成功！",
+      "successDesc": "您的付款已處理並經核實。我們的會計團隊已收到通知。",
+      "paymentId": "付款 ID",
+      "amountPaid": "已付金額",
+      "status": "狀態",
+      "paid": "已付款",
+      "rejected": "已拒絕",
+      "pendingReview": "待審核",
+      "adminApproved": "管理員已批准",
+      "stripeStatus": "Stripe 狀態",
+      "receipt": "收據",
+      "viewReceipt": "查看收據",
+      "refreshStatus": "整理狀態",
+      "continue": "繼續下一步",
+      "proofSubmitted": "憑證已提交",
+      "proofSubmittedDesc": "您的銀行轉帳憑證已上傳。我們的會計團隊將在 24 小時內核實付款並更新狀態。",
+      "reference": "參考編號",
+      "amountDue": "欠款金額",
+      "proofDocument": "憑證文件",
+      "viewProof": "查看憑證",
+      "proofDenied": "您之前的憑證已被拒絕。請重新上傳收據。",
+      "proofDeniedShort": "您的憑證已被拒絕。請將其刪除並重新上傳收據。",
+      "proofDeleteNote": "如果您的憑證被拒絕，您可以在下方將其刪除並重新上傳。",
+      "deleteReupload": "刪除並重新上傳",
+      "waitingApproval": "正在等待管理員批准。批准後即可繼續。",
+      "selectMethod": "選擇付款方式",
+      "cardPayment": "信用卡付款",
+      "cardPaymentDesc": "經 Stripe 進行安全付款",
+      "bankTransfer": "銀行轉帳",
+      "bankTransferDesc": "電匯至我們的帳戶",
+      "details": "付款詳情",
+      "cardRedirectNote": "您將被重定向至安全付款頁面，以使用信用卡或扣帳卡完成購買。",
+      "subtotal": "小計",
+      "cardFee": "信用卡手續費",
+      "totalAmount": "總金額",
+      "proceedToPay": "前往付款",
+      "totalToTransfer": "總轉帳金額",
+      "noCardFeeNote": "銀行轉帳不收取信用卡手續費。",
+      "refNumber": "參考編號（選填）",
+      "refPlaceholder": "例如：REF-123456",
+      "uploadProof": "上傳收據/憑證",
+      "supportedFormats": "支援格式：PDF, JPG, PNG。",
+      "submitProof": "提交憑證",
+      "errors": {
+        "confirmFailed": "無法確認付款。",
+        "deleteFailed": "刪除憑證失敗。",
+        "fetchFailed": "無法獲取付款狀態。",
+        "paymentFailed": "付款失敗。請重試。",
+        "serverSyncFailed": "付款已確認，但與服務器通訊失敗。",
+        "unexpected": "發生預期之外的錯誤。",
+        "generic": "錯誤",
+        "notSaved": "申請尚未儲存。",
+        "stripeInitFailed": "無法初始化 Stripe。",
+        "networkError": "初始化付款時發生網絡錯誤。",
+        "uploadFailed": "上傳失敗。",
+        "uploadException": "上傳異常。"
+      },
+      "messages": {
+        "success": "成功",
+        "proofUploaded": "憑證上傳成功。",
+        "updated": "已更新",
+        "statusRefreshed": "付款狀態已整理。",
+        "deleted": "已刪除",
+        "proofRemoved": "憑證已移除。請上傳新文件。"
+      }
+    }
   }
 }
+

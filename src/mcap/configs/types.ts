@@ -22,6 +22,14 @@ export type PartyFieldDef = {
   storage?: "root" | "details";
 };
 
+export type PartyCoverageRule = {
+  key: string;
+  storage?: "root" | "details";
+  requiredValues: string[];
+  label?: string;
+  valueLabels?: Record<string, string>;
+};
+
 export type McapFees = {
   currency?: string;
   government?: number;
@@ -44,7 +52,8 @@ export type McapField = {
   | "checkbox-group"
   | "derived"
   | "search-select"
-  | "info";
+  | "info"
+  | "info-list";
   name?: string;
   label?: string;
   placeholder?: string;
@@ -54,6 +63,8 @@ export type McapField = {
   colSpan?: 1 | 2;
   options?: McapFieldOption[];
   items?: any[];
+  listItemKeys?: string[];
+  listPrefix?: string;
   rows?: number;
   condition?: (data: Record<string, any>) => boolean;
   compute?: (data: Record<string, any>, entityMeta?: Record<string, any> | null) => string;
@@ -65,7 +76,7 @@ export type McapStep = {
   title: string;
   description?: string;
   fields?: McapField[];
-  widget?: "PartiesManager" | "PaymentWidget" | "RepeatableSection" | "ServiceSelectionWidget" | "InvoiceWidget";
+  widget?: "PartiesManager" | "PaymentWidget" | "RepeatableSection" | "ServiceSelectionWidget" | "InvoiceWidget" | "PanamaServiceSetupWidget";
   minParties?: number;
   requireDcp?: boolean;
   requirePartyInvite?: boolean;
@@ -74,6 +85,7 @@ export type McapStep = {
   supportedCurrencies?: string[];
   serviceItems?: any[] | ((data: Record<string, any>, entityMeta?: Record<string, any> | null) => any[]);
   partyFields?: PartyFieldDef[];
+  partyCoverageRules?: PartyCoverageRule[];
   widgetConfig?: RepeatableSectionWidgetConfig;
 };
 

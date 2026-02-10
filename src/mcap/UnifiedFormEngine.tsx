@@ -11,6 +11,7 @@ import { PaymentWidget } from "./fields/PaymentWidget";
 import { ServiceSelectionWidget } from "./fields/ServiceSelectionWidget";
 import { InvoiceWidget } from "./fields/InvoiceWidget";
 import { RepeatableSectionWidget } from "./fields/RepeatableSectionWidget";
+import { PanamaServiceSetupWidget } from "./fields/PanamaServiceSetupWidget";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -62,9 +63,11 @@ export const UnifiedFormEngine = ({
     const currentStep = config.steps[currentStepIdx];
     const isLastStep = currentStepIdx === config.steps.length - 1;
     const entityMeta = config.entityMeta || {};
-    // Prefer a precomputed live preview from formData (single source of truth).
-    // Fall back to step.computeFees or static step.fees when not available.
-    const computedFees = (formData && formData.computedFees) || (currentStep.computeFees ? currentStep.computeFees(formData, entityMeta) : currentStep.fees);
+    // Always call step.computeFees if available to ensure latest form data is used.
+    // Fall back to cached formData.computedFees or static step.fees when not available.
+    const computedFees = currentStep.computeFees
+        ? currentStep.computeFees(formData, entityMeta)
+        : (formData?.computedFees || currentStep.fees);
 
     useEffect(() => {
         if (currentStep.widget === "PaymentWidget" && !companyId) {
@@ -283,6 +286,32 @@ export const UnifiedFormEngine = ({
                 const allInvited = parties.length > 0 && parties.every((p) => p.invited);
                 if (!allInvited) missing.push("All parties must be invited before continuing");
             }
+            if (currentStep.partyCoverageRules && currentStep.partyCoverageRules.length > 0) {
+                const getPartyField = (party: any, key: string, storage?: "root" | "details") =>
+                    storage === "root" ? party?.[key] : party?.details?.[key];
+
+                currentStep.partyCoverageRules.forEach((rule) => {
+                    const required = Array.isArray(rule.requiredValues) ? rule.requiredValues : [];
+                    if (required.length === 0) return;
+
+                    const missingValues = required.filter((requiredValue) => {
+                        const expected = String(requiredValue).trim().toLowerCase();
+                        return !parties.some((party) => {
+                            const actual = getPartyField(party, rule.key, rule.storage);
+                            return String(actual ?? "").trim().toLowerCase() === expected;
+                        });
+                    });
+
+                    if (missingValues.length > 0) {
+                        const label = rule.label ? t(rule.label, rule.label) : rule.key;
+                        const renderedValues = missingValues.map((value) => {
+                            const valueLabel = rule.valueLabels?.[value] || value;
+                            return t(valueLabel, valueLabel);
+                        });
+                        missing.push(`${label}: missing required options (${renderedValues.join(", ")})`);
+                    }
+                });
+            }
         }
 
         return missing;
@@ -382,7 +411,7 @@ export const UnifiedFormEngine = ({
         if (field.condition && !field.condition(dataContext)) return null;
 
         // Type guard: ensure field.name exists for fields that need it
-        if (!field.name && field.type !== "info") return null;
+        if (!field.name && field.type !== "info" && field.type !== "info-list") return null;
 
         const key = fieldKey || field.name || field.label || `field-${Math.random()}`;
 
@@ -457,6 +486,31 @@ export const UnifiedFormEngine = ({
                 <div key={infoKey} className={cn("rounded-md border border-dashed bg-muted/5 p-3 text-sm text-foreground", field.colSpan === 2 && "md:col-span-2")}>
                     {field.label && <div className="font-semibold text-foreground mb-1">{t(field.label, field.label)}</div>}
                     {infoContent}
+                </div>
+            );
+        }
+        if (field.type === "info-list") {
+            const listKeys = field.listItemKeys || [];
+            const prefix = field.listPrefix || "";
+            return (
+                <div key={key} className={cn("space-y-2", field.colSpan === 2 && "md:col-span-2")}>
+                    {field.label && (
+                        <div className="font-medium text-foreground">
+                            {t(field.label, field.label)}
+                        </div>
+                    )}
+                    <div className="rounded-md border p-2.5 text-[13px] text-muted-foreground">
+                        {listKeys.map((k) => (
+                            <details className="mb-1.5" key={k}>
+                                <summary className="cursor-pointer font-medium hover:text-foreground">
+                                    {t(`${prefix}.${k}.title`)}
+                                </summary>
+                                <div className="pl-2 pt-1">
+                                    {t(`${prefix}.${k}.desc`)}
+                                </div>
+                            </details>
+                        ))}
+                    </div>
                 </div>
             );
         }
@@ -690,6 +744,11 @@ export const UnifiedFormEngine = ({
                                         currency={config.currency}
                                     />
                                 </div>
+                            ) : currentStep.widget === "PanamaServiceSetupWidget" ? (
+                                <PanamaServiceSetupWidget
+                                    data={formData}
+                                    onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
+                                />
                             ) : currentStep.widget === "InvoiceWidget" ? (
                                 <InvoiceWidget
                                     fees={computedFees}

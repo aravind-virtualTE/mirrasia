@@ -32,6 +32,8 @@ export interface InvoiceData {
     cardFeePct?: number;
     cardFeeSurcharge?: number;
     grandTotal?: number;
+    exchangeRateUsed?: number;
+    originalAmountUsd?: number;
 }
 
 interface InvoiceWidgetProps {
@@ -285,10 +287,12 @@ export function InvoiceWidget({
             cardFeePct: (fees as any).cardFeePct,
             cardFeeSurcharge: (fees as any).cardFeeSurcharge,
             grandTotal: (fees as any).grandTotal,
+            exchangeRateUsed: (fees as any).exchangeRateUsed,
+            originalAmountUsd: (fees as any).originalAmountUsd,
         };
     }, [fees]);
 
-    const { items, government, service, total, currency } = invoiceData;
+    const { items, government, service, total, currency, exchangeRateUsed, originalAmountUsd } = invoiceData;
 
     // Group items by kind
     const govItems = items.filter((i) => i.kind === "government");
@@ -429,6 +433,19 @@ export function InvoiceWidget({
             {/* Totals Card */}
             <Card className="border-2 border-primary/20 bg-background">
                 <CardContent className="p-4 space-y-3">
+                    {currency !== "USD" && typeof exchangeRateUsed === "number" && typeof originalAmountUsd === "number" ? (
+                        <>
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-muted-foreground">{t("invoice.originalUsd", "Original (USD)")}</span>
+                                <span className="font-medium">{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(originalAmountUsd)}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-muted-foreground">{t("invoice.exchangeRate", "Exchange Rate")}</span>
+                                <span className="font-medium">1 USD = {exchangeRateUsed.toFixed(4)} {currency}</span>
+                            </div>
+                        </>
+                    ) : null}
+
                     {/* Subtotal */}
                     <div className="flex justify-between items-center text-sm">
                         <span className="text-muted-foreground">{t("invoice.subtotal", "Subtotal")}</span>
