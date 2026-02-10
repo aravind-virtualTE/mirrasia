@@ -266,6 +266,81 @@ const simpleFundOptions = [
   { value: "other", label: "Other" },
 ];
 
+// --- UK options ---
+const yesNoOtherOptions = [
+  { value: "yes", label: "Yes" },
+  { value: "no", label: "No" },
+  { value: "other", label: "Other" },
+];
+
+const ukNameChangedOptions = [
+  { value: "yes", label: "Yes" },
+  { value: "no", label: "No" },
+  { value: "other", label: "Other" },
+];
+
+const ukMailingAddressOptions = [
+  { value: "same", label: "Same as residential address" },
+  { value: "different", label: "Different mailing address" },
+];
+
+const ukMemberRoleOptions = [
+  { value: "shareholder", label: "Shareholder" },
+  { value: "director", label: "Director" },
+  { value: "psc", label: "Person with Significant Control (25%+ direct/indirect)" },
+  { value: "dcp", label: "Designated Contact Person" },
+  { value: "official_partner", label: "Official Partner registered with Mirr Asia" },
+  { value: "other", label: "Other" },
+];
+
+const ukInvestmentSourceOptions = [
+  { value: "earned_income", label: "Earned income" },
+  { value: "savings", label: "Savings / installment savings" },
+  { value: "investment_income", label: "Income from real estate/stocks/other investments" },
+  { value: "loan", label: "Loan" },
+  { value: "equity_sale", label: "Company or equity sale proceeds" },
+  { value: "business_income_dividend", label: "Business income/dividends" },
+  { value: "inheritance", label: "Inheritance" },
+  { value: "parent_company_investment", label: "Investment from parent company" },
+  { value: "other", label: "Other" },
+];
+
+const ukFutureFundSourceOptions = [
+  { value: "business_income_distribution", label: "Business income and distribution" },
+  { value: "earned_income", label: "Earned income" },
+  { value: "interest_income", label: "Interest income" },
+  { value: "investment_income", label: "Income from real estate/stocks/other investments" },
+  { value: "equity_sale", label: "Company or equity sale proceeds" },
+  { value: "inheritance_gift", label: "Inheritance/gift" },
+  { value: "borrowing_trust_deposit", label: "Borrowing/trust/deposit, etc." },
+  { value: "other", label: "Other" },
+];
+
+const ukTaxResidencyOptions = [
+  { value: "yes", label: "Yes" },
+  { value: "no", label: "No" },
+  { value: "other", label: "Other" },
+];
+
+const ukPepOptions = [
+  { value: "yes", label: "Yes" },
+  { value: "no", label: "No" },
+];
+
+const ukDeclarationOptions = [
+  { value: "yes", label: "Yes" },
+  { value: "no", label: "No" },
+];
+
+const shouldShowUkDeclarationDetails = (values: Record<string, any>) =>
+  [
+    "declArrestedOrConvicted",
+    "declInvestigatedByAuthority",
+    "declIllegalFundsOrCrime",
+    "declPersonalBankruptcy",
+    "declExecutiveBankruptcy",
+  ].some((key) => String(values?.[key] || "").toLowerCase() === "yes");
+
 const applyReadOnly = (fields: PartyField[], names: string[]) =>
   fields.map((field) => (names.includes(field.name) ? { ...field, readOnly: true } : field));
 
@@ -722,6 +797,316 @@ export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
           { name: "declarationDesc", label: "Declaration Details", type: "textarea" },
           { name: "isAgreed", label: "Agree to proceed", type: "radio", required: true, options: yesNoOptions },
           { name: "otherIsAgreed", label: "Other Agreement", type: "text" },
+        ],
+      },
+    ],
+  },
+
+  // --- UK Individual ---
+  {
+    id: "UK_PERSON",
+    title: "UK Member Registration KYC",
+    countryCode: "UK",
+    partyType: "person",
+    steps: [
+      {
+        id: "identity",
+        title: "Member Identity",
+        fields: [
+          { name: "email", label: "Email", type: "email", required: true, readOnly: true },
+          { name: "companyName", label: "UK Legal Entity Name to be Registered", type: "text", required: true, readOnly: true },
+          { name: "name", label: "Full Name", type: "text", required: true },
+          {
+            name: "hasChangedName",
+            label: "Have you ever changed your name?",
+            type: "radio",
+            required: true,
+            options: ukNameChangedOptions,
+          },
+          {
+            name: "formerNameInEnglish",
+            label: "Former name in English / other details",
+            type: "text",
+            condition: (values) => {
+              const value = String(values?.hasChangedName || "").toLowerCase();
+              return value === "yes" || value === "other";
+            },
+            required: true,
+          },
+          { name: "birthdate", label: "Date of Birth", type: "date", required: true },
+          { name: "birthPlace", label: "Place of Birth", type: "text", required: true },
+          { name: "nationality", label: "Nationality", type: "text", required: true },
+          { name: "passportNumber", label: "Passport Number", type: "text", required: true },
+          {
+            name: "residentialAddress",
+            label: "Residential address (include postal code and period lived in this country)",
+            type: "textarea",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "mailingAddressType",
+            label: "Mailing address",
+            type: "radio",
+            required: true,
+            options: ukMailingAddressOptions,
+            colSpan: 2,
+          },
+          {
+            name: "mailingAddress",
+            label: "Mailing address (if different from residential address)",
+            type: "textarea",
+            condition: (values) => values?.mailingAddressType === "different",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "mobileNumber",
+            label: "Contactable mobile phone number",
+            type: "tel",
+            required: true,
+            tooltip:
+              "We will use this for major communications. If your contact information changes, communications continue to this number until formally updated.",
+            colSpan: 2,
+          },
+          { name: "kakaoTalkId", label: "KakaoTalk ID (if applicable)", type: "text" },
+          { name: "otherSnsId", label: "Telegram, WeChat, or other SNS ID (if applicable)", type: "text" },
+        ],
+      },
+      {
+        id: "relationship",
+        title: "Relationship and Role",
+        fields: [
+          {
+            name: "relationshipWithUkEntity",
+            label: "Relationship with the UK Legal Entity",
+            type: "text",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "ukEntityRelationshipRoles",
+            label: "Relationship role(s) with the UK Legal Entity",
+            type: "checkbox-group",
+            required: true,
+            options: ukMemberRoleOptions,
+            tooltip:
+              "Designated Contact Person handles key business communications. First contact person is free. Additional contacts are charged annually.",
+            colSpan: 2,
+          },
+          {
+            name: "ukEntityRelationshipRolesOther",
+            label: "Other relationship role details",
+            type: "text",
+            condition: (values) =>
+              Array.isArray(values?.ukEntityRelationshipRoles) &&
+              values.ukEntityRelationshipRoles.includes("other"),
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "shareholdingPercentage",
+            label: "Shareholding percentage (%) in the UK legal entity",
+            type: "text",
+            required: true,
+          },
+        ],
+      },
+      {
+        id: "funds",
+        title: "Source of Funds",
+        fields: [
+          {
+            name: "investmentFundSource",
+            label: "Source of funds for investment/loan into UK corporation (multiple selections possible)",
+            type: "checkbox-group",
+            required: true,
+            options: ukInvestmentSourceOptions,
+            tooltip: "Supporting documents for source of funds may be requested later.",
+            colSpan: 2,
+          },
+          {
+            name: "investmentFundSourceOther",
+            label: "Other source of investment funds",
+            type: "text",
+            condition: (values) =>
+              Array.isArray(values?.investmentFundSource) &&
+              values.investmentFundSource.includes("other"),
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "investmentFundInflowCountries",
+            label: "Country of fund inflow for the above investment source(s)",
+            type: "textarea",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "futureFundSource",
+            label: "Expected future source of funds flowing into UK corporation (multiple selections possible)",
+            type: "checkbox-group",
+            required: true,
+            options: ukFutureFundSourceOptions,
+            tooltip: "Supporting documents for source of funds may be requested later.",
+            colSpan: 2,
+          },
+          {
+            name: "futureFundSourceOther",
+            label: "Other expected source of future funds",
+            type: "text",
+            condition: (values) =>
+              Array.isArray(values?.futureFundSource) &&
+              values.futureFundSource.includes("other"),
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "futureFundInflowCountries",
+            label: "Country of fund inflow for the above future source(s)",
+            type: "textarea",
+            required: true,
+            colSpan: 2,
+          },
+        ],
+      },
+      {
+        id: "tax-pep",
+        title: "Tax and PEP",
+        fields: [
+          {
+            name: "usTaxResidency",
+            label: "Are you a U.S. citizen, permanent resident, or U.S. tax resident?",
+            type: "radio",
+            required: true,
+            options: ukTaxResidencyOptions,
+            colSpan: 2,
+          },
+          {
+            name: "irsTin",
+            label: "IRS Taxpayer Identification Number (TIN)",
+            type: "text",
+            condition: (values) => String(values?.usTaxResidency || "").toLowerCase() === "yes",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "pepStatus",
+            label: "Are you, your immediate family, or close associates politically exposed persons (PEP)?",
+            type: "radio",
+            required: true,
+            options: ukPepOptions,
+            tooltip:
+              "Covers foreign/domestic/international organization PEP, family relationship PEP, and close associate PEP as per FATF guidance.",
+            colSpan: 2,
+          },
+          {
+            name: "pepDetails",
+            label: "Describe the key political figure or relationship in detail",
+            type: "textarea",
+            condition: (values) => String(values?.pepStatus || "").toLowerCase() === "yes",
+            required: true,
+            colSpan: 2,
+          },
+        ],
+      },
+      {
+        id: "documents",
+        title: "Document Upload",
+        fields: [
+          {
+            name: "passportCopyCertificate",
+            label: "Passport copy and Certificate of Passport Copy",
+            type: "file",
+            required: true,
+            accept: "image/*,.pdf,.doc,.docx",
+            tooltip: "Upload one file (max 10 MB).",
+            colSpan: 2,
+          },
+          {
+            name: "proofOfAddress",
+            label: "Proof of address (English resident registration or abstract)",
+            type: "file",
+            required: true,
+            accept: "image/*,.pdf,.doc,.docx",
+            tooltip: "Upload one file (max 10 MB).",
+            colSpan: 2,
+          },
+          {
+            name: "driverLicenseFrontBack",
+            label: "Driver's license scan (front and back)",
+            type: "file",
+            required: true,
+            accept: "image/*,.pdf,.doc,.docx",
+            tooltip: "Upload one file (max 10 MB).",
+            colSpan: 2,
+          },
+        ],
+      },
+      {
+        id: "declaration",
+        title: "Declaration and Agreement",
+        fields: [
+          {
+            name: "declArrestedOrConvicted",
+            label: "Have you ever been arrested or convicted of a crime?",
+            type: "radio",
+            required: true,
+            options: ukDeclarationOptions,
+          },
+          {
+            name: "declInvestigatedByAuthority",
+            label: "Have you ever been investigated by law enforcement or tax authorities?",
+            type: "radio",
+            required: true,
+            options: ukDeclarationOptions,
+          },
+          {
+            name: "declIllegalFundsOrCrime",
+            label: "Are you involved in crime, money laundering, bribery, terrorism, or other illegal-source funds?",
+            type: "radio",
+            required: true,
+            options: ukDeclarationOptions,
+            colSpan: 2,
+          },
+          {
+            name: "declPersonalBankruptcy",
+            label: "Have you ever been personally involved in bankruptcy or liquidation?",
+            type: "radio",
+            required: true,
+            options: ukDeclarationOptions,
+          },
+          {
+            name: "declExecutiveBankruptcy",
+            label: "Have you been involved in bankruptcy or liquidation as a company executive?",
+            type: "radio",
+            required: true,
+            options: ukDeclarationOptions,
+          },
+          {
+            name: "declarationYesDetails",
+            label: "Detailed description of items marked 'Yes'",
+            type: "textarea",
+            condition: shouldShowUkDeclarationDetails,
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "applicationAgreement",
+            label: "Do you agree to the application declaration and legal-use statement?",
+            type: "radio",
+            required: true,
+            options: yesNoOtherOptions,
+            colSpan: 2,
+          },
+          {
+            name: "applicationAgreementOther",
+            label: "Other agreement details",
+            type: "text",
+            condition: (values) => String(values?.applicationAgreement || "").toLowerCase() === "other",
+            required: true,
+            colSpan: 2,
+          },
         ],
       },
     ],

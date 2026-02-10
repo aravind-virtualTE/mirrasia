@@ -18,7 +18,7 @@ export default function McapDashboard() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const basePath = location.pathname.startsWith("/mcap-demo") ? "/mcap-demo" : "/mcap";
+  const basePath = location.pathname.startsWith("/incorporation-dashboard") ? "/incorporation-dashboard" : "/incorporation";
   const [initialData, setInitialData] = useState<any>(null);
   const [initialParties, setInitialParties] = useState<any[]>([]);
   const [initialCompanyId, setInitialCompanyId] = useState<string | null>(null);

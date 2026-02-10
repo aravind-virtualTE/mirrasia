@@ -264,6 +264,38 @@ const McapCompanyDetail: React.FC = () => {
     }
   };
 
+  const handleRevokeDcp = async (party: McapParty) => {
+    if (!party?._id) return;
+    const hasDcpRole = (party.roles || []).includes("dcp");
+    if (!hasDcpRole) {
+      toast({ title: "No DCP role", description: "This party does not currently have DCP access." });
+      return;
+    }
+
+    const target = party.name || party.email || "this party";
+    const confirmed = window.confirm(`Revoke DCP role for ${target}? Access will be removed immediately.`);
+    if (!confirmed) return;
+
+    try {
+      const res = await api.post(`/mcap/parties/${party._id}/revoke-dcp`);
+      if (res?.data?.success) {
+        toast({ title: "DCP revoked", description: "DCP role removed successfully." });
+        const updatedParty = res?.data?.data;
+        setCompany((prev) => {
+          if (!prev) return prev;
+          const updated = (prev.parties || []).map((p) =>
+            p._id === party._id ? { ...p, ...updatedParty, roles: updatedParty?.roles || [] } : p
+          );
+          return { ...prev, parties: updated };
+        });
+      } else {
+        toast({ title: "Revoke failed", description: res?.data?.message || "Unable to revoke DCP role.", variant: "destructive" });
+      }
+    } catch (err) {
+      toast({ title: "Revoke failed", description: "Unable to revoke DCP role.", variant: "destructive" });
+    }
+  };
+
   const openPartyModal = (partyId?: string) => {
     if (!partyId) return;
     setSelectedPartyId(partyId);
@@ -702,6 +734,16 @@ const McapCompanyDetail: React.FC = () => {
                                   <Button variant="ghost" size="sm" onClick={() => handleKycStatus(p, "rejected")}>
                                     Reject
                                   </Button>
+                                  {(p.roles || []).includes("dcp") && (
+                                    <Button
+                                      variant="destructive"
+                                      size="sm"
+                                      onClick={() => handleRevokeDcp(p)}
+                                      disabled={!p._id}
+                                    >
+                                      Revoke DCP
+                                    </Button>
+                                  )}
                                 </div>
                               </TableCell>
                             )}
