@@ -135,7 +135,7 @@ export default function McapUserDashboard() {
                   return (
                     <TableRow
                       key={entry?._id}
-                      onClick={() => navigate(`/mcap-detail/${entry._id}`)}
+                      onClick={() => navigate(`/incorporation-detail/${entry._id}`)}
                       className="cursor-pointer"
                     >
                       <TableCell className="font-medium">
@@ -165,7 +165,7 @@ export default function McapUserDashboard() {
                             variant="outline"
                             className="gap-2"
                             // disabled={!canEdit}
-                            onClick={() => navigate(`/mcap?companyId=${entry._id}`)}
+                            onClick={() => navigate(`/incorporation?companyId=${entry._id}`)}
                           >
                             <Pencil className="h-3.5 w-3.5" />
                             {t("mcap.dashboard.actions.edit", "Edit")}
@@ -217,7 +217,7 @@ export default function McapUserDashboard() {
                     <TableRow
                       key={inv._id}
                       className="cursor-pointer"
-                      onClick={() => navigate(`/mcap-parties?partyId=${inv._id}&mode=detail`)}
+                      onClick={() => navigate(`/incorporation-parties?partyId=${inv._id}&mode=detail`)}
                     >
                       <TableCell className="font-medium">{company.companyName || company.countryName || "Company"}</TableCell>
                       <TableCell>{company.countryName || company.countryCode || "—"}</TableCell>
@@ -237,7 +237,7 @@ export default function McapUserDashboard() {
                             variant="outline"
                             onClick={(e) => {
                               e.stopPropagation();
-                              navigate(`/mcap-parties?partyId=${inv._id}&mode=edit`);
+                              navigate(`/incorporation-parties?partyId=${inv._id}&mode=edit`);
                             }}
                           >
                             Complete KYC
@@ -247,7 +247,7 @@ export default function McapUserDashboard() {
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                navigate(`/mcap?companyId=${company._id || company.id || ""}`);
+                                navigate(`/incorporation?companyId=${company._id || company.id || ""}`);
                               }}
                             >
                               Open Incorporation

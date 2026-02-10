@@ -11,6 +11,28 @@ export const CR_FULL_CONFIG: McapConfig = {
   countryName: "Costa Rica",
   currency: "USD",
   title: "Costa Rica Incorporation",
+  confirmationDetails: {
+    title: "Costa Rica Application Process",
+    message: "We have collected your details and your Costa Rica incorporation is now being processed by the National Registry. This typically takes 2-4 business weeks. Our team will contact you if any further information is required.",
+    steps: [
+      {
+        title: "KYC & AML Verification",
+        description: "Our compliance team verifies all shareholder and director ID documents.",
+      },
+      {
+        title: "Notary Public Filing",
+        description: "Drafting of constitution and filing with the National Registry (Registro Nacional).",
+      },
+      {
+        title: "Registration Approval",
+        description: "Waiting for the registry to issue the Corporate ID (Cédula Jurídica).",
+      },
+      {
+        title: "Post-Registration",
+        description: "Obtaining tax IDs and finalizing nominee agreements (if selected).",
+      },
+    ],
+  },
   steps: [
     {
       id: "applicant",

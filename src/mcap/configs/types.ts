@@ -125,4 +125,9 @@ export type McapConfig = {
   title?: string;
   steps: McapStep[];
   entityMeta?: Record<string, any>;
+  confirmationDetails?: {
+    title: string;
+    message: string;
+    steps?: { title: string; description: string }[];
+  };
 };
