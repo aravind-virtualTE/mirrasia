@@ -62,6 +62,28 @@ export const PA_FULL_CONFIG: McapConfig = {
   countryName: "Panama",
   currency: "USD",
   title: "panama.title",
+  confirmationDetails: {
+    title: "panama.finalMsg",
+    message: "We have collected your details and your incorporation is now being processed. This typically takes a few business weeks. Our team will contact you if any further information is required.",
+    steps: [
+      {
+        title: "Compliance Review",
+        description: "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1-2 business days.",
+      },
+      {
+        title: "Filing with Companies Registry",
+        description: "We will file the incorporation documents with the Panama Public Registry.",
+      },
+      {
+        title: "Registration Certificates",
+        description: "Expected: Certificate of Incorporation & Business Registration within 1-3 business weeks.",
+      },
+      {
+        title: "Bank/EMI Account",
+        description: "If selected, we arrange an account opening with your preferred bank/EMI.",
+      },
+    ],
+  },
   steps: [
     {
       id: "applicant",

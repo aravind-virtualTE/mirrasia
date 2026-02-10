@@ -21,6 +21,28 @@ export const SG_FULL_CONFIG: McapConfig = {
   entityMeta: {
     cardFeePctByCountry: { SGD: 0.04, USD: 0.06 },
   },
+  confirmationDetails: {
+    title: "Singapore.congratsTitle",
+    message: "We have collected your details and your Singapore incorporation is now being processed by ACRA. This typically takes 1-3 business days. Our team will contact you if any further information is required.",
+    steps: [
+      {
+        title: "Compliance Review",
+        description: "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1 business day.",
+      },
+      {
+        title: "ACRA Filing",
+        description: "We will file the incorporation with the Accounting and Corporate Regulatory Authority (ACRA).",
+      },
+      {
+        title: "BizFile & Certificates",
+        description: "Expected: Business Profile (BizFile) and Certificate of Incorporation within 1-2 days.",
+      },
+      {
+        title: "Post-Incorp Support",
+        description: "Opening of bank accounts and corporate secretarial setup.",
+      },
+    ],
+  },
   steps: [
     {
       id: "applicant",

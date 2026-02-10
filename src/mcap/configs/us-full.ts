@@ -8,6 +8,28 @@ export const US_FULL_CONFIG: McapConfig = {
   countryName: "United States",
   currency: "USD",
   title: "usa.title",
+  confirmationDetails: {
+    title: "usa.congratsTitle",
+    message: "We have collected your details and your US incorporation is now being processed. This typically takes 3-7 business days depending on the state. Our team will contact you if any further information is required.",
+    steps: [
+      {
+        title: "State Documentation Review",
+        description: "Our team reviews your selected state and entity type for compliance.",
+      },
+      {
+        title: "Secretary of State Filing",
+        description: "Documents are submitted to the chosen Secretary of State.",
+      },
+      {
+        title: "Article approval & EIN",
+        description: "Waiting for approved Articles of Organization/Incorporation and EIN application.",
+      },
+      {
+        title: "Company Kit Delivery",
+        description: "Digital delivery of your US company documents and operating agreement.",
+      },
+    ],
+  },
   steps: [
     {
       id: "applicant",

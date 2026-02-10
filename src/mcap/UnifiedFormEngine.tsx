@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -53,6 +54,7 @@ export const UnifiedFormEngine = ({
     isLoading?: boolean;
 }) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const [currentStepIdx, setCurrentStepIdx] = useState(0);
     const [formData, setFormData] = useState<any>({}); // Stores the dynamic 'data' field
     const [parties, setParties] = useState<any[]>([]);   // Stores 'parties'
@@ -629,12 +631,57 @@ export const UnifiedFormEngine = ({
 
     // --- Success View ---
     if (submissionResult) {
+        const details = config.confirmationDetails;
         return (
-            <div className="flex flex-col items-center justify-center p-8 space-y-4">
-                <CheckCircle2 className="w-16 h-16 text-green-500" />
-                <h2 className="text-2xl font-bold">Application Created!</h2>
-                <p className="text-muted-foreground">ID: {submissionResult._id}</p>
-                <Button onClick={() => window.location.reload()}>Start Another</Button>
+            <div className="flex flex-col items-center justify-center py-10 px-4 max-w-2xl mx-auto space-y-6 text-center">
+                <div className="flex flex-col items-center space-y-2">
+                    <CheckCircle2 className="w-16 h-16 text-green-500" />
+                    <h2 className="text-3xl font-bold">{details?.title ? t(details.title, details.title) : "Application Submitted!"}</h2>
+                </div>
+
+                <p className="text-muted-foreground text-lg leading-relaxed">
+                    {details?.message ? t(details.message, details.message) : "Your application has been successfully submitted and is now under review."}
+                </p>
+
+                {details?.steps && (
+                    <div className="w-full space-y-4 text-left border rounded-xl p-6 bg-accent/5">
+                        <h3 className="font-semibold text-lg mb-2">What Happens Next?</h3>
+                        <div className="space-y-4">
+                            {details.steps.map((s, i) => (
+                                <div key={i} className="flex gap-4">
+                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                                        {i + 1}
+                                    </div>
+                                    <div className="space-y-1">
+                                        <div className="font-medium leading-none">{t(s.title, s.title)}</div>
+                                        <div className="text-sm text-muted-foreground">{t(s.description, s.description)}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto pt-4">
+                    <Button
+                        size="lg"
+                        className="px-8"
+                        onClick={() => navigate("/dashboard")}
+                    >
+                        Return to Dashboard
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={() => window.location.reload()}
+                    >
+                        Start Another Application
+                    </Button>
+                </div>
+
+                <div className="text-xs text-muted-foreground pt-4 border-t w-full">
+                    Application ID: <span className="font-mono bg-muted px-1 rounded">{submissionResult._id}</span>
+                </div>
             </div>
         )
     }

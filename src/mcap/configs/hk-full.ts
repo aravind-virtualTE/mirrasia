@@ -134,6 +134,28 @@ export const HK_FULL_CONFIG: McapConfig = {
       USD: 0.06,
     },
   },
+  confirmationDetails: {
+    title: "newHk.congrats.title",
+    message: "We have collected your details and your incorporation is now being processed. This typically takes a few days. Our team will contact you if any further information is required.",
+    steps: [
+      {
+        title: "Compliance Review",
+        description: "Our compliance officer will review your KYC/CDD and shareholding information. ETA: 1-2 business days.",
+      },
+      {
+        title: "Filing with Companies Registry",
+        description: "We will file the incorporation documents with the HK Companies Registry.",
+      },
+      {
+        title: "Registration Certificates",
+        description: "Expected: Certificate of Incorporation & Business Registration within a week.",
+      },
+      {
+        title: "Bank/EMI Account",
+        description: "If selected, we arrange an account opening with your preferred bank/EMI.",
+      },
+    ],
+  },
   steps: [
     {
       id: "applicant",
