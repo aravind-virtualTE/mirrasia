@@ -9,12 +9,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Trash2, User, Building2, Send, CheckCircle2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import api from "@/services/fetch";
+import api, { API_URL } from "@/services/fetch";
 import { useTranslation } from "react-i18next";
 import type { PartyFieldDef } from "../configs/types";
 
 // This widget manages a list of parties (Shareholders/Directors)
 // conformant to the UnifiedParty model
+const API_BASE = API_URL.replace(/\/+$/, "");
+
 export const PartyWidget = ({
     parties = [],
     onChange,
@@ -141,7 +143,7 @@ export const PartyWidget = ({
 
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${import.meta.env.API_URL || "http://localhost:5000"}/api/mcap/parties/invite`, {
+            const res = await fetch(`${API_BASE}/mcap/parties/invite`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
