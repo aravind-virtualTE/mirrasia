@@ -16,16 +16,17 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { Loader2, CreditCard, Building2, FileText, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { API_URL } from "@/services/fetch";
 // import type { McapFees } from "../configs/types";
 
 // --- Constants & API ---
 const STRIPE_CLIENT_ID = import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
 const stripePromise = loadStripe(STRIPE_CLIENT_ID);
-const API_ORIGIN = import.meta.env.API_URL || "http://localhost:5000";
+const API_BASE = API_URL.replace(/\/+$/, "");
 
 const createPaymentIntent = async (payload: { amount: number; currency: string; companyId: string }) => {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_ORIGIN}/api/mcap/invoice-intent`, {
+    const res = await fetch(`${API_BASE}/mcap/invoice-intent`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({ companyId: payload.companyId, totalCents: payload.amount, currency: payload.currency })
@@ -35,7 +36,7 @@ const createPaymentIntent = async (payload: { amount: number; currency: string; 
 
 // const updatePaymentIntent = async (payload: { paymentIntentId: string; amount: number; currency: string; companyId: string }) => {
 //     const token = localStorage.getItem("token");
-//     const res = await fetch(`${API_ORIGIN}/api/mcap/update-intent`, {
+//     const res = await fetch(`${API_BASE}/mcap/update-intent`, {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
 //         body: JSON.stringify({ paymentIntentId: payload.paymentIntentId, totalCents: payload.amount, currency: payload.currency, companyId: payload.companyId })
@@ -45,7 +46,7 @@ const createPaymentIntent = async (payload: { amount: number; currency: string; 
 
 const updateBackendWithPayment = async (payload: any) => {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_ORIGIN}/api/mcap/confirm-payment`, {
+    const res = await fetch(`${API_BASE}/mcap/confirm-payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(payload)
@@ -69,7 +70,7 @@ const uploadBankProof = async (companyId: string, file: File, bankRef: string) =
     formData.append("paymethod", "bank");
     if (bankRef) formData.append("bankRef", bankRef);
 
-    const res = await fetch(`${API_ORIGIN}/api/mcap/companies/${companyId}/bank-proof`, {
+    const res = await fetch(`${API_BASE}/mcap/companies/${companyId}/bank-proof`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: formData
@@ -79,7 +80,7 @@ const uploadBankProof = async (companyId: string, file: File, bankRef: string) =
 
 const deleteBankProof = async (companyId: string) => {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_ORIGIN}/api/mcap/companies/${companyId}/bank-proof`, {
+    const res = await fetch(`${API_BASE}/mcap/companies/${companyId}/bank-proof`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` },
     });
@@ -93,7 +94,7 @@ const deleteBankProof = async (companyId: string) => {
 
 const fetchCompanyPayment = async (companyId: string) => {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_ORIGIN}/api/mcap/companies/${companyId}`, {
+    const res = await fetch(`${API_BASE}/mcap/companies/${companyId}`, {
         method: "GET",
         headers: { "Authorization": `Bearer ${token}` },
     });

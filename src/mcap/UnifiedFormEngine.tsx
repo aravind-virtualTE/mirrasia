@@ -22,12 +22,15 @@ import { cn } from "@/lib/utils";
 import type { McapConfig, McapField, RepeatableSection } from "./configs/types";
 import { Progress } from "@/components/ui/progress";
 import { buildDefaultsForFields, getDefaultValueForField } from "./fields/fieldDefaults";
+import { API_URL } from "@/services/fetch";
 
 // --- API Helper (Inlined for Demo) ---
+const API_BASE = API_URL.replace(/\/+$/, "");
+
 const saveToBackend = async (payload: any) => {
     // In real implementation, use the api service
     const token = localStorage.getItem("token");
-    const res = await fetch(`${import.meta.env.API_URL || "http://localhost:5000"}/api/mcap/companies`, {
+    const res = await fetch(`${API_BASE}/mcap/companies`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
