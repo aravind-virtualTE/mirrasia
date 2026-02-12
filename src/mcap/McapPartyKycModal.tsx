@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, X } from "lucide-react";
 import api from "@/services/fetch";
+import { useTranslation } from "react-i18next";
 import PartyKycEngine from "./party-kyc/PartyKycEngine";
 import { resolvePartyKycConfig } from "./party-kyc/partyKycRegistry";
 
@@ -46,6 +47,7 @@ export default function McapPartyKycModal({
   onOpenChange,
   onSaved,
 }: McapPartyKycModalProps) {
+  const { t } = useTranslation();
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
   const isAdmin = user?.role !== "user";
   const [party, setParty] = useState<Party | null>(null);
@@ -59,7 +61,7 @@ export default function McapPartyKycModal({
     if (!partyId) {
       setParty(null);
       setCompany(null);
-      setError("No party selected.");
+      setError(t("mcap.partyKyc.ui.noPartySelected", "No party selected."));
       return;
     }
     let active = true;
@@ -74,7 +76,9 @@ export default function McapPartyKycModal({
         setCompany(data?.company || null);
       } catch (err: any) {
         if (!active) return;
-        const message = err?.response?.data?.message || "Unable to load party details.";
+        const message =
+          err?.response?.data?.message ||
+          t("mcap.partyKyc.ui.loadPartyDetailsFailed", "Unable to load party details.");
         setError(message);
         setParty(null);
         setCompany(null);
@@ -85,7 +89,7 @@ export default function McapPartyKycModal({
     return () => {
       active = false;
     };
-  }, [open, partyId]);
+  }, [open, partyId, t]);
 
   useEffect(() => {
     if (open) setMode("detail");
@@ -118,7 +122,7 @@ export default function McapPartyKycModal({
     if (!preserveStatus) payload.kycStatus = status;
     const res = await api.post(`/mcap/parties/${partyId}/kyc`, payload);
     if (!res?.data?.success) {
-      throw new Error(res?.data?.message || "Save failed");
+      throw new Error(res?.data?.message || t("mcap.partyKyc.ui.saveFailedTitle", "Save failed"));
     }
     const updated = res.data.data as Party;
     setParty(updated);
@@ -134,7 +138,7 @@ export default function McapPartyKycModal({
       headers: { "Content-Type": "multipart/form-data" },
     });
     if (!res?.data?.success) {
-      throw new Error(res?.data?.message || "Upload failed");
+      throw new Error(res?.data?.message || t("mcap.partyKyc.ui.uploadFailedTitle", "Upload failed"));
     }
     return res.data.data?.url as string;
   };
@@ -149,24 +153,27 @@ export default function McapPartyKycModal({
         <div className="flex items-center justify-between gap-3 border-b bg-background px-4 py-3 sm:px-6">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <DialogTitle className="text-lg font-semibold">Party KYC Details</DialogTitle>
+              <DialogTitle className="text-lg font-semibold">
+                {t("mcap.partyKyc.ui.partyKycDetails", "Party KYC Details")}
+              </DialogTitle>
               <Badge variant={getStatusVariant(kycStatus)} className="capitalize">
                 {kycStatus}
               </Badge>
             </div>
             <div className="mt-1 text-xs text-muted-foreground truncate">
-              {party?.name || "Party"} {company?.companyName ? `• ${company.companyName}` : ""}
+              {party?.name || t("mcap.partyKyc.ui.partyLabel", "Party")}{" "}
+              {company?.companyName ? `- ${company.companyName}` : ""}
             </div>
           </div>
           <div className="flex items-center gap-2">
             {mode === "detail" && canEdit && (
               <Button size="sm" onClick={() => setMode("edit")}>
-                Edit KYC
+                {t("mcap.partyKyc.ui.editKyc", "Edit KYC")}
               </Button>
             )}
             {mode === "edit" && (
               <Button size="sm" variant="outline" onClick={() => setMode("detail")}>
-                View
+                {t("mcap.partyKyc.ui.view", "View")}
               </Button>
             )}
             <DialogClose asChild>
@@ -181,20 +188,24 @@ export default function McapPartyKycModal({
           {loading ? (
             <div className="flex items-center justify-center py-16 text-muted-foreground">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Loading party KYC...
+              {t("mcap.partyKyc.ui.loadingPartyKyc", "Loading party KYC...")}
             </div>
           ) : error ? (
             <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">{error}</div>
           ) : !party || !config ? (
             <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-              No KYC form configured for this party yet.
+              {t("mcap.partyKyc.ui.noFormConfigured", "No KYC form configured for this party yet.")}
             </div>
           ) : mode === "edit" && !canEdit ? (
             <div className="rounded-lg border p-6 text-sm text-muted-foreground">
-              KYC is not editable in the current status ({kycStatus}). You can view the submitted details.
+              {t(
+                "mcap.partyKyc.ui.notEditableStatus",
+                "KYC is not editable in the current status ({{kycStatus}}). You can view the submitted details.",
+                { kycStatus }
+              )}
               <div className="mt-4">
                 <Button variant="outline" onClick={() => setMode("detail")}>
-                  View Details
+                  {t("mcap.partyKyc.ui.viewDetails", "View Details")}
                 </Button>
               </div>
             </div>
@@ -219,3 +230,4 @@ export default function McapPartyKycModal({
     </Dialog>
   );
 }
+

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import api, { API_URL } from "@/services/fetch";
 import { useTranslation } from "react-i18next";
 import type { PartyFieldDef } from "../configs/types";
+import { isEntityPartyTypeEnabledForCountry } from "../party-kyc/partyKycRegistry";
 
 // This widget manages a list of parties (Shareholders/Directors)
 // conformant to the UnifiedParty model
@@ -22,15 +23,26 @@ export const PartyWidget = ({
     onChange,
     companyId,
     partyFields,
+    countryCode,
 }: {
     parties: any[];
     onChange: (p: any[]) => void;
     companyId?: string | null;
     partyFields?: PartyFieldDef[];
+    countryCode?: string;
 }) => {
     const { t } = useTranslation();
     const [directory, setDirectory] = useState<any[]>([]);
     const [selectedDirectoryId, setSelectedDirectoryId] = useState<string>("");
+
+    const normalizedCountryCode = useMemo(() => {
+        const raw = countryCode || localStorage.getItem("country") || "";
+        return String(raw).split("_")[0].toUpperCase();
+    }, [countryCode]);
+
+    const entityTypeEnabled = isEntityPartyTypeEnabledForCountry(normalizedCountryCode);
+    const normalizePartyType = (typeValue: any): "person" | "entity" =>
+        typeValue === "entity" && entityTypeEnabled ? "entity" : "person";
 
     useEffect(() => {
         const loadDirectory = async () => {
@@ -45,6 +57,18 @@ export const PartyWidget = ({
         };
         loadDirectory();
     }, []);
+
+    useEffect(() => {
+        if (entityTypeEnabled) return;
+        if (!parties.some((party) => party?.type === "entity")) return;
+
+        const next = parties.map((party) =>
+            party?.type === "entity"
+                ? { ...party, type: "person", details: {}, invited: false, inviteStatus: "pending" }
+                : party
+        );
+        onChange(next);
+    }, [entityTypeEnabled, parties, onChange]);
 
     const addParty = () => {
         const newParty = {
@@ -86,7 +110,7 @@ export const PartyWidget = ({
         const newParty = {
             id: crypto.randomUUID(),
             directoryId: picked._id,
-            type: picked.type || "person",
+            type: normalizePartyType(picked.type),
             name: picked.name || "",
             email: picked.email || "",
             phone: picked.phone || "",
@@ -107,6 +131,24 @@ export const PartyWidget = ({
     const updateParty = (idx: number, key: string, value: any) => {
         const next = [...parties];
         next[idx] = { ...next[idx], [key]: value };
+        onChange(next);
+    };
+
+    const handlePartyTypeChange = (idx: number, nextType: "person" | "entity") => {
+        const current = parties[idx];
+        if (!current) return;
+
+        const safeType = normalizePartyType(nextType);
+        if ((current.type || "person") === safeType) return;
+
+        const next = [...parties];
+        next[idx] = {
+            ...current,
+            type: safeType,
+            details: {},
+            invited: false,
+            inviteStatus: "pending",
+        };
         onChange(next);
     };
 
@@ -233,24 +275,29 @@ export const PartyWidget = ({
             </div>
 
             <div className="grid gap-4">
-                {parties.map((party, idx) => (
-                    <Card key={party.id || idx}>
-                        <CardContent className="pt-6">
+                {parties.map((party, idx) => {
+                    const partyType = normalizePartyType(party?.type);
+
+                    return (
+                        <Card key={party.id || idx}>
+                            <CardContent className="pt-6">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex items-center gap-2">
-                                    <div className={`p-2 rounded-full ${party.type === 'person' ? 'bg-blue-100' : 'bg-purple-100'}`}>
-                                        {party.type === 'person' ? <User className="w-4 h-4 text-blue-600" /> : <Building2 className="w-4 h-4 text-purple-600" />}
+                                    <div className={`p-2 rounded-full ${partyType === 'person' ? 'bg-blue-100' : 'bg-purple-100'}`}>
+                                        {partyType === 'person' ? <User className="w-4 h-4 text-blue-600" /> : <Building2 className="w-4 h-4 text-purple-600" />}
                                     </div>
                                     <Select
-                                        value={party.type}
-                                        onValueChange={(v) => updateParty(idx, "type", v)}
+                                        value={partyType}
+                                        onValueChange={(v) => handlePartyTypeChange(idx, v as "person" | "entity")}
                                     >
                                         <SelectTrigger className="w-[120px] h-8">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="person">{t("newHk.parties.fields.isCorp.options.no", "Individual")}</SelectItem>
-                                            <SelectItem value="entity">{t("newHk.parties.fields.isCorp.options.yes", "Corporate")}</SelectItem>
+                                            {entityTypeEnabled && (
+                                                <SelectItem value="entity">{t("newHk.parties.fields.isCorp.options.yes", "Corporate")}</SelectItem>
+                                            )}
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -407,9 +454,10 @@ export const PartyWidget = ({
                                 </div>
                             )}
 
-                        </CardContent>
-                    </Card>
-                ))}
+                            </CardContent>
+                        </Card>
+                    );
+                })}
 
                 {parties.length === 0 && (
                     <div className="text-center py-8 text-muted-foreground border border-dashed rounded-lg">

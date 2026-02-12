@@ -20,6 +20,21 @@ type QuestionItem = {
   showIf?: { questionId: string; value: string };
 };
 
+const normalizeCountryCode = (countryCode?: string) =>
+  String(countryCode || "").split("_")[0].toUpperCase();
+
+// Toggle corporate-party support by country.
+// Set HK to true in the future if/when entity KYC is introduced.
+export const PARTY_ENTITY_TYPE_ENABLED_BY_COUNTRY: Record<string, boolean> = {
+  HK: false,
+};
+
+export const isEntityPartyTypeEnabledForCountry = (countryCode?: string) => {
+  const normalized = normalizeCountryCode(countryCode);
+  if (!normalized) return true;
+  return PARTY_ENTITY_TYPE_ENABLED_BY_COUNTRY[normalized] ?? true;
+};
+
 const mapQuestionType = (type: string, hasOptions: boolean): PartyFieldType => {
   if (type === "checkbox" && hasOptions) return "checkbox-group";
   if (type === "checkbox") return "checkbox";
@@ -293,6 +308,13 @@ const ukMemberRoleOptions = [
   { value: "other", label: "Other" },
 ];
 
+const ukCorporateRelationOptions = [
+  { value: "shareHld", label: "shareholder" },
+  { value: "officer", label: "move" },
+  { value: "keyControl", label: "Trustee" },
+  { value: "other", label: "Other" },
+];
+
 const ukInvestmentSourceOptions = [
   { value: "earned_income", label: "Earned income" },
   { value: "savings", label: "Savings / installment savings" },
@@ -339,6 +361,15 @@ const shouldShowUkDeclarationDetails = (values: Record<string, any>) =>
     "declIllegalFundsOrCrime",
     "declPersonalBankruptcy",
     "declExecutiveBankruptcy",
+  ].some((key) => String(values?.[key] || "").toLowerCase() === "yes");
+
+const shouldShowUkCorporateDeclarationDetails = (values: Record<string, any>) =>
+  [
+    "isArrestedBefore",
+    "isInvestigatedBefore",
+    "isInvolvedInCriminal",
+    "gotBankruptBefore",
+    "officerBankruptBefore",
   ].some((key) => String(values?.[key] || "").toLowerCase() === "yes");
 
 const applyReadOnly = (fields: PartyField[], names: string[]) =>
@@ -1112,6 +1143,318 @@ export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
     ],
   },
 
+  // --- UK Corporate ---
+  {
+    id: "UK_ENTITY",
+    title: "UK Corporate Member Registration KYC",
+    countryCode: "UK",
+    partyType: "entity",
+    steps: [
+      {
+        id: "company",
+        title: "Corporate Details",
+        fields: [
+          {
+            name: "email",
+            label: "Representative email address",
+            type: "email",
+            required: true,
+            readOnly: true,
+            tooltip:
+              "We will use this email for official communications regarding important matters. If contact changes, we continue using this address until formally updated.",
+            colSpan: 2,
+          },
+          {
+            name: "companyName",
+            label: "Name of the UK company to be registered",
+            type: "text",
+            required: true,
+            readOnly: true,
+            colSpan: 2,
+          },
+          { name: "dateOfEstablishment", label: "Date of establishment", type: "date", required: true },
+          { name: "countryOfEstablishment", label: "Country of establishment", type: "text", required: true },
+          {
+            name: "registrationNumber",
+            label: "Corporate registration number or business registration number",
+            type: "text",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "listedOnStockExchange",
+            label: "Whether listed on a stock exchange",
+            type: "radio",
+            required: true,
+            options: yesNoOtherOptions,
+            colSpan: 2,
+          },
+          {
+            name: "otherListedOnStockExchange",
+            label: "Other stock exchange details",
+            type: "text",
+            condition: (values) =>
+              String(values?.listedOnStockExchange || "").toLowerCase() === "other",
+            required: true,
+            colSpan: 2,
+          },
+          { name: "representativeName", label: "Representative name", type: "text", required: true },
+          {
+            name: "mobileNumber",
+            label: "Contactable representative mobile phone number",
+            type: "tel",
+            required: true,
+            tooltip:
+              "We use this number for official communications. If contact changes, we continue using this number until formally updated.",
+          },
+          {
+            name: "englishNamesOfShareholders",
+            label: "Documents showing English names of shareholders/directors and stockholding status",
+            type: "radio",
+            required: true,
+            options: usShrDirEngOptions,
+            colSpan: 2,
+          },
+          {
+            name: "otherEnglishNamesOfShareholders",
+            label: "Other shareholder/director document details",
+            type: "text",
+            condition: (values) =>
+              String(values?.englishNamesOfShareholders || "").toLowerCase() === "other",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "articlesOfAssociation",
+            label: "English Articles of Incorporation",
+            type: "radio",
+            required: true,
+            options: usEgnArticleOptions,
+            colSpan: 2,
+          },
+          {
+            name: "otherArticlesOfAssociation",
+            label: "Other Articles of Incorporation details",
+            type: "text",
+            condition: (values) =>
+              String(values?.articlesOfAssociation || "").toLowerCase() === "other",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "businessAddress",
+            label: "Business address (if different from registration certificate address)",
+            type: "textarea",
+            required: true,
+            colSpan: 2,
+          },
+        ],
+      },
+      {
+        id: "relationship",
+        title: "Relationship",
+        fields: [
+          {
+            name: "relationWithUs",
+            label: "Relationship with UK corporations",
+            type: "checkbox-group",
+            required: true,
+            options: ukCorporateRelationOptions,
+            colSpan: 2,
+          },
+          {
+            name: "otherRelation",
+            label: "Other relationship details",
+            type: "text",
+            condition: (values) =>
+              Array.isArray(values?.relationWithUs) && values.relationWithUs.includes("other"),
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "amountInvestedAndShares",
+            label: "Amount to be invested and number of shares to be acquired",
+            type: "text",
+            required: true,
+            colSpan: 2,
+          },
+        ],
+      },
+      {
+        id: "funds",
+        title: "Source of Funds",
+        fields: [
+          {
+            name: "investmentSource",
+            label: "Source of investment funds (multiple selections possible)",
+            type: "checkbox-group",
+            required: true,
+            options: usInvestmentSourceOptions,
+            tooltip: "Supporting source-of-funds documents may be requested later.",
+            colSpan: 2,
+          },
+          {
+            name: "otherInvestmentSource",
+            label: "Other source of investment funds",
+            type: "text",
+            condition: (values) =>
+              Array.isArray(values?.investmentSource) && values.investmentSource.includes("other"),
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "fundsOrigin",
+            label: "Countries receiving funds for the above items (list all countries)",
+            type: "textarea",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "sourceFundExpected",
+            label: "Expected future funds generated or received (multiple selections possible)",
+            type: "checkbox-group",
+            required: true,
+            options: usSourceFundOptions,
+            tooltip: "Supporting source-of-funds documents may be requested later.",
+            colSpan: 2,
+          },
+          {
+            name: "otherSourceFund",
+            label: "Other expected future fund source",
+            type: "text",
+            condition: (values) =>
+              Array.isArray(values?.sourceFundExpected) && values.sourceFundExpected.includes("other"),
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "fundsOrigin2",
+            label: "Countries receiving future funds for the above items (list all countries)",
+            type: "textarea",
+            required: true,
+            colSpan: 2,
+          },
+        ],
+      },
+      {
+        id: "tax-pep",
+        title: "Tax and PEP",
+        fields: [
+          {
+            name: "isUsLegalEntity",
+            label:
+              "Is your company under U.S. legal jurisdiction or a U.S. permanent establishment for tax purposes?",
+            type: "radio",
+            required: true,
+            options: yesNoOtherOptions,
+            colSpan: 2,
+          },
+          {
+            name: "otherResidenceTaxPurpose",
+            label: "Other U.S. legal/tax jurisdiction details",
+            type: "text",
+            condition: (values) => String(values?.isUsLegalEntity || "").toLowerCase() === "other",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "usTinNumber",
+            label: "IRS U.S. Tax Identification Number (TIN)",
+            type: "text",
+            condition: (values) => String(values?.isUsLegalEntity || "").toLowerCase() === "yes",
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "isPoliticalFigure",
+            label:
+              "Do any company officials, immediate family, or close associates qualify as politically exposed persons (PEP)?",
+            type: "radio",
+            required: true,
+            options: ukPepOptions,
+            colSpan: 2,
+          },
+          {
+            name: "describePoliticallyImp",
+            label: "Description of major political figures / relationships",
+            type: "textarea",
+            condition: (values) => String(values?.isPoliticalFigure || "").toLowerCase() === "yes",
+            required: true,
+            colSpan: 2,
+          },
+        ],
+      },
+      {
+        id: "declaration",
+        title: "Declaration and Consent",
+        fields: [
+          {
+            name: "isArrestedBefore",
+            label: "Has any company official been arrested or convicted?",
+            type: "radio",
+            required: true,
+            options: ukDeclarationOptions,
+          },
+          {
+            name: "isInvestigatedBefore",
+            label: "Has any company official been investigated by law enforcement or tax authorities?",
+            type: "radio",
+            required: true,
+            options: ukDeclarationOptions,
+          },
+          {
+            name: "isInvolvedInCriminal",
+            label:
+              "Is any company official involved in criminal, money laundering, bribery, terrorism, or other illicit-source funds activity?",
+            type: "radio",
+            required: true,
+            options: ukDeclarationOptions,
+            colSpan: 2,
+          },
+          {
+            name: "gotBankruptBefore",
+            label: "Has any company official been personally involved in bankruptcy or liquidation?",
+            type: "radio",
+            required: true,
+            options: ukDeclarationOptions,
+          },
+          {
+            name: "officerBankruptBefore",
+            label:
+              "Has any company official been involved in bankruptcy or liquidation as a company executive?",
+            type: "radio",
+            required: true,
+            options: ukDeclarationOptions,
+          },
+          {
+            name: "declarationDesc",
+            label: "Detailed description of items marked 'Yes'",
+            type: "textarea",
+            condition: shouldShowUkCorporateDeclarationDetails,
+            required: true,
+            colSpan: 2,
+          },
+          {
+            name: "isAgreed",
+            label: "Do you agree to the consent and declaration on application?",
+            type: "radio",
+            required: true,
+            options: yesNoOtherOptions,
+            colSpan: 2,
+          },
+          {
+            name: "otherIsAgreed",
+            label: "Other agreement details",
+            type: "text",
+            condition: (values) => String(values?.isAgreed || "").toLowerCase() === "other",
+            required: true,
+            colSpan: 2,
+          },
+        ],
+      },
+    ],
+  },
+
   // --- SG Individual (simplified) ---
   {
     id: "SG_PERSON",
@@ -1243,11 +1586,21 @@ export const resolvePartyKycConfig = ({
   partyType?: "person" | "entity";
   roles?: string[];
 }) => {
-  if (!countryCode) return null;
-  const byCountry = PARTY_KYC_REGISTRY.filter((c) => c.countryCode === countryCode);
+  const normalizedCountryCode = normalizeCountryCode(countryCode);
+  if (!normalizedCountryCode) return null;
+
+  const effectivePartyType =
+    partyType === "entity" && !isEntityPartyTypeEnabledForCountry(normalizedCountryCode)
+      ? "person"
+      : partyType;
+
+  const byCountry = PARTY_KYC_REGISTRY.filter(
+    (c) => normalizeCountryCode(c.countryCode) === normalizedCountryCode
+  );
   if (!byCountry.length) return null;
-  const byType = byCountry.find((c) => (c.partyType ? c.partyType === partyType : true));
+  const byType = byCountry.find((c) => (c.partyType ? c.partyType === effectivePartyType : true));
   if (byType) return byType;
+  if (effectivePartyType) return null;
   const byRole = byCountry.find((c) => c.roles && roles?.some((r) => c.roles?.includes(r)));
   return byRole || byCountry[0];
 };

@@ -11,7 +11,7 @@ import { PPIF_FULL_CONFIG } from "./ppif-full";
 import { CR_FULL_CONFIG } from "./cr-full";
 import { UK_FULL_CONFIG } from "./uk-full";
 
-const STANDARD_FLOW_COUNTRIES = new Set(["HK", "US", "SG", "PA", "PPIF", "CR", "UK"]);
+const STANDARD_FLOW_COUNTRIES = new Set(["HK", "US", "SG", "PA", "PPIF", "CR", "UK", "UAE"]);
 
 const buildAgreementStep = (): McapStep => ({
   id: "service-agreement",
@@ -21,7 +21,7 @@ const buildAgreementStep = (): McapStep => ({
       type: "info",
       content: React.createElement(CommonServiceAgrementTxt),
       colSpan: 2,
-    }    
+    }
   ],
 });
 

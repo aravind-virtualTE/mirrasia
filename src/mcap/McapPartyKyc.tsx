@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import api from "@/services/fetch";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import PartyKycEngine from "./party-kyc/PartyKycEngine";
 import { resolvePartyKycConfig } from "./party-kyc/partyKycRegistry";
 
@@ -34,6 +35,7 @@ export default function McapPartyKyc({
   mode?: "edit" | "detail";
   onModeChange?: (mode: "edit" | "detail") => void;
 }) {
+  const { t } = useTranslation();
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
   const isAdmin = user?.role !== "user";
   const navigate = useNavigate();
@@ -97,7 +99,7 @@ export default function McapPartyKyc({
     if (!preserveStatus) payload.kycStatus = status;
     const res = await api.post(`/mcap/parties/${partyId}/kyc`, payload);
     if (!res?.data?.success) {
-      throw new Error(res?.data?.message || "Save failed");
+      throw new Error(res?.data?.message || t("mcap.partyKyc.ui.saveFailedTitle", "Save failed"));
     }
     setParty((prev) => (prev ? { ...prev, kycStatus: res.data.data?.kycStatus || status } : prev));
   };
@@ -110,7 +112,7 @@ export default function McapPartyKyc({
       headers: { "Content-Type": "multipart/form-data" },
     });
     if (!res?.data?.success) {
-      throw new Error(res?.data?.message || "Upload failed");
+      throw new Error(res?.data?.message || t("mcap.partyKyc.ui.uploadFailedTitle", "Upload failed"));
     }
     return res.data.data?.url as string;
   };
@@ -119,7 +121,7 @@ export default function McapPartyKyc({
     return (
       <div className="flex items-center justify-center py-16 text-muted-foreground">
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        Loading party KYC...
+        {t("mcap.partyKyc.ui.loadingPartyKyc", "Loading party KYC...")}
       </div>
     );
   }
@@ -127,7 +129,7 @@ export default function McapPartyKyc({
   if (!party || !config) {
     return (
       <div className="max-width mx-auto p-6 text-sm text-muted-foreground">
-        No KYC form configured for this party yet.
+        {t("mcap.partyKyc.ui.noFormConfigured", "No KYC form configured for this party yet.")}
       </div>
     );
   }
@@ -159,10 +161,14 @@ export default function McapPartyKyc({
     return (
       <div className="max-width mx-auto p-6">
         <div className="rounded-lg border p-6 text-sm text-slate-600">
-          KYC is not editable in the current status ({kycStatus}). You can view the submitted details.
+          {t(
+            "mcap.partyKyc.ui.notEditableStatus",
+            "KYC is not editable in the current status ({{kycStatus}}). You can view the submitted details.",
+            { kycStatus }
+          )}
           <div className="mt-4">
             <Button onClick={handleViewDetail} variant="outline">
-              View Details
+              {t("mcap.partyKyc.ui.viewDetails", "View Details")}
             </Button>
           </div>
         </div>
@@ -176,7 +182,7 @@ export default function McapPartyKyc({
         <div className="mx-auto w-full max-w-[1100px] px-4 md:px-6 pt-6 flex justify-end">
           {showEditButton && (
             <Button onClick={handleEdit} disabled={!canEditStatus && !isAdmin}>
-              Edit KYC
+              {t("mcap.partyKyc.ui.editKyc", "Edit KYC")}
             </Button>
           )}
         </div>
