@@ -785,6 +785,7 @@ export const UnifiedFormEngine = ({
                                         onChange={setParties}
                                         companyId={companyId}
                                         partyFields={currentStep.partyFields}
+                                        countryCode={config.countryCode}
                                     />
                                 </div>
                             ) : currentStep.widget === "PaymentWidget" ? (

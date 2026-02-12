@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import type { PartyField, PartyFormConfig, PartyStep } from "./partyKycTypes";
+import { resolvePartyKycI18nKey } from "./i18nKeys";
 
 const BrandH1: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <h1 className="text-[22px] font-semibold text-[#0F3D6E]">{children}</h1>
@@ -118,12 +119,14 @@ function FileInput({
   accept,
   existingName,
   uploading,
+  uploadingText,
 }: {
   id: string;
   onChange: (f: File | undefined) => void;
   accept?: string;
   existingName?: string;
   uploading?: boolean;
+  uploadingText?: string;
 }) {
   const ref = useRef<HTMLInputElement | null>(null);
   return (
@@ -142,7 +145,7 @@ function FileInput({
       />
       {uploading && (
         <div className="mt-2 flex items-center justify-center text-xs text-slate-500">
-          <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> Uploading...
+          <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> {uploadingText || "Uploading..."}
         </div>
       )}
       {existingName ? (
@@ -208,7 +211,13 @@ export default function PartyKycEngine({
   const [removing, setRemoving] = useState<Record<string, boolean>>({});
   const [isSaving, setIsSaving] = useState(false);
 
-  const steps = config.steps || [];
+  const steps = useMemo(() => config.steps || [], [config.steps]);
+  const tr = (value?: string) => {
+    if (!value) return "";
+    const key = resolvePartyKycI18nKey(value);
+    if (!key) return value;
+    return t(key, { defaultValue: value });
+  };
 
   useEffect(() => {
     if (initialValues) setFormData((prev) => ({ ...initialValues, ...prev }));
@@ -239,7 +248,7 @@ export default function PartyKycEngine({
       if (!field.required) return;
       const value = formData[field.name];
       if (isEmptyValue(field, value)) {
-        nextErrors[field.name] = "Required";
+        nextErrors[field.name] = t("mcap.partyKyc.ui.required", "Required");
       }
     });
     return nextErrors;
@@ -263,7 +272,10 @@ export default function PartyKycEngine({
     const nextErrors = validateStep(currentStep);
     setErrors((prev) => ({ ...prev, ...nextErrors }));
     if (Object.keys(nextErrors).length > 0) {
-      toast({ title: "Missing info", description: "Please complete required fields." });
+      toast({
+        title: t("mcap.partyKyc.ui.missingInfoTitle", "Missing info"),
+        description: t("mcap.partyKyc.ui.missingInfoDesc", "Please complete required fields."),
+      });
       return;
     }
     setCurrentStepIdx((prev) => Math.min(prev + 1, steps.length - 1));
@@ -283,7 +295,10 @@ export default function PartyKycEngine({
         step.fields.some((f) => nextErrors[f.name])
       );
       if (firstErrorStep >= 0) setCurrentStepIdx(firstErrorStep);
-      toast({ title: "Missing info", description: "Please complete required fields." });
+      toast({
+        title: t("mcap.partyKyc.ui.missingInfoTitle", "Missing info"),
+        description: t("mcap.partyKyc.ui.missingInfoDesc", "Please complete required fields."),
+      });
       return;
     }
 
@@ -291,11 +306,22 @@ export default function PartyKycEngine({
     try {
       await onSave(formData, status);
       toast({
-        title: status === "submitted" ? "KYC submitted" : "Saved",
-        description: status === "submitted" ? "Your KYC is under review." : "Draft saved.",
+        title:
+          status === "submitted"
+            ? t("mcap.partyKyc.ui.submittedTitle", "KYC submitted")
+            : t("mcap.partyKyc.ui.savedTitle", "Saved"),
+        description:
+          status === "submitted"
+            ? t("mcap.partyKyc.ui.submittedDesc", "Your KYC is under review.")
+            : t("mcap.partyKyc.ui.draftSavedDesc", "Draft saved."),
       });
     } catch (err) {
-      toast({ title: "Save failed", description: "Unable to save. Please retry.", variant: "destructive" });
+      console.log(err)
+      toast({
+        title: t("mcap.partyKyc.ui.saveFailedTitle", "Save failed"),
+        description: t("mcap.partyKyc.ui.saveFailedDesc", "Unable to save. Please retry."),
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -312,7 +338,12 @@ export default function PartyKycEngine({
       const url = await onFileUpload(field.name, file);
       updateField(field.name, url);
     } catch (err) {
-      toast({ title: "Upload failed", description: "Could not upload file.", variant: "destructive" });
+      console.log(err)
+      toast({
+        title: t("mcap.partyKyc.ui.uploadFailedTitle", "Upload failed"),
+        description: t("mcap.partyKyc.ui.uploadFailedDesc", "Could not upload file."),
+        variant: "destructive",
+      });
     } finally {
       setUploading((prev) => ({ ...prev, [field.name]: false }));
     }
@@ -328,7 +359,12 @@ export default function PartyKycEngine({
       }
       updateField(field.name, "");
     } catch (err) {
-      toast({ title: "Remove failed", description: "Could not remove file.", variant: "destructive" });
+      console.log(err)
+      toast({
+        title: t("mcap.partyKyc.ui.removeFailedTitle", "Remove failed"),
+        description: t("mcap.partyKyc.ui.removeFailedDesc", "Could not remove file."),
+        variant: "destructive",
+      });
     } finally {
       setRemoving((prev) => ({ ...prev, [field.name]: false }));
     }
@@ -339,9 +375,9 @@ export default function PartyKycEngine({
     const error = errors[field.name];
     const value = formData[field.name];
     const colSpan = field.colSpan === 2 ? "md:col-span-2" : "";
-    const tooltipNode = field.tooltip ? <IHelp>{t(field.tooltip, field.tooltip)}</IHelp> : undefined;
-    const labelText = t(field.label, field.label);
-    const placeholderText = field.placeholder ? t(field.placeholder, field.placeholder) : undefined;
+    const tooltipNode = field.tooltip ? <IHelp>{tr(field.tooltip)}</IHelp> : undefined;
+    const labelText = tr(field.label);
+    const placeholderText = field.placeholder ? tr(field.placeholder) : undefined;
 
     const isDisabled = isReadOnly || field.readOnly;
 
@@ -391,12 +427,12 @@ export default function PartyKycEngine({
         <Field key={field.name} label={labelText} required={field.required} tooltip={tooltipNode} className={colSpan}>
           <Select value={value || ""} onValueChange={(v) => updateField(field.name, v)}>
             <SelectTrigger disabled={isDisabled}>
-              <SelectValue placeholder="Select" />
+              <SelectValue placeholder={t("mcap.partyKyc.ui.selectPlaceholder", "Select")} />
             </SelectTrigger>
             <SelectContent>
               {(field.options || []).map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
-                  {t(opt.label, opt.label)}
+                  {tr(opt.label)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -422,7 +458,7 @@ export default function PartyKycEngine({
               <div key={opt.value} className="flex items-center space-x-2">
                 <RadioGroupItem id={`${field.name}-${opt.value}`} value={opt.value} disabled={isDisabled} />
                 <Label htmlFor={`${field.name}-${opt.value}`} className="text-sm">
-                  {t(opt.label, opt.label)}
+                  {tr(opt.label)}
                 </Label>
               </div>
             ))}
@@ -455,7 +491,7 @@ export default function PartyKycEngine({
                   }}
                 />
                 <Label htmlFor={`${field.name}-${opt.value}`} className="text-sm">
-                  {t(opt.label, opt.label)}
+                  {tr(opt.label)}
                 </Label>
               </div>
             ))}
@@ -504,22 +540,22 @@ export default function PartyKycEngine({
                 <span className="truncate">{fileName}</span>
                 {typeof value === "string" && value.startsWith("http") && (
                   <a href={value} target="_blank" rel="noreferrer" className="text-blue-600 text-xs underline">
-                    View
+                    {t("mcap.partyKyc.ui.view", "View")}
                   </a>
                 )}
               </div>
             ) : (
-              <p className="text-xs text-slate-500">No file uploaded</p>
+              <p className="text-xs text-slate-500">{t("mcap.partyKyc.ui.noFileUploaded", "No file uploaded")}</p>
             )
           ) : (
             <>
               {hasValue && (
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm">
-                  <span className="truncate">{fileName || "File"}</span>
+                  <span className="truncate">{fileName || t("mcap.partyKyc.ui.file", "File")}</span>
                   <div className="flex items-center gap-2">
                     {canView && (
                       <a href={String(value)} target="_blank" rel="noreferrer" className="text-xs text-blue-600 underline">
-                        View
+                        {t("mcap.partyKyc.ui.view", "View")}
                       </a>
                     )}
                     <Button
@@ -529,7 +565,9 @@ export default function PartyKycEngine({
                       disabled={isDisabled || removing[field.name]}
                       onClick={() => handleFileRemove(field)}
                     >
-                      {removing[field.name] ? "Removing..." : "Remove"}
+                      {removing[field.name]
+                        ? t("mcap.partyKyc.ui.removing", "Removing...")
+                        : t("mcap.partyKyc.ui.remove", "Remove")}
                     </Button>
                   </div>
                 </div>
@@ -539,6 +577,7 @@ export default function PartyKycEngine({
                 accept={field.accept}
                 existingName={hasValue ? undefined : fileName}
                 uploading={uploading[field.name]}
+                uploadingText={t("mcap.partyKyc.ui.uploading", "Uploading...")}
                 onChange={(file) => handleFileChange(field, file)}
               />
             </>
@@ -558,32 +597,33 @@ export default function PartyKycEngine({
   return (
     <div className="mx-auto w-full max-w-[1100px] px-4 md:px-6 py-6">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-      <BrandH1>{t(config.title, config.title)}</BrandH1>
+        <BrandH1>{tr(config.title)}</BrandH1>
         {header?.kycStatus && (
           <span className="text-xs rounded-full border px-2 py-1 text-slate-600">
-            KYC: {header.kycStatus}
+            {t("mcap.partyKyc.ui.kycStatus", "KYC")}: {header.kycStatus}
           </span>
         )}
       </div>
 
       {header?.companyName && (
         <div className="mb-4 text-sm text-slate-600">
-          Company: <span className="font-medium text-slate-800">{header.companyName}</span>
+          {t("mcap.partyKyc.ui.companyLabel", "Company")}:{" "}
+          <span className="font-medium text-slate-800">{header.companyName}</span>
           {header.countryName ? ` (${header.countryName})` : ""}
         </div>
       )}
 
       <ProgressBar value={progressValue} />
-      <Stepper steps={steps.map((s) => t(s.title, s.title))} active={currentActiveStep} />
+      <Stepper steps={steps.map((s) => tr(s.title))} active={currentActiveStep} />
 
       {currentStep ? (
         <Card className="mt-5 rounded-2xl border-slate-200">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg">
-              {currentStepIdx + 1}) {t(currentStep.title, currentStep.title)}
+              {currentStepIdx + 1}) {tr(currentStep.title)}
             </CardTitle>
             {currentStep.description && (
-              <p className="text-sm text-slate-500">{t(currentStep.description, currentStep.description)}</p>
+              <p className="text-sm text-slate-500">{tr(currentStep.description)}</p>
             )}
           </CardHeader>
           <CardContent className="space-y-4">
@@ -596,29 +636,29 @@ export default function PartyKycEngine({
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <Button variant="outline" onClick={handleBack} disabled={currentStepIdx === 0 || isSaving}>
-          Back
+          {t("mcap.partyKyc.ui.back", "Back")}
         </Button>
         <div className="flex items-center gap-2">
           {isReadOnly ? (
             currentStepIdx < steps.length - 1 && (
               <Button onClick={handleNext} disabled={isSaving}>
-                Next Step
+                {t("mcap.partyKyc.ui.nextStep", "Next Step")}
               </Button>
             )
           ) : (
             <>
               <Button variant="outline" onClick={() => handleSave("in_progress")} disabled={isSaving}>
                 {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                Save Draft
+                {t("mcap.partyKyc.ui.saveDraft", "Save Draft")}
               </Button>
               {currentStepIdx < steps.length - 1 ? (
                 <Button onClick={handleNext} disabled={isSaving}>
-                  Next Step
+                  {t("mcap.partyKyc.ui.nextStep", "Next Step")}
                 </Button>
               ) : (
                 <Button onClick={() => handleSave("submitted")} disabled={isSaving}>
                   {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                  Submit KYC
+                  {t("mcap.partyKyc.ui.submitKyc", "Submit KYC")}
                 </Button>
               )}
             </>
