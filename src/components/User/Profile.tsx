@@ -183,9 +183,14 @@ export default function Profile() {
     return letters.length >= 2
   }
 
+  const normalizeIntlPhone = (val: string) => String(val || "").trim().replace(/[\s\-()]+/g, "")
+
   const isValidIntlPhone = (val: string) => {
     if (!val) return false
-    const cleaned = val.replace(/\s|-/g, "")
+    const cleaned = normalizeIntlPhone(val)
+    if ((cleaned.match(/\+/g) || []).length > 1) return false
+    if (cleaned.includes("+") && !cleaned.startsWith("+")) return false
+    if (!/^\+?[0-9]+$/.test(cleaned)) return false
     if (/^\+0/.test(cleaned)) return false
     if (!cleaned.startsWith("+") && cleaned.startsWith("0")) return false
     const digitsOnly = cleaned.replace(/^\+/, "")
@@ -218,7 +223,7 @@ export default function Profile() {
     }
 
     if (field === "phone") {
-      const raw = String(value).replace(/[\s-]+/g, "")
+      const raw = normalizeIntlPhone(String(value))
       if (!isValidIntlPhone(raw)) setPhoneError(t("userProfile.messages.phoneError"))
       else setPhoneError("")
     }
@@ -506,7 +511,9 @@ export default function Profile() {
       return
     }
 
-    if (!phoneError) {
+    const normalizedPhone = normalizeIntlPhone(draftProfile.phone)
+    if (!isValidIntlPhone(normalizedPhone)) {
+      setPhoneError(t("userProfile.messages.phoneError"))
       toast({
         title: t("error"),
         description: t("userProfile.messages.phoneError"),
@@ -519,7 +526,7 @@ export default function Profile() {
     if (resendTimer > 0) return
 
     try {
-      const data = { phoneNum: draftProfile.phone }
+      const data = { phoneNum: normalizedPhone }
       const result = await sendMobileOtpforVerification(data)
 
       if (result.success) {
@@ -906,3 +913,4 @@ export default function Profile() {
     </div>
   )
 }
+
