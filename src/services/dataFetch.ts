@@ -617,10 +617,32 @@ export const deleteCommonIncorpo = async (countryCode: string, id: string) => {
   }
 };
 
-export const getMcapCompanies = async (params?: { userId?: string }) => {
+export const getMcapCompanies = async (params?: {
+  userId?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: "country" | "status" | "payment";
+  sortOrder?: "asc" | "desc";
+  filter?:
+    | "all"
+    | "pending"
+    | "paid"
+    | "document_collection"
+    | "new_incorporation"
+    | "renewal_in_progress"
+    | "renewed"
+    | "rejected";
+  search?: string;
+  withMeta?: boolean;
+  includeCounts?: boolean;
+}) => {
   try {
+    const finalParams = {
+      limit: 0,
+      ...(params || {}),
+    };
     const response = await api.get("mcap/companies", {
-      params: params || {},
+      params: finalParams,
     });
     return response.data;
   } catch (error) {

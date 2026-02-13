@@ -238,6 +238,13 @@ const Layout: React.FC = () => {
             roles: ["user", "admin", "master"],
             to: "/incorporation-pricing",
           },
+          {
+            id: "incorporation-migrations",
+            icon: FileCheck,
+            label: "Migration Audit",
+            roles: ["admin", "master"],
+            to: "/incorporation-migrations",
+          },
 
         ],
       },

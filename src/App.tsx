@@ -63,6 +63,7 @@ import McapDashboard from './mcap/McapDashboard';
 import McapUserDashboard from './mcap/McapUserDashboard';
 import McapCompanyDetail from './mcap/McapCompanyDetail';
 import McapParties from './mcap/McapParties';
+import McapMigrationAudit from './mcap/McapMigrationAudit';
 import ProfessionalLetterGenerator from './components/refLetter/ProfessionalLetterGenerator';
 import QuoteEnquiry from './components/quoteService/quoteService';
 import PricingDashboard from './mcap/pricing/PricingDashboard';
@@ -173,6 +174,7 @@ const App: React.FC = () => {
                       <Route path="/sms-management" element={<SMSTracker />} />
                       <Route path="/invoice-management" element={<InvoiceManager />} />
                       <Route path="/admin-companies-list" element={<ViewBoard />} />
+                      <Route path="/incorporation-migrations" element={<McapMigrationAudit />} />
                       <Route path="/enquiries" element={<EnquiryList />} />
                       <Route path="/quote-enquiries" element={<ReqForQuoteList />} />
 
