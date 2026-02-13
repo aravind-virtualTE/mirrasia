@@ -71,10 +71,7 @@ export function SettingsCard({
       console.error("Clipboard copy failed:", error)
       toast({
         title: t("error"),
-        description: t(
-          "userProfile.messages.copyError",
-          "Unable to copy automatically. Please copy it manually."
-        ),
+        description: t("userProfile.messages.copyError"),
         variant: "destructive",
       })
     }
@@ -90,25 +87,19 @@ export function SettingsCard({
         <CardContent className="space-y-6">
           <div className="rounded-xl border bg-muted/30 p-4">
             <h3 className="text-sm font-semibold">
-              {t("userProfile.settings.help.title", "What is Two-Factor Authentication (2FA)?")}
+              {t("userProfile.settings.help.title")}
             </h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              {t(
-                "userProfile.settings.help.description",
-                "2FA adds one extra login step by asking for a 6-digit code from your authentication app."
-              )}
+              {t("userProfile.settings.help.description")}
             </p>
             <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
-              <li>{t("userProfile.settings.help.step1", "Tap Enable 2FA.")}</li>
-              <li>{t("userProfile.settings.help.step2", "Scan the QR code using your authenticator app.")}</li>
-              <li>{t("userProfile.settings.help.step3", "Save your backup codes in a safe place.")}</li>
-              <li>{t("userProfile.settings.help.step4", "Enter the 6-digit code from the app to finish setup.")}</li>
+              <li>{t("userProfile.settings.help.step1")}</li>
+              <li>{t("userProfile.settings.help.step2")}</li>
+              <li>{t("userProfile.settings.help.step3")}</li>
+              <li>{t("userProfile.settings.help.step4")}</li>
             </ol>
             <p className="mt-2 text-xs text-muted-foreground">
-              {t(
-                "userProfile.settings.help.apps",
-                "Example apps: Google Authenticator, Microsoft Authenticator, or Authy."
-              )}
+              {t("userProfile.settings.help.apps")}
             </p>
           </div>
           <div className="flex flex-col gap-4 p-4 border rounded-xl bg-card hover:bg-accent/5 transition-colors sm:flex-row sm:items-center sm:justify-between">
@@ -167,9 +158,9 @@ export function SettingsCard({
             {twoFASetup && (
               <>
                 <div className="rounded-md border bg-muted/30 p-3 text-sm text-muted-foreground">
-                  <p>{t("userProfile.settings.setup.step1", "Step 1: Scan the QR code in your authenticator app.")}</p>
-                  <p>{t("userProfile.settings.setup.step2", "Step 2: Save backup codes in case you lose your phone.")}</p>
-                  <p>{t("userProfile.settings.setup.step3", "Step 3: Enter the 6-digit code from the app.")}</p>
+                  <p>{t("userProfile.settings.setup.step1")}</p>
+                  <p>{t("userProfile.settings.setup.step2")}</p>
+                  <p>{t("userProfile.settings.setup.step3")}</p>
                 </div>
                 <div className="flex justify-center">
                   <img
@@ -190,7 +181,7 @@ export function SettingsCard({
                       variant="outline"
                       size="sm"
                       onClick={() => copyToClipboard(twoFASetup.secret)}
-                      aria-label={t("userProfile.actions.copySecret", "Copy secret key")}
+                      aria-label={t("userProfile.actions.copySecret")}
                       className="shrink-0"
                     >
                       <Copy className="h-4 w-4" />
@@ -200,7 +191,7 @@ export function SettingsCard({
                 {hasBackupCodes && (
                   <div className="space-y-3 rounded-md border p-3">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                      <Label>{t("userProfile.settings.setup.backupCodes", "Backup codes")}</Label>
+                      <Label>{t("userProfile.settings.setup.backupCodes")}</Label>
                       <Button
                         type="button"
                         variant="outline"
@@ -208,10 +199,10 @@ export function SettingsCard({
                         onClick={() =>
                           copyToClipboard(
                             twoFASetup.backupCodes.join("\n"),
-                            t("userProfile.messages.backupCodesCopied", "Backup codes copied")
+                            t("userProfile.messages.backupCodesCopied")
                           )
                         }
-                        aria-label={t("userProfile.actions.copyBackupCodes", "Copy backup codes")}
+                        aria-label={t("userProfile.actions.copyBackupCodes")}
                         className="w-full sm:w-auto"
                       >
                         <Copy className="h-4 w-4" />
@@ -237,10 +228,7 @@ export function SettingsCard({
                         htmlFor="backup-codes-saved"
                         className="text-xs text-muted-foreground leading-5 cursor-pointer"
                       >
-                        {t(
-                          "userProfile.settings.setup.backupCodesConfirm",
-                          "I saved these backup codes in a secure place."
-                        )}
+                        {t("userProfile.settings.setup.backupCodesConfirm")}
                       </Label>
                     </div>
                   </div>
@@ -259,7 +247,7 @@ export function SettingsCard({
                     aria-describedby="two-fa-verify-hint"
                   />
                   <p id="two-fa-verify-hint" className="text-xs text-muted-foreground">
-                    {t("userProfile.settings.setup.codeHint", "Enter the 6-digit code from your authenticator app.")}
+                    {t("userProfile.settings.setup.codeHint")}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 sm:flex-row">
@@ -313,7 +301,7 @@ export function SettingsCard({
                 aria-describedby="two-fa-disable-hint"
               />
               <p id="two-fa-disable-hint" className="text-xs text-muted-foreground">
-                {t("userProfile.settings.disable.codeHint", "Enter your 6-digit authenticator code to continue.")}
+                {t("userProfile.settings.disable.codeHint")}
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
