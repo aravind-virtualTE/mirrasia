@@ -510,6 +510,15 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
   const patchCompany = (key: keyof OnboardingRecord, val: any) =>
     setData((d) => (d ? { ...d, [key]: val } : d));
 
+  const getOptionDisplay = (
+    options: ReadonlyArray<{ label: string; value: string }>,
+    value?: string
+  ) => {
+    if (!value) return "—";
+    const option = options.find((o) => o.value === value);
+    return option ? t(option.label as any, option.label) : value;
+  };
+
   const onSave = async () => {
     if (!data) return;
     try {
@@ -1009,8 +1018,10 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                             />
                           )}
                         </div>
-                      ) : (                       
-                       f.capAmount == "other" ? `${(data?.form as any)?.capOther ?? ""}`:""
+                      ) : (
+                        f.capAmount === "other"
+                          ? (f.capOther || "—")
+                          : getOptionDisplay(capitalAmountOptions, f.capAmount)
                       )}
                     </LabelValue>
                     <LabelValue label="Total Shares">
@@ -1037,7 +1048,9 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                           )}
                         </div>
                       ) : (
-                        f.shareCount == "other" ? `${(data?.form as any)?.shareOther ?? ""}`:""
+                        f.shareCount === "other"
+                          ? (f.shareOther || "—")
+                          : getOptionDisplay(shareCountOptions, f.shareCount)
                       )}
                     </LabelValue>
                     <LabelValue label="Financial Year End">
@@ -1053,7 +1066,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                           </SelectContent>
                         </Select>
                       ) : (
-                        f.finYrEnd || "—"
+                        getOptionDisplay(finYearOptions, f.finYrEnd)
                       )}
                     </LabelValue>
                     <LabelValue label="Bookkeeping Cycle">
@@ -1403,3 +1416,4 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
     </Tabs>
   );
 }
+
