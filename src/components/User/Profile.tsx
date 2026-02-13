@@ -521,6 +521,7 @@ export default function Profile() {
       })
       return
     }
+    setPhoneError("")
 
     // ✅ Block only while timer running (allow resend after timer ends)
     if (resendTimer > 0) return
@@ -913,4 +914,5 @@ export default function Profile() {
     </div>
   )
 }
+
 
