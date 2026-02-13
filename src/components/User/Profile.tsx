@@ -59,6 +59,21 @@ export default function Profile() {
   const [showDisable2FADialog, setShowDisable2FADialog] = useState(false)
   const [disableCode, setDisableCode] = useState("")
 
+  const handleShow2FADialog = (show: boolean) => {
+    setShow2FADialog(show)
+    if (!show) {
+      setVerificationCode("")
+      setTwoFASetup(null)
+    }
+  }
+
+  const handleShowDisable2FADialog = (show: boolean) => {
+    setShowDisable2FADialog(show)
+    if (!show) {
+      setDisableCode("")
+    }
+  }
+
   const [capturedImage, setCapturedImage] = useState<string | null>(null)
   const [isWebcamReady, setIsWebcamReady] = useState(false)
   const [facingMode, setFacingMode] = useState("user")
@@ -320,9 +335,10 @@ export default function Profile() {
   const handleEnable2FA = async () => {
     try {
       setTwoFALoading(true)
+      setVerificationCode("")
       const response = await enable2FA(user.id)
       setTwoFASetup(response)
-      setShow2FADialog(true)
+      handleShow2FADialog(true)
     } catch (err) {
       console.error("Error enabling 2FA:", err)
       toast({
@@ -349,8 +365,7 @@ export default function Profile() {
       const response = await verify2FA(user.id, verificationCode)
       if (response.success) {
         setProfile((prev) => ({ ...prev, twoFactorEnabled: true }))
-        setShow2FADialog(false)
-        setVerificationCode("")
+        handleShow2FADialog(false)
         toast({ title: t("success"), description: t("userProfile.messages.twoFactorEnabled") })
       } else {
         toast({
@@ -385,8 +400,7 @@ export default function Profile() {
       const response = await disable2FA(user.id, disableCode)
       if (response.success) {
         setProfile((prev) => ({ ...prev, twoFactorEnabled: false }))
-        setShowDisable2FADialog(false)
-        setDisableCode("")
+        handleShowDisable2FADialog(false)
         toast({ title: t("userProfile.messages.success"), description: t("userProfile.messages.twoFactorDisabled") })
       } else {
         toast({ title: t("error"), description: t("userProfile.messages.invalidCode"), variant: "destructive" })
@@ -903,8 +917,8 @@ export default function Profile() {
               onEnable2FA={handleEnable2FA}
               onVerify2FA={handleVerify2FA}
               onDisable2FA={handleDisable2FA}
-              onShow2FADialog={setShow2FADialog}
-              onShowDisable2FADialog={setShowDisable2FADialog}
+              onShow2FADialog={handleShow2FADialog}
+              onShowDisable2FADialog={handleShowDisable2FADialog}
               onVerificationCodeChange={setVerificationCode}
               onDisableCodeChange={setDisableCode}
             />
