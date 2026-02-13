@@ -54,7 +54,20 @@ type DashboardFilter = {
   match: (entry: any) => boolean;
 };
 
+type DashboardSortKey = "none" | "country" | "status" | "payment";
+
 const PAGE_SIZE_OPTIONS = [10, 20, 30, 50];
+const SEARCH_DEBOUNCE_MS = 1000;
+const EMPTY_FILTER_COUNTS: Record<DashboardFilterKey, number> = {
+  all: 0,
+  pending: 0,
+  paid: 0,
+  document_collection: 0,
+  new_incorporation: 0,
+  renewal_in_progress: 0,
+  renewed: 0,
+  rejected: 0,
+};
 
 const normalizeStatus = (value: any) => String(value ?? "").trim().toLowerCase();
 
@@ -111,36 +124,23 @@ const resolveCompanyName = (entry: any) => {
   );
 };
 
-const resolveApplicantName = (entry: any) => {
-  const data = entry?.data || {};
-  return (
-    entry?.applicantName ||
-    data.applicantName ||
-    data.name ||
-    data.contactName ||
-    data.primaryContactName ||
-    data.fullName ||
-    ""
-  );
-};
-
-const matchesCompanySearch = (entry: any, query: string) => {
-  const keyword = query.trim().toLowerCase();
-  if (!keyword) return true;
-  const companyName = String(resolveCompanyName(entry) || "").toLowerCase();
-  const applicantName = String(resolveApplicantName(entry) || "").toLowerCase();
-  return companyName.includes(keyword) || applicantName.includes(keyword);
-};
-
 export default function McapUserDashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [items, setItems] = useState<any[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [serverFilterCounts, setServerFilterCounts] = useState<Record<DashboardFilterKey, number>>(EMPTY_FILTER_COUNTS);
   const [activeFilter, setActiveFilter] = useState<DashboardFilterKey>("all");
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [invites, setInvites] = useState<any[]>([]);
+  const [invitePageSize, setInvitePageSize] = useState(10);
+  const [inviteCurrentPage, setInviteCurrentPage] = useState(1);
+  const [inviteTotal, setInviteTotal] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [sortKey, setSortKey] = useState<DashboardSortKey>("none");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingInvites, setIsLoadingInvites] = useState(true);
 
@@ -156,14 +156,66 @@ export default function McapUserDashboard() {
   const canOpenAdminDetail = role !== "user";
 
   useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedSearch(searchQuery.trim());
+    }, SEARCH_DEBOUNCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
     let active = true;
     (async () => {
       setIsLoading(true);
-      const res = await getMcapCompanies(role === "user" ? { userId } : undefined);
-      const data = res?.data || [];
+      try {
+        const sortParams =
+          sortKey === "none"
+            ? {}
+            : {
+                sortBy: sortKey as Exclude<DashboardSortKey, "none">,
+                sortOrder: sortDirection,
+              };
+        const requestParams = {
+          ...(role === "user" ? { userId } : {}),
+          withMeta: true,
+          page: currentPage,
+          limit: pageSize,
+          ...(activeFilter !== "all" ? { filter: activeFilter } : {}),
+          ...(debouncedSearch ? { search: debouncedSearch } : {}),
+          ...sortParams,
+        } as const;
+        const res = await getMcapCompanies(requestParams);
+        const payload = res?.data || {};
+        const pageItems = Array.isArray(payload?.items) ? payload.items : [];
+        const total = Number(payload?.total);
+        if (active) {
+          setItems(pageItems);
+          setTotalItems(Number.isFinite(total) ? total : 0);
+        }
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [userId, role, currentPage, pageSize, activeFilter, debouncedSearch, sortKey, sortDirection]);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const res = await getMcapCompanies({
+        ...(role === "user" ? { userId } : {}),
+        withMeta: true,
+        includeCounts: true,
+        page: 1,
+        limit: 1,
+      });
+      const counts = res?.data?.filterCounts || {};
       if (active) {
-        setItems(data);
-        setIsLoading(false);
+        setServerFilterCounts({
+          ...EMPTY_FILTER_COUNTS,
+          ...counts,
+        });
       }
     })();
     return () => {
@@ -176,10 +228,25 @@ export default function McapUserDashboard() {
     (async () => {
       setIsLoadingInvites(true);
       try {
-        const res = await api.get("/mcap/invites/me");
-        if (active) setInvites(res?.data?.data || []);
+        const res = await api.get("/mcap/invites/me", {
+          params: {
+            withMeta: true,
+            page: inviteCurrentPage,
+            limit: invitePageSize,
+          },
+        });
+        const payload = res?.data?.data || {};
+        const pageItems = Array.isArray(payload?.items) ? payload.items : [];
+        const total = Number(payload?.total);
+        if (active) {
+          setInvites(pageItems);
+          setInviteTotal(Number.isFinite(total) ? total : 0);
+        }
       } catch {
-        if (active) setInvites([]);
+        if (active) {
+          setInvites([]);
+          setInviteTotal(0);
+        }
       } finally {
         if (active) setIsLoadingInvites(false);
       }
@@ -187,7 +254,7 @@ export default function McapUserDashboard() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [inviteCurrentPage, invitePageSize, userId, role]);
 
   const filters = useMemo<DashboardFilter[]>(
     () => [
@@ -240,49 +307,38 @@ export default function McapUserDashboard() {
     [filters, activeFilter]
   );
 
-  const filterCounts = useMemo(() => {
-    const counts: Record<DashboardFilterKey, number> = {
-      all: 0,
-      pending: 0,
-      paid: 0,
-      document_collection: 0,
-      new_incorporation: 0,
-      renewal_in_progress: 0,
-      renewed: 0,
-      rejected: 0,
-    };
-
-    for (const filter of filters) {
-      counts[filter.key] = items.filter(filter.match).length;
-    }
-
-    return counts;
-  }, [filters, items]);
-
   const filteredItems = useMemo(() => {
-    const byStatus = items.filter(activeFilterMeta.match);
-    return byStatus.filter((entry) => matchesCompanySearch(entry, searchQuery));
-  }, [items, activeFilterMeta, searchQuery]);
+    return items;
+  }, [items]);
 
-  const totalFiltered = filteredItems.length;
+  const totalFiltered = totalItems;
+  const totalAll = serverFilterCounts.all || totalItems;
   const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
   const pageStart = totalFiltered === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-  const pageEnd = Math.min(currentPage * pageSize, totalFiltered);
+  const pageEnd = totalFiltered === 0 ? 0 : Math.min(pageStart + items.length - 1, totalFiltered);
+  const inviteTotalPages = Math.max(1, Math.ceil(inviteTotal / invitePageSize));
+  const invitePageStart = inviteTotal === 0 ? 0 : (inviteCurrentPage - 1) * invitePageSize + 1;
+  const invitePageEnd = inviteTotal === 0 ? 0 : Math.min(invitePageStart + invites.length - 1, inviteTotal);
 
   const paginatedItems = useMemo(() => {
-    const start = (currentPage - 1) * pageSize;
-    return filteredItems.slice(start, start + pageSize);
-  }, [filteredItems, currentPage, pageSize]);
+    return filteredItems;
+  }, [filteredItems]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeFilter, searchQuery]);
+  }, [activeFilter, searchQuery, sortKey, sortDirection]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
+
+  useEffect(() => {
+    if (inviteCurrentPage > inviteTotalPages) {
+      setInviteCurrentPage(inviteTotalPages);
+    }
+  }, [inviteCurrentPage, inviteTotalPages]);
 
   return (
     <div className="max-width mx-auto p-3 md:p-4 space-y-4">
@@ -292,7 +348,7 @@ export default function McapUserDashboard() {
           <CardDescription>{t("mcap.dashboard.desc", "Track and continue your unified incorporation applications.")}</CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
-          {!isLoading && items.length > 0 && (
+          {!isLoading && totalAll > 0 && (
             <div className="mb-3 space-y-2">
               <div className="flex flex-wrap gap-1.5">
                 {filters.map((filter) => {
@@ -315,7 +371,7 @@ export default function McapUserDashboard() {
                           isActive ? "bg-white/20 text-white" : "bg-muted text-foreground"
                         }`}
                       >
-                        {filterCounts[filter.key] ?? 0}
+                        {serverFilterCounts[filter.key] ?? 0}
                       </span>
                     </Button>
                   );
@@ -339,13 +395,45 @@ export default function McapUserDashboard() {
                     {t("mcap.dashboard.filters.showing", "Showing {{start}}-{{end}} of {{filtered}} filtered ({{total}} total)", {
                       start: pageStart,
                       end: pageEnd,
-                      filtered: filteredItems.length,
-                      total: items.length,
+                      filtered: totalFiltered,
+                      total: totalAll,
                     })}
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 self-start md:self-auto">
+                  <span className="text-xs text-muted-foreground">
+                    {t("mcap.dashboard.sort.by", "Sort")}
+                  </span>
+                  <Select
+                    value={sortKey}
+                    onValueChange={(v) => setSortKey(v as DashboardSortKey)}
+                  >
+                    <SelectTrigger className="h-8 w-[130px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">{t("mcap.dashboard.sort.none", "None")}</SelectItem>
+                      <SelectItem value="country">{t("mcap.dashboard.sort.country", "Country")}</SelectItem>
+                      <SelectItem value="status">{t("mcap.dashboard.sort.status", "Status")}</SelectItem>
+                      <SelectItem value="payment">{t("mcap.dashboard.sort.payment", "Payment")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    value={sortDirection}
+                    onValueChange={(v) => setSortDirection(v as "asc" | "desc")}
+                    disabled={sortKey === "none"}
+                  >
+                    <SelectTrigger className="h-8 w-[100px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="asc">{t("mcap.dashboard.sort.asc", "Asc")}</SelectItem>
+                      <SelectItem value="desc">{t("mcap.dashboard.sort.desc", "Desc")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+
                   <span className="text-xs text-muted-foreground">
                     {t("mcap.dashboard.pagination.rows", "Rows")}
                   </span>
@@ -406,11 +494,11 @@ export default function McapUserDashboard() {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               {t("mcap.dashboard.loading", "Loading applications...")}
             </div>
-          ) : items.length === 0 ? (
+          ) : totalAll === 0 ? (
             <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
               {t("mcap.dashboard.empty", "No Incorporation applications yet.")}
             </div>
-          ) : filteredItems.length === 0 ? (
+          ) : totalFiltered === 0 ? (
             <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground space-y-3">
               <div>
                 {searchQuery.trim()
@@ -507,12 +595,67 @@ export default function McapUserDashboard() {
           <CardDescription>Complete KYC for companies that invited you.</CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
+          {!isLoadingInvites && inviteTotal > 0 && (
+            <div className="mb-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <div className="text-xs text-muted-foreground">
+                Showing {invitePageStart}-{invitePageEnd} of {inviteTotal} invitations
+              </div>
+              <div className="flex items-center gap-2 self-start md:self-auto">
+                <span className="text-xs text-muted-foreground">Rows</span>
+                <Select
+                  value={String(invitePageSize)}
+                  onValueChange={(v) => {
+                    setInvitePageSize(Number(v));
+                    setInviteCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger className="h-8 w-[78px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PAGE_SIZE_OPTIONS.map((size) => (
+                      <SelectItem key={size} value={String(size)}>
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <div className="flex items-center gap-1">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-2"
+                    onClick={() => setInviteCurrentPage((prev) => Math.max(1, prev - 1))}
+                    disabled={inviteCurrentPage <= 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <div className="min-w-[74px] text-center text-xs text-muted-foreground">
+                    Page {inviteCurrentPage}/{inviteTotalPages}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-2"
+                    onClick={() => setInviteCurrentPage((prev) => Math.min(inviteTotalPages, prev + 1))}
+                    disabled={inviteCurrentPage >= inviteTotalPages}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {isLoadingInvites ? (
             <div className="flex items-center justify-center py-6 text-muted-foreground">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Loading invitations...
             </div>
-          ) : invites.length === 0 ? (
+          ) : inviteTotal === 0 ? (
             <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
               No pending invitations.
             </div>
