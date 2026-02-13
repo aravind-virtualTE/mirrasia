@@ -42,7 +42,9 @@
       "discard": "捨棄",
       "retakeReplace": "重拍 / 更換",
       "success": "成功",
-      "error": "錯誤"
+      "error": "錯誤",
+      "copySecret": "複製密鑰",
+      "copyBackupCodes": "複製備用碼"
     },
     "personalInfo": {
       "title": "個人資訊",
@@ -128,11 +130,27 @@
         "title": "設置雙重驗證",
         "instruction": "使用您的驗證器 App 掃描 QR Code，然後輸入驗證碼。",
         "manual": "或手動輸入此代碼：",
-        "enterCode": "請輸入 App 中的驗證碼："
+        "enterCode": "請輸入 App 中的驗證碼：",
+        "backupCodes": "備用碼",
+        "backupCodesConfirm": "我已將這些備用碼保存於安全位置。",
+        "codeHint": "請輸入驗證器 App 中的 6 位數代碼。",
+        "step1": "步驟 1：使用驗證器 App 掃描 QR Code。",
+        "step2": "步驟 2：保存備用碼，以防手機遺失。",
+        "step3": "步驟 3：輸入 App 顯示的 6 位數代碼。"
       },
       "disable": {
         "title": "停用雙重驗證",
-        "instruction": "請輸入驗證器 App 中的驗證碼以停用 2FA。"
+        "instruction": "請輸入驗證器 App 中的驗證碼以停用 2FA。",
+        "codeHint": "請輸入驗證器 App 的 6 位數代碼以繼續。"
+      },
+      "help": {
+        "title": "什麼是雙重驗證（2FA）？",
+        "description": "2FA 會在登入時增加一步，要求輸入驗證器 App 的 6 位數代碼。",
+        "step1": "點擊「啟用 2FA」。",
+        "step2": "使用驗證器 App 掃描 QR Code。",
+        "step3": "將備用碼妥善保存於安全位置。",
+        "step4": "輸入 App 顯示的 6 位數代碼完成設定。",
+        "apps": "例如：Google Authenticator、Microsoft Authenticator、Authy"
       }
     },
     "messages": {
@@ -164,7 +182,9 @@
       "copied": "已複製到剪貼簿！",
       "otpVerifyInstruction": "請輸入發送至 {{phone}} 的 6 位數驗證碼。",
       "changesDiscarded": "已捨棄更改",
-      "otpVerified": "驗證碼驗證成功"
+      "otpVerified": "驗證碼驗證成功",
+      "copyError": "無法自動複製，請手動複製。",
+      "backupCodesCopied": "備用碼已複製"
     },
     "upload": {
       "drop": "將檔案拖放到此處",
@@ -2821,4 +2841,3 @@
     }
   }
 }
-

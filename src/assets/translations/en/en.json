@@ -1,4 +1,4 @@
-﻿{
+{
   "userProfile": {
     "title": "Profile Settings",
     "subtitle": "Manage your account information and security settings",
@@ -36,6 +36,8 @@
       "enable2fa": "Enable 2FA",
       "disable": "Disable",
       "copy": "Copy",
+      "copySecret": "Copy secret key",
+      "copyBackupCodes": "Copy backup codes",
       "setup2fa": "Verify & Enable",
       "verifying": "Verifying...",
       "disabling": "Disabling...",
@@ -120,6 +122,15 @@
       "subtitle": "Manage your account security and two-factor authentication",
       "twoFactor": "Two-Factor Authentication",
       "twoFactorDesc": "Add an extra layer of security to your account",
+      "help": {
+        "title": "What is Two-Factor Authentication (2FA)?",
+        "description": "2FA adds one extra login step by asking for a 6-digit code from your authentication app.",
+        "step1": "Tap Enable 2FA.",
+        "step2": "Scan the QR code using your authenticator app.",
+        "step3": "Save your backup codes in a safe place.",
+        "step4": "Enter the 6-digit code from the app to finish setup.",
+        "apps": "Example apps: Google Authenticator, Microsoft Authenticator, or Authy."
+      },
       "status": {
         "enabled": "Enabled",
         "disabled": "Disabled"
@@ -128,11 +139,18 @@
         "title": "Setup Two-Factor Authentication",
         "instruction": "Scan the QR code with your authenticator app, then enter the verification code.",
         "manual": "Or enter this code manually:",
-        "enterCode": "Enter verification code from your app:"
+        "enterCode": "Enter verification code from your app:",
+        "backupCodes": "Backup codes",
+        "backupCodesConfirm": "I saved these backup codes in a secure place.",
+        "codeHint": "Enter the 6-digit code from your authenticator app.",
+        "step1": "Step 1: Scan the QR code in your authenticator app.",
+        "step2": "Step 2: Save backup codes in case you lose your phone.",
+        "step3": "Step 3: Enter the 6-digit code from the app."
       },
       "disable": {
         "title": "Disable Two-Factor Authentication",
-        "instruction": "Enter a verification code from your authenticator app to disable 2FA."
+        "instruction": "Enter a verification code from your authenticator app to disable 2FA.",
+        "codeHint": "Enter your 6-digit authenticator code to continue."
       }
     },
     "messages": {
@@ -162,6 +180,8 @@
       "twoFactorEnabled": "Two-Factor Authentication has been enabled successfully!",
       "twoFactorDisabled": "Two-Factor Authentication has been disabled.",
       "copied": "Copied to clipboard!",
+      "copyError": "Unable to copy automatically. Please copy it manually.",
+      "backupCodesCopied": "Backup codes copied",
       "otpVerifyInstruction": "Enter the 6-digit code we sent to {{phone}}.",
       "changesDiscarded": "Changes discarded",
       "otpVerified": "OTP Verified successfully"
