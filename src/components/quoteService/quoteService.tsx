@@ -17,7 +17,6 @@ import {
   Search,
   Package,
   History,
-  Calendar,
   User,
   Filter
 } from 'lucide-react';
