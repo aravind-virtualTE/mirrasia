@@ -34,6 +34,7 @@ import AdminProject from "@/pages/dashboard/Admin/Projects/AdminProject";
 import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { Banknote, Building2, Mail, Phone, ReceiptText, Send, ShieldCheck } from "lucide-react";
 import McapPartyKycModal from "@/mcap/McapPartyKycModal";
+import McapCompanyDocumentCenter from "@/mcap/documents/McapCompanyDocumentCenter";
 
 type McapParty = {
   _id?: string;
@@ -161,6 +162,7 @@ const McapCompanyDetail: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [partyModalOpen, setPartyModalOpen] = useState(false);
   const [selectedPartyId, setSelectedPartyId] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState("details");
 
   const fetchCompany = async () => {
     if (!id) return;
@@ -408,7 +410,7 @@ const McapCompanyDetail: React.FC = () => {
 
   return (
     <>
-    <Tabs defaultValue="details" className="flex flex-col w-full mx-auto">
+    <Tabs value={activeSection} onValueChange={setActiveSection} className="flex flex-col w-full mx-auto">
       <TabsList className="flex w-full p-1 bg-background/80 rounded-t-lg border-b">
         <TabsTrigger value="details" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
           Company Details
@@ -455,8 +457,16 @@ const McapCompanyDetail: React.FC = () => {
               </Select>
             </div>
           )}
-          <Button onClick={() => navigate(`/company-documents/${company.countryCode}/${company._id}`)} size="sm" className="flex items-center gap-2">
+          <Button onClick={() => setActiveSection("documents")} size="sm" className="flex items-center gap-2">
             Company Docs
+          </Button>
+          <Button
+            onClick={() => navigate(`/incorporation-documents?companyId=${company._id}`)}
+            size="sm"
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            MCAP Docs Hub
           </Button>
           <Button onClick={() => navigate(`/mcap?companyId=${company._id}`)} size="sm" className="flex items-center gap-2">
             Open in Form
@@ -923,13 +933,11 @@ const McapCompanyDetail: React.FC = () => {
       </TabsContent>
 
       <TabsContent value="documents" className="p-6">
-        <div className="space-y-4">
-          <h1 className="text-2xl font-bold">Record of Documents</h1>
-          <p className="text-sm text-muted-foreground">Open the company documents manager to upload and review files.</p>
-          <Button onClick={() => navigate(`/company-documents/${company.countryCode}/${company._id}`)} size="sm">
-            Open Document Manager
-          </Button>
-        </div>
+        <McapCompanyDocumentCenter
+          companyId={company._id}
+          countryCode={company.countryCode}
+          companyName={companyName}
+        />
       </TabsContent>
 
       {isAdmin && (

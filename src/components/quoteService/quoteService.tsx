@@ -513,7 +513,8 @@ export default function QuoteEnquiry() {
                           items: selectedItems.map(i => ({ title: i.title, price: i.price, description: i.description })),
                           total: selectedItems.reduce((acc, curr) => acc + (curr.price || 0), 0),
                           status: 'pending',
-                          userId: user?._id || user?.id || ''
+                          userId: user?._id || user?.id || '',
+                          userName: user?.fullName || user?.name || user?.username || user?.email || ''
                         };
                         await updateReqForEnquiry(payload);
                         toast({ title: "Sent", description: "Quotation sent to " + formData.email });
@@ -684,7 +685,7 @@ function HistoryView({ onViewQuote }: { onViewQuote: (quote: any) => void }) {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     search: '',
-    userId: '',
+    userName: '',
     sort: '-createdAt'
   });
 
@@ -694,7 +695,7 @@ function HistoryView({ onViewQuote }: { onViewQuote: (quote: any) => void }) {
       const res = await getRedQuoteData({
         params: {
           search: filters.search,
-          userId: filters.userId,
+          userName: filters.userName,
           sort: filters.sort
         }
       });
@@ -712,6 +713,15 @@ function HistoryView({ onViewQuote }: { onViewQuote: (quote: any) => void }) {
   useEffect(() => {
     fetchHistory();
   }, [filters]);
+
+  const filteredHistory = useMemo(() => {
+    const creatorQuery = filters.userName.trim().toLowerCase();
+    if (!creatorQuery) return history;
+
+    return history.filter((quote) =>
+      String(quote.userName || '').toLowerCase().includes(creatorQuery)
+    );
+  }, [history, filters.userName]);
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -744,9 +754,9 @@ function HistoryView({ onViewQuote }: { onViewQuote: (quote: any) => void }) {
           <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Filter by User ID..."
-            value={filters.userId}
-            onChange={e => setFilters(prev => ({ ...prev, userId: e.target.value }))}
+            placeholder="Filter by Creator name..."
+            value={filters.userName}
+            onChange={e => setFilters(prev => ({ ...prev, userName: e.target.value }))}
             className="w-full border border-input bg-background text-foreground rounded-lg pl-10 pr-4 py-2 outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
@@ -773,7 +783,7 @@ function HistoryView({ onViewQuote }: { onViewQuote: (quote: any) => void }) {
                 <th className="px-6 py-4">Quote #</th>
                 <th className="px-6 py-4">Date</th>
                 <th className="px-6 py-4">Client</th>
-                <th className="px-6 py-4">Creator (User ID)</th>
+                <th className="px-6 py-4">Creator (Name)</th>
                 <th className="px-6 py-4 text-right">Total</th>
                 <th className="px-6 py-4 text-center">Status</th>
                 <th className="px-6 py-4 text-right">Actions</th>
@@ -786,14 +796,14 @@ function HistoryView({ onViewQuote }: { onViewQuote: (quote: any) => void }) {
                     Loading history...
                   </td>
                 </tr>
-              ) : history.length === 0 ? (
+              ) : filteredHistory.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-8 text-center text-muted-foreground">
                     No quotes found.
                   </td>
                 </tr>
               ) : (
-                history.map((quote) => (
+                filteredHistory.map((quote) => (
                   <tr key={quote._id} className="hover:bg-muted/20 transition-colors">
                     <td className="px-6 py-4 font-mono text-sm font-medium">{quote.quoteNumber || '—'}</td>
                     <td className="px-6 py-4 text-sm text-muted-foreground">
@@ -805,7 +815,7 @@ function HistoryView({ onViewQuote }: { onViewQuote: (quote: any) => void }) {
                       <div className="text-xs text-muted-foreground">{quote.clientEmail || quote.email}</div>
                     </td>
                     <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {quote.userId || <span className="text-xs italic opacity-50">Anonymous</span>}
+                      {quote.userName || quote.userId || <span className="text-xs italic opacity-50">Anonymous</span>}
                     </td>
                     <td className="px-6 py-4 text-right font-bold text-foreground">
                       ${(quote.total || 0).toFixed(2)}
