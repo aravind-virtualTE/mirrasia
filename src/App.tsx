@@ -64,6 +64,7 @@ import McapUserDashboard from './mcap/McapUserDashboard';
 import McapCompanyDetail from './mcap/McapCompanyDetail';
 import McapParties from './mcap/McapParties';
 import McapMigrationAudit from './mcap/McapMigrationAudit';
+import McapDocumentsHub from './mcap/McapDocumentsHub';
 import ProfessionalLetterGenerator from './components/refLetter/ProfessionalLetterGenerator';
 import QuoteEnquiry from './components/quoteService/quoteService';
 import PricingDashboard from './mcap/pricing/PricingDashboard';
@@ -155,6 +156,7 @@ const App: React.FC = () => {
                         <Route path="/incorporation-parties" element={<McapParties />} />
                         <Route path="/incorporation-pricing" element={<PricingDashboard />} />
                         <Route path="/incorporation-detail/:id" element={<McapCompanyDetail />} />
+                        <Route path="/incorporation-documents" element={<McapDocumentsHub />} />
                       </Route>
                     </Route>
                   </Route>

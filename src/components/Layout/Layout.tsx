@@ -232,6 +232,13 @@ const Layout: React.FC = () => {
             to: "/incorporation-parties",
           },
           {
+            id: "incorporation-documents",
+            icon: Files,
+            label: "Document Center",
+            roles: ["user", "admin", "master"],
+            to: "/incorporation-documents",
+          },
+          {
             id: "incorporation-pricing",
             icon: DollarSign,
             label: "Incorporation Pricing",

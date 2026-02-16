@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { Loader2, RefreshCw, Download } from "lucide-react";
@@ -93,6 +94,17 @@ type MigrationAuditItem = {
   createdAt?: string;
 };
 
+type MigrationTarget = "HK" | "US" | "SG" | "PA" | "PPIF" | "COMMON";
+
+const MIGRATION_TARGET_META: Record<MigrationTarget, { label: string; sourceModel: string }> = {
+  HK: { label: "Hong Kong", sourceModel: "hkincorporation" },
+  US: { label: "United States", sourceModel: "usIncorporation" },
+  SG: { label: "Singapore", sourceModel: "sgIncorporation" },
+  PA: { label: "Panama", sourceModel: "paIncorporation" },
+  PPIF: { label: "Panama Foundation", sourceModel: "PanamaFoundation" },
+  COMMON: { label: "Common Countries", sourceModel: "commonCountries" },
+};
+
 const fmtDateTime = (value?: string) => {
   if (!value) return "N/A";
   const dt = new Date(value);
@@ -111,6 +123,8 @@ const downloadJson = (name: string, data: unknown) => {
 };
 
 export default function McapMigrationAudit() {
+  const [targetCountry, setTargetCountry] = useState<MigrationTarget>("HK");
+  const [commonCountryCodes, setCommonCountryCodes] = useState("");
   const [legacyId, setLegacyId] = useState("");
   const [limit, setLimit] = useState("");
   const [force, setForce] = useState(false);
@@ -126,16 +140,23 @@ export default function McapMigrationAudit() {
     () => history.find((item) => item._id === selectedAuditId) || null,
     [history, selectedAuditId]
   );
+  const migrationSlug = targetCountry.toLowerCase();
+  const targetLabel = MIGRATION_TARGET_META[targetCountry].label;
+  const sourceModelLabel = MIGRATION_TARGET_META[targetCountry].sourceModel;
 
   const fetchHistory = useCallback(async () => {
     try {
       setIsLoadingHistory(true);
-      const res = await api.get("/mcap/migrations/hk-legacy/reports", {
+      const res = await api.get(`/mcap/migrations/${migrationSlug}-legacy/reports`, {
         params: { page: 1, limit: 50 },
       });
       const items: MigrationAuditItem[] = res?.data?.data?.items || [];
       setHistory(items);
-      setSelectedAuditId((prev) => prev || (items.length > 0 ? items[0]._id : null));
+      setSelectedAuditId((prev) => {
+        if (prev && items.some((item) => item._id === prev)) return prev;
+        return items.length > 0 ? items[0]._id : null;
+      });
+      if (items.length === 0) setLatestReport(null);
     } catch (err: any) {
       toast({
         title: "Failed to load history",
@@ -145,11 +166,21 @@ export default function McapMigrationAudit() {
     } finally {
       setIsLoadingHistory(false);
     }
-  }, []);
+  }, [migrationSlug]);
 
   useEffect(() => {
     fetchHistory();
   }, [fetchHistory]);
+
+  useEffect(() => {
+    setSelectedAuditId(null);
+    setHistory([]);
+    setLatestReport(null);
+    setSelectedUnresolvedCompanyId("");
+    if (targetCountry !== "COMMON") {
+      setCommonCountryCodes("");
+    }
+  }, [targetCountry]);
 
   useEffect(() => {
     if (selectedAudit?.result) {
@@ -160,7 +191,7 @@ export default function McapMigrationAudit() {
   const runMigration = async (previewMode: boolean) => {
     if (!previewMode) {
       const ok = window.confirm(
-        "Execute live migration now? This will write into UnifiedCompany and UnifiedParty."
+        `Execute live ${targetCountry} migration now? This will write into UnifiedCompany and UnifiedParty.`
       );
       if (!ok) return;
     }
@@ -169,6 +200,9 @@ export default function McapMigrationAudit() {
     params.set("preview", previewMode ? "true" : "false");
     if (force) params.set("force", "true");
     if (legacyId.trim()) params.set("id", legacyId.trim());
+    if (targetCountry === "COMMON" && commonCountryCodes.trim()) {
+      params.set("countryCode", commonCountryCodes.trim());
+    }
     const parsedLimit = Number(limit);
     if (Number.isFinite(parsedLimit) && parsedLimit > 0) {
       params.set("limit", String(Math.floor(parsedLimit)));
@@ -176,7 +210,7 @@ export default function McapMigrationAudit() {
 
     try {
       setIsRunning(true);
-      const res = await api.post(`/mcap/migrations/hk-legacy?${params.toString()}`);
+      const res = await api.post(`/mcap/migrations/${migrationSlug}-legacy?${params.toString()}`);
       const report: MigrationReport = res?.data?.data;
       setLatestReport(report || null);
       if (report?.auditId) {
@@ -184,14 +218,14 @@ export default function McapMigrationAudit() {
       }
 
       toast({
-        title: previewMode ? "Preview completed" : "Migration completed",
+        title: previewMode ? `${targetCountry} preview completed` : `${targetCountry} migration completed`,
         description: `Processed: ${report?.migrated || 0}, Failed: ${report?.failed || 0}`,
       });
 
       await fetchHistory();
     } catch (err: any) {
       toast({
-        title: previewMode ? "Preview failed" : "Migration failed",
+        title: previewMode ? `${targetCountry} preview failed` : `${targetCountry} migration failed`,
         description: err?.response?.data?.message || err?.message || "Unexpected error.",
         variant: "destructive",
       });
@@ -228,15 +262,46 @@ export default function McapMigrationAudit() {
     <div className="max-width mx-auto p-4 space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle>MCAP HK Migration</CardTitle>
+          <CardTitle>MCAP Legacy Migration</CardTitle>
           <CardDescription>
-            Trigger and monitor legacy HK migration (`hkincorporation` to MCAP unified models) and keep audit reports.
+            Trigger and monitor legacy {targetLabel} migration (`{sourceModelLabel}` to MCAP unified models) and keep audit reports.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
             <div className="space-y-1">
-              <Label htmlFor="legacyId">Legacy HK ID (optional)</Label>
+              <Label htmlFor="targetCountry">Migration Target</Label>
+              <Select
+                value={targetCountry}
+                onValueChange={(value) => setTargetCountry(value as MigrationTarget)}
+                disabled={isRunning || isLoadingHistory}
+              >
+                <SelectTrigger id="targetCountry">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="HK">Hong Kong</SelectItem>
+                  <SelectItem value="US">United States</SelectItem>
+                  <SelectItem value="SG">Singapore</SelectItem>
+                  <SelectItem value="PA">Panama</SelectItem>
+                  <SelectItem value="PPIF">Panama Foundation</SelectItem>
+                  <SelectItem value="COMMON">Common Countries</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {targetCountry === "COMMON" ? (
+              <div className="space-y-1">
+                <Label htmlFor="commonCountryCodes">Country Code(s) (optional)</Label>
+                <Input
+                  id="commonCountryCodes"
+                  value={commonCountryCodes}
+                  onChange={(e) => setCommonCountryCodes(e.target.value.toUpperCase())}
+                  placeholder="AE,BZ,BVI,KY,CW,EE,MH,MT,CH,VC,SC,GB,CN-SZ,CR"
+                />
+              </div>
+            ) : null}
+            <div className="space-y-1">
+              <Label htmlFor="legacyId">Legacy ID (optional)</Label>
               <Input
                 id="legacyId"
                 value={legacyId}
@@ -279,7 +344,7 @@ export default function McapMigrationAudit() {
               <Button
                 onClick={() =>
                   downloadJson(
-                    `mcap-hk-migration-report-${new Date().toISOString().replace(/[:.]/g, "-")}.json`,
+                    `mcap-${migrationSlug}-migration-report-${new Date().toISOString().replace(/[:.]/g, "-")}.json`,
                     reportToShow
                   )
                 }
@@ -299,7 +364,7 @@ export default function McapMigrationAudit() {
           <CardHeader>
             <CardTitle>Current Report</CardTitle>
             <CardDescription>
-              {reportToShow.preview ? "Preview mode" : "Execution mode"} {reportToShow.force ? "• force enabled" : ""}
+              {targetLabel}: {reportToShow.preview ? "Preview mode" : "Execution mode"} {reportToShow.force ? "• force enabled" : ""}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -541,7 +606,7 @@ export default function McapMigrationAudit() {
                             variant="ghost"
                             onClick={() =>
                               downloadJson(
-                                `mcap-hk-migration-audit-${item._id}.json`,
+                                `mcap-${migrationSlug}-migration-audit-${item._id}.json`,
                                 item
                               )
                             }
