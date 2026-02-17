@@ -468,7 +468,7 @@ const McapCompanyDetail: React.FC = () => {
           >
             MCAP Docs Hub
           </Button>
-          <Button onClick={() => navigate(`/mcap?companyId=${company._id}`)} size="sm" className="flex items-center gap-2">
+          <Button onClick={() => navigate(`/incorporation?companyId=${company._id}`)} size="sm" className="flex items-center gap-2">
             Open in Form
           </Button>
           <Button onClick={() => navigate(-1)} size="sm" className="flex items-center gap-2">
