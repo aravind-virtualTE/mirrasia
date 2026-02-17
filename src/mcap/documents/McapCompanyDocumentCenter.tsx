@@ -16,7 +16,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { deleteCompanyDoc, getCompDocs, uploadCompanyDocs } from "@/services/dataFetch";
+import {
+  deleteMcapCompanyDocument,
+  deleteMcapDocumentComment,
+  getMcapCompanyDocuments,
+  upsertMcapDocumentComment,
+  uploadMcapCompanyDocuments,
+} from "@/services/dataFetch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,8 +38,6 @@ import {
   Document,
   DocumentComment,
   DocumentType,
-  deleteDocumentComment,
-  upsertDocumentComment,
 } from "@/components/companyDocumentManager/cdm";
 import DocumentTableWithComments from "@/components/companyDocumentManager/DocumentTableWithComments";
 
@@ -44,7 +48,8 @@ interface McapCompanyDocumentCenterProps {
 }
 
 const getDocId = (doc?: Document | null) =>
-  doc?._id?.toString?.() || doc?.id?.toString?.() || "";
+  (doc?._id?.toString?.() || doc?.id?.toString?.() || "").toLowerCase();
+const isMongoDocId = (id: string) => /^[a-f0-9]{24}$/.test(String(id || "").toLowerCase());
 
 const docTypeFromTab = (tab: DocumentType): "companyDocs" | "kycDocs" | "letterDocs" => {
   if (tab === "kyc") return "kycDocs";
@@ -138,25 +143,16 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
   const userId = user?.id || user?._id || "";
 
   const fetchCompanyDocuments = async () => {
-    if (!userId) {
-      toast({
-        title: "Session error",
-        description: "User context is missing. Please sign in again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
-    setCurrentUserId(userId);
+    setCurrentUserId(String(userId || ""));
     try {
-      const resp = await getCompDocs(String(userId));
-      const list: Company[] = resp?.companies ?? resp ?? [];
-      setCommentsMap(resp?.commentsMap ?? {});
+      const resp = await getMcapCompanyDocuments(String(companyId));
+      const payload = resp?.company ? resp : {};
+      const serverCompany: Company | null = payload?.company || null;
+      setCommentsMap(payload?.commentsMap ?? {});
 
-      const matched = list.find((item) => String(item.id) === String(companyId));
-      if (matched) {
-        setCompany(matched);
+      if (serverCompany?.id) {
+        setCompany(serverCompany);
         setIsCompanyMissing(false);
       } else {
         setCompany({
@@ -261,7 +257,8 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
 
     try {
       const slimPayload = buildSlimCompanyPayload(optimisticCompany, activeTab);
-      const res = await uploadCompanyDocs([slimPayload]);
+      const uploadResp = await uploadMcapCompanyDocuments(String(optimisticCompany.id), [slimPayload]);
+      const res = Array.isArray(uploadResp) ? uploadResp : uploadResp ? [uploadResp] : [];
 
       if (Array.isArray(res) && res.length > 0) {
         const serverItem = res.find((item: any) => String(item.id) === String(optimisticCompany.id)) || res[0];
@@ -311,13 +308,8 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
     setIsUpdating(true);
 
     try {
-      const payload = JSON.stringify({
-        docType: docTypeFromTab(activeTab),
-        docId: company.id,
-        country: company.country,
-        ...documentToDelete,
-      });
-      await deleteCompanyDoc(payload);
+      if (!docId) throw new Error("Missing document id");
+      await deleteMcapCompanyDocument(String(company.id), String(docId));
       toast({
         title: "Deleted",
         description: "Document removed successfully.",
@@ -347,14 +339,20 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
 
   const handleAddComment = async (docId: string, text: string) => {
     if (!company || !currentUserId) return;
+    if (!isMongoDocId(docId)) {
+      toast({
+        title: "Invalid document",
+        description: "This document cannot be commented yet. Please refresh and retry.",
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       setIsUpdating(true);
-      const resp = await upsertDocumentComment({
+      const resp = await upsertMcapDocumentComment(String(company.id), {
         docId,
-        companyId: company.id,
         docType: docTypeFromTab(activeTab),
         text,
-        userId: currentUserId,
       });
       const comment: DocumentComment | undefined = resp?.comment;
       if (!comment?._id) throw new Error("Invalid comment response");
@@ -377,15 +375,21 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
 
   const handleEditComment = async (docId: string, commentId: string, text: string) => {
     if (!company || !currentUserId) return;
+    if (!isMongoDocId(docId)) {
+      toast({
+        title: "Invalid document",
+        description: "This document cannot be commented yet. Please refresh and retry.",
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       setIsUpdating(true);
-      const resp = await upsertDocumentComment({
+      const resp = await upsertMcapDocumentComment(String(company.id), {
         _id: commentId,
         docId,
-        companyId: company.id,
         docType: docTypeFromTab(activeTab),
         text,
-        userId: currentUserId,
       });
       const updated: DocumentComment | undefined = resp?.comment;
       if (!updated?._id) throw new Error("Invalid comment response");
@@ -410,7 +414,9 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
     if (!currentUserId) return;
     try {
       setIsUpdating(true);
-      const resp = await deleteDocumentComment(commentId, currentUserId);
+      const resp = await deleteMcapDocumentComment(String(companyId), commentId, {
+        userId: currentUserId,
+      });
       const deletedId = resp?.deletedId || commentId;
       setCommentsMap((prev) => ({
         ...prev,
