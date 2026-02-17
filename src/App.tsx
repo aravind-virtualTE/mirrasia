@@ -154,7 +154,7 @@ const App: React.FC = () => {
                         <Route path="/incorporation" element={<McapDashboard />} />
                         <Route path="/incorporation-dashboard" element={<McapUserDashboard />} />
                         <Route path="/incorporation-parties" element={<McapParties />} />
-                        <Route path="/incorporation-pricing" element={<PricingDashboard />} />
+                        
                         <Route path="/incorporation-detail/:id" element={<McapCompanyDetail />} />
                         <Route path="/incorporation-documents" element={<McapDocumentsHub />} />
                       </Route>
@@ -179,9 +179,7 @@ const App: React.FC = () => {
                       <Route path="/incorporation-migrations" element={<McapMigrationAudit />} />
                       <Route path="/enquiries" element={<EnquiryList />} />
                       <Route path="/quote-enquiries" element={<ReqForQuoteList />} />
-
-
-
+                      <Route path="/incorporation-pricing" element={<PricingDashboard />} />
                     </Route>
                   </Route>
 

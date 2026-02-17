@@ -242,7 +242,7 @@ const Layout: React.FC = () => {
             id: "incorporation-pricing",
             icon: DollarSign,
             label: "Incorporation Pricing",
-            roles: ["user", "admin", "master"],
+            roles: ["admin", "master"],
             to: "/incorporation-pricing",
           },
           {
