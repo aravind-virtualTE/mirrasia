@@ -39,6 +39,8 @@ type MigrationSample = {
   linkRowsUnresolved?: number;
   dedupedLinkedParties?: number;
   finalParties?: number;
+  documentsCount?: number;
+  documentsAction?: string;
   parties?: MigrationSampleParty[];
 };
 
@@ -62,6 +64,7 @@ type MigrationReport = {
   auditId?: string | null;
   preview: boolean;
   force: boolean;
+  docsOnly?: boolean;
   totalLegacy: number;
   migrated: number;
   created: number;
@@ -76,6 +79,12 @@ type MigrationReport = {
   linkRowsUnresolved?: number;
   dedupedLinkedParties?: number;
   finalParties?: number;
+  docsMapped?: number;
+  docsCompaniesWithDocs?: number;
+  docsCompaniesWithoutDocs?: number;
+  docsOnlyUpdated?: number;
+  docsOnlySkippedMissingCompany?: number;
+  docsOnlySkippedEmpty?: number;
   unresolvedLinkedByCompany?: UnresolvedLinkedCompany[];
   errors: MigrationError[];
   sample: MigrationSample[];
@@ -128,7 +137,9 @@ export default function McapMigrationAudit() {
   const [legacyId, setLegacyId] = useState("");
   const [limit, setLimit] = useState("");
   const [force, setForce] = useState(false);
+  const [docsOnly, setDocsOnly] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
+  const [isRetryingFailed, setIsRetryingFailed] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [latestReport, setLatestReport] = useState<MigrationReport | null>(null);
   const [history, setHistory] = useState<MigrationAuditItem[]>([]);
@@ -180,6 +191,7 @@ export default function McapMigrationAudit() {
     if (targetCountry !== "COMMON") {
       setCommonCountryCodes("");
     }
+    setDocsOnly(false);
   }, [targetCountry]);
 
   useEffect(() => {
@@ -191,7 +203,9 @@ export default function McapMigrationAudit() {
   const runMigration = async (previewMode: boolean) => {
     if (!previewMode) {
       const ok = window.confirm(
-        `Execute live ${targetCountry} migration now? This will write into UnifiedCompany and UnifiedParty.`
+        docsOnly
+          ? `Execute live ${targetCountry} docs-only migration now? This will update UnifiedCompany.documents only.`
+          : `Execute live ${targetCountry} migration now? This will write into UnifiedCompany and UnifiedParty.`
       );
       if (!ok) return;
     }
@@ -199,6 +213,7 @@ export default function McapMigrationAudit() {
     const params = new URLSearchParams();
     params.set("preview", previewMode ? "true" : "false");
     if (force) params.set("force", "true");
+    if (docsOnly) params.set("docsOnly", "true");
     if (legacyId.trim()) params.set("id", legacyId.trim());
     if (targetCountry === "COMMON" && commonCountryCodes.trim()) {
       params.set("countryCode", commonCountryCodes.trim());
@@ -235,6 +250,67 @@ export default function McapMigrationAudit() {
   };
 
   const reportToShow = latestReport || selectedAudit?.result || null;
+  const failedLegacyIds = useMemo(() => {
+    const source = Array.isArray(reportToShow?.errors) ? reportToShow.errors : [];
+    const unique = new Set<string>();
+    source.forEach((entry) => {
+      const id = String(entry?.legacyId || "").trim();
+      if (/^[a-fA-F0-9]{24}$/.test(id)) unique.add(id);
+    });
+    return Array.from(unique);
+  }, [reportToShow]);
+
+  const retryFailedLegacyIds = async () => {
+    if (failedLegacyIds.length === 0) {
+      toast({
+        title: "No failed IDs",
+        description: "Current report has no valid failed legacy ObjectIds to retry.",
+      });
+      return;
+    }
+
+    const ok = window.confirm(
+      `Retry ${failedLegacyIds.length} failed legacy record(s) for ${targetCountry} in execution mode?` +
+      (docsOnly ? " Docs-only mode is enabled." : " Consider enabling docs-only mode for document recovery.")
+    );
+    if (!ok) return;
+
+    try {
+      setIsRetryingFailed(true);
+      let succeeded = 0;
+      let failed = 0;
+
+      for (const legacyObjectId of failedLegacyIds) {
+        const params = new URLSearchParams();
+        params.set("preview", "false");
+        params.set("id", legacyObjectId);
+        if (force) params.set("force", "true");
+        if (docsOnly) params.set("docsOnly", "true");
+        if (targetCountry === "COMMON" && commonCountryCodes.trim()) {
+          params.set("countryCode", commonCountryCodes.trim());
+        }
+
+        try {
+          const res = await api.post(`/mcap/migrations/${migrationSlug}-legacy?${params.toString()}`);
+          const report: MigrationReport = res?.data?.data;
+          if ((report?.failed || 0) > 0) failed += 1;
+          else succeeded += 1;
+        } catch {
+          failed += 1;
+        }
+      }
+
+      await fetchHistory();
+      toast({
+        title: failed === 0 ? "Retry completed" : "Retry completed with failures",
+        description: `Retried: ${failedLegacyIds.length}, Succeeded: ${succeeded}, Failed: ${failed}.`,
+        ...(failed > 0 ? { variant: "destructive" as const } : {}),
+      });
+    } finally {
+      setIsRetryingFailed(false);
+    }
+  };
+
   const unresolvedCompanies = useMemo(
     () => (Array.isArray(reportToShow?.unresolvedLinkedByCompany) ? reportToShow.unresolvedLinkedByCompany : []),
     [reportToShow]
@@ -320,11 +396,23 @@ export default function McapMigrationAudit() {
             </div>
             <div className="space-y-1">
               <Label>Options</Label>
-              <label className="flex items-center gap-2 h-10">
-                <Checkbox checked={force} onCheckedChange={(v) => setForce(v === true)} />
-                <span className="text-sm">Force update existing migrated records</span>
-              </label>
+              <div className="space-y-1">
+                <label className="flex items-center gap-2">
+                  <Checkbox checked={force} onCheckedChange={(v) => setForce(v === true)} />
+                  <span className="text-sm">Force update existing migrated records</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <Checkbox checked={docsOnly} onCheckedChange={(v) => setDocsOnly(v === true)} />
+                  <span className="text-sm">Documents-only recovery mode</span>
+                </label>
+              </div>
             </div>
+          </div>
+
+          <div className="text-xs text-muted-foreground">
+            {docsOnly
+              ? "Docs-only mode updates UnifiedCompany.documents and skips party migration."
+              : "Standard mode migrates company and party data."}
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -336,6 +424,12 @@ export default function McapMigrationAudit() {
               {isRunning ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
               Execute Migration
             </Button>
+            {failedLegacyIds.length > 0 ? (
+              <Button onClick={retryFailedLegacyIds} disabled={isRunning || isRetryingFailed} variant="secondary">
+                {isRetryingFailed ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+                Retry Failed IDs ({failedLegacyIds.length})
+              </Button>
+            ) : null}
             <Button onClick={fetchHistory} disabled={isLoadingHistory} variant="outline">
               {isLoadingHistory ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <RefreshCw className="h-4 w-4 mr-2" />}
               Refresh Audit History
@@ -364,7 +458,9 @@ export default function McapMigrationAudit() {
           <CardHeader>
             <CardTitle>Current Report</CardTitle>
             <CardDescription>
-              {targetLabel}: {reportToShow.preview ? "Preview mode" : "Execution mode"} {reportToShow.force ? "• force enabled" : ""}
+              {targetLabel}: {reportToShow.preview ? "Preview mode" : "Execution mode"}
+              {reportToShow.force ? " | force enabled" : ""}
+              {reportToShow.docsOnly ? " | docs-only" : ""}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -377,6 +473,13 @@ export default function McapMigrationAudit() {
               <Badge variant={reportToShow.failed > 0 ? "destructive" : "secondary"}>Failed: {reportToShow.failed}</Badge>
               <Badge variant="outline">Preview: {String(reportToShow.preview)}</Badge>
               <Badge variant="outline">Force: {String(reportToShow.force)}</Badge>
+              <Badge variant="outline">DocsOnly: {String(reportToShow.docsOnly === true)}</Badge>
+              <Badge variant="secondary">Docs Mapped: {reportToShow.docsMapped ?? 0}</Badge>
+              <Badge variant="secondary">Docs +ve Co.: {reportToShow.docsCompaniesWithDocs ?? 0}</Badge>
+              <Badge variant="secondary">Docs 0 Co.: {reportToShow.docsCompaniesWithoutDocs ?? 0}</Badge>
+              <Badge variant="secondary">Docs Updated: {reportToShow.docsOnlyUpdated ?? 0}</Badge>
+              <Badge variant="secondary">Docs Skip Missing: {reportToShow.docsOnlySkippedMissingCompany ?? 0}</Badge>
+              <Badge variant="secondary">Docs Skip Empty: {reportToShow.docsOnlySkippedEmpty ?? 0}</Badge>
               <Badge variant="secondary">Legacy Parties: {reportToShow.partiesFromLegacyDoc ?? 0}</Badge>
               <Badge variant="secondary">Linked Parties: {reportToShow.partiesFromShareholderLinks ?? 0}</Badge>
               <Badge variant="secondary">Linked Resolved: {reportToShow.linkRowsResolved ?? 0}</Badge>

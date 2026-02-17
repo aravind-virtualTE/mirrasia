@@ -53,11 +53,21 @@ const DocumentTableWithComments: React.FC<DocumentTableWithCommentsProps> = ({
     setDrawerOpen(true);
   };
 
-  const getSafeId = (doc: Document) => (doc?._id as any)?.toString?.() || (doc.id as any)?.toString?.() || "unknown-id";
+  const getSafeId = (doc: Document) =>
+    ((doc?._id as any)?.toString?.() || (doc.id as any)?.toString?.() || "unknown-id").toLowerCase();
 
   const getCommentCount = (doc: Document) => {
     const docId = getSafeId(doc);
     return commentsMap[docId]?.length || 0;
+  };
+
+  const getLatestComment = (doc: Document) => {
+    const docId = getSafeId(doc);
+    const list = commentsMap[docId] || [];
+    if (!list.length) return null;
+    return [...list].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )[0];
   };
 
   if (expandedDoc) return null;
@@ -89,6 +99,10 @@ const DocumentTableWithComments: React.FC<DocumentTableWithCommentsProps> = ({
             ) : (
               documents.map((document) => {
                 const commentCount = getCommentCount(document);
+                const latestComment = getLatestComment(document);
+                const latestCommentPreview = latestComment
+                  ? `${latestComment.createdByName || "User"}: ${latestComment.text}`
+                  : "No comments yet";
                 return (
                   <TableRow key={getSafeId(document)}>
                     <TableCell className="py-3">
@@ -138,6 +152,11 @@ const DocumentTableWithComments: React.FC<DocumentTableWithCommentsProps> = ({
                           </Badge>
                         )}
                       </Button>
+                      <div className="mt-1 text-left text-[11px] text-muted-foreground px-1">
+                        <span className="block truncate" title={latestCommentPreview}>
+                          {latestCommentPreview}
+                        </span>
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-center">
