@@ -23,6 +23,41 @@ type QuestionItem = {
 const normalizeCountryCode = (countryCode?: string) =>
   String(countryCode || "").split("_")[0].toUpperCase();
 
+const normalizePartyType = (partyType?: string): "person" | "entity" | undefined => {
+  const normalized = String(partyType || "").trim().toLowerCase();
+  if (!normalized) return undefined;
+
+  if (
+    [
+      "person",
+      "individual",
+      "natural",
+      "natural_person",
+      "natural-person",
+      "individual_member",
+      "individual-member",
+    ].includes(normalized)
+  ) {
+    return "person";
+  }
+
+  if (
+    [
+      "entity",
+      "corporate",
+      "company",
+      "corporation",
+      "legal",
+      "legal_person",
+      "legal-person",
+    ].includes(normalized)
+  ) {
+    return "entity";
+  }
+
+  return undefined;
+};
+
 // Toggle corporate-party support by country.
 // Set HK to true in the future if/when entity KYC is introduced.
 export const PARTY_ENTITY_TYPE_ENABLED_BY_COUNTRY: Record<string, boolean> = {
@@ -354,6 +389,41 @@ const ukDeclarationOptions = [
   { value: "no", label: "No" },
 ];
 
+const chCorporateRelationshipOptions = [
+  { value: "shareholder", label: "Shareholder" },
+  { value: "director", label: "Director" },
+  { value: "ultimate_beneficial_owner", label: "Ultimate Beneficial Owner" },
+  { value: "designated_contact_person", label: "Designated Contact Person" },
+  { value: "other", label: "Other" },
+];
+
+const chShareholdingRoleOptions = [
+  { value: "shareholder", label: "Shareholder" },
+  { value: "director", label: "Director" },
+  { value: "other", label: "Other" },
+];
+
+const chInvestmentSourceOptions = [
+  { value: "shareholdersCapitalOrLoans", label: "Shareholders' capital or loans" },
+  { value: "businessIncomeDividends", label: "Business income / dividends" },
+  { value: "depositsSavings", label: "Deposits / savings" },
+  { value: "realEstateStocksInvestmentIncome", label: "Real estate / stocks / investment income" },
+  { value: "loanAmount", label: "Loan amount" },
+  { value: "saleOfCompanyOrShares", label: "Sale of company or shares" },
+  { value: "inheritanceFunds", label: "Inheritance funds" },
+  { value: "other", label: "Other" },
+];
+
+const chFutureSourceOptions = [
+  { value: "businessIncome", label: "Business income" },
+  { value: "interestIncome", label: "Interest income" },
+  { value: "realEstateStocksInvestmentIncome", label: "Real estate / stocks / investment income" },
+  { value: "saleOfCompanyOrShares", label: "Sale of company or shares" },
+  { value: "inheritanceGift", label: "Inheritance / Gift" },
+  { value: "borrowingTrustDeposit", label: "Borrowing / trust / deposit" },
+  { value: "other", label: "Other" },
+];
+
 const shouldShowUkDeclarationDetails = (values: Record<string, any>) =>
   [
     "declArrestedOrConvicted",
@@ -520,7 +590,7 @@ const paSteps = buildStepsFromGroups(paFields, [
   },
 ]);
 
-export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
+const BASE_PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   // --- HK Individual ---
   {
     id: "HK_PERSON",
@@ -1577,27 +1647,541 @@ export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   },
 ];
 
+const cloneStep = (step: PartyStep): PartyStep => ({
+  ...step,
+  fields: step.fields.map((field) => ({ ...field })),
+});
+
+const getFieldIndex = (fields: PartyField[], name: string) =>
+  fields.findIndex((field) => field.name === name);
+
+const buildSwissPersonConfig = (): PartyFormConfig | null => {
+  const ukPerson = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_PERSON" && cfg.partyType === "person"
+  );
+  if (!ukPerson) return null;
+
+  const steps = ukPerson.steps.map(cloneStep).map((step) => {
+    if (step.id === "identity") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "companyName") {
+          return { ...field, label: "Swiss Legal Entity Name to be Registered" };
+        }
+        if (field.name === "residentialAddress") {
+          return {
+            ...field,
+            label: "Residential address",
+            placeholder: "Full residential address",
+          };
+        }
+        return field;
+      });
+
+      const mailingAddressIndex = getFieldIndex(fields, "mailingAddress");
+      const insertAt = mailingAddressIndex >= 0 ? mailingAddressIndex : fields.length;
+      const identityAdditions: PartyField[] = [
+        {
+          name: "residentialPostalCode",
+          label: "Residential postal code (ZIP code)",
+          type: "text",
+          required: true,
+        },
+        {
+          name: "residencyDuration",
+          label: "How long have you lived at your current residential address?",
+          type: "text",
+          required: true,
+          placeholder: "e.g., 5 years",
+        },
+      ];
+      fields.splice(insertAt, 0, ...identityAdditions);
+
+      return { ...step, fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "relationshipWithUkEntity") {
+          return { ...field, label: "Relationship with the Swiss legal entity" };
+        }
+        if (field.name === "ukEntityRelationshipRoles") {
+          return {
+            ...field,
+            label: "Relationship role(s) with the Swiss legal entity",
+          };
+        }
+        if (field.name === "shareholdingPercentage") {
+          return {
+            ...field,
+            label: "Shareholding percentage (%) in the Swiss legal entity",
+          };
+        }
+        return field;
+      });
+      return { ...step, fields };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "investmentFundSource") {
+          return {
+            ...field,
+            label:
+              "Source of funds for investment/loan into Swiss corporation (multiple selections possible)",
+          };
+        }
+        if (field.name === "futureFundSource") {
+          return {
+            ...field,
+            label:
+              "Expected future source of funds flowing into Swiss corporation (multiple selections possible)",
+          };
+        }
+        return field;
+      });
+
+      fields.push(
+        {
+          name: "annualIncomeUsd",
+          label: "Comprehensive annual income (USD)",
+          type: "number",
+          required: true,
+        },
+        {
+          name: "primaryIncomeSource",
+          label: "Primary annual income source",
+          type: "textarea",
+          required: true,
+          colSpan: 2,
+        }
+      );
+
+      return { ...step, fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "usTaxResidency") {
+          return {
+            ...field,
+            label: "Are you a U.S. tax person (citizen, resident, or tax resident)?",
+            options: yesNoOptions,
+          };
+        }
+        if (field.name === "irsTin") {
+          return {
+            ...field,
+            label: "U.S. TIN or SSN",
+            condition: (values: Record<string, any>) =>
+              String(values?.usTaxResidency || "").toLowerCase() === "yes",
+            required: true,
+          };
+        }
+        return field;
+      });
+
+      const tinIndex = getFieldIndex(fields, "irsTin");
+      const insertAt = tinIndex >= 0 ? tinIndex + 1 : fields.length;
+      fields.splice(insertAt, 0, {
+        name: "usTaxReturnFiled",
+        label: "If yes, have you filed U.S. tax returns as required?",
+        type: "radio",
+        required: true,
+        options: yesNoOptions,
+        condition: (values: Record<string, any>) =>
+          String(values?.usTaxResidency || "").toLowerCase() === "yes",
+        colSpan: 2,
+      });
+
+      return { ...step, fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...ukPerson,
+    id: "CH_PERSON",
+    title: "Swiss Individual Member Registration KYC",
+    countryCode: "CH",
+    steps,
+  };
+};
+
+const CH_PERSON_CONFIG = buildSwissPersonConfig();
+
+const buildSwissEntityConfig = (): PartyFormConfig | null => {
+  const ukEntity = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_ENTITY" && cfg.partyType === "entity"
+  );
+  if (!ukEntity) return null;
+
+  const steps: PartyStep[] = ukEntity.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "company") {
+      const fields = step.fields
+        .filter(
+          (field) =>
+            ![
+              "englishNamesOfShareholders",
+              "otherEnglishNamesOfShareholders",
+              "articlesOfAssociation",
+              "otherArticlesOfAssociation",
+            ].includes(field.name)
+        )
+        .map((field) => {
+          if (field.name === "companyName") {
+            return { ...field, label: "Name of the Swiss corporation to be registered" };
+          }
+          if (field.name === "registrationNumber") {
+            return { ...field, name: "corporateRegistrationNumber", label: "Corporate registration number" };
+          }
+          if (field.name === "listedOnStockExchange") {
+            return {
+              ...field,
+              name: "isListedOnStockExchange",
+              label: "Is the corporation listed on a stock exchange?",
+              options: yesNoOtherOptions,
+            };
+          }
+          if (field.name === "otherListedOnStockExchange") {
+            return {
+              ...field,
+              name: "isListedOnStockExchangeOtherDetails",
+              label: "Other stock exchange details",
+              condition: (values: Record<string, any>) =>
+                String(values?.isListedOnStockExchange || "").toLowerCase() === "other",
+              required: true,
+            };
+          }
+          if (field.name === "representativeName") {
+            return { ...field, name: "fullName", label: "Corporate representative full name" };
+          }
+          if (field.name === "businessAddress") {
+            return {
+              ...field,
+              label: "Business address",
+              placeholder: "Include full address and postal code",
+            };
+          }
+          return field;
+        });
+
+      const representativeInsertAt = getFieldIndex(fields, "mobileNumber");
+      const representativeExtraFields: PartyField[] = [
+        {
+          name: "emailAddress",
+          label: "Representative email address",
+          type: "email",
+          required: true,
+          colSpan: 2,
+          placeholder: "If same as applicant email, use the same address",
+        },
+        {
+          name: "kakaoTalkId",
+          label: "KakaoTalk ID (if applicable)",
+          type: "text",
+        },
+        {
+          name: "otherSnsId",
+          label: "Telegram, WeChat, or other SNS ID (if applicable)",
+          type: "text",
+        },
+      ];
+      if (representativeInsertAt >= 0) {
+        fields.splice(representativeInsertAt + 1, 0, ...representativeExtraFields);
+      } else {
+        fields.push(...representativeExtraFields);
+      }
+
+      return { ...step, title: "Corporate Applicant and Representative", fields };
+    }
+
+    if (step.id === "relationship") {
+      const relationshipFields: PartyField[] = [
+        {
+          name: "proposedCompanyName",
+          label: "Proposed Swiss corporation name",
+          type: "text",
+          required: true,
+          colSpan: 2,
+        },
+        {
+          name: "relationshipToSwissCorporation",
+          label: "Relationship to the Swiss corporation",
+          type: "select",
+          required: true,
+          options: chCorporateRelationshipOptions,
+          colSpan: 2,
+        },
+        {
+          name: "relationshipToSwissCorporationOther",
+          label: "Other relationship details",
+          type: "text",
+          condition: (values: Record<string, any>) =>
+            String(values?.relationshipToSwissCorporation || "").toLowerCase() === "other",
+          required: true,
+          colSpan: 2,
+        },
+        {
+          name: "investmentAmountCHF",
+          label: "Investment amount (CHF)",
+          type: "number",
+          required: true,
+        },
+      ];
+
+      return {
+        ...step,
+        title: "Swiss Corporation Details",
+        fields: relationshipFields,
+      };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "investmentSource") {
+          return {
+            ...field,
+            label: "Source of investment funds (multiple selections possible)",
+            options: chInvestmentSourceOptions,
+          };
+        }
+        if (field.name === "otherInvestmentSource") {
+          return {
+            ...field,
+            label: "Other source details for investment funds",
+          };
+        }
+        if (field.name === "fundsOrigin") {
+          return {
+            ...field,
+            label: "Countries of origin for investment funds",
+            placeholder: "List all countries",
+          };
+        }
+        if (field.name === "sourceFundExpected") {
+          return {
+            ...field,
+            label: "Future source of funds (multiple selections possible)",
+            options: chFutureSourceOptions,
+          };
+        }
+        if (field.name === "otherSourceFund") {
+          return {
+            ...field,
+            label: "Other details for future source of funds",
+          };
+        }
+        if (field.name === "fundsOrigin2") {
+          return {
+            ...field,
+            label: "Countries of origin for future funds",
+            placeholder: "List all countries",
+          };
+        }
+        return field;
+      });
+      return { ...step, fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "isUsLegalEntity") {
+          return {
+            ...field,
+            label:
+              "Is the company under U.S. legal jurisdiction or a U.S. permanent establishment for tax purposes?",
+          };
+        }
+        if (field.name === "otherResidenceTaxPurpose") {
+          return {
+            ...field,
+            label: "Other U.S. jurisdiction details",
+          };
+        }
+        if (field.name === "usTinNumber") {
+          return {
+            ...field,
+            label: "IRS Taxpayer Identification Number (TIN)",
+          };
+        }
+        if (field.name === "isPoliticalFigure") {
+          return {
+            ...field,
+            label:
+              "Do any company officials, immediate family, or close associates qualify as politically exposed persons (PEP)?",
+          };
+        }
+        if (field.name === "describePoliticallyImp") {
+          return {
+            ...field,
+            label: "PEP description",
+          };
+        }
+        return field;
+      });
+      return { ...step, fields };
+    }
+
+    if (step.id === "declaration") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "isArrestedBefore") {
+          return { ...field, label: "Any criminal conviction history?" };
+        }
+        if (field.name === "isInvestigatedBefore") {
+          return { ...field, label: "Any law-enforcement or tax investigation history?" };
+        }
+        if (field.name === "isInvolvedInCriminal") {
+          return { ...field, label: "Any involvement in illegal activities or illicit funds?" };
+        }
+        if (field.name === "gotBankruptBefore") {
+          return { ...field, label: "Any personal bankruptcy or liquidation history?" };
+        }
+        if (field.name === "officerBankruptBefore") {
+          return { ...field, label: "Any executive bankruptcy or liquidation history?" };
+        }
+        if (field.name === "declarationDesc") {
+          return { ...field, label: "Details for any declaration item answered 'Yes'" };
+        }
+        if (field.name === "isAgreed") {
+          return { ...field, label: "Do you agree to the consent declaration?" };
+        }
+        if (field.name === "otherIsAgreed") {
+          return { ...field, label: "Other consent declaration details" };
+        }
+        return field;
+      });
+      return { ...step, title: "Compliance and Consent", fields };
+    }
+
+    return step;
+  });
+
+  const shareholdingStep: PartyStep = {
+    id: "shareholding-structure",
+    title: "Shareholding Structure",
+    fields: [
+      {
+        name: "englishFullName",
+        label: "English full name (first shareholder/director)",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "role",
+        label: "Role",
+        type: "select",
+        required: true,
+        options: chShareholdingRoleOptions,
+      },
+      {
+        name: "sharesHeld",
+        label: "Shares held",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "zipCode",
+        label: "ZIP / postal code",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "countryOfResidence",
+        label: "Country of residence",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "residencyDurationInYears",
+        label: "Residency duration (years)",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "shareholdingStructureAdditional",
+        label: "Additional shareholders/directors details",
+        type: "textarea",
+        colSpan: 2,
+        hint:
+          "If there are multiple shareholders/directors, list each person's full name, role, shares held, ZIP code, country of residence, and residency duration.",
+      },
+    ],
+  };
+
+  const companyIndex = steps.findIndex((step) => step.id === "company");
+  if (companyIndex >= 0) {
+    steps.splice(companyIndex + 1, 0, shareholdingStep);
+  } else {
+    steps.unshift(shareholdingStep);
+  }
+
+  return {
+    ...ukEntity,
+    id: "CH_ENTITY",
+    title: "Swiss Corporate Member Registration KYC",
+    countryCode: "CH",
+    steps,
+  };
+};
+
+const CH_ENTITY_CONFIG = buildSwissEntityConfig();
+
+const CH_FALLBACK_ENTITY_CLONES: PartyFormConfig[] = BASE_PARTY_KYC_REGISTRY
+  .filter(
+    (cfg) => normalizeCountryCode(cfg.countryCode) === "UK" && cfg.partyType === "entity"
+  )
+  .map((cfg) => ({
+    ...cfg,
+    id: "CH_ENTITY",
+    title: "Swiss Corporate Member Registration KYC",
+    countryCode: "CH",
+  }));
+
+export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
+  ...BASE_PARTY_KYC_REGISTRY,
+  ...(CH_PERSON_CONFIG ? [CH_PERSON_CONFIG] : []),
+  ...(CH_ENTITY_CONFIG ? [CH_ENTITY_CONFIG] : CH_FALLBACK_ENTITY_CLONES),
+];
+
 export const resolvePartyKycConfig = ({
   countryCode,
   partyType,
   roles,
 }: {
   countryCode?: string;
-  partyType?: "person" | "entity";
+  partyType?: string;
   roles?: string[];
 }) => {
   const normalizedCountryCode = normalizeCountryCode(countryCode);
   if (!normalizedCountryCode) return null;
 
+  const normalizedPartyType = normalizePartyType(partyType);
   const effectivePartyType =
-    partyType === "entity" && !isEntityPartyTypeEnabledForCountry(normalizedCountryCode)
+    normalizedPartyType === "entity" &&
+    !isEntityPartyTypeEnabledForCountry(normalizedCountryCode)
       ? "person"
-      : partyType;
+      : normalizedPartyType;
 
   const byCountry = PARTY_KYC_REGISTRY.filter(
     (c) => normalizeCountryCode(c.countryCode) === normalizedCountryCode
   );
   if (!byCountry.length) return null;
+
+  if (normalizedCountryCode === "CH" && effectivePartyType === "person") {
+    const swissPersonConfig = byCountry.find(
+      (c) => c.id === "CH_PERSON" && c.partyType === "person"
+    );
+    if (swissPersonConfig) return swissPersonConfig;
+  }
+
+  if (normalizedCountryCode === "CH" && effectivePartyType === "entity") {
+    const swissEntityConfig = byCountry.find(
+      (c) => c.id === "CH_ENTITY" && c.partyType === "entity"
+    );
+    if (swissEntityConfig) return swissEntityConfig;
+  }
+
   const byType = byCountry.find((c) => (c.partyType ? c.partyType === effectivePartyType : true));
   if (byType) return byType;
   if (effectivePartyType) return null;
