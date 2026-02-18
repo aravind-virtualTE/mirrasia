@@ -82,7 +82,9 @@ export default function McapPartyKyc({
   const initialValues = useMemo(() => {
     const base = {
       email: party?.email || "",
+      emailAddress: party?.email || "",
       companyName: company?.companyName || company?.countryName || "",
+      proposedCompanyName: company?.companyName || company?.countryName || "",
       roles: party?.roles || [],
       fullName: party?.name || "",
       name: party?.name || "",

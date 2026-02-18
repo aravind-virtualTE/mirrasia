@@ -180,14 +180,15 @@ export default function McapDashboard() {
   }
 
   const grouped = MCAP_CONFIGS.reduce<Record<string, McapConfig[]>>((acc, cfg) => {
-    const key = cfg.countryCode || "Other";
+    const code = String(cfg.countryCode || "Other");
+    const key = code.split("_")[0] || "Other";
     if (!acc[key]) acc[key] = [];
     acc[key].push(cfg);
     return acc;
   }, {});
 
   const groupEntries = Object.entries(grouped);
-  console.log("groupEntries",groupEntries)
+  // console.log("groupEntries",groupEntries)
   return (
     <div className="min-h-[calc(100vh-120px)] p-2 md:p-8 max-width mx-auto">
       {/* Hero / Header */}
