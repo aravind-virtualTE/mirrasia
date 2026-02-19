@@ -424,6 +424,38 @@ const chFutureSourceOptions = [
   { value: "other", label: "Other" },
 ];
 
+const eeRelationshipRoleOptions = [
+  { value: "shareholder", label: "Shareholder" },
+  { value: "officer", label: "Officer" },
+  { value: "key_controller_25_percent_or_more", label: "Key controller (25% or more)" },
+  { value: "designated_contact_person", label: "Designated Contact Person" },
+  { value: "official_partner_mirr_asia", label: "Official partner (Mirr Asia)" },
+  { value: "other", label: "Other" },
+];
+
+const eeContributionSourceOptions = [
+  { value: "earned_income", label: "Earned income" },
+  { value: "deposits_savings", label: "Deposits / savings" },
+  { value: "real_estate_or_investment_income", label: "Real estate / investment income" },
+  { value: "loan", label: "Loan" },
+  { value: "sale_of_company_or_shares", label: "Sale of company or shares" },
+  { value: "business_income_dividends", label: "Business income / dividends" },
+  { value: "inheritance", label: "Inheritance" },
+  { value: "parent_company_investment", label: "Parent company investment" },
+  { value: "other", label: "Other" },
+];
+
+const eeFutureSourceOptions = [
+  { value: "business_income_distribution", label: "Business income distribution" },
+  { value: "earned_income", label: "Earned income" },
+  { value: "interest_income", label: "Interest income" },
+  { value: "real_estate_or_investment_income", label: "Real estate / investment income" },
+  { value: "sale_of_company_or_shares", label: "Sale of company or shares" },
+  { value: "inheritance_gift", label: "Inheritance / Gift" },
+  { value: "borrowing_trust_deposit", label: "Borrowing / trust / deposit" },
+  { value: "other", label: "Other" },
+];
+
 const shouldShowUkDeclarationDetails = (values: Record<string, any>) =>
   [
     "declArrestedOrConvicted",
@@ -2138,10 +2170,429 @@ const CH_FALLBACK_ENTITY_CLONES: PartyFormConfig[] = BASE_PARTY_KYC_REGISTRY
     countryCode: "CH",
   }));
 
+const shouldShowEeComplianceDetails = (values: Record<string, any>) =>
+  [
+    "criminalConviction",
+    "lawEnforcementInvestigation",
+    "involvementInIllegalActivities",
+    "personalBankruptcyOrLiquidation",
+    "executiveBankruptcyOrLiquidation",
+  ].some((key) => String(values?.[key] || "").toLowerCase() === "yes");
+
+const buildEeSharedMemberSteps = (): PartyStep[] => [
+  {
+    id: "identity",
+    title: "Personal Information",
+    fields: [
+      {
+        name: "email",
+        label: "Email",
+        type: "email",
+        required: true,
+        readOnly: true,
+      },
+      { name: "fullName", label: "Full Name", type: "text", required: true },
+      {
+        name: "hasChangedName",
+        label: "Have you ever changed your name?",
+        type: "radio",
+        required: true,
+        options: ukPepOptions,
+      },
+      {
+        name: "previousEnglishName",
+        label: "Previous English Name",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          String(values?.hasChangedName || "").toLowerCase() === "yes",
+        required: true,
+      },
+      { name: "birthDate", label: "Date of Birth", type: "date", required: true },
+      { name: "birthPlace", label: "Place of Birth", type: "text", required: true },
+      { name: "nationality", label: "Nationality", type: "text", required: true },
+      { name: "passportNumber", label: "Passport Number", type: "text", required: true },
+      {
+        name: "residentialStreet",
+        label: "Residential Address - Street",
+        type: "text",
+        required: true,
+      },
+      { name: "residentialCity", label: "Residential Address - City", type: "text", required: true },
+      {
+        name: "residentialStateOrProvince",
+        label: "Residential Address - State/Province",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "residentialCountry",
+        label: "Residential Address - Country",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "residentialZipCode",
+        label: "Residential Address - ZIP Code",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "residencyDurationYears",
+        label: "Residency Duration (Years)",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "mailingAddressDifferent",
+        label: "Is your mailing address different from residential address?",
+        type: "radio",
+        required: true,
+        options: ukPepOptions,
+        colSpan: 2,
+      },
+      {
+        name: "mailingStreet",
+        label: "Mailing Address - Street",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          String(values?.mailingAddressDifferent || "").toLowerCase() === "yes",
+        required: true,
+      },
+      {
+        name: "mailingCity",
+        label: "Mailing Address - City",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          String(values?.mailingAddressDifferent || "").toLowerCase() === "yes",
+        required: true,
+      },
+      {
+        name: "mailingStateOrProvince",
+        label: "Mailing Address - State/Province",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          String(values?.mailingAddressDifferent || "").toLowerCase() === "yes",
+        required: true,
+      },
+      {
+        name: "mailingCountry",
+        label: "Mailing Address - Country",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          String(values?.mailingAddressDifferent || "").toLowerCase() === "yes",
+        required: true,
+      },
+      {
+        name: "mailingZipCode",
+        label: "Mailing Address - ZIP Code",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          String(values?.mailingAddressDifferent || "").toLowerCase() === "yes",
+        required: true,
+      },
+    ],
+  },
+  {
+    id: "contact",
+    title: "Contact Information",
+    fields: [
+      {
+        name: "mobileNumber",
+        label: "Mobile Number",
+        type: "tel",
+        required: true,
+      },
+      {
+        name: "emailAddress",
+        label: "Contact Email Address",
+        type: "email",
+        required: true,
+      },
+      { name: "kakaoTalkId", label: "KakaoTalk ID", type: "text" },
+      { name: "otherSocialMediaId", label: "Other Social Media ID", type: "text" },
+    ],
+  },
+  {
+    id: "relationship",
+    title: "Estonian Company Information",
+    fields: [
+      {
+        name: "proposedCompanyName",
+        label: "Proposed Company Name",
+        type: "text",
+        required: true,
+        colSpan: 2,
+      },
+      {
+        name: "relationshipToCompanyRoles",
+        label: "Relationship to Company",
+        type: "checkbox-group",
+        required: true,
+        options: eeRelationshipRoleOptions,
+        colSpan: 2,
+      },
+      {
+        name: "relationshipToCompanyOther",
+        label: "Other relationship details",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          Array.isArray(values?.relationshipToCompanyRoles) &&
+          values.relationshipToCompanyRoles.includes("other"),
+        required: true,
+        colSpan: 2,
+      },
+      {
+        name: "shareholdingPercentage",
+        label: "Shareholding Percentage (%)",
+        type: "number",
+        required: true,
+      },
+    ],
+  },
+  {
+    id: "funds",
+    title: "Source of Funds",
+    fields: [
+      {
+        name: "contributionSources",
+        label: "Source of Funds Contribution",
+        type: "checkbox-group",
+        required: true,
+        options: eeContributionSourceOptions,
+        colSpan: 2,
+      },
+      {
+        name: "contributionSourcesOther",
+        label: "Other source details (contribution)",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          Array.isArray(values?.contributionSources) && values.contributionSources.includes("other"),
+        required: true,
+        colSpan: 2,
+      },
+      {
+        name: "contributionCountriesOfOrigin",
+        label: "Countries of Origin (Contribution Funds)",
+        type: "textarea",
+        required: true,
+        colSpan: 2,
+      },
+      {
+        name: "futureSources",
+        label: "Future Source of Funds",
+        type: "checkbox-group",
+        required: true,
+        options: eeFutureSourceOptions,
+        colSpan: 2,
+      },
+      {
+        name: "futureSourcesOther",
+        label: "Other source details (future funds)",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          Array.isArray(values?.futureSources) && values.futureSources.includes("other"),
+        required: true,
+        colSpan: 2,
+      },
+      {
+        name: "futureCountriesOfOrigin",
+        label: "Countries of Origin (Future Funds)",
+        type: "textarea",
+        required: true,
+        colSpan: 2,
+      },
+    ],
+  },
+  {
+    id: "tax-pep",
+    title: "US Tax and PEP",
+    fields: [
+      {
+        name: "isUsTaxResident",
+        label: "Are you a U.S. tax resident?",
+        type: "radio",
+        required: true,
+        options: yesNoOtherOptions,
+      },
+      {
+        name: "isUsTaxResidentOtherDetails",
+        label: "Other U.S. tax residency details",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          String(values?.isUsTaxResident || "").toLowerCase() === "other",
+        required: true,
+      },
+      {
+        name: "irsTin",
+        label: "IRS TIN",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          String(values?.isUsTaxResident || "").toLowerCase() === "yes",
+        required: true,
+      },
+      {
+        name: "isPepOrRelated",
+        label: "Are you a PEP or related to a PEP?",
+        type: "radio",
+        required: true,
+        options: ukPepOptions,
+      },
+      {
+        name: "pepDescription",
+        label: "PEP description",
+        type: "textarea",
+        condition: (values: Record<string, any>) =>
+          String(values?.isPepOrRelated || "").toLowerCase() === "yes",
+        required: true,
+        colSpan: 2,
+      },
+    ],
+  },
+  {
+    id: "documents",
+    title: "Document Uploads",
+    fields: [
+      {
+        name: "passportCopyFiles",
+        label: "Passport Copy Files",
+        type: "file",
+        required: true,
+        accept: "image/*,.pdf,.doc,.docx",
+        colSpan: 2,
+      },
+      {
+        name: "addressVerificationFiles",
+        label: "Address Verification Files",
+        type: "file",
+        required: true,
+        accept: "image/*,.pdf,.doc,.docx",
+        colSpan: 2,
+      },
+    ],
+  },
+  {
+    id: "eresidency",
+    title: "e-Residency Status",
+    fields: [
+      {
+        name: "eResidencyStatus",
+        label:
+          "Now that you have your Estonian E-Resident card issued, can you log in with a digital signature via USB?",
+        type: "radio",
+        required: true,
+        options: ukPepOptions,
+        tooltip:
+          "To obtain an Estonian E-Resident card, apply individually at https://eresident.politsei.ee/. It usually takes approximately 4-6 weeks to receive the card.",
+        colSpan: 2,
+      },
+      {
+        name: "eResidencyStatusNoFeeAcknowledged",
+        label:
+          "If 'No', I understand that the POA document will be translated and notarized, and an additional fee of EUR 300 per person will be charged.",
+        type: "checkbox",
+        condition: (values: Record<string, any>) =>
+          String(values?.eResidencyStatus || "").toLowerCase() === "no",
+        required: true,
+        colSpan: 2,
+      },
+    ],
+  },
+  {
+    id: "declaration",
+    title: "Compliance and Final Consent",
+    fields: [
+      {
+        name: "criminalConviction",
+        label: "Any criminal conviction history?",
+        type: "radio",
+        required: true,
+        options: ukDeclarationOptions,
+      },
+      {
+        name: "lawEnforcementInvestigation",
+        label: "Any law-enforcement investigation history?",
+        type: "radio",
+        required: true,
+        options: ukDeclarationOptions,
+      },
+      {
+        name: "involvementInIllegalActivities",
+        label: "Any involvement in illegal activities?",
+        type: "radio",
+        required: true,
+        options: ukDeclarationOptions,
+      },
+      {
+        name: "personalBankruptcyOrLiquidation",
+        label: "Any personal bankruptcy or liquidation history?",
+        type: "radio",
+        required: true,
+        options: ukDeclarationOptions,
+      },
+      {
+        name: "executiveBankruptcyOrLiquidation",
+        label: "Any executive bankruptcy or liquidation history?",
+        type: "radio",
+        required: true,
+        options: ukDeclarationOptions,
+      },
+      {
+        name: "complianceYesDetails",
+        label: "Details for items answered 'Yes'",
+        type: "textarea",
+        condition: shouldShowEeComplianceDetails,
+        required: true,
+        colSpan: 2,
+      },
+      {
+        name: "agreedToTerms",
+        label: "Do you agree to the terms?",
+        type: "radio",
+        required: true,
+        options: yesNoOtherOptions,
+      },
+      {
+        name: "finalConsentOtherDetails",
+        label: "Other consent details",
+        type: "text",
+        condition: (values: Record<string, any>) =>
+          String(values?.agreedToTerms || "").toLowerCase() === "other",
+        required: true,
+      },
+    ],
+  },
+];
+
+const createEeMemberConfig = (
+  id: "EE_PERSON" | "EE_ENTITY",
+  partyType: "person" | "entity",
+  title: string
+): PartyFormConfig => ({
+  id,
+  title,
+  countryCode: "EE",
+  partyType,
+  steps: buildEeSharedMemberSteps(),
+});
+
+const EE_PERSON_CONFIG = createEeMemberConfig(
+  "EE_PERSON",
+  "person",
+  "Estonia Member Registration KYC"
+);
+
+const EE_ENTITY_CONFIG = createEeMemberConfig(
+  "EE_ENTITY",
+  "entity",
+  "Estonia Member Registration KYC"
+);
+
 export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...BASE_PARTY_KYC_REGISTRY,
   ...(CH_PERSON_CONFIG ? [CH_PERSON_CONFIG] : []),
   ...(CH_ENTITY_CONFIG ? [CH_ENTITY_CONFIG] : CH_FALLBACK_ENTITY_CLONES),
+  EE_PERSON_CONFIG,
+  EE_ENTITY_CONFIG,
 ];
 
 export const resolvePartyKycConfig = ({

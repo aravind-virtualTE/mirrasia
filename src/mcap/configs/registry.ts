@@ -13,6 +13,7 @@ import { UK_FULL_CONFIG } from "./uk-full";
 import { CH_FOUNDATION_FULL_CONFIG } from "./ch-foundation-full";
 import { CH_AG_FULL_CONFIG } from "./ch-ag-full";
 import { CH_GMBH_FULL_CONFIG } from "./ch-gmbh-full";
+import { EE_FULL_CONFIG } from "./ee-full";
 
 const STANDARD_FLOW_COUNTRIES = new Set([
   "HK",
@@ -26,6 +27,7 @@ const STANDARD_FLOW_COUNTRIES = new Set([
   "CH",
   "CH_FOUNDATION",
   "CH_LLC",
+  "EE",
 ]);
 
 const buildAgreementStep = (): McapStep => ({
@@ -177,6 +179,7 @@ export const MCAP_CONFIGS: McapConfig[] = [
   CH_AG_FULL_CONFIG,
   CH_GMBH_FULL_CONFIG,
   CH_FOUNDATION_FULL_CONFIG,
+  EE_FULL_CONFIG,
   UAE_IFZA_CONFIG,
   ...UAE_FREEZONE_CONFIGS,
 ].map(normalizeConfig);
