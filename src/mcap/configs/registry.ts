@@ -1,5 +1,5 @@
 import React from "react";
-import type { McapConfig, McapStep } from "./types";
+import type { McapConfig, McapField, McapStep } from "./types";
 import CommonServiceAgrementTxt from "@/pages/Company/CommonServiceAgrementTxt";
 import { HK_FULL_CONFIG } from "./hk-full";
 import { UAE_IFZA_CONFIG } from "./uae-ifza";
@@ -14,6 +14,7 @@ import { CH_FOUNDATION_FULL_CONFIG } from "./ch-foundation-full";
 import { CH_AG_FULL_CONFIG } from "./ch-ag-full";
 import { CH_GMBH_FULL_CONFIG } from "./ch-gmbh-full";
 import { EE_FULL_CONFIG } from "./ee-full";
+import { LT_FULL_CONFIG } from "./lt-full";
 
 const STANDARD_FLOW_COUNTRIES = new Set([
   "HK",
@@ -28,6 +29,7 @@ const STANDARD_FLOW_COUNTRIES = new Set([
   "CH_FOUNDATION",
   "CH_LLC",
   "EE",
+  "LT",
 ]);
 
 const buildAgreementStep = (): McapStep => ({
@@ -38,7 +40,14 @@ const buildAgreementStep = (): McapStep => ({
       type: "info",
       content: React.createElement(CommonServiceAgrementTxt),
       colSpan: 2,
-    }
+    },
+    {
+      type: "checkbox",
+      name: "legalTermsAcknowledgment",
+      label: "serviceAgreement.checkBox",
+      required: true,
+      colSpan: 2,
+    },
   ],
 });
 
@@ -96,8 +105,24 @@ const mergePartiesIntoCompany = (steps: McapStep[]) => {
   return next;
 };
 
-const injectServiceAgreement = (steps: McapStep[]) => {
-  if (steps.some((s) => s.id === "service-agreement")) return steps;
+const isLegalTermsField = (field: McapField) =>
+  field.name === "legalTermsAcknowledgment" || field.label === "newHk.review.declarations.terms";
+
+const stripLegalTermsOutsideAgreement = (steps: McapStep[]) =>
+  steps.map((step) => {
+    if (step.id === "service-agreement" || !step.fields?.length) return step;
+    const filtered = step.fields.filter((field) => !isLegalTermsField(field));
+    if (filtered.length === step.fields.length) return step;
+    return { ...step, fields: filtered };
+  });
+
+const ensureCommonServiceAgreement = (steps: McapStep[]) => {
+  const existingIdx = steps.findIndex((s) => s.id === "service-agreement");
+  if (existingIdx !== -1) {
+    const next = [...steps];
+    next[existingIdx] = buildAgreementStep();
+    return next;
+  }
   const insertIdx = steps.findIndex((s) =>
     s.id === "invoice" ||
     s.id === "payment" ||
@@ -155,14 +180,13 @@ const reorderSteps = (steps: McapStep[]) => {
 
 const normalizeConfig = (config: McapConfig): McapConfig => {
   let steps = config.steps.map((s) => ({ ...s }));
+  steps = stripLegalTermsOutsideAgreement(steps);
+  steps = ensureCommonServiceAgreement(steps);
 
   if (STANDARD_FLOW_COUNTRIES.has(config.countryCode)) {
     steps = mergePartiesIntoCompany(steps);
-    steps = injectServiceAgreement(steps);
     steps = ensureReviewStep(steps);
     steps = reorderSteps(steps);
-  } else {
-    steps = injectServiceAgreement(steps);
   }
 
   return { ...config, steps };
@@ -180,6 +204,7 @@ export const MCAP_CONFIGS: McapConfig[] = [
   CH_GMBH_FULL_CONFIG,
   CH_FOUNDATION_FULL_CONFIG,
   EE_FULL_CONFIG,
+  LT_FULL_CONFIG,
   UAE_IFZA_CONFIG,
   ...UAE_FREEZONE_CONFIGS,
 ].map(normalizeConfig);

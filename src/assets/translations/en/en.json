@@ -1,4 +1,4 @@
-{
+﻿{
   "userProfile": {
     "title": "Profile Settings",
     "subtitle": "Manage your account information and security settings",
@@ -2058,13 +2058,13 @@
             "placeholder": "+852 1234 5678"
           },
           "name1": {
-            "label": "Proposed English Name 1st"
+            "label": "Proposed Company English Name 1st"
           },
           "name2": {
-            "label": "Proposed English Name 2nd"
+            "label": "Proposed Company English Name 2nd"
           },
           "name3": {
-            "label": "Proposed English Name 3rd"
+            "label": "Proposed Company English Name 3rd"
           },
           "cname1": {
             "label": "Chinese Name 1st (optional)"

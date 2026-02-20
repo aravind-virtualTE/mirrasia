@@ -441,7 +441,7 @@ export const UnifiedFormEngine = ({
         if (field.type === "checkbox") {
             const checkboxId = fieldKey || field.name!;
             return (
-                <div key={key} className="flex items-start gap-2">
+                <div key={key} className={cn("flex items-start gap-2", field.colSpan === 2 && "md:col-span-2")}>
                     <Checkbox
                         id={checkboxId}
                         checked={!!value}
@@ -688,7 +688,7 @@ export const UnifiedFormEngine = ({
                     <Button
                         size="lg"
                         className="px-8"
-                        onClick={() => navigate("/dashboard")}
+                        onClick={() => navigate("/incorporation-dashboard")}
                     >
                         Return to Dashboard
                     </Button>
