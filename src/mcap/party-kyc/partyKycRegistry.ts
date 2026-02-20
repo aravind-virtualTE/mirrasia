@@ -343,6 +343,16 @@ const ukMemberRoleOptions = [
   { value: "other", label: "Other" },
 ];
 
+const ltMemberRoleOptions = [
+  { value: "shareholder", label: "Shareholder" },
+  { value: "key_controller_25_plus", label: "Key controller (direct/indirect 25%+ ownership)" },
+  { value: "director", label: "Director (minimum 1 required)" },
+  { value: "general_manager", label: "General Manager (minimum 1 required)" },
+  { value: "dcp", label: "Designated Contact Person (can be concurrent with Director)" },
+  { value: "official_partner", label: "Official partner registered with Mirr Asia" },
+  { value: "other", label: "Other" },
+];
+
 const ukCorporateRelationOptions = [
   { value: "shareHld", label: "shareholder" },
   { value: "officer", label: "move" },
@@ -2587,12 +2597,277 @@ const EE_ENTITY_CONFIG = createEeMemberConfig(
   "Estonia Member Registration KYC"
 );
 
+const buildLithuaniaPersonConfig = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_PERSON" && cfg.partyType === "person"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "identity") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "companyName") {
+          return { ...field, label: "Lithuanian legal entity name (applied for)" };
+        }
+        if (field.name === "name") {
+          return { ...field, label: "Name" };
+        }
+        if (field.name === "formerNameInEnglish") {
+          return {
+            ...field,
+            label: "Former English name before name change (or other details)",
+          };
+        }
+        if (field.name === "residentialAddress") {
+          return {
+            ...field,
+            label:
+              "Residential address (include ZIP/postal code and length of residence in your country)",
+          };
+        }
+        if (field.name === "mobileNumber") {
+          return {
+            ...field,
+            label: "A contactable mobile phone number",
+            tooltip:
+              "We use this number for official communications on important matters. If contact details change, communications continue to this number until formally updated.",
+          };
+        }
+        return field;
+      });
+
+      const residentialIdx = getFieldIndex(fields, "residentialAddress");
+      if (residentialIdx >= 0 && getFieldIndex(fields, "residentialPostalCode") === -1) {
+        fields.splice(residentialIdx + 1, 0,
+          {
+            name: "residentialPostalCode",
+            label: "Residential ZIP / postal code",
+            type: "text",
+            required: true,
+          },
+          {
+            name: "residencyDuration",
+            label: "Length of time residing in your country of residence",
+            type: "text",
+            required: true,
+            placeholder: "e.g., 5 years",
+          }
+        );
+      }
+
+      const mobileIdx = getFieldIndex(fields, "mobileNumber");
+      if (mobileIdx >= 0 && getFieldIndex(fields, "contactEmailAddress") === -1) {
+        fields.splice(mobileIdx + 1, 0, {
+          name: "contactEmailAddress",
+          label: "Email address",
+          type: "email",
+          required: true,
+          tooltip:
+            "We use this email for official communications on important matters. Please provide one you check regularly.",
+          colSpan: 2,
+        });
+      }
+
+      return { ...step, title: "Member Identity", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "relationshipWithUkEntity") {
+          return {
+            ...field,
+            label: "Relationship with the Lithuanian legal entity to be established",
+          };
+        }
+        if (field.name === "ukEntityRelationshipRoles") {
+          return {
+            ...field,
+            label: "Relationship role(s) with the Lithuanian legal entity",
+            options: ltMemberRoleOptions,
+            tooltip:
+              "A designated contact person must be set. First designated contact person is free; from second onward, annual fee is USD 250 per person.",
+          };
+        }
+        if (field.name === "ukEntityRelationshipRolesOther") {
+          return { ...field, label: "Other relationship role details" };
+        }
+        if (field.name === "shareholdingPercentage") {
+          return {
+            ...field,
+            label: "Shareholding percentage (%) in the Lithuanian company to be established",
+          };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Lithuanian Entity Relationship", fields };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "investmentFundSource") {
+          return {
+            ...field,
+            label:
+              "Source of funds to be contributed (or loaned) to the Lithuanian company (multiple selections possible)",
+          };
+        }
+        if (field.name === "investmentFundInflowCountries") {
+          return {
+            ...field,
+            label: "Countries receiving funds for the above items (list all countries)",
+          };
+        }
+        if (field.name === "futureFundSource") {
+          return {
+            ...field,
+            label:
+              "Sources of funds expected to be generated or received by the Lithuanian entity in future (multiple selections possible)",
+          };
+        }
+        if (field.name === "futureFundInflowCountries") {
+          return {
+            ...field,
+            label: "Countries receiving funds for the above future items (list all countries)",
+          };
+        }
+        return field;
+      });
+
+      return { ...step, fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "usTaxResidency") {
+          return {
+            ...field,
+            label:
+              "Are you a U.S. citizen, permanent resident, or a U.S. resident for tax purposes?",
+          };
+        }
+        if (field.name === "irsTin") {
+          return {
+            ...field,
+            label:
+              "If yes, please provide your IRS Tax Identification Number (TIN)",
+          };
+        }
+        if (field.name === "pepStatus") {
+          return {
+            ...field,
+            label:
+              "Are you a politically exposed person, or an immediate family member / close associate of one?",
+          };
+        }
+        if (field.name === "pepDetails") {
+          return {
+            ...field,
+            label: "Description of major political figures or relationships",
+          };
+        }
+        return field;
+      });
+
+      const usTaxIdx = getFieldIndex(fields, "usTaxResidency");
+      if (usTaxIdx >= 0 && getFieldIndex(fields, "usTaxResidencyOtherDetails") === -1) {
+        fields.splice(usTaxIdx + 1, 0, {
+          name: "usTaxResidencyOtherDetails",
+          label: "Other U.S. tax residency details",
+          type: "text",
+          condition: (values: Record<string, any>) =>
+            String(values?.usTaxResidency || "").toLowerCase() === "other",
+          required: true,
+          colSpan: 2,
+        });
+      }
+
+      return { ...step, title: "Tax and PEP", fields };
+    }
+
+    if (step.id === "documents") {
+      const fields = step.fields
+        .filter((field) => field.name !== "driverLicenseFrontBack")
+        .map((field) => {
+          if (field.name === "passportCopyCertificate") {
+            return {
+              ...field,
+              label: "Please upload a copy of your passport",
+              accept: "image/*,.pdf",
+              tooltip: "Upload one file (PDF or image), max 10 MB.",
+            };
+          }
+          if (field.name === "proofOfAddress") {
+            return {
+              ...field,
+              label: "Please upload your address verification document (English copy or original)",
+              accept: "image/*,.pdf",
+              tooltip: "Upload up to five files (PDF or image), max 10 MB per file.",
+            };
+          }
+          return field;
+        });
+
+      return { ...step, title: "Upload Supporting Documents", fields };
+    }
+
+    if (step.id === "declaration") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "applicationAgreement") {
+          return {
+            ...field,
+            label: "Do you agree to the consent and declaration on application?",
+          };
+        }
+        if (field.name === "applicationAgreementOther") {
+          return { ...field, label: "Other agreement details" };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Declaration (Confirmation Declaration)", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "LT_PERSON",
+    title: "Lithuania Member Registration KYC",
+    countryCode: "LT",
+    partyType: "person",
+    steps,
+  };
+};
+
+const buildLtEntityConfigFromUk = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_ENTITY" && cfg.partyType === "entity"
+  );
+  if (!source) return null;
+
+  return {
+    ...source,
+    id: "LT_ENTITY",
+    title: "Lithuania Corporate Member Registration KYC",
+    countryCode: "LT",
+    partyType: "entity",
+    steps: source.steps.map(cloneStep),
+  };
+};
+
+const LT_PERSON_CONFIG = buildLithuaniaPersonConfig();
+const LT_ENTITY_CONFIG = buildLtEntityConfigFromUk();
+
 export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...BASE_PARTY_KYC_REGISTRY,
   ...(CH_PERSON_CONFIG ? [CH_PERSON_CONFIG] : []),
   ...(CH_ENTITY_CONFIG ? [CH_ENTITY_CONFIG] : CH_FALLBACK_ENTITY_CLONES),
   EE_PERSON_CONFIG,
   EE_ENTITY_CONFIG,
+  ...(LT_PERSON_CONFIG ? [LT_PERSON_CONFIG] : []),
+  ...(LT_ENTITY_CONFIG ? [LT_ENTITY_CONFIG] : []),
 ];
 
 export const resolvePartyKycConfig = ({

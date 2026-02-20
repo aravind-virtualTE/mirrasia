@@ -470,13 +470,6 @@ export const HK_FULL_CONFIG: McapConfig = {
         },
         {
           type: "checkbox",
-          name: "legalTermsAcknowledgment",
-          label: "newHk.review.declarations.terms",
-          required: true,
-          colSpan: 2,
-        },
-        {
-          type: "checkbox",
           name: "truthfulnessDeclaration",
           label: "newHk.review.declarations.truth",
           required: true,
