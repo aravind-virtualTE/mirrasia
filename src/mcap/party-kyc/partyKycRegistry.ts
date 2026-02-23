@@ -353,6 +353,15 @@ const ltMemberRoleOptions = [
   { value: "other", label: "Other" },
 ];
 
+const ieMemberRoleOptions = [
+  { value: "shareholder", label: "Shareholder" },
+  { value: "director", label: "Director" },
+  { value: "key_controller_25_plus", label: "Key controller (direct/indirect 25%+ ownership)" },
+  { value: "dcp", label: "Designated Contact Person (can be concurrent with Director)" },
+  { value: "official_partner", label: "Official partner registered with Mirr Asia" },
+  { value: "other", label: "Other" },
+];
+
 const ukCorporateRelationOptions = [
   { value: "shareHld", label: "shareholder" },
   { value: "officer", label: "move" },
@@ -380,6 +389,88 @@ const ukFutureFundSourceOptions = [
   { value: "equity_sale", label: "Company or equity sale proceeds" },
   { value: "inheritance_gift", label: "Inheritance/gift" },
   { value: "borrowing_trust_deposit", label: "Borrowing/trust/deposit, etc." },
+  { value: "other", label: "Other" },
+];
+
+const ieInvestmentSourceOptions = [
+  { value: "earned_income", label: "Earned income" },
+  { value: "savings", label: "Deposits, savings" },
+  { value: "investment_income", label: "Income from real estate, stocks, and other investment assets" },
+  { value: "loan", label: "Loan" },
+  { value: "equity_sale", label: "Proceeds from the sale of a company or shares" },
+  { value: "business_income_dividend", label: "Business income/dividends" },
+  { value: "inheritance", label: "Succession" },
+  { value: "parent_company_investment", label: "Investment by parent company" },
+  { value: "other", label: "Other" },
+];
+
+const ieFutureFundSourceOptions = [
+  { value: "business_income_distribution", label: "Business income and distribution" },
+  { value: "earned_income", label: "Earned income" },
+  { value: "interest_income", label: "Interest income" },
+  { value: "investment_income", label: "Income from real estate, stocks, and other investment assets" },
+  { value: "equity_sale", label: "Proceeds from the sale of a company or shares" },
+  { value: "inheritance_gift", label: "Inheritance/Gift" },
+  { value: "borrowing_trust_deposit", label: "Borrowing/trust/deposit, etc." },
+  { value: "other", label: "Other" },
+];
+
+const ieCorporateRelationOptions = [
+  { value: "shareholder", label: "shareholder" },
+  { value: "move", label: "move" },
+  { value: "trustee", label: "trustee" },
+  { value: "other", label: "Other" },
+];
+
+const ieCorporateInvestmentSourceOptions = [
+  { value: "shareholders_capital_or_loans", label: "Shareholders' capital or loans" },
+  { value: "business_income", label: "Business income" },
+  { value: "dividends", label: "Dividends" },
+  { value: "savings", label: "Deposits, savings" },
+  { value: "investment_income", label: "Income from real estate, stocks, and other investment assets" },
+  { value: "loan", label: "Loan" },
+  { value: "equity_sale", label: "Proceeds from the sale of a company or shares" },
+  {
+    value: "inheritance_funds_of_special_persons",
+    label: "Inheritance funds of shareholders/directors or special persons",
+  },
+  { value: "other", label: "Other" },
+];
+
+const ieCorporateFutureFundSourceOptions = [
+  { value: "business_income", label: "Business income" },
+  { value: "interest_income", label: "Interest income" },
+  { value: "investment_income", label: "Income from real estate, stocks, and other investment assets" },
+  { value: "equity_sale_held", label: "Proceeds from sale of company or shares held" },
+  { value: "inheritance_gift", label: "Inheritance/Gift" },
+  { value: "borrowing_trust_deposit", label: "Borrowing/trust/deposit, etc." },
+  { value: "other", label: "Other" },
+];
+
+const ieShareholderDocumentsOptions = [
+  {
+    value: "notary_translation",
+    label: "Submit a notarized English translation of the shareholder register and a copy of the register.",
+  },
+  {
+    value: "submit_company_held_docs_first",
+    label:
+      "First, submit documents held within the company, and if necessary, have them notarized through a translation agency affiliated with Mir Asia (translation notarization fee separate).",
+  },
+  { value: "other", label: "Other" },
+];
+
+const ieArticlesOptions = [
+  {
+    value: "submit_english_or_notarized_translation",
+    label:
+      "Submit the English version of the Articles of Incorporation or a notarized English translation of the Articles of Incorporation",
+  },
+  {
+    value: "submit_company_held_articles_first",
+    label:
+      "First, submit the articles of incorporation held within the company, and if necessary, have them translated and notarized through a translation agency affiliated with Mir Asia (translation and notarization fee separate).",
+  },
   { value: "other", label: "Other" },
 ];
 
@@ -2857,8 +2948,519 @@ const buildLtEntityConfigFromUk = (): PartyFormConfig | null => {
   };
 };
 
+const buildIrelandPersonConfig = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_PERSON" && cfg.partyType === "person"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "identity") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "companyName") {
+          return { ...field, label: "Name of Irish company to be registered" };
+        }
+        if (field.name === "name") {
+          return { ...field, label: "Name" };
+        }
+        if (field.name === "formerNameInEnglish") {
+          return {
+            ...field,
+            label: "Please enter your English name before name change (or provide other details)",
+          };
+        }
+        if (field.name === "birthPlace") {
+          return { ...field, label: "Birthplace" };
+        }
+        if (field.name === "residentialAddress") {
+          return {
+            ...field,
+            label:
+              "Residential address (include zip code and the length of time you have resided in your country of residence)",
+          };
+        }
+        if (field.name === "mailingAddress") {
+          return { ...field, label: "Mailing address (if different from residential address)" };
+        }
+        if (field.name === "mobileNumber") {
+          return {
+            ...field,
+            label: "A contactable mobile phone number",
+            tooltip:
+              "We will only use this phone number for official communications regarding important matters. If your contact information changes, this number is used until the new information is officially updated.",
+          };
+        }
+        if (field.name === "kakaoTalkId") {
+          return { ...field, label: "KakaoTalk ID (if available)" };
+        }
+        if (field.name === "otherSnsId") {
+          return { ...field, label: "Telegram, WeChat, or other social media ID (if available)" };
+        }
+        return field;
+      });
+
+      const mobileIdx = getFieldIndex(fields, "mobileNumber");
+      if (mobileIdx >= 0 && getFieldIndex(fields, "contactEmailAddress") === -1) {
+        fields.splice(mobileIdx + 1, 0, {
+          name: "contactEmailAddress",
+          label: "Email address",
+          type: "email",
+          required: true,
+          tooltip:
+            "We will use this email for official communications regarding important matters. If your contact information changes, this address is used until the new information is officially updated.",
+          colSpan: 2,
+        });
+      }
+
+      return { ...step, title: "Member Identity", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "relationshipWithUkEntity") {
+          return { ...field, label: "Relationship with Irish Corporations" };
+        }
+        if (field.name === "ukEntityRelationshipRoles") {
+          return {
+            ...field,
+            label: "Relationship with Irish Corporations",
+            options: ieMemberRoleOptions,
+            tooltip:
+              "[Designated Contact Description] You must designate a designated contact person to handle your company's business communications. One designated contact person is free of charge. For two or more designated contact persons, an annual fee of USD 250 per person applies.",
+          };
+        }
+        if (field.name === "ukEntityRelationshipRolesOther") {
+          return { ...field, label: "Other relationship details" };
+        }
+        if (field.name === "shareholdingPercentage") {
+          return { ...field, label: "Percentage of shares held in the Irish corporation (%)" };
+        }
+        return field;
+      });
+
+      return {
+        ...step,
+        title: "Information about the Irish entity you wish to register",
+        fields,
+      };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "investmentFundSource") {
+          return {
+            ...field,
+            label:
+              "Source of funds to be contributed (or loaned) to the Irish corporation (multiple selections possible)",
+            options: ieInvestmentSourceOptions,
+            tooltip:
+              "Please select all applicable items. Documentation proving source of funds may be required in the future.",
+          };
+        }
+        if (field.name === "investmentFundSourceOther") {
+          return { ...field, label: "Other source details (investment/loan funds)" };
+        }
+        if (field.name === "investmentFundInflowCountries") {
+          return { ...field, label: "Countries receiving funds for the above items (list all countries)" };
+        }
+        if (field.name === "futureFundSource") {
+          return {
+            ...field,
+            label:
+              "Sources of funds expected to be generated or received by the Irish entity in the future (multiple selections possible)",
+            options: ieFutureFundSourceOptions,
+            tooltip:
+              "Please select all applicable items. Documentation proving source of funds may be required in the future.",
+          };
+        }
+        if (field.name === "futureFundSourceOther") {
+          return { ...field, label: "Other source details (future funds)" };
+        }
+        if (field.name === "futureFundInflowCountries") {
+          return { ...field, label: "Countries receiving funds for the above items (list all countries)" };
+        }
+        return field;
+      });
+      return { ...step, fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "usTaxResidency") {
+          return {
+            ...field,
+            label: "Are you a U.S. citizen, permanent resident, or U.S. resident for tax purposes?",
+          };
+        }
+        if (field.name === "irsTin") {
+          return {
+            ...field,
+            label:
+              "If you are a U.S. citizen or permanent resident, or a U.S. resident for tax purposes, please provide your IRS Tax Identification Number (TIN).",
+          };
+        }
+        if (field.name === "pepStatus") {
+          return {
+            ...field,
+            label:
+              "Are you a politically prominent figure, or do you have an immediate family member or close acquaintance who is a politically exposed person (PEP)?",
+            tooltip:
+              "Includes foreign/domestic/international organization PEPs, family members, and close associates under FATF guidance.",
+          };
+        }
+        if (field.name === "pepDetails") {
+          return { ...field, label: "Description of major political figures" };
+        }
+        return field;
+      });
+      return { ...step, title: "U.S. Tax Residency and PEP", fields };
+    }
+
+    if (step.id === "documents") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "passportCopyCertificate") {
+          return {
+            ...field,
+            label: "Please upload a copy of your passport and a passport copy certificate.",
+            tooltip:
+              "If upload is unavailable due to Google account issues, submit separately by email to the person in charge.",
+          };
+        }
+        if (field.name === "proofOfAddress") {
+          return {
+            ...field,
+            label: "Please upload your address verification document (English copy or original copy).",
+          };
+        }
+        if (field.name === "driverLicenseFrontBack") {
+          return { ...field, label: "Please scan and upload the front and back of your driver's license." };
+        }
+        return field;
+      });
+      return { ...step, title: "Upload Supporting Documents", fields };
+    }
+
+    if (step.id === "declaration") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "declArrestedOrConvicted") {
+          return { ...field, label: "Have you ever been arrested or convicted of a crime against the law?" };
+        }
+        if (field.name === "declInvestigatedByAuthority") {
+          return { ...field, label: "Have you ever been investigated by law enforcement or tax authorities?" };
+        }
+        if (field.name === "declIllegalFundsOrCrime") {
+          return {
+            ...field,
+            label:
+              "Are you involved in criminal activity, money laundering, bribery, terrorist activity, or any other illegal activity involving related funds?",
+          };
+        }
+        if (field.name === "declPersonalBankruptcy") {
+          return { ...field, label: "Have you ever been personally involved in bankruptcy or liquidation?" };
+        }
+        if (field.name === "declExecutiveBankruptcy") {
+          return {
+            ...field,
+            label: "Have you ever been involved in bankruptcy or liquidation as an officer of a company?",
+          };
+        }
+        if (field.name === "applicationAgreement") {
+          return {
+            ...field,
+            label: "Do you agree to the Consent and Declaration on Application?",
+          };
+        }
+        if (field.name === "applicationAgreementOther") {
+          return { ...field, label: "Other consent details" };
+        }
+        return field;
+      });
+      return { ...step, title: "Declaration (Confirmation Declaration)", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "IE_PERSON",
+    title: "Ireland Member Registration KYC",
+    countryCode: "IE",
+    partyType: "person",
+    steps,
+  };
+};
+
+const buildIeEntityConfigFromUk = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_ENTITY" && cfg.partyType === "entity"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "company") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "email") {
+          return {
+            ...field,
+            label: "Representative email address",
+            tooltip:
+              "We will use this email for official communications regarding important matters. If your contact information changes, this address is used until the new information is officially updated.",
+          };
+        }
+        if (field.name === "companyName") {
+          return { ...field, label: "Company name" };
+        }
+        if (field.name === "dateOfEstablishment") {
+          return { ...field, label: "Date of establishment" };
+        }
+        if (field.name === "countryOfEstablishment") {
+          return { ...field, label: "Country of establishment" };
+        }
+        if (field.name === "registrationNumber") {
+          return { ...field, label: "Corporate registration number or business registration number" };
+        }
+        if (field.name === "listedOnStockExchange") {
+          return { ...field, label: "Whether listed on a stock exchange" };
+        }
+        if (field.name === "otherListedOnStockExchange") {
+          return { ...field, label: "Other listing details" };
+        }
+        if (field.name === "representativeName") {
+          return { ...field, label: "Representative name" };
+        }
+        if (field.name === "mobileNumber") {
+          return {
+            ...field,
+            label: "Contactable representative mobile phone number",
+            tooltip:
+              "We will only use this phone number for official communications regarding important matters. If your contact information changes, this number is used until the new information is officially updated.",
+          };
+        }
+        if (field.name === "englishNamesOfShareholders") {
+          return {
+            ...field,
+            label: "Documents showing the English names of shareholders/directors and the status of their stock holdings",
+            options: ieShareholderDocumentsOptions,
+          };
+        }
+        if (field.name === "otherEnglishNamesOfShareholders") {
+          return { ...field, label: "Other shareholder/director document details" };
+        }
+        if (field.name === "articlesOfAssociation") {
+          return {
+            ...field,
+            label: "English Articles of Incorporation",
+            options: ieArticlesOptions,
+          };
+        }
+        if (field.name === "otherArticlesOfAssociation") {
+          return { ...field, label: "Other Articles of Incorporation details" };
+        }
+        if (field.name === "businessAddress") {
+          return {
+            ...field,
+            label:
+              "Business address (if actual business address is different from the address on the business registration certificate)",
+          };
+        }
+        return field;
+      });
+
+      const representativeInsertAt = getFieldIndex(fields, "mobileNumber");
+      if (representativeInsertAt >= 0 && getFieldIndex(fields, "representativeKakaoTalkId") === -1) {
+        fields.splice(representativeInsertAt + 1, 0,
+          {
+            name: "representativeKakaoTalkId",
+            label: "Representative KakaoTalk ID (if available)",
+            type: "text",
+          },
+          {
+            name: "representativeOtherSnsId",
+            label: "Representative Telegram, WeChat, or other SNS ID (if available)",
+            type: "text",
+          }
+        );
+      }
+
+      return { ...step, title: "Corporate Details", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "relationWithUs") {
+          return {
+            ...field,
+            label: "Relationship with Irish Corporations",
+            options: ieCorporateRelationOptions,
+          };
+        }
+        if (field.name === "otherRelation") {
+          return { ...field, label: "Other relationship details" };
+        }
+        if (field.name === "amountInvestedAndShares") {
+          return {
+            ...field,
+            label: "Amount to be invested in an Irish corporation and number of shares to be acquired",
+          };
+        }
+        return field;
+      });
+
+      if (getFieldIndex(fields, "proposedIrishCompanyName") === -1) {
+        fields.unshift({
+          name: "proposedIrishCompanyName",
+          label: "Name of Irish company to be registered",
+          type: "text",
+          required: true,
+          colSpan: 2,
+        });
+      }
+
+      return { ...step, title: "Information about the Irish company you wish to establish", fields };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "investmentSource") {
+          return {
+            ...field,
+              label:
+              "Source of investment funds (multiple selections possible)",
+            options: ieCorporateInvestmentSourceOptions,
+            tooltip:
+              "Please check the appropriate box as documentation proving the source of funds may be required in the future.",
+          };
+        }
+        if (field.name === "otherInvestmentSource") {
+          return { ...field, label: "Other source details (investment funds)" };
+        }
+        if (field.name === "fundsOrigin") {
+          return { ...field, label: "Countries receiving funds for the above items (list all countries)" };
+        }
+        if (field.name === "sourceFundExpected") {
+          return {
+            ...field,
+            label:
+              "Sources of funds expected to be generated or received by the Irish corporation in the future (multiple selections possible)",
+            options: ieCorporateFutureFundSourceOptions,
+            tooltip:
+              "Please check the appropriate box as documentation proving the source of funds may be required in the future.",
+          };
+        }
+        if (field.name === "otherSourceFund") {
+          return { ...field, label: "Other source details (future funds)" };
+        }
+        if (field.name === "fundsOrigin2") {
+          return { ...field, label: "Countries receiving funds for the above items (list all countries)" };
+        }
+        return field;
+      });
+      return { ...step, fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "isUsLegalEntity") {
+          return {
+            ...field,
+            label:
+              "Is your company under U.S. jurisdiction for legal purposes or a U.S. permanent establishment for tax purposes?",
+          };
+        }
+        if (field.name === "otherResidenceTaxPurpose") {
+          return { ...field, label: "Other U.S. jurisdiction / tax establishment details" };
+        }
+        if (field.name === "usTinNumber") {
+          return {
+            ...field,
+            label:
+              "If your company is under U.S. jurisdiction or has a U.S. permanent establishment, provide IRS U.S. Tax Identification Number (TIN).",
+          };
+        }
+        if (field.name === "isPoliticalFigure") {
+          return {
+            ...field,
+            label:
+              "Do any company officials fall into politically exposed categories (or immediate family/close associates)?",
+            tooltip:
+              "Includes foreign/domestic/international organization PEPs, family members, and close associates under FATF guidance.",
+          };
+        }
+        if (field.name === "describePoliticallyImp") {
+          return { ...field, label: "Description of major political figures" };
+        }
+        return field;
+      });
+      return { ...step, title: "U.S. Tax Residency and PEP", fields };
+    }
+
+    if (step.id === "declaration") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "isArrestedBefore") {
+          return {
+            ...field,
+            label: "Has anyone from your company ever been arrested or convicted of a crime against the law?",
+          };
+        }
+        if (field.name === "isInvestigatedBefore") {
+          return {
+            ...field,
+            label: "Has anyone from your company ever been investigated by law enforcement or tax authorities?",
+          };
+        }
+        if (field.name === "isInvolvedInCriminal") {
+          return {
+            ...field,
+            label:
+              "Are any company employees involved in criminal activity, money laundering, bribery, terrorist activity, or related illicit funds activity?",
+          };
+        }
+        if (field.name === "gotBankruptBefore") {
+          return {
+            ...field,
+            label: "Has anyone from your company ever been personally involved in bankruptcy or liquidation?",
+          };
+        }
+        if (field.name === "officerBankruptBefore") {
+          return {
+            ...field,
+            label:
+              "Has anyone from your company ever been involved in bankruptcy or liquidation as an executive of the company?",
+          };
+        }
+        if (field.name === "declarationDesc") {
+          return { ...field, label: "Details for items answered 'Yes'" };
+        }
+        if (field.name === "isAgreed") {
+          return { ...field, label: "Do you agree to the Consent and Declaration on Application?" };
+        }
+        if (field.name === "otherIsAgreed") {
+          return { ...field, label: "Other consent details" };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Declaration for company officials", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "IE_ENTITY",
+    title: "Ireland Corporate Member Registration KYC",
+    countryCode: "IE",
+    partyType: "entity",
+    steps,
+  };
+};
+
 const LT_PERSON_CONFIG = buildLithuaniaPersonConfig();
 const LT_ENTITY_CONFIG = buildLtEntityConfigFromUk();
+const IE_PERSON_CONFIG = buildIrelandPersonConfig();
+const IE_ENTITY_CONFIG = buildIeEntityConfigFromUk();
 
 export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...BASE_PARTY_KYC_REGISTRY,
@@ -2868,6 +3470,8 @@ export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   EE_ENTITY_CONFIG,
   ...(LT_PERSON_CONFIG ? [LT_PERSON_CONFIG] : []),
   ...(LT_ENTITY_CONFIG ? [LT_ENTITY_CONFIG] : []),
+  ...(IE_PERSON_CONFIG ? [IE_PERSON_CONFIG] : []),
+  ...(IE_ENTITY_CONFIG ? [IE_ENTITY_CONFIG] : []),
 ];
 
 export const resolvePartyKycConfig = ({

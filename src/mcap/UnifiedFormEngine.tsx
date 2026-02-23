@@ -199,7 +199,7 @@ export const UnifiedFormEngine = ({
             const normalized = normalizeStatus(value);
             return ["true", "yes", "1", "y"].includes(normalized);
         };
-        const dcpKycReadyStatuses = new Set(["in_progress", "submitted", "approved"]);
+        // const dcpKycReadyStatuses = new Set(["in_progress", "submitted", "approved"]);
         const getStepSections = (cfg: any) => {
             if (!cfg) return [];
             if (cfg.modeField && Array.isArray(cfg.modes) && cfg.modes.length > 0) {
@@ -316,20 +316,21 @@ export const UnifiedFormEngine = ({
                 const dcpParties = parties.filter((p) => (p.roles || []).includes("dcp"));
                 if (dcpParties.length === 0) {
                     missing.push(t("mcap.validation.dcpRequired", "Designated Contact Person (DCP) required"));
-                } else {
-                    const hasKycSignal = dcpParties.some((p) => p?.kycStatus !== undefined && p?.kycStatus !== null && String(p?.kycStatus).trim() !== "");
-                    if (hasKycSignal) {
-                        const hasReadyDcp = dcpParties.some((p) => dcpKycReadyStatuses.has(normalizeStatus(p?.kycStatus)));
-                        if (!hasReadyDcp) {
-                            missing.push(
-                                t(
-                                    "mcap.validation.dcpKycRequired",
-                                    "Designated Contact Person (DCP) must start or complete KYC before continuing"
-                                )
-                            );
-                        }
-                    }
-                }
+                } 
+                // else {
+                //     const hasKycSignal = dcpParties.some((p) => p?.kycStatus !== undefined && p?.kycStatus !== null && String(p?.kycStatus).trim() !== "");
+                //     if (hasKycSignal) {
+                //         const hasReadyDcp = dcpParties.some((p) => dcpKycReadyStatuses.has(normalizeStatus(p?.kycStatus)));
+                //         if (!hasReadyDcp) {
+                //             missing.push(
+                //                 t(
+                //                     "mcap.validation.dcpKycRequired",
+                //                     "Designated Contact Person (DCP) must start or complete KYC before continuing"
+                //                 )
+                //             );
+                //         }
+                //     }
+                // }
             }
             if (currentStep.requirePartyInvite) {
                 const allInvited = parties.length > 0 && parties.every((p) => p.invited);
