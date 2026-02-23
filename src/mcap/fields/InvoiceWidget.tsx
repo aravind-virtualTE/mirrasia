@@ -292,7 +292,24 @@ export function InvoiceWidget({
         };
     }, [fees]);
 
-    const { items, government, service, total, currency, exchangeRateUsed, originalAmountUsd } = invoiceData;
+    const {
+        items,
+        government,
+        service,
+        total,
+        currency,
+        cardFeePct,
+        cardFeeSurcharge,
+        grandTotal,
+        exchangeRateUsed,
+        originalAmountUsd,
+    } = invoiceData;
+    const normalizedCardFeePct = Number(cardFeePct || 0);
+    const normalizedCardFeeSurcharge = Number(cardFeeSurcharge || 0);
+    const resolvedGrandTotal = Number.isFinite(Number(grandTotal))
+        ? Number(grandTotal)
+        : Number((total + normalizedCardFeeSurcharge).toFixed(2));
+    const hasCardFeeLine = normalizedCardFeeSurcharge > 0 || resolvedGrandTotal > total;
 
     // Group items by kind
     const govItems = items.filter((i) => i.kind === "government");
@@ -332,7 +349,7 @@ export function InvoiceWidget({
                         />
                     ))}
                     <div className="flex justify-between items-center pt-2 mt-2 border-t">
-                        <span className="text-sm text-muted-foreground">Subtotal</span>
+                        <span className="text-sm text-muted-foreground">{t("invoice.subtotal", "Subtotal")}</span>
                         <span className="font-semibold">{formatPrice(subtotal)}</span>
                     </div>
                 </div>
@@ -371,7 +388,7 @@ export function InvoiceWidget({
                                 />
                             ))}
                             <TableRow className="bg-muted/20">
-                                <TableCell className="py-2 font-medium">Subtotal</TableCell>
+                                <TableCell className="py-2 font-medium">{t("invoice.subtotal", "Subtotal")}</TableCell>
                                 <TableCell className="py-2" />
                                 <TableCell className="py-2" />
                                 <TableCell className="py-2" />
@@ -452,12 +469,26 @@ export function InvoiceWidget({
                         <span className="font-medium">{formatPrice(total)}</span>
                     </div>
 
+                    {hasCardFeeLine && (
+                        <div className="flex justify-between items-center text-sm">
+                            <div className="flex items-center gap-1">
+                                <span className="text-muted-foreground">{t("invoice.cardFee", "Card Processing Fee")}</span>
+                                {normalizedCardFeePct > 0 && (
+                                    <span className="text-[10px] text-primary border border-primary/20 rounded px-1.5 py-0.5">
+                                        {Math.round(normalizedCardFeePct * 100)}%
+                                    </span>
+                                )}
+                            </div>
+                            <span className="font-medium">{formatPrice(normalizedCardFeeSurcharge)}</span>
+                        </div>
+                    )}
+
                     {/* Grand Total */}
                     <div className="flex justify-between items-center">
                         <span className="text-lg font-bold">{t("invoice.grandTotal", "Total Due")}</span>
                         <div className="text-right">
                             <span className="text-2xl font-bold text-primary">
-                                {formatPrice(total)}
+                                {formatPrice(resolvedGrandTotal)}
                             </span>
                             <span className="text-xs text-muted-foreground block uppercase">{currency}</span>
                         </div>

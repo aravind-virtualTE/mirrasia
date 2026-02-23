@@ -759,6 +759,8 @@ export const createChCorporateConfig = ({
         widget: "ServiceSelectionWidget",
         fields: buildServicesFields(variant),
         serviceItems: (data) => buildChCorporateServiceItems(data, variant),
+        supportedCurrencies: ["USD", "HKD"],
+        computeFees: (data) => computeChCorporateFees(data, variant),
       },
       {
         id: "invoice",

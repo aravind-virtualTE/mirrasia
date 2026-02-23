@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -16,6 +16,8 @@ interface ServiceSelectionWidgetProps {
     onChange: (data: any) => void;
     items?: any[] | ((data: any, entityMeta?: any) => any[]);
     currency?: string;
+    supportedCurrencies?: string[];
+    computeFees?: (data: Record<string, any>, entityMeta?: Record<string, any> | null) => any;
 }
 
 export function ServiceSelectionWidget({
@@ -23,13 +25,27 @@ export function ServiceSelectionWidget({
     data,
     onChange,
     items,
-    currency = "USD"
+    currency = "USD",
+    supportedCurrencies,
+    computeFees,
 }: ServiceSelectionWidgetProps) {
     const { t } = useTranslation();
     const optionalIds: string[] = Array.isArray(data.optionalFeeIds) ? data.optionalFeeIds : [];
     const serviceIds: string[] = Array.isArray(data.serviceItemsSelected) ? data.serviceItemsSelected : [];
     const selectedIds: string[] = Array.from(new Set([...optionalIds, ...serviceIds]));
-    const selectedCurrency = data.paymentCurrency || data.currency || currency;
+    const allowedCurrencies = useMemo(() => {
+        const raw = Array.isArray(supportedCurrencies) && supportedCurrencies.length > 0
+            ? supportedCurrencies
+            : ["USD", "HKD"];
+        const normalized = raw
+            .map((entry) => String(entry || "").trim().toUpperCase())
+            .filter(Boolean);
+        return normalized.length > 0 ? Array.from(new Set(normalized)) : ["USD", "HKD"];
+    }, [supportedCurrencies]);
+    const selectedCurrencyRaw = String(data.paymentCurrency || data.currency || currency || "USD").toUpperCase();
+    const selectedCurrency = allowedCurrencies.includes(selectedCurrencyRaw)
+        ? selectedCurrencyRaw
+        : allowedCurrencies[0];
     const isLocked = data.paymentStatus === "paid";
 
     // Extract fees from config or passed items
@@ -38,6 +54,8 @@ export function ServiceSelectionWidget({
     const govItems = feesMeta?.government || [];
     const svcItemsMeta = (resolvedItems && resolvedItems.length > 0) ? resolvedItems : (feesMeta?.service || []);
     const enableKycExtras = !!(config as any)?.entityMeta?.enableKycExtras;
+
+    const getCardFeePct = (curr: string) => (String(curr).toUpperCase() === "USD" ? 0.06 : 0.04);
 
     // Auto-select mandatory items on mount
     useEffect(() => {
@@ -49,6 +67,14 @@ export function ServiceSelectionWidget({
     }, [svcItemsMeta]);
 
     const [isConverting, setIsConverting] = useState(false);
+
+    useEffect(() => {
+        if (isLocked) return;
+        if (selectedCurrencyRaw !== selectedCurrency) {
+            handleChange(selectedIds, selectedCurrency);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedCurrencyRaw, selectedCurrency, isLocked]);
 
     const toggleService = (id: string, mandatory: boolean = false) => {
         if (mandatory || isLocked) return;
@@ -65,89 +91,166 @@ export function ServiceSelectionWidget({
     const sameSelection = (a: string[], b: string[]) =>
         a.length === b.length && a.every(id => b.includes(id));
 
-    // Compute pricing and propagate as single source of truth (subtotal only)
+    // Compute pricing and propagate as single source of truth (service + invoice + payment).
     const handleChange = async (newIds: string[], payCurr: string) => {
         const normalizedIds = Array.from(new Set(newIds));
         setIsConverting(true);
         try {
-            const governmentTotalUsd = govItems.reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
-            const mandatoryServiceTotalUsd = svcItemsMeta.filter((f: any) => f.mandatory).reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
-            const optionalSelectedTotalUsd = svcItemsMeta
-                .filter((f: any) => !f.mandatory && normalizedIds.includes(f.id))
-                .reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
-
-            // KYC extras based on parties
-            const parties = Array.isArray(data.parties) ? data.parties : [];
-            const legalPersonCount = parties.filter((p: any) => p?.isCorp === true || p?.type === "entity").length;
-            const individualCount = Math.max(0, parties.length - legalPersonCount);
-            let extraKycUsd = 0;
-            if (enableKycExtras) {
-                if (legalPersonCount > 0) extraKycUsd += legalPersonCount * 130;
-                if (individualCount > 2) {
-                    const peopleNeedingKyc = individualCount - 2;
-                    const kycSlots = Math.ceil(peopleNeedingKyc / 2);
-                    extraKycUsd += kycSlots * 65;
-                }
-            }
-
-            const serviceTotalUsd = mandatoryServiceTotalUsd + optionalSelectedTotalUsd + extraKycUsd;
-            const subtotalUsd = governmentTotalUsd + serviceTotalUsd;
-
-            // Currency conversion
-            let finalSubtotal = subtotalUsd;
-            let rate: number | undefined;
-            if (payCurr === "HKD") {
-                const conv = await convertUsdToHkd(subtotalUsd);
-                finalSubtotal = conv.hkdAmount;
-                rate = conv.rate;
-            }
-
-            const computedFees = {
-                currency: payCurr,
-                items: [
-                    ...govItems.map((f: any) => ({
-                        id: f.id,
-                        label: f.label,
-                        amount: payCurr === "HKD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
-                        original: payCurr === "HKD" ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
-                        info: f.info,
-                        kind: "government" as const,
-                    })),
-                    ...svcItemsMeta.filter((f: any) => f.mandatory || normalizedIds.includes(f.id)).map((f: any) => ({
-                        id: f.id,
-                        label: f.label,
-                        amount: payCurr === "HKD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
-                        original: payCurr === "HKD" ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
-                        info: f.info,
-                        kind: "service" as const,
-                    })),
-                    ...(extraKycUsd > 0 ? [{
-                        id: "extra_kyc",
-                        label: "newHk.fees.items.extra_kyc.label",
-                        amount: payCurr === "HKD" ? Number((extraKycUsd * (rate || 1)).toFixed(2)) : extraKycUsd,
-                        original: payCurr === "HKD" ? Number((extraKycUsd * (rate || 1)).toFixed(2)) : extraKycUsd,
-                        info: "Additional KYC fees for corporate shareholders and extra individual shareholders.",
-                        kind: "service" as const,
-                    }] : [])
-                ],
-                government: payCurr === "HKD" ? Number((governmentTotalUsd * (rate || 1)).toFixed(2)) : governmentTotalUsd,
-                service: payCurr === "HKD" ? Number((serviceTotalUsd * (rate || 1)).toFixed(2)) : serviceTotalUsd,
-                total: finalSubtotal,
-                exchangeRateUsed: rate,
-                originalAmountUsd: subtotalUsd,
+            const normalizedCurrency = allowedCurrencies.includes(String(payCurr).toUpperCase())
+                ? String(payCurr).toUpperCase()
+                : allowedCurrencies[0];
+            const nextData = {
+                ...data,
+                optionalFeeIds: normalizedIds,
+                serviceItemsSelected: normalizedIds,
+                paymentCurrency: normalizedCurrency,
             };
+
+            let computedFees: any = null;
+
+            if (typeof computeFees === "function") {
+                computedFees = computeFees(nextData, (config as any).entityMeta || null) || {};
+                const needsHkdConversion =
+                    normalizedCurrency === "HKD"
+                    && !(Number.isFinite(Number(computedFees?.exchangeRateUsed)) && Number(computedFees?.exchangeRateUsed) > 0);
+
+                if (needsHkdConversion) {
+                    const totalUsd = Number(computedFees?.total || 0);
+                    const conv = await convertUsdToHkd(totalUsd);
+                    const rate = Number(conv.rate || 0);
+                    const scale = (val: any) => Number((Number(val || 0) * rate).toFixed(2));
+                    const cardFeePct = getCardFeePct("HKD");
+                    const payMethod = String(nextData.payMethod || "card").toLowerCase();
+                    const convertedTotal = Number(conv.hkdAmount || 0);
+                    const cardFeeSurcharge = payMethod === "card"
+                        ? Number((convertedTotal * cardFeePct).toFixed(2))
+                        : 0;
+                    const grandTotal = Number((convertedTotal + cardFeeSurcharge).toFixed(2));
+
+                    computedFees = {
+                        ...computedFees,
+                        currency: "HKD",
+                        items: Array.isArray(computedFees?.items)
+                            ? computedFees.items.map((item: any) => ({
+                                ...item,
+                                amount: scale(item?.amount),
+                                ...(item?.original !== undefined ? { original: scale(item?.original) } : {}),
+                            }))
+                            : [],
+                        government: scale(computedFees?.government),
+                        service: scale(computedFees?.service),
+                        total: convertedTotal,
+                        exchangeRateUsed: rate,
+                        originalAmountUsd: totalUsd,
+                        cardFeePct,
+                        cardFeeSurcharge,
+                        grandTotal,
+                    };
+                } else {
+                    const cardFeePct = Number(computedFees?.cardFeePct || getCardFeePct(normalizedCurrency));
+                    const payMethod = String(nextData.payMethod || "card").toLowerCase();
+                    const total = Number(computedFees?.total || 0);
+                    const cardFeeSurcharge = payMethod === "card"
+                        ? Number((total * cardFeePct).toFixed(2))
+                        : Number(computedFees?.cardFeeSurcharge || 0);
+                    const grandTotal = Number((total + cardFeeSurcharge).toFixed(2));
+
+                    computedFees = {
+                        ...computedFees,
+                        currency: normalizedCurrency,
+                        cardFeePct,
+                        cardFeeSurcharge,
+                        grandTotal,
+                    };
+                }
+            } else {
+                const governmentTotalUsd = govItems.reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
+                const mandatoryServiceTotalUsd = svcItemsMeta.filter((f: any) => f.mandatory).reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
+                const optionalSelectedTotalUsd = svcItemsMeta
+                    .filter((f: any) => !f.mandatory && normalizedIds.includes(f.id))
+                    .reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
+
+                const parties = Array.isArray(data.parties) ? data.parties : [];
+                const legalPersonCount = parties.filter((p: any) => p?.isCorp === true || p?.type === "entity").length;
+                const individualCount = Math.max(0, parties.length - legalPersonCount);
+                let extraKycUsd = 0;
+                if (enableKycExtras) {
+                    if (legalPersonCount > 0) extraKycUsd += legalPersonCount * 130;
+                    if (individualCount > 2) {
+                        const peopleNeedingKyc = individualCount - 2;
+                        const kycSlots = Math.ceil(peopleNeedingKyc / 2);
+                        extraKycUsd += kycSlots * 65;
+                    }
+                }
+
+                const serviceTotalUsd = mandatoryServiceTotalUsd + optionalSelectedTotalUsd + extraKycUsd;
+                const subtotalUsd = governmentTotalUsd + serviceTotalUsd;
+
+                let finalSubtotal = subtotalUsd;
+                let rate: number | undefined;
+                if (normalizedCurrency === "HKD") {
+                    const conv = await convertUsdToHkd(subtotalUsd);
+                    finalSubtotal = conv.hkdAmount;
+                    rate = conv.rate;
+                }
+
+                const cardFeePct = getCardFeePct(normalizedCurrency);
+                const payMethod = String(nextData.payMethod || "card").toLowerCase();
+                const cardFeeSurcharge = payMethod === "card"
+                    ? Number((finalSubtotal * cardFeePct).toFixed(2))
+                    : 0;
+                const grandTotal = Number((finalSubtotal + cardFeeSurcharge).toFixed(2));
+
+                computedFees = {
+                    currency: normalizedCurrency,
+                    items: [
+                        ...govItems.map((f: any) => ({
+                            id: f.id,
+                            label: f.label,
+                            amount: normalizedCurrency === "HKD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
+                            original: normalizedCurrency === "HKD" ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
+                            info: f.info,
+                            kind: "government" as const,
+                        })),
+                        ...svcItemsMeta.filter((f: any) => f.mandatory || normalizedIds.includes(f.id)).map((f: any) => ({
+                            id: f.id,
+                            label: f.label,
+                            amount: normalizedCurrency === "HKD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
+                            original: normalizedCurrency === "HKD" ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
+                            info: f.info,
+                            kind: "service" as const,
+                        })),
+                        ...(extraKycUsd > 0 ? [{
+                            id: "extra_kyc",
+                            label: "newHk.fees.items.extra_kyc.label",
+                            amount: normalizedCurrency === "HKD" ? Number((extraKycUsd * (rate || 1)).toFixed(2)) : extraKycUsd,
+                            original: normalizedCurrency === "HKD" ? Number((extraKycUsd * (rate || 1)).toFixed(2)) : extraKycUsd,
+                            info: "Additional KYC fees for corporate shareholders and extra individual shareholders.",
+                            kind: "service" as const,
+                        }] : []),
+                    ],
+                    government: normalizedCurrency === "HKD" ? Number((governmentTotalUsd * (rate || 1)).toFixed(2)) : governmentTotalUsd,
+                    service: normalizedCurrency === "HKD" ? Number((serviceTotalUsd * (rate || 1)).toFixed(2)) : serviceTotalUsd,
+                    total: finalSubtotal,
+                    exchangeRateUsed: rate,
+                    originalAmountUsd: subtotalUsd,
+                    cardFeePct,
+                    cardFeeSurcharge,
+                    grandTotal,
+                };
+            }
 
             const feesChanged = JSON.stringify(data.computedFees || {}) !== JSON.stringify(computedFees);
             const selectionChanged = !sameSelection(normalizedIds, selectedIds);
-            const currencyChanged = payCurr !== selectedCurrency;
+            const currencyChanged = normalizedCurrency !== selectedCurrency;
 
             if (feesChanged || selectionChanged || currencyChanged) {
                 onChange({
-                    ...data,
+                    ...nextData,
                     optionalFeeIds: normalizedIds,
                     serviceItemsSelected: normalizedIds,
-                    paymentCurrency: payCurr,
-                    computedFees
+                    paymentCurrency: normalizedCurrency,
+                    computedFees,
                 });
             }
         } catch (err) {
@@ -207,7 +310,7 @@ export function ServiceSelectionWidget({
                     </div>
                 </TableCell>
                 <TableCell className="text-right">
-                    {item.original ? formatPrice(item.original, selectedCurrency) : "—"}
+                    {item.original ? formatPrice(item.original, selectedCurrency) : "-"}
                 </TableCell>
                 <TableCell className="text-right">
                     {formatPrice(item.amount, selectedCurrency)}
@@ -307,7 +410,10 @@ export function ServiceSelectionWidget({
     const mandatorySvcSubtotalConverted = convertAmount(mandatorySvcSubtotal);
     const optionalSvcSubtotalConverted = convertAmount(optionalSvcSubtotal);
     const extraKycSubtotalConverted = convertAmount(extraKycSubtotal);
-    const totalConverted = govSubtotalConverted + mandatorySvcSubtotalConverted + optionalSvcSubtotalConverted + extraKycSubtotalConverted;
+    const totalConverted =
+        typeof data.computedFees?.total === "number"
+            ? Number(data.computedFees.total)
+            : govSubtotalConverted + mandatorySvcSubtotalConverted + optionalSvcSubtotalConverted + extraKycSubtotalConverted;
 
 
 
@@ -385,8 +491,11 @@ export function ServiceSelectionWidget({
                                         <SelectValue placeholder="Currency" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="USD">USD ($)</SelectItem>
-                                        <SelectItem value="HKD">HKD (HK$)</SelectItem>
+                                        {allowedCurrencies.map((code) => (
+                                            <SelectItem key={code} value={code}>
+                                                {code === "USD" ? "USD ($)" : code === "HKD" ? "HKD (HK$)" : code}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 {isConverting && <RefreshCw className="h-4 w-4 animate-spin text-primary" />}

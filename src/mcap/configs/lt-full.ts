@@ -1028,6 +1028,8 @@ export const LT_FULL_CONFIG: McapConfig = {
       widget: "ServiceSelectionWidget",
       fields: buildServiceFields(),
       serviceItems: (data) => buildLtServiceItems(data),
+      supportedCurrencies: ["USD", "HKD"],
+      computeFees: (data) => computeLtFees(data),
     },
     {
       id: "invoice",

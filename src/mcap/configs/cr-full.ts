@@ -1,3 +1,4 @@
+import { applicantRoles } from "@/pages/Company/NewHKForm/hkIncorpo";
 import type { McapConfig, McapFeeItem } from "./types";
 
 const CR_PRICES = {
@@ -42,6 +43,24 @@ export const CR_FULL_CONFIG: McapConfig = {
         { type: "text", name: "applicantName", label: "Full Name", required: true, colSpan: 2 },
         { type: "email", name: "applicantEmail", label: "Email", required: true, colSpan: 2 },
         { type: "text", name: "applicantPhone", label: "Phone Number", required: true, colSpan: 2 },
+        {
+          type: "checkbox-group",
+          name: "relationshipToCrCorporation",
+          label: "Relationship to Costa Rica Corporation",
+          required: true,
+          options: applicantRoles,
+          colSpan: 2,
+        },
+        {
+          type: "text",
+          name: "relationshipToCrCorporationOther",
+          label: "Other relationship details",
+          condition: (f) =>
+            Array.isArray(f.relationshipToCrCorporation) &&
+            f.relationshipToCrCorporation.includes("Other"),
+          required: true,
+          colSpan: 2,
+        },
         {
           type: "select",
           name: "sns",
