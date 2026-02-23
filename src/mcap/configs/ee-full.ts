@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { applicantRoles } from "@/pages/Company/NewHKForm/hkIncorpo";
 import type { McapConfig, McapFeeItem, McapField } from "./types";
 
 type EeServiceItem = {
@@ -27,13 +28,13 @@ const YES_NO_UNKNOWN = [
   { label: "Do not know", value: "unknown" },
 ];
 
-const RELATIONSHIP_OPTIONS = [
-  { label: "Officer", value: "officer" },
-  { label: "Authorized Proxy", value: "authorizedProxy" },
-  { label: "Major Shareholder", value: "majorShareholder" },
-  { label: "Professional Advisor", value: "professionalAdvisor" },
-  { label: "Other", value: "other" },
-];
+// const RELATIONSHIP_OPTIONS = [
+//   { label: "Officer", value: "officer" },
+//   { label: "Authorized Proxy", value: "authorizedProxy" },
+//   { label: "Major Shareholder", value: "majorShareholder" },
+//   { label: "Professional Advisor", value: "professionalAdvisor" },
+//   { label: "Other", value: "other" },
+// ];
 
 const REQUESTED_SERVICE_OPTIONS = [
   {
@@ -257,7 +258,7 @@ const buildApplicantFields = (): McapField[] => [
     name: "relationshipToEstonianCorporation",
     label: "Relationship to Estonian Corporation",
     required: true,
-    options: RELATIONSHIP_OPTIONS,
+    options: applicantRoles,
     colSpan: 2,
   },
   {
@@ -266,7 +267,7 @@ const buildApplicantFields = (): McapField[] => [
     label: "Other relationship details",
     condition: (f) =>
       Array.isArray(f.relationshipToEstonianCorporation) &&
-      f.relationshipToEstonianCorporation.includes("other"),
+      f.relationshipToEstonianCorporation.includes("Other"),
     required: true,
     colSpan: 2,
   },
@@ -693,6 +694,8 @@ export const EE_FULL_CONFIG: McapConfig = {
       widget: "ServiceSelectionWidget",
       fields: buildServiceFields(),
       serviceItems: (data) => buildEeServiceItems(data),
+      supportedCurrencies: ["USD", "HKD"],
+      computeFees: (data) => computeEeFees(data),
     },
     {
       id: "invoice",
@@ -746,4 +749,3 @@ export const EE_FULL_CONFIG: McapConfig = {
     },
   ],
 };
-

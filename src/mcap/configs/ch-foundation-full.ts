@@ -556,6 +556,8 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
         },
       ],
       serviceItems: (data) => buildChFoundationServiceItems(data),
+      supportedCurrencies: ["USD", "HKD"],
+      computeFees: (data) => computeChFoundationFees(data),
     },
     {
       id: "invoice",

@@ -271,6 +271,7 @@ function StripeCardDrawer({
 export const PaymentWidget = ({
     fees,
     currency,
+    supportedCurrencies,
     companyId,
     onPaymentComplete,
     data,
@@ -300,20 +301,39 @@ export const PaymentWidget = ({
     const [payMethod, setPayMethod] = useState<"card" | "bank">(data?.payMethod || "card");
     const [stripeDrawerOpen, setStripeDrawerOpen] = useState(false);
 
+    const allowedCurrencies = useMemo(() => {
+        const base = Array.isArray(supportedCurrencies) && supportedCurrencies.length > 0
+            ? supportedCurrencies
+            : ["USD", "HKD"];
+        const normalized = base
+            .map((entry) => String(entry || "").trim().toUpperCase())
+            .filter(Boolean);
+        return normalized.length > 0 ? Array.from(new Set(normalized)) : ["USD", "HKD"];
+    }, [supportedCurrencies]);
+
+    const ensureAllowedCurrency = (raw: any) => {
+        const normalized = String(raw || "").trim().toUpperCase();
+        if (allowedCurrencies.includes(normalized)) return normalized;
+        return allowedCurrencies[0];
+    };
+
     // 1. Parsing Fees
     // The previous steps (InvoiceWidget) finalized the currency and total.
     // Ideally 'fees' here is the final object { total, currency, items }.
     // If it's a number, we fallback.
-    const fallbackCurrency = data?.paymentCurrency || data?.currency || currency || "HKD";
+    const fallbackCurrency = ensureAllowedCurrency(data?.paymentCurrency || data?.currency || currency || "USD");
     const finalFees = useMemo(() => {
         if (typeof fees === "number") return { total: fees, currency: fallbackCurrency, items: [] };
-        if (fees && typeof fees.total === "number") return { ...fees, currency: fees.currency || fallbackCurrency };
+        if (fees && typeof fees.total === "number") return { ...fees, currency: ensureAllowedCurrency(fees.currency || fallbackCurrency) };
         return { total: 0, currency: fallbackCurrency, items: [] };
-    }, [fees, fallbackCurrency]);
+    }, [fees, fallbackCurrency, allowedCurrencies]);
 
-    const activeCurrency = finalFees.currency || fallbackCurrency;
+    const activeCurrency = ensureAllowedCurrency(finalFees.currency || fallbackCurrency);
     const subtotal = finalFees.total;
-    const cardFeePct = String(activeCurrency).toUpperCase() === "USD" ? 0.06 : 0.04;
+    const cardFeePct = Number(
+        (finalFees as any)?.cardFeePct
+        ?? (String(activeCurrency).toUpperCase() === "USD" ? 0.06 : 0.04)
+    );
     const exchangeRateUsed = typeof (finalFees as any).exchangeRateUsed === "number"
         ? Number((finalFees as any).exchangeRateUsed)
         : undefined;
@@ -409,6 +429,19 @@ export const PaymentWidget = ({
             setPayMethod(data.payMethod);
         }
     }, [data?.payMethod]);
+
+    useEffect(() => {
+        const raw = String(data?.paymentCurrency || data?.currency || "").toUpperCase();
+        const normalized = ensureAllowedCurrency(raw || activeCurrency);
+        if (raw && raw === normalized) return;
+        if (!onChange) return;
+        onChange({
+            ...data,
+            paymentCurrency: normalized,
+            currency: normalized,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data?.paymentCurrency, data?.currency, activeCurrency, allowedCurrencies.join(",")]);
 
     // 3. Handlers
     const handleMethodChange = (v: "card" | "bank") => {

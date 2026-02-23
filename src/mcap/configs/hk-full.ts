@@ -117,6 +117,91 @@ const computeKycExtras = (parties: any[]) => {
   return extra;
 };
 
+const round2 = (value: number) => Number(value.toFixed(2));
+
+const computeHkFees = (data: any) => {
+  const selectedIds = new Set(Array.isArray(data?.optionalFeeIds) ? data.optionalFeeIds : []);
+  const parties = Array.isArray(data?.parties) ? data.parties : [];
+  const extraKyc = computeKycExtras(parties);
+
+  const usdItems = [
+    ...HK_FEES.government
+      .filter((f) => f.mandatory)
+      .map((f) => ({
+        id: f.id,
+        label: f.label,
+        amount: Number(f.amount || 0),
+        original: Number(f.original || 0),
+        info: f.info,
+        kind: "government" as const,
+      })),
+    ...HK_FEES.service
+      .filter((f) => f.mandatory || selectedIds.has(f.id))
+      .map((f) => ({
+        id: f.id,
+        label: f.label,
+        amount: Number(f.amount || 0),
+        original: Number(f.original || 0),
+        info: f.info,
+        kind: "service" as const,
+      })),
+    ...(extraKyc > 0
+      ? [{
+        id: "extra_kyc",
+        label: "newHk.fees.items.extra_kyc.label",
+        amount: Number(extraKyc),
+        original: Number(extraKyc),
+        info: "Additional KYC fees for corporate shareholders and extra individual shareholders.",
+        kind: "service" as const,
+      }]
+      : []),
+  ];
+
+  const governmentUsd = usdItems
+    .filter((i) => i.kind === "government")
+    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const serviceUsd = usdItems
+    .filter((i) => i.kind !== "government")
+    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const totalUsd = governmentUsd + serviceUsd;
+
+  const paymentCurrency = String(data?.paymentCurrency || data?.currency || "HKD").toUpperCase();
+  const exchangeRateUsedRaw = Number(data?.computedFees?.exchangeRateUsed || 0);
+  const shouldConvertToHkd =
+    paymentCurrency === "HKD"
+    && Number.isFinite(exchangeRateUsedRaw)
+    && exchangeRateUsedRaw > 0;
+
+  const convertedItems = shouldConvertToHkd
+    ? usdItems.map((item) => ({
+      ...item,
+      amount: round2(Number(item.amount || 0) * exchangeRateUsedRaw),
+      original: round2(Number(item.original || 0) * exchangeRateUsedRaw),
+    }))
+    : usdItems;
+
+  const government = shouldConvertToHkd ? round2(governmentUsd * exchangeRateUsedRaw) : governmentUsd;
+  const service = shouldConvertToHkd ? round2(serviceUsd * exchangeRateUsedRaw) : serviceUsd;
+  const total = shouldConvertToHkd ? round2(totalUsd * exchangeRateUsedRaw) : totalUsd;
+
+  const cardFeePct = paymentCurrency === "USD" ? 0.06 : 0.04;
+  const payMethod = String(data?.payMethod || "card").toLowerCase();
+  const cardFeeSurcharge = payMethod === "card" ? round2(total * cardFeePct) : 0;
+  const grandTotal = round2(total + cardFeeSurcharge);
+
+  return {
+    currency: shouldConvertToHkd ? "HKD" : "USD",
+    items: convertedItems,
+    government,
+    service,
+    total,
+    cardFeePct,
+    cardFeeSurcharge,
+    grandTotal,
+    ...(shouldConvertToHkd ? { exchangeRateUsed: exchangeRateUsedRaw, originalAmountUsd: totalUsd } : {}),
+  };
+};
+
 export const HK_FULL_CONFIG: McapConfig = {
   id: "hk-full",
   countryCode: "HK",
@@ -177,6 +262,12 @@ export const HK_FULL_CONFIG: McapConfig = {
           required: true,
           options: applicantRoles,
           colSpan: 2,
+        },
+         {
+          type: "text",
+          name: "otherRelationshipType",
+          label: "Other relationship (please specify)",
+          condition: (f) => f.roles?.includes("Other"),
         },
         {
           type: "select",
@@ -329,6 +420,8 @@ export const HK_FULL_CONFIG: McapConfig = {
       id: "services",
       title: "newHk.steps.fees.title",
       widget: "ServiceSelectionWidget",
+      supportedCurrencies: ["HKD", "USD"],
+      computeFees: (data: any) => computeHkFees(data),
       serviceItems: [
         ...HK_FEES.service.map((f) => ({
           id: f.id,
@@ -346,64 +439,7 @@ export const HK_FULL_CONFIG: McapConfig = {
       title: "newHk.steps.invoice.title",
       description: "newHk.steps.invoice.description",
       widget: "InvoiceWidget",
-      computeFees: (data: any) => {
-        const selectedIds = new Set(Array.isArray(data.optionalFeeIds) ? data.optionalFeeIds : []);
-        const parties = Array.isArray(data.parties) ? data.parties : [];
-        const extraKyc = computeKycExtras(parties);
-
-        const items = [
-          ...HK_FEES.government.filter((f) => f.mandatory).map((f) => ({
-            id: f.id,
-            label: f.label,
-            amount: f.amount,
-            original: f.original,
-            info: f.info,
-            kind: "government" as const,
-          })),
-          ...HK_FEES.service.filter((f) => f.mandatory || selectedIds.has(f.id)).map((f) => ({
-            id: f.id,
-            label: f.label,
-            amount: f.amount,
-            original: f.original,
-            info: f.info,
-            kind: "service" as const,
-          })),
-        ];
-
-        if (extraKyc > 0) {
-          items.push({
-            id: "extra_kyc",
-            label: "newHk.fees.items.extra_kyc.label",
-            amount: extraKyc,
-            original: extraKyc,
-            info: "Additional KYC fees for corporate shareholders and extra individual shareholders.",
-            kind: "service" as const,
-          });
-        }
-
-        const government = items
-          .filter((i) => i.kind === "government")
-          .reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        const service = items
-          .filter((i) => i.kind !== "government")
-          .reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        const total = government + service;
-
-        // Card fee surcharge (currency-based)
-        const paymentCurrency = data.paymentCurrency || data.currency || "HKD";
-        const cardFeePct = paymentCurrency === "USD" ? 0.06 : 0.04;
-
-        return {
-          currency: "USD",
-          items,
-          government,
-          service,
-          total,
-          cardFeePct,
-          cardFeeSurcharge: total * cardFeePct,
-          grandTotal: total + (total * cardFeePct),
-        };
-      },
+      computeFees: (data: any) => computeHkFees(data),
     },
     {
       id: "acct",
@@ -444,6 +480,7 @@ export const HK_FULL_CONFIG: McapConfig = {
       description: "newHk.steps.payment.description",
       widget: "PaymentWidget",
       supportedCurrencies: ["HKD", "USD"],
+      computeFees: (data: any) => computeHkFees(data),
       fields: [
         {
           type: "radio-group",

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { McapConfig } from "./types";
 
 const ENTITY_OPTIONS = [

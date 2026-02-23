@@ -68,6 +68,12 @@ export const SG_FULL_CONFIG: McapConfig = {
             { label: "newHk.steps.applicant.fields.roles.options.Other", value: "Other" },
           ],
         },
+         {
+          type: "text",
+          name: "otherRelationshipType",
+          label: "Other relationship (please specify)",
+          condition: (f) => f.establishedRelationshipType?.includes("Other"),
+        },
         {
           type: "select",
           name: "sns",

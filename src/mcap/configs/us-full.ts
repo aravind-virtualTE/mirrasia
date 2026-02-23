@@ -57,6 +57,12 @@ export const US_FULL_CONFIG: McapConfig = {
           ],
         },
         {
+          type: "text",
+          name: "otherRelationshipType",
+          label: "Enter Other Value",
+          condition: (f) => f.establishedRelationshipType?.includes("Other"),
+        },
+        {
           type: "select",
           name: "sns",
           label: "newHk.steps.applicant.fields.sns.label",

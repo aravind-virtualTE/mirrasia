@@ -68,11 +68,28 @@ export const UnifiedFormEngine = ({
     const currentStep = config.steps[currentStepIdx];
     const isLastStep = currentStepIdx === config.steps.length - 1;
     const entityMeta = config.entityMeta || {};
-    // Always call step.computeFees if available to ensure latest form data is used.
-    // Fall back to cached formData.computedFees or static step.fees when not available.
-    const computedFees = currentStep.computeFees
-        ? currentStep.computeFees(formData, entityMeta)
-        : (formData?.computedFees || currentStep.fees);
+    // Prefer step-level computeFees. For legacy configs lacking FX metadata in computeFees,
+    // use cached computedFees from ServiceSelectionWidget when HKD conversion was already computed.
+    const computedFees = useMemo(() => {
+        const cachedFees = formData?.computedFees;
+        const calculated = currentStep.computeFees
+            ? currentStep.computeFees(formData, entityMeta)
+            : (cachedFees || currentStep.fees);
+
+        if (!cachedFees || !currentStep.computeFees) return calculated;
+
+        const requestedCurrency = String(formData?.paymentCurrency || formData?.currency || "").toUpperCase();
+        const calculatedCurrency = String((calculated as any)?.currency || "").toUpperCase();
+        const cachedCurrency = String((cachedFees as any)?.currency || "").toUpperCase();
+        const hasCalculatedFx =
+            Number.isFinite(Number((calculated as any)?.exchangeRateUsed))
+            && Number((calculated as any)?.exchangeRateUsed) > 0;
+        const shouldUseCachedFx = requestedCurrency === "HKD"
+            && cachedCurrency === "HKD"
+            && (!hasCalculatedFx || calculatedCurrency !== "HKD");
+
+        return shouldUseCachedFx ? cachedFees : calculated;
+    }, [currentStep, formData, entityMeta]);
 
     useEffect(() => {
         if (currentStep.widget === "PaymentWidget" && !companyId) {
@@ -176,6 +193,22 @@ export const UnifiedFormEngine = ({
 
     const missingFields = useMemo(() => {
         const missing: string[] = [];
+        const normalizeStatus = (value: any) => String(value || "").trim().toLowerCase();
+        const isTruthy = (value: any) => {
+            if (typeof value === "boolean") return value;
+            const normalized = normalizeStatus(value);
+            return ["true", "yes", "1", "y"].includes(normalized);
+        };
+        const dcpKycReadyStatuses = new Set(["in_progress", "submitted", "approved"]);
+        const getStepSections = (cfg: any) => {
+            if (!cfg) return [];
+            if (cfg.modeField && Array.isArray(cfg.modes) && cfg.modes.length > 0) {
+                const modeValue = formData[cfg.modeField];
+                const active = cfg.modes.find((m: any) => m.value === modeValue);
+                return active?.sections || [];
+            }
+            return cfg.sections || [];
+        };
 
         const checkField = (
             field: McapField,
@@ -224,72 +257,85 @@ export const UnifiedFormEngine = ({
                         cfg.preFields?.find((f: any) => f.name === cfg.modeField)?.label || cfg.modeField;
                     missing.push(String(t(String(modeLabel), String(modeLabel))));
                 }
-                const active = cfg.modes.find((m: any) => m.value === modeValue);
-                const sections = active?.sections || [];
-                sections.forEach((section: any) => {
-                    if (section.condition && !section.condition(formData)) return;
-                    const title = section.title ? t(section.title, section.title) : section.fieldName || "Item";
-
-                    if (section.kind === "list") {
-                        const list = Array.isArray(formData[section.fieldName || ""]) ? formData[section.fieldName || ""] : [];
-                        const minItems = section.minItems || 0;
-                        if (minItems > 0 && list.length < minItems) {
-                            missing.push(`${title}: ${t("common.atLeastItems", "At least")} ${minItems}`);
-                        }
-                        list.forEach((item: any, idx: number) => {
-                            const itemLabel = section.itemLabel
-                                ? t(section.itemLabel, { n: idx + 1, title })
-                                : `${title} ${idx + 1}`;
-                            checkFields(section.itemFields, { ...formData, ...item }, itemLabel);
-                        });
-                        return;
-                    }
-
-                    if (section.kind === "object") {
-                        const obj = formData[section.fieldName || ""] || {};
-                        checkFields(section.itemFields, { ...formData, ...obj }, title);
-                    }
-                });
-            } else {
-                (cfg.sections || []).forEach((section: any) => {
-                    if (section.condition && !section.condition(formData)) return;
-                    const title = section.title ? t(section.title, section.title) : section.fieldName || "Item";
-
-                    if (section.kind === "list") {
-                        const list = Array.isArray(formData[section.fieldName || ""]) ? formData[section.fieldName || ""] : [];
-                        const minItems = section.minItems || 0;
-                        if (minItems > 0 && list.length < minItems) {
-                            missing.push(`${title}: ${t("common.atLeastItems", "At least")} ${minItems}`);
-                        }
-                        list.forEach((item: any, idx: number) => {
-                            const itemLabel = section.itemLabel
-                                ? t(section.itemLabel, { n: idx + 1, title })
-                                : `${title} ${idx + 1}`;
-                            checkFields(section.itemFields, { ...formData, ...item }, itemLabel);
-                        });
-                        return;
-                    }
-
-                    if (section.kind === "object") {
-                        const obj = formData[section.fieldName || ""] || {};
-                        checkFields(section.itemFields, { ...formData, ...obj }, title);
-                    }
-                });
             }
+
+            const sections = getStepSections(cfg);
+            sections.forEach((section: any) => {
+                if (section.condition && !section.condition(formData)) return;
+                const title = section.title ? t(section.title, section.title) : section.fieldName || t("common.item", "Item");
+
+                const sectionItems = section.kind === "list"
+                    ? (Array.isArray(formData[section.fieldName || ""]) ? formData[section.fieldName || ""] : [])
+                    : [formData[section.fieldName || ""] || {}];
+
+                if (section.kind === "list") {
+                    const minItems = section.minItems || 0;
+                    if (minItems > 0 && sectionItems.length < minItems) {
+                        missing.push(`${title}: ${t("common.atLeastItems", "At least")} ${minItems}`);
+                    }
+                }
+
+                sectionItems.forEach((item: any, idx: number) => {
+                    const itemLabel = section.kind === "list"
+                        ? (section.itemLabel ? t(section.itemLabel, { n: idx + 1, title }) : `${title} ${idx + 1}`)
+                        : title;
+                    checkFields(section.itemFields, { ...formData, ...(item || {}) }, itemLabel);
+                });
+
+                const includeDcpFromKey = section?.invite?.includeDcpFromKey;
+                if (!includeDcpFromKey) return;
+                const dcpEntries = sectionItems.filter((item: any) => isTruthy(item?.[includeDcpFromKey]));
+                if (dcpEntries.length === 0) {
+                    missing.push(t("mcap.validation.dcpRequired", "Designated Contact Person (DCP) required"));
+                    return;
+                }
+                if (section.invite) {
+                    const hasInvitedDcp = dcpEntries.some((entry: any) => {
+                        if (entry?.invited === true) return true;
+                        const statusKey = section.invite.statusKey || "status";
+                        const status = normalizeStatus(entry?.inviteStatus || entry?.[statusKey]);
+                        return ["invited", "sent", "accepted", "completed", "approved"].includes(status);
+                    });
+                    if (!hasInvitedDcp) {
+                        missing.push(t("mcap.validation.dcpInviteRequired", "Designated Contact Person (DCP) must be invited before continuing"));
+                    }
+                }
+            });
         }
 
         if (currentStep.widget === "PartiesManager") {
             const min = currentStep.minParties || 0;
             if (min > 0 && parties.length < min) {
-                missing.push(`At least ${min} party(ies) required`);
+                missing.push(
+                    String(
+                        t("mcap.validation.minParties", "At least {{count}} party(ies) required", { count: min })
+                    )
+                );
             }
             if (currentStep.requireDcp) {
-                const hasDcp = parties.some((p) => (p.roles || []).includes("dcp"));
-                if (!hasDcp) missing.push("Designated Contact Person (DCP) required");
+                const dcpParties = parties.filter((p) => (p.roles || []).includes("dcp"));
+                if (dcpParties.length === 0) {
+                    missing.push(t("mcap.validation.dcpRequired", "Designated Contact Person (DCP) required"));
+                } else {
+                    const hasKycSignal = dcpParties.some((p) => p?.kycStatus !== undefined && p?.kycStatus !== null && String(p?.kycStatus).trim() !== "");
+                    if (hasKycSignal) {
+                        const hasReadyDcp = dcpParties.some((p) => dcpKycReadyStatuses.has(normalizeStatus(p?.kycStatus)));
+                        if (!hasReadyDcp) {
+                            missing.push(
+                                t(
+                                    "mcap.validation.dcpKycRequired",
+                                    "Designated Contact Person (DCP) must start or complete KYC before continuing"
+                                )
+                            );
+                        }
+                    }
+                }
             }
             if (currentStep.requirePartyInvite) {
                 const allInvited = parties.length > 0 && parties.every((p) => p.invited);
-                if (!allInvited) missing.push("All parties must be invited before continuing");
+                if (!allInvited) {
+                    missing.push(t("mcap.validation.inviteAllParties", "All parties must be invited before continuing"));
+                }
             }
             if (currentStep.partyCoverageRules && currentStep.partyCoverageRules.length > 0) {
                 const getPartyField = (party: any, key: string, storage?: "root" | "details") =>
@@ -313,14 +359,21 @@ export const UnifiedFormEngine = ({
                             const valueLabel = rule.valueLabels?.[value] || value;
                             return t(valueLabel, valueLabel);
                         });
-                        missing.push(`${label}: missing required options (${renderedValues.join(", ")})`);
+                        missing.push(
+                            String(
+                                t("mcap.validation.partyCoverageMissing", "{{label}}: missing required options ({{values}})", {
+                                    label,
+                                    values: renderedValues.join(", "),
+                                })
+                            )
+                        );
                     }
                 });
             }
         }
 
         return missing;
-    }, [currentStep, formData, parties]);
+    }, [currentStep, formData, parties, t]);
 
     const ensureDraft = async () => {
         console.log("Ensuring draft...", companyId);
@@ -349,7 +402,11 @@ export const UnifiedFormEngine = ({
             await handleSubmit();
         } else {
             if (missingFields.length > 0) {
-                toast({ title: "Missing information", description: "Please complete required fields to continue.", variant: "destructive" });
+                toast({
+                    title: t("mcap.validation.missingInformation.title", "Missing information"),
+                    description: t("mcap.validation.missingInformation.desc", "Please complete required fields to continue."),
+                    variant: "destructive",
+                });
                 return;
             }
             console.log("Ensuring draft before next step...");
@@ -578,48 +635,52 @@ export const UnifiedFormEngine = ({
         const entityType = getValue(["selectedEntity", "entityType", "panamaEntity"]) || "-";
         const industry = getValue(["industry", "selectedIndustry", "businessTypes"]) || "-";
         const partiesCount = Array.isArray(parties) ? parties.length : 0;
-        const services = getValue(["optionalFeeIds", "serviceItemsSelected", "services", "pif_optEmi"]) || "—";
+        const services = getValue(["optionalFeeIds", "serviceItemsSelected", "services", "pif_optEmi"]) || "-";
 
         const renderValue = (value: any) => {
             if (Array.isArray(value)) return value.length ? value.join(", ") : "-";
-            if (typeof value === "boolean") return value ? "Yes" : "No";
+            if (typeof value === "boolean") {
+                return value
+                    ? t("common.yes", "Yes")
+                    : t("common.no", "No");
+            }
             return String(value);
         };
 
         return (
             <div className="rounded-lg border bg-muted/10 p-4 space-y-3">
-                <div className="text-sm font-semibold">Review Summary</div>
+                <div className="text-sm font-semibold">{t("mcap.review.summary.title", "Review Summary")}</div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                     <div>
-                        <div className="text-xs text-muted-foreground">Applicant</div>
+                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.applicant", "Applicant")}</div>
                         <div className="font-medium">{renderValue(applicantName)}</div>
                     </div>
                     <div>
-                        <div className="text-xs text-muted-foreground">Company Name</div>
+                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.companyName", "Company Name")}</div>
                         <div className="font-medium">{renderValue(companyName)}</div>
                     </div>
                     <div>
-                        <div className="text-xs text-muted-foreground">Email</div>
+                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.email", "Email")}</div>
                         <div className="font-medium">{renderValue(applicantEmail)}</div>
                     </div>
                     <div>
-                        <div className="text-xs text-muted-foreground">Phone</div>
+                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.phone", "Phone")}</div>
                         <div className="font-medium">{renderValue(applicantPhone)}</div>
                     </div>
                     <div>
-                        <div className="text-xs text-muted-foreground">Entity Type</div>
+                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.entityType", "Entity Type")}</div>
                         <div className="font-medium">{renderValue(entityType)}</div>
                     </div>
                     <div>
-                        <div className="text-xs text-muted-foreground">Industry</div>
+                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.industry", "Industry")}</div>
                         <div className="font-medium">{renderValue(industry)}</div>
                     </div>
                     <div>
-                        <div className="text-xs text-muted-foreground">Parties</div>
+                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.parties", "Parties")}</div>
                         <div className="font-medium">{partiesCount}</div>
                     </div>
                     <div>
-                        <div className="text-xs text-muted-foreground">Services Selected</div>
+                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.services", "Services Selected")}</div>
                         <div className="font-medium">{renderValue(services)}</div>
                     </div>
                 </div>
@@ -812,6 +873,17 @@ export const UnifiedFormEngine = ({
                                         onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
                                         items={currentStep.serviceItems}
                                         currency={config.currency}
+                                        supportedCurrencies={
+                                            currentStep.supportedCurrencies
+                                            || config.steps.find((step) => step.widget === "PaymentWidget")?.supportedCurrencies
+                                        }
+                                        computeFees={
+                                            currentStep.computeFees
+                                            || config.steps.find((step) =>
+                                                (step.id === "invoice" || step.id === "payment" || step.widget === "InvoiceWidget" || step.widget === "PaymentWidget")
+                                                && typeof step.computeFees === "function"
+                                            )?.computeFees
+                                        }
                                     />
                                 </div>
                             ) : currentStep.widget === "PanamaServiceSetupWidget" ? (
@@ -844,7 +916,7 @@ export const UnifiedFormEngine = ({
 
                             {missingFields.length > 0 && currentStep.widget !== "PaymentWidget" && (
                                 <div className="text-xs sm:text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-3">
-                                    <strong>Required:</strong> {missingFields.join(", ")}
+                                    <strong>{t("common.required", "Required")}:</strong> {missingFields.join(", ")}
                                 </div>
                             )}
                         </CardContent>
@@ -853,12 +925,14 @@ export const UnifiedFormEngine = ({
                     {/* Navigation */}
                     <div className="flex justify-between mt-6">
                         <Button variant="outline" onClick={handleBack} disabled={currentStepIdx === 0}>
-                            Back
+                            {t("common.back", "Back")}
                         </Button>
                         {currentStep.widget !== "PaymentWidget" && currentStep.widget !== "InvoiceWidget" && (
                             <Button onClick={handleNext} disabled={isSubmitting}>
                                 {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                                {isLastStep ? "Submit Application" : "Next Step"}
+                                {isLastStep
+                                    ? t("mcap.navigation.submit", "Submit Application")
+                                    : t("mcap.navigation.next", "Next Step")}
                             </Button>
                         )}
                         {/* Special Next Button for InvoiceWidget is inside the widget itself */}
@@ -876,3 +950,4 @@ export const UnifiedFormEngine = ({
         </div>
     );
 };
+

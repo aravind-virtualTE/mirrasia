@@ -129,9 +129,9 @@ export default function McapDashboard() {
       setSelectedConfig(requestedConfig);
     }
   }, [requestedConfig]);
-  console.log("selectedConfig",selectedConfig)
-  console.log("initialData",initialData)
-  console.log("initialParties",initialParties)
+  // console.log("selectedConfig",selectedConfig)
+  // console.log("initialData",initialData)
+  // console.log("initialParties",initialParties)
   if (selectedConfig) {
     return (
       <div className="p-6">

@@ -737,6 +737,8 @@ export const UK_FULL_CONFIG: McapConfig = {
         },
       ],
       serviceItems: (data) => buildUkServiceItems(data),
+      supportedCurrencies: ["USD", "HKD"],
+      computeFees: (data) => computeUkFees(data),
     },
     {
       id: "invoice",
