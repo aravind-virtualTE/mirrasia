@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -64,6 +64,13 @@ export const UnifiedFormEngine = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submissionResult, setSubmissionResult] = useState<any>(null);
     const [companyId, setCompanyId] = useState<string | null>(null);
+    const [isAdvancingStep, setIsAdvancingStep] = useState(false);
+    const companyIdRef = useRef<string | null>(null);
+    const ensureDraftInFlightRef = useRef<Promise<string | null> | null>(null);
+    const isAdvancingStepRef = useRef(false);
+    // TEMP (admin testing only): keep true to bypass required-step blocking and unlock sidebar jumps.
+    // Revert this to false after admin testing is complete.
+    const ADMIN_TEST_RELAX_VALIDATION = true;
 
     const currentStep = config.steps[currentStepIdx];
     const isLastStep = currentStepIdx === config.steps.length - 1;
@@ -92,8 +99,12 @@ export const UnifiedFormEngine = ({
     }, [currentStep, formData, entityMeta]);
 
     useEffect(() => {
-        if (currentStep.widget === "PaymentWidget" && !companyId) {
-            ensureDraft();
+        companyIdRef.current = companyId;
+    }, [companyId]);
+
+    useEffect(() => {
+        if (currentStep.widget === "PaymentWidget" && !companyIdRef.current) {
+            void ensureDraft();
         }
     }, [currentStep.widget, companyId]);
     const user = localStorage.getItem("user");
@@ -167,7 +178,10 @@ export const UnifiedFormEngine = ({
     }, [initialParties]);
 
     useEffect(() => {
-        if (initialCompanyId) setCompanyId(initialCompanyId);
+        if (initialCompanyId) {
+            companyIdRef.current = initialCompanyId;
+            setCompanyId(initialCompanyId);
+        }
     }, [initialCompanyId]);
 
     useEffect(() => {
@@ -377,24 +391,38 @@ export const UnifiedFormEngine = ({
     }, [currentStep, formData, parties, t]);
 
     const ensureDraft = async () => {
-        console.log("Ensuring draft...", companyId);
-        // if (companyId) return companyId; // REMOVED: Must update on every step!
-        const payload = {
-            _id: companyId || undefined,
-            countryCode: config.countryCode,
-            countryName: config.countryName,
-            status: "Draft",
-            stepIdx: currentStepIdx,
-            data: formData,
-            parties,
-            userId: userId
-        };
-        const response = await saveToBackend(payload);
-        if (response?.success && response?.data?._id) {
-            setCompanyId(response.data._id);
-            return response.data._id as string;
+        if (ensureDraftInFlightRef.current) {
+            return ensureDraftInFlightRef.current;
         }
-        return null;
+
+        const request = (async () => {
+            const currentCompanyId = companyIdRef.current;
+            console.log("Ensuring draft...", currentCompanyId);
+
+            const payload = {
+                _id: currentCompanyId || undefined,
+                countryCode: config.countryCode,
+                countryName: config.countryName,
+                status: "Draft",
+                stepIdx: currentStepIdx,
+                data: formData,
+                parties,
+                userId: userId
+            };
+            const response = await saveToBackend(payload);
+            if (response?.success && response?.data?._id) {
+                const nextCompanyId = response.data._id as string;
+                companyIdRef.current = nextCompanyId;
+                setCompanyId((prev) => (prev === nextCompanyId ? prev : nextCompanyId));
+                return nextCompanyId;
+            }
+            return currentCompanyId || null;
+        })().finally(() => {
+            ensureDraftInFlightRef.current = null;
+        });
+
+        ensureDraftInFlightRef.current = request;
+        return request;
     };
 
     const handleNext = async () => {
@@ -402,18 +430,43 @@ export const UnifiedFormEngine = ({
             // Submit
             await handleSubmit();
         } else {
-            if (missingFields.length > 0) {
+            if (isAdvancingStepRef.current) return;
+            isAdvancingStepRef.current = true;
+            setIsAdvancingStep(true);
+
+            try {
+                // TEMP (admin testing only): required-field validation is bypassed when ADMIN_TEST_RELAX_VALIDATION is true.
+                if (!ADMIN_TEST_RELAX_VALIDATION && missingFields.length > 0) {
+                    toast({
+                        title: t("mcap.validation.missingInformation.title", "Missing information"),
+                        description: t("mcap.validation.missingInformation.desc", "Please complete required fields to continue."),
+                        variant: "destructive",
+                    });
+                    return;
+                }
+                console.log("Ensuring draft before next step...");
+                const draftId = await ensureDraft();
+                if (!draftId) {
+                    toast({
+                        title: t("mcap.error.title", "Error"),
+                        description: t("mcap.error.draftSaveFailed", "Unable to save draft. Please try again."),
+                        variant: "destructive",
+                    });
+                    return;
+                }
+                setCurrentStepIdx((prev) => prev + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            } catch (e) {
+                console.error(e);
                 toast({
-                    title: t("mcap.validation.missingInformation.title", "Missing information"),
-                    description: t("mcap.validation.missingInformation.desc", "Please complete required fields to continue."),
+                    title: t("mcap.error.title", "Error"),
+                    description: t("mcap.error.draftSaveFailed", "Unable to save draft. Please try again."),
                     variant: "destructive",
                 });
-                return;
+            } finally {
+                isAdvancingStepRef.current = false;
+                setIsAdvancingStep(false);
             }
-            console.log("Ensuring draft before next step...");
-            await ensureDraft();
-            setCurrentStepIdx((prev) => prev + 1);
-            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
 
@@ -435,7 +488,7 @@ export const UnifiedFormEngine = ({
             // But ideally we should map them to the unified model structure.
 
             const payload = {
-                _id: companyId || undefined,
+                _id: companyIdRef.current || undefined,
                 countryCode: config.countryCode,
                 countryName: config.countryName,
                 status: "Submitted",
@@ -448,7 +501,10 @@ export const UnifiedFormEngine = ({
             const response = await saveToBackend(payload);
 
             if (response.success) {
-                if (response?.data?._id) setCompanyId(response.data._id);
+                if (response?.data?._id) {
+                    companyIdRef.current = response.data._id;
+                    setCompanyId(response.data._id);
+                }
                 setSubmissionResult(response.data);
                 toast({ title: "Success", description: "Company Application Created via MCAP Engine!" });
             } else {
@@ -692,7 +748,8 @@ export const UnifiedFormEngine = ({
     const totalSteps = config.steps.length;
     const progressPct = Math.round(((currentStepIdx + 1) / totalSteps) * 100);
 
-    const canJumpTo = (idx: number) => idx <= currentStepIdx;
+    // TEMP (admin testing only): after first step is reached, allow jumping to any sidebar step.
+    const canJumpTo = (idx: number) => currentStepIdx > 0 || idx <= currentStepIdx;
 
     // Memoize initialPaymentStatus to avoid unnecessary re-renders
     const memoizedPaymentStatus = useMemo(() => ({
@@ -915,7 +972,7 @@ export const UnifiedFormEngine = ({
                                 </div>
                             )}
 
-                            {missingFields.length > 0 && currentStep.widget !== "PaymentWidget" && (
+                            {!ADMIN_TEST_RELAX_VALIDATION && missingFields.length > 0 && currentStep.widget !== "PaymentWidget" && (
                                 <div className="text-xs sm:text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-3">
                                     <strong>{t("common.required", "Required")}:</strong> {missingFields.join(", ")}
                                 </div>
@@ -929,8 +986,8 @@ export const UnifiedFormEngine = ({
                             {t("common.back", "Back")}
                         </Button>
                         {currentStep.widget !== "PaymentWidget" && currentStep.widget !== "InvoiceWidget" && (
-                            <Button onClick={handleNext} disabled={isSubmitting}>
-                                {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                            <Button onClick={handleNext} disabled={isSubmitting || isAdvancingStep}>
+                                {(isSubmitting || isAdvancingStep) && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                                 {isLastStep
                                     ? t("mcap.navigation.submit", "Submit Application")
                                     : t("mcap.navigation.next", "Next Step")}
@@ -951,4 +1008,3 @@ export const UnifiedFormEngine = ({
         </div>
     );
 };
-
