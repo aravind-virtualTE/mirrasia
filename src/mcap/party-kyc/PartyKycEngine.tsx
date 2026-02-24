@@ -204,6 +204,9 @@ export default function PartyKycEngine({
   const { t } = useTranslation();
   const { toast } = useToast();
   const isReadOnly = mode === "detail";
+  // TEMP (admin testing only): keep true to bypass required-field validation restrictions.
+  // Revert this to false after admin testing is complete.
+  const ADMIN_TEST_RELAX_VALIDATION = true;
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -234,12 +237,20 @@ export default function PartyKycEngine({
 
   const currentStep = steps[currentStepIdx] as PartyStep;
   const activeStep = stepChecks.findIndex((v) => !v);
-  const currentActiveStep = activeStep === -1 ? steps.length - 1 : activeStep;
+  const currentActiveStep = ADMIN_TEST_RELAX_VALIDATION
+    ? currentStepIdx
+    : activeStep === -1
+      ? steps.length - 1
+      : activeStep;
   const progressValue = useMemo(() => {
+    if (ADMIN_TEST_RELAX_VALIDATION) {
+      const total = steps.length || 1;
+      return ((currentStepIdx + 1) / total) * 100;
+    }
     const total = stepChecks.length || 1;
     const completed = stepChecks.filter((f) => f).length;
     return (completed / total) * 100;
-  }, [stepChecks]);
+  }, [ADMIN_TEST_RELAX_VALIDATION, currentStepIdx, stepChecks, steps.length]);
 
   const validateStep = (step: PartyStep) => {
     const nextErrors: Record<string, string> = {};
@@ -269,14 +280,23 @@ export default function PartyKycEngine({
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    const nextErrors = validateStep(currentStep);
-    setErrors((prev) => ({ ...prev, ...nextErrors }));
-    if (Object.keys(nextErrors).length > 0) {
-      toast({
-        title: t("mcap.partyKyc.ui.missingInfoTitle", "Missing info"),
-        description: t("mcap.partyKyc.ui.missingInfoDesc", "Please complete required fields."),
+    if (!ADMIN_TEST_RELAX_VALIDATION) {
+      const nextErrors = validateStep(currentStep);
+      setErrors((prev) => ({ ...prev, ...nextErrors }));
+      if (Object.keys(nextErrors).length > 0) {
+        toast({
+          title: t("mcap.partyKyc.ui.missingInfoTitle", "Missing info"),
+          description: t("mcap.partyKyc.ui.missingInfoDesc", "Please complete required fields."),
+        });
+        return;
+      }
+    } else {
+      setErrors((prev) => {
+        if (!Object.keys(prev).length) return prev;
+        const next = { ...prev };
+        currentStep.fields.forEach((field) => delete next[field.name]);
+        return next;
       });
-      return;
     }
     setCurrentStepIdx((prev) => Math.min(prev + 1, steps.length - 1));
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -288,9 +308,13 @@ export default function PartyKycEngine({
   };
 
   const handleSave = async (status: "in_progress" | "submitted") => {
-    const nextErrors = status === "submitted" ? validateAll() : validateStep(currentStep);
+    const nextErrors = ADMIN_TEST_RELAX_VALIDATION
+      ? {}
+      : status === "submitted"
+        ? validateAll()
+        : validateStep(currentStep);
     setErrors(nextErrors);
-    if (status === "submitted" && Object.keys(nextErrors).length > 0) {
+    if (!ADMIN_TEST_RELAX_VALIDATION && status === "submitted" && Object.keys(nextErrors).length > 0) {
       const firstErrorStep = steps.findIndex((step) =>
         step.fields.some((f) => nextErrors[f.name])
       );
