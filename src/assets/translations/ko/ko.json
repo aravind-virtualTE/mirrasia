@@ -2759,6 +2759,166 @@
       }
     }
   },
+  "quoteService": {
+    "common": {
+      "success": "성공",
+      "error": "오류",
+      "cancel": "취소"
+    },
+    "languages": {
+      "en": "영어",
+      "ko": "한국어",
+      "zhTW": "번체 중국어"
+    },
+    "nav": {
+      "title": "MIRRASIA 견적",
+      "language": "언어",
+      "manageCatalog": "카탈로그 관리",
+      "buildInvoiceTemplate": "인보이스 템플릿 설정",
+      "quoteHistory": "견적 내역",
+      "myQuotes": "내 견적",
+      "createQuote": "견적 생성"
+    },
+    "catalog": {
+      "title": "서비스 카탈로그",
+      "subtitle": "다국어 서비스 항목을 관리합니다.",
+      "addService": "서비스 추가",
+      "searchPlaceholder": "서비스 검색",
+      "servicesCount": "{{count}}개의 서비스",
+      "loadingServices": "서비스 로딩 중...",
+      "untitledService": "제목 없는 서비스"
+    },
+    "layoutSettings": {
+      "title": "인보이스 템플릿 설정",
+      "subtitle": "생성된 PDF 견적서 및 이메일에 사용되는 레이아웃, 라벨 및 텍스트를 구성합니다. 여기서 변경한 사항은 선택한 언어의 모든 새 견적서에 적용됩니다.",
+      "loadingLayout": "레이아웃 구성 로딩 중...",
+      "saving": "저장 중...",
+      "saveConfiguration": "구성 저장",
+      "brandIdentity": {
+        "title": "브랜드 및 아이덴티티",
+        "subtitle": "인보이스 상단에 표시되는 주요 회사 세부 정보입니다.",
+        "companyNameLabel": "회사 이름",
+        "companyNameHint": "왼쪽 상단의 큰 기울임꼴 헤더입니다.",
+        "headerBadgeLabel": "헤더 배지",
+        "headerBadgeHint": "오른쪽 상단의 컬러 박스 (예: \"DRAFT QUOTE\").",
+        "companyDetailsLabel": "회사 상세 정보",
+        "companyDetailsHint": "주소, 연락처 등. 한 줄에 하나씩 입력하세요. 회사 이름 아래에 표시됩니다."
+      },
+      "terms": {
+        "title": "이용 약관",
+        "subtitle": "참고 사항 및 법적 고지 사항을 위한 푸터 섹션입니다.",
+        "notesTitleLabel": "참고 제목",
+        "notesContentLabel": "참고 내용",
+        "notesHint": "일반 참고 사항 (한 줄에 하나씩). 왼쪽 하단에 표시됩니다.",
+        "legalTitleLabel": "법적 약관 제목",
+        "legalContentLabel": "법적 약관 내용",
+        "legalHint": "번호가 매겨진 법적 약관 목록 (한 줄에 하나씩). 오른쪽 하단에 표시됩니다.",
+        "footerTextLabel": "푸터 텍스트",
+        "footerHint": "맨 아래에 표시되는 저작권 또는 시스템 생성 알림입니다."
+      },
+      "tableLabels": {
+        "title": "테이블 라벨 및 제목",
+        "subtitle": "표준 UI 요소에 대한 현지화 문자열입니다.",
+        "quotationLabel": "견적서 라벨",
+        "recipientLabel": "수신인 라벨",
+        "totalPriceLabel": "총 가격 라벨"
+      }
+    },
+    "customer": {
+      "title": "견적 요청",
+      "subtitle": "상세 정보를 제공하고 필요한 서비스를 선택하세요.",
+      "contactSectionTitle": "1. 연락처 정보",
+      "namePlaceholder": "성함",
+      "emailPlaceholder": "이메일",
+      "descriptionPlaceholder": "비즈니스 배경 / 제품 설명",
+      "servicesSectionTitle": "2. 서비스 선택",
+      "searchPlaceholder": "서비스 검색...",
+      "selectedCount": "{{count}}개 선택됨",
+      "totalEstimate": "총 예상 금액",
+      "generateQuote": "견적서 생성"
+    },
+    "invoice": {
+      "backToSelection": "선택 단계로 돌아가기",
+      "downloadPdf": "PDF 다운로드",
+      "sendToClient": "고객에게 전송",
+      "pending": "대기 중",
+      "valuedClient": "귀중한 고객님",
+      "serviceInquiry": "서비스 문의"
+    },
+    "modal": {
+      "editService": "서비스 수정",
+      "addService": "서비스 추가",
+      "multilingualSuffix": "(다국어)",
+      "basePriceLabel": "기본 가격 (USD) *",
+      "basePricePlaceholder": "0.00",
+      "serviceNameEnglishLabel": "서비스 명칭 (영어) *",
+      "serviceNameEnglishPlaceholder": "예: Corporate Secretary Service",
+      "serviceDescriptionEnglishLabel": "서비스 설명 (영어) *",
+      "serviceDescriptionEnglishPlaceholder": "제공 결과물에 대한 상세 설명...",
+      "optionalLocalizationHint": "이 필드들은 선택 사항입니다. 비워두면 영어 텍스트가 대체 사용됩니다.",
+      "serviceNameKoreanLabel": "서비스 명칭 (한국어)",
+      "serviceNameKoreanPlaceholder": "예: 한국어 서비스 명칭",
+      "serviceDescriptionKoreanLabel": "서비스 설명 (한국어)",
+      "serviceDescriptionKoreanPlaceholder": "한국어 설명을 입력하세요...",
+      "serviceNameTraditionalChineseLabel": "서비스 명칭 (번체 중국어)",
+      "serviceNameTraditionalChinesePlaceholder": "예: 번체 중국어 서비스 명칭",
+      "serviceDescriptionTraditionalChineseLabel": "서비스 설명 (번체 중국어)",
+      "serviceDescriptionTraditionalChinesePlaceholder": "번체 중국어 설명을 입력하세요...",
+      "updateService": "서비스 업데이트",
+      "createService": "서비스 생성"
+    },
+    "toast": {
+      "itemUpdated": "항목이 업데이트되었습니다",
+      "itemCreated": "항목이 생성되었습니다",
+      "failedToSaveItem": "항목 저장 실패",
+      "saved": "저장됨",
+      "layoutUpdated": "레이아웃 내용이 업데이트되었습니다.",
+      "failedToSaveLayout": "레이아웃 저장 실패",
+      "itemDeleted": "항목이 삭제되었습니다",
+      "failedToDeleteItem": "항목 삭제 실패",
+      "sent": "전송됨",
+      "quotationSent": "{{email}}(으)로 견적서가 전송되었습니다",
+      "failedToSendQuotation": "견적서 전송 실패"
+    },
+    "confirm": {
+      "deleteService": "이 서비스를 삭제하시겠습니까?"
+    },
+    "alert": {
+      "selectAtLeastOneService": "최소 하나 이상의 서비스를 선택해 주세요."
+    },
+    "history": {
+      "toast": {
+        "failedToLoadHistory": "내역을 불러오지 못했습니다"
+      },
+      "searchPlaceholder": "고객명, 이메일, 견적 번호 검색",
+      "filterByCreatorPlaceholder": "작성자별 필터링",
+      "sort": {
+        "newestFirst": "최신순",
+        "oldestFirst": "오래된순",
+        "highestValue": "금액 높은순"
+      },
+      "columns": {
+        "quoteNumber": "견적 번호",
+        "date": "날짜",
+        "client": "고객",
+        "creator": "작성자",
+        "total": "합계",
+        "status": "상태",
+        "action": "작업"
+      },
+      "loading": "로딩 중...",
+      "noQuotesFound": "검색된 견적이 없습니다.",
+      "anonymous": "익명",
+      "statusValues": {
+        "approved": "승인됨",
+        "paid": "결제됨",
+        "rejected": "거절됨",
+        "sent": "전송됨",
+        "pending": "대기 중"
+      },
+      "viewPrint": "보기 / 인쇄"
+    }
+  },
   "service": {
     "grandTotal": "총합계",
     "note": "정부 수수료는 법정 필수 사항입니다. 선택 사항 서비스를 전환하여 패키지를 맞춤 설정할 수 있습니다.",

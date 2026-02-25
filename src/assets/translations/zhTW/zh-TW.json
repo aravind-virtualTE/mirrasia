@@ -2760,6 +2760,166 @@
       }
     }
   },
+  "quoteService": {
+    "common": {
+      "success": "成功",
+      "error": "錯誤",
+      "cancel": "取消"
+    },
+    "languages": {
+      "en": "英文",
+      "ko": "韓文",
+      "zhTW": "繁體中文"
+    },
+    "nav": {
+      "title": "MIRRASIA 報價",
+      "language": "語言",
+      "manageCatalog": "管理目錄",
+      "buildInvoiceTemplate": "建立發票模板",
+      "quoteHistory": "報價紀錄",
+      "myQuotes": "我的報價",
+      "createQuote": "建立報價"
+    },
+    "catalog": {
+      "title": "服務目錄",
+      "subtitle": "管理多語言服務項目。",
+      "addService": "添加服務",
+      "searchPlaceholder": "搜尋服務",
+      "servicesCount": "{{count}} 個服務",
+      "loadingServices": "正在載入服務...",
+      "untitledService": "未命名服務"
+    },
+    "layoutSettings": {
+      "title": "發票模板設定",
+      "subtitle": "配置生成的 PDF 報價單和電子郵件中使用的佈局、標籤和文本。此處的更改將影響所選語言的所有新報價單。",
+      "loadingLayout": "正在載入佈局配置...",
+      "saving": "儲存中...",
+      "saveConfiguration": "儲存配置",
+      "brandIdentity": {
+        "title": "品牌與識別",
+        "subtitle": "顯示在發票頂部的公司主要詳情。",
+        "companyNameLabel": "公司名稱",
+        "companyNameHint": "左上角的大字斜體標題。",
+        "headerBadgeLabel": "頁眉徽章",
+        "headerBadgeHint": "右上角的彩色標籤（例如：\"DRAFT QUOTE\"）。",
+        "companyDetailsLabel": "公司詳情",
+        "companyDetailsHint": "地址、聯絡資訊等。每行輸入一項。顯示在公司名稱下方。"
+      },
+      "terms": {
+        "title": "條款與細則",
+        "subtitle": "用於備註和法律免責聲明的頁腳部分。",
+        "notesTitleLabel": "備註標題",
+        "notesContentLabel": "備註內容",
+        "notesHint": "一般備註（每行一項）。顯示在左下角。",
+        "legalTitleLabel": "法律條款標題",
+        "legalContentLabel": "法律條款內容",
+        "legalHint": "法律條款編號列表（每行一項）。顯示在右下角。",
+        "footerTextLabel": "頁腳文字",
+        "footerHint": "最底部的版權或系統生成通知。"
+      },
+      "tableLabels": {
+        "title": "表格標籤與標題",
+        "subtitle": "標準 UI 元素的本地化字串。",
+        "quotationLabel": "報價單標籤",
+        "recipientLabel": "收件人標籤",
+        "totalPriceLabel": "總價標籤"
+      }
+    },
+    "customer": {
+      "title": "報價請求",
+      "subtitle": "請提供詳情並選擇所需服務。",
+      "contactSectionTitle": "1. 聯絡資訊",
+      "namePlaceholder": "您的姓名",
+      "emailPlaceholder": "電子郵件",
+      "descriptionPlaceholder": "業務背景 / 產品描述",
+      "servicesSectionTitle": "2. 選擇服務",
+      "searchPlaceholder": "搜尋服務...",
+      "selectedCount": "已選擇 {{count}} 項",
+      "totalEstimate": "總預計金額",
+      "generateQuote": "生成報價單"
+    },
+    "invoice": {
+      "backToSelection": "返回選擇",
+      "downloadPdf": "下載 PDF",
+      "sendToClient": "發送給客戶",
+      "pending": "待處理",
+      "valuedClient": "尊敬的客戶",
+      "serviceInquiry": "服務諮詢"
+    },
+    "modal": {
+      "editService": "編輯服務",
+      "addService": "添加服務",
+      "multilingualSuffix": "(多語言)",
+      "basePriceLabel": "基礎價格 (USD) *",
+      "basePricePlaceholder": "0.00",
+      "serviceNameEnglishLabel": "服務名稱 (英文) *",
+      "serviceNameEnglishPlaceholder": "例如：Corporate Secretary Service",
+      "serviceDescriptionEnglishLabel": "服務描述 (英文) *",
+      "serviceDescriptionEnglishPlaceholder": "交付成果的詳細說明...",
+      "optionalLocalizationHint": "這些欄位為選填。留空則預設使用英文文本。",
+      "serviceNameKoreanLabel": "服務名稱 (韓文)",
+      "serviceNameKoreanPlaceholder": "例如：韓文服務名稱",
+      "serviceDescriptionKoreanLabel": "服務描述 (韓文)",
+      "serviceDescriptionKoreanPlaceholder": "輸入韓文描述...",
+      "serviceNameTraditionalChineseLabel": "服務名稱 (繁體中文)",
+      "serviceNameTraditionalChinesePlaceholder": "例如：繁體中文服務名稱",
+      "serviceDescriptionTraditionalChineseLabel": "服務描述 (繁體中文)",
+      "serviceDescriptionTraditionalChinesePlaceholder": "輸入繁體中文描述...",
+      "updateService": "更新服務",
+      "createService": "建立服務"
+    },
+    "toast": {
+      "itemUpdated": "項目已更新",
+      "itemCreated": "項目已建立",
+      "failedToSaveItem": "儲存項目失敗",
+      "saved": "已儲存",
+      "layoutUpdated": "佈局內容已更新。",
+      "failedToSaveLayout": "儲存佈局失敗",
+      "itemDeleted": "項目已刪除",
+      "failedToDeleteItem": "刪除項目失敗",
+      "sent": "已發送",
+      "quotationSent": "報價單已發送到 {{email}}",
+      "failedToSendQuotation": "發送報價單失敗"
+    },
+    "confirm": {
+      "deleteService": "確定要刪除此服務嗎？"
+    },
+    "alert": {
+      "selectAtLeastOneService": "請至少選擇一項服務。"
+    },
+    "history": {
+      "toast": {
+        "failedToLoadHistory": "無法載入歷史紀錄"
+      },
+      "searchPlaceholder": "搜尋客戶、電郵、報價編號",
+      "filterByCreatorPlaceholder": "按建立者過濾",
+      "sort": {
+        "newestFirst": "最新優先",
+        "oldestFirst": "最早優先",
+        "highestValue": "金額最高優先"
+      },
+      "columns": {
+        "quoteNumber": "報價編號",
+        "date": "日期",
+        "client": "客戶",
+        "creator": "建立者",
+        "total": "總計",
+        "status": "狀態",
+        "action": "操作"
+      },
+      "loading": "載入中...",
+      "noQuotesFound": "找不到報價。",
+      "anonymous": "匿名",
+      "statusValues": {
+        "approved": "已批准",
+        "paid": "已付款",
+        "rejected": "已拒絕",
+        "sent": "已發送",
+        "pending": "待處理"
+      },
+      "viewPrint": "查看 / 列印"
+    }
+  },
   "service": {
     "grandTotal": "總計",
     "note": "政府費用為法定且強制性的。您可以切換可選服務以自定義您的方案。",

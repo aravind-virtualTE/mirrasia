@@ -1,655 +1,758 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  Plus,
-  Trash2,
-  Edit2,
-  Save,
-  X,
-  FileText,
-  Settings,
+  ArrowLeft,
+  CheckCircle2,
   ChevronRight,
   Download,
-  Mail,
-  CheckCircle2,
-  ArrowLeft,
-  Search,
-  Package,
+  Edit2,
+  FileText,
   History,
-  User,
-  Filter
+  Mail,
+  Package,
+  Plus,
+  Save,
+  Search,
+  Settings,
+  Trash2,
+  X,
 } from 'lucide-react';
 import {
-  getInvoiceBillableData,
-  saveInvoiceBillableData,
+  BillableItem,
+  QuoteLanguage,
+  QuoteLayout,
   delInvoiceBillableData,
-  BillableItem
+  getInvoiceBillableData,
+  getQuoteLayoutData,
+  saveInvoiceBillableData,
+  saveQuoteLayoutData,
 } from '../InvoiceManager/invoiceM';
-import { updateReqForEnquiry, getRedQuoteData } from '@/pages/dashboard/Admin/ReqForQuote/rfq';
+import { updateReqForEnquiry } from '@/pages/dashboard/Admin/ReqForQuote/rfq';
 import { toast } from '@/hooks/use-toast';
 
-// --- API Service Layer Removed in favor of imports ---
+import {
+  DEFAULT_LAYOUT,
+  LayoutForm,
+  cloneLayout,
+  normalizeLanguage,
+  mergeLayout,
+  getItemText,
+  layoutToForm,
+  formToLayout,
+} from './utils';
+import InvoiceLayout from './InvoiceLayout';
+import HistoryView from './HistoryView';
 
-// --- Mock Data from your prompt for initial state ---
-const INITIAL_ITEMS = [
-  {
-    "_id": "d78bc7d5-95f9-4006-8a9c-a820ff07e89d",
-    "title": "Seychelles IBC Incorporation",
-    "description": "1. Corporate name reservation and availability check service\n2. Preparation of Articles of Association (M&A)...",
-    "price": 2850
-  },
-  {
-    "_id": "caef6528-f456-4871-ba4c-e797045d5ed6",
-    "title": "Accounting and Tax Management Package Service",
-    "description": "* For cases with 20 or fewer transactions...\n* Service fee: US$ 400/month X 12 months (Pre-billed)",
-    "price": 4800
-  },
-  {
-    "_id": "ddd27297-8966-470a-9336-52d69b92ca40",
-    "title": "EMI (Electronic Money Institution) Account Opening Support",
-    "description": "EMI account opening support service (Mercury, Wise, or Airwallex)",
-    "price": 400
-  }
-];
+type LocaleField = 'title' | 'description';
 
-// --- Sub-Components ---
-
-const ItemCard = ({ item, onEdit, onDelete }: { item: BillableItem, onEdit: any, onDelete: any }) => (
-  <div className="bg-card border border-border rounded-lg p-4 hover:shadow-md transition-shadow group">
-    <div className="flex justify-between items-start mb-2 gap-2">
-      <h3 className="font-bold text-foreground line-clamp-1">{item.title}</h3>
-      <div className="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-        <button onClick={() => onEdit(item)} className="p-1 text-primary hover:bg-primary/10 rounded"><Edit2 size={16} /></button>
-        <button onClick={() => onDelete(item._id)} className="p-1 text-destructive hover:bg-destructive/10 rounded"><Trash2 size={16} /></button>
-      </div>
-    </div>
-    <p className="text-sm text-muted-foreground line-clamp-2 mb-3 h-10">{item.description}</p>
-    <div className="flex justify-between items-center pt-3 border-t border-border">
-      <span className="text-xs font-semibold uppercase text-muted-foreground">Price</span>
-      <span className="text-lg font-bold text-primary">${item.price}</span>
-    </div>
-  </div>
-);
-
-const InvoiceLayout = ({ data, items, selectedIds }: { data: any, items: BillableItem[], selectedIds: string[] }) => {
-  const selectedItems = items.filter(i => selectedIds.includes(i._id || ''));
-  const subtotal = selectedItems.reduce((acc, curr) => acc + (curr.price || 0), 0);
-  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
-  return (
-    <div className="bg-card shadow-2xl rounded-2xl w-full max-w-4xl mx-auto p-4 sm:p-8 lg:p-12 border border-border text-foreground print:p-0 print:shadow-none" id="invoice-capture">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start gap-6 border-b-2 border-border pb-8 mb-8">
-        <div>
-          <h1 className="text-4xl font-black text-foreground tracking-tighter mb-2 italic">MIRR ASIA</h1>
-          <div className="text-xs leading-relaxed text-muted-foreground uppercase tracking-wider">
-            MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED<br />
-            WORKSHOP UNIT B50 & B58, 2/F, 36-40 Tai Lin Pai Road<br />
-            KWAI CHUNG, N.T. Hong Kong<br />
-            Email: mirrasia@gmail.com | Phone: +8225436187
-          </div>
-        </div>
-        <div className="text-right">
-          <div className="bg-primary text-primary-foreground px-4 py-1 text-xs font-bold mb-4 inline-block">DRAFT QUOTE</div>
-          <div className="text-sm">
-            <p><span className="font-bold">Quote #:</span> 2026{Math.floor(Math.random() * 10000)}</p>
-            <p><span className="font-bold">Date:</span> {date}</p>
-            <p><span className="font-bold">Expires:</span> 30 Days from issue</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Client Info */}
-      <div className="mb-10">
-        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Recipient</h3>
-        <p className="font-bold text-lg">{data.personName || 'Valued Client'}</p>
-        <p className="text-muted-foreground">{data.email}</p>
-        <p className="text-muted-foreground italic mt-1 font-medium">"{data.productDescription || 'Service Inquiry'}"</p>
-      </div>
-
-      {/* Table */}
-      <div className="w-full overflow-x-auto">
-        <table className="w-full mb-10 min-w-[640px]">
-          <thead>
-            <tr className="border-b-2 border-border text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              <th className="py-3 px-2 w-16 text-center">Qty</th>
-              <th className="py-3 px-4">Product or Service</th>
-              <th className="py-3 px-4 text-right">Unit Price</th>
-              <th className="py-3 px-4 text-right">Line Total</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {selectedItems.map((item, idx) => (
-              <tr key={idx} className="group">
-                <td className="py-5 px-2 text-center align-top font-medium">1</td>
-                <td className="py-5 px-4">
-                  <div className="font-bold text-foreground mb-1">{item.title}</div>
-                  <div className="text-xs text-muted-foreground whitespace-pre-wrap leading-relaxed">{item.description}</div>
-                </td>
-                <td className="py-5 px-4 text-right align-top font-medium">${(item.price || 0).toFixed(2)}</td>
-                <td className="py-5 px-4 text-right align-top font-bold text-foreground">${(item.price || 0).toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr className="border-t-2 border-border">
-              <td colSpan={3} className="py-6 px-4 text-right font-bold text-lg">Total Price:</td>
-              <td className="py-6 px-4 text-right font-black text-2xl text-foreground">${subtotal.toFixed(2)}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-
-      {/* Footer Notes */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 border-t border-border pt-8 text-[10px] leading-relaxed text-muted-foreground">
-        <div>
-          <h4 className="font-bold text-foreground uppercase mb-2">Notes</h4>
-          <p>별도비용: 회계/세무 (예상견적 차트 참조)</p>
-          <p className="mt-2">This is a digital quote generated via Mirrasia App.</p>
-        </div>
-        <div>
-          <h4 className="font-bold text-foreground uppercase mb-2">Legal Terms</h4>
-          <p>결제방법 : 해외송금 혹은 카드결제(카드결제시 수수료3.5% 추가)</p>
-          <p className="mt-1 font-bold">주의사항:</p>
-          <ol className="list-decimal pl-4">
-            <li>업무 진행 전 KYC/Due Diligence 를 진행하며, 당사에서 수임이 확정되어야 서비스가 가능합니다.</li>
-            <li>라이선스를 요할 수 있습니다 (SFC 규제 대상).</li>
-            <li>가상자산 업종 등은 계좌개설이 어려울 수 있습니다.</li>
-          </ol>
-        </div>
-      </div>
-    </div>
-  );
+type LocaleInputConfig = {
+  lang: QuoteLanguage;
+  required?: boolean;
+  nameField: string;
+  descriptionField: string;
+  nameLabelKey: string;
+  namePlaceholderKey: string;
+  descriptionLabelKey: string;
+  descriptionPlaceholderKey: string;
 };
 
-// --- Main Application ---
+const LOCALE_INPUT_CONFIGS: LocaleInputConfig[] = [
+  {
+    lang: 'en',
+    required: true,
+    nameField: 'name_en',
+    descriptionField: 'description_en',
+    nameLabelKey: 'quoteService.modal.serviceNameEnglishLabel',
+    namePlaceholderKey: 'quoteService.modal.serviceNameEnglishPlaceholder',
+    descriptionLabelKey: 'quoteService.modal.serviceDescriptionEnglishLabel',
+    descriptionPlaceholderKey: 'quoteService.modal.serviceDescriptionEnglishPlaceholder',
+  },
+  {
+    lang: 'ko',
+    nameField: 'name_ko',
+    descriptionField: 'description_ko',
+    nameLabelKey: 'quoteService.modal.serviceNameKoreanLabel',
+    namePlaceholderKey: 'quoteService.modal.serviceNameKoreanPlaceholder',
+    descriptionLabelKey: 'quoteService.modal.serviceDescriptionKoreanLabel',
+    descriptionPlaceholderKey: 'quoteService.modal.serviceDescriptionKoreanPlaceholder',
+  },
+  {
+    lang: 'zhTW',
+    nameField: 'name_zhTW',
+    descriptionField: 'description_zhTW',
+    nameLabelKey: 'quoteService.modal.serviceNameTraditionalChineseLabel',
+    namePlaceholderKey: 'quoteService.modal.serviceNameTraditionalChinesePlaceholder',
+    descriptionLabelKey: 'quoteService.modal.serviceDescriptionTraditionalChineseLabel',
+    descriptionPlaceholderKey: 'quoteService.modal.serviceDescriptionTraditionalChinesePlaceholder',
+  },
+];
+
+const getLocalizationDefaultValue = (
+  item: BillableItem | null,
+  language: QuoteLanguage,
+  field: LocaleField,
+) => {
+  const localizedValue = item?.localizations?.[language]?.[field];
+  if (localizedValue != null && String(localizedValue).trim()) {
+    return String(localizedValue);
+  }
+
+  if (language === 'en') {
+    return String(field === 'title' ? item?.title || '' : item?.description || '');
+  }
+
+  return '';
+};
 
 export default function QuoteEnquiry() {
-  // --- Role Detection ---
-  const user = useMemo(() => {
-    try {
-      const stored = localStorage.getItem('user');
-      return stored ? JSON.parse(stored) : null;
-    } catch { return null; }
-  }, []);
+  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
+  const isAdmin = user?.role !== "user";
 
+  const [view, setView] = useState<'manager' | 'customer' | 'invoice' | 'history' | 'layout_settings'>(isAdmin ? 'manager' : 'customer');
 
-  const userRole = user?.role || 'user';
-  const isAdmin = ['admin', 'master'].includes(userRole);
+  const { t, i18n } = useTranslation();
+  const selectedLanguage = useMemo(() => normalizeLanguage(i18n.language), [i18n.language]);
 
-  const [view, setView] = useState(isAdmin ? 'manager' : 'customer'); // 'manager' | 'customer' | 'invoice' | 'history'
   const [items, setItems] = useState<BillableItem[]>([]);
+  const [invoiceItemsOverride, setInvoiceItemsOverride] = useState<BillableItem[] | null>(null);
+  const [layoutOverride, setLayoutOverride] = useState<QuoteLayout | null>(null);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState('');
 
-  // Item Editor State
-  const [editingItem, setEditingItem] = useState<BillableItem | null>(null);
+  const [layout, setLayout] = useState<QuoteLayout>(cloneLayout(DEFAULT_LAYOUT));
+  const [layoutForm, setLayoutForm] = useState<LayoutForm>(layoutToForm(DEFAULT_LAYOUT));
+  const [layoutLoading, setLayoutLoading] = useState(false);
+  const [layoutSaving, setLayoutSaving] = useState(false);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<BillableItem | null>(null);
+  const [customerSearch, setCustomerSearch] = useState('');
+  const [activeTab, setActiveTab] = useState<QuoteLanguage>(selectedLanguage);
 
-  // Form State
-  const [formData, setFormData] = useState({
+  // Sync activeTab with global language when it changes
+  useEffect(() => {
+    setActiveTab(selectedLanguage);
+  }, [selectedLanguage]);
+
+  const [quote, setQuote] = useState({
     email: '',
     personName: '',
     productDescription: '',
-    selectedServiceIds: [] as string[]
+    selectedServiceIds: [] as string[],
+    quoteNumber: '',
+    quoteDate: '',
   });
 
-  // Filtered items based on search
-  const filteredItems = useMemo(() => {
-    if (!searchQuery.trim()) return items;
-    const q = searchQuery.toLowerCase();
-    return items.filter(i =>
-      i.title?.toLowerCase().includes(q) ||
-      i.description?.toLowerCase().includes(q)
-    );
-  }, [items, searchQuery]);
+  const activeLayout = layoutOverride || layout;
+  const invoiceItems = invoiceItemsOverride || items;
 
-  useEffect(() => {
-    loadItems();
-  }, []);
+  const clearPreviewOverrides = () => {
+    setInvoiceItemsOverride(null);
+    setLayoutOverride(null);
+  };
+
+  const filteredItems = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((item) => {
+      const text = getItemText(item, selectedLanguage, t('quoteService.catalog.untitledService'));
+      return (
+        text.title.toLowerCase().includes(q) ||
+        text.description.toLowerCase().includes(q) ||
+        String(item.title || '').toLowerCase().includes(q) ||
+        String(item.description || '').toLowerCase().includes(q)
+      );
+    });
+  }, [items, search, selectedLanguage, t]);
+
+  const customerFilteredItems = useMemo(() => {
+    const q = customerSearch.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((item) => {
+      const text = getItemText(item, selectedLanguage, t('quoteService.catalog.untitledService'));
+      return (
+        text.title.toLowerCase().includes(q) ||
+        text.description.toLowerCase().includes(q) ||
+        String(item.title || '').toLowerCase().includes(q) ||
+        String(item.description || '').toLowerCase().includes(q)
+      );
+    });
+  }, [items, customerSearch, selectedLanguage, t]);
+
+  const customerTotal = useMemo(() => {
+    const selected = items.filter((item) => quote.selectedServiceIds.includes(item._id || ''));
+    return selected.reduce((sum, item) => sum + Number(item.price || 0), 0);
+  }, [items, quote.selectedServiceIds]);
 
   const loadItems = async () => {
     setLoading(true);
     try {
-      const res = await getInvoiceBillableData("billableItems");
+      const res = await getInvoiceBillableData('billableItems');
       setItems(res.result || []);
-    } catch (err) {
-      console.error("Failed to load items", err);
-      setItems(INITIAL_ITEMS as any);
+    } catch (error) {
+      console.error(error);
+      setItems([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSaveItem = async (e: any) => {
-    e.preventDefault();
-    const form = e.target;
+  const loadLayout = async (language: QuoteLanguage) => {
+    setLayoutLoading(true);
+    try {
+      const res = await getQuoteLayoutData(language);
+      const nextLayout = mergeLayout(res?.result?.layout);
+      setLayout(nextLayout);
+      setLayoutForm(layoutToForm(nextLayout));
+    } catch (error) {
+      console.error(error);
+      const fallback = cloneLayout(DEFAULT_LAYOUT);
+      setLayout(fallback);
+      setLayoutForm(layoutToForm(fallback));
+    } finally {
+      setLayoutLoading(false);
+    }
+  };
 
-    const itemData: any = {
-      title: form.name.value,
-      price: parseFloat(form.price.value),
-      description: form.description.value,
-      type: "billableItems" as const
-    };
+  useEffect(() => {
+    loadItems();
+  }, []);
+
+  useEffect(() => {
+    loadLayout(selectedLanguage);
+  }, [selectedLanguage]);
+
+  const saveItem = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const price = Number((form.elements.namedItem('price') as HTMLInputElement)?.value || 0);
+
+    let enTitle = '';
+    let enDescription = '';
+    const localizations: Partial<Record<QuoteLanguage, { title: string; description: string } | null>> = {};
+
+    LOCALE_INPUT_CONFIGS.forEach((config) => {
+      const title = String((form.elements.namedItem(config.nameField) as HTMLInputElement | null)?.value || '').trim();
+      const description = String((form.elements.namedItem(config.descriptionField) as HTMLTextAreaElement | null)?.value || '').trim();
+
+      if (config.lang === 'en') {
+        enTitle = title;
+        enDescription = description;
+        localizations.en = { title, description };
+        return;
+      }
+
+      if (title || description) {
+        localizations[config.lang] = { title, description };
+        return;
+      }
+
+      if (editingItem?.localizations?.[config.lang]) {
+        localizations[config.lang] = null;
+      }
+    });
 
     try {
-      await saveInvoiceBillableData(itemData, editingItem?._id || '');
-      toast({ title: "Success", description: editingItem ? "Item updated" : "Item created" });
-      loadItems();
+      await saveInvoiceBillableData({
+        title: enTitle,
+        description: enDescription,
+        price,
+        type: 'billableItems',
+        localizations,
+      }, editingItem?._id || '');
+
+      toast({
+        title: t('quoteService.common.success'),
+        description: editingItem ? t('quoteService.toast.itemUpdated') : t('quoteService.toast.itemCreated'),
+      });
       setIsModalOpen(false);
       setEditingItem(null);
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to save item", variant: "destructive" });
+      loadItems();
+    } catch (error) {
+      console.log("error", error)
+      toast({ title: t('quoteService.common.error'), description: t('quoteService.toast.failedToSaveItem'), variant: 'destructive' });
     }
   };
 
-  const handleDeleteItem = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
-      try {
-        await delInvoiceBillableData(id);
-        toast({ title: "Success", description: "Item deleted" });
-        loadItems();
-      } catch (err) {
-        toast({ title: "Error", description: "Failed to delete item", variant: "destructive" });
-      }
+  const saveLayout = async () => {
+    setLayoutSaving(true);
+    try {
+      const payloadLayout = formToLayout(layoutForm, layout);
+      const res = await saveQuoteLayoutData({
+        language: selectedLanguage,
+        layout: payloadLayout,
+        updatedBy: user?._id || user?.id || '',
+      });
+      const merged = mergeLayout(res?.result?.layout || payloadLayout);
+      setLayout(merged);
+      setLayoutForm(layoutToForm(merged));
+      toast({ title: t('quoteService.toast.saved'), description: t('quoteService.toast.layoutUpdated') });
+    } catch (error) {
+      console.log("error", error)
+      toast({ title: t('quoteService.common.error'), description: t('quoteService.toast.failedToSaveLayout'), variant: 'destructive' });
+    } finally {
+      setLayoutSaving(false);
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const deleteItem = async (id: string) => {
+    if (!window.confirm(t('quoteService.confirm.deleteService'))) return;
+    try {
+      await delInvoiceBillableData(id);
+      toast({ title: t('quoteService.common.success'), description: t('quoteService.toast.itemDeleted') });
+      loadItems();
+    } catch (error) {
+      console.log("error", error)
+      toast({ title: t('quoteService.common.error'), description: t('quoteService.toast.failedToDeleteItem'), variant: 'destructive' });
+    }
+  };
+
+  const submitQuoteForm = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.selectedServiceIds.length === 0) {
-      alert("Please select at least one service.");
+    if (!quote.selectedServiceIds.length) {
+      alert(t('quoteService.alert.selectAtLeastOneService'));
       return;
     }
+    clearPreviewOverrides();
+    setQuote((prev) => ({
+      ...prev,
+      quoteNumber: `DRAFT-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      quoteDate: new Date().toISOString(),
+    }));
     setView('invoice');
   };
 
   const toggleService = (id: string) => {
-    setFormData(prev => ({
+    setQuote((prev) => ({
       ...prev,
       selectedServiceIds: prev.selectedServiceIds.includes(id)
-        ? prev.selectedServiceIds.filter(sid => sid !== id)
-        : [...prev.selectedServiceIds, id]
+        ? prev.selectedServiceIds.filter((x) => x !== id)
+        : [...prev.selectedServiceIds, id],
     }));
   };
 
+  const sendQuote = async () => {
+    try {
+      const selected = invoiceItems.filter((item) => quote.selectedServiceIds.includes(item._id || ''));
+      const payloadItems = selected.map((item) => {
+        const text = getItemText(item, selectedLanguage, t('quoteService.catalog.untitledService'));
+        return {
+          title: text.title,
+          description: text.description,
+          price: Number(item.price || 0),
+          localizations: item.localizations || {},
+        };
+      });
+
+      await updateReqForEnquiry({
+        clientName: quote.personName,
+        clientEmail: quote.email,
+        email: quote.email,
+        personName: quote.personName,
+        description: quote.productDescription,
+        language: selectedLanguage,
+        layoutSnapshot: activeLayout,
+        quoteNumber: quote.quoteNumber,
+        quoteDate: quote.quoteDate,
+        items: payloadItems,
+        total: payloadItems.reduce((sum, item) => sum + Number(item.price || 0), 0),
+        status: 'pending',
+        userId: user?._id || user?.id || '',
+        userName: user?.fullName || user?.name || user?.username || user?.email || '',
+      });
+
+      toast({
+        title: t('quoteService.toast.sent'),
+        description: t('quoteService.toast.quotationSent', { email: quote.email }),
+      });
+      clearPreviewOverrides();
+      setView(isAdmin ? 'history' : 'customer');
+    } catch (error) {
+      console.log("error", error)
+      toast({ title: t('quoteService.common.error'), description: t('quoteService.toast.failedToSendQuotation'), variant: 'destructive' });
+    }
+  };
+
   return (
-    <div className="h-screen flex flex-col bg-background font-sans text-foreground">
-      {/* Navigation Header */}
-      <nav className="bg-card border-b border-border sticky top-0 z-10 px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 shadow-sm shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="bg-primary text-primary-foreground p-1.5 rounded font-black text-xl italic">MA</div>
-          <span className="font-bold tracking-tight text-lg">MIRRASIA <span className="text-muted-foreground font-medium">QUOTES</span></span>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-1 bg-muted p-1 rounded-lg w-full sm:w-auto">
-          {isAdmin && (
-            <>
-              <button
-                onClick={() => setView('manager')}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all flex-1 sm:flex-none ${view === 'manager' ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-              >
-                <Settings size={16} className="inline mr-2" />
-                Manage Catalog
+    <div className="h-screen flex flex-col bg-background text-foreground">
+      <nav className="bg-card border-b border-border px-4 py-3 sticky top-0 z-10">
+        <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
+          <div className="flex items-center gap-2">
+            <div className="bg-primary text-primary-foreground rounded px-2 py-1 font-black italic">MA</div>
+            <p className="font-bold tracking-tight">{t('quoteService.nav.title')}</p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2 sm:items-center">          
+            <div className="flex gap-1 bg-muted p-1 rounded-lg">
+              {isAdmin && (
+                <>
+                  <button className={`px-3 py-1.5 rounded text-sm ${view === 'manager' ? 'bg-card shadow-sm' : ''}`} onClick={() => { clearPreviewOverrides(); setView('manager'); }}>
+                    <Settings size={14} className="inline mr-1" />{t('quoteService.nav.manageCatalog')}
+                  </button>
+                  <button className={`px-3 py-1.5 rounded text-sm ${view === 'layout_settings' ? 'bg-card shadow-sm' : ''}`} onClick={() => { clearPreviewOverrides(); setView('layout_settings'); }}>
+                    <FileText size={14} className="inline mr-1" />{t('quoteService.nav.buildInvoiceTemplate')}
+                  </button>
+                </>
+              )}
+              <button className={`px-3 py-1.5 rounded text-sm ${view === 'history' ? 'bg-card shadow-sm' : ''}`} onClick={() => { clearPreviewOverrides(); setView('history'); }}>
+                <History size={14} className="inline mr-1" />{isAdmin ? t('quoteService.nav.quoteHistory') : t('quoteService.nav.myQuotes')}
               </button>
-              <button
-                onClick={() => setView('history')}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all flex-1 sm:flex-none ${view === 'history' ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-              >
-                <History size={16} className="inline mr-2" />
-                Quote History
+              <button className={`px-3 py-1.5 rounded text-sm ${view === 'customer' || view === 'invoice' ? 'bg-card shadow-sm' : ''}`} onClick={() => { clearPreviewOverrides(); setView('customer'); }}>
+                <FileText size={14} className="inline mr-1" />{t('quoteService.nav.createQuote')}
               </button>
-            </>
-          )}
-          <button
-            onClick={() => setView('customer')}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all flex-1 sm:flex-none ${view === 'customer' || view === 'invoice' ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-          >
-            <FileText size={16} className="inline mr-2" />
-            Create Quote
-          </button>
+            </div>
+          </div>
         </div>
       </nav>
 
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto p-4 sm:p-6">
-
-          {/* VIEW 1: ITEM MANAGEMENT */}
-          {view === 'manager' && isAdmin && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+        {view === 'manager' && isAdmin && (
+          <div className="space-y-8">
+            <section>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-foreground">Service Catalog</h1>
-                  <p className="text-muted-foreground">Define the products and services that will appear on client forms.</p>
+                  <h1 className="text-2xl font-bold">{t('quoteService.catalog.title')}</h1>
+                  <p className="text-sm text-muted-foreground">{t('quoteService.catalog.subtitle')}</p>
                 </div>
-                <button
-                  onClick={() => { setEditingItem(null); setIsModalOpen(true); }}
-                  className="bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg"
-                >
-                  <Plus size={20} />
-                  Add New Service
+                <button className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-bold" onClick={() => { setEditingItem(null); setIsModalOpen(true); }}>
+                  <Plus size={16} className="inline mr-1" />{t('quoteService.catalog.addService')}
                 </button>
               </div>
 
-              {/* Search & Stats Bar */}
-              <div className="flex flex-col sm:flex-row gap-3 mb-6">
+              <div className="flex gap-3 mb-4">
                 <div className="relative flex-1">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Search services..."
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                    className="w-full border border-input bg-background text-foreground rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-all"
-                  />
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <input className="w-full border border-input rounded-lg pl-9 pr-3 py-2 bg-background" placeholder={t('quoteService.catalog.searchPlaceholder')} value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-muted rounded-lg">
-                  <Package size={16} className="text-muted-foreground" />
-                  <span className="text-sm font-medium text-muted-foreground">{items.length} services</span>
+                <div className="px-3 py-2 rounded-lg bg-muted text-sm text-muted-foreground flex items-center gap-2">
+                  <Package size={14} /> {t('quoteService.catalog.servicesCount', { count: items.length })}
                 </div>
               </div>
 
               {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 opacity-50">
-                  {[1, 2, 3].map(i => <div key={i} className="h-48 bg-card border border-border rounded-lg animate-pulse"></div>)}
-                </div>
-              ) : filteredItems.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 text-center">
-                  <Package size={48} className="text-muted-foreground/30 mb-4" />
-                  <p className="text-lg font-semibold text-muted-foreground">No services found</p>
-                  <p className="text-sm text-muted-foreground/70">{searchQuery ? 'Try a different search term' : 'Add your first service to get started'}</p>
-                </div>
+                <p className="text-muted-foreground">{t('quoteService.catalog.loadingServices')}</p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredItems.map((item: BillableItem) => (
-                    <ItemCard
-                      key={item._id}
-                      item={item}
-                      onEdit={(item: any) => { setEditingItem(item); setIsModalOpen(true); }}
-                      onDelete={handleDeleteItem}
-                    />
-                  ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredItems.map((item) => {
+                    const text = getItemText(item, selectedLanguage, t('quoteService.catalog.untitledService'));
+                    return (
+                      <div key={item._id} className="border border-border rounded-lg p-4 bg-card">
+                        <div className="flex justify-between gap-2">
+                          <h3 className="font-bold line-clamp-1">{text.title}</h3>
+                          <div className="flex gap-2">
+                            <button onClick={() => { setEditingItem(item); setIsModalOpen(true); }}><Edit2 size={14} /></button>
+                            <button onClick={() => item._id && deleteItem(item._id)}><Trash2 size={14} /></button>
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground line-clamp-2 mt-2">{text.description}</p>
+                        <p className="mt-3 font-bold text-primary">${item.price}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
-            </div>
-          )}
+            </section>
+          </div>
+        )}
 
-          {/* VIEW 2: CUSTOMER REQUEST FORM */}
-          {view === 'customer' && (
-            <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="mb-8 text-center">
-                <h1 className="text-3xl font-bold text-foreground">Request for Quotation</h1>
-                <p className="text-muted-foreground mt-2">Please provide your details and select the services you require.</p>
+        {view === 'layout_settings' && isAdmin && (
+          <div className="space-y-6 max-w-5xl mx-auto">
+            <div>
+              <h1 className="text-2xl font-bold">{t('quoteService.layoutSettings.title')}</h1>
+              <p className="text-sm text-muted-foreground mt-1">{t('quoteService.layoutSettings.subtitle')}</p>
+            </div>
+
+            {layoutLoading ? (
+              <div className="p-8 text-center text-muted-foreground bg-card rounded-xl border border-border">{t('quoteService.layoutSettings.loadingLayout')}</div>
+            ) : (
+              <div className="space-y-6">
+                {/* Brand & Identity */}
+                <section className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+                  <div className="p-4 border-b border-border bg-muted/20">
+                    <h2 className="font-bold text-lg">{t('quoteService.layoutSettings.brandIdentity.title')}</h2>
+                    <p className="text-xs text-muted-foreground">{t('quoteService.layoutSettings.brandIdentity.subtitle')}</p>
+                  </div>
+                  <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-bold mb-1.5">{t('quoteService.layoutSettings.brandIdentity.companyNameLabel')}</label>
+                      <input className="w-full border border-input rounded-lg px-3 py-2 bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all" value={layoutForm.companyName} onChange={(e) => setLayoutForm((p) => ({ ...p, companyName: e.target.value }))} />
+                      <p className="text-[11px] text-muted-foreground mt-1">{t('quoteService.layoutSettings.brandIdentity.companyNameHint')}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold mb-1.5">{t('quoteService.layoutSettings.brandIdentity.headerBadgeLabel')}</label>
+                      <input className="w-full border border-input rounded-lg px-3 py-2 bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all" value={layoutForm.badgeText} onChange={(e) => setLayoutForm((p) => ({ ...p, badgeText: e.target.value }))} />
+                      <p className="text-[11px] text-muted-foreground mt-1">{t('quoteService.layoutSettings.brandIdentity.headerBadgeHint')}</p>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-bold mb-1.5">{t('quoteService.layoutSettings.brandIdentity.companyDetailsLabel')}</label>
+                      <textarea className="w-full border border-input rounded-lg px-3 py-2 bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all" rows={4} value={layoutForm.companyDetails} onChange={(e) => setLayoutForm((p) => ({ ...p, companyDetails: e.target.value }))} />
+                      <p className="text-[11px] text-muted-foreground mt-1">{t('quoteService.layoutSettings.brandIdentity.companyDetailsHint')}</p>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Terms & Conditions */}
+                <section className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+                  <div className="p-4 border-b border-border bg-muted/20">
+                    <h2 className="font-bold text-lg">{t('quoteService.layoutSettings.terms.title')}</h2>
+                    <p className="text-xs text-muted-foreground">{t('quoteService.layoutSettings.terms.subtitle')}</p>
+                  </div>
+                  <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-bold mb-1.5">{t('quoteService.layoutSettings.terms.notesTitleLabel')}</label>
+                      <input className="w-full border border-input rounded-lg px-3 py-2 bg-background" value={layoutForm.notesTitle} onChange={(e) => setLayoutForm((p) => ({ ...p, notesTitle: e.target.value }))} />
+                      <label className="block text-sm font-bold mt-4 mb-1.5">{t('quoteService.layoutSettings.terms.notesContentLabel')}</label>
+                      <textarea className="w-full border border-input rounded-lg px-3 py-2 bg-background" rows={4} value={layoutForm.notesLines} onChange={(e) => setLayoutForm((p) => ({ ...p, notesLines: e.target.value }))} />
+                      <p className="text-[11px] text-muted-foreground mt-1">{t('quoteService.layoutSettings.terms.notesHint')}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold mb-1.5">{t('quoteService.layoutSettings.terms.legalTitleLabel')}</label>
+                      <input className="w-full border border-input rounded-lg px-3 py-2 bg-background" value={layoutForm.legalTermsTitle} onChange={(e) => setLayoutForm((p) => ({ ...p, legalTermsTitle: e.target.value }))} />
+                      <label className="block text-sm font-bold mt-4 mb-1.5">{t('quoteService.layoutSettings.terms.legalContentLabel')}</label>
+                      <textarea className="w-full border border-input rounded-lg px-3 py-2 bg-background" rows={4} value={layoutForm.legalTermsLines} onChange={(e) => setLayoutForm((p) => ({ ...p, legalTermsLines: e.target.value }))} />
+                      <p className="text-[11px] text-muted-foreground mt-1">{t('quoteService.layoutSettings.terms.legalHint')}</p>
+                    </div>
+                    <div className="md:col-span-2 pt-2 border-t border-border">
+                      <label className="block text-sm font-bold mb-1.5">{t('quoteService.layoutSettings.terms.footerTextLabel')}</label>
+                      <textarea className="w-full border border-input rounded-lg px-3 py-2 bg-background text-sm" rows={2} value={layoutForm.footerText} onChange={(e) => setLayoutForm((p) => ({ ...p, footerText: e.target.value }))} />
+                      <p className="text-[11px] text-muted-foreground mt-1">{t('quoteService.layoutSettings.terms.footerHint')}</p>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Table Labels */}
+                <section className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+                  <div className="p-4 border-b border-border bg-muted/20 flex justify-between items-center">
+                    <div>
+                      <h2 className="font-bold text-lg">{t('quoteService.layoutSettings.tableLabels.title')}</h2>
+                      <p className="text-xs text-muted-foreground">{t('quoteService.layoutSettings.tableLabels.subtitle')}</p>
+                    </div>
+                    <button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-2 font-bold shadow-md transition-all active:scale-95 flex items-center gap-2" disabled={layoutSaving} onClick={saveLayout}>
+                      <Save size={16} />{layoutSaving ? t('quoteService.layoutSettings.saving') : t('quoteService.layoutSettings.saveConfiguration')}
+                    </button>
+                  </div>
+                  <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">{t('quoteService.layoutSettings.tableLabels.quotationLabel')}</label>
+                      <input className="w-full border border-input rounded-lg px-3 py-2 bg-background text-sm" value={layoutForm.quotationLabel} onChange={(e) => setLayoutForm((p) => ({ ...p, quotationLabel: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">{t('quoteService.layoutSettings.tableLabels.recipientLabel')}</label>
+                      <input className="w-full border border-input rounded-lg px-3 py-2 bg-background text-sm" value={layoutForm.recipientLabel} onChange={(e) => setLayoutForm((p) => ({ ...p, recipientLabel: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">{t('quoteService.layoutSettings.tableLabels.totalPriceLabel')}</label>
+                      <input className="w-full border border-input rounded-lg px-3 py-2 bg-background text-sm" value={layoutForm.totalLabel} onChange={(e) => setLayoutForm((p) => ({ ...p, totalLabel: e.target.value }))} />
+                    </div>
+                  </div>
+                </section>
+              </div>
+            )}
+          </div>
+        )
+        }
+
+        {
+          view === 'history' && <HistoryView
+            isAdmin={isAdmin}
+            currentUserId={user?._id || user?.id}
+            currentUserEmail={user?.email}
+            onViewQuote={(row) => {
+              const lang = normalizeLanguage(row.language);
+              i18n.changeLanguage(lang);
+              setLayoutOverride(mergeLayout(row.layoutSnapshot));
+              const mapped: BillableItem[] = (row.items || []).map((item: any, idx: number) => ({
+                _id: `history-${idx}`,
+                title: item.title || '',
+                description: item.description || '',
+                price: Number(item.price) || 0,
+                type: 'billableItems',
+                localizations: item.localizations || { [lang]: { title: item.title || '', description: item.description || '' } },
+              }));
+              setInvoiceItemsOverride(mapped);
+              setQuote({
+                email: row.clientEmail || row.email || '',
+                personName: row.clientName || row.personName || '',
+                productDescription: row.description || row.productDescription || '',
+                selectedServiceIds: mapped.map((m) => m._id || ''),
+                quoteNumber: row.quoteNumber || '',
+                quoteDate: row.createdAt || new Date().toISOString(),
+              });
+              setView('invoice');
+            }} />
+        }
+
+        {
+          view === 'customer' && (
+            <div className="max-width mx-auto">
+              <div className="text-center mb-6">
+                <h1 className="text-3xl font-bold">{t('quoteService.customer.title')}</h1>
+                <p className="text-muted-foreground mt-1">{t('quoteService.customer.subtitle')}</p>
               </div>
 
-              <form onSubmit={handleFormSubmit} className="space-y-6">
-                <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-                  <div className="p-4 sm:p-6 border-b border-border bg-muted/30">
-                    <h2 className="font-bold flex items-center gap-2 text-foreground">
-                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-muted text-muted-foreground text-xs font-bold">1</span>
-                      Contact Information
-                    </h2>
-                  </div>
-                  <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-semibold text-muted-foreground">Your Name</label>
-                      <input
-                        required
-                        type="text"
-                        className="w-full border border-input bg-background text-foreground rounded-lg px-4 py-2 focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-all"
-                        placeholder="John Doe"
-                        value={formData.personName}
-                        onChange={e => setFormData({ ...formData, personName: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-semibold text-muted-foreground">Email Address</label>
-                      <input
-                        required
-                        type="email"
-                        className="w-full border border-input bg-background text-foreground rounded-lg px-4 py-2 focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-all"
-                        placeholder="john@example.com"
-                        value={formData.email}
-                        onChange={e => setFormData({ ...formData, email: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2 md:col-span-2">
-                      <label className="text-sm font-semibold text-muted-foreground">Business Context / Product Description</label>
-                      <textarea
-                        required
-                        rows={3}
-                        className="w-full border border-input bg-background text-foreground rounded-lg px-4 py-2 focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-all"
-                        placeholder="Describe your business or specific needs..."
-                        value={formData.productDescription}
-                        onChange={e => setFormData({ ...formData, productDescription: e.target.value })}
-                      />
-                    </div>
+              <form onSubmit={submitQuoteForm} className="space-y-5">
+                <div className="border border-border rounded-xl bg-card overflow-hidden">
+                  <div className="p-4 border-b border-border bg-muted/30 font-bold">{t('quoteService.customer.contactSectionTitle')}</div>
+                  <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input className="border border-input rounded-lg px-3 py-2 bg-background" placeholder={t('quoteService.customer.namePlaceholder')} required value={quote.personName} onChange={(e) => setQuote((p) => ({ ...p, personName: e.target.value }))} />
+                    <input className="border border-input rounded-lg px-3 py-2 bg-background" placeholder={t('quoteService.customer.emailPlaceholder')} type="email" required value={quote.email} onChange={(e) => setQuote((p) => ({ ...p, email: e.target.value }))} />
+                    <textarea className="border border-input rounded-lg px-3 py-2 bg-background md:col-span-2" rows={3} placeholder={t('quoteService.customer.descriptionPlaceholder')} required value={quote.productDescription} onChange={(e) => setQuote((p) => ({ ...p, productDescription: e.target.value }))} />
                   </div>
                 </div>
 
-                <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-                  <div className="p-4 sm:p-6 border-b border-border bg-muted/30 flex items-center justify-between">
-                    <h2 className="font-bold flex items-center gap-2 text-foreground">
-                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-muted text-muted-foreground text-xs font-bold">2</span>
-                      Select Services
-                    </h2>
-                    {formData.selectedServiceIds.length > 0 && (
-                      <span className="text-xs font-semibold px-2.5 py-1 bg-primary/10 text-primary rounded-full">
-                        {formData.selectedServiceIds.length} selected
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-4 grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto">
-                    {items.map((item: BillableItem) => (
-                      <div
-                        key={item._id}
-                        onClick={() => toggleService(item._id || '')}
-                        className={`flex items-start gap-4 p-4 border rounded-xl cursor-pointer transition-all ${formData.selectedServiceIds.includes(item._id || '')
-                          ? 'border-primary/50 bg-primary/5 shadow-sm'
-                          : 'border-border hover:border-muted-foreground/40'
-                          }`}
-                      >
-                        <div className={`mt-1 flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${formData.selectedServiceIds.includes(item._id || '')
-                          ? 'bg-primary border-primary text-primary-foreground'
-                          : 'border-muted-foreground/30 text-transparent'
-                          }`}>
-                          <CheckCircle2 size={16} />
-                        </div>
-                        <div className="flex-grow">
-                          <div className="flex justify-between items-center mb-1">
-                            <h4 className="font-bold text-foreground">{item.title}</h4>
-                            <span className="font-bold text-foreground">${item.price}</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>
-                        </div>
+                <div className="border border-border rounded-xl bg-card overflow-hidden">
+                  <div className="p-4 border-b border-border bg-muted/30 font-bold flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                    <span>{t('quoteService.customer.servicesSectionTitle')}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="relative flex-1 sm:w-[250px]">
+                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <input
+                          className="w-full border border-input rounded-full pl-8 pr-3 py-1 bg-background text-sm font-normal"
+                          placeholder={t('quoteService.customer.searchPlaceholder')}
+                          value={customerSearch}
+                          onChange={(e) => setCustomerSearch(e.target.value)}
+                        />
                       </div>
-                    ))}
+                      <span className="text-xs text-primary font-bold bg-primary/10 px-2 py-1 rounded-full whitespace-nowrap">{t('quoteService.customer.selectedCount', { count: quote.selectedServiceIds.length })}</span>
+                    </div>
+                  </div>
+                  <div className="p-4 space-y-3 max-h-[420px] overflow-y-auto">
+                    {customerFilteredItems.map((item) => {
+                      const text = getItemText(item, selectedLanguage, t('quoteService.catalog.untitledService'));
+                      const active = quote.selectedServiceIds.includes(item._id || '');
+                      return (
+                        <button
+                          type="button"
+                          key={item._id}
+                          className={`w-full text-left border rounded-xl p-3 transition ${active ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground/40'}`}
+                          onClick={() => toggleService(item._id || '')}
+                        >
+                          <div className="flex gap-3">
+                            <div className={`w-6 h-6 rounded-full border-2 mt-1 flex items-center justify-center ${active ? 'bg-primary border-primary text-primary-foreground' : 'border-muted-foreground/30 text-transparent'}`}><CheckCircle2 size={14} /></div>
+                            <div className="flex-1">
+                              <div className="flex justify-between gap-3">
+                                <p className="font-bold">{text.title}</p>
+                                <p className="font-bold">${item.price}</p>
+                              </div>
+                              <p className="text-xs text-muted-foreground line-clamp-2 mt-1">{text.description}</p>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
-                <div className="flex justify-end pt-4">
-                  <button
-                    type="submit"
-                    className="bg-primary text-primary-foreground px-10 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg group w-full sm:w-auto justify-center"
-                  >
-                    Generate Professional Quote
-                    <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                <div className="sticky bottom-0 left-0 right-0 bg-card border-t border-border p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-xl z-20 flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                  <div>
+                    <p className="text-sm text-muted-foreground">{t('quoteService.customer.totalEstimate')}</p>
+                    <p className="text-2xl font-black">${customerTotal.toFixed(2)}</p>
+                  </div>
+                  <button type="submit" className="bg-primary text-primary-foreground rounded-xl px-8 py-3 font-bold w-full sm:w-auto shadow-lg hover:shadow-xl transition-all">
+                    {t('quoteService.customer.generateQuote')} <ChevronRight size={16} className="inline ml-1" />
                   </button>
                 </div>
               </form>
             </div>
-          )}
+          )
+        }
 
-          {/* VIEW 3: INVOICE PREVIEW */}
-          {view === 'invoice' && (
-            <div className="animate-in zoom-in-95 duration-300">
-              <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <button
-                  onClick={() => setView('customer')}
-                  className="text-muted-foreground hover:text-foreground font-bold flex items-center gap-2"
-                >
-                  <ArrowLeft size={18} />
-                  Back to Selection
+        {
+          view === 'invoice' && (
+            <div className="space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <button className="text-sm text-muted-foreground font-bold" onClick={() => { clearPreviewOverrides(); setView('customer'); }}>
+                  <ArrowLeft size={16} className="inline mr-1" />{t('quoteService.invoice.backToSelection')}
                 </button>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => window.print()}
-                    className="bg-card border border-border text-foreground px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-muted"
-                  >
-                    <Download size={18} />
-                    Download PDF
+                  <button className="border border-border rounded-lg px-4 py-2 font-bold" onClick={() => window.print()}>
+                    <Download size={14} className="inline mr-1" />{t('quoteService.invoice.downloadPdf')}
                   </button>
-                  <button
-                    onClick={async () => {
-                      try {
-                        const selectedItems = items.filter(i => formData.selectedServiceIds.includes(i._id || ''));
-                        const payload = {
-                          clientName: formData.personName,
-                          clientEmail: formData.email,
-                          // Required fields for MongoDB model:
-                          email: formData.email,
-                          personName: formData.personName,
-                          description: formData.productDescription,
-                          items: selectedItems.map(i => ({ title: i.title, price: i.price, description: i.description })),
-                          total: selectedItems.reduce((acc, curr) => acc + (curr.price || 0), 0),
-                          status: 'pending',
-                          userId: user?._id || user?.id || '',
-                          userName: user?.fullName || user?.name || user?.username || user?.email || ''
-                        };
-                        await updateReqForEnquiry(payload);
-                        toast({ title: "Sent", description: "Quotation sent to " + formData.email });
-                        setView(isAdmin ? 'history' : 'customer');
-                      } catch (err) {
-                        toast({ title: "Error", description: "Failed to send quotation", variant: "destructive" });
-                      }
-                    }}
-                    className="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-primary/90 shadow-lg"
-                  >
-                    <Mail size={18} />
-                    Send to Client
-                  </button>
+                  {!invoiceItemsOverride && (
+                    <button className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-bold" onClick={sendQuote}>
+                      <Mail size={14} className="inline mr-1" />{t('quoteService.invoice.sendToClient')}
+                    </button>
+                  )}
                 </div>
               </div>
 
-              <InvoiceLayout
-                data={formData}
-                items={items}
-                selectedIds={formData.selectedServiceIds}
-              />
-
-              <div className="mt-12 text-center text-muted-foreground text-sm">
-                <p>Generated by MIRRASIA Proprietary Quotation Engine</p>
-              </div>
+              <InvoiceLayout quote={quote} items={invoiceItems} language={selectedLanguage} layout={activeLayout} />
+              <p className="text-center text-sm text-muted-foreground">{activeLayout.generatedByText}</p>
             </div>
-          )}
+          )
+        }
+      </main >
 
-          {/* VIEW 4: ADMIN HISTORY */}
-          {view === 'history' && isAdmin && (
-            <HistoryView
-              onViewQuote={(quote: any) => {
-                // Map history item back to form data format for preview
-                setFormData({
-                  email: quote.clientEmail || quote.email || '',
-                  personName: quote.clientName || quote.personName || '',
-                  productDescription: quote.description || quote.productDescription || '',
-                  selectedServiceIds: [] // We won't select IDs, we'll pass full items to preview
-                });
-                // We need a way to pass arbitrary items to InvoiceLayout. 
-                // Currently InvoiceLayout takes IDs. 
-                // For now, let's just log or improve InvoiceLayout later.
-                // Actually, we can just switch to invoice view and populate a special state.
-                // But for simplicity in this turn, let's just show a toast or basic list.
-                // Wait, I should implement this properly.
-                // Let's defer "View Quote" full visual preview for a specialized component or just reprint.
-
-                // Hack: Repopulate form with "custom" items if needed, or just show raw data.
-                // A better approach is to make InvoiceLayout accept items directly, which it does!
-                // InvoiceLayout takes `items` and `selectedIds`. 
-                // I can pass the quote items as `items` and SELECT ALL of them.
-
-                const quoteItems: BillableItem[] = (quote.items || []).map((i: any, idx: number) => ({
-                  _id: `history-${idx}`,
-                  title: i.title,
-                  price: i.price,
-                  description: i.description
-                }));
-
-                const tempItems = [...quoteItems];
-                setItems(tempItems); // Override catalog temporarily
-                setFormData(prev => ({
-                  ...prev,
-                  selectedServiceIds: tempItems.map(i => i._id || '')
-                }));
-                setView('invoice');
-              }}
-            />
-          )}
-
-        </div>
-      </main>
-
-      {/* Item Editor Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-border flex justify-between items-center bg-muted/40">
-              <h2 className="text-xl font-black text-foreground tracking-tight">
-                {editingItem ? 'Edit Service' : 'Add New Service'}
+        <div className="fixed inset-0 z-50 bg-black/50 p-4 flex items-center justify-center">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+            <div className="p-4 border-b border-border flex items-center justify-between bg-muted/30">
+              <h2 className="font-black text-lg">
+                {editingItem ? t('quoteService.modal.editService') : t('quoteService.modal.addService')} {t('quoteService.modal.multilingualSuffix')}
               </h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground"><X size={24} /></button>
+              <button onClick={() => setIsModalOpen(false)}><X size={18} /></button>
             </div>
-            <form onSubmit={handleSaveItem} className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1.5 md:col-span-1">
-                  <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Service Name</label>
-                  <input
-                    name="name"
-                    required
-                    defaultValue={editingItem?.title}
-                    className="w-full border-2 border-input bg-background text-foreground rounded-xl px-4 py-2.5 focus:border-ring outline-none transition-all font-medium"
-                    placeholder="e.g. Hong Kong Incorporation"
-                  />
-                </div>
-                <div className="space-y-1.5 md:col-span-1">
-                  <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Price (USD)</label>
+            <form onSubmit={saveItem} className="p-0 flex flex-col max-h-[75vh]">
+              <div className="p-5 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="w-full sm:w-1/2">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-1.5">{t('quoteService.modal.basePriceLabel')}</label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">$</span>
-                    <input
-                      name="price"
-                      required
-                      type="number"
-                      defaultValue={editingItem?.price}
-                      className="w-full border-2 border-input bg-background text-foreground rounded-xl pl-8 pr-4 py-2.5 focus:border-ring outline-none transition-all font-medium"
-                      placeholder="0.00"
-                    />
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">$</span>
+                    <input name="price" type="number" required defaultValue={editingItem?.price} className="w-full border border-input rounded-lg pl-8 pr-3 py-2.5 bg-background font-bold text-lg" placeholder={t('quoteService.modal.basePricePlaceholder')} />
                   </div>
                 </div>
-                <div className="space-y-1.5 md:col-span-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Full Description</label>
-                  <textarea
-                    name="description"
-                    required
-                    rows={6}
-                    defaultValue={editingItem?.description}
-                    className="w-full border-2 border-input bg-background text-foreground rounded-xl px-4 py-2.5 focus:border-ring outline-none transition-all font-medium"
-                    placeholder="Provide full details. Use new lines for bullet points..."
-                  />
+                <div className="flex bg-muted/50 p-1 rounded-lg">
+                  {LOCALE_INPUT_CONFIGS.map((config) => (
+                    <button
+                      key={`lang-tab-${config.lang}`}
+                      type="button"
+                      onClick={() => setActiveTab(config.lang)}
+                      className={`px-4 py-1.5 text-sm font-bold rounded-md transition-all ${activeTab === config.lang ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      {t(`quoteService.languages.${config.lang}`, { defaultValue: config.lang })}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="submit"
-                  className="flex-grow bg-primary text-primary-foreground py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all"
-                >
-                  <Save size={18} />
-                  {editingItem ? 'Update Service' : 'Save New Service'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-6 border border-border rounded-xl font-bold text-muted-foreground hover:bg-muted transition-all"
-                >
-                  Cancel
+
+              <div className="p-5 overflow-y-auto min-h-[400px]">
+                {LOCALE_INPUT_CONFIGS.map((config) => (
+                  <div key={`lang-form-${config.lang}`} className={`space-y-4 ${activeTab === config.lang ? 'animate-in fade-in slide-in-from-bottom-2' : 'hidden'}`}>
+                    {!config.required && (
+                      <div className="flex items-center gap-2 mb-2 p-3 bg-blue-500/10 text-blue-600 rounded-lg">
+                        <FileText size={16} /> <span className="text-xs font-medium">{t('quoteService.modal.optionalLocalizationHint')}</span>
+                      </div>
+                    )}
+                    <div>
+                      <label className="block text-sm font-bold mb-1.5 text-foreground">{t(config.nameLabelKey)}</label>
+                      <input
+                        name={config.nameField}
+                        required={Boolean(config.required)}
+                        defaultValue={getLocalizationDefaultValue(editingItem, config.lang, 'title')}
+                        className="w-full border border-input rounded-lg px-3 py-2 bg-background"
+                        placeholder={t(config.namePlaceholderKey)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold mb-1.5 text-foreground">{t(config.descriptionLabelKey)}</label>
+                      <textarea
+                        name={config.descriptionField}
+                        required={Boolean(config.required)}
+                        defaultValue={getLocalizationDefaultValue(editingItem, config.lang, 'description')}
+                        className="w-full border border-input rounded-lg px-3 py-2 bg-background"
+                        rows={10}
+                        placeholder={t(config.descriptionPlaceholderKey)}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-4 border-t border-border flex justify-end gap-3 bg-muted/10">
+                <button type="button" className="px-6 py-2 border border-border rounded-lg font-medium hover:bg-muted/50 transition-colors" onClick={() => setIsModalOpen(false)}>{t('quoteService.common.cancel')}</button>
+                <button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-8 py-2 font-bold shadow-md transition-transform active:scale-95 flex items-center">
+                  <Save size={16} className="mr-2" />{editingItem ? t('quoteService.modal.updateService') : t('quoteService.modal.createService')}
                 </button>
               </div>
             </form>
@@ -657,192 +760,13 @@ export default function QuoteEnquiry() {
         </div>
       )}
 
-      {/* Global CSS for Print */}
       <style>{`
         @media print {
-          body { background: white !important; padding: 0 !important; }
           body * { visibility: hidden !important; }
           #invoice-capture, #invoice-capture * { visibility: visible !important; }
-          #invoice-capture {
-            border: none !important;
-            box-shadow: none !important;
-            max-width: 100% !important;
-            padding: 0 !important;
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 100% !important;
-          }
+          #invoice-capture { position: absolute !important; inset: 0 !important; width: 100% !important; }
         }
       `}</style>
-    </div>
-  );
-}
-
-// --- History View Component ---
-function HistoryView({ onViewQuote }: { onViewQuote: (quote: any) => void }) {
-  const [history, setHistory] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    search: '',
-    userName: '',
-    sort: '-createdAt'
-  });
-
-  const fetchHistory = async () => {
-    setLoading(true);
-    try {
-      const res = await getRedQuoteData({
-        params: {
-          search: filters.search,
-          userName: filters.userName,
-          sort: filters.sort
-        }
-      });
-      if (res?.data) {
-        setHistory(res.data);
-      }
-    } catch (err) {
-      console.error(err);
-      toast({ title: "Error", description: "Failed to load history", variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchHistory();
-  }, [filters]);
-
-  const filteredHistory = useMemo(() => {
-    const creatorQuery = filters.userName.trim().toLowerCase();
-    if (!creatorQuery) return history;
-
-    return history.filter((quote) =>
-      String(quote.userName || '').toLowerCase().includes(creatorQuery)
-    );
-  }, [history, filters.userName]);
-
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Quote History</h1>
-          <p className="text-muted-foreground">Review and manage generated quotations.</p>
-        </div>
-        <button
-          onClick={() => fetchHistory()}
-          className="bg-muted text-foreground px-4 py-2 rounded-lg font-medium hover:bg-muted/80 transition-colors"
-        >
-          Refresh
-        </button>
-      </div>
-
-      {/* Filters */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-        <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search client, email, or quote #..."
-            value={filters.search}
-            onChange={e => setFilters(prev => ({ ...prev, search: e.target.value }))}
-            className="w-full border border-input bg-background text-foreground rounded-lg pl-10 pr-4 py-2 outline-none focus:ring-2 focus:ring-ring"
-          />
-        </div>
-        <div className="relative">
-          <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Filter by Creator name..."
-            value={filters.userName}
-            onChange={e => setFilters(prev => ({ ...prev, userName: e.target.value }))}
-            className="w-full border border-input bg-background text-foreground rounded-lg pl-10 pr-4 py-2 outline-none focus:ring-2 focus:ring-ring"
-          />
-        </div>
-        <div className="relative">
-          <Filter size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <select
-            value={filters.sort}
-            onChange={e => setFilters(prev => ({ ...prev, sort: e.target.value }))}
-            className="w-full border border-input bg-background text-foreground rounded-lg pl-10 pr-4 py-2 outline-none focus:ring-2 focus:ring-ring appearance-none"
-          >
-            <option value="-createdAt">Newest First</option>
-            <option value="createdAt">Oldest First</option>
-            <option value="-total">Highest Value</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-muted/50 border-b border-border text-left text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                <th className="px-6 py-4">Quote #</th>
-                <th className="px-6 py-4">Date</th>
-                <th className="px-6 py-4">Client</th>
-                <th className="px-6 py-4">Creator (Name)</th>
-                <th className="px-6 py-4 text-right">Total</th>
-                <th className="px-6 py-4 text-center">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {loading ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-muted-foreground animate-pulse">
-                    Loading history...
-                  </td>
-                </tr>
-              ) : filteredHistory.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-muted-foreground">
-                    No quotes found.
-                  </td>
-                </tr>
-              ) : (
-                filteredHistory.map((quote) => (
-                  <tr key={quote._id} className="hover:bg-muted/20 transition-colors">
-                    <td className="px-6 py-4 font-mono text-sm font-medium">{quote.quoteNumber || '—'}</td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {new Date(quote.createdAt).toLocaleDateString()}
-                      <div className="text-xs opacity-70">{new Date(quote.createdAt).toLocaleTimeString()}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="font-bold text-sm text-foreground">{quote.clientName || quote.personName}</div>
-                      <div className="text-xs text-muted-foreground">{quote.clientEmail || quote.email}</div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {quote.userName || quote.userId || <span className="text-xs italic opacity-50">Anonymous</span>}
-                    </td>
-                    <td className="px-6 py-4 text-right font-bold text-foreground">
-                      ${(quote.total || 0).toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize
-                        ${quote.status === 'sent' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                          quote.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                            'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'}`}>
-                        {quote.status || 'pending'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => onViewQuote(quote)}
-                        className="text-primary hover:text-primary/80 font-medium text-sm transition-colors"
-                      >
-                        View / Print
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    </div >
   );
 }
