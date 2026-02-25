@@ -224,6 +224,23 @@ const hkSourceOfFundsOptions = [
   { value: "otherSourceOfFunds", label: "usa.Section2StateOptions.Other" },
 ];
 
+// Legacy HK label-key aliases from HkShareHldrDir.
+// Keeps new semantic keys in registry while resolving to existing translation keys.
+const HK_LEGACY_LABEL_ALIASES: Record<string, string> = {
+  "hk_shldr.significantController": "hk_shldr.signiControl",
+  "hk_shldr.passportDigits": "hk_shldr.first4Pass",
+  "hk_shldr.birthCountry": "hk_shldr.countryBirth",
+  "hk_shldr.currentResidence": "hk_shldr.currentRedsidency",
+  "hk_shldr.passportCopy": "hk_shldr.passport",
+  "hk_shldr.personalCertificate": "hk_shldr.certifiedPass",
+  "hk_shldr.proofOfAddress": "hk_shldr.uploadProof",
+  "hk_shldr.nomineeParticipation": "hk_shldr.participateNominee",
+  "hk_shldr.undischargedBankruptcy": "hk_shldr.isBankrupt",
+  "hk_shldr.pastParticipation": "hk_shldr.violatedLaw",
+};
+
+const resolveHkLegacyLabelKey = (labelKey: string) => HK_LEGACY_LABEL_ALIASES[labelKey] || labelKey;
+
 // --- US options ---
 const usRoleOptions = [
   { value: "shareHld", label: "shareholder" },
@@ -757,7 +774,7 @@ const BASE_PARTY_KYC_REGISTRY: PartyFormConfig[] = [
           },
           {
             name: "significantController",
-            label: "hk_shldr.significantController",
+            label: resolveHkLegacyLabelKey("hk_shldr.significantController"),
             type: "radio",
             required: true,
             options: hkSignificantControllerOptions,
@@ -768,18 +785,51 @@ const BASE_PARTY_KYC_REGISTRY: PartyFormConfig[] = [
         id: "personal",
         title: "Personal",
         fields: [
-          { name: "passportDigits", label: "hk_shldr.passportDigits", type: "text", required: true },
-          { name: "birthCountry", label: "hk_shldr.birthCountry", type: "text", required: true },
-          { name: "currentResidence", label: "hk_shldr.currentResidence", type: "text", required: true },
+          {
+            name: "passportDigits",
+            label: resolveHkLegacyLabelKey("hk_shldr.passportDigits"),
+            type: "text",
+            required: true,
+          },
+          {
+            name: "birthCountry",
+            label: resolveHkLegacyLabelKey("hk_shldr.birthCountry"),
+            type: "text",
+            required: true,
+          },
+          {
+            name: "currentResidence",
+            label: resolveHkLegacyLabelKey("hk_shldr.currentResidence"),
+            type: "text",
+            required: true,
+          },
         ],
       },
       {
         id: "uploads",
         title: "Uploads",
         fields: [
-          { name: "passportCopy", label: "hk_shldr.passportCopy", type: "file", required: true, accept: "image/*,.pdf" },
-          { name: "personalCertificate", label: "hk_shldr.personalCertificate", type: "file", required: true, accept: "image/*,.pdf" },
-          { name: "proofOfAddress", label: "hk_shldr.proofOfAddress", type: "file", required: true, accept: "image/*,.pdf" },
+          {
+            name: "passportCopy",
+            label: resolveHkLegacyLabelKey("hk_shldr.passportCopy"),
+            type: "file",
+            required: true,
+            accept: "image/*,.pdf",
+          },
+          {
+            name: "personalCertificate",
+            label: resolveHkLegacyLabelKey("hk_shldr.personalCertificate"),
+            type: "file",
+            required: true,
+            accept: "image/*,.pdf",
+          },
+          {
+            name: "proofOfAddress",
+            label: resolveHkLegacyLabelKey("hk_shldr.proofOfAddress"),
+            type: "file",
+            required: true,
+            accept: "image/*,.pdf",
+          },
         ],
       },
       {
@@ -788,7 +838,7 @@ const BASE_PARTY_KYC_REGISTRY: PartyFormConfig[] = [
         fields: [
           {
             name: "nomineeParticipation",
-            label: "hk_shldr.nomineeParticipation",
+            label: resolveHkLegacyLabelKey("hk_shldr.nomineeParticipation"),
             type: "radio",
             required: true,
             options: hkOverseasResidentOptions,
@@ -865,8 +915,20 @@ const BASE_PARTY_KYC_REGISTRY: PartyFormConfig[] = [
         id: "misc",
         title: "Miscellaneous",
         fields: [
-          { name: "undischargedBankruptcy", label: "hk_shldr.undischargedBankruptcy", type: "radio", required: true, options: hkLegalIssuesOptions },
-          { name: "pastParticipation", label: "hk_shldr.pastParticipation", type: "radio", required: true, options: hkLegalIssuesOptions },
+          {
+            name: "undischargedBankruptcy",
+            label: resolveHkLegacyLabelKey("hk_shldr.undischargedBankruptcy"),
+            type: "radio",
+            required: true,
+            options: hkLegalIssuesOptions,
+          },
+          {
+            name: "pastParticipation",
+            label: resolveHkLegacyLabelKey("hk_shldr.pastParticipation"),
+            type: "radio",
+            required: true,
+            options: hkLegalIssuesOptions,
+          },
           { name: "additionalInfo", label: "hk_shldr.anyQuestionsApply", type: "text" },
         ],
       },

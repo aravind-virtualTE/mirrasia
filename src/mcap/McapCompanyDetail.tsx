@@ -328,6 +328,10 @@ const McapCompanyDetail: React.FC = () => {
     if (!config?.steps) return [];
     const data = company?.data || {};
     const toLabel = (label?: string) => (label ? t(label, label) : "");
+    const isPaymentStep = (step: { id?: string; widget?: string; title?: string }) =>
+      step?.widget === "PaymentWidget"
+      || /^payments?$/i.test(String(step?.id || ""))
+      || /\bpayment\b/i.test(String(step?.title || ""));
 
     const renderField = (field: McapField) => {
       if (!field?.name) return null;
@@ -378,6 +382,7 @@ const McapCompanyDetail: React.FC = () => {
 
     return config.steps
       .filter((step) => Array.isArray(step.fields) && step.fields.length > 0)
+      .filter((step) => !isPaymentStep(step))
       .map((step) => {
         const fields = (step.fields || []).map((field) => renderField(field)).filter(Boolean);
         return { step, fields };
@@ -385,6 +390,7 @@ const McapCompanyDetail: React.FC = () => {
       .filter((group) => group.fields.length > 0);
   }, [config?.steps, company?.data, t]);
 
+  // console.log("stepGroups",stepGroups)
   if (!id) {
     return <div className="p-6 text-sm text-destructive">Error: No company ID provided in route.</div>;
   }
