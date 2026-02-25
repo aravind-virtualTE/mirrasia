@@ -2770,6 +2770,166 @@
       }
     }
   },
+  "quoteService": {
+    "common": {
+      "success": "Success",
+      "error": "Error",
+      "cancel": "Cancel"
+    },
+    "languages": {
+      "en": "English",
+      "ko": "Korean",
+      "zhTW": "Traditional Chinese"
+    },
+    "nav": {
+      "title": "MIRRASIA QUOTES",
+      "language": "Language",
+      "manageCatalog": "Manage Catalog",
+      "buildInvoiceTemplate": "Build Invoice Template",
+      "quoteHistory": "Quote History",
+      "myQuotes": "My Quotes",
+      "createQuote": "Create Quote"
+    },
+    "catalog": {
+      "title": "Service Catalog",
+      "subtitle": "Manage multilingual service entries.",
+      "addService": "Add Service",
+      "searchPlaceholder": "Search services",
+      "servicesCount": "{{count}} services",
+      "loadingServices": "Loading services...",
+      "untitledService": "Untitled Service"
+    },
+    "layoutSettings": {
+      "title": "Invoice Template Settings",
+      "subtitle": "Configure the layout, labels, and text used in the generated PDF quotes and emails. Changes here affect all new quotes for the selected language.",
+      "loadingLayout": "Loading layout configuration...",
+      "saving": "Saving...",
+      "saveConfiguration": "Save Configuration",
+      "brandIdentity": {
+        "title": "Brand & Identity",
+        "subtitle": "Main company details shown at the top of the invoice.",
+        "companyNameLabel": "Company Name",
+        "companyNameHint": "Large italic header on the top left.",
+        "headerBadgeLabel": "Header Badge",
+        "headerBadgeHint": "Colored pill on the top right (e.g., \"DRAFT QUOTE\").",
+        "companyDetailsLabel": "Company Details",
+        "companyDetailsHint": "Address, contact info, etc. Enter one item per line. Appears below the company name."
+      },
+      "terms": {
+        "title": "Terms & Conditions",
+        "subtitle": "Footer sections for notes and legal disclaimers.",
+        "notesTitleLabel": "Notes Title",
+        "notesContentLabel": "Notes Content",
+        "notesHint": "General notes (one per line). Displayed at the bottom left.",
+        "legalTitleLabel": "Legal Terms Title",
+        "legalContentLabel": "Legal Terms Content",
+        "legalHint": "Numbered list of legal terms (one per line). Displayed at the bottom right.",
+        "footerTextLabel": "Footer Text",
+        "footerHint": "Copyright or system generation notice at the very bottom."
+      },
+      "tableLabels": {
+        "title": "Table Labels & Headings",
+        "subtitle": "Localization strings for standard UI elements.",
+        "quotationLabel": "Quotation Label",
+        "recipientLabel": "Recipient Label",
+        "totalPriceLabel": "Total Price Label"
+      }
+    },
+    "customer": {
+      "title": "Request for Quotation",
+      "subtitle": "Provide details and choose required services.",
+      "contactSectionTitle": "1. Contact Information",
+      "namePlaceholder": "Your name",
+      "emailPlaceholder": "Email",
+      "descriptionPlaceholder": "Business context / product description",
+      "servicesSectionTitle": "2. Select Services",
+      "searchPlaceholder": "Search services...",
+      "selectedCount": "{{count}} selected",
+      "totalEstimate": "Total Estimate",
+      "generateQuote": "Generate Quote"
+    },
+    "invoice": {
+      "backToSelection": "Back to Selection",
+      "downloadPdf": "Download PDF",
+      "sendToClient": "Send to Client",
+      "pending": "Pending",
+      "valuedClient": "Valued Client",
+      "serviceInquiry": "Service Inquiry"
+    },
+    "modal": {
+      "editService": "Edit Service",
+      "addService": "Add Service",
+      "multilingualSuffix": "(Multilingual)",
+      "basePriceLabel": "Base Price (USD) *",
+      "basePricePlaceholder": "0.00",
+      "serviceNameEnglishLabel": "Service Name (English) *",
+      "serviceNameEnglishPlaceholder": "e.g. Corporate Secretary Service",
+      "serviceDescriptionEnglishLabel": "Service Description (English) *",
+      "serviceDescriptionEnglishPlaceholder": "Detailed explanation of the deliverables...",
+      "optionalLocalizationHint": "These fields are optional. Leave blank to use English text as fallback.",
+      "serviceNameKoreanLabel": "Service Name (Korean)",
+      "serviceNameKoreanPlaceholder": "e.g. Korean service name",
+      "serviceDescriptionKoreanLabel": "Service Description (Korean)",
+      "serviceDescriptionKoreanPlaceholder": "Enter Korean description...",
+      "serviceNameTraditionalChineseLabel": "Service Name (Traditional Chinese)",
+      "serviceNameTraditionalChinesePlaceholder": "e.g. Traditional Chinese service name",
+      "serviceDescriptionTraditionalChineseLabel": "Service Description (Traditional Chinese)",
+      "serviceDescriptionTraditionalChinesePlaceholder": "Enter Traditional Chinese description...",
+      "updateService": "Update Service",
+      "createService": "Create Service"
+    },
+    "toast": {
+      "itemUpdated": "Item updated",
+      "itemCreated": "Item created",
+      "failedToSaveItem": "Failed to save item",
+      "saved": "Saved",
+      "layoutUpdated": "Layout content updated.",
+      "failedToSaveLayout": "Failed to save layout",
+      "itemDeleted": "Item deleted",
+      "failedToDeleteItem": "Failed to delete item",
+      "sent": "Sent",
+      "quotationSent": "Quotation sent to {{email}}",
+      "failedToSendQuotation": "Failed to send quotation"
+    },
+    "confirm": {
+      "deleteService": "Delete this service?"
+    },
+    "alert": {
+      "selectAtLeastOneService": "Please select at least one service."
+    },
+    "history": {
+      "toast": {
+        "failedToLoadHistory": "Failed to load history"
+      },
+      "searchPlaceholder": "Search client, email, quote #",
+      "filterByCreatorPlaceholder": "Filter by creator",
+      "sort": {
+        "newestFirst": "Newest First",
+        "oldestFirst": "Oldest First",
+        "highestValue": "Highest Value"
+      },
+      "columns": {
+        "quoteNumber": "Quote #",
+        "date": "Date",
+        "client": "Client",
+        "creator": "Creator",
+        "total": "Total",
+        "status": "Status",
+        "action": "Action"
+      },
+      "loading": "Loading...",
+      "noQuotesFound": "No quotes found.",
+      "anonymous": "Anonymous",
+      "statusValues": {
+        "approved": "approved",
+        "paid": "paid",
+        "rejected": "rejected",
+        "sent": "sent",
+        "pending": "pending"
+      },
+      "viewPrint": "View / Print"
+    }
+  },
   "service": {
     "grandTotal": "Grand Total",
     "note": "Government fees are statutory and mandatory. Optional services can be toggled to customize your package.",
