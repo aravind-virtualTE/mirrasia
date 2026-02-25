@@ -33,19 +33,37 @@ function ProgressBar({ value }: { value: number }) {
   );
 }
 
-function Stepper({ steps, active }: { steps: string[]; active: number }) {
+function Stepper({
+  steps,
+  active,
+  canNavigate = false,
+  onStepSelect,
+}: {
+  steps: string[];
+  active: number;
+  canNavigate?: boolean;
+  onStepSelect?: (stepIdx: number) => void;
+}) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-6 gap-2 mt-3">
       {steps.map((s, i) => {
         const isActive = i === active;
+        const isClickable = canNavigate && !!onStepSelect;
         return (
-          <div
+          <button
+            type="button"
             key={`${s}-${i}`}
+            tabIndex={isClickable ? 0 : -1}
+            aria-current={isActive ? "step" : undefined}
+            onClick={() => {
+              if (isClickable) onStepSelect(i);
+            }}
             className={cn(
-              "flex items-center gap-2 rounded-xl border p-2 text-xs bg-slate-50",
+              "flex w-full items-center gap-2 rounded-xl border p-2 text-xs bg-slate-50 text-left transition",
               isActive
                 ? "border-[#0F3D6E] shadow-[0_0_0_2px] shadow-blue-500/15"
-                : "border-slate-200"
+                : "border-slate-200",
+              isClickable ? "cursor-pointer hover:border-[#0F3D6E]/40" : "cursor-default"
             )}
           >
             <span
@@ -57,7 +75,7 @@ function Stepper({ steps, active }: { steps: string[]; active: number }) {
               {i + 1}
             </span>
             <span className="truncate">{s}</span>
-          </div>
+          </button>
         );
       })}
     </div>
@@ -204,6 +222,16 @@ export default function PartyKycEngine({
   const { t } = useTranslation();
   const { toast } = useToast();
   const isReadOnly = mode === "detail";
+  const viewerRole = useMemo(() => {
+    try {
+      const rawUser = localStorage.getItem("user");
+      if (!rawUser) return "";
+      return String(JSON.parse(rawUser)?.role || "").trim().toLowerCase();
+    } catch {
+      return "";
+    }
+  }, []);
+  const canAdminMoveAcrossSteps = viewerRole === "admin" || viewerRole === "master";
   // TEMP (admin testing only): keep true to bypass required-field validation restrictions.
   // Revert this to false after admin testing is complete.
   const ADMIN_TEST_RELAX_VALIDATION = true;
@@ -237,11 +265,13 @@ export default function PartyKycEngine({
 
   const currentStep = steps[currentStepIdx] as PartyStep;
   const activeStep = stepChecks.findIndex((v) => !v);
-  const currentActiveStep = ADMIN_TEST_RELAX_VALIDATION
+  const currentActiveStep = canAdminMoveAcrossSteps
     ? currentStepIdx
-    : activeStep === -1
-      ? steps.length - 1
-      : activeStep;
+    : ADMIN_TEST_RELAX_VALIDATION
+      ? currentStepIdx
+      : activeStep === -1
+        ? steps.length - 1
+        : activeStep;
   const progressValue = useMemo(() => {
     if (ADMIN_TEST_RELAX_VALIDATION) {
       const total = steps.length || 1;
@@ -304,6 +334,14 @@ export default function PartyKycEngine({
 
   const handleBack = () => {
     setCurrentStepIdx((prev) => Math.max(prev - 1, 0));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleStepSelect = (stepIdx: number) => {
+    if (!canAdminMoveAcrossSteps || steps.length === 0) return;
+    const safeStepIdx = Math.max(0, Math.min(stepIdx, steps.length - 1));
+    if (safeStepIdx === currentStepIdx) return;
+    setCurrentStepIdx(safeStepIdx);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -638,7 +676,12 @@ export default function PartyKycEngine({
       )}
 
       <ProgressBar value={progressValue} />
-      <Stepper steps={steps.map((s) => tr(s.title))} active={currentActiveStep} />
+      <Stepper
+        steps={steps.map((s) => tr(s.title))}
+        active={currentActiveStep}
+        canNavigate={canAdminMoveAcrossSteps}
+        onStepSelect={handleStepSelect}
+      />
 
       {currentStep ? (
         <Card className="mt-5 rounded-2xl border-slate-200">
