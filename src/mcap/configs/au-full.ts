@@ -359,6 +359,7 @@ const buildCompanyFields = (): McapField[] => [
     required: true,
     options: [
       { label: "AUD", value: "AUD" },
+      { label: "HKD", value: "HKD" },
       { label: "USD", value: "USD" },
       { label: "Other", value: "other" },
     ],
@@ -485,7 +486,7 @@ export const AU_FULL_CONFIG: McapConfig = {
   id: "au-full",
   countryCode: "AU",
   countryName: "Australia",
-  currency: "AUD",
+  currency: "USD",
   title: "Australia Company Incorporation",
   confirmationDetails: {
     title: "Australia Incorporation Request Submitted",
@@ -592,7 +593,7 @@ export const AU_FULL_CONFIG: McapConfig = {
       widget: "ServiceSelectionWidget",
       fields: buildServiceFields(),
       serviceItems: (data) => buildAuServiceItems(data),
-      supportedCurrencies: ["AUD"],
+      supportedCurrencies: ["USD", "HKD"],
       computeFees: (data) => computeAuFees(data),
     },
     {
