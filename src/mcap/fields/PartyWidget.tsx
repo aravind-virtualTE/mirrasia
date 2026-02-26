@@ -286,20 +286,23 @@ export const PartyWidget = ({
                                     <div className={`p-2 rounded-full ${partyType === 'person' ? 'bg-blue-100' : 'bg-purple-100'}`}>
                                         {partyType === 'person' ? <User className="w-4 h-4 text-blue-600" /> : <Building2 className="w-4 h-4 text-purple-600" />}
                                     </div>
-                                    <Select
-                                        value={partyType}
-                                        onValueChange={(v) => handlePartyTypeChange(idx, v as "person" | "entity")}
-                                    >
-                                        <SelectTrigger className="w-[120px] h-8">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="person">{t("newHk.parties.fields.isCorp.options.no", "Individual")}</SelectItem>
-                                            {entityTypeEnabled && (
-                                                <SelectItem value="entity">{t("newHk.parties.fields.isCorp.options.yes", "Corporate")}</SelectItem>
-                                            )}
-                                        </SelectContent>
-                                    </Select>
+                                    <div className="space-y-1">
+                                        <Label className="text-xs text-muted-foreground">
+                                            {t("newHk.parties.fields.isCorp.label", "Is this shareholder a corporate entity?")}
+                                        </Label>
+                                        <Select
+                                            value={partyType}
+                                            onValueChange={(v) => handlePartyTypeChange(idx, v as "person" | "entity")}
+                                        >
+                                            <SelectTrigger className="w-[120px] h-8">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="person">{t("newHk.parties.fields.isCorp.options.no", "Individual")}</SelectItem>
+                                                 <SelectItem value="entity">{t("newHk.parties.fields.isCorp.options.yes", "Corporate")}</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
                                 <Button variant="ghost" size="sm" onClick={() => removeParty(idx)} className="text-red-500">
                                     <Trash2 className="w-4 h-4" />

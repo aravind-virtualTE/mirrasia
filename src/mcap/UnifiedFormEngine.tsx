@@ -79,6 +79,13 @@ export const UnifiedFormEngine = ({
     // use cached computedFees from ServiceSelectionWidget when HKD conversion was already computed.
     const computedFees = useMemo(() => {
         const cachedFees = formData?.computedFees;
+        const shouldPreferCachedFees =
+            currentStep.widget === "InvoiceWidget" || currentStep.widget === "PaymentWidget";
+
+        if (cachedFees && shouldPreferCachedFees) {
+            return cachedFees;
+        }
+
         const calculated = currentStep.computeFees
             ? currentStep.computeFees(formData, entityMeta)
             : (cachedFees || currentStep.fees);
@@ -107,8 +114,17 @@ export const UnifiedFormEngine = ({
             void ensureDraft();
         }
     }, [currentStep.widget, companyId]);
-    const user = localStorage.getItem("user");
-    const userId = user ? JSON.parse(user).id : null;
+    const currentUser = useMemo(() => {
+        try {
+            const rawUser = localStorage.getItem("user");
+            return rawUser ? JSON.parse(rawUser) : null;
+        } catch {
+            return null;
+        }
+    }, []);
+    const userId = currentUser?.id || null;
+    const userRole = String(currentUser?.role || "").trim().toLowerCase();
+    const isAdminOrMaster = userRole === "admin" || userRole === "master";
 
     const defaultData = useMemo(() => {
         const initial: Record<string, any> = {};
@@ -677,22 +693,44 @@ export const UnifiedFormEngine = ({
     const renderReviewSummary = () => {
         if (currentStep.id !== "review") return null;
 
-        const getValue = (keys: string[]) => {
+        const getValueEntry = (keys: string[]) => {
             for (const key of keys) {
                 const val = formData?.[key];
-                if (val !== undefined && val !== null && String(val).trim() !== "") return val;
+                if (val === undefined || val === null) continue;
+                if (Array.isArray(val) && val.length === 0) continue;
+                if (!Array.isArray(val) && String(val).trim() === "") continue;
+                return { key, value: val };
             }
             return null;
         };
 
-        const applicantName = getValue(["applicantName", "name", "contactName"]) || "-";
-        const applicantEmail = getValue(["email", "applicantEmail", "applicantEmailAddress"]) || "-";
-        const applicantPhone = getValue(["phone", "phoneNum", "contactPhone"]) || "-";
-        const companyName = getValue(["companyName_1", "name1", "foundationNameEn", "companyName"]) || "-";
-        const entityType = getValue(["selectedEntity", "entityType", "panamaEntity"]) || "-";
-        const industry = getValue(["industry", "selectedIndustry", "businessTypes"]) || "-";
+        const findFieldByName = (name: string) =>
+            config.steps
+                .flatMap((step) => step.fields || [])
+                .find((field) => field.name === name);
+
+        const getOptionDisplay = (field: McapField, rawValue: any) => {
+            if (field.type === "search-select") {
+                const matchedItem = (field.items || []).find((item: any) => String(item?.code) === String(rawValue));
+                return matchedItem?.label
+                    ? t(String(matchedItem.label), String(matchedItem.label))
+                    : String(rawValue);
+            }
+
+            const matchedOption = (field.options || []).find((option) => String(option.value) === String(rawValue));
+            return matchedOption
+                ? t(matchedOption.label, matchedOption.label)
+                : String(rawValue);
+        };
+
+        const applicantName = getValueEntry(["applicantName", "name", "contactName"])?.value || "-";
+        const applicantEmail = getValueEntry(["email", "applicantEmail", "applicantEmailAddress"])?.value || "-";
+        const applicantPhone = getValueEntry(["phone", "phoneNum", "contactPhone"])?.value || "-";
+        const companyName = getValueEntry(["companyName_1", "name1", "foundationNameEn", "companyName"])?.value || "-";
+        const entityType = getValueEntry(["selectedEntity", "entityType", "panamaEntity"])?.value || "-";
+        const industryEntry = getValueEntry(["industry", "selectedIndustry", "businessTypes"]);
         const partiesCount = Array.isArray(parties) ? parties.length : 0;
-        const services = getValue(["optionalFeeIds", "serviceItemsSelected", "services", "pif_optEmi"]) || "-";
+        const services = getValueEntry(["optionalFeeIds", "serviceItemsSelected", "services", "pif_optEmi"])?.value || "-";
 
         const renderValue = (value: any) => {
             if (Array.isArray(value)) return value.length ? value.join(", ") : "-";
@@ -702,6 +740,20 @@ export const UnifiedFormEngine = ({
                     : t("common.no", "No");
             }
             return String(value);
+        };
+
+        const renderIndustryValue = () => {
+            if (!industryEntry) return "-";
+            const field = findFieldByName(industryEntry.key);
+            if (!field) return renderValue(industryEntry.value);
+
+            if (Array.isArray(industryEntry.value)) {
+                return industryEntry.value.length
+                    ? industryEntry.value.map((v) => getOptionDisplay(field, v)).join(", ")
+                    : "-";
+            }
+
+            return getOptionDisplay(field, industryEntry.value);
         };
 
         return (
@@ -730,7 +782,7 @@ export const UnifiedFormEngine = ({
                     </div>
                     <div>
                         <div className="text-xs text-muted-foreground">{t("mcap.review.summary.industry", "Industry")}</div>
-                        <div className="font-medium">{renderValue(industry)}</div>
+                        <div className="font-medium">{renderIndustryValue()}</div>
                     </div>
                     <div>
                         <div className="text-xs text-muted-foreground">{t("mcap.review.summary.parties", "Parties")}</div>
@@ -748,8 +800,13 @@ export const UnifiedFormEngine = ({
     const totalSteps = config.steps.length;
     const progressPct = Math.round(((currentStepIdx + 1) / totalSteps) * 100);
 
-    // TEMP (admin testing only): after first step is reached, allow jumping to any sidebar step.
-    const canJumpTo = (idx: number) => currentStepIdx > 0 || idx <= currentStepIdx;
+    // TEMP (admin testing only): only admin/master can use relaxed sidebar jumping.
+    const canJumpTo = (idx: number) => {
+        if (ADMIN_TEST_RELAX_VALIDATION && isAdminOrMaster) {
+            return currentStepIdx > 0 || idx <= currentStepIdx;
+        }
+        return idx <= currentStepIdx;
+    };
 
     // Memoize initialPaymentStatus to avoid unnecessary re-renders
     const memoizedPaymentStatus = useMemo(() => ({

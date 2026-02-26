@@ -51,8 +51,12 @@ export function ServiceSelectionWidget({
     // Extract fees from config or passed items
     const feesMeta = (config && (config as any).entityMeta && (config as any).entityMeta.fees) || null;
     const resolvedItems = typeof items === "function" ? items(data, (config as any).entityMeta || null) : items;
-    const govItems = feesMeta?.government || [];
-    const svcItemsMeta = (resolvedItems && resolvedItems.length > 0) ? resolvedItems : (feesMeta?.service || []);
+
+    const govSource = Array.isArray(feesMeta?.government) ? feesMeta.government : [];
+    const svcSource = (resolvedItems && resolvedItems.length > 0) ? resolvedItems : (feesMeta?.service || []);
+
+    const govItems = govSource;
+    const svcItemsMeta = svcSource;
     const enableKycExtras = !!(config as any)?.entityMeta?.enableKycExtras;
 
     const getCardFeePct = (curr: string) => (String(curr).toUpperCase() === "USD" ? 0.06 : 0.04);
@@ -90,6 +94,16 @@ export function ServiceSelectionWidget({
 
     const sameSelection = (a: string[], b: string[]) =>
         a.length === b.length && a.every(id => b.includes(id));
+
+    const computedItemsById = useMemo(() => {
+        const map = new Map<string, any>();
+        const computedItems = Array.isArray(data?.computedFees?.items) ? data.computedFees.items : [];
+        computedItems.forEach((item: any) => {
+            if (!item?.id) return;
+            map.set(String(item.id), item);
+        });
+        return map;
+    }, [data?.computedFees?.items]);
 
     // Compute pricing and propagate as single source of truth (service + invoice + payment).
     const handleChange = async (newIds: string[], payCurr: string) => {
@@ -276,6 +290,32 @@ export function ServiceSelectionWidget({
         }).format(amount);
     };
 
+    const toNumber = (value: any) => {
+        const n = Number(value ?? 0);
+        return Number.isFinite(n) ? n : 0;
+    };
+
+    const getRowAmounts = (item: any) => {
+        const rate = Number(data?.computedFees?.exchangeRateUsed || 0);
+        const shouldConvert = selectedCurrency === "HKD" && rate > 0;
+        const scale = (val: any) => shouldConvert ? Number((toNumber(val) * rate).toFixed(2)) : toNumber(val);
+        const computed = item?.id ? computedItemsById.get(String(item.id)) : undefined;
+
+        if (computed) {
+            return {
+                amount: computed?.amount !== undefined ? toNumber(computed.amount) : scale(item?.amount),
+                original: computed?.original !== undefined
+                    ? toNumber(computed.original)
+                    : (item?.original !== undefined ? scale(item.original) : undefined),
+            };
+        }
+
+        return {
+            amount: scale(item?.amount),
+            original: item?.original !== undefined ? scale(item.original) : undefined,
+        };
+    };
+
     // Helper to show hint tooltip
     const renderTip = (text?: string | object) => {
         if (!text) return null;
@@ -300,6 +340,7 @@ export function ServiceSelectionWidget({
         const info = item.info ? (typeof t(item.info, item.info) === 'string' ? t(item.info, item.info) : undefined) : undefined;
         const checked = item.mandatory || selectedIds.includes(item.id);
         const disabled = item.mandatory || isLocked;
+        const { amount, original } = getRowAmounts(item);
 
         return (
             <TableRow>
@@ -310,10 +351,10 @@ export function ServiceSelectionWidget({
                     </div>
                 </TableCell>
                 <TableCell className="text-right">
-                    {item.original ? formatPrice(item.original, selectedCurrency) : "-"}
+                    {original !== undefined ? formatPrice(original, selectedCurrency) : "-"}
                 </TableCell>
                 <TableCell className="text-right">
-                    {formatPrice(item.amount, selectedCurrency)}
+                    {formatPrice(amount, selectedCurrency)}
                 </TableCell>
                 <TableCell className="text-center w-[80px]">
                     <Checkbox
@@ -410,6 +451,9 @@ export function ServiceSelectionWidget({
     const mandatorySvcSubtotalConverted = convertAmount(mandatorySvcSubtotal);
     const optionalSvcSubtotalConverted = convertAmount(optionalSvcSubtotal);
     const extraKycSubtotalConverted = convertAmount(extraKycSubtotal);
+    const normalizedCardFeePct = Number(data.computedFees?.cardFeePct || 0);
+    const normalizedCardFeeSurcharge = Number(data.computedFees?.cardFeeSurcharge || 0);
+    const hasCardFeeLine = normalizedCardFeeSurcharge > 0;
     const totalConverted =
         typeof data.computedFees?.total === "number"
             ? Number(data.computedFees.total)
@@ -516,6 +560,20 @@ export function ServiceSelectionWidget({
                     </p>
                 </CardContent>
             </Card>
+
+            {hasCardFeeLine && (
+                <div className="flex justify-between items-center text-sm px-4 py-3 bg-primary/5 border border-primary/10 rounded-lg">
+                    <div className="flex items-center gap-1">
+                        <span className="text-muted-foreground">{t("invoice.cardFee", "Card Processing Fee")}</span>
+                        {normalizedCardFeePct > 0 && (
+                            <span className="text-[10px] text-primary border border-primary/20 rounded px-1.5 py-0.5 whitespace-nowrap">
+                                {Math.round(normalizedCardFeePct * 100)}%
+                            </span>
+                        )}
+                    </div>
+                    <span className="font-medium">{formatPrice(normalizedCardFeeSurcharge, selectedCurrency)}</span>
+                </div>
+            )}
 
             {/* Status Badge */}
             {isLocked && (

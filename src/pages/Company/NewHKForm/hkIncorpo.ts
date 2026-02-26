@@ -124,6 +124,10 @@ export const finYearOptions = [
     label: "newHk.steps.acct.fields.finYrEnd.options.September 30",
     value: "September 30",
   },
+  {
+    label: "newHk.steps.acct.fields.finYrEnd.options.Other",
+    value: "Other",
+  },
 ];
 
 export const bookKeepingCycleOptions = [

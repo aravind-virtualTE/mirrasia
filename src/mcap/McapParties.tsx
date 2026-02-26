@@ -135,7 +135,7 @@ export default function McapParties() {
               <Input value={newParty.phone} onChange={(e) => setNewParty((p) => ({ ...p, phone: e.target.value }))} />
             </div>
             <div>
-              <Label>Type</Label>
+              <Label>Is this shareholder a corporate entity?</Label>
               <Select value={newParty.type} onValueChange={(v) => setNewParty((p) => ({ ...p, type: v as "person" | "entity" }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />

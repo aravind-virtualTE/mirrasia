@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { finYearOptions } from "@/pages/Company/NewHKForm/hkIncorpo";
 import type { McapConfig, McapFeeItem, McapField } from "./types";
 
 type IeServiceItem = {
@@ -252,24 +253,24 @@ const buildApplicantFields = (): McapField[] => [
     condition: (f) => Array.isArray(f.writerRelationship) && f.writerRelationship.includes("other"),
     required: true,
   },
-   {
-          type: "select",
-          name: "sns",
-          label: "newHk.steps.applicant.fields.sns.label",
-          options: [
-            { label: "newHk.steps.applicant.fields.sns.options.WhatsApp", value: "WhatsApp" },
-            { label: "newHk.steps.applicant.fields.sns.options.WeChat", value: "WeChat" },
-            { label: "newHk.steps.applicant.fields.sns.options.Line", value: "Line" },
-            { label: "newHk.steps.applicant.fields.sns.options.KakaoTalk", value: "KakaoTalk" },
-            { label: "newHk.steps.applicant.fields.sns.options.Telegram", value: "Telegram" },
-          ],
-        },
-        {
-          type: "text",
-          name: "snsId",
-          label: "newHk.steps.applicant.fields.snsId.label",
-          condition: (f) => !!f.sns,
-        },
+  {
+    type: "select",
+    name: "sns",
+    label: "newHk.steps.applicant.fields.sns.label",
+    options: [
+      { label: "newHk.steps.applicant.fields.sns.options.WhatsApp", value: "WhatsApp" },
+      { label: "newHk.steps.applicant.fields.sns.options.WeChat", value: "WeChat" },
+      { label: "newHk.steps.applicant.fields.sns.options.Line", value: "Line" },
+      { label: "newHk.steps.applicant.fields.sns.options.KakaoTalk", value: "KakaoTalk" },
+      { label: "newHk.steps.applicant.fields.sns.options.Telegram", value: "Telegram" },
+    ],
+  },
+  {
+    type: "text",
+    name: "snsId",
+    label: "newHk.steps.applicant.fields.snsId.label",
+    condition: (f) => !!f.sns,
+  },
 ];
 
 const buildComplianceFields = (): McapField[] => [
@@ -420,7 +421,7 @@ const buildCompanyFields = (): McapField[] => [
     required: true,
     colSpan: 2,
   },
-  
+
   {
     type: "select",
     name: "totalShares",
@@ -492,7 +493,7 @@ const buildCompanyFields = (): McapField[] => [
       return `EUR ${(paidInCapital / totalShares).toFixed(4)}`;
     },
   },
- 
+
   {
     type: "radio-group",
     name: "eeaDirectorOrBondPlan",
@@ -563,13 +564,14 @@ const buildAccountingFields = (): McapField[] => [
   {
     type: "select",
     name: "finYrEnd",
-    label: "Financial year end",
-    options: [
-      { label: "December 31", value: "December 31" },
-      { label: "March 31", value: "March 31" },
-      { label: "June 30", value: "June 30" },
-      { label: "September 30", value: "September 30" },
-    ],
+    label: "newHk.steps.acct.fields.finYrEnd.label",
+    options: finYearOptions,
+  },
+  {
+    type: "text",
+    name: "finYrEndOther",
+    label: "newHk.common.other",
+    condition: (f) => f.finYrEnd === "Other",
   },
   {
     type: "radio-group",

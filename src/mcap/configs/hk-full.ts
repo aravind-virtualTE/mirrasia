@@ -341,11 +341,12 @@ export const HK_FULL_CONFIG: McapConfig = {
       title: "newHk.steps.company.title",
       fields: [
         {
-          type: "select",
+          type: "search-select",
           name: "industry",
           label: "newHk.company.fields.industry.label",
-          options: businessNatureList.map((b) => ({ label: b.label, value: b.code })),
           required: true,
+          placeholder: "newHk.company.fields.industry.placeholder",
+          items: businessNatureList,
         },
         {
           type: "checkbox-group",
@@ -437,7 +438,6 @@ export const HK_FULL_CONFIG: McapConfig = {
     {
       id: "invoice",
       title: "newHk.steps.invoice.title",
-      description: "newHk.steps.invoice.description",
       widget: "InvoiceWidget",
       computeFees: (data: any) => computeHkFees(data),
     },
@@ -450,6 +450,12 @@ export const HK_FULL_CONFIG: McapConfig = {
           name: "finYrEnd",
           label: "newHk.steps.acct.fields.finYrEnd.label",
           options: finYearOptions,
+        },
+         {
+          type: "text",
+          name: "finYrEndOther",
+          label: "newHk.common.other",
+          condition: (f) => f.finYrEnd === "Other",
         },
         {
           type: "radio-group",

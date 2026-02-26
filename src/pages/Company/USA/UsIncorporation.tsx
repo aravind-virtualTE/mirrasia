@@ -3689,8 +3689,6 @@ const usaIncorpConfig: LocalFormConfig = {
         {
             id: "invoice",
             title: "usa.steps.step6",
-            description:
-                "usa.steps.invoice.description",
             render: () => <InvoiceUsStep />,
         },
         // Payment

@@ -3519,10 +3519,154 @@ const buildIeEntityConfigFromUk = (): PartyFormConfig | null => {
   };
 };
 
+const buildAustraliaPersonConfigFromUk = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_PERSON" && cfg.partyType === "person"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "identity") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "companyName") {
+          return { ...field, label: "Australian legal entity name to be registered" };
+        }
+        if (field.name === "residentialAddress") {
+          return {
+            ...field,
+            label: "Residential address (include postal code and period lived in this country)",
+          };
+        }
+        return field;
+      });
+      return { ...step, title: "Member Identity", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "relationshipWithUkEntity") {
+          return { ...field, label: "Relationship with the Australian legal entity" };
+        }
+        if (field.name === "ukEntityRelationshipRoles") {
+          return { ...field, label: "Relationship role(s) with the Australian legal entity" };
+        }
+        if (field.name === "shareholdingPercentage") {
+          return { ...field, label: "Shareholding percentage (%) in the Australian legal entity" };
+        }
+        return field;
+      });
+      return { ...step, title: "Relationship and Role", fields };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "investmentFundSource") {
+          return {
+            ...field,
+            label: "Source of funds for investment/loan into Australian company (multiple selections possible)",
+          };
+        }
+        if (field.name === "investmentFundInflowCountries") {
+          return {
+            ...field,
+            label: "Country of fund inflow for the above investment source(s)",
+          };
+        }
+        if (field.name === "futureFundSource") {
+          return {
+            ...field,
+            label: "Expected future source of funds flowing into Australian company (multiple selections possible)",
+          };
+        }
+        if (field.name === "futureFundInflowCountries") {
+          return {
+            ...field,
+            label: "Country of fund inflow for the above future source(s)",
+          };
+        }
+        return field;
+      });
+      return { ...step, title: "Source of Funds", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "AU_PERSON",
+    title: "Australia Member Registration KYC",
+    countryCode: "AU",
+    partyType: "person",
+    steps,
+  };
+};
+
+const buildAuEntityConfigFromUk = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_ENTITY" && cfg.partyType === "entity"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "company") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "companyName") {
+          return { ...field, label: "Name of the Australian company to be registered" };
+        }
+        if (field.name === "countryOfEstablishment") {
+          return { ...field, label: "Country of incorporation" };
+        }
+        if (field.name === "registrationNumber") {
+          return { ...field, label: "Company registration number" };
+        }
+        return field;
+      });
+      return { ...step, title: "Corporate Details", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "relationWithUs") {
+          return { ...field, label: "Relationship with Australian corporations" };
+        }
+        return field;
+      });
+      return { ...step, title: "Relationship", fields };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "fundsOrigin") {
+          return { ...field, label: "Countries receiving funds for the above items (list all countries)" };
+        }
+        if (field.name === "fundsOrigin2") {
+          return { ...field, label: "Countries receiving future funds for the above items (list all countries)" };
+        }
+        return field;
+      });
+      return { ...step, title: "Source of Funds", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "AU_ENTITY",
+    title: "Australia Corporate Member Registration KYC",
+    countryCode: "AU",
+    partyType: "entity",
+    steps,
+  };
+};
+
 const LT_PERSON_CONFIG = buildLithuaniaPersonConfig();
 const LT_ENTITY_CONFIG = buildLtEntityConfigFromUk();
 const IE_PERSON_CONFIG = buildIrelandPersonConfig();
 const IE_ENTITY_CONFIG = buildIeEntityConfigFromUk();
+const AU_PERSON_CONFIG = buildAustraliaPersonConfigFromUk();
+const AU_ENTITY_CONFIG = buildAuEntityConfigFromUk();
 
 export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...BASE_PARTY_KYC_REGISTRY,
@@ -3534,6 +3678,8 @@ export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   ...(LT_ENTITY_CONFIG ? [LT_ENTITY_CONFIG] : []),
   ...(IE_PERSON_CONFIG ? [IE_PERSON_CONFIG] : []),
   ...(IE_ENTITY_CONFIG ? [IE_ENTITY_CONFIG] : []),
+  ...(AU_PERSON_CONFIG ? [AU_PERSON_CONFIG] : []),
+  ...(AU_ENTITY_CONFIG ? [AU_ENTITY_CONFIG] : []),
 ];
 
 export const resolvePartyKycConfig = ({

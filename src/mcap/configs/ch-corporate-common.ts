@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { finYearOptions } from "@/pages/Company/NewHKForm/hkIncorpo";
 import type { McapConfig, McapFeeItem, McapField } from "./types";
 
 type ChCorporateVariant = "AG" | "GMBH";
@@ -538,13 +539,14 @@ const buildAccountingFields = (): McapField[] => [
   {
     type: "select",
     name: "finYrEnd",
-    label: "Financial Year End",
-    options: [
-      { label: "December 31", value: "December 31" },
-      { label: "March 31", value: "March 31" },
-      { label: "June 30", value: "June 30" },
-      { label: "September 30", value: "September 30" },
-    ],
+    label: "newHk.steps.acct.fields.finYrEnd.label",
+    options: finYearOptions,
+  },
+  {
+    type: "text",
+    name: "finYrEndOther",
+    label: "newHk.common.other",
+    condition: (f) => f.finYrEnd === "Other",
   },
   {
     type: "radio-group",
