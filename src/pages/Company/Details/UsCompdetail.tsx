@@ -424,7 +424,7 @@ const UsCompdetail: React.FC<{ id: string }> = ({ id }) => {
 
   const showMemberDetails = async (email: string) => {
     const res = await getShrMemberData(id, email, "US", entityType);
-    // console.log("email--->", email, id, entityType, res)
+    console.log("email--->", email, id, entityType, res)
     setSelectedData(res.data);
     setIsDialogOpen(true);
   }

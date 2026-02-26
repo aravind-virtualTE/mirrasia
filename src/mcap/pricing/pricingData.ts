@@ -1104,5 +1104,277 @@ export const initialPricingData: CountryRegion[] = [
         }
       }
     ]
+  },
+  {
+    "code": "MCAP",
+    "name": "MCAP Service Overrides",
+    "flag": "MCAP",
+    "type": "region",
+    "items": [
+      {
+        "name": "HK CR Fee",
+        "type": "service_override",
+        "flag": "HK",
+        "countryCode": "HK",
+        "serviceId": "cr_fee",
+        "pricing": { "amount": 221, "currency": "USD", "notes": "Default MCAP service fee override" }
+      },
+      {
+        "name": "HK BR Fee",
+        "type": "service_override",
+        "flag": "HK",
+        "countryCode": "HK",
+        "serviceId": "br_fee",
+        "pricing": { "amount": 283, "currency": "USD" }
+      },
+      {
+        "name": "HK Incorporation Service",
+        "type": "service_override",
+        "flag": "HK",
+        "countryCode": "HK",
+        "serviceId": "inc_service",
+        "pricing": { "amount": 0, "currency": "USD" }
+      },
+      {
+        "name": "HK Secretary Annual",
+        "type": "service_override",
+        "flag": "HK",
+        "countryCode": "HK",
+        "serviceId": "sec_annual",
+        "pricing": { "amount": 225, "currency": "USD" }
+      },
+      {
+        "name": "HK KYC",
+        "type": "service_override",
+        "flag": "HK",
+        "countryCode": "HK",
+        "serviceId": "kyc",
+        "pricing": { "amount": 0, "currency": "USD" }
+      },
+      {
+        "name": "HK Registered Office",
+        "type": "service_override",
+        "flag": "HK",
+        "countryCode": "HK",
+        "serviceId": "reg_office",
+        "pricing": { "amount": 161, "currency": "USD" }
+      },
+      {
+        "name": "HK Bank Arrangement",
+        "type": "service_override",
+        "flag": "HK",
+        "countryCode": "HK",
+        "serviceId": "bank_arr",
+        "pricing": { "amount": 400, "currency": "USD" }
+      },
+      {
+        "name": "HK Company Kit",
+        "type": "service_override",
+        "flag": "HK",
+        "countryCode": "HK",
+        "serviceId": "kit",
+        "pricing": { "amount": 70, "currency": "USD" }
+      },
+      {
+        "name": "HK Correspondence Address",
+        "type": "service_override",
+        "flag": "HK",
+        "countryCode": "HK",
+        "serviceId": "corr_addr",
+        "pricing": { "amount": 65, "currency": "USD" }
+      },
+      {
+        "name": "US Base - Delaware LLC",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "Delaware",
+        "entityType": "LLC",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "US Base - Delaware Corporation",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "Delaware",
+        "entityType": "Corporation",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "US Base - New York LLC",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "New York",
+        "entityType": "LLC",
+        "pricing": { "amount": 1800, "currency": "USD" }
+      },
+      {
+        "name": "US Base - New York Corporation",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "New York",
+        "entityType": "Corporation",
+        "pricing": { "amount": 2350, "currency": "USD" }
+      },
+      {
+        "name": "US Base - Wyoming LLC",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "Wyoming",
+        "entityType": "LLC",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "US Base - Wyoming Corporation",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "Wyoming",
+        "entityType": "Corporation",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "US Base - California LLC",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "California",
+        "entityType": "LLC",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "US Base - California Corporation",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "California",
+        "entityType": "Corporation",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "US Base - Washington LLC",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "Washington",
+        "entityType": "LLC",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "US Base - Washington Corporation",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "Washington",
+        "entityType": "Corporation",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "US Base - Washington D.C. LLC",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "Washington D.C.",
+        "entityType": "LLC",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "US Base - Washington D.C. Corporation",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "base",
+        "state": "Washington D.C.",
+        "entityType": "Corporation",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "US Airwallex",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "airwallex",
+        "pricing": { "amount": 0, "currency": "USD" }
+      },
+      {
+        "name": "US Payoneer",
+        "type": "service_override",
+        "flag": "US",
+        "countryCode": "US",
+        "serviceId": "payoneer",
+        "pricing": { "amount": 0, "currency": "USD" }
+      },
+      {
+        "name": "SG Company Incorporation",
+        "type": "service_override",
+        "flag": "SG",
+        "countryCode": "SG",
+        "serviceId": "companyIncorporation",
+        "pricing": { "amount": 350, "currency": "USD" }
+      },
+      {
+        "name": "SG Company Secretary",
+        "type": "service_override",
+        "flag": "SG",
+        "countryCode": "SG",
+        "serviceId": "companySecretary",
+        "pricing": { "amount": 480, "currency": "USD" }
+      },
+      {
+        "name": "SG Registered Address",
+        "type": "service_override",
+        "flag": "SG",
+        "countryCode": "SG",
+        "serviceId": "registeredAddress",
+        "pricing": { "amount": 300, "currency": "USD" }
+      },
+      {
+        "name": "SG Nominee Director",
+        "type": "service_override",
+        "flag": "SG",
+        "countryCode": "SG",
+        "serviceId": "nomineeDirector",
+        "pricing": { "amount": 2000, "currency": "USD" }
+      },
+      {
+        "name": "SG Nominee Security",
+        "type": "service_override",
+        "flag": "SG",
+        "countryCode": "SG",
+        "serviceId": "nomineeSecurity",
+        "pricing": { "amount": 2000, "currency": "USD" }
+      },
+      {
+        "name": "SG Bank Account Advisory",
+        "type": "service_override",
+        "flag": "SG",
+        "countryCode": "SG",
+        "serviceId": "bankAccountAdvisory",
+        "pricing": { "amount": 1200, "currency": "USD" }
+      },
+      {
+        "name": "SG EMI E-Account",
+        "type": "service_override",
+        "flag": "SG",
+        "countryCode": "SG",
+        "serviceId": "emiEAccount",
+        "pricing": { "amount": 0, "currency": "USD" }
+      }
+    ]
   }
 ];

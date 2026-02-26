@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { finYearOptions } from "@/pages/Company/NewHKForm/hkIncorpo";
 import type { McapConfig } from "./types";
 
 const ENTITY_OPTIONS = [
@@ -408,14 +409,14 @@ export const UAE_IFZA_CONFIG: McapConfig = {
         {
           type: "select",
           name: "finYrEnd",
-          label: "Financial Year End",
-          options: [
-            { label: "December 31", value: "Dec 31" },
-            { label: "March 31", value: "Mar 31" },
-            { label: "June 30", value: "Jun 30" },
-            { label: "September 30", value: "Sep 30" },
-          ],
-          required: true,
+          label: "newHk.steps.acct.fields.finYrEnd.label",
+          options: finYearOptions,
+        },
+        {
+          type: "text",
+          name: "finYrEndOther",
+          label: "newHk.common.other",
+          condition: (f) => f.finYrEnd === "Other",
         },
         {
           type: "radio-group",

@@ -2119,12 +2119,13 @@
         "title": "會計與稅務",
         "fields": {
           "finYrEnd": {
-            "label": "香港公司的財政年度結束日期",
+            "label": "財政年度結算日期",
             "options": {
               "December 31": "12月31日",
               "March 31": "3月31日",
               "June 30": "6月30日",
-              "September 30": "9月30日"
+              "September 30": "9月30日",
+              "Other": "其他"
             }
           },
           "bookKeepingCycle": {
@@ -2139,7 +2140,7 @@
           "xero": {
             "label": "您想使用線上會計軟體（例如 Xero）嗎？",
             "options": {
-              "Yes": "是（約 HKD 400/月）",
+              "Yes": "是",
               "No": "否",
               "Recommendation required": "需要推薦 — 我們將根據行業和交易量提供建議",
               "Other": "其他"

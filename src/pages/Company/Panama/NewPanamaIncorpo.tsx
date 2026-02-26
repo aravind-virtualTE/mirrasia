@@ -3116,7 +3116,6 @@ const CONFIG: FormConfig = {
         {
             id: "invoice",
             title: "usa.steps.step6",
-            description: "usa.steps.invoice.description",
             render: PanamaQuoteSetupStep,
         },
         {

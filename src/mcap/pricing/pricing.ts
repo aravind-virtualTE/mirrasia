@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Pricing {
+  [key: string]: number | string | undefined;
   government_fees?: number;
-  service_fee: number;
+  service_fee?: number;
   registered_agent?: number;
   registered_office?: number;
   franchise_tax?: number;
@@ -20,6 +22,12 @@ export interface PricingItem {
   type: string;
   flag: string;
   pricing: Pricing;
+  serviceId?: string;
+  countryCode?: string;
+  state?: string;
+  entityType?: string;
+  active?: boolean;
+  metadata?: Record<string, any>;
 }
 
 export interface CountryRegion {

@@ -2123,12 +2123,13 @@
         "title": "Accounting & Taxation",
         "fields": {
           "finYrEnd": {
-            "label": "Financial year-end date of the Hong Kong company",
+            "label": "Financial year-end date",            
             "options": {
               "December 31": "December 31",
               "March 31": "March 31",
               "June 30": "June 30",
-              "September 30": "September 30"
+              "September 30": "September 30",
+              "Other": "Other"
             }
           },
           "bookKeepingCycle": {
@@ -2143,7 +2144,7 @@
           "xero": {
             "label": "Would you like to implement online accounting software (e.g., Xero)?",
             "options": {
-              "Yes": "Yes (HKD 400/mo)",
+              "Yes": "Yes",
               "No": "No",
               "Recommendation required": "Recommendation required we will suggest based on industry & volume",
               "Other": "Other"
@@ -2247,7 +2248,8 @@
       }
     },
     "common": {
-      "select": "Select"
+      "select": "Select",
+      "other":"Other (please specify)"
     },
     "fees": {
       "table": {

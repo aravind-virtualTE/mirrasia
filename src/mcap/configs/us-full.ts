@@ -343,7 +343,6 @@ export const US_FULL_CONFIG: McapConfig = {
     {
       id: "invoice",
       title: "newHk.steps.invoice.title",
-      description: "newHk.steps.invoice.description",
       widget: "InvoiceWidget",
     },
     {

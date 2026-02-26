@@ -539,7 +539,6 @@ export const SG_FULL_CONFIG: McapConfig = {
     {
       id: "invoice",
       title: "usa.steps.step6",
-      description: "usa.steps.invoice.description",
       widget: "InvoiceWidget",
       computeFees: (data: any) => {
         const hasLocalDir = data.sg_hasLocalDirector === "yes";
