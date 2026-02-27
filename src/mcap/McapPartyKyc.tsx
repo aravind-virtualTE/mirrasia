@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PartyKycEngine from "./party-kyc/PartyKycEngine";
 import { resolvePartyKycConfig } from "./party-kyc/partyKycRegistry";
+import { buildPartyKycInitialValues } from "./party-kyc/partyKycInitialValues";
 
 type Party = {
   _id: string;
@@ -80,18 +81,7 @@ export default function McapPartyKyc({
   }, [company?.countryCode, party?.type, party?.roles]);
 
   const initialValues = useMemo(() => {
-    const base = {
-      email: party?.email || "",
-      emailAddress: party?.email || "",
-      companyName: company?.companyName || company?.countryName || "",
-      proposedCompanyName: company?.companyName || company?.countryName || "",
-      roles: party?.roles || [],
-      fullName: party?.name || "",
-      name: party?.name || "",
-      phone: party?.phone || "",
-      mobileNumber: party?.phone || "",
-    };
-    return { ...base, ...(party?.details || {}) };
+    return buildPartyKycInitialValues({ party, company });
   }, [party, company]);
 
   const handleSave = async (values: Record<string, any>, status: "in_progress" | "submitted") => {

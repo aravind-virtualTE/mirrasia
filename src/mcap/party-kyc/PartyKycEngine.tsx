@@ -251,7 +251,11 @@ export default function PartyKycEngine({
   };
 
   useEffect(() => {
-    if (initialValues) setFormData((prev) => ({ ...initialValues, ...prev }));
+    if (!initialValues) {
+      setFormData({});
+      return;
+    }
+    setFormData({ ...initialValues });
   }, [initialValues]);
 
   const stepChecks = useMemo(() => {
