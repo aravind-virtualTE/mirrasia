@@ -180,7 +180,7 @@
       "twoFactorEnabled": "雙重驗證已成功啟用！",
       "twoFactorDisabled": "雙重驗證已停用。",
       "copied": "已複製到剪貼簿！",
-      "otpVerifyInstruction": "請輸入發送至 {{phone}} 的 6 位數驗證碼。",
+      "otpVerifyInstruction": "請輸入發送至 {{phone}} 的 4 位數驗證碼。",
       "changesDiscarded": "已捨棄更改",
       "otpVerified": "驗證碼驗證成功",
       "copyError": "無法自動複製，請手動複製。",

@@ -180,7 +180,7 @@
       "twoFactorEnabled": "2단계 인증이 성공적으로 활성화되었습니다!",
       "twoFactorDisabled": "2단계 인증이 비활성화되었습니다.",
       "copied": "클립보드에 복사되었습니다!",
-      "otpVerifyInstruction": "{{phone}}번으로 전송된 6자리 코드를 입력하세요.",
+      "otpVerifyInstruction": "{{phone}}번으로 전송된 4자리 코드를 입력하세요.",
       "changesDiscarded": "변경 사항이 취소되었습니다",
       "otpVerified": "OTP 인증 성공",
       "copyError": "자동 복사에 실패했습니다. 수동으로 복사해 주세요.",
