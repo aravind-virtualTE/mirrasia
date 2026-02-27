@@ -2292,7 +2292,19 @@
         "corr_addr": {
           "label": "通訊地址年度服務（可選）",
           "info": "董事/股東的郵件處理。"
+        },
+        "dcp_headcount": {
+          "label": "額外 DCP 人數（選填）",
+          "info": "每位指定聯繫人（DCP）的年度服務費。"
+        },
+        "extra_kyc": {
+          "label": "額外 KYC / 盡職調查費用",
+          "info": "當相關方人數超過基本配額而需進行額外 KYC 審核時適用。"
         }
+      },
+      "units": {
+        "person": "人",
+        "personPerYear": "人/年"
       },
       "richTips": {
         "reg_office": {

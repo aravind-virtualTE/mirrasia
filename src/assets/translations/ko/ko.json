@@ -2291,7 +2291,19 @@
         "corr_addr": {
           "label": "연락 주소 연간 서비스 (선택 사항)",
           "info": "이사/주주를 위한 우편물 처리."
+        },
+        "dcp_headcount": {
+          "label": "추가 DCP 인원 (선택 사항)",
+          "info": "지정 연락 담당자(DCP) 1인당 연간 서비스 수수료입니다."
+        },
+        "extra_kyc": {
+          "label": "추가 KYC / 고객 실사 수수료",
+          "info": "기본 포함 인원을 초과하여 추가 인원에 대한 KYC가 필요한 경우 적용됩니다."
         }
+      },
+      "units": {
+        "person": "인",
+        "personPerYear": "인/년"
       },
       "richTips": {
         "reg_office": {

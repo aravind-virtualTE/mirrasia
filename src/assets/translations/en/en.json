@@ -2300,10 +2300,18 @@
           "label": "Correspondence Address Annual Service (optional)",
           "info": "Mail handling for directors/shareholders."
         },
+        "dcp_headcount": {
+          "label": "Additional DCP headcount (optional)",
+          "info": "Annual service fee per designated contact person."
+        },
         "extra_kyc": {
           "label": "Additional KYC / Due Diligence fee",
           "info": "Applied when extra parties require KYC beyond the included quota."
         }
+      },
+      "units": {
+        "person": "person",
+        "personPerYear": "person/year"
       },
       "richTips": {
         "reg_office": {
@@ -2376,7 +2384,8 @@
         "reg_office": "Registered office address for statutory records and official correspondence.",
         "bank_arr": "Introduction and scheduling support with the selected bank/EMI.",
         "kit": "Company chop, share certificates, and related items.",
-        "corr_addr": "Mail handling for directors/shareholders."
+        "corr_addr": "Mail handling for directors/shareholders.",
+        "dcp_headcount": "Additional annual DCP service fee charged per designated contact person."
       },
       "common": {
         "subtotal": "Subtotal"
