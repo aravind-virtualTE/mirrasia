@@ -1,4 +1,4 @@
-{
+﻿{
   "userProfile": {
     "title": "프로필 설정",
     "subtitle": "계정 정보 및 보안 설정을 관리하세요",
@@ -973,7 +973,7 @@
     "numSharestTip": "설립 후 신주 발행 및 주식 양도와 같은 자본 증가에는 추가 비용이 발생하므로 주식 수와 자본금을 신중히 결정하시기 바랍니다. 향후 주식을 양도할 계획이 있는 경우 원하는 비율로 주식을 나눌 수 있도록 주식 수를 효율적으로 설정하는 것이 좋습니다. 예를 들어, 설립 시 10주를 발행한 경우, 전체 주식의 33.33%를 다른 파트너에게 양도하려면 비율에 맞게 추가 주식을 발행해야 하므로 과정이 복잡해질 수 있습니다. 또한 설립 시 주당 액면가를 HKD 1로 발행한 후 미래 투자자에게 HKD 5 차이를 두고 싶다면 이를 미리 고려하시기 바랍니다."
   },
   "businessIndustry": {
-    "empty": "\uc544\uc9c1 \uad6c\uc131\uc6d0\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \"\uc8fc\uc8fc/\uc774\uc0ac/DCP \uad6c\uc131\uc6d0 \ucd94\uac00\"\ub97c \ud074\ub9ad\ud574 \uc2dc\uc791\ud558\uc138\uc694.",
+    "empty": "아직 구성원이 없습니다. \"주주/이사/DCP 구성원 추가\"를 클릭해 시작하세요.",
     "cropAnimalProduction": "작물 및 동물 생산, 수렵 및 관련 서비스 활동",
     "forestryActivities": "임업 활동",
     "fishingAndAquaculture": "어업 및 양식업",
@@ -2291,7 +2291,19 @@
         "corr_addr": {
           "label": "연락 주소 연간 서비스 (선택 사항)",
           "info": "이사/주주를 위한 우편물 처리."
+        },
+        "dcp_headcount": {
+          "label": "추가 DCP 인원 (선택 사항)",
+          "info": "지정 연락 담당자(DCP) 1인당 연간 서비스 수수료입니다."
+        },
+        "extra_kyc": {
+          "label": "추가 KYC / 고객 실사 수수료",
+          "info": "기본 포함 인원을 초과하여 추가 인원에 대한 KYC가 필요한 경우 적용됩니다."
         }
+      },
+      "units": {
+        "person": "인",
+        "personPerYear": "인/년"
       },
       "richTips": {
         "reg_office": {
@@ -2565,7 +2577,7 @@
             "no": "아니요"
           }
         },
-        "roleSelectionPrompt": "\ud574\ub2f9 \uad6c\uc131\uc6d0\uc774 \ub9e1\uc744 \ud56d\ubaa9\uc744 \uc120\ud0dd\ud558\uc138\uc694",
+        "roleSelectionPrompt": "해당 구성원이 맡을 항목을 선택하세요",
         "shares": {
           "label": "주식 수"
         },
@@ -2585,14 +2597,14 @@
       "buttons": {
         "remove": "삭제",
         "add": "+ 주주 / 이사 추가",
-        "addMember": "\uc8fc\uc8fc/\uc774\uc0ac/DCP \uad6c\uc131\uc6d0 \ucd94\uac00",
+        "addMember": "주주/이사/DCP 구성원 추가",
         "invite": "초대 보내기"
       },
       "directory": {
-        "placeholder": "\uad6c\uc131\uc6d0 \uc120\ud0dd",
-        "addSelected": "\uc120\ud0dd\ud55c \ud56d\ubaa9 \ucd94\uac00"
+        "placeholder": "구성원 선택",
+        "addSelected": "선택한 항목 추가"
       },
-      "empty": "\uc544\uc9c1 \uad6c\uc131\uc6d0\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \"\uc8fc\uc8fc/\uc774\uc0ac/DCP \uad6c\uc131\uc6d0 \ucd94\uac00\"\ub97c \ud074\ub9ad\ud574 \uc2dc\uc791\ud558\uc138\uc694.",
+      "empty": "아직 구성원이 없습니다. \"주주/이사/DCP 구성원 추가\"를 클릭해 시작하세요.",
       "totals": "총 주식 수: {{total}} • 할당됨: {{assigned}}",
       "toasts": {
         "invalidEmail": {
@@ -2928,13 +2940,1350 @@
     "currencyNote": "모든 가격은 원래 USD로 계산됩니다. 환율은 실시간으로 업데이트됩니다."
   },
   "mcap": {
+    "common": {
+      "steps": {
+        "applicant": "신청인 정보",
+        "compliance": "컴플라이언스",
+        "company": "법인 정보",
+        "parties": "당사자 및 초대",
+        "accounting": "회계 및 세무",
+        "services": "서비스 선택",
+        "invoice": "인보이스 미리보기",
+        "payment": "결제",
+        "review": "검토 및 선언"
+      },
+      "options": {
+        "yes": "예",
+        "no": "아니요",
+        "doNotKnow": "모름",
+        "other": "기타",
+        "notSureYet": "아직 확실하지 않음",
+        "selfHandleAfterSetup": "설립 후 자체 처리 가능",
+        "noIfFixedAnnualCosts": "고정 연간 비용 발생 시 설립 의사 없음",
+        "adviceRequiredBeforeProceeding": "진행 전 상담 필요",
+        "internalResolution": "내부적으로 해결 가능",
+        "upTo300": "300개 이하",
+        "from301To1000": "301 - 1000개",
+        "moreThan1000": "1000개 이상"
+      },
+      "relationship": {
+        "director": "이사",
+        "shareholder": "주주",
+        "authorizedRepresentative": "권한 있는 대리인",
+        "professionalAdvisor": "전문 고문(자문)"
+      },
+      "messenger": {
+        "whatsApp": "WhatsApp",
+        "weChat": "WeChat",
+        "line": "Line",
+        "kakaoTalk": "카카오톡",
+        "telegram": "텔레그램"
+      },
+      "currency": {
+        "aud": "AUD",
+        "hkd": "HKD",
+        "usd": "USD",
+        "gbp": "파운드"
+      },
+      "fields": {
+        "applicantName": "신청인 성함",
+        "applicantEmail": "신청인 이메일",
+        "applicantPhone": "신청인 전화번호",
+        "companyNameFirstChoice": "법인명 (1순위)",
+        "companyNameSecondChoice": "법인명 (2순위)",
+        "companyNameThirdChoice": "법인명 (3순위)",
+        "relationshipToCompany": "법인과의 관계",
+        "otherRelationshipDetails": "기타 관계 상세 정보",
+        "additionalContactInfo": "추가 연락처 정보 (SNS ID 등)",
+        "preferredMessenger": "선호하는 메신저",
+        "messengerId": "메신저 ID",
+        "selectedIndustry": "업종 선택",
+        "productServiceDescription": "거래 예정인 제품/서비스 설명",
+        "businessSummary": "사업 내용을 3-4문장으로 설명해 주세요",
+        "businessOperatingCountries": "사업이 운영될 국가",
+        "websiteAddressOptional": "웹사이트 주소 (있는 경우)",
+        "capitalCurrency": "자본금 통화",
+        "capitalCurrencyOther": "자본금 통화 (기타)",
+        "totalCapitalToBePaid": "납입 자본금 총액",
+        "totalCapitalToBePaidOther": "납입 자본금 총액 (기타)",
+        "capitalRequirementAcknowledged": "자본금 요건은 컴플라이언스 사항이며 인보이스 총액에서 제외됨을 이해합니다.",
+        "totalNumberOfShares": "총 발행 주식 수",
+        "totalNumberOfSharesOther": "총 발행 주식 수 (기타)",
+        "shareCountOther": "주식 수 (기타)",
+        "parValuePerShare": "주당 액면가",
+        "otherIndustryDetails": "기타 업종 상세 정보",
+        "otherPurposeDetails": "기타 목적 상세 정보",
+        "financialYearEnd": "회계연도 종료일",
+        "otherFinancialYearEnd": "기타 회계연도 종료일",
+        "bookKeepingCycle": "기장 주기",
+        "expectedAnnualTransactions": "예상 연간 거래량",
+        "vatRegistrationSupport": "부가가치세(VAT) 등록 지원이 필요하십니까?",
+        "vatTaxSupportNeed": "부가가치세(VAT)/세무 신고 지원이 필요하십니까?",
+        "accountingAndTaxNotes": "회계 및 세무 관련 참고 사항",
+        "shareType": "주식 유형",
+        "directorAppointment": "이사 임명",
+        "issuedShareTypeOther": "발행 주식 유형 (기타)",
+        "agreementAndDeclaration": "동의 및 선언",
+        "doYouAgreeToDeclaration": "위의 선언 내용에 동의하십니까?",
+        "truthfulnessDeclaration": "제출된 정보가 사실이며 정확함을 확인합니다.",
+        "complianceSuspensionAcknowledgement": "법적/컴플라이언스 위반 사항이 발견될 경우 서비스가 중단될 수 있음을 이해합니다.",
+        "electronicSignature": "전자 서명 (성함 입력)",
+        "otherDetails": "기타 상세 정보"
+      },
+      "placeholders": {
+        "website": "https://"
+      },
+      "bookkeeping": {
+        "monthly": "매월",
+        "quarterly": "매분기",
+        "halfYearly": "반기별",
+        "annually": "매년"
+      },
+      "shareType": {
+        "ordinary": "보통주",
+        "preference": "우선주"
+      },
+      "coverage": {
+        "director": "이사 요건 충족",
+        "directorAtLeastOne": "최소 1인의 임명된 이사"
+      }
+    },
+    "au": {
+      "title": "호주 법인 설립",
+      "confirmation": {
+        "title": "호주 법인 설립 요청 제출 완료",
+        "message": "호주 법인 설립 요청이 접수되었습니다. 일반 처리는 보통 2-3개월이 소요됩니다. 급행 처리는 보통 1-2주가 소요되며, ABN 발급 목표는 영업일 기준 4일 이내입니다. 금융 기관 온보딩 기간은 별도입니다.",
+        "steps": {
+          "complianceReview": {
+            "title": "컴플라이언스 검토",
+            "description": "모든 관련 당사자 및 지배인에 대한 KYC/CDD 및 제재 대상 여부 검토."
+          },
+          "structureValidation": {
+            "title": "구조 검증",
+            "description": "신고 전 이사의 거주 요건 및 등록 주소지 요건 확인."
+          },
+          "incorporationAndAbn": {
+            "title": "설립 및 ABN 처리",
+            "description": "설립 서류를 제출하고 선택한 서비스 수준에 따라 ABN 처리를 진행합니다."
+          },
+          "postIncorporationSupport": {
+            "title": "설립 후 지원",
+            "description": "선택한 경우에 한해 EMI 지원 및 온보딩 지원이 조율됩니다."
+          }
+        }
+      },
+      "fees": {
+        "note": "모든 금액에는 세금이 포함되어 있지 않습니다. 법인세는 일반적으로 30%입니다 (자격 요건 충족 시 소규모 기업 세율 25% 적용 가능)."
+      },
+      "options": {
+        "industry": {
+          "technology": "기술 / 소프트웨어 / AI",
+          "consulting": "컨설팅 및 전문 서비스",
+          "trading": "무역 / 수출입",
+          "ecommerce": "이커머스",
+          "investment": "투자 / 지주 활동",
+          "manufacturing": "제조업",
+          "fintech": "금융 서비스 / 핀테크"
+        },
+        "purpose": {
+          "marketExpansion": "호주 시장 진출",
+          "regionalOperations": "지역 거점 운영 설정",
+          "assetHolding": "자산/투자 보유 및 관리",
+          "localCustomerSupport": "호주 현지 고객 지원",
+          "investorRequirement": "투자자 / 파트너 요구 사항"
+        }
+      },
+      "compliance": {
+        "annualRenewalConsent": {
+          "label": "설립 후 연간 갱신, 회계 및 세무 의무를 인지하고 계십니까?"
+        },
+        "legalAndEthicalConcern": {
+          "label": "법인 설립 목적에 법적/윤리적 문제(자금 세탁, 사기, 제재 회피 등)가 포함되어 있습니까?"
+        },
+        "sanctionsExposureDeclaration": {
+          "label": "신청인이나 관련 당사자 중 제재 국가, 단체 또는 개인과 연결된 경우가 있습니까?"
+        },
+        "corporateTaxAcknowledgement": {
+          "label": "호주 법인세가 일반적으로 30%(적격 소규모 기업은 25%)임을 인지하고 계십니까?"
+        },
+        "options": {
+          "needTaxAdvice": "세무 상담 필요"
+        }
+      },
+      "company": {
+        "requirements": {
+          "label": "호주 법인 설립 요건",
+          "content": "법적으로 최소 1인의 호주 거주 이사가 필요합니다. 호주 내 물리적 등록 주소지가 필요합니다 (사서함 불가). 예상 소요 기간: 일반 2-3개월, 급행 1-2주 (영업일 4일 내 ABN 목표). 금융 기관 온보딩 기간은 별도입니다."
+        },
+        "selectedIndustry": {
+          "label": "업종 선택 (다중 선택 가능)"
+        },
+        "businessDescription": {
+          "label": "사업 활동 설명"
+        },
+        "establishmentPurpose": {
+          "label": "호주 법인 설립 목적"
+        },
+        "auHasResidentDirector": {
+          "label": "현재 최소 1인의 호주 거주 이사를 보유하고 계십니까?"
+        },
+        "auNomineeDirectorAcknowledgment": {
+          "label": "호주 거주 이사가 없는 경우 지정 이사 서비스(연간 A$5,000)가 필수임을 이해합니다."
+        },
+        "auHasOwnRegisteredAddress": {
+          "label": "자체적인 호주 물리적 등록 주소지를 보유하고 계십니까?"
+        },
+        "auRegisteredAddressDetails": {
+          "label": "호주 등록 주소지 상세 정보"
+        },
+        "auNoPoBoxAcknowledgement": {
+          "label": "이 등록 주소지가 사서함이 아닌 실제 물리적 주소임을 확인합니다."
+        },
+        "capitalAmountOther": {
+          "label": "자본금 총액 (기타)"
+        }
+      },
+      "services": {
+        "items": {
+          "base": {
+            "label": "호주 법인 설립 (서류 준비, 전자 신고, 표준 법인 서류 포함)",
+            "info": "기본 설립 비용입니다. 모든 금액에는 세금이 포함되어 있지 않습니다."
+          },
+          "nomineeDirector": {
+            "label": "지정 이사 서비스 (연간)",
+            "info": "호주 거주 이사가 최소 1인 이상 없는 경우 필수입니다. 필수 KYC, 계약 및 면책 합의가 포함됩니다."
+          },
+          "registeredAddress": {
+            "label": "등록 주소지 서비스 (연간)",
+            "info": "신고 목적으로만 사용되는 등록 주소지입니다. 실제 사무 공간이 아니며 사서함은 허용되지 않습니다."
+          },
+          "express": {
+            "label": "급행 서비스",
+            "info": "영업일 기준 4일 이내 ABN 발급을 목표로 합니다. 일반적으로 호주 거주자 전용 구조로 우선 설립한 후 비거주 주주/이사를 추가하는 방식으로 진행됩니다."
+          },
+          "emiAssistance": {
+            "label": "EMI 계좌 개설 지원",
+            "infoIncluded": "승인된 파트너 채널을 통해 개설 시 추가 비용 없이 포함됩니다.",
+            "infoConditional": "승인된 파트너 채널을 통해 개설 시 무료일 수 있습니다."
+          }
+        },
+        "pricingSummary": {
+          "label": "호주 가격 요약",
+          "content": "기본 설립 비용: A$2,000. 예상 소요 기간: 일반 2-3개월, 급행 1-2주 (영업일 4일 내 ABN 목표). 모든 금액에는 세금이 포함되어 있지 않습니다."
+        },
+        "auEmiViaPartnerChannel": {
+          "label": "EMI 계좌 개설을 당사 파트너 채널을 통해 진행하시겠습니까?"
+        }
+      },
+      "parties": {
+        "fields": {
+          "auIsResidentDirector": {
+            "label": "호주 거주 이사"
+          }
+        }
+      },
+      "steps": {
+        "compliance": {
+          "description": "신고 전 컴플라이언스 및 연간 의무 사항에 대한 확인을 제공해 주세요."
+        },
+        "parties": {
+          "description": "모든 주주/이사를 초대하고 최소 1인의 연락 담당자를 지정해 주세요."
+        },
+        "services": {
+          "description": "서비스를 선택하고 AUD 기준 세전 가격을 검토해 주세요."
+        }
+      }
+    },
+    "uk": {
+      "title": "영국 법인 설립",
+      "confirmation": {
+        "title": "영국 법인 설립 신청 완료",
+        "message": "영국 법인 설립 정보가 수집되었습니다. 당사 팀에서 KYC/CDD를 검증하고, 선택하신 서비스를 검토한 후 설립 등기를 진행할 예정입니다.",
+        "steps": {
+          "complianceReview": {
+            "title": "컴플라이언스 검토",
+            "description": "KYC/CDD 확인 및 제재 대상 스크리닝 검토."
+          },
+          "documentConfirmation": {
+            "title": "서류 확인",
+            "description": "법인 설립 세부 정보, 구성원 및 필수 증빙 서류 검토."
+          },
+          "incorporationFiling": {
+            "title": "설립 등기 신청",
+            "description": "모든 확인 절차 완료 후 영국 기업등록소(Companies House)에 설립 신청서 제출."
+          },
+          "postFilingSupport": {
+            "title": "설립 후 지원",
+            "description": "선택하신 옵션에 따라 등록 사무소(Registered Office) 및 설립 후 후속 지원이 조율됩니다."
+          }
+        }
+      },
+      "fees": {
+        "note": "견적 전용 서비스 요청은 별도로 관리되며, 가격이 확정될 때까지 인보이스 합계에서 제외됩니다."
+      },
+      "applicant": {
+        "guidance": {
+          "label": "영국 법인 설립 안내",
+          "content": "영국 유한회사(잉글랜드 및 웨일스) 설립을 위한 신청서입니다. 지원이 필요한 경우: www.mirrasia.com, +82-2-543-6187 (한국), +852-2187-2428 (홍콩), cs@mirrasia.com으로 연락주시기 바랍니다."
+        },
+        "fields": {
+          "applicantName": {
+            "placeholder": "이 양식을 작성하는 작성자 성명"
+          },
+          "relationship": {
+            "label": "신청인과 설립 예정인 영국 법인 간의 관계"
+          },
+          "relationshipOther": {
+            "label": "기타 관계 (직접 입력)"
+          }
+        }
+      },
+      "compliance": {
+        "legalAndEthicalConcern": {
+          "label": "영국 법인 설립 목적이 자금 세탁, 도박, 탈세, 자산 은닉, 불법 사업 또는 사기와 같은 법적 또는 윤리적 문제와 관련이 있습니까?"
+        },
+        "annualRenewalConsent": {
+          "label": "법인 설립 후 매년 갱신/회계/세무 의무가 발생하며, 이에 따른 고정 비용 및 데이터 제출 의무가 적용됩니다. 이에 동의하십니까?"
+        },
+        "sanctionedCountryOperations": {
+          "label": "설립 예정인 영국 법인/지주사/그룹사/관계사가 이란, 수단, 남수단, 북한, 시리아, 쿠바, 벨라루스, 짐바브웨, 러시아 또는 정부 통제 밖의 우크라이나 지역에서 운영 중이거나 운영할 계획이 있습니까?"
+        },
+        "sanctionedResidenceExposure": {
+          "label": "임직원 중 제재 국가/지역에 거주하거나 UN, EU, UKHMT, HKMA 또는 OFAC의 제재를 받은 국가에 거주하는 인원이 있습니까?"
+        },
+        "sanctionedOwnershipOrControl": {
+          "label": "설립 예정인 영국 법인이 제재 대상 개인, 그룹, 조직 또는 정부에 의해 소유/통제되거나 이들을 대리하여 활동하게 됩니까?"
+        },
+        "crimeaSevastopolExposure": {
+          "label": "임직원 또는 관계사가 현재 크림반도 또는 세바스토폴에서 운영 중이거나 운영할 계획이 있습니까?"
+        },
+        "oilGasMilitaryExposure": {
+          "label": "설립 예정인 영국 법인 또는 관계사가 현재 석유/가스/에너지/군수/국방 분야에서 운영 중이거나 운영할 계획이 있습니까?"
+        },
+        "options": {
+          "considerLegalAdvice": "법률 자문 고려 필요"
+        }
+      },
+      "company": {
+        "selectedEntity": {
+          "label": "영국 법인 설립 유형 선택",
+          "options": {
+            "individual": "영국 법인 (개인 주주)",
+            "subsidiary": "영국 자회사 (해외 법인이 주주인 경우)",
+            "branch": "영국 지점 (해외 법인의 영국 지점 - 임시 가격은 개인 패키지를 따름)"
+          }
+        },
+        "businessTypes": {
+          "label": "사업 유형 선택 (해당되는 항목 모두 선택)"
+        },
+        "businessTypesOther": {
+          "label": "기타 사업 유형"
+        },
+        "tradedItemDescription": {
+          "label": "취급 품목/서비스 내용/서비스 유형 설명"
+        },
+        "businessSummary": {
+          "label": "사업 내용을 3-4문장으로 설명해 주세요"
+        },
+        "establishmentPurpose": {
+          "label": "영국 법인 설립 목적 및 기대 효과"
+        },
+        "operatingCountries": {
+          "label": "설립 후 사업이 수행될 국가",
+          "placeholder": "개발, 운영, 직원 거주, 사무실, CS, 재고 관리, 의사 결정, 마케팅, 판매 등이 발생하는 모든 국가를 기재해 주세요."
+        },
+        "articlesSpecialClauses": {
+          "label": "정관(Articles of Association)에 기재할 특별 조항 (있는 경우)"
+        },
+        "registeredOfficeChoice": {
+          "label": "영국 법인 등록 사무소 주소",
+          "options": {
+            "useMirrAsiaAddress": "Mirr Asia 등록 주소지 서비스 사용",
+            "useOwnAddress": "별도의 영국 사업장 주소 사용 (Mirr Asia 서비스 미사용)"
+          }
+        },
+        "registeredOfficeOwnAddress": {
+          "label": "영국 사업장 주소 상세 정보"
+        }
+      },
+      "options": {
+        "businessType": {
+          "virtualAsset": "가상자산 관련 (토큰 발행/판매/ICO/거래소/지갑)",
+          "nftRelated": "NFT 관련",
+          "vaSoftwareDevelopment": "가상자산 관련 소프트웨어 개발",
+          "softwareDevelopment": "가상자산과 무관한 일반 소프트웨어 개발",
+          "vaInvestment": "가상자산 기반 투자 사업",
+          "vaP2eGame": "가상자산 기반 P2E 게임",
+          "vaSpeculativeGame": "가상자산 기반 사행성 게임",
+          "vaOtherGame": "P2E/사행성과 무관한 가상자산 기반 게임",
+          "metaversePlatform": "메타버스 플랫폼 개발",
+          "forexTrading": "외환 거래 (Forex)",
+          "financeInvestment": "금융/투자/컨설팅/대출",
+          "tradingBusiness": "무역업",
+          "distributionBusiness": "도소매 유통업",
+          "consulting": "컨설팅",
+          "manufacturing": "제조업",
+          "ecommerce": "온라인 서비스업 (전자상거래)",
+          "purchaseProxy": "온라인 직구/배송 대행/구매 대행"
+        },
+        "establishmentPurpose": {
+          "commonwealthEuropeExpansion": "영연방 또는 유럽 지역으로의 확장",
+          "regulatoryDiversification": "규제 완화에 따른 사업 다각화",
+          "advisorOrClientSuggested": "법률 고문/투자자/고객의 권유",
+          "internationalExpansion": "다수의 해외 국가로의 확장",
+          "assetManagement": "부동산 또는 금융 투자를 통한 자산 관리",
+          "holdingManagement": "자회사/계열사 관리를 위한 지주사 운영",
+          "policyCompetitiveness": "금융 정책에 따른 경쟁 우위 확보"
+        },
+        "quoteOnlyServices": {
+          "emiAccountAdvisory": "EMI 계좌 개설 신청 자문",
+          "ukLegalOpinion": "영국 현지 법률 의견서 (백서 검토 후 견적)",
+          "domesticExchangeLegalOpinion": "국내 거래소 상장용 법률 의견서",
+          "crossBorderLegalOpinion": "타 국가 제출용 법률 의견서",
+          "regulatoryConsulting": "규제 및 운영 컨설팅 서비스",
+          "vatReportingQuote": "VAT 분기별/연간 보고 견적",
+          "bookkeepingQuote": "연간 회계 장부 기장 견적",
+          "financialStatementsAndTaxQuote": "재무제표 작성 및 법인세 신고 견적"
+        }
+      },
+      "services": {
+        "base": {
+          "incorporation": {
+            "label": "영국 법인 설립",
+            "info": "기본 법인 설립 서비스 수수료."
+          },
+          "kyc": {
+            "label": "KYC 및 실사 (Due Diligence)",
+            "info": "선택한 설립 유형에 따른 기본 KYC 수수료."
+          },
+          "registeredOffice": {
+            "label": "등록 사무소 주소 서비스 (1년)",
+            "info": "기본 첫해 패키지에 포함되어 있습니다."
+          }
+        },
+        "additional": {
+          "executivePacks": {
+            "label": "추가 임원 팩 (팩당 2인)",
+            "info": "추가 임원 2인당 USD 100."
+          },
+          "corporateLayers": {
+            "label": "추가 법인 주주 계층",
+            "info": "법인 주주 계층 단계당 USD 150."
+          },
+          "contactPersons": {
+            "label": "추가 지정 연락 담당자",
+            "info": "첫 번째 연락 담당자는 무료입니다. 추가 인원당 연간 USD 250."
+          }
+        },
+        "optional": {
+          "emiListProvision": {
+            "label": "서비스 이용 고객 대상 EMI 리스트 제공",
+            "info": "법인 설립 서비스를 이용하시는 고객에게 무료로 제공됩니다."
+          },
+          "bankAccountAdvisory": {
+            "label": "은행 계좌 개설 자문",
+            "info": "신청 지원 및 자문 서비스."
+          },
+          "vatRegistration": {
+            "label": "부가가치세(VAT) 등록",
+            "info": "VAT 등록 지원. 영국 VAT는 일반적으로 연간 과세 매출이 90,000 파운드에 도달할 때 등록 의무가 발생합니다."
+          }
+        },
+        "fields": {
+          "additionalExecutivePairs": {
+            "label": "추가 임원 팩 (팩당 2인, 팩당 USD 100)"
+          },
+          "additionalCorporateLayers": {
+            "label": "추가 법인 주주 계층 (계층당 USD 150)"
+          },
+          "quoteOnlyServices": {
+            "label": "견적 전용 서비스 요청 (기록용으로 인보이스에 합산되지 않음)"
+          },
+          "quoteOnlyServicesOther": {
+            "label": "기타 견적 요청 세부 사항"
+          }
+        }
+      },
+      "review": {
+        "declaration": {
+          "content": "귀하는 제공된 모든 정보와 서류가 진실되고 완전하며 정확함을 선언합니다. 불법적인 목적이나 법규 위반이 확인될 경우 서비스가 중단될 수 있습니다."
+        }
+      },
+      "steps": {
+        "compliance": {
+          "description": "향후 오해와 규제 문제를 방지하기 위해 컴플라이언스 질문에 정확하게 답변해 주세요."
+        },
+        "parties": {
+          "description": "관련 당사자를 초대하고 필수 역할 및 거주 요건 충족 여부를 확인하세요."
+        },
+        "services": {
+          "description": "인보이스에 포함될 유료 서비스를 선택하세요. 견적 전용 요청은 별도로 관리되며 합계 금액에서 제외됩니다."
+        },
+        "invoice": {
+          "description": "결제 전 서비스 수수료를 검토하세요."
+        },
+        "payment": {
+          "description": "카드 결제를 진행하거나 은행 송금 증빙 서류를 업로드하세요."
+        }
+      }
+    },
+    "uae": {
+      "title": "두바이 IFZA 법인 설립",
+      "freezones": {
+        "titles": {
+          "difc": "두바이 DIFC 프리존 법인 설립",
+          "dmcc": "두바이 DMCC 프리존 법인 설립",
+          "dwtc": "두바이 DWTC 프리존 법인 설립",
+          "dic": "두바이 DIC 프리존 법인 설립",
+          "ifzaFzco": "두바이 IFZA 프리존 법인 설립"
+        }
+      },
+      "confirmation": {
+        "title": "신청서가 성공적으로 제출되었습니다",
+        "message": "두바이 IFZA 법인 설립 신청이 접수되었습니다. 당사 팀에서 세부 사항을 검토한 후 다음 단계를 위해 연락드리겠습니다.",
+        "steps": {
+          "initialReview": {
+            "title": "초기 검토",
+            "description": "법인 세부 정보 및 사업 의도 검토 (영업일 기준 1-2일)."
+          },
+          "kycVerification": {
+            "title": "KYC 인증",
+            "description": "개인 서류 처리 및 AML(자금세탁방지) 확인."
+          },
+          "filing": {
+            "title": "등기 신청",
+            "description": "UAE/IFZA 당국에 공식 서류 제출."
+          }
+        }
+      },
+      "fees": {
+        "note": "초기 비용은 관할 구역에 따라 다르며, 최종 견적은 검토 후 확정됩니다."
+      },
+      "steps": {
+        "applicant": {
+          "description": "신청인 정보를 제공하고 제출 권한을 확인합니다."
+        },
+        "compliance": {
+          "description": "자금세탁방지(AML) 및 고객 실사(CDD) 설문지 작성."
+        },
+        "company": {
+          "description": "회사의 사업 세부 정보, 자본금, 주소를 제공한 후 관계자를 초대합니다."
+        },
+        "accounting": {
+          "description": "회계 선호도 및 장부 기장 주기를 제공합니다."
+        },
+        "services": {
+          "description": "Mirr Asia에서 제공하는 서비스를 선택합니다."
+        },
+        "invoice": {
+          "description": "서비스 비용 및 정부 수수료를 검토합니다."
+        },
+        "payment": {
+          "description": "결제 방법을 선택하고 거래를 완료합니다."
+        }
+      },
+      "applicant": {
+        "notice": {
+          "label": "신청 공지",
+          "content": "이 신청서는 실질적 지배자(예정 이사) 또는 권한 있는 대리인이 작성해야 합니다. 최종 신청서에는 이사가 직접 서명해야 합니다. 제공된 정보는 TCSP/AMLO 규정에 따른 KYC 및 실사 목적으로 사용됩니다. 오류나 누락이 없도록 주의해 주십시오."
+        },
+        "fields": {
+          "applicantRelationship": {
+            "label": "신청인과 두바이 IFZA 법인(설립 예정) 간의 관계 (중복 선택 가능)"
+          },
+          "applicantRelationshipOther": {
+            "label": "기타 관계 (직접 입력)"
+          }
+        }
+      },
+      "compliance": {
+        "legalEthicalIssues": {
+          "label": "두바이 IFZA 법인 설립 목적이 법적 또는 윤리적 문제(자금 세탁, 도박, 탈세, 사기 등)와 관련될 가능성이 있습니까?"
+        },
+        "annualRenewalConsent": {
+          "label": "설립 후 매년 갱신 업무가 발생하며 관련 비용 및 데이터가 필요합니다. 이에 동의하십니까?"
+        },
+        "sanctionCountriesOps": {
+          "label": "설립 예정 법인 또는 관계사가 이란, 수단, 남수단, 북한, 시리아, 쿠바, 벨라루스 또는 짐바브웨에서 운영 중이거나 운영할 계획이 있습니까?"
+        },
+        "sanctionPersonnelResidency": {
+          "label": "임직원 중 이란, 수단, 북한, 시리아, 쿠바 또는 기타 UN/EU/UK/OFAC 제재 국가에 거주하는 인원이 있습니까?"
+        },
+        "crimeaSevastopol": {
+          "label": "설립 예정 법인 또는 관계사가 크림반도 또는 세바스토폴에서 운영 중이거나 운영할 계획이 있습니까?"
+        },
+        "sensitiveSectors": {
+          "label": "설립 예정 법인 또는 관계사가 석유, 가스, 에너지, 군사 또는 국방 분야에서 운영 중이거나 운영할 계획이 있습니까?"
+        },
+        "fields": {
+          "legalEthicalIssuesOther": {
+            "label": "기타 (직접 입력)"
+          }
+        },
+        "options": {
+          "considerLegalAdvice": "법률 자문 고려",
+          "internalAfterEstablishment": "설립 후 내부적으로 해결 가능"
+        }
+      },
+      "company": {
+        "fields": {
+          "entityType": {
+            "label": "법인 유형"
+          },
+          "initialCostUsd": {
+            "label": "초기 비용 (USD)"
+          },
+          "capital": {
+            "label": "자본금"
+          },
+          "officeRequirement": {
+            "label": "사무실 요건"
+          },
+          "visaCost": {
+            "label": "비자 비용"
+          },
+          "establishmentPeriod": {
+            "label": "설립 소요 기간"
+          },
+          "businessTypes": {
+            "label": "사업 유형 선택 (해당되는 모든 항목 선택)"
+          },
+          "businessTypesOther": {
+            "label": "기타 사업 유형 (직접 입력)"
+          },
+          "tradeDescription": {
+            "label": "품목명, 품목 유형, 서비스 세부 내용 설명"
+          },
+          "businessSummary": {
+            "label": "회사 사업 설명 (3-4문장)"
+          },
+          "purposeOfEstablishment": {
+            "label": "두바이 IFZA 법인 설립 목적 및 기대 효과"
+          },
+          "paidInCapital": {
+            "label": "총 납입 자본금 (AED)"
+          },
+          "paidInCapitalOther": {
+            "label": "기타 자본금 금액 (AED)"
+          },
+          "registeredAddressChoice": {
+            "label": "두바이 IFZA 등록 주소"
+          },
+          "registeredAddress": {
+            "label": "두바이 IFZA 내 사업장 주소 입력"
+          }
+        }
+      },
+      "accounting": {
+        "fields": {
+          "xero": {
+            "label": "클라우드 회계 소프트웨어 (Xero) 필요 여부"
+          }
+        },
+        "options": {
+          "xero": {
+            "yesNeedSetup": "네, Xero 설정이 필요합니다",
+            "noOwnSystem": "아니요, 자체 시스템을 사용합니다",
+            "needAdvice": "전문가 상담 필요"
+          }
+        }
+      },
+      "options": {
+        "entityType": {
+          "localLlc": "두바이 로컬 LLC",
+          "ifzaFzco": "두바이 DSO/IFZA 프리존 법인 (FZCO)",
+          "difcFzco": "두바이 DIFC 프리존 법인 (FZCO)",
+          "dwtcFzco": "두바이 DWTC 프리존 법인 (FZCO)",
+          "dmccFzco": "두바이 DMCC 프리존 법인 (FZCO)",
+          "dicFzco": "두바이 DIC 프리존 법인 (FZCO)"
+        },
+        "applicantRelationship": {
+          "director": "두바이 IFZA 법인의 이사 (예정)",
+          "chiefManager": "두바이 IFZA 법인의 총괄 매니저 (예정)",
+          "authorizedPerson": "두바이 IFZA 법인 이사로부터 권한을 위임받은 자 (예정)",
+          "majorShareholder": "두바이 IFZA 법인의 주요 주주 (예정)",
+          "expertAdvisor": "설립 자문을 제공하는 전문가 (변호사, 회계사, 대행인 등)"
+        },
+        "businessType": {
+          "crypto": "가상자산 관련 (발행, 거래소, 지갑 서비스)",
+          "itBlockchain": "IT, 블록체인, 소프트웨어 개발",
+          "cryptoInvestment": "가상자산 기반 투자 사업",
+          "cryptoGames": "가상자산 기반 게임",
+          "forexTrading": "외환 거래 (Forex)",
+          "finance": "금융, 투자, 컨설팅, 대출",
+          "trading": "무역업",
+          "distribution": "도소매 유통",
+          "consulting": "컨설팅",
+          "manufacturing": "제조업",
+          "ecommerce": "온라인 서비스업 (전자상거래)",
+          "onlineDelivery": "온라인 직구/배송"
+        },
+        "purpose": {
+          "diversification": "규제 완화에 따른 사업 다각화",
+          "advisorSuggested": "법률 고문, 투자자 또는 고객의 권유",
+          "internationalExpansion": "해외 국가로의 확장",
+          "assetManagement": "자산 관리 (부동산 또는 금융 자산)",
+          "holdingCompany": "자회사 또는 계열사 관리를 위한 지주회사",
+          "competitiveAdvantage": "자유로운 금융 정책에 따른 경쟁 우위",
+          "lowTax": "낮은 세율로 인한 거래량 확대"
+        },
+        "paidInCapital": {
+          "oneAed": "1 AED",
+          "hundredAed": "100 AED",
+          "tenThousandAed": "10,000 AED (두바이 법인 최소 금액)"
+        },
+        "registeredAddressChoice": {
+          "mirrAsia": "Mirr Asia 등록 주소지 서비스 사용",
+          "own": "두바이 IFZA 내 별도 주소 사용"
+        }
+      },
+      "services": {
+        "items": {
+          "setup": {
+            "label": "UAE 설립 비용",
+            "info": "초기 정부 수수료 및 Mirr Asia 서비스 요금 포함."
+          },
+          "vaspSetupEmi": {
+            "label": "[VASP] IFZA 설립 + 공증 + 1년 유지보수 + VASP 라이선스 + EMI 계좌",
+            "info": "라이선스 및 뱅킹 설정을 포함한 종합 VASP 패키지."
+          },
+          "vaspKycKyt": {
+            "label": "[VASP] KYC/KYT 외부 업체 설정",
+            "info": "VASP 라이선스 보유자 필수 사항."
+          },
+          "vaspAml10": {
+            "label": "[VASP] AML 책임자 등록 (월 10시간)"
+          },
+          "vaspAml20": {
+            "label": "[VASP] AML 책임자 등록 (월 20시간)"
+          },
+          "vaspAccounting": {
+            "label": "[VASP] VASP 회계 서비스"
+          },
+          "ifzaSetupBank": {
+            "label": "IFZA 설립 + 공증 + 1년 유지보수 + 은행 계좌 개설"
+          },
+          "legalOpinionIfza": {
+            "label": "법률 의견서 (현지 IFZA)"
+          },
+          "legalOpinionDomestic": {
+            "label": "국내 거래소 상장용 법률 의견서"
+          },
+          "consulting": {
+            "label": "컨설팅 (규제, 타당성, 서류, 운영)"
+          }
+        }
+      }
+    },
+    "cr": {
+      "title": "코스타리카 법인 설립",
+      "confirmation": {
+        "title": "코스타리카 신청 프로세스",
+        "message": "상세 정보가 수집되었으며, 현재 코스타리카 국가등록처(National Registry)에서 법인 설립 절차를 진행 중입니다. 통상적으로 영업일 기준 2~4주가 소요됩니다. 추가 정보가 필요한 경우 당사 팀에서 연락드리겠습니다.",
+        "steps": {
+          "kycAmlVerification": {
+            "title": "KYC 및 AML 검증",
+            "description": "당사 컴플라이언스 팀에서 모든 주주 및 이사의 신분증 서류를 확인합니다."
+          },
+          "notaryPublicFiling": {
+            "title": "공증인 등기 신청",
+            "description": "정관 초안 작성 및 국가등록처(Registro Nacional) 신고를 진행합니다."
+          },
+          "registrationApproval": {
+            "title": "등록 승인",
+            "description": "등록처의 법인 아이디(Cédula Jurídica) 발급을 대기합니다."
+          },
+          "postRegistration": {
+            "title": "등록 후 후속 조치",
+            "description": "납세자 번호 취득 및 차명(Nominee) 계약(선택 시)을 마무리합니다."
+          }
+        }
+      },
+      "steps": {
+        "applicant": {
+          "description": "개인 정보 및 희망 법인명을 제공해 주세요."
+        },
+        "compliance": {
+          "description": "규제 준수 및 제재 사항 관련 질문입니다."
+        },
+        "company": {
+          "description": "사업 세부 정보, 자본금 및 구성원 정보입니다."
+        },
+        "services": {
+          "description": "차명 지원(Nominee support) 서비스 옵션을 선택해 주세요."
+        },
+        "parties": {
+          "description": "KYC를 위해 주주, 이사 및 지정 연락 담당자를 초대해 주세요."
+        }
+      },
+      "applicant": {
+        "fields": {
+          "relationshipToCrCorporation": {
+            "label": "코스타리카 법인과의 관계"
+          },
+          "address": {
+            "label": "거주지 주소"
+          }
+        }
+      },
+      "compliance": {
+        "annualRenewalConsent": {
+          "label": "연례 컴플라이언스 갱신 및 AML/KYC 절차에 동의하십니까?"
+        },
+        "sanctionsExposureDeclaration": {
+          "label": "제재 대상 개인 또는 단체와 연관된 사항이 있습니까?"
+        },
+        "legalAndEthicalConcern": {
+          "label": "법적 또는 윤리적 문제(자금 세탁, 탈세, 사기 등)와 관련된 사항이 있습니까?"
+        },
+        "qCountry": {
+          "label": "제재 국가/지역에서 현재 활동 중이거나 계획 중인 사업이 있습니까?"
+        },
+        "crimeaSevastapolPresence": {
+          "label": "크림반도/세바스토폴 지역에서 현재 활동 중이거나 계획 중인 사업이 있습니까?"
+        },
+        "russianEnergyPresence": {
+          "label": "러시아의 에너지/석유/가스, 군사 또는 국방 분야와 연관된 사항이 있습니까?"
+        },
+        "criminalHistory": {
+          "label": "금융 범죄 이력이 있습니까?"
+        }
+      },
+      "company": {
+        "fields": {
+          "selectedIndustry": {
+            "label": "산업 유형"
+          },
+          "productDescription": {
+            "label": "제품/서비스 상세 설명"
+          },
+          "establishmentPurpose": {
+            "label": "설립 목적"
+          },
+          "listCountry": {
+            "label": "비즈니스 거래 국가"
+          },
+          "sourceFunding": {
+            "label": "자금 출처"
+          },
+          "businessAddress": {
+            "label": "법인 등록 주소"
+          },
+          "otherBusinessAddress": {
+            "label": "기타 사업장 주소 (직접 입력)"
+          },
+          "currency": {
+            "label": "통화"
+          },
+          "capAmount": {
+            "label": "자본금 금액"
+          },
+          "capOther": {
+            "label": "자본금 금액 (기타)"
+          },
+          "shareCount": {
+            "label": "주식 수"
+          },
+          "shareOther": {
+            "label": "주식 수 (기타)"
+          }
+        }
+      },
+      "options": {
+        "industry": {
+          "trade": "무역",
+          "retailDistribution": "소매/도매 유통",
+          "consulting": "컨설팅",
+          "manufacturing": "제조",
+          "financeAdvisory": "금융/투자/자문",
+          "ecommerce": "온라인 서비스(전자상거래)",
+          "onlineProxy": "온라인 직구/배송 대행",
+          "itSoftware": "IT 및 소프트웨어 개발",
+          "crypto": "가상자산 관련"
+        },
+        "establishmentPurpose": {
+          "expansion": "미주 및 유럽 지역으로의 비즈니스 확장",
+          "assetManagement": "자산 관리",
+          "holdingCompany": "지주 회사",
+          "investorSuggestion": "투자자 권유",
+          "internationalTransactions": "국제 거래",
+          "businessDiversification": "사업 다각화",
+          "taxEfficiency": "조세 효율성",
+          "noCapitalGainsTax": "자본이득세 면제"
+        },
+        "sourceFunding": {
+          "earnedIncome": "근로 소득",
+          "savings": "예금/저축",
+          "investmentIncome": "투자 수익",
+          "loan": "대출",
+          "companySale": "회사 매각 대금",
+          "businessIncome": "사업 소득",
+          "inheritance": "상속"
+        },
+        "businessAddress": {
+          "mirrAsia": "MirrAsia 등록 주소지 사용",
+          "ownAddress": "코스타리카 내 자체 주소 사용"
+        },
+        "currency": {
+          "usd": "USD - 미국 달러",
+          "eur": "EUR - 유로",
+          "crc": "CRC - 코스타리카 콜론"
+        }
+      },
+      "services": {
+        "fields": {
+          "directorNominee": {
+            "label": "차명 이사 (Nominee Director)"
+          },
+          "shareholderNominee": {
+            "label": "차명 주주 (Nominee Shareholder)"
+          }
+        },
+        "items": {
+          "base": {
+            "label": "법인 설립 수수료"
+          },
+          "directorNominee": {
+            "label": "차명 이사 서비스"
+          },
+          "shareholderNominee": {
+            "label": "차명 주주 서비스"
+          }
+        }
+      },
+      "accounting": {
+        "fields": {
+          "accountingAddress": {
+            "label": "회계 데이터 보관 주소"
+          },
+          "xero": {
+            "label": "Xero 또는 기타 회계 소프트웨어를 사용하십니까?"
+          },
+          "softNote": {
+            "label": "추가 참고 사항"
+          }
+        },
+        "options": {
+          "xero": {
+            "recommendationRequired": "추천 필요"
+          }
+        }
+      }
+    },
+    "ch": {
+      "ag": {
+        "title": "스위스 주식회사 (AG) 설립",
+        "confirmation": {
+          "title": "스위스 주식회사 (AG) 신청서 제출 완료"
+        }
+      },
+      "gmbh": {
+        "title": "스위스 유한회사 (GmbH; LLC) 설립",
+        "confirmation": {
+          "title": "스위스 유한회사 (GmbH; LLC) 신청서 제출 완료"
+        }
+      },
+      "options": {
+        "relationship": {
+          "directorOfSwissEntity": "스위스 법인의 이사",
+          "delegate": "이사로부터 권한을 위임받은 자",
+          "directOrIndirectShareholder": "직/간접 주주",
+          "expert": "전문가 (변호사, 회계사 등)"
+        },
+        "industry": {
+          "cryptoRelated": "가상자산 관련",
+          "itBlockchain": "IT / 블록체인 개발",
+          "financeInvestment": "금융 / 투자",
+          "tradeWholesale": "무역 / 도매",
+          "manufacturing": "제조업",
+          "ecommerce": "전자상거래",
+          "consulting": "컨설팅"
+        },
+        "purpose": {
+          "euExpansion": "유럽 시장으로의 사업 확장",
+          "regulatoryDiversification": "규제 환경 다변화",
+          "advisorRecommendation": "투자자 / 고문 추천",
+          "holdingAssetManagement": "지주회사 및 자산 관리",
+          "internationalStructuring": "국제 거래 구조화",
+          "optimization": "운영 및 조세 최적화"
+        },
+        "quoteOnly": {
+          "annualAccountingTax": "연간 회계 / 세무 서비스 (견적 필요)",
+          "emiOpening": "EMI 계좌 개설 대행 (견적 필요)",
+          "legalOpinionSwiss": "법률 의견서 (스위스 현지) (백서 검토 후 견적)",
+          "legalOpinionExchange": "법률 의견서 (국내 거래소 상장용) (백서 검토 후 견적)",
+          "consulting": "컨설팅 (타당성 / 규제) (견적 필요)"
+        }
+      },
+      "common": {
+        "options": {
+          "considerLegalAdvice": "법률 자문 고려"
+        },
+        "steps": {
+          "parties": {
+            "description": "모든 필수 관계자를 초대하고 지정 연락 담당자를 할당하십시오."
+          }
+        },
+        "compliance": {
+          "ethicalLegalConfirmation": {
+            "label": "사업 목적이 법적/윤리적 문제(자금 세탁, 도박, 탈세 등)를 야기할 가능성이 있습니까?"
+          },
+          "annualRenewalAgreement": {
+            "label": "연례 갱신 및 관련 고정 비용 발생에 동의하십니까?"
+          },
+          "sanctionedCountriesBusiness": {
+            "label": "제재 국가 또는 지역에서 사업을 수행하십니까?"
+          },
+          "sanctionedPersonsInvolved": {
+            "label": "관련 인원 중 제재 지역에 거주하는 자가 있습니까?"
+          },
+          "restrictedSectors": {
+            "label": "석유, 가스, 군사 또는 국방 분야에 종사하십니까?"
+          }
+        },
+        "services": {
+          "fields": {
+            "registeredOfficeMode": {
+              "label": "등록 주소지 서비스"
+            },
+            "registeredOfficeClientAddress": {
+              "label": "고객이 제공하는 스위스 현지 등록 주소"
+            },
+            "bankOpeningMode": {
+              "label": "스위스 은행 계좌 개설 서비스"
+            }
+          },
+          "options": {
+            "registeredOfficeMode": {
+              "pobox": "사서함 (PO Box) (연간 USD 3,000)",
+              "flexidesk": "플렉시 데스크 (Flexi Desk) (연간 USD 6,800)",
+              "clientAddress": "고객 소유의 스위스 주소 사용"
+            },
+            "bankOpeningMode": {
+              "mirrOpening": "Mirr Asia 은행 계좌 개설 대행 서비스 이용",
+              "selfArranged": "고객이 직접 은행 계좌 개설 진행"
+            }
+          }
+        }
+      },
+      "corporate": {
+        "confirmation": {
+          "message": "스위스 법인 설립 요청이 접수되었습니다. 당사 팀에서 설립 신청 전 컴플라이언스, 구조 및 선택된 서비스를 검토할 예정입니다.",
+          "steps": {
+            "complianceReview": {
+              "title": "컴플라이언스 검토",
+              "description": "신청 전 KYC/CDD 및 제재 내역 확인이 완료됩니다."
+            },
+            "registrationPreparation": {
+              "title": "등록 준비",
+              "description": "법인 구조 및 온보딩 서류의 유효성을 검증합니다."
+            },
+            "filingAndSupport": {
+              "title": "등기 신청 및 사후 지원",
+              "description": "법인 등기, 운영 설정 및 기타 선택 서비스가 조율됩니다."
+            }
+          }
+        },
+        "steps": {
+          "applicant": {
+            "description": "본 신청서의 작성자 및 연락처 정보입니다."
+          },
+          "compliance": {
+            "description": "제재 및 법적 리스크 선언입니다."
+          },
+          "company": {
+            "description": "사업 내용, 등록 및 자본금 세부 정보입니다."
+          },
+          "services": {
+            "description": "청구 대상 서비스를 선택하고 견적 요청 항목을 확인합니다."
+          },
+          "invoice": {
+            "description": "결제 전 청구 서비스를 검토합니다."
+          },
+          "payment": {
+            "description": "카드 결제 또는 은행 송금 증빙 업로드를 진행합니다."
+          }
+        },
+        "applicant": {
+          "notice": {
+            "label": "신청 공지",
+            "content": "이 양식은 이사 또는 권한을 위임받은 대리인이 작성해야 합니다. 컴플라이언스 및 온보딩을 위해 정확한 정보를 제공해 주십시오."
+          },
+          "fields": {
+            "authorRelationship": {
+              "label": "스위스 법인과의 관계"
+            }
+          }
+        },
+        "company": {
+          "context": {
+            "label": "스위스 법인 설립 요건",
+            "contentAg": "스위스 주식회사(AG)를 선택하셨습니다. 이사회 구성원의 과반수는 스위스 거주자여야 합니다.",
+            "contentGmbh": "스위스 유한회사(GmbH)를 선택하셨습니다. 최소 한 명의 경영진(Operating Officer)은 스위스 거주자여야 합니다."
+          },
+          "fields": {
+            "purposeOfEstablishment": {
+              "label": "스위스 법인 설립 목적 및 기대 효과"
+            },
+            "tokenIssuancePlanned": {
+              "label": "해당 법인이 토큰을 발행하거나 배포할 계획이 있습니까?"
+            },
+            "tokenUtilityAtIssuance": {
+              "label": "토큰 발행 시 유틸리티(사용성)가 즉시 존재합니까?"
+            },
+            "tokenRightsFeatures": {
+              "label": "토큰에 배당/이익 분배/의결권이 포함됩니까?"
+            },
+            "sroMembershipPlan": {
+              "label": "금융 중개인으로 활동할 경우 SRO 멤버십 가입이 필요함을 이해하며 가입 계획이 있습니까?"
+            },
+            "totalCapital": {
+              "ag": {
+                "label": "총 납입 자본금 (최소 CHF 100,000)"
+              },
+              "gmbh": {
+                "label": "총 납입 자본금 (GmbH의 경우 통상 최소 CHF 20,000)"
+              }
+            },
+            "addressServiceChoice": {
+              "label": "현지 법인 주소지 선택"
+            },
+            "addressServiceOwnAddress": {
+              "label": "별도 주소지 상세 정보 제공"
+            }
+          }
+        },
+        "options": {
+          "totalCapital": {
+            "agDefault": "CHF 100,000",
+            "gmbhDefault": "CHF 20,000"
+          },
+          "addressServiceChoice": {
+            "mirr": "Mirr Asia 법인 등록 주소지 서비스 이용",
+            "own": "자체 주소지 보유"
+          },
+          "swissResidencyStatus": {
+            "swissResident": "스위스 거주자",
+            "nonSwissResident": "스위스 비거주자"
+          }
+        },
+        "parties": {
+          "fields": {
+            "swissResidencyStatus": {
+              "label": "스위스 거주 여부"
+            }
+          }
+        },
+        "coverage": {
+          "swissResidency": {
+            "label": "스위스 거주자 요건 충족",
+            "swissResidentRequired": "최소 1명의 스위스 거주자 필요"
+          }
+        },
+        "services": {
+          "fields": {
+            "boardServiceMode": {
+              "ag": {
+                "label": "현지 이사 지원 서비스 선택"
+              },
+              "gmbh": {
+                "label": "현지 경영진(Operating Officer) / 이사 지원 서비스 선택"
+              }
+            },
+            "quoteOnlyServices": {
+              "label": "견적 전용 서비스 요청 (추적용 항목이며 인보이스 합계에서는 제외됨)"
+            },
+            "quoteOnlyServicesOther": {
+              "label": "기타 견적 요청 상세 내용"
+            }
+          },
+          "options": {
+            "boardServiceMode": {
+              "mirrProvided": "Mirr Asia 현지 지원 서비스 이용",
+              "clientProvided": "고객이 직접 요건을 갖춘 현지 경영진 선임"
+            }
+          },
+          "items": {
+            "setupMaintenance": {
+              "label": "스위스 법인 설립 + 1년 유지보수",
+              "info": "설립 비용 및 첫해 핵심 유지관리 서비스가 포함됩니다."
+            },
+            "localSupport": {
+              "ag": {
+                "label": "현지 이사 2인 등록 (1년)",
+                "info": "AG는 일반적으로 스위스 거주 이사회 구성원을 필요로 합니다. 이 패키지는 현지 이사 지원을 포함합니다."
+              },
+              "gmbh": {
+                "label": "현지 경영진 / 이사 지원 패키지 (1년)",
+                "info": "GmbH는 일반적으로 최소 한 명의 스위스 거주 경영진을 필요로 합니다. 이 패키지는 현지 지원을 포함합니다."
+              }
+            },
+            "registeredOfficePobox": {
+              "label": "사업장 주소: 사서함 (1년)",
+              "info": "스위스 현지 법인 등록용 사서함 주소 서비스입니다."
+            },
+            "registeredOfficeFlexidesk": {
+              "label": "사업장 주소: 플렉시 데스크 (1년)",
+              "info": "임대차 계약 지원, 회의실 이용 및 스위스 전화번호가 포함됩니다."
+            },
+            "bankOpening": {
+              "label": "자본금 납입 및 은행 계좌 개설 대행",
+              "info": "자본금 계좌 및 운영 계좌 개설을 지원합니다."
+            },
+            "emiListProvision": {
+              "label": "EMI 리스트 제공",
+              "info": "무료 정보성 EMI 제공기관 리스트입니다."
+            }
+          }
+        },
+        "fees": {
+          "note": "견적 전용 서비스 요청은 별도로 추적되며 가격이 확정되기 전까지 인보이스 합계에서 제외됩니다."
+        },
+        "review": {
+          "declaration": {
+            "content": "본인은 제공된 모든 정보가 사실이고 완전하며, 의도된 사업이 합법적임을 확인합니다."
+          }
+        }
+      },
+      "foundation": {
+        "title": "스위스 재단 설립",
+        "confirmation": {
+          "title": "스위스 재단 설립 신청서 제출 완료",
+          "message": "스위스 재단 설립 요청이 접수되었습니다. 당사 팀에서 컴플라이언스 세부 사항을 확인한 후 설립 절차를 진행할 예정입니다.",
+          "steps": {
+            "complianceReview": {
+              "title": "컴플라이언스 검토",
+              "description": "신청 전 KYC/CDD 및 제재 내역 확인이 완료됩니다."
+            },
+            "foundationFilingPreparation": {
+              "title": "재단 등기 준비",
+              "description": "감독 기관 및 등기소 제출을 위한 초안 작성 및 서류 패키지를 준비합니다."
+            },
+            "registrationTaxSetup": {
+              "title": "등록 및 세무 설정",
+              "description": "상업 등기소 신고 및 세무 당국 등록이 완료됩니다."
+            },
+            "postFilingServices": {
+              "title": "등기 후 서비스",
+              "description": "선택하신 사항에 따라 이사회, 사무실, 회계 및 보고 지원이 조율됩니다."
+            }
+          }
+        },
+        "steps": {
+          "applicant": {
+            "description": "이사 또는 권한을 위임받은 대리인이 작성해야 합니다."
+          },
+          "compliance": {
+            "description": "사업 의도, 제재 및 컴플라이언스 선언입니다."
+          },
+          "company": {
+            "description": "사업 프로필, 등록 세부 사항 및 자본금 요건 확인입니다."
+          },
+          "accounting": {
+            "description": "회계 결산기 및 세무 지원 선호도를 제공합니다."
+          },
+          "services": {
+            "description": "기본 패키지에는 현지 이사회 지원, 사서함 등록 주소 및 은행 계좌 개설 지원이 포함됩니다. 설정에 따라 조정 가능합니다."
+          },
+          "invoice": {
+            "description": "결제 전 최종 수수료 내역을 검토합니다."
+          },
+          "payment": {
+            "description": "카드 결제를 완료하거나 은행 송금 증빙을 업로드합니다."
+          }
+        },
+        "applicant": {
+          "fields": {
+            "authorRelationship": {
+              "label": "스위스 재단과의 관계"
+            }
+          }
+        },
+        "options": {
+          "relationship": {
+            "director": "스위스 재단의 이사"
+          },
+          "capitalRequirementChoice": {
+            "acknowledged": "최소 자본금 CHF 50,000 확인 완료",
+            "otherArrangement": "기타 약정 (설명 필요)"
+          }
+        },
+        "company": {
+          "fields": {
+            "foundationNameFirstChoice": {
+              "label": "희망 재단 명칭 (1순위)"
+            },
+            "foundationNameSecondChoice": {
+              "label": "희망 재단 명칭 (2순위)"
+            },
+            "capitalRequirementChoice": {
+              "label": "재단 납입 자본금 요건"
+            },
+            "capitalRequirementOther": {
+              "label": "자본금 요건 추가 설명"
+            }
+          }
+        },
+        "services": {
+          "fields": {
+            "boardServiceMode": {
+              "label": "현지 이사회 구성원 서비스"
+            }
+          },
+          "options": {
+            "boardServiceMode": {
+              "mirrProvided": "Mirr Asia 현지 이사회 구성원 서비스 이용",
+              "clientProvided": "고객이 직접 요건을 갖춘 현지 이사회를 구성"
+            }
+          },
+          "items": {
+            "foundationSetup": {
+              "label": "스위스 재단 설립",
+              "info": "모든 설립 관련 비용이 포함되어 있습니다."
+            },
+            "localBoardMember": {
+              "label": "현지 이사회 구성원 서비스 (1년)",
+              "info": "스위스 재단은 최소 한 명의 스위스 거주 이사를 임명해야 합니다."
+            },
+            "registeredOfficePobox": {
+              "label": "등록 주소지 - 사서함 (1년)",
+              "info": "스위스 현지 연간 사서함 주소 서비스입니다."
+            },
+            "registeredOfficeFlexidesk": {
+              "label": "등록 주소지 - 플렉시 데스크 (1년)",
+              "info": "임대차 계약서, 회의실 이용 및 스위스 전화번호가 포함됩니다."
+            },
+            "bankOpening": {
+              "label": "스위스 은행 계좌 개설 (자본금 + 운영)",
+              "info": "비대면 계좌 개설 지원 서비스입니다."
+            },
+            "accountingTaxAnnual": {
+              "label": "회계 및 세무 서비스 (연간, 최대 300건의 거래)",
+              "info": "장부 기장, AHV/SUVA/VAT 등록, VAT 신고, 연차 보고서 및 세무 신고를 포함합니다."
+            },
+            "annualFoundationReport": {
+              "label": "연례 재단 보고서 작성 및 제출 (예상)",
+              "info": "예상 금액이며 컴플라이언스 검토 후 조정될 수 있습니다."
+            }
+          }
+        },
+        "fees": {
+          "note": "자본금 요건은 컴플라이언스 확인용으로 수집되며 인보이스 합계에서는 제외됩니다."
+        },
+        "review": {
+          "declaration": {
+            "content": "본인은 제공된 모든 정보가 사실이고 완전하며, 합법적인 사업 목적을 위해 제출되었음에 동의합니다."
+          }
+        }
+      }
+    },
     "payment": {
-      "securePayment": "보안 결제",
+      "securePayment": "안전 결제",
       "totalToPay": "총 결제 금액:",
       "cancel": "취소",
       "pay": "{{amount}} 결제하기",
       "success": "결제 성공!",
-      "successDesc": "결제가 처리 및 확인되었습니다. 당사 회계팀에 알림이 전송되었습니다.",
+      "successDesc": "결제가 완료되고 확인되었습니다. 회계팀에 해당 내용이 통보되었습니다.",
       "paymentId": "결제 ID",
       "amountPaid": "결제 금액",
       "status": "상태",
@@ -2946,31 +4295,31 @@
       "receipt": "영수증",
       "viewReceipt": "영수증 보기",
       "refreshStatus": "상태 새로고침",
-      "continue": "다음 단계로 계속",
+      "continue": "다음 단계로 이동",
       "proofSubmitted": "증빙 제출 완료",
-      "proofSubmittedDesc": "은행 송금 증빙이 업로드되었습니다. 회계팀에서 결제 확인 후 24시간 이내에 상태를 업데이트할 예정입니다.",
-      "reference": "참조 번호",
+      "proofSubmittedDesc": "은행 송금 증빙이 업로드되었습니다. 회계팀에서 24시간 이내에 확인 후 상태를 업데이트해 드립니다.",
+      "reference": "참조",
       "amountDue": "미납 금액",
       "proofDocument": "증빙 서류",
       "viewProof": "증빙 보기",
-      "proofDenied": "이전 증빙이 거절되었습니다. 새 영수증을 업로드해 주세요.",
-      "proofDeniedShort": "증빙이 거절되었습니다. 기존 파일을 삭제하고 새 영수증을 업로드해 주세요.",
-      "proofDeleteNote": "증빙이 거절된 경우, 아래에서 삭제하고 새로 업로드할 수 있습니다.",
-      "deleteReupload": "삭제 후 재업로드",
-      "waitingApproval": "관리자 승인을 기다리는 중입니다. 승인 후 계속 진행할 수 있습니다.",
+      "proofDenied": "이전 증빙이 거절되었습니다. 새 영수증을 업로드해주세요.",
+      "proofDeniedShort": "증빙이 거절되었습니다. 삭제 후 다시 업로드해주세요.",
+      "proofDeleteNote": "증빙이 거절된 경우 아래에서 삭제하고 다시 업로드할 수 있습니다.",
+      "deleteReupload": "삭제 및 재업로드",
+      "waitingApproval": "관리자 승인 대기 중입니다. 승인 후 계속 진행할 수 있습니다.",
       "selectMethod": "결제 수단 선택",
       "cardPayment": "카드 결제",
-      "cardPaymentDesc": "Stripe를 통한 보안 결제",
+      "cardPaymentDesc": "Stripe를 통한 안전한 결제",
       "bankTransfer": "은행 송금",
-      "bankTransferDesc": "당사 계좌로 무통장 입금/해외 송금",
+      "bankTransferDesc": "당사 계좌로 무통장 입금",
       "details": "결제 상세 정보",
-      "cardRedirectNote": "신용카드 또는 체크카드로 구매를 완료할 수 있도록 보안 결제창으로 이동합니다.",
+      "cardRedirectNote": "신용카드 또는 체크카드로 결제를 완료할 수 있도록 보안 결제창으로 이동합니다.",
       "subtotal": "소계",
       "cardFee": "카드 결제 수수료",
-      "totalAmount": "총 금액",
-      "proceedToPay": "결제 진행",
+      "totalAmount": "총 합계 금액",
+      "proceedToPay": "결제 진행하기",
       "totalToTransfer": "총 송금 금액",
-      "noCardFeeNote": "은행 송금 시에는 카드 결제 수수료가 적용되지 않습니다.",
+      "noCardFeeNote": "은행 송금 시에는 카드 수수료가 적용되지 않습니다.",
       "refNumber": "참조 번호 (선택 사항)",
       "refPlaceholder": "예: REF-123456",
       "uploadProof": "영수증/증빙 업로드",
@@ -2979,15 +4328,15 @@
       "errors": {
         "confirmFailed": "결제 확인에 실패했습니다.",
         "deleteFailed": "증빙 삭제에 실패했습니다.",
-        "fetchFailed": "결제 상태를 가져오지 못했습니다.",
-        "paymentFailed": "결제에 실패했습니다. 다시 시도해 주세요.",
+        "fetchFailed": "결제 상태를 불러오지 못했습니다.",
+        "paymentFailed": "결제에 실패했습니다. 다시 시도해주세요.",
         "serverSyncFailed": "결제는 확인되었으나 서버 통신에 실패했습니다.",
         "unexpected": "예기치 않은 오류가 발생했습니다.",
         "generic": "오류",
         "notSaved": "신청서가 저장되지 않았습니다.",
         "stripeInitFailed": "Stripe를 초기화할 수 없습니다.",
         "networkError": "결제 초기화 중 네트워크 오류가 발생했습니다.",
-        "uploadFailed": "업로드에 실패했습니다.",
+        "uploadFailed": "업로드 실패.",
         "uploadException": "업로드 중 예외가 발생했습니다."
       },
       "messages": {
@@ -2996,7 +4345,448 @@
         "updated": "업데이트됨",
         "statusRefreshed": "결제 상태가 새로고침되었습니다.",
         "deleted": "삭제됨",
-        "proofRemoved": "증빙이 제거되었습니다. 새 파일을 업로드해 주세요."
+        "proofRemoved": "증빙이 제거되었습니다. 새 파일을 업로드해주세요."
+      }
+    },
+    "ee": {
+      "auto": {
+        "k001": "임원(Officer)",
+        "k002": "공인 대리인",
+        "k003": "주요 주주",
+        "k004": "전문 자문가",
+        "k005": "에스토니아 OÜ 법인 설립 및 초기 유지관리",
+        "k006": "EMI 리스트",
+        "k007": "EMI 계좌 개설",
+        "k008": "은행 계좌 개설",
+        "k009": "법률 의견서 (에스토니아)",
+        "k010": "법률 의견서 (국내 상장용)",
+        "k011": "법률 의견서 (기타 국가)",
+        "k012": "비즈니스 컨설팅",
+        "k013": "암호화폐 관련",
+        "k014": "IT / 블록체인 소프트웨어",
+        "k015": "암호화폐 투자",
+        "k016": "암호화폐 게임",
+        "k017": "외환 거래",
+        "k018": "금융 / 투자 컨설팅",
+        "k019": "무역",
+        "k020": "도소매",
+        "k021": "컨설팅",
+        "k022": "제조업",
+        "k023": "이커머스",
+        "k024": "온라인 직구",
+        "k025": "사업 다각화",
+        "k026": "고문 또는 파트너 제안",
+        "k027": "해외 확장",
+        "k028": "자산 관리",
+        "k029": "지주 회사",
+        "k030": "금융 정책 이점",
+        "k031": "저세율 거래 성장",
+        "k032": "자본 이득세 면제",
+        "k033": "EMI 계좌 개설 자문",
+        "k034": "은행 계좌 개설 자문",
+        "k035": "기타 견적 요청",
+        "k036": "에스토니아 OÜ 설립 서비스",
+        "k037": "설립 준비, 서류 점검 및 신고 지원",
+        "k038": "에스토니아 정부 수수료",
+        "k039": "법정 신고 수수료",
+        "k040": "에스토니아 사업장 주소 서비스 (1년)",
+        "k041": "의무적인 연간 현지 사업장 주소 서비스",
+        "k042": "매니지먼트 및 케이스 사후 관리",
+        "k043": "설립 자문 및 케이스 처리 지원",
+        "k044": "에스토니아 연락 담당자(Contact Person) 서비스 (1인 / 1년)",
+        "k045": "고객이 지정 연락 담당자를 제공하는 경우 제외 가능",
+        "k046": "위임장 (POA)",
+        "k047": "EMI 리스트",
+        "k048": "정보 서비스 리스트",
+        "k049": "견적 전용 서비스는 가격이 책정될 때까지 송금 합계에서 제외됩니다. 가격은 EUR 기준으로 산정되어 현재 USD/HKD 결제망을 통해 청구됩니다.",
+        "k050": "신청 안내",
+        "k051": "본 신청서는 임원 또는 권한 있는 대리인이 작성해야 합니다. 컴플라이언스 및 신고 검토를 위해 정확한 정보를 제공해주세요.",
+        "k052": "작성자 성명",
+        "k053": "에스토니아 법인과의 관계",
+        "k054": "전화번호",
+        "k055": "이메일",
+        "k056": "SNS / 메신저 ID",
+        "k057": "의도한 사업과 관련하여 법적 또는 윤리적 우려 사항이 있습니까?",
+        "k058": "기타 법적/윤리적 우려 사항 상세 내용",
+        "k059": "연간 갱신 의무 및 반복되는 컴플라이언스 비용에 동의하십니까?",
+        "k060": "내부적으로 처리 가능",
+        "k061": "고정 연간 비용 발생 시 진행하지 않음",
+        "k062": "확인 전 상담 필요",
+        "k063": "제재 대상 국가 또는 지역에서 사업을 운영합니까?",
+        "k064": "제재 대상 국가 또는 지역에 거주하는 관련자가 있습니까?",
+        "k065": "제재 대상자 또는 단체가 소유/통제하고 있습니까?",
+        "k066": "크림반도 또는 세바스토폴에서 현재 또는 계획 중인 활동이 있습니까?",
+        "k067": "석유, 가스, 군사 또는 에너지 분야에서 현재 또는 계획 중인 활동이 있습니까?",
+        "k068": "산업 선택",
+        "k069": "기타 산업 상세 내용",
+        "k070": "사업 설명",
+        "k071": "웹사이트",
+        "k072": "https://",
+        "k073": "설립 목적",
+        "k074": "기타 목적 상세 내용",
+        "k075": "희망 법인명 (1순위)",
+        "k076": "희망 법인명 (2순위)",
+        "k077": "희망 법인명 (3순위)",
+        "k078": "총 자본금 (EUR)",
+        "k079": "1 EUR",
+        "k080": "2,500 EUR",
+        "k081": "25,000 EUR",
+        "k082": "총 자본금 (기타 금액 - EUR)",
+        "k083": "경영진 구성",
+        "k084": "단독 책임 임원 / DCP 주도",
+        "k085": "다수의 개인 임원",
+        "k086": "법인 멤버 대표 포함",
+        "k087": "기타 경영진 구성 상세 내용",
+        "k088": "등록 주소지 옵션",
+        "k089": "Mirr Asia 에스토니아 사업장 주소 서비스 사용 (필수 패키지 항목)",
+        "k090": "자체 주소 사용 (컴플라이언스 검토 대상, 필수 패키지 항목은 유지됨)",
+        "k091": "자체 등록 주소지 상세 내용",
+        "k092": "예상 연간 거래 횟수",
+        "k093": "상담 필요",
+        "k094": "서비스 설정 안내",
+        "k095": "에스토니아 사업장 주소 서비스는 본 패키지에서 필수입니다. 연락 담당자 서비스는 고객이 별도로 마련한 경우에만 제거할 수 있습니다.",
+        "k096": "연락 담당자 서비스 모드",
+        "k097": "Mirr Asia 연락 담당자 서비스 사용 (연 400 USD)",
+        "k098": "고객 제공 DCP 연락 담당자 지정 (서비스 요금 없음)",
+        "k099": "요청 서비스 접수",
+        "k100": "기타 요청 서비스 상세 내용",
+        "k101": "견적 전용 서비스 요청 (송금 합계 제외)",
+        "k102": "기타 견적 전용 요청 상세 내용",
+        "k103": "에스토니아 OÜ 법인 설립",
+        "k104": "에스토니아 OÜ 신청서 제출됨",
+        "k105": "에스토니아 법인 설립 요청이 접수되었습니다. 서류 및 컴플라이언스 확인 후 통상 영업일 기준 3~5일이 소요됩니다.",
+        "k106": "준비 및 KYC",
+        "k107": "준비, 서류 확인 및 KYC 승인은 통상 영업일 기준 2~3일이 소요됩니다.",
+        "k108": "설립 신고",
+        "k109": "신고 및 설립 절차는 준비 완료 후 영업일 기준 1~2일 내에 완료됩니다.",
+        "k110": "사후 지원",
+        "k111": "주소/연락 담당자 서비스 설정 및 사후 관리는 선택한 서비스에 따라 조정됩니다.",
+        "k112": "작성자 상세 정보 및 에스토니아 법인과의 관계",
+        "k113": "AML / CDD",
+        "k114": "사업 의도, 제재 스크리닝 및 연간 갱신 동의",
+        "k115": "비즈니스 프로필 및 등록 상세 정보",
+        "k116": "관련자 초대 및 지정 연락 담당자 할당",
+        "k117": "서비스 맞춤 설정",
+        "k118": "필수 패키지 항목 및 선택형 추가 항목 검토",
+        "k119": "결제 전 최종 청구 요금 확인",
+        "k120": "결제 진행",
+        "k121": "카드 결제 또는 은행 송금 증빙 업로드 진행",
+        "k122": "검토 및 선언",
+        "k123": "본 신청의 약관 및 선언 사항에 동의합니다.",
+        "k124": "제출된 모든 정보가 사실이며 정확함을 확인합니다.",
+        "k125": "법적 또는 컴플라이언스 위반이 발견될 경우 서비스가 중단될 수 있음을 이해합니다."
+      }
+    },
+    "lt": {
+      "auto": {
+        "k001": "설립될 리투아니아 법인의 이사",
+        "k002": "설립될 리투아니아 법인의 최고 경영자",
+        "k003": "이사가 위임한 권한 있는 대리인",
+        "k004": "주요 주주",
+        "k005": "전문 자문가 (변호사, 회계사, 세무사 등)",
+        "k006": "암호화폐 관련",
+        "k007": "IT / 블록체인 / 소프트웨어 개발",
+        "k008": "암호화폐 투자",
+        "k009": "암호화폐 게임",
+        "k010": "외환 거래",
+        "k011": "금융 / 투자 / 컨설팅",
+        "k012": "무역",
+        "k013": "도소매",
+        "k014": "컨설팅",
+        "k015": "제조업",
+        "k016": "온라인 서비스 (이커머스)",
+        "k017": "온라인 직구 / 배송 / 대행",
+        "k018": "사업 다각화",
+        "k019": "고문 / 투자자 / 파트너 추천",
+        "k020": "해외 확장",
+        "k021": "자산 관리",
+        "k022": "지주 회사 전략",
+        "k023": "금융 정책을 통한 경쟁 우위",
+        "k024": "조세 효율성에 따른 거래 성장",
+        "k025": "리투아니아 법률 의견서",
+        "k026": "국내 거래소 상장용 법률 의견서",
+        "k027": "기타 국가용 법률 의견서",
+        "k028": "비즈니스 및 규제 컨설팅",
+        "k029": "EMI 레벨 10 운영 지원 (별도 견적)",
+        "k030": "기타 견적 전용 요청",
+        "k031": "리투아니아 설립 서비스",
+        "k032": "공증료",
+        "k033": "설립 등록",
+        "k034": "1년 법인 주소지 서비스",
+        "k035": "은행 계좌 개설 지원",
+        "k036": "참조 가격은 현재 400 EUR로 설정되어 있으며 추후 조정 가능합니다.",
+        "k037": "READY-MADE VASP 표준 패키지 (서류/라이선스 증빙 전용)",
+        "k038": "표준 패키지 가격은 견적 기반입니다. 전체 인프라 구성 요소는 이 옵션에 포함되지 않습니다.",
+        "k039": "READY-MADE VASP 풀 패키지",
+        "k040": "양도 절차, VASP 인프라 설정, 등록 주소/현지 연락처, AML 통합 지원 및 관련 패키지 범위 포함.",
+        "k041": "리투아니아 EMI 라이선스 프로젝트 (레벨 1-9)",
+        "k042": "리투아니아 중앙은행 정부 수수료",
+        "k043": "AML 담당자 (연간, 기본)",
+        "k044": "월 1,000 EUR부터 시작하는 연간 참조 금액 (최소 계약 기간 적용).",
+        "k045": "AML 담당자 (연간, 경력직)",
+        "k046": "월 2,000 EUR부터 시작하는 연간 참조 금액 (최소 계약 기간 적용).",
+        "k047": "회계 패키지 (월 최대 50건 인보이스, 연간)",
+        "k048": "회계 패키지 (월 최대 100건 인보이스, 연간)",
+        "k049": "회계 패키/지 (월 최대 200건 인보이스, 연간)",
+        "k050": "회계 패키지 (월 최대 500건 인보이스, 연간)",
+        "k051": "회계 패키지 (대량 거래 / 맞춤형 견적)",
+        "k052": "이 회계 등급의 가격은 견적 기반입니다.",
+        "k053": "EMI 가상 계좌 온보딩 수수료 (제3자 추정치)",
+        "k054": "제공업체 온보딩 결과에 따라 통상 500 EUR에서 2,000 EUR 사이입니다.",
+        "k055": "현지 사무실 임대료 및 공과금 (연간 추정치)",
+        "k056": "월 150 EUR에서 250 EUR 기준의 참조 추정치.",
+        "k057": "KYC/KYT 사용료 추정치",
+        "k058": "예상 KYC/KYT 물량에 따라 인당 2 EUR로 계산됨.",
+        "k059": "법정 이자 (자본금이 완납되지 않은 경우)",
+        "k060": "법정 최소 자본금이 완납되지 않은 경우 적용됩니다. 이는 회사 수익으로 반영되며 지출로 사용될 수 있습니다.",
+        "k061": "EUR 견적 참조는 통합 USD/HKD 결제망에 맞춰 모델링되었습니다. 자본금 요건은 컴플라이언스용으로만 파악되며 청구 합계에서는 제외됩니다.",
+        "k062": "신청자 안내",
+        "k063": "신청자, 이사 또는 권한 있는 대리인으로서 본 양식을 작성해 주십시오. 모든 세부 사항은 신분증 서류와 일치해야 합니다.",
+        "k064": "리투아니아 법인과의 관계",
+        "k065": "필수 서류",
+        "k066": "필요한 모든 서류를 제공할 수 있음을 확인합니다.",
+        "k067": "선호하는 본인 인증 방법",
+        "k068": "여권과 얼굴이 함께 나오는 사진",
+        "k069": "Mirr Asia 사무실 방문 (홍콩 또는 서울 서초구)",
+        "k070": "구청 공인 여권 사본 제출",
+        "k071": "인근 공증 사무소에서 여권 공증",
+        "k072": "설립 목적이 법적 또는 윤리적 문제(자금 세탁, 도박, 탈세, 은닉, 사기)를 일으킬 가능성이 있습니까?",
+        "k073": "법률 자문 필요",
+        "k074": "기타 법적/윤리적 이슈 상세 내용",
+        "k075": "설립 후 연간 갱신 및 반복적인 컴플라이언스 비용이 발생합니다. 이에 동의하십니까?",
+        "k076": "내부적으로 처리 가능",
+        "k077": "고정 연간 비용 발생 시 진행하지 않음",
+        "k078": "결정 전 상담 필요",
+        "k079": "제재 대상 국가/지역에서 사업을 수행하거나 수행할 계획이 있습니까?",
+        "k080": "관련자 중 제재 관할 구역(UN/EU/UK/HKMA/OFAC 범위)에 거주하는 자가 있습니까?",
+        "k081": "크림반도 또는 세바스토폴에서 현재 또는 계획 중인 사업 활동이 있습니까?",
+        "k082": "석유, 가스, 에너지, 군사 또는 국방 분야에서 현재 또는 계획 중인 활동이 있습니까?",
+        "k083": "리투아니아 설립 요건",
+        "k084": "표준 설립의 최소 자본금은 2,500 EUR이며, 최소 1명의 주주/이사/매니저가 등록되어야 합니다. 은행 계좌 개설은 온보딩 후 통상 3~5주가 소요됩니다.",
+        "k085": "산업 선택",
+        "k086": "기타 산업 상세 내용",
+        "k087": "제품/서비스 설명",
+        "k088": "비즈니스 요약 (3~4문장)",
+        "k089": "https://",
+        "k090": "설립 목적 및 기대 효과",
+        "k091": "기타 목적 상세 내용",
+        "k092": "납입 예정 총 자본금 (EUR)",
+        "k093": "2,500 EUR (표준 최소 금액)",
+        "k094": "125,000 EUR (READY-MADE VASP 관련)",
+        "k095": "350,000 EUR (EMI 라이선스 관련)",
+        "k096": "기타 금액",
+        "k097": "기타 자본금 금액 (EUR)",
+        "k098": "리투아니아 등록 주소지",
+        "k099": "Mirr Asia 법인 주소지 서비스 사용",
+        "k100": "고객 제공 리투아니아 사업장 주소 사용",
+        "k101": "고객 제공 주소 상세 정보",
+        "k102": "자본금 요건은 설립 전 자본금 계좌에 납입되어야 하며 인보이스 합계에서 제외됨을 이해합니다.",
+        "k103": "선호하는 장부 기장 주기",
+        "k104": "반기별",
+        "k105": "연간",
+        "k106": "예상 월간 인보이스 건수",
+        "k107": "50건 이하",
+        "k108": "51건 ~ 100건",
+        "k109": "101건 ~ 200건",
+        "k110": "201건 ~ 500건",
+        "k111": "500건 초과",
+        "k112": "예상 직원 수",
+        "k113": "0 ~ 3명",
+        "k114": "4 ~ 5명",
+        "k115": "6 ~ 7명",
+        "k116": "7명 초과",
+        "k117": "VAT 및 세무 신고 지원이 필요하십니까?",
+        "k118": "먼저 상담 필요",
+        "k119": "회계 및 보고 참고 사항",
+        "k120": "서비스 및 가격 설정",
+        "k121": "먼저 리투아니아 경로를 선택한 후 유지관리 및 제3자 추정치를 구성하십시오. 제3자 추정치는 계획 가시성을 위해 인보이스에 표시될 수 있습니다.",
+        "k122": "리투아니아 서비스 경로",
+        "k123": "리투아니아 설립 가이드 패키지 (참조 2,200 EUR)",
+        "k124": "READY-MADE VASP - 표준 패키지 (견적 기반)",
+        "k125": "READY-MADE VASP - 풀 패키지 (25,000 EUR)",
+        "k126": "EMI 라이선스 프로젝트 (레벨 1-9, 60,000 EUR + 정부 수수료)",
+        "k127": "AML 담당자 플랜",
+        "k128": "AML 담당자 플랜 선택 안 함",
+        "k129": "기본 AML 담당자 연간 플랜 (12,000 EUR)",
+        "k130": "경력직 AML 담당자 연간 플랜 (24,000 EUR)",
+        "k131": "회계 패키지",
+        "k132": "회계 패키지 선택 안 함",
+        "k133": "월 최대 50건 인보이스 (연간 4,800 EUR)",
+        "k134": "월 최대 100건 인보이스 (연간 6,120 EUR)",
+        "k135": "월 최대 200건 인보이스 (연간 9,240 EUR)",
+        "k136": "월 최대 500건 인보이스 (연간 13,560 EUR)",
+        "k137": "500건 초과 / 맞춤형 (견적)",
+        "k138": "EMI 가상 계좌 온보딩 수수료 추정치",
+        "k139": "포함하지 않음",
+        "k140": "500 EUR",
+        "k141": "1,000 EUR",
+        "k142": "1,500 EUR",
+        "k143": "2,000 EUR",
+        "k144": "직접 입력",
+        "k145": "맞춤 EMI 온보딩 추정치 (EUR)",
+        "k146": "현지 사무실 임대료 + 공과금 추정치 (연간)",
+        "k147": "1,800 EUR",
+        "k148": "2,400 EUR",
+        "k149": "3,000 EUR",
+        "k150": "맞춤 사무실 임대료 + 공과금 추정치 (EUR)",
+        "k151": "예상 KYC/KYT 검사 횟수 (인당 2 EUR)",
+        "k152": "풀 VASP 자본금이 완납되지 않은 경우 법정 이자 항목(4,900 EUR) 포함",
+        "k153": "견적 전용 서비스 요청",
+        "k154": "기타 견적 전용 요청 상세 내용",
+        "k155": "자본금 유의사항",
+        "k156": "자본금 요건(경로에 따라 2,500 / 125,000 / 350,000 EUR)은 컴플라이언스 전제 조건이며 인보이스 합계에 합산되지 않습니다.",
+        "k157": "리투아니아 설립 및 라이선스",
+        "k158": "리투아니아 신청서 제출됨",
+        "k159": "리투아니아 요청이 접수되었습니다. 당사 팀이 선택한 경로에 따라 범위 확인, 컴플라이언스 검토 및 신고 조율을 완료할 것입니다.",
+        "k160": "준비 및 KYC",
+        "k161": "서류 준비, KYC/CDD 확인 및 패키지 확정이 먼저 완료됩니다.",
+        "k162": "경로 실행",
+        "k163": "표준 설립은 필수 서류 준비 후 통상 약 2~3주가 소요됩니다.",
+        "k164": "뱅킹 / 운영",
+        "k165": "은행 계좌 온보딩 일정은 산업별로 다르며, 통상 3~5주의 계획 기간이 소요됩니다.",
+        "k166": "라이선스 특화 사후 관리",
+        "k167": "READY-MADE VASP 및 EMI 경로는 추가적인 운영 및 규제 사후 관리 단계가 포함됩니다.",
+        "k168": "작성자 상세 정보 및 온보딩 준비 상태",
+        "k169": "AML / CDD",
+        "k170": "사업 의도, 제재 확인 및 컴플라이언스 선언",
+        "k171": "사업 프로필, 등록 상세 정보 및 자본금 선언",
+        "k172": "관련자 초대 및 지정 연락 담당자 범위 할당",
+        "k173": "서비스 맞춤 설정",
+        "k174": "경로, 유지관리 범위 및 제3자 추정치 항목 선택",
+        "k175": "결제 전 청구 항목 및 추정 항목 검토",
+        "k176": "결제 진행",
+        "k177": "카드 또는 은행 송금 결제 워크플로우 진행",
+        "k178": "검토 및 선언",
+        "k179": "제출된 모든 정보가 사실이며 정확함을 확인합니다.",
+        "k180": "법적/컴플라이언스 우려 사항이 식별될 경우 서비스가 일시 중단되거나 거부될 수 있음을 이해합니다.",
+        "k181": "법정 자본금은 청구되지 않는 설립 전제 조건이며 인보이스 합계의 일부가 아님을 이해합니다."
+      }
+    },
+    "ie": {
+      "auto": {
+        "k001": "설립될 아일랜드 법인의 이사",
+        "k002": "설립될 아일랜드 법인의 최고 경영자",
+        "k003": "아일랜드 법인 이사가 위임한 대리인",
+        "k004": "설립될 아일랜드 법인의 주요 주주",
+        "k005": "이사를 대신하여 설립 자문을 제공하는 전문가 (변호사, 회계사, 행정사, 세무사 등)",
+        "k006": "암호화폐 관련 (발행/판매/기부/ICO/거래소/지갑 서비스)",
+        "k007": "IT, 블록체인, 소프트웨어 등 개발",
+        "k008": "암호화폐 기반 투자 관련 사업",
+        "k009": "암호화폐 기반 게임",
+        "k010": "일반 온라인 게임",
+        "k011": "외환 거래",
+        "k012": "금융, 투자, 컨설팅, 대출 등",
+        "k013": "무역업",
+        "k014": "도소매 유통",
+        "k015": "컨설팅",
+        "k016": "제조업",
+        "k017": "온라인 서비스업 (이커머스)",
+        "k018": "온라인 직구/배송 서비스/구매 대행",
+        "k019": "완화된 규제를 통한 사업 다각화 추구",
+        "k020": "법률 고문, 투자자 또는 파트너가 아일랜드 법인 설립을 제안함",
+        "k021": "다양한 유럽 국가로의 사업 확장",
+        "k022": "부동산 또는 금융 자산 투자를 통한 자산 관리",
+        "k023": "자회사 또는 관계사 관리를 위한 지주 회사",
+        "k024": "자유로운 금융 정책을 통한 경쟁 우위 추구",
+        "k025": "유럽 내 낮은 세율로 인한 거래량 증가",
+        "k026": "규제 검토, 타당성 검토, 서류 준비 및 운영 컨설팅을 포함한 컨설팅 서비스 (별도 견적)",
+        "k027": "기타 견적 전용 요청",
+        "k028": "아일랜드 법인 설립 + 첫해 법인 주소지 및 서기(Secretary) 서비스",
+        "k029": "설립 신고/정부 수수료, 설립 서류, 창립 결의서 및 의사록, 첫해 등록 주소지, 법인 서기 지원, 세무/VAT 등록 및 관련 패키지 포함 사항.",
+        "k030": "아일랜드 법인 은행 계좌 개설",
+        "k031": "비 EEA 거주 이사 요건 대체를 위한 2년 보증서(Bond)",
+        "k032": "25,000 EUR 책임 보증서에 대한 참조 견적은 2,000 EUR입니다. 본 워크플로우에서는 USD/HKD로 표시됩니다.",
+        "k033": "현지 아일랜드 규정 준수를 위한 1년 이사 등록",
+        "k034": "1년 동안 현지 아일랜드 이사 추가 임명",
+        "k035": "아일랜드 조세 거주 지위를 강화하고, 원격 계좌 개설을 지원하며, 해당 시 조약 혜택 접근성을 개선할 수 있습니다.",
+        "k036": "연간 법인 갱신 패키지",
+        "k037": "연간 보고서 신고, 서기 지원, 등록 주소/우편 처리 및 연례 주주총회(AGM) 서류 준비 포함.",
+        "k038": "컨설팅 서비스 (견적 전용 요청)",
+        "k039": "EUR로 견적된 항목은 본 워크플로우의 통합 USD/HKD 결제망으로 표시됩니다. 견적 전용 요청은 추적되지만 청구 합계에서는 제외됩니다.",
+        "k040": "작성자와 설립될 아일랜드 법인과의 관계",
+        "k041": "아일랜드 법인 설립 목적이 법적 또는 윤리적 문제(자금 세탁, 도박, 탈세, 자산 은닉, 법적 절차 회피, 사기)를 일으킵니까?",
+        "k042": "법률 자문 고려",
+        "k043": "기타 법적/윤리적 이슈 상세 내용",
+        "k044": "아일랜드 법인 설립 후 연간 갱신 및 반복적인 서류/비용 의무가 적용됩니다. 이에 동의하십니까?",
+        "k045": "설립 후 내부적으로 해결 가능",
+        "k046": "고정 연간 비용이 발생할 경우 진행하지 않음",
+        "k047": "진행 전 상담 필요",
+        "k048": "설립 예정인 아일랜드 회사, 지주 회사, 그룹 또는 관련 엔티티가 현재 제재 대상 국가 또는 지역에서 사업을 수행하거나 수행할 계획이 있습니까?",
+        "k049": "관련자 중 UN/EU/UKHMT/HKMA/OFAC에서 제재한 국가/지역 또는 관할권에 거주하는 자가 있습니까?",
+        "k050": "설립 예정인 아일랜드 엔티티를 제재 대상 개인/단체/정부가 소유 또는 통제하고 있습니까(소유권 또는 지배력 포함)?",
+        "k051": "관련 엔티티 중 현재 크림반도 또는 세바스토폴에서 사업을 수행 중이거나 수행할 계획이 있는 곳이 있습니까?",
+        "k052": "그룹이 현재 석유, 가스, 에너지, 군사 또는 국방 분야에 종사하고 있거나 종사할 계획이 있습니까?",
+        "k053": "아일랜드 설립 요건",
+        "k054": "최소 자본금은 0.01 EUR 및 1주입니다. 최소 1명의 자연인이 이사여야 하며, 최소 1명의 이사는 EEA 거주자여야 합니다(또는 보증서로 대체). 최소 1명의 서기(Secretary)가 필요하며, 아일랜드 내 등록 주소지는 필수입니다.",
+        "k055": "산업 선택 (해당 항목 모두 체크)",
+        "k056": "기타 산업 상세 내용",
+        "k057": "제품명/유형/서비스 내용/서비스 유형 설명",
+        "k058": "비즈니스를 3~4문장으로 설명해 주십시오.",
+        "k059": "https://",
+        "k060": "아일랜드 법인 설립 목적 및 향후 기대 효과",
+        "k061": "기타 목적 상세 내용",
+        "k062": "총 주식 수",
+        "k063": "1주",
+        "k064": "100주",
+        "k065": "1,000주",
+        "k066": "10,000주",
+        "k067": "100,000주",
+        "k068": "총 주식 수 (기타)",
+        "k069": "납입 예정 총 자본금 (EUR)",
+        "k070": "0.01 EUR",
+        "k071": "1 EUR",
+        "k072": "100 EUR",
+        "k073": "1,000 EUR",
+        "k074": "10,000 EUR",
+        "k075": "100,000 EUR",
+        "k076": "납입 예정 총 자본금 (기타 - EUR)",
+        "k077": "주당 액면가 (EUR)",
+        "k078": "EEA 거주 이사 또는 25,000 EUR 보증서 요건을 어떻게 충족하시겠습니까?",
+        "k079": "이미 최소 1명의 EEA 거주 이사가 있음",
+        "k080": "현지 이사 등록 서비스 사용",
+        "k081": "2년 보증서 구매 (25,000 EUR 책임 한도)",
+        "k082": "결정 전 상담 필요",
+        "k083": "최소 1명의 자연인을 이사로 임명하시겠습니까?",
+        "k084": "확인 전 상담 필요",
+        "k085": "서기(Secretary) 구성",
+        "k086": "이사가 서기를 겸임",
+        "k087": "별도의 인원을 서기로 등록",
+        "k088": "이사가 1명뿐인 경우, 별도의 인원을 서기로 등록해야 함을 이해합니다.",
+        "k089": "아일랜드 내 회사 등록 주소지",
+        "k090": "Mirr Asia의 아일랜드 법인 등록 주소지 서비스 사용",
+        "k091": "별도의 아일랜드 사업장 주소 사용",
+        "k092": "별도 아일랜드 주소 상세 정보",
+        "k093": "아일랜드 현지 이사 / 보증서 규정",
+        "k094": "아일랜드 회사는 최소 1명의 EEA 거주 이사를 유지해야 합니다. 이 요건이 충족되지 않을 경우, 일반적으로 25,000 EUR 보증서가 대체 컴플라이언스 경로로 사용됩니다.",
+        "k095": "견적 전용 서비스 요청 (송금 합계 제외)",
+        "k096": "기타 견적 전용 요청 상세 내용",
+        "k097": "아일랜드 법인 설립",
+        "k098": "아일랜드 설립 요청 제출됨",
+        "k099": "아일랜드 설립 요청이 접수되었습니다. 당사 팀이 진행 전 컴플라이언스, 서비스 범위 및 신고 준비 상태를 검토할 것입니다.",
+        "k100": "컴플라이언스 및 범위 검토",
+        "k101": "KYC/CDD 및 제재 스크리닝 확인을 완료하고 서비스 범위를 확정합니다.",
+        "k102": "등록 준비",
+        "k103": "회사 구조, 등록 세부 사항 및 이사/서기 요건을 검증합니다.",
+        "k104": "신고 및 설정 실행",
+        "k105": "최종 승인에 따라 법인 설립 및 선택된 사후 설립 서비스를 실행합니다.",
+        "k106": "작성자 상세 정보 및 설립될 아일랜드 회사와의 관계",
+        "k107": "AML / CDD",
+        "k108": "사업 의도, 제재 확인 및 연간 갱신 동의",
+        "k109": "사업 프로필, 등록 상세 정보 및 아일랜드 설립 요건",
+        "k110": "관련자 초대 및 필수 역할/거주 요건 보충",
+        "k111": "이사 임명",
+        "k112": "서기 임명",
+        "k113": "이사 범위",
+        "k114": "서기 범위",
+        "k115": "청구 가능 서비스 항목 및 선택적 견적 요청 선택",
+        "k116": "결제 전 요금 확인",
+        "k117": "결제 진행",
+        "k118": "카드 결제 또는 은행 송금 증빙 업로드 진행",
+        "k119": "검토 및 선언",
+        "k120": "동의 및 선언",
+        "k121": "필요한 서류와 정보를 제공할 것에 동의하며, 적법한 사업 의도를 확인하고, 제출된 모든 정보가 진실되고 완전하며 정확함을 선언합니다.",
+        "k122": "동의하십니까?",
+        "k123": "불법적인 활동이나 의도가 발견될 경우 서비스가 중단될 수 있음을 이해합니다."
       }
     }
   }

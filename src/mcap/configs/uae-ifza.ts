@@ -3,12 +3,12 @@ import { finYearOptions } from "@/pages/Company/NewHKForm/hkIncorpo";
 import type { McapConfig } from "./types";
 
 const ENTITY_OPTIONS = [
-  { label: "Dubai Local LLC", value: "UAE-LOCAL-LLC" },
-  { label: "Dubai DSO/IFZA Free Zone Company (FZCO)", value: "UAE-IFZA-FZCO" },
-  { label: "Dubai DIFC Free Zone Company (FZCO)", value: "UAE-DIFC-FZCO" },
-  { label: "Dubai DWTC Free Zone Company (FZCO)", value: "UAE-DWTC-FZCO" },
-  { label: "Dubai DMCC Free Zone Company (FZCO)", value: "UAE-DMCC-FZCO" },
-  { label: "Dubai DIC Free Zone Company (FZCO)", value: "UAE-DIC-FZCO" },
+  { label: "mcap.uae.options.entityType.localLlc", value: "UAE-LOCAL-LLC" },
+  { label: "mcap.uae.options.entityType.ifzaFzco", value: "UAE-IFZA-FZCO" },
+  { label: "mcap.uae.options.entityType.difcFzco", value: "UAE-DIFC-FZCO" },
+  { label: "mcap.uae.options.entityType.dwtcFzco", value: "UAE-DWTC-FZCO" },
+  { label: "mcap.uae.options.entityType.dmccFzco", value: "UAE-DMCC-FZCO" },
+  { label: "mcap.uae.options.entityType.dicFzco", value: "UAE-DIC-FZCO" },
 ];
 
 const ENTITY_META = {
@@ -74,328 +74,446 @@ const ENTITY_META = {
   },
 };
 
+const YES_NO_OPTIONS = [
+  { label: "mcap.common.options.yes", value: "yes" },
+  { label: "mcap.common.options.no", value: "no" },
+];
+
+const YES_NO_DONT_KNOW_OPTIONS = [
+  { label: "mcap.common.options.yes", value: "yes" },
+  { label: "mcap.common.options.no", value: "no" },
+  { label: "mcap.common.options.doNotKnow", value: "unknown" },
+];
+
+type UaeServiceItem = {
+  id: string;
+  label: string;
+  amount: number;
+  original: number;
+  mandatory?: boolean;
+  info?: string;
+};
+
+const UAE_SERVICE_CATALOG: UaeServiceItem[] = [
+  {
+    id: "vasp_setup_emi",
+    label: "mcap.uae.services.items.vaspSetupEmi.label",
+    amount: 14850,
+    original: 14850,
+    info: "mcap.uae.services.items.vaspSetupEmi.info",
+  },
+  {
+    id: "vasp_kyc_kyt",
+    label: "mcap.uae.services.items.vaspKycKyt.label",
+    amount: 2500,
+    original: 2500,
+    mandatory: false,
+    info: "mcap.uae.services.items.vaspKycKyt.info",
+  },
+  {
+    id: "vasp_aml_10",
+    label: "mcap.uae.services.items.vaspAml10.label",
+    amount: 1000,
+    original: 1000,
+  },
+  {
+    id: "vasp_aml_20",
+    label: "mcap.uae.services.items.vaspAml20.label",
+    amount: 1800,
+    original: 1800,
+  },
+  {
+    id: "vasp_accounting",
+    label: "mcap.uae.services.items.vaspAccounting.label",
+    amount: 3000,
+    original: 3000,
+  },
+  {
+    id: "ifza_setup_bank",
+    label: "mcap.uae.services.items.ifzaSetupBank.label",
+    amount: 5000,
+    original: 5000,
+  },
+  {
+    id: "legal_opinion_ifza",
+    label: "mcap.uae.services.items.legalOpinionIfza.label",
+    amount: 1500,
+    original: 1500,
+  },
+  {
+    id: "legal_opinion_domestic",
+    label: "mcap.uae.services.items.legalOpinionDomestic.label",
+    amount: 5000,
+    original: 5000,
+  },
+  {
+    id: "consulting",
+    label: "mcap.uae.services.items.consulting.label",
+    amount: 2000,
+    original: 2000,
+  },
+];
+
+const getSelectedServiceIds = (data: any) => {
+  const selected = new Set<string>();
+  const optionalFeeIds = Array.isArray(data?.optionalFeeIds) ? data.optionalFeeIds : [];
+  const serviceItemsSelected = Array.isArray(data?.serviceItemsSelected) ? data.serviceItemsSelected : [];
+  optionalFeeIds.forEach((id: any) => selected.add(String(id)));
+  serviceItemsSelected.forEach((id: any) => selected.add(String(id)));
+  return selected;
+};
+
+const buildUaeServiceItems = (data: any, entityMeta: any) => {
+  const entity = entityMeta?.[data?.entityType] || null;
+  const setupCost = Number(entity?.setupCostUSD || 0);
+  return [
+    {
+      id: "setup",
+      label: "mcap.uae.services.items.setup.label",
+      amount: setupCost,
+      original: setupCost,
+      mandatory: true,
+      info: "mcap.uae.services.items.setup.info",
+    },
+    ...UAE_SERVICE_CATALOG,
+  ];
+};
+
+const computeUaeFees = (data: any, entityMeta: any) => {
+  const selectedIds = getSelectedServiceIds(data);
+  const allItems = buildUaeServiceItems(data, entityMeta);
+  const items = allItems
+    .filter((item) => item.mandatory || selectedIds.has(item.id))
+    .map((item) => ({
+      id: item.id,
+      label: item.label,
+      amount: item.amount,
+      original: item.original,
+      kind: "service" as const,
+      ...(item.info ? { info: item.info } : {}),
+    }));
+
+  const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const paymentCurrency = String(data?.paymentCurrency || data?.currency || "USD").toUpperCase();
+  const cardFeePct = paymentCurrency === "USD" ? 0.06 : 0.04;
+  const cardFeeSurcharge = String(data?.payMethod || "").toLowerCase() === "card" ? total * cardFeePct : 0;
+
+  return {
+    currency: "USD",
+    paymentCurrency,
+    items,
+    government: 0,
+    service: total,
+    total,
+    cardFeePct,
+    cardFeeSurcharge,
+    grandTotal: total + cardFeeSurcharge,
+    note: "mcap.uae.fees.note",
+  };
+};
+
 export const UAE_IFZA_CONFIG: McapConfig = {
   id: "uae-ifza",
   countryCode: "UAE",
   countryName: "Dubai IFZA / UAE",
   currency: "USD",
-  title: "Dubai IFZA Company Incorporation",
+  title: "mcap.uae.title",
   entityMeta: ENTITY_META,
   confirmationDetails: {
-    title: "Application Submitted Successfully",
-    message: "Your application for Dubai IFZA company incorporation has been received. Our team will review your details and contact you for the next steps.",
+    title: "mcap.uae.confirmation.title",
+    message: "mcap.uae.confirmation.message",
     steps: [
       {
-        title: "Initial Review",
-        description: "Review of your company details and business intent (1-2 business days).",
+        title: "mcap.uae.confirmation.steps.initialReview.title",
+        description: "mcap.uae.confirmation.steps.initialReview.description",
       },
       {
-        title: "KYC Verification",
-        description: "Processing of personal documents and AML checks.",
+        title: "mcap.uae.confirmation.steps.kycVerification.title",
+        description: "mcap.uae.confirmation.steps.kycVerification.description",
       },
       {
-        title: "Filing",
-        description: "Official submission to UAE/IFZA authorities.",
+        title: "mcap.uae.confirmation.steps.filing.title",
+        description: "mcap.uae.confirmation.steps.filing.description",
       },
     ],
   },
   steps: [
     {
       id: "applicant",
-      title: "newHk.steps.applicant.title",
-      description: "Provide applicant details and confirm authority to submit.",
+      title: "mcap.common.steps.applicant",
+      description: "mcap.uae.steps.applicant.description",
       fields: [
         {
           type: "info",
-          label: "Application Notice",
-          content:
-            "This application must be completed by the primary controller (future director) or an authorized person. The final application must be signed in person by the director. The information will be used for KYC and due diligence under TCSP/AMLO rules. Please avoid errors or omissions.",
+          label: "mcap.uae.applicant.notice.label",
+          content: "mcap.uae.applicant.notice.content",
         },
-        { type: "text", name: "applicantName", label: "Applicant Name", required: true },
+        { type: "text", name: "applicantName", label: "mcap.common.fields.applicantName", required: true },
         {
           type: "text",
           name: "companyName1",
-          label: "Desired company name (1st choice)",
+          label: "mcap.common.fields.companyNameFirstChoice",
           required: true,
         },
-        { type: "text", name: "companyName2", label: "Desired company name (2nd choice)" },
-        { type: "text", name: "companyName3", label: "Desired company name (3rd choice)" },
-        { type: "email", name: "applicantEmail", label: "Applicant Email", required: true },
-        { type: "text", name: "applicantPhone", label: "Applicant Phone", required: true },
+        { type: "text", name: "companyName2", label: "mcap.common.fields.companyNameSecondChoice" },
+        { type: "text", name: "companyName3", label: "mcap.common.fields.companyNameThirdChoice" },
+        { type: "email", name: "applicantEmail", label: "mcap.common.fields.applicantEmail", required: true },
+        { type: "text", name: "applicantPhone", label: "mcap.common.fields.applicantPhone", required: true },
         {
           type: "checkbox-group",
           name: "applicantRelationship",
-          label: "Relationship between applicant and the Dubai IFZA company (multiple selections possible)",
+          label: "mcap.uae.applicant.fields.applicantRelationship.label",
           required: true,
           options: [
-            { label: "Director of the Dubai IFZA company (to be established)", value: "director" },
-            { label: "Chief Manager of the Dubai IFZA company (to be established)", value: "chief_manager" },
-            { label: "Person authorized by the Director of the Dubai IFZA company (to be established)", value: "authorized_person" },
-            { label: "Major Shareholder of the Dubai IFZA company (to be established)", value: "major_shareholder" },
-            { label: "Expert providing establishment consultation (lawyer, accountant, agent, etc.)", value: "expert_advisor" },
-            { label: "Other", value: "other" },
+            { label: "mcap.uae.options.applicantRelationship.director", value: "director" },
+            { label: "mcap.uae.options.applicantRelationship.chiefManager", value: "chief_manager" },
+            { label: "mcap.uae.options.applicantRelationship.authorizedPerson", value: "authorized_person" },
+            { label: "mcap.uae.options.applicantRelationship.majorShareholder", value: "major_shareholder" },
+            { label: "mcap.uae.options.applicantRelationship.expertAdvisor", value: "expert_advisor" },
+            { label: "mcap.common.options.other", value: "other" },
           ],
         },
         {
           type: "text",
           name: "applicantRelationshipOther",
-          label: "Other relationship (please specify)",
+          label: "mcap.uae.applicant.fields.applicantRelationshipOther.label",
           condition: (data) => Array.isArray(data.applicantRelationship) && data.applicantRelationship.includes("other"),
         },
         {
           type: "select",
           name: "snsType",
-          label: "SNS / Messaging App",
+          label: "mcap.common.fields.preferredMessenger",
           options: [
-            { label: "WhatsApp", value: "whatsapp" },
-            { label: "WeChat", value: "wechat" },
-            { label: "Telegram", value: "telegram" },
-            { label: "Line", value: "line" },
-            { label: "KakaoTalk", value: "kakaotalk" },
-            { label: "Other", value: "other" },
+            { label: "mcap.common.messenger.whatsApp", value: "whatsapp" },
+            { label: "mcap.common.messenger.weChat", value: "wechat" },
+            { label: "mcap.common.messenger.telegram", value: "telegram" },
+            { label: "mcap.common.messenger.line", value: "line" },
+            { label: "mcap.common.messenger.kakaoTalk", value: "kakaotalk" },
+            { label: "mcap.common.options.other", value: "other" },
           ],
         },
         {
           type: "text",
           name: "snsId",
-          label: "SNS Account ID",
+          label: "mcap.common.fields.messengerId",
           condition: (data) => !!data.snsType,
         },
       ],
     },
     {
       id: "compliance",
-      title: "AML / CDD",
-      description: "Anti-Money Laundering and Customer Due Diligence questionnaire.",
+      title: "mcap.common.steps.compliance",
+      description: "mcap.uae.steps.compliance.description",
       fields: [
         {
           type: "radio-group",
           name: "legalEthicalIssues",
-          label:
-            "Is the purpose of establishing a Dubai IFZA company likely to involve legal or ethical issues (money laundering, gambling, tax evasion, fraud, etc.)?",
+          label: "mcap.uae.compliance.legalEthicalIssues.label",
           required: true,
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-            { label: "Don't know", value: "unknown" },
-            { label: "Consider legal advice", value: "legal_advice" },
-            { label: "Other", value: "other" },
+            { label: "mcap.common.options.yes", value: "yes" },
+            { label: "mcap.common.options.no", value: "no" },
+            { label: "mcap.common.options.doNotKnow", value: "unknown" },
+            { label: "mcap.uae.compliance.options.considerLegalAdvice", value: "legal_advice" },
+            { label: "mcap.common.options.other", value: "other" },
           ],
         },
         {
           type: "text",
           name: "legalEthicalIssuesOther",
-          label: "Other (please specify)",
+          label: "mcap.uae.compliance.fields.legalEthicalIssuesOther.label",
           condition: (data) => data.legalEthicalIssues === "other",
         },
         {
           type: "radio-group",
           name: "annualRenewalConsent",
-          label:
-            "After establishment, annual renewal work occurs every year and requires related costs and data. Do you agree?",
+          label: "mcap.uae.compliance.annualRenewalConsent.label",
           required: true,
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-            { label: "Can be resolved internally after establishment", value: "internal" },
-            { label: "Need advice before proceeding", value: "advice" },
+            { label: "mcap.common.options.yes", value: "yes" },
+            { label: "mcap.common.options.no", value: "no" },
+            { label: "mcap.uae.compliance.options.internalAfterEstablishment", value: "internal" },
+            { label: "mcap.common.options.adviceRequiredBeforeProceeding", value: "advice" },
           ],
         },
         {
           type: "radio-group",
           name: "sanctionCountriesOps",
-          label:
-            "Does the planned corporation or related companies operate or plan to operate in Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, or Zimbabwe?",
+          label: "mcap.uae.compliance.sanctionCountriesOps.label",
           required: true,
-          options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-            { label: "Don't know", value: "unknown" },
-          ],
+          options: YES_NO_DONT_KNOW_OPTIONS,
         },
         {
           type: "radio-group",
           name: "sanctionPersonnelResidency",
-          label:
-            "Are any personnel residing in Iran, Sudan, North Korea, Syria, Cuba, or other UN/EU/UK/OFAC sanctioned countries?",
+          label: "mcap.uae.compliance.sanctionPersonnelResidency.label",
           required: true,
-          options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-          ],
+          options: YES_NO_OPTIONS,
         },
         {
           type: "radio-group",
           name: "crimeaSevastopol",
-          label:
-            "Do the planned corporation or related companies operate or plan to operate in Crimea or Sevastopol?",
+          label: "mcap.uae.compliance.crimeaSevastopol.label",
           required: true,
-          options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-            { label: "Don't know", value: "unknown" },
-          ],
+          options: YES_NO_DONT_KNOW_OPTIONS,
         },
         {
           type: "radio-group",
           name: "sensitiveSectors",
-          label:
-            "Do the planned corporation or related companies operate or plan to operate in oil, gas, energy, military, or defense sectors?",
+          label: "mcap.uae.compliance.sensitiveSectors.label",
           required: true,
-          options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-          ],
+          options: YES_NO_OPTIONS,
         },
       ],
     },
     {
       id: "company",
-      title: "Company Information",
-      description: "Provide company business details, capital, and address, then invite parties.",
+      title: "mcap.common.steps.company",
+      description: "mcap.uae.steps.company.description",
       widget: "PartiesManager",
       minParties: 1,
       requireDcp: true,
       requirePartyInvite: true,
       fields: [
         // --- Entity Selection ---
-        { type: "select", name: "entityType", label: "Entity Type", required: true, options: ENTITY_OPTIONS, colSpan: 2 },
+        { type: "select", name: "entityType", label: "mcap.uae.company.fields.entityType.label", required: true, options: ENTITY_OPTIONS, colSpan: 2 },
         {
           type: "derived",
           name: "initialCostUSD",
-          label: "Initial Cost (USD)",
+          label: "mcap.uae.company.fields.initialCostUsd.label",
           compute: (_data, entity) => (entity?.initialCostUSD ? `$${entity.initialCostUSD.toLocaleString()}` : ""),
         },
         {
           type: "derived",
           name: "capital",
-          label: "Capital",
+          label: "mcap.uae.company.fields.capital.label",
           compute: (_data, entity) => entity?.capital || "",
         },
         {
           type: "derived",
           name: "officeRequirement",
-          label: "Office Requirement",
+          label: "mcap.uae.company.fields.officeRequirement.label",
           compute: (_data, entity) => entity?.office || "",
         },
         {
           type: "derived",
           name: "visaCost",
-          label: "Visa Cost",
+          label: "mcap.uae.company.fields.visaCost.label",
           compute: (_data, entity) => entity?.visa || "",
         },
         {
           type: "derived",
           name: "establishmentPeriod",
-          label: "Establishment Period",
+          label: "mcap.uae.company.fields.establishmentPeriod.label",
           compute: (_data, entity) => entity?.establishmentDays || "",
         },
         // --- Company Business Details ---
         {
           type: "checkbox-group",
           name: "businessTypes",
-          label: "Select business type (check all relevant items)",
+          label: "mcap.uae.company.fields.businessTypes.label",
           required: true,
           colSpan: 2,
           options: [
-            { label: "Cryptocurrency related (issuance, exchange, wallet services)", value: "crypto" },
-            { label: "IT, blockchain, software development", value: "it_blockchain" },
-            { label: "Cryptocurrency-based investment business", value: "crypto_investment" },
-            { label: "Cryptocurrency-based games", value: "crypto_games" },
-            { label: "Foreign exchange trading", value: "fx_trading" },
-            { label: "Finance, investment, consulting, lending", value: "finance" },
-            { label: "Trading business", value: "trading" },
-            { label: "Wholesale/retail distribution", value: "distribution" },
-            { label: "Consulting", value: "consulting" },
-            { label: "Manufacturing", value: "manufacturing" },
-            { label: "Online service business (e-commerce)", value: "ecommerce" },
-            { label: "Online direct purchase/delivery", value: "online_delivery" },
-            { label: "Other", value: "other" },
+            { label: "mcap.uae.options.businessType.crypto", value: "crypto" },
+            { label: "mcap.uae.options.businessType.itBlockchain", value: "it_blockchain" },
+            { label: "mcap.uae.options.businessType.cryptoInvestment", value: "crypto_investment" },
+            { label: "mcap.uae.options.businessType.cryptoGames", value: "crypto_games" },
+            { label: "mcap.uae.options.businessType.forexTrading", value: "fx_trading" },
+            { label: "mcap.uae.options.businessType.finance", value: "finance" },
+            { label: "mcap.uae.options.businessType.trading", value: "trading" },
+            { label: "mcap.uae.options.businessType.distribution", value: "distribution" },
+            { label: "mcap.uae.options.businessType.consulting", value: "consulting" },
+            { label: "mcap.uae.options.businessType.manufacturing", value: "manufacturing" },
+            { label: "mcap.uae.options.businessType.ecommerce", value: "ecommerce" },
+            { label: "mcap.uae.options.businessType.onlineDelivery", value: "online_delivery" },
+            { label: "mcap.common.options.other", value: "other" },
           ],
         },
         {
           type: "text",
           name: "businessTypesOther",
-          label: "Other business type (please specify)",
+          label: "mcap.uae.company.fields.businessTypesOther.label",
           colSpan: 2,
           condition: (data) => Array.isArray(data.businessTypes) && data.businessTypes.includes("other"),
         },
         {
           type: "textarea",
           name: "tradeDescription",
-          label: "Description of item names, item types, service details",
+          label: "mcap.uae.company.fields.tradeDescription.label",
           required: true,
           colSpan: 2,
         },
         {
           type: "textarea",
           name: "businessSummary",
-          label: "Company business description (3-4 sentences)",
+          label: "mcap.uae.company.fields.businessSummary.label",
           required: true,
           colSpan: 2,
         },
         {
           type: "text",
           name: "website",
-          label: "Website address (if available)",
+          label: "mcap.common.fields.websiteAddressOptional",
+          placeholder: "mcap.common.placeholders.website",
           colSpan: 2,
         },
         {
           type: "checkbox-group",
           name: "purposeOfEstablishment",
-          label: "Purpose of establishing an IFZA corporation in Dubai and expected effects",
+          label: "mcap.uae.company.fields.purposeOfEstablishment.label",
           colSpan: 2,
           options: [
-            { label: "Business diversification due to relaxed regulations", value: "diversification" },
-            { label: "Suggested by legal advisors, investors, or clients", value: "advisor_suggested" },
-            { label: "Expansion into overseas countries", value: "international_expansion" },
-            { label: "Asset management (real estate or financial assets)", value: "asset_management" },
-            { label: "Holding company for subsidiaries or affiliates", value: "holding_company" },
-            { label: "Competitive advantage due to free financial policies", value: "competitive_advantage" },
-            { label: "Expansion of transaction volume due to low tax rates", value: "low_tax" },
-            { label: "Other", value: "other" },
+            { label: "mcap.uae.options.purpose.diversification", value: "diversification" },
+            { label: "mcap.uae.options.purpose.advisorSuggested", value: "advisor_suggested" },
+            { label: "mcap.uae.options.purpose.internationalExpansion", value: "international_expansion" },
+            { label: "mcap.uae.options.purpose.assetManagement", value: "asset_management" },
+            { label: "mcap.uae.options.purpose.holdingCompany", value: "holding_company" },
+            { label: "mcap.uae.options.purpose.competitiveAdvantage", value: "competitive_advantage" },
+            { label: "mcap.uae.options.purpose.lowTax", value: "low_tax" },
+            { label: "mcap.common.options.other", value: "other" },
           ],
         },
         {
           type: "text",
           name: "purposeOther",
-          label: "Other purpose (please specify)",
+          label: "mcap.common.fields.otherPurposeDetails",
           colSpan: 2,
           condition: (data) => Array.isArray(data.purposeOfEstablishment) && data.purposeOfEstablishment.includes("other"),
         },
         {
           type: "select",
           name: "paidInCapital",
-          label: "Total Paid-in Capital (AED)",
+          label: "mcap.uae.company.fields.paidInCapital.label",
           required: true,
           options: [
-            { label: "1 AED", value: "1" },
-            { label: "100 AED", value: "100" },
-            { label: "10,000 AED (minimum for Dubai company)", value: "10000" },
-            { label: "Other", value: "other" },
+            { label: "mcap.uae.options.paidInCapital.oneAed", value: "1" },
+            { label: "mcap.uae.options.paidInCapital.hundredAed", value: "100" },
+            { label: "mcap.uae.options.paidInCapital.tenThousandAed", value: "10000" },
+            { label: "mcap.common.options.other", value: "other" },
           ],
         },
         {
           type: "text",
           name: "paidInCapitalOther",
-          label: "Other capital amount (AED)",
+          label: "mcap.uae.company.fields.paidInCapitalOther.label",
           condition: (data) => data.paidInCapital === "other",
         },
         {
           type: "radio-group",
           name: "registeredAddressChoice",
-          label: "Registered address in Dubai IFZA",
+          label: "mcap.uae.company.fields.registeredAddressChoice.label",
           required: true,
           colSpan: 2,
           options: [
-            { label: "Use Mirr Asia registration address service", value: "mirasia_address" },
-            { label: "Use a separate address in Dubai IFZA", value: "own_address" },
+            { label: "mcap.uae.options.registeredAddressChoice.mirrAsia", value: "mirasia_address" },
+            { label: "mcap.uae.options.registeredAddressChoice.own", value: "own_address" },
           ],
         },
         {
           type: "textarea",
           name: "registeredAddress",
-          label: "Enter your business address in Dubai IFZA",
+          label: "mcap.uae.company.fields.registeredAddress.label",
           colSpan: 2,
           condition: (data) => data.registeredAddressChoice === "own_address",
         },
@@ -403,256 +521,65 @@ export const UAE_IFZA_CONFIG: McapConfig = {
     },
     {
       id: "acct",
-      title: "Accounting & Taxation",
-      description: "Provide accounting preferences and bookkeeping cycle.",
+      title: "mcap.common.steps.accounting",
+      description: "mcap.uae.steps.accounting.description",
       fields: [
         {
           type: "select",
           name: "finYrEnd",
-          label: "newHk.steps.acct.fields.finYrEnd.label",
+          label: "mcap.common.fields.financialYearEnd",
           options: finYearOptions,
         },
         {
           type: "text",
           name: "finYrEndOther",
-          label: "newHk.common.other",
+          label: "mcap.common.fields.otherFinancialYearEnd",
           condition: (f) => f.finYrEnd === "Other",
         },
         {
           type: "radio-group",
           name: "bookKeepingCycle",
-          label: "Bookkeeping Cycle",
+          label: "mcap.common.fields.bookKeepingCycle",
           options: [
-            { label: "Monthly", value: "monthly" },
-            { label: "Quarterly", value: "quarterly" },
-            { label: "Annually", value: "annually" },
+            { label: "mcap.common.bookkeeping.monthly", value: "monthly" },
+            { label: "mcap.common.bookkeeping.quarterly", value: "quarterly" },
+            { label: "mcap.common.bookkeeping.annually", value: "annually" },
           ],
           required: true,
         },
         {
           type: "radio-group",
           name: "xero",
-          label: "Cloud Accounting (Xero) Requirement",
+          label: "mcap.uae.accounting.fields.xero.label",
           options: [
-            { label: "Yes, I need Xero setup", value: "yes" },
-            { label: "No, I have my own system", value: "no" },
-            { label: "Need professional advice", value: "advice" },
+            { label: "mcap.uae.accounting.options.xero.yesNeedSetup", value: "yes" },
+            { label: "mcap.uae.accounting.options.xero.noOwnSystem", value: "no" },
+            { label: "mcap.uae.accounting.options.xero.needAdvice", value: "advice" },
           ],
         },
       ],
     },
     {
       id: "services",
-      title: "Select Services Provided by Mirr Asia",
+      title: "mcap.common.steps.services",
+      description: "mcap.uae.steps.services.description",
       widget: "ServiceSelectionWidget",
-      serviceItems: (data: any, entityMeta: any) => {
-        const entity = entityMeta?.[data.entityType] || null;
-        const setupCost = Number(entity?.setupCostUSD || 0);
-
-        return [
-          {
-            id: "setup",
-            label: `UAE Setup Cost (${entity ? entity.label : "Selected Entity"})`,
-            amount: setupCost,
-            original: setupCost,
-            mandatory: true,
-            info: "Includes initial government fees and Mir Asia service charges.",
-          },
-          {
-            id: "vasp_setup_emi",
-            label: "[VASP] IFZA setup + notarization + 1 year maintenance + VASP license + EMI account",
-            amount: 14850, // Approx USD equivalent of EUR 13,500
-            original: 14850,
-            info: "Comprehensive VASP package including license and banking setup.",
-          },
-          {
-            id: "vasp_kyc_kyt",
-            label: "[VASP] Outsourcing firm setup for KYC/KYT",
-            amount: 2500, // Estimated
-            original: 2500,
-            mandatory: false, // User marked as mandatory in text, but let's make it toggleable or force it? Text said "(mandatory)".
-            // If mandatory, set mandatory: true.
-            info: "Mandatory for VASP license holders.",
-          },
-          {
-            id: "vasp_aml_10",
-            label: "[VASP] AML officer registration (10 hours/month)",
-            amount: 1000, // Estimated
-            original: 1000,
-          },
-          {
-            id: "vasp_aml_20",
-            label: "[VASP] AML officer registration (20 hours/month)",
-            amount: 1800, // Estimated
-            original: 1800,
-          },
-          {
-            id: "vasp_accounting",
-            label: "[VASP] VASP accounting services",
-            amount: 3000, // Estimated
-            original: 3000,
-          },
-          {
-            id: "ifza_setup_bank",
-            label: "IFZA setup + notarization + 1 year maintenance + bank account opening",
-            amount: 5000, // Estimated
-            original: 5000,
-          },
-          {
-            id: "legal_opinion_ifza",
-            label: "Legal opinion (local IFZA)",
-            amount: 1500, // Estimated
-            original: 1500,
-          },
-          {
-            id: "legal_opinion_domestic",
-            label: "Legal opinion for domestic exchange listing",
-            amount: 5000, // Estimated
-            original: 5000,
-          },
-          {
-            id: "consulting",
-            label: "Consulting (regulation, feasibility, docs, operations)",
-            amount: 2000, // Estimated
-            original: 2000,
-          },
-        ];
-      },
+      serviceItems: (data: any, entityMeta: any) => buildUaeServiceItems(data, entityMeta),
     },
     {
       id: "invoice",
-      title: "Invoice Preview",
-      description: "Review your service costs and government fees.",
+      title: "mcap.common.steps.invoice",
+      description: "mcap.uae.steps.invoice.description",
       widget: "InvoiceWidget",
-      computeFees: (data, entityMeta) => {
-        const selectedIds = new Set(Array.isArray(data.optionalFeeIds) ? data.optionalFeeIds : []);
-        const serviceIds = new Set(Array.isArray(data.serviceItemsSelected) ? data.serviceItemsSelected : []);
-        // Combine selections
-        const allSelectedIds = new Set([...selectedIds, ...serviceIds]);
-
-        // Re-generate items to calculate totals
-        // Note: computeFees receives the same data, so we can re-invoke the serviceItems function logic or duplicate it.
-        // Since serviceItems is defined in the previous step, we can't easily access it here without defining it outside.
-        // BUT InvoiceWidget passes 'entityMeta' so we can reconstruct the mandatory setup cost.
-        // For the static optional items, we need them defined. 
-        // Best practice: Define the items list outside of the step definition if used in multiple places.
-        // For now, I will define the list inside a helper or just duplicate the list for calculation if needed, 
-        // OR rely on 'data.computedFees' if persisted. 
-        // ACTUALLY, ServiceSelectionWidget SAVES 'computedFees' to data!
-        // So InvoiceWidget just needs to read data.computedFees if available.
-
-        // However, existing InvoiceWidget logic usually re-computes to be safe.
-        // Let's define the items constant outside to share.
-
-        // For now, to keep the edit contained, I'll inline the list again or use a simplified approach 
-        // assuming ServiceSelectionWidget has already populated 'data.computedFees'.
-        // But InvoiceWidget calls 'computeFees' itself.
-
-        const entity = entityMeta?.[data.entityType] || null;
-        const setupCost = Number(entity?.setupCostUSD || 0);
-
-        const possibleItems = [
-          {
-            id: "setup",
-            label: `UAE Setup Cost (${entity ? entity.label : "Selected Entity"})`,
-            amount: setupCost,
-            original: setupCost,
-            mandatory: true,
-            kind: "service" as const
-          },
-          {
-            id: "vasp_setup_emi",
-            label: "[VASP] IFZA setup + notarization + 1 year maintenance + VASP license + EMI account",
-            amount: 14850,
-            original: 14850,
-            kind: "service" as const
-          },
-          {
-            id: "vasp_kyc_kyt",
-            label: "[VASP] Outsourcing firm setup for KYC/KYT",
-            amount: 2500,
-            original: 2500,
-            kind: "service" as const
-          },
-          {
-            id: "vasp_aml_10",
-            label: "[VASP] AML officer registration (10 hours/month)",
-            amount: 1000,
-            original: 1000,
-            kind: "service" as const
-          },
-          {
-            id: "vasp_aml_20",
-            label: "[VASP] AML officer registration (20 hours/month)",
-            amount: 1800,
-            original: 1800,
-            kind: "service" as const
-          },
-          {
-            id: "vasp_accounting",
-            label: "[VASP] VASP accounting services",
-            amount: 3000,
-            original: 3000,
-            kind: "service" as const
-          },
-          {
-            id: "ifza_setup_bank",
-            label: "IFZA setup + notarization + 1 year maintenance + bank account opening",
-            amount: 5000,
-            original: 5000,
-            kind: "service" as const
-          },
-          {
-            id: "legal_opinion_ifza",
-            label: "Legal opinion (local IFZA)",
-            amount: 1500,
-            original: 1500,
-            kind: "service" as const
-          },
-          {
-            id: "legal_opinion_domestic",
-            label: "Legal opinion for domestic exchange listing",
-            amount: 5000,
-            original: 5000,
-            kind: "service" as const
-          },
-          {
-            id: "consulting",
-            label: "Consulting (regulation, feasibility, docs, operations)",
-            amount: 2000,
-            original: 2000,
-            kind: "service" as const
-          },
-        ];
-
-        const items = possibleItems.filter(i => i.mandatory || allSelectedIds.has(i.id));
-
-        const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-
-        // Card fee logic
-        const paymentCurrency = data.paymentCurrency || data.currency || "USD";
-        const cardFeePct = paymentCurrency === "USD" ? 0.06 : 0.04;
-
-        return {
-          currency: "USD", // Base currency
-          paymentCurrency, // Selected payment currency (for InvoiceWidget display)
-          items,
-          government: 0,
-          service: total,
-          total,
-          cardFeePct,
-          cardFeeSurcharge: total * cardFeePct,
-          grandTotal: total * (1 + cardFeePct),
-          note: "Initial costs vary by jurisdiction; final quote will be confirmed after review.",
-        };
-      },
+      computeFees: (data, entityMeta) => computeUaeFees(data, entityMeta),
     },
     {
       id: "payment",
-      title: "Payment Processing",
-      description: "Choose your payment method and complete the transaction.",
+      title: "mcap.common.steps.payment",
+      description: "mcap.uae.steps.payment.description",
       widget: "PaymentWidget",
       supportedCurrencies: ["USD", "HKD"],
+      computeFees: (data, entityMeta) => computeUaeFees(data, entityMeta),
     },
   ],
 };

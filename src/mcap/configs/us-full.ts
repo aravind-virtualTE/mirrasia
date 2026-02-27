@@ -34,14 +34,13 @@ export const US_FULL_CONFIG: McapConfig = {
     {
       id: "applicant",
       title: "usa.steps.step1",
-      description: "usa.steps.applicant.description",
       fields: [
         { type: "text", name: "applicantName", label: "newHk.steps.applicant.fields.applicantName.label", required: true, colSpan: 2 },
         { type: "email", name: "applicantEmail", label: "newHk.steps.applicant.fields.email.label", required: true, colSpan: 2 },
         { type: "text", name: "applicantPhone", label: "newHk.steps.applicant.fields.phone.label", colSpan: 2 },
         { type: "text", name: "companyName1", label: "usa.AppInfo.usCompName", required: true, colSpan: 2 },
-        { type: "text", name: "companyName2", label: "newHk.steps.applicant.fields.name2.label", colSpan: 2 },
-        { type: "text", name: "companyName3", label: "newHk.steps.applicant.fields.name3.label", colSpan: 2 },
+        { type: "text", name: "companyName2", label: "newHk.steps.applicant.fields.name2.label",required: true, colSpan: 2 },
+        { type: "text", name: "companyName3", label: "newHk.steps.applicant.fields.name3.label",required: true, colSpan: 2 },
         {
           type: "checkbox-group",
           name: "establishedRelationshipType",

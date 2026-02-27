@@ -278,7 +278,7 @@ export function InvoiceWidget({
                 original: (item as any).original,
                 info: (item as any).info,
                 kind: item.kind as any,
-                quantity: 1,
+                quantity: Math.max(1, Number((item as any).quantity || 1)),
             })),
             government: (fees as any).government ?? 0,
             service: (fees as any).service ?? 0,

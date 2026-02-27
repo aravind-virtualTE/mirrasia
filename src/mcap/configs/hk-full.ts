@@ -96,6 +96,26 @@ const HK_FEES = {
       amount: 65,
       mandatory: false,
       info: "Mail handling for directors/shareholders.",
+      quantityControl: {
+        enabled: true,
+        min: 1,
+        maxBy: "totalParties",
+        unitLabel: "newHk.fees.units.person",
+      },
+    },
+    {
+      id: "dcp_headcount",
+      label: "newHk.fees.items.dcp_headcount.label",
+      original: 260,
+      amount: 260,
+      mandatory: false,
+      info: "Additional Designated Contact Person coverage (annual).",
+      quantityControl: {
+        enabled: true,
+        min: 1,
+        maxBy: "dcpParties",
+        unitLabel: "newHk.fees.units.personPerYear",
+      },
     },
   ],
 };
@@ -119,8 +139,48 @@ const computeKycExtras = (parties: any[]) => {
 
 const round2 = (value: number) => Number(value.toFixed(2));
 
+const getQuantityCapForService = (service: any, parties: any[]) => {
+  if (!service?.quantityControl?.enabled) return 1;
+  const list = Array.isArray(parties) ? parties : [];
+  const maxBy = String(service?.quantityControl?.maxBy || "totalParties");
+  if (maxBy === "dcpParties") {
+    return list.filter((p: any) => Array.isArray(p?.roles) && p.roles.includes("dcp")).length;
+  }
+  return list.length;
+};
+
+const resolveServiceQuantity = (service: any, data: any, selectedIds: Set<string>, parties: any[]) => {
+  const selected = service?.mandatory || selectedIds.has(service?.id);
+  if (!service?.quantityControl?.enabled) {
+    return selected ? 1 : 0;
+  }
+
+  const cap = Math.max(0, getQuantityCapForService(service, parties));
+  if (cap <= 0) return 0;
+
+  const rawQuantities = data?.serviceQuantities && typeof data.serviceQuantities === "object"
+    ? data.serviceQuantities
+    : {};
+  const rawQty = Number(rawQuantities?.[service.id]);
+  const hasPositiveRawQty = Number.isFinite(rawQty) && rawQty > 0;
+  const shouldInclude = selected || hasPositiveRawQty;
+  if (!shouldInclude) return 0;
+
+  const minQty = Math.max(1, Number(service?.quantityControl?.min || 1));
+  const fallbackQty = Math.min(minQty, cap);
+  const normalizedBase = hasPositiveRawQty ? Math.floor(rawQty) : fallbackQty;
+  return Math.max(minQty, Math.min(cap, normalizedBase));
+};
+
+const sumItems = (items: any[], kind?: "government" | "service") =>
+  items
+    .filter((item) => !kind || item.kind === kind)
+    .reduce((sum, item) => sum + (Number(item.amount || 0) * Number(item.quantity || 1)), 0);
+
 const computeHkFees = (data: any) => {
-  const selectedIds = new Set(Array.isArray(data?.optionalFeeIds) ? data.optionalFeeIds : []);
+  const selectedIds = new Set<string>(
+    Array.isArray(data?.optionalFeeIds) ? data.optionalFeeIds.map((id: any) => String(id)) : []
+  );
   const parties = Array.isArray(data?.parties) ? data.parties : [];
   const extraKyc = computeKycExtras(parties);
 
@@ -136,15 +196,20 @@ const computeHkFees = (data: any) => {
         kind: "government" as const,
       })),
     ...HK_FEES.service
-      .filter((f) => f.mandatory || selectedIds.has(f.id))
-      .map((f) => ({
-        id: f.id,
-        label: f.label,
-        amount: Number(f.amount || 0),
-        original: Number(f.original || 0),
-        info: f.info,
-        kind: "service" as const,
-      })),
+      .map((f) => {
+        const quantity = resolveServiceQuantity(f, data, selectedIds, parties);
+        return {
+          id: f.id,
+          label: f.label,
+          amount: Number(f.amount || 0),
+          original: Number(f.original || 0),
+          info: f.info,
+          kind: "service" as const,
+          quantity,
+          quantityControl: f.quantityControl,
+        };
+      })
+      .filter((f) => Number(f.quantity || 0) > 0),
     ...(extraKyc > 0
       ? [{
         id: "extra_kyc",
@@ -153,16 +218,13 @@ const computeHkFees = (data: any) => {
         original: Number(extraKyc),
         info: "Additional KYC fees for corporate shareholders and extra individual shareholders.",
         kind: "service" as const,
+        quantity: 1,
       }]
       : []),
   ];
 
-  const governmentUsd = usdItems
-    .filter((i) => i.kind === "government")
-    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
-  const serviceUsd = usdItems
-    .filter((i) => i.kind !== "government")
-    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const governmentUsd = sumItems(usdItems, "government");
+  const serviceUsd = sumItems(usdItems, "service");
   const totalUsd = governmentUsd + serviceUsd;
 
   const paymentCurrency = String(data?.paymentCurrency || data?.currency || "HKD").toUpperCase();
@@ -431,6 +493,7 @@ export const HK_FULL_CONFIG: McapConfig = {
           original: f.original,
           info: f.info,
           mandatory: f.mandatory,
+          quantityControl: f.quantityControl,
           currency: "USD",
         })),
       ]
