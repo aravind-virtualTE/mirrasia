@@ -2123,7 +2123,7 @@
         "title": "Accounting & Taxation",
         "fields": {
           "finYrEnd": {
-            "label": "Financial year-end date",            
+            "label": "Financial year-end date",
             "options": {
               "December 31": "December 31",
               "March 31": "March 31",
@@ -2249,7 +2249,7 @@
     },
     "common": {
       "select": "Select",
-      "other":"Other (please specify)"
+      "other": "Other (please specify)"
     },
     "fees": {
       "table": {
@@ -2940,6 +2940,1343 @@
     "currencyNote": "All prices are originally computed in USD. Conversion rates are updated live."
   },
   "mcap": {
+    "common": {
+      "steps": {
+        "applicant": "Applicant Information",
+        "compliance": "Compliance",
+        "company": "Company Information",
+        "parties": "Parties and Invites",
+        "accounting": "Accounting and Taxation",
+        "services": "Service Selection",
+        "invoice": "Invoice Preview",
+        "payment": "Payment",
+        "review": "Review & Declaration"
+      },
+      "options": {
+        "yes": "Yes",
+        "no": "No",
+        "doNotKnow": "Do not know",
+        "other": "Other",
+        "notSureYet": "Not sure yet",
+        "selfHandleAfterSetup": "Can be handled in-house after establishment",
+        "noIfFixedAnnualCosts": "No intention to establish if fixed annual costs occur",
+        "adviceRequiredBeforeProceeding": "Need advice before proceeding",
+        "internalResolution": "Can be resolved internally",
+        "upTo300": "Up to 300",
+        "from301To1000": "301 - 1000",
+        "moreThan1000": "More than 1000"
+      },
+      "relationship": {
+        "director": "Director",
+        "shareholder": "Shareholder",
+        "authorizedRepresentative": "Authorized representative",
+        "professionalAdvisor": "Professional advisor"
+      },
+      "messenger": {
+        "whatsApp": "WhatsApp",
+        "weChat": "WeChat",
+        "line": "Line",
+        "kakaoTalk": "KakaoTalk",
+        "telegram": "Telegram"
+      },
+      "currency": {
+        "aud": "AUD",
+        "hkd": "HKD",
+        "usd": "USD",
+        "gbp": "Pound"
+      },
+      "fields": {
+        "applicantName": "Applicant Name",
+        "applicantEmail": "Applicant Email",
+        "applicantPhone": "Applicant Phone",
+        "companyNameFirstChoice": "Company Name (1st Choice)",
+        "companyNameSecondChoice": "Company Name (2nd Choice)",
+        "companyNameThirdChoice": "Company Name (3rd Choice)",
+        "relationshipToCompany": "Relationship to Company",
+        "otherRelationshipDetails": "Other relationship details",
+        "additionalContactInfo": "Additional contact information (SNS ID, etc.)",
+        "preferredMessenger": "Preferred messenger",
+        "messengerId": "Messenger ID",
+        "selectedIndustry": "Select industry",
+        "productServiceDescription": "Description of product/service to be traded",
+        "businessSummary": "Describe the business in 3-4 sentences",
+        "businessOperatingCountries": "Countries where business will be conducted",
+        "websiteAddressOptional": "Website address (if available)",
+        "capitalCurrency": "Capital currency",
+        "capitalCurrencyOther": "Capital currency (other)",
+        "totalCapitalToBePaid": "Total capital to be paid",
+        "totalCapitalToBePaidOther": "Total capital to be paid (other)",
+        "capitalRequirementAcknowledged": "I understand capital requirements are compliance requirements and excluded from invoice totals.",
+        "totalNumberOfShares": "Total number of shares",
+        "totalNumberOfSharesOther": "Total number of shares (other)",
+        "shareCountOther": "Share count (other)",
+        "parValuePerShare": "Par value per share",
+        "otherIndustryDetails": "Other industry details",
+        "otherPurposeDetails": "Other purpose details",
+        "financialYearEnd": "Financial year end",
+        "otherFinancialYearEnd": "Other financial year end",
+        "bookKeepingCycle": "Bookkeeping cycle",
+        "expectedAnnualTransactions": "Expected annual transaction volume",
+        "vatRegistrationSupport": "Do you need VAT registration support?",
+        "vatTaxSupportNeed": "Do you need VAT/tax filing support?",
+        "accountingAndTaxNotes": "Accounting and tax notes",
+        "shareType": "Share type",
+        "directorAppointment": "Director appointment",
+        "issuedShareTypeOther": "Issued share type (other)",
+        "agreementAndDeclaration": "Agreement and Declaration",
+        "doYouAgreeToDeclaration": "Do you agree to the above declaration?",
+        "truthfulnessDeclaration": "I confirm the submitted information is true and accurate.",
+        "complianceSuspensionAcknowledgement": "I understand services may be suspended if legal/compliance violations are identified.",
+        "electronicSignature": "Electronic signature (full name)",
+        "otherDetails": "Other details"
+      },
+      "placeholders": {
+        "website": "https://"
+      },
+      "bookkeeping": {
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "halfYearly": "Half-yearly",
+        "annually": "Annually"
+      },
+      "shareType": {
+        "ordinary": "Ordinary shares",
+        "preference": "Preference shares"
+      },
+      "coverage": {
+        "director": "Director coverage",
+        "directorAtLeastOne": "At least one appointed director"
+      }
+    },
+    "au": {
+      "title": "Australia Company Incorporation",
+      "confirmation": {
+        "title": "Australia Incorporation Request Submitted",
+        "message": "We have received your Australia incorporation request. Standard processing is typically 2-3 months. Express processing is typically 1-2 weeks, with ABN target within 4 business days. Financial institution onboarding timelines are separate.",
+        "steps": {
+          "complianceReview": {
+            "title": "Compliance Review",
+            "description": "KYC/CDD and sanctions review for all proposed parties and control persons."
+          },
+          "structureValidation": {
+            "title": "Structure Validation",
+            "description": "Director residency and registered address requirements are verified before filing."
+          },
+          "incorporationAndAbn": {
+            "title": "Incorporation and ABN Processing",
+            "description": "We file incorporation documents and proceed with ABN processing based on the selected service level."
+          },
+          "postIncorporationSupport": {
+            "title": "Post-Incorporation Support",
+            "description": "Optional EMI assistance and onboarding support are coordinated where selected."
+          }
+        }
+      },
+      "fees": {
+        "note": "All amounts are exclusive of tax. Corporate tax is generally 30% (small business rate of 25% may apply when eligible)."
+      },
+      "options": {
+        "industry": {
+          "technology": "Technology / software / AI",
+          "consulting": "Consulting and professional services",
+          "trading": "Trading / import / export",
+          "ecommerce": "E-commerce",
+          "investment": "Investment / holding activities",
+          "manufacturing": "Manufacturing",
+          "fintech": "Financial services / fintech"
+        },
+        "purpose": {
+          "marketExpansion": "Expand into Australia market",
+          "regionalOperations": "Set up regional operations",
+          "assetHolding": "Hold and manage assets/investments",
+          "localCustomerSupport": "Serve Australian customers locally",
+          "investorRequirement": "Investor / partner requirement"
+        }
+      },
+      "compliance": {
+        "annualRenewalConsent": {
+          "label": "Do you acknowledge annual renewal, accounting, and tax obligations after incorporation?"
+        },
+        "legalAndEthicalConcern": {
+          "label": "Does the incorporation purpose involve legal/ethical concerns (money laundering, fraud, sanctions evasion, etc.)?"
+        },
+        "sanctionsExposureDeclaration": {
+          "label": "Are any applicants or related parties connected to sanctioned countries, entities, or individuals?"
+        },
+        "corporateTaxAcknowledgement": {
+          "label": "Do you acknowledge Australian corporate tax is generally 30% (25% may apply for qualifying small businesses)?"
+        },
+        "options": {
+          "needTaxAdvice": "Need tax advice"
+        }
+      },
+      "company": {
+        "requirements": {
+          "label": "Australia Incorporation Requirements",
+          "content": "At least one Australian resident director is required by law. A physical Australian registered address is required (P.O. Box not accepted). Estimated timeline: Standard 2-3 months, Express 1-2 weeks (target ABN within 4 business days). Financial institution onboarding timelines are separate."
+        },
+        "selectedIndustry": {
+          "label": "Select industry (multiple choices allowed)"
+        },
+        "businessDescription": {
+          "label": "Describe your business activities"
+        },
+        "establishmentPurpose": {
+          "label": "Purpose of establishing the Australian company"
+        },
+        "auHasResidentDirector": {
+          "label": "Do you currently have at least one Australian resident director?"
+        },
+        "auNomineeDirectorAcknowledgment": {
+          "label": "I understand Nominee Director Service (A$5,000/year) is mandatory if I do not have an Australian resident director."
+        },
+        "auHasOwnRegisteredAddress": {
+          "label": "Do you have your own physical Australian registered address?"
+        },
+        "auRegisteredAddressDetails": {
+          "label": "Australian registered address details"
+        },
+        "auNoPoBoxAcknowledgement": {
+          "label": "I confirm this registered address is a physical address and not a P.O. Box."
+        },
+        "capitalAmountOther": {
+          "label": "Capital amount (other)"
+        }
+      },
+      "services": {
+        "items": {
+          "base": {
+            "label": "Australian company incorporation (document preparation, electronic filing, standard corporate documents)",
+            "info": "Base incorporation fee. All amounts are exclusive of tax."
+          },
+          "nomineeDirector": {
+            "label": "Nominee Director Service (annual)",
+            "info": "Mandatory when you do not have at least one Australian resident director. Includes mandatory KYC, contracts, and indemnities."
+          },
+          "registeredAddress": {
+            "label": "Registered address service (annual)",
+            "info": "Registered address for filing purposes only. Not a physical office space. P.O. Box is not accepted."
+          },
+          "express": {
+            "label": "Express service",
+            "info": "Targets ABN issuance within 4 business days. Typical processing uses an Australian resident-only structure first, then adds non-resident shareholders/directors."
+          },
+          "emiAssistance": {
+            "label": "EMI account opening assistance",
+            "infoIncluded": "Included at no additional fee when opened via approved partner channel.",
+            "infoConditional": "May be free when opened via approved partner channel."
+          }
+        },
+        "pricingSummary": {
+          "label": "Australia Pricing Summary",
+          "content": "Base incorporation fee: A$2,000. Estimated timeline: Standard 2-3 months, Express 1-2 weeks (target ABN within 4 business days). All amounts are exclusive of tax."
+        },
+        "auEmiViaPartnerChannel": {
+          "label": "Will EMI account opening be processed through our partner channel?"
+        }
+      },
+      "parties": {
+        "fields": {
+          "auIsResidentDirector": {
+            "label": "Australian resident director"
+          }
+        }
+      },
+      "steps": {
+        "compliance": {
+          "description": "Provide compliance and annual-obligation confirmations before filing."
+        },
+        "parties": {
+          "description": "Invite all shareholders/directors and designate at least one contact person."
+        },
+        "services": {
+          "description": "Select services and review tax-exclusive pricing in AUD."
+        }
+      }
+    },
+    "uk": {
+      "title": "UK Company Incorporation",
+      "confirmation": {
+        "title": "UK Incorporation Submitted",
+        "message": "We have collected your UK incorporation details. Our team will validate KYC/CDD, review your service selection, and proceed with filing.",
+        "steps": {
+          "complianceReview": {
+            "title": "Compliance Review",
+            "description": "KYC/CDD verification and sanctions screening review."
+          },
+          "documentConfirmation": {
+            "title": "Document Confirmation",
+            "description": "Review of incorporation details, members, and required supporting documents."
+          },
+          "incorporationFiling": {
+            "title": "Incorporation Filing",
+            "description": "Submission to the UK Companies House process after checks are complete."
+          },
+          "postFilingSupport": {
+            "title": "Post-filing Support",
+            "description": "Registered office and optional post-incorporation support are coordinated based on your selections."
+          }
+        }
+      },
+      "fees": {
+        "note": "Quote-only service requests are tracked separately and excluded from invoice totals until priced."
+      },
+      "applicant": {
+        "guidance": {
+          "label": "UK Incorporation Guidance",
+          "content": "Application Form for Establishing a British Private Limited Company (England and Wales). If you need support: www.mirrasia.com, +82-2-543-6187 (Korea), +852-2187-2428 (Hong Kong), cs@mirrasia.com."
+        },
+        "fields": {
+          "applicantName": {
+            "placeholder": "Name of person completing this form"
+          },
+          "relationship": {
+            "label": "Relationship between applicant and UK corporation to be established"
+          },
+          "relationshipOther": {
+            "label": "Other relationship (please specify)"
+          }
+        }
+      },
+      "compliance": {
+        "legalAndEthicalConcern": {
+          "label": "Does the purpose of establishing a UK corporation have legal or ethical issues such as money laundering, gambling, tax evasion, asset concealment, illegal business, or fraud?"
+        },
+        "annualRenewalConsent": {
+          "label": "After incorporation, annual renewal/accounting/tax duties with recurring costs and data obligations will apply. Do you agree?"
+        },
+        "sanctionedCountryOperations": {
+          "label": "Will the planned UK corporation/holding/group/related company operate or plan to operate in Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, Zimbabwe, Russia, or regions of Ukraine outside government control?"
+        },
+        "sanctionedResidenceExposure": {
+          "label": "Are any officials residing in sanctioned countries/regions or countries sanctioned by UN, EU, UKHMT, HKMA, or OFAC?"
+        },
+        "sanctionedOwnershipOrControl": {
+          "label": "Will the planned UK entity be owned/controlled by, or act for, sanctioned individuals, groups, organizations, or governments?"
+        },
+        "crimeaSevastopolExposure": {
+          "label": "Are officials or related companies currently operating, or planning to operate, in Crimea or Sevastopol?"
+        },
+        "oilGasMilitaryExposure": {
+          "label": "Are the planned UK entity or related companies currently operating, or planning to operate, in oil/gas/energy/military/defense sectors?"
+        },
+        "options": {
+          "considerLegalAdvice": "Consider legal advice"
+        }
+      },
+      "company": {
+        "selectedEntity": {
+          "label": "Select UK setup path",
+          "options": {
+            "individual": "UK corporation (individual shareholder)",
+            "subsidiary": "UK subsidiary of foreign corporation",
+            "branch": "UK branch office of foreign corporation (temporary pricing follows individual package)"
+          }
+        },
+        "businessTypes": {
+          "label": "Select business type (check all relevant items)"
+        },
+        "businessTypesOther": {
+          "label": "Other business type"
+        },
+        "tradedItemDescription": {
+          "label": "Description of traded item/service content/service type"
+        },
+        "businessSummary": {
+          "label": "Describe the business content in 3-4 sentences"
+        },
+        "establishmentPurpose": {
+          "label": "Purpose and expected effects of establishing a UK corporation"
+        },
+        "operatingCountries": {
+          "label": "Country/countries where business will be conducted after establishment",
+          "placeholder": "List all countries where development, operations, staff residence, office, CS, inventory, decision-making, marketing, sales, etc. occur."
+        },
+        "articlesSpecialClauses": {
+          "label": "Special clauses to be recorded in articles of association (if any)"
+        },
+        "registeredOfficeChoice": {
+          "label": "UK company registered office address",
+          "options": {
+            "useMirrAsiaAddress": "Use Mirr Asia registered address service",
+            "useOwnAddress": "Use separate UK business address (do not use Mirr Asia service)"
+          }
+        },
+        "registeredOfficeOwnAddress": {
+          "label": "UK business address details"
+        }
+      },
+      "options": {
+        "businessType": {
+          "virtualAsset": "Virtual assets related (token issuance/sale/ICO/exchange/wallet)",
+          "nftRelated": "NFT related",
+          "vaSoftwareDevelopment": "Software development related to virtual assets",
+          "softwareDevelopment": "Software development unrelated to virtual assets",
+          "vaInvestment": "Virtual asset based investment business",
+          "vaP2eGame": "Virtual asset based P2E game",
+          "vaSpeculativeGame": "Virtual asset based speculative game",
+          "vaOtherGame": "Virtual asset based game unrelated to P2E/speculation",
+          "metaversePlatform": "Metaverse platform development",
+          "forexTrading": "Foreign exchange trading",
+          "financeInvestment": "Finance/investment/consulting/lending",
+          "tradingBusiness": "Trading business",
+          "distributionBusiness": "Wholesale/retail distribution business",
+          "consulting": "Consulting",
+          "manufacturing": "Manufacturing",
+          "ecommerce": "Online service business (e-commerce)",
+          "purchaseProxy": "Online direct purchase/shipping proxy/purchase agency"
+        },
+        "establishmentPurpose": {
+          "commonwealthEuropeExpansion": "Expansion into Commonwealth or European regions",
+          "regulatoryDiversification": "Business diversification due to relaxed regulations",
+          "advisorOrClientSuggested": "Suggested by legal advisors/investors/clients",
+          "internationalExpansion": "Expansion into multiple overseas countries",
+          "assetManagement": "Asset management through real estate or financial investment",
+          "holdingManagement": "Holding company management of subsidiaries/affiliates",
+          "policyCompetitiveness": "Competitive advantage due to financial policies"
+        },
+        "quoteOnlyServices": {
+          "emiAccountAdvisory": "EMI account opening application advisory",
+          "ukLegalOpinion": "UK local legal opinion (quote after whitepaper review)",
+          "domesticExchangeLegalOpinion": "Legal opinion for domestic exchange listing",
+          "crossBorderLegalOpinion": "Legal opinion for other countries",
+          "regulatoryConsulting": "Regulatory and operational consulting services",
+          "vatReportingQuote": "VAT quarterly/annual reporting quote",
+          "bookkeepingQuote": "Annual accounting bookkeeping quote",
+          "financialStatementsAndTaxQuote": "Financial statements and corporate tax return quote"
+        }
+      },
+      "services": {
+        "base": {
+          "incorporation": {
+            "label": "UK company incorporation",
+            "info": "Base incorporation service fee."
+          },
+          "kyc": {
+            "label": "KYC and due diligence",
+            "info": "Base KYC fee based on selected UK setup path."
+          },
+          "registeredOffice": {
+            "label": "Registered office address service (1 year)",
+            "info": "Included in the base first-year package."
+          }
+        },
+        "additional": {
+          "executivePacks": {
+            "label": "Additional executive packs (2 individuals per pack)",
+            "info": "USD 100 per additional 2 individual executives."
+          },
+          "corporateLayers": {
+            "label": "Additional corporate shareholder layers",
+            "info": "USD 150 per additional corporate shareholder layer."
+          },
+          "contactPersons": {
+            "label": "Additional designated contact persons",
+            "info": "First designated contact person is free. Each additional contact is USD 250 per year."
+          }
+        },
+        "optional": {
+          "emiListProvision": {
+            "label": "EMI list provision for service users",
+            "info": "Provided free for clients using our incorporation service."
+          },
+          "bankAccountAdvisory": {
+            "label": "Bank account opening advisory",
+            "info": "Application support and advisory service."
+          },
+          "vatRegistration": {
+            "label": "VAT registration",
+            "info": "VAT registration support. UK VAT registration is generally required once annual taxable turnover reaches GBP 90,000."
+          }
+        },
+        "fields": {
+          "additionalExecutivePairs": {
+            "label": "Additional executive packs (2 individuals per pack, USD 100 per pack)"
+          },
+          "additionalCorporateLayers": {
+            "label": "Additional corporate shareholder layers (USD 150 per layer)"
+          },
+          "quoteOnlyServices": {
+            "label": "Quote-only service requests (tracked only, not added to invoice)"
+          },
+          "quoteOnlyServicesOther": {
+            "label": "Other quote-only request details"
+          }
+        }
+      },
+      "review": {
+        "declaration": {
+          "content": "You declare that all provided information and documents are true, complete, and accurate. Service may be suspended if unlawful purpose or legal violations are identified."
+        }
+      },
+      "steps": {
+        "compliance": {
+          "description": "Please answer compliance questions accurately to avoid future misunderstandings and regulatory issues."
+        },
+        "parties": {
+          "description": "Invite parties and ensure required role/residency coverage."
+        },
+        "services": {
+          "description": "Select priced services to include in invoice. Quote-only requests are tracked separately and excluded from totals."
+        },
+        "invoice": {
+          "description": "Review service fees before payment."
+        },
+        "payment": {
+          "description": "Proceed with card payment or upload bank transfer proof."
+        }
+      }
+    },
+    "uae": {
+      "title": "Dubai IFZA Company Incorporation",
+      "freezones": {
+        "titles": {
+          "difc": "Dubai DIFC Free Zone Incorporation",
+          "dmcc": "Dubai DMCC Free Zone Incorporation",
+          "dwtc": "Dubai DWTC Free Zone Incorporation",
+          "dic": "Dubai DIC Free Zone Incorporation",
+          "ifzaFzco": "Dubai IFZA Free Zone Incorporation"
+        }
+      },
+      "confirmation": {
+        "title": "Application Submitted Successfully",
+        "message": "Your application for Dubai IFZA company incorporation has been received. Our team will review your details and contact you for the next steps.",
+        "steps": {
+          "initialReview": {
+            "title": "Initial Review",
+            "description": "Review of your company details and business intent (1-2 business days)."
+          },
+          "kycVerification": {
+            "title": "KYC Verification",
+            "description": "Processing of personal documents and AML checks."
+          },
+          "filing": {
+            "title": "Filing",
+            "description": "Official submission to UAE/IFZA authorities."
+          }
+        }
+      },
+      "fees": {
+        "note": "Initial costs vary by jurisdiction; final quote will be confirmed after review."
+      },
+      "steps": {
+        "applicant": {
+          "description": "Provide applicant details and confirm authority to submit."
+        },
+        "compliance": {
+          "description": "Anti-Money Laundering and Customer Due Diligence questionnaire."
+        },
+        "company": {
+          "description": "Provide company business details, capital, and address, then invite parties."
+        },
+        "accounting": {
+          "description": "Provide accounting preferences and bookkeeping cycle."
+        },
+        "services": {
+          "description": "Select services provided by Mirr Asia."
+        },
+        "invoice": {
+          "description": "Review your service costs and government fees."
+        },
+        "payment": {
+          "description": "Choose your payment method and complete the transaction."
+        }
+      },
+      "applicant": {
+        "notice": {
+          "label": "Application Notice",
+          "content": "This application must be completed by the primary controller (future director) or an authorized person. The final application must be signed in person by the director. The information will be used for KYC and due diligence under TCSP/AMLO rules. Please avoid errors or omissions."
+        },
+        "fields": {
+          "applicantRelationship": {
+            "label": "Relationship between applicant and the Dubai IFZA company (multiple selections possible)"
+          },
+          "applicantRelationshipOther": {
+            "label": "Other relationship (please specify)"
+          }
+        }
+      },
+      "compliance": {
+        "legalEthicalIssues": {
+          "label": "Is the purpose of establishing a Dubai IFZA company likely to involve legal or ethical issues (money laundering, gambling, tax evasion, fraud, etc.)?"
+        },
+        "annualRenewalConsent": {
+          "label": "After establishment, annual renewal work occurs every year and requires related costs and data. Do you agree?"
+        },
+        "sanctionCountriesOps": {
+          "label": "Does the planned corporation or related companies operate or plan to operate in Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, or Zimbabwe?"
+        },
+        "sanctionPersonnelResidency": {
+          "label": "Are any personnel residing in Iran, Sudan, North Korea, Syria, Cuba, or other UN/EU/UK/OFAC sanctioned countries?"
+        },
+        "crimeaSevastopol": {
+          "label": "Do the planned corporation or related companies operate or plan to operate in Crimea or Sevastopol?"
+        },
+        "sensitiveSectors": {
+          "label": "Do the planned corporation or related companies operate or plan to operate in oil, gas, energy, military, or defense sectors?"
+        },
+        "fields": {
+          "legalEthicalIssuesOther": {
+            "label": "Other (please specify)"
+          }
+        },
+        "options": {
+          "considerLegalAdvice": "Consider legal advice",
+          "internalAfterEstablishment": "Can be resolved internally after establishment"
+        }
+      },
+      "company": {
+        "fields": {
+          "entityType": {
+            "label": "Entity Type"
+          },
+          "initialCostUsd": {
+            "label": "Initial Cost (USD)"
+          },
+          "capital": {
+            "label": "Capital"
+          },
+          "officeRequirement": {
+            "label": "Office Requirement"
+          },
+          "visaCost": {
+            "label": "Visa Cost"
+          },
+          "establishmentPeriod": {
+            "label": "Establishment Period"
+          },
+          "businessTypes": {
+            "label": "Select business type (check all relevant items)"
+          },
+          "businessTypesOther": {
+            "label": "Other business type (please specify)"
+          },
+          "tradeDescription": {
+            "label": "Description of item names, item types, service details"
+          },
+          "businessSummary": {
+            "label": "Company business description (3-4 sentences)"
+          },
+          "purposeOfEstablishment": {
+            "label": "Purpose of establishing an IFZA corporation in Dubai and expected effects"
+          },
+          "paidInCapital": {
+            "label": "Total Paid-in Capital (AED)"
+          },
+          "paidInCapitalOther": {
+            "label": "Other capital amount (AED)"
+          },
+          "registeredAddressChoice": {
+            "label": "Registered address in Dubai IFZA"
+          },
+          "registeredAddress": {
+            "label": "Enter your business address in Dubai IFZA"
+          }
+        }
+      },
+      "accounting": {
+        "fields": {
+          "xero": {
+            "label": "Cloud Accounting (Xero) Requirement"
+          }
+        },
+        "options": {
+          "xero": {
+            "yesNeedSetup": "Yes, I need Xero setup",
+            "noOwnSystem": "No, I have my own system",
+            "needAdvice": "Need professional advice"
+          }
+        }
+      },
+      "options": {
+        "entityType": {
+          "localLlc": "Dubai Local LLC",
+          "ifzaFzco": "Dubai DSO/IFZA Free Zone Company (FZCO)",
+          "difcFzco": "Dubai DIFC Free Zone Company (FZCO)",
+          "dwtcFzco": "Dubai DWTC Free Zone Company (FZCO)",
+          "dmccFzco": "Dubai DMCC Free Zone Company (FZCO)",
+          "dicFzco": "Dubai DIC Free Zone Company (FZCO)"
+        },
+        "applicantRelationship": {
+          "director": "Director of the Dubai IFZA company (to be established)",
+          "chiefManager": "Chief Manager of the Dubai IFZA company (to be established)",
+          "authorizedPerson": "Person authorized by the Director of the Dubai IFZA company (to be established)",
+          "majorShareholder": "Major Shareholder of the Dubai IFZA company (to be established)",
+          "expertAdvisor": "Expert providing establishment consultation (lawyer, accountant, agent, etc.)"
+        },
+        "businessType": {
+          "crypto": "Cryptocurrency related (issuance, exchange, wallet services)",
+          "itBlockchain": "IT, blockchain, software development",
+          "cryptoInvestment": "Cryptocurrency-based investment business",
+          "cryptoGames": "Cryptocurrency-based games",
+          "forexTrading": "Foreign exchange trading",
+          "finance": "Finance, investment, consulting, lending",
+          "trading": "Trading business",
+          "distribution": "Wholesale/retail distribution",
+          "consulting": "Consulting",
+          "manufacturing": "Manufacturing",
+          "ecommerce": "Online service business (e-commerce)",
+          "onlineDelivery": "Online direct purchase/delivery"
+        },
+        "purpose": {
+          "diversification": "Business diversification due to relaxed regulations",
+          "advisorSuggested": "Suggested by legal advisors, investors, or clients",
+          "internationalExpansion": "Expansion into overseas countries",
+          "assetManagement": "Asset management (real estate or financial assets)",
+          "holdingCompany": "Holding company for subsidiaries or affiliates",
+          "competitiveAdvantage": "Competitive advantage due to free financial policies",
+          "lowTax": "Expansion of transaction volume due to low tax rates"
+        },
+        "paidInCapital": {
+          "oneAed": "1 AED",
+          "hundredAed": "100 AED",
+          "tenThousandAed": "10,000 AED (minimum for Dubai company)"
+        },
+        "registeredAddressChoice": {
+          "mirrAsia": "Use Mirr Asia registration address service",
+          "own": "Use a separate address in Dubai IFZA"
+        }
+      },
+      "services": {
+        "items": {
+          "setup": {
+            "label": "UAE Setup Cost",
+            "info": "Includes initial government fees and Mirr Asia service charges."
+          },
+          "vaspSetupEmi": {
+            "label": "[VASP] IFZA setup + notarization + 1 year maintenance + VASP license + EMI account",
+            "info": "Comprehensive VASP package including license and banking setup."
+          },
+          "vaspKycKyt": {
+            "label": "[VASP] Outsourcing firm setup for KYC/KYT",
+            "info": "Mandatory for VASP license holders."
+          },
+          "vaspAml10": {
+            "label": "[VASP] AML officer registration (10 hours/month)"
+          },
+          "vaspAml20": {
+            "label": "[VASP] AML officer registration (20 hours/month)"
+          },
+          "vaspAccounting": {
+            "label": "[VASP] VASP accounting services"
+          },
+          "ifzaSetupBank": {
+            "label": "IFZA setup + notarization + 1 year maintenance + bank account opening"
+          },
+          "legalOpinionIfza": {
+            "label": "Legal opinion (local IFZA)"
+          },
+          "legalOpinionDomestic": {
+            "label": "Legal opinion for domestic exchange listing"
+          },
+          "consulting": {
+            "label": "Consulting (regulation, feasibility, docs, operations)"
+          }
+        }
+      }
+    },
+    "cr": {
+      "title": "Costa Rica Incorporation",
+      "confirmation": {
+        "title": "Costa Rica Application Process",
+        "message": "We have collected your details and your Costa Rica incorporation is now being processed by the National Registry. This typically takes 2-4 business weeks. Our team will contact you if any further information is required.",
+        "steps": {
+          "kycAmlVerification": {
+            "title": "KYC & AML Verification",
+            "description": "Our compliance team verifies all shareholder and director ID documents."
+          },
+          "notaryPublicFiling": {
+            "title": "Notary Public Filing",
+            "description": "Drafting of constitution and filing with the National Registry (Registro Nacional)."
+          },
+          "registrationApproval": {
+            "title": "Registration Approval",
+            "description": "Waiting for the registry to issue the Corporate ID (Cédula Jurídica)."
+          },
+          "postRegistration": {
+            "title": "Post-Registration",
+            "description": "Obtaining tax IDs and finalizing nominee agreements (if selected)."
+          }
+        }
+      },
+      "steps": {
+        "applicant": {
+          "description": "Provide your personal information and company name choices"
+        },
+        "compliance": {
+          "description": "Questions regarding compliance and sanctions"
+        },
+        "company": {
+          "description": "Business details, capital, and members"
+        },
+        "services": {
+          "description": "Select service options for nominee support."
+        },
+        "parties": {
+          "description": "Invite shareholders, directors, and designated contact persons for KYC."
+        }
+      },
+      "applicant": {
+        "fields": {
+          "relationshipToCrCorporation": {
+            "label": "Relationship to Costa Rica Corporation"
+          },
+          "address": {
+            "label": "Place of Residence"
+          }
+        }
+      },
+      "compliance": {
+        "annualRenewalConsent": {
+          "label": "Do you consent to annual compliance renewal and AML/KYC procedures?"
+        },
+        "sanctionsExposureDeclaration": {
+          "label": "Any exposure to sanctioned persons or entities?"
+        },
+        "legalAndEthicalConcern": {
+          "label": "Any legal or ethical concerns (money laundering, tax evasion, fraud, etc.)?"
+        },
+        "qCountry": {
+          "label": "Any current or planned business activity in sanctioned countries/regions?"
+        },
+        "crimeaSevastapolPresence": {
+          "label": "Any current or planned business in Crimea/Sevastopol Regions?"
+        },
+        "russianEnergyPresence": {
+          "label": "Any exposure to Russia in energy/oil/gas, military, or defense?"
+        },
+        "criminalHistory": {
+          "label": "Any history of financial crimes?"
+        }
+      },
+      "company": {
+        "fields": {
+          "selectedIndustry": {
+            "label": "Industry Type"
+          },
+          "productDescription": {
+            "label": "Description of Goods/Services"
+          },
+          "establishmentPurpose": {
+            "label": "Purpose of Establishment"
+          },
+          "listCountry": {
+            "label": "Countries for Business Transactions"
+          },
+          "sourceFunding": {
+            "label": "Source of Funds"
+          },
+          "businessAddress": {
+            "label": "Registered Business Address"
+          },
+          "otherBusinessAddress": {
+            "label": "Other Business Address (please specify)"
+          },
+          "currency": {
+            "label": "Currency"
+          },
+          "capAmount": {
+            "label": "Capital Amount"
+          },
+          "capOther": {
+            "label": "Capital Amount (Other)"
+          },
+          "shareCount": {
+            "label": "Number of Shares"
+          },
+          "shareOther": {
+            "label": "Number of Shares (Other)"
+          }
+        }
+      },
+      "options": {
+        "industry": {
+          "trade": "Trade",
+          "retailDistribution": "Retail/Wholesale Distribution",
+          "consulting": "Consulting",
+          "manufacturing": "Manufacturing",
+          "financeAdvisory": "Finance/Investment/Advisory",
+          "ecommerce": "Online Services (E-commerce)",
+          "onlineProxy": "Online Direct Purchase/Shipping Proxy",
+          "itSoftware": "IT and Software Development",
+          "crypto": "Cryptocurrency-related"
+        },
+        "establishmentPurpose": {
+          "expansion": "Business expansion into the Americas and Europe",
+          "assetManagement": "Asset management",
+          "holdingCompany": "Holding company",
+          "investorSuggestion": "Investor suggestion",
+          "internationalTransactions": "International transactions",
+          "businessDiversification": "Business diversification",
+          "taxEfficiency": "Tax efficiency",
+          "noCapitalGainsTax": "No capital gain tax"
+        },
+        "sourceFunding": {
+          "earnedIncome": "Earned income",
+          "savings": "Savings",
+          "investmentIncome": "Investment income",
+          "loan": "Loan",
+          "companySale": "Company sale",
+          "businessIncome": "Business income",
+          "inheritance": "Inheritance"
+        },
+        "businessAddress": {
+          "mirrAsia": "Use MirAsia registration address",
+          "ownAddress": "Use own address in Costa Rica"
+        },
+        "currency": {
+          "usd": "USD - US Dollar",
+          "eur": "EUR - Euro",
+          "crc": "CRC - Costa Rican Colon"
+        }
+      },
+      "services": {
+        "fields": {
+          "directorNominee": {
+            "label": "Nominee Director"
+          },
+          "shareholderNominee": {
+            "label": "Nominee Shareholder"
+          }
+        },
+        "items": {
+          "base": {
+            "label": "Company Formation Fee"
+          },
+          "directorNominee": {
+            "label": "Nominee Director"
+          },
+          "shareholderNominee": {
+            "label": "Nominee Shareholder"
+          }
+        }
+      },
+      "accounting": {
+        "fields": {
+          "accountingAddress": {
+            "label": "Accounting Data Storage Address"
+          },
+          "xero": {
+            "label": "Do you use Xero or other accounting software?"
+          },
+          "softNote": {
+            "label": "Additional Notes"
+          }
+        },
+        "options": {
+          "xero": {
+            "recommendationRequired": "Recommendation required"
+          }
+        }
+      }
+    },
+    "ch": {
+      "ag": {
+        "title": "Swiss Corporation (AG) Establishment",
+        "confirmation": {
+          "title": "Swiss Corporation (AG) Application Submitted"
+        }
+      },
+      "gmbh": {
+        "title": "Swiss Limited Liability Company (GmbH; LLC) Establishment",
+        "confirmation": {
+          "title": "Swiss Limited Liability Company (GmbH; LLC) Application Submitted"
+        }
+      },
+      "options": {
+        "relationship": {
+          "directorOfSwissEntity": "Director of the Swiss entity",
+          "delegate": "Person delegated by the director",
+          "directOrIndirectShareholder": "Direct/indirect shareholder",
+          "expert": "Expert (lawyer, accountant, etc.)"
+        },
+        "industry": {
+          "cryptoRelated": "Cryptocurrency-related",
+          "itBlockchain": "IT / Blockchain Development",
+          "financeInvestment": "Finance / Investment",
+          "tradeWholesale": "Trade / Wholesale",
+          "manufacturing": "Manufacturing",
+          "ecommerce": "E-commerce",
+          "consulting": "Consulting"
+        },
+        "purpose": {
+          "euExpansion": "Business expansion into European markets",
+          "regulatoryDiversification": "Regulatory diversification",
+          "advisorRecommendation": "Investor / advisor recommendation",
+          "holdingAssetManagement": "Holding and asset management",
+          "internationalStructuring": "International transaction structuring",
+          "optimization": "Operational / tax optimization"
+        },
+        "quoteOnly": {
+          "annualAccountingTax": "Annual Accounting / Tax Service (quote)",
+          "emiOpening": "EMI Account Opening Agency (quote)",
+          "legalOpinionSwiss": "Legal Opinion (Swiss) (quote after whitepaper)",
+          "legalOpinionExchange": "Legal Opinion (Domestic Exchange Listing) (quote after whitepaper)",
+          "consulting": "Consulting (Feasibility / Regulation) (quote)"
+        }
+      },
+      "common": {
+        "options": {
+          "considerLegalAdvice": "Consider legal advice"
+        },
+        "steps": {
+          "parties": {
+            "description": "Invite all required parties and assign a designated contact person."
+          }
+        },
+        "compliance": {
+          "ethicalLegalConfirmation": {
+            "label": "Does the business purpose raise legal/ethical issues (money laundering, gambling, tax evasion, etc.)?"
+          },
+          "annualRenewalAgreement": {
+            "label": "Do you agree to annual renewals and associated fixed costs?"
+          },
+          "sanctionedCountriesBusiness": {
+            "label": "Do you conduct business in sanctioned countries or regions?"
+          },
+          "sanctionedPersonsInvolved": {
+            "label": "Are any involved persons residing in sanctioned regions?"
+          },
+          "restrictedSectors": {
+            "label": "Are you engaged in oil, gas, military, or defense sectors?"
+          }
+        },
+        "services": {
+          "fields": {
+            "registeredOfficeMode": {
+              "label": "Registered office service"
+            },
+            "registeredOfficeClientAddress": {
+              "label": "Client-provided Swiss registered office address"
+            },
+            "bankOpeningMode": {
+              "label": "Swiss bank account opening service"
+            }
+          },
+          "options": {
+            "registeredOfficeMode": {
+              "pobox": "PO Box (USD 3,000/year)",
+              "flexidesk": "Flexi Desk (USD 6,800/year)",
+              "clientAddress": "Client uses own Swiss address"
+            },
+            "bankOpeningMode": {
+              "mirrOpening": "Use Mirr Asia bank account opening agency",
+              "selfArranged": "Client will arrange bank account opening"
+            }
+          }
+        }
+      },
+      "corporate": {
+        "confirmation": {
+          "message": "We have received your Swiss incorporation request. Our team will review compliance, structure, and selected services before filing.",
+          "steps": {
+            "complianceReview": {
+              "title": "Compliance Review",
+              "description": "KYC/CDD and sanctions checks are completed before filing."
+            },
+            "registrationPreparation": {
+              "title": "Registration Preparation",
+              "description": "Corporate structure and onboarding documents are validated."
+            },
+            "filingAndSupport": {
+              "title": "Filing and Post-filing Support",
+              "description": "Entity filing, operational setup, and optional services are coordinated."
+            }
+          }
+        },
+        "steps": {
+          "applicant": {
+            "description": "Author and contact details for this application."
+          },
+          "compliance": {
+            "description": "Sanctions and legal-risk declarations."
+          },
+          "company": {
+            "description": "Business, registration, and capital details."
+          },
+          "services": {
+            "description": "Select billable services and track quote-only requests."
+          },
+          "invoice": {
+            "description": "Review billable services before payment."
+          },
+          "payment": {
+            "description": "Proceed with card payment or bank transfer upload."
+          }
+        },
+        "applicant": {
+          "notice": {
+            "label": "Application Notice",
+            "content": "This form should be completed by a director or an authorized delegate. Please provide accurate details for compliance and onboarding."
+          },
+          "fields": {
+            "authorRelationship": {
+              "label": "Relationship to the Swiss entity"
+            }
+          }
+        },
+        "company": {
+          "context": {
+            "label": "Swiss corporate setup context",
+            "contentAg": "You selected Swiss corporation (AG). Majority of board members must be Swiss residents.",
+            "contentGmbh": "You selected Swiss GmbH / LLC. At least one operating officer must be a Swiss resident."
+          },
+          "fields": {
+            "purposeOfEstablishment": {
+              "label": "Purpose and expected effects of establishing this Swiss entity"
+            },
+            "tokenIssuancePlanned": {
+              "label": "Will the entity issue or distribute tokens?"
+            },
+            "tokenUtilityAtIssuance": {
+              "label": "If tokens are issued, will utility exist at issuance?"
+            },
+            "tokenRightsFeatures": {
+              "label": "Will tokens include dividend/profit/voting rights?"
+            },
+            "sroMembershipPlan": {
+              "label": "Do you understand and plan for SRO membership if acting as a financial intermediary?"
+            },
+            "totalCapital": {
+              "ag": {
+                "label": "Total capital to be paid (minimum CHF 100,000)"
+              },
+              "gmbh": {
+                "label": "Total capital to be paid (typical minimum CHF 20,000 for GmbH)"
+              }
+            },
+            "addressServiceChoice": {
+              "label": "Local corporate address choice"
+            },
+            "addressServiceOwnAddress": {
+              "label": "Provide separate address details"
+            }
+          }
+        },
+        "options": {
+          "totalCapital": {
+            "agDefault": "CHF 100,000",
+            "gmbhDefault": "CHF 20,000"
+          },
+          "addressServiceChoice": {
+            "mirr": "Use Mirr Asia registration address service",
+            "own": "Have a separate address"
+          },
+          "swissResidencyStatus": {
+            "swissResident": "Swiss resident",
+            "nonSwissResident": "Non-Swiss resident"
+          }
+        },
+        "parties": {
+          "fields": {
+            "swissResidencyStatus": {
+              "label": "Swiss residency status"
+            }
+          }
+        },
+        "coverage": {
+          "swissResidency": {
+            "label": "Swiss residency coverage",
+            "swissResidentRequired": "At least one Swiss resident"
+          }
+        },
+        "services": {
+          "fields": {
+            "boardServiceMode": {
+              "ag": {
+                "label": "Local director support selection"
+              },
+              "gmbh": {
+                "label": "Local operating officer / director support selection"
+              }
+            },
+            "quoteOnlyServices": {
+              "label": "Quote-only service requests (tracked, excluded from invoice totals)"
+            },
+            "quoteOnlyServicesOther": {
+              "label": "Other quote-only request details"
+            }
+          },
+          "options": {
+            "boardServiceMode": {
+              "mirrProvided": "Use Mirr Asia local support service",
+              "clientProvided": "Client provides own compliant local executives"
+            }
+          },
+          "items": {
+            "setupMaintenance": {
+              "label": "Swiss incorporation + 1 year maintenance",
+              "info": "Includes establishment and first-year core maintenance services."
+            },
+            "localSupport": {
+              "ag": {
+                "label": "Registering 2 local directors (1 year)",
+                "info": "AG generally requires resident Swiss board presence. This package covers local director support."
+              },
+              "gmbh": {
+                "label": "Local operating officer / director support package (1 year)",
+                "info": "GmbH generally requires at least one Swiss-resident operating officer. This package covers local support."
+              }
+            },
+            "registeredOfficePobox": {
+              "label": "Business address: PO Box (1 year)",
+              "info": "Registered office PO Box address service in Switzerland."
+            },
+            "registeredOfficeFlexidesk": {
+              "label": "Business address: Flexi-desk (1 year)",
+              "info": "Includes lease support, meeting room access, and Swiss phone number."
+            },
+            "bankOpening": {
+              "label": "Capital and bank account opening agency",
+              "info": "Support for capital account and operational bank account opening."
+            },
+            "emiListProvision": {
+              "label": "EMI list provision",
+              "info": "Free informational EMI provider list."
+            }
+          }
+        },
+        "fees": {
+          "note": "Quote-only service requests are tracked separately and excluded from invoice totals until priced."
+        },
+        "review": {
+          "declaration": {
+            "content": "I confirm all provided information is true and complete, and the intended business is legitimate."
+          }
+        }
+      },
+      "foundation": {
+        "title": "Swiss Foundation Establishment",
+        "confirmation": {
+          "title": "Swiss Foundation Application Submitted",
+          "message": "We have received your Swiss foundation establishment request. Our team will validate compliance details and proceed with the filing workflow.",
+          "steps": {
+            "complianceReview": {
+              "title": "Compliance Review",
+              "description": "KYC/CDD and sanctions checks are completed before filing."
+            },
+            "foundationFilingPreparation": {
+              "title": "Foundation Filing Preparation",
+              "description": "Drafting and execution package is prepared for supervisory and registry submissions."
+            },
+            "registrationTaxSetup": {
+              "title": "Registration and Tax Setup",
+              "description": "Commercial registry filing and tax authority registration are completed."
+            },
+            "postFilingServices": {
+              "title": "Post-filing Services",
+              "description": "Board, office, accounting, and reporting support is coordinated based on your selections."
+            }
+          }
+        },
+        "steps": {
+          "applicant": {
+            "description": "Must be completed by the director or an authorized delegate."
+          },
+          "compliance": {
+            "description": "Business intentions, sanctions, and compliance declarations."
+          },
+          "company": {
+            "description": "Business profile, registration details, and capital requirement acknowledgements."
+          },
+          "accounting": {
+            "description": "Provide accounting year-end and tax support preferences."
+          },
+          "services": {
+            "description": "Default package includes local board support, PO Box registered office, and bank account opening assistance. You can adjust based on your setup."
+          },
+          "invoice": {
+            "description": "Review the final fee breakdown before payment."
+          },
+          "payment": {
+            "description": "Complete card payment or upload bank transfer proof."
+          }
+        },
+        "applicant": {
+          "fields": {
+            "authorRelationship": {
+              "label": "Relationship to the Swiss foundation"
+            }
+          }
+        },
+        "options": {
+          "relationship": {
+            "director": "Director of the Swiss foundation"
+          },
+          "capitalRequirementChoice": {
+            "acknowledged": "CHF 50,000 minimum acknowledged",
+            "otherArrangement": "Other arrangement (explain)"
+          }
+        },
+        "company": {
+          "fields": {
+            "foundationNameFirstChoice": {
+              "label": "Desired foundation name (1st choice)"
+            },
+            "foundationNameSecondChoice": {
+              "label": "Desired foundation name (2nd choice)"
+            },
+            "capitalRequirementChoice": {
+              "label": "Foundation paid-in capital requirement"
+            },
+            "capitalRequirementOther": {
+              "label": "Capital requirement clarification"
+            }
+          }
+        },
+        "services": {
+          "fields": {
+            "boardServiceMode": {
+              "label": "Local board member service"
+            }
+          },
+          "options": {
+            "boardServiceMode": {
+              "mirrProvided": "Use Mirr Asia local board member service",
+              "clientProvided": "Client will arrange own compliant local board"
+            }
+          },
+          "items": {
+            "foundationSetup": {
+              "label": "Swiss foundation establishment",
+              "info": "All establishment-related costs included."
+            },
+            "localBoardMember": {
+              "label": "Local board member service (1 year)",
+              "info": "Swiss foundation must appoint at least one board member residing in Switzerland."
+            },
+            "registeredOfficePobox": {
+              "label": "Registered office - PO Box (1 year)",
+              "info": "Annual Swiss PO Box address service."
+            },
+            "registeredOfficeFlexidesk": {
+              "label": "Registered office - Flexi Desk (1 year)",
+              "info": "Includes lease agreement, meeting room access, and Swiss phone number."
+            },
+            "bankOpening": {
+              "label": "Swiss bank account opening (capital + operating)",
+              "info": "Non-face-to-face account opening support."
+            },
+            "accountingTaxAnnual": {
+              "label": "Accounting and tax services (annual, up to 300 transactions)",
+              "info": "Includes bookkeeping, AHV/SUVA/VAT registration, VAT returns, annual statements, and tax returns."
+            },
+            "annualFoundationReport": {
+              "label": "Annual foundation report preparation and submission (estimated)",
+              "info": "Estimated amount and can be adjusted after compliance review."
+            }
+          }
+        },
+        "fees": {
+          "note": "Capital requirements are collected for compliance and are excluded from invoice totals."
+        },
+        "review": {
+          "declaration": {
+            "content": "I agree that all information provided is true, complete, and submitted for legitimate business purposes."
+          }
+        }
+      }
+    },
     "payment": {
       "securePayment": "Secure Payment",
       "totalToPay": "Total to pay:",
@@ -3009,6 +4346,447 @@
         "statusRefreshed": "Payment status refreshed.",
         "deleted": "Deleted",
         "proofRemoved": "Proof removed. Please upload a new file."
+      }
+    },
+    "ee": {
+      "auto": {
+        "k001": "Officer",
+        "k002": "Authorized Proxy",
+        "k003": "Major Shareholder",
+        "k004": "Professional Advisor",
+        "k005": "Estonia OÜ incorporation with initial maintenance",
+        "k006": "EMI list",
+        "k007": "EMI account opening",
+        "k008": "Bank account opening",
+        "k009": "Legal opinion (Estonia)",
+        "k010": "Legal opinion (domestic listing)",
+        "k011": "Legal opinion (other country)",
+        "k012": "Business consulting",
+        "k013": "Crypto-related",
+        "k014": "IT / Blockchain software",
+        "k015": "Crypto investment",
+        "k016": "Crypto games",
+        "k017": "Forex trading",
+        "k018": "Finance / Investment consulting",
+        "k019": "Trade",
+        "k020": "Wholesale / Retail",
+        "k021": "Consulting",
+        "k022": "Manufacturing",
+        "k023": "E-commerce",
+        "k024": "Online direct purchase",
+        "k025": "Business diversification",
+        "k026": "Advisor or partner suggestion",
+        "k027": "International expansion",
+        "k028": "Asset management",
+        "k029": "Holding company",
+        "k030": "Financial policy advantage",
+        "k031": "Low-tax transaction growth",
+        "k032": "No capital gains tax",
+        "k033": "EMI account opening advisory",
+        "k034": "Bank account opening advisory",
+        "k035": "Other quote request",
+        "k036": "Estonia OÜ Incorporation Service",
+        "k037": "Incorporation preparation, document check, and filing support.",
+        "k038": "Estonian Government State Fee",
+        "k039": "Statutory filing fee.",
+        "k040": "Estonia Business Address Service (1 year)",
+        "k041": "Mandatory annual local business address service.",
+        "k042": "Management and Case Follow-up",
+        "k043": "Establishment advisory and case handling support.",
+        "k044": "Estonian Contact Person Service (1 person / 1 year)",
+        "k045": "Can be removed if designated contact person arrangement is client-provided.",
+        "k046": "Power of Attorney (POA)",
+        "k047": "EMI List",
+        "k048": "Informational service list.",
+        "k049": "Quote-only service requests are tracked and excluded from invoice totals until priced. Pricing is sourced from EUR quote structure and currently billed via USD/HKD rails.",
+        "k050": "Application Notice",
+        "k051": "This application should be completed by an officer or authorized representative. Please provide accurate information for compliance and filing review.",
+        "k052": "Author Name",
+        "k053": "Relationship to Estonian Corporation",
+        "k054": "Phone Number",
+        "k055": "Email",
+        "k056": "SNS / Messaging ID",
+        "k057": "Any legal or ethical concerns related to the intended business?",
+        "k058": "Other legal or ethical concern details",
+        "k059": "Do you agree to annual renewal obligations and recurring compliance costs?",
+        "k060": "Can be handled internally",
+        "k061": "Will not proceed if fixed annual costs apply",
+        "k062": "Need advisory before confirming",
+        "k063": "Any business in sanctioned countries or regions?",
+        "k064": "Any involved persons residing in sanctioned countries or regions?",
+        "k065": "Any ownership/control by sanctioned persons or entities?",
+        "k066": "Any current or planned activity in Crimea or Sevastopol?",
+        "k067": "Any current or planned activity in oil, gas, military, or energy sectors?",
+        "k068": "Industry selection",
+        "k069": "Other industry details",
+        "k070": "Business description",
+        "k071": "Website",
+        "k072": "https://",
+        "k073": "Purpose of establishment",
+        "k074": "Other purpose details",
+        "k075": "Proposed company name (priority 1)",
+        "k076": "Proposed company name (priority 2)",
+        "k077": "Proposed company name (priority 3)",
+        "k078": "Total capital (EUR)",
+        "k079": "EUR 1",
+        "k080": "EUR 2,500",
+        "k081": "EUR 25,000",
+        "k082": "Total capital (other amount in EUR)",
+        "k083": "Executive composition",
+        "k084": "Single responsible executive / DCP-led",
+        "k085": "Multiple individual executives",
+        "k086": "Includes corporate member representation",
+        "k087": "Other executive composition details",
+        "k088": "Registered address option",
+        "k089": "Use Mirr Asia Estonia business address service (mandatory package item)",
+        "k090": "Use own address (subject to compliance review, mandatory package item remains)",
+        "k091": "Own registered address details",
+        "k092": "Expected annual transaction count",
+        "k093": "Need advisory",
+        "k094": "Service Setup Notice",
+        "k095": "Estonia business address service remains mandatory in this package. Contact person service can be removed when a designated contact person arrangement is client-provided.",
+        "k096": "Contact person service mode",
+        "k097": "Use Mirr Asia contact person service (USD 400/year)",
+        "k098": "Client-provided DCP contact person arrangement (no service fee)",
+        "k099": "Requested services intake",
+        "k100": "Other requested service details",
+        "k101": "Quote-only service requests (tracked, excluded from invoice totals)",
+        "k102": "Other quote-only request details",
+        "k103": "Estonia OÜ Incorporation",
+        "k104": "Estonia OÜ Application Submitted",
+        "k105": "Your Estonia incorporation request has been received. Typical processing timeline is 3 to 5 business days after document and compliance checks.",
+        "k106": "Preparation and KYC",
+        "k107": "Preparation, document check, and KYC confirmation are typically completed in 2 to 3 business days.",
+        "k108": "Incorporation Filing",
+        "k109": "Filing and incorporation process is typically completed in 1 to 2 business days after readiness.",
+        "k110": "Post-filing Support",
+        "k111": "Address/contact service setup and follow-up support are coordinated based on selected services.",
+        "k112": "Author details and relationship to the planned Estonian corporation.",
+        "k113": "AML / CDD",
+        "k114": "Business intent, sanctions screening, and annual-renewal consent.",
+        "k115": "Business profile and registration details.",
+        "k116": "Invite parties and assign a designated contact person.",
+        "k117": "Service Customization",
+        "k118": "Review mandatory package items and optional add-ons.",
+        "k119": "Review final billable fees before payment.",
+        "k120": "Payment Processing",
+        "k121": "Proceed with card payment or bank transfer proof upload.",
+        "k122": "Review and Declaration",
+        "k123": "I agree to the terms and declarations for this application.",
+        "k124": "I confirm that all submitted information is true and accurate.",
+        "k125": "I understand services may be suspended if legal or compliance violations are identified."
+      }
+    },
+    "lt": {
+      "auto": {
+        "k001": "Director of the Lithuanian company to be established",
+        "k002": "Chief executive of the Lithuanian legal entity to be established",
+        "k003": "Authorized person delegated by a director",
+        "k004": "Major shareholder",
+        "k005": "Professional advisor (lawyer, accountant, tax advisor, etc.)",
+        "k006": "Cryptocurrency related",
+        "k007": "IT / blockchain / software development",
+        "k008": "Cryptocurrency investment",
+        "k009": "Cryptocurrency games",
+        "k010": "Foreign exchange trading",
+        "k011": "Finance / investment / consulting",
+        "k012": "Trade",
+        "k013": "Wholesale / retail",
+        "k014": "Consulting",
+        "k015": "Manufacturing",
+        "k016": "Online services (e-commerce)",
+        "k017": "Online direct purchase / delivery / agency",
+        "k018": "Business diversification",
+        "k019": "Advisor / investor / partner recommendation",
+        "k020": "International expansion",
+        "k021": "Asset management",
+        "k022": "Holding company strategy",
+        "k023": "Competitive advantage through financial policy",
+        "k024": "Transaction growth due to tax efficiency",
+        "k025": "Legal opinion in Lithuania",
+        "k026": "Legal opinion for domestic exchange listing",
+        "k027": "Legal opinion for another country",
+        "k028": "Business and regulatory consulting",
+        "k029": "EMI Level 10 operational support (separate quote)",
+        "k030": "Other quote-only request",
+        "k031": "Lithuania incorporation service",
+        "k032": "Notary fee",
+        "k033": "Registration of establishment",
+        "k034": "1 year corporate address service",
+        "k035": "Bank account opening support",
+        "k036": "Reference price set to EUR 400 for now and can be adjusted later.",
+        "k037": "READY-MADE VASP Standard package (documents/license proof only)",
+        "k038": "Standard package pricing is quote-based. Full infrastructure components are not included in this variant.",
+        "k039": "READY-MADE VASP Full package",
+        "k040": "Includes transfer procedure, VASP infrastructure setup, registered address/local contact, AML integration support, and related package scope.",
+        "k041": "Lithuania EMI license project (Level 1-9)",
+        "k042": "Lithuania Central Bank government fee",
+        "k043": "AML officer (annual, basic)",
+        "k044": "Reference annualized amount from EUR 1,000/month (minimum contract period applies).",
+        "k045": "AML officer (annual, experienced)",
+        "k046": "Reference annualized amount from EUR 2,000/month (minimum contract period applies).",
+        "k047": "Accounting package (up to 50 invoices/month, annualized)",
+        "k048": "Accounting package (up to 100 invoices/month, annualized)",
+        "k049": "Accounting package (up to 200 invoices/month, annualized)",
+        "k050": "Accounting package (up to 500 invoices/month, annualized)",
+        "k051": "Accounting package (higher volume / custom quote)",
+        "k052": "Pricing for this accounting tier is quote-based.",
+        "k053": "EMI virtual account onboarding fee (third-party estimate)",
+        "k054": "Typical range is EUR 500 to EUR 2,000 depending on provider onboarding outcome.",
+        "k055": "Local office rent and utilities (annual estimate)",
+        "k056": "Reference estimate based on EUR 150 to EUR 250 per month.",
+        "k057": "KYC/KYT usage fee estimate",
+        "k058": "Computed at EUR 2 per person based on expected KYC/KYT volume.",
+        "k059": "Statutory interest (if full capital is not paid)",
+        "k060": "Applies when full statutory capital is not paid. This is reflected as company revenue and may be used for expenditure.",
+        "k061": "EUR quote references are modeled in the unified USD/HKD payment rails. Capital requirements are captured for compliance and excluded from billable totals.",
+        "k062": "Applicant Notice",
+        "k063": "Please complete this form as the applicant, director, or an authorized representative. Keep all details aligned with identification documents.",
+        "k064": "Relationship to the Lithuanian entity",
+        "k065": "Required Documents",
+        "k066": "I confirm I can provide all required documents.",
+        "k067": "Preferred self-authentication method",
+        "k068": "Photo where passport and face are visible together",
+        "k069": "In-person visit to Mirr Asia office (Hong Kong or Seocho-gu, Seoul)",
+        "k070": "Ward-office certified passport copy submission",
+        "k071": "Passport notarization at nearby notary office",
+        "k072": "Does the purpose of establishment raise legal or ethical concerns (money laundering, gambling, tax evasion, concealment, fraud)?",
+        "k073": "Need legal advice",
+        "k074": "Other legal/ethical issue details",
+        "k075": "After establishment, annual renewals and recurring compliance costs apply. Do you agree?",
+        "k076": "Can be handled internally",
+        "k077": "Will not proceed if fixed annual costs apply",
+        "k078": "Need advisory before decision",
+        "k079": "Do you currently conduct or plan to conduct business in sanctioned countries/regions?",
+        "k080": "Do any relevant persons reside in sanctioned jurisdictions (UN/EU/UK/HKMA/OFAC scope)?",
+        "k081": "Any current/planned business activity in Crimea or Sevastopol?",
+        "k082": "Any current/planned activity in oil, gas, energy, military, or defense sectors?",
+        "k083": "Lithuania Establishment Requirements",
+        "k084": "Minimum capital is EUR 2,500 for standard incorporation, with at least one shareholder/director/manager listed. Bank account opening lead time is typically 3 to 5 weeks after onboarding.",
+        "k085": "Industry selection",
+        "k086": "Other industry details",
+        "k087": "Product/service description",
+        "k088": "Business summary (3 to 4 sentences)",
+        "k089": "https://",
+        "k090": "Purpose of establishment and expected effect",
+        "k091": "Other purpose details",
+        "k092": "Total capital to be paid in (EUR)",
+        "k093": "EUR 2,500 (standard minimum)",
+        "k094": "EUR 125,000 (READY-MADE VASP context)",
+        "k095": "EUR 350,000 (EMI license context)",
+        "k096": "Other amount",
+        "k097": "Other capital amount (EUR)",
+        "k098": "Registered address in Lithuania",
+        "k099": "Use Mirr Asia corporate address service",
+        "k100": "Use client-provided Lithuanian business address",
+        "k101": "Client-provided address details",
+        "k102": "I understand capital requirements must be paid to the capital account before establishment and are excluded from invoice totals.",
+        "k103": "Preferred bookkeeping cycle",
+        "k104": "Semi-annual",
+        "k105": "Annual",
+        "k106": "Expected monthly invoices",
+        "k107": "Up to 50",
+        "k108": "51 to 100",
+        "k109": "101 to 200",
+        "k110": "201 to 500",
+        "k111": "More than 500",
+        "k112": "Expected number of employees",
+        "k113": "0 to 3",
+        "k114": "4 to 5",
+        "k115": "6 to 7",
+        "k116": "More than 7",
+        "k117": "Do you need VAT and tax filing support?",
+        "k118": "Need advisory first",
+        "k119": "Accounting and reporting notes",
+        "k120": "Service and Pricing Setup",
+        "k121": "Select the Lithuania route first, then configure maintenance and third-party estimates. Third-party estimates can be displayed in invoice for planning visibility.",
+        "k122": "Lithuania service route",
+        "k123": "Lithuania Incorporation Guide package (EUR 2,200 reference)",
+        "k124": "READY-MADE VASP - Standard package (quote-based)",
+        "k125": "READY-MADE VASP - Full package (EUR 25,000)",
+        "k126": "EMI license project (Level 1-9, EUR 60,000 + government fee)",
+        "k127": "AML officer plan",
+        "k128": "No AML officer plan selected",
+        "k129": "Basic AML officer annualized plan (EUR 12,000)",
+        "k130": "Experienced AML officer annualized plan (EUR 24,000)",
+        "k131": "Accounting package",
+        "k132": "No accounting package selected",
+        "k133": "Up to 50 invoices/month (annualized EUR 4,800)",
+        "k134": "Up to 100 invoices/month (annualized EUR 6,120)",
+        "k135": "Up to 200 invoices/month (annualized EUR 9,240)",
+        "k136": "Up to 500 invoices/month (annualized EUR 13,560)",
+        "k137": "More than 500 invoices / custom (quote)",
+        "k138": "EMI virtual account onboarding fee estimate",
+        "k139": "Do not include",
+        "k140": "EUR 500",
+        "k141": "EUR 1,000",
+        "k142": "EUR 1,500",
+        "k143": "EUR 2,000",
+        "k144": "Custom amount",
+        "k145": "Custom EMI onboarding estimate (EUR)",
+        "k146": "Local office rent + utility estimate (annual)",
+        "k147": "EUR 1,800",
+        "k148": "EUR 2,400",
+        "k149": "EUR 3,000",
+        "k150": "Custom office rent + utility estimate (EUR)",
+        "k151": "Expected number of KYC/KYT checks (EUR 2 per person)",
+        "k152": "Include statutory interest line (EUR 4,900) if full VASP capital is not paid",
+        "k153": "Quote-only service requests",
+        "k154": "Other quote-only request details",
+        "k155": "Capital Reminder",
+        "k156": "Capital requirements (EUR 2,500 / EUR 125,000 / EUR 350,000 based on route) are compliance prerequisites and are not added to invoice totals.",
+        "k157": "Lithuania Incorporation and Licensing",
+        "k158": "Lithuania Application Submitted",
+        "k159": "Your Lithuania request has been received. Our team will complete scope confirmation, compliance review, and filing coordination based on the selected route.",
+        "k160": "Preparation and KYC",
+        "k161": "Document readiness, KYC/CDD checks, and package confirmation are completed first.",
+        "k162": "Route Execution",
+        "k163": "Standard incorporation typically takes around 2 to 3 weeks after required documents are ready.",
+        "k164": "Banking / Operations",
+        "k165": "Bank account onboarding timelines vary by industry; planning range is typically 3 to 5 weeks.",
+        "k166": "License-specific Follow-up",
+        "k167": "READY-MADE VASP and EMI routes include additional operational and regulatory follow-up phases.",
+        "k168": "Author details and onboarding readiness.",
+        "k169": "AML / CDD",
+        "k170": "Business intent, sanctions checks, and compliance declarations.",
+        "k171": "Business profile, registration details, and capital declarations.",
+        "k172": "Invite parties and assign designated contact person coverage.",
+        "k173": "Service Customization",
+        "k174": "Select route, maintenance scope, and third-party estimate lines.",
+        "k175": "Review billable and estimate line items before payment.",
+        "k176": "Payment Processing",
+        "k177": "Proceed with card or bank transfer payment workflow.",
+        "k178": "Review and Declaration",
+        "k179": "I confirm all submitted information is true and accurate.",
+        "k180": "I understand services may be paused or declined if legal/compliance concerns are identified.",
+        "k181": "I understand statutory capital is a non-billable establishment prerequisite and not part of invoice totals."
+      }
+    },
+    "ie": {
+      "auto": {
+        "k001": "Director of the Irish corporation (to be established)",
+        "k002": "Highest manager of the Irish corporation (to be established)",
+        "k003": "Person delegated by the director of the Irish corporation (to be established)",
+        "k004": "Major shareholder of the Irish corporation (to be established)",
+        "k005": "Expert providing establishment advice on behalf of the director (lawyer, accountant, administrative agent, tax accountant, etc.)",
+        "k006": "Cryptocurrency-related (issuance/sale/donation/ICO/exchange/wallet service)",
+        "k007": "Development of IT, blockchain, software, etc.",
+        "k008": "Cryptocurrency-based investment-related business",
+        "k009": "Cryptocurrency-based games",
+        "k010": "General online games",
+        "k011": "Foreign exchange trading",
+        "k012": "Finance, investment, consulting, lending, etc.",
+        "k013": "Trade industry",
+        "k014": "Wholesale/retail distribution",
+        "k015": "Consulting",
+        "k016": "Manufacturing",
+        "k017": "Online service industry (e-commerce)",
+        "k018": "Online direct purchase/delivery service/purchase agency",
+        "k019": "Pursuing business diversification through relaxed regulations",
+        "k020": "A legal advisor, investor, or partner suggested establishing an Irish company",
+        "k021": "Expanding business into various European countries",
+        "k022": "Asset management by investing in real estate or financial assets",
+        "k023": "Holding company for managing subsidiaries or affiliates",
+        "k024": "Pursuing competitive advantage through free financial policies",
+        "k025": "Increased trading volume due to low tax rates in Europe",
+        "k026": "Consulting services including regulatory review, feasibility review, document preparation, and operational consulting (separate quote)",
+        "k027": "Other quote-only request",
+        "k028": "Irish company formation + corporate address and secretary services for the first year",
+        "k029": "Includes incorporation filing/government fees, incorporation documents, inaugural resolutions and minutes, first-year registered address, company secretary support, tax/VAT registration, and related package inclusions.",
+        "k030": "Opening a bank account for an Irish corporation",
+        "k031": "2-year bond to satisfy non-EEA director alternative requirement",
+        "k032": "Reference quote is EUR 2,000 for a EUR 25,000 liability bond. Displayed in USD/HKD rails in this workflow.",
+        "k033": "1 year of director registration to comply with local Irish regulations",
+        "k034": "Additional appointment of a local Irish director for one year",
+        "k035": "Can strengthen Irish tax residency posture, support remote account opening, and improve access to treaty benefits where applicable.",
+        "k036": "Annual company renewal package",
+        "k037": "Includes annual return filing, secretary support, registered address/mail handling, and AGM documentation preparation.",
+        "k038": "Consulting services (quote-only request)",
+        "k039": "Items quoted in EUR are represented in the unified USD/HKD payment rails for this workflow. Quote-only requests are tracked and excluded from billable totals.",
+        "k040": "Relationship between the writer and the Irish corporation to be established",
+        "k041": "Does the purpose of establishing an Irish corporation raise legal or ethical issues (money laundering, gambling, tax evasion, asset concealment, evasion of legal proceedings, fraud)?",
+        "k042": "Consider legal advice",
+        "k043": "Other legal/ethical issue details",
+        "k044": "After establishing an Irish corporation, annual renewals and recurring documentation/cost obligations apply. Do you agree?",
+        "k045": "Can be resolved internally after establishment",
+        "k046": "I will not proceed if fixed annual costs are incurred",
+        "k047": "Advice required before proceeding",
+        "k048": "Does the proposed Irish company, holding company, group, or related entity currently conduct or plan to conduct business in sanctioned countries or territories?",
+        "k049": "Are any involved persons residing in sanctioned countries/regions or jurisdictions sanctioned by UN/EU/UKHMT/HKMA/OFAC?",
+        "k050": "Is the proposed Irish entity owned/controlled by, or acting for, sanctioned persons/entities/governments (including through ownership or control)?",
+        "k051": "Are any related entities currently conducting business in Crimea or Sevastopol, or planning to do so?",
+        "k052": "Is the group currently engaged in, or planning to engage in, oil, gas, energy, military, or defense sectors?",
+        "k053": "Ireland Establishment Requirements",
+        "k054": "Minimum capital is EUR 0.01 and at least one share. At least one natural person must be a director, and at least one director should be EEA resident (or bond alternative). At least one secretary is required. A registered address in Ireland is mandatory.",
+        "k055": "Select industry (check all relevant items)",
+        "k056": "Other industry details",
+        "k057": "Description of product name/type/service content/service type",
+        "k058": "Describe the business in 3-4 sentences",
+        "k059": "https://",
+        "k060": "Purpose of establishing an Irish corporation and expected future effects",
+        "k061": "Other purpose details",
+        "k062": "Total shares",
+        "k063": "1 share",
+        "k064": "100 shares",
+        "k065": "1,000 shares",
+        "k066": "10,000 shares",
+        "k067": "100,000 shares",
+        "k068": "Total shares (other)",
+        "k069": "Total capital to be paid in (EUR)",
+        "k070": "EUR 0.01",
+        "k071": "EUR 1",
+        "k072": "EUR 100",
+        "k073": "EUR 1,000",
+        "k074": "EUR 10,000",
+        "k075": "EUR 100,000",
+        "k076": "Total capital to be paid in (EUR, other)",
+        "k077": "Par value per share (EUR)",
+        "k078": "How will you satisfy the EEA-resident director or EUR 25,000 bond requirement?",
+        "k079": "Already have at least one EEA-resident director",
+        "k080": "Use local director registration service",
+        "k081": "Purchase 2-year bond (EUR 25,000 liability limit)",
+        "k082": "Need advice before deciding",
+        "k083": "Will at least one natural person be appointed as a director?",
+        "k084": "Need advice before confirming",
+        "k085": "Secretary arrangement",
+        "k086": "Director also serves as secretary",
+        "k087": "Separate person registered as secretary",
+        "k088": "If there is only one director, I understand a separate person must be registered as secretary.",
+        "k089": "Registered address of the company in Ireland",
+        "k090": "Use Mir Asia's Irish corporate registered address service",
+        "k091": "Use separate Ireland business address",
+        "k092": "Separate Ireland address details",
+        "k093": "Ireland local director / bond rule",
+        "k094": "Irish companies should maintain at least one EEA-resident director. If that is not met, a EUR 25,000 bond is commonly used as an alternative compliance route.",
+        "k095": "Quote-only service requests (tracked, excluded from invoice totals)",
+        "k096": "Other quote-only request details",
+        "k097": "Ireland Company Incorporation",
+        "k098": "Ireland Incorporation Request Submitted",
+        "k099": "We have received your Ireland incorporation request. Our team will review compliance, service scope, and filing readiness before proceeding.",
+        "k100": "Compliance and Scope Review",
+        "k101": "KYC/CDD and sanctions screening checks are completed and service scope is confirmed.",
+        "k102": "Registration Preparation",
+        "k103": "Company structure, registration details, and director/secretary requirements are validated.",
+        "k104": "Filing and Setup Execution",
+        "k105": "Incorporation and selected post-incorporation services are executed based on final approval.",
+        "k106": "Writer details and relationship to the Irish company being established.",
+        "k107": "AML / CDD",
+        "k108": "Business intent, sanctions checks, and annual renewal consent.",
+        "k109": "Business profile, registration details, and Irish establishment requirements.",
+        "k110": "Invite parties and ensure required role/residency coverage.",
+        "k111": "Director appointment",
+        "k112": "Secretary appointment",
+        "k113": "Director coverage",
+        "k114": "Secretary coverage",
+        "k115": "Select billable service lines and optional quote-only requests.",
+        "k116": "Review fees before payment.",
+        "k117": "Payment Processing",
+        "k118": "Proceed with card payment or bank transfer proof upload.",
+        "k119": "Review and Declaration",
+        "k120": "Consent and Declaration",
+        "k121": "I agree to provide required documents and information, confirm lawful business intent, and declare all submitted information is true, complete, and accurate.",
+        "k122": "Do you agree?",
+        "k123": "I understand service may be suspended if unlawful activity or intent is identified."
       }
     }
   }

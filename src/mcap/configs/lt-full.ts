@@ -37,63 +37,63 @@ const LT_PRICING = {
 } as const;
 
 const YES_NO_UNKNOWN = [
-  { label: "Yes", value: "yes" },
-  { label: "No", value: "no" },
-  { label: "Do not know", value: "unknown" },
+  { label: "mcap.common.options.yes", value: "yes" },
+  { label: "mcap.common.options.no", value: "no" },
+  { label: "mcap.common.options.doNotKnow", value: "unknown" },
 ];
 
 const APPLICANT_RELATION_OPTIONS = [
-  { label: "Director of the Lithuanian company to be established", value: "director" },
+  { label: "mcap.lt.auto.k001", value: "director" },
   {
-    label: "Chief executive of the Lithuanian legal entity to be established",
+    label: "mcap.lt.auto.k002",
     value: "ceo",
   },
   {
-    label: "Authorized person delegated by a director",
+    label: "mcap.lt.auto.k003",
     value: "authorized_proxy",
   },
-  { label: "Major shareholder", value: "major_shareholder" },
+  { label: "mcap.lt.auto.k004", value: "major_shareholder" },
   {
-    label: "Professional advisor (lawyer, accountant, tax advisor, etc.)",
+    label: "mcap.lt.auto.k005",
     value: "professional_advisor",
   },
-  { label: "Other", value: "other" },
+  { label: "mcap.common.options.other", value: "other" },
 ];
 
 const INDUSTRY_OPTIONS = [
-  { label: "Cryptocurrency related", value: "crypto_related" },
-  { label: "IT / blockchain / software development", value: "it_blockchain_software" },
-  { label: "Cryptocurrency investment", value: "crypto_investment" },
-  { label: "Cryptocurrency games", value: "crypto_games" },
-  { label: "Foreign exchange trading", value: "forex_trading" },
-  { label: "Finance / investment / consulting", value: "finance_investment_consulting" },
-  { label: "Trade", value: "trade" },
-  { label: "Wholesale / retail", value: "wholesale_retail" },
-  { label: "Consulting", value: "consulting" },
-  { label: "Manufacturing", value: "manufacturing" },
-  { label: "Online services (e-commerce)", value: "ecommerce" },
-  { label: "Online direct purchase / delivery / agency", value: "online_direct_purchase" },
-  { label: "Other", value: "other" },
+  { label: "mcap.lt.auto.k006", value: "crypto_related" },
+  { label: "mcap.lt.auto.k007", value: "it_blockchain_software" },
+  { label: "mcap.lt.auto.k008", value: "crypto_investment" },
+  { label: "mcap.lt.auto.k009", value: "crypto_games" },
+  { label: "mcap.lt.auto.k010", value: "forex_trading" },
+  { label: "mcap.lt.auto.k011", value: "finance_investment_consulting" },
+  { label: "mcap.lt.auto.k012", value: "trade" },
+  { label: "mcap.lt.auto.k013", value: "wholesale_retail" },
+  { label: "mcap.lt.auto.k014", value: "consulting" },
+  { label: "mcap.lt.auto.k015", value: "manufacturing" },
+  { label: "mcap.lt.auto.k016", value: "ecommerce" },
+  { label: "mcap.lt.auto.k017", value: "online_direct_purchase" },
+  { label: "mcap.common.options.other", value: "other" },
 ];
 
 const PURPOSE_OPTIONS = [
-  { label: "Business diversification", value: "business_diversification" },
-  { label: "Advisor / investor / partner recommendation", value: "advisor_partner_suggestion" },
-  { label: "International expansion", value: "international_expansion" },
-  { label: "Asset management", value: "asset_management" },
-  { label: "Holding company strategy", value: "holding_company" },
-  { label: "Competitive advantage through financial policy", value: "financial_policy_advantage" },
-  { label: "Transaction growth due to tax efficiency", value: "tax_efficiency" },
-  { label: "Other", value: "other" },
+  { label: "mcap.lt.auto.k018", value: "business_diversification" },
+  { label: "mcap.lt.auto.k019", value: "advisor_partner_suggestion" },
+  { label: "mcap.lt.auto.k020", value: "international_expansion" },
+  { label: "mcap.lt.auto.k021", value: "asset_management" },
+  { label: "mcap.lt.auto.k022", value: "holding_company" },
+  { label: "mcap.lt.auto.k023", value: "financial_policy_advantage" },
+  { label: "mcap.lt.auto.k024", value: "tax_efficiency" },
+  { label: "mcap.common.options.other", value: "other" },
 ];
 
 const QUOTE_ONLY_REQUEST_OPTIONS = [
-  { label: "Legal opinion in Lithuania", value: "legal_opinion_lithuania" },
-  { label: "Legal opinion for domestic exchange listing", value: "legal_opinion_domestic_listing" },
-  { label: "Legal opinion for another country", value: "legal_opinion_other_country" },
-  { label: "Business and regulatory consulting", value: "business_consulting" },
-  { label: "EMI Level 10 operational support (separate quote)", value: "emi_level_10_ops" },
-  { label: "Other quote-only request", value: "other" },
+  { label: "mcap.lt.auto.k025", value: "legal_opinion_lithuania" },
+  { label: "mcap.lt.auto.k026", value: "legal_opinion_domestic_listing" },
+  { label: "mcap.lt.auto.k027", value: "legal_opinion_other_country" },
+  { label: "mcap.lt.auto.k028", value: "business_consulting" },
+  { label: "mcap.lt.auto.k029", value: "emi_level_10_ops" },
+  { label: "mcap.lt.auto.k030", value: "other" },
 ];
 
 const LT_QUOTE_ONLY_LABELS: Record<string, string> = {
@@ -146,7 +146,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
     items.push(
       {
         id: "lt_standard_incorporation",
-        label: "Lithuania incorporation service",
+        label: "mcap.lt.auto.k031",
         amount: LT_PRICING.standard_incorporation,
         original: LT_PRICING.standard_incorporation,
         mandatory: true,
@@ -154,7 +154,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
       },
       {
         id: "lt_standard_notary_fee",
-        label: "Notary fee",
+        label: "mcap.lt.auto.k032",
         amount: LT_PRICING.standard_notary_fee,
         original: LT_PRICING.standard_notary_fee,
         mandatory: true,
@@ -162,7 +162,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
       },
       {
         id: "lt_standard_registration_fee",
-        label: "Registration of establishment",
+        label: "mcap.lt.auto.k033",
         amount: LT_PRICING.standard_registration_fee,
         original: LT_PRICING.standard_registration_fee,
         mandatory: true,
@@ -170,7 +170,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
       },
       {
         id: "lt_standard_corporate_address_1y",
-        label: "1 year corporate address service",
+        label: "mcap.lt.auto.k034",
         amount: LT_PRICING.standard_corporate_address_1y,
         original: LT_PRICING.standard_corporate_address_1y,
         mandatory: true,
@@ -178,12 +178,12 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
       },
       {
         id: "lt_standard_bank_opening",
-        label: "Bank account opening support",
+        label: "mcap.lt.auto.k035",
         amount: LT_PRICING.standard_bank_opening,
         original: LT_PRICING.standard_bank_opening,
         mandatory: true,
         kind: "service",
-        info: "Reference price set to EUR 400 for now and can be adjusted later.",
+        info: "mcap.lt.auto.k036",
       }
     );
   }
@@ -191,26 +191,26 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
   if (track === "vasp_standard") {
     items.push({
       id: "lt_vasp_standard_quote_only",
-      label: "READY-MADE VASP Standard package (documents/license proof only)",
+      label: "mcap.lt.auto.k037",
       amount: 0,
       original: 0,
       mandatory: true,
       kind: "service",
       info:
-        "Standard package pricing is quote-based. Full infrastructure components are not included in this variant.",
+        "mcap.lt.auto.k038",
     });
   }
 
   if (track === "vasp_full") {
     items.push({
       id: "lt_vasp_full",
-      label: "READY-MADE VASP Full package",
+      label: "mcap.lt.auto.k039",
       amount: LT_PRICING.vasp_full_package,
       original: LT_PRICING.vasp_full_package,
       mandatory: true,
       kind: "service",
       info:
-        "Includes transfer procedure, VASP infrastructure setup, registered address/local contact, AML integration support, and related package scope.",
+        "mcap.lt.auto.k040",
     });
   }
 
@@ -218,7 +218,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
     items.push(
       {
         id: "lt_emi_license_level_1_9",
-        label: "Lithuania EMI license project (Level 1-9)",
+        label: "mcap.lt.auto.k041",
         amount: LT_PRICING.emi_license_level_1_9,
         original: LT_PRICING.emi_license_level_1_9,
         mandatory: true,
@@ -226,7 +226,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
       },
       {
         id: "lt_emi_license_government_fee",
-        label: "Lithuania Central Bank government fee",
+        label: "mcap.lt.auto.k042",
         amount: LT_PRICING.emi_license_government_fee,
         original: LT_PRICING.emi_license_government_fee,
         mandatory: true,
@@ -239,22 +239,22 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
   if (amlPlan === "basic") {
     items.push({
       id: "lt_aml_officer_basic_annual",
-      label: "AML officer (annual, basic)",
+      label: "mcap.lt.auto.k043",
       amount: LT_PRICING.aml_officer_basic_annual,
       original: LT_PRICING.aml_officer_basic_annual,
       mandatory: true,
       kind: "service",
-      info: "Reference annualized amount from EUR 1,000/month (minimum contract period applies).",
+      info: "mcap.lt.auto.k044",
     });
   } else if (amlPlan === "experienced") {
     items.push({
       id: "lt_aml_officer_experienced_annual",
-      label: "AML officer (annual, experienced)",
+      label: "mcap.lt.auto.k045",
       amount: LT_PRICING.aml_officer_experienced_annual,
       original: LT_PRICING.aml_officer_experienced_annual,
       mandatory: true,
       kind: "service",
-      info: "Reference annualized amount from EUR 2,000/month (minimum contract period applies).",
+      info: "mcap.lt.auto.k046",
     });
   }
 
@@ -262,7 +262,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
   if (accountingPlan === "acc_50") {
     items.push({
       id: "lt_accounting_annual_50",
-      label: "Accounting package (up to 50 invoices/month, annualized)",
+      label: "mcap.lt.auto.k047",
       amount: LT_PRICING.accounting_annual_50,
       original: LT_PRICING.accounting_annual_50,
       mandatory: true,
@@ -271,7 +271,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
   } else if (accountingPlan === "acc_100") {
     items.push({
       id: "lt_accounting_annual_100",
-      label: "Accounting package (up to 100 invoices/month, annualized)",
+      label: "mcap.lt.auto.k048",
       amount: LT_PRICING.accounting_annual_100,
       original: LT_PRICING.accounting_annual_100,
       mandatory: true,
@@ -280,7 +280,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
   } else if (accountingPlan === "acc_200") {
     items.push({
       id: "lt_accounting_annual_200",
-      label: "Accounting package (up to 200 invoices/month, annualized)",
+      label: "mcap.lt.auto.k049",
       amount: LT_PRICING.accounting_annual_200,
       original: LT_PRICING.accounting_annual_200,
       mandatory: true,
@@ -289,7 +289,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
   } else if (accountingPlan === "acc_500") {
     items.push({
       id: "lt_accounting_annual_500",
-      label: "Accounting package (up to 500 invoices/month, annualized)",
+      label: "mcap.lt.auto.k050",
       amount: LT_PRICING.accounting_annual_500,
       original: LT_PRICING.accounting_annual_500,
       mandatory: true,
@@ -298,12 +298,12 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
   } else if (accountingPlan === "quote") {
     items.push({
       id: "lt_accounting_quote",
-      label: "Accounting package (higher volume / custom quote)",
+      label: "mcap.lt.auto.k051",
       amount: 0,
       original: 0,
       mandatory: true,
       kind: "other",
-      info: "Pricing for this accounting tier is quote-based.",
+      info: "mcap.lt.auto.k052",
     });
   }
 
@@ -314,12 +314,12 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
   if (emiOnboardingAmount > 0) {
     items.push({
       id: "lt_emi_onboarding",
-      label: "EMI virtual account onboarding fee (third-party estimate)",
+      label: "mcap.lt.auto.k053",
       amount: emiOnboardingAmount,
       original: emiOnboardingAmount,
       mandatory: true,
       kind: "other",
-      info: "Typical range is EUR 500 to EUR 2,000 depending on provider onboarding outcome.",
+      info: "mcap.lt.auto.k054",
     });
   }
 
@@ -327,12 +327,12 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
   if (officeRentAmount > 0) {
     items.push({
       id: "lt_office_rent_utilities",
-      label: "Local office rent and utilities (annual estimate)",
+      label: "mcap.lt.auto.k055",
       amount: officeRentAmount,
       original: officeRentAmount,
       mandatory: true,
       kind: "other",
-      info: "Reference estimate based on EUR 150 to EUR 250 per month.",
+      info: "mcap.lt.auto.k056",
     });
   }
 
@@ -341,25 +341,25 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
     const kycFee = Number((kycProfiles * 2).toFixed(2));
     items.push({
       id: "lt_kyc_kyt_usage",
-      label: "KYC/KYT usage fee estimate",
+      label: "mcap.lt.auto.k057",
       amount: kycFee,
       original: kycFee,
       mandatory: true,
       kind: "other",
-      info: "Computed at EUR 2 per person based on expected KYC/KYT volume.",
+      info: "mcap.lt.auto.k058",
     });
   }
 
   if (isVaspTrack(track) && Boolean(data?.ltIncludeStatutoryInterest)) {
     items.push({
       id: "lt_statutory_interest_unpaid_capital",
-      label: "Statutory interest (if full capital is not paid)",
+      label: "mcap.lt.auto.k059",
       amount: LT_PRICING.statutory_interest_if_capital_unpaid,
       original: LT_PRICING.statutory_interest_if_capital_unpaid,
       mandatory: true,
       kind: "other",
       info:
-        "Applies when full statutory capital is not paid. This is reflected as company revenue and may be used for expenditure.",
+        "mcap.lt.auto.k060",
     });
   }
 
@@ -386,7 +386,7 @@ export const buildLtServiceItems = (data: Record<string, any>): LtServiceItem[] 
   if (quoteOnlyRequests.includes("other") && String(data?.ltQuoteOnlyServiceRequestsOther || "").trim()) {
     items.push({
       id: "lt_quote_only_other",
-      label: "Other quote-only request",
+      label: "mcap.lt.auto.k030",
       amount: 0,
       original: 0,
       mandatory: true,
@@ -453,16 +453,16 @@ export const computeLtFees = (data: Record<string, any>) => {
     grandTotal,
     ...(shouldConvertToHkd ? { exchangeRateUsed: exchangeRateUsedRaw, originalAmountUsd: totalUsd } : {}),
     note:
-      "EUR quote references are modeled in the unified USD/HKD payment rails. Capital requirements are captured for compliance and excluded from billable totals.",
+      "mcap.lt.auto.k061",
   };
 };
 
 const buildApplicantFields = (): McapField[] => [
   {
     type: "info",
-    label: "Applicant Notice",
+    label: "mcap.lt.auto.k062",
     content:
-      "Please complete this form as the applicant, director, or an authorized representative. Keep all details aligned with identification documents.",
+      "mcap.lt.auto.k063",
     colSpan: 2,
   },
   { type: "text", name: "applicantName", label: "newHk.steps.applicant.fields.applicantName.label", required: true },
@@ -475,7 +475,7 @@ const buildApplicantFields = (): McapField[] => [
   {
     type: "checkbox-group",
     name: "authorRelationship",
-    label: "Relationship to the Lithuanian entity",
+    label: "mcap.lt.auto.k064",
     required: true,
     options: APPLICANT_RELATION_OPTIONS,
     colSpan: 2,
@@ -483,7 +483,7 @@ const buildApplicantFields = (): McapField[] => [
   {
     type: "text",
     name: "authorRelationshipOther",
-    label: "Other relationship details",
+    label: "mcap.common.fields.otherRelationshipDetails",
     condition: (f) => Array.isArray(f.authorRelationship) && f.authorRelationship.includes("other"),
     required: true,
     colSpan: 2,
@@ -508,7 +508,7 @@ const buildApplicantFields = (): McapField[] => [
   },
   // {
   //   type: "info",
-  //   label: "Required Documents",
+  //   label: "mcap.lt.auto.k065",
   //   content:
   //     "Passport copy, proof of address (English), identity verification evidence, and completed incorporation application are required.",
   //   colSpan: 2,
@@ -516,30 +516,30 @@ const buildApplicantFields = (): McapField[] => [
   // {
   //   type: "checkbox",
   //   name: "requiredDocumentsConfirmed",
-  //   label: "I confirm I can provide all required documents.",
+  //   label: "mcap.lt.auto.k066",
   //   required: true,
   //   colSpan: 2,
   // },
   {
     type: "radio-group",
     name: "identityVerificationMethod",
-    label: "Preferred self-authentication method",
+    label: "mcap.lt.auto.k067",
     required: true,
     options: [
       {
-        label: "Photo where passport and face are visible together",
+        label: "mcap.lt.auto.k068",
         value: "photo_with_passport",
       },
       {
-        label: "In-person visit to Mirr Asia office (Hong Kong or Seocho-gu, Seoul)",
+        label: "mcap.lt.auto.k069",
         value: "office_visit",
       },
       {
-        label: "Ward-office certified passport copy submission",
+        label: "mcap.lt.auto.k070",
         value: "ward_office_certificate",
       },
       {
-        label: "Passport notarization at nearby notary office",
+        label: "mcap.lt.auto.k071",
         value: "passport_notarization",
       },
     ],
@@ -552,21 +552,21 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "legalEthicsIssues",
     label:
-      "Does the purpose of establishment raise legal or ethical concerns (money laundering, gambling, tax evasion, concealment, fraud)?",
+      "mcap.lt.auto.k072",
     required: true,
     options: [
-      { label: "Yes", value: "yes" },
-      { label: "No", value: "no" },
-      { label: "Do not know", value: "unknown" },
-      { label: "Need legal advice", value: "legal_advice" },
-      { label: "Other", value: "other" },
+      { label: "mcap.common.options.yes", value: "yes" },
+      { label: "mcap.common.options.no", value: "no" },
+      { label: "mcap.common.options.doNotKnow", value: "unknown" },
+      { label: "mcap.lt.auto.k073", value: "legal_advice" },
+      { label: "mcap.common.options.other", value: "other" },
     ],
     colSpan: 2,
   },
   {
     type: "text",
     name: "legalEthicsIssuesOther",
-    label: "Other legal/ethical issue details",
+    label: "mcap.lt.auto.k074",
     condition: (f) => f.legalEthicsIssues === "other",
     required: true,
     colSpan: 2,
@@ -575,14 +575,14 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "annualRenewalAgreement",
     label:
-      "After establishment, annual renewals and recurring compliance costs apply. Do you agree?",
+      "mcap.lt.auto.k075",
     required: true,
     options: [
-      { label: "Yes", value: "yes" },
-      { label: "No", value: "no" },
-      { label: "Can be handled internally", value: "internal" },
-      { label: "Will not proceed if fixed annual costs apply", value: "no_if_fixed_cost" },
-      { label: "Need advisory before decision", value: "advice_required" },
+      { label: "mcap.common.options.yes", value: "yes" },
+      { label: "mcap.common.options.no", value: "no" },
+      { label: "mcap.lt.auto.k076", value: "internal" },
+      { label: "mcap.lt.auto.k077", value: "no_if_fixed_cost" },
+      { label: "mcap.lt.auto.k078", value: "advice_required" },
     ],
     colSpan: 2,
   },
@@ -590,7 +590,7 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "sanctionedCountriesBusiness",
     label:
-      "Do you currently conduct or plan to conduct business in sanctioned countries/regions?",
+      "mcap.lt.auto.k079",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -599,7 +599,7 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "sanctionedPersonsResidence",
     label:
-      "Do any relevant persons reside in sanctioned jurisdictions (UN/EU/UK/HKMA/OFAC scope)?",
+      "mcap.lt.auto.k080",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -607,7 +607,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "crimeaSevastopolBusiness",
-    label: "Any current/planned business activity in Crimea or Sevastopol?",
+    label: "mcap.lt.auto.k081",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -615,7 +615,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "restrictedSectors",
-    label: "Any current/planned activity in oil, gas, energy, military, or defense sectors?",
+    label: "mcap.lt.auto.k082",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -625,15 +625,15 @@ const buildComplianceFields = (): McapField[] => [
 const buildCompanyFields = (): McapField[] => [
   {
     type: "info",
-    label: "Lithuania Establishment Requirements",
+    label: "mcap.lt.auto.k083",
     content:
-      "Minimum capital is EUR 2,500 for standard incorporation, with at least one shareholder/director/manager listed. Bank account opening lead time is typically 3 to 5 weeks after onboarding.",
+      "mcap.lt.auto.k084",
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "industrySelection",
-    label: "Industry selection",
+    label: "mcap.lt.auto.k085",
     required: true,
     options: INDUSTRY_OPTIONS,
     colSpan: 2,
@@ -641,7 +641,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "industrySelectionOther",
-    label: "Other industry details",
+    label: "mcap.lt.auto.k086",
     condition: (f) => Array.isArray(f.industrySelection) && f.industrySelection.includes("other"),
     required: true,
     colSpan: 2,
@@ -649,14 +649,14 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "productServiceDescription",
-    label: "Product/service description",
+    label: "mcap.lt.auto.k087",
     required: true,
     colSpan: 2,
   },
   {
     type: "textarea",
     name: "businessDescription",
-    label: "Business summary (3 to 4 sentences)",
+    label: "mcap.lt.auto.k088",
     required: true,
     rows: 4,
     colSpan: 2,
@@ -664,14 +664,14 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "websiteAddress",
-    label: "Website address",
-    placeholder: "https://",
+    label: "mcap.common.fields.websiteAddressOptional",
+    placeholder: "mcap.lt.auto.k089",
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "purposeOfEstablishment",
-    label: "Purpose of establishment and expected effect",
+    label: "mcap.lt.auto.k090",
     required: true,
     options: PURPOSE_OPTIONS,
     colSpan: 2,
@@ -679,7 +679,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "purposeOfEstablishmentOther",
-    label: "Other purpose details",
+    label: "mcap.lt.auto.k091",
     condition: (f) =>
       Array.isArray(f.purposeOfEstablishment) && f.purposeOfEstablishment.includes("other"),
     required: true,
@@ -688,21 +688,21 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "totalCapitalEur",
-    label: "Total capital to be paid in (EUR)",
+    label: "mcap.lt.auto.k092",
     required: true,
     defaultValue: "2500",
     options: [
-      { label: "EUR 2,500 (standard minimum)", value: "2500" },
-      { label: "EUR 125,000 (READY-MADE VASP context)", value: "125000" },
-      { label: "EUR 350,000 (EMI license context)", value: "350000" },
-      { label: "Other amount", value: "other" },
+      { label: "mcap.lt.auto.k093", value: "2500" },
+      { label: "mcap.lt.auto.k094", value: "125000" },
+      { label: "mcap.lt.auto.k095", value: "350000" },
+      { label: "mcap.lt.auto.k096", value: "other" },
     ],
     colSpan: 2,
   },
   {
     type: "number",
     name: "totalCapitalEurOther",
-    label: "Other capital amount (EUR)",
+    label: "mcap.lt.auto.k097",
     condition: (f) => f.totalCapitalEur === "other",
     required: true,
     colSpan: 2,
@@ -710,15 +710,15 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "registeredAddressOption",
-    label: "Registered address in Lithuania",
+    label: "mcap.lt.auto.k098",
     required: true,
     options: [
       {
-        label: "Use Mirr Asia corporate address service",
+        label: "mcap.lt.auto.k099",
         value: "mirr_address",
       },
       {
-        label: "Use client-provided Lithuanian business address",
+        label: "mcap.lt.auto.k100",
         value: "client_address",
       },
     ],
@@ -727,7 +727,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "textarea",
     name: "registeredAddressDetails",
-    label: "Client-provided address details",
+    label: "mcap.lt.auto.k101",
     condition: (f) => f.registeredAddressOption === "client_address",
     required: true,
     rows: 3,
@@ -737,7 +737,7 @@ const buildCompanyFields = (): McapField[] => [
     type: "checkbox",
     name: "capitalRequirementAcknowledged",
     label:
-      "I understand capital requirements must be paid to the capital account before establishment and are excluded from invoice totals.",
+      "mcap.lt.auto.k102",
     required: true,
     colSpan: 2,
   },
@@ -747,55 +747,55 @@ const buildAccountingFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "bookKeepingCycle",
-    label: "Preferred bookkeeping cycle",
+    label: "mcap.lt.auto.k103",
     options: [
-      { label: "Monthly", value: "monthly" },
-      { label: "Quarterly", value: "quarterly" },
-      { label: "Semi-annual", value: "semi_annual" },
-      { label: "Annual", value: "annual" },
+      { label: "mcap.common.bookkeeping.monthly", value: "monthly" },
+      { label: "mcap.common.bookkeeping.quarterly", value: "quarterly" },
+      { label: "mcap.lt.auto.k104", value: "semi_annual" },
+      { label: "mcap.lt.auto.k105", value: "annual" },
     ],
     colSpan: 2,
   },
   {
     type: "select",
     name: "expectedMonthlyInvoices",
-    label: "Expected monthly invoices",
+    label: "mcap.lt.auto.k106",
     options: [
-      { label: "Up to 50", value: "up_to_50" },
-      { label: "51 to 100", value: "51_100" },
-      { label: "101 to 200", value: "101_200" },
-      { label: "201 to 500", value: "201_500" },
-      { label: "More than 500", value: "500_plus" },
+      { label: "mcap.lt.auto.k107", value: "up_to_50" },
+      { label: "mcap.lt.auto.k108", value: "51_100" },
+      { label: "mcap.lt.auto.k109", value: "101_200" },
+      { label: "mcap.lt.auto.k110", value: "201_500" },
+      { label: "mcap.lt.auto.k111", value: "500_plus" },
     ],
     colSpan: 2,
   },
   {
     type: "select",
     name: "expectedEmployees",
-    label: "Expected number of employees",
+    label: "mcap.lt.auto.k112",
     options: [
-      { label: "0 to 3", value: "0_3" },
-      { label: "4 to 5", value: "4_5" },
-      { label: "6 to 7", value: "6_7" },
-      { label: "More than 7", value: "7_plus" },
+      { label: "mcap.lt.auto.k113", value: "0_3" },
+      { label: "mcap.lt.auto.k114", value: "4_5" },
+      { label: "mcap.lt.auto.k115", value: "6_7" },
+      { label: "mcap.lt.auto.k116", value: "7_plus" },
     ],
     colSpan: 2,
   },
   {
     type: "radio-group",
     name: "vatTaxSupportNeed",
-    label: "Do you need VAT and tax filing support?",
+    label: "mcap.lt.auto.k117",
     options: [
-      { label: "Yes", value: "yes" },
-      { label: "No", value: "no" },
-      { label: "Need advisory first", value: "advice" },
+      { label: "mcap.common.options.yes", value: "yes" },
+      { label: "mcap.common.options.no", value: "no" },
+      { label: "mcap.lt.auto.k118", value: "advice" },
     ],
     colSpan: 2,
   },
   {
     type: "textarea",
     name: "accountingNotes",
-    label: "Accounting and reporting notes",
+    label: "mcap.lt.auto.k119",
     rows: 3,
     colSpan: 2,
   },
@@ -804,32 +804,32 @@ const buildAccountingFields = (): McapField[] => [
 const buildServiceFields = (): McapField[] => [
   {
     type: "info",
-    label: "Service and Pricing Setup",
+    label: "mcap.lt.auto.k120",
     content:
-      "Select the Lithuania route first, then configure maintenance and third-party estimates. Third-party estimates can be displayed in invoice for planning visibility.",
+      "mcap.lt.auto.k121",
     colSpan: 2,
   },
   {
     type: "select",
     name: "ltTrack",
-    label: "Lithuania service route",
+    label: "mcap.lt.auto.k122",
     required: true,
     defaultValue: "standard_incorporation",
     options: [
       {
-        label: "Lithuania Incorporation Guide package (EUR 2,200 reference)",
+        label: "mcap.lt.auto.k123",
         value: "standard_incorporation",
       },
       {
-        label: "READY-MADE VASP - Standard package (quote-based)",
+        label: "mcap.lt.auto.k124",
         value: "vasp_standard",
       },
       {
-        label: "READY-MADE VASP - Full package (EUR 25,000)",
+        label: "mcap.lt.auto.k125",
         value: "vasp_full",
       },
       {
-        label: "EMI license project (Level 1-9, EUR 60,000 + government fee)",
+        label: "mcap.lt.auto.k126",
         value: "emi_license",
       },
     ],
@@ -838,16 +838,16 @@ const buildServiceFields = (): McapField[] => [
   {
     type: "select",
     name: "ltAmlOfficerPlan",
-    label: "AML officer plan",
+    label: "mcap.lt.auto.k127",
     defaultValue: "none",
     options: [
-      { label: "No AML officer plan selected", value: "none" },
+      { label: "mcap.lt.auto.k128", value: "none" },
       {
-        label: "Basic AML officer annualized plan (EUR 12,000)",
+        label: "mcap.lt.auto.k129",
         value: "basic",
       },
       {
-        label: "Experienced AML officer annualized plan (EUR 24,000)",
+        label: "mcap.lt.auto.k130",
         value: "experienced",
       },
     ],
@@ -857,37 +857,37 @@ const buildServiceFields = (): McapField[] => [
   {
     type: "select",
     name: "ltAccountingPlan",
-    label: "Accounting package",
+    label: "mcap.lt.auto.k131",
     defaultValue: "none",
     options: [
-      { label: "No accounting package selected", value: "none" },
-      { label: "Up to 50 invoices/month (annualized EUR 4,800)", value: "acc_50" },
-      { label: "Up to 100 invoices/month (annualized EUR 6,120)", value: "acc_100" },
-      { label: "Up to 200 invoices/month (annualized EUR 9,240)", value: "acc_200" },
-      { label: "Up to 500 invoices/month (annualized EUR 13,560)", value: "acc_500" },
-      { label: "More than 500 invoices / custom (quote)", value: "quote" },
+      { label: "mcap.lt.auto.k132", value: "none" },
+      { label: "mcap.lt.auto.k133", value: "acc_50" },
+      { label: "mcap.lt.auto.k134", value: "acc_100" },
+      { label: "mcap.lt.auto.k135", value: "acc_200" },
+      { label: "mcap.lt.auto.k136", value: "acc_500" },
+      { label: "mcap.lt.auto.k137", value: "quote" },
     ],
     colSpan: 2,
   },
   {
     type: "select",
     name: "ltEmiOnboardingFee",
-    label: "EMI virtual account onboarding fee estimate",
+    label: "mcap.lt.auto.k138",
     defaultValue: "none",
     options: [
-      { label: "Do not include", value: "none" },
-      { label: "EUR 500", value: "500" },
-      { label: "EUR 1,000", value: "1000" },
-      { label: "EUR 1,500", value: "1500" },
-      { label: "EUR 2,000", value: "2000" },
-      { label: "Custom amount", value: "custom" },
+      { label: "mcap.lt.auto.k139", value: "none" },
+      { label: "mcap.lt.auto.k140", value: "500" },
+      { label: "mcap.lt.auto.k141", value: "1000" },
+      { label: "mcap.lt.auto.k142", value: "1500" },
+      { label: "mcap.lt.auto.k143", value: "2000" },
+      { label: "mcap.lt.auto.k144", value: "custom" },
     ],
     colSpan: 2,
   },
   {
     type: "number",
     name: "ltEmiOnboardingFeeCustom",
-    label: "Custom EMI onboarding estimate (EUR)",
+    label: "mcap.lt.auto.k145",
     condition: (f) => String(f.ltEmiOnboardingFee || "") === "custom",
     required: true,
     colSpan: 2,
@@ -895,21 +895,21 @@ const buildServiceFields = (): McapField[] => [
   {
     type: "select",
     name: "ltOfficeRentPlan",
-    label: "Local office rent + utility estimate (annual)",
+    label: "mcap.lt.auto.k146",
     defaultValue: "none",
     options: [
-      { label: "Do not include", value: "none" },
-      { label: "EUR 1,800", value: "1800" },
-      { label: "EUR 2,400", value: "2400" },
-      { label: "EUR 3,000", value: "3000" },
-      { label: "Custom amount", value: "custom" },
+      { label: "mcap.lt.auto.k139", value: "none" },
+      { label: "mcap.lt.auto.k147", value: "1800" },
+      { label: "mcap.lt.auto.k148", value: "2400" },
+      { label: "mcap.lt.auto.k149", value: "3000" },
+      { label: "mcap.lt.auto.k144", value: "custom" },
     ],
     colSpan: 2,
   },
   {
     type: "number",
     name: "ltOfficeRentPlanCustom",
-    label: "Custom office rent + utility estimate (EUR)",
+    label: "mcap.lt.auto.k150",
     condition: (f) => String(f.ltOfficeRentPlan || "") === "custom",
     required: true,
     colSpan: 2,
@@ -917,7 +917,7 @@ const buildServiceFields = (): McapField[] => [
   {
     type: "number",
     name: "ltKycKytExpectedProfiles",
-    label: "Expected number of KYC/KYT checks (EUR 2 per person)",
+    label: "mcap.lt.auto.k151",
     defaultValue: 0,
     colSpan: 2,
   },
@@ -925,21 +925,21 @@ const buildServiceFields = (): McapField[] => [
     type: "checkbox",
     name: "ltIncludeStatutoryInterest",
     label:
-      "Include statutory interest line (EUR 4,900) if full VASP capital is not paid",
+      "mcap.lt.auto.k152",
     condition: (f) => ["vasp_standard", "vasp_full"].includes(String(f.ltTrack || "")),
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "ltQuoteOnlyServiceRequests",
-    label: "Quote-only service requests",
+    label: "mcap.lt.auto.k153",
     options: QUOTE_ONLY_REQUEST_OPTIONS,
     colSpan: 2,
   },
   {
     type: "text",
     name: "ltQuoteOnlyServiceRequestsOther",
-    label: "Other quote-only request details",
+    label: "mcap.lt.auto.k154",
     condition: (f) =>
       Array.isArray(f.ltQuoteOnlyServiceRequests) &&
       f.ltQuoteOnlyServiceRequests.includes("other"),
@@ -948,9 +948,9 @@ const buildServiceFields = (): McapField[] => [
   },
   {
     type: "info",
-    label: "Capital Reminder",
+    label: "mcap.lt.auto.k155",
     content:
-      "Capital requirements (EUR 2,500 / EUR 125,000 / EUR 350,000 based on route) are compliance prerequisites and are not added to invoice totals.",
+      "mcap.lt.auto.k156",
     colSpan: 2,
   },
 ];
@@ -960,57 +960,57 @@ export const LT_FULL_CONFIG: McapConfig = {
   countryCode: "LT",
   countryName: "Lithuania",
   currency: "USD",
-  title: "Lithuania Incorporation and Licensing",
+  title: "mcap.lt.auto.k157",
   confirmationDetails: {
-    title: "Lithuania Application Submitted",
+    title: "mcap.lt.auto.k158",
     message:
-      "Your Lithuania request has been received. Our team will complete scope confirmation, compliance review, and filing coordination based on the selected route.",
+      "mcap.lt.auto.k159",
     steps: [
       {
-        title: "Preparation and KYC",
+        title: "mcap.lt.auto.k160",
         description:
-          "Document readiness, KYC/CDD checks, and package confirmation are completed first.",
+          "mcap.lt.auto.k161",
       },
       {
-        title: "Route Execution",
+        title: "mcap.lt.auto.k162",
         description:
-          "Standard incorporation typically takes around 2 to 3 weeks after required documents are ready.",
+          "mcap.lt.auto.k163",
       },
       {
-        title: "Banking / Operations",
+        title: "mcap.lt.auto.k164",
         description:
-          "Bank account onboarding timelines vary by industry; planning range is typically 3 to 5 weeks.",
+          "mcap.lt.auto.k165",
       },
       {
-        title: "License-specific Follow-up",
+        title: "mcap.lt.auto.k166",
         description:
-          "READY-MADE VASP and EMI routes include additional operational and regulatory follow-up phases.",
+          "mcap.lt.auto.k167",
       },
     ],
   },
   steps: [
     {
       id: "applicant",
-      title: "Applicant Information",
-      description: "Author details and onboarding readiness.",
+      title: "mcap.common.steps.applicant",
+      description: "mcap.lt.auto.k168",
       fields: buildApplicantFields(),
     },
     {
       id: "compliance",
-      title: "AML / CDD",
-      description: "Business intent, sanctions checks, and compliance declarations.",
+      title: "mcap.lt.auto.k169",
+      description: "mcap.lt.auto.k170",
       fields: buildComplianceFields(),
     },
     {
       id: "company",
-      title: "Company Information",
-      description: "Business profile, registration details, and capital declarations.",
+      title: "mcap.common.steps.company",
+      description: "mcap.lt.auto.k171",
       fields: buildCompanyFields(),
     },
     {
       id: "parties",
-      title: "Parties and Invites",
-      description: "Invite parties and assign designated contact person coverage.",
+      title: "mcap.common.steps.parties",
+      description: "mcap.lt.auto.k172",
       widget: "PartiesManager",
       minParties: 1,
       requireDcp: true,
@@ -1018,13 +1018,13 @@ export const LT_FULL_CONFIG: McapConfig = {
     },
     {
       id: "accounting",
-      title: "Accounting and Taxation",
+      title: "mcap.common.steps.accounting",
       fields: buildAccountingFields(),
     },
     {
       id: "services",
-      title: "Service Customization",
-      description: "Select route, maintenance scope, and third-party estimate lines.",
+      title: "mcap.lt.auto.k173",
+      description: "mcap.lt.auto.k174",
       widget: "ServiceSelectionWidget",
       fields: buildServiceFields(),
       serviceItems: (data) => buildLtServiceItems(data),
@@ -1033,27 +1033,27 @@ export const LT_FULL_CONFIG: McapConfig = {
     },
     {
       id: "invoice",
-      title: "Invoice Preview",
-      description: "Review billable and estimate line items before payment.",
+      title: "mcap.common.steps.invoice",
+      description: "mcap.lt.auto.k175",
       widget: "InvoiceWidget",
       computeFees: (data) => computeLtFees(data),
     },
     {
       id: "payment",
-      title: "Payment Processing",
-      description: "Proceed with card or bank transfer payment workflow.",
+      title: "mcap.lt.auto.k176",
+      description: "mcap.lt.auto.k177",
       widget: "PaymentWidget",
       supportedCurrencies: ["USD", "HKD"],
       computeFees: (data) => computeLtFees(data),
     },
     {
       id: "review",
-      title: "Review and Declaration",
+      title: "mcap.lt.auto.k178",
       fields: [
         {
           type: "checkbox",
           name: "truthfulnessDeclaration",
-          label: "I confirm all submitted information is true and accurate.",
+          label: "mcap.lt.auto.k179",
           required: true,
           colSpan: 2,
         },
@@ -1061,7 +1061,7 @@ export const LT_FULL_CONFIG: McapConfig = {
           type: "checkbox",
           name: "compliancePreconditionAcknowledgment",
           label:
-            "I understand services may be paused or declined if legal/compliance concerns are identified.",
+            "mcap.lt.auto.k180",
           required: true,
           colSpan: 2,
         },
@@ -1069,14 +1069,14 @@ export const LT_FULL_CONFIG: McapConfig = {
           type: "checkbox",
           name: "capitalNonBillableAcknowledgment",
           label:
-            "I understand statutory capital is a non-billable establishment prerequisite and not part of invoice totals.",
+            "mcap.lt.auto.k181",
           required: true,
           colSpan: 2,
         },
         {
           type: "text",
           name: "eSign",
-          label: "Electronic signature (full name)",
+          label: "mcap.common.fields.electronicSignature",
           required: true,
           colSpan: 2,
         },

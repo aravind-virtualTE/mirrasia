@@ -13,57 +13,57 @@ type IeServiceItem = {
 };
 
 const YES_NO_UNKNOWN = [
-  { label: "Yes", value: "yes" },
-  { label: "No", value: "no" },
-  { label: "I don't know", value: "unknown" },
+  { label: "mcap.common.options.yes", value: "yes" },
+  { label: "mcap.common.options.no", value: "no" },
+  { label: "mcap.common.options.doNotKnow", value: "unknown" },
 ];
 
 const APPLICANT_RELATIONSHIP_OPTIONS = [
-  { label: "Director of the Irish corporation (to be established)", value: "director" },
-  { label: "Highest manager of the Irish corporation (to be established)", value: "executive_manager" },
-  { label: "Person delegated by the director of the Irish corporation (to be established)", value: "delegate" },
-  { label: "Major shareholder of the Irish corporation (to be established)", value: "major_shareholder" },
+  { label: "mcap.ie.auto.k001", value: "director" },
+  { label: "mcap.ie.auto.k002", value: "executive_manager" },
+  { label: "mcap.ie.auto.k003", value: "delegate" },
+  { label: "mcap.ie.auto.k004", value: "major_shareholder" },
   {
-    label: "Expert providing establishment advice on behalf of the director (lawyer, accountant, administrative agent, tax accountant, etc.)",
+    label: "mcap.ie.auto.k005",
     value: "professional_advisor",
   },
-  { label: "Other", value: "other" },
+  { label: "mcap.common.options.other", value: "other" },
 ];
 
 const INDUSTRY_OPTIONS = [
-  { label: "Cryptocurrency-related (issuance/sale/donation/ICO/exchange/wallet service)", value: "crypto_related" },
-  { label: "Development of IT, blockchain, software, etc.", value: "it_blockchain_software" },
-  { label: "Cryptocurrency-based investment-related business", value: "crypto_investment" },
-  { label: "Cryptocurrency-based games", value: "crypto_games" },
-  { label: "General online games", value: "online_games" },
-  { label: "Foreign exchange trading", value: "forex_trading" },
-  { label: "Finance, investment, consulting, lending, etc.", value: "finance_investment_consulting" },
-  { label: "Trade industry", value: "trade" },
-  { label: "Wholesale/retail distribution", value: "wholesale_retail" },
-  { label: "Consulting", value: "consulting" },
-  { label: "Manufacturing", value: "manufacturing" },
-  { label: "Online service industry (e-commerce)", value: "ecommerce" },
-  { label: "Online direct purchase/delivery service/purchase agency", value: "online_purchase_delivery_agency" },
-  { label: "Other", value: "other" },
+  { label: "mcap.ie.auto.k006", value: "crypto_related" },
+  { label: "mcap.ie.auto.k007", value: "it_blockchain_software" },
+  { label: "mcap.ie.auto.k008", value: "crypto_investment" },
+  { label: "mcap.ie.auto.k009", value: "crypto_games" },
+  { label: "mcap.ie.auto.k010", value: "online_games" },
+  { label: "mcap.ie.auto.k011", value: "forex_trading" },
+  { label: "mcap.ie.auto.k012", value: "finance_investment_consulting" },
+  { label: "mcap.ie.auto.k013", value: "trade" },
+  { label: "mcap.ie.auto.k014", value: "wholesale_retail" },
+  { label: "mcap.ie.auto.k015", value: "consulting" },
+  { label: "mcap.ie.auto.k016", value: "manufacturing" },
+  { label: "mcap.ie.auto.k017", value: "ecommerce" },
+  { label: "mcap.ie.auto.k018", value: "online_purchase_delivery_agency" },
+  { label: "mcap.common.options.other", value: "other" },
 ];
 
 const PURPOSE_OPTIONS = [
-  { label: "Pursuing business diversification through relaxed regulations", value: "business_diversification" },
-  { label: "A legal advisor, investor, or partner suggested establishing an Irish company", value: "advisor_partner_suggestion" },
-  { label: "Expanding business into various European countries", value: "europe_expansion" },
-  { label: "Asset management by investing in real estate or financial assets", value: "asset_management" },
-  { label: "Holding company for managing subsidiaries or affiliates", value: "holding_company" },
-  { label: "Pursuing competitive advantage through free financial policies", value: "financial_policy_advantage" },
-  { label: "Increased trading volume due to low tax rates in Europe", value: "tax_rate_advantage" },
-  { label: "Other", value: "other" },
+  { label: "mcap.ie.auto.k019", value: "business_diversification" },
+  { label: "mcap.ie.auto.k020", value: "advisor_partner_suggestion" },
+  { label: "mcap.ie.auto.k021", value: "europe_expansion" },
+  { label: "mcap.ie.auto.k022", value: "asset_management" },
+  { label: "mcap.ie.auto.k023", value: "holding_company" },
+  { label: "mcap.ie.auto.k024", value: "financial_policy_advantage" },
+  { label: "mcap.ie.auto.k025", value: "tax_rate_advantage" },
+  { label: "mcap.common.options.other", value: "other" },
 ];
 
 const QUOTE_ONLY_OPTIONS = [
   {
-    label: "Consulting services including regulatory review, feasibility review, document preparation, and operational consulting (separate quote)",
+    label: "mcap.ie.auto.k026",
     value: "consulting_quote",
   },
-  { label: "Other quote-only request", value: "other" },
+  { label: "mcap.ie.auto.k027", value: "other" },
 ];
 
 const IE_PRICING = {
@@ -88,17 +88,17 @@ export const buildIeServiceItems = (data: Record<string, any>): IeServiceItem[] 
   const items: IeServiceItem[] = [
     {
       id: "ie_incorporation_first_year_package",
-      label: "Irish company formation + corporate address and secretary services for the first year",
+      label: "mcap.ie.auto.k028",
       amount: IE_PRICING.incorporation_and_first_year_package,
       original: IE_PRICING.incorporation_and_first_year_package,
       mandatory: true,
       kind: "service",
       info:
-        "Includes incorporation filing/government fees, incorporation documents, inaugural resolutions and minutes, first-year registered address, company secretary support, tax/VAT registration, and related package inclusions.",
+        "mcap.ie.auto.k029",
     },
     {
       id: "ie_bank_account_opening",
-      label: "Opening a bank account for an Irish corporation",
+      label: "mcap.ie.auto.k030",
       amount: IE_PRICING.bank_account_opening,
       original: IE_PRICING.bank_account_opening,
       mandatory: false,
@@ -106,17 +106,17 @@ export const buildIeServiceItems = (data: Record<string, any>): IeServiceItem[] 
     },
     {
       id: "ie_bond_2y_eur_reference",
-      label: "2-year bond to satisfy non-EEA director alternative requirement",
+      label: "mcap.ie.auto.k031",
       amount: IE_PRICING.bond_2y_eur_reference,
       original: IE_PRICING.bond_2y_eur_reference,
       mandatory: false,
       kind: "other",
       info:
-        "Reference quote is EUR 2,000 for a EUR 25,000 liability bond. Displayed in USD/HKD rails in this workflow.",
+        "mcap.ie.auto.k032",
     },
     {
       id: "ie_local_director_registration_1y",
-      label: "1 year of director registration to comply with local Irish regulations",
+      label: "mcap.ie.auto.k033",
       amount: IE_PRICING.local_director_registration_1y,
       original: IE_PRICING.local_director_registration_1y,
       mandatory: false,
@@ -124,23 +124,23 @@ export const buildIeServiceItems = (data: Record<string, any>): IeServiceItem[] 
     },
     {
       id: "ie_additional_local_director_1y",
-      label: "Additional appointment of a local Irish director for one year",
+      label: "mcap.ie.auto.k034",
       amount: IE_PRICING.additional_local_director_1y,
       original: IE_PRICING.additional_local_director_1y,
       mandatory: false,
       kind: "service",
       info:
-        "Can strengthen Irish tax residency posture, support remote account opening, and improve access to treaty benefits where applicable.",
+        "mcap.ie.auto.k035",
     },
     {
       id: "ie_annual_company_renewal",
-      label: "Annual company renewal package",
+      label: "mcap.ie.auto.k036",
       amount: IE_PRICING.annual_company_renewal,
       original: IE_PRICING.annual_company_renewal,
       mandatory: false,
       kind: "service",
       info:
-        "Includes annual return filing, secretary support, registered address/mail handling, and AGM documentation preparation.",
+        "mcap.ie.auto.k037",
     },
   ];
 
@@ -151,7 +151,7 @@ export const buildIeServiceItems = (data: Record<string, any>): IeServiceItem[] 
   if (quoteOnlyRequests.includes("consulting_quote")) {
     items.push({
       id: "ie_quote_only_consulting",
-      label: "Consulting services (quote-only request)",
+      label: "mcap.ie.auto.k038",
       amount: 0,
       original: 0,
       mandatory: true,
@@ -162,7 +162,7 @@ export const buildIeServiceItems = (data: Record<string, any>): IeServiceItem[] 
   if (quoteOnlyRequests.includes("other")) {
     items.push({
       id: "ie_quote_only_other",
-      label: "Other quote-only request",
+      label: "mcap.ie.auto.k027",
       amount: 0,
       original: 0,
       mandatory: true,
@@ -227,7 +227,7 @@ export const computeIeFees = (data: Record<string, any>) => {
     grandTotal,
     ...(shouldConvertToHkd ? { exchangeRateUsed: exchangeRateUsedRaw, originalAmountUsd: totalUsd } : {}),
     note:
-      "Items quoted in EUR are represented in the unified USD/HKD payment rails for this workflow. Quote-only requests are tracked and excluded from billable totals.",
+      "mcap.ie.auto.k039",
   };
 };
 
@@ -241,7 +241,7 @@ const buildApplicantFields = (): McapField[] => [
   {
     type: "checkbox-group",
     name: "writerRelationship",
-    label: "Relationship between the writer and the Irish corporation to be established",
+    label: "mcap.ie.auto.k040",
     required: true,
     options: APPLICANT_RELATIONSHIP_OPTIONS,
     colSpan: 2,
@@ -249,7 +249,7 @@ const buildApplicantFields = (): McapField[] => [
   {
     type: "text",
     name: "writerRelationshipOther",
-    label: "Other relationship details",
+    label: "mcap.common.fields.otherRelationshipDetails",
     condition: (f) => Array.isArray(f.writerRelationship) && f.writerRelationship.includes("other"),
     required: true,
   },
@@ -278,21 +278,21 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "legalEthicalIssues",
     label:
-      "Does the purpose of establishing an Irish corporation raise legal or ethical issues (money laundering, gambling, tax evasion, asset concealment, evasion of legal proceedings, fraud)?",
+      "mcap.ie.auto.k041",
     required: true,
     options: [
-      { label: "Yes", value: "yes" },
-      { label: "No", value: "no" },
-      { label: "I don't know", value: "unknown" },
-      { label: "Consider legal advice", value: "consider_legal_advice" },
-      { label: "Other", value: "other" },
+      { label: "mcap.common.options.yes", value: "yes" },
+      { label: "mcap.common.options.no", value: "no" },
+      { label: "mcap.common.options.doNotKnow", value: "unknown" },
+      { label: "mcap.ie.auto.k042", value: "consider_legal_advice" },
+      { label: "mcap.common.options.other", value: "other" },
     ],
     colSpan: 2,
   },
   {
     type: "text",
     name: "legalEthicalIssuesOther",
-    label: "Other legal/ethical issue details",
+    label: "mcap.ie.auto.k043",
     condition: (f) => f.legalEthicalIssues === "other",
     required: true,
     colSpan: 2,
@@ -301,14 +301,14 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "annualRenewalConsent",
     label:
-      "After establishing an Irish corporation, annual renewals and recurring documentation/cost obligations apply. Do you agree?",
+      "mcap.ie.auto.k044",
     required: true,
     options: [
-      { label: "Yes", value: "yes" },
-      { label: "No", value: "no" },
-      { label: "Can be resolved internally after establishment", value: "internal_after_establishment" },
-      { label: "I will not proceed if fixed annual costs are incurred", value: "no_if_fixed_annual_cost" },
-      { label: "Advice required before proceeding", value: "advice_required" },
+      { label: "mcap.common.options.yes", value: "yes" },
+      { label: "mcap.common.options.no", value: "no" },
+      { label: "mcap.ie.auto.k045", value: "internal_after_establishment" },
+      { label: "mcap.ie.auto.k046", value: "no_if_fixed_annual_cost" },
+      { label: "mcap.ie.auto.k047", value: "advice_required" },
     ],
     colSpan: 2,
   },
@@ -316,7 +316,7 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "sanctionedCountryBusiness",
     label:
-      "Does the proposed Irish company, holding company, group, or related entity currently conduct or plan to conduct business in sanctioned countries or territories?",
+      "mcap.ie.auto.k048",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -325,7 +325,7 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "sanctionedResidenceExposure",
     label:
-      "Are any involved persons residing in sanctioned countries/regions or jurisdictions sanctioned by UN/EU/UKHMT/HKMA/OFAC?",
+      "mcap.ie.auto.k049",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -334,7 +334,7 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "sanctionedOwnershipOrAgency",
     label:
-      "Is the proposed Irish entity owned/controlled by, or acting for, sanctioned persons/entities/governments (including through ownership or control)?",
+      "mcap.ie.auto.k050",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -342,7 +342,7 @@ const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "crimeaSevastopolExposure",
-    label: "Are any related entities currently conducting business in Crimea or Sevastopol, or planning to do so?",
+    label: "mcap.ie.auto.k051",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -351,7 +351,7 @@ const buildComplianceFields = (): McapField[] => [
     type: "radio-group",
     name: "restrictedSectorExposure",
     label:
-      "Is the group currently engaged in, or planning to engage in, oil, gas, energy, military, or defense sectors?",
+      "mcap.ie.auto.k052",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -361,15 +361,15 @@ const buildComplianceFields = (): McapField[] => [
 const buildCompanyFields = (): McapField[] => [
   {
     type: "info",
-    label: "Ireland Establishment Requirements",
+    label: "mcap.ie.auto.k053",
     content:
-      "Minimum capital is EUR 0.01 and at least one share. At least one natural person must be a director, and at least one director should be EEA resident (or bond alternative). At least one secretary is required. A registered address in Ireland is mandatory.",
+      "mcap.ie.auto.k054",
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "industrySelection",
-    label: "Select industry (check all relevant items)",
+    label: "mcap.ie.auto.k055",
     required: true,
     options: INDUSTRY_OPTIONS,
     colSpan: 2,
@@ -377,7 +377,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "industrySelectionOther",
-    label: "Other industry details",
+    label: "mcap.ie.auto.k056",
     condition: (f) => Array.isArray(f.industrySelection) && f.industrySelection.includes("other"),
     required: true,
     colSpan: 2,
@@ -385,7 +385,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "textarea",
     name: "productServiceDescription",
-    label: "Description of product name/type/service content/service type",
+    label: "mcap.ie.auto.k057",
     required: true,
     rows: 3,
     colSpan: 2,
@@ -393,7 +393,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "textarea",
     name: "businessSummary",
-    label: "Describe the business in 3-4 sentences",
+    label: "mcap.ie.auto.k058",
     required: true,
     rows: 4,
     colSpan: 2,
@@ -401,14 +401,14 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "websiteAddress",
-    label: "Website address (if available)",
-    placeholder: "https://",
+    label: "mcap.common.fields.websiteAddressOptional",
+    placeholder: "mcap.ie.auto.k059",
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "purposeOfEstablishment",
-    label: "Purpose of establishing an Irish corporation and expected future effects",
+    label: "mcap.ie.auto.k060",
     required: true,
     options: PURPOSE_OPTIONS,
     colSpan: 2,
@@ -416,7 +416,7 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "text",
     name: "purposeOfEstablishmentOther",
-    label: "Other purpose details",
+    label: "mcap.ie.auto.k061",
     condition: (f) => Array.isArray(f.purposeOfEstablishment) && f.purposeOfEstablishment.includes("other"),
     required: true,
     colSpan: 2,
@@ -425,50 +425,50 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "select",
     name: "totalShares",
-    label: "Total shares",
+    label: "mcap.ie.auto.k062",
     required: true,
     options: [
-      { label: "1 share", value: "1" },
-      { label: "100 shares", value: "100" },
-      { label: "1,000 shares", value: "1000" },
-      { label: "10,000 shares", value: "10000" },
-      { label: "100,000 shares", value: "100000" },
-      { label: "Other", value: "other" },
+      { label: "mcap.ie.auto.k063", value: "1" },
+      { label: "mcap.ie.auto.k064", value: "100" },
+      { label: "mcap.ie.auto.k065", value: "1000" },
+      { label: "mcap.ie.auto.k066", value: "10000" },
+      { label: "mcap.ie.auto.k067", value: "100000" },
+      { label: "mcap.common.options.other", value: "other" },
     ],
   },
   {
     type: "text",
     name: "totalSharesOther",
-    label: "Total shares (other)",
+    label: "mcap.ie.auto.k068",
     condition: (f) => f.totalShares === "other",
     required: true,
   },
   {
     type: "select",
     name: "paidInCapitalEur",
-    label: "Total capital to be paid in (EUR)",
+    label: "mcap.ie.auto.k069",
     required: true,
     options: [
-      { label: "EUR 0.01", value: "0.01" },
-      { label: "EUR 1", value: "1" },
-      { label: "EUR 100", value: "100" },
-      { label: "EUR 1,000", value: "1000" },
-      { label: "EUR 10,000", value: "10000" },
-      { label: "EUR 100,000", value: "100000" },
-      { label: "Other", value: "other" },
+      { label: "mcap.ie.auto.k070", value: "0.01" },
+      { label: "mcap.ie.auto.k071", value: "1" },
+      { label: "mcap.ie.auto.k072", value: "100" },
+      { label: "mcap.ie.auto.k073", value: "1000" },
+      { label: "mcap.ie.auto.k074", value: "10000" },
+      { label: "mcap.ie.auto.k075", value: "100000" },
+      { label: "mcap.common.options.other", value: "other" },
     ],
   },
   {
     type: "text",
     name: "paidInCapitalEurOther",
-    label: "Total capital to be paid in (EUR, other)",
+    label: "mcap.ie.auto.k076",
     condition: (f) => f.paidInCapitalEur === "other",
     required: true,
   },
   {
     type: "derived",
     name: "parValuePerShareEur",
-    label: "Par value per share (EUR)",
+    label: "mcap.ie.auto.k077",
     compute: (f) => {
       const parseNumeric = (value: any) => {
         const cleaned = String(value ?? "")
@@ -497,43 +497,43 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "eeaDirectorOrBondPlan",
-    label: "How will you satisfy the EEA-resident director or EUR 25,000 bond requirement?",
+    label: "mcap.ie.auto.k078",
     required: true,
     options: [
-      { label: "Already have at least one EEA-resident director", value: "already_has_eea_director" },
-      { label: "Use local director registration service", value: "use_local_director_service" },
-      { label: "Purchase 2-year bond (EUR 25,000 liability limit)", value: "purchase_bond" },
-      { label: "Need advice before deciding", value: "need_advice" },
+      { label: "mcap.ie.auto.k079", value: "already_has_eea_director" },
+      { label: "mcap.ie.auto.k080", value: "use_local_director_service" },
+      { label: "mcap.ie.auto.k081", value: "purchase_bond" },
+      { label: "mcap.ie.auto.k082", value: "need_advice" },
     ],
     colSpan: 2,
   },
   // {
   //   type: "radio-group",
   //   name: "naturalPersonDirectorConfirmation",
-  //   label: "Will at least one natural person be appointed as a director?",
+  //   label: "mcap.ie.auto.k083",
   //   required: true,
   //   options: [
-  //     { label: "Yes", value: "yes" },
-  //     { label: "No", value: "no" },
-  //     { label: "Need advice before confirming", value: "need_advice" },
+  //     { label: "mcap.common.options.yes", value: "yes" },
+  //     { label: "mcap.common.options.no", value: "no" },
+  //     { label: "mcap.ie.auto.k084", value: "need_advice" },
   //   ],
   //   colSpan: 2,
   // },
   // {
   //   type: "radio-group",
   //   name: "secretaryArrangement",
-  //   label: "Secretary arrangement",
+  //   label: "mcap.ie.auto.k085",
   //   required: true,
   //   options: [
-  //     { label: "Director also serves as secretary", value: "director_also_secretary" },
-  //     { label: "Separate person registered as secretary", value: "separate_secretary" },
+  //     { label: "mcap.ie.auto.k086", value: "director_also_secretary" },
+  //     { label: "mcap.ie.auto.k087", value: "separate_secretary" },
   //   ],
   //   colSpan: 2,
   // },
   {
     type: "checkbox",
     name: "singleDirectorSecretaryAcknowledgment",
-    label: "If there is only one director, I understand a separate person must be registered as secretary.",
+    label: "mcap.ie.auto.k088",
     required: true,
     condition: (f) => f.directorCountStructure === "one_director",
     colSpan: 2,
@@ -541,18 +541,18 @@ const buildCompanyFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "registeredAddressChoice",
-    label: "Registered address of the company in Ireland",
+    label: "mcap.ie.auto.k089",
     required: true,
     options: [
-      { label: "Use Mir Asia's Irish corporate registered address service", value: "use_mir_asia_address" },
-      { label: "Use separate Ireland business address", value: "use_own_address" },
+      { label: "mcap.ie.auto.k090", value: "use_mir_asia_address" },
+      { label: "mcap.ie.auto.k091", value: "use_own_address" },
     ],
     colSpan: 2,
   },
   {
     type: "textarea",
     name: "registeredAddressOwnDetails",
-    label: "Separate Ireland address details",
+    label: "mcap.ie.auto.k092",
     condition: (f) => f.registeredAddressChoice === "use_own_address",
     required: true,
     rows: 3,
@@ -576,19 +576,19 @@ const buildAccountingFields = (): McapField[] => [
   {
     type: "radio-group",
     name: "bookKeepingCycle",
-    label: "Bookkeeping cycle",
+    label: "mcap.common.fields.bookKeepingCycle",
     options: [
-      { label: "Monthly", value: "monthly" },
-      { label: "Quarterly", value: "quarterly" },
-      { label: "Half-annually", value: "half_yearly" },
-      { label: "Annually", value: "annually" },
+      { label: "mcap.common.bookkeeping.monthly", value: "monthly" },
+      { label: "mcap.common.bookkeeping.quarterly", value: "quarterly" },
+      { label: "mcap.common.bookkeeping.halfYearly", value: "half_yearly" },
+      { label: "mcap.common.bookkeeping.annually", value: "annually" },
     ],
     colSpan: 2,
   },
   {
     type: "textarea",
     name: "accountingNotes",
-    label: "Accounting and tax notes",
+    label: "mcap.common.fields.accountingAndTaxNotes",
     rows: 3,
     colSpan: 2,
   },
@@ -597,22 +597,22 @@ const buildAccountingFields = (): McapField[] => [
 const buildServiceFields = (): McapField[] => [
   {
     type: "info",
-    label: "Ireland local director / bond rule",
+    label: "mcap.ie.auto.k093",
     content:
-      "Irish companies should maintain at least one EEA-resident director. If that is not met, a EUR 25,000 bond is commonly used as an alternative compliance route.",
+      "mcap.ie.auto.k094",
     colSpan: 2,
   },
   {
     type: "checkbox-group",
     name: "ieQuoteOnlyServiceRequests",
-    label: "Quote-only service requests (tracked, excluded from invoice totals)",
+    label: "mcap.ie.auto.k095",
     options: QUOTE_ONLY_OPTIONS,
     colSpan: 2,
   },
   {
     type: "textarea",
     name: "ieQuoteOnlyServiceRequestsOther",
-    label: "Other quote-only request details",
+    label: "mcap.ie.auto.k096",
     condition: (f) =>
       Array.isArray(f.ieQuoteOnlyServiceRequests) && f.ieQuoteOnlyServiceRequests.includes("other"),
     required: true,
@@ -626,52 +626,52 @@ export const IE_FULL_CONFIG: McapConfig = {
   countryCode: "IE",
   countryName: "Ireland",
   currency: "USD",
-  title: "Ireland Company Incorporation",
+  title: "mcap.ie.auto.k097",
   confirmationDetails: {
-    title: "Ireland Incorporation Request Submitted",
+    title: "mcap.ie.auto.k098",
     message:
-      "We have received your Ireland incorporation request. Our team will review compliance, service scope, and filing readiness before proceeding.",
+      "mcap.ie.auto.k099",
     steps: [
       {
-        title: "Compliance and Scope Review",
+        title: "mcap.ie.auto.k100",
         description:
-          "KYC/CDD and sanctions screening checks are completed and service scope is confirmed.",
+          "mcap.ie.auto.k101",
       },
       {
-        title: "Registration Preparation",
+        title: "mcap.ie.auto.k102",
         description:
-          "Company structure, registration details, and director/secretary requirements are validated.",
+          "mcap.ie.auto.k103",
       },
       {
-        title: "Filing and Setup Execution",
+        title: "mcap.ie.auto.k104",
         description:
-          "Incorporation and selected post-incorporation services are executed based on final approval.",
+          "mcap.ie.auto.k105",
       },
     ],
   },
   steps: [
     {
       id: "applicant",
-      title: "Applicant Information",
-      description: "Writer details and relationship to the Irish company being established.",
+      title: "mcap.common.steps.applicant",
+      description: "mcap.ie.auto.k106",
       fields: buildApplicantFields(),
     },
     {
       id: "compliance",
-      title: "AML / CDD",
-      description: "Business intent, sanctions checks, and annual renewal consent.",
+      title: "mcap.ie.auto.k107",
+      description: "mcap.ie.auto.k108",
       fields: buildComplianceFields(),
     },
     {
       id: "company",
-      title: "Company Information",
-      description: "Business profile, registration details, and Irish establishment requirements.",
+      title: "mcap.common.steps.company",
+      description: "mcap.ie.auto.k109",
       fields: buildCompanyFields(),
     },
     {
       id: "parties",
-      title: "Parties and Invites",
-      description: "Invite parties and ensure required role/residency coverage.",
+      title: "mcap.common.steps.parties",
+      description: "mcap.ie.auto.k110",
       widget: "PartiesManager",
       minParties: 1,
       requireDcp: true,
@@ -679,21 +679,21 @@ export const IE_FULL_CONFIG: McapConfig = {
       partyFields: [
         {
           key: "ieIsDirector",
-          label: "Director appointment",
+          label: "mcap.ie.auto.k111",
           type: "select",
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
+            { label: "mcap.common.options.yes", value: "yes" },
+            { label: "mcap.common.options.no", value: "no" },
           ],
           storage: "details",
         },
         {
           key: "ieIsSecretary",
-          label: "Secretary appointment",
+          label: "mcap.ie.auto.k112",
           type: "select",
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
+            { label: "mcap.common.options.yes", value: "yes" },
+            { label: "mcap.common.options.no", value: "no" },
           ],
           storage: "details",
         },
@@ -703,7 +703,7 @@ export const IE_FULL_CONFIG: McapConfig = {
           key: "ieIsDirector",
           storage: "details",
           requiredValues: ["yes"],
-          label: "Director coverage",
+          label: "mcap.ie.auto.k113",
           valueLabels: {
             yes: "At least one director",
           },
@@ -712,7 +712,7 @@ export const IE_FULL_CONFIG: McapConfig = {
           key: "ieIsSecretary",
           storage: "details",
           requiredValues: ["yes"],
-          label: "Secretary coverage",
+          label: "mcap.ie.auto.k114",
           valueLabels: {
             yes: "At least one secretary",
           },
@@ -721,13 +721,13 @@ export const IE_FULL_CONFIG: McapConfig = {
     },
     {
       id: "accounting",
-      title: "Accounting and Taxation",
+      title: "mcap.common.steps.accounting",
       fields: buildAccountingFields(),
     },
     {
       id: "services",
-      title: "Service Selection",
-      description: "Select billable service lines and optional quote-only requests.",
+      title: "mcap.common.steps.services",
+      description: "mcap.ie.auto.k115",
       widget: "ServiceSelectionWidget",
       fields: buildServiceFields(),
       serviceItems: (data) => buildIeServiceItems(data),
@@ -736,59 +736,59 @@ export const IE_FULL_CONFIG: McapConfig = {
     },
     {
       id: "invoice",
-      title: "Invoice Preview",
-      description: "Review fees before payment.",
+      title: "mcap.common.steps.invoice",
+      description: "mcap.ie.auto.k116",
       widget: "InvoiceWidget",
       computeFees: (data) => computeIeFees(data),
     },
     {
       id: "payment",
-      title: "Payment Processing",
-      description: "Proceed with card payment or bank transfer proof upload.",
+      title: "mcap.ie.auto.k117",
+      description: "mcap.ie.auto.k118",
       widget: "PaymentWidget",
       supportedCurrencies: ["USD", "HKD"],
       computeFees: (data) => computeIeFees(data),
     },
     {
       id: "review",
-      title: "Review and Declaration",
+      title: "mcap.ie.auto.k119",
       fields: [
         {
           type: "info",
-          label: "Consent and Declaration",
+          label: "mcap.ie.auto.k120",
           content:
-            "I agree to provide required documents and information, confirm lawful business intent, and declare all submitted information is true, complete, and accurate.",
+            "mcap.ie.auto.k121",
           colSpan: 2,
         },
         {
           type: "radio-group",
           name: "applicationAgreement",
-          label: "Do you agree?",
+          label: "mcap.ie.auto.k122",
           required: true,
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
+            { label: "mcap.common.options.yes", value: "yes" },
+            { label: "mcap.common.options.no", value: "no" },
           ],
           colSpan: 2,
         },
         {
           type: "checkbox",
           name: "truthfulnessDeclaration",
-          label: "I confirm the submitted information is true and accurate.",
+          label: "mcap.common.fields.truthfulnessDeclaration",
           required: true,
           colSpan: 2,
         },
         {
           type: "checkbox",
           name: "compliancePreconditionAcknowledgment",
-          label: "I understand service may be suspended if unlawful activity or intent is identified.",
+          label: "mcap.ie.auto.k123",
           required: true,
           colSpan: 2,
         },
         {
           type: "text",
           name: "eSign",
-          label: "Electronic signature (full name)",
+          label: "mcap.common.fields.electronicSignature",
           required: true,
           colSpan: 2,
         },

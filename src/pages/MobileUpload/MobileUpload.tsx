@@ -78,6 +78,7 @@ export default function MobileUpload() {
                 setErrorMessage(data.message || "Upload failed");
             }
         } catch (error) {
+            console.log("error",error)
             setStatus("error");
             setErrorMessage("Network error occurred");
         } finally {

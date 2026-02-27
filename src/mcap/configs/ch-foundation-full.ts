@@ -23,6 +23,36 @@ const CH_FOUNDATION_PRICING = {
   annual_foundation_report_estimated: 6000,
 } as const;
 
+const YES_NO_OPTIONS = [
+  { label: "mcap.common.options.yes", value: "yes" },
+  { label: "mcap.common.options.no", value: "no" },
+];
+
+const YES_NO_DONT_KNOW_OPTIONS = [
+  { label: "mcap.common.options.yes", value: "yes" },
+  { label: "mcap.common.options.no", value: "no" },
+  { label: "mcap.common.options.doNotKnow", value: "unknown" },
+];
+
+const ANNUAL_RENEWAL_OPTIONS = [
+  { label: "mcap.common.options.yes", value: "yes" },
+  { label: "mcap.common.options.no", value: "no" },
+  { label: "mcap.common.options.internalResolution", value: "internal_resolution" },
+  { label: "mcap.common.options.noIfFixedAnnualCosts", value: "no_if_fixed_cost" },
+  { label: "mcap.common.options.adviceRequiredBeforeProceeding", value: "advice_required" },
+];
+
+const CH_FOUNDATION_INDUSTRY_OPTIONS = [
+  { label: "mcap.ch.options.industry.cryptoRelated", value: "crypto" },
+  { label: "mcap.ch.options.industry.itBlockchain", value: "it_blockchain" },
+  { label: "mcap.ch.options.industry.financeInvestment", value: "finance_investment" },
+  { label: "mcap.ch.options.industry.tradeWholesale", value: "trade_wholesale" },
+  { label: "mcap.ch.options.industry.manufacturing", value: "manufacturing" },
+  { label: "mcap.ch.options.industry.ecommerce", value: "ecommerce" },
+  { label: "mcap.ch.options.industry.consulting", value: "consulting" },
+  { label: "mcap.common.options.other", value: "other" },
+];
+
 const getSelectedServiceIds = (data: Record<string, any>) => {
   const ids = new Set<string>();
   const optionalFeeIds = Array.isArray(data?.optionalFeeIds) ? data.optionalFeeIds : [];
@@ -47,80 +77,80 @@ export const buildChFoundationServiceItems = (data: Record<string, any>): ChFoun
   const items: ChFoundationServiceItem[] = [
     {
       id: "chf_foundation_setup",
-      label: "Swiss Foundation Establishment",
+      label: "mcap.ch.foundation.services.items.foundationSetup.label",
       amount: CH_FOUNDATION_PRICING.foundation_setup,
       original: CH_FOUNDATION_PRICING.foundation_setup,
       mandatory: true,
       kind: "service",
-      info: "All establishment-related costs included.",
+      info: "mcap.ch.foundation.services.items.foundationSetup.info",
     },
   ];
 
   if (boardServiceMode === "mirr_provided") {
     items.push({
       id: "chf_local_board_member_1y",
-      label: "Local Board Member Service (1 year)",
+      label: "mcap.ch.foundation.services.items.localBoardMember.label",
       amount: CH_FOUNDATION_PRICING.local_board_member_1y,
       original: CH_FOUNDATION_PRICING.local_board_member_1y,
       mandatory: true,
       kind: "service",
-      info: "Swiss foundation must appoint at least one board member residing in Switzerland.",
+      info: "mcap.ch.foundation.services.items.localBoardMember.info",
     });
   }
 
   if (registeredOfficeMode === "pobox") {
     items.push({
       id: "chf_registered_office_pobox_1y",
-      label: "Registered Office - PO Box (1 year)",
+      label: "mcap.ch.foundation.services.items.registeredOfficePobox.label",
       amount: CH_FOUNDATION_PRICING.registered_office_pobox_1y,
       original: CH_FOUNDATION_PRICING.registered_office_pobox_1y,
       mandatory: true,
       kind: "service",
-      info: "Annual Swiss PO Box address service.",
+      info: "mcap.ch.foundation.services.items.registeredOfficePobox.info",
     });
   } else if (registeredOfficeMode === "flexidesk") {
     items.push({
       id: "chf_registered_office_flexidesk_1y",
-      label: "Registered Office - Flexi Desk (1 year)",
+      label: "mcap.ch.foundation.services.items.registeredOfficeFlexidesk.label",
       amount: CH_FOUNDATION_PRICING.registered_office_flexidesk_1y,
       original: CH_FOUNDATION_PRICING.registered_office_flexidesk_1y,
       mandatory: true,
       kind: "service",
-      info: "Includes lease agreement, meeting room access, and Swiss phone number.",
+      info: "mcap.ch.foundation.services.items.registeredOfficeFlexidesk.info",
     });
   }
 
   if (bankOpeningMode === "mirr_opening") {
     items.push({
       id: "chf_bank_opening_capital_operating",
-      label: "Swiss Bank Account Opening (Capital + Operating)",
+      label: "mcap.ch.foundation.services.items.bankOpening.label",
       amount: CH_FOUNDATION_PRICING.bank_opening_capital_operating,
       original: CH_FOUNDATION_PRICING.bank_opening_capital_operating,
       mandatory: true,
       kind: "service",
-      info: "Non-face-to-face account opening support.",
+      info: "mcap.ch.foundation.services.items.bankOpening.info",
     });
   }
 
   items.push(
     {
       id: "chf_accounting_tax_annual",
-      label: "Accounting and Tax Services (Annual, up to 300 transactions)",
+      label: "mcap.ch.foundation.services.items.accountingTaxAnnual.label",
       amount: CH_FOUNDATION_PRICING.accounting_tax_annual,
       original: CH_FOUNDATION_PRICING.accounting_tax_annual,
       mandatory: false,
       kind: "optional",
-      info: "Includes bookkeeping, AHV/SUVA/VAT registration, VAT returns, annual statements, and tax returns.",
+      info: "mcap.ch.foundation.services.items.accountingTaxAnnual.info",
     },
     {
       id: "chf_annual_foundation_report_estimated",
-      label: "Annual Foundation Report Preparation and Submission (Estimated)",
+      label: "mcap.ch.foundation.services.items.annualFoundationReport.label",
       amount: CH_FOUNDATION_PRICING.annual_foundation_report_estimated,
       original: CH_FOUNDATION_PRICING.annual_foundation_report_estimated,
       mandatory: false,
       kind: "optional",
       estimated: true,
-      info: "Estimated amount and can be adjusted after compliance review.",
+      info: "mcap.ch.foundation.services.items.annualFoundationReport.info",
     }
   );
 
@@ -176,7 +206,7 @@ export const computeChFoundationFees = (data: Record<string, any>) => {
     cardFeeSurcharge,
     grandTotal,
     ...(shouldConvertToHkd ? { exchangeRateUsed: exchangeRateUsedRaw, originalAmountUsd: totalUsd } : {}),
-    note: "Capital requirements are collected for compliance and are excluded from invoice totals.",
+    note: "mcap.ch.foundation.fees.note",
   };
 };
 
@@ -185,82 +215,81 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
   countryCode: "CH_FOUNDATION",
   countryName: "Switzerland Foundation",
   currency: "USD",
-  title: "Swiss Foundation Establishment",
+  title: "mcap.ch.foundation.title",
   confirmationDetails: {
-    title: "Swiss Foundation Application Submitted",
-    message:
-      "We have received your Swiss foundation establishment request. Our team will validate compliance details and proceed with the filing workflow.",
+    title: "mcap.ch.foundation.confirmation.title",
+    message: "mcap.ch.foundation.confirmation.message",
     steps: [
       {
-        title: "Compliance Review",
-        description: "KYC/CDD and sanctions checks are completed before filing.",
+        title: "mcap.ch.foundation.confirmation.steps.complianceReview.title",
+        description: "mcap.ch.foundation.confirmation.steps.complianceReview.description",
       },
       {
-        title: "Foundation Filing Preparation",
-        description: "Drafting and execution package is prepared for supervisory and registry submissions.",
+        title: "mcap.ch.foundation.confirmation.steps.foundationFilingPreparation.title",
+        description: "mcap.ch.foundation.confirmation.steps.foundationFilingPreparation.description",
       },
       {
-        title: "Registration and Tax Setup",
-        description: "Commercial registry filing and tax authority registration are completed.",
+        title: "mcap.ch.foundation.confirmation.steps.registrationTaxSetup.title",
+        description: "mcap.ch.foundation.confirmation.steps.registrationTaxSetup.description",
       },
       {
-        title: "Post-filing Services",
-        description: "Board, office, accounting, and reporting support is coordinated based on your selections.",
+        title: "mcap.ch.foundation.confirmation.steps.postFilingServices.title",
+        description: "mcap.ch.foundation.confirmation.steps.postFilingServices.description",
       },
     ],
   },
   steps: [
     {
       id: "applicant",
-      title: "Applicant Information",
-      description: "Must be completed by the director or an authorized delegate.",
+      title: "mcap.common.steps.applicant",
+      description: "mcap.ch.foundation.steps.applicant.description",
       fields: [
         {
           type: "text",
           name: "applicantName",
-          label: "Name of Author",
+          label: "mcap.common.fields.applicantName",
           required: true,
           colSpan: 2,
         },
         {
           type: "checkbox-group",
           name: "authorRelationship",
-          label: "Relationship to the Swiss foundation",
+          label: "mcap.ch.foundation.applicant.fields.authorRelationship.label",
           required: true,
           options: [
-            { label: "Director of the Swiss foundation", value: "director" },
-            { label: "Person delegated by the director", value: "delegate" },
-            { label: "Direct or indirect shareholder / contributor", value: "shareholder" },
-            { label: "Expert (lawyer, accountant, etc.)", value: "expert" },
-            { label: "Other", value: "other" },
+            { label: "mcap.ch.foundation.options.relationship.director", value: "director" },
+            { label: "mcap.ch.options.relationship.delegate", value: "delegate" },
+            { label: "mcap.ch.options.relationship.directOrIndirectShareholder", value: "shareholder" },
+            { label: "mcap.ch.options.relationship.expert", value: "expert" },
+            { label: "mcap.common.options.other", value: "other" },
           ],
           colSpan: 2,
         },
         {
           type: "text",
           name: "authorRelationshipOther",
-          label: "Other relationship details",
+          label: "mcap.common.fields.otherRelationshipDetails",
           condition: (f) => Array.isArray(f.authorRelationship) && f.authorRelationship.includes("other"),
           colSpan: 2,
         },
         {
           type: "email",
           name: "applicantEmail",
-          label: "Applicant Email",
+          label: "mcap.common.fields.applicantEmail",
           required: true,
           colSpan: 2,
         },
         {
           type: "text",
           name: "applicantPhone",
-          label: "Applicant Phone",
+          label: "mcap.common.fields.applicantPhone",
           required: true,
           colSpan: 2,
         },
         {
           type: "text",
           name: "authorContactInfo",
-          label: "Additional Contact Information (SNS ID, etc.)",
+          label: "mcap.common.fields.additionalContactInfo",
           required: true,
           colSpan: 2,
         },
@@ -268,122 +297,94 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
     },
     {
       id: "compliance",
-      title: "AML / CDD",
-      description: "Business intentions, sanctions, and compliance declarations.",
+      title: "mcap.common.steps.compliance",
+      description: "mcap.ch.foundation.steps.compliance.description",
       fields: [
         {
           type: "radio-group",
           name: "legalAndEthicalConcern",
-          label:
-            "Does the purpose raise legal/ethical issues (money laundering, gambling, tax evasion, etc.)?",
+          label: "mcap.ch.common.compliance.ethicalLegalConfirmation.label",
           required: true,
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-            { label: "I don't know", value: "unknown" },
-            { label: "Consider legal advice", value: "legal_advice" },
+            { label: "mcap.common.options.yes", value: "yes" },
+            { label: "mcap.common.options.no", value: "no" },
+            { label: "mcap.common.options.doNotKnow", value: "unknown" },
+            { label: "mcap.ch.common.options.considerLegalAdvice", value: "legal_advice" },
           ],
           colSpan: 2,
         },
         {
           type: "radio-group",
           name: "annualRenewalConsent",
-          label: "Do you agree to annual renewals and associated fixed costs?",
+          label: "mcap.ch.common.compliance.annualRenewalAgreement.label",
           required: true,
-          options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-            { label: "Can be resolved internally", value: "internal_resolution" },
-            { label: "No intention if fixed costs incur", value: "no_if_fixed_cost" },
-            { label: "Advice required", value: "advice_required" },
-          ],
+          options: ANNUAL_RENEWAL_OPTIONS,
           colSpan: 2,
         },
         {
           type: "radio-group",
           name: "sanctionedCountriesBusiness",
-          label: "Do you conduct business in sanctioned countries or regions?",
+          label: "mcap.ch.common.compliance.sanctionedCountriesBusiness.label",
           required: true,
-          options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-            { label: "I don't know", value: "unknown" },
-          ],
+          options: YES_NO_DONT_KNOW_OPTIONS,
           colSpan: 2,
         },
         {
           type: "radio-group",
           name: "sanctionedPersonsInvolved",
-          label: "Are any involved persons residing in sanctioned regions?",
+          label: "mcap.ch.common.compliance.sanctionedPersonsInvolved.label",
           required: true,
-          options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-            { label: "I don't know", value: "unknown" },
-          ],
+          options: YES_NO_DONT_KNOW_OPTIONS,
           colSpan: 2,
         },
         {
           type: "radio-group",
           name: "restrictedSectors",
-          label: "Are you engaged in oil, gas, military, or defense sectors?",
+          label: "mcap.ch.common.compliance.restrictedSectors.label",
           required: true,
-          options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-            { label: "I don't know", value: "unknown" },
-          ],
+          options: YES_NO_DONT_KNOW_OPTIONS,
           colSpan: 2,
         },
       ],
     },
     {
       id: "company",
-      title: "Business and Foundation Information",
-      description: "Business profile, registration details, and capital requirement acknowledgements.",
+      title: "mcap.common.steps.company",
+      description: "mcap.ch.foundation.steps.company.description",
       fields: [
         {
           type: "text",
           name: "companyName1",
-          label: "Desired Foundation Name (1st choice)",
+          label: "mcap.ch.foundation.company.fields.foundationNameFirstChoice.label",
           required: true,
           colSpan: 2,
         },
         {
           type: "text",
           name: "companyName2",
-          label: "Desired Foundation Name (2nd choice)",
+          label: "mcap.ch.foundation.company.fields.foundationNameSecondChoice.label",
           required: true,
           colSpan: 2,
         },
         {
           type: "checkbox-group",
           name: "industrySelection",
-          label: "Select Industry",
+          label: "mcap.common.fields.selectedIndustry",
           required: true,
-          options: [
-            { label: "Cryptocurrency-related", value: "crypto" },
-            { label: "IT/Blockchain Development", value: "it_blockchain" },
-            { label: "Finance/Investment", value: "finance_investment" },
-            { label: "Trade/Wholesale", value: "trade_wholesale" },
-            { label: "Manufacturing", value: "manufacturing" },
-            { label: "E-commerce", value: "ecommerce" },
-            { label: "Consulting", value: "consulting" },
-            { label: "Other", value: "other" },
-          ],
+          options: CH_FOUNDATION_INDUSTRY_OPTIONS,
           colSpan: 2,
         },
         {
           type: "text",
           name: "industrySelectionOther",
-          label: "Other Industry Details",
+          label: "mcap.common.fields.otherIndustryDetails",
           condition: (f) => Array.isArray(f.industrySelection) && f.industrySelection.includes("other"),
           colSpan: 2,
         },
         {
           type: "textarea",
           name: "productServiceDescription",
-          label: "Description of product/service to be traded",
+          label: "mcap.common.fields.productServiceDescription",
           required: true,
           rows: 3,
           colSpan: 2,
@@ -391,7 +392,7 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
         {
           type: "textarea",
           name: "businessSummary",
-          label: "Describe business in 3-4 sentences",
+          label: "mcap.common.fields.businessSummary",
           required: true,
           rows: 4,
           colSpan: 2,
@@ -399,42 +400,30 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
         {
           type: "text",
           name: "websiteUrl",
-          label: "Website address",
+          label: "mcap.common.fields.websiteAddressOptional",
           colSpan: 2,
         },
-        // {
-        //   type: "radio-group",
-        //   name: "directorComposition",
-        //   label: "Composition of Directors",
-        //   required: true,
-        //   options: [
-        //     { label: "2 Swiss residents + 1 non-Swiss resident", value: "2_local_1_foreign" },
-        //     { label: "Other", value: "other" },
-        //   ],
-        //   colSpan: 2,
-        // },
-        // {
-        //   type: "text",
-        //   name: "directorCompositionOther",
-        //   label: "Other Director Composition Details",
-        //   condition: (f) => f.directorComposition === "other",
-        //   colSpan: 2,
-        // },
         {
           type: "radio-group",
           name: "capitalRequirementChoice",
-          label: "Foundation paid-in capital requirement",
+          label: "mcap.ch.foundation.company.fields.capitalRequirementChoice.label",
           required: true,
           options: [
-            { label: "CHF 50,000 minimum acknowledged", value: "acknowledged" },
-            { label: "Other arrangement (explain)", value: "other" },
+            {
+              label: "mcap.ch.foundation.options.capitalRequirementChoice.acknowledged",
+              value: "acknowledged",
+            },
+            {
+              label: "mcap.ch.foundation.options.capitalRequirementChoice.otherArrangement",
+              value: "other",
+            },
           ],
           colSpan: 2,
         },
         {
           type: "textarea",
           name: "capitalRequirementOther",
-          label: "Capital Requirement Clarification",
+          label: "mcap.ch.foundation.company.fields.capitalRequirementOther.label",
           required: true,
           condition: (f) => f.capitalRequirementChoice === "other",
           rows: 3,
@@ -443,8 +432,7 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
         {
           type: "checkbox",
           name: "capitalRequirementAcknowledged",
-          label:
-            "I understand that capital requirements are compliance requirements and are excluded from invoice/payment totals.",
+          label: "mcap.common.fields.capitalRequirementAcknowledged",
           required: true,
           colSpan: 2,
         },
@@ -452,8 +440,8 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
     },
     {
       id: "parties",
-      title: "Parties and Board Members",
-      description: "Invite all required parties and assign a designated contact person.",
+      title: "mcap.common.steps.parties",
+      description: "mcap.ch.common.steps.parties.description",
       widget: "PartiesManager",
       minParties: 1,
       requireDcp: true,
@@ -461,46 +449,47 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
     },
     {
       id: "accounting",
-      title: "Accounting and Taxation Preferences",
+      title: "mcap.common.steps.accounting",
+      description: "mcap.ch.foundation.steps.accounting.description",
       fields: [
         {
           type: "select",
           name: "finYrEnd",
-          label: "newHk.steps.acct.fields.finYrEnd.label",
+          label: "mcap.common.fields.financialYearEnd",
           options: finYearOptions,
         },
         {
           type: "text",
           name: "finYrEndOther",
-          label: "newHk.common.other",
+          label: "mcap.common.fields.otherFinancialYearEnd",
           condition: (f) => f.finYrEnd === "Other",
         },
         {
           type: "select",
           name: "expectedAnnualTransactions",
-          label: "Expected annual transaction volume",
+          label: "mcap.common.fields.expectedAnnualTransactions",
           options: [
-            { label: "Up to 300", value: "up_to_300" },
-            { label: "301 - 1000", value: "301_1000" },
-            { label: "More than 1000", value: "1000_plus" },
+            { label: "mcap.common.options.upTo300", value: "up_to_300" },
+            { label: "mcap.common.options.from301To1000", value: "301_1000" },
+            { label: "mcap.common.options.moreThan1000", value: "1000_plus" },
           ],
           colSpan: 2,
         },
         {
           type: "radio-group",
           name: "vatRegistrationNeed",
-          label: "Do you need VAT registration support?",
+          label: "mcap.common.fields.vatRegistrationSupport",
           options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-            { label: "Need advice", value: "advice" },
+            { label: "mcap.common.options.yes", value: "yes" },
+            { label: "mcap.common.options.no", value: "no" },
+            { label: "mcap.common.options.adviceRequiredBeforeProceeding", value: "advice" },
           ],
           colSpan: 2,
         },
         {
           type: "textarea",
           name: "accountingOperationalNotes",
-          label: "Accounting / Tax Operational Notes",
+          label: "mcap.common.fields.accountingAndTaxNotes",
           rows: 3,
           colSpan: 2,
         },
@@ -508,38 +497,37 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
     },
     {
       id: "services",
-      title: "Service Customization",
-      description:
-        "Default package includes local board support, PO Box registered office, and bank account opening assistance. You can adjust based on your setup.",
+      title: "mcap.common.steps.services",
+      description: "mcap.ch.foundation.steps.services.description",
       widget: "ServiceSelectionWidget",
       fields: [
         {
           type: "select",
           name: "boardServiceMode",
-          label: "Local Board Member Service",
+          label: "mcap.ch.foundation.services.fields.boardServiceMode.label",
           required: true,
           defaultValue: "mirr_provided",
           options: [
-            { label: "Use Mirr Asia local board member service", value: "mirr_provided" },
-            { label: "Client will arrange own compliant local board", value: "client_provided" },
+            { label: "mcap.ch.foundation.services.options.boardServiceMode.mirrProvided", value: "mirr_provided" },
+            { label: "mcap.ch.foundation.services.options.boardServiceMode.clientProvided", value: "client_provided" },
           ],
         },
         {
           type: "select",
           name: "registeredOfficeMode",
-          label: "Registered Office Service",
+          label: "mcap.ch.common.services.fields.registeredOfficeMode.label",
           required: true,
           defaultValue: "pobox",
           options: [
-            { label: "PO Box (USD 3,000/year)", value: "pobox" },
-            { label: "Flexi Desk (USD 6,800/year)", value: "flexidesk" },
-            { label: "Client uses own Swiss address", value: "client_address" },
+            { label: "mcap.ch.common.services.options.registeredOfficeMode.pobox", value: "pobox" },
+            { label: "mcap.ch.common.services.options.registeredOfficeMode.flexidesk", value: "flexidesk" },
+            { label: "mcap.ch.common.services.options.registeredOfficeMode.clientAddress", value: "client_address" },
           ],
         },
         {
           type: "textarea",
           name: "clientRegisteredOfficeAddress",
-          label: "Client-provided Swiss Registered Office Address",
+          label: "mcap.ch.common.services.fields.registeredOfficeClientAddress.label",
           required: true,
           condition: (f) => f.registeredOfficeMode === "client_address",
           rows: 3,
@@ -548,12 +536,12 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
         {
           type: "select",
           name: "bankOpeningMode",
-          label: "Swiss Bank Account Opening Service",
+          label: "mcap.ch.common.services.fields.bankOpeningMode.label",
           required: true,
           defaultValue: "mirr_opening",
           options: [
-            { label: "Use Mirr Asia bank account opening agency", value: "mirr_opening" },
-            { label: "Client will arrange bank account opening", value: "self_arranged" },
+            { label: "mcap.ch.common.services.options.bankOpeningMode.mirrOpening", value: "mirr_opening" },
+            { label: "mcap.ch.common.services.options.bankOpeningMode.selfArranged", value: "self_arranged" },
           ],
         },
       ],
@@ -563,59 +551,55 @@ export const CH_FOUNDATION_FULL_CONFIG: McapConfig = {
     },
     {
       id: "invoice",
-      title: "Invoice Preview",
-      description: "Review the final fee breakdown before payment.",
+      title: "mcap.common.steps.invoice",
+      description: "mcap.ch.foundation.steps.invoice.description",
       widget: "InvoiceWidget",
       computeFees: (data) => computeChFoundationFees(data),
     },
     {
       id: "payment",
-      title: "Payment Processing",
-      description: "Complete card payment or upload bank transfer proof.",
+      title: "mcap.common.steps.payment",
+      description: "mcap.ch.foundation.steps.payment.description",
       widget: "PaymentWidget",
       supportedCurrencies: ["USD", "HKD"],
       computeFees: (data) => computeChFoundationFees(data),
     },
     {
       id: "review",
-      title: "Review and Declaration",
+      title: "mcap.common.steps.review",
       fields: [
         {
           type: "info",
-          label: "Final Declaration",
-          content:
-            "I agree that all information provided is true, complete, and submitted for legitimate business purposes.",
+          label: "mcap.common.fields.agreementAndDeclaration",
+          content: "mcap.ch.foundation.review.declaration.content",
           colSpan: 2,
         },
         {
           type: "radio-group",
           name: "finalAgreement",
-          label: "Do you agree to this declaration?",
+          label: "mcap.common.fields.doYouAgreeToDeclaration",
           required: true,
-          options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-          ],
+          options: YES_NO_OPTIONS,
           colSpan: 2,
         },
         {
           type: "checkbox",
           name: "truthfulnessDeclaration",
-          label: "I confirm that all provided information is true and accurate.",
+          label: "mcap.common.fields.truthfulnessDeclaration",
           required: true,
           colSpan: 2,
         },
         {
           type: "checkbox",
           name: "compliancePreconditionAcknowledgment",
-          label: "I understand service may be suspended if compliance violations are identified.",
+          label: "mcap.common.fields.complianceSuspensionAcknowledgement",
           required: true,
           colSpan: 2,
         },
         {
           type: "text",
           name: "eSign",
-          label: "Electronic signature (full name)",
+          label: "mcap.common.fields.electronicSignature",
           required: true,
           colSpan: 2,
         },
