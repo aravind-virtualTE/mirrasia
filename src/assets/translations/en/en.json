@@ -182,7 +182,7 @@
       "copied": "Copied to clipboard!",
       "copyError": "Unable to copy automatically. Please copy it manually.",
       "backupCodesCopied": "Backup codes copied",
-      "otpVerifyInstruction": "Enter the 6-digit code we sent to {{phone}}.",
+      "otpVerifyInstruction": "Enter the 4-digit code we sent to {{phone}}.",
       "changesDiscarded": "Changes discarded",
       "otpVerified": "OTP Verified successfully"
     },
