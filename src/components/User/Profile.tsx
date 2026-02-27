@@ -850,11 +850,11 @@ export default function Profile() {
                         </Label>
                         <div className="flex gap-2">
                           <Input
-                            placeholder="6-digit code"
+                            placeholder="4-digit code"
                             value={otp}
                             onChange={(e) => setOtp(e.target.value)}
                             className="max-w-[150px] font-mono text-center tracking-[0.2em]"
-                            maxLength={6}
+                            maxLength={4}
                           />
                           <Button onClick={handleVerifyOtp} size="sm" className="px-6">
                             {t("userProfile.actions.verify")}
