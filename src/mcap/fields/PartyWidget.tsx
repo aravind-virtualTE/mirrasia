@@ -43,6 +43,23 @@ export const PartyWidget = ({
     const entityTypeEnabled = isEntityPartyTypeEnabledForCountry(normalizedCountryCode);
     const normalizePartyType = (typeValue: any): "person" | "entity" =>
         typeValue === "entity" && entityTypeEnabled ? "entity" : "person";
+    const normalizeRoles = (roles: any[]) =>
+        Array.isArray(roles)
+            ? roles.map((role) => String(role || "").trim().toLowerCase()).filter(Boolean)
+            : [];
+    const isHkCorrespondenceEligible = (roles: any[]) => {
+        const normalizedRoles = normalizeRoles(roles);
+        return normalizedRoles.includes("shareholder") || normalizedRoles.includes("director")
+            || normalizedRoles.includes("member")
+            || normalizedRoles.includes("dcp");
+    };
+    const usesDcpCorrespondenceRate = (roles: any[]) => normalizeRoles(roles).includes("dcp");
+    const isCorrespondenceServiceSelected = (party: any) => {
+        const raw = party?.details?.useCorrespondenceAddressService ?? party?.useCorrespondenceAddressService;
+        if (typeof raw === "boolean") return raw;
+        const normalized = String(raw || "").trim().toLowerCase();
+        return ["true", "yes", "1", "on"].includes(normalized);
+    };
 
     useEffect(() => {
         const loadDirectory = async () => {
@@ -155,11 +172,25 @@ export const PartyWidget = ({
     const toggleRole = (idx: number, role: string) => {
         const next = [...parties];
         const currentRoles = next[idx].roles || [];
-        if (currentRoles.includes(role)) {
-            next[idx].roles = currentRoles.filter((r: string) => r !== role);
-        } else {
-            next[idx].roles = [...currentRoles, role];
+        const nextRoles = currentRoles.includes(role)
+            ? currentRoles.filter((r: string) => r !== role)
+            : [...currentRoles, role];
+        const details = { ...(next[idx].details || {}) };
+        if (normalizedCountryCode === "HK" && !isHkCorrespondenceEligible(nextRoles)) {
+            details.useCorrespondenceAddressService = false;
         }
+        next[idx] = { ...next[idx], roles: nextRoles, details };
+        onChange(next);
+    };
+
+    const updateCorrespondenceServiceSelection = (idx: number, selected: boolean) => {
+        const next = [...parties];
+        const target = { ...next[idx] };
+        target.details = {
+            ...(target.details || {}),
+            useCorrespondenceAddressService: selected,
+        };
+        next[idx] = target;
         onChange(next);
     };
 
@@ -277,6 +308,19 @@ export const PartyWidget = ({
             <div className="grid gap-4">
                 {parties.map((party, idx) => {
                     const partyType = normalizePartyType(party?.type);
+                    const partyRoles = normalizeRoles(party?.roles);
+                    const showHkCorrespondenceService = normalizedCountryCode === "HK" && partyType === "person";
+                    const correspondenceEligible = isHkCorrespondenceEligible(partyRoles);
+                    const correspondenceSelected = isCorrespondenceServiceSelected(party);
+                    const correspondenceHint = usesDcpCorrespondenceRate(partyRoles)
+                        ? t(
+                            "hk_shldr.useCorrespondenceAddressServiceHintDcp",
+                            "Optional service. If selected, USD 260/year will be added automatically to service selection and invoice."
+                        )
+                        : t(
+                            "hk_shldr.useCorrespondenceAddressServiceHintStandard",
+                            "Optional service. If selected, USD 65 will be added automatically to service selection and invoice."
+                        );
 
                     return (
                         <Card key={party.id || idx}>
@@ -376,6 +420,49 @@ export const PartyWidget = ({
                                         onChange={(e) => updateParty(idx, "shares", Number(e.target.value))}
                                         className="w-48"
                                     />
+                                </div>
+                            )}
+
+                            {showHkCorrespondenceService && (
+                                <div className="mt-4 rounded-lg border border-dashed bg-muted/20 p-4 space-y-3">
+                                    <div className="space-y-1">
+                                        <Label className="text-sm font-semibold">
+                                            {t("hk_shldr.useCorrespondenceAddressService", "Use correspondence address service")}
+                                        </Label>
+                                        <p className="text-xs text-muted-foreground">
+                                            {correspondenceHint}
+                                        </p>
+                                        {!correspondenceEligible && (
+                                            <p className="text-xs text-muted-foreground">
+                                                {t(
+                                                    "newHk.parties.fields.useCorrespondenceAddressService.availableWhenEligible",
+                                                    "Available when this party is marked as Shareholder or DCP."
+                                                )}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="flex flex-wrap gap-4">
+                                        <label className="flex items-center gap-2 text-sm">
+                                            <input
+                                                type="radio"
+                                                name={`${party.id || idx}-useCorrespondenceAddressService`}
+                                                checked={!correspondenceSelected}
+                                                disabled={!correspondenceEligible}
+                                                onChange={() => updateCorrespondenceServiceSelection(idx, false)}
+                                            />
+                                            <span>{t("common.no", "No")}</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 text-sm">
+                                            <input
+                                                type="radio"
+                                                name={`${party.id || idx}-useCorrespondenceAddressService`}
+                                                checked={correspondenceSelected}
+                                                disabled={!correspondenceEligible}
+                                                onChange={() => updateCorrespondenceServiceSelection(idx, true)}
+                                            />
+                                            <span>{t("common.yes", "Yes")}</span>
+                                        </label>
+                                    </div>
                                 </div>
                             )}
 

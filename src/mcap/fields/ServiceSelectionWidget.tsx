@@ -88,6 +88,7 @@ export function ServiceSelectionWidget({
         return meta && typeof meta === "object" ? meta : {};
     };
     const isQuantityItem = (item: any) => !!getQuantityMeta(item).enabled;
+    const isPartyManagedItem = (item: any) => !!item?.managedByPartyKyc;
     const getQuantityCap = (item: any) => {
         const meta = getQuantityMeta(item);
         if (!meta.enabled) return 1;
@@ -123,6 +124,11 @@ export function ServiceSelectionWidget({
         svcItemsMeta.forEach((item: any) => {
             const selected = item.mandatory || ids.has(item.id);
             const quantity = getNormalizedQuantity(item, quantitySnapshot[item.id], selected);
+
+            if (isPartyManagedItem(item)) {
+                ids.delete(item.id);
+                return;
+            }
 
             if (isQuantityItem(item)) {
                 if (quantity > 0) {
@@ -414,9 +420,11 @@ export function ServiceSelectionWidget({
         const computed = item?.id ? computedItemsById.get(String(item.id)) : undefined;
         const computedQty = Number(computed?.quantity);
         const selected = item?.mandatory || selectedIds.includes(item?.id);
-        const normalizedQty = getNormalizedQuantity(item, serviceQuantities[item?.id], selected);
-        const quantity = Number.isFinite(computedQty) && computedQty > 0
-            ? Math.floor(computedQty)
+        const normalizedQty = isPartyManagedItem(item)
+            ? 0
+            : getNormalizedQuantity(item, serviceQuantities[item?.id], selected);
+        const quantity = Number.isFinite(computedQty)
+            ? Math.max(0, Math.floor(computedQty))
             : Math.max(0, normalizedQty);
 
         if (computed) {
@@ -476,24 +484,40 @@ export function ServiceSelectionWidget({
     const Row = ({ item }: { item: any }) => {
         const label = typeof t(item.label, item.label) === 'string' ? t(item.label, item.label) : item.label;
         const info = item.info ? (typeof t(item.info, item.info) === 'string' ? t(item.info, item.info) : undefined) : undefined;
+        const partyManaged = isPartyManagedItem(item);
         const quantityMode = isQuantityItem(item);
         const cap = getQuantityCap(item);
         const { amountPerUnit, originalPerUnit, quantity } = getRowAmounts(item);
         const checked = quantityMode
-            ? (quantity > 0)
+            ? quantity > 0
             : (item.mandatory || selectedIds.includes(item.id));
         const disabled = item.mandatory || isLocked;
-        const effectiveQty = quantityMode
+        const effectiveQty = partyManaged || quantityMode
             ? Math.max(0, quantity)
             : (checked ? 1 : 0);
-        const amount = quantityMode && effectiveQty > 0
-            ? amountPerUnit * effectiveQty
+        const amount = partyManaged || quantityMode
+            ? (effectiveQty > 0 ? amountPerUnit * effectiveQty : 0)
             : amountPerUnit;
         const original = originalPerUnit !== undefined
-            ? (quantityMode && effectiveQty > 0 ? originalPerUnit * effectiveQty : originalPerUnit)
+            ? ((partyManaged || quantityMode)
+                ? (effectiveQty > 0 ? originalPerUnit * effectiveQty : 0)
+                : originalPerUnit)
             : undefined;
-        const unitLabelKey = getQuantityMeta(item).unitLabel;
-        const unitLabel = quantityMode ? t(unitLabelKey || "service.quantity.unit", "person") : "";
+        const unitLabelKey = item?.unitLabel || getQuantityMeta(item).unitLabel;
+        const unitLabel = partyManaged || quantityMode ? t(unitLabelKey || "service.quantity.unit", "person") : "";
+        const displayOriginal = original !== undefined && (!(partyManaged || quantityMode) || effectiveQty > 0)
+            ? formatPrice(original, selectedCurrency)
+            : "-";
+        const displayAmount = (partyManaged || quantityMode) && effectiveQty <= 0
+            ? "-"
+            : formatPrice(amount, selectedCurrency);
+        const unitRateText = (partyManaged || quantityMode) && amountPerUnit > 0
+            ? `${formatPrice(amountPerUnit, selectedCurrency)}/${unitLabel}`
+            : "";
+        const managedStatusText = t("service.managedByPartyKyc", "Selected in Party KYC");
+        const managedRateText = unitRateText
+            ? (effectiveQty > 0 ? `${effectiveQty} x ${unitRateText}` : unitRateText)
+            : "";
 
         return (
             <TableRow>
@@ -504,13 +528,24 @@ export function ServiceSelectionWidget({
                     </div>
                 </TableCell>
                 <TableCell className="text-right">
-                    {original !== undefined ? formatPrice(original, selectedCurrency) : "-"}
+                    {displayOriginal}
                 </TableCell>
                 <TableCell className="text-right">
-                    {formatPrice(amount, selectedCurrency)}
+                    {displayAmount}
                 </TableCell>
                 <TableCell className="text-center w-[180px]">
-                    {quantityMode ? (
+                    {partyManaged ? (
+                        <div className="flex flex-col items-end gap-1 text-right">
+                            <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                                {managedStatusText}
+                            </span>
+                            {managedRateText && (
+                                <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                                    {managedRateText}
+                                </span>
+                            )}
+                        </div>
+                    ) : quantityMode ? (
                         <div className="flex flex-col items-end gap-1">
                             <div className="flex items-center gap-2 justify-end">
                                 <Button
@@ -538,7 +573,7 @@ export function ServiceSelectionWidget({
                                 </Button>
                             </div>
                             <span className="text-[11px] text-muted-foreground whitespace-nowrap">
-                                × {formatPrice(amountPerUnit, selectedCurrency)}/{unitLabel}
+                                x {formatPrice(amountPerUnit, selectedCurrency)}/{unitLabel}
                             </span>
                         </div>
                     ) : (

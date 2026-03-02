@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -74,18 +74,11 @@ export const UnifiedFormEngine = ({
 
     const currentStep = config.steps[currentStepIdx];
     const isLastStep = currentStepIdx === config.steps.length - 1;
-    const entityMeta = config.entityMeta || {};
-    // Prefer step-level computeFees. For legacy configs lacking FX metadata in computeFees,
-    // use cached computedFees from ServiceSelectionWidget when HKD conversion was already computed.
+    const entityMeta = useMemo(() => config.entityMeta || {}, [config.entityMeta]);
+    // Prefer fresh step-level computeFees. If HKD FX metadata is missing from that output,
+    // fall back to cached converted computedFees from ServiceSelectionWidget.
     const computedFees = useMemo(() => {
         const cachedFees = formData?.computedFees;
-        const shouldPreferCachedFees =
-            currentStep.widget === "InvoiceWidget" || currentStep.widget === "PaymentWidget";
-
-        if (cachedFees && shouldPreferCachedFees) {
-            return cachedFees;
-        }
-
         const calculated = currentStep.computeFees
             ? currentStep.computeFees(formData, entityMeta)
             : (cachedFees || currentStep.fees);
@@ -109,11 +102,6 @@ export const UnifiedFormEngine = ({
         companyIdRef.current = companyId;
     }, [companyId]);
 
-    useEffect(() => {
-        if (currentStep.widget === "PaymentWidget" && !companyIdRef.current) {
-            void ensureDraft();
-        }
-    }, [currentStep.widget, companyId]);
     const currentUser = useMemo(() => {
         try {
             const rawUser = localStorage.getItem("user");
@@ -406,7 +394,7 @@ export const UnifiedFormEngine = ({
         return missing;
     }, [currentStep, formData, parties, t]);
 
-    const ensureDraft = async () => {
+    const ensureDraft = useCallback(async () => {
         if (ensureDraftInFlightRef.current) {
             return ensureDraftInFlightRef.current;
         }
@@ -439,7 +427,13 @@ export const UnifiedFormEngine = ({
 
         ensureDraftInFlightRef.current = request;
         return request;
-    };
+    }, [config.countryCode, config.countryName, currentStepIdx, formData, parties, userId]);
+
+    useEffect(() => {
+        if (currentStep.widget === "PaymentWidget" && !companyIdRef.current) {
+            void ensureDraft();
+        }
+    }, [currentStep.widget, ensureDraft]);
 
     const handleNext = async () => {
         if (isLastStep) {

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import api from "@/services/fetch";
 import { MCAP_CONFIG_MAP } from "@/mcap/configs/registry";
-import type { McapField } from "@/mcap/configs/types";
+import type { McapField, McapFees } from "@/mcap/configs/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,8 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { fetchUsers, sendCustomMail } from "@/services/dataFetch";
 import { STATUS_OPTIONS } from "@/pages/Company/Details/detailData";
@@ -35,6 +37,7 @@ import ChecklistHistory from "@/pages/Checklist/ChecklistHistory";
 import { Banknote, Building2, Mail, Phone, ReceiptText, Send, ShieldCheck } from "lucide-react";
 import McapPartyKycModal from "@/mcap/McapPartyKycModal";
 import McapCompanyDocumentCenter from "@/mcap/documents/McapCompanyDocumentCenter";
+import { InvoiceWidget } from "@/mcap/fields/InvoiceWidget";
 
 type McapParty = {
   _id?: string;
@@ -82,6 +85,7 @@ type McapCompany = {
   stripeAmountCents?: number;
   stripeCurrency?: string;
   uploadReceiptUrl?: string;
+  computedFees?: Record<string, any>;
 
   // Renewal Tracking
   renewalDate?: string;
@@ -145,6 +149,27 @@ const resolveFieldKey = (data: Record<string, any>, candidates: string[], fallba
   return fallback;
 };
 
+const hasStoredInvoiceSnapshot = (fees: any) => {
+  if (!fees || typeof fees !== "object") return false;
+  if (Array.isArray(fees.items) && fees.items.length > 0) return true;
+
+  return ["total", "government", "service", "grandTotal"].some((key) => {
+    const value = Number(fees[key]);
+    return Number.isFinite(value) && value > 0;
+  });
+};
+
+const formatMoney = (amount?: number, currency = "USD") => {
+  const numericAmount = Number(amount);
+  if (!Number.isFinite(numericAmount)) return null;
+
+  try {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(numericAmount);
+  } catch {
+    return `${numericAmount.toFixed(2)} ${currency}`;
+  }
+};
+
 const McapCompanyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -163,6 +188,7 @@ const McapCompanyDetail: React.FC = () => {
   const [partyModalOpen, setPartyModalOpen] = useState(false);
   const [selectedPartyId, setSelectedPartyId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("details");
+  const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
 
   const fetchCompany = async () => {
     if (!id) return;
@@ -200,11 +226,12 @@ const McapCompanyDetail: React.FC = () => {
     if (!company) return;
     setIsSaving(true);
     try {
-      const payload = { ...company, assignedTo: adminAssigned || company.assignedTo };
+      const payload = { ...company, assignedTo: adminAssigned };
       const res = await api.post("/mcap/companies", payload);
       if (res?.data?.success) {
         toast({ title: "Saved", description: "MCAP record updated." });
         setCompany(res.data.data);
+        setAdminAssigned(res.data.data?.assignedTo || "");
       } else {
         toast({ title: "Save failed", description: res?.data?.message || "Unable to save.", variant: "destructive" });
       }
@@ -314,6 +341,16 @@ const McapCompanyDetail: React.FC = () => {
     return MCAP_CONFIG_MAP[company.countryCode] || null;
   }, [company?.countryCode]);
 
+  const invoiceFees = useMemo<McapFees | undefined>(() => {
+    const dataFees = company?.data?.computedFees;
+    if (hasStoredInvoiceSnapshot(dataFees)) return dataFees as McapFees;
+
+    const rootFees = company?.computedFees;
+    if (hasStoredInvoiceSnapshot(rootFees)) return rootFees as McapFees;
+
+    return undefined;
+  }, [company?.computedFees, company?.data?.computedFees]);
+
   const checklistItems = useMemo(() => {
     const code = (company?.countryCode || "").toUpperCase();
     if (code === "HK") return [hkIncorporationItems, hkRenewalList];
@@ -413,6 +450,17 @@ const McapCompanyDetail: React.FC = () => {
   const applicantPhoneKey = resolveFieldKey(data, ["phone", "phoneNum", "contactPhone"], "phone");
   const stepsCount = config?.steps?.length || 1;
   const pct = Math.min(100, Math.max(0, Math.round(((company.stepIdx || 0) / (stepsCount - 1 || 1)) * 100)));
+  const invoiceItemCount = Array.isArray((invoiceFees as any)?.items) ? (invoiceFees as any).items.length : 0;
+  const invoiceSummaryAmount = invoiceFees
+    ? formatMoney(
+        Number((invoiceFees as any)?.grandTotal ?? (invoiceFees as any)?.total),
+        String((invoiceFees as any)?.currency || company?.stripeCurrency || "USD").toUpperCase()
+      )
+    : (
+        company?.stripeAmountCents
+          ? formatMoney(company.stripeAmountCents / 100, String(company.stripeCurrency || "USD").toUpperCase())
+          : null
+      );
 
   return (
     <>
@@ -854,6 +902,42 @@ const McapCompanyDetail: React.FC = () => {
                     )}
                   </div>
                 </div>
+
+                <Accordion type="single" collapsible className="rounded-lg border px-4">
+                  <AccordionItem value="invoice-breakdown" className="border-b-0">
+                    <AccordionTrigger className="py-3 hover:no-underline">
+                      <div className="flex flex-col items-start gap-1">
+                        <span className="text-sm font-medium">Invoice Breakdown</span>
+                        <span className="text-xs text-muted-foreground">
+                          {invoiceFees
+                            ? `Stored invoice snapshot${invoiceSummaryAmount ? ` • ${invoiceSummaryAmount}` : ""}`
+                            : "No saved invoice snapshot for this company."}
+                        </span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-3">
+                      {invoiceFees ? (
+                        <div className="flex flex-col gap-3 rounded-md bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="space-y-1">
+                            <div className="text-sm font-medium">Invoice details available</div>
+                            <div className="text-xs text-muted-foreground">
+                              {invoiceItemCount > 0
+                                ? `${invoiceItemCount} charge line${invoiceItemCount > 1 ? "s" : ""} captured from the application invoice.`
+                                : "Totals were captured on this company record."}
+                            </div>
+                          </div>
+                          <Button type="button" variant="outline" size="sm" onClick={() => setInvoiceDialogOpen(true)}>
+                            View Invoice
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                          Invoice details are not available for this record.
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
 
@@ -983,6 +1067,29 @@ const McapCompanyDetail: React.FC = () => {
       onOpenChange={handlePartyModalChange}
       onSaved={fetchCompany}
     />
+    <Dialog open={invoiceDialogOpen} onOpenChange={setInvoiceDialogOpen}>
+      <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto p-0">
+        <DialogHeader className="border-b px-6 py-4">
+          <DialogTitle>Invoice Details</DialogTitle>
+          <DialogDescription>
+            Stored fee breakdown captured from the company application flow.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="p-6">
+          {invoiceFees ? (
+            <InvoiceWidget
+              fees={invoiceFees}
+              companyName={companyName}
+              readOnly
+            />
+          ) : (
+            <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+              Invoice details are not available for this record.
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
     </>
   );
 };
