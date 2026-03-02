@@ -95,13 +95,9 @@ const HK_FEES = {
       original: 65,
       amount: 65,
       mandatory: false,
-      info: "Mail handling for directors/shareholders.",
-      quantityControl: {
-        enabled: true,
-        min: 1,
-        maxBy: "totalParties",
-        unitLabel: "newHk.fees.units.person",
-      },
+      info: "Optional service selected per party in Party KYC for director/shareholder/member correspondence.",
+      managedByPartyKyc: true,
+      unitLabel: "newHk.fees.units.person",
     },
     {
       id: "dcp_headcount",
@@ -109,13 +105,9 @@ const HK_FEES = {
       original: 260,
       amount: 260,
       mandatory: false,
-      info: "Additional Designated Contact Person coverage (annual).",
-      quantityControl: {
-        enabled: true,
-        min: 1,
-        maxBy: "dcpParties",
-        unitLabel: "newHk.fees.units.personPerYear",
-      },
+      info: "Optional service selected per party in Party KYC for designated contact persons.",
+      managedByPartyKyc: true,
+      unitLabel: "newHk.fees.units.personPerYear",
     },
   ],
 };
@@ -139,37 +131,47 @@ const computeKycExtras = (parties: any[]) => {
 
 const round2 = (value: number) => Number(value.toFixed(2));
 
-const getQuantityCapForService = (service: any, parties: any[]) => {
-  if (!service?.quantityControl?.enabled) return 1;
-  const list = Array.isArray(parties) ? parties : [];
-  const maxBy = String(service?.quantityControl?.maxBy || "totalParties");
-  if (maxBy === "dcpParties") {
-    return list.filter((p: any) => Array.isArray(p?.roles) && p.roles.includes("dcp")).length;
-  }
-  return list.length;
+const HK_CORRESPONDENCE_SERVICE_FIELD = "useCorrespondenceAddressService";
+
+const isEnabledFlag = (value: any) => {
+  if (typeof value === "boolean") return value;
+  const normalized = String(value || "").trim().toLowerCase();
+  return ["true", "yes", "1", "on"].includes(normalized);
 };
 
-const resolveServiceQuantity = (service: any, data: any, selectedIds: Set<string>, parties: any[]) => {
-  const selected = service?.mandatory || selectedIds.has(service?.id);
-  if (!service?.quantityControl?.enabled) {
-    return selected ? 1 : 0;
-  }
+const getPartyRoleSet = (party: any) => {
+  const rootRoles = Array.isArray(party?.roles) ? party.roles : [];
+  const detailRoles = Array.isArray(party?.details?.roles) ? party.details.roles : [];
+  return new Set(
+    [...rootRoles, ...detailRoles]
+      .map((role) => String(role || "").trim().toLowerCase())
+      .filter(Boolean)
+  );
+};
 
-  const cap = Math.max(0, getQuantityCapForService(service, parties));
-  if (cap <= 0) return 0;
+const getCorrespondenceServiceCounts = (parties: any[]) => {
+  const list = Array.isArray(parties) ? parties : [];
+  let corrAddrCount = 0;
+  let dcpCount = 0;
 
-  const rawQuantities = data?.serviceQuantities && typeof data.serviceQuantities === "object"
-    ? data.serviceQuantities
-    : {};
-  const rawQty = Number(rawQuantities?.[service.id]);
-  const hasPositiveRawQty = Number.isFinite(rawQty) && rawQty > 0;
-  const shouldInclude = selected || hasPositiveRawQty;
-  if (!shouldInclude) return 0;
+  list.forEach((party: any) => {
+    const selected = isEnabledFlag(
+      party?.details?.[HK_CORRESPONDENCE_SERVICE_FIELD] ?? party?.[HK_CORRESPONDENCE_SERVICE_FIELD]
+    );
+    if (!selected) return;
 
-  const minQty = Math.max(1, Number(service?.quantityControl?.min || 1));
-  const fallbackQty = Math.min(minQty, cap);
-  const normalizedBase = hasPositiveRawQty ? Math.floor(rawQty) : fallbackQty;
-  return Math.max(minQty, Math.min(cap, normalizedBase));
+    const roles = getPartyRoleSet(party);
+    if (roles.has("dcp")) {
+      dcpCount += 1;
+      return;
+    }
+
+    if (roles.has("director") || roles.has("shareholder") || roles.has("member")) {
+      corrAddrCount += 1;
+    }
+  });
+
+  return { corrAddrCount, dcpCount };
 };
 
 const sumItems = (items: any[], kind?: "government" | "service") =>
@@ -178,11 +180,13 @@ const sumItems = (items: any[], kind?: "government" | "service") =>
     .reduce((sum, item) => sum + (Number(item.amount || 0) * Number(item.quantity || 1)), 0);
 
 const computeHkFees = (data: any) => {
-  const selectedIds = new Set<string>(
-    Array.isArray(data?.optionalFeeIds) ? data.optionalFeeIds.map((id: any) => String(id)) : []
-  );
+  const selectedIds = new Set<string>([
+    ...(Array.isArray(data?.optionalFeeIds) ? data.optionalFeeIds.map((id: any) => String(id)) : []),
+    ...(Array.isArray(data?.serviceItemsSelected) ? data.serviceItemsSelected.map((id: any) => String(id)) : []),
+  ]);
   const parties = Array.isArray(data?.parties) ? data.parties : [];
   const extraKyc = computeKycExtras(parties);
+  const { corrAddrCount, dcpCount } = getCorrespondenceServiceCounts(parties);
 
   const usdItems = [
     ...HK_FEES.government
@@ -195,21 +199,25 @@ const computeHkFees = (data: any) => {
         info: f.info,
         kind: "government" as const,
       })),
-    ...HK_FEES.service
-      .map((f) => {
-        const quantity = resolveServiceQuantity(f, data, selectedIds, parties);
-        return {
-          id: f.id,
-          label: f.label,
-          amount: Number(f.amount || 0),
-          original: Number(f.original || 0),
-          info: f.info,
-          kind: "service" as const,
-          quantity,
-          quantityControl: f.quantityControl,
-        };
-      })
-      .filter((f) => Number(f.quantity || 0) > 0),
+    ...HK_FEES.service.flatMap((f) => {
+      const quantity = f.managedByPartyKyc
+        ? (f.id === "dcp_headcount" ? dcpCount : corrAddrCount)
+        : (f.mandatory || selectedIds.has(f.id) ? 1 : 0);
+
+      if (quantity <= 0) return [];
+
+      return [{
+        id: f.id,
+        label: f.label,
+        amount: Number(f.amount || 0),
+        original: Number(f.original || 0),
+        info: f.info,
+        kind: "service" as const,
+        quantity,
+        managedByPartyKyc: f.managedByPartyKyc,
+        unitLabel: f.unitLabel,
+      }];
+    }),
     ...(extraKyc > 0
       ? [{
         id: "extra_kyc",
@@ -493,7 +501,8 @@ export const HK_FULL_CONFIG: McapConfig = {
           original: f.original,
           info: f.info,
           mandatory: f.mandatory,
-          quantityControl: f.quantityControl,
+          managedByPartyKyc: f.managedByPartyKyc,
+          unitLabel: f.unitLabel,
           currency: "USD",
         })),
       ]

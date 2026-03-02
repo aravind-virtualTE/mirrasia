@@ -38,9 +38,10 @@ export interface InvoiceData {
 
 interface InvoiceWidgetProps {
     fees: McapFees | number | undefined;
-    onNext: () => void;
+    onNext?: () => void;
     isSubmitting?: boolean;
     companyName?: string;
+    readOnly?: boolean;
 }
 
 // ============================================
@@ -242,6 +243,7 @@ export function InvoiceWidget({
     onNext,
     isSubmitting = false,
     companyName = "MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED",
+    readOnly = false,
 }: InvoiceWidgetProps) {
     const { t: i18nT } = useTranslation();
     const [hintOpen, setHintOpen] = useState<Record<string, boolean>>({});
@@ -495,32 +497,38 @@ export function InvoiceWidget({
                     </div>
                 </CardContent>
 
-                <CardFooter className="p-4 pt-0">
-                    <Button
-                        size="lg"
-                        onClick={onNext}
-                        disabled={isSubmitting}
-                        className="w-full font-semibold shadow-md"
-                    >
-                        {isSubmitting ? (
-                            t("common.processing", "Processing...")
-                        ) : (
-                            <>
-                                {t("invoice.proceed", "Proceed to Payment")}
-                                <ArrowRight className="w-4 h-4 ml-2" />
-                            </>
-                        )}
-                    </Button>
-                </CardFooter>
+                {!readOnly && onNext && (
+                    <CardFooter className="p-4 pt-0">
+                        <Button
+                            size="lg"
+                            onClick={onNext}
+                            disabled={isSubmitting}
+                            className="w-full font-semibold shadow-md"
+                        >
+                            {isSubmitting ? (
+                                t("common.processing", "Processing...")
+                            ) : (
+                                <>
+                                    {t("invoice.proceed", "Proceed to Payment")}
+                                    <ArrowRight className="w-4 h-4 ml-2" />
+                                </>
+                            )}
+                        </Button>
+                    </CardFooter>
+                )}
             </Card>
 
-            {/* Disclaimer */}
-            <p className="text-center text-xs text-muted-foreground max-w-md mx-auto">
-                {t("invoice.disclaimer", "By proceeding, you agree to our Terms of Service and Refund Policy.")}
-            </p>
-            <p className="text-center text-[10px] text-muted-foreground max-w-md mx-auto">
-                {t("invoice.cardFeeNote", "Card processing fee is applied at payment: 6% (USD) / 4% (HKD).")}
-            </p>
+            {!readOnly && (
+                <>
+                    {/* Disclaimer */}
+                    <p className="text-center text-xs text-muted-foreground max-w-md mx-auto">
+                        {t("invoice.disclaimer", "By proceeding, you agree to our Terms of Service and Refund Policy.")}
+                    </p>
+                    <p className="text-center text-[10px] text-muted-foreground max-w-md mx-auto">
+                        {t("invoice.cardFeeNote", "Card processing fee is applied at payment: 6% (USD) / 4% (HKD).")}
+                    </p>
+                </>
+            )}
         </div>
     );
 }

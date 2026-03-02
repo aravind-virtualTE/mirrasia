@@ -1499,6 +1499,9 @@
     "participateNominee": "설립하고자 하는 홍콩 법인의 실제 소유주 또는 대표자를 대신하여 지명인 또는 수탁인으로 참여할 계획이십니까?",
     "whatAddress": "공개되는 통신 주소로 어떤 주소를 등록하시겠습니까?",
     "whatAddressInfo": "개인 이사의 거주지 주소는 개인 정보로 등록되며, 통신 주소만 공개됩니다.",
+    "useCorrespondenceAddressService": "통신 주소(Correspondence Address) 서비스 이용",
+    "useCorrespondenceAddressServiceHintStandard": "선택 서비스입니다. 선택 시 서비스 항목 및 인보이스에 65 USD가 자동으로 추가됩니다.",
+    "useCorrespondenceAddressServiceHintDcp": "선택 서비스입니다. 선택 시 서비스 항목 및 인보이스에 연간 260 USD가 자동으로 추가됩니다.",
     "overSeasResident": "홍콩 이외의 해외 거주자로서 해외 법인 설립 또는 해외 직접 투자 신고 대상에 해당하십니까?",
     "osRGuide": "아래 안내 슬라이드를 참조하십시오.",
     "foreignDirectRep": "해외 직접 투자 신고를 하셨거나 위 정보로 진행할 계획이십니까?",
@@ -2937,7 +2940,8 @@
     "note": "정부 수수료는 법정 필수 사항입니다. 선택 사항 서비스를 전환하여 패키지를 맞춤 설정할 수 있습니다.",
     "lockedNote": "결제 후에는 선택 사항이 잠금 처리되어 수정할 수 없습니다.",
     "paymentCurrency": "카드 결제 시 결제 통화",
-    "currencyNote": "모든 가격은 원래 USD로 계산됩니다. 환율은 실시간으로 업데이트됩니다."
+    "currencyNote": "모든 가격은 USD(미국 달러) 기준으로 산출됩니다. 환율은 실시간으로 업데이트됩니다.",
+    "managedByPartyKyc": "당사자 KYC에서 선택됨"
   },
   "mcap": {
     "common": {

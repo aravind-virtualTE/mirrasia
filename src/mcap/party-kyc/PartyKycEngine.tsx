@@ -397,6 +397,27 @@ export default function PartyKycEngine({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const getFieldHint = (field: PartyField) => {
+    const normalizedRoles = Array.isArray(formData?.roles)
+      ? formData.roles.map((role: any) => String(role || "").trim().toLowerCase())
+      : [];
+
+    if (config.countryCode === "HK" && field.name === "useCorrespondenceAddressService") {
+      const isDcp = normalizedRoles.includes("dcp");
+      return isDcp
+        ? t(
+          "hk_shldr.useCorrespondenceAddressServiceHintDcp",
+          "Optional service. If selected, USD 260/year will be added automatically to service selection and invoice."
+        )
+        : t(
+          "hk_shldr.useCorrespondenceAddressServiceHintStandard",
+          "Optional service. If selected, USD 65 will be added automatically to service selection and invoice."
+        );
+    }
+
+    return field.hint ? tr(field.hint) : undefined;
+  };
+
   const handleFileChange = async (field: PartyField, file?: File) => {
     if (!file) return;
     setUploading((prev) => ({ ...prev, [field.name]: true }));
@@ -444,6 +465,7 @@ export default function PartyKycEngine({
     const tooltipNode = field.tooltip ? <IHelp>{tr(field.tooltip)}</IHelp> : undefined;
     const labelText = tr(field.label);
     const placeholderText = field.placeholder ? tr(field.placeholder) : undefined;
+    const hintText = getFieldHint(field);
 
     const isDisabled = isReadOnly || field.readOnly;
 
@@ -573,16 +595,17 @@ export default function PartyKycEngine({
 
     if (field.type === "checkbox") {
       return (
-        <Field key={field.name} label={labelText} required={field.required} tooltip={tooltipNode} className={colSpan}>
-          <div className="flex items-center space-x-2">
+        <Field key={field.name} tooltip={tooltipNode} hint={hintText} className={colSpan}>
+          <div className="flex items-start space-x-2">
             <Checkbox
               id={field.name}
               checked={!!value}
               disabled={isDisabled}
               onCheckedChange={(checked) => updateField(field.name, !!checked)}
             />
-            <Label htmlFor={field.name} className="text-sm">
+            <Label htmlFor={field.name} className="text-sm font-semibold leading-5">
               {labelText}
+              {field.required && <span className="text-red-600 ml-0.5">*</span>}
             </Label>
           </div>
           {error && (

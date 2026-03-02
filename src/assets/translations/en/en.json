@@ -1504,6 +1504,9 @@
     "participateNominee": "Are you planning to participate as the nominee or trustee on behalf of or on behalf of the actual owner or representative of the Hong Kong company you wish to establish?",
     "whatAddress": "What address do you want to register as a Correspondence Address that is open to the public?",
     "whatAddressInfo": "The residence address of the individual director is registered as private information, and only the communication address is disclosed to the public.",
+    "useCorrespondenceAddressService": "Use correspondence address service",
+    "useCorrespondenceAddressServiceHintStandard": "Optional service. If selected, USD 65 will be added automatically to service selection and invoice.",
+    "useCorrespondenceAddressServiceHintDcp": "Optional service. If selected, USD 260/year will be added automatically to service selection and invoice.",
     "overSeasResident": "Are you an overseas resident other than Hong Kong and are you subject to reporting of overseas corporation establishment or foreign direct investment?",
     "osRGuide": "See the guide slide below",
     "foreignDirectRep": " Have you filed a foreign direct investment report or are you planning to proceed with the above information?",
@@ -2946,7 +2949,8 @@
     "note": "Government fees are statutory and mandatory. Optional services can be toggled to customize your package.",
     "lockedNote": "After payment, selections are locked.",
     "paymentCurrency": "Payment Currency For Card Payment",
-    "currencyNote": "All prices are originally computed in USD. Conversion rates are updated live."
+    "currencyNote": "All prices are originally computed in USD. Conversion rates are updated live.",
+    "managedByPartyKyc": "Selected in Party KYC"
   },
   "mcap": {
     "common": {

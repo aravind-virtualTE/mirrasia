@@ -1500,6 +1500,9 @@
     "participateNominee": "您是否計劃代表或代為香港公司的實際擁有人或代表人，以代名人或受託人身份參與您希望成立的香港公司？",
     "whatAddress": "您希望將哪個地址註冊為公開的通訊地址？",
     "whatAddressInfo": "個人董事的住址會註冊為私人資料，只有通訊地址會向公眾披露。",
+    "useCorrespondenceAddressService": "使用通訊地址 (Correspondence Address) 服務",
+    "useCorrespondenceAddressServiceHintStandard": "選填服務。若勾選，將自動在服務選項及發票中增加 65 美元。",
+    "useCorrespondenceAddressServiceHintDcp": "選填服務。若勾選，將自動在服務選項及發票中增加每年 260 美元。",
     "overSeasResident": "您是否為香港以外的海外居民，並且需要申報海外公司成立或外國直接投資？",
     "osRGuide": "請參閱下方的指引幻燈片",
     "foreignDirectRep": "您是否已提交外國直接投資報告，或計劃以上述資料繼續進行？",
@@ -2938,7 +2941,8 @@
     "note": "政府費用為法定且強制性的。您可以切換可選服務以自定義您的方案。",
     "lockedNote": "付款後，所選項目將被鎖定，無法更改。",
     "paymentCurrency": "信用卡付款之結算貨幣",
-    "currencyNote": "所有價格最初以 USD 計算。匯率將實時更新。"
+    "currencyNote": "所有價格均以美元 (USD) 為基礎計算。匯率將會即時更新。",
+    "managedByPartyKyc": "已在相關方 KYC 中選擇"
   },
   "mcap": {
     "common": {

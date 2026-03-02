@@ -141,6 +141,13 @@ const partyRoleOptions = [
   { value: "dcp", label: "Designated Contact Person" },
 ];
 
+const hkCorrespondenceServiceEligible = (values: Record<string, any>) => {
+  const roles = Array.isArray(values?.roles)
+    ? values.roles.map((role) => String(role || "").trim().toLowerCase())
+    : [];
+  return roles.includes("director") || roles.includes("shareholder") || roles.includes("member") || roles.includes("dcp");
+};
+
 // --- HK options (mirrors ShrDirConstants keys for compatibility) ---
 const hkSignificantControllerOptions = [
   { value: "s1", label: "shldrOptions.sigNiConS1" },
@@ -849,6 +856,12 @@ const BASE_PARTY_KYC_REGISTRY: PartyFormConfig[] = [
             type: "radio",
             required: true,
             options: hkCorrespondenceAddressOptions,
+          },
+          {
+            name: "useCorrespondenceAddressService",
+            label: "hk_shldr.useCorrespondenceAddressService",
+            type: "checkbox",
+            condition: hkCorrespondenceServiceEligible,
           },
           {
             name: "overseasResidentStatus",

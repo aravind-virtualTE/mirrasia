@@ -32,6 +32,7 @@ import { ChevronLeft, ChevronRight, Loader2, Pencil, Search } from "lucide-react
 import { getMcapCompanies } from "@/services/dataFetch";
 import { MCAP_CONFIG_MAP } from "@/mcap/configs/registry";
 import api from "@/services/fetch";
+import { formatDateTime } from "@/pages/dashboard/Admin/utils";
 
 interface TokenData {
   userId: string;
@@ -124,6 +125,29 @@ const resolveCompanyName = (entry: any) => {
   );
 };
 
+const isAdminRole = (role: string) => role === "admin" || role === "master";
+
+const formatDateOnly = (value: string | Date | null | undefined) => {
+  if (!value) return "N/A";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "N/A";
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+const getOwnerUser = (entry: any) => {
+  const owner = entry?.userId;
+  return owner && typeof owner === "object" ? owner : null;
+};
+
+const resolveFilledBy = (entry: any) => {
+  const owner = getOwnerUser(entry);
+  return owner?.fullName || owner?.email || entry?.applicantName || entry?.applicantEmail || "N/A";
+};
+
 export default function McapUserDashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -153,7 +177,8 @@ export default function McapUserDashboard() {
       return { userId: "", role: "" } as TokenData;
     }
   }, [token]);
-  const canOpenAdminDetail = role !== "user";
+  const isAdminView = isAdminRole(role);
+  const canOpenAdminDetail = isAdminView;
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -523,20 +548,26 @@ export default function McapUserDashboard() {
               </div>
             </div>
           ) : (
-            <div className="rounded-md border">
-            <Table>
+            <div className="overflow-x-auto rounded-md border">
+            <Table className={isAdminView ? "min-w-[1200px]" : "min-w-[860px]"}>
               <TableHeader>
                 <TableRow>
                   <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.company", "Company")}</TableHead>
                   <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.country", "Country")}</TableHead>
                   <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.status", "Status")}</TableHead>
                   <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.payment", "Payment")}</TableHead>
+                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.incorporationDate", "Incorporation Date")}</TableHead>
+                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.createdAt", "Created At")}</TableHead>
+                  {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.assignedTo", "Assigned To")}</TableHead>}
+                  {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.filledBy", "Filled By")}</TableHead>}
+                  {isAdminView && <TableHead className="h-9 text-xs">{t("mcap.dashboard.columns.userLastLogin", "User Latest Login")}</TableHead>}
                   <TableHead className="h-9 text-right text-xs">{t("mcap.dashboard.columns.actions", "Actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedItems.map((entry) => {
                   const config = MCAP_CONFIG_MAP[entry?.countryCode] || MCAP_CONFIG_MAP[entry?.id];
+                  const ownerUser = getOwnerUser(entry);
                   // const canEdit = entry?.paymentStatus !== "paid";
                   return (
                     <TableRow
@@ -563,6 +594,32 @@ export default function McapUserDashboard() {
                           {entry?.paymentStatus || "unpaid"}
                         </Badge>
                       </TableCell>
+
+                      <TableCell className="py-2 text-xs tabular-nums">
+                        {formatDateOnly(entry?.incorporationDate)}
+                      </TableCell>
+
+                      <TableCell className="py-2 text-xs tabular-nums">
+                        {formatDateOnly(entry?.createdAt)}
+                      </TableCell>
+
+                      {isAdminView && (
+                        <TableCell className="py-2 text-xs text-muted-foreground">
+                          {entry?.assignedTo || "N/A"}
+                        </TableCell>
+                      )}
+
+                      {isAdminView && (
+                        <TableCell className="py-2 text-xs text-muted-foreground">
+                          {resolveFilledBy(entry)}
+                        </TableCell>
+                      )}
+
+                      {isAdminView && (
+                        <TableCell className="py-2 text-xs tabular-nums text-muted-foreground">
+                          {ownerUser?.lastLogin ? formatDateTime(ownerUser.lastLogin) : "N/A"}
+                        </TableCell>
+                      )}
 
                       <TableCell className="py-2 text-right">
                         <div onClick={(e) => e.stopPropagation()}>
