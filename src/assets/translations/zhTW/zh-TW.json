@@ -3500,7 +3500,7 @@
         "selectedEntity": {
           "label": "選擇英國設立路徑",
           "options": {
-            "individual": "英國公司（個人股東）",
+            "individual": "英國私營有限公司",
             "subsidiary": "外國公司的英國子公司",
             "branch": "外國公司的英國分公司（臨時定價參考個人套裝）"
           }

@@ -165,6 +165,7 @@ export const UnifiedFormEngine = ({
     const userId = currentUser?.id || null;
     const userRole = String(currentUser?.role || "").trim().toLowerCase();
     const isAdminOrMaster = userRole === "admin" || userRole === "master";
+    const allowAdminTestingBypass = ADMIN_TEST_RELAX_VALIDATION && isAdminOrMaster;
 
     const defaultData = useMemo(() => {
         const initial: Record<string, any> = {};
@@ -534,8 +535,8 @@ export const UnifiedFormEngine = ({
                     });
                     return false;
                 };
-                // TEMP (admin testing only): required-field validation is bypassed when ADMIN_TEST_RELAX_VALIDATION is true.
-                if (!ADMIN_TEST_RELAX_VALIDATION && missingFields.length > 0) {
+                // TEMP (admin testing only): required-field validation is bypassed only for admin/master when ADMIN_TEST_RELAX_VALIDATION is true.
+                if (!allowAdminTestingBypass && missingFields.length > 0) {
                     const persisted = await persistBlockedDraftIfNeeded();
                     if (!persisted) return;
                     toast({
@@ -1073,7 +1074,7 @@ export const UnifiedFormEngine = ({
 
     // TEMP (admin testing only): only admin/master can use relaxed sidebar jumping.
     const canJumpTo = (idx: number) => {
-        if (ADMIN_TEST_RELAX_VALIDATION && isAdminOrMaster) {
+        if (allowAdminTestingBypass) {
             return currentStepIdx > 0 || idx <= currentStepIdx;
         }
         return idx <= currentStepIdx;
@@ -1300,7 +1301,7 @@ export const UnifiedFormEngine = ({
                                 </div>
                             )}
 
-                            {!ADMIN_TEST_RELAX_VALIDATION && missingFields.length > 0 && currentStep.widget !== "PaymentWidget" && (
+                            {!allowAdminTestingBypass && missingFields.length > 0 && currentStep.widget !== "PaymentWidget" && (
                                 <div className="text-xs sm:text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-3">
                                     <strong>{t("common.required", "Required")}:</strong> {missingFields.join(", ")}
                                 </div>
@@ -1336,3 +1337,7 @@ export const UnifiedFormEngine = ({
         </div>
     );
 };
+
+
+
+
