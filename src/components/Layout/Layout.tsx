@@ -142,7 +142,7 @@ const Layout: React.FC = () => {
       {
         id: "services",
         icon: Briefcase,
-        label: "Services",
+        label: t("sideItems.services"),
         roles: ["user", "admin", "master"],
         children: [
           {
