@@ -30,10 +30,8 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import InvoicePreview from "../NewHKForm/NewInvoicePreview";
 import DetailShdHk from "@/components/shareholderDirector/detailShddHk";
@@ -108,7 +106,9 @@ export type OnboardingRecord = {
     bizdesc?: string;
     currency?: string;
     capAmount?: string;
+    capOther?: string;
     shareCount?: string;
+    shareOther?: string;
     stripeLastStatus?: string;
     stripeReceiptUrl?: string;
     finalAmount?: string;
@@ -290,9 +290,19 @@ function PartyRow({ p, totalShares, onClick, onSendInvite, onDelete, isEditing, 
         <div className="flex flex-col gap-2">
           {/* Type + Director badge/toggle */}
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary">
-              {p.isCorp ? "Corporate" : "Individual"}
-            </Badge>
+            {isEditing ? (
+              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <Badge variant="secondary">{p.isCorp ? "Corporate" : "Individual"}</Badge>
+                <Switch
+                  checked={!!p.isCorp}
+                  onCheckedChange={(checked) => onChange?.({ isCorp: checked })}
+                />
+              </div>
+            ) : (
+              <Badge variant="secondary">
+                {p.isCorp ? "Corporate" : "Individual"}
+              </Badge>
+            )}
 
             {isEditing ? (
               <div
@@ -499,6 +509,15 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
   const patchCompany = (key: keyof OnboardingRecord, val: any) =>
     setData((d) => (d ? { ...d, [key]: val } : d));
+
+  const getOptionDisplay = (
+    options: ReadonlyArray<{ label: string; value: string }>,
+    value?: string
+  ) => {
+    if (!value) return "—";
+    const option = options.find((o) => o.value === value);
+    return option ? t(option.label as any, option.label) : value;
+  };
 
   const onSave = async () => {
     if (!data) return;
@@ -740,7 +759,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                           <div className="mt-2 flex flex-wrap items-center gap-2">
                             <Badge variant="secondary" className="text-muted-foreground">{currentStep}</Badge>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground">Incorporation Status</span>
+                              <span className="text-xs text-muted-foreground">Status</span>
                               {user.role !== "user" ? (
                                 <Select
                                   value={data?.incorporationStatus || "Pending"}
@@ -761,6 +780,18 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                                 <Badge variant="default">{data?.incorporationStatus || "Pending"}</Badge>
                               )}
                             </div>
+                            <LabelValue label="Incorporation Date">
+                              {isEditing && isAdmin ? (
+                                <Input
+                                  type="date"
+                                  value={data.incorporationDate ? String(data.incorporationDate).slice(0, 10) : ""}
+                                  onChange={(e) => patchCompany("incorporationDate", e.target.value)}
+                                  className="h-8"
+                                />
+                              ) : (
+                                <span>{data.incorporationDate ? fmtDate(data.incorporationDate) : "—"}</span>
+                              )}
+                            </LabelValue>
                           </div>
                         </div>
 
@@ -966,35 +997,60 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
 
                     <LabelValue label="Declared Capital">
                       {isEditing ? (
-                        <Select value={String(f.capAmount ?? "")} onValueChange={(v) => patchForm("capAmount", v)}>
-                          <SelectTrigger className="h-8">
-                            <SelectValue placeholder={t("common.select", "Select")} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {capitalAmountOptions.map((o) => (
-                              <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="space-y-2">
+                          <Select value={String(f.capAmount ?? "")} onValueChange={(v) => patchForm("capAmount", v)}>
+                            <SelectTrigger className="h-8">
+                              <SelectValue placeholder={t("common.select", "Select")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {capitalAmountOptions.map((o) => (
+                                <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {f.capAmount === "other" && (
+                            <Input
+                              type="number"
+                              placeholder={t("newHk.company.fields.capOther.placeholder", "Enter custom capital amount")}
+                              value={(data?.form as any)?.capOther ?? ""}
+                              onChange={(e) => patchForm("capOther", e.target.value)}
+                              className="h-8"
+                            />
+                          )}
+                        </div>
                       ) : (
-                        f.capAmount || "—"
+                        f.capAmount === "other"
+                          ? (f.capOther || "—")
+                          : getOptionDisplay(capitalAmountOptions, f.capAmount)
                       )}
                     </LabelValue>
-
                     <LabelValue label="Total Shares">
                       {isEditing ? (
-                        <Select value={String(f.shareCount ?? "")} onValueChange={(v) => patchForm("shareCount", v)}>
-                          <SelectTrigger className="h-8">
-                            <SelectValue placeholder={t("common.select", "Select")} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {shareCountOptions.map((o) => (
-                              <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="space-y-2">
+                          <Select value={String(f.shareCount ?? "")} onValueChange={(v) => patchForm("shareCount", v)}>
+                            <SelectTrigger className="h-8">
+                              <SelectValue placeholder={t("common.select", "Select")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {shareCountOptions.map((o) => (
+                                <SelectItem key={o.value} value={o.value}>{t(o.label as any, o.label)}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {f.shareCount === "other" && (
+                            <Input
+                              type="number"
+                              placeholder={t("newHk.company.fields.shareOther.placeholder", "Enter custom share count")}
+                              value={(data?.form as any)?.shareOther ?? ""}
+                              onChange={(e) => patchForm("shareOther", e.target.value)}
+                              className="h-8"
+                            />
+                          )}
+                        </div>
                       ) : (
-                        f.shareCount || "—"
+                        f.shareCount === "other"
+                          ? (f.shareOther || "—")
+                          : getOptionDisplay(shareCountOptions, f.shareCount)
                       )}
                     </LabelValue>
                     <LabelValue label="Financial Year End">
@@ -1010,7 +1066,7 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                           </SelectContent>
                         </Select>
                       ) : (
-                        f.finYrEnd || "—"
+                        getOptionDisplay(finYearOptions, f.finYrEnd)
                       )}
                     </LabelValue>
                     <LabelValue label="Bookkeeping Cycle">
@@ -1099,56 +1155,6 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
                   <Separator />
                   {/* Incorporation date + AML/CDD toggle */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <LabelValue label="Incorporation Date">
-                      <div className="flex items-center gap-2">
-                        <span>
-                          {data.incorporationDate
-                            ? fmtDate(data.incorporationDate)
-                            : "—"}
-                        </span>
-                        {isAdmin && (
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                Edit
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Edit Incorporation Date</DialogTitle>
-                                <DialogDescription>
-                                  Set the date when the company was officially registered.
-                                </DialogDescription>
-                              </DialogHeader>
-                              <div className="grid gap-4 py-2">
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label
-                                    htmlFor="incorporationDate"
-                                    className="text-right"
-                                  >
-                                    Date
-                                  </Label>
-                                  <Input
-                                    id="incorporationDate"
-                                    type="date"
-                                    value={
-                                      data.incorporationDate
-                                        ? String(data.incorporationDate).slice(0, 10)
-                                        : ""
-                                    }
-                                    onChange={(e) =>
-                                      patchCompany("incorporationDate", e.target.value)
-                                    }
-                                    className="col-span-3"
-                                  />
-                                </div>
-                              </div>
-                            </DialogContent>
-                          </Dialog>
-                        )}
-                      </div>
-                    </LabelValue>
-
                     <LabelValue label="AML/CDD Edit">
                       <div className="flex items-center gap-2">
                         {/* true = enabled => !isDisabled */}
@@ -1410,3 +1416,4 @@ export default function HKCompDetailSummary({ id }: { id: string }) {
     </Tabs>
   );
 }
+

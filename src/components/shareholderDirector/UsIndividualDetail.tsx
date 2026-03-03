@@ -60,10 +60,38 @@ export interface UsIndividualShareholder {
 interface UsIndividualShdrDetailDialogProps {
     isOpen: boolean;
     onClose: () => void;
-    data: UsIndividualShareholder | null;
+    data: UsIndividualShareholder | { data?: UsIndividualShareholder } | null;
 }
 
-/* ---------- helpers ---------- */
+const toStringArray = (value: unknown): string[] => {
+    if (Array.isArray(value)) {
+        return value.map((item) => String(item ?? "").trim()).filter(Boolean);
+    }
+
+    if (typeof value === "string") {
+        const trimmed = value.trim();
+        if (!trimmed) return [];
+        if (trimmed.includes(",")) {
+            return trimmed.split(",").map((v) => v.trim()).filter(Boolean);
+        }
+        return [trimmed];
+    }
+
+    return [];
+};
+
+const normalizeUsIndividualData = (raw: any): UsIndividualShareholder | null => {
+    if (!raw || typeof raw !== "object") return null;
+
+    return {
+        ...(raw as UsIndividualShareholder),
+        mailingAdress: raw.mailingAdress ?? raw.mailingAddress ?? "",
+        relationWithUs: toStringArray(raw.relationWithUs),
+        sourceOfFunds: toStringArray(raw.sourceOfFunds),
+        sourceReceivedUs: toStringArray(raw.sourceReceivedUs),
+        sourceWithDrawUs: toStringArray(raw.sourceWithDrawUs),
+    };
+};
 
 const formatDate = (value?: string) => {
     if (!value) return "-";
@@ -95,7 +123,7 @@ const mapArrayFromMap = (
     map: { key: string; value: string }[],
     t: (k: string) => string
 ): string[] => {
-    if (!keys || !keys.length) return [];
+    if (!keys || !Array.isArray(keys) || !keys.length) return [];
     return keys.map((k) => {
         const found = map.find((m) => m.key === k);
         return found ? t(found.value) : k;
@@ -181,8 +209,12 @@ const sourceWithdrawUsMap = [
 
 const UsIndividualShdrDetail: React.FC<
     UsIndividualShdrDetailDialogProps
-> = ({ isOpen, onClose, data }) => {
+> = ({ isOpen, onClose, data: rawData }) => {
     const { t } = useTranslation();
+    const resolvedData = (rawData as any)?.data && typeof (rawData as any).data === "object"
+        ? (rawData as any).data
+        : rawData;
+    const data = normalizeUsIndividualData(resolvedData);
 
     if (!data) return null;
 
@@ -238,7 +270,7 @@ const UsIndividualShdrDetail: React.FC<
         const isPDF = isFile
             ? fileValue.type === "application/pdf"
             : /\.pdf$/i.test(fileName);
-
+        console.log("data",data)
         return (
             <div className="mb-4">
                 <div className="text-sm font-medium mb-1">{label}</div>
@@ -336,7 +368,7 @@ const UsIndividualShdrDetail: React.FC<
                     )}
                 </DialogHeader>
 
-                <ScrollArea className="h-[calc(90vh-5rem)] px-6 pb-6">
+                <ScrollArea className="h-[calc(90vh-5rem)] px-6 pb-6 [&>[data-radix-scroll-area-viewport]>div]:!block [&>[data-radix-scroll-area-viewport]>div]:!min-w-0">
                     {/* 1. Basic Info & Contact */}
                     <Section title="1) Basic Information & Contact">
                         <div className="space-y-2">
@@ -561,16 +593,29 @@ function Section({
 
 interface RowProps {
     label: string;
-    value?: React.ReactNode;
+    value?: unknown;
     isBadges?: boolean;
     badges?: string[];
 }
 
 function Row({ label, value, isBadges, badges = [] }: RowProps) {
+    const renderValue = () => {
+        if (value === null || value === undefined) return "-";
+        if (typeof value === "string") return value.trim() || "-";
+        if (typeof value === "number") return Number.isFinite(value) ? String(value) : "-";
+        if (typeof value === "boolean") return value ? "Yes" : "No";
+        if (Array.isArray(value)) {
+            const joined = value.map((v) => String(v ?? "").trim()).filter(Boolean).join(", ");
+            return joined || "-";
+        }
+        if (React.isValidElement(value)) return value;
+        return String(value);
+    };
+
     return (
-        <div className="grid grid-cols-2 gap-2 text-sm mb-1">
+        <div className="grid w-full min-w-0 [grid-template-columns:220px_minmax(0,1fr)] md:[grid-template-columns:260px_minmax(0,1fr)] gap-3 text-sm mb-1">
             <div className="text-muted-foreground font-medium">{label}</div>
-            <div className="font-medium">
+            <div className="min-w-0 break-words text-black dark:text-white" style={{ fontWeight: 500 }}>
                 {isBadges ? (
                     badges.length ? (
                         <div className="flex flex-wrap gap-1">
@@ -584,7 +629,7 @@ function Row({ label, value, isBadges, badges = [] }: RowProps) {
                         "-"
                     )
                 ) : (
-                    (value as React.ReactNode) ?? "-"
+                    renderValue()
                 )}
             </div>
         </div>

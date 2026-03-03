@@ -139,6 +139,15 @@ export const updateEditValues = async (data: string) => {
   }
 }
 
+export const saveOrUpdatePaComp = async (data: any) => {
+  try {
+    const response = await api.post('company/pa-form', data);
+    return response.data;
+  } catch (error) {
+    console.error("Error saving Panama form data:", error);
+  }
+}
+
 
 export const saveShrDirRegData = async (data: ShareHolderRegistrationForm, id?: string) => {
   try {
@@ -605,5 +614,154 @@ export const deleteCommonIncorpo = async (countryCode: string, id: string) => {
     return res.data;
   } catch (error) {
     console.error("Error deleting common company data:", error);
+  }
+};
+
+export const getMcapCompanies = async (params?: {
+  userId?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: "country" | "status" | "payment";
+  sortOrder?: "asc" | "desc";
+  filter?:
+    | "all"
+    | "pending"
+    | "paid"
+    | "document_collection"
+    | "new_incorporation"
+    | "renewal_in_progress"
+    | "renewed"
+    | "rejected";
+  search?: string;
+  withMeta?: boolean;
+  includeCounts?: boolean;
+}) => {
+  try {
+    const finalParams = {
+      limit: 0,
+      ...(params || {}),
+    };
+    const response = await api.get("mcap/companies", {
+      params: finalParams,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching MCAP companies:", error);
+    return [];
+  }
+};
+
+export const getMcapCompanyDocuments = async (companyId: string) => {
+  try {
+    const response = await api.get(`mcap/companies/${companyId}/documents`);
+    return response.data?.data ?? response.data;
+  } catch (error) {
+    console.error("Error fetching MCAP company documents:", error);
+    throw error;
+  }
+};
+
+export const uploadMcapCompanyDocuments = async (companyId: string, companiesData: Company[]) => {
+  const formData = new FormData();
+
+  const sanitizedCompanies = companiesData.map((company) => ({
+    ...company,
+    companyDocs: (company.companyDocs ?? []).map((doc) => {
+      const { file, ...rest } = doc;
+      return rest;
+    }),
+    kycDocs: (company.kycDocs ?? []).map((doc) => {
+      const { file, ...rest } = doc;
+      return rest;
+    }),
+    letterDocs: (company.letterDocs ?? []).map((doc) => {
+      const { file, ...rest } = doc;
+      return rest;
+    }),
+  }));
+
+  formData.append("data", JSON.stringify(sanitizedCompanies));
+
+  companiesData.forEach((company) => {
+    (company.companyDocs ?? []).forEach((doc) => {
+      if (doc.file) {
+        formData.append("companyDocs", doc.file, doc.docName);
+      }
+    });
+    (company.kycDocs ?? []).forEach((doc) => {
+      if (doc.file) {
+        formData.append("kycDocs", doc.file, doc.docName);
+      }
+    });
+    (company.letterDocs ?? []).forEach((doc) => {
+      if (doc.file) {
+        formData.append("letterDocs", doc.file, doc.docName);
+      }
+    });
+  });
+
+  try {
+    const response = await api.post(`mcap/companies/${companyId}/documents`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data?.data ?? response.data;
+  } catch (error) {
+    console.error("Error uploading MCAP company documents:", error);
+    throw error;
+  }
+};
+
+export const deleteMcapCompanyDocument = async (companyId: string, documentId: string) => {
+  try {
+    const response = await api.delete(`mcap/companies/${companyId}/documents/${documentId}`);
+    return response.data?.data ?? response.data;
+  } catch (error) {
+    console.error("Error deleting MCAP company document:", error);
+    throw error;
+  }
+};
+
+export const upsertMcapDocumentComment = async (
+  companyId: string,
+  payload: {
+    _id?: string;
+    docId: string;
+    docType: "companyDocs" | "kycDocs" | "letterDocs";
+    text: string;
+    userId?: string;
+  }
+) => {
+  try {
+    const response = await api.post(`mcap/companies/${companyId}/document-comments/upsert`, payload);
+    return response.data?.data ?? response.data;
+  } catch (error) {
+    console.error("Error upserting MCAP document comment:", error);
+    throw error;
+  }
+};
+
+export const deleteMcapDocumentComment = async (
+  companyId: string,
+  commentId: string,
+  payload?: { userId?: string }
+) => {
+  try {
+    const response = await api.delete(`mcap/companies/${companyId}/document-comments/${commentId}`, {
+      data: payload || {},
+    });
+    return response.data?.data ?? response.data;
+  } catch (error) {
+    console.error("Error deleting MCAP document comment:", error);
+    throw error;
+  }
+};
+export const generateUploadToken = async () => {
+  try {
+    const response = await api.get("user/generate-upload-token");
+    return response.data;
+  } catch (error) {
+    console.error("Error generating upload token:", error);
   }
 };

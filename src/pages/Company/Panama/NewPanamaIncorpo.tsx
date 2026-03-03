@@ -1958,7 +1958,7 @@ function computeSgGrandTotal(app: any): number {
     }
 
     const currency = app.stripeCurrency;
-    const cardFeeRate = currency && String(currency).toUpperCase() == "USD" ? 0.06 : 0.035;
+    const cardFeeRate = currency && String(currency).toUpperCase() == "USD" ? 0.06 : 0.04;
     const needsCardFee = app?.payMethod === "card";
 
     const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
@@ -3116,7 +3116,6 @@ const CONFIG: FormConfig = {
         {
             id: "invoice",
             title: "usa.steps.step6",
-            description: "usa.steps.invoice.description",
             render: PanamaQuoteSetupStep,
         },
         {
@@ -3127,7 +3126,7 @@ const CONFIG: FormConfig = {
         },
         {
             id: "incorp",
-            title: "usa.steps.step9",
+            title: "ppif.congrats",
             description: "usa.steps.incorp.description",
             render: CongratsStep,
         },

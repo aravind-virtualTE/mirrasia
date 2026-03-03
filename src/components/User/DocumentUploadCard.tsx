@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import { t } from "i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Upload,
@@ -40,27 +41,28 @@ interface DocumentUploadCardProps {
   onRemove: (id: string) => void;
   onDelete?: (url: string) => void;
   onView?: (url: string) => void;
+  uploadLabel?: string;
 }
 
 const statusConfig = {
   pending: {
     icon: Clock,
-    label: "Pending Review",
+    labelKey: "userProfile.verification.status.pending",
     className: "status-pending",
   },
   uploaded: {
     icon: Sparkles,
-    label: "Uploaded",
+    labelKey: "userProfile.verification.status.uploaded",
     className: "status-uploaded",
   },
   accepted: {
     icon: CheckCircle,
-    label: "Accepted",
+    labelKey: "userProfile.verification.status.accepted",
     className: "status-verified",
   },
   rejected: {
     icon: AlertCircle,
-    label: "Rejected",
+    labelKey: "userProfile.verification.status.rejected",
     className: "status-rejected",
   },
 };
@@ -79,6 +81,7 @@ export function DocumentUploadCard({
   onRemove,
   onDelete,
   onView,
+  uploadLabel,
 }: DocumentUploadCardProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [previewDoc, setPreviewDoc] = useState<UploadedDocument | null>(null);
@@ -128,9 +131,9 @@ export function DocumentUploadCard({
     return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
   };
 
-  console.log("status",existingStatus)
   const status = statusConfig[existingStatus as keyof typeof statusConfig] || statusConfig.pending;
   const StatusIcon = status.icon;
+  // console.log("status", status)
 
   return (
     <motion.div
@@ -153,7 +156,7 @@ export function DocumentUploadCard({
         {existingUrl && (
           <div className={cn("status-badge", status.className)}>
             <StatusIcon className="w-3.5 h-3.5" />
-            {status.label}
+            {t(status.labelKey)}
           </div>
         )}
       </div>
@@ -171,8 +174,8 @@ export function DocumentUploadCard({
                 <CheckCircle className="w-6 h-6 text-success" />
               </div>
               <div>
-                <p className="font-medium text-foreground">Document Submitted</p>
-                <p className="text-sm text-muted-foreground">Click to view or delete</p>
+                <p className="font-medium text-foreground">{t("userProfile.upload.submitted")}</p>
+                <p className="text-sm text-muted-foreground">{t("userProfile.upload.submittedDesc")}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -184,7 +187,7 @@ export function DocumentUploadCard({
                   className="gap-2"
                 >
                   <Eye className="w-4 h-4" />
-                  View
+                  {t("userProfile.actions.view")}
                 </Button>
               )}
               {onDelete && (
@@ -195,7 +198,7 @@ export function DocumentUploadCard({
                   className="gap-2"
                 >
                   <Trash2 className="w-4 h-4" />
-                  Delete
+                  {t("userProfile.actions.delete")}
                 </Button>
               )}
             </div>
@@ -228,16 +231,16 @@ export function DocumentUploadCard({
               <Upload className="w-8 h-8 text-primary" />
             </div>
             <p className="font-medium text-foreground mb-1">
-              {isDragging ? "Drop your file here" : "Drag & drop your file"}
+              {isDragging ? t("userProfile.upload.drop") : (uploadLabel || t("userProfile.upload.dragDrop"))}
             </p>
             <p className="text-sm text-muted-foreground mb-4">
-              or click to browse from your device
+              {t("userProfile.upload.browse")}
             </p>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="px-2 py-1 rounded-md bg-muted">JPEG</span>
               <span className="px-2 py-1 rounded-md bg-muted">PNG</span>
               <span className="px-2 py-1 rounded-md bg-muted">PDF</span>
-              <span className="text-muted-foreground">up to {maxSize}MB</span>
+              <span className="text-muted-foreground">{t("userProfile.upload.upTo", { size: maxSize })}</span>
             </div>
           </motion.div>
         </div>

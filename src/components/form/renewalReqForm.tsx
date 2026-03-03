@@ -3,56 +3,56 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup,RadioGroupItem } from "../ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 const RenewalRequestForm = () => {
-    const [formState, setFormState] = useState({
-        email: "",
-        companyName: "",
-        applicantName: "",
-        industries: [] as string[],
-        otherIndustry: "",
-        incomingTransactions: [] as string[],
-        otherIncoming: "",
-        outgoingTransactions: [] as string[],
-        otherOutgoing: "",
-        changeParticulars: "",        
-        contactPersonChange: "",     
-        originOfFunds: [] as string[],  
-        otherOrigin: "",
-        contactChanges: [] as string[],
-        otherContactChange: "",
-        bodyCorporateShareholder: "",
-        paymentMethod: [] as string[],
-        otherPayment: "",
-    
+  const [formState, setFormState] = useState({
+    email: "",
+    companyName: "",
+    applicantName: "",
+    industries: [] as string[],
+    otherIndustry: "",
+    incomingTransactions: [] as string[],
+    otherIncoming: "",
+    outgoingTransactions: [] as string[],
+    otherOutgoing: "",
+    changeParticulars: "",
+    contactPersonChange: "",
+    originOfFunds: [] as string[],
+    otherOrigin: "",
+    contactChanges: [] as string[],
+    otherContactChange: "",
+    bodyCorporateShareholder: "",
+    paymentMethod: [] as string[],
+    otherPayment: "",
 
-      });
-      
 
-      const [errors, setErrors] = useState({
-        email: "",
-        companyName: "",
-        applicantName: "",
-        industries: "",
-        incomingTransactions: "",
-        outgoingTransactions: "",
-        changeParticulars: "",       
-        contactPersonChange: "",      
-        originOfFunds: "",
-        contactChanges: "",
-        bodyCorporateShareholder: "",
-        paymentMethod: "",
-        
-      });
-      const paymentOptions = [
-        "Credit Card or Debit Card Payment (3.5% processing fee will be incurred additionally)",
-        "Telegraphic Transfer or Hong Kong Local transfer (All the bank charges are requested to be borne by remitter)",
-      ];
-    
-      
+  });
+
+
+  const [errors, setErrors] = useState({
+    email: "",
+    companyName: "",
+    applicantName: "",
+    industries: "",
+    incomingTransactions: "",
+    outgoingTransactions: "",
+    changeParticulars: "",
+    contactPersonChange: "",
+    originOfFunds: "",
+    contactChanges: "",
+    bodyCorporateShareholder: "",
+    paymentMethod: "",
+
+  });
+  const paymentOptions = [
+    "Credit Card or Debit Card Payment (4% for HKD, 6% for USD fee )",
+    "Telegraphic Transfer or Hong Kong Local transfer (All the bank charges are requested to be borne by remitter)",
+  ];
+
+
 
   const industryOptions = [
     "Trade",
@@ -126,27 +126,27 @@ const RenewalRequestForm = () => {
       contactPersonChange: formState.contactPersonChange
         ? ""
         : "Please answer if the designated contact person has changed.",
-        contactChanges: formState.contactChanges.length
+      contactChanges: formState.contactChanges.length
         ? ""
         : "Please select at least one contact change option.",
       bodyCorporateShareholder: formState.bodyCorporateShareholder
         ? ""
         : "Please select an option for Body Corporate Shareholder.",
-        paymentMethod: formState.paymentMethod.length
+      paymentMethod: formState.paymentMethod.length
         ? ""
         : "Please select at least one payment method.",
 
     };
-    
-  
+
+
     setErrors(newErrors);
-  
+
     if (Object.values(newErrors).every((error) => error === "")) {
       console.log("Form Submitted Successfully:", formState);
       alert("Form submitted successfully!");
     }
   };
-  
+
 
   return (
     <Card>
@@ -178,18 +178,18 @@ const RenewalRequestForm = () => {
               https://pf.kakao.com/_KxmnZT
             </a>
           </p>
-          
-                <p className="mt-6">
-                    This application is in the form of a questionnaire about information
-                    necessary for the company to proceed with the renewal. If you write the
-                    exact details as possible for the question, the person in charge will
-                    provide feedback immediately. If you have any difficulties in answering
-                    questions, please contact us at the contact information above.
-                 </p>
-                 <p className="text-red-500 text-sm font-medium mt-3">
-          * Indicates required question
-        </p>
-          </div>
+
+          <p className="mt-6">
+            This application is in the form of a questionnaire about information
+            necessary for the company to proceed with the renewal. If you write the
+            exact details as possible for the question, the person in charge will
+            provide feedback immediately. If you have any difficulties in answering
+            questions, please contact us at the contact information above.
+          </p>
+          <p className="text-red-500 text-sm font-medium mt-3">
+            * Indicates required question
+          </p>
+        </div>
 
         {/* Email */}
         <div className="mt-6 ">
@@ -233,7 +233,7 @@ const RenewalRequestForm = () => {
             </Alert>
           )}
         </div>
-          <p className="mt-6 text-black-500">Please Provide Information of HK company and related businesses</p>
+        <p className="mt-6 text-black-500">Please Provide Information of HK company and related businesses</p>
         {/* Industry Selection */}
         <div className="mt-4 space-y-2">
           <Label>Select Industry <span className="text-red-500">*</span></Label>
@@ -320,172 +320,172 @@ const RenewalRequestForm = () => {
           )}
         </div>
 
-     {/* Origin of Source of Funds */}
-<div className="mt-6">
-  <Label className="text-sm font-bold">
-    Origin of Source of Funds <span className="text-red-500">*</span>
-  </Label>
-  <div className="mt-4 space-y-2">
-    {["Hong Kong", "United States", "China"].map((country) => (
-      <div key={country} className="flex items-center space-x-2">
-        <Checkbox
-          id={country}
-          checked={formState.incomingTransactions.includes(country)}
-          onCheckedChange={(checked) =>
-            handleChange(
-              "incomingTransactions",
-              checked
-                ? [...formState.incomingTransactions, country]
-                : formState.incomingTransactions.filter((c) => c !== country)
-            )
-          }
-        />
-        <Label htmlFor={country} className="text-sm">
-          {country}
-        </Label>
-      </div>
-    ))}
-    {/* Other Option */}
-    <div className="flex items-center space-x-2 mt-2">
-      <Checkbox
-        id="otherIncoming"
-        checked={!!formState.otherIncoming}
-        onCheckedChange={(checked) => handleChange("otherIncoming", checked ? "" : "")}
-      />
-      <Label htmlFor="otherIncoming" className="text-sm">Other:</Label>
-      <Input
-        placeholder="Specify other origin"
-        value={formState.otherIncoming}
-        onChange={(e) => handleChange("otherIncoming", e.target.value)}
-        className="w-full"
-      />
-    </div>
-  </div>
-  {/* Error Message */}
-  {errors.incomingTransactions && (
-    <Alert variant="destructive" className="mt-2">
-      <AlertDescription>{errors.incomingTransactions}</AlertDescription>
-    </Alert>
-  )}
-</div>
-
-{/* Change in Particulars */}
-<div className="mt-6">
-  <Label className="text-sm font-bold">
-    Regarding the shareholder/director/designated contact person registered in
-    a Hong Kong company, is there any change in particulars for the past 1 year,
-    such as passport number, residential address?{" "}
-    <span className="text-red-500">*</span>
-  </Label>
-  <RadioGroup
-    value={formState.changeParticulars}
-    onValueChange={(value) => handleChange("changeParticulars", value)}
-    className="mt-4 space-y-2"
-  >
-    <div className="flex items-center space-x-2">
-      <RadioGroupItem id="change-yes" value="Yes" />
-      <Label htmlFor="change-yes" className="text-sm">
-        Yes (Please provide relevant documents)
-      </Label>
-    </div>
-    <div className="flex items-center space-x-2">
-      <RadioGroupItem id="change-no" value="No" />
-      <Label htmlFor="change-no" className="text-sm">
-        No (Please provide latest residential address proof issued within 3
-        months)
-      </Label>
-    </div>
-  </RadioGroup>
-  {errors.changeParticulars && (
-    <Alert variant="destructive" className="mt-2">
-      <AlertDescription>{errors.changeParticulars}</AlertDescription>
-    </Alert>
-  )}
-</div>
-
-{/* Designated Contact Person Change */}
-            <div className="mt-8 border-t pt-6">
-              <Label className="text-sm font-bold">
-                Has the designated contact person changed to another person?{" "}
-                <span className="text-red-500">*</span>
-              </Label>
-              <RadioGroup
-                value={formState.contactPersonChange}
-                onValueChange={(value) => handleChange("contactPersonChange", value)}
-                className="mt-4 space-y-2"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem id="contact-yes" value="Yes" />
-                  <Label htmlFor="contact-yes" className="text-sm">
-                    Yes (Please provide the valid passport copy and latest residential
-                    address issued within last 3 months of new designated contact person)
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem id="contact-no" value="No" />
-                  <Label htmlFor="contact-no" className="text-sm">
-                    No (Please provide the latest residential address proof issued within
-                    last three months)
-                  </Label>
-                </div>
-              </RadioGroup>
-              {errors.contactPersonChange && (
-                <Alert variant="destructive" className="mt-2">
-                  <AlertDescription>{errors.contactPersonChange}</AlertDescription>
-                </Alert>
-              )}
+        {/* Origin of Source of Funds */}
+        <div className="mt-6">
+          <Label className="text-sm font-bold">
+            Origin of Source of Funds <span className="text-red-500">*</span>
+          </Label>
+          <div className="mt-4 space-y-2">
+            {["Hong Kong", "United States", "China"].map((country) => (
+              <div key={country} className="flex items-center space-x-2">
+                <Checkbox
+                  id={country}
+                  checked={formState.incomingTransactions.includes(country)}
+                  onCheckedChange={(checked) =>
+                    handleChange(
+                      "incomingTransactions",
+                      checked
+                        ? [...formState.incomingTransactions, country]
+                        : formState.incomingTransactions.filter((c) => c !== country)
+                    )
+                  }
+                />
+                <Label htmlFor={country} className="text-sm">
+                  {country}
+                </Label>
+              </div>
+            ))}
+            {/* Other Option */}
+            <div className="flex items-center space-x-2 mt-2">
+              <Checkbox
+                id="otherIncoming"
+                checked={!!formState.otherIncoming}
+                onCheckedChange={(checked) => handleChange("otherIncoming", checked ? "" : "")}
+              />
+              <Label htmlFor="otherIncoming" className="text-sm">Other:</Label>
+              <Input
+                placeholder="Specify other origin"
+                value={formState.otherIncoming}
+                onChange={(e) => handleChange("otherIncoming", e.target.value)}
+                className="w-full"
+              />
             </div>
-{/* Contact Information Change Section */}
-              <div className="mt-6">
-                        <Label className="text-sm font-bold">
-                          If the contact information of the shareholder(s)/director(s)/designated contact person has changed, please check the relevant information and write it in the "Others" section.
-                          <span className="text-red-500">*</span></Label>
-                        <div className="mt-4 space-y-2">
-                          {["Email", "Mobile Phone", "Office Tel", "No change"].map((item) => (
-                            <div key={item} className="flex items-center space-x-2">
-                              <Checkbox
-                                id={item}
-                                checked={formState.contactChanges.includes(item)}
-                                onCheckedChange={(checked) =>
-                                  handleChange(
-                                    "contactChanges",
-                                    checked
-                                      ? [...formState.contactChanges, item]
-                                      : formState.contactChanges.filter((i) => i !== item)
-                                  )
-                                }
-                              />
-                              <Label htmlFor={item} className="text-sm">
-                                {item}
-                              </Label>
-                            </div>
-                          ))}
-                          {/* Other Option */}
-                          <div className="flex items-center space-x-2 mt-2">
-                            <Checkbox
-                              id="Other"
-                              checked={!!formState.otherContactChange}
-                              onCheckedChange={(checked) =>
-                                handleChange("otherContactChange", checked ? "" : "")
-                              }
-                            />
-                            <Label htmlFor="Other" className="text-sm">Other:</Label>
-                            <Input
-                              placeholder="Specify other contact change"
-                              value={formState.otherContactChange}
-                              onChange={(e) =>
-                                handleChange("otherContactChange", e.target.value)
-                              }
-                              className="w-full"
-                            />
-                          </div>
-                        </div>
-                        {errors.contactChanges && (
-                          <Alert variant="destructive" className="mt-2">
-                            <AlertDescription>{errors.contactChanges}</AlertDescription>
-                          </Alert>
-                        )}
-                      </div>
+          </div>
+          {/* Error Message */}
+          {errors.incomingTransactions && (
+            <Alert variant="destructive" className="mt-2">
+              <AlertDescription>{errors.incomingTransactions}</AlertDescription>
+            </Alert>
+          )}
+        </div>
+
+        {/* Change in Particulars */}
+        <div className="mt-6">
+          <Label className="text-sm font-bold">
+            Regarding the shareholder/director/designated contact person registered in
+            a Hong Kong company, is there any change in particulars for the past 1 year,
+            such as passport number, residential address?{" "}
+            <span className="text-red-500">*</span>
+          </Label>
+          <RadioGroup
+            value={formState.changeParticulars}
+            onValueChange={(value) => handleChange("changeParticulars", value)}
+            className="mt-4 space-y-2"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem id="change-yes" value="Yes" />
+              <Label htmlFor="change-yes" className="text-sm">
+                Yes (Please provide relevant documents)
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem id="change-no" value="No" />
+              <Label htmlFor="change-no" className="text-sm">
+                No (Please provide latest residential address proof issued within 3
+                months)
+              </Label>
+            </div>
+          </RadioGroup>
+          {errors.changeParticulars && (
+            <Alert variant="destructive" className="mt-2">
+              <AlertDescription>{errors.changeParticulars}</AlertDescription>
+            </Alert>
+          )}
+        </div>
+
+        {/* Designated Contact Person Change */}
+        <div className="mt-8 border-t pt-6">
+          <Label className="text-sm font-bold">
+            Has the designated contact person changed to another person?{" "}
+            <span className="text-red-500">*</span>
+          </Label>
+          <RadioGroup
+            value={formState.contactPersonChange}
+            onValueChange={(value) => handleChange("contactPersonChange", value)}
+            className="mt-4 space-y-2"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem id="contact-yes" value="Yes" />
+              <Label htmlFor="contact-yes" className="text-sm">
+                Yes (Please provide the valid passport copy and latest residential
+                address issued within last 3 months of new designated contact person)
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem id="contact-no" value="No" />
+              <Label htmlFor="contact-no" className="text-sm">
+                No (Please provide the latest residential address proof issued within
+                last three months)
+              </Label>
+            </div>
+          </RadioGroup>
+          {errors.contactPersonChange && (
+            <Alert variant="destructive" className="mt-2">
+              <AlertDescription>{errors.contactPersonChange}</AlertDescription>
+            </Alert>
+          )}
+        </div>
+        {/* Contact Information Change Section */}
+        <div className="mt-6">
+          <Label className="text-sm font-bold">
+            If the contact information of the shareholder(s)/director(s)/designated contact person has changed, please check the relevant information and write it in the "Others" section.
+            <span className="text-red-500">*</span></Label>
+          <div className="mt-4 space-y-2">
+            {["Email", "Mobile Phone", "Office Tel", "No change"].map((item) => (
+              <div key={item} className="flex items-center space-x-2">
+                <Checkbox
+                  id={item}
+                  checked={formState.contactChanges.includes(item)}
+                  onCheckedChange={(checked) =>
+                    handleChange(
+                      "contactChanges",
+                      checked
+                        ? [...formState.contactChanges, item]
+                        : formState.contactChanges.filter((i) => i !== item)
+                    )
+                  }
+                />
+                <Label htmlFor={item} className="text-sm">
+                  {item}
+                </Label>
+              </div>
+            ))}
+            {/* Other Option */}
+            <div className="flex items-center space-x-2 mt-2">
+              <Checkbox
+                id="Other"
+                checked={!!formState.otherContactChange}
+                onCheckedChange={(checked) =>
+                  handleChange("otherContactChange", checked ? "" : "")
+                }
+              />
+              <Label htmlFor="Other" className="text-sm">Other:</Label>
+              <Input
+                placeholder="Specify other contact change"
+                value={formState.otherContactChange}
+                onChange={(e) =>
+                  handleChange("otherContactChange", e.target.value)
+                }
+                className="w-full"
+              />
+            </div>
+          </div>
+          {errors.contactChanges && (
+            <Alert variant="destructive" className="mt-2">
+              <AlertDescription>{errors.contactChanges}</AlertDescription>
+            </Alert>
+          )}
+        </div>
 
         {/* Body Corporate Shareholder Section */}
         <div className="mt-8 border-t pt-6">
@@ -521,62 +521,62 @@ const RenewalRequestForm = () => {
             </Alert>
           )}
         </div>
-                        <div className="mt-8 border rounded-lg p-4 bg-gray-50">
-                  <h2 className="text-lg font-semibold mb-4">
-                    Please send an email with the required documents. (Email address:{" "}
-                    <a
-                      href="mailto:cs1@mirrasia.com"
-                      className="text-blue-500 underline hover:text-blue-600"
-                    >
-                      cs1@mirrasia.com
-                    </a>
-                    )
-                  </h2>
-                  <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
-                    <li>
-                      <span className="font-medium">(Required)</span> Please provide English
-                      documents that prove the address of the shareholders, directors, and
-                      designated contact person within the last 3 months. (Required submission
-                      even if there are no changes)
-                    </li>
-                    <li>
-                      <span className="font-medium">(If any)</span> If the passport of the
-                      shareholder/director/designated contact person has changed, please submit
-                      a copy of the valid passport.
-                    </li>
-                    <li>
-                      If the shareholders are a corporation (parent company), please submit a
-                      scanned copy or soft copy of the{" "}
-                      <span className="font-medium">
-                        English Business Registration Certificate
-                      </span>{" "}
-                      issued within the last 3 months of the corporate shareholder and a scanned
-                      copy of the latest shareholder list (with the Company Chop) - This is a
-                      mandatory required document even if there is no change.
-                    </li>
-                    <li>
-                      If the corporate shareholder's representative is changed to another
-                      person, please provide a scanned copy of the corporate shareholder's
-                      representative's passport copy and the English version of residence
-                      address proof issued within the last 3 months.
-                    </li>
-                    <li>
-                      If you have any other matters related to the change, please submit the
-                      documents together or let us know.
-                    </li>
-                  </ol>
-                  <div className="mt-4 text-sm">
-                    <span className="font-medium">Email address to submit documents: </span>
-                    <a
-                      href="mailto:cs1@mirrasia.com"
-                      className="text-blue-500 underline hover:text-blue-600"
-                    >
-                      cs1@mirrasia.com
-                    </a>
-                  </div>
-                </div>
-  {/* Payment Method Section */}
-  <div className="mt-6">
+        <div className="mt-8 border rounded-lg p-4 bg-gray-50">
+          <h2 className="text-lg font-semibold mb-4">
+            Please send an email with the required documents. (Email address:{" "}
+            <a
+              href="mailto:cs1@mirrasia.com"
+              className="text-blue-500 underline hover:text-blue-600"
+            >
+              cs1@mirrasia.com
+            </a>
+            )
+          </h2>
+          <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
+            <li>
+              <span className="font-medium">(Required)</span> Please provide English
+              documents that prove the address of the shareholders, directors, and
+              designated contact person within the last 3 months. (Required submission
+              even if there are no changes)
+            </li>
+            <li>
+              <span className="font-medium">(If any)</span> If the passport of the
+              shareholder/director/designated contact person has changed, please submit
+              a copy of the valid passport.
+            </li>
+            <li>
+              If the shareholders are a corporation (parent company), please submit a
+              scanned copy or soft copy of the{" "}
+              <span className="font-medium">
+                English Business Registration Certificate
+              </span>{" "}
+              issued within the last 3 months of the corporate shareholder and a scanned
+              copy of the latest shareholder list (with the Company Chop) - This is a
+              mandatory required document even if there is no change.
+            </li>
+            <li>
+              If the corporate shareholder's representative is changed to another
+              person, please provide a scanned copy of the corporate shareholder's
+              representative's passport copy and the English version of residence
+              address proof issued within the last 3 months.
+            </li>
+            <li>
+              If you have any other matters related to the change, please submit the
+              documents together or let us know.
+            </li>
+          </ol>
+          <div className="mt-4 text-sm">
+            <span className="font-medium">Email address to submit documents: </span>
+            <a
+              href="mailto:cs1@mirrasia.com"
+              className="text-blue-500 underline hover:text-blue-600"
+            >
+              cs1@mirrasia.com
+            </a>
+          </div>
+        </div>
+        {/* Payment Method Section */}
+        <div className="mt-6">
           <Label className="text-sm font-bold">
             Please choose the payment method of Hong Kong company renewal service fees. <span className="text-red-500">*</span>
           </Label>

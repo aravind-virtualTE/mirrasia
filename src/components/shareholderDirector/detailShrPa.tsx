@@ -82,12 +82,12 @@ const formatYesNo = (value?: string) => {
   return value;
 };
 
-const toArray = (val: string[] | string | undefined | null): string[] => {
-  if (!val) return [];
-  if (Array.isArray(val)) return val;
-  if (typeof val === "string" && val.trim()) return [val.trim()];
-  return [];
-};
+const toArray = (val?: string | string[] | null): string[] =>
+  Array.isArray(val)
+    ? val.filter(Boolean)
+    : typeof val === "string" && val.trim()
+    ? [val.trim()]
+    : [];
 
 // const formatKey = (key: string): string => {
 //   return key
@@ -106,14 +106,14 @@ const renderFilePreview = (label: string, fileValue?: string | File | null) => {
   const fileName = isFile
     ? fileValue.name
     : typeof fileValue === "string"
-    ? fileValue.split("/").pop() || fileValue
-    : "File";
+      ? fileValue.split("/").pop() || fileValue
+      : "File";
 
   const fileUrl = isFile
     ? URL.createObjectURL(fileValue)
     : typeof fileValue === "string"
-    ? fileValue
-    : "";
+      ? fileValue
+      : "";
 
   const fileType = isFile ? fileValue.type : "";
   const fileSize = isFile ? fileValue.size : null;
@@ -255,7 +255,18 @@ const DetailPAShareHolderDialog: React.FC<DetailUserDialogProps> = ({
   const fundGenerated = toArray(userData.fundGenerated);
   const annualSale = toArray(userData.annualSaleIncomePrevYr);
   const netWorth = toArray(userData.currentNetWorth);
+  // console.log("netWorth", userData.annualSaleIncomePrevYr)
 
+  const netWorthList : Record<string, string> ={
+    "businessIncome": "Under  USD 25,000.00",
+    "intrestIncome": "USD 25,000 - 50,000",
+    "realEstateIncome": "USD 50,001 - 100,000",
+    "companyShareSale": "USD 100,001-500,000",
+    "inheritanceGift": "USD 500,001-1,000,000",
+    "borrowingTrustDeposit": "USD Over 1 Million"
+  }
+  const annualSaleKeys = annualSale.map((key) => netWorthList[key]).filter(Boolean);
+  const netWorthKeys =  netWorth.map((key) => netWorthList[key]).filter(Boolean);
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
@@ -379,12 +390,12 @@ const DetailPAShareHolderDialog: React.FC<DetailUserDialogProps> = ({
               <Row
                 label="Annual Sales / Income (Previous Year)"
                 isBadges
-                badges={annualSale}
+                badges={annualSaleKeys}
               />
               <Row
                 label="Current Net Worth"
                 isBadges
-                badges={netWorth}
+                badges={netWorthKeys}
               />
             </div>
           </Section>

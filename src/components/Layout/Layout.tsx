@@ -32,7 +32,8 @@ import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
 import SocialMediaWidget from "../SocialMedia";
 import TopNav from "./Navbar";
 import { hkAppAtom } from "@/pages/Company/NewHKForm/hkIncorpo";
-import {costaRicaFormAtom} from "@/pages/Company/CostaRica/costaState";
+import { costaRicaFormAtom } from "@/pages/Company/CostaRica/costaState";
+import { McapBotWidget } from '@/mcap/bot/McapBotWidget';
 
 type Role = "user" | "admin" | "master"
 type DecodedToken = { role?: Role };
@@ -130,7 +131,7 @@ const Layout: React.FC = () => {
     } catch {
       /* no-op */
     }
-  }, [resetAllForms, setUS, setPA, setSG,setHK]);
+  }, [resetAllForms, setUS, setPA, setSG, setHK]);
 
   const baseItem =
     "w-full inline-flex items-center h-10 rounded-md px-2 text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400";
@@ -183,18 +184,84 @@ const Layout: React.FC = () => {
             id: "member-director",
             icon: UserPlus,
             label: "Member/Director Management",
-            roles: ["user", "admin", "master"],
+            roles: ["admin", "master"],
             to: "/member-director-change",
           },
-           {
+          {
             id: "quotation-request",
             icon: FileText,
-            label: "Quotation Request",
+            label: t("sideItems.quotationrequest"),
             roles: ["user", "admin", "master"],
             to: "/quotation-request",
           },
+          {
+            id: "quotation-request1",
+            icon: FileText,
+            label: "Quotation v1.0",
+            roles: ["user", "admin", "master"],
+            to: "/quote-enquiry",
+          },
+
+        ],
+      },     
+      {
+        id: "legacy-services",
+        icon: Briefcase,
+        label: "Old View",
+        roles: ["admin", "master"],
+        children: [
+          {
+            id: "home",
+            icon: Home,
+            label: t("sideItems.Home"),
+            roles: ["admin", "master"],
+            onClick: () => {
+              hardReset();
+              navigate(["admin", "master"].includes(role) ? "/admin-dashboard" : "/dashboard");
+            },
+          },
+          {
+            id: "register-company",
+            icon: FileSignature,
+            label: t("sideItems.regComp"),
+            roles: ["admin", "master"],
+            onClick: () => {
+              hardReset();
+              navigate("/company-register");
+            },
+          },
+          {
+            id: "documents",
+            icon: Files,
+            label: t("sideItems.compDocs"),
+            roles: ["admin", "master"],
+            to: "/company-documents",
+          },
         ],
       },
+       {
+        id: "incorporation-services",
+        icon: Briefcase,
+        label: "MCAP",
+        roles: ["admin", "master"],
+        children: [
+          // {
+          //   id: "incorporation-pricing",
+          //   icon: DollarSign,
+          //   label: "Incorporation Pricing",
+          //   roles: ["admin", "master"],
+          //   to: "/incorporation-pricing",
+          // },
+          {
+            id: "incorporation-migrations",
+            icon: FileCheck,
+            label: "Migration Audit",
+            roles: ["admin", "master"],
+            to: "/incorporation-migrations",
+          },
+
+        ],
+      }
     ],
     [t]
   );
@@ -212,15 +279,34 @@ const Layout: React.FC = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const singleItems: SidebarItemCfg[] = useMemo(
     () => [
+
       {
-        id: "home",
+        id: "incorporation-dashboard",
         icon: Home,
         label: t("sideItems.Home"),
         roles: ["user", "admin", "master"],
-        onClick: () => {
-          hardReset();
-          navigate(["admin", "master"].includes(role) ? "/admin-dashboard" : "/dashboard");
-        },
+        to: "/incorporation-dashboard",
+      },
+      {
+        id: "incorporation-newVersion",
+        icon: FileSignature,
+        label: t("sideItems.regComp"),
+        roles: ["user", "admin", "master"],
+        to: "/incorporation",
+      },
+      {
+        id: "incorporation-parties",
+        icon: Briefcase,
+        label: t("sideItems.incorpParties"),
+        roles: ["user", "admin", "master"],
+        to: "/incorporation-parties",
+      },
+      {
+        id: "incorporation-documents",
+        icon: Files,
+        label: t("sideItems.compDocs"),
+        roles: ["user", "admin", "master"],
+        to: "/incorporation-documents",
       },
       {
         id: "users",
@@ -228,23 +314,6 @@ const Layout: React.FC = () => {
         label: t("sideItems.userList"),
         roles: ["master", "admin"],
         to: "/userslist",
-      },
-      {
-        id: "register-company",
-        icon: FileSignature,
-        label: t("sideItems.regComp"),
-        roles: ["user", "admin", "master"],
-        onClick: () => {
-          hardReset();
-          navigate("/company-register");
-        },
-      },
-      {
-        id: "documents",
-        icon: Files,
-        label: t("sideItems.compDocs"),
-        roles: ["user", "admin", "master"],
-        to: "/company-documents",
       },
       {
         id: "chat",
@@ -267,6 +336,14 @@ const Layout: React.FC = () => {
         roles: ["admin", "master"],
         to: "/admin-companies-list",
       },
+      {
+        id: "letter-generator",
+        icon: Building2,
+        label: "Letter Generator",
+        roles: ["admin", "master"],
+        to: "/letter-generator",
+      },
+
     ],
     [t, role, navigate, hardReset]
   );
@@ -401,6 +478,7 @@ const Layout: React.FC = () => {
         </main>
       </div>
       <SocialMediaWidget />
+      {["admin", "master"].includes(role) && <McapBotWidget />}
     </div>
   );
 };

@@ -222,7 +222,8 @@ const SignupPage = () => {
         error: null,
       });
 
-      navigate(user.role === "admin" ? "/admin-dashboard" : "/dashboard");
+      // navigate(user.role === "admin" ? "/admin-dashboard" : "/dashboard");
+      navigate("/incorporation-dashboard");
     } catch (error) {
       console.error(error);
       setAuth((prev) => ({

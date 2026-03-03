@@ -2573,9 +2573,9 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, displayAmount, app
   const note = app.payMethod === "card" ? t("ppif.payment.stripe.drawer.cardFeeNote") : "";
   const usedCcy = app.stripeCurrency ?? "USD";
   const getCardFeePct = (currency?: string) => {
-    if (!currency) return 0.035;
+    if (!currency) return 0.04;
     if (String(currency).toUpperCase() === "USD") return 0.06;
-    return 0.035;
+    return 0.06;
   };
 
   return (

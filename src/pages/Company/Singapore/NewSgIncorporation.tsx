@@ -1943,8 +1943,8 @@ function asNum(v: any) {
 }
 
 function getCardFeePct(currency?: string) {
-    if (!currency) return 0.035;
-    return String(currency).toUpperCase() == "USD" ? 0.06 : 0.035;
+    if (!currency) return 0.06;
+    return String(currency).toUpperCase() == "USD" ? 0.06 : 0.04;
 }
 
 function computeSgGrandTotal(app: any): number {
@@ -2697,8 +2697,6 @@ const CONFIG: FormConfig = {
         {
             id: "invoice",
             title: "usa.steps.step6",
-            description:
-                "usa.steps.invoice.description",
             render: InvoiceSgStep,
         },
         {

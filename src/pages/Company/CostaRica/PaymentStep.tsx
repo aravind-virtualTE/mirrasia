@@ -48,7 +48,7 @@ function computeGrandTotal(formData: Record<string, any>): number {
     subtotal = Number(formData.convertedAmountHkd);
   }
 
-  const cardFeeRate = String(currency).toUpperCase() === 'USD' ? 0.06 : 0.035;
+  const cardFeeRate = String(currency).toUpperCase() === 'USD' ? 0.06 : 0.04;
   const needsCardFee = formData.payMethod === 'card';
 
   const total = needsCardFee ? subtotal * (1 + cardFeeRate) : subtotal;
@@ -236,7 +236,7 @@ function StripeCardDrawer({ open, onOpenChange, clientSecret, amount, app, onSuc
           <SheetTitle>Stripe Card Payment</SheetTitle>
           <SheetDescription>
             Grand Total: {app.stripeCurrency ?? "USD"} <b>{amount.toFixed(2)}</b>
-            {app.stripeCurrency === 'USD' ? ' (incl. 6% fee)' : ' (incl. 3.5% fee)'}
+            {app.stripeCurrency === 'USD' ? ' (incl. 6% fee)' : ' (incl. 4% fee)'}
           </SheetDescription>
         </SheetHeader>
         {clientSecret ? (
@@ -497,12 +497,12 @@ export const PaymentStep = () => {
             <div className="pt-4 border-t mt-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Subtotal</span>
-                <span>{formData.paymentCurrency || 'USD'} {((grandTotal / (1 + (formData.payMethod === 'card' ? ((formData.paymentCurrency === 'hkd' || formData.paymentCurrency === 'HKD' ? 0.035 : 0.06)) : 0)))).toFixed(2)}</span>
+                <span>{formData.paymentCurrency || 'USD'} {((grandTotal / (1 + (formData.payMethod === 'card' ? ((formData.paymentCurrency === 'hkd' || formData.paymentCurrency === 'HKD' ? 0.04 : 0.06)) : 0)))).toFixed(2)}</span>
               </div>
               {formData.payMethod === 'card' && (
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Card Fee ({(String(formData.paymentCurrency).toUpperCase() == 'USD' ? '6%' : '3.5%')})</span>
-                  <span>{formData.paymentCurrency || 'USD'} {(grandTotal - (grandTotal / (1 + (String(formData.paymentCurrency).toUpperCase() === 'USD' ? 0.06 : 0.035)))).toFixed(2)}</span>
+                  <span>Card Fee ({(String(formData.paymentCurrency).toUpperCase() == 'USD' ? '6%' : '4%')})</span>
+                  <span>{formData.paymentCurrency || 'USD'} {(grandTotal - (grandTotal / (1 + (String(formData.paymentCurrency).toUpperCase() === 'USD' ? 0.06 : 0.04)))).toFixed(2)}</span>
                 </div>
               )}
               <div className="flex justify-between font-bold text-lg border-t pt-2">

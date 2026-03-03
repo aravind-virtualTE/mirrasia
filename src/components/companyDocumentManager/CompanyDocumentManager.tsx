@@ -21,6 +21,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { deleteCompanyDoc, getCompDocs, uploadCompanyDocs } from "@/services/dataFetch";
 import SearchSelectNew from "../SearchSelect2";
 import { Company, DocumentComment ,DocumentType,Document, upsertDocumentComment, deleteDocumentComment} from "./cdm";
+import { ConfirmDialog } from "../shared/ConfirmDialog";
 
 import DocumentTableWithComments from "./DocumentTableWithComments";
 
@@ -730,34 +731,24 @@ const CompanyDocumentManager: React.FC = () => {
         </>
       )}
 
-      {/* Delete confirmation modal */}
-      {documentToDelete && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-2">Delete Document</h3>
-            <p className="mb-4 text-gray-600">
-              Are you sure you want to delete "{documentToDelete.docName}"? This action cannot be undone.
-            </p>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setDocumentToDelete(null)} disabled={isUpdating}>
-                Cancel
-              </Button>
-              <Button variant="destructive" onClick={deleteDocument} disabled={isUpdating}>
-                {isUpdating ? (
-                  <span className="inline-flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
+      <ConfirmDialog
+        open={!!documentToDelete}
+        onOpenChange={(open) => {
+          if (!open) setDocumentToDelete(null);
+        }}
+        title="Delete Document"
+        description={
+          documentToDelete
+            ? `Are you sure you want to delete "${documentToDelete.docName}"? This action cannot be undone.`
+            : undefined
+        }
+        confirmText="Delete"
+        loadingText="Deleting..."
+        isLoading={isUpdating}
+        onConfirm={deleteDocument}
+      />{/*
                     Deleting…
-                  </span>
-                ) : (
-                  "Delete"
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Global loader overlay */}
+      */}{/* Global loader overlay */}
       {isUpdating && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
           <div className="flex items-center gap-3 rounded-lg bg-white px-4 py-3 shadow-lg">

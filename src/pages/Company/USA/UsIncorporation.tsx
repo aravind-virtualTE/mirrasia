@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -1835,7 +1834,6 @@ export function InvoiceUsStep() {
     const fmtFx = (usd: number) => {
         if (selectedCurrency === "USD") return `USD ${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         const val = usd * displayRate;
-        // eslint-disable-next-line
         return `${selectedCurrency.toUpperCase()} ${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
 
@@ -2023,7 +2021,7 @@ function computeUsGrandTotal(app: any): number {
 
     const subtotal = basePrice + addonsTotal;
     const currency = app.stripeCurrency;
-    const cardFeeRate = currency && String(currency).toUpperCase() === "USD" ? 0.06 : 0.035;
+    const cardFeeRate = currency && String(currency).toUpperCase() === "USD" ? 0.06 : 0.04;
     const grand =
         app.payMethod === "card"
             ? subtotal * (1 + cardFeeRate)
@@ -3691,8 +3689,6 @@ const usaIncorpConfig: LocalFormConfig = {
         {
             id: "invoice",
             title: "usa.steps.step6",
-            description:
-                "usa.steps.invoice.description",
             render: () => <InvoiceUsStep />,
         },
         // Payment

@@ -208,8 +208,9 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
   }, [projects, sortKey, sortDir]);
 
   const SortIcon = ({ active }: { active: boolean }) =>
-    active ? (sortDir === 'asc' ? <ChevronUp className="h-3.5 w-3.5 inline" /> : <ChevronDown className="h-3.5 w-3.5 inline" />)
-      : <ArrowUpDown className="h-3.5 w-3.5 inline" />;
+    active ? (sortDir === 'asc' ? <ChevronUp className="h-3 w-3 inline" /> : <ChevronDown className="h-3 w-3 inline" />)
+      : <ArrowUpDown className="h-3 w-3 inline" />;
+
   return (
     <div className="w-full px-4 py-4">
       <div className="flex flex-col gap-3 mb-2 md:flex-row md:items-center md:justify-between">
@@ -267,42 +268,45 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
       ) : (
         // Scroll container with sticky header
         <div className="mt-6 w-full">
-          <div className="rounded-xl border w-full overflow-x-auto">
-            <Table className="min-w-full w-full table-auto text-xs text-left lg:min-w-[1100px]">
+          <div className="rounded-md border w-full overflow-x-auto">
+            <Table className="w-full table-fixed text-xs text-left">
               <TableHeader className="sticky top-0 z-10 bg-background">
-                <TableRow className="h-9">
-                  <TableHead className="w-12 px-2 py-1 text-center">No</TableHead>
-
-                  {/* Project Name: wider + higher priority */}
-                  <TableHead className="px-2 py-1 min-w-[200px] md:min-w-[340px]">
+                <TableRow className="h-8">
+                  <TableHead className="w-[5%] px-1.5 py-0.5 text-center">No</TableHead>
+                  <TableHead className="w-[25%] px-1.5 py-0.5">
                     <button
                       type="button"
                       onClick={() => toggleSort("projectName")}
-                      className="inline-flex items-center gap-1 hover:opacity-80"
+                      className="inline-flex items-center gap-1 hover:opacity-80 w-full"
                     >
-                      Project Name <SortIcon active={sortKey === "projectName"} />
+                      <span className="truncate">Project Name</span>
+                      <SortIcon active={sortKey === "projectName"} />
                     </button>
                   </TableHead>
-
-                  <TableHead className="px-2 py-1 min-w-[160px]">
+                  <TableHead className="w-[15%] px-1.5 py-0.5">
                     <button
                       type="button"
                       onClick={() => toggleSort("companyName")}
-                      className="inline-flex items-center gap-1 hover:opacity-80"
+                      className="inline-flex items-center gap-1 hover:opacity-80 w-full"
                     >
-                      Company Name <SortIcon active={sortKey === "companyName"} />
+                      <span className="truncate">Company Name</span>
+                      <SortIcon active={sortKey === "companyName"} />
                     </button>
                   </TableHead>
-
-                  <TableHead className="px-2 py-1 min-w-[160px]">Email</TableHead>
-                  <TableHead className="px-2 py-1 min-w-[90px]">Contact</TableHead>
-                  <TableHead className="px-2 py-1 min-w-[90px]">Jurisdiction</TableHead>
-
-                  {/* Description: flexible, takes remaining space */}
-                  <TableHead className="px-2 py-1 min-w-[150px]">Description</TableHead>
-
-                  <TableHead className="px-2 py-1 w-[80px] whitespace-nowrap">Updated At</TableHead>
-                  <TableHead className="px-2 py-1 w-[90px] text-right whitespace-nowrap">Actions</TableHead>
+                  <TableHead className="w-[15%] px-1.5 py-0.5">
+                    <span className="truncate block">Email</span>
+                  </TableHead>
+                  <TableHead className="w-[10%] px-1.5 py-0.5">
+                    <span className="truncate block">Contact</span>
+                  </TableHead>
+                  <TableHead className="w-[10%] px-1.5 py-0.5">
+                    <span className="truncate block">Jurisdiction</span>
+                  </TableHead>
+                  <TableHead className="w-[10%] px-1.5 py-0.5">
+                    <span className="truncate block">Description</span>
+                  </TableHead>
+                  <TableHead className="w-[5%] px-1.5 py-0.5 whitespace-nowrap">Updated</TableHead>
+                  <TableHead className="w-[5%] px-1.5 py-0.5 text-right whitespace-nowrap">Actions</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -310,64 +314,48 @@ const AdminProject: React.FC<{ id?: string }> = ({ id }) => {
                 {sortedProjects.map((project, idx) => (
                   <TableRow
                     key={project._id}
-                    className="h-9 cursor-pointer"
+                    className="h-8 cursor-pointer hover:bg-muted/50"
                     onClick={() => handleNavigate(project)}
                   >
-                    <TableCell className="w-12 px-2 py-1 text-center whitespace-nowrap">
-                      {idx + 1}
+                    <TableCell className="px-1.5 py-0.5 text-center">{idx + 1}</TableCell>
+                    <TableCell className="px-1.5 py-0.5 font-medium">
+                      <div className="truncate">{project.projectName || "-"}</div>
                     </TableCell>
-
-                    {/* Project name: allow a bit more visible text */}
-                    <TableCell className="px-2 py-1 font-medium min-w-[280px] md:min-w-[340px]">
-                      <div className="truncate">
-                        {project.projectName || "-"}
-                      </div>
-                    </TableCell>
-
-
-                    <TableCell className="px-2 py-1">
+                    <TableCell className="px-1.5 py-0.5">
                       <div className="truncate">{project.company?.name || "-"}</div>
                     </TableCell>
-
-                    <TableCell className="px-2 py-1 whitespace-nowrap">
+                    <TableCell className="px-1.5 py-0.5 whitespace-nowrap">
                       <div className="truncate">{project.email || "-"}</div>
                     </TableCell>
-
-                    <TableCell className="px-2 py-1 whitespace-nowrap">
+                    <TableCell className="px-1.5 py-0.5 whitespace-nowrap">
                       <div className="truncate">{project.contactName || "-"}</div>
                     </TableCell>
-
-                    <TableCell className="px-2 py-1 whitespace-nowrap">
+                    <TableCell className="px-1.5 py-0.5 whitespace-nowrap">
                       <div className="truncate">{project.jurisdiction || "-"}</div>
                     </TableCell>
-
-                    {/* Description: flexible, still truncates */}
-                    <TableCell className="px-2 py-1 whitespace-nowrap">
+                    <TableCell className="px-1.5 py-0.5 whitespace-nowrap">
                       <div className="truncate">{project.description || "-"}</div>
                     </TableCell>
-
-                    <TableCell className="px-2 py-1  whitespace-nowrap tabular-nums">
+                    <TableCell className="px-1.5 py-0.5 whitespace-nowrap tabular-nums">
                       {project.updatedAt ? format(new Date(project.updatedAt), "yyyy-MM-dd") : "-"}
                     </TableCell>
-
-                    <TableCell className="px-2 py-1 w-[90px] text-right">
+                    <TableCell className="px-1.5 py-0.5 text-right">
                       <div className="flex justify-end space-x-1">
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7"
+                          className="h-6 w-6"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleEdit(project);
                           }}
                         >
-                          <Pencil className="h-4 w-4" />
+                          <Pencil className="h-3 w-3" />
                         </Button>
-
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7"
+                          className="h-6 w-6"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDelete(project._id);

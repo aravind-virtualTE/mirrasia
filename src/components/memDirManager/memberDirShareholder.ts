@@ -4,7 +4,7 @@ import api from '@/services/fetch';
 
 
 export const STRIPE_CLIENT_ID = import.meta.env.VITE_STRIPE_DETAILS || process.env.REACT_APP_STRIPE_DETAILS;
-export const CARD_FEE_RATE = 0.035; // Card fee rate (3.5%)
+export const CARD_FEE_RATE = 0.04; // Card fee rate (4% for HKD, 6% for USD)
 export const countryAtom = atom("");
 export const selectedCompanyAtom = atom<Company[]>([]);
 export const selectedCompanyIdAtom = atom<Company | null>(null);

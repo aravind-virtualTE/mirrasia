@@ -109,12 +109,12 @@ const LoginComponent: React.FC = () => {
     localStorage.setItem("user", JSON.stringify(response.user));
 
     setAuth({ user: response.user, isAuthenticated: true, loading: false, error: null });
-
-    if (response.user.role === "admin" || response.user.role === "master") {
-      navigate("/admin-dashboard");
-    } else {
-      navigate("/dashboard");
-    }
+    navigate("/incorporation-dashboard");
+    // if (response.user.role === "admin" || response.user.role === "master") {
+    //   navigate("/admin-dashboard");
+    // } else {
+    //   navigate("/dashboard");
+    // }
   };
 
   const handleLogin = async () => {
