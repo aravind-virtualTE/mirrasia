@@ -39,7 +39,6 @@ export const PartyWidget = ({
         const raw = countryCode || localStorage.getItem("country") || "";
         return String(raw).split("_")[0].toUpperCase();
     }, [countryCode]);
-
     const entityTypeEnabled = isEntityPartyTypeEnabledForCountry(normalizedCountryCode);
     const normalizePartyType = (typeValue: any): "person" | "entity" =>
         typeValue === "entity" && entityTypeEnabled ? "entity" : "person";
@@ -413,7 +412,7 @@ export const PartyWidget = ({
 
                             {(party.roles || []).includes("shareholder") && (
                                 <div className="mt-4 space-y-2">
-                                    <Label>{t("newHk.parties.fields.shares.label", "Unit of capital")}</Label>
+                                    {normalizedCountryCode == "EE" ?  <Label>{t("newHk.parties.fields.shares.label", "Unit of capital")}</Label>: <Label>{t("mcap.cr.company.fields.shareCount.label", "Number of shares")}</Label>}
                                     <Input
                                         type="number"
                                         value={party.shares}

@@ -235,6 +235,7 @@ export default function PartyKycEngine({
   // TEMP (admin testing only): keep true to bypass required-field validation restrictions.
   // Revert this to false after admin testing is complete.
   const ADMIN_TEST_RELAX_VALIDATION = true;
+  const allowAdminTestingBypass = ADMIN_TEST_RELAX_VALIDATION && canAdminMoveAcrossSteps;
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -271,20 +272,20 @@ export default function PartyKycEngine({
   const activeStep = stepChecks.findIndex((v) => !v);
   const currentActiveStep = canAdminMoveAcrossSteps
     ? currentStepIdx
-    : ADMIN_TEST_RELAX_VALIDATION
+    : allowAdminTestingBypass
       ? currentStepIdx
       : activeStep === -1
         ? steps.length - 1
         : activeStep;
   const progressValue = useMemo(() => {
-    if (ADMIN_TEST_RELAX_VALIDATION) {
+    if (allowAdminTestingBypass) {
       const total = steps.length || 1;
       return ((currentStepIdx + 1) / total) * 100;
     }
     const total = stepChecks.length || 1;
     const completed = stepChecks.filter((f) => f).length;
     return (completed / total) * 100;
-  }, [ADMIN_TEST_RELAX_VALIDATION, currentStepIdx, stepChecks, steps.length]);
+  }, [allowAdminTestingBypass, currentStepIdx, stepChecks, steps.length]);
 
   const validateStep = (step: PartyStep) => {
     const nextErrors: Record<string, string> = {};
@@ -314,7 +315,7 @@ export default function PartyKycEngine({
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    if (!ADMIN_TEST_RELAX_VALIDATION) {
+    if (!allowAdminTestingBypass) {
       const nextErrors = validateStep(currentStep);
       setErrors((prev) => ({ ...prev, ...nextErrors }));
       if (Object.keys(nextErrors).length > 0) {
@@ -350,13 +351,13 @@ export default function PartyKycEngine({
   };
 
   const handleSave = async (status: "in_progress" | "submitted") => {
-    const nextErrors = ADMIN_TEST_RELAX_VALIDATION
+    const nextErrors = allowAdminTestingBypass
       ? {}
       : status === "submitted"
         ? validateAll()
         : validateStep(currentStep);
     setErrors(nextErrors);
-    if (!ADMIN_TEST_RELAX_VALIDATION && status === "submitted" && Object.keys(nextErrors).length > 0) {
+    if (!allowAdminTestingBypass && status === "submitted" && Object.keys(nextErrors).length > 0) {
       const firstErrorStep = steps.findIndex((step) =>
         step.fields.some((f) => nextErrors[f.name])
       );
@@ -762,3 +763,10 @@ export default function PartyKycEngine({
     </div>
   );
 }
+
+
+
+
+
+
+

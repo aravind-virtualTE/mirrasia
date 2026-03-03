@@ -3561,7 +3561,7 @@
         "selectedEntity": {
           "label": "Select UK setup path",
           "options": {
-            "individual": "UK corporation (individual shareholder)",
+            "individual": "UK private company",
             "subsidiary": "UK subsidiary of foreign corporation",
             "branch": "UK branch office of foreign corporation (temporary pricing follows individual package)"
           }

@@ -3499,7 +3499,7 @@
         "selectedEntity": {
           "label": "영국 법인 설립 유형 선택",
           "options": {
-            "individual": "영국 법인 (개인 주주)",
+            "individual": "영국 비상장 주식회사",
             "subsidiary": "영국 자회사 (해외 법인이 주주인 경우)",
             "branch": "영국 지점 (해외 법인의 영국 지점 - 임시 가격은 개인 패키지를 따름)"
           }
