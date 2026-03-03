@@ -17,6 +17,8 @@ interface CommentsDrawerProps {
   onDeleteComment: (commentId: string) => Promise<void>;
   currentUserId?: string;
   isLoading?: boolean;
+  readOnly?: boolean;
+  allowDelete?: boolean;
 }
 
 const CommentsDrawer: React.FC<CommentsDrawerProps> = ({
@@ -29,6 +31,8 @@ const CommentsDrawer: React.FC<CommentsDrawerProps> = ({
   onDeleteComment,
   currentUserId,
   isLoading = false,
+  readOnly = false,
+  allowDelete = true,
 }) => {
   const MAX_COMMENT_LEN = 2000;
   const [newComment, setNewComment] = useState("");
@@ -118,7 +122,7 @@ const CommentsDrawer: React.FC<CommentsDrawerProps> = ({
             </div>
           ) : sortedComments.length === 0 ? (
             <div className="rounded-lg border border-dashed py-10 text-center text-sm text-muted-foreground">
-              No comments yet. Add the first note for this document.
+              {readOnly ? "No comments yet for this document." : "No comments yet. Add the first note for this document."}
             </div>
           ) : (
             sortedComments.map((comment) => {
@@ -149,7 +153,7 @@ const CommentsDrawer: React.FC<CommentsDrawerProps> = ({
                     <p className="ml-8 text-[11px] text-muted-foreground">{formatDate(comment.createdAt)}</p>
                   </div>
 
-                  {currentUserId === comment.createdBy && (
+                  {!readOnly && currentUserId === comment.createdBy && (
                     <div className="flex gap-1 shrink-0">
                       {editingId === comment._id ? (
                         <>
@@ -183,15 +187,17 @@ const CommentsDrawer: React.FC<CommentsDrawerProps> = ({
                           >
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-destructive hover:text-destructive"
-                            onClick={() => handleDelete(comment._id)}
-                            disabled={submitting}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                          {allowDelete && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-destructive hover:text-destructive"
+                              onClick={() => handleDelete(comment._id)}
+                              disabled={submitting}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          )}
                         </>
                       )}
                     </div>
@@ -220,37 +226,39 @@ const CommentsDrawer: React.FC<CommentsDrawerProps> = ({
           )}
         </div>
 
-        <div className="border-t pt-3 space-y-2">
-          <p className="text-xs text-muted-foreground">
-            Notes here help keep document review history clear for users, admins, and masters.
-          </p>
-          <Textarea
-            placeholder="Write a comment..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            className="min-h-[80px]"
-            disabled={submitting}
-            maxLength={MAX_COMMENT_LEN}
-          />
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] text-muted-foreground">
-              {newComment.length}/{MAX_COMMENT_LEN}
-            </span>
-            <Button
-              onClick={handleAddComment}
-              disabled={!newComment.trim() || submitting}
-            >
-              {submitting ? (
-                <span className="inline-flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Posting...
-                </span>
-              ) : (
-                "Add Comment"
-              )}
-            </Button>
+        {!readOnly && (
+          <div className="border-t pt-3 space-y-2">
+            <p className="text-xs text-muted-foreground">
+              Notes here help keep document review history clear for users, admins, and masters.
+            </p>
+            <Textarea
+              placeholder="Write a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              className="min-h-[80px]"
+              disabled={submitting}
+              maxLength={MAX_COMMENT_LEN}
+            />
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] text-muted-foreground">
+                {newComment.length}/{MAX_COMMENT_LEN}
+              </span>
+              <Button
+                onClick={handleAddComment}
+                disabled={!newComment.trim() || submitting}
+              >
+                {submitting ? (
+                  <span className="inline-flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Posting...
+                  </span>
+                ) : (
+                  "Add Comment"
+                )}
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </SheetContent>
     </Sheet>
   );

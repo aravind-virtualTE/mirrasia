@@ -1,7 +1,7 @@
 ﻿/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import api from "@/services/fetch";
 import { MCAP_CONFIG_MAP } from "@/mcap/configs/registry";
@@ -170,12 +170,100 @@ const formatMoney = (amount?: number, currency = "USD") => {
   }
 };
 
+const isImageValue = (value: unknown) => {
+  if (typeof value !== "string") return false;
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  if (trimmed.startsWith("data:image/") || trimmed.startsWith("blob:")) return true;
+  return /\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(trimmed);
+};
+
+const renderDetailField = ({
+  field,
+  data,
+  t,
+}: {
+  field: McapField;
+  data: Record<string, any>;
+  t: any;
+}) => {
+  if (!field?.name) return null;
+  if (field.condition && !field.condition(data)) return null;
+  const rawValue = toDisplayValue(data[field.name]);
+  if (rawValue == null) return null;
+
+  const label = field.label ? t(field.label, field.label) : "";
+
+  if (field.type === "signature") {
+    return (
+      <div key={field.name} className="grid gap-1">
+        <div className="text-xs text-muted-foreground">{label}</div>
+        {typeof rawValue === "string" && isImageValue(rawValue) ? (
+          <div className="rounded-lg border bg-slate-50 p-3">
+            <img
+              src={rawValue}
+              alt={label || "Signature"}
+              className="max-h-24 w-full object-contain"
+            />
+          </div>
+        ) : (
+          <div className="text-sm font-medium break-words">{String(rawValue)}</div>
+        )}
+      </div>
+    );
+  }
+
+  if (field.type === "checkbox") {
+    const checked = rawValue === true || rawValue === "true" || rawValue === "yes";
+    return (
+      <div key={field.name} className="grid gap-1">
+        <div className="text-xs text-muted-foreground">{label}</div>
+        <Badge variant={checked ? "default" : "outline"} className={!checked ? "text-muted-foreground" : ""}>
+          {checked ? "YES" : "NO"}
+        </Badge>
+      </div>
+    );
+  }
+
+  const options = field.options || [];
+  const mapOption = (val: any) => {
+    const opt = options.find((o) => String(o.value) === String(val));
+    return opt ? t(opt.label, opt.label) : String(val);
+  };
+
+  if (Array.isArray(rawValue)) {
+    return (
+      <div key={field.name} className="grid gap-1">
+        <div className="text-xs text-muted-foreground">{label}</div>
+        <div className="flex flex-wrap gap-2">
+          {rawValue.map((v, idx) => (
+            <Badge key={`${field.name}-${idx}`} variant="secondary">
+              {mapOption(v)}
+            </Badge>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div key={field.name} className="grid gap-1">
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className="text-sm font-medium break-words">{mapOption(rawValue)}</div>
+    </div>
+  );
+};
+
 const McapCompanyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
+  const dashboardPath = "/incorporation-dashboard";
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
   const isAdmin = user?.role !== "user";
+  const isDashboardDetailView = searchParams.get("mode") === "detail";
+  const canEdit = isAdmin && !isDashboardDetailView;
 
   const [company, setCompany] = useState<McapCompany | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -207,12 +295,16 @@ const McapCompanyDetail: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!canEdit) return;
     fetchUsers().then((users) => {
       const list = (users || []).filter((u: AdminUser) => u.role === "admin" || u.role === "master");
       setAdminUsers(list);
     });
-  }, [isAdmin]);
+  }, [canEdit]);
+
+  useEffect(() => {
+    if (!canEdit) setIsEditing(false);
+  }, [canEdit]);
 
   const updateField = (key: keyof McapCompany, value: any) => {
     setCompany((prev) => (prev ? { ...prev, [key]: value } : prev));
@@ -223,7 +315,7 @@ const McapCompanyDetail: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!company) return;
+    if (!company || !canEdit) return;
     setIsSaving(true);
     try {
       const payload = { ...company, assignedTo: adminAssigned };
@@ -251,7 +343,7 @@ const McapCompanyDetail: React.FC = () => {
   };
 
   const handleInviteParty = async (party: McapParty) => {
-    if (!company?._id) return;
+    if (!company?._id || !canEdit) return;
     try {
       const res = await api.post("/mcap/parties/invite", { companyId: company._id, party });
       if (res?.data?.success) {
@@ -272,7 +364,7 @@ const McapCompanyDetail: React.FC = () => {
   };
 
   const handleKycStatus = async (party: McapParty, status: string, reason = "") => {
-    if (!party?._id) return;
+    if (!party?._id || !canEdit) return;
     try {
       const res = await api.post(`/mcap/parties/${party._id}/kyc-status`, { status, reason });
       if (res?.data?.success) {
@@ -294,7 +386,7 @@ const McapCompanyDetail: React.FC = () => {
   };
 
   const handleRevokeDcp = async (party: McapParty) => {
-    if (!party?._id) return;
+    if (!party?._id || !canEdit) return;
     const hasDcpRole = (party.roles || []).includes("dcp");
     if (!hasDcpRole) {
       toast({ title: "No DCP role", description: "This party does not currently have DCP access." });
@@ -364,67 +456,30 @@ const McapCompanyDetail: React.FC = () => {
   const stepGroups = useMemo(() => {
     if (!config?.steps) return [];
     const data = company?.data || {};
-    const toLabel = (label?: string) => (label ? t(label, label) : "");
     const isPaymentStep = (step: { id?: string; widget?: string; title?: string }) =>
       step?.widget === "PaymentWidget"
       || /^payments?$/i.test(String(step?.id || ""))
       || /\bpayment\b/i.test(String(step?.title || ""));
 
-    const renderField = (field: McapField) => {
-      if (!field?.name) return null;
-      if (field.condition && !field.condition(data)) return null;
-      const rawValue = toDisplayValue(data[field.name]);
-      if (rawValue == null) return null;
-
-      if (field.type === "checkbox") {
-        const checked = rawValue === true || rawValue === "true" || rawValue === "yes";
-        return (
-          <div key={field.name} className="grid gap-1">
-            <div className="text-xs text-muted-foreground">{toLabel(field.label)}</div>
-            <Badge variant={checked ? "default" : "outline"} className={!checked ? "text-muted-foreground" : ""}>
-              {checked ? "YES" : "NO"}
-            </Badge>
-          </div>
-        );
-      }
-
-      const options = field.options || [];
-      const mapOption = (val: any) => {
-        const opt = options.find((o) => String(o.value) === String(val));
-        return opt ? toLabel(opt.label) : String(val);
-      };
-
-      if (Array.isArray(rawValue)) {
-        return (
-          <div key={field.name} className="grid gap-1">
-            <div className="text-xs text-muted-foreground">{toLabel(field.label)}</div>
-            <div className="flex flex-wrap gap-2">
-              {rawValue.map((v, idx) => (
-                <Badge key={`${field.name}-${idx}`} variant="secondary">
-                  {mapOption(v)}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        );
-      }
-
-      return (
-        <div key={field.name} className="grid gap-1">
-          <div className="text-xs text-muted-foreground">{toLabel(field.label)}</div>
-          <div className="text-sm font-medium break-words">{mapOption(rawValue)}</div>
-        </div>
-      );
-    };
-
     return config.steps
       .filter((step) => Array.isArray(step.fields) && step.fields.length > 0)
       .filter((step) => !isPaymentStep(step))
+      .filter((step) => step.id !== "compliance")
       .map((step) => {
-        const fields = (step.fields || []).map((field) => renderField(field)).filter(Boolean);
+        const fields = (step.fields || []).map((field) => renderDetailField({ field, data, t })).filter(Boolean);
         return { step, fields };
       })
       .filter((group) => group.fields.length > 0);
+  }, [config?.steps, company?.data, t]);
+
+  const complianceGroup = useMemo(() => {
+    if (!config?.steps) return null;
+    const data = company?.data || {};
+    const complianceStep = config.steps.find((step) => step.id === "compliance" && Array.isArray(step.fields) && step.fields.length > 0);
+    if (!complianceStep) return null;
+    const fields = (complianceStep.fields || []).map((field) => renderDetailField({ field, data, t })).filter(Boolean);
+    if (fields.length === 0) return null;
+    return { step: complianceStep, fields };
   }, [config?.steps, company?.data, t]);
 
   // console.log("stepGroups",stepGroups)
@@ -472,12 +527,12 @@ const McapCompanyDetail: React.FC = () => {
         <TabsTrigger value="documents" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
           Record of Documents
         </TabsTrigger>
-        {isAdmin && (
+        {canEdit && (
           <TabsTrigger value="memos" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
             Memo
           </TabsTrigger>
         )}
-        {isAdmin && (
+        {canEdit && (
           <TabsTrigger value="projects" className="flex-1 py-3 text-md font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
             Project
           </TabsTrigger>
@@ -491,10 +546,10 @@ const McapCompanyDetail: React.FC = () => {
       </TabsList>
 
       <TabsContent value="details" className="p-4 md:p-6">
-        {companyName && <TodoApp id={company._id} name={companyName} />}
+        {!isDashboardDetailView && companyName && <TodoApp id={company._id} name={companyName} />}
 
         <div className="flex flex-wrap gap-3 mt-4">
-          {isAdmin && (
+          {canEdit && (
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium">Assign Admin:</span>
               <Select value={adminAssigned} onValueChange={setAdminAssigned}>
@@ -514,18 +569,22 @@ const McapCompanyDetail: React.FC = () => {
           <Button onClick={() => setActiveSection("documents")} size="sm" className="flex items-center gap-2">
             Company Docs
           </Button>
-          <Button
-            onClick={() => navigate(`/incorporation-documents?companyId=${company._id}`)}
-            size="sm"
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            MCAP Docs Hub
-          </Button>
-          <Button onClick={() => navigate(`/incorporation?companyId=${company._id}`)} size="sm" className="flex items-center gap-2">
-            Open in Form
-          </Button>
-          <Button onClick={() => navigate(-1)} size="sm" className="flex items-center gap-2">
+          {canEdit && (
+            <Button
+              onClick={() => navigate(`/incorporation-documents?companyId=${company._id}`)}
+              size="sm"
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              MCAP Docs Hub
+            </Button>
+          )}
+          {canEdit && (
+            <Button onClick={() => navigate(`/incorporation?companyId=${company._id}`)} size="sm" className="flex items-center gap-2">
+              Open in Form
+            </Button>
+          )}
+          <Button onClick={() => navigate(dashboardPath)} size="sm" className="flex items-center gap-2">
             Return
           </Button>
         </div>
@@ -541,7 +600,7 @@ const McapCompanyDetail: React.FC = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        {isEditing && isAdmin ? (
+                        {isEditing && canEdit ? (
                           <Input
                             value={String(data?.[companyNameKey] ?? "")}
                             onChange={(e) => updateDataField(companyNameKey, e.target.value)}
@@ -557,7 +616,7 @@ const McapCompanyDetail: React.FC = () => {
                           </Badge>
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-muted-foreground">Status</span>
-                            {isAdmin ? (
+                            {canEdit ? (
                               <Select value={company.incorporationStatus || ""} onValueChange={(v) => updateField("incorporationStatus", v)}>
                                 <SelectTrigger className="h-7 w-[240px]">
                                   <SelectValue placeholder="Select status" />
@@ -577,7 +636,7 @@ const McapCompanyDetail: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2 text-xs text-muted-foreground">
-                        {isAdmin && (
+                        {canEdit && (
                           <Button
                             variant="outline"
                             size="sm"
@@ -607,7 +666,7 @@ const McapCompanyDetail: React.FC = () => {
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="grid gap-1">
                     <div className="text-xs text-muted-foreground">Applicant</div>
-                    {isEditing && isAdmin ? (
+                    {isEditing && canEdit ? (
                       <Input
                         value={String(data?.[applicantNameKey] ?? "")}
                         onChange={(e) => updateDataField(applicantNameKey, e.target.value)}
@@ -620,7 +679,7 @@ const McapCompanyDetail: React.FC = () => {
                   </div>
                   <div className="grid gap-2">
                     <div className="text-xs text-muted-foreground">Contact</div>
-                    {isEditing && isAdmin ? (
+                    {isEditing && canEdit ? (
                       <div className="grid gap-2">
                         <Input
                           value={String(data?.[applicantEmailKey] ?? "")}
@@ -651,7 +710,7 @@ const McapCompanyDetail: React.FC = () => {
                   </div>
                   <div className="grid gap-1 md:col-span-2">
                     <div className="text-xs text-muted-foreground">Alternative Names</div>
-                    {isEditing && isAdmin ? (
+                    {isEditing && canEdit ? (
                       <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                         <Input
                           value={String(data?.[companyAlt1Key] ?? "")}
@@ -724,7 +783,7 @@ const McapCompanyDetail: React.FC = () => {
                           <TableHead className="w-[15%]">KYC</TableHead>
                           <TableHead className="w-[15%]">Invite</TableHead>
                           <TableHead className="w-[10%]">View</TableHead>
-                          {isAdmin && <TableHead className="w-[15%]">Actions</TableHead>}
+                          {canEdit && <TableHead className="w-[15%]">Actions</TableHead>}
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -758,7 +817,7 @@ const McapCompanyDetail: React.FC = () => {
                               )}
                             </TableCell>
                             <TableCell>
-                              {isAdmin ? (
+                              {canEdit ? (
                                 <Button variant="outline" size="sm" onClick={() => handleInviteParty(p)} className="inline-flex items-center gap-1">
                                   <Send className="h-3.5 w-3.5" />
                                   {p.invited ? "Remind" : "Invite"}
@@ -781,7 +840,7 @@ const McapCompanyDetail: React.FC = () => {
                                 View
                               </Button>
                             </TableCell>
-                            {isAdmin && (
+                            {canEdit && (
                               <TableCell className="space-y-1">
                                 <div className="flex flex-wrap gap-2">
                                   <Button variant="outline" size="sm" onClick={() => handleKycStatus(p, "approved")}>
@@ -857,7 +916,7 @@ const McapCompanyDetail: React.FC = () => {
                       <a href={company.uploadReceiptUrl} target="_blank" rel="noreferrer" className="group relative block overflow-hidden rounded-md border">
                         <img src={company.uploadReceiptUrl} alt="Payment receipt" className="h-44 w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]" />
                       </a>
-                      {isAdmin && (
+                      {canEdit && (
                         <div className="flex items-center gap-3">
                           <Label className="text-sm font-medium">Payment Status:</Label>
                           <Select value={company.paymentStatus || "unpaid"} onValueChange={(val) => updateField("paymentStatus", val)}>
@@ -889,7 +948,7 @@ const McapCompanyDetail: React.FC = () => {
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="expiresAt" className="text-right">Expires</Label>
-                    {isAdmin ? (
+                    {canEdit ? (
                       <Input
                         id="expiresAt"
                         type="date"
@@ -953,23 +1012,14 @@ const McapCompanyDetail: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent className="grid gap-4">
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    ["legalAndEthicalConcern", "Legal and Ethical Concern"],
-                    ["q_country", "Sanctioned Countries Activity"],
-                    ["sanctionsExposureDeclaration", "Sanctions Exposure"],
-                    ["crimeaSevastapolPresence", "Crimea/Sevastopol Presence"],
-                    ["russianEnergyPresence", "Russian Energy/Defense Presence"],
-                  ].map(([key, label]) => (
-                    <div key={key} className="grid gap-1">
-                      <div className="text-xs text-muted-foreground">{label}</div>
-                      <Badge variant={(data as any)[key] === "yes" ? "destructive" : "outline"} className={(data as any)[key] === "yes" ? "" : "text-muted-foreground"}>
-                        {String((data as any)[key] || "N/A").toUpperCase()}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-                <Separator />
+                {complianceGroup ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {complianceGroup.fields}
+                  </div>
+                ) : (
+                  <div className="text-sm text-muted-foreground">No compliance answers saved yet.</div>
+                )}
+                {(data?.sns || data?.snsId) && <Separator />}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-1">
                     <div className="text-xs text-muted-foreground">Social App</div>
@@ -990,22 +1040,22 @@ const McapCompanyDetail: React.FC = () => {
               <CardContent className="grid gap-3">
                 <div>
                   <Label>Email</Label>
-                  <Input value={emailTo} onChange={(e) => setEmailTo(e.target.value)} />
+                  <Input value={emailTo} onChange={(e) => setEmailTo(e.target.value)} readOnly={isDashboardDetailView} />
                 </div>
                 <div>
                   <Label>Subject</Label>
-                  <Input value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} />
+                  <Input value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} readOnly={isDashboardDetailView} />
                 </div>
                 <div>
                   <Label>Message</Label>
-                  <Textarea value={emailMessage} onChange={(e) => setEmailMessage(e.target.value)} rows={4} />
+                  <Textarea value={emailMessage} onChange={(e) => setEmailMessage(e.target.value)} rows={4} readOnly={isDashboardDetailView} />
                 </div>
-                <Button onClick={handleSendEmail}>Send Email</Button>
+                <Button onClick={handleSendEmail} disabled={isDashboardDetailView}>Send Email</Button>
               </CardContent>
             </Card>
           </div>
 
-          {isAdmin && (
+          {canEdit && (
             <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <div className="mx-auto flex max-width items-center justify-between gap-3 p-3">
                 <div className="text-xs text-muted-foreground">
@@ -1027,10 +1077,11 @@ const McapCompanyDetail: React.FC = () => {
           companyId={company._id}
           countryCode={company.countryCode}
           companyName={companyName}
+          allowDelete={canEdit}
         />
       </TabsContent>
 
-      {isAdmin && (
+      {canEdit && (
         <TabsContent value="memos" className="p-6">
           <div className="space-y-6">
             <MemoApp id={company._id} />
@@ -1038,7 +1089,7 @@ const McapCompanyDetail: React.FC = () => {
         </TabsContent>
       )}
 
-      {isAdmin && (
+      {canEdit && (
         <TabsContent value="projects" className="p-6">
           <div className="space-y-6">
             <AdminProject id={company._id} />
@@ -1066,6 +1117,7 @@ const McapCompanyDetail: React.FC = () => {
       open={partyModalOpen}
       onOpenChange={handlePartyModalChange}
       onSaved={fetchCompany}
+      forceReadOnly={isDashboardDetailView}
     />
     <Dialog open={invoiceDialogOpen} onOpenChange={setInvoiceDialogOpen}>
       <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto p-0">

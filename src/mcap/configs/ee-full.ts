@@ -46,7 +46,7 @@ const REQUESTED_SERVICE_OPTIONS = [
   { label: "mcap.ee.auto.k008", value: "bank_account_opening" },
   { label: "mcap.ee.auto.k009", value: "legal_opinion_estonia" },
   { label: "mcap.ee.auto.k010", value: "legal_opinion_domestic_listing" },
-  { label: "mcap.ee.auto.k011", value: "legal_opinion_other_country" },
+  // { label: "mcap.ee.auto.k011", value: "legal_opinion_other_country" },
   { label: "mcap.ee.auto.k012", value: "business_consulting" },
   { label: "mcap.common.options.other", value: "other" },
 ];
@@ -87,7 +87,7 @@ const QUOTE_ONLY_OPTIONS = [
   { label: "mcap.ee.auto.k034", value: "bank_account_opening" },
   { label: "mcap.ee.auto.k009", value: "legal_opinion_estonia" },
   { label: "mcap.ee.auto.k010", value: "legal_opinion_domestic_listing" },
-  { label: "mcap.ee.auto.k011", value: "legal_opinion_other_country" },
+  // { label: "mcap.ee.auto.k011", value: "legal_opinion_other_country" },
   { label: "mcap.ee.auto.k012", value: "business_consulting" },
   { label: "mcap.ee.auto.k035", value: "other" },
 ];
@@ -198,11 +198,15 @@ export const computeEeFees = (data: Record<string, any>) => {
 
   const totalUsd = selectedItemsUsd.reduce((sum, item) => sum + Number(item.amount || 0), 0);
   const paymentCurrency = String(data?.paymentCurrency || data?.currency || "USD").toUpperCase();
+  const cachedComputedCurrency = String(data?.computedFees?.currency || "").toUpperCase();
   const exchangeRateUsedRaw = Number(data?.computedFees?.exchangeRateUsed || 0);
-  const shouldConvertToHkd =
-    paymentCurrency === "HKD" && Number.isFinite(exchangeRateUsedRaw) && exchangeRateUsedRaw > 0;
+  const shouldConvertFromUsd =
+    paymentCurrency !== "USD"
+    && cachedComputedCurrency === paymentCurrency
+    && Number.isFinite(exchangeRateUsedRaw)
+    && exchangeRateUsedRaw > 0;
 
-  const selectedItems = shouldConvertToHkd
+  const selectedItems = shouldConvertFromUsd
     ? selectedItemsUsd.map((item: any) => ({
       ...item,
       amount: Number((Number(item.amount || 0) * exchangeRateUsedRaw).toFixed(2)),
@@ -212,7 +216,7 @@ export const computeEeFees = (data: Record<string, any>) => {
     }))
     : selectedItemsUsd;
 
-  const total = shouldConvertToHkd ? Number((totalUsd * exchangeRateUsedRaw).toFixed(2)) : totalUsd;
+  const total = shouldConvertFromUsd ? Number((totalUsd * exchangeRateUsedRaw).toFixed(2)) : totalUsd;
   const government = selectedItems
     .filter((item: any) => item.kind === "government")
     .reduce((sum: number, item: any) => sum + Number(item.amount || 0), 0);
@@ -224,7 +228,7 @@ export const computeEeFees = (data: Record<string, any>) => {
   const grandTotal = Number((total + cardFeeSurcharge).toFixed(2));
 
   return {
-    currency: paymentCurrency === "HKD" ? "HKD" : "USD",
+    currency: shouldConvertFromUsd ? paymentCurrency : "USD",
     items: selectedItems,
     government,
     service,
@@ -232,7 +236,7 @@ export const computeEeFees = (data: Record<string, any>) => {
     cardFeePct,
     cardFeeSurcharge,
     grandTotal,
-    ...(shouldConvertToHkd ? { exchangeRateUsed: exchangeRateUsedRaw, originalAmountUsd: totalUsd } : {}),
+    ...(shouldConvertFromUsd ? { exchangeRateUsed: exchangeRateUsedRaw, originalAmountUsd: totalUsd } : {}),
     note:
       "mcap.ee.auto.k049",
   };
@@ -446,6 +450,7 @@ const buildCompanyFields = (): McapField[] => [
     type: "radio-group",
     name: "totalCapitalEUR",
     label: "mcap.ee.auto.k078",
+    tooltip:  "mcap.ee.auto.totalCapitalTooltip",
     required: true,
     defaultValue: "1",
     options: [
@@ -658,6 +663,56 @@ export const EE_FULL_CONFIG: McapConfig = {
       },
     ],
   },
+  reviewSummary: [
+    {
+      id: "applicant",
+      kind: "field",
+      label: "mcap.review.summary.applicant",
+      fieldNames: ["authorName"],
+    },
+    {
+      id: "companyName",
+      kind: "field",
+      label: "mcap.review.summary.companyName",
+      fieldNames: ["proposedCompanyName1"],
+    },
+    {
+      id: "email",
+      kind: "field",
+      label: "mcap.review.summary.email",
+      fieldNames: ["email"],
+    },
+    {
+      id: "phone",
+      kind: "field",
+      label: "mcap.review.summary.phone",
+      fieldNames: ["phoneNumber"],
+    },
+    {
+      id: "relationshipToEstonianCorporation",
+      kind: "field",
+      label: "mcap.review.summary.entityType",
+      fieldNames: ["relationshipToEstonianCorporation"],
+      useFieldLabel: true,
+    },
+    {
+      id: "industries",
+      kind: "field",
+      label: "mcap.review.summary.industry",
+      fieldNames: ["industries"],
+      useFieldLabel: true,
+    },
+    {
+      id: "parties",
+      kind: "parties",
+      label: "mcap.review.summary.parties",
+    },
+    {
+      id: "services",
+      kind: "services",
+      label: "mcap.review.summary.services",
+    },
+  ],
   steps: [
     {
       id: "applicant",
@@ -698,7 +753,7 @@ export const EE_FULL_CONFIG: McapConfig = {
       widget: "ServiceSelectionWidget",
       fields: buildServiceFields(),
       serviceItems: (data) => buildEeServiceItems(data),
-      supportedCurrencies: ["USD", "HKD"],
+      supportedCurrencies: ["USD", "HKD", "EUR"],
       computeFees: (data) => computeEeFees(data),
     },
     {
@@ -713,7 +768,7 @@ export const EE_FULL_CONFIG: McapConfig = {
       title: "mcap.ee.auto.k120",
       description: "mcap.ee.auto.k121",
       widget: "PaymentWidget",
-      supportedCurrencies: ["USD", "HKD"],
+      supportedCurrencies: ["USD", "HKD", "EUR"],
       computeFees: (data) => computeEeFees(data),
     },
     {
@@ -743,7 +798,7 @@ export const EE_FULL_CONFIG: McapConfig = {
           colSpan: 2,
         },
         {
-          type: "text",
+          type: "signature",
           name: "eSign",
           label: "mcap.common.fields.electronicSignature",
           required: true,

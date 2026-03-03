@@ -231,6 +231,7 @@
     "Home": "首頁",
     "userList": "用戶列表",
     "regComp": "註冊公司",
+    "incorpParties": "法人設立相關方",
     "compDocs": "公司文件",
     "switchServices": "服務切換列表",
     "bankServices": "銀行服務",
@@ -932,7 +933,7 @@
     "grandTotal": "應付總額",
     "proceed": "前往付款",
     "disclaimer": "繼續操作即表示您同意我們的服務條款和退款政策。",
-    "cardFeeNote": "信用卡手續費將於付款時收取：6% (USD) / 4% (HKD)。",
+    "cardFeeNote": "信用卡手續費將於付款時收取：USD/EUR 為 6%，HKD 為 4%。",
     "sections": {
       "government": {
         "title": "政府規費",
@@ -3032,7 +3033,7 @@
         "doYouAgreeToDeclaration": "您是否同意上述聲明？",
         "truthfulnessDeclaration": "我確認所提交的資訊真實且準確。",
         "complianceSuspensionAcknowledgement": "我明白若發現法律/合規違規行為，服務可能會被暫停。",
-        "electronicSignature": "電子簽名 (全名)",
+        "electronicSignature": "電子簽名",
         "otherDetails": "其他詳情"
       },
       "placeholders": {
@@ -3051,6 +3052,87 @@
       "coverage": {
         "director": "董事覆蓋",
         "directorAtLeastOne": "至少委任一名董事"
+      }
+    },
+    "dashboard": {
+      "title": "法人設立申請",
+      "desc": "追蹤並繼續您的統一法人設立申請。",
+      "loading": "正在載入申請...",
+      "empty": "目前尚無設立申請。",
+      "filters": {
+        "all": "所有申請",
+        "pending": "待處理申請",
+        "paid": "已付款申請",
+        "documentCollection": "文件收集階段",
+        "currentCorporateClient": "現有法人客戶",
+        "renewalInProgress": "續約處理中",
+        "renewed": "已續約公司",
+        "rejected": "已拒絕公司",
+        "showing": "顯示第 {{start}}-{{end}} 筆，共 {{filtered}} 筆篩選結果 (總計 {{total}} 筆)",
+        "empty": "在 {{filter}} 中找不到相關申請。",
+        "reset": "顯示所有申請"
+      },
+      "search": {
+        "placeholder": "按公司或申請人姓名搜尋",
+        "empty": "在 {{filter}} 中找不到符合此搜尋條件的申請。",
+        "clear": "清除搜尋"
+      },
+      "sort": {
+        "by": "排序",
+        "none": "無",
+        "country": "國家",
+        "status": "狀態",
+        "payment": "付款",
+        "asc": "升冪",
+        "desc": "降冪"
+      },
+      "pagination": {
+        "rows": "每頁列數",
+        "page": "頁碼 {{page}}/{{pages}}"
+      },
+      "columns": {
+        "company": "公司",
+        "country": "國家",
+        "status": "狀態",
+        "payment": "付款",
+        "incorporationDate": "設立日期",
+        "createdAt": "建立時間",
+        "assignedTo": "指派給",
+        "filledBy": "填寫人",
+        "userLastLogin": "用戶最近登入",
+        "actions": "操作"
+      },
+      "actions": {
+        "edit": "編輯"
+      },
+      "values": {
+        "notAvailable": "不適用",
+        "untitled": "無標題",
+        "draft": "草稿",
+        "unpaid": "未付款"
+      },
+      "invitations": {
+        "title": "我的邀請",
+        "desc": "為邀請您的公司完成 KYC (身份認證)。",
+        "showing": "顯示第 {{start}}-{{end}} 封，共 {{total}} 封邀請",
+        "loading": "正在載入邀請...",
+        "empty": "無待處理的邀請。",
+        "columns": {
+          "company": "公司",
+          "country": "國家",
+          "roles": "角色",
+          "kyc": "KYC 狀態",
+          "expires": "到期日",
+          "action": "操作"
+        },
+        "actions": {
+          "completeKyc": "完成 KYC",
+          "openIncorporation": "開啟設立申請"
+        },
+        "values": {
+          "companyFallback": "公司名",
+          "pending": "待處理"
+        }
       }
     },
     "au": {
@@ -4433,6 +4515,7 @@
         "k076": "擬定公司名稱（優先順位 2）",
         "k077": "擬定公司名稱（優先順位 3）",
         "k078": "總資本額 (EUR)",
+        "totalCapitalTooltip": "在以最低資本設立實體的情況下，尤其是由我們代您先行墊付資本以協助完成設立時，我們建議將初始股本設定為 1 歐元。（在愛沙尼亞，若以預先繳足資本並存入指定銀行帳戶的方式設立公司，通常會大幅拉長處理時間。因此，若您重視更快速的設立流程，我們建議採用 1 歐元方案。）但是，如果您受韓國《外國匯兌交易法》等法規約束，且該法規要求在匯出資本前先完成海外直接投資（ODI）申報，我們則建議設定較高的資本額（例如 1,000 歐元）。在此情況下，您應先向當地銀行辦理 ODI 申報，之後再匯出所設定的資本。",
         "k079": "1 歐元",
         "k080": "2,500 歐元",
         "k081": "25,000 歐元",

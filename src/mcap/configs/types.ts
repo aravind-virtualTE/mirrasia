@@ -39,12 +39,22 @@ export type McapFees = {
   note?: string;
 };
 
+export type McapReviewSummaryRow = {
+  id: string;
+  kind: "field" | "parties" | "services";
+  label?: string;
+  fieldNames?: string[];
+  useFieldLabel?: boolean;
+  showWhenEmpty?: boolean;
+};
+
 export type McapField = {
   type:
   | "text"
   | "email"
   | "number"
   | "textarea"
+  | "signature"
   | "select"
   | "radio"
   | "radio-group"
@@ -72,6 +82,26 @@ export type McapField = {
   content?: ReactNode;
 };
 
+export type McapStepGuardResult = {
+  block: boolean;
+  title?: string;
+  description: string;
+  variant?: "default" | "destructive";
+  saveDraftBeforeBlock?: boolean;
+};
+
+export type McapStepGuardContext = {
+  data: Record<string, any>;
+  parties: any[];
+  entityMeta?: Record<string, any> | null;
+};
+
+export type McapStepGuard =
+  (context: McapStepGuardContext) =>
+    | McapStepGuardResult
+    | null
+    | Promise<McapStepGuardResult | null>;
+
 export type McapStep = {
   id: string;
   title: string;
@@ -88,6 +118,8 @@ export type McapStep = {
   partyFields?: PartyFieldDef[];
   partyCoverageRules?: PartyCoverageRule[];
   widgetConfig?: any;
+  nextGuard?: McapStepGuard;
+  saveDraftOnBlockedNext?: boolean;
 };
 
 export type RepeatableSection = {
@@ -138,6 +170,7 @@ export type McapConfig = {
   currency: string;
   title?: string;
   steps: McapStep[];
+  reviewSummary?: McapReviewSummaryRow[];
   entityMeta?: Record<string, any>;
   confirmationDetails?: {
     title: string;

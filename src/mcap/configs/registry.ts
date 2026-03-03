@@ -17,6 +17,7 @@ import { EE_FULL_CONFIG } from "./ee-full";
 import { LT_FULL_CONFIG } from "./lt-full";
 import { IE_FULL_CONFIG } from "./ie-full";
 import { AU_FULL_CONFIG } from "./au-full";
+import { getComplianceGuardForCountryCode } from "./complianceGuards";
 
 const STANDARD_FLOW_COUNTRIES = new Set([
   "HK",
@@ -72,7 +73,7 @@ const buildReviewStep = (): McapStep => ({
       required: true,
     },
     {
-      type: "text",
+      type: "signature",
       name: "eSign",
       label: "newHk.review.esign.label",
       required: true,
@@ -182,6 +183,20 @@ const reorderSteps = (steps: McapStep[]) => {
     .map((item) => item.step);
 };
 
+const attachComplianceGuard = (config: McapConfig, steps: McapStep[]) => {
+  const complianceGuard = getComplianceGuardForCountryCode(config.countryCode);
+  if (!complianceGuard) return steps;
+  return steps.map((step) =>
+    step.id === "compliance"
+      ? {
+        ...step,
+        nextGuard: step.nextGuard || complianceGuard,
+        saveDraftOnBlockedNext: step.saveDraftOnBlockedNext ?? true,
+      }
+      : step
+  );
+};
+
 const normalizeConfig = (config: McapConfig): McapConfig => {
   let steps = config.steps.map((s) => ({ ...s }));
   steps = stripLegalTermsOutsideAgreement(steps);
@@ -192,6 +207,8 @@ const normalizeConfig = (config: McapConfig): McapConfig => {
     steps = ensureReviewStep(steps);
     steps = reorderSteps(steps);
   }
+
+  steps = attachComplianceGuard(config, steps);
 
   return { ...config, steps };
 };

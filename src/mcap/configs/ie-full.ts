@@ -786,7 +786,7 @@ export const IE_FULL_CONFIG: McapConfig = {
           colSpan: 2,
         },
         {
-          type: "text",
+          type: "signature",
           name: "eSign",
           label: "mcap.common.fields.electronicSignature",
           required: true,

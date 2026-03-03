@@ -15,6 +15,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { toast } from "@/hooks/use-toast";
 import {
   deleteMcapCompanyDocument,
@@ -23,16 +24,6 @@ import {
   upsertMcapDocumentComment,
   uploadMcapCompanyDocuments,
 } from "@/services/dataFetch";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import {
   Company,
   Document,
@@ -45,6 +36,8 @@ interface McapCompanyDocumentCenterProps {
   companyId: string;
   countryCode: string;
   companyName?: string;
+  readOnly?: boolean;
+  allowDelete?: boolean;
 }
 
 const getDocId = (doc?: Document | null) =>
@@ -120,6 +113,8 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
   companyId,
   countryCode,
   companyName,
+  readOnly = false,
+  allowDelete = true,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -484,18 +479,20 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
                 <RefreshCw className="h-4 w-4" />
                 Refresh
               </Button>
-              <Button
-                size="sm"
-                onClick={() => {
-                  setShowUploadSection((prev) => !prev);
-                  setUploadedFiles([]);
-                }}
-                disabled={isUpdating}
-                className="inline-flex items-center gap-2"
-              >
-                <PlusCircle className="h-4 w-4" />
-                Add Documents
-              </Button>
+              {!readOnly && (
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    setShowUploadSection((prev) => !prev);
+                    setUploadedFiles([]);
+                  }}
+                  disabled={isUpdating}
+                  className="inline-flex items-center gap-2"
+                >
+                  <PlusCircle className="h-4 w-4" />
+                  Add Documents
+                </Button>
+              )}
             </div>
           </div>
 
@@ -541,7 +538,7 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
             </div>
           </div>
 
-          {showUploadSection && (
+          {!readOnly && showUploadSection && (
             <div className="space-y-4 rounded-xl border bg-muted/20 p-4">
               <div
                 className={`rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
@@ -631,6 +628,8 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
                 currentUserId={currentUserId}
                 isUpdating={isUpdating}
                 expandedDoc={null}
+                readOnly={readOnly}
+                allowDelete={allowDelete}
               />
             </div>
 
@@ -677,36 +676,20 @@ const McapCompanyDocumentCenter: React.FC<McapCompanyDocumentCenterProps> = ({
         </CardContent>
       </Card>
 
-      <AlertDialog open={!!documentToDelete} onOpenChange={(open) => !open && setDocumentToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete document</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete "{documentToDelete?.docName || "document"}". This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isUpdating}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => {
-                e.preventDefault();
-                handleDeleteDocument();
-              }}
-              disabled={isUpdating}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {isUpdating ? (
-                <span className="inline-flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Deleting...
-                </span>
-              ) : (
-                "Delete"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {!readOnly && allowDelete && (
+        <ConfirmDialog
+          open={!!documentToDelete}
+          onOpenChange={(open) => {
+            if (!open) setDocumentToDelete(null);
+          }}
+          title="Delete document"
+          description={`This will permanently delete "${documentToDelete?.docName || "document"}". This action cannot be undone.`}
+          confirmText="Delete"
+          loadingText="Deleting..."
+          isLoading={isUpdating}
+          onConfirm={handleDeleteDocument}
+        />
+      )}
     </div>
   );
 };

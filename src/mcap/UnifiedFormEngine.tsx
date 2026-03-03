@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { UnifiedTextField } from "./fields/TextField";
+import { UnifiedSignatureField } from "./fields/SignatureField";
 import { UnifiedSelectField } from "./fields/SelectField";
 import { UnifiedSearchSelectField } from "./fields/SearchSelectField";
 import { PartyWidget } from "./fields/PartyWidget";
@@ -13,13 +14,14 @@ import { ServiceSelectionWidget } from "./fields/ServiceSelectionWidget";
 import { InvoiceWidget } from "./fields/InvoiceWidget";
 import { RepeatableSectionWidget } from "./fields/RepeatableSectionWidget";
 import { PanamaServiceSetupWidget } from "./fields/PanamaServiceSetupWidget";
+import { FieldTooltip } from "./fields/FieldTooltip";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import type { McapConfig, McapField, RepeatableSection } from "./configs/types";
+import type { McapConfig, McapField, McapReviewSummaryRow, RepeatableSection } from "./configs/types";
 import { Progress } from "@/components/ui/progress";
 import { buildDefaultsForFields, getDefaultValueForField } from "./fields/fieldDefaults";
 import { API_URL } from "@/services/fetch";
@@ -39,6 +41,56 @@ const saveToBackend = async (payload: any) => {
         body: JSON.stringify(payload)
     });
     return res.json();
+};
+
+const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+    const headers: Record<string, string> = {};
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+    return headers;
+};
+
+const uploadSignatureToBackend = async (companyId: string, field: string, file: File) => {
+    const payload = new FormData();
+    payload.append("file", file);
+    payload.append("field", field);
+
+    const res = await fetch(`${API_BASE}/mcap/companies/${companyId}/signature`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: payload,
+    });
+
+    return res.json();
+};
+
+const deleteSignatureFromBackend = async (companyId: string, field: string) => {
+    const res = await fetch(`${API_BASE}/mcap/companies/${companyId}/signature/${field}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+    });
+
+    return res.json();
+};
+
+const buildSignatureFile = (signatureDataUrl: string, fieldName: string) => {
+    const matches = signatureDataUrl.match(/^data:(.*?);base64,(.*)$/);
+    if (!matches) {
+        throw new Error("Invalid signature image");
+    }
+
+    const [, mimeType = "image/png", base64 = ""] = matches;
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+
+    for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index);
+    }
+
+    const extension = mimeType.split("/")[1] || "png";
+    return new File([bytes], `${fieldName}-${Date.now()}.${extension}`, { type: mimeType });
 };
 
 export const UnifiedFormEngine = ({
@@ -420,7 +472,7 @@ export const UnifiedFormEngine = ({
                 setCompanyId((prev) => (prev === nextCompanyId ? prev : nextCompanyId));
                 return nextCompanyId;
             }
-            return currentCompanyId || null;
+            return null;
         })().finally(() => {
             ensureDraftInFlightRef.current = null;
         });
@@ -435,6 +487,32 @@ export const UnifiedFormEngine = ({
         }
     }, [currentStep.widget, ensureDraft]);
 
+    const uploadSignatureAsset = useCallback(async (fieldName: string, signature: string) => {
+        const draftCompanyId = companyIdRef.current || await ensureDraft();
+        if (!draftCompanyId) {
+            throw new Error("Unable to create draft before uploading signature");
+        }
+
+        const file = buildSignatureFile(signature, fieldName);
+        const response = await uploadSignatureToBackend(draftCompanyId, fieldName, file);
+
+        if (!response?.success || !response?.data?.url) {
+            throw new Error(response?.message || "Failed to upload signature");
+        }
+
+        return response.data.url as string;
+    }, [ensureDraft]);
+
+    const removeSignatureAsset = useCallback(async (fieldName: string) => {
+        const currentCompanyId = companyIdRef.current;
+        if (!currentCompanyId) return;
+
+        const response = await deleteSignatureFromBackend(currentCompanyId, fieldName);
+        if (!response?.success) {
+            throw new Error(response?.message || "Failed to delete signature");
+        }
+    }, []);
+
     const handleNext = async () => {
         if (isLastStep) {
             // Submit
@@ -445,12 +523,47 @@ export const UnifiedFormEngine = ({
             setIsAdvancingStep(true);
 
             try {
+                const persistBlockedDraftIfNeeded = async () => {
+                    if (!currentStep.saveDraftOnBlockedNext) return true;
+                    const blockedDraftId = await ensureDraft();
+                    if (blockedDraftId) return true;
+                    toast({
+                        title: t("mcap.error.title", "Error"),
+                        description: t("mcap.error.draftSaveFailed", "Unable to save draft. Please try again."),
+                        variant: "destructive",
+                    });
+                    return false;
+                };
                 // TEMP (admin testing only): required-field validation is bypassed when ADMIN_TEST_RELAX_VALIDATION is true.
                 if (!ADMIN_TEST_RELAX_VALIDATION && missingFields.length > 0) {
+                    const persisted = await persistBlockedDraftIfNeeded();
+                    if (!persisted) return;
                     toast({
                         title: t("mcap.validation.missingInformation.title", "Missing information"),
                         description: t("mcap.validation.missingInformation.desc", "Please complete required fields to continue."),
                         variant: "destructive",
+                    });
+                    return;
+                }
+                const nextGuardResult = currentStep.nextGuard
+                    ? await currentStep.nextGuard({ data: formData, parties, entityMeta })
+                    : null;
+                if (nextGuardResult?.block) {
+                    if (nextGuardResult.saveDraftBeforeBlock !== false) {
+                        const blockedDraftId = await ensureDraft();
+                        if (!blockedDraftId) {
+                            toast({
+                                title: t("mcap.error.title", "Error"),
+                                description: t("mcap.error.draftSaveFailed", "Unable to save draft. Please try again."),
+                                variant: "destructive",
+                            });
+                            return;
+                        }
+                    }
+                    toast({
+                        title: nextGuardResult.title,
+                        description: nextGuardResult.description,
+                        variant: nextGuardResult.variant,
                     });
                     return;
                 }
@@ -553,6 +666,16 @@ export const UnifiedFormEngine = ({
         if (field.type === "text" || field.type === "textarea" || field.type === "number" || field.type === "email") {
             return <UnifiedTextField key={key} {...commonProps} />;
         }
+        if (field.type === "signature") {
+            return (
+                <UnifiedSignatureField
+                    key={key}
+                    {...commonProps}
+                    onUploadSignature={(signature) => uploadSignatureAsset(field.name!, signature)}
+                    onRemoveSignature={() => removeSignatureAsset(field.name!)}
+                />
+            );
+        }
         if (field.type === "select" || field.type === "radio") {
             return <UnifiedSelectField key={key} {...commonProps} />;
         }
@@ -572,10 +695,12 @@ export const UnifiedFormEngine = ({
                         onCheckedChange={(v) => onChange(!!v)}
                     />
                     <div className="space-y-1">
-                        <Label htmlFor={checkboxId} className="font-medium">
-                            {t(field.label || "", field.label || "")} {field.required && <span className="text-red-500">*</span>}
-                        </Label>
-                        {field.tooltip && <p className="text-xs text-muted-foreground">{t(field.tooltip, field.tooltip)}</p>}
+                        <div className="flex items-center gap-1.5">
+                            <Label htmlFor={checkboxId} className="font-medium">
+                                {t(field.label || "", field.label || "")} {field.required && <span className="text-red-500">*</span>}
+                            </Label>
+                            <FieldTooltip content={t(field.tooltip || "", field.tooltip || "") as string} />
+                        </div>
                     </div>
                 </div>
             );
@@ -590,9 +715,12 @@ export const UnifiedFormEngine = ({
             };
             return (
                 <div key={key} className="space-y-2">
-                    <Label className="font-medium">
-                        {t(field.label || "", field.label || "")} {field.required && <span className="text-red-500">*</span>}
-                    </Label>
+                    <div className="flex items-center gap-1.5">
+                        <Label className="font-medium">
+                            {t(field.label || "", field.label || "")} {field.required && <span className="text-red-500">*</span>}
+                        </Label>
+                        <FieldTooltip content={t(field.tooltip || "", field.tooltip || "") as string} />
+                    </div>
                     <div className="grid sm:grid-cols-2 gap-2">
                         {field.options?.map((opt) => (
                             <label key={opt.value} className="flex items-center gap-2 border rounded-md p-2">
@@ -604,7 +732,6 @@ export const UnifiedFormEngine = ({
                             </label>
                         ))}
                     </div>
-                    {field.tooltip && <p className="text-xs text-muted-foreground">{t(field.tooltip, field.tooltip)}</p>}
                 </div>
             );
         }
@@ -717,15 +844,6 @@ export const UnifiedFormEngine = ({
                 : String(rawValue);
         };
 
-        const applicantName = getValueEntry(["applicantName", "name", "contactName"])?.value || "-";
-        const applicantEmail = getValueEntry(["email", "applicantEmail", "applicantEmailAddress"])?.value || "-";
-        const applicantPhone = getValueEntry(["phone", "phoneNum", "contactPhone"])?.value || "-";
-        const companyName = getValueEntry(["companyName_1", "name1", "foundationNameEn", "companyName"])?.value || "-";
-        const entityType = getValueEntry(["selectedEntity", "entityType", "panamaEntity"])?.value || "-";
-        const industryEntry = getValueEntry(["industry", "selectedIndustry", "businessTypes"]);
-        const partiesCount = Array.isArray(parties) ? parties.length : 0;
-        const services = getValueEntry(["optionalFeeIds", "serviceItemsSelected", "services", "pif_optEmi"])?.value || "-";
-
         const renderValue = (value: any) => {
             if (Array.isArray(value)) return value.length ? value.join(", ") : "-";
             if (typeof value === "boolean") {
@@ -736,56 +854,215 @@ export const UnifiedFormEngine = ({
             return String(value);
         };
 
-        const renderIndustryValue = () => {
-            if (!industryEntry) return "-";
-            const field = findFieldByName(industryEntry.key);
-            if (!field) return renderValue(industryEntry.value);
+        const renderFieldEntryValue = (entry: { key: string; value: any } | null) => {
+            if (!entry) return "-";
+            const field = findFieldByName(entry.key);
+            if (!field) return renderValue(entry.value);
 
-            if (Array.isArray(industryEntry.value)) {
-                return industryEntry.value.length
-                    ? industryEntry.value.map((v) => getOptionDisplay(field, v)).join(", ")
+            if (Array.isArray(entry.value)) {
+                return entry.value.length
+                    ? entry.value.map((v) => getOptionDisplay(field, v)).join(", ")
                     : "-";
             }
 
-            return getOptionDisplay(field, industryEntry.value);
+            if (
+                field.type === "select"
+                || field.type === "radio"
+                || field.type === "radio-group"
+                || field.type === "checkbox-group"
+                || field.type === "search-select"
+            ) {
+                return getOptionDisplay(field, entry.value);
+            }
+
+            return renderValue(entry.value);
         };
 
+        const getEntryLabel = (entry: { key: string; value: any } | null, fallback: string) => {
+            if (!entry) return fallback;
+            const field = findFieldByName(entry.key);
+            return field?.label ? t(field.label, field.label) : fallback;
+        };
+
+        const applicantEntry = getValueEntry(["applicantName", "authorName", "name", "contactName", "primaryContactName"]);
+        const applicantEmailEntry = getValueEntry(["email", "applicantEmail", "applicantEmailAddress", "contactEmail"]);
+        const applicantPhoneEntry = getValueEntry(["phone", "phoneNum", "phoneNumber", "applicantPhone", "contactPhone"]);
+        const companyNameEntry = getValueEntry([
+            "companyName1",
+            "companyName_1",
+            "proposedCompanyName1",
+            "name1",
+            "foundationNameEn",
+            "companyName",
+            "desiredCompanyName",
+            "companyNamePrimary",
+        ]);
+        const entityEntry = getValueEntry([
+            "selectedEntity",
+            "entityType",
+            "panamaEntity",
+            "relationshipToEstonianCorporation",
+            "executiveComposition",
+        ]);
+        const industryEntry = getValueEntry(["industry", "industries", "selectedIndustry", "businessTypes"]);
+        const partiesCount = Array.isArray(parties) ? parties.length : 0;
+        const hasPartiesStep = config.steps.some((step) => step.widget === "PartiesManager");
+        const hasServicesStep = config.steps.some((step) => step.widget === "ServiceSelectionWidget");
+        const renderServicesValue = () => {
+            const selectedIds = Array.from(
+                new Set([
+                    ...(Array.isArray(formData?.optionalFeeIds) ? formData.optionalFeeIds : []),
+                    ...(Array.isArray(formData?.serviceItemsSelected) ? formData.serviceItemsSelected : []),
+                ].map((id) => String(id)))
+            );
+
+            const labelMap = new Map<string, string>();
+            const feeItems = Array.isArray((computedFees as any)?.items) ? (computedFees as any).items : [];
+            feeItems.forEach((item: any) => {
+                if (!item?.id) return;
+                labelMap.set(
+                    String(item.id),
+                    item?.label ? t(String(item.label), String(item.label)) : String(item.id)
+                );
+            });
+
+            const servicesStep = config.steps.find((step) => step.widget === "ServiceSelectionWidget");
+            const serviceItemsSource = servicesStep?.serviceItems;
+            const resolvedServiceItems =
+                typeof serviceItemsSource === "function"
+                    ? serviceItemsSource(formData, entityMeta)
+                    : (Array.isArray(serviceItemsSource) ? serviceItemsSource : []);
+
+            resolvedServiceItems.forEach((item: any) => {
+                if (!item?.id) return;
+                labelMap.set(
+                    String(item.id),
+                    item?.label ? t(String(item.label), String(item.label)) : String(item.id)
+                );
+            });
+
+            if (selectedIds.length > 0) {
+                return selectedIds.map((id) => labelMap.get(id) || id).join(", ");
+            }
+
+            if (feeItems.length > 0) {
+                return feeItems
+                    .map((item: any) => (item?.label ? t(String(item.label), String(item.label)) : String(item?.id || "")))
+                    .filter(Boolean)
+                    .join(", ");
+            }
+
+            return "-";
+        };
+        const servicesValue = renderServicesValue();
+        const buildEntryRow = (
+            id: string,
+            fallbackLabel: string,
+            entry: { key: string; value: any } | null,
+            useFieldLabel = false
+        ) => {
+            if (!entry) return null;
+            return {
+                id,
+                label: useFieldLabel ? getEntryLabel(entry, fallbackLabel) : fallbackLabel,
+                value: renderFieldEntryValue(entry),
+            };
+        };
+        const buildStaticRow = (id: string, label: string, value: any, visible = true) => {
+            if (!visible) return null;
+            return {
+                id,
+                label,
+                value: typeof value === "string" ? value : renderValue(value),
+            };
+        };
+        const configuredFieldEntries: Record<string, { key: string; value: any } | null> = {
+            applicant: applicantEntry,
+            applicantEmail: applicantEmailEntry,
+            applicantPhone: applicantPhoneEntry,
+            companyName: companyNameEntry,
+            entityType: entityEntry,
+            industry: industryEntry,
+        };
+        const buildConfiguredRow = (row: McapReviewSummaryRow) => {
+            const translatedLabel = row.label ? t(row.label, row.label) : "";
+
+            if (row.kind === "field") {
+                const entry =
+                    Array.isArray(row.fieldNames) && row.fieldNames.length > 0
+                        ? getValueEntry(row.fieldNames)
+                        : configuredFieldEntries[row.id] || null;
+
+                if (!entry) {
+                    if (!row.showWhenEmpty) return null;
+                    return {
+                        id: row.id,
+                        label: translatedLabel || t("mcap.review.summary.value", "Value"),
+                        value: "-",
+                    };
+                }
+
+                return buildEntryRow(
+                    row.id,
+                    translatedLabel || t("mcap.review.summary.value", "Value"),
+                    entry,
+                    row.useFieldLabel
+                );
+            }
+
+            if (row.kind === "parties") {
+                return buildStaticRow(
+                    row.id,
+                    translatedLabel || t("mcap.review.summary.parties", "Parties"),
+                    partiesCount,
+                    row.showWhenEmpty ? true : (hasPartiesStep || partiesCount > 0)
+                );
+            }
+
+            if (row.kind === "services") {
+                return buildStaticRow(
+                    row.id,
+                    translatedLabel || t("mcap.review.summary.services", "Services Selected"),
+                    servicesValue,
+                    row.showWhenEmpty ? true : (hasServicesStep || servicesValue !== "-")
+                );
+            }
+
+            return null;
+        };
+        const defaultSummaryRows = [
+            buildEntryRow("applicant", t("mcap.review.summary.applicant", "Applicant"), applicantEntry),
+            buildEntryRow("companyName", t("mcap.review.summary.companyName", "Company Name"), companyNameEntry),
+            buildEntryRow("email", t("mcap.review.summary.email", "Email"), applicantEmailEntry),
+            buildEntryRow("phone", t("mcap.review.summary.phone", "Phone"), applicantPhoneEntry),
+            buildEntryRow("entityType", t("mcap.review.summary.entityType", "Entity Type"), entityEntry, true),
+            buildEntryRow("industry", t("mcap.review.summary.industry", "Industry"), industryEntry, true),
+            buildStaticRow("parties", t("mcap.review.summary.parties", "Parties"), partiesCount, hasPartiesStep),
+            buildStaticRow(
+                "services",
+                t("mcap.review.summary.services", "Services Selected"),
+                servicesValue,
+                hasServicesStep || servicesValue !== "-"
+            ),
+        ].filter(Boolean) as Array<{ id: string; label: string; value: string }>;
+        const summaryRows = Array.isArray(config.reviewSummary) && config.reviewSummary.length > 0
+            ? config.reviewSummary
+                .map((row) => buildConfiguredRow(row))
+                .filter(Boolean) as Array<{ id: string; label: string; value: string }>
+            : defaultSummaryRows;
+
         return (
-            <div className="rounded-lg border bg-muted/10 p-4 space-y-3">
-                <div className="text-sm font-semibold">{t("mcap.review.summary.title", "Review Summary")}</div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                    <div>
-                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.applicant", "Applicant")}</div>
-                        <div className="font-medium">{renderValue(applicantName)}</div>
-                    </div>
-                    <div>
-                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.companyName", "Company Name")}</div>
-                        <div className="font-medium">{renderValue(companyName)}</div>
-                    </div>
-                    <div>
-                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.email", "Email")}</div>
-                        <div className="font-medium">{renderValue(applicantEmail)}</div>
-                    </div>
-                    <div>
-                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.phone", "Phone")}</div>
-                        <div className="font-medium">{renderValue(applicantPhone)}</div>
-                    </div>
-                    <div>
-                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.entityType", "Entity Type")}</div>
-                        <div className="font-medium">{renderValue(entityType)}</div>
-                    </div>
-                    <div>
-                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.industry", "Industry")}</div>
-                        <div className="font-medium">{renderIndustryValue()}</div>
-                    </div>
-                    <div>
-                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.parties", "Parties")}</div>
-                        <div className="font-medium">{partiesCount}</div>
-                    </div>
-                    <div>
-                        <div className="text-xs text-muted-foreground">{t("mcap.review.summary.services", "Services Selected")}</div>
-                        <div className="font-medium">{renderValue(services)}</div>
-                    </div>
+            <div className="col-span-full w-full rounded-xl border bg-muted/10 p-4 sm:p-5 space-y-4">
+                <div className="text-sm sm:text-base font-semibold">
+                    {t("mcap.review.summary.title", "Review Summary")}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 text-sm">
+                    {summaryRows.map((row) => (
+                        <div key={row.id} className="min-w-0 rounded-lg bg-background/80 px-3 py-3 border border-border/60">
+                            <div className="text-xs text-muted-foreground break-words">{row.label}</div>
+                            <div className="mt-1 font-medium break-words text-foreground">{row.value}</div>
+                        </div>
+                    ))}
                 </div>
             </div>
         );

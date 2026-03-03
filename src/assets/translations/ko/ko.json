@@ -231,6 +231,7 @@
     "Home": "홈",
     "userList": "사용자 목록",
     "regComp": "회사 등록",
+    "incorpParties": "법인 설립 당사자",
     "compDocs": "회사 문서",
     "switchServices": "서비스 전환 목록",
     "bankServices": "은행 서비스",
@@ -931,7 +932,7 @@
     "grandTotal": "총 결제 금액",
     "proceed": "결제 진행하기",
     "disclaimer": "결제를 진행함으로써 귀하는 당사의 서비스 약관 및 환불 정책에 동의하게 됩니다.",
-    "cardFeeNote": "결제 시 카드 결제 수수료가 적용됩니다: 6% (USD) / 4% (HKD).",
+    "cardFeeNote": "결제 시 카드 결제 수수료가 적용됩니다: USD/EUR는 6%, HKD는 4%.",
     "sections": {
       "government": {
         "title": "정부 수수료",
@@ -3031,7 +3032,7 @@
         "doYouAgreeToDeclaration": "위의 선언 내용에 동의하십니까?",
         "truthfulnessDeclaration": "제출된 정보가 사실이며 정확함을 확인합니다.",
         "complianceSuspensionAcknowledgement": "법적/컴플라이언스 위반 사항이 발견될 경우 서비스가 중단될 수 있음을 이해합니다.",
-        "electronicSignature": "전자 서명 (성함 입력)",
+        "electronicSignature": "전자 서명",
         "otherDetails": "기타 상세 정보"
       },
       "placeholders": {
@@ -3050,6 +3051,87 @@
       "coverage": {
         "director": "이사 요건 충족",
         "directorAtLeastOne": "최소 1인의 임명된 이사"
+      }
+    },
+    "dashboard": {
+      "title": "법인 설립 신청",
+      "desc": "통합 법인 설립 신청 현황을 추적하고 계속해서 진행하세요.",
+      "loading": "신청 내역을 불러오는 중...",
+      "empty": "아직 설립 신청 내역이 없습니다.",
+      "filters": {
+        "all": "모든 신청",
+        "pending": "대기 중인 신청",
+        "paid": "결제 완료된 신청",
+        "documentCollection": "서류 수집 단계",
+        "currentCorporateClient": "현재 법인 고객",
+        "renewalInProgress": "갱신 진행 중",
+        "renewed": "갱신 완료된 법인",
+        "rejected": "거절된 법인",
+        "showing": "필터링된 {{filtered}}개 중 {{start}}-{{end}} 표시 (총 {{total}}개)",
+        "empty": "{{filter}} 항목에 해당하는 신청 내역이 없습니다.",
+        "reset": "모든 신청 보기"
+      },
+      "search": {
+        "placeholder": "회사명 또는 신청자 이름으로 검색",
+        "empty": "{{filter}} 필터 내에서 검색어와 일치하는 내역이 없습니다.",
+        "clear": "검색 초기화"
+      },
+      "sort": {
+        "by": "정렬",
+        "none": "없음",
+        "country": "국가",
+        "status": "상태",
+        "payment": "결제",
+        "asc": "오름차순",
+        "desc": "내림차순"
+      },
+      "pagination": {
+        "rows": "행 개수",
+        "page": "페이지 {{page}}/{{pages}}"
+      },
+      "columns": {
+        "company": "회사",
+        "country": "국가",
+        "status": "상태",
+        "payment": "결제",
+        "incorporationDate": "설립일",
+        "createdAt": "생성일",
+        "assignedTo": "담당자",
+        "filledBy": "작성자",
+        "userLastLogin": "사용자 최근 접속",
+        "actions": "작업"
+      },
+      "actions": {
+        "edit": "수정"
+      },
+      "values": {
+        "notAvailable": "해당 없음",
+        "untitled": "제목 없음",
+        "draft": "임시 저장",
+        "unpaid": "미결제"
+      },
+      "invitations": {
+        "title": "내 초대 목록",
+        "desc": "나를 초대한 회사의 KYC(본인 인증)를 완료하세요.",
+        "showing": "총 {{total}}개의 초대 중 {{start}}-{{end}} 표시",
+        "loading": "초대 목록을 불러오는 중...",
+        "empty": "대기 중인 초대가 없습니다.",
+        "columns": {
+          "company": "회사",
+          "country": "국가",
+          "roles": "역할",
+          "kyc": "KYC 상태",
+          "expires": "만료일",
+          "action": "작업"
+        },
+        "actions": {
+          "completeKyc": "KYC 완료하기",
+          "openIncorporation": "설립 신청서 열기"
+        },
+        "values": {
+          "companyFallback": "회사",
+          "pending": "대기 중"
+        }
       }
     },
     "au": {
@@ -4432,6 +4514,7 @@
         "k076": "희망 법인명 (2순위)",
         "k077": "희망 법인명 (3순위)",
         "k078": "총 자본금 (EUR)",
+        "totalCapitalTooltip": "최소 자본금으로 법인을 설립하는 경우, 특히 당사가 귀하를 대신해 자본금을 선지급하여 설립을 진행하는 경우에는 초기 자본금을 EUR 1로 설정하는 방식을 권장합니다. (에스토니아에서는 지정 은행 계좌에 자본금을 선납입하는 방식으로 설립할 경우 처리 기간이 상당히 길어질 수 있습니다. 따라서 신속한 설립을 우선하는 경우 EUR 1 방식을 권장합니다.) 다만, 대한민국 외국환거래법과 같이 자본금 송금 전에 해외직접투자(ODI) 신고를 요구하는 규정을 적용받는 경우에는 보다 큰 자본금(예: EUR 1,000)을 설정하는 것이 적절합니다. 이 경우 먼저 현지 은행에 ODI 신고를 진행한 후, 해당 자본금을 송금하시면 됩니다.",
         "k079": "1 EUR",
         "k080": "2,500 EUR",
         "k081": "25,000 EUR",

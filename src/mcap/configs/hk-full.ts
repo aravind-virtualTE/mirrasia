@@ -598,7 +598,7 @@ export const HK_FULL_CONFIG: McapConfig = {
           colSpan: 2,
         },
         {
-          type: "text",
+          type: "signature",
           name: "eSign",
           label: "newHk.review.esign.label",
           placeholder: "Your Full Name (Electronic Signature)",

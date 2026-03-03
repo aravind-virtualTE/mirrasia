@@ -5,7 +5,7 @@ export const getDefaultValueForField = (field: McapField) => {
   if (field.type === "checkbox") return false;
   if (field.type === "checkbox-group") return [];
   if (field.type === "select" || field.type === "radio" || field.type === "radio-group") return "";
-  if (field.type === "text" || field.type === "email" || field.type === "number" || field.type === "textarea") return "";
+  if (field.type === "text" || field.type === "email" || field.type === "number" || field.type === "textarea" || field.type === "signature") return "";
   return undefined;
 };
 

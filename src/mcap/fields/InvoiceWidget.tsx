@@ -525,7 +525,7 @@ export function InvoiceWidget({
                         {t("invoice.disclaimer", "By proceeding, you agree to our Terms of Service and Refund Policy.")}
                     </p>
                     <p className="text-center text-[10px] text-muted-foreground max-w-md mx-auto">
-                        {t("invoice.cardFeeNote", "Card processing fee is applied at payment: 6% (USD) / 4% (HKD).")}
+                        {t("invoice.cardFeeNote", "Card processing fee is applied at payment: 6% for USD/EUR and 4% for HKD.")}
                     </p>
                 </>
             )}
