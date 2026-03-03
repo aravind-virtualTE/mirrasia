@@ -797,7 +797,7 @@ export const createChCorporateConfig = ({
             colSpan: 2,
           },
           {
-            type: "text",
+            type: "signature",
             name: "eSign",
             label: "mcap.common.fields.electronicSignature",
             required: true,

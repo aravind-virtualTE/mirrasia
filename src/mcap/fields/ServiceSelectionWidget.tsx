@@ -8,7 +8,7 @@ import { Info, Minus, Plus, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { convertUsdToHkd } from "@/services/exchangeRate";
+import { convertCurrency } from "@/services/exchangeRate";
 import type { McapConfig } from "../configs/types";
 
 interface ServiceSelectionWidgetProps {
@@ -82,7 +82,7 @@ export function ServiceSelectionWidget({
     const svcItemsMeta = svcSource;
     const enableKycExtras = !!(config as any)?.entityMeta?.enableKycExtras;
 
-    const getCardFeePct = (curr: string) => (String(curr).toUpperCase() === "USD" ? 0.06 : 0.04);
+    const getCardFeePct = (curr: string) => (String(curr).toUpperCase() === "HKD" ? 0.04 : 0.06);
     const getQuantityMeta = (item: any): QuantityControlMeta => {
         const meta = item?.quantityControl;
         return meta && typeof meta === "object" ? meta : {};
@@ -225,18 +225,22 @@ export function ServiceSelectionWidget({
 
             if (typeof computeFees === "function") {
                 computedFees = computeFees(nextData, (config as any).entityMeta || null) || {};
-                const needsHkdConversion =
-                    normalizedCurrency === "HKD"
-                    && !(Number.isFinite(Number(computedFees?.exchangeRateUsed)) && Number(computedFees?.exchangeRateUsed) > 0);
+                const computedCurrency = String(computedFees?.currency || "").toUpperCase();
+                const hasValidExchangeRate =
+                    Number.isFinite(Number(computedFees?.exchangeRateUsed))
+                    && Number(computedFees?.exchangeRateUsed) > 0;
+                const needsCurrencyConversion =
+                    normalizedCurrency !== "USD"
+                    && !(computedCurrency === normalizedCurrency && hasValidExchangeRate);
 
-                if (needsHkdConversion) {
-                    const totalUsd = Number(computedFees?.total || 0);
-                    const conv = await convertUsdToHkd(totalUsd);
+                if (needsCurrencyConversion) {
+                    const totalUsd = Number(computedFees?.originalAmountUsd ?? computedFees?.total ?? 0);
+                    const conv = await convertCurrency(totalUsd, "USD", normalizedCurrency);
                     const rate = Number(conv.rate || 0);
                     const scale = (val: any) => Number((Number(val || 0) * rate).toFixed(2));
-                    const cardFeePct = getCardFeePct("HKD");
+                    const cardFeePct = getCardFeePct(normalizedCurrency);
                     const payMethod = String(nextData.payMethod || "card").toLowerCase();
-                    const convertedTotal = Number(conv.hkdAmount || 0);
+                    const convertedTotal = Number(conv.convertedAmount || 0);
                     const cardFeeSurcharge = payMethod === "card"
                         ? Number((convertedTotal * cardFeePct).toFixed(2))
                         : 0;
@@ -244,7 +248,7 @@ export function ServiceSelectionWidget({
 
                     computedFees = {
                         ...computedFees,
-                        currency: "HKD",
+                        currency: normalizedCurrency,
                         items: Array.isArray(computedFees?.items)
                             ? computedFees.items.map((item: any) => ({
                                 ...item,
@@ -310,9 +314,9 @@ export function ServiceSelectionWidget({
 
                 let finalSubtotal = subtotalUsd;
                 let rate: number | undefined;
-                if (normalizedCurrency === "HKD") {
-                    const conv = await convertUsdToHkd(subtotalUsd);
-                    finalSubtotal = conv.hkdAmount;
+                if (normalizedCurrency !== "USD") {
+                    const conv = await convertCurrency(subtotalUsd, "USD", normalizedCurrency);
+                    finalSubtotal = conv.convertedAmount;
                     rate = conv.rate;
                 }
 
@@ -329,8 +333,8 @@ export function ServiceSelectionWidget({
                         ...govItems.map((f: any) => ({
                             id: f.id,
                             label: f.label,
-                            amount: normalizedCurrency === "HKD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
-                            original: normalizedCurrency === "HKD" ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
+                            amount: normalizedCurrency !== "USD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
+                            original: normalizedCurrency !== "USD" ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
                             info: f.info,
                             kind: "government" as const,
                             quantity: 1,
@@ -342,8 +346,8 @@ export function ServiceSelectionWidget({
                                 return {
                                     id: f.id,
                                     label: f.label,
-                                    amount: normalizedCurrency === "HKD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
-                                    original: normalizedCurrency === "HKD" ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
+                                    amount: normalizedCurrency !== "USD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
+                                    original: normalizedCurrency !== "USD" ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
                                     info: f.info,
                                     kind: "service" as const,
                                     quantity,
@@ -352,15 +356,15 @@ export function ServiceSelectionWidget({
                         ...(extraKycUsd > 0 ? [{
                             id: "extra_kyc",
                             label: "newHk.fees.items.extra_kyc.label",
-                            amount: normalizedCurrency === "HKD" ? Number((extraKycUsd * (rate || 1)).toFixed(2)) : extraKycUsd,
-                            original: normalizedCurrency === "HKD" ? Number((extraKycUsd * (rate || 1)).toFixed(2)) : extraKycUsd,
+                            amount: normalizedCurrency !== "USD" ? Number((extraKycUsd * (rate || 1)).toFixed(2)) : extraKycUsd,
+                            original: normalizedCurrency !== "USD" ? Number((extraKycUsd * (rate || 1)).toFixed(2)) : extraKycUsd,
                             info: "Additional KYC fees for corporate shareholders and extra individual shareholders.",
                             kind: "service" as const,
                             quantity: 1,
                         }] : []),
                     ],
-                    government: normalizedCurrency === "HKD" ? Number((governmentTotalUsd * (rate || 1)).toFixed(2)) : governmentTotalUsd,
-                    service: normalizedCurrency === "HKD" ? Number((serviceTotalUsd * (rate || 1)).toFixed(2)) : serviceTotalUsd,
+                    government: normalizedCurrency !== "USD" ? Number((governmentTotalUsd * (rate || 1)).toFixed(2)) : governmentTotalUsd,
+                    service: normalizedCurrency !== "USD" ? Number((serviceTotalUsd * (rate || 1)).toFixed(2)) : serviceTotalUsd,
                     total: finalSubtotal,
                     exchangeRateUsed: rate,
                     originalAmountUsd: subtotalUsd,
@@ -415,7 +419,8 @@ export function ServiceSelectionWidget({
 
     const getRowAmounts = (item: any) => {
         const rate = Number(data?.computedFees?.exchangeRateUsed || 0);
-        const shouldConvert = selectedCurrency === "HKD" && rate > 0;
+        const hasMatchingComputedCurrency = String(data?.computedFees?.currency || "").toUpperCase() === selectedCurrency;
+        const shouldConvert = selectedCurrency !== "USD" && hasMatchingComputedCurrency && rate > 0;
         const scale = (val: any) => shouldConvert ? Number((toNumber(val) * rate).toFixed(2)) : toNumber(val);
         const computed = item?.id ? computedItemsById.get(String(item.id)) : undefined;
         const computedQty = Number(computed?.quantity);
@@ -667,7 +672,11 @@ export function ServiceSelectionWidget({
 
     // Convert to selected currency
     const convertAmount = (amountUsd: number): number => {
-        if (selectedCurrency === "HKD" && data.computedFees?.exchangeRateUsed) {
+        if (
+            selectedCurrency !== "USD"
+            && String(data?.computedFees?.currency || "").toUpperCase() === selectedCurrency
+            && data.computedFees?.exchangeRateUsed
+        ) {
             return Number((amountUsd * data.computedFees.exchangeRateUsed).toFixed(2));
         }
         return amountUsd;
@@ -763,7 +772,15 @@ export function ServiceSelectionWidget({
                                     <SelectContent>
                                         {allowedCurrencies.map((code) => (
                                             <SelectItem key={code} value={code}>
-                                                {code === "USD" ? "USD ($)" : code === "HKD" ? "HKD (HK$)" : code}
+                                                {code === "EUR"
+                                                    ? "EUR (Euro)"
+                                                    : code === "USD"
+                                                        ? "USD ($)"
+                                                    : code === "HKD"
+                                                        ? "HKD (HK$)"
+                                                        : code === "EUR"
+                                                            ? "EUR (€)"
+                                                            : code}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -772,10 +789,12 @@ export function ServiceSelectionWidget({
                             </div>
                         </div>
 
-                        {data.computedFees?.exchangeRateUsed && selectedCurrency === "HKD" && (
+                        {data.computedFees?.exchangeRateUsed
+                            && selectedCurrency !== "USD"
+                            && String(data.computedFees?.currency || "").toUpperCase() === selectedCurrency && (
                             <div className="px-3 py-1 bg-primary/10 rounded-md border border-primary/20">
                                 <p className="text-[10px] text-primary font-medium">
-                                    1 USD = {data.computedFees.exchangeRateUsed.toFixed(4)} HKD
+                                    1 USD = {data.computedFees.exchangeRateUsed.toFixed(4)} {selectedCurrency}
                                 </p>
                             </div>
                         )}

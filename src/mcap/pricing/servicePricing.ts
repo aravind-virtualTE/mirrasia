@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { CountryRegion, PricingItem } from "./pricing";
 import { initialPricingData } from "./pricingData";
 import type { ServicePricingOverride } from "./pricingApi";
@@ -315,7 +316,7 @@ export const applyServicePricingOverridesToFees = (
 
     const cardFeePct = Number(
         fees.cardFeePct
-        ?? (currency === "USD" ? 0.06 : 0.04)
+        ?? (currency === "HKD" ? 0.04 : 0.06)
     );
     const payMethod = normalize(args.data?.payMethod || "card");
     const cardFeeSurcharge = payMethod === "card"
@@ -336,4 +337,3 @@ export const applyServicePricingOverridesToFees = (
         pricingOverrideApplied: true,
     };
 };
-

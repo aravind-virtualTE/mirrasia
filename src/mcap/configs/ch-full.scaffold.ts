@@ -179,7 +179,7 @@ export const CH_FULL_SCAFFOLD: McapConfig = {
           colSpan: 2,
         },
         {
-          type: "text",
+          type: "signature",
           name: "eSign",
           label: "Electronic signature",
           required: true,

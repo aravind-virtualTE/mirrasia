@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import SearchSelect, { Item } from "@/components/SearchSelect";
 import type { McapField } from "../configs/types";
+import { FieldTooltip } from "./FieldTooltip";
 
 export const UnifiedSearchSelectField = ({
     field,
@@ -38,9 +39,12 @@ export const UnifiedSearchSelectField = ({
 
     return (
         <div className="space-y-2">
-            <Label htmlFor={field.name}>
-                {label} {field.required && <span className="text-red-500">*</span>}
-            </Label>
+            <div className="flex items-center gap-1.5">
+                <Label htmlFor={field.name}>
+                    {label} {field.required && <span className="text-red-500">*</span>}
+                </Label>
+                <FieldTooltip content={tooltip} />
+            </div>
 
             <SearchSelect
                 name={field.name}
@@ -50,8 +54,6 @@ export const UnifiedSearchSelectField = ({
                 onSelect={handleSelect}
                 required={field.required}
             />
-
-            {tooltip && <p className="text-xs text-muted-foreground">{tooltip}</p>}
         </div>
     );
 };

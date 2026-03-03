@@ -25,6 +25,8 @@ interface DocumentTableWithCommentsProps {
   currentUserId?: string;
   isUpdating?: boolean;
   expandedDoc?: Document | null;
+  readOnly?: boolean;
+  allowDelete?: boolean;
 }
 
 const formatDate = (iso?: string) => {
@@ -44,9 +46,12 @@ const DocumentTableWithComments: React.FC<DocumentTableWithCommentsProps> = ({
   currentUserId,
   isUpdating = false,
   expandedDoc,
+  readOnly = false,
+  allowDelete = true,
 }) => {
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const canDelete = allowDelete && !readOnly;
 
   const openComments = (doc: Document) => {
     setSelectedDoc(doc);
@@ -83,14 +88,14 @@ const DocumentTableWithComments: React.FC<DocumentTableWithCommentsProps> = ({
               <TableHead className="w-[15%]">Created At</TableHead>
               <TableHead className="w-[13%] text-center">Comments</TableHead>
               <TableHead className="w-[13%] text-center">View</TableHead>
-              <TableHead className="w-[14%] text-center">Delete</TableHead>
+              {canDelete && <TableHead className="w-[14%] text-center">Delete</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {documents.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={canDelete ? 6 : 5}
                   className="text-center text-muted-foreground py-6"
                 >
                   No documents found.
@@ -172,18 +177,20 @@ const DocumentTableWithComments: React.FC<DocumentTableWithCommentsProps> = ({
                       </Button>
                     </TableCell>
 
-                    <TableCell className="text-center">
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => onConfirmDelete(document)}
-                        className="inline-flex items-center gap-1"
-                        disabled={isUpdating}
-                      >
-                        <Trash className="h-3.5 w-3.5" />
-                        Delete
-                      </Button>
-                    </TableCell>
+                    {canDelete && (
+                      <TableCell className="text-center">
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => onConfirmDelete(document)}
+                          className="inline-flex items-center gap-1"
+                          disabled={isUpdating}
+                        >
+                          <Trash className="h-3.5 w-3.5" />
+                          Delete
+                        </Button>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })
@@ -211,6 +218,8 @@ const DocumentTableWithComments: React.FC<DocumentTableWithCommentsProps> = ({
             : Promise.resolve()
         }
         currentUserId={currentUserId}
+        readOnly={readOnly}
+        allowDelete={allowDelete}
       />
     </>
   );

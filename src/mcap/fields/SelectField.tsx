@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { McapField } from "../configs/types";
+import { FieldTooltip } from "./FieldTooltip";
 
 export const UnifiedSelectField = ({
     field,
@@ -23,7 +24,10 @@ export const UnifiedSelectField = ({
         const isGroup = field.type === "radio-group";
         return (
             <div className="space-y-3">
-                <Label>{label} {field.required && <span className="text-red-500">*</span>}</Label>
+                <div className="flex items-center gap-1.5">
+                    <Label>{label} {field.required && <span className="text-red-500">*</span>}</Label>
+                    <FieldTooltip content={tooltip} />
+                </div>
                 <RadioGroup value={value} onValueChange={onChange} className={isGroup ? "flex flex-col gap-2.5" : ""}>
                     <div className={isGroup ? "space-y-2.5" : "flex items-center space-x-4"}>
                         {field.options?.map((opt: any) => (
@@ -36,16 +40,18 @@ export const UnifiedSelectField = ({
                         ))}
                     </div>
                 </RadioGroup>
-                {tooltip && <p className="text-xs text-muted-foreground">{tooltip}</p>}
             </div>
         )
     }
 
     return (
         <div className="space-y-2">
-            <Label htmlFor={field.name}>
-                {label} {field.required && <span className="text-red-500">*</span>}
-            </Label>
+            <div className="flex items-center gap-1.5">
+                <Label htmlFor={field.name}>
+                    {label} {field.required && <span className="text-red-500">*</span>}
+                </Label>
+                <FieldTooltip content={tooltip} />
+            </div>
 
             <Select value={value} onValueChange={onChange}>
                 <SelectTrigger>
@@ -59,9 +65,6 @@ export const UnifiedSelectField = ({
                     ))}
                 </SelectContent>
             </Select>
-
-            {tooltip && <p className="text-xs text-muted-foreground">{tooltip}</p>}
         </div>
     );
 };
-

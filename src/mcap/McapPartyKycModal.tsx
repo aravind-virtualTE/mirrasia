@@ -34,6 +34,7 @@ type McapPartyKycModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSaved?: () => void;
+  forceReadOnly?: boolean;
 };
 
 const getStatusVariant = (status?: string) => {
@@ -47,6 +48,7 @@ export default function McapPartyKycModal({
   open,
   onOpenChange,
   onSaved,
+  forceReadOnly = false,
 }: McapPartyKycModalProps) {
   const { t } = useTranslation();
   const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null;
@@ -96,6 +98,10 @@ export default function McapPartyKycModal({
     if (open) setMode("detail");
   }, [open, partyId]);
 
+  useEffect(() => {
+    if (forceReadOnly) setMode("detail");
+  }, [forceReadOnly]);
+
   const config = useMemo(() => {
     return resolvePartyKycConfig({
       countryCode: company?.countryCode,
@@ -137,7 +143,7 @@ export default function McapPartyKycModal({
 
   const kycStatus = party?.kycStatus || "pending";
   const canEditStatus = ["pending", "in_progress"].includes(kycStatus);
-  const canEdit = isAdmin || canEditStatus;
+  const canEdit = !forceReadOnly && (isAdmin || canEditStatus);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {  useNavigate, useSearchParams } from "react-router-dom"; //useLocation,
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { UnifiedFormEngine } from "./UnifiedFormEngine";
@@ -17,8 +17,8 @@ export default function McapDashboard() {
   const [selectedConfig, setSelectedConfig] = useState<McapConfig | null>(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const basePath = location.pathname.startsWith("/incorporation-dashboard") ? "/incorporation-dashboard" : "/incorporation";
+  // const location = useLocation();
+  const basePath =  "/incorporation-dashboard";
   const [initialData, setInitialData] = useState<any>(null);
   const [initialParties, setInitialParties] = useState<any[]>([]);
   const [initialCompanyId, setInitialCompanyId] = useState<string | null>(null);

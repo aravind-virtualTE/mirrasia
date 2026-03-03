@@ -332,7 +332,7 @@ export const PaymentWidget = ({
     const subtotal = finalFees.total;
     const cardFeePct = Number(
         (finalFees as any)?.cardFeePct
-        ?? (String(activeCurrency).toUpperCase() === "USD" ? 0.06 : 0.04)
+        ?? (String(activeCurrency).toUpperCase() === "HKD" ? 0.04 : 0.06)
     );
     const exchangeRateUsed = typeof (finalFees as any).exchangeRateUsed === "number"
         ? Number((finalFees as any).exchangeRateUsed)

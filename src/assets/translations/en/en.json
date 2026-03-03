@@ -284,6 +284,7 @@
     "Home": "Home",
     "userList": "Users List",
     "regComp": "Register Company",
+    "incorpParties": "Incorporation Parties",
     "compDocs": "Company Documents",
     "switchServices": "Switch Services List",
     "accountList": "Accounting List",
@@ -937,7 +938,7 @@
     "grandTotal": "Total Due",
     "proceed": "Proceed to Payment",
     "disclaimer": "By proceeding, you agree to our Terms of Service and Refund Policy.",
-    "cardFeeNote": "Card processing fee is applied at payment: 6% (USD) / 4% (HKD).",
+    "cardFeeNote": "Card processing fee is applied at payment: 6% for USD/EUR and 4% for HKD.",
     "sections": {
       "government": {
         "title": "Government Fees",
@@ -3040,7 +3041,7 @@
         "doYouAgreeToDeclaration": "Do you agree to the above declaration?",
         "truthfulnessDeclaration": "I confirm the submitted information is true and accurate.",
         "complianceSuspensionAcknowledgement": "I understand services may be suspended if legal/compliance violations are identified.",
-        "electronicSignature": "Electronic signature (full name)",
+        "electronicSignature": "Electronic signature",
         "otherDetails": "Other details"
       },
       "placeholders": {
@@ -3059,6 +3060,87 @@
       "coverage": {
         "director": "Director coverage",
         "directorAtLeastOne": "At least one appointed director"
+      }
+    },
+    "dashboard": {
+      "title": "Incorporation Applications",
+      "desc": "Track and continue your unified incorporation applications.",
+      "loading": "Loading applications...",
+      "empty": "No Incorporation applications yet.",
+      "filters": {
+        "all": "All Applications",
+        "pending": "Pending Applications",
+        "paid": "Paid Applications",
+        "documentCollection": "Document Collection",
+        "currentCorporateClient": "Current Corporate Client",
+        "renewalInProgress": "Renewal In Progress",
+        "renewed": "Renewed Companies",
+        "rejected": "Rejected Companies",
+        "showing": "Showing {{start}}-{{end}} of {{filtered}} filtered ({{total}} total)",
+        "empty": "No applications found for {{filter}}.",
+        "reset": "Show all applications"
+      },
+      "search": {
+        "placeholder": "Search by company or applicant name",
+        "empty": "No applications found for this search in {{filter}}.",
+        "clear": "Clear search"
+      },
+      "sort": {
+        "by": "Sort",
+        "none": "None",
+        "country": "Country",
+        "status": "Status",
+        "payment": "Payment",
+        "asc": "Asc",
+        "desc": "Desc"
+      },
+      "pagination": {
+        "rows": "Rows",
+        "page": "Page {{page}}/{{pages}}"
+      },
+      "columns": {
+        "company": "Company",
+        "country": "Country",
+        "status": "Status",
+        "payment": "Payment",
+        "incorporationDate": "Incorporation Date",
+        "createdAt": "Created At",
+        "assignedTo": "Assigned To",
+        "filledBy": "Filled By",
+        "userLastLogin": "User Latest Login",
+        "actions": "Actions"
+      },
+      "actions": {
+        "edit": "Edit"
+      },
+      "values": {
+        "notAvailable": "N/A",
+        "untitled": "Untitled",
+        "draft": "Draft",
+        "unpaid": "unpaid"
+      },
+      "invitations": {
+        "title": "My Invitations",
+        "desc": "Complete KYC for companies that invited you.",
+        "showing": "Showing {{start}}-{{end}} of {{total}} invitations",
+        "loading": "Loading invitations...",
+        "empty": "No pending invitations.",
+        "columns": {
+          "company": "Company",
+          "country": "Country",
+          "roles": "Roles",
+          "kyc": "KYC",
+          "expires": "Expires",
+          "action": "Action"
+        },
+        "actions": {
+          "completeKyc": "Complete KYC",
+          "openIncorporation": "Open Incorporation"
+        },
+        "values": {
+          "companyFallback": "Company",
+          "pending": "pending"
+        }
       }
     },
     "au": {
@@ -4441,6 +4523,7 @@
         "k076": "Proposed company name (priority 2)",
         "k077": "Proposed company name (priority 3)",
         "k078": "Total capital (EUR)",
+        "totalCapitalTooltip": "When establishing an entity with minimum capital, specifically in cases where we facilitate the incorporation by advancing the capital on your behalf, we recommend proceeding with an initial share capital of EUR 1. (In Estonia, incorporating with a pre-paid capital deposit into a designated bank account can significantly extend the processing time. Therefore, we recommend the EUR 1 path for those prioritizing an expedited setup.) However, if you are subject to regulations such as the Foreign Exchange Transactions Act of South Korea, which requires an Overseas Direct Investment (ODI) report prior to the remittance of capital, we suggest setting a more substantial capital amount (e.g. EUR 1,000). In this scenario, you should first file the ODI report with your local bank and subsequently remit the specified capital.",
         "k079": "EUR 1",
         "k080": "EUR 2,500",
         "k081": "EUR 25,000",

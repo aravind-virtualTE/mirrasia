@@ -107,7 +107,7 @@ const isNewIncorporationCompany = (entry: any) => {
   return normalizeStatus(entry?.incorporationStatus) !== "completed";
 };
 
-const resolveCompanyName = (entry: any) => {
+const resolveCompanyName = (entry: any, untitledLabel: string) => {
   const data = entry?.data || {};
   return (
     data.companyName_1 ||
@@ -121,16 +121,16 @@ const resolveCompanyName = (entry: any) => {
     data.companyName ||
     data.companyNameEn ||
     entry?.countryName ||
-    "Untitled"
+    untitledLabel
   );
 };
 
 const isAdminRole = (role: string) => role === "admin" || role === "master";
 
-const formatDateOnly = (value: string | Date | null | undefined) => {
-  if (!value) return "N/A";
+const formatDateOnly = (value: string | Date | null | undefined, emptyLabel: string) => {
+  if (!value) return emptyLabel;
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "N/A";
+  if (Number.isNaN(date.getTime())) return emptyLabel;
 
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -143,9 +143,9 @@ const getOwnerUser = (entry: any) => {
   return owner && typeof owner === "object" ? owner : null;
 };
 
-const resolveFilledBy = (entry: any) => {
+const resolveFilledBy = (entry: any, emptyLabel: string) => {
   const owner = getOwnerUser(entry);
-  return owner?.fullName || owner?.email || entry?.applicantName || entry?.applicantEmail || "N/A";
+  return owner?.fullName || owner?.email || entry?.applicantName || entry?.applicantEmail || emptyLabel;
 };
 
 export default function McapUserDashboard() {
@@ -178,7 +178,7 @@ export default function McapUserDashboard() {
     }
   }, [token]);
   const isAdminView = isAdminRole(role);
-  const canOpenAdminDetail = isAdminView;
+  const canOpenCompanyDetail = true;
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -305,7 +305,7 @@ export default function McapUserDashboard() {
       },
       {
         key: "new_incorporation",
-        label: t("mcap.dashboard.filters.newIncorporation", "Newly Incorporation"),
+        label: t("mcap.dashboard.filters.currentCorporateClient", "Current Corporate Client"),
         match: isNewIncorporationCompany,
       },
       {
@@ -331,6 +331,12 @@ export default function McapUserDashboard() {
     () => filters.find((f) => f.key === activeFilter) || filters[0],
     [filters, activeFilter]
   );
+  const notAvailableLabel = t("mcap.dashboard.values.notAvailable", "N/A");
+  const untitledLabel = t("mcap.dashboard.values.untitled", "Untitled");
+  const draftLabel = t("mcap.dashboard.values.draft", "Draft");
+  const unpaidLabel = t("mcap.dashboard.values.unpaid", "unpaid");
+  const invitationCompanyLabel = t("mcap.dashboard.invitations.values.companyFallback", "Company");
+  const invitationPendingLabel = t("mcap.dashboard.invitations.values.pending", "pending");
 
   const filteredItems = useMemo(() => {
     return items;
@@ -572,11 +578,11 @@ export default function McapUserDashboard() {
                   return (
                     <TableRow
                       key={entry?._id}
-                      onClick={canOpenAdminDetail ? () => navigate(`/incorporation-detail/${entry._id}`) : undefined}
-                      className={canOpenAdminDetail ? "h-11 cursor-pointer hover:bg-muted/40" : "h-11"}
+                      onClick={canOpenCompanyDetail ? () => navigate(`/incorporation-detail/${entry._id}?mode=detail`) : undefined}
+                      className={canOpenCompanyDetail ? "h-11 cursor-pointer hover:bg-muted/40" : "h-11"}
                     >
                       <TableCell className="py-2 font-medium">
-                        {resolveCompanyName(entry)}
+                        {resolveCompanyName(entry, untitledLabel)}
                       </TableCell>
 
                       <TableCell className="py-2">
@@ -585,39 +591,39 @@ export default function McapUserDashboard() {
 
                       <TableCell className="py-2">
                         <Badge variant="secondary">
-                          {entry?.status || "Draft"}
+                          {entry?.status || draftLabel}
                         </Badge>
                       </TableCell>
 
                       <TableCell className="py-2">
                         <Badge variant={entry?.paymentStatus === "paid" ? "default" : "outline"}>
-                          {entry?.paymentStatus || "unpaid"}
+                          {entry?.paymentStatus || unpaidLabel}
                         </Badge>
                       </TableCell>
 
                       <TableCell className="py-2 text-xs tabular-nums">
-                        {formatDateOnly(entry?.incorporationDate)}
+                        {formatDateOnly(entry?.incorporationDate, notAvailableLabel)}
                       </TableCell>
 
                       <TableCell className="py-2 text-xs tabular-nums">
-                        {formatDateOnly(entry?.createdAt)}
+                        {formatDateOnly(entry?.createdAt, notAvailableLabel)}
                       </TableCell>
 
                       {isAdminView && (
                         <TableCell className="py-2 text-xs text-muted-foreground">
-                          {entry?.assignedTo || "N/A"}
+                          {entry?.assignedTo || notAvailableLabel}
                         </TableCell>
                       )}
 
                       {isAdminView && (
                         <TableCell className="py-2 text-xs text-muted-foreground">
-                          {resolveFilledBy(entry)}
+                          {resolveFilledBy(entry, notAvailableLabel)}
                         </TableCell>
                       )}
 
                       {isAdminView && (
                         <TableCell className="py-2 text-xs tabular-nums text-muted-foreground">
-                          {ownerUser?.lastLogin ? formatDateTime(ownerUser.lastLogin) : "N/A"}
+                          {ownerUser?.lastLogin ? formatDateTime(ownerUser.lastLogin) : notAvailableLabel}
                         </TableCell>
                       )}
 
@@ -648,17 +654,21 @@ export default function McapUserDashboard() {
 
       <Card className="border shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle>My Invitations</CardTitle>
-          <CardDescription>Complete KYC for companies that invited you.</CardDescription>
+          <CardTitle>{t("mcap.dashboard.invitations.title", "My Invitations")}</CardTitle>
+          <CardDescription>{t("mcap.dashboard.invitations.desc", "Complete KYC for companies that invited you.")}</CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
           {!isLoadingInvites && inviteTotal > 0 && (
             <div className="mb-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
               <div className="text-xs text-muted-foreground">
-                Showing {invitePageStart}-{invitePageEnd} of {inviteTotal} invitations
+                {t("mcap.dashboard.invitations.showing", "Showing {{start}}-{{end}} of {{total}} invitations", {
+                  start: invitePageStart,
+                  end: invitePageEnd,
+                  total: inviteTotal,
+                })}
               </div>
               <div className="flex items-center gap-2 self-start md:self-auto">
-                <span className="text-xs text-muted-foreground">Rows</span>
+                <span className="text-xs text-muted-foreground">{t("mcap.dashboard.pagination.rows", "Rows")}</span>
                 <Select
                   value={String(invitePageSize)}
                   onValueChange={(v) => {
@@ -690,7 +700,10 @@ export default function McapUserDashboard() {
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
                   <div className="min-w-[74px] text-center text-xs text-muted-foreground">
-                    Page {inviteCurrentPage}/{inviteTotalPages}
+                    {t("mcap.dashboard.pagination.page", "Page {{page}}/{{pages}}", {
+                      page: inviteCurrentPage,
+                      pages: inviteTotalPages,
+                    })}
                   </div>
                   <Button
                     type="button"
@@ -710,23 +723,23 @@ export default function McapUserDashboard() {
           {isLoadingInvites ? (
             <div className="flex items-center justify-center py-6 text-muted-foreground">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Loading invitations...
+              {t("mcap.dashboard.invitations.loading", "Loading invitations...")}
             </div>
           ) : inviteTotal === 0 ? (
             <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-              No pending invitations.
+              {t("mcap.dashboard.invitations.empty", "No pending invitations.")}
             </div>
           ) : (
             <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="h-9 text-xs">Company</TableHead>
-                  <TableHead className="h-9 text-xs">Country</TableHead>
-                  <TableHead className="h-9 text-xs">Roles</TableHead>
-                  <TableHead className="h-9 text-xs">KYC</TableHead>
-                  <TableHead className="h-9 text-xs">Expires</TableHead>
-                  <TableHead className="h-9 text-right text-xs">Action</TableHead>
+                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.company", "Company")}</TableHead>
+                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.country", "Country")}</TableHead>
+                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.roles", "Roles")}</TableHead>
+                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.kyc", "KYC")}</TableHead>
+                  <TableHead className="h-9 text-xs">{t("mcap.dashboard.invitations.columns.expires", "Expires")}</TableHead>
+                  <TableHead className="h-9 text-right text-xs">{t("mcap.dashboard.invitations.columns.action", "Action")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -739,12 +752,12 @@ export default function McapUserDashboard() {
                       className="h-11 cursor-pointer hover:bg-muted/40"
                       onClick={() => navigate(`/incorporation-parties?partyId=${inv._id}&mode=detail`)}
                     >
-                      <TableCell className="py-2 font-medium">{company.companyName || company.countryName || "Company"}</TableCell>
+                      <TableCell className="py-2 font-medium">{company.companyName || company.countryName || invitationCompanyLabel}</TableCell>
                       <TableCell className="py-2">{company.countryName || company.countryCode || "-"}</TableCell>
                       <TableCell className="py-2 text-xs text-muted-foreground">{(inv.roles || []).join(", ")}</TableCell>
                       <TableCell className="py-2">
                         <Badge variant={inv.kycStatus === "approved" ? "default" : "outline"} className="capitalize">
-                          {inv.kycStatus || "pending"}
+                          {inv.kycStatus || invitationPendingLabel}
                         </Badge>
                       </TableCell>
                       <TableCell className="py-2 text-xs text-muted-foreground">
@@ -761,7 +774,7 @@ export default function McapUserDashboard() {
                               navigate(`/incorporation-parties?partyId=${inv._id}&mode=edit`);
                             }}
                           >
-                            Complete KYC
+                            {t("mcap.dashboard.invitations.actions.completeKyc", "Complete KYC")}
                           </Button>
                           {isDcp && (
                             <Button
@@ -772,7 +785,7 @@ export default function McapUserDashboard() {
                                 navigate(`/incorporation?companyId=${company._id || company.id || ""}`);
                               }}
                             >
-                              Open Incorporation
+                              {t("mcap.dashboard.invitations.actions.openIncorporation", "Open Incorporation")}
                             </Button>
                           )}
                         </div>

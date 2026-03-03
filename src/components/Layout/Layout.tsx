@@ -16,7 +16,7 @@ import {
   Users,
   UserPlus,
   Building2,
-  FileText, DollarSign,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -210,41 +210,13 @@ const Layout: React.FC = () => {
         label: "MCAP v1.0",
         roles: ["admin", "master"],
         children: [
-          {
-            id: "incorporation-dashboard",
-            icon: Home,
-            label: "Dashboard",
-            roles: ["admin", "master"],
-            to: "/incorporation-dashboard",
-          },
-          {
-            id: "incorporation-demo",
-            icon: FileSignature,
-            label: "Incorporate company",
-            roles: ["admin", "master"],
-            to: "/incorporation",
-          },
-          {
-            id: "incorporation-parties",
-            icon: Briefcase,
-            label: "Incorporation Parties",
-            roles: ["admin", "master"],
-            to: "/incorporation-parties",
-          },
-          {
-            id: "incorporation-documents",
-            icon: Files,
-            label: "Document Center",
-            roles: ["admin", "master"],
-            to: "/incorporation-documents",
-          },
-          {
-            id: "incorporation-pricing",
-            icon: DollarSign,
-            label: "Incorporation Pricing",
-            roles: ["admin", "master"],
-            to: "/incorporation-pricing",
-          },
+          // {
+          //   id: "incorporation-pricing",
+          //   icon: DollarSign,
+          //   label: "Incorporation Pricing",
+          //   roles: ["admin", "master"],
+          //   to: "/incorporation-pricing",
+          // },
           {
             id: "incorporation-migrations",
             icon: FileCheck,
@@ -253,6 +225,41 @@ const Layout: React.FC = () => {
             to: "/incorporation-migrations",
           },
 
+        ],
+      },
+      {
+        id: "legacy-services",
+        icon: Briefcase,
+        label: "Old View",
+        roles: ["admin", "master"],
+        children: [
+          {
+            id: "home",
+            icon: Home,
+            label: t("sideItems.Home"),
+            roles: ["admin", "master"],
+            onClick: () => {
+              hardReset();
+              navigate(["admin", "master"].includes(role) ? "/admin-dashboard" : "/dashboard");
+            },
+          },
+          {
+            id: "register-company",
+            icon: FileSignature,
+            label: t("sideItems.regComp"),
+            roles: ["admin", "master"],
+            onClick: () => {
+              hardReset();
+              navigate("/company-register");
+            },
+          },
+          {
+            id: "documents",
+            icon: Files,
+            label: t("sideItems.compDocs"),
+            roles: ["admin", "master"],
+            to: "/company-documents",
+          },
         ],
       },
     ],
@@ -272,15 +279,34 @@ const Layout: React.FC = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const singleItems: SidebarItemCfg[] = useMemo(
     () => [
+
       {
-        id: "home",
+        id: "incorporation-dashboard",
         icon: Home,
         label: t("sideItems.Home"),
         roles: ["user", "admin", "master"],
-        onClick: () => {
-          hardReset();
-          navigate(["admin", "master"].includes(role) ? "/admin-dashboard" : "/dashboard");
-        },
+        to: "/incorporation-dashboard",
+      },
+      {
+        id: "incorporation-newVersion",
+        icon: FileSignature,
+        label: t("sideItems.regComp"),
+        roles: ["user", "admin", "master"],
+        to: "/incorporation",
+      },
+      {
+        id: "incorporation-parties",
+        icon: Briefcase,
+        label: t("sideItems.incorpParties"),
+        roles: ["user", "admin", "master"],
+        to: "/incorporation-parties",
+      },
+      {
+        id: "incorporation-documents",
+        icon: Files,
+        label: t("sideItems.compDocs"),
+        roles: ["user", "admin", "master"],
+        to: "/incorporation-documents",
       },
       {
         id: "users",
@@ -288,23 +314,6 @@ const Layout: React.FC = () => {
         label: t("sideItems.userList"),
         roles: ["master", "admin"],
         to: "/userslist",
-      },
-      {
-        id: "register-company",
-        icon: FileSignature,
-        label: t("sideItems.regComp"),
-        roles: ["user", "admin", "master"],
-        onClick: () => {
-          hardReset();
-          navigate("/company-register");
-        },
-      },
-      {
-        id: "documents",
-        icon: Files,
-        label: t("sideItems.compDocs"),
-        roles: ["user", "admin", "master"],
-        to: "/company-documents",
       },
       {
         id: "chat",

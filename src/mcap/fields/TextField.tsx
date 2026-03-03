@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { McapField } from "../configs/types";
+import { FieldTooltip } from "./FieldTooltip";
 
 export const UnifiedTextField = ({
     field,
@@ -22,9 +23,12 @@ export const UnifiedTextField = ({
 
     return (
         <div className="space-y-2">
-            <Label htmlFor={field.name}>
-                {label} {field.required && <span className="text-red-500">*</span>}
-            </Label>
+            <div className="flex items-center gap-1.5">
+                <Label htmlFor={field.name}>
+                    {label} {field.required && <span className="text-red-500">*</span>}
+                </Label>
+                <FieldTooltip content={tooltip} />
+            </div>
 
             {isTextArea ? (
                 <Textarea
@@ -44,8 +48,6 @@ export const UnifiedTextField = ({
                     placeholder={placeholder}
                 />
             )}
-
-            {tooltip && <p className="text-xs text-muted-foreground">{tooltip}</p>}
         </div>
     );
 };

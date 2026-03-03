@@ -7,7 +7,7 @@ import { X, Type, Pencil, Upload } from 'lucide-react';
 import SignatureCanvas from 'react-signature-canvas';
 
 interface SignatureCreatorProps {
-  onSignatureCreate: (signature: string) => void;
+  onSignatureCreate: (signature: string) => void | Promise<void>;
   maxWidth?: number;
   maxHeight?: number;
   className?: string;
@@ -31,6 +31,7 @@ export default function InlineSignatureCreator({
   const signaturePadRef = useRef<SignatureCanvas>(null);
   const [activeTab, setActiveTab] = useState("type");
   const [, setIsDrawing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const convertToStandardFormat = async (
     input: string | File | null, 
@@ -112,10 +113,17 @@ export default function InlineSignatureCreator({
     }
   };
 
-  const handleSubmit = () => {
-    if (previewSignature) {
-      onSignatureCreate(previewSignature);
+  const handleSubmit = async () => {
+    if (!previewSignature || isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+      await onSignatureCreate(previewSignature);
       clearAll();
+    } catch (error) {
+      console.error('Signature creation failed:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -217,6 +225,7 @@ export default function InlineSignatureCreator({
           <Button
             variant="outline"
             onClick={clearAll}
+            disabled={isSubmitting}
             className="flex items-center gap-2"
           >
             <X className="h-4 w-4" />
@@ -224,9 +233,9 @@ export default function InlineSignatureCreator({
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={!previewSignature}
+            disabled={!previewSignature || isSubmitting}
           >
-            Add Signature
+            {isSubmitting ? "Saving..." : "Add Signature"}
           </Button>
         </div>
 
