@@ -940,6 +940,8 @@
     "proceed": "Proceed to Payment",
     "disclaimer": "By proceeding, you agree to our Terms of Service and Refund Policy.",
     "cardFeeNote": "Card processing fee is applied at payment: 6% for USD/EUR and 4% for HKD.",
+    "originalUsd": "Original ({{currency}})",
+    "exchangeRate": "Exchange Rate",
     "sections": {
       "government": {
         "title": "Government Fees",
@@ -3095,7 +3097,7 @@
     "note": "Government fees are statutory and mandatory. Optional services can be toggled to customize your package.",
     "lockedNote": "After payment, selections are locked.",
     "paymentCurrency": "Payment Currency For Card Payment",
-    "currencyNote": "All prices are originally computed in USD. Conversion rates are updated live.",
+    "currencyNote": "All prices are originally computed in {{currency}}. Conversion rates are updated live.",
     "managedByPartyKyc": "Selected in Party KYC"
   },
   "mcap": {
@@ -4607,6 +4609,8 @@
       "bankTransferDesc": "Wire transfer to our account",
       "details": "Payment Details",
       "cardRedirectNote": "You will be redirected to a secure payment drawer to complete your purchase using a credit or debit card.",
+      "originalUsd": "Original ({{currency}})",
+      "exchangeRate": "Exchange Rate",
       "subtotal": "Subtotal",
       "cardFee": "Card Processing Fee",
       "totalAmount": "Total Amount",
@@ -4693,7 +4697,7 @@
         "k048": "Informational service list.",
         "k049": "Quote-only service requests are tracked and excluded from invoice totals until priced. Pricing is sourced from EUR quote structure and currently billed via USD/HKD rails.",
         "k050": "Application Notice",
-        "k051": "This application should be completed by an officer or authorized representative. Please provide accurate information for compliance and filing review.",
+        "k051": "This application must be completed by a director, shareholder, or an authorized representative. To ensure a smooth compliance and filing review, please ensure all details provided are accurate.Important: All fields must be completed in English only.",
         "k052": "Author Name",
         "k053": "Relationship to Estonian Corporation",
         "k054": "Phone Number",
@@ -4755,7 +4759,7 @@
         "k109": "Filing and incorporation process is typically completed in 1 to 2 business days after readiness.",
         "k110": "Post-filing Support",
         "k111": "Address/contact service setup and follow-up support are coordinated based on selected services.",
-        "k112": "Author details and relationship to the planned Estonian corporation.",
+        "k112": "Please provide the details of the individual filing this application and their relationship to the proposed Estonian corporation.",
         "k113": "AML / CDD",
         "k114": "Business intent, sanctions screening, and annual-renewal consent.",
         "k115": "Business profile and registration details.",

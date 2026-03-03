@@ -286,7 +286,13 @@ export function PanamaServiceSetupWidget({ data, onChange, config }: PanamaServi
                     </div>
 
                     <p className="text-[10px] text-muted-foreground max-w-xs text-center md:text-right">
-                        {t("service.currencyNote", "All prices are originally computed in USD. Conversion rates are updated live.")}
+                        {(t as any)(
+                            "service.currencyNote",
+                            {
+                                defaultValue: "All prices are originally computed in {{currency}}. Conversion rates are updated live.",
+                                currency: "USD",
+                            }
+                        )}
                     </p>
                 </CardContent>
             </Card>

@@ -33,6 +33,8 @@ export interface InvoiceData {
     cardFeeSurcharge?: number;
     grandTotal?: number;
     exchangeRateUsed?: number;
+    originalAmount?: number;
+    originalCurrency?: string;
     originalAmountUsd?: number;
 }
 
@@ -290,6 +292,8 @@ export function InvoiceWidget({
             cardFeeSurcharge: (fees as any).cardFeeSurcharge,
             grandTotal: (fees as any).grandTotal,
             exchangeRateUsed: (fees as any).exchangeRateUsed,
+            originalAmount: (fees as any).originalAmount,
+            originalCurrency: (fees as any).originalCurrency,
             originalAmountUsd: (fees as any).originalAmountUsd,
         };
     }, [fees]);
@@ -304,6 +308,8 @@ export function InvoiceWidget({
         cardFeeSurcharge,
         grandTotal,
         exchangeRateUsed,
+        originalAmount,
+        originalCurrency,
         originalAmountUsd,
     } = invoiceData;
     const normalizedCardFeePct = Number(cardFeePct || 0);
@@ -312,6 +318,14 @@ export function InvoiceWidget({
         ? Number(grandTotal)
         : Number((total + normalizedCardFeeSurcharge).toFixed(2));
     const hasCardFeeLine = normalizedCardFeeSurcharge > 0 || resolvedGrandTotal > total;
+    const resolvedOriginalCurrency = String(
+        originalCurrency || (typeof originalAmountUsd === "number" ? "USD" : currency)
+    ).toUpperCase();
+    const resolvedOriginalAmount = typeof originalAmount === "number" ? originalAmount : originalAmountUsd;
+    const hasFxBreakdown =
+        resolvedOriginalCurrency !== String(currency).toUpperCase()
+        && typeof exchangeRateUsed === "number"
+        && typeof resolvedOriginalAmount === "number";
 
     // Group items by kind
     const govItems = items.filter((i) => i.kind === "government");
@@ -452,15 +466,25 @@ export function InvoiceWidget({
             {/* Totals Card */}
             <Card className="border-2 border-primary/20 bg-background">
                 <CardContent className="p-4 space-y-3">
-                    {currency !== "USD" && typeof exchangeRateUsed === "number" && typeof originalAmountUsd === "number" ? (
+                    {hasFxBreakdown ? (
                         <>
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-muted-foreground">{t("invoice.originalUsd", "Original (USD)")}</span>
-                                <span className="font-medium">{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(originalAmountUsd)}</span>
+                                <span className="text-muted-foreground">
+                                    {(t as any)(
+                                        "invoice.originalUsd",
+                                        {
+                                            defaultValue: "Original ({{currency}})",
+                                            currency: resolvedOriginalCurrency,
+                                        }
+                                    )}
+                                </span>
+                                <span className="font-medium">
+                                    {new Intl.NumberFormat("en-US", { style: "currency", currency: resolvedOriginalCurrency }).format(Number(resolvedOriginalAmount))}
+                                </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                                 <span className="text-muted-foreground">{t("invoice.exchangeRate", "Exchange Rate")}</span>
-                                <span className="font-medium">1 USD = {exchangeRateUsed.toFixed(4)} {currency}</span>
+                                <span className="font-medium">1 {resolvedOriginalCurrency} = {Number(exchangeRateUsed).toFixed(4)} {currency}</span>
                             </div>
                         </>
                     ) : null}

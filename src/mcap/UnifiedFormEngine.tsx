@@ -127,7 +127,7 @@ export const UnifiedFormEngine = ({
     const currentStep = config.steps[currentStepIdx];
     const isLastStep = currentStepIdx === config.steps.length - 1;
     const entityMeta = useMemo(() => config.entityMeta || {}, [config.entityMeta]);
-    // Prefer fresh step-level computeFees. If HKD FX metadata is missing from that output,
+    // Prefer fresh step-level computeFees. If converted FX metadata is missing from that output,
     // fall back to cached converted computedFees from ServiceSelectionWidget.
     const computedFees = useMemo(() => {
         const cachedFees = formData?.computedFees;
@@ -140,12 +140,20 @@ export const UnifiedFormEngine = ({
         const requestedCurrency = String(formData?.paymentCurrency || formData?.currency || "").toUpperCase();
         const calculatedCurrency = String((calculated as any)?.currency || "").toUpperCase();
         const cachedCurrency = String((cachedFees as any)?.currency || "").toUpperCase();
+        const cachedOriginalCurrency = String(
+            (cachedFees as any)?.originalCurrency
+            || ((cachedFees as any)?.originalAmountUsd !== undefined ? "USD" : "")
+        ).toUpperCase();
         const hasCalculatedFx =
             Number.isFinite(Number((calculated as any)?.exchangeRateUsed))
             && Number((calculated as any)?.exchangeRateUsed) > 0;
-        const shouldUseCachedFx = requestedCurrency === "HKD"
-            && cachedCurrency === "HKD"
-            && (!hasCalculatedFx || calculatedCurrency !== "HKD");
+        const cachedRepresentsConvertedState =
+            !!cachedOriginalCurrency
+            && cachedOriginalCurrency !== cachedCurrency;
+        const shouldUseCachedFx = !!requestedCurrency
+            && cachedRepresentsConvertedState
+            && cachedCurrency === requestedCurrency
+            && (!hasCalculatedFx || calculatedCurrency !== requestedCurrency);
 
         return shouldUseCachedFx ? cachedFees : calculated;
     }, [currentStep, formData, entityMeta]);

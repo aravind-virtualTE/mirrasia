@@ -22,6 +22,8 @@ const EE_PRICING = {
   emi_list: 0,
 } as const;
 
+const EE_BASE_CURRENCY = "EUR";
+
 const YES_NO_UNKNOWN = [
   { label: "mcap.common.options.yes", value: "yes" },
   { label: "mcap.common.options.no", value: "no" },
@@ -185,7 +187,7 @@ export const computeEeFees = (data: Record<string, any>) => {
   const selectedServiceIds = getSelectedServiceIds(data);
   const allItems = buildEeServiceItems(data);
 
-  const selectedItemsUsd: McapFeeItem[] = allItems
+  const selectedItemsBase: McapFeeItem[] = allItems
     .filter((item) => item.mandatory || selectedServiceIds.has(item.id))
     .map((item) => ({
       id: item.id,
@@ -196,27 +198,27 @@ export const computeEeFees = (data: Record<string, any>) => {
       ...(item.info ? { info: item.info } : {}),
     }));
 
-  const totalUsd = selectedItemsUsd.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-  const paymentCurrency = String(data?.paymentCurrency || data?.currency || "USD").toUpperCase();
+  const totalBase = selectedItemsBase.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const paymentCurrency = String(data?.paymentCurrency || EE_BASE_CURRENCY).toUpperCase();
   const cachedComputedCurrency = String(data?.computedFees?.currency || "").toUpperCase();
   const exchangeRateUsedRaw = Number(data?.computedFees?.exchangeRateUsed || 0);
-  const shouldConvertFromUsd =
-    paymentCurrency !== "USD"
+  const shouldConvertFromBase =
+    paymentCurrency !== EE_BASE_CURRENCY
     && cachedComputedCurrency === paymentCurrency
     && Number.isFinite(exchangeRateUsedRaw)
     && exchangeRateUsedRaw > 0;
 
-  const selectedItems = shouldConvertFromUsd
-    ? selectedItemsUsd.map((item: any) => ({
+  const selectedItems = shouldConvertFromBase
+    ? selectedItemsBase.map((item: any) => ({
       ...item,
       amount: Number((Number(item.amount || 0) * exchangeRateUsedRaw).toFixed(2)),
       ...(item.original !== undefined
         ? { original: Number((Number(item.original || 0) * exchangeRateUsedRaw).toFixed(2)) }
         : {}),
     }))
-    : selectedItemsUsd;
+    : selectedItemsBase;
 
-  const total = shouldConvertFromUsd ? Number((totalUsd * exchangeRateUsedRaw).toFixed(2)) : totalUsd;
+  const total = shouldConvertFromBase ? Number((totalBase * exchangeRateUsedRaw).toFixed(2)) : totalBase;
   const government = selectedItems
     .filter((item: any) => item.kind === "government")
     .reduce((sum: number, item: any) => sum + Number(item.amount || 0), 0);
@@ -228,7 +230,7 @@ export const computeEeFees = (data: Record<string, any>) => {
   const grandTotal = Number((total + cardFeeSurcharge).toFixed(2));
 
   return {
-    currency: shouldConvertFromUsd ? paymentCurrency : "USD",
+    currency: shouldConvertFromBase ? paymentCurrency : EE_BASE_CURRENCY,
     items: selectedItems,
     government,
     service,
@@ -236,7 +238,9 @@ export const computeEeFees = (data: Record<string, any>) => {
     cardFeePct,
     cardFeeSurcharge,
     grandTotal,
-    ...(shouldConvertFromUsd ? { exchangeRateUsed: exchangeRateUsedRaw, originalAmountUsd: totalUsd } : {}),
+    originalCurrency: EE_BASE_CURRENCY,
+    originalAmount: totalBase,
+    ...(shouldConvertFromBase ? { exchangeRateUsed: exchangeRateUsedRaw } : {}),
     note:
       "mcap.ee.auto.k049",
   };
@@ -253,14 +257,14 @@ const buildApplicantFields = (): McapField[] => [
   {
     type: "text",
     name: "authorName",
-    label: "mcap.ee.auto.k052",
+    label: "mcap.common.fields.applicantName",
     required: true,
     colSpan: 2,
   },
    {
     type: "email",
     name: "email",
-    label: "mcap.ee.auto.k055",
+    label: "mcap.common.fields.applicantEmail",
     required: true,
     colSpan: 2,
   },
@@ -639,7 +643,7 @@ export const EE_FULL_CONFIG: McapConfig = {
   id: "ee-full",
   countryCode: "EE",
   countryName: "Estonia OÜ",
-  currency: "USD",
+  currency: "EUR",
   title: "mcap.ee.auto.k103",
   confirmationDetails: {
     title: "mcap.ee.auto.k104",
@@ -753,7 +757,7 @@ export const EE_FULL_CONFIG: McapConfig = {
       widget: "ServiceSelectionWidget",
       fields: buildServiceFields(),
       serviceItems: (data) => buildEeServiceItems(data),
-      supportedCurrencies: ["USD", "HKD", "EUR"],
+      supportedCurrencies: ["EUR", "USD", "HKD"],
       computeFees: (data) => computeEeFees(data),
     },
     {
@@ -768,7 +772,7 @@ export const EE_FULL_CONFIG: McapConfig = {
       title: "mcap.ee.auto.k120",
       description: "mcap.ee.auto.k121",
       widget: "PaymentWidget",
-      supportedCurrencies: ["USD", "HKD", "EUR"],
+      supportedCurrencies: ["EUR", "USD", "HKD"],
       computeFees: (data) => computeEeFees(data),
     },
     {
