@@ -1,30 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
-import {  useNavigate, useSearchParams } from "react-router-dom"; //useLocation,
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import jwtDecode from "jwt-decode";
+import { ArrowLeft, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { toast } from "@/hooks/use-toast";
+import api from "@/services/fetch";
 import { UnifiedFormEngine } from "./UnifiedFormEngine";
 import { MCAP_CONFIGS, MCAP_CONFIG_MAP } from "./configs/registry";
 import type { McapConfig } from "./configs/types";
-import { ArrowLeft, Globe } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import api from "@/services/fetch";
-import { toast } from "@/hooks/use-toast";
-import { t } from "i18next";
-import jwtDecode from "jwt-decode";
 
 export default function McapDashboard() {
+  const { t } = useTranslation();
   const [selectedConfig, setSelectedConfig] = useState<McapConfig | null>(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  // const location = useLocation();
-  const basePath =  "/incorporation-dashboard";
+  const basePath = "/incorporation-dashboard";
   const [initialData, setInitialData] = useState<any>(null);
   const [initialParties, setInitialParties] = useState<any[]>([]);
   const [initialCompanyId, setInitialCompanyId] = useState<string | null>(null);
   const [initialStepIdx, setInitialStepIdx] = useState<number | undefined>(undefined);
   const [isLoadingCompany, setIsLoadingCompany] = useState(false);
-  const [accessDenied, setAccessDenied] = useState<string | null>(null);
+  const [hasAccessDenied, setHasAccessDenied] = useState(false);
 
   const token = useMemo(() => (localStorage.getItem("token") as string) ?? "", []);
   const decoded = useMemo(() => {
@@ -47,6 +47,7 @@ export default function McapDashboard() {
   const currentUserId = storedUser?.id || storedUser?._id || decoded?.userId || "";
   const currentEmail = (storedUser?.email || decoded?.email || "").toLowerCase();
   const currentRole = storedUser?.role || decoded?.role || "";
+  const fallbackConfigTitle = t("mcap.dashboard.launcher.config.fallbackTitle", "MCAP Configuration");
 
   const requestedConfig = useMemo(() => {
     const id = searchParams.get("country");
@@ -57,20 +58,25 @@ export default function McapDashboard() {
   const requestedCompanyId = useMemo(() => searchParams.get("companyId"), [searchParams]);
 
   useEffect(() => {
-    if (!requestedCompanyId) setAccessDenied(null);
+    if (!requestedCompanyId) setHasAccessDenied(false);
   }, [requestedCompanyId]);
 
   useEffect(() => {
     if (!requestedCompanyId) return;
     let active = true;
+
     (async () => {
       setIsLoadingCompany(true);
+      setHasAccessDenied(false);
       try {
         const res = await api.get(`/mcap/companies/${requestedCompanyId}`);
         const payload = res?.data?.data || res?.data;
-        if (!payload?._id) throw new Error("Company not found");
+        if (!payload?._id) throw new Error("company_not_found");
+
         const cfg = MCAP_CONFIG_MAP[payload.countryCode] || null;
-        if (!cfg) throw new Error("Unsupported country configuration");
+        if (!cfg) throw new Error("unsupported_country_configuration");
+        if (!active) return;
+
         const ownerId = payload.userId?._id || payload.userId;
         const isApplicant = currentUserId && ownerId && String(ownerId) === String(currentUserId);
         const isDcp =
@@ -83,8 +89,9 @@ export default function McapDashboard() {
               String(p.email).toLowerCase() === currentEmail
           );
         const isAdmin = ["admin", "master"].includes(String(currentRole || "").toLowerCase());
+
         if (!isApplicant && !isDcp && !isAdmin) {
-          setAccessDenied("You do not have access to this incorporation form.");
+          setHasAccessDenied(true);
           setSelectedConfig(null);
           setInitialCompanyId(null);
           setInitialData(null);
@@ -92,10 +99,11 @@ export default function McapDashboard() {
           setInitialStepIdx(undefined);
           return;
         }
-        if (!active) return;
-        setAccessDenied(null);
+
+        setHasAccessDenied(false);
         setSelectedConfig(cfg);
         setInitialCompanyId(payload._id);
+
         const mergedData = { ...(payload.data || {}) };
         const paymentMeta = {
           paymentStatus: payload.paymentStatus,
@@ -107,31 +115,49 @@ export default function McapDashboard() {
           stripeCurrency: payload.stripeCurrency,
           uploadReceiptUrl: payload.uploadReceiptUrl,
         };
+
         Object.entries(paymentMeta).forEach(([key, value]) => {
           if (value !== undefined) mergedData[key] = value;
         });
+
         setInitialData(mergedData);
         setInitialParties(payload.parties || []);
         setInitialStepIdx(typeof payload.stepIdx === "number" ? payload.stepIdx : 0);
       } catch (err: any) {
-        toast({ title: "Unable to load application", description: err?.message || "Please try again.", variant: "destructive" });
+        if (!active) return;
+
+        const errorMessage = String(err?.message || "");
+        const description =
+          errorMessage === "company_not_found"
+            ? t("mcap.dashboard.launcher.errors.companyNotFound", "Company not found")
+            : errorMessage === "unsupported_country_configuration"
+              ? t(
+                "mcap.dashboard.launcher.errors.unsupportedCountryConfiguration",
+                "Unsupported country configuration"
+              )
+              : errorMessage || t("mcap.dashboard.launcher.errors.retry", "Please try again.");
+
+        toast({
+          title: t("mcap.dashboard.launcher.errors.loadTitle", "Unable to load application"),
+          description,
+          variant: "destructive",
+        });
       } finally {
         if (active) setIsLoadingCompany(false);
       }
     })();
+
     return () => {
       active = false;
     };
-  }, [requestedCompanyId]);
+  }, [currentEmail, currentRole, currentUserId, requestedCompanyId, t]);
 
   useEffect(() => {
     if (requestedConfig) {
       setSelectedConfig(requestedConfig);
     }
   }, [requestedConfig]);
-  // console.log("selectedConfig",selectedConfig)
-  // console.log("initialData",initialData)
-  // console.log("initialParties",initialParties)
+
   if (selectedConfig) {
     return (
       <div className="p-6">
@@ -147,7 +173,8 @@ export default function McapDashboard() {
           }}
           className="mb-4"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          {t("mcap.dashboard.launcher.back", "Back to Dashboard")}
         </Button>
         <UnifiedFormEngine
           config={selectedConfig}
@@ -161,17 +188,22 @@ export default function McapDashboard() {
     );
   }
 
-  if (accessDenied) {
+  if (hasAccessDenied) {
     return (
       <div className="max-width mx-auto p-6">
         <Card>
           <CardHeader>
-            <CardTitle>Access restricted</CardTitle>
-            <CardDescription>{accessDenied}</CardDescription>
+            <CardTitle>{t("mcap.dashboard.launcher.accessRestricted.title", "Access restricted")}</CardTitle>
+            <CardDescription>
+              {t(
+                "mcap.dashboard.launcher.accessRestricted.description",
+                "You do not have access to this incorporation form."
+              )}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Button onClick={() => navigate(basePath)} variant="outline">
-              Back to Dashboard
+              {t("mcap.dashboard.launcher.back", "Back to Dashboard")}
             </Button>
           </CardContent>
         </Card>
@@ -188,12 +220,10 @@ export default function McapDashboard() {
   }, {});
 
   const groupEntries = Object.entries(grouped);
-  // console.log("groupEntries",groupEntries)
+
   return (
     <div className="min-h-[calc(100vh-120px)] p-2 md:p-8 max-width mx-auto">
-      {/* Hero / Header */}
-      <div className="relative overflow-hidden rounded-2xl border bg-card text-card-foreground p-6 md:p-8 shadow-sm">
-        {/* subtle theme-aware glow using primary token */}
+      <div className="relative overflow-hidden rounded-2xl border bg-card p-6 text-card-foreground shadow-sm md:p-8">
         <div
           className="pointer-events-none absolute inset-0 opacity-60"
           aria-hidden="true"
@@ -206,16 +236,19 @@ export default function McapDashboard() {
         <div className="relative z-10 flex flex-col gap-3">
           <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
             <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_0_3px_hsl(var(--primary)/0.15)]" />
-            Incorporation Hub
+            {t("mcap.dashboard.launcher.hero.eyebrow", "Incorporation Hub")}
           </div>
-          <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
-            Select a jurisdiction to launch the unified incorporation flow with compliance, parties, and payment steps.
+          <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
+            {t(
+              "mcap.dashboard.launcher.hero.description",
+              "Select a jurisdiction to launch the unified incorporation flow with compliance, parties, and payment steps."
+            )}
           </p>
         </div>
       </div>
 
       <TooltipProvider delayDuration={0}>
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2">
+        <div className="mt-6 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
           {groupEntries.map(([group, configs]: any) => (
             <Card key={group} className="border bg-card">
               <CardHeader className="pb-2">
@@ -223,29 +256,35 @@ export default function McapDashboard() {
                   {group}
                 </CardTitle>
                 <CardDescription className="text-xs">
-                  {configs.length} configuration{configs.length > 1 ? "s" : ""} available
+                  {t("mcap.dashboard.launcher.groups.available", {
+                    count: configs.length,
+                    defaultValue: `${configs.length} configurations available`,
+                  })}
                 </CardDescription>
               </CardHeader>
 
               <CardContent className="pt-0">
                 <div className="divide-y divide-border">
-                  {configs.map((config: any) => (
+                  {configs.map((config: McapConfig) => (
                     <div
                       key={config.id}
                       className="flex items-center justify-between gap-3 py-2.5"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        {/* Icon pill - theme adaptive */}
-                        <div className="h-8 w-8 rounded-lg border bg-muted/50 text-foreground flex items-center justify-center shrink-0">
-                          <Globe className="w-4 h-4" />
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border bg-muted/50 text-foreground">
+                          <Globe className="h-4 w-4" />
                         </div>
 
                         <div className="min-w-0">
-                          <div className="text-sm font-medium truncate text-foreground">
-                            {config.countryName}
+                          <div className="truncate text-sm font-medium text-foreground">
+                            {t(`mcap.dashboard.launcher.countries.${config.id}`, {
+                              defaultValue: config.countryName,
+                            })}
                           </div>
-                          <div className="text-[11px] text-muted-foreground truncate">
-                            {t(config.title) || "MCAP Configuration"}
+                          <div className="truncate text-[11px] text-muted-foreground">
+                            {config.title
+                              ? t(config.title, { defaultValue: fallbackConfigTitle })
+                              : fallbackConfigTitle}
                           </div>
                         </div>
                       </div>
@@ -253,25 +292,33 @@ export default function McapDashboard() {
                       <div className="flex items-center gap-3">
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            {/* Badge - theme adaptive */}
-                            <div className="text-[10px] uppercase tracking-widest text-muted-foreground border border-border rounded-full px-2 py-0.5 bg-background">
+                            <div className="rounded-full border border-border bg-background px-2 py-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">
                               {config.countryCode}
                             </div>
                           </TooltipTrigger>
                           <TooltipContent className="text-xs">
-                            <div>Currency: {config.currency}</div>
-                            <div>Steps: {config.steps.length}</div>
+                            <div>
+                              {t("mcap.dashboard.launcher.tooltip.currency", {
+                                currency: config.currency,
+                                defaultValue: "Currency: {{currency}}",
+                              })}
+                            </div>
+                            <div>
+                              {t("mcap.dashboard.launcher.tooltip.steps", {
+                                count: config.steps.length,
+                                defaultValue: "Steps: {{count}}",
+                              })}
+                            </div>
                           </TooltipContent>
                         </Tooltip>
 
-                        {/* Button - use shadcn variants instead of custom colors */}
                         <Button
                           size="sm"
                           variant="default"
                           className="h-7 px-3 text-xs"
                           onClick={() => setSelectedConfig(config)}
                         >
-                          Start
+                          {t("mcap.dashboard.launcher.actions.start", "Start")}
                         </Button>
                       </div>
                     </div>
