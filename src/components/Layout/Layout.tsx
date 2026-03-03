@@ -203,30 +203,7 @@ const Layout: React.FC = () => {
           },
 
         ],
-      },
-      {
-        id: "incorporation-services",
-        icon: Briefcase,
-        label: "MCAP v1.0",
-        roles: ["admin", "master"],
-        children: [
-          // {
-          //   id: "incorporation-pricing",
-          //   icon: DollarSign,
-          //   label: "Incorporation Pricing",
-          //   roles: ["admin", "master"],
-          //   to: "/incorporation-pricing",
-          // },
-          {
-            id: "incorporation-migrations",
-            icon: FileCheck,
-            label: "Migration Audit",
-            roles: ["admin", "master"],
-            to: "/incorporation-migrations",
-          },
-
-        ],
-      },
+      },     
       {
         id: "legacy-services",
         icon: Briefcase,
@@ -262,6 +239,29 @@ const Layout: React.FC = () => {
           },
         ],
       },
+       {
+        id: "incorporation-services",
+        icon: Briefcase,
+        label: "MCAP",
+        roles: ["admin", "master"],
+        children: [
+          // {
+          //   id: "incorporation-pricing",
+          //   icon: DollarSign,
+          //   label: "Incorporation Pricing",
+          //   roles: ["admin", "master"],
+          //   to: "/incorporation-pricing",
+          // },
+          {
+            id: "incorporation-migrations",
+            icon: FileCheck,
+            label: "Migration Audit",
+            roles: ["admin", "master"],
+            to: "/incorporation-migrations",
+          },
+
+        ],
+      }
     ],
     [t]
   );
