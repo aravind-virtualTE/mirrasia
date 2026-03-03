@@ -8,7 +8,7 @@ import { Info, Minus, Plus, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { convertCurrency } from "@/services/exchangeRate";
+import { convertCurrency, DEFAULT_PRICING_BASE_CURRENCY, getPricingBaseCurrency } from "@/services/exchangeRate";
 import type { McapConfig } from "../configs/types";
 
 interface ServiceSelectionWidgetProps {
@@ -35,7 +35,7 @@ export function ServiceSelectionWidget({
     data,
     onChange,
     items,
-    currency = "USD",
+    currency,
     supportedCurrencies,
     computeFees,
 }: ServiceSelectionWidgetProps) {
@@ -56,6 +56,9 @@ export function ServiceSelectionWidget({
         }
         return acc;
     }, {} as Record<string, number>);
+    const basePricingCurrency = getPricingBaseCurrency(config?.countryCode);
+    const hasExplicitPaymentCurrencyChoice = data?.paymentCurrencyTouched === true;
+    const shouldForceBaseCurrencyDefault = config?.countryCode === "EE" && !hasExplicitPaymentCurrencyChoice;
     const allowedCurrencies = useMemo(() => {
         const raw = Array.isArray(supportedCurrencies) && supportedCurrencies.length > 0
             ? supportedCurrencies
@@ -65,7 +68,15 @@ export function ServiceSelectionWidget({
             .filter(Boolean);
         return normalized.length > 0 ? Array.from(new Set(normalized)) : ["USD", "HKD"];
     }, [supportedCurrencies]);
-    const selectedCurrencyRaw = String(data.paymentCurrency || data.currency || currency || "USD").toUpperCase();
+    const defaultCurrencySeed = shouldForceBaseCurrencyDefault
+        ? (currency || basePricingCurrency)
+        : (
+            data.paymentCurrency
+            || (basePricingCurrency !== DEFAULT_PRICING_BASE_CURRENCY
+                ? (currency || basePricingCurrency)
+                : (data.currency || currency || basePricingCurrency))
+        );
+    const selectedCurrencyRaw = String(defaultCurrencySeed).toUpperCase();
     const selectedCurrency = allowedCurrencies.includes(selectedCurrencyRaw)
         ? selectedCurrencyRaw
         : allowedCurrencies[0];
@@ -163,11 +174,14 @@ export function ServiceSelectionWidget({
 
     useEffect(() => {
         if (isLocked) return;
-        if (selectedCurrencyRaw !== selectedCurrency) {
+        if (
+            selectedCurrencyRaw !== selectedCurrency
+            || (shouldForceBaseCurrencyDefault && String(data?.paymentCurrency || "").toUpperCase() !== selectedCurrency)
+        ) {
             handleChange(selectedIds, selectedCurrency);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedCurrencyRaw, selectedCurrency, isLocked]);
+    }, [selectedCurrencyRaw, selectedCurrency, isLocked, shouldForceBaseCurrencyDefault, data?.paymentCurrency]);
 
     const toggleService = (id: string, mandatory: boolean = false) => {
         if (mandatory || isLocked) return;
@@ -178,7 +192,7 @@ export function ServiceSelectionWidget({
     };
 
     const handleCurrencyChange = (newCurr: string) => {
-        handleChange(selectedIds, newCurr);
+        handleChange(selectedIds, newCurr, undefined, true);
     };
 
     const sameSelection = (a: string[], b: string[]) =>
@@ -198,7 +212,8 @@ export function ServiceSelectionWidget({
     const handleChange = async (
         newIds: string[],
         payCurr: string,
-        quantityOverrides?: Record<string, number>
+        quantityOverrides?: Record<string, number>,
+        markPaymentCurrencyTouched: boolean = false
     ) => {
         const idsSnapshot = Array.from(new Set(newIds));
         const mergedQuantities = {
@@ -219,6 +234,7 @@ export function ServiceSelectionWidget({
                 serviceItemsSelected: normalizedIds,
                 serviceQuantities: normalizedQuantities,
                 paymentCurrency: normalizedCurrency,
+                paymentCurrencyTouched: markPaymentCurrencyTouched ? true : data?.paymentCurrencyTouched,
             };
 
             let computedFees: any = null;
@@ -226,16 +242,14 @@ export function ServiceSelectionWidget({
             if (typeof computeFees === "function") {
                 computedFees = computeFees(nextData, (config as any).entityMeta || null) || {};
                 const computedCurrency = String(computedFees?.currency || "").toUpperCase();
-                const hasValidExchangeRate =
-                    Number.isFinite(Number(computedFees?.exchangeRateUsed))
-                    && Number(computedFees?.exchangeRateUsed) > 0;
                 const needsCurrencyConversion =
-                    normalizedCurrency !== "USD"
-                    && !(computedCurrency === normalizedCurrency && hasValidExchangeRate);
+                    !!computedCurrency
+                    && computedCurrency !== normalizedCurrency;
 
                 if (needsCurrencyConversion) {
-                    const totalUsd = Number(computedFees?.originalAmountUsd ?? computedFees?.total ?? 0);
-                    const conv = await convertCurrency(totalUsd, "USD", normalizedCurrency);
+                    const sourceCurrency = computedCurrency;
+                    const sourceTotal = Number(computedFees?.total ?? 0);
+                    const conv = await convertCurrency(sourceTotal, sourceCurrency, normalizedCurrency);
                     const rate = Number(conv.rate || 0);
                     const scale = (val: any) => Number((Number(val || 0) * rate).toFixed(2));
                     const cardFeePct = getCardFeePct(normalizedCurrency);
@@ -260,12 +274,24 @@ export function ServiceSelectionWidget({
                         service: scale(computedFees?.service),
                         total: convertedTotal,
                         exchangeRateUsed: rate,
-                        originalAmountUsd: totalUsd,
+                        originalCurrency: sourceCurrency,
+                        originalAmount: sourceTotal,
+                        ...(sourceCurrency === "USD" ? { originalAmountUsd: sourceTotal } : {}),
                         cardFeePct,
                         cardFeeSurcharge,
                         grandTotal,
                     };
                 } else {
+                    const normalizedOriginalCurrency = String(
+                        computedFees?.originalCurrency
+                        || (computedFees?.originalAmountUsd !== undefined ? "USD" : basePricingCurrency)
+                    ).toUpperCase();
+                    const normalizedOriginalAmount = Number(
+                        computedFees?.originalAmount
+                        ?? (computedFees?.originalAmountUsd !== undefined
+                            ? computedFees.originalAmountUsd
+                            : computedFees?.total ?? 0)
+                    );
                     const cardFeePct = Number(computedFees?.cardFeePct || getCardFeePct(normalizedCurrency));
                     const payMethod = String(nextData.payMethod || "card").toLowerCase();
                     const total = Number(computedFees?.total || 0);
@@ -273,24 +299,28 @@ export function ServiceSelectionWidget({
                         ? Number((total * cardFeePct).toFixed(2))
                         : Number(computedFees?.cardFeeSurcharge || 0);
                     const grandTotal = Number((total + cardFeeSurcharge).toFixed(2));
+                    const { ...computedFeesWithoutLegacyUsd } = computedFees;
 
                     computedFees = {
-                        ...computedFees,
+                        ...computedFeesWithoutLegacyUsd,
                         currency: normalizedCurrency,
+                        originalCurrency: normalizedOriginalCurrency,
+                        originalAmount: normalizedOriginalAmount,
+                        ...(normalizedOriginalCurrency === "USD" ? { originalAmountUsd: normalizedOriginalAmount } : {}),
                         cardFeePct,
                         cardFeeSurcharge,
                         grandTotal,
                     };
                 }
             } else {
-                const governmentTotalUsd = govItems.reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
-                const mandatoryServiceTotalUsd = svcItemsMeta
+                const governmentTotalBase = govItems.reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
+                const mandatoryServiceTotalBase = svcItemsMeta
                     .filter((f: any) => f.mandatory)
                     .reduce((s: number, it: any) => {
                         const quantity = getNormalizedQuantity(it, normalizedQuantities[it.id], true);
                         return s + (Number(it.amount || 0) * Number(quantity || 0));
                     }, 0);
-                const optionalSelectedTotalUsd = svcItemsMeta
+                const optionalSelectedTotalBase = svcItemsMeta
                     .filter((f: any) => !f.mandatory && normalizedIds.includes(f.id))
                     .reduce((s: number, it: any) => {
                         const quantity = getNormalizedQuantity(it, normalizedQuantities[it.id], true);
@@ -299,23 +329,23 @@ export function ServiceSelectionWidget({
 
                 const legalPersonCount = parties.filter((p: any) => p?.isCorp === true || p?.type === "entity").length;
                 const individualCount = Math.max(0, parties.length - legalPersonCount);
-                let extraKycUsd = 0;
+                let extraKycBase = 0;
                 if (enableKycExtras) {
-                    if (legalPersonCount > 0) extraKycUsd += legalPersonCount * 130;
+                    if (legalPersonCount > 0) extraKycBase += legalPersonCount * 130;
                     if (individualCount > 2) {
                         const peopleNeedingKyc = individualCount - 2;
                         const kycSlots = Math.ceil(peopleNeedingKyc / 2);
-                        extraKycUsd += kycSlots * 65;
+                        extraKycBase += kycSlots * 65;
                     }
                 }
 
-                const serviceTotalUsd = mandatoryServiceTotalUsd + optionalSelectedTotalUsd + extraKycUsd;
-                const subtotalUsd = governmentTotalUsd + serviceTotalUsd;
+                const serviceTotalBase = mandatoryServiceTotalBase + optionalSelectedTotalBase + extraKycBase;
+                const subtotalBase = governmentTotalBase + serviceTotalBase;
 
-                let finalSubtotal = subtotalUsd;
+                let finalSubtotal = subtotalBase;
                 let rate: number | undefined;
-                if (normalizedCurrency !== "USD") {
-                    const conv = await convertCurrency(subtotalUsd, "USD", normalizedCurrency);
+                if (normalizedCurrency !== basePricingCurrency) {
+                    const conv = await convertCurrency(subtotalBase, basePricingCurrency, normalizedCurrency);
                     finalSubtotal = conv.convertedAmount;
                     rate = conv.rate;
                 }
@@ -333,8 +363,8 @@ export function ServiceSelectionWidget({
                         ...govItems.map((f: any) => ({
                             id: f.id,
                             label: f.label,
-                            amount: normalizedCurrency !== "USD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
-                            original: normalizedCurrency !== "USD" ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
+                            amount: normalizedCurrency !== basePricingCurrency ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
+                            original: normalizedCurrency !== basePricingCurrency ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
                             info: f.info,
                             kind: "government" as const,
                             quantity: 1,
@@ -346,28 +376,30 @@ export function ServiceSelectionWidget({
                                 return {
                                     id: f.id,
                                     label: f.label,
-                                    amount: normalizedCurrency !== "USD" ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
-                                    original: normalizedCurrency !== "USD" ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
+                                    amount: normalizedCurrency !== basePricingCurrency ? Number((f.amount * (rate || 1)).toFixed(2)) : f.amount,
+                                    original: normalizedCurrency !== basePricingCurrency ? Number((f.original * (rate || 1)).toFixed(2)) : f.original,
                                     info: f.info,
                                     kind: "service" as const,
                                     quantity,
                                 };
                             }),
-                        ...(extraKycUsd > 0 ? [{
+                        ...(extraKycBase > 0 ? [{
                             id: "extra_kyc",
                             label: "newHk.fees.items.extra_kyc.label",
-                            amount: normalizedCurrency !== "USD" ? Number((extraKycUsd * (rate || 1)).toFixed(2)) : extraKycUsd,
-                            original: normalizedCurrency !== "USD" ? Number((extraKycUsd * (rate || 1)).toFixed(2)) : extraKycUsd,
+                            amount: normalizedCurrency !== basePricingCurrency ? Number((extraKycBase * (rate || 1)).toFixed(2)) : extraKycBase,
+                            original: normalizedCurrency !== basePricingCurrency ? Number((extraKycBase * (rate || 1)).toFixed(2)) : extraKycBase,
                             info: "Additional KYC fees for corporate shareholders and extra individual shareholders.",
                             kind: "service" as const,
                             quantity: 1,
                         }] : []),
                     ],
-                    government: normalizedCurrency !== "USD" ? Number((governmentTotalUsd * (rate || 1)).toFixed(2)) : governmentTotalUsd,
-                    service: normalizedCurrency !== "USD" ? Number((serviceTotalUsd * (rate || 1)).toFixed(2)) : serviceTotalUsd,
+                    government: normalizedCurrency !== basePricingCurrency ? Number((governmentTotalBase * (rate || 1)).toFixed(2)) : governmentTotalBase,
+                    service: normalizedCurrency !== basePricingCurrency ? Number((serviceTotalBase * (rate || 1)).toFixed(2)) : serviceTotalBase,
                     total: finalSubtotal,
                     exchangeRateUsed: rate,
-                    originalAmountUsd: subtotalUsd,
+                    originalCurrency: basePricingCurrency,
+                    originalAmount: subtotalBase,
+                    ...(basePricingCurrency === "USD" ? { originalAmountUsd: subtotalBase } : {}),
                     cardFeePct,
                     cardFeeSurcharge,
                     grandTotal,
@@ -386,6 +418,7 @@ export function ServiceSelectionWidget({
                     serviceItemsSelected: normalizedIds,
                     serviceQuantities: normalizedQuantities,
                     paymentCurrency: normalizedCurrency,
+                    paymentCurrencyTouched: markPaymentCurrencyTouched ? true : data?.paymentCurrencyTouched,
                     computedFees,
                 });
             }
@@ -417,10 +450,19 @@ export function ServiceSelectionWidget({
         return Number.isFinite(n) ? n : 0;
     };
 
+    const computedFeesCurrency = String(data?.computedFees?.currency || "").toUpperCase();
+    const computedFeesSourceCurrency = String(
+        data?.computedFees?.originalCurrency
+        || (data?.computedFees?.originalAmountUsd !== undefined ? "USD" : basePricingCurrency)
+    ).toUpperCase();
+
     const getRowAmounts = (item: any) => {
         const rate = Number(data?.computedFees?.exchangeRateUsed || 0);
-        const hasMatchingComputedCurrency = String(data?.computedFees?.currency || "").toUpperCase() === selectedCurrency;
-        const shouldConvert = selectedCurrency !== "USD" && hasMatchingComputedCurrency && rate > 0;
+        const hasMatchingComputedCurrency = computedFeesCurrency === selectedCurrency;
+        const shouldConvert =
+            computedFeesSourceCurrency !== selectedCurrency
+            && hasMatchingComputedCurrency
+            && rate > 0;
         const scale = (val: any) => shouldConvert ? Number((toNumber(val) * rate).toFixed(2)) : toNumber(val);
         const computed = item?.id ? computedItemsById.get(String(item.id)) : undefined;
         const computedQty = Number(computed?.quantity);
@@ -671,15 +713,15 @@ export function ServiceSelectionWidget({
     }
 
     // Convert to selected currency
-    const convertAmount = (amountUsd: number): number => {
+    const convertAmount = (amount: number): number => {
         if (
-            selectedCurrency !== "USD"
-            && String(data?.computedFees?.currency || "").toUpperCase() === selectedCurrency
+            computedFeesSourceCurrency !== selectedCurrency
+            && computedFeesCurrency === selectedCurrency
             && data.computedFees?.exchangeRateUsed
         ) {
-            return Number((amountUsd * data.computedFees.exchangeRateUsed).toFixed(2));
+            return Number((amount * data.computedFees.exchangeRateUsed).toFixed(2));
         }
-        return amountUsd;
+        return amount;
     };
 
     const govSubtotalConverted = convertAmount(govSubtotal);
@@ -790,18 +832,24 @@ export function ServiceSelectionWidget({
                         </div>
 
                         {data.computedFees?.exchangeRateUsed
-                            && selectedCurrency !== "USD"
-                            && String(data.computedFees?.currency || "").toUpperCase() === selectedCurrency && (
+                            && computedFeesSourceCurrency !== selectedCurrency
+                            && computedFeesCurrency === selectedCurrency && (
                             <div className="px-3 py-1 bg-primary/10 rounded-md border border-primary/20">
                                 <p className="text-[10px] text-primary font-medium">
-                                    1 USD = {data.computedFees.exchangeRateUsed.toFixed(4)} {selectedCurrency}
+                                    1 {computedFeesSourceCurrency} = {data.computedFees.exchangeRateUsed.toFixed(4)} {selectedCurrency}
                                 </p>
                             </div>
                         )}
                     </div>
 
                     <p className="text-[10px] text-muted-foreground max-w-xs text-center md:text-right">
-                        {t("service.currencyNote", "All prices are originally computed in USD. Conversion rates are updated live.")}
+                        {(t as any)(
+                            "service.currencyNote",
+                            {
+                                defaultValue: "All prices are originally computed in {{currency}}. Conversion rates are updated live.",
+                                currency: computedFeesSourceCurrency || selectedCurrency,
+                            }
+                        )}
                     </p>
                 </CardContent>
             </Card>

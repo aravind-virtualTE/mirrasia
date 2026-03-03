@@ -337,12 +337,20 @@ export const PaymentWidget = ({
     const exchangeRateUsed = typeof (finalFees as any).exchangeRateUsed === "number"
         ? Number((finalFees as any).exchangeRateUsed)
         : undefined;
+    const originalAmount = typeof (finalFees as any).originalAmount === "number"
+        ? Number((finalFees as any).originalAmount)
+        : undefined;
+    const originalCurrency = String(
+        (finalFees as any).originalCurrency
+        || (typeof (finalFees as any).originalAmountUsd === "number" ? "USD" : activeCurrency)
+    ).toUpperCase();
     const originalAmountUsd = typeof (finalFees as any).originalAmountUsd === "number"
         ? Number((finalFees as any).originalAmountUsd)
         : undefined;
-    const hasFxBreakdown = String(activeCurrency).toUpperCase() !== "USD"
+    const resolvedOriginalAmount = typeof originalAmount === "number" ? originalAmount : originalAmountUsd;
+    const hasFxBreakdown = originalCurrency !== String(activeCurrency).toUpperCase()
         && typeof exchangeRateUsed === "number"
-        && typeof originalAmountUsd === "number";
+        && typeof resolvedOriginalAmount === "number";
 
     // If payMethod is card, use grandTotal (which includes surcharge). 
     // If payMethod is bank, use the base total (subtotal).
@@ -815,12 +823,20 @@ export const PaymentWidget = ({
                         {hasFxBreakdown && (
                             <div className="space-y-1 p-3 bg-muted/40 rounded-md border text-xs">
                                 <div className="flex justify-between">
-                                    <span className="text-muted-foreground">{t("mcap.payment.originalUsd", "Original (USD)")}</span>
-                                    <span className="font-medium">{formatAmount(originalAmountUsd, "USD")}</span>
+                                    <span className="text-muted-foreground">
+                                        {(t as any)(
+                                            "mcap.payment.originalUsd",
+                                            {
+                                                defaultValue: "Original ({{currency}})",
+                                                currency: originalCurrency,
+                                            }
+                                        )}
+                                    </span>
+                                    <span className="font-medium">{formatAmount(Number(resolvedOriginalAmount), originalCurrency)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">{t("mcap.payment.exchangeRate", "Exchange Rate")}</span>
-                                    <span className="font-medium">1 USD = {exchangeRateUsed.toFixed(4)} {String(activeCurrency).toUpperCase()}</span>
+                                    <span className="font-medium">1 {originalCurrency} = {Number(exchangeRateUsed).toFixed(4)} {String(activeCurrency).toUpperCase()}</span>
                                 </div>
                             </div>
                         )}

@@ -37,6 +37,13 @@ export type McapFees = {
   total?: number;
   items?: McapFeeItem[];
   note?: string;
+  cardFeePct?: number;
+  cardFeeSurcharge?: number;
+  grandTotal?: number;
+  exchangeRateUsed?: number;
+  originalAmount?: number;
+  originalCurrency?: string;
+  originalAmountUsd?: number;
 };
 
 export type McapReviewSummaryRow = {
