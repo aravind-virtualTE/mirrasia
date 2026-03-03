@@ -2728,7 +2728,7 @@
         },
         "roleSelectionPrompt": "해당 구성원이 맡을 항목을 선택하세요",
         "shares": {
-          "label": "주식 수"
+          "label": "자본 단위"
         },
         "pct": {
           "label": "지분율 % (자동)"
