@@ -2729,7 +2729,7 @@
         },
         "roleSelectionPrompt": "請選擇此成員將擔任的選項",
         "shares": {
-          "label": "股數"
+          "label": "資本單位"
         },
         "pct": {
           "label": "持股百分比 %（自動計算）"

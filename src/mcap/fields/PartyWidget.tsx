@@ -413,7 +413,7 @@ export const PartyWidget = ({
 
                             {(party.roles || []).includes("shareholder") && (
                                 <div className="mt-4 space-y-2">
-                                    <Label>{t("newHk.parties.fields.shares.label", "Number of Shares")}</Label>
+                                    <Label>{t("newHk.parties.fields.shares.label", "Unit of capital")}</Label>
                                     <Input
                                         type="number"
                                         value={party.shares}

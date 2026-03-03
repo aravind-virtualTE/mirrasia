@@ -2737,7 +2737,7 @@
         },
         "roleSelectionPrompt": "Select the options that the member will be",
         "shares": {
-          "label": "Number of shares"
+          "label": "Unit of capital"
         },
         "pct": {
           "label": "Shareholding % (auto)"
