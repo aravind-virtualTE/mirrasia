@@ -3668,6 +3668,9 @@
           "contactPersons": {
             "label": "Additional designated contact persons",
             "info": "First designated contact person is free. Each additional contact is USD 250 per year."
+          },
+          "corporateMemberKyc": {
+            "label": "Additional KYC fee of USD150 for corporate member"
           }
         },
         "optional": {
