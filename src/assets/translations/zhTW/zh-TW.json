@@ -3607,6 +3607,9 @@
           "contactPersons": {
             "label": "額外指定聯絡人",
             "info": "首位指定聯絡人免費。每增加一位聯絡人每年 250 美元。"
+          },
+          "corporateMemberKyc": {
+            "label": "法人成員額外 KYC 費用 (150 美元)"
           }
         },
         "optional": {

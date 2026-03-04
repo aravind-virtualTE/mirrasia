@@ -127,6 +127,31 @@ const getSelectedServiceIds = (data: any) => {
   return ids;
 };
 
+const UK_CORPORATE_MEMBER_KYC_FEE = 150;
+
+const getPartyRoleSet = (party: any) => {
+  const rootRoles = Array.isArray(party?.roles) ? party.roles : [];
+  const detailRoles = Array.isArray(party?.details?.roles) ? party.details.roles : [];
+  return new Set(
+    [...rootRoles, ...detailRoles]
+      .map((role) => String(role || "").trim().toLowerCase())
+      .filter(Boolean)
+  );
+};
+
+const isCorporateParty = (party: any) => party?.isCorp === true || party?.type === "entity";
+
+const isEligibleUkCorporateMember = (party: any) => {
+  if (!isCorporateParty(party)) return false;
+  const roles = getPartyRoleSet(party);
+  return roles.has("shareholder") || roles.has("director") || roles.has("member");
+};
+
+const getUkCorporateMemberKycCount = (parties: any[]) => {
+  const list = Array.isArray(parties) ? parties : [];
+  return list.filter((party) => isEligibleUkCorporateMember(party)).length;
+};
+
 const buildUkServiceItems = (data: any) => {
   const mode = getSelectedEntityMode(data);
   const pricing = UK_ENTITY_PRICING[mode];
@@ -134,6 +159,7 @@ const buildUkServiceItems = (data: any) => {
   const additionalExecutivePairs = toNonNegativeInt(data?.ukAdditionalExecutivePairs);
   const additionalCorporateLayers = mode === "subsidiary" ? toNonNegativeInt(data?.ukAdditionalCorporateLayers) : 0;
   const additionalDcpContacts = toNonNegativeInt(data?.additionalContactPersons);
+  const corporateMemberKycCount = getUkCorporateMemberKycCount(data?.parties);
 
   const items: Array<{
     id: string;
@@ -142,6 +168,9 @@ const buildUkServiceItems = (data: any) => {
     original: number;
     mandatory: boolean;
     info?: string;
+    quantity?: number;
+    managedByPartyData?: boolean;
+    unitLabel?: string;
   }> = [
       {
         id: "uk_base_incorporation",
@@ -149,7 +178,7 @@ const buildUkServiceItems = (data: any) => {
         amount: pricing.incorporation,
         original: pricing.incorporation,
         mandatory: true,
-        info: "mcap.uk.services.base.incorporation.info",
+        // info: "mcap.uk.services.base.incorporation.info",
       },
       {
         id: "uk_base_kyc",
@@ -157,7 +186,7 @@ const buildUkServiceItems = (data: any) => {
         amount: pricing.kyc,
         original: pricing.kyc,
         mandatory: true,
-        info: "mcap.uk.services.base.kyc.info",
+        // info: "mcap.uk.services.base.kyc.info",
       },
       {
         id: "uk_base_registered_office",
@@ -165,7 +194,7 @@ const buildUkServiceItems = (data: any) => {
         amount: pricing.registeredOffice,
         original: pricing.registeredOffice,
         mandatory: true,
-        info: "mcap.uk.services.base.registeredOffice.info",
+        // info: "mcap.uk.services.base.registeredOffice.info",
       },
     ];
 
@@ -205,6 +234,20 @@ const buildUkServiceItems = (data: any) => {
     });
   }
 
+  if (corporateMemberKycCount > 0) {
+    items.push({
+      id: "uk_additional_corporate_member_kyc",
+      label: "mcap.uk.services.additional.corporateMemberKyc.label",
+      amount: UK_CORPORATE_MEMBER_KYC_FEE,
+      original: UK_CORPORATE_MEMBER_KYC_FEE,
+      mandatory: true,
+      // info: "mcap.uk.services.additional.corporateMemberKyc.info",
+      quantity: corporateMemberKycCount,
+      managedByPartyData: true,
+      unitLabel: "service.quantity.unit",
+    });
+  }
+
   UK_OPTIONAL_FIXED_SERVICES.forEach((service) => {
     items.push({
       id: service.id,
@@ -230,11 +273,15 @@ const computeUkFees = (data: any) => {
       label: item.label,
       amount: item.amount,
       kind: "service" as const,
+      quantity: Math.max(1, Number(item.quantity || 1)),
       ...(item.original !== undefined ? { original: item.original } : {}),
       ...(item.info ? { info: item.info } : {}),
     }));
 
-  const totalUsd = selectedItemsUsd.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const totalUsd = selectedItemsUsd.reduce(
+    (sum, item) => sum + (Number(item.amount || 0) * Number(item.quantity || 1)),
+    0
+  );
 
   const paymentCurrency = String(data?.paymentCurrency || data?.currency || "USD").toUpperCase();
   const exchangeRateUsedRaw = Number(data?.computedFees?.exchangeRateUsed || 0);

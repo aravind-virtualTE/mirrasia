@@ -100,6 +100,8 @@ export function ServiceSelectionWidget({
     };
     const isQuantityItem = (item: any) => !!getQuantityMeta(item).enabled;
     const isPartyManagedItem = (item: any) => !!item?.managedByPartyKyc;
+    const isManagedByPartyDataItem = (item: any) => !!item?.managedByPartyData;
+    const isManagedComputedItem = (item: any) => isPartyManagedItem(item) || isManagedByPartyDataItem(item);
     const getQuantityCap = (item: any) => {
         const meta = getQuantityMeta(item);
         if (!meta.enabled) return 1;
@@ -136,7 +138,7 @@ export function ServiceSelectionWidget({
             const selected = item.mandatory || ids.has(item.id);
             const quantity = getNormalizedQuantity(item, quantitySnapshot[item.id], selected);
 
-            if (isPartyManagedItem(item)) {
+            if (isManagedComputedItem(item)) {
                 ids.delete(item.id);
                 return;
             }
@@ -467,8 +469,8 @@ export function ServiceSelectionWidget({
         const computed = item?.id ? computedItemsById.get(String(item.id)) : undefined;
         const computedQty = Number(computed?.quantity);
         const selected = item?.mandatory || selectedIds.includes(item?.id);
-        const normalizedQty = isPartyManagedItem(item)
-            ? 0
+        const normalizedQty = isManagedComputedItem(item)
+            ? Math.max(0, Math.floor(toNumber(item?.quantity)))
             : getNormalizedQuantity(item, serviceQuantities[item?.id], selected);
         const quantity = Number.isFinite(computedQty)
             ? Math.max(0, Math.floor(computedQty))
@@ -532,6 +534,7 @@ export function ServiceSelectionWidget({
         const label = typeof t(item.label, item.label) === 'string' ? t(item.label, item.label) : item.label;
         const info = item.info ? (typeof t(item.info, item.info) === 'string' ? t(item.info, item.info) : undefined) : undefined;
         const partyManaged = isPartyManagedItem(item);
+        const managedComputed = isManagedComputedItem(item);
         const quantityMode = isQuantityItem(item);
         const cap = getQuantityCap(item);
         const { amountPerUnit, originalPerUnit, quantity } = getRowAmounts(item);
@@ -539,29 +542,31 @@ export function ServiceSelectionWidget({
             ? quantity > 0
             : (item.mandatory || selectedIds.includes(item.id));
         const disabled = item.mandatory || isLocked;
-        const effectiveQty = partyManaged || quantityMode
+        const effectiveQty = managedComputed || quantityMode
             ? Math.max(0, quantity)
             : (checked ? 1 : 0);
-        const amount = partyManaged || quantityMode
+        const amount = managedComputed || quantityMode
             ? (effectiveQty > 0 ? amountPerUnit * effectiveQty : 0)
             : amountPerUnit;
         const original = originalPerUnit !== undefined
-            ? ((partyManaged || quantityMode)
+            ? ((managedComputed || quantityMode)
                 ? (effectiveQty > 0 ? originalPerUnit * effectiveQty : 0)
                 : originalPerUnit)
             : undefined;
         const unitLabelKey = item?.unitLabel || getQuantityMeta(item).unitLabel;
-        const unitLabel = partyManaged || quantityMode ? t(unitLabelKey || "service.quantity.unit", "person") : "";
-        const displayOriginal = original !== undefined && (!(partyManaged || quantityMode) || effectiveQty > 0)
+        const unitLabel = managedComputed || quantityMode ? t(unitLabelKey || "service.quantity.unit", "person") : "";
+        const displayOriginal = original !== undefined && (!(managedComputed || quantityMode) || effectiveQty > 0)
             ? formatPrice(original, selectedCurrency)
             : "-";
-        const displayAmount = (partyManaged || quantityMode) && effectiveQty <= 0
+        const displayAmount = (managedComputed || quantityMode) && effectiveQty <= 0
             ? "-"
             : formatPrice(amount, selectedCurrency);
-        const unitRateText = (partyManaged || quantityMode) && amountPerUnit > 0
+        const unitRateText = (managedComputed || quantityMode) && amountPerUnit > 0
             ? `${formatPrice(amountPerUnit, selectedCurrency)}/${unitLabel}`
             : "";
-        const managedStatusText = t("service.managedByPartyKyc", "Selected in Party KYC");
+        const managedStatusText = partyManaged
+            ? t("service.managedByPartyKyc", "Selected in Party KYC")
+            : t("service.managedByPartySetup", "Calculated from party setup");
         const managedRateText = unitRateText
             ? (effectiveQty > 0 ? `${effectiveQty} x ${unitRateText}` : unitRateText)
             : "";
@@ -581,7 +586,7 @@ export function ServiceSelectionWidget({
                     {displayAmount}
                 </TableCell>
                 <TableCell className="text-center w-[180px]">
-                    {partyManaged ? (
+                    {managedComputed ? (
                         <div className="flex flex-col items-end gap-1 text-right">
                             <span className="text-[11px] text-muted-foreground whitespace-nowrap">
                                 {managedStatusText}
@@ -658,13 +663,17 @@ export function ServiceSelectionWidget({
     // Compute subtotals
     const govSubtotal = govItems.reduce((s: number, it: any) => s + Number(it.amount || 0), 0);
     const mandatorySvcSubtotal = mandatorySvcItems.reduce((s: number, it: any) => {
-        const qty = getNormalizedQuantity(it, serviceQuantities[it.id], true);
+        const qty = isManagedComputedItem(it)
+            ? Math.max(0, Math.floor(toNumber(it?.quantity)))
+            : getNormalizedQuantity(it, serviceQuantities[it.id], true);
         return s + (Number(it.amount || 0) * Number(qty || 0));
     }, 0);
     const optionalSvcSubtotal = optionalSvcItems
         .filter((f: any) => selectedIds.includes(f.id))
         .reduce((s: number, it: any) => {
-            const qty = getNormalizedQuantity(it, serviceQuantities[it.id], true);
+            const qty = isManagedComputedItem(it)
+                ? Math.max(0, Math.floor(toNumber(it?.quantity)))
+                : getNormalizedQuantity(it, serviceQuantities[it.id], true);
             return s + (Number(it.amount || 0) * Number(qty || 0));
         }, 0);
 

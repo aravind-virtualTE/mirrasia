@@ -10,6 +10,9 @@ export type McapFeeItem = {
   id?: string;
   label: string;
   amount: number;
+  original?: number;
+  info?: string;
+  quantity?: number;
   kind?: "government" | "service" | "optional" | "surcharge" | "other";
 };
 
