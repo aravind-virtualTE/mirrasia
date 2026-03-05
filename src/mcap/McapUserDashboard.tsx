@@ -5,6 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   Card,
   CardContent,
   CardDescription,
@@ -28,11 +34,17 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, ChevronRight, Loader2, Pencil, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, HelpCircle, Loader2, Pencil, Search } from "lucide-react";
 import { getMcapCompanies } from "@/services/dataFetch";
 import { MCAP_CONFIG_MAP } from "@/mcap/configs/registry";
 import api from "@/services/fetch";
 import { formatDateTime } from "@/pages/dashboard/Admin/utils";
+import ProjectsCard from "@/pages/dashboard/Admin/ProjectsCard";
+import AdminTodoCard from "@/pages/dashboard/Admin/AdminTodoCard";
+import EnquiryCard from "@/pages/dashboard/Admin/Enquiry/EnquiryCard";
+import ReqForQuoteCard from "@/pages/dashboard/Admin/ReqForQuote/ReqForQuoteCard";
+import ServiceCarousel from "@/pages/dashboard/ServiceCarousel";
+import { parseStoredUser } from "@/lib/kyc";
 
 interface TokenData {
   userId: string;
@@ -148,6 +160,145 @@ const resolveFilledBy = (entry: any, emptyLabel: string) => {
   return owner?.fullName || owner?.email || entry?.applicantName || entry?.applicantEmail || emptyLabel;
 };
 
+type UserTask = {
+  label: string;
+  checked?: boolean;
+  _id?: string;
+};
+
+const AdminOverviewCardsBlock = () => {
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <ProjectsCard />
+      <AdminTodoCard />
+      <EnquiryCard />
+      <ReqForQuoteCard />
+    </div>
+  );
+};
+
+const UserOutstandingTasksBlock = ({ tasks }: { tasks: UserTask[] }) => {
+  return (
+    <Accordion type="multiple" className="w-full" defaultValue={["outstanding-tasks"]}>
+      <AccordionItem value="outstanding-tasks" className="rounded-lg border">
+        <AccordionTrigger className="px-4 py-3 hover:no-underline">
+          <div className="flex w-full items-center justify-between">
+            <h3 className="text-left font-semibold text-primary">Outstanding Tasks</h3>
+            <span className="mr-4 text-sm text-muted-foreground">
+              {tasks.length > 0 ? `${tasks.length} task${tasks.length > 1 ? "s" : ""}` : "No tasks"}
+            </span>
+          </div>
+        </AccordionTrigger>
+        <AccordionContent className="px-4 pb-4">
+          {tasks.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50px]">S.No</TableHead>
+                  <TableHead>Task Name</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tasks.map((task, index) => (
+                  <TableRow key={task._id || `${task.label}-${index}`}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{task.label}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <p className="py-4 text-muted-foreground">No outstanding tasks</p>
+          )}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+};
+
+const UserFeaturedServicesBlock = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="mb-2">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-semibold">{t("dashboard.fservices")}:</h2>
+      </div>
+      <ServiceCarousel />
+    </div>
+  );
+};
+
+const UserSupportCardBlock = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex items-center space-x-4">
+            <HelpCircle className="h-8 w-8" />
+            <div>
+              <h3 className="text-lg font-semibold">{t("dashboard.needHelp")}</h3>
+              <p className="text-sm text-muted-foreground">{t("dashboard.expIssue")}</p>
+            </div>
+          </div>
+          <div className="mt-4 grid gap-2 text-sm">
+            <p>
+              <strong>{t("ApplicantInfoForm.email")}:</strong> cs@mirrasia.com
+            </p>
+            <p>
+              <strong>{t("ApplicantInfoForm.phoneNum")}:</strong> (HK) +852-2187-2428 | (KR) +82-2-543-6187
+            </p>
+            <p>
+              <strong>{t("dashboard.kakaoT")}:</strong> mirrasia
+            </p>
+            <p>
+              <strong>{t("dashboard.wechat")}:</strong> mirrasia_hk
+            </p>
+            <p>
+              <strong>{t("dashboard.kakaChannel")}:</strong>{" "}
+              <a
+                href="https://pf.kakao.com/_KxmnZT"
+                className="text-primary underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("dashboard.clickHere")}
+              </a>
+            </p>
+            <p>
+              <strong>{t("dashboard.Website")}:</strong>{" "}
+              <a
+                href="https://www.mirrasia.com"
+                className="text-primary underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                www.mirrasia.com
+              </a>
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+const RoleTopBlock = ({ isAdminView, role, tasks }: { isAdminView: boolean; role: string; tasks: UserTask[] }) => {
+  if (isAdminView) return <AdminOverviewCardsBlock />;
+  if (role === "user") return <UserOutstandingTasksBlock tasks={tasks} />;
+  return null;
+};
+
+const RoleBottomBlock = ({ role }: { role: string }) => {
+  if (role !== "user") return null;
+  return (
+    <>
+      <UserFeaturedServicesBlock />
+      <UserSupportCardBlock />
+    </>
+  );
+};
+
 export default function McapUserDashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -178,6 +329,7 @@ export default function McapUserDashboard() {
     }
   }, [token]);
   const isAdminView = isAdminRole(role);
+  const tasks = parseStoredUser()?.tasks ?? [];
   const canOpenCompanyDetail = true;
 
   useEffect(() => {
@@ -373,6 +525,8 @@ export default function McapUserDashboard() {
 
   return (
     <div className="max-width mx-auto p-3 md:p-4 space-y-4">
+      <RoleTopBlock isAdminView={isAdminView} role={role} tasks={tasks} />
+
       <Card className="border shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle>{t("mcap.dashboard.title", "Incorporation Applications")}</CardTitle>
@@ -799,6 +953,8 @@ export default function McapUserDashboard() {
           )}
         </CardContent>
       </Card>
+
+      <RoleBottomBlock role={role} />
     </div>
   );
 }

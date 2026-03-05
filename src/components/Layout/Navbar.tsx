@@ -64,13 +64,14 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
         setSG('reset')
         setUSForm('reset')
         setCR("reset")
-        if (['admin', 'master'].includes(decodedToken.role)) {
-            navigate('/admin-dashboard');
-        }
-        else {
-            localStorage.removeItem('companyRecordId');
-            navigate('/dashboard');
-        }
+        navigate("/incorporation-dashboard")
+        // if (['admin', 'master'].includes(decodedToken.role)) {
+        //     navigate('/admin-dashboard');
+        // }
+        // else {
+        //     localStorage.removeItem('companyRecordId');
+        //     navigate('/dashboard');
+        // }
     }
 
     const logout = async () => {
