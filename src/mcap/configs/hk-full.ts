@@ -10,6 +10,7 @@ import {
   bookKeepingCycleOptions,
 } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { businessNatureList } from "@/pages/Company/HongKong/constants";
+import { HK_DCP_HEADCOUNT_FEE_ID, HK_DCP_HEADCOUNT_PRICING_ENABLED } from "./hkPricingFlags";
 const yesNoOther = [
   { label: "newHk.steps.compliance.options.yes", value: "yes" },
   { label: "newHk.steps.compliance.options.no", value: "no" },
@@ -112,6 +113,10 @@ const HK_FEES = {
   ],
 };
 
+const HK_RUNTIME_SERVICE_FEES = HK_FEES.service.filter(
+  (fee) => HK_DCP_HEADCOUNT_PRICING_ENABLED || fee.id !== HK_DCP_HEADCOUNT_FEE_ID
+);
+
 const computeKycExtras = (parties: any[]) => {
   const list = Array.isArray(parties) ? parties : [];
   // Support both old "isCorp" and new "type: entity" formats
@@ -162,7 +167,12 @@ const getCorrespondenceServiceCounts = (parties: any[]) => {
 
     const roles = getPartyRoleSet(party);
     if (roles.has("dcp")) {
-      dcpCount += 1;
+      if (HK_DCP_HEADCOUNT_PRICING_ENABLED) {
+        dcpCount += 1;
+      } else {
+        // When DCP-specific pricing is disabled, DCP falls back to the standard correspondence rate.
+        corrAddrCount += 1;
+      }
       return;
     }
 
@@ -199,9 +209,9 @@ const computeHkFees = (data: any) => {
         info: f.info,
         kind: "government" as const,
       })),
-    ...HK_FEES.service.flatMap((f) => {
+    ...HK_RUNTIME_SERVICE_FEES.flatMap((f) => {
       const quantity = f.managedByPartyKyc
-        ? (f.id === "dcp_headcount" ? dcpCount : corrAddrCount)
+        ? (f.id === HK_DCP_HEADCOUNT_FEE_ID ? dcpCount : corrAddrCount)
         : (f.mandatory || selectedIds.has(f.id) ? 1 : 0);
 
       if (quantity <= 0) return [];
@@ -281,7 +291,7 @@ export const HK_FULL_CONFIG: McapConfig = {
   entityMeta: {
     fees: {
       government: HK_FEES.government,
-      service: HK_FEES.service,
+      service: HK_RUNTIME_SERVICE_FEES,
     },
     enableKycExtras: true,
     cardFeePctByCountry: {
@@ -494,7 +504,7 @@ export const HK_FULL_CONFIG: McapConfig = {
       supportedCurrencies: ["HKD", "USD"],
       computeFees: (data: any) => computeHkFees(data),
       serviceItems: [
-        ...HK_FEES.service.map((f) => ({
+        ...HK_RUNTIME_SERVICE_FEES.map((f) => ({
           id: f.id,
           label: f.label,
           amount: f.amount,

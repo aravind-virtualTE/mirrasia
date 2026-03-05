@@ -59,9 +59,8 @@ const normalizePartyType = (partyType?: string): "person" | "entity" | undefined
 };
 
 // Toggle corporate-party support by country.
-// Set HK to true in the future if/when entity KYC is introduced.
 export const PARTY_ENTITY_TYPE_ENABLED_BY_COUNTRY: Record<string, boolean> = {
-  HK: false,
+  HK: true,
 };
 
 export const isEntityPartyTypeEnabledForCountry = (countryCode?: string) => {

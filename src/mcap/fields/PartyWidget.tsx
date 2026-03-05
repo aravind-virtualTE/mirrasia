@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import api, { API_URL } from "@/services/fetch";
 import { useTranslation } from "react-i18next";
 import type { PartyFieldDef } from "../configs/types";
+import { HK_DCP_HEADCOUNT_PRICING_ENABLED } from "../configs/hkPricingFlags";
 import { isEntityPartyTypeEnabledForCountry } from "../party-kyc/partyKycRegistry";
 
 // This widget manages a list of parties (Shareholders/Directors)
@@ -311,7 +312,8 @@ export const PartyWidget = ({
                     const showHkCorrespondenceService = normalizedCountryCode === "HK" && partyType === "person";
                     const correspondenceEligible = isHkCorrespondenceEligible(partyRoles);
                     const correspondenceSelected = isCorrespondenceServiceSelected(party);
-                    const correspondenceHint = usesDcpCorrespondenceRate(partyRoles)
+                    const dcpPricingEnabled = normalizedCountryCode === "HK" && HK_DCP_HEADCOUNT_PRICING_ENABLED;
+                    const correspondenceHint = usesDcpCorrespondenceRate(partyRoles) && dcpPricingEnabled
                         ? t(
                             "hk_shldr.useCorrespondenceAddressServiceHintDcp",
                             "Optional service. If selected, USD 260/year will be added automatically to service selection and invoice."
@@ -324,224 +326,224 @@ export const PartyWidget = ({
                     return (
                         <Card key={party.id || idx}>
                             <CardContent className="pt-6">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="flex items-center gap-2">
-                                    <div className={`p-2 rounded-full ${partyType === 'person' ? 'bg-blue-100' : 'bg-purple-100'}`}>
-                                        {partyType === 'person' ? <User className="w-4 h-4 text-blue-600" /> : <Building2 className="w-4 h-4 text-purple-600" />}
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center gap-2">
+                                        <div className={`p-2 rounded-full ${partyType === 'person' ? 'bg-blue-100' : 'bg-purple-100'}`}>
+                                            {partyType === 'person' ? <User className="w-4 h-4 text-blue-600" /> : <Building2 className="w-4 h-4 text-purple-600" />}
+                                        </div>
+                                        <div className="space-y-1">
+                                            <Label className="text-xs text-muted-foreground">
+                                                {t("newHk.parties.fields.isCorp.label", "Is this shareholder a corporate entity?")}
+                                            </Label>
+                                            <Select
+                                                value={partyType}
+                                                onValueChange={(v) => handlePartyTypeChange(idx, v as "person" | "entity")}
+                                            >
+                                                <SelectTrigger className="w-[120px] h-8">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="person">{t("newHk.parties.fields.isCorp.options.no", "Individual")}</SelectItem>
+                                                    <SelectItem value="entity">{t("newHk.parties.fields.isCorp.options.yes", "Corporate")}</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
                                     </div>
-                                    <div className="space-y-1">
-                                        <Label className="text-xs text-muted-foreground">
-                                            {t("newHk.parties.fields.isCorp.label", "Is this shareholder a corporate entity?")}
-                                        </Label>
-                                        <Select
-                                            value={partyType}
-                                            onValueChange={(v) => handlePartyTypeChange(idx, v as "person" | "entity")}
-                                        >
-                                            <SelectTrigger className="w-[120px] h-8">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="person">{t("newHk.parties.fields.isCorp.options.no", "Individual")}</SelectItem>
-                                                 <SelectItem value="entity">{t("newHk.parties.fields.isCorp.options.yes", "Corporate")}</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                                    <Button variant="ghost" size="sm" onClick={() => removeParty(idx)} className="text-red-500">
+                                        <Trash2 className="w-4 h-4" />
+                                    </Button>
                                 </div>
-                                <Button variant="ghost" size="sm" onClick={() => removeParty(idx)} className="text-red-500">
-                                    <Trash2 className="w-4 h-4" />
-                                </Button>
-                            </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>{t("newHk.parties.fields.name.label", "Full Name / Company Name")}</Label>
-                                    <Input
-                                        value={party.name}
-                                        onChange={(e) => updateParty(idx, "name", e.target.value)}
-                                        placeholder={t("newHk.parties.fields.name.example", "Legal Name")}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>{t("newHk.parties.fields.email.label", "Email Address")}</Label>
-                                    <div className="flex gap-2">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>{t("newHk.parties.fields.name.label", "Full Name / Company Name")}</Label>
                                         <Input
-                                            value={party.email}
-                                            onChange={(e) => updateParty(idx, "email", e.target.value)}
-                                            placeholder={t("newHk.parties.fields.email.label", "Email for contact")}
+                                            value={party.name}
+                                            onChange={(e) => updateParty(idx, "name", e.target.value)}
+                                            placeholder={t("newHk.parties.fields.name.example", "Legal Name")}
                                         />
-                                        <Button
-                                            size="sm"
-                                            variant={party.invited ? "secondary" : "default"}
-                                            onClick={() => inviteParty(idx)}
-                                        >
-                                            {party.invited ? <CheckCircle2 className="w-4 h-4 mr-1" /> : <Send className="w-4 h-4 mr-1" />}
-                                            {party.invited
-                                                ? t("newHk.parties.buttons.invite", "Sent")
-                                                : t("newHk.parties.buttons.invite", "Invite")}
-                                        </Button>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>{t("newHk.parties.fields.email.label", "Email Address")}</Label>
+                                        <div className="flex gap-2">
+                                            <Input
+                                                value={party.email}
+                                                onChange={(e) => updateParty(idx, "email", e.target.value)}
+                                                placeholder={t("newHk.parties.fields.email.label", "Email for contact")}
+                                            />
+                                            <Button
+                                                size="sm"
+                                                variant={party.invited ? "secondary" : "default"}
+                                                onClick={() => inviteParty(idx)}
+                                            >
+                                                {party.invited ? <CheckCircle2 className="w-4 h-4 mr-1" /> : <Send className="w-4 h-4 mr-1" />}
+                                                {party.invited
+                                                    ? t("newHk.parties.buttons.invite", "Sent")
+                                                    : t("newHk.parties.buttons.invite", "Invite")}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>{t("newHk.parties.fields.phone.label", "Phone")}</Label>
+                                        <Input
+                                            value={party.phone || ""}
+                                            onChange={(e) => updateParty(idx, "phone", e.target.value)}
+                                            placeholder={t("newHk.parties.fields.phone.label", "Phone number")}
+                                        />
                                     </div>
                                 </div>
+
+                                <Separator className="my-4" />
+
                                 <div className="space-y-2">
-                                    <Label>{t("newHk.parties.fields.phone.label", "Phone")}</Label>
-                                    <Input
-                                        value={party.phone || ""}
-                                        onChange={(e) => updateParty(idx, "phone", e.target.value)}
-                                        placeholder={t("newHk.parties.fields.phone.label", "Phone number")}
-                                    />
+                                    <Label>{t("newHk.parties.fields.roleSelectionPrompt", "Select the options that the member will be")}</Label>
+                                    <div className="flex gap-4">
+                                        {["director", "shareholder", "dcp"].map(role => (
+                                            <label key={role} className="flex items-center gap-2 border p-2 rounded cursor-pointer hover:bg-muted">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={(party.roles || []).includes(role)}
+                                                    onChange={() => toggleRole(idx, role)}
+                                                    className="rounded border-gray-300"
+                                                />
+                                                <span className="capitalize text-sm">{t(`newHk.parties.roles.${role}`, role)}</span>
+                                            </label>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
 
-                            <Separator className="my-4" />
+                                {(party.roles || []).includes("shareholder") && (
+                                    <div className="mt-4 space-y-2">
+                                        {normalizedCountryCode == "EE" ? <Label>{t("newHk.parties.fields.shares.label", "Unit of capital")}</Label> : <Label>{t("mcap.cr.company.fields.shareCount.label", "Number of shares")}</Label>}
+                                        <Input
+                                            type="number"
+                                            value={party.shares}
+                                            onChange={(e) => updateParty(idx, "shares", Number(e.target.value))}
+                                            className="w-48"
+                                        />
+                                    </div>
+                                )}
 
-                            <div className="space-y-2">
-                                <Label>{t("newHk.parties.fields.roleSelectionPrompt", "Select the options that the member will be")}</Label>
-                                <div className="flex gap-4">
-                                    {["director", "shareholder", "dcp"].map(role => (
-                                        <label key={role} className="flex items-center gap-2 border p-2 rounded cursor-pointer hover:bg-muted">
-                                            <input
-                                                type="checkbox"
-                                                checked={(party.roles || []).includes(role)}
-                                                onChange={() => toggleRole(idx, role)}
-                                                className="rounded border-gray-300"
-                                            />
-                                            <span className="capitalize text-sm">{t(`newHk.parties.roles.${role}`, role)}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {(party.roles || []).includes("shareholder") && (
-                                <div className="mt-4 space-y-2">
-                                    {normalizedCountryCode == "EE" ?  <Label>{t("newHk.parties.fields.shares.label", "Unit of capital")}</Label>: <Label>{t("mcap.cr.company.fields.shareCount.label", "Number of shares")}</Label>}
-                                    <Input
-                                        type="number"
-                                        value={party.shares}
-                                        onChange={(e) => updateParty(idx, "shares", Number(e.target.value))}
-                                        className="w-48"
-                                    />
-                                </div>
-                            )}
-
-                            {showHkCorrespondenceService && (
-                                <div className="mt-4 rounded-lg border border-dashed bg-muted/20 p-4 space-y-3">
-                                    <div className="space-y-1">
-                                        <Label className="text-sm font-semibold">
-                                            {t("hk_shldr.useCorrespondenceAddressService", "Use correspondence address service")}
-                                        </Label>
-                                        <p className="text-xs text-muted-foreground">
-                                            {correspondenceHint}
-                                        </p>
-                                        {!correspondenceEligible && (
+                                {showHkCorrespondenceService && (
+                                    <div className="mt-4 rounded-lg border border-dashed bg-muted/20 p-4 space-y-3">
+                                        <div className="space-y-1">
+                                            <Label className="text-sm font-semibold">
+                                                {t("hk_shldr.useCorrespondenceAddressService", "Use correspondence address service")}
+                                            </Label>
                                             <p className="text-xs text-muted-foreground">
-                                                {t(
-                                                    "newHk.parties.fields.useCorrespondenceAddressService.availableWhenEligible",
-                                                    "Available when this party is marked as Shareholder or DCP."
-                                                )}
+                                                {correspondenceHint}
                                             </p>
-                                        )}
+                                            {!correspondenceEligible && (
+                                                <p className="text-xs text-muted-foreground">
+                                                    {t(
+                                                        "newHk.parties.fields.useCorrespondenceAddressService.availableWhenEligible",
+                                                        "Available when this party is marked as Shareholder or DCP."
+                                                    )}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-wrap gap-4">
+                                            <label className="flex items-center gap-2 text-sm">
+                                                <input
+                                                    type="radio"
+                                                    name={`${party.id || idx}-useCorrespondenceAddressService`}
+                                                    checked={!correspondenceSelected}
+                                                    disabled={!correspondenceEligible}
+                                                    onChange={() => updateCorrespondenceServiceSelection(idx, false)}
+                                                />
+                                                <span>{t("common.no", "No")}</span>
+                                            </label>
+                                            <label className="flex items-center gap-2 text-sm">
+                                                <input
+                                                    type="radio"
+                                                    name={`${party.id || idx}-useCorrespondenceAddressService`}
+                                                    checked={correspondenceSelected}
+                                                    disabled={!correspondenceEligible}
+                                                    onChange={() => updateCorrespondenceServiceSelection(idx, true)}
+                                                />
+                                                <span>{t("common.yes", "Yes")}</span>
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div className="flex flex-wrap gap-4">
-                                        <label className="flex items-center gap-2 text-sm">
-                                            <input
-                                                type="radio"
-                                                name={`${party.id || idx}-useCorrespondenceAddressService`}
-                                                checked={!correspondenceSelected}
-                                                disabled={!correspondenceEligible}
-                                                onChange={() => updateCorrespondenceServiceSelection(idx, false)}
-                                            />
-                                            <span>{t("common.no", "No")}</span>
-                                        </label>
-                                        <label className="flex items-center gap-2 text-sm">
-                                            <input
-                                                type="radio"
-                                                name={`${party.id || idx}-useCorrespondenceAddressService`}
-                                                checked={correspondenceSelected}
-                                                disabled={!correspondenceEligible}
-                                                onChange={() => updateCorrespondenceServiceSelection(idx, true)}
-                                            />
-                                            <span>{t("common.yes", "Yes")}</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            )}
+                                )}
 
-                            {partyFields && partyFields.length > 0 && (
-                                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {partyFields
-                                        .filter((field) => shouldRenderField(party, field))
-                                        .map((field) => {
-                                            const value = getPartyFieldValue(party, field);
-                                            if (field.type === "select") {
-                                                return (
-                                                    <div key={field.key} className="space-y-2">
-                                                        <Label>{t(field.label, field.label)}</Label>
-                                                        <Select
-                                                            value={String(value ?? "")}
-                                                            onValueChange={(v) => updatePartyField(idx, field, v)}
-                                                        >
-                                                            <SelectTrigger className="h-9">
-                                                                <SelectValue />
-                                                            </SelectTrigger>
-                                                            <SelectContent>
-                                                                {(field.options || []).map((opt) => (
-                                                                    <SelectItem key={opt.value} value={opt.value}>
-                                                                        {t(opt.label, opt.label)}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </div>
-                                                );
-                                            }
-
-                                            if (field.type === "radio-group") {
-                                                return (
-                                                    <div key={field.key} className="space-y-2 md:col-span-2">
-                                                        <Label>{t(field.label, field.label)}</Label>
-                                                        <div className="flex gap-4">
-                                                            {(field.options || []).map((opt) => (
-                                                                <label key={opt.value} className="flex items-center gap-2">
-                                                                    <input
-                                                                        type="radio"
-                                                                        name={`${party.id || idx}-${field.key}`}
-                                                                        checked={String(value ?? "") === opt.value}
-                                                                        onChange={() => updatePartyField(idx, field, opt.value)}
-                                                                    />
-                                                                    <span className="text-sm">{t(opt.label, opt.label)}</span>
-                                                                </label>
-                                                            ))}
+                                {partyFields && partyFields.length > 0 && (
+                                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {partyFields
+                                            .filter((field) => shouldRenderField(party, field))
+                                            .map((field) => {
+                                                const value = getPartyFieldValue(party, field);
+                                                if (field.type === "select") {
+                                                    return (
+                                                        <div key={field.key} className="space-y-2">
+                                                            <Label>{t(field.label, field.label)}</Label>
+                                                            <Select
+                                                                value={String(value ?? "")}
+                                                                onValueChange={(v) => updatePartyField(idx, field, v)}
+                                                            >
+                                                                <SelectTrigger className="h-9">
+                                                                    <SelectValue />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    {(field.options || []).map((opt) => (
+                                                                        <SelectItem key={opt.value} value={opt.value}>
+                                                                            {t(opt.label, opt.label)}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
                                                         </div>
-                                                    </div>
-                                                );
-                                            }
+                                                    );
+                                                }
 
-                                            if (field.type === "checkbox") {
+                                                if (field.type === "radio-group") {
+                                                    return (
+                                                        <div key={field.key} className="space-y-2 md:col-span-2">
+                                                            <Label>{t(field.label, field.label)}</Label>
+                                                            <div className="flex gap-4">
+                                                                {(field.options || []).map((opt) => (
+                                                                    <label key={opt.value} className="flex items-center gap-2">
+                                                                        <input
+                                                                            type="radio"
+                                                                            name={`${party.id || idx}-${field.key}`}
+                                                                            checked={String(value ?? "") === opt.value}
+                                                                            onChange={() => updatePartyField(idx, field, opt.value)}
+                                                                        />
+                                                                        <span className="text-sm">{t(opt.label, opt.label)}</span>
+                                                                    </label>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+
+                                                if (field.type === "checkbox") {
+                                                    return (
+                                                        <div key={field.key} className="space-y-2">
+                                                            <Label>{t(field.label, field.label)}</Label>
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={!!value}
+                                                                onChange={(e) => updatePartyField(idx, field, e.target.checked)}
+                                                                className="rounded border-gray-300"
+                                                            />
+                                                        </div>
+                                                    );
+                                                }
+
                                                 return (
                                                     <div key={field.key} className="space-y-2">
                                                         <Label>{t(field.label, field.label)}</Label>
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={!!value}
-                                                            onChange={(e) => updatePartyField(idx, field, e.target.checked)}
-                                                            className="rounded border-gray-300"
+                                                        <Input
+                                                            type={field.type === "number" ? "number" : "text"}
+                                                            value={value ?? ""}
+                                                            onChange={(e) => updatePartyField(idx, field, e.target.value)}
                                                         />
                                                     </div>
                                                 );
-                                            }
-
-                                            return (
-                                                <div key={field.key} className="space-y-2">
-                                                    <Label>{t(field.label, field.label)}</Label>
-                                                    <Input
-                                                        type={field.type === "number" ? "number" : "text"}
-                                                        value={value ?? ""}
-                                                        onChange={(e) => updatePartyField(idx, field, e.target.value)}
-                                                    />
-                                                </div>
-                                            );
-                                        })}
-                                </div>
-                            )}
+                                            })}
+                                    </div>
+                                )}
 
                             </CardContent>
                         </Card>
