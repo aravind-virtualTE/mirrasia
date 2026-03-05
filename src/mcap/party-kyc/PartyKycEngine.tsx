@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { HK_DCP_HEADCOUNT_PRICING_ENABLED } from "../configs/hkPricingFlags";
 import type { PartyField, PartyFormConfig, PartyStep } from "./partyKycTypes";
 import { resolvePartyKycI18nKey } from "./i18nKeys";
 
@@ -405,11 +406,17 @@ export default function PartyKycEngine({
 
     if (config.countryCode === "HK" && field.name === "useCorrespondenceAddressService") {
       const isDcp = normalizedRoles.includes("dcp");
+      const dcpPricingEnabled = HK_DCP_HEADCOUNT_PRICING_ENABLED;
       return isDcp
-        ? t(
-          "hk_shldr.useCorrespondenceAddressServiceHintDcp",
-          "Optional service. If selected, USD 260/year will be added automatically to service selection and invoice."
-        )
+        ? (dcpPricingEnabled
+          ? t(
+            "hk_shldr.useCorrespondenceAddressServiceHintDcp",
+            "Optional service. If selected, USD 260/year will be added automatically to service selection and invoice."
+          )
+          : t(
+             "hk_shldr.useCorrespondenceAddressServiceHintStandard",
+              "Optional service. If selected, USD 65 will be added automatically to service selection and invoice."
+          ))
         : t(
           "hk_shldr.useCorrespondenceAddressServiceHintStandard",
           "Optional service. If selected, USD 65 will be added automatically to service selection and invoice."

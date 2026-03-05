@@ -312,7 +312,7 @@ export const US_FULL_CONFIG: McapConfig = {
     {
       id: "services",
       title: "usa.steps.step5",
-      description: "usa.steps.services.description",
+      // description: "usa.steps.services.description",
       widget: "ServiceSelectionWidget",
       serviceItems: (data: any) => {
         const base = getEntityBasicPrice(data.selectedState || "", data.selectedEntity || "");

@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { convertCurrency, DEFAULT_PRICING_BASE_CURRENCY, getPricingBaseCurrency } from "@/services/exchangeRate";
+import { HK_DCP_HEADCOUNT_FEE_ID, HK_DCP_HEADCOUNT_PRICING_ENABLED } from "../configs/hkPricingFlags";
 import type { McapConfig } from "../configs/types";
 
 interface ServiceSelectionWidgetProps {
@@ -80,6 +81,9 @@ export function ServiceSelectionWidget({
     const selectedCurrency = allowedCurrencies.includes(selectedCurrencyRaw)
         ? selectedCurrencyRaw
         : allowedCurrencies[0];
+    const hideHkDcpHeadcountPricing =
+        String(config?.countryCode || "").toUpperCase() === "HK"
+        && !HK_DCP_HEADCOUNT_PRICING_ENABLED;
     const isLocked = data.paymentStatus === "paid";
 
     // Extract fees from config or passed items
@@ -88,9 +92,12 @@ export function ServiceSelectionWidget({
 
     const govSource = Array.isArray(feesMeta?.government) ? feesMeta.government : [];
     const svcSource = (resolvedItems && resolvedItems.length > 0) ? resolvedItems : (feesMeta?.service || []);
+    const filteredSvcSource = hideHkDcpHeadcountPricing
+        ? (svcSource || []).filter((item: any) => String(item?.id || "") !== HK_DCP_HEADCOUNT_FEE_ID)
+        : svcSource;
 
     const govItems = govSource;
-    const svcItemsMeta = svcSource;
+    const svcItemsMeta = filteredSvcSource;
     const enableKycExtras = !!(config as any)?.entityMeta?.enableKycExtras;
 
     const getCardFeePct = (curr: string) => (String(curr).toUpperCase() === "HKD" ? 0.04 : 0.06);
@@ -164,8 +171,10 @@ export function ServiceSelectionWidget({
 
     // Auto-select mandatory items on mount
     useEffect(() => {
+        const allowedIds = new Set(svcItemsMeta.map((item: any) => String(item.id)));
+        const sanitizedSelectedIds = selectedIds.filter((id) => allowedIds.has(String(id)));
         const mandatoryIds = svcItemsMeta.filter((i: any) => i.mandatory).map((i: any) => i.id);
-        const newIds = [...new Set([...selectedIds, ...mandatoryIds])];
+        const newIds = [...new Set([...sanitizedSelectedIds, ...mandatoryIds])];
         if (newIds.length !== selectedIds.length || !newIds.every(id => selectedIds.includes(id))) {
             handleChange(newIds, selectedCurrency);
         }
@@ -205,10 +214,11 @@ export function ServiceSelectionWidget({
         const computedItems = Array.isArray(data?.computedFees?.items) ? data.computedFees.items : [];
         computedItems.forEach((item: any) => {
             if (!item?.id) return;
+            if (hideHkDcpHeadcountPricing && String(item.id) === HK_DCP_HEADCOUNT_FEE_ID) return;
             map.set(String(item.id), item);
         });
         return map;
-    }, [data?.computedFees?.items]);
+    }, [data?.computedFees?.items, hideHkDcpHeadcountPricing]);
 
     // Compute pricing and propagate as single source of truth (service + invoice + payment).
     const handleChange = async (
