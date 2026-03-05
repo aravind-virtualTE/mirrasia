@@ -156,7 +156,7 @@ export const buildEeServiceItems = (data: Record<string, any>): EeServiceItem[] 
       original: EE_PRICING.contact_person_1y,
       mandatory: true,
       kind: "service",
-      info: "mcap.ee.auto.k045",
+      // info: "mcap.ee.auto.k045",
     });
   }
 
@@ -579,13 +579,13 @@ const buildAccountingFields = (): McapField[] => [
 ];
 
 const buildServiceFields = (): McapField[] => [
-  {
-    type: "info",
-    label: "mcap.ee.auto.k094",
-    content:
-      "mcap.ee.auto.k095",
-    colSpan: 2,
-  },
+  // {
+  //   type: "info",
+  //   label: "mcap.ee.auto.k094",
+  //   content:
+  //     "mcap.ee.auto.k095",
+  //   colSpan: 2,
+  // },
   {
     type: "select",
     name: "contactPersonMode",
@@ -597,10 +597,10 @@ const buildServiceFields = (): McapField[] => [
         label: "mcap.ee.auto.k097",
         value: "mirr_provided",
       },
-      {
-        label: "mcap.ee.auto.k098",
-        value: "dcp_provided",
-      },
+      // {
+      //   label: "mcap.ee.auto.k098",
+      //   value: "dcp_provided",
+      // },
     ],
     colSpan: 2,
   },
