@@ -903,6 +903,25 @@ export const PaymentWidget = ({
                                     </p>
                                 </div>
 
+                                <div className="space-y-2 rounded-lg border border-blue-200 bg-blue-50/40 p-3 text-xs leading-relaxed">
+                                    <p className="font-semibold text-slate-900">
+                                        {t("mcap.payment.bankInstructions.transferTitle", "Bank Transfer or Telegraphic Transfer:")}
+                                    </p>
+                                    <div className="space-y-1 text-slate-700">
+                                        <p>{t("mcap.payment.bankInstructions.bankName", "Beneficiary Bank Name : HSBC")}</p>
+                                        <p>{t("mcap.payment.bankInstructions.accountNo", "Account No. : 817 245681 838")}</p>
+                                        <p>{t("mcap.payment.bankInstructions.beneficiaryName", "Beneficiary Name : MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED")}</p>
+                                        <p>{t("mcap.payment.bankInstructions.bankAddress", "HSBC Address : 1 Queen's Road, Central, Hong Kong")}</p>
+                                        <p>{t("mcap.payment.bankInstructions.bankCode", "Bank Code : 004")}</p>
+                                        <p>{t("mcap.payment.bankInstructions.swiftHkd", "Swift Code : HSBCHKHHHKH (FOR HKD ACCOUNT)")}</p>
+                                        <p>{t("mcap.payment.bankInstructions.swiftForeign", "Swift Code : HSBCHKHHXXX (FOR USD ACCOUNT OR OTHER FOREIGN CURRENCIES)")}</p>
+                                        <p>{t("mcap.payment.bankInstructions.charges", "(Bank Charges : All charges are borne by the remitter)")}</p>
+                                    </div>
+                                    <p className="text-slate-700">
+                                        {t("mcap.payment.bankInstructions.cheque", "Cheque : Payable to \"MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED\".")}
+                                    </p>
+                                </div>
+
                                 <div className="space-y-2">
                                     <Label>{t("mcap.payment.refNumber", "Reference Number (Optional)")}</Label>
                                     <Input
