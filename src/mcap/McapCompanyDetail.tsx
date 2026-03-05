@@ -264,7 +264,6 @@ const McapCompanyDetail: React.FC = () => {
   const isAdmin = user?.role !== "user";
   const isDashboardDetailView = searchParams.get("mode") === "detail";
   const canEdit = isAdmin && !isDashboardDetailView;
-
   const [company, setCompany] = useState<McapCompany | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [emailTo, setEmailTo] = useState("");

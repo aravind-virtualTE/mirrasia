@@ -5090,5 +5090,10 @@
         "k123": "I understand service may be suspended if unlawful activity or intent is identified."
       }
     }
+  },
+  "appUpdate": {
+    "title": "New version available",
+    "description": "Please refresh the page for the latest version.",
+    "refreshNow": "Refresh"
   }
 }
