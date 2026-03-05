@@ -331,6 +331,7 @@ export default function McapUserDashboard() {
   const isAdminView = isAdminRole(role);
   const tasks = parseStoredUser()?.tasks ?? [];
   const canOpenCompanyDetail = true;
+  const companyDetailMode = isAdminView ? "edit" : "detail";
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -732,7 +733,7 @@ export default function McapUserDashboard() {
                   return (
                     <TableRow
                       key={entry?._id}
-                      onClick={canOpenCompanyDetail ? () => navigate(`/incorporation-detail/${entry._id}?mode=detail`) : undefined}
+                      onClick={canOpenCompanyDetail ? () => navigate(`/incorporation-detail/${entry._id}?mode=${companyDetailMode}`) : undefined}
                       className={canOpenCompanyDetail ? "h-11 cursor-pointer hover:bg-muted/40" : "h-11"}
                     >
                       <TableCell className="py-2 font-medium">

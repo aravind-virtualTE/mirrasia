@@ -69,6 +69,7 @@ import ProfessionalLetterGenerator from './components/refLetter/ProfessionalLett
 import QuoteEnquiry from './components/quoteService/quoteService';
 import PricingDashboard from './mcap/pricing/PricingDashboard';
 import MobileUpload from './pages/MobileUpload/MobileUpload';
+import VersionUpdateBanner from './components/system/VersionUpdateBanner';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -98,6 +99,7 @@ const App: React.FC = () => {
           <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
             <TooltipProvider delayDuration={0}>
               <QueryClientProvider client={queryClient}>
+                <VersionUpdateBanner />
                 <Routes>
                   {/* Public routes */}
                   <Route path="/logout" element={<Logout />} />
