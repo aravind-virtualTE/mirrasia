@@ -8,37 +8,35 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
+import { normalizeLanguageCode, setStoredLanguagePreference, type AppLanguage } from '@/lib/language';
 
 const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
-  const languages: {
-    name: string
-    val: string
-  }[] = [
-      { name: "English", val: "en" },
-      { name: "한국어", val: "ko" },
-      { name: "繁體中文", val: "zhTW" }
-    ]
-    // zh-CN - Chinese (Simplified)
-    // zh-TW - Chinese (Traditional)
-    // zh-HK - Chinese (Hong Kong)
-    // zh - Chinese
-  const handleLanguageChange = (lng: string) => {
+
+  const languages: { name: string; val: AppLanguage }[] = [
+    { name: 'English', val: 'en' },
+    { name: 'Korean', val: 'ko' },
+    { name: 'Traditional Chinese', val: 'zhTW' },
+  ];
+
+  const handleLanguageChange = (lng: AppLanguage) => {
+    setStoredLanguagePreference(lng);
     i18n.changeLanguage(lng);
   };
+
+  const activeLanguage = normalizeLanguageCode(i18n.resolvedLanguage || i18n.language) || 'en';
+
   return (
-    <DropdownMenu >
-      <DropdownMenuTrigger asChild >
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="flex items-center space-x-2">
           <Globe className="h-4 w-4" />
-          <span>{i18n.language.toUpperCase()}</span>
+          <span>{activeLanguage.toUpperCase()}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {languages.map((lang) => (
-          <DropdownMenuItem key={lang.name}
-            onClick={() => handleLanguageChange(lang.val)}
-          >
+          <DropdownMenuItem key={lang.val} onClick={() => handleLanguageChange(lang.val)}>
             {lang.name}
           </DropdownMenuItem>
         ))}
@@ -46,4 +44,5 @@ const LanguageSwitcher: React.FC = () => {
     </DropdownMenu>
   );
 };
+
 export default LanguageSwitcher;
