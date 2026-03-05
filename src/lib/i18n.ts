@@ -7,8 +7,7 @@ import ko from '../assets/translations/ko/ko.json';
 import ko1 from '../assets/translations/ko/ko1.json';
 import zhTW from '../assets/translations/zhTW/zh-TW.json';
 import zhTW1 from '../assets/translations/zhTW/zhTW1.json';
-
-
+import { resolveInitialLanguage, SUPPORTED_I18N_LANGUAGES } from './language';
 
 const resources = {
   en: {
@@ -29,8 +28,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'en', // Default language
-    supportedLngs: ['en', 'ko', 'zhTW'],
+    lng: resolveInitialLanguage(),
+    supportedLngs: [...SUPPORTED_I18N_LANGUAGES],
     fallbackLng: 'en',
     ns: ["common", "incorporation",],
     defaultNS: "common",
