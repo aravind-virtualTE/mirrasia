@@ -18,35 +18,32 @@ const APPLICANT_RELATIONSHIP_OPTIONS = [
 ];
 
 const BUSINESS_TYPE_OPTIONS = [
-  { label: "mcap.uk.options.businessType.virtualAsset", value: "virtual_asset" },
-  { label: "mcap.uk.options.businessType.nftRelated", value: "nft_related" },
-  { label: "mcap.uk.options.businessType.vaSoftwareDevelopment", value: "va_software_dev" },
-  { label: "mcap.uk.options.businessType.softwareDevelopment", value: "software_dev" },
-  { label: "mcap.uk.options.businessType.vaInvestment", value: "va_investment" },
-  { label: "mcap.uk.options.businessType.vaP2eGame", value: "va_p2e_game" },
-  { label: "mcap.uk.options.businessType.vaSpeculativeGame", value: "va_speculative_game" },
-  { label: "mcap.uk.options.businessType.vaOtherGame", value: "va_other_game" },
-  { label: "mcap.uk.options.businessType.metaversePlatform", value: "metaverse_platform" },
-  { label: "mcap.uk.options.businessType.forexTrading", value: "fx_trading" },
-  { label: "mcap.uk.options.businessType.financeInvestment", value: "finance_investment" },
-  { label: "mcap.uk.options.businessType.tradingBusiness", value: "trading" },
-  { label: "mcap.uk.options.businessType.distributionBusiness", value: "distribution" },
-  { label: "mcap.uk.options.businessType.consulting", value: "consulting" },
+  { label: "mcap.uk.options.businessType.softwareDevelopmentCryptoBlockchainRelated", value: "software_crypto_blockchain" },
+  { label: "mcap.uk.options.businessType.softwareDevelopmentGeneral", value: "software_general" },
+  { label: "mcap.uk.options.businessType.metaverseWeb3PlatformDevelopment", value: "metaverse_web3_platform" },
+  { label: "mcap.uk.options.businessType.itConsultingManagedServices", value: "it_consulting_managed_services" },
+  { label: "mcap.uk.options.businessType.ecommerceOnlineRetail", value: "ecommerce_online_retail" },
+  { label: "mcap.uk.options.businessType.generalTradingImportExport", value: "general_trading_import_export" },
+  { label: "mcap.uk.options.businessType.wholesaleDistribution", value: "wholesale_distribution" },
+  { label: "mcap.uk.options.businessType.managementProfessionalConsulting", value: "management_professional_consulting" },
   { label: "mcap.uk.options.businessType.manufacturing", value: "manufacturing" },
-  { label: "mcap.uk.options.businessType.ecommerce", value: "ecommerce" },
-  { label: "mcap.uk.options.businessType.purchaseProxy", value: "purchase_proxy" },
-  { label: "mcap.common.options.other", value: "other" },
+  { label: "mcap.uk.options.businessType.cryptoassetServicesExchangeWalletTokenIssuanceIco", value: "cryptoasset_services" },
+  { label: "mcap.uk.options.businessType.cryptoassetInvestmentDefi", value: "cryptoasset_investment_defi" },
+  { label: "mcap.uk.options.businessType.financialServicesBankingLendingWealthManagement", value: "financial_services" },
+  { label: "mcap.uk.options.businessType.foreignExchangeForexCfdTrading", value: "forex_cfd_trading" },
+  { label: "mcap.uk.options.businessType.gamblingBettingPrizeCompetitions", value: "gambling_betting_prize_competitions" },
+  { label: "mcap.common.options.other", value: "other" }
 ];
 
 const ESTABLISHMENT_PURPOSE_OPTIONS = [
   { label: "mcap.uk.options.establishmentPurpose.commonwealthEuropeExpansion", value: "commonwealth_europe_expansion" },
-  { label: "mcap.uk.options.establishmentPurpose.regulatoryDiversification", value: "regulatory_diversification" },
   { label: "mcap.uk.options.establishmentPurpose.advisorOrClientSuggested", value: "advisor_or_client_suggested" },
-  { label: "mcap.uk.options.establishmentPurpose.internationalExpansion", value: "international_expansion" },
-  { label: "mcap.uk.options.establishmentPurpose.assetManagement", value: "asset_management" },
   { label: "mcap.uk.options.establishmentPurpose.holdingManagement", value: "holding_management" },
+  { label: "mcap.uk.options.establishmentPurpose.assetManagement", value: "asset_management" },
   { label: "mcap.uk.options.establishmentPurpose.policyCompetitiveness", value: "policy_competitiveness" },
-  { label: "mcap.common.options.other", value: "other" },
+  { label: "mcap.uk.options.establishmentPurpose.internationalExpansion", value: "international_expansion" },
+  { label: "mcap.uk.options.establishmentPurpose.regulatoryDiversification", value: "regulatory_diversification" },
+   { label: "mcap.common.options.other", value: "other" }
 ];
 
 const QUOTE_ONLY_SERVICE_OPTIONS = [
@@ -127,39 +124,51 @@ const getSelectedServiceIds = (data: any) => {
   return ids;
 };
 
-const UK_CORPORATE_MEMBER_KYC_FEE = 150;
+const UK_ADDITIONAL_KYC_COMPLIANCE_OPTIONS = [
+  {
+    label: "mcap.uk.services.fields.additionalExecutivePairs.options.none",
+    value: "none",
+    amount: 0,
+  },
+  {
+    label: "mcap.uk.services.fields.additionalExecutivePairs.options.individualPack1",
+    value: "individual_pack_1",
+    amount: 100,
+  },
+  {
+    label: "mcap.uk.services.fields.additionalExecutivePairs.options.individualPack2",
+    value: "individual_pack_2",
+    amount: 200,
+  },
+  {
+    label: "mcap.uk.services.fields.additionalExecutivePairs.options.corporateShareholder1",
+    value: "corporate_shareholder_1",
+    amount: 150,
+  },
+  {
+    label: "mcap.uk.services.fields.additionalExecutivePairs.options.corporateShareholder2",
+    value: "corporate_shareholder_2",
+    amount: 300,
+  },
+  {
+    label: "mcap.uk.services.fields.additionalExecutivePairs.options.combinationPack1",
+    value: "combination_pack_1",
+    amount: 250,
+  },
+] as const;
 
-const getPartyRoleSet = (party: any) => {
-  const rootRoles = Array.isArray(party?.roles) ? party.roles : [];
-  const detailRoles = Array.isArray(party?.details?.roles) ? party.details.roles : [];
-  return new Set(
-    [...rootRoles, ...detailRoles]
-      .map((role) => String(role || "").trim().toLowerCase())
-      .filter(Boolean)
-  );
-};
-
-const isCorporateParty = (party: any) => party?.isCorp === true || party?.type === "entity";
-
-const isEligibleUkCorporateMember = (party: any) => {
-  if (!isCorporateParty(party)) return false;
-  const roles = getPartyRoleSet(party);
-  return roles.has("shareholder") || roles.has("director") || roles.has("member");
-};
-
-const getUkCorporateMemberKycCount = (parties: any[]) => {
-  const list = Array.isArray(parties) ? parties : [];
-  return list.filter((party) => isEligibleUkCorporateMember(party)).length;
+const getUkAdditionalKycComplianceOption = (value: any) => {
+  const selected = String(value || "none");
+  return UK_ADDITIONAL_KYC_COMPLIANCE_OPTIONS.find((option) => option.value === selected)
+    || UK_ADDITIONAL_KYC_COMPLIANCE_OPTIONS[0];
 };
 
 const buildUkServiceItems = (data: any) => {
   const mode = getSelectedEntityMode(data);
   const pricing = UK_ENTITY_PRICING[mode];
 
-  const additionalExecutivePairs = toNonNegativeInt(data?.ukAdditionalExecutivePairs);
-  const additionalCorporateLayers = mode === "subsidiary" ? toNonNegativeInt(data?.ukAdditionalCorporateLayers) : 0;
+  const selectedAdditionalKycCompliance = getUkAdditionalKycComplianceOption(data?.ukAdditionalExecutivePairs);
   const additionalDcpContacts = toNonNegativeInt(data?.additionalContactPersons);
-  const corporateMemberKycCount = getUkCorporateMemberKycCount(data?.parties);
 
   const items: Array<{
     id: string;
@@ -198,27 +207,13 @@ const buildUkServiceItems = (data: any) => {
       },
     ];
 
-  if (additionalExecutivePairs > 0) {
-    const amount = additionalExecutivePairs * 100;
+  if (selectedAdditionalKycCompliance.amount > 0) {
     items.push({
-      id: "uk_additional_executive_pairs",
-      label: "mcap.uk.services.additional.executivePacks.label",
-      amount,
-      original: amount,
+      id: "uk_additional_kyc_compliance_option",
+      label: selectedAdditionalKycCompliance.label,
+      amount: selectedAdditionalKycCompliance.amount,
+      original: selectedAdditionalKycCompliance.amount,
       mandatory: true,
-      info: "mcap.uk.services.additional.executivePacks.info",
-    });
-  }
-
-  if (additionalCorporateLayers > 0) {
-    const amount = additionalCorporateLayers * 150;
-    items.push({
-      id: "uk_additional_corporate_layers",
-      label: "mcap.uk.services.additional.corporateLayers.label",
-      amount,
-      original: amount,
-      mandatory: true,
-      info: "mcap.uk.services.additional.corporateLayers.info",
     });
   }
 
@@ -231,20 +226,6 @@ const buildUkServiceItems = (data: any) => {
       original: amount,
       mandatory: true,
       info: "mcap.uk.services.additional.contactPersons.info",
-    });
-  }
-
-  if (corporateMemberKycCount > 0) {
-    items.push({
-      id: "uk_additional_corporate_member_kyc",
-      label: "mcap.uk.services.additional.corporateMemberKyc.label",
-      amount: UK_CORPORATE_MEMBER_KYC_FEE,
-      original: UK_CORPORATE_MEMBER_KYC_FEE,
-      mandatory: true,
-      // info: "mcap.uk.services.additional.corporateMemberKyc.info",
-      quantity: corporateMemberKycCount,
-      managedByPartyData: true,
-      unitLabel: "service.quantity.unit",
     });
   }
 
@@ -286,6 +267,7 @@ const computeUkFees = (data: any) => {
   const paymentCurrency = String(data?.paymentCurrency || data?.currency || "USD").toUpperCase();
   const exchangeRateUsedRaw = Number(data?.computedFees?.exchangeRateUsed || 0);
   const shouldConvertToHkd = paymentCurrency === "HKD" && Number.isFinite(exchangeRateUsedRaw) && exchangeRateUsedRaw > 0;
+  const outputCurrency = shouldConvertToHkd ? "HKD" : "USD";
 
   const selectedItems = shouldConvertToHkd
     ? selectedItemsUsd.map((item: any) => ({
@@ -301,13 +283,13 @@ const computeUkFees = (data: any) => {
     ? Number((totalUsd * exchangeRateUsedRaw).toFixed(2))
     : totalUsd;
 
-  const cardFeePct = paymentCurrency === "HKD" ? 0.04 : 0.06;
+  const cardFeePct = outputCurrency === "HKD" ? 0.04 : 0.06;
   const payMethod = String(data?.payMethod || "").toLowerCase();
   const cardFeeSurcharge = payMethod === "card" ? Number((total * cardFeePct).toFixed(2)) : 0;
   const grandTotal = Number((total + cardFeeSurcharge).toFixed(2));
 
   return {
-    currency: paymentCurrency === "HKD" ? "HKD" : "USD",
+    currency: outputCurrency,
     items: selectedItems,
     government: 0,
     service: total,
@@ -490,14 +472,14 @@ export const UK_FULL_CONFIG: McapConfig = {
           options: YES_NO_DONT_KNOW,
           colSpan: 2,
         },
-        {
-          type: "radio-group",
-          name: "crimeaSevastopolExposure",
-          label: "mcap.uk.compliance.crimeaSevastopolExposure.label",
-          required: true,
-          options: YES_NO_DONT_KNOW,
-          colSpan: 2,
-        },
+        // {
+        //   type: "radio-group",
+        //   name: "crimeaSevastopolExposure",
+        //   label: "mcap.uk.compliance.crimeaSevastopolExposure.label",
+        //   required: true,
+        //   options: YES_NO_DONT_KNOW,
+        //   colSpan: 2,
+        // },
         {
           type: "radio-group",
           name: "oilGasMilitaryExposure",
@@ -519,9 +501,16 @@ export const UK_FULL_CONFIG: McapConfig = {
           required: true,
           defaultValue: "individual",
           options: [
-            { label: "mcap.uk.company.selectedEntity.options.individual", value: "individual" },
-            { label: "mcap.uk.company.selectedEntity.options.subsidiary", value: "subsidiary" },
-            { label: "mcap.uk.company.selectedEntity.options.branch", value: "branch" },
+            {
+              label: "mcap.uk.company.selectedEntity.options.individual",
+              value: "individual",
+              tooltip: "mcap.uk.company.selectedEntity.options.individualInfo",
+            },
+            {
+              label: "mcap.uk.company.selectedEntity.options.subsidiary",
+              value: "subsidiary",
+              tooltip: "mcap.uk.company.selectedEntity.options.subsidiaryInfo",
+            },
           ],
           colSpan: 2,
         },
@@ -756,16 +745,11 @@ export const UK_FULL_CONFIG: McapConfig = {
           type: "select",
           name: "ukAdditionalExecutivePairs",
           label: "mcap.uk.services.fields.additionalExecutivePairs.label",
-          defaultValue: "0",
-          options: ["0", "1", "2", "3", "4", "5"].map((value) => ({ label: value, value })),
-        },
-        {
-          type: "select",
-          name: "ukAdditionalCorporateLayers",
-          label: "mcap.uk.services.fields.additionalCorporateLayers.label",
-          defaultValue: "0",
-          condition: (f) => f.selectedEntity === "subsidiary",
-          options: ["0", "1", "2", "3", "4", "5"].map((value) => ({ label: value, value })),
+          defaultValue: "none",
+          options: UK_ADDITIONAL_KYC_COMPLIANCE_OPTIONS.map((option) => ({
+            label: option.label,
+            value: option.value,
+          })),
         },
         {
           type: "checkbox-group",

@@ -292,7 +292,99 @@
     "signDocs": "Sign Docs",
     "mirrChat": "MirrAsia Chat",
     "quotationrequest": "Quotation Request",
-    "services" : "Services"
+    "services": "Services",
+    "supportTickets": "Support Tickets",
+    "supportQueue": "Support Queue"
+  },
+  "supportTickets": {
+    "common": {
+      "error": "Error",
+      "loading": "Loading...",
+      "saving": "Saving...",
+      "submitting": "Submitting...",
+      "cancel": "Cancel"
+    },
+    "fields": {
+      "ticket": "Ticket",
+      "title": "Title",
+      "description": "Description",
+      "status": "Status",
+      "severity": "Severity",
+      "category": "Category",
+      "assignee": "Assignee",
+      "attachments": "Attachments",
+      "pageUrl": "Page URL",
+      "browser": "Browser",
+      "os": "OS",
+      "device": "Device",
+      "appVersion": "App Version",
+      "updatedAt": "Updated",
+      "resolutionSummary": "Resolution Summary",
+      "fixReference": "Fix Reference"
+    },
+    "create": {
+      "title": "Report an Issue",
+      "titlePlaceholder": "Short summary of the issue",
+      "descriptionPlaceholder": "Explain steps, expected result, and actual result.",
+      "attachmentsHint": "Up to 5 files, max 10MB each. Allowed: png, jpg, webp, pdf, txt, json, zip.",
+      "submit": "Submit Ticket",
+      "successTitle": "Ticket created",
+      "successDescription": "Your issue has been submitted to the support queue.",
+      "errorDescription": "Failed to create ticket."
+    },
+    "list": {
+      "title": "Support Tickets",
+      "newTicket": "Report an Issue",
+      "searchPlaceholder": "Search by id, title, or reporter",
+      "allStatuses": "All statuses",
+      "applyFilters": "Apply",
+      "empty": "No tickets found.",
+      "total": "Total tickets: {{count}}",
+      "pageInfo": "Page {{page}} of {{pages}}",
+      "prev": "Previous",
+      "next": "Next",
+      "errorDescription": "Failed to load tickets."
+    },
+    "detail": {
+      "errorDescription": "Failed to load ticket details.",
+      "notFound": "Ticket not found.",
+      "reportedBy": "Reported by {{name}} ({{email}})",
+      "unassigned": "Unassigned",
+      "noAttachments": "No attachments.",
+      "internalActions": "Internal actions",
+      "updateSuccessTitle": "Ticket updated",
+      "updateSuccessDescription": "Ticket fields were updated successfully.",
+      "updateErrorDescription": "Failed to update ticket.",
+      "saveChanges": "Save Changes"
+    },
+    "comments": {
+      "title": "Comments",
+      "empty": "No comments yet.",
+      "add": "Add Comment",
+      "submit": "Post Comment",
+      "successTitle": "Comment added",
+      "successDescription": "Your comment has been posted.",
+      "errorDescription": "Failed to add comment."
+    },
+    "timeline": {
+      "title": "Timeline",
+      "empty": "No timeline events."
+    },
+    "queue": {
+      "title": "Support Queue",
+      "searchPlaceholder": "Search tickets",
+      "errorDescription": "Failed to load support queue.",
+      "saveSuccessTitle": "Queue item updated",
+      "saveSuccessDescription": "Ticket assignment/status/resolution has been updated.",
+      "saveErrorDescription": "Failed to update queue item.",
+      "forbidden": "You are not allowed to access support queue.",
+      "total": "Total queued tickets: {{count}}",
+      "empty": "No tickets in queue for current filters.",
+      "openDetail": "Open Detail",
+      "save": "Save Queue Update",
+      "allSeverities": "All severities",
+      "allAssignees": "All assignees"
+    }
   },
   "dashboard": {
     "project": "Projects",
@@ -2260,7 +2352,7 @@
           "unsure": "Unsure"
         },
         "questions": {
-          "legalAndEthicalConcern": "Are there any legal or ethical concerns related to the business (e.g., money laundering, gambling, tax evasion, asset concealment, fraud)?",
+          "legalAndEthicalConcern": "Is the proposed UK entity being established for, associated with, or related to any purpose involving money laundering, illegal gambling, tax evasion, asset concealment, fraud, or any other illicit activities?",
           "q_country": "Does the Current company have any current or planned business activity in the following countries/regions: Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus, or Zimbabwe?",
           "sanctionsExposureDeclaration": "Sanctions exposure: Do the company or any connected parties have a presence in, dealings with, or ownership ties to sanctioned persons or entities under UN, EU, UK HMT, HKMA, OFAC (US) or local sanctions law?",
           "crimeaSevastapolPresence": "Any current or planned business in Crimea/Sevastopol Regions?",
@@ -3104,7 +3196,7 @@
     "common": {
       "steps": {
         "applicant": "Applicant Information",
-        "compliance": "Compliance",
+        "compliance": " Compliance & Regulatory Declarations",
         "company": "Company Information",
         "parties": "Parties and Invites",
         "accounting": "Accounting and Taxation",
@@ -3144,7 +3236,7 @@
         "aud": "AUD",
         "hkd": "HKD",
         "usd": "USD",
-        "gbp": "Pound"
+        "gbp": "GBP"
       },
       "fields": {
         "applicantName": "Applicant Name",
@@ -3535,37 +3627,35 @@
       },
       "compliance": {
         "legalAndEthicalConcern": {
-          "label": "Does the purpose of establishing a UK corporation have legal or ethical issues such as money laundering, gambling, tax evasion, asset concealment, illegal business, or fraud?"
+          "label": "Is the proposed UK entity being established for, associated with, or related to any purpose involving money laundering, illegal gambling, tax evasion, asset concealment, fraud, or any other illicit activities?"
         },
         "annualRenewalConsent": {
-          "label": "After incorporation, annual renewal/accounting/tax duties with recurring costs and data obligations will apply. Do you agree?"
+          "label": "Do you acknowledge and agree that following incorporation, the entity will be subject to recurring costs and legal obligations, including annual renewals, accounting, and tax compliance?"
         },
         "sanctionedCountryOperations": {
-          "label": "Will the planned UK corporation/holding/group/related company operate or plan to operate in Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, Zimbabwe, Russia, or regions of Ukraine outside government control?"
+          "label": "Does the planned UK entity (including any parent, subsidiary, or affiliated group companies) operate, or intend to operate, in any of the following jurisdictions? (Iran, North Korea, Russia, Belarus, Syria, Cuba, Myanmar, Afghanistan, Venezuela, regions of Ukraine not under government control including Crimea, Donetsk, and Luhansk, or any other jurisdictions subject to international sanctions)"
         },
         "sanctionedResidenceExposure": {
-          "label": "Are any officials residing in sanctioned countries/regions or countries sanctioned by UN, EU, UKHMT, HKMA, or OFAC?"
+          "label": "Are any of the entity's officers, directors, or significant controllers residing in countries or regions sanctioned by the UN, EU, UKHMT, HKMA, or OFAC?"
         },
         "sanctionedOwnershipOrControl": {
-          "label": "Will the planned UK entity be owned/controlled by, or act for, sanctioned individuals, groups, organizations, or governments?"
-        },
-        "crimeaSevastopolExposure": {
-          "label": "Are officials or related companies currently operating, or planning to operate, in Crimea or Sevastopol?"
+          "label": "Will the planned UK entity be owned, controlled by, or act on behalf of any sanctioned individuals, groups, organizations, or government bodies?"
         },
         "oilGasMilitaryExposure": {
-          "label": "Are the planned UK entity or related companies currently operating, or planning to operate, in oil/gas/energy/military/defense sectors?"
+          "label": "Is the planned UK entity or any affiliated company currently operating, or planning to operate, in the following high-risk sectors? (Oil, Gas, Energy, Military/Defense, Fintech, or Virtual Asset/Crypto-related services)"
         },
         "options": {
-          "considerLegalAdvice": "Consider legal advice"
+          "considerLegalAdvice": "Other / Seek Legal Advice"
         }
       },
       "company": {
         "selectedEntity": {
           "label": "Select UK setup path",
           "options": {
-            "individual": "UK private company",
-            "subsidiary": "UK subsidiary of foreign corporation",
-            "branch": "UK branch office of foreign corporation (temporary pricing follows individual package)"
+            "individual": "UK Limited Company (Individual Ownership)",
+            "individualInfo": "(For entities where all shareholders are natural persons)",
+            "subsidiary": "UK Subsidiary (Corporate Ownership)",
+            "subsidiaryInfo": "(A new UK legal entity owned by an existing foreign corporation)"
           }
         },
         "businessTypes": {
@@ -3593,8 +3683,8 @@
         "registeredOfficeChoice": {
           "label": "UK company registered office address",
           "options": {
-            "useMirrAsiaAddress": "Use Mirr Asia registered address service",
-            "useOwnAddress": "Use separate UK business address (do not use Mirr Asia service)"
+            "useMirrAsiaAddress": "Use the UK registered office address provided by Mirr Asia (Included in the standard package)",
+            "useOwnAddress": "I will provide my own UK registered office address (Subject to compliance review; package fees remain unchanged)"
           }
         },
         "registeredOfficeOwnAddress": {
@@ -3603,32 +3693,29 @@
       },
       "options": {
         "businessType": {
-          "virtualAsset": "Virtual assets related (token issuance/sale/ICO/exchange/wallet)",
-          "nftRelated": "NFT related",
-          "vaSoftwareDevelopment": "Software development related to virtual assets",
-          "softwareDevelopment": "Software development unrelated to virtual assets",
-          "vaInvestment": "Virtual asset based investment business",
-          "vaP2eGame": "Virtual asset based P2E game",
-          "vaSpeculativeGame": "Virtual asset based speculative game",
-          "vaOtherGame": "Virtual asset based game unrelated to P2E/speculation",
-          "metaversePlatform": "Metaverse platform development",
-          "forexTrading": "Foreign exchange trading",
-          "financeInvestment": "Finance/investment/consulting/lending",
-          "tradingBusiness": "Trading business",
-          "distributionBusiness": "Wholesale/retail distribution business",
-          "consulting": "Consulting",
+          "softwareDevelopmentCryptoBlockchainRelated": "Software Development (Crypto/Blockchain related)",
+          "softwareDevelopmentGeneral": "Software Development (General)",
+          "metaverseWeb3PlatformDevelopment": "Metaverse & Web3 Platform Development",
+          "itConsultingManagedServices": "IT Consulting & Managed Services",
+          "ecommerceOnlineRetail": "E-commerce & Online Retail",
+          "generalTradingImportExport": "General Trading (Import / Export)",
+          "wholesaleDistribution": "Wholesale & Distribution",
+          "managementProfessionalConsulting": "Management & Professional Consulting",
           "manufacturing": "Manufacturing",
-          "ecommerce": "Online service business (e-commerce)",
-          "purchaseProxy": "Online direct purchase/shipping proxy/purchase agency"
+          "cryptoassetServicesExchangeWalletTokenIssuanceIco": "Cryptoasset Services (Exchange, Wallet, Token Issuance/ICO)",
+          "cryptoassetInvestmentDefi": "Cryptoasset Investment & DeFi",
+          "financialServicesBankingLendingWealthManagement": "Financial Services (Banking, Lending, Wealth Management)",
+          "foreignExchangeForexCfdTrading": "Foreign Exchange (Forex) & CFD Trading",
+          "gamblingBettingPrizeCompetitions": "Gambling / Betting / Prize Competitions"
         },
         "establishmentPurpose": {
-          "commonwealthEuropeExpansion": "Expansion into Commonwealth or European regions",
-          "regulatoryDiversification": "Business diversification due to relaxed regulations",
-          "advisorOrClientSuggested": "Suggested by legal advisors/investors/clients",
-          "internationalExpansion": "Expansion into multiple overseas countries",
-          "assetManagement": "Asset management through real estate or financial investment",
-          "holdingManagement": "Holding company management of subsidiaries/affiliates",
-          "policyCompetitiveness": "Competitive advantage due to financial policies"
+          "commonwealthEuropeExpansion": "Market Expansion (UK, Europe, or Commonwealth Regions)",
+          "regulatoryDiversification": "Business Diversification",
+          "advisorOrClientSuggested": "Service Provision / Consulting / IT Services",
+          "internationalExpansion": "General Trading / E-commerce Expansion",
+          "assetManagement": "Asset Management (Real estate or financial investment)",
+          "holdingManagement": "Holding Company (Management of subsidiaries or affiliates)",
+          "policyCompetitiveness": "Intellectual Property (IP) Holding & Management"
         },
         "quoteOnlyServices": {
           "emiAccountAdvisory": "EMI account opening application advisory",
@@ -3644,15 +3731,15 @@
       "services": {
         "base": {
           "incorporation": {
-            "label": "UK company incorporation",
+            "label": "UK Company Formation (Ltd)",
             "info": "Base incorporation service fee."
           },
           "kyc": {
-            "label": "KYC and due diligence",
+            "label": "KYC & AML Compliance Review",
             "info": "Base KYC fee based on selected UK setup path."
           },
           "registeredOffice": {
-            "label": "Registered office address service (1 year)",
+            "label": "UK Registered Office Address (1 Year)",
             "info": "Included in the base first-year package."
           }
         },
@@ -3675,21 +3762,29 @@
         },
         "optional": {
           "emiListProvision": {
-            "label": "EMI list provision for service users",
-            "info": "Provided free for clients using our incorporation service."
+            "label": "Complimentary Partner EMI Support",
+            "info": "Free onboarding support for our partnered EMI providers. Note: Successful account opening is not guaranteed and is subject to the sole discretion and compliance policies of the chosen EMI."
           },
           "bankAccountAdvisory": {
-            "label": "Bank account opening advisory",
+            "label": "UK Bank Onboarding Advisory",
             "info": "Application support and advisory service."
           },
           "vatRegistration": {
-            "label": "VAT registration",
+            "label": "UK VAT Registration Support",
             "info": "VAT registration support. UK VAT registration is generally required once annual taxable turnover reaches GBP 90,000."
           }
         },
         "fields": {
           "additionalExecutivePairs": {
-            "label": "Additional executive packs (2 individuals per pack, USD 100 per pack)"
+            "label": "Additional KYC & Compliance Options *",
+            "options": {
+              "none": "None (Standard: Up to 2 Individuals included)",
+              "individualPack1": "+1 Individual Pack (Up to 2 extra persons) - USD 100",
+              "individualPack2": "+2 Individual Packs (Up to 4 extra persons) - USD 200",
+              "corporateShareholder1": "+1 Corporate Shareholder (Legal Entity) - USD 150",
+              "corporateShareholder2": "+2 Corporate Shareholders (Legal Entities) - USD 300",
+              "combinationPack1": "+1 Corporate Entity & +1 Individual Pack - USD 250"
+            }
           },
           "additionalCorporateLayers": {
             "label": "Additional corporate shareholder layers (USD 150 per layer)"
@@ -4662,25 +4757,24 @@
         "k010": "Legal opinion (domestic listing)",
         "k011": "Legal opinion (other country)",
         "k012": "Business consulting",
-        "k013": "Crypto-related",
-        "k014": "IT / Blockchain software",
-        "k015": "Crypto investment",
-        "k016": "Crypto games",
-        "k017": "Forex trading",
-        "k018": "Finance / Investment consulting",
-        "k019": "Trade",
-        "k020": "Wholesale / Retail",
-        "k021": "Consulting",
-        "k022": "Manufacturing",
+        "k013": "IT / Software / Blockchain Dev",
+        "k014": "E-commerce / Retail / Wholesale",
+        "k015": "Trading",
+        "k016": "Management / IT Consulting",
+        "k017": "Manufacturing",
+        "k018": "Crypto Exchange / Wallet",
+        "k019": "Crypto Investment / DeFi",
+        "k020": "Forex / Finance / Investment",
+        "k021": "Crypto Games / Web3",
+        "k022": "Other",
         "k023": "E-commerce",
         "k024": "Online direct purchase",
-        "k025": "Business diversification",
-        "k026": "Advisor or partner suggestion",
-        "k027": "International expansion",
-        "k028": "Asset management",
-        "k029": "Holding company",
-        "k030": "Financial policy advantage",
-        "k031": "Low-tax transaction growth",
+        "k025": "International Business Expansion / Cross-border Trade",
+        "k026": "Service Provision / Consulting / IT Services",
+        "k027": "Holding Company (Corporate Structure)",
+        "k028": "Investment / Wealth Management",
+        "k029": "Project / Joint Venture Vehicle",
+        "k030": "Intellectual Property (IP) Holding",
         "k032": "No capital gains tax",
         "k033": "EMI account opening advisory",
         "k034": "Bank account opening advisory",
@@ -4691,13 +4785,13 @@
         "k039": "Statutory filing fee.",
         "k040": "Estonia Business Address Service (1 year)",
         "k041": "Mandatory annual local business address service.",
-        "k042": "Management and Case Follow-up",
+        "k042": "Professional Management & Case Follow-up",
         "k043": "Establishment advisory and case handling support.",
-        "k044": "Estonian Contact Person Service (1 person / 1 year)",
+        "k044": "Estonian Contact Person Service (1 Year)",
         "k045": "Can be removed if designated contact person arrangement is client-provided.",
-        "k046": "Power of Attorney (POA)",
-        "k047": "EMI List",
-        "k048": "Informational service list.",
+        "k046": "Power of Attorney (POA) Preparation",
+        "k047": "Complimentary Partner EMI Support",
+        "k048": "Assistance is provided exclusively for Mirr Asia’s partnered EMIs. Final approval is at the sole discretion of the provider based on their internal compliance requirements.",
         "k049": "Quote-only service requests are tracked and excluded from invoice totals until priced. Pricing is sourced from EUR quote structure and currently billed via USD/HKD rails.",
         "k050": "Application Notice",
         "k051": "This application must be completed by a director, shareholder, or an authorized representative. To ensure a smooth compliance and filing review, please ensure all details provided are accurate.Important: All fields must be completed in English only.",
@@ -4706,17 +4800,16 @@
         "k054": "Phone Number",
         "k055": "Email",
         "k056": "SNS / Messaging ID",
-        "k057": "Any legal or ethical concerns related to the intended business?",
-        "k058": "Other legal or ethical concern details",
-        "k059": "Do you agree to annual renewal obligations and recurring compliance costs?",
-        "k060": "Can be handled internally",
-        "k061": "Will not proceed if fixed annual costs apply",
-        "k062": "Need advisory before confirming",
-        "k063": "Any business in sanctioned countries or regions?",
-        "k064": "Any involved persons residing in sanctioned countries or regions?",
-        "k065": "Any ownership/control by sanctioned persons or entities?",
-        "k066": "Any current or planned activity in Crimea or Sevastopol?",
-        "k067": "Any current or planned activity in oil, gas, military, or energy sectors?",
+        "k057": "1. Is the proposed Estonian entity being established for, associated with, or related to any purpose involving money laundering, illegal gambling, tax evasion, asset concealment, fraud, or any other illicit activities?",
+        "k058": "Other / Seek Legal Advice",
+        "k059": "2. Do you acknowledge and agree that following incorporation, the entity will be subject to recurring compliance costs and legal obligations, including annual renewals?",
+        "k060": "Can be handled internally.",
+        "k061": "No, I will not proceed if fixed annual costs apply.",
+        "k062": "I require further professional advisory before confirming.",
+        "k063": "Section B: Sanctions & Jurisdictional Risk\n3. Does the planned Estonian entity (including any parent, subsidiary, or affiliated group companies) operate, or intend to operate, in any of the following jurisdictions? (Iran, North Korea, Russia, Belarus, Syria, Cuba, Myanmar, Afghanistan, Venezuela, regions of Ukraine not under government control including Crimea, Donetsk, and Luhansk, or any other jurisdictions subject to international sanctions)",
+        "k064": "4. Are any of the entity's officers, directors, or significant controllers residing in countries or regions sanctioned by the UN, EU, OFAC, or local authorities?",
+        "k065": "5. Will the planned Estonian entity be owned, controlled by, or act on behalf of any sanctioned individuals, groups, organizations, or government bodies?",
+        "k066": "6. Is the planned Estonian entity or any affiliated company currently operating, or planning to operate, in the following high-risk sectors? (Oil, Gas, Energy, Military/Defense, Fintech, or Virtual Asset/Crypto-related services)",
         "k068": "Industry selection",
         "k069": "Other industry details",
         "k070": "Business description",
@@ -4734,13 +4827,16 @@
         "k081": "EUR 25,000",
         "k082": "Total capital (other amount in EUR)",
         "k083": "Executive composition",
-        "k084": "Single responsible executive / DCP-led",
-        "k085": "Multiple individual executives",
-        "k086": "Includes corporate member representation",
+        "k084": "Single Individual (Sole Director & 100% Shareholder)",
+        "k084Info": "(One natural person holds both the management board position and all shares.)",
+        "k085": "Multiple Individuals (Natural Persons Only)",
+        "k085Info": "(Two or more natural persons act as directors and/or shareholders. No corporate entities involved.)",
+        "k086": "Corporate-Linked Structure (Includes Legal Entity Shareholder)",
+        "k086Info": "(One or more shareholders are companies or organizations. Note: Directors must be natural persons.)",
         "k087": "Other executive composition details",
         "k088": "Registered address option",
-        "k089": "Use Mirr Asia Estonia business address service (mandatory package item)",
-        "k090": "Use own address (subject to compliance review, mandatory package item remains)",
+        "k089": "I will use the address in Estonia provided by Mirr Asia (Included in the standard package)",
+        "k090": "I will provide my own registered address in Estonia (Subject to compliance review; Standard package fee will still apply)",
         "k091": "Own registered address details",
         "k092": "Expected annual transaction count",
         "k093": "Need advisory",
@@ -4763,7 +4859,7 @@
         "k110": "Post-filing Support",
         "k111": "Address/contact service setup and follow-up support are coordinated based on selected services.",
         "k112": "Please provide the details of the individual filing this application and their relationship to the proposed Estonian corporation.",
-        "k113": "AML / CDD",
+        "k113": "AML / CDD (Anti-Money Laundering & Customer Due Diligence)",
         "k114": "Business intent, sanctions screening, and annual-renewal consent.",
         "k115": "Business profile and registration details.",
         "k116": "Invite parties and assign a designated contact person.",

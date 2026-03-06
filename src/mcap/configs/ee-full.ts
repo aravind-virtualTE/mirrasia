@@ -54,34 +54,26 @@ const REQUESTED_SERVICE_OPTIONS = [
 ];
 
 const INDUSTRY_OPTIONS = [
-  { label: "mcap.ee.auto.k013", value: "crypto_related" },
-  { label: "mcap.ee.auto.k014", value: "it_blockchain_software" },
-  { label: "mcap.ee.auto.k015", value: "crypto_investment" },
-  { label: "mcap.ee.auto.k016", value: "crypto_games" },
-  { label: "mcap.ee.auto.k017", value: "forex_trading" },
-  { label: "mcap.ee.auto.k018", value: "finance_investment_consulting" },
-  { label: "mcap.ee.auto.k019", value: "trade" },
-  { label: "mcap.ee.auto.k020", value: "wholesale_retail" },
-  { label: "mcap.ee.auto.k021", value: "consulting" },
-  { label: "mcap.ee.auto.k022", value: "manufacturing" },
-  { label: "mcap.ee.auto.k023", value: "ecommerce" },
-  { label: "mcap.ee.auto.k024", value: "online_direct_purchase" },
-  { label: "mcap.common.options.other", value: "other" },
+  { label: "mcap.ee.auto.k013", value: "it_software_blockchain_dev" },
+  { label: "mcap.ee.auto.k014", value: "ecommerce_retail_wholesale" },
+  { label: "mcap.ee.auto.k015", value: "trading" },
+  { label: "mcap.ee.auto.k016", value: "management_it_consulting" },
+  { label: "mcap.ee.auto.k017", value: "manufacturing" },
+  { label: "mcap.ee.auto.k018", value: "crypto_exchange_wallet" },
+  { label: "mcap.ee.auto.k019", value: "crypto_investment_defi" },
+  { label: "mcap.ee.auto.k020", value: "forex_finance_investment" },
+  { label: "mcap.ee.auto.k021", value: "crypto_games_web3" },
+  { label: "mcap.common.fields.otherDetails", value: "other" },
 ];
 
 const PURPOSE_OPTIONS = [
-  { label: "mcap.ee.auto.k025", value: "business_diversification" },
-  { label: "mcap.ee.auto.k026", value: "advisor_or_partner_suggestion" },
-  { label: "mcap.ee.auto.k027", value: "international_expansion" },
-  { label: "mcap.ee.auto.k028", value: "asset_management" },
-  { label: "mcap.ee.auto.k029", value: "holding_company" },
-  {
-    label: "mcap.ee.auto.k030",
-    value: "free_financial_policy_advantage",
-  },
-  { label: "mcap.ee.auto.k031", value: "low_tax_transaction_growth" },
-  { label: "mcap.ee.auto.k032", value: "no_capital_gains_tax" },
-  { label: "mcap.common.options.other", value: "other" },
+  { label: "mcap.ee.auto.k025", value: "international_business_expansion_cross_border_trade" },
+  { label: "mcap.ee.auto.k026", value: "service_provision_consulting_it_services" },
+  { label: "mcap.ee.auto.k027", value: "holding_company_corporate_structure" },
+  { label: "mcap.ee.auto.k028", value: "investment_wealth_management" },
+  { label: "mcap.ee.auto.k029", value: "project_joint_venture_vehicle" },
+  { label: "mcap.ee.auto.k030", value: "intellectual_property_holding" },
+  { label: "mcap.common.fields.otherDetails", value: "other" },
 ];
 
 const QUOTE_ONLY_OPTIONS = [
@@ -330,19 +322,10 @@ const buildComplianceFields = (): McapField[] => [
     label: "mcap.ee.auto.k057",
     required: true,
     options: [
-      { label: "mcap.common.options.yes", value: "yes" },
       { label: "mcap.common.options.no", value: "no" },
-      { label: "mcap.common.options.doNotKnow", value: "unknown" },
-      { label: "mcap.common.options.other", value: "other" },
+      { label: "mcap.common.options.yes", value: "yes" },
+      { label: "mcap.ee.auto.k058", value: "seek_legal_advice" },
     ],
-    colSpan: 2,
-  },
-  {
-    type: "text",
-    name: "legalOrEthicalIssuesConcernOther",
-    label: "mcap.ee.auto.k058",
-    condition: (f) => f.legalOrEthicalIssuesConcern === "other",
-    required: true,
     colSpan: 2,
   },
   {
@@ -352,7 +335,6 @@ const buildComplianceFields = (): McapField[] => [
     required: true,
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
-      { label: "mcap.common.options.no", value: "no" },
       { label: "mcap.ee.auto.k060", value: "self_handle" },
       { label: "mcap.ee.auto.k061", value: "no_if_fixed_cost" },
       { label: "mcap.ee.auto.k062", value: "advice_required" },
@@ -385,16 +367,8 @@ const buildComplianceFields = (): McapField[] => [
   },
   {
     type: "radio-group",
-    name: "crimeaOrSevastopolActivity",
-    label: "mcap.ee.auto.k066",
-    required: true,
-    options: YES_NO_UNKNOWN,
-    colSpan: 2,
-  },
-  {
-    type: "radio-group",
     name: "oilGasMilitaryEnergySectorActivity",
-    label: "mcap.ee.auto.k067",
+    label: "mcap.ee.auto.k066",
     required: true,
     options: YES_NO_UNKNOWN,
     colSpan: 2,
@@ -479,9 +453,9 @@ const buildCompanyFields = (): McapField[] => [
     label: "mcap.ee.auto.k083",
     required: true,
     options: [
-      { label: "mcap.ee.auto.k084", value: "single_dcp_led" },
-      { label: "mcap.ee.auto.k085", value: "multiple_individuals" },
-      { label: "mcap.ee.auto.k086", value: "corporate_member_structure" },
+      { label: "mcap.ee.auto.k084", value: "single_dcp_led", tooltip: "mcap.ee.auto.k084Info" },
+      { label: "mcap.ee.auto.k085", value: "multiple_individuals", tooltip: "mcap.ee.auto.k085Info" },
+      { label: "mcap.ee.auto.k086", value: "corporate_member_structure", tooltip: "mcap.ee.auto.k086Info" },
       { label: "mcap.common.options.other", value: "other" },
     ],
     colSpan: 2,

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 export type McapFieldOption = {
   label: string;
   value: string;
+  tooltip?: string;
 };
 
 export type McapFeeItem = {

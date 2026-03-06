@@ -30,14 +30,20 @@ export const UnifiedSelectField = ({
                 </div>
                 <RadioGroup value={value} onValueChange={onChange} className={isGroup ? "flex flex-col gap-2.5" : ""}>
                     <div className={isGroup ? "space-y-2.5" : "flex items-center space-x-4"}>
-                        {field.options?.map((opt: any) => (
-                            <div key={opt.value} className="flex items-start space-x-2">
-                                <RadioGroupItem value={opt.value} id={`${field.name}-${opt.value}`} className={isGroup ? "mt-0.5" : ""} />
-                                <Label htmlFor={`${field.name}-${opt.value}`} className={isGroup ? "font-normal leading-tight cursor-pointer" : ""}>
-                                    {t(opt.label, opt.label) as string}
-                                </Label>
-                            </div>
-                        ))}
+                        {field.options?.map((opt: any) => {
+                            const optionTooltip = opt.tooltip ? (t(opt.tooltip, opt.tooltip) as string) : "";
+                            return (
+                                <div key={opt.value} className="flex items-start space-x-2">
+                                    <RadioGroupItem value={opt.value} id={`${field.name}-${opt.value}`} className={isGroup ? "mt-0.5" : ""} />
+                                    <div className="flex items-start gap-1.5">
+                                        <Label htmlFor={`${field.name}-${opt.value}`} className={isGroup ? "font-normal leading-tight cursor-pointer" : ""}>
+                                            {t(opt.label, opt.label) as string}
+                                        </Label>
+                                        <FieldTooltip content={optionTooltip} />
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </RadioGroup>
             </div>
