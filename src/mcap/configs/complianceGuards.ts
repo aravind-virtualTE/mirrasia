@@ -146,7 +146,6 @@ const countryRulesByCode: Record<string, ConsultationRule[]> = {
     { field: "businessInSanctionedCountries", allow: ["no"] },
     { field: "personsResidingInSanctionedCountries", allow: ["no"] },
     { field: "ownershipBySanctionedPersons", allow: ["no"] },
-    { field: "crimeaOrSevastopolActivity", allow: ["no"] },
     { field: "oilGasMilitaryEnergySectorActivity", allow: ["no"] },
   ],
 };

@@ -99,6 +99,20 @@ export function ServiceSelectionWidget({
     const govItems = govSource;
     const svcItemsMeta = filteredSvcSource;
     const enableKycExtras = !!(config as any)?.entityMeta?.enableKycExtras;
+    const servicePricingSignature = useMemo(
+        () => JSON.stringify(
+            (svcItemsMeta || []).map((item: any) => ({
+                id: String(item?.id || ""),
+                amount: Number(item?.amount || 0),
+                original: Number(item?.original ?? item?.amount ?? 0),
+                mandatory: !!item?.mandatory,
+                quantity: Number(item?.quantity || 1),
+                managedByPartyKyc: !!item?.managedByPartyKyc,
+                managedByPartyData: !!item?.managedByPartyData,
+            }))
+        ),
+        [svcItemsMeta]
+    );
 
     const getCardFeePct = (curr: string) => (String(curr).toUpperCase() === "HKD" ? 0.04 : 0.06);
     const getQuantityMeta = (item: any): QuantityControlMeta => {
@@ -443,11 +457,11 @@ export function ServiceSelectionWidget({
 
     // Recompute totals when key pricing inputs change (e.g., base selection or parties)
     useEffect(() => {
-        if (data.selectedState || data.selectedEntity || enableKycExtras) {
+        if (data.selectedState || data.selectedEntity || enableKycExtras || svcItemsMeta.length > 0) {
             handleChange(selectedIds, selectedCurrency);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data.selectedState, data.selectedEntity, data.parties, enableKycExtras]);
+    }, [data.selectedState, data.selectedEntity, data.parties, enableKycExtras, servicePricingSignature]);
 
     const formatPrice = (amount: number, curr: string) => {
         if (amount === 0) return t("common.free", "Included");
