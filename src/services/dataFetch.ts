@@ -651,6 +651,18 @@ export const getMcapCompanies = async (params?: {
   }
 };
 
+export const fetchDetailedUsersUnified = async (role?: string, q?: string) => {
+  try {
+    const response = await api.get(`user/getDetailedUsersUnified`, {
+      params: { role, q },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching detailed users from unified model:", error);
+    throw error;
+  }
+};
+
 export const getMcapCompanyDocuments = async (companyId: string) => {
   try {
     const response = await api.get(`mcap/companies/${companyId}/documents`);

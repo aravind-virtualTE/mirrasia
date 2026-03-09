@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
-import { Label } from '@radix-ui/react-dropdown-menu'
-import { Shield } from 'lucide-react'
+import { Label } from '../ui/label'
+import { Loader2, Shield } from 'lucide-react'
 import { Button } from '../ui/button';
 // import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -13,12 +13,13 @@ interface UserVerificationCardProps {
     selfieUrl: string;
     selfieStatus: string,
     addressProofStatus: string,
-    onReviewUpdate?: (adminReview: { passportStatus: string; addressProofStatus: string; selfieStatus: string }) => void
+    onReviewUpdate?: (adminReview: { passportStatus: string; addressProofStatus: string; selfieStatus: string }) => void,
+    isSubmitting?: boolean
 }
 type VerificationStatus = 'pending' | 'accepted' | 'rejected'
 
 
-const UserVerificationCard: React.FC<UserVerificationCardProps> = ({ passportUrl, addressProofUrl, selfieUrl, onReviewUpdate, passportStatus, addressProofStatus, selfieStatus }) => {
+const UserVerificationCard: React.FC<UserVerificationCardProps> = ({ passportUrl, addressProofUrl, selfieUrl, onReviewUpdate, passportStatus, addressProofStatus, selfieStatus, isSubmitting = false }) => {
     const [ppStatus, setPassportStatus] = useState<VerificationStatus>(passportStatus as VerificationStatus)
     // const [passportComment, setPassportComment] = useState('')
     const [addressStatus, setAddressStatus] = useState<VerificationStatus>(addressProofStatus as VerificationStatus)
@@ -26,8 +27,14 @@ const UserVerificationCard: React.FC<UserVerificationCardProps> = ({ passportUrl
     // const [addressComment, setAddressComment] = useState('')
     // const [isSubmitting, setIsSubmitting] = useState(false)
 
+    useEffect(() => {
+        setPassportStatus(passportStatus as VerificationStatus);
+        setAddressStatus(addressProofStatus as VerificationStatus);
+        setSelfieStatus(selfieStatus as VerificationStatus);
+    }, [passportStatus, addressProofStatus, selfieStatus]);
 
     const handleSubmit = async () => {
+        if (isSubmitting) return;
         // setIsSubmitting(true)
         const adminReview = {
             passportStatus: ppStatus,
@@ -292,8 +299,16 @@ const UserVerificationCard: React.FC<UserVerificationCardProps> = ({ passportUrl
                     onClick={handleSubmit}
                     className="px-8"
                     size="lg"
+                    disabled={isSubmitting}
                 >
-                    {'Submit Review'}
+                    {isSubmitting ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Submitting...
+                        </>
+                    ) : (
+                        'Submit Review'
+                    )}
                 </Button>
             </div>
 

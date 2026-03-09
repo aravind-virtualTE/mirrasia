@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { Trash2, Save, Plus, Pencil, X } from "lucide-react";
 import McapPartyKyc from "./McapPartyKyc";
+import { useTranslation } from "react-i18next";
 
 type PartyDraft = {
   name: string;
@@ -28,6 +29,7 @@ type Party = {
 };
 
 export default function McapParties() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const partyId = searchParams.get("partyId");
   const mode = searchParams.get("mode") === "detail" ? "detail" : "edit";
@@ -123,26 +125,28 @@ export default function McapParties() {
         <CardContent className="grid gap-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label>Name</Label>
+              <Label>{t("userProfile.personalInfo.fullName")}</Label>
               <Input value={newParty.name} onChange={(e) => setNewParty((p) => ({ ...p, name: e.target.value }))} />
             </div>
             <div>
-              <Label>Email</Label>
+              <Label>{t("userProfile.personalInfo.email")}</Label>
               <Input value={newParty.email} onChange={(e) => setNewParty((p) => ({ ...p, email: e.target.value }))} />
             </div>
             <div>
-              <Label>Phone</Label>
+              <Label>{t("userProfile.personalInfo.phone")}</Label>
               <Input value={newParty.phone} onChange={(e) => setNewParty((p) => ({ ...p, phone: e.target.value }))} />
             </div>
             <div>
-              <Label>Is this shareholder a corporate entity?</Label>
+              <Label>{t("newHk.parties.fields.isCorp.label", "Is this shareholder a corporate entity?")}</Label>
               <Select value={newParty.type} onValueChange={(v) => setNewParty((p) => ({ ...p, type: v as "person" | "entity" }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="person">Individual</SelectItem>
-                  <SelectItem value="entity">Corporate</SelectItem>
+                  <SelectContent>
+                    <SelectItem value="person">{t("newHk.parties.fields.isCorp.options.no", "Individual")}</SelectItem>
+                    <SelectItem value="entity">{t("newHk.parties.fields.isCorp.options.yes", "Corporate")}</SelectItem>
+                  </SelectContent>
                 </SelectContent>
               </Select>
             </div>
@@ -167,35 +171,35 @@ export default function McapParties() {
               {editingId === party._id ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Name</Label>
+                    <Label>{t("userProfile.personalInfo.fullName")}</Label>
                     <Input value={draft.name} onChange={(e) => setDraft((p) => ({ ...p, name: e.target.value }))} />
                   </div>
                   <div>
-                    <Label>Email</Label>
+                    <Label>{t("userProfile.personalInfo.email")}</Label>
                     <Input value={draft.email} onChange={(e) => setDraft((p) => ({ ...p, email: e.target.value }))} />
                   </div>
                   <div>
-                    <Label>Phone</Label>
+                    <Label>{t("userProfile.personalInfo.phone")}</Label>
                     <Input value={draft.phone} onChange={(e) => setDraft((p) => ({ ...p, phone: e.target.value }))} />
                   </div>
                   <div>
-                    <Label>Type</Label>
+                    <Label>{t("newHk.parties.fields.isCorp.label", "Is this shareholder a corporate entity?")}</Label>
                     <Select value={draft.type} onValueChange={(v) => setDraft((p) => ({ ...p, type: v as "person" | "entity" }))}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="person">Individual</SelectItem>
-                        <SelectItem value="entity">Corporate</SelectItem>
+                        <SelectItem value="person">{t("newHk.parties.fields.isCorp.options.no", "Individual")}</SelectItem>
+                        <SelectItem value="entity">{t("newHk.parties.fields.isCorp.options.yes", "Corporate")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" onClick={() => handleUpdate(party._id)}>
-                      <Save className="w-4 h-4 mr-1" /> Save
+                      <Save className="w-4 h-4 mr-1" /> {t("userProfile.actions.save")}
                     </Button>
                     <Button size="sm" variant="outline" onClick={cancelEdit}>
-                      <X className="w-4 h-4 mr-1" /> Cancel
+                      <X className="w-4 h-4 mr-1" /> {t("userProfile.actions.cancel")}
                     </Button>
                   </div>
                 </div>
@@ -209,10 +213,10 @@ export default function McapParties() {
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" onClick={() => startEdit(party)}>
-                      <Pencil className="w-4 h-4 mr-1" /> Edit
+                      <Pencil className="w-4 h-4 mr-1" /> {t("mcap.dashboard.actions.edit", "Edit")}
                     </Button>
                     <Button size="sm" variant="destructive" onClick={() => handleDelete(party._id)}>
-                      <Trash2 className="w-4 h-4 mr-1" /> Delete
+                      <Trash2 className="w-4 h-4 mr-1" /> {t("userProfile.actions.delete")}
                     </Button>
                   </div>
                 </div>
