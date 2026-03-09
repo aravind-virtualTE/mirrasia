@@ -259,6 +259,13 @@ const Layout: React.FC = () => {
             roles: ["admin", "master"],
             to: "/incorporation-migrations",
           },
+          {
+            id: "incorporation-pricing-docs",
+            icon: FileText,
+            label: "Pricing Change Docs",
+            roles: ["admin", "master"],
+            to: "/incorporation-docs",
+          },
 
         ],
       }

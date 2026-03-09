@@ -1648,7 +1648,7 @@
     "whatAddress": "공개되는 통신 주소로 어떤 주소를 등록하시겠습니까?",
     "whatAddressInfo": "개인 이사의 거주지 주소는 개인 정보로 등록되며, 통신 주소만 공개됩니다.",
     "useCorrespondenceAddressService": "통신 주소(Correspondence Address) 서비스 이용",
-    "useCorrespondenceAddressServiceHintStandard": "선택 서비스입니다. 선택 시 서비스 항목 및 인보이스에 65 USD가 자동으로 추가됩니다.",
+    "useCorrespondenceAddressServiceHintStandard": "선택 서비스입니다. 선택 시 서비스 항목 및 인보이스에 USD {{amount}}가 자동으로 추가됩니다.",
     "useCorrespondenceAddressServiceHintDcp": "선택 서비스입니다. 선택 시 서비스 항목 및 인보이스에 연간 260 USD가 자동으로 추가됩니다.",
     "overSeasResident": "홍콩 이외의 해외 거주자로서 해외 법인 설립 또는 해외 직접 투자 신고 대상에 해당하십니까?",
     "osRGuide": "아래 안내 슬라이드를 참조하십시오.",
@@ -2713,11 +2713,11 @@
           "label": "전화번호"
         },
         "isCorp": {
-          "label": "이 주주는 법인입니까?",
-          "tip": "주주가 회사인 경우 '예'를 선택하십시오. 개인인 경우 '아니요'를 선택하십시오.",
+          "label": "이 관련 당사자가 법인 또는 단체입니까?",
+          "tip": "당사자가 법인 또는 단체인 경우 '예'를 선택하십시오. 개인인 경우 '아니요'를 선택하십시오.",
           "options": {
-            "no": "아니요 - 개인",
-            "yes": "예 - 법인 주주"
+            "no": "아니요 (개인)",
+            "yes": "예 (법인)"
           }
         },
         "isDirector": {
@@ -2744,6 +2744,11 @@
         "PREF": "우선주",
         "NONVOT": "무의결권주",
         "REDEEM": "상환주"
+      },
+      "roles": {
+        "director": "이사 (Director)",
+        "shareholder": "주주 (Shareholder)",
+        "dcp": "DCP (지정 대리인)"
       },
       "buttons": {
         "remove": "삭제",
@@ -3609,7 +3614,7 @@
         "optional": {
           "emiListProvision": {
             "label": "제휴 EMI 지원 (무료 제공)",
-           "info": "당사 제휴 EMI 제공업체에 대한 무료 온보딩 지원을 제공합니다. 참고: 계좌 개설 성공 여부는 보장되지 않으며, 선택한 EMI의 고유 권한 및 컴플라이언스 정책에 따라 결정됩니다."
+            "info": "당사 제휴 EMI 제공업체에 대한 무료 온보딩 지원을 제공합니다. 참고: 계좌 개설 성공 여부는 보장되지 않으며, 선택한 EMI의 고유 권한 및 컴플라이언스 정책에 따라 결정됩니다."
           },
           "bankAccountAdvisory": {
             "label": "영국 은행 온보딩 자문",

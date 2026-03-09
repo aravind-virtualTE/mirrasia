@@ -60,12 +60,12 @@ const QUOTE_ONLY_SERVICE_OPTIONS = [
 
 const UK_ENTITY_PRICING: Record<UkEntityMode, { incorporation: number; kyc: number; registeredOffice: number }> = {
   individual: {
-    incorporation: 1000,
+    incorporation: 1700,
     kyc: 100,
     registeredOffice: 600,
   },
   subsidiary: {
-    incorporation: 1000,
+    incorporation: 1700,
     kyc: 250,
     registeredOffice: 600,
   },
