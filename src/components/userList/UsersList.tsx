@@ -743,7 +743,7 @@ const UsersList = () => {
                                         <SelectItem value="admin">Admin</SelectItem>
                                         {/* <SelectItem value="hk_shdr">SH Dir</SelectItem> */}
                                         <SelectItem value="master">Master</SelectItem>
-                                        <SelectItem value="dcp">Dcp</SelectItem>
+                                        <SelectItem value="dcp">DCP</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>

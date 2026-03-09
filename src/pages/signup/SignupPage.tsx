@@ -244,7 +244,8 @@ const SignupPage = () => {
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("user", JSON.stringify(user));
         setAuth({ user, isAuthenticated: true, loading: false, error: null });
-        navigate(["admin", "master"].includes(user.role) ? "/admin-dashboard" : "/dashboard");
+        navigate("/incorporation-dashboard");
+        // navigate(["admin", "master"].includes(user.role) ? "/admin-dashboard" : "/dashboard");
       } catch (error) {
         setAuth((prev) => ({
           ...prev,

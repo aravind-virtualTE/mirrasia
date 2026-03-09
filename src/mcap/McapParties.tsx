@@ -137,7 +137,7 @@ export default function McapParties() {
               <Input value={newParty.phone} onChange={(e) => setNewParty((p) => ({ ...p, phone: e.target.value }))} />
             </div>
             <div>
-              <Label>{t("newHk.parties.fields.isCorp.label", "Is this shareholder a corporate entity?")}</Label>
+              <Label>{t("newHk.parties.fields.isCorp.label", "Is this Associated party a corporate/entity?")}</Label>
               <Select value={newParty.type} onValueChange={(v) => setNewParty((p) => ({ ...p, type: v as "person" | "entity" }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />
@@ -183,7 +183,7 @@ export default function McapParties() {
                     <Input value={draft.phone} onChange={(e) => setDraft((p) => ({ ...p, phone: e.target.value }))} />
                   </div>
                   <div>
-                    <Label>{t("newHk.parties.fields.isCorp.label", "Is this shareholder a corporate entity?")}</Label>
+                    <Label>{t("newHk.parties.fields.isCorp.label", "Is this Associated party a corporate/entity?")}</Label>
                     <Select value={draft.type} onValueChange={(v) => setDraft((p) => ({ ...p, type: v as "person" | "entity" }))}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />

@@ -1649,7 +1649,7 @@
     "whatAddress": "您希望將哪個地址註冊為公開的通訊地址？",
     "whatAddressInfo": "個人董事的住址會註冊為私人資料，只有通訊地址會向公眾披露。",
     "useCorrespondenceAddressService": "使用通訊地址 (Correspondence Address) 服務",
-    "useCorrespondenceAddressServiceHintStandard": "選填服務。若勾選，將自動在服務選項及發票中增加 65 美元。",
+    "useCorrespondenceAddressServiceHintStandard": "選填服務。若勾選，將自動在服務選項及發票中增加 {{amount}} 美元。",
     "useCorrespondenceAddressServiceHintDcp": "選填服務。若勾選，將自動在服務選項及發票中增加每年 260 美元。",
     "overSeasResident": "您是否為香港以外的海外居民，並且需要申報海外公司成立或外國直接投資？",
     "osRGuide": "請參閱下方的指引幻燈片",
@@ -2714,11 +2714,11 @@
           "label": "電話"
         },
         "isCorp": {
-          "label": "這位股東是公司實體嗎？",
-          "tip": "如果股東是公司（公司股東），請選擇「是」。如果是個人，請選擇「否」。",
+          "label": "此關聯方是否為法人或實體？",
+          "tip": "若該當事方為公司或法人實體，請選擇「是」。若為個人，請選擇「否」。",
           "options": {
-            "no": "否 — 個人",
-            "yes": "是 — 公司股東"
+            "no": "否 (個人)",
+            "yes": "是 (法人)"
           }
         },
         "isDirector": {
@@ -2746,17 +2746,22 @@
         "NONVOT": "無表決權股",
         "REDEEM": "可贖回股"
       },
+      "roles": {
+        "director": "董事 (Director)",
+        "shareholder": "股東 (Shareholder)",
+        "dcp": "DCP (指定負責人)"
+      },
       "buttons": {
         "remove": "移除",
         "add": "+ 新增股東 / 董事",
-        "addMember": "????/??/DCP ??",
+        "addMember": "新增成員/董事/DCP",
         "invite": "發送邀請"
       },
       "directory": {
-        "placeholder": "????",
-        "addSelected": "????"
+        "placeholder": "選擇成員",
+        "addSelected": "添加選定的成員"
       },
-      "empty": "???????????????/??/DCP ??????",
+      "empty": "尚未有成員。請點擊「新增成員/董事/DCP」開始。",
       "totals": "總股數：{{total}} • 已分配：{{assigned}}",
       "toasts": {
         "invalidEmail": {
@@ -3622,7 +3627,7 @@
           }
         },
         "fields": {
-         "additionalExecutivePairs": {
+          "additionalExecutivePairs": {
             "label": "額外 KYC 及合規選項 *",
             "options": {
               "none": "無（標準：已包含最多 2 位個人）",
