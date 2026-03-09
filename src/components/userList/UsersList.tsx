@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { addUser, updateUserRole, fetchDetailedUsers, deleteUserById, sendCustomMail, createOutstandingTask, updateUserProfileData } from "@/services/dataFetch"
+import { addUser, updateUserRole, fetchDetailedUsersUnified, deleteUserById, sendCustomMail, createOutstandingTask, updateUserProfileData } from "@/services/dataFetch"
 import { useEffect, useMemo, useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
-import { Building, Clock, Mail, Pencil, Phone, Save, Send, Trash2, User } from "lucide-react"
+import { Building, Clock, Loader2, Mail, Pencil, Phone, Save, Send, Trash2, User } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { useNavigate } from "react-router-dom";
@@ -74,7 +74,13 @@ const UsersList = () => {
     const [isEditRoleOpen, setIsEditRoleOpen] = useState(false)
     const [selectedUser, setSelectedUser] = useState<User | null>(null)
     const [isUserDetailsOpen, setIsUserDetailsOpen] = useState(false)
-    const [isLoading, setIsLoading] = useState(false);
+    const [addUserLoading, setAddUserLoading] = useState(false);
+    const [roleUpdatingUserId, setRoleUpdatingUserId] = useState<string | null>(null);
+    const [mailLoading, setMailLoading] = useState(false);
+    const [reviewLoading, setReviewLoading] = useState(false);
+    const [taskSaving, setTaskSaving] = useState(false);
+    const [deleteTaskLoading, setDeleteTaskLoading] = useState(false);
+    const [deleteUserLoading, setDeleteUserLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [taskLabel, setTaskLabel] = useState("");
@@ -96,7 +102,7 @@ const UsersList = () => {
     useEffect(() => {
         const load = async () => {
             try {
-                const detailedUsers = await fetchDetailedUsers(defaultRole);
+                const detailedUsers = await fetchDetailedUsersUnified(defaultRole);
                 // console.log("detailedUsers",detailedUsers)
                 setUsers(detailedUsers);
             } catch (e) {
@@ -130,6 +136,8 @@ const UsersList = () => {
     // }, [searchQuery]);
 
     const handleRoleChange = async (userId: string, newRole: string) => {
+        if (!userId) return;
+        setRoleUpdatingUserId(userId);
         try {
             await updateUserRole(userId, newRole);
             setUsers((prevUsers) =>
@@ -151,11 +159,14 @@ const UsersList = () => {
                 description: "Failed to update user role. Please try again.",
                 variant: "destructive",
             })
+        } finally {
+            setRoleUpdatingUserId(null);
         }
     }
 
     const handleAddUser = async (e: React.FormEvent) => {
         e.preventDefault()
+        setAddUserLoading(true);
         try {
             const addedUser = await addUser(JSON.stringify(newUser));
             setUsers([...users, addedUser])
@@ -172,6 +183,8 @@ const UsersList = () => {
                 description: "Failed to add user. Please try again.",
                 variant: "destructive",
             })
+        } finally {
+            setAddUserLoading(false);
         }
     }
 
@@ -189,62 +202,97 @@ const UsersList = () => {
     // console.log(selectedUser)
 
     const handleSendMail = async () => {
-        if (message.trim()) {
-            setIsLoading(true);
+        if (!message.trim()) {
+            toast({
+                title: "Message required",
+                description: "Please enter a message before sending.",
+                variant: "destructive",
+            });
+            return;
+        }
+        setMailLoading(true);
+        try {
             const data = {
                 to: selectedUser?.email || "",
                 message: message,
                 subject: "Message from Admin",
             }
             const result = await sendCustomMail(data)
-            if (result.error) {
-                toast({
-                    title: "Error",
-                    description: "Failed to send message. Please try again.",
-                    variant: "destructive",
-                });
-                setIsLoading(false);
-                return;
-            } else {
-                toast({
-                    title: "Message Sent",
-                    description: `Your message has been sent to ${selectedUser?.fullName || "the user"}.`,
-                });
+            if (result?.error) {
+                throw new Error("Failed to send");
             }
+            toast({
+                title: "Message Sent",
+                description: `Your message has been sent to ${selectedUser?.fullName || "the user"}.`,
+            });
             setMessage("");
-            setIsLoading(false);
+        } catch (error) {
+            console.log("error", error);
+            toast({
+                title: "Error",
+                description: "Failed to send message. Please try again.",
+                variant: "destructive",
+            });
+        } finally {
+            setMailLoading(false);
         }
     };
 
-    console.log('Review updated:', selectedUser);
-    const handleReviewUpdate = async (review: any) => {
+    const handleReviewUpdate = async (review: { passportStatus: string; addressProofStatus: string; selfieStatus: string }) => {
+        if (!selectedUser || !selectedUser._id) return;
+        setReviewLoading(true);
         try {
-            const userData = selectedUser
-            if (userData && userData.kycDocuments) {
-                userData.kycDocuments.passportStatus = review.passportStatus
-                userData.kycDocuments.addressProofStatus = review.addressProofStatus
-                const formData = new FormData();
-                formData.append("passportStatus", review.passportStatus);
-                formData.append("addressStatus", review.addressProofStatus);
-                formData.append("selfieStatus", review.selfieStatus);
-                const result = await updateUserProfileData(formData, userData._id)
-                if (result) {
-                    toast({
-                        title: "updated Status",
-                        description: `Status for the item is update for the user ${selectedUser?.fullName || ""}.`,
-                    })
-                }
-                // console.log('Review updated:', result);
-            }
-            setSelectedUser(userData);
-            // You can show a success toast here
+            const formData = new FormData();
+            formData.append("passportStatus", review.passportStatus);
+            formData.append("addressStatus", review.addressProofStatus);
+            formData.append("selfieStatus", review.selfieStatus);
+
+            await updateUserProfileData(formData, selectedUser._id);
+
+            const updatedUser: User = {
+                ...selectedUser,
+                kycDocuments: selectedUser.kycDocuments
+                    ? {
+                        ...selectedUser.kycDocuments,
+                        passportStatus: review.passportStatus,
+                        addressProofStatus: review.addressProofStatus,
+                        selfieStatus: review.selfieStatus,
+                    }
+                    : selectedUser.kycDocuments,
+            };
+
+            setSelectedUser(updatedUser);
+            setUsers(prevUsers =>
+                prevUsers.map(user =>
+                    user._id === updatedUser._id ? updatedUser : user
+                )
+            );
+
+            toast({
+                title: "Verification updated",
+                description: `KYC review updated for ${selectedUser.fullName}.`,
+            });
         } catch (error) {
             console.error('Failed to update review:', error);
-            // Handle error - show error toast
+            toast({
+                title: "Error",
+                description: "Failed to update verification status.",
+                variant: "destructive",
+            });
+        } finally {
+            setReviewLoading(false);
         }
     };
 
     const handleAddTask = () => {
+        if (!taskLabel.trim()) {
+            toast({
+                title: "Task required",
+                description: "Enter a task label before adding.",
+                variant: "destructive",
+            });
+            return;
+        }
         if (taskLabel.trim() && selectedUser) {
             const newTask = { label: taskLabel.trim(), checked: false };
             const updatedUser = {
@@ -259,6 +307,10 @@ const UsersList = () => {
                 )
             );
             setTaskLabel("");
+            toast({
+                title: "Task added",
+                description: "Task added locally. Click Save to persist changes.",
+            });
         }
     };
 
@@ -281,15 +333,18 @@ const UsersList = () => {
     };
 
     const handleDeleteTask = async () => {
-        if (selectedUser && selectedUser.tasks) {
-            const sndData = {
-                index: deleteIndex,
-                userId: selectedUser._id || "",
-            }
-            console.log("Deleting task at index:", sndData);
+        if (!selectedUser || !selectedUser.tasks) return;
+        if (deleteIndex === null) {
+            toast({
+                title: "Error",
+                description: "No task selected for deletion.",
+                variant: "destructive",
+            });
+            return;
+        }
+        setDeleteTaskLoading(true);
+        try {
             const updatedTasks = selectedUser.tasks.filter((_, i) => i !== deleteIndex);
-            // const data = await delOutstandingTask(sndData)
-            // console.log("data", data)
 
             const updatedUser = {
                 ...selectedUser,
@@ -303,16 +358,30 @@ const UsersList = () => {
                     user._id === selectedUser._id ? updatedUser : user
                 )
             );
+
+            toast({
+                title: "Task deleted",
+                description: "Task removed locally. Click Save to persist changes.",
+            });
             setDeleteDialogOpen(false);
             setDeleteIndex(null)
+        } catch (error) {
+            console.log("error", error);
+            toast({
+                title: "Error",
+                description: "Failed to delete task.",
+                variant: "destructive",
+            });
+        } finally {
+            setDeleteTaskLoading(false);
         }
     }
 
     const handleSave = async () => {
         if (selectedUser && selectedUser.tasks) {
             // console.log("Saving data:", selectedUser.tasks)
+            setTaskSaving(true);
             try {
-                setIsLoading(true);
                 const object = {
                     userId: selectedUser._id || "",
                     email: selectedUser.email || "",
@@ -325,10 +394,16 @@ const UsersList = () => {
                         description: `Check list Saved`,
                     })
                 }
-                setIsLoading(false);
                 // console.log("data", data)
             } catch (e) {
                 console.log("err", e)
+                toast({
+                    title: "Error",
+                    description: "Failed to save task list.",
+                    variant: "destructive",
+                });
+            } finally {
+                setTaskSaving(false);
             }
         }
     }
@@ -364,7 +439,7 @@ const UsersList = () => {
     const handleSearch = async () => {
         try {
             const q = searchQuery.trim() || undefined;
-            const data = await fetchDetailedUsers(defaultRole, q);
+            const data = await fetchDetailedUsersUnified(defaultRole, q);
             setUsers(data);
         } catch (e) {
             console.log("error", e)
@@ -378,6 +453,7 @@ const UsersList = () => {
 
     const confirmDeleteUser = async () => {
         if (!userToDelete) return;
+        setDeleteUserLoading(true);
         try {
             await deleteUserById(userToDelete._id || "");
             setUsers(prev => prev.filter(u => u._id !== userToDelete._id));
@@ -394,6 +470,8 @@ const UsersList = () => {
                 description: "Failed to delete user.",
                 variant: "destructive",
             });
+        } finally {
+            setDeleteUserLoading(false);
         }
     }
 
@@ -448,12 +526,21 @@ const UsersList = () => {
                                     <SelectContent>
                                         <SelectItem value="user">User</SelectItem>
                                         <SelectItem value="admin">Admin</SelectItem>
-                                        <SelectItem value="hk_shdr">SH Dir</SelectItem>
+                                        {/* <SelectItem value="hk_shdr">SH Dir</SelectItem> */}
                                         <SelectItem value="master">Master</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <Button type="submit">Add User</Button>
+                            <Button type="submit" disabled={addUserLoading}>
+                                {addUserLoading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Adding...
+                                    </>
+                                ) : (
+                                    "Add User"
+                                )}
+                            </Button>
                         </form>
                     </DialogContent>
                 </Dialog>
@@ -645,6 +732,7 @@ const UsersList = () => {
                                 <Label>Role</Label>
                                 <Select
                                     value={selectedUser.role}
+                                    disabled={roleUpdatingUserId === selectedUser._id}
                                     onValueChange={(value) => handleRoleChange(selectedUser._id || "", value)}
                                 >
                                     <SelectTrigger>
@@ -653,12 +741,15 @@ const UsersList = () => {
                                     <SelectContent>
                                         <SelectItem value="user">User</SelectItem>
                                         <SelectItem value="admin">Admin</SelectItem>
-                                        <SelectItem value="hk_shdr">SH Dir</SelectItem>
+                                        {/* <SelectItem value="hk_shdr">SH Dir</SelectItem> */}
                                         <SelectItem value="master">Master</SelectItem>
                                         <SelectItem value="dcp">Dcp</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
+                            {roleUpdatingUserId === selectedUser._id && (
+                                <p className="text-sm text-muted-foreground">Updating role...</p>
+                            )}
                             <Button onClick={() => setIsEditRoleOpen(false)}>Close</Button>
                         </div>
                     )}
@@ -773,6 +864,7 @@ const UsersList = () => {
                                 passportStatus={selectedUser?.kycDocuments?.passportStatus || "pending"}
                                 addressProofStatus={selectedUser?.kycDocuments?.addressProofStatus || "pending"}
                                 onReviewUpdate={handleReviewUpdate}
+                                isSubmitting={reviewLoading}
                             />
                              <UserOtherDocumentsCard docs={(selectedUser as any)?.otherDocuments || []} />
                         </TabsContent>
@@ -828,10 +920,10 @@ const UsersList = () => {
                                                 Tasks assigned to this user that are pending or in progress
                                             </CardDescription>
                                         </div>
-                                        {user.role !== 'user' && (
+                                        {user?.role !== 'user' && (
                                             <div className="flex items-center gap-2">
-                                                <Button size="sm" className="px-3" onClick={handleSave}>
-                                                    {isLoading ? (
+                                                <Button size="sm" className="px-3" onClick={handleSave} disabled={taskSaving}>
+                                                    {taskSaving ? (
                                                         <>
                                                             <CustomLoader />
                                                             <span className="ml-2">Saving...</span>
@@ -920,11 +1012,11 @@ const UsersList = () => {
                                                 value={message}
                                                 onChange={(e) => setMessage(e.target.value)}
                                             />
-                                            <Button size="sm" className="px-3" onClick={handleSendMail}>
-                                                {isLoading ? (
+                                            <Button size="sm" className="px-3" onClick={handleSendMail} disabled={mailLoading}>
+                                                {mailLoading ? (
                                                     <>
                                                         <CustomLoader />
-                                                        <span className="ml-2">Saving...</span>
+                                                        <span className="ml-2">Sending...</span>
                                                     </>
                                                 ) : (
                                                     <>
@@ -955,6 +1047,8 @@ const UsersList = () => {
                 confirmText="Delete"
                 cancelText="Cancel"
                 onConfirm={handleDeleteTask}
+                isLoading={deleteTaskLoading}
+                loadingText="Deleting..."
             />
 
             <ConfirmDialog
@@ -965,6 +1059,8 @@ const UsersList = () => {
                 confirmText="Delete User"
                 cancelText="Cancel"
                 onConfirm={confirmDeleteUser}
+                isLoading={deleteUserLoading}
+                loadingText="Deleting user..."
             />
         </div>
     )
