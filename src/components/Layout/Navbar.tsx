@@ -23,6 +23,7 @@ import { paFormWithResetAtom1 } from "@/pages/Company/Panama/PaState";
 import { sgFormWithResetAtom1 } from "@/pages/Company/Singapore/SgState";
 import { pifFormWithResetAtom } from "@/pages/Company/PanamaFoundation/PaState";
 import { costaRicaFormAtom } from "@/pages/Company/CostaRica/costaState";
+// import SupportTicketNotificationBell from "@/components/support/SupportTicketNotificationBell";
 
 interface NavbarProps {
     onMenuToggle: () => void;
@@ -131,6 +132,9 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
                 <div className="hidden md:flex items-center gap-2 flex-shrink-0">
                     <ToggleTheme />
                     <LanguageSwitcher />
+                    {/* {["user", "admin", "master"].includes(decodedToken.role) && (
+                        <SupportTicketNotificationBell />
+                    )} */}
                     {(decodedToken.role === 'admin' || decodedToken.role === 'master') && (
                         <AdminNotification />
                     )}
@@ -201,6 +205,9 @@ export default function Navbar({ onMenuToggle, isMobileMenuOpen }: NavbarProps) 
             <div className="flex items-center gap-2 w-full justify-end md:hidden">
                 <ToggleTheme />
                 <LanguageSwitcher />
+                {/* {["user", "admin", "master"].includes(decodedToken.role) && (
+                    <SupportTicketNotificationBell />
+                )} */}
                 {(decodedToken.role === 'admin' || decodedToken.role === 'master') && (
                     <AdminNotification />
                 )}

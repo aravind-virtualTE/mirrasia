@@ -333,7 +333,7 @@
       "errorDescription": "Failed to create ticket."
     },
     "list": {
-      "title": "Support Tickets",
+      "title": "Issues Tracking",
       "newTicket": "Report an Issue",
       "searchPlaceholder": "Search by id, title, or reporter",
       "allStatuses": "All statuses",
@@ -355,7 +355,13 @@
       "updateSuccessTitle": "Ticket updated",
       "updateSuccessDescription": "Ticket fields were updated successfully.",
       "updateErrorDescription": "Failed to update ticket.",
-      "saveChanges": "Save Changes"
+      "saveChanges": "Save Changes",
+      "delete": "Delete Ticket",
+      "deleting": "Deleting...",
+      "deleteConfirm": "Delete this support ticket and all linked S3 attachments?",
+      "deleteSuccessTitle": "Ticket deleted",
+      "deleteSuccessDescription": "Ticket record and attachment files were deleted.",
+      "deleteErrorDescription": "Failed to delete ticket."
     },
     "comments": {
       "title": "Comments",
@@ -383,7 +389,11 @@
       "openDetail": "Open Detail",
       "save": "Save Queue Update",
       "allSeverities": "All severities",
-      "allAssignees": "All assignees"
+      "allAssignees": "All assignees",
+      "deleteConfirm": "Delete this support ticket and all linked S3 attachments?",
+      "deleteSuccessTitle": "Ticket deleted",
+      "deleteSuccessDescription": "Ticket record and attachment files were deleted.",
+      "deleteErrorDescription": "Failed to delete ticket."
     }
   },
   "dashboard": {

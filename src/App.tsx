@@ -70,6 +70,10 @@ import QuoteEnquiry from './components/quoteService/quoteService';
 import PricingDashboard from './mcap/pricing/PricingDashboard';
 import MobileUpload from './pages/MobileUpload/MobileUpload';
 import VersionUpdateBanner from './components/system/VersionUpdateBanner';
+import SupportTicketCreatePage from './pages/support/SupportTicketCreatePage';
+import SupportTicketListPage from './pages/support/SupportTicketListPage';
+import SupportTicketDetailPage from './pages/support/SupportTicketDetailPage';
+import SupportTicketQueuePage from './pages/support/SupportTicketQueuePage';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -158,7 +162,8 @@ const App: React.FC = () => {
                         <Route path="/incorporation-parties" element={<McapParties />} />
                         <Route path="/incorporation-detail/:id" element={<McapCompanyDetail />} />
                         <Route path="/incorporation-documents" element={<McapDocumentsHub />} />
-                        
+
+
                       </Route>
                     </Route>
                   </Route>
@@ -182,6 +187,10 @@ const App: React.FC = () => {
                       <Route path="/enquiries" element={<EnquiryList />} />
                       <Route path="/quote-enquiries" element={<ReqForQuoteList />} />
                       <Route path="/incorporation-pricing" element={<PricingDashboard />} />
+                      <Route path="/support/queue" element={<SupportTicketQueuePage />} />
+                      <Route path="/support/tickets/new" element={<SupportTicketCreatePage />} />
+                      <Route path="/support/tickets" element={<SupportTicketListPage />} />
+                      <Route path="/support/tickets/:id" element={<SupportTicketDetailPage />} />
 
                     </Route>
                   </Route>

@@ -322,6 +322,20 @@ const Layout: React.FC = () => {
         roles: ["admin", "master"],
         to: "/messages",
       },
+      // {
+      //   id: "support-tickets",
+      //   icon: MessageSquare,
+      //   label: t("sideItems.supportTickets"),
+      //   roles: ["admin", "master"],
+      //   to: "/support/tickets",
+      // },
+      // {
+      //   id: "support-queue",
+      //   icon: Users,
+      //   label: t("sideItems.supportQueue"),
+      //   roles: ["admin", "master"],
+      //   to: "/support/queue",
+      // },
       {
         id: "sms",
         icon: Send,

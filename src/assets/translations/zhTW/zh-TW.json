@@ -241,6 +241,96 @@
     "quotationrequest": "報價請求",
     "services": "服務項目"
   },
+  "supportTickets": {
+    "common": {
+      "error": "錯誤",
+      "loading": "載入中...",
+      "saving": "儲存中...",
+      "submitting": "提交中...",
+      "cancel": "取消"
+    },
+    "fields": {
+      "ticket": "工單",
+      "title": "標題",
+      "description": "描述",
+      "status": "狀態",
+      "severity": "嚴重程度",
+      "category": "類別",
+      "assignee": "負責人",
+      "attachments": "附件",
+      "pageUrl": "頁면 URL",
+      "browser": "瀏覽器",
+      "os": "作業系統",
+      "device": "裝置",
+      "appVersion": "應用程式版本",
+      "updatedAt": "更新於",
+      "resolutionSummary": "解決方案摘要",
+      "fixReference": "修復參考"
+    },
+    "create": {
+      "title": "回報問題",
+      "titlePlaceholder": "問題的簡短摘要",
+      "descriptionPlaceholder": "請說明操作步驟、預期結果及實際結果。",
+      "attachmentsHint": "最多 5 個檔案，每個最大 10MB。允許格式：png, jpg, webp, pdf, txt, json, zip。",
+      "submit": "提交工單",
+      "successTitle": "工單已建立",
+      "successDescription": "您的問題已提交至支援隊列。",
+      "errorDescription": "建立工單失敗。"
+    },
+    "list": {
+      "title": "問題追蹤",
+      "newTicket": "回報問題",
+      "searchPlaceholder": "按 ID、標題或回報者搜尋",
+      "allStatuses": "所有狀態",
+      "applyFilters": "套用",
+      "empty": "未找到工單。",
+      "total": "工單總數：{{count}}",
+      "pageInfo": "第 {{page}} 頁，共 {{pages}} 頁",
+      "prev": "上一頁",
+      "next": "下一頁",
+      "errorDescription": "無法載入工單列表。"
+    },
+    "detail": {
+      "errorDescription": "無法載入工單詳情。",
+      "notFound": "找不到工單。",
+      "reportedBy": "回報者：{{name}} ({{email}})",
+      "unassigned": "未分配",
+      "noAttachments": "無附件。",
+      "internalActions": "內部操作",
+      "updateSuccessTitle": "工單已更新",
+      "updateSuccessDescription": "工單欄位已成功更新。",
+      "updateErrorDescription": "更新工單失敗。",
+      "saveChanges": "儲存變更"
+    },
+    "comments": {
+      "title": "評論",
+      "empty": "尚無評論。",
+      "add": "新增評論",
+      "submit": "發佈評論",
+      "successTitle": "評論已新增",
+      "successDescription": "您的評論已發佈。",
+      "errorDescription": "新增評論失敗。"
+    },
+    "timeline": {
+      "title": "時間軸",
+      "empty": "尚無時間軸事件。"
+    },
+    "queue": {
+      "title": "支援隊列",
+      "searchPlaceholder": "搜尋工單",
+      "errorDescription": "無法載入支援隊列。",
+      "saveSuccessTitle": "隊列項目已更新",
+      "saveSuccessDescription": "工單分配/狀態/解決方案已更新。",
+      "saveErrorDescription": "更新隊列項目失敗。",
+      "forbidden": "您沒有權限存取支援隊列。",
+      "total": "隊列中工單總數：{{count}}",
+      "empty": "目前篩選條件下無隊列工單。",
+      "openDetail": "打開詳情",
+      "save": "儲存隊列更新",
+      "allSeverities": "所有嚴重程度",
+      "allAssignees": "所有負責人"
+    }
+  },
   "dashboard": {
     "welcome": "歡迎，",
     "welcome1": "您可以從這裡開始。",
@@ -3622,7 +3712,7 @@
           }
         },
         "fields": {
-         "additionalExecutivePairs": {
+          "additionalExecutivePairs": {
             "label": "額外 KYC 及合規選項 *",
             "options": {
               "none": "無（標準：已包含最多 2 位個人）",
