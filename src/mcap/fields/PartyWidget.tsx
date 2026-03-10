@@ -12,12 +12,24 @@ import { toast } from "@/hooks/use-toast";
 import api, { API_URL } from "@/services/fetch";
 import { useTranslation } from "react-i18next";
 import type { PartyFieldDef } from "../configs/types";
-import { HK_DCP_HEADCOUNT_PRICING_ENABLED } from "../configs/hkPricingFlags";
 import { isEntityPartyTypeEnabledForCountry } from "../party-kyc/partyKycRegistry";
+import {
+    CORRESPONDENCE_SERVICE_FIELD,
+    getCorrespondenceServicePrice,
+    isCorrespondenceServiceEligibleRoles,
+    isCorrespondenceServiceSelected,
+    normalizeMcapCountryCode,
+} from "../correspondenceService";
 
 // This widget manages a list of parties (Shareholders/Directors)
 // conformant to the UnifiedParty model
 const API_BASE = API_URL.replace(/\/+$/, "");
+const PARTY_ROLE_OPTIONS = ["director", "shareholder", "dcp"] as const;
+const PARTY_ROLE_FALLBACK_LABELS: Record<(typeof PARTY_ROLE_OPTIONS)[number], string> = {
+    director: "Director",
+    shareholder: "Shareholder",
+    dcp: "DCP",
+};
 
 export const PartyWidget = ({
     parties = [],
@@ -35,10 +47,12 @@ export const PartyWidget = ({
     const { t } = useTranslation();
     const [directory, setDirectory] = useState<any[]>([]);
     const [selectedDirectoryId, setSelectedDirectoryId] = useState<string>("");
+    const getPartyRoleLabel = (role: (typeof PARTY_ROLE_OPTIONS)[number]) =>
+        t(`newHk.parties.roles.${role}`, PARTY_ROLE_FALLBACK_LABELS[role]);
 
     const normalizedCountryCode = useMemo(() => {
         const raw = countryCode || localStorage.getItem("country") || "";
-        return String(raw).split("_")[0].toUpperCase();
+        return normalizeMcapCountryCode(raw);
     }, [countryCode]);
     const entityTypeEnabled = isEntityPartyTypeEnabledForCountry(normalizedCountryCode);
     const normalizePartyType = (typeValue: any): "person" | "entity" =>
@@ -47,19 +61,7 @@ export const PartyWidget = ({
         Array.isArray(roles)
             ? roles.map((role) => String(role || "").trim().toLowerCase()).filter(Boolean)
             : [];
-    const isHkCorrespondenceEligible = (roles: any[]) => {
-        const normalizedRoles = normalizeRoles(roles);
-        return normalizedRoles.includes("shareholder") || normalizedRoles.includes("director")
-            || normalizedRoles.includes("member")
-            || normalizedRoles.includes("dcp");
-    };
-    const usesDcpCorrespondenceRate = (roles: any[]) => normalizeRoles(roles).includes("dcp");
-    const isCorrespondenceServiceSelected = (party: any) => {
-        const raw = party?.details?.useCorrespondenceAddressService ?? party?.useCorrespondenceAddressService;
-        if (typeof raw === "boolean") return raw;
-        const normalized = String(raw || "").trim().toLowerCase();
-        return ["true", "yes", "1", "on"].includes(normalized);
-    };
+    const isHkCorrespondenceFlow = normalizedCountryCode === "HK";
 
     useEffect(() => {
         const loadDirectory = async () => {
@@ -176,8 +178,8 @@ export const PartyWidget = ({
             ? currentRoles.filter((r: string) => r !== role)
             : [...currentRoles, role];
         const details = { ...(next[idx].details || {}) };
-        if (normalizedCountryCode === "HK" && !isHkCorrespondenceEligible(nextRoles)) {
-            details.useCorrespondenceAddressService = false;
+        if (isHkCorrespondenceFlow && !isCorrespondenceServiceEligibleRoles(nextRoles)) {
+            details[CORRESPONDENCE_SERVICE_FIELD] = false;
         }
         next[idx] = { ...next[idx], roles: nextRoles, details };
         onChange(next);
@@ -188,7 +190,7 @@ export const PartyWidget = ({
         const target = { ...next[idx] };
         target.details = {
             ...(target.details || {}),
-            useCorrespondenceAddressService: selected,
+            [CORRESPONDENCE_SERVICE_FIELD]: selected,
         };
         next[idx] = target;
         onChange(next);
@@ -309,19 +311,17 @@ export const PartyWidget = ({
                 {parties.map((party, idx) => {
                     const partyType = normalizePartyType(party?.type);
                     const partyRoles = normalizeRoles(party?.roles);
-                    const showHkCorrespondenceService = normalizedCountryCode === "HK" && partyType === "person";
-                    const correspondenceEligible = isHkCorrespondenceEligible(partyRoles);
+                    const showCorrespondenceService = isHkCorrespondenceFlow && partyType === "person";
+                    const correspondenceEligible = isCorrespondenceServiceEligibleRoles(partyRoles);
                     const correspondenceSelected = isCorrespondenceServiceSelected(party);
-                    const dcpPricingEnabled = normalizedCountryCode === "HK" && HK_DCP_HEADCOUNT_PRICING_ENABLED;
-                    const correspondenceHint = usesDcpCorrespondenceRate(partyRoles) && dcpPricingEnabled
-                        ? t(
-                            "hk_shldr.useCorrespondenceAddressServiceHintDcp",
-                            "Optional service. If selected, USD 260/year will be added automatically to service selection and invoice."
-                        )
-                        : t(
-                            "hk_shldr.useCorrespondenceAddressServiceHintStandard",
-                            "Optional service. If selected, USD 65 will be added automatically to service selection and invoice."
-                        );
+                    const correspondencePrice = getCorrespondenceServicePrice(normalizedCountryCode);
+                    const correspondenceHint = t(
+                        "hk_shldr.useCorrespondenceAddressServiceHintStandard",
+                        {
+                            amount: correspondencePrice,
+                            defaultValue: `Optional service. If selected, USD ${correspondencePrice} will be added automatically to service selection and invoice.`,
+                        }
+                    );
 
                     return (
                         <Card key={party.id || idx}>
@@ -333,7 +333,7 @@ export const PartyWidget = ({
                                         </div>
                                         <div className="space-y-1">
                                             <Label className="text-xs text-muted-foreground">
-                                                {t("newHk.parties.fields.isCorp.label", "Is this shareholder a corporate entity?")}
+                                                {t("newHk.parties.fields.isCorp.label", "Is this Associated party a corporate/entity?")}
                                             </Label>
                                             <Select
                                                 value={partyType}
@@ -398,7 +398,7 @@ export const PartyWidget = ({
                                 <div className="space-y-2">
                                     <Label>{t("newHk.parties.fields.roleSelectionPrompt", "Select the options that the member will be")}</Label>
                                     <div className="flex gap-4">
-                                        {["director", "shareholder", "dcp"].map(role => (
+                                        {PARTY_ROLE_OPTIONS.map((role) => (
                                             <label key={role} className="flex items-center gap-2 border p-2 rounded cursor-pointer hover:bg-muted">
                                                 <input
                                                     type="checkbox"
@@ -406,7 +406,7 @@ export const PartyWidget = ({
                                                     onChange={() => toggleRole(idx, role)}
                                                     className="rounded border-gray-300"
                                                 />
-                                                <span className="capitalize text-sm">{t(`newHk.parties.roles.${role}`, role)}</span>
+                                                <span className="text-sm">{getPartyRoleLabel(role)}</span>
                                             </label>
                                         ))}
                                     </div>
@@ -424,7 +424,7 @@ export const PartyWidget = ({
                                     </div>
                                 )}
 
-                                {showHkCorrespondenceService && (
+                                {showCorrespondenceService && (
                                     <div className="mt-4 rounded-lg border border-dashed bg-muted/20 p-4 space-y-3">
                                         <div className="space-y-1">
                                             <Label className="text-sm font-semibold">
@@ -437,7 +437,7 @@ export const PartyWidget = ({
                                                 <p className="text-xs text-muted-foreground">
                                                     {t(
                                                         "newHk.parties.fields.useCorrespondenceAddressService.availableWhenEligible",
-                                                        "Available when this party is marked as Shareholder or DCP."
+                                                        "Available when this party is marked as Director, Shareholder, Member, or DCP."
                                                     )}
                                                 </p>
                                             )}

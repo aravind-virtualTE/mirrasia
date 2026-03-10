@@ -9,8 +9,19 @@ import { useTranslation } from "react-i18next";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { convertCurrency, DEFAULT_PRICING_BASE_CURRENCY, getPricingBaseCurrency } from "@/services/exchangeRate";
-import { HK_DCP_HEADCOUNT_FEE_ID, HK_DCP_HEADCOUNT_PRICING_ENABLED } from "../configs/hkPricingFlags";
+import { cn } from "@/lib/utils";
 import type { McapConfig } from "../configs/types";
+import {
+    ADDITIONAL_EXECUTIVE_CORPORATES_ID,
+    ADDITIONAL_EXECUTIVE_INDIVIDUALS_ID,
+    ADDITIONAL_EXECUTIVE_ITEM_IDS,
+    ADDITIONAL_EXECUTIVE_KYC_FIELD,
+    applyAdditionalExecutiveFeesToFees,
+    buildAdditionalExecutiveServiceItems,
+    getAdditionalExecutivePreview,
+    getAdditionalExecutiveUsdToBaseRate,
+    isAdditionalExecutiveKycEnabled,
+} from "../additionalExecutivePricing";
 
 interface ServiceSelectionWidgetProps {
     config: McapConfig;
@@ -47,6 +58,7 @@ export function ServiceSelectionWidget({
     const parties = Array.isArray(data?.parties) ? data.parties : [];
     const totalPartyCount = parties.length;
     const dcpPartyCount = parties.filter((p: any) => Array.isArray(p?.roles) && p.roles.includes("dcp")).length;
+    const additionalExecutiveEnabled = isAdditionalExecutiveKycEnabled(data);
     const rawServiceQuantities = data?.serviceQuantities && typeof data.serviceQuantities === "object"
         ? data.serviceQuantities
         : {};
@@ -81,24 +93,34 @@ export function ServiceSelectionWidget({
     const selectedCurrency = allowedCurrencies.includes(selectedCurrencyRaw)
         ? selectedCurrencyRaw
         : allowedCurrencies[0];
-    const hideHkDcpHeadcountPricing =
-        String(config?.countryCode || "").toUpperCase() === "HK"
-        && !HK_DCP_HEADCOUNT_PRICING_ENABLED;
     const isLocked = data.paymentStatus === "paid";
 
     // Extract fees from config or passed items
     const feesMeta = (config && (config as any).entityMeta && (config as any).entityMeta.fees) || null;
     const resolvedItems = typeof items === "function" ? items(data, (config as any).entityMeta || null) : items;
+    const additionalExecutiveUsdToBaseRate = useMemo(
+        () => getAdditionalExecutiveUsdToBaseRate(config?.countryCode, data),
+        [config?.countryCode, data]
+    );
+    const additionalExecutiveItems = useMemo(
+        () => buildAdditionalExecutiveServiceItems(config?.countryCode, parties, additionalExecutiveEnabled, {
+            usdToBaseRate: additionalExecutiveUsdToBaseRate,
+        }),
+        [additionalExecutiveEnabled, additionalExecutiveUsdToBaseRate, config?.countryCode, parties]
+    );
+    const additionalExecutivePreview = useMemo(
+        () => getAdditionalExecutivePreview(config?.countryCode, parties, {
+            usdToBaseRate: additionalExecutiveUsdToBaseRate,
+        }),
+        [additionalExecutiveUsdToBaseRate, config?.countryCode, parties]
+    );
 
     const govSource = Array.isArray(feesMeta?.government) ? feesMeta.government : [];
-    const svcSource = (resolvedItems && resolvedItems.length > 0) ? resolvedItems : (feesMeta?.service || []);
-    const filteredSvcSource = hideHkDcpHeadcountPricing
-        ? (svcSource || []).filter((item: any) => String(item?.id || "") !== HK_DCP_HEADCOUNT_FEE_ID)
-        : svcSource;
+    const svcSource = ((resolvedItems && resolvedItems.length > 0) ? resolvedItems : (feesMeta?.service || []))
+        .filter((item: any) => !ADDITIONAL_EXECUTIVE_ITEM_IDS.has(String(item?.id || "")));
 
     const govItems = govSource;
-    const svcItemsMeta = filteredSvcSource;
-    const enableKycExtras = !!(config as any)?.entityMeta?.enableKycExtras;
+    const svcItemsMeta = [...svcSource, ...additionalExecutiveItems];
     const servicePricingSignature = useMemo(
         () => JSON.stringify(
             (svcItemsMeta || []).map((item: any) => ({
@@ -220,6 +242,13 @@ export function ServiceSelectionWidget({
         handleChange(selectedIds, newCurr, undefined, true);
     };
 
+    const toggleAdditionalExecutiveKyc = (checked: boolean) => {
+        if (isLocked) return;
+        handleChange(selectedIds, selectedCurrency, undefined, false, {
+            [ADDITIONAL_EXECUTIVE_KYC_FIELD]: checked,
+        });
+    };
+
     const sameSelection = (a: string[], b: string[]) =>
         a.length === b.length && a.every(id => b.includes(id));
 
@@ -228,18 +257,18 @@ export function ServiceSelectionWidget({
         const computedItems = Array.isArray(data?.computedFees?.items) ? data.computedFees.items : [];
         computedItems.forEach((item: any) => {
             if (!item?.id) return;
-            if (hideHkDcpHeadcountPricing && String(item.id) === HK_DCP_HEADCOUNT_FEE_ID) return;
             map.set(String(item.id), item);
         });
         return map;
-    }, [data?.computedFees?.items, hideHkDcpHeadcountPricing]);
+    }, [data?.computedFees?.items]);
 
     // Compute pricing and propagate as single source of truth (service + invoice + payment).
     const handleChange = async (
         newIds: string[],
         payCurr: string,
         quantityOverrides?: Record<string, number>,
-        markPaymentCurrencyTouched: boolean = false
+        markPaymentCurrencyTouched: boolean = false,
+        dataPatch: Record<string, any> = {}
     ) => {
         const idsSnapshot = Array.from(new Set(newIds));
         const mergedQuantities = {
@@ -256,6 +285,7 @@ export function ServiceSelectionWidget({
                 : allowedCurrencies[0];
             const nextData = {
                 ...data,
+                ...dataPatch,
                 optionalFeeIds: normalizedIds,
                 serviceItemsSelected: normalizedIds,
                 serviceQuantities: normalizedQuantities,
@@ -346,26 +376,20 @@ export function ServiceSelectionWidget({
                         const quantity = getNormalizedQuantity(it, normalizedQuantities[it.id], true);
                         return s + (Number(it.amount || 0) * Number(quantity || 0));
                     }, 0);
+                const managedServiceTotalBase = svcItemsMeta
+                    .filter((f: any) => !f.mandatory && isManagedComputedItem(f))
+                    .reduce((s: number, it: any) => {
+                        const quantity = getNormalizedQuantity(it, normalizedQuantities[it.id], true);
+                        return s + (Number(it.amount || 0) * Number(quantity || 0));
+                    }, 0);
                 const optionalSelectedTotalBase = svcItemsMeta
-                    .filter((f: any) => !f.mandatory && normalizedIds.includes(f.id))
+                    .filter((f: any) => !f.mandatory && !isManagedComputedItem(f) && normalizedIds.includes(f.id))
                     .reduce((s: number, it: any) => {
                         const quantity = getNormalizedQuantity(it, normalizedQuantities[it.id], true);
                         return s + (Number(it.amount || 0) * Number(quantity || 0));
                     }, 0);
 
-                const legalPersonCount = parties.filter((p: any) => p?.isCorp === true || p?.type === "entity").length;
-                const individualCount = Math.max(0, parties.length - legalPersonCount);
-                let extraKycBase = 0;
-                if (enableKycExtras) {
-                    if (legalPersonCount > 0) extraKycBase += legalPersonCount * 130;
-                    if (individualCount > 2) {
-                        const peopleNeedingKyc = individualCount - 2;
-                        const kycSlots = Math.ceil(peopleNeedingKyc / 2);
-                        extraKycBase += kycSlots * 65;
-                    }
-                }
-
-                const serviceTotalBase = mandatoryServiceTotalBase + optionalSelectedTotalBase + extraKycBase;
+                const serviceTotalBase = mandatoryServiceTotalBase + managedServiceTotalBase + optionalSelectedTotalBase;
                 const subtotalBase = governmentTotalBase + serviceTotalBase;
 
                 let finalSubtotal = subtotalBase;
@@ -396,7 +420,11 @@ export function ServiceSelectionWidget({
                             quantity: 1,
                         })),
                         ...svcItemsMeta
-                            .filter((f: any) => f.mandatory || normalizedIds.includes(f.id))
+                            .filter((f: any) =>
+                                f.mandatory
+                                || isManagedComputedItem(f)
+                                || normalizedIds.includes(f.id)
+                            )
                             .map((f: any) => {
                                 const quantity = getNormalizedQuantity(f, normalizedQuantities[f.id], true);
                                 return {
@@ -407,17 +435,9 @@ export function ServiceSelectionWidget({
                                     info: f.info,
                                     kind: "service" as const,
                                     quantity,
+                                    managedByPartyData: f.managedByPartyData,
                                 };
                             }),
-                        ...(extraKycBase > 0 ? [{
-                            id: "extra_kyc",
-                            label: "newHk.fees.items.extra_kyc.label",
-                            amount: normalizedCurrency !== basePricingCurrency ? Number((extraKycBase * (rate || 1)).toFixed(2)) : extraKycBase,
-                            original: normalizedCurrency !== basePricingCurrency ? Number((extraKycBase * (rate || 1)).toFixed(2)) : extraKycBase,
-                            info: "Additional KYC fees for corporate shareholders and extra individual shareholders.",
-                            kind: "service" as const,
-                            quantity: 1,
-                        }] : []),
                     ],
                     government: normalizedCurrency !== basePricingCurrency ? Number((governmentTotalBase * (rate || 1)).toFixed(2)) : governmentTotalBase,
                     service: normalizedCurrency !== basePricingCurrency ? Number((serviceTotalBase * (rate || 1)).toFixed(2)) : serviceTotalBase,
@@ -432,12 +452,23 @@ export function ServiceSelectionWidget({
                 };
             }
 
+            computedFees = applyAdditionalExecutiveFeesToFees(computedFees, {
+                countryCode: config?.countryCode,
+                parties: nextData.parties,
+                payMethod: nextData.payMethod,
+                enabled: isAdditionalExecutiveKycEnabled(nextData),
+                usdToBaseRate: getAdditionalExecutiveUsdToBaseRate(config?.countryCode, nextData),
+            });
+
             const feesChanged = JSON.stringify(data.computedFees || {}) !== JSON.stringify(computedFees);
             const selectionChanged = !sameSelection(normalizedIds, selectedIds);
             const currencyChanged = normalizedCurrency !== selectedCurrency;
             const quantitiesChanged = JSON.stringify(serviceQuantities || {}) !== JSON.stringify(normalizedQuantities || {});
+            const patchChanged = Object.keys(dataPatch).some((key) =>
+                JSON.stringify(data?.[key]) !== JSON.stringify(nextData[key])
+            );
 
-            if (feesChanged || selectionChanged || currencyChanged || quantitiesChanged) {
+            if (feesChanged || selectionChanged || currencyChanged || quantitiesChanged || patchChanged) {
                 onChange({
                     ...nextData,
                     optionalFeeIds: normalizedIds,
@@ -457,11 +488,11 @@ export function ServiceSelectionWidget({
 
     // Recompute totals when key pricing inputs change (e.g., base selection or parties)
     useEffect(() => {
-        if (data.selectedState || data.selectedEntity || enableKycExtras || svcItemsMeta.length > 0) {
+        if (data.selectedState || data.selectedEntity || svcItemsMeta.length > 0) {
             handleChange(selectedIds, selectedCurrency);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data.selectedState, data.selectedEntity, data.parties, enableKycExtras, servicePricingSignature]);
+    }, [data.selectedState, data.selectedEntity, data.parties, additionalExecutiveEnabled, servicePricingSignature]);
 
     const formatPrice = (amount: number, curr: string) => {
         if (amount === 0) return t("common.free", "Included");
@@ -692,58 +723,20 @@ export function ServiceSelectionWidget({
             : getNormalizedQuantity(it, serviceQuantities[it.id], true);
         return s + (Number(it.amount || 0) * Number(qty || 0));
     }, 0);
-    const optionalSvcSubtotal = optionalSvcItems
-        .filter((f: any) => selectedIds.includes(f.id))
+    const managedSvcSubtotal = optionalSvcItems
+        .filter((f: any) => isManagedComputedItem(f))
         .reduce((s: number, it: any) => {
             const qty = isManagedComputedItem(it)
                 ? Math.max(0, Math.floor(toNumber(it?.quantity)))
                 : getNormalizedQuantity(it, serviceQuantities[it.id], true);
             return s + (Number(it.amount || 0) * Number(qty || 0));
         }, 0);
-
-    // Extra KYC subtotal
-    const legalPersonCount = parties.filter((p: any) => p?.isCorp === true || p?.type === "entity").length;
-    const individualCount = Math.max(0, parties.length - legalPersonCount);
-    let extraKycSubtotal = 0;
-    if (enableKycExtras) {
-        if (legalPersonCount > 0) extraKycSubtotal += legalPersonCount * 130;
-        if (individualCount > 2) {
-            const peopleNeedingKyc = individualCount - 2;
-            const kycSlots = Math.ceil(peopleNeedingKyc / 2);
-            extraKycSubtotal += kycSlots * 65;
-        }
-    }
-
-    // Extra KYC items for table
-    const extraKycItems: any[] = [];
-    if (enableKycExtras) {
-        for (let i = 0; i < legalPersonCount; i++) {
-            extraKycItems.push({
-                id: `kyc_legal_${i + 1}`,
-                label: "KYC / Due Diligence fee (Corporate Shareholder)",
-                original: 130,
-                amount: 130,
-                mandatory: true,
-                info: "KYC for corporate shareholders. Includes company documents, registers and UBO checks.",
-                category: "kyc",
-            });
-        }
-        if (individualCount > 2) {
-            const peopleNeedingKyc = individualCount - 2;
-            const kycSlots = Math.ceil(peopleNeedingKyc / 2);
-            for (let i = 0; i < kycSlots; i++) {
-                extraKycItems.push({
-                    id: `kyc_extra_${i + 1}`,
-                    label: "KYC / Due Diligence fee (Additional Individuals)",
-                    original: 65,
-                    amount: 65,
-                    mandatory: true,
-                    info: "Additional KYC for individual shareholders beyond the two included.",
-                    category: "kyc",
-                });
-            }
-        }
-    }
+    const optionalSvcSubtotal = optionalSvcItems
+        .filter((f: any) => !isManagedComputedItem(f) && selectedIds.includes(f.id))
+        .reduce((s: number, it: any) => {
+            const qty = getNormalizedQuantity(it, serviceQuantities[it.id], true);
+            return s + (Number(it.amount || 0) * Number(qty || 0));
+        }, 0);
 
     // Convert to selected currency
     const convertAmount = (amount: number): number => {
@@ -759,20 +752,132 @@ export function ServiceSelectionWidget({
 
     const govSubtotalConverted = convertAmount(govSubtotal);
     const mandatorySvcSubtotalConverted = convertAmount(mandatorySvcSubtotal);
+    const managedSvcSubtotalConverted = convertAmount(managedSvcSubtotal);
     const optionalSvcSubtotalConverted = convertAmount(optionalSvcSubtotal);
-    const extraKycSubtotalConverted = convertAmount(extraKycSubtotal);
     const normalizedCardFeePct = Number(data.computedFees?.cardFeePct || 0);
     const normalizedCardFeeSurcharge = Number(data.computedFees?.cardFeeSurcharge || 0);
     const hasCardFeeLine = normalizedCardFeeSurcharge > 0;
     const totalConverted =
         typeof data.computedFees?.total === "number"
             ? Number(data.computedFees.total)
-            : govSubtotalConverted + mandatorySvcSubtotalConverted + optionalSvcSubtotalConverted + extraKycSubtotalConverted;
+            : govSubtotalConverted + mandatorySvcSubtotalConverted + managedSvcSubtotalConverted + optionalSvcSubtotalConverted;
+
+    const computedIndividualPreviewItem = computedItemsById.get(ADDITIONAL_EXECUTIVE_INDIVIDUALS_ID);
+    const computedCorporatePreviewItem = computedItemsById.get(ADDITIONAL_EXECUTIVE_CORPORATES_ID);
+    const previewIndividualRate = computedIndividualPreviewItem
+        ? toNumber(computedIndividualPreviewItem.amount)
+        : convertAmount(additionalExecutivePreview.rates.individual);
+    const previewCorporateRate = computedCorporatePreviewItem
+        ? toNumber(computedCorporatePreviewItem.amount)
+        : convertAmount(additionalExecutivePreview.rates.corporate);
+    const previewIndividualSubtotal = computedIndividualPreviewItem
+        ? Number((
+            toNumber(computedIndividualPreviewItem.amount)
+            * Math.max(0, Math.floor(toNumber(computedIndividualPreviewItem.quantity || 1)))
+        ).toFixed(2))
+        : convertAmount(additionalExecutivePreview.individualSubtotal);
+    const previewCorporateSubtotal = computedCorporatePreviewItem
+        ? Number((
+            toNumber(computedCorporatePreviewItem.amount)
+            * Math.max(0, Math.floor(toNumber(computedCorporatePreviewItem.quantity || 1)))
+        ).toFixed(2))
+        : convertAmount(additionalExecutivePreview.corporateSubtotal);
+    const previewTotal = Number((previewIndividualSubtotal + previewCorporateSubtotal).toFixed(2));
+    const hasAdditionalExecutivePreview =
+        additionalExecutivePreview.individualCount > 0 || additionalExecutivePreview.corporateCount > 0;
 
 
 
     return (
         <div className="space-y-4">
+            <Card className={cn("border", !additionalExecutiveEnabled && "bg-muted/20")}>
+                <CardContent className="pt-4">
+                    <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                        <div className="space-y-3 xl:max-w-md">
+                            <label className="flex items-start gap-3">
+                                <Checkbox
+                                    checked={additionalExecutiveEnabled}
+                                    disabled={isLocked}
+                                    onCheckedChange={(checked) => toggleAdditionalExecutiveKyc(checked === true)}
+                                />
+                                <div className="space-y-1">
+                                    <div className="text-sm font-semibold text-foreground">
+                                        {t("service.additionalExecutive.toggleLabel", "Additional Executive KYC / Due Diligence")}
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">
+                                        {t(
+                                            "service.additionalExecutive.toggleInfo",
+                                            "Turn this on to add KYC / due diligence pricing from the party list. The preview updates automatically when party type or count changes."
+                                        )}
+                                    </p>
+                                </div>
+                            </label>
+                            <p className="text-xs text-muted-foreground">
+                                {additionalExecutiveEnabled
+                                    ? t("service.additionalExecutive.previewActive", "Preview is active and the charge is included in totals.")
+                                    : t("service.additionalExecutive.previewMuted", "Preview only. No charge is added until this service is enabled.")}
+                            </p>
+                        </div>
+
+                        <div className={cn("grid gap-3 sm:grid-cols-3 xl:min-w-[540px]", !additionalExecutiveEnabled && "opacity-60")}>
+                            <div className="rounded-lg border bg-background/80 p-3">
+                                <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                                    {t("service.additionalExecutive.individualPreviewLabel", "Individual KYC")}
+                                </div>
+                                <div className="mt-2 text-sm font-semibold text-foreground">
+                                    {formatPrice(previewIndividualSubtotal, selectedCurrency)}
+                                </div>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {t("service.additionalExecutive.individualPreviewInfo", {
+                                        count: additionalExecutivePreview.individualCount,
+                                        packs: additionalExecutivePreview.individualPacks,
+                                        rate: formatPrice(previewIndividualRate, selectedCurrency),
+                                        defaultValue: "{{count}} parties • {{packs}} packs • {{rate}} per pack",
+                                    })}
+                                </p>
+                            </div>
+
+                            <div className="rounded-lg border bg-background/80 p-3">
+                                <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                                    {t("service.additionalExecutive.corporatePreviewLabel", "Corporate KYC")}
+                                </div>
+                                <div className="mt-2 text-sm font-semibold text-foreground">
+                                    {formatPrice(previewCorporateSubtotal, selectedCurrency)}
+                                </div>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {t("service.additionalExecutive.corporatePreviewInfo", {
+                                        count: additionalExecutivePreview.corporateCount,
+                                        packs: additionalExecutivePreview.corporatePacks,
+                                        rate: formatPrice(previewCorporateRate, selectedCurrency),
+                                        defaultValue: "{{count}} parties • {{packs}} packs • {{rate}} per pack",
+                                    })}
+                                </p>
+                            </div>
+
+                            <div className="rounded-lg border bg-background/80 p-3">
+                                <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                                    {t("service.additionalExecutive.previewTotalLabel", "Preview Total")}
+                                </div>
+                                <div className="mt-2 text-sm font-semibold text-foreground">
+                                    {formatPrice(previewTotal, selectedCurrency)}
+                                </div>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {hasAdditionalExecutivePreview
+                                        ? t(
+                                            "service.additionalExecutive.previewHelp",
+                                            "Preview is derived from the current party list. Individual and corporate parties are charged separately in packs of two."
+                                        )
+                                        : t(
+                                            "service.additionalExecutive.previewEmpty",
+                                            "No parties yet. Add parties first to preview the KYC charge."
+                                        )}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
             {/* Fee Table */}
             <Card className="border">
                 <CardContent className="pt-4 pb-0">
@@ -800,7 +905,6 @@ export function ServiceSelectionWidget({
                                     ...govItemsWithFees,
                                     ...mandatorySvcWithFees,
                                     ...optionalSvcWithFees,
-                                    ...extraKycItems,
                                 ].map((item) => (
                                     <Row key={item.id} item={item} />
                                 ))}

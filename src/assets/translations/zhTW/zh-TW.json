@@ -3095,7 +3095,26 @@
     "lockedNote": "付款後，所選項目將被鎖定，無法更改。",
     "paymentCurrency": "信用卡付款之結算貨幣",
     "currencyNote": "所有價格均以 {{currency}} 為基礎計算。匯率將會即時更新。",
-    "managedByPartyKyc": "已在相關方 KYC 中選擇"
+    "managedByPartyKyc": "已在相關方 KYC 中選擇",
+    "managedByPartySetup": "根據關係方設定計算",
+    "additionalExecutive": {
+      "toggleLabel": "額外管理層 KYC / 盡職調查",
+      "toggleInfo": "開啟此選項可根據關係方列表加入 KYC / 盡職調查費用。當關係方類型或數量更改時，預覽將自動更新。",
+      "previewActive": "預覽已啟用，費用已包含在總計中。",
+      "previewMuted": "僅供預覽。在啟用此服務之前，不會產生額外費用。",
+      "individualPreviewLabel": "個人 KYC",
+      "corporatePreviewLabel": "法人 KYC",
+      "previewTotalLabel": "預覽總計",
+      "individualPreviewInfo": "{{count}} 位關係方 • {{packs}} 組方案 • 每組 {{rate}}",
+      "corporatePreviewInfo": "{{count}} 個法人關係方 • {{packs}} 組方案 • 每組 {{rate}}",
+      "previewHelp": "預覽是根據目前的關係方列表產生的。個人與法人關係方將以每兩位/兩個為一組單位分別計費。",
+      "previewEmpty": "尚未新增關係方。請先新增關係方以預覽 KYC 費用。",
+      "individualItemLabel": "個人 KYC / 盡職調查費用",
+      "individualItemInfo": "根據個人關係方的數量，以每兩位為一組單位計費。",
+      "corporateItemLabel": "法人 KYC / 盡職調查費用",
+      "corporateItemInfo": "根據法人關係方的數量，以每兩個為一組單位計費。",
+      "packUnit": "組"
+    }
   },
   "mcap": {
     "common": {

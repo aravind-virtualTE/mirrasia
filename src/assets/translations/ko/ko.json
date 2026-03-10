@@ -3094,7 +3094,26 @@
     "lockedNote": "결제 후에는 선택 사항이 잠금 처리되어 수정할 수 없습니다.",
     "paymentCurrency": "카드 결제 시 결제 통화",
     "currencyNote": "모든 가격은 USD(미국 달러) 기준으로 산출됩니다. 환율은 실시간으로 업데이트됩니다.",
-    "managedByPartyKyc": "당사자 KYC에서 선택됨"
+    "managedByPartyKyc": "당사자 KYC에서 선택됨",
+    "managedByPartySetup": "당사자 설정에 따라 계산됨",
+    "additionalExecutive": {
+      "toggleLabel": "추가 경영진 KYC / 실사(Due Diligence)",
+      "toggleInfo": "이 옵션을 켜면 당사자 목록을 기반으로 KYC / 실사 비용이 추가됩니다. 당사자 유형이나 수가 변경되면 미리보기가 자동으로 업데이트됩니다.",
+      "previewActive": "미리보기가 활성화되었으며 비용이 합계에 포함되었습니다.",
+      "previewMuted": "미리보기 전용입니다. 이 서비스가 활성화되기 전에는 비용이 추가되지 않습니다.",
+      "individualPreviewLabel": "개인 KYC",
+      "corporatePreviewLabel": "법인 KYC",
+      "previewTotalLabel": "미리보기 합계",
+      "individualPreviewInfo": "당사자 {{count}}명 • {{packs}}팩 • 팩당 {{rate}}",
+      "corporatePreviewInfo": "법인 {{count}}개 • {{packs}}팩 • 팩당 {{rate}}",
+      "previewHelp": "미리보기는 현재 당사자 목록을 기반으로 합니다. 개인 및 법인 당사자는 2인/2개 단위를 1팩으로 하여 각각 별도로 청구됩니다.",
+      "previewEmpty": "등록된 당사자가 없습니다. KYC 비용 미리보기를 위해 먼저 당사자를 추가해 주세요.",
+      "individualItemLabel": "개인 KYC / 실사 비용",
+      "individualItemInfo": "개인 당사자 수에 따라 2인당 1팩 단위로 청구됩니다.",
+      "corporateItemLabel": "법인 KYC / 실사 비용",
+      "corporateItemInfo": "법인 당사자 수에 따라 2개당 1팩 단위로 청구됩니다.",
+      "packUnit": "팩"
+    }
   },
   "mcap": {
     "common": {

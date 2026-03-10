@@ -1746,7 +1746,7 @@
     "whatAddressInfo": "The residence address of the individual director is registered as private information, and only the communication address is disclosed to the public.",
     "useCorrespondenceAddressService": "Use correspondence address service",
     "useCorrespondenceAddressServiceHintStandard": "Optional service. If selected, USD {{amount}} will be added automatically to service selection and invoice.",
-    "useCorrespondenceAddressServiceHintDcp": "Optional service. If selected, USD 260/year will be added automatically to service selection and invoice.",
+    "useCorrespondenceAddressServiceHintDcp": "Optional service. If selected, USD {{amount}} will be added automatically to service selection and invoice.",
     "overSeasResident": "Are you an overseas resident other than Hong Kong and are you subject to reporting of overseas corporation establishment or foreign direct investment?",
     "osRGuide": "See the guide slide below",
     "foreignDirectRep": " Have you filed a foreign direct investment report or are you planning to proceed with the above information?",
@@ -3195,7 +3195,26 @@
     "lockedNote": "After payment, selections are locked.",
     "paymentCurrency": "Payment Currency For Card Payment",
     "currencyNote": "All prices are originally computed in {{currency}}. Conversion rates are updated live.",
-    "managedByPartyKyc": "Selected in Party KYC"
+    "managedByPartyKyc": "Selected in Party KYC",
+    "managedByPartySetup": "Calculated from party setup",
+    "additionalExecutive": {
+      "toggleLabel": "Additional Executive KYC / Due Diligence",
+      "toggleInfo": "Turn this on to add KYC / due diligence pricing from the party list. The preview updates automatically when party type or count changes.",
+      "previewActive": "Preview is active and the charge is included in totals.",
+      "previewMuted": "Preview only. No charge is added until this service is enabled.",
+      "individualPreviewLabel": "Individual KYC",
+      "corporatePreviewLabel": "Corporate KYC",
+      "previewTotalLabel": "Preview Total",
+      "individualPreviewInfo": "{{count}} parties • {{packs}} packs • {{rate}} per pack",
+      "corporatePreviewInfo": "{{count}} parties • {{packs}} packs • {{rate}} per pack",
+      "previewHelp": "Preview is derived from the current party list. Individual and corporate parties are charged separately in packs of two.",
+      "previewEmpty": "No parties yet. Add parties first to preview the KYC charge.",
+      "individualItemLabel": "Individual KYC / Due Diligence fee",
+      "individualItemInfo": "Charged based on the number of individual parties in packs of two.",
+      "corporateItemLabel": "Corporate KYC / Due Diligence fee",
+      "corporateItemInfo": "Charged based on the number of corporate parties in packs of two.",
+      "packUnit": "pack"
+    }
   },
   "mcap": {
     "common": {
