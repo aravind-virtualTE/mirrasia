@@ -8,6 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { getExchangeRate } from "@/services/exchangeRate";
 import { RefreshCw } from "lucide-react";
+import {
+    ADDITIONAL_EXECUTIVE_KYC_FIELD,
+    getAdditionalExecutivePreview,
+    getAdditionalExecutiveUsdToBaseRate,
+    isAdditionalExecutiveKycEnabled,
+} from "../additionalExecutivePricing";
 
 const BASE_SETUP_CORP = 3000;
 const PRICE_NS = 1300;
@@ -26,6 +32,7 @@ const ND_PRICES: Record<number, number> = {
 type PanamaServiceSetupWidgetProps = {
     data: Record<string, any>;
     onChange: (data: Record<string, any>) => void;
+    countryCode?: string;
     config?: {
         basePrice?: number;
         tPrefix?: string;
@@ -41,13 +48,24 @@ const toCurrency = (amount: number, currency: string) => (
     }).format(round2(amount))
 );
 
-export function PanamaServiceSetupWidget({ data, onChange, config }: PanamaServiceSetupWidgetProps) {
+export function PanamaServiceSetupWidget({ data, onChange, countryCode, config }: PanamaServiceSetupWidgetProps) {
     const basePrice = config?.basePrice ?? BASE_SETUP_CORP;
     const tPrefix = config?.tPrefix ?? "panama.quoteSetup";
     const { t } = useTranslation();
     const isLocked = data.paymentStatus === "paid";
     const selectedCurrency = String(data.paymentCurrency || data.stripeCurrency || "USD").toUpperCase();
     const useMirrStorage = Boolean(data.recordStorageUseMirr);
+    const additionalExecutiveEnabled = isAdditionalExecutiveKycEnabled(data);
+    const additionalExecutiveUsdToBaseRate = useMemo(
+        () => getAdditionalExecutiveUsdToBaseRate(countryCode, data),
+        [countryCode, data]
+    );
+    const additionalExecutivePreview = useMemo(
+        () => getAdditionalExecutivePreview(countryCode, data?.parties, {
+            usdToBaseRate: additionalExecutiveUsdToBaseRate,
+        }),
+        [additionalExecutiveUsdToBaseRate, countryCode, data?.parties]
+    );
     const [isConverting, setIsConverting] = useState(false);
     const [displayRate, setDisplayRate] = useState<number>(
         Number(data.pa_exchangeRate || (selectedCurrency === "HKD" ? 7.8 : 1)) || 1
@@ -118,6 +136,8 @@ export function PanamaServiceSetupWidget({ data, onChange, config }: PanamaServi
             + (optCbi ? PRICE_CBI : 0)
             + (useMirrStorage ? PRICE_RECORD_STORAGE : 0);
     }, [basePrice, ndSetup, nsSetup, optEmi, optBank, optCbi, useMirrStorage]);
+    const previewTotalUsd = additionalExecutiveEnabled ? additionalExecutivePreview.total : 0;
+    const combinedTotalUsd = totalUsd + previewTotalUsd;
 
     const toDisplayAmount = (usdAmount: number) => (
         selectedCurrency === "HKD" ? round2(usdAmount * displayRate) : round2(usdAmount)
@@ -128,6 +148,11 @@ export function PanamaServiceSetupWidget({ data, onChange, config }: PanamaServi
     const setField = (key: string, value: any) => {
         if (isLocked) return;
         mergeData({ [key]: value });
+    };
+
+    const toggleAdditionalExecutiveKyc = (checked: boolean) => {
+        if (isLocked) return;
+        mergeData({ [ADDITIONAL_EXECUTIVE_KYC_FIELD]: checked });
     };
 
     const handleCurrencyChange = (currency: string) => {
@@ -157,6 +182,94 @@ export function PanamaServiceSetupWidget({ data, onChange, config }: PanamaServi
                     {t(`${tPrefix}.lockedMessage`)}
                 </div>
             )}
+
+            <Card className={!additionalExecutiveEnabled ? "border bg-muted/20" : "border"}>
+                <CardContent className="pt-4">
+                    <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                        <div className="space-y-3 xl:max-w-md">
+                            <label className="flex items-start gap-3">
+                                <Checkbox
+                                    checked={additionalExecutiveEnabled}
+                                    disabled={isLocked}
+                                    onCheckedChange={(checked) => toggleAdditionalExecutiveKyc(checked === true)}
+                                />
+                                <div className="space-y-1">
+                                    <div className="text-sm font-semibold text-foreground">
+                                        {t("service.additionalExecutive.toggleLabel", "Additional Executive KYC / Due Diligence")}
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">
+                                        {t(
+                                            "service.additionalExecutive.toggleInfo",
+                                            "Turn this on to add KYC / due diligence pricing from the party list. The preview updates automatically when party type or count changes."
+                                        )}
+                                    </p>
+                                </div>
+                            </label>
+                            <p className="text-xs text-muted-foreground">
+                                {additionalExecutiveEnabled
+                                    ? t("service.additionalExecutive.previewActive", "Preview is active and the charge is included in totals.")
+                                    : t("service.additionalExecutive.previewMuted", "Preview only. No charge is added until this service is enabled.")}
+                            </p>
+                        </div>
+
+                        <div className={!additionalExecutiveEnabled ? "grid gap-3 sm:grid-cols-3 xl:min-w-[540px] opacity-60" : "grid gap-3 sm:grid-cols-3 xl:min-w-[540px]"}>
+                            <div className="rounded-lg border bg-background/80 p-3">
+                                <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                                    {t("service.additionalExecutive.individualPreviewLabel", "Individual KYC")}
+                                </div>
+                                <div className="mt-2 text-sm font-semibold text-foreground">
+                                    {formatAmount(additionalExecutivePreview.individualSubtotal)}
+                                </div>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {t("service.additionalExecutive.individualPreviewInfo", {
+                                        count: additionalExecutivePreview.individualCount,
+                                        packs: additionalExecutivePreview.individualPacks,
+                                        rate: formatAmount(additionalExecutivePreview.rates.individual),
+                                        defaultValue: "{{count}} parties • {{packs}} packs • {{rate}} per pack",
+                                    })}
+                                </p>
+                            </div>
+
+                            <div className="rounded-lg border bg-background/80 p-3">
+                                <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                                    {t("service.additionalExecutive.corporatePreviewLabel", "Corporate KYC")}
+                                </div>
+                                <div className="mt-2 text-sm font-semibold text-foreground">
+                                    {formatAmount(additionalExecutivePreview.corporateSubtotal)}
+                                </div>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {t("service.additionalExecutive.corporatePreviewInfo", {
+                                        count: additionalExecutivePreview.corporateCount,
+                                        packs: additionalExecutivePreview.corporatePacks,
+                                        rate: formatAmount(additionalExecutivePreview.rates.corporate),
+                                        defaultValue: "{{count}} parties • {{packs}} packs • {{rate}} per pack",
+                                    })}
+                                </p>
+                            </div>
+
+                            <div className="rounded-lg border bg-background/80 p-3">
+                                <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                                    {t("service.additionalExecutive.previewTotalLabel", "Preview Total")}
+                                </div>
+                                <div className="mt-2 text-sm font-semibold text-foreground">
+                                    {formatAmount(additionalExecutivePreview.total)}
+                                </div>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {additionalExecutivePreview.total > 0
+                                        ? t(
+                                            "service.additionalExecutive.previewHelp",
+                                            "Preview is derived from the current party list. Individual and corporate parties are charged separately in packs of two."
+                                        )
+                                        : t(
+                                            "service.additionalExecutive.previewEmpty",
+                                            "No parties yet. Add parties first to preview the KYC charge."
+                                        )}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
 
             <Card className="border">
                 <CardContent className="space-y-3 pt-4">
@@ -247,9 +360,15 @@ export function PanamaServiceSetupWidget({ data, onChange, config }: PanamaServi
                     )}
 
                     <div className="mt-2 rounded-lg bg-primary/10 p-3">
+                        {additionalExecutiveEnabled && additionalExecutivePreview.total > 0 && (
+                            <div className="mb-2 flex items-center justify-between border-b border-primary/15 pb-2 text-sm">
+                                <span>{t("service.additionalExecutive.previewTotalLabel", "Preview Total")}</span>
+                                <span className="font-semibold">{formatAmount(additionalExecutivePreview.total)}</span>
+                            </div>
+                        )}
                         <div className="flex items-center justify-between">
                             <span className="text-sm font-medium">{t(`${tPrefix}.totals.setupY1`)}</span>
-                            <span className="text-sm font-bold">{toCurrency(toDisplayAmount(totalUsd), selectedCurrency)}</span>
+                            <span className="text-sm font-bold">{toCurrency(toDisplayAmount(combinedTotalUsd), selectedCurrency)}</span>
                         </div>
                     </div>
                 </CardContent>

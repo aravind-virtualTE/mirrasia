@@ -2,6 +2,10 @@
 import type { PartyField, PartyFieldType, PartyFormConfig, PartyStep } from "./partyKycTypes";
 import sgQuestions from "./questionBank/sg-questions.json";
 import paQuestions from "./questionBank/pa-questions.json";
+import {
+  CORRESPONDENCE_SERVICE_FIELD,
+  isCorrespondenceServiceEligibleRoles,
+} from "../correspondenceService";
 
 type QuestionOption = {
   value: string;
@@ -140,12 +144,8 @@ const partyRoleOptions = [
   { value: "dcp", label: "Designated Contact Person" },
 ];
 
-const hkCorrespondenceServiceEligible = (values: Record<string, any>) => {
-  const roles = Array.isArray(values?.roles)
-    ? values.roles.map((role) => String(role || "").trim().toLowerCase())
-    : [];
-  return roles.includes("director") || roles.includes("shareholder") || roles.includes("member") || roles.includes("dcp");
-};
+const correspondenceServiceEligible = (values: Record<string, any>) =>
+  isCorrespondenceServiceEligibleRoles(values?.roles);
 
 // --- HK options (mirrors ShrDirConstants keys for compatibility) ---
 const hkSignificantControllerOptions = [
@@ -857,10 +857,10 @@ const BASE_PARTY_KYC_REGISTRY: PartyFormConfig[] = [
             options: hkCorrespondenceAddressOptions,
           },
           {
-            name: "useCorrespondenceAddressService",
+            name: CORRESPONDENCE_SERVICE_FIELD,
             label: "hk_shldr.useCorrespondenceAddressService",
             type: "checkbox",
-            condition: hkCorrespondenceServiceEligible,
+            condition: correspondenceServiceEligible,
           },
           {
             name: "overseasResidentStatus",

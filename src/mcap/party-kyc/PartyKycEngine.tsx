@@ -14,7 +14,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { HK_DCP_HEADCOUNT_PRICING_ENABLED } from "../configs/hkPricingFlags";
+import { CORRESPONDENCE_SERVICE_FIELD, getCorrespondenceServicePrice } from "../correspondenceService";
 import type { PartyField, PartyFormConfig, PartyStep } from "./partyKycTypes";
 import { resolvePartyKycI18nKey } from "./i18nKeys";
 
@@ -400,27 +400,15 @@ export default function PartyKycEngine({
   };
 
   const getFieldHint = (field: PartyField) => {
-    const normalizedRoles = Array.isArray(formData?.roles)
-      ? formData.roles.map((role: any) => String(role || "").trim().toLowerCase())
-      : [];
-
-    if (config.countryCode === "HK" && field.name === "useCorrespondenceAddressService") {
-      const isDcp = normalizedRoles.includes("dcp");
-      const dcpPricingEnabled = HK_DCP_HEADCOUNT_PRICING_ENABLED;
-      return isDcp
-        ? (dcpPricingEnabled
-          ? t(
-            "hk_shldr.useCorrespondenceAddressServiceHintDcp",
-            "Optional service. If selected, USD 260/year will be added automatically to service selection and invoice."
-          )
-          : t(
-             "hk_shldr.useCorrespondenceAddressServiceHintStandard",
-              "Optional service. If selected, USD 65 will be added automatically to service selection and invoice."
-          ))
-        : t(
-          "hk_shldr.useCorrespondenceAddressServiceHintStandard",
-          "Optional service. If selected, USD 65 will be added automatically to service selection and invoice."
-        );
+    if (field.name === CORRESPONDENCE_SERVICE_FIELD) {
+      const correspondencePrice = getCorrespondenceServicePrice(config.countryCode);
+      return t(
+        "hk_shldr.useCorrespondenceAddressServiceHintStandard",
+        {
+          amount: correspondencePrice,
+          defaultValue: `Optional service. If selected, USD ${correspondencePrice} will be added automatically to service selection and invoice.`,
+        }
+      );
     }
 
     return field.hint ? tr(field.hint) : undefined;
@@ -770,9 +758,6 @@ export default function PartyKycEngine({
     </div>
   );
 }
-
-
-
 
 
 

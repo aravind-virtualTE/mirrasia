@@ -17,6 +17,17 @@ const YES_NO_DONT_KNOW_OPTIONS = [
   { label: "mcap.common.options.doNotKnow", value: "unknown" },
 ];
 
+const getSelectedCrServiceIds = (data: Record<string, any>) => {
+  const ids = new Set<string>();
+  const optionalFeeIds = Array.isArray(data?.optionalFeeIds) ? data.optionalFeeIds : [];
+  const serviceItemsSelected = Array.isArray(data?.serviceItemsSelected) ? data.serviceItemsSelected : [];
+  optionalFeeIds.forEach((id: any) => ids.add(String(id)));
+  serviceItemsSelected.forEach((id: any) => ids.add(String(id)));
+  if (data?.directorNominee) ids.add("directorNominee");
+  if (data?.shareholderNominee) ids.add("shareholderNominee");
+  return ids;
+};
+
 export const CR_FULL_CONFIG: McapConfig = {
   id: "cr-full",
   countryCode: "CR",
@@ -319,10 +330,40 @@ export const CR_FULL_CONFIG: McapConfig = {
       id: "services",
       title: "mcap.common.steps.services",
       description: "mcap.cr.steps.services.description",
-      fields: [
-        { type: "checkbox", name: "directorNominee", label: "mcap.cr.services.fields.directorNominee.label" },
-        { type: "checkbox", name: "shareholderNominee", label: "mcap.cr.services.fields.shareholderNominee.label" },
+      widget: "ServiceSelectionWidget",
+      serviceItems: [
+        { id: "base", label: "mcap.cr.services.items.base.label", amount: CR_PRICES.base, original: CR_PRICES.base, mandatory: true },
+        { id: "directorNominee", label: "mcap.cr.services.items.directorNominee.label", amount: CR_PRICES.nominee, original: CR_PRICES.nominee, mandatory: false },
+        { id: "shareholderNominee", label: "mcap.cr.services.items.shareholderNominee.label", amount: CR_PRICES.nominee, original: CR_PRICES.nominee, mandatory: false },
       ],
+      supportedCurrencies: ["USD", "HKD"],
+      computeFees: (data) => {
+        const selectedServiceIds = getSelectedCrServiceIds(data);
+        const items: McapFeeItem[] = [
+          { id: "base", label: "mcap.cr.services.items.base.label", amount: CR_PRICES.base, kind: "service" as const },
+        ];
+        if (selectedServiceIds.has("directorNominee")) {
+          items.push({ id: "directorNominee", label: "mcap.cr.services.items.directorNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
+        }
+        if (selectedServiceIds.has("shareholderNominee")) {
+          items.push({ id: "shareholderNominee", label: "mcap.cr.services.items.shareholderNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
+        }
+        const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const cardFeePct = 0.06;
+        const cardFeeSurcharge = data.payMethod === "card" ? total * cardFeePct : 0;
+        const grandTotal = total + cardFeeSurcharge;
+
+        return {
+          currency: "USD",
+          items,
+          total,
+          service: total,
+          government: 0,
+          cardFeePct,
+          cardFeeSurcharge,
+          grandTotal,
+        };
+      },
     },
     {
       id: "parties",
@@ -366,13 +407,14 @@ export const CR_FULL_CONFIG: McapConfig = {
       widget: "PaymentWidget",
       supportedCurrencies: ["USD", "HKD"],
       computeFees: (data) => {
+        const selectedServiceIds = getSelectedCrServiceIds(data);
         const items: McapFeeItem[] = [
           { id: "base", label: "mcap.cr.services.items.base.label", amount: CR_PRICES.base, kind: "service" as const },
         ];
-        if (data.directorNominee) {
+        if (selectedServiceIds.has("directorNominee")) {
           items.push({ id: "directorNominee", label: "mcap.cr.services.items.directorNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
         }
-        if (data.shareholderNominee) {
+        if (selectedServiceIds.has("shareholderNominee")) {
           items.push({ id: "shareholderNominee", label: "mcap.cr.services.items.shareholderNominee.label", amount: CR_PRICES.nominee, kind: "optional" as const });
         }
         const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);

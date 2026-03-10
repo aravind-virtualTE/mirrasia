@@ -58,22 +58,19 @@ const QUOTE_ONLY_SERVICE_OPTIONS = [
   { label: "mcap.common.options.other", value: "other" },
 ];
 
-const UK_ENTITY_PRICING: Record<UkEntityMode, { incorporation: number; kyc: number; registeredOffice: number }> = {
+const UK_ENTITY_PRICING: Record<UkEntityMode, { incorporation: number; registeredOffice: number }> = {
   individual: {
     incorporation: 1700,
-    kyc: 100,
     registeredOffice: 600,
   },
   subsidiary: {
     incorporation: 1700,
-    kyc: 250,
     registeredOffice: 600,
   },
   // Reserved for future dedicated branch pricing update.
   // For now this follows the individual package as requested.
   branch: {
     incorporation: 1000,
-    kyc: 100,
     registeredOffice: 600,
   },
 };
@@ -124,50 +121,10 @@ const getSelectedServiceIds = (data: any) => {
   return ids;
 };
 
-const UK_ADDITIONAL_KYC_COMPLIANCE_OPTIONS = [
-  {
-    label: "mcap.uk.services.fields.additionalExecutivePairs.options.none",
-    value: "none",
-    amount: 0,
-  },
-  {
-    label: "mcap.uk.services.fields.additionalExecutivePairs.options.individualPack1",
-    value: "individual_pack_1",
-    amount: 100,
-  },
-  {
-    label: "mcap.uk.services.fields.additionalExecutivePairs.options.individualPack2",
-    value: "individual_pack_2",
-    amount: 200,
-  },
-  {
-    label: "mcap.uk.services.fields.additionalExecutivePairs.options.corporateShareholder1",
-    value: "corporate_shareholder_1",
-    amount: 150,
-  },
-  {
-    label: "mcap.uk.services.fields.additionalExecutivePairs.options.corporateShareholder2",
-    value: "corporate_shareholder_2",
-    amount: 300,
-  },
-  {
-    label: "mcap.uk.services.fields.additionalExecutivePairs.options.combinationPack1",
-    value: "combination_pack_1",
-    amount: 250,
-  },
-] as const;
-
-const getUkAdditionalKycComplianceOption = (value: any) => {
-  const selected = String(value || "none");
-  return UK_ADDITIONAL_KYC_COMPLIANCE_OPTIONS.find((option) => option.value === selected)
-    || UK_ADDITIONAL_KYC_COMPLIANCE_OPTIONS[0];
-};
-
 const buildUkServiceItems = (data: any) => {
   const mode = getSelectedEntityMode(data);
   const pricing = UK_ENTITY_PRICING[mode];
 
-  const selectedAdditionalKycCompliance = getUkAdditionalKycComplianceOption(data?.ukAdditionalExecutivePairs);
   const additionalDcpContacts = toNonNegativeInt(data?.additionalContactPersons);
 
   const items: Array<{
@@ -190,14 +147,6 @@ const buildUkServiceItems = (data: any) => {
         // info: "mcap.uk.services.base.incorporation.info",
       },
       {
-        id: "uk_base_kyc",
-        label: "mcap.uk.services.base.kyc.label",
-        amount: pricing.kyc,
-        original: pricing.kyc,
-        mandatory: true,
-        // info: "mcap.uk.services.base.kyc.info",
-      },
-      {
         id: "uk_base_registered_office",
         label: "mcap.uk.services.base.registeredOffice.label",
         amount: pricing.registeredOffice,
@@ -206,16 +155,6 @@ const buildUkServiceItems = (data: any) => {
         // info: "mcap.uk.services.base.registeredOffice.info",
       },
     ];
-
-  if (selectedAdditionalKycCompliance.amount > 0) {
-    items.push({
-      id: "uk_additional_kyc_compliance_option",
-      label: selectedAdditionalKycCompliance.label,
-      amount: selectedAdditionalKycCompliance.amount,
-      original: selectedAdditionalKycCompliance.amount,
-      mandatory: true,
-    });
-  }
 
   if (additionalDcpContacts > 0) {
     const amount = additionalDcpContacts * 250;
@@ -741,16 +680,6 @@ export const UK_FULL_CONFIG: McapConfig = {
       description: "mcap.uk.steps.services.description",
       widget: "ServiceSelectionWidget",
       fields: [
-        {
-          type: "select",
-          name: "ukAdditionalExecutivePairs",
-          label: "mcap.uk.services.fields.additionalExecutivePairs.label",
-          defaultValue: "none",
-          options: UK_ADDITIONAL_KYC_COMPLIANCE_OPTIONS.map((option) => ({
-            label: option.label,
-            value: option.value,
-          })),
-        },
         {
           type: "checkbox-group",
           name: "ukQuoteOnlyServices",

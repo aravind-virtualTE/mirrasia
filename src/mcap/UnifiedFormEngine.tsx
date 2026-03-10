@@ -25,6 +25,14 @@ import type { McapConfig, McapField, McapReviewSummaryRow, RepeatableSection } f
 import { Progress } from "@/components/ui/progress";
 import { buildDefaultsForFields, getDefaultValueForField } from "./fields/fieldDefaults";
 import { API_URL } from "@/services/fetch";
+import { getExchangeRate, getPricingBaseCurrency } from "@/services/exchangeRate";
+import {
+    ADDITIONAL_EXECUTIVE_USD_TO_BASE_CURRENCY_FIELD,
+    ADDITIONAL_EXECUTIVE_USD_TO_BASE_RATE_FIELD,
+    applyAdditionalExecutiveFeesToFees,
+    getAdditionalExecutiveUsdToBaseRate,
+    isAdditionalExecutiveKycEnabled,
+} from "./additionalExecutivePricing";
 
 // --- API Helper (Inlined for Demo) ---
 const API_BASE = API_URL.replace(/\/+$/, "");
@@ -127,6 +135,7 @@ export const UnifiedFormEngine = ({
     const currentStep = config.steps[currentStepIdx];
     const isLastStep = currentStepIdx === config.steps.length - 1;
     const entityMeta = useMemo(() => config.entityMeta || {}, [config.entityMeta]);
+    const pricingBaseCurrency = useMemo(() => getPricingBaseCurrency(config.countryCode), [config.countryCode]);
     // Prefer fresh step-level computeFees. If converted FX metadata is missing from that output,
     // fall back to cached converted computedFees from ServiceSelectionWidget.
     const computedFees = useMemo(() => {
@@ -134,8 +143,16 @@ export const UnifiedFormEngine = ({
         const calculated = currentStep.computeFees
             ? currentStep.computeFees(formData, entityMeta)
             : (cachedFees || currentStep.fees);
+        const withAdditionalExecutiveFees = (fees: any) =>
+            applyAdditionalExecutiveFeesToFees(fees, {
+                countryCode: config.countryCode,
+                parties,
+                payMethod: formData?.payMethod,
+                enabled: isAdditionalExecutiveKycEnabled(formData),
+                usdToBaseRate: getAdditionalExecutiveUsdToBaseRate(config.countryCode, formData),
+            });
 
-        if (!cachedFees || !currentStep.computeFees) return calculated;
+        if (!cachedFees || !currentStep.computeFees) return withAdditionalExecutiveFees(calculated);
 
         const requestedCurrency = String(formData?.paymentCurrency || formData?.currency || "").toUpperCase();
         const calculatedCurrency = String((calculated as any)?.currency || "").toUpperCase();
@@ -155,8 +172,8 @@ export const UnifiedFormEngine = ({
             && cachedCurrency === requestedCurrency
             && (!hasCalculatedFx || calculatedCurrency !== requestedCurrency);
 
-        return shouldUseCachedFx ? cachedFees : calculated;
-    }, [currentStep, formData, entityMeta]);
+        return withAdditionalExecutiveFees(shouldUseCachedFx ? cachedFees : calculated);
+    }, [config.countryCode, currentStep, formData, entityMeta, parties]);
 
     useEffect(() => {
         companyIdRef.current = companyId;
@@ -259,6 +276,77 @@ export const UnifiedFormEngine = ({
         if (!Array.isArray(parties)) return;
         setFormData((prev: any) => ({ ...prev, parties }));
     }, [parties]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        if (pricingBaseCurrency === "USD") {
+            setFormData((prev: any) => {
+                if (
+                    Number(prev?.[ADDITIONAL_EXECUTIVE_USD_TO_BASE_RATE_FIELD] || 0) === 1
+                    && String(prev?.[ADDITIONAL_EXECUTIVE_USD_TO_BASE_CURRENCY_FIELD] || "").toUpperCase() === "USD"
+                ) {
+                    return prev;
+                }
+
+                return {
+                    ...prev,
+                    [ADDITIONAL_EXECUTIVE_USD_TO_BASE_RATE_FIELD]: 1,
+                    [ADDITIONAL_EXECUTIVE_USD_TO_BASE_CURRENCY_FIELD]: "USD",
+                };
+            });
+            return () => {
+                cancelled = true;
+            };
+        }
+
+        const existingRate = getAdditionalExecutiveUsdToBaseRate(config.countryCode, formData);
+        const existingTargetCurrency = String(
+            formData?.[ADDITIONAL_EXECUTIVE_USD_TO_BASE_CURRENCY_FIELD] || ""
+        ).toUpperCase();
+        if (existingRate > 0 && existingTargetCurrency === pricingBaseCurrency) {
+            return () => {
+                cancelled = true;
+            };
+        }
+
+        const loadAdditionalExecutiveRate = async () => {
+            try {
+                const rate = await getExchangeRate("USD", pricingBaseCurrency);
+                if (cancelled) return;
+
+                setFormData((prev: any) => {
+                    const prevRate = getAdditionalExecutiveUsdToBaseRate(config.countryCode, prev);
+                    const prevTargetCurrency = String(
+                        prev?.[ADDITIONAL_EXECUTIVE_USD_TO_BASE_CURRENCY_FIELD] || ""
+                    ).toUpperCase();
+                    if (prevRate === rate && prevTargetCurrency === pricingBaseCurrency) {
+                        return prev;
+                    }
+
+                    return {
+                        ...prev,
+                        [ADDITIONAL_EXECUTIVE_USD_TO_BASE_RATE_FIELD]: rate,
+                        [ADDITIONAL_EXECUTIVE_USD_TO_BASE_CURRENCY_FIELD]: pricingBaseCurrency,
+                    };
+                });
+            } catch (error) {
+                if (!cancelled) {
+                    console.error("Unable to load additional executive base currency rate:", error);
+                }
+            }
+        };
+
+        loadAdditionalExecutiveRate();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        config.countryCode,
+        formData,
+        pricingBaseCurrency,
+    ]);
 
     // --- Handlers ---
     const handleFieldChange = (name: string, value: any) => {
@@ -1285,6 +1373,7 @@ export const UnifiedFormEngine = ({
                                 <PanamaServiceSetupWidget
                                     data={formData}
                                     onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
+                                    countryCode={config.countryCode}
                                     config={currentStep.widgetConfig}
                                 />
                             ) : currentStep.widget === "InvoiceWidget" ? (

@@ -128,7 +128,7 @@ const DesktopFeeRow: React.FC<{
                             )}
                         </div>
                         {hintOpen && item.info && (
-                            <p className="mt-1 text-xs text-muted-foreground">{item.info}</p>
+                            <p className="mt-1 text-xs text-muted-foreground">{t(item.info, item.info)}</p>
                         )}
                         {hasDiscount && (
                             <p className="text-xs text-green-600 dark:text-green-400 mt-0.5">
@@ -191,7 +191,7 @@ const MobileFeeRow: React.FC<{
                         <div className="min-w-0">
                             <p className="font-medium leading-snug">{t(item.label, item.label)}</p>
                             {hintOpen && item.info && (
-                                <p className="mt-1 text-xs text-muted-foreground">{item.info}</p>
+                                <p className="mt-1 text-xs text-muted-foreground">{t(item.info, item.info)}</p>
                             )}
                         </div>
                         {item.info && (

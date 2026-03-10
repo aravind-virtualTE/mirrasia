@@ -10,7 +10,10 @@ import {
   bookKeepingCycleOptions,
 } from "@/pages/Company/NewHKForm/hkIncorpo";
 import { businessNatureList } from "@/pages/Company/HongKong/constants";
-import { HK_DCP_HEADCOUNT_FEE_ID, HK_DCP_HEADCOUNT_PRICING_ENABLED } from "./hkPricingFlags";
+import {
+  buildCorrespondenceServiceFeeItem,
+  getCorrespondenceServiceCounts,
+} from "../correspondenceService";
 const yesNoOther = [
   { label: "newHk.steps.compliance.options.yes", value: "yes" },
   { label: "newHk.steps.compliance.options.no", value: "no" },
@@ -21,6 +24,11 @@ const purposeOptions = incorporationPurposeKeys.map((key) => ({
   label: `newHk.company.fields.purpose.options.${key}`,
   value: key,
 }));
+
+const HK_CORRESPONDENCE_SERVICE_ITEM = {
+  ...buildCorrespondenceServiceFeeItem("HK"),
+  info: "Optional service (a professional mailing service that allows company officials to keep their home addresses off the public record).",
+};
 
 const HK_FEES = {
   government: [
@@ -59,14 +67,6 @@ const HK_FEES = {
       info: "Includes statutory record keeping and filings.",
     },
     {
-      id: "kyc",
-      label: "newHk.fees.items.kyc.label",
-      original: 65,
-      amount: 0,
-      mandatory: true,
-      info: "Included for the first year.",
-    },
-    {
       id: "reg_office",
       label: "newHk.fees.items.reg_office.label",
       original: 322,
@@ -91,98 +91,12 @@ const HK_FEES = {
       info: "Company chop, share certificates, etc.",
     },
     {
-      id: "corr_addr",
-      label: "newHk.fees.items.corr_addr.label",
-      original: 65,
-      amount: 65,
-      mandatory: false,
-      info: "Optional service selected per party in Party KYC for director/shareholder/member correspondence.",
-      managedByPartyKyc: true,
-      unitLabel: "newHk.fees.units.person",
-    },
-    {
-      id: "dcp_headcount",
-      label: "newHk.fees.items.dcp_headcount.label",
-      original: 260,
-      amount: 260,
-      mandatory: false,
-      info: "Optional service selected per party in Party KYC for designated contact persons.",
-      managedByPartyKyc: true,
-      unitLabel: "newHk.fees.units.personPerYear",
+      ...HK_CORRESPONDENCE_SERVICE_ITEM,
     },
   ],
 };
 
-const HK_RUNTIME_SERVICE_FEES = HK_FEES.service.filter(
-  (fee) => HK_DCP_HEADCOUNT_PRICING_ENABLED || fee.id !== HK_DCP_HEADCOUNT_FEE_ID
-);
-
-const computeKycExtras = (parties: any[]) => {
-  const list = Array.isArray(parties) ? parties : [];
-  // Support both old "isCorp" and new "type: entity" formats
-  const legalPersonCount = list.filter((p: any) => p?.isCorp === true || p?.type === "entity").length;
-  const individualCount = list.length - legalPersonCount;
-  const LEGAL_PERSON_KYC_FEE = 130;
-  const INDIVIDUAL_KYC_SLOT_FEE = 65;
-  let extra = 0;
-  if (legalPersonCount > 0) extra += legalPersonCount * LEGAL_PERSON_KYC_FEE;
-  if (individualCount > 2) {
-    const peopleNeedingKyc = individualCount - 2;
-    const kycSlots = Math.ceil(peopleNeedingKyc / 2);
-    extra += kycSlots * INDIVIDUAL_KYC_SLOT_FEE;
-  }
-  return extra;
-};
-
 const round2 = (value: number) => Number(value.toFixed(2));
-
-const HK_CORRESPONDENCE_SERVICE_FIELD = "useCorrespondenceAddressService";
-
-const isEnabledFlag = (value: any) => {
-  if (typeof value === "boolean") return value;
-  const normalized = String(value || "").trim().toLowerCase();
-  return ["true", "yes", "1", "on"].includes(normalized);
-};
-
-const getPartyRoleSet = (party: any) => {
-  const rootRoles = Array.isArray(party?.roles) ? party.roles : [];
-  const detailRoles = Array.isArray(party?.details?.roles) ? party.details.roles : [];
-  return new Set(
-    [...rootRoles, ...detailRoles]
-      .map((role) => String(role || "").trim().toLowerCase())
-      .filter(Boolean)
-  );
-};
-
-const getCorrespondenceServiceCounts = (parties: any[]) => {
-  const list = Array.isArray(parties) ? parties : [];
-  let corrAddrCount = 0;
-  let dcpCount = 0;
-
-  list.forEach((party: any) => {
-    const selected = isEnabledFlag(
-      party?.details?.[HK_CORRESPONDENCE_SERVICE_FIELD] ?? party?.[HK_CORRESPONDENCE_SERVICE_FIELD]
-    );
-    if (!selected) return;
-
-    const roles = getPartyRoleSet(party);
-    if (roles.has("dcp")) {
-      if (HK_DCP_HEADCOUNT_PRICING_ENABLED) {
-        dcpCount += 1;
-      } else {
-        // When DCP-specific pricing is disabled, DCP falls back to the standard correspondence rate.
-        corrAddrCount += 1;
-      }
-      return;
-    }
-
-    if (roles.has("director") || roles.has("shareholder") || roles.has("member")) {
-      corrAddrCount += 1;
-    }
-  });
-
-  return { corrAddrCount, dcpCount };
-};
 
 const sumItems = (items: any[], kind?: "government" | "service") =>
   items
@@ -195,8 +109,7 @@ const computeHkFees = (data: any) => {
     ...(Array.isArray(data?.serviceItemsSelected) ? data.serviceItemsSelected.map((id: any) => String(id)) : []),
   ]);
   const parties = Array.isArray(data?.parties) ? data.parties : [];
-  const extraKyc = computeKycExtras(parties);
-  const { corrAddrCount, dcpCount } = getCorrespondenceServiceCounts(parties);
+  const { correspondenceCount } = getCorrespondenceServiceCounts(parties);
 
   const usdItems = [
     ...HK_FEES.government
@@ -209,9 +122,9 @@ const computeHkFees = (data: any) => {
         info: f.info,
         kind: "government" as const,
       })),
-    ...HK_RUNTIME_SERVICE_FEES.flatMap((f) => {
-      const quantity = f.managedByPartyKyc
-        ? (f.id === HK_DCP_HEADCOUNT_FEE_ID ? dcpCount : corrAddrCount)
+    ...HK_FEES.service.flatMap((f) => {
+      const quantity = (f as any).managedByPartyKyc
+        ? correspondenceCount
         : (f.mandatory || selectedIds.has(f.id) ? 1 : 0);
 
       if (quantity <= 0) return [];
@@ -224,21 +137,10 @@ const computeHkFees = (data: any) => {
         info: f.info,
         kind: "service" as const,
         quantity,
-        managedByPartyKyc: f.managedByPartyKyc,
-        unitLabel: f.unitLabel,
+        managedByPartyKyc: (f as any).managedByPartyKyc,
+        unitLabel: (f as any).unitLabel,
       }];
     }),
-    ...(extraKyc > 0
-      ? [{
-        id: "extra_kyc",
-        label: "newHk.fees.items.extra_kyc.label",
-        amount: Number(extraKyc),
-        original: Number(extraKyc),
-        info: "Additional KYC fees for corporate shareholders and extra individual shareholders.",
-        kind: "service" as const,
-        quantity: 1,
-      }]
-      : []),
   ];
 
   const governmentUsd = sumItems(usdItems, "government");
@@ -291,9 +193,8 @@ export const HK_FULL_CONFIG: McapConfig = {
   entityMeta: {
     fees: {
       government: HK_FEES.government,
-      service: HK_RUNTIME_SERVICE_FEES,
+      service: HK_FEES.service,
     },
-    enableKycExtras: true,
     cardFeePctByCountry: {
       HKD: 0.04,
       USD: 0.06,
@@ -504,15 +405,15 @@ export const HK_FULL_CONFIG: McapConfig = {
       supportedCurrencies: ["HKD", "USD"],
       computeFees: (data: any) => computeHkFees(data),
       serviceItems: [
-        ...HK_RUNTIME_SERVICE_FEES.map((f) => ({
+        ...HK_FEES.service.map((f) => ({
           id: f.id,
           label: f.label,
           amount: f.amount,
           original: f.original,
           info: f.info,
           mandatory: f.mandatory,
-          managedByPartyKyc: f.managedByPartyKyc,
-          unitLabel: f.unitLabel,
+          managedByPartyKyc: (f as any).managedByPartyKyc,
+          unitLabel: (f as any).unitLabel,
           currency: "USD",
         })),
       ]
