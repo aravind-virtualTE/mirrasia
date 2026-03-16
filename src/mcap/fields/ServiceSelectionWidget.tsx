@@ -619,9 +619,15 @@ export function ServiceSelectionWidget({
         const unitRateText = (managedComputed || quantityMode) && amountPerUnit > 0
             ? `${formatPrice(amountPerUnit, selectedCurrency)}/${unitLabel}`
             : "";
+        const managedStatusKey = typeof item?.managedStatusLabel === "string"
+            ? item.managedStatusLabel
+            : "service.managedByPartySetup";
+        const managedStatusFallback = typeof item?.managedStatusLabel === "string"
+            ? item.managedStatusLabel
+            : "Calculated from party setup";
         const managedStatusText = partyManaged
-            ? t("service.managedByPartyKyc", "Selected in Party KYC")
-            : t("service.managedByPartySetup", "Calculated from party setup");
+            ? String(t("service.managedByPartyKyc", "Selected in Party KYC"))
+            : String(t(managedStatusKey, managedStatusFallback));
         const managedRateText = unitRateText
             ? (effectiveQty > 0 ? `${effectiveQty} x ${unitRateText}` : unitRateText)
             : "";

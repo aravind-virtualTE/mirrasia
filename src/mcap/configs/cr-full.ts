@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { applicantRoles } from "@/pages/Company/NewHKForm/hkIncorpo";
 import type { McapConfig, McapFeeItem } from "./types";
 

@@ -8,6 +8,7 @@
  * selection lives in the MCAP pricing layer:
  * - default base pricing currency: USD
  * - Estonia / Eustonia (EE): EUR
+ * - Hungary (HU): EUR
  */
 
 import { GoogleGenAI, Type } from "@google/genai";
@@ -24,6 +25,7 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour cache
 export const DEFAULT_PRICING_BASE_CURRENCY = "USD";
 const COUNTRY_PRICING_BASE_CURRENCIES: Record<string, string> = {
     EE: "EUR",
+    HU: "EUR",
 };
 
 type GeminiExchangeResponse = {

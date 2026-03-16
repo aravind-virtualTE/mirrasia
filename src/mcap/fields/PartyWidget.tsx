@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import api, { API_URL } from "@/services/fetch";
 import { useTranslation } from "react-i18next";
-import type { PartyFieldDef } from "../configs/types";
+import type { McapFieldOption, PartyFieldDef } from "../configs/types";
 import { isEntityPartyTypeEnabledForCountry } from "../party-kyc/partyKycRegistry";
 import {
     CORRESPONDENCE_SERVICE_FIELD,
@@ -24,31 +24,32 @@ import {
 // This widget manages a list of parties (Shareholders/Directors)
 // conformant to the UnifiedParty model
 const API_BASE = API_URL.replace(/\/+$/, "");
-const PARTY_ROLE_OPTIONS = ["director", "shareholder", "dcp"] as const;
-const PARTY_ROLE_FALLBACK_LABELS: Record<(typeof PARTY_ROLE_OPTIONS)[number], string> = {
-    director: "Director",
-    shareholder: "Shareholder",
-    dcp: "DCP",
-};
+const DEFAULT_PARTY_ROLE_OPTIONS: McapFieldOption[] = [
+    { value: "director", label: "newHk.parties.roles.director" },
+    { value: "shareholder", label: "newHk.parties.roles.shareholder" },
+    { value: "dcp", label: "newHk.parties.roles.dcp" },
+];
 
 export const PartyWidget = ({
     parties = [],
     onChange,
     companyId,
     partyFields,
+    partyRoleOptions,
+    defaultPartyRoles,
     countryCode,
 }: {
     parties: any[];
     onChange: (p: any[]) => void;
     companyId?: string | null;
     partyFields?: PartyFieldDef[];
+    partyRoleOptions?: McapFieldOption[];
+    defaultPartyRoles?: string[];
     countryCode?: string;
 }) => {
     const { t } = useTranslation();
     const [directory, setDirectory] = useState<any[]>([]);
     const [selectedDirectoryId, setSelectedDirectoryId] = useState<string>("");
-    const getPartyRoleLabel = (role: (typeof PARTY_ROLE_OPTIONS)[number]) =>
-        t(`newHk.parties.roles.${role}`, PARTY_ROLE_FALLBACK_LABELS[role]);
 
     const normalizedCountryCode = useMemo(() => {
         const raw = countryCode || localStorage.getItem("country") || "";
@@ -61,6 +62,21 @@ export const PartyWidget = ({
         Array.isArray(roles)
             ? roles.map((role) => String(role || "").trim().toLowerCase()).filter(Boolean)
             : [];
+    const resolvedRoleOptions = useMemo(() => {
+        const raw = Array.isArray(partyRoleOptions) && partyRoleOptions.length > 0
+            ? partyRoleOptions
+            : DEFAULT_PARTY_ROLE_OPTIONS;
+        return raw
+            .map((option) => ({
+                value: String(option?.value || "").trim().toLowerCase(),
+                label: String(option?.label || option?.value || "").trim(),
+            }))
+            .filter((option) => option.value.length > 0);
+    }, [partyRoleOptions]);
+    const resolvedDefaultRoles = useMemo(() => {
+        const allowedRoleSet = new Set(resolvedRoleOptions.map((option) => option.value));
+        return normalizeRoles(defaultPartyRoles as any[]).filter((role) => allowedRoleSet.has(role));
+    }, [defaultPartyRoles, resolvedRoleOptions]);
     const isHkCorrespondenceFlow = normalizedCountryCode === "HK";
 
     useEffect(() => {
@@ -96,7 +112,7 @@ export const PartyWidget = ({
             name: "",
             email: "",
             phone: "",
-            roles: ["director"], // default role
+            roles: [...resolvedDefaultRoles],
             shares: 0,
             shareType: "ordinary",
             details: {}
@@ -133,7 +149,7 @@ export const PartyWidget = ({
             name: picked.name || "",
             email: picked.email || "",
             phone: picked.phone || "",
-            roles: ["director"],
+            roles: [...resolvedDefaultRoles],
             shares: 0,
             shareType: "ordinary",
             details: {},
@@ -173,7 +189,7 @@ export const PartyWidget = ({
 
     const toggleRole = (idx: number, role: string) => {
         const next = [...parties];
-        const currentRoles = next[idx].roles || [];
+        const currentRoles = normalizeRoles(next[idx].roles || []);
         const nextRoles = currentRoles.includes(role)
             ? currentRoles.filter((r: string) => r !== role)
             : [...currentRoles, role];
@@ -272,7 +288,7 @@ export const PartyWidget = ({
 
     const shouldRenderField = (party: any, field: PartyFieldDef) => {
         if (!field.roles || field.roles.length === 0) return true;
-        const roles = party?.roles || [];
+        const roles = normalizeRoles(party?.roles || []);
         return field.roles.some((r) => roles.includes(r));
     };
 
@@ -395,21 +411,21 @@ export const PartyWidget = ({
 
                                 <Separator className="my-4" />
 
-                                <div className="space-y-2">
-                                    <Label>{t("newHk.parties.fields.roleSelectionPrompt", "Select the options that the member will be")}</Label>
-                                    <div className="flex gap-4">
-                                        {PARTY_ROLE_OPTIONS.map((role) => (
-                                            <label key={role} className="flex items-center gap-2 border p-2 rounded cursor-pointer hover:bg-muted">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={(party.roles || []).includes(role)}
-                                                    onChange={() => toggleRole(idx, role)}
-                                                    className="rounded border-gray-300"
-                                                />
-                                                <span className="text-sm">{getPartyRoleLabel(role)}</span>
-                                            </label>
-                                        ))}
-                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>{t("newHk.parties.fields.roleSelectionPrompt", "Select the options that the member will be")}</Label>
+                                        <div className="flex gap-4">
+                                            {resolvedRoleOptions.map((roleOption) => (
+                                                <label key={roleOption.value} className="flex items-center gap-2 border p-2 rounded cursor-pointer hover:bg-muted">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={partyRoles.includes(roleOption.value)}
+                                                        onChange={() => toggleRole(idx, roleOption.value)}
+                                                        className="rounded border-gray-300"
+                                                    />
+                                                    <span className="text-sm">{t(roleOption.label, roleOption.label)}</span>
+                                                </label>
+                                            ))}
+                                        </div>
                                 </div>
 
                                 {(party.roles || []).includes("shareholder") && (

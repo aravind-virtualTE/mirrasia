@@ -127,6 +127,8 @@ export type McapStep = {
   supportedCurrencies?: string[];
   serviceItems?: any[] | ((data: Record<string, any>, entityMeta?: Record<string, any> | null) => any[]);
   partyFields?: PartyFieldDef[];
+  partyRoleOptions?: McapFieldOption[];
+  defaultPartyRoles?: string[];
   partyCoverageRules?: PartyCoverageRule[];
   widgetConfig?: any;
   nextGuard?: McapStepGuard;

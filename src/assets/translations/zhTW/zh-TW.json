@@ -3160,6 +3160,7 @@
         "aud": "澳元 (AUD)",
         "hkd": "港幣 (HKD)",
         "usd": "美元 (USD)",
+        "eur": "歐元 (EUR)",
         "gbp": "英鎊"
       },
       "fields": {
@@ -4930,6 +4931,214 @@
         "k179": "我確認所有提交的資訊均真實準確。",
         "k180": "我了解若發現法律/合規疑慮，服務可能會被暫停或拒絕。",
         "k181": "我了解法定資本為非計費的設立前提，不屬於發票總額的一部分。"
+      }
+    },
+    "hu": {
+      "title": "Hungary Kft Incorporation",
+      "confirmation": {
+        "title": "Hungary Incorporation Request Submitted",
+        "message": "We have received your Hungary incorporation request. Our team will review compliance, structure, and selected services before filing.",
+        "steps": {
+          "documentReview": {
+            "title": "Document Review",
+            "description": "We verify the submitted structure, supporting documents, and service scope before filing."
+          },
+          "incorporation": {
+            "title": "Incorporation and VAT Registration",
+            "description": "Standard incorporation and VAT registration are typically completed in 5 to 10 business days after all required documents are received."
+          },
+          "postFiling": {
+            "title": "Post-filing Coordination",
+            "description": "We coordinate post-incorporation items such as bank account preparation and residence-permit related services where selected."
+          }
+        }
+      },
+      "reviewSummary": {
+        "relationship": "Relationship"
+      },
+      "applicant": {
+        "description": "Applicant details, relationship to the company, and primary contact setup.",
+        "notice": {
+          "title": "Applicant Notice",
+          "content": "Complete all details in English. Apostille, translation, embassy certification, and similar external procedures should be estimated separately from the 5 to 10 business day incorporation timeline."
+        },
+        "changedName": "Have you ever changed your name?",
+        "previousNameEnglish": "If yes, provide your previous name in English.",
+        "changedNameOther": "Other name-change details",
+        "dateOfBirth": "Date of Birth",
+        "placeOfBirth": "Place of Birth",
+        "nationality": "Nationality",
+        "passportNumber": "Passport Number",
+        "residentialAddress": "Residential Address",
+        "mailingAddress": "Mailing Address",
+        "mailingAddressDetails": "If different from your residential address, provide your mailing address.",
+        "mailingOptions": {
+          "same": "Same as residential address",
+          "different": "Different mailing address"
+        },
+        "relationshipToCompany": "Relationship with the Hungarian Company",
+        "relationshipOptions": {
+          "shareholder": "Shareholder",
+          "keyController": "Ultimate Beneficial Owner / Major Controller (holding 25% or more)",
+          "director": "Director (minimum 1 required)",
+          "generalManager": "General Manager (minimum 1 required, may also be the director)",
+          "dcp": "Designated Contact Person (may also be a director)",
+          "officialPartner": "Official partner registered with Mirr Asia",
+          "other": "Other"
+        },
+        "designatedContactResponsibilities": "The designated contact person will:",
+        "designatedContactItems": {
+          "communication": "Communicate with the service provider regarding company matters.",
+          "inquiries": "Handle business inquiries and progress updates.",
+          "documents": "Receive official documents and correspondence.",
+          "access": "Access company information and documents."
+        }
+      },
+      "compliance": {
+        "description": "Business intent, sanctions screening, and ongoing obligation confirmations.",
+        "legalEthicsIssues": "Does the purpose of establishment raise legal or ethical concerns such as money laundering, gambling, tax evasion, asset concealment, or fraud?",
+        "needLegalAdvice": "Need legal advice",
+        "legalEthicsIssuesOther": "Other legal or ethical issue details",
+        "annualRenewalAgreement": "After incorporation, annual renewals, accounting, tax, and compliance obligations continue. Do you agree?",
+        "sanctionedCountriesBusiness": "Do you currently conduct or plan to conduct business in sanctioned countries or regions?",
+        "sanctionedPersonsResidence": "Do any relevant persons reside in sanctioned jurisdictions (UN/EU/UK/HKMA/OFAC scope)?",
+        "crimeaSevastopolBusiness": "Any current or planned business activity in Crimea or Sevastopol?",
+        "restrictedSectors": "Any current or planned activity in oil, gas, energy, military, or defense sectors?"
+      },
+      "company": {
+        "description": "Business profile, registered address setup, and capital acknowledgements.",
+        "notesLabel": "Important Notes",
+        "notes": {
+          "vat": "Hungary is an EU country and VAT numbers are generally issued automatically upon incorporation.",
+          "bank": "A corporate bank account should be opened within 8 days after incorporation, but onboarding may take 1 to 2 months. Significant delay can trigger an approximate EUR 70 penalty.",
+          "emi": "EMI accounts may be opened remotely in some cases, but transaction fees are usually higher than traditional bank accounts.",
+          "apostille": "If shareholders are Korean corporations, apostille and Hungarian notarized translation requirements usually apply to corporate documents.",
+          "documents": "After all documents are prepared, send them to the Korean office first for verification before they are forwarded to Hungary."
+        },
+        "industrySelection": "Industry selection",
+        "industrySelectionOther": "Other industry details",
+        "productServiceDescription": "Description of product or service",
+        "businessDescription": "Describe the business in 3 to 4 sentences",
+        "industryOptions": {
+          "cryptoRelated": "Cryptocurrency-related",
+          "itBlockchainSoftware": "IT / blockchain / software development",
+          "cryptoInvestment": "Cryptocurrency investment",
+          "cryptoGames": "Cryptocurrency-based games",
+          "forexTrading": "Foreign exchange trading",
+          "financeInvestmentConsulting": "Finance / investment / consulting",
+          "trade": "Trade",
+          "wholesaleRetail": "Wholesale / retail",
+          "consulting": "Consulting",
+          "manufacturing": "Manufacturing",
+          "ecommerce": "Online services (e-commerce)",
+          "onlineDirectPurchase": "Online direct purchase / delivery / agency"
+        },
+        "purposeOfEstablishment": "Purpose of establishment and expected effect",
+        "purposeOfEstablishmentOther": "Other purpose details",
+        "purposeOptions": {
+          "businessDiversification": "Business diversification",
+          "advisorPartnerSuggestion": "Advisor / investor / partner recommendation",
+          "internationalExpansion": "International expansion",
+          "assetManagement": "Asset management",
+          "holdingCompany": "Holding company strategy",
+          "financialPolicyAdvantage": "Competitive advantage through financial policy",
+          "taxEfficiency": "Transaction growth due to tax efficiency"
+        },
+        "registeredCapitalHuf": "Registered capital to be paid in (HUF)",
+        "registeredAddressOption": "Registered address in Hungary",
+        "registeredAddressOptions": {
+          "mirr": "Use Mirr Asia registered address arrangement",
+          "client": "Use client-provided Hungarian address"
+        },
+        "registeredAddressDetails": "Client-provided registered address details",
+        "capitalRequirementAcknowledged": "I understand the HUF 3,000,000 statutory capital requirement is a compliance prerequisite and is excluded from invoice totals."
+      },
+      "parties": {
+        "description": "Invite all required parties and assign director, general manager, and designated contact coverage.",
+        "roleOptions": {
+          "shareholder": "Shareholder",
+          "keyController": "Ultimate Beneficial Owner / Major Controller (holding 25% or more)",
+          "director": "Director",
+          "generalManager": "General Manager",
+          "dcp": "Designated Contact Person",
+          "officialPartner": "Official partner registered with Mirr Asia",
+          "other": "Other"
+        },
+        "coverage": {
+          "generalManager": "General manager coverage",
+          "generalManagerAtLeastOne": "At least one general manager is required"
+        }
+      },
+      "accounting": {
+        "description": "Bookkeeping scope, staffing profile, and VAT / tax support needs.",
+        "expectedMonthlyInvoices": "Expected monthly invoices",
+        "invoiceVolume": {
+          "upTo50": "Up to 50",
+          "from51To100": "51 to 100",
+          "from101To200": "101 to 200",
+          "from201To500": "201 to 500",
+          "moreThan500": "More than 500"
+        },
+        "expectedEmployees": "Expected number of employees",
+        "employeeCount": {
+          "zeroToThree": "0 to 3",
+          "fourToFive": "4 to 5",
+          "sixToSeven": "6 to 7",
+          "moreThanSeven": "More than 7"
+        },
+        "needAdvisory": "Need advisory before deciding",
+        "notes": "Accounting and reporting notes"
+      },
+      "services": {
+        "description": "Review the Hungary package and optional add-ons before payment.",
+        "notice": {
+          "title": "Service Selection",
+          "content": "Residence permit services should be requested in advance. Entity-shareholder KYC is charged automatically based on the party list."
+        },
+        "items": {
+          "basePackage": {
+            "label": "Hungary Kft establishment + initial 1-year service",
+            "info": "Includes Kft establishment and the initial one-year service package. Standard filing plus VAT registration is typically 5 to 10 business days after all required documents are received."
+          },
+          "accounting": {
+            "label": "Accounting services (initial 6 months)",
+            "info": "Starting price is EUR 1,000 for 6 months. Apply in advance if accounting services are required."
+          },
+          "representativeResidencePermit": {
+            "label": "Residence permit application for representative",
+            "info": "Apply in advance if residence permit service is required for the representative."
+          },
+          "entityShareholderKyc": {
+            "label": "Additional KYC for entity shareholder",
+            "info": "Charged at incorporation for each shareholder party that is a legal entity."
+          }
+        },
+        "familyResidencePermit": {
+          "label": "Residence permit application for immediate family members",
+          "info": "Charged at EUR 2,000 per 2-person pack. The total number of packs is rounded up from the person count.",
+          "selectedLabel": "Include immediate family residence permit service",
+          "personCountLabel": "Number of family members",
+          "personCountHelpTitle": "Pricing rule",
+          "personCountHelp": "Pricing is EUR 2,000 per 2 family members. The invoice uses packs rounded up from the entered person count."
+        },
+        "managed": {
+          "partyDriven": "Calculated from entity shareholder parties",
+          "familyInput": "Calculated from family member count"
+        },
+        "units": {
+          "entityShareholder": "entity shareholder",
+          "twoPersonPack": "2-person pack"
+        },
+        "note": "Hungary prices are authored in EUR. The HUF 3,000,000 minimum capital is tracked for compliance only and is excluded from billable totals."
+      },
+      "invoice": {
+        "description": "Review the final fee breakdown before payment."
+      },
+      "payment": {
+        "description": "Proceed with card payment or bank transfer proof upload."
+      },
+      "review": {
+        "capitalNonBillableAcknowledgment": "I understand the HUF 3,000,000 statutory capital is not part of the invoice total."
       }
     },
     "ie": {

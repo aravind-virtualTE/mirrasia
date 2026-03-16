@@ -469,8 +469,8 @@ const buildApplicantFields = (): McapField[] => [
   { type: "email", name: "applicantEmail", label: "newHk.steps.applicant.fields.email.label", required: true },
   { type: "text", name: "applicantPhone", label: "newHk.steps.applicant.fields.phone.label", required: true },
   { type: "text", name: "companyName1", label: "newHk.steps.applicant.fields.name1.label", required: true, colSpan: 2 },
-  { type: "text", name: "companyName2", label: "newHk.steps.applicant.fields.name2.label", colSpan: 2 },
-  { type: "text", name: "companyName3", label: "newHk.steps.applicant.fields.name3.label", colSpan: 2 },
+  { type: "text", name: "companyName2", label: "newHk.steps.applicant.fields.name2.label", required: true, colSpan: 2 },
+  { type: "text", name: "companyName3", label: "newHk.steps.applicant.fields.name3.label", required: true, colSpan: 2 },
 
   {
     type: "checkbox-group",
