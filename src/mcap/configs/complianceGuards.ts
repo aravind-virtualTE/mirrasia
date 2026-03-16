@@ -141,10 +141,10 @@ const countryRulesByCode: Record<string, ConsultationRule[]> = {
     { field: "restrictedSectors", allow: ["no"] },
   ],
   HU: [
-    { field: "legalEthicsIssues", allow: ["no"] },
     { field: "annualRenewalAgreement", allow: ["yes", "internal"] },
     { field: "sanctionedCountriesBusiness", allow: ["no"] },
     { field: "sanctionedPersonsResidence", allow: ["no"] },
+    { field: "sanctionedOwnershipControl", allow: ["no"] },
     { field: "crimeaSevastopolBusiness", allow: ["no"] },
     { field: "restrictedSectors", allow: ["no"] },
   ],
