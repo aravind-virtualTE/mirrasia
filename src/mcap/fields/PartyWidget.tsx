@@ -70,6 +70,7 @@ export const PartyWidget = ({
             .map((option) => ({
                 value: String(option?.value || "").trim().toLowerCase(),
                 label: String(option?.label || option?.value || "").trim(),
+                tooltip: typeof option?.tooltip === "string" ? option.tooltip : undefined,
             }))
             .filter((option) => option.value.length > 0);
     }, [partyRoleOptions]);
@@ -77,6 +78,10 @@ export const PartyWidget = ({
         const allowedRoleSet = new Set(resolvedRoleOptions.map((option) => option.value));
         return normalizeRoles(defaultPartyRoles as any[]).filter((role) => allowedRoleSet.has(role));
     }, [defaultPartyRoles, resolvedRoleOptions]);
+    const showDcpNote = useMemo(
+        () => resolvedRoleOptions.some((option) => option.value === "dcp"),
+        [resolvedRoleOptions]
+    );
     const isHkCorrespondenceFlow = normalizedCountryCode === "HK";
 
     useEffect(() => {
@@ -322,6 +327,31 @@ export const PartyWidget = ({
                     </Button>
                 </div>
             </div>
+
+            {showDcpNote && (
+                <div className="rounded-lg border border-dashed bg-muted/20 p-4 space-y-2">
+                    <p className="text-sm font-semibold">
+                        {t("newHk.parties.notes.dcp.title", "Designated Contact Person")}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                        {t(
+                            "newHk.parties.notes.dcp.description",
+                            "Provide the person responsible for communication with the service provider."
+                        )}
+                    </p>
+                    <ul className="list-disc pl-5 text-xs text-muted-foreground space-y-1">
+                        <li>
+                            {t("newHk.parties.notes.dcp.items.inquiries", "Handling company-related inquiries")}
+                        </li>
+                        <li>
+                            {t("newHk.parties.notes.dcp.items.progress", "Monitoring progress of procedures")}
+                        </li>
+                        <li>
+                            {t("newHk.parties.notes.dcp.items.correspondence", "Receiving official correspondence")}
+                        </li>
+                    </ul>
+                </div>
+            )}
 
             <div className="grid gap-4">
                 {parties.map((party, idx) => {

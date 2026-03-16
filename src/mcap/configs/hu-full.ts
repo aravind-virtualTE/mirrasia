@@ -19,16 +19,21 @@ const HU_BASE_CURRENCY = "EUR";
 
 const HU_PRICING = {
   incorporationAndFirstYear: 3500,
+  bankAccountOpening: 0,
   entityShareholderKyc: 700,
   accountingSixMonthsFrom: 1000,
   representativeResidencePermit: 3000,
   familyResidencePermitPack: 2000,
+  legalOpinionWhitepaperReview: 0,
+  legalOpinionDomesticExchange: 0,
+  legalOpinionOtherJurisdictions: 0,
+  businessRegulatoryConsulting: 0,
 } as const;
 
-const YES_NO_UNKNOWN: McapFieldOption[] = [
+const YES_NO_NOT_SURE: McapFieldOption[] = [
   { label: "mcap.common.options.yes", value: "yes" },
   { label: "mcap.common.options.no", value: "no" },
-  { label: "mcap.common.options.doNotKnow", value: "unknown" },
+  { label: "mcap.hu.compliance.options.notSure", value: "unknown" },
 ];
 
 const YES_NO_OTHER: McapFieldOption[] = [
@@ -118,6 +123,15 @@ export const buildHuServiceItems = (data: Record<string, any>): HuServiceItem[] 
       info: "mcap.hu.services.items.basePackage.info",
     },
     {
+      id: "hu_bank_account_opening",
+      label: "mcap.hu.services.items.bankAccountOpening.label",
+      amount: HU_PRICING.bankAccountOpening,
+      original: HU_PRICING.bankAccountOpening,
+      mandatory: false,
+      kind: "other",
+      info: "mcap.hu.services.items.bankAccountOpening.info",
+    },
+    {
       id: "hu_accounting_six_months",
       label: "mcap.hu.services.items.accounting.label",
       amount: HU_PRICING.accountingSixMonthsFrom,
@@ -134,6 +148,42 @@ export const buildHuServiceItems = (data: Record<string, any>): HuServiceItem[] 
       mandatory: false,
       kind: "service",
       info: "mcap.hu.services.items.representativeResidencePermit.info",
+    },
+    {
+      id: "hu_legal_opinion_whitepaper_review",
+      label: "mcap.hu.services.items.legalOpinionWhitepaperReview.label",
+      amount: HU_PRICING.legalOpinionWhitepaperReview,
+      original: HU_PRICING.legalOpinionWhitepaperReview,
+      mandatory: false,
+      kind: "other",
+      info: "mcap.hu.services.items.legalOpinionWhitepaperReview.info",
+    },
+    {
+      id: "hu_legal_opinion_domestic_exchange",
+      label: "mcap.hu.services.items.legalOpinionDomesticExchange.label",
+      amount: HU_PRICING.legalOpinionDomesticExchange,
+      original: HU_PRICING.legalOpinionDomesticExchange,
+      mandatory: false,
+      kind: "other",
+      info: "mcap.hu.services.items.legalOpinionDomesticExchange.info",
+    },
+    {
+      id: "hu_legal_opinion_other_jurisdictions",
+      label: "mcap.hu.services.items.legalOpinionOtherJurisdictions.label",
+      amount: HU_PRICING.legalOpinionOtherJurisdictions,
+      original: HU_PRICING.legalOpinionOtherJurisdictions,
+      mandatory: false,
+      kind: "other",
+      info: "mcap.hu.services.items.legalOpinionOtherJurisdictions.info",
+    },
+    {
+      id: "hu_business_regulatory_consulting",
+      label: "mcap.hu.services.items.businessRegulatoryConsulting.label",
+      amount: HU_PRICING.businessRegulatoryConsulting,
+      original: HU_PRICING.businessRegulatoryConsulting,
+      mandatory: false,
+      kind: "other",
+      info: "mcap.hu.services.items.businessRegulatoryConsulting.info",
     },
   ];
 
@@ -416,37 +466,15 @@ const buildApplicantFields = (): McapField[] => [
 const buildComplianceFields = (): McapField[] => [
   {
     type: "radio-group",
-    name: "legalEthicsIssues",
-    label: "mcap.hu.compliance.legalEthicsIssues",
-    required: true,
-    options: [
-      { label: "mcap.common.options.yes", value: "yes" },
-      { label: "mcap.common.options.no", value: "no" },
-      { label: "mcap.common.options.doNotKnow", value: "unknown" },
-      { label: "mcap.hu.compliance.needLegalAdvice", value: "legal_advice" },
-      { label: "mcap.common.options.other", value: "other" },
-    ],
-    colSpan: 2,
-  },
-  {
-    type: "text",
-    name: "legalEthicsIssuesOther",
-    label: "mcap.hu.compliance.legalEthicsIssuesOther",
-    condition: (f) => String(f.legalEthicsIssues || "") === "other",
-    required: true,
-    colSpan: 2,
-  },
-  {
-    type: "radio-group",
     name: "annualRenewalAgreement",
     label: "mcap.hu.compliance.annualRenewalAgreement",
     required: true,
     options: [
       { label: "mcap.common.options.yes", value: "yes" },
       { label: "mcap.common.options.no", value: "no" },
-      { label: "mcap.common.options.internalResolution", value: "internal" },
-      { label: "mcap.common.options.noIfFixedAnnualCosts", value: "no_if_fixed_cost" },
-      { label: "mcap.common.options.adviceRequiredBeforeProceeding", value: "advice_required" },
+      { label: "mcap.hu.compliance.annualRenewalOptions.internalAfterIncorporation", value: "internal" },
+      { label: "mcap.hu.compliance.annualRenewalOptions.noIfAnnualCostsApply", value: "no_if_fixed_cost" },
+      { label: "mcap.hu.compliance.annualRenewalOptions.consultationRequired", value: "advice_required" },
     ],
     colSpan: 2,
   },
@@ -455,7 +483,7 @@ const buildComplianceFields = (): McapField[] => [
     name: "sanctionedCountriesBusiness",
     label: "mcap.hu.compliance.sanctionedCountriesBusiness",
     required: true,
-    options: YES_NO_UNKNOWN,
+    options: YES_NO_NOT_SURE,
     colSpan: 2,
   },
   {
@@ -463,7 +491,15 @@ const buildComplianceFields = (): McapField[] => [
     name: "sanctionedPersonsResidence",
     label: "mcap.hu.compliance.sanctionedPersonsResidence",
     required: true,
-    options: YES_NO_UNKNOWN,
+    options: YES_NO_NOT_SURE,
+    colSpan: 2,
+  },
+  {
+    type: "radio-group",
+    name: "sanctionedOwnershipControl",
+    label: "mcap.hu.compliance.sanctionedOwnershipControl",
+    required: true,
+    options: YES_NO_NOT_SURE,
     colSpan: 2,
   },
   {
@@ -471,7 +507,7 @@ const buildComplianceFields = (): McapField[] => [
     name: "crimeaSevastopolBusiness",
     label: "mcap.hu.compliance.crimeaSevastopolBusiness",
     required: true,
-    options: YES_NO_UNKNOWN,
+    options: YES_NO_NOT_SURE,
     colSpan: 2,
   },
   {
@@ -479,7 +515,7 @@ const buildComplianceFields = (): McapField[] => [
     name: "restrictedSectors",
     label: "mcap.hu.compliance.restrictedSectors",
     required: true,
-    options: YES_NO_UNKNOWN,
+    options: YES_NO_NOT_SURE,
     colSpan: 2,
   },
 ];

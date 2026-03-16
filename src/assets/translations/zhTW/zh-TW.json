@@ -2751,6 +2751,17 @@
         "shareholder": "股東 (Shareholder)",
         "dcp": "DCP (指定負責人)"
       },
+      "notes": {
+        "dcp": {
+          "title": "指定聯絡人",
+          "description": "請提供負責與服務提供者溝通的人員。",
+          "items": {
+            "inquiries": "處理公司相關詢問",
+            "progress": "追蹤程序進度",
+            "correspondence": "接收正式函件"
+          }
+        }
+      },
       "buttons": {
         "remove": "移除",
         "add": "+ 新增股東 / 董事",
@@ -4999,11 +5010,20 @@
         "legalEthicsIssues": "Does the purpose of establishment raise legal or ethical concerns such as money laundering, gambling, tax evasion, asset concealment, or fraud?",
         "needLegalAdvice": "Need legal advice",
         "legalEthicsIssuesOther": "Other legal or ethical issue details",
-        "annualRenewalAgreement": "After incorporation, annual renewals, accounting, tax, and compliance obligations continue. Do you agree?",
-        "sanctionedCountriesBusiness": "Do you currently conduct or plan to conduct business in sanctioned countries or regions?",
-        "sanctionedPersonsResidence": "Do any relevant persons reside in sanctioned jurisdictions (UN/EU/UK/HKMA/OFAC scope)?",
-        "crimeaSevastopolBusiness": "Any current or planned business activity in Crimea or Sevastopol?",
-        "restrictedSectors": "Any current or planned activity in oil, gas, energy, military, or defense sectors?"
+        "annualRenewalAgreement": "After company incorporation, annual renewal obligations and related costs will apply. Do you agree to these obligations?",
+        "annualRenewalOptions": {
+          "internalAfterIncorporation": "Can handle internally after incorporation",
+          "noIfAnnualCostsApply": "Do not wish to incorporate if annual costs apply",
+          "consultationRequired": "Consultation required"
+        },
+        "options": {
+          "notSure": "Not sure"
+        },
+        "sanctionedCountriesBusiness": "Will the Hungarian company (or its parent, group, or related companies) conduct business with sanctioned countries such as Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, Zimbabwe, Russia, or regions of Ukraine outside government control?",
+        "sanctionedPersonsResidence": "Are any shareholders, directors, or related persons residents of sanctioned countries?",
+        "sanctionedOwnershipControl": "Will the Hungarian company be owned, controlled, or acting on behalf of any sanctioned persons, entities, organizations, or governments?",
+        "crimeaSevastopolBusiness": "Are any related persons currently conducting business in Crimea or Sevastopol?",
+        "restrictedSectors": "Are the company or related entities involved in industries such as oil, gas, energy, military, or defense?"
       },
       "company": {
         "description": "Business profile, registered address setup, and capital acknowledgements.",
@@ -5033,16 +5053,16 @@
           "ecommerce": "Online services (e-commerce)",
           "onlineDirectPurchase": "Online direct purchase / delivery / agency"
         },
-        "purposeOfEstablishment": "Purpose of establishment and expected effect",
+        "purposeOfEstablishment": "Purpose or Expected Benefits of Establishing the Company (Multiple selection allowed)",
         "purposeOfEstablishmentOther": "Other purpose details",
         "purposeOptions": {
-          "businessDiversification": "Business diversification",
-          "advisorPartnerSuggestion": "Advisor / investor / partner recommendation",
-          "internationalExpansion": "International expansion",
-          "assetManagement": "Asset management",
-          "holdingCompany": "Holding company strategy",
-          "financialPolicyAdvantage": "Competitive advantage through financial policy",
-          "taxEfficiency": "Transaction growth due to tax efficiency"
+          "businessDiversification": "Business diversification due to relaxed regulations",
+          "advisorPartnerSuggestion": "Suggested by legal advisors, investors, or business partners",
+          "internationalExpansion": "Expansion into international markets",
+          "assetManagement": "Investment in real estate or financial assets",
+          "holdingCompany": "Holding company for subsidiaries",
+          "financialPolicyAdvantage": "Competitive advantage through favorable financial policies",
+          "taxEfficiency": "Lower tax rates or absence of VAT for certain transactions"
         },
         "registeredCapitalHuf": "Registered capital to be paid in (HUF)",
         "registeredAddressOption": "Registered address in Hungary",
@@ -5054,7 +5074,7 @@
         "capitalRequirementAcknowledged": "I understand the HUF 3,000,000 statutory capital requirement is a compliance prerequisite and is excluded from invoice totals."
       },
       "parties": {
-        "description": "Invite all required parties and assign director, general manager, and designated contact coverage.",
+        "description": "Invite shareholders/directors and assign a designated contact person.",
         "roleOptions": {
           "shareholder": "Shareholder",
           "keyController": "Ultimate Beneficial Owner / Major Controller (holding 25% or more)",
@@ -5067,6 +5087,9 @@
         "coverage": {
           "generalManager": "General manager coverage",
           "generalManagerAtLeastOne": "At least one general manager is required"
+        },
+        "roleTooltips": {
+          "dcp": "Designated Contact Person\n\nProvide the person responsible for communication with the service provider.\nResponsibilities include:\nHandling company-related inquiries\nMonitoring progress of procedures\nReceiving official correspondence"
         }
       },
       "accounting": {
@@ -5090,23 +5113,43 @@
         "notes": "Accounting and reporting notes"
       },
       "services": {
-        "description": "Review the Hungary package and optional add-ons before payment.",
+        "description": "Select the services you wish to receive and review priced versus quotation-only items before payment.",
         "notice": {
-          "title": "Service Selection",
-          "content": "Residence permit services should be requested in advance. Entity-shareholder KYC is charged automatically based on the party list."
+          "title": "Select the services you wish to receive:",
+          "content": "Quote-only services stay at EUR 0 in the invoice until a separate quotation is issued. Use the family residence permit option below to enter the number of family members."
         },
         "items": {
           "basePackage": {
-            "label": "Hungary Kft establishment + initial 1-year service",
-            "info": "Includes Kft establishment and the initial one-year service package. Standard filing plus VAT registration is typically 5 to 10 business days after all required documents are received."
+            "label": "Hungary LLC incorporation + notarization + first-year company maintenance",
+            "info": "Includes incorporation, notarization, and first-year company maintenance. Standard filing plus VAT registration is typically 5 to 10 business days after all required documents are received."
+          },
+          "bankAccountOpening": {
+            "label": "Hungarian company bank account opening",
+            "info": "Pricing is confirmed separately after bank compliance review and onboarding route assessment."
           },
           "accounting": {
-            "label": "Accounting services (initial 6 months)",
+            "label": "Hungarian accounting service (6 months)",
             "info": "Starting price is EUR 1,000 for 6 months. Apply in advance if accounting services are required."
           },
           "representativeResidencePermit": {
-            "label": "Residence permit application for representative",
+            "label": "Residence permit application for the company representative",
             "info": "Apply in advance if residence permit service is required for the representative."
+          },
+          "legalOpinionWhitepaperReview": {
+            "label": "Hungarian Legal Opinion (quotation after whitepaper review)",
+            "info": "Quote-only selection. Pricing is provided after whitepaper review."
+          },
+          "legalOpinionDomesticExchange": {
+            "label": "Legal opinion for domestic exchange listing",
+            "info": "Quote-only selection. Pricing is confirmed separately."
+          },
+          "legalOpinionOtherJurisdictions": {
+            "label": "Legal opinion for other jurisdictions",
+            "info": "Quote-only selection. Pricing is confirmed separately."
+          },
+          "businessRegulatoryConsulting": {
+            "label": "Business regulatory review, feasibility analysis, document preparation, operational consulting",
+            "info": "Separate quotation."
           },
           "entityShareholderKyc": {
             "label": "Additional KYC for entity shareholder",
@@ -5116,7 +5159,7 @@
         "familyResidencePermit": {
           "label": "Residence permit application for immediate family members",
           "info": "Charged at EUR 2,000 per 2-person pack. The total number of packs is rounded up from the person count.",
-          "selectedLabel": "Include immediate family residence permit service",
+          "selectedLabel": "Residence permit application for immediate family members",
           "personCountLabel": "Number of family members",
           "personCountHelpTitle": "Pricing rule",
           "personCountHelp": "Pricing is EUR 2,000 per 2 family members. The invoice uses packs rounded up from the entered person count."
@@ -5129,7 +5172,7 @@
           "entityShareholder": "entity shareholder",
           "twoPersonPack": "2-person pack"
         },
-        "note": "Hungary prices are authored in EUR. The HUF 3,000,000 minimum capital is tracked for compliance only and is excluded from billable totals."
+        "note": "Hungary prices are authored in EUR. Quote-only service selections remain zero-valued until a separate quotation is issued. The HUF 3,000,000 minimum capital is tracked for compliance only and is excluded from billable totals."
       },
       "invoice": {
         "description": "Review the final fee breakdown before payment."
