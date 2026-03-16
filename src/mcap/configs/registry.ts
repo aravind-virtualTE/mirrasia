@@ -15,6 +15,7 @@ import { CH_AG_FULL_CONFIG } from "./ch-ag-full";
 import { CH_GMBH_FULL_CONFIG } from "./ch-gmbh-full";
 import { EE_FULL_CONFIG } from "./ee-full";
 import { LT_FULL_CONFIG } from "./lt-full";
+import { HU_FULL_CONFIG } from "./hu-full";
 import { IE_FULL_CONFIG } from "./ie-full";
 import { AU_FULL_CONFIG } from "./au-full";
 import { getComplianceGuardForCountryCode } from "./complianceGuards";
@@ -33,6 +34,7 @@ const STANDARD_FLOW_COUNTRIES = new Set([
   "CH_LLC",
   "EE",
   "LT",
+  "HU",
   "IE",
   "AU",
 ]);
@@ -99,6 +101,8 @@ const mergePartiesIntoCompany = (steps: McapStep[]) => {
   companyStep.requireDcp = partiesStep.requireDcp ?? companyStep.requireDcp;
   companyStep.requirePartyInvite = partiesStep.requirePartyInvite ?? companyStep.requirePartyInvite;
   companyStep.partyFields = partiesStep.partyFields ?? companyStep.partyFields;
+  companyStep.partyRoleOptions = partiesStep.partyRoleOptions ?? companyStep.partyRoleOptions;
+  companyStep.defaultPartyRoles = partiesStep.defaultPartyRoles ?? companyStep.defaultPartyRoles;
   companyStep.partyCoverageRules = partiesStep.partyCoverageRules ?? companyStep.partyCoverageRules;
   if (!companyStep.description && partiesStep.description) {
     companyStep.description = partiesStep.description;
@@ -226,6 +230,7 @@ export const MCAP_CONFIGS: McapConfig[] = [
   CH_FOUNDATION_FULL_CONFIG,
   EE_FULL_CONFIG,
   LT_FULL_CONFIG,
+  HU_FULL_CONFIG,
   IE_FULL_CONFIG,
   AU_FULL_CONFIG,
   UAE_IFZA_CONFIG,

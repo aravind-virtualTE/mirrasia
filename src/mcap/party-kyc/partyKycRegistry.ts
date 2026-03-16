@@ -376,6 +376,19 @@ const ltMemberRoleOptions = [
   { value: "other", label: "Other" },
 ];
 
+const huMemberRoleOptions = [
+  { value: "shareholder", label: "Shareholder" },
+  {
+    value: "key_controller_25_plus",
+    label: "Ultimate Beneficial Owner / Major Controller (holding 25% or more)",
+  },
+  { value: "director", label: "Director (minimum 1 required)" },
+  { value: "general_manager", label: "General Manager (minimum 1 required, may also be the director)" },
+  { value: "dcp", label: "Designated Contact Person (may also be a director)" },
+  { value: "official_partner", label: "Official partner registered with Mirr Asia" },
+  { value: "other", label: "Other" },
+];
+
 const ieMemberRoleOptions = [
   { value: "shareholder", label: "Shareholder" },
   { value: "director", label: "Director" },
@@ -442,6 +455,15 @@ const ieCorporateRelationOptions = [
   { value: "shareholder", label: "shareholder" },
   { value: "move", label: "move" },
   { value: "trustee", label: "trustee" },
+  { value: "other", label: "Other" },
+];
+
+const huCorporateRelationOptions = [
+  { value: "shareholder", label: "Shareholder" },
+  { value: "key_controller_25_plus", label: "Ultimate Beneficial Owner / Major Controller (25%+)" },
+  { value: "director", label: "Director" },
+  { value: "general_manager", label: "General Manager" },
+  { value: "official_partner", label: "Official partner registered with Mirr Asia" },
   { value: "other", label: "Other" },
 ];
 
@@ -3022,6 +3044,522 @@ const buildLtEntityConfigFromUk = (): PartyFormConfig | null => {
   };
 };
 
+const buildHungaryPersonConfig = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_PERSON" && cfg.partyType === "person"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "identity") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "companyName") {
+          return { ...field, label: "Hungarian company name to be registered" };
+        }
+        if (field.name === "name") {
+          return { ...field, label: "Name" };
+        }
+        if (field.name === "formerNameInEnglish") {
+          return {
+            ...field,
+            label: "If your name changed, provide your previous name in English (or other details)",
+          };
+        }
+        if (field.name === "birthPlace") {
+          return { ...field, label: "Place of birth" };
+        }
+        if (field.name === "residentialAddress") {
+          return {
+            ...field,
+            label:
+              "Residential address (include ZIP/postal code and period lived in your country of residence)",
+          };
+        }
+        if (field.name === "mailingAddress") {
+          return { ...field, label: "Mailing address (if different from residential address)" };
+        }
+        if (field.name === "mobileNumber") {
+          return {
+            ...field,
+            label: "Mobile phone number",
+            tooltip:
+              "We use this number for official communications regarding important matters until updated.",
+          };
+        }
+        return field;
+      });
+
+      const residentialIdx = getFieldIndex(fields, "residentialAddress");
+      if (residentialIdx >= 0 && getFieldIndex(fields, "residentialPostalCode") === -1) {
+        fields.splice(residentialIdx + 1, 0,
+          {
+            name: "residentialPostalCode",
+            label: "Residential ZIP / postal code",
+            type: "text",
+            required: true,
+          },
+          {
+            name: "residencyDuration",
+            label: "Length of time residing in your country of residence",
+            type: "text",
+            required: true,
+            placeholder: "e.g., 5 years",
+          }
+        );
+      }
+
+      const mobileIdx = getFieldIndex(fields, "mobileNumber");
+      if (mobileIdx >= 0 && getFieldIndex(fields, "contactEmailAddress") === -1) {
+        fields.splice(mobileIdx + 1, 0, {
+          name: "contactEmailAddress",
+          label: "Email address",
+          type: "email",
+          required: true,
+          tooltip:
+            "We use this email for official communications regarding important matters. Please provide one you check regularly.",
+          colSpan: 2,
+        });
+      }
+
+      return { ...step, title: "Member Identity", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "relationshipWithUkEntity") {
+          return {
+            ...field,
+            label: "Relationship with the Hungarian company to be established",
+          };
+        }
+        if (field.name === "ukEntityRelationshipRoles") {
+          return {
+            ...field,
+            label: "Relationship role(s) with the Hungarian company",
+            options: huMemberRoleOptions,
+            tooltip:
+              "One designated contact person is free. Additional designated contacts cost USD 250 per person per year.",
+          };
+        }
+        if (field.name === "ukEntityRelationshipRolesOther") {
+          return { ...field, label: "Other relationship role details" };
+        }
+        if (field.name === "shareholdingPercentage") {
+          return {
+            ...field,
+            label: "Shareholding percentage (%) in the Hungarian company to be established",
+          };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Hungarian Company Relationship", fields };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "investmentFundSource") {
+          return {
+            ...field,
+            label: "Source of funds for investment in the Hungarian company (multiple selections possible)",
+            tooltip:
+              "Documentary evidence may later be required to support the source of funds.",
+          };
+        }
+        if (field.name === "investmentFundInflowCountries") {
+          return {
+            ...field,
+            label: "Countries from which the above funds will originate (list all countries)",
+          };
+        }
+        if (field.name === "futureFundSource") {
+          return {
+            ...field,
+            label:
+              "Expected sources of funds for the Hungarian company in the future (multiple selections possible)",
+            tooltip:
+              "Documentary evidence may later be required to support the source of funds.",
+          };
+        }
+        if (field.name === "futureFundInflowCountries") {
+          return {
+            ...field,
+            label: "Countries from which future funds are expected to originate (list all countries)",
+          };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Source of Funds", fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "usTaxResidency") {
+          return {
+            ...field,
+            label: "Are you a U.S. citizen, U.S. permanent resident, or U.S. tax resident?",
+          };
+        }
+        if (field.name === "irsTin") {
+          return {
+            ...field,
+            label: "If yes, provide your U.S. Tax Identification Number (TIN)",
+          };
+        }
+        if (field.name === "pepStatus") {
+          return {
+            ...field,
+            label: "Are you or your close associates considered a Politically Exposed Person?",
+          };
+        }
+        if (field.name === "pepDetails") {
+          return {
+            ...field,
+            label: "Describe the political role or relationship",
+          };
+        }
+        return field;
+      });
+
+      const usTaxIdx = getFieldIndex(fields, "usTaxResidency");
+      if (usTaxIdx >= 0 && getFieldIndex(fields, "usTaxResidencyOtherDetails") === -1) {
+        fields.splice(usTaxIdx + 1, 0, {
+          name: "usTaxResidencyOtherDetails",
+          label: "Other U.S. tax residency details",
+          type: "text",
+          condition: (values: Record<string, any>) =>
+            String(values?.usTaxResidency || "").toLowerCase() === "other",
+          required: true,
+          colSpan: 2,
+        });
+      }
+
+      return { ...step, title: "U.S. Tax and PEP", fields };
+    }
+
+    if (step.id === "documents") {
+      const fields = step.fields
+        .filter((field) => field.name !== "driverLicenseFrontBack")
+        .map((field) => {
+          if (field.name === "passportCopyCertificate") {
+            return {
+              ...field,
+              label: "Please upload a copy of your passport",
+              accept: "image/*,.pdf",
+              tooltip: "Upload one file (PDF or image), max 10 MB.",
+            };
+          }
+          if (field.name === "proofOfAddress") {
+            return {
+              ...field,
+              label: "Please upload your proof of residential address",
+              accept: "image/*,.pdf",
+              tooltip: "Upload up to five files (PDF or image), max 10 MB per file.",
+            };
+          }
+          return field;
+        });
+
+      return { ...step, title: "Supporting Documents", fields };
+    }
+
+    if (step.id === "declaration") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "applicationAgreement") {
+          return {
+            ...field,
+            label: "Do you agree to the consent and declaration on application?",
+          };
+        }
+        if (field.name === "applicationAgreementOther") {
+          return { ...field, label: "Other agreement details" };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Declaration", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "HU_PERSON",
+    title: "Hungary Member Registration KYC",
+    countryCode: "HU",
+    partyType: "person",
+    steps,
+  };
+};
+
+const buildHuEntityConfigFromUk = (): PartyFormConfig | null => {
+  const source = BASE_PARTY_KYC_REGISTRY.find(
+    (cfg) => cfg.id === "UK_ENTITY" && cfg.partyType === "entity"
+  );
+  if (!source) return null;
+
+  const steps = source.steps.map(cloneStep).map((step): PartyStep => {
+    if (step.id === "company") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "email") {
+          return {
+            ...field,
+            label: "Representative email address",
+            tooltip:
+              "We use this email for official communications regarding important matters until updated.",
+          };
+        }
+        if (field.name === "companyName") {
+          return { ...field, label: "Entity name" };
+        }
+        if (field.name === "dateOfEstablishment") {
+          return { ...field, label: "Date of establishment" };
+        }
+        if (field.name === "countryOfEstablishment") {
+          return { ...field, label: "Country of establishment" };
+        }
+        if (field.name === "registrationNumber") {
+          return { ...field, label: "Corporate registration number or business registration number" };
+        }
+        if (field.name === "listedOnStockExchange") {
+          return { ...field, label: "Whether listed on a stock exchange" };
+        }
+        if (field.name === "otherListedOnStockExchange") {
+          return { ...field, label: "Other listing details" };
+        }
+        if (field.name === "representativeName") {
+          return { ...field, label: "Representative name" };
+        }
+        if (field.name === "mobileNumber") {
+          return {
+            ...field,
+            label: "Representative mobile phone number",
+            tooltip:
+              "We use this number for official communications regarding important matters until updated.",
+          };
+        }
+        if (field.name === "englishNamesOfShareholders") {
+          return {
+            ...field,
+            label: "Documents showing the English names of shareholders/directors and their shareholding status",
+            options: ieShareholderDocumentsOptions,
+          };
+        }
+        if (field.name === "otherEnglishNamesOfShareholders") {
+          return { ...field, label: "Other shareholder/director document details" };
+        }
+        if (field.name === "articlesOfAssociation") {
+          return {
+            ...field,
+            label: "Articles of incorporation or constitutional documents",
+            options: ieArticlesOptions,
+          };
+        }
+        if (field.name === "otherArticlesOfAssociation") {
+          return { ...field, label: "Other constitutional document details" };
+        }
+        if (field.name === "businessAddress") {
+          return {
+            ...field,
+            label:
+              "Business address (if actual business address differs from the address on the registration certificate)",
+          };
+        }
+        return field;
+      });
+
+      const representativeInsertAt = getFieldIndex(fields, "mobileNumber");
+      if (representativeInsertAt >= 0 && getFieldIndex(fields, "representativeKakaoTalkId") === -1) {
+        fields.splice(representativeInsertAt + 1, 0,
+          {
+            name: "representativeKakaoTalkId",
+            label: "Representative KakaoTalk ID (if available)",
+            type: "text",
+          },
+          {
+            name: "representativeOtherSnsId",
+            label: "Representative Telegram, WeChat, or other SNS ID (if available)",
+            type: "text",
+          }
+        );
+      }
+
+      return { ...step, title: "Corporate Details", fields };
+    }
+
+    if (step.id === "relationship") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "relationWithUs") {
+          return {
+            ...field,
+            label: "Relationship with the Hungarian company to be established",
+            options: huCorporateRelationOptions,
+          };
+        }
+        if (field.name === "otherRelation") {
+          return { ...field, label: "Other relationship details" };
+        }
+        if (field.name === "amountInvestedAndShares") {
+          return {
+            ...field,
+            label: "Amount to be invested in the Hungarian company and shares to be acquired",
+          };
+        }
+        return field;
+      });
+
+      if (getFieldIndex(fields, "proposedHungarianCompanyName") === -1) {
+        fields.unshift({
+          name: "proposedHungarianCompanyName",
+          label: "Hungarian company name to be registered",
+          type: "text",
+          required: true,
+          colSpan: 2,
+        });
+      }
+
+      return { ...step, title: "Information about the Hungarian company to be established", fields };
+    }
+
+    if (step.id === "funds") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "investmentSource") {
+          return {
+            ...field,
+            label: "Source of investment funds (multiple selections possible)",
+            options: ieCorporateInvestmentSourceOptions,
+            tooltip:
+              "Documentary evidence may later be required to support the source of funds.",
+          };
+        }
+        if (field.name === "otherInvestmentSource") {
+          return { ...field, label: "Other source details (investment funds)" };
+        }
+        if (field.name === "fundsOrigin") {
+          return { ...field, label: "Countries from which the above funds will originate (list all countries)" };
+        }
+        if (field.name === "sourceFundExpected") {
+          return {
+            ...field,
+            label:
+              "Sources of funds expected to be generated or received by the Hungarian company in the future (multiple selections possible)",
+            options: ieCorporateFutureFundSourceOptions,
+            tooltip:
+              "Documentary evidence may later be required to support the source of funds.",
+          };
+        }
+        if (field.name === "otherSourceFund") {
+          return { ...field, label: "Other source details (future funds)" };
+        }
+        if (field.name === "fundsOrigin2") {
+          return {
+            ...field,
+            label: "Countries from which future funds are expected to originate (list all countries)",
+          };
+        }
+        return field;
+      });
+      return { ...step, title: "Source of Funds", fields };
+    }
+
+    if (step.id === "tax-pep") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "isUsLegalEntity") {
+          return {
+            ...field,
+            label:
+              "Is your company under U.S. jurisdiction for legal purposes or a U.S. permanent establishment for tax purposes?",
+          };
+        }
+        if (field.name === "otherResidenceTaxPurpose") {
+          return { ...field, label: "Other U.S. jurisdiction / tax establishment details" };
+        }
+        if (field.name === "usTinNumber") {
+          return {
+            ...field,
+            label:
+              "If your company is under U.S. jurisdiction or has a U.S. permanent establishment, provide its U.S. Tax Identification Number (TIN).",
+          };
+        }
+        if (field.name === "isPoliticalFigure") {
+          return {
+            ...field,
+            label:
+              "Are any company officials politically exposed persons, or immediate family members / close associates of one?",
+          };
+        }
+        if (field.name === "describePoliticallyImp") {
+          return { ...field, label: "Describe the political role or relationship" };
+        }
+        return field;
+      });
+      return { ...step, title: "U.S. Tax and PEP", fields };
+    }
+
+    if (step.id === "declaration") {
+      const fields = step.fields.map((field) => {
+        if (field.name === "isArrestedBefore") {
+          return {
+            ...field,
+            label: "Has anyone from your company ever been arrested or convicted of a crime?",
+          };
+        }
+        if (field.name === "isInvestigatedBefore") {
+          return {
+            ...field,
+            label: "Has anyone from your company ever been investigated by law enforcement or tax authorities?",
+          };
+        }
+        if (field.name === "isInvolvedInCriminal") {
+          return {
+            ...field,
+            label:
+              "Are any company employees involved in criminal activity, money laundering, bribery, terrorist activity, or related illicit funds activity?",
+          };
+        }
+        if (field.name === "gotBankruptBefore") {
+          return {
+            ...field,
+            label: "Has anyone from your company ever been personally involved in bankruptcy or liquidation?",
+          };
+        }
+        if (field.name === "officerBankruptBefore") {
+          return {
+            ...field,
+            label:
+              "Has anyone from your company ever been involved in bankruptcy or liquidation as an executive of the company?",
+          };
+        }
+        if (field.name === "declarationDesc") {
+          return { ...field, label: "Details for items answered 'Yes'" };
+        }
+        if (field.name === "isAgreed") {
+          return { ...field, label: "Do you agree to the consent and declaration on application?" };
+        }
+        if (field.name === "otherIsAgreed") {
+          return { ...field, label: "Other consent details" };
+        }
+        return field;
+      });
+
+      return { ...step, title: "Declaration for Company Officials", fields };
+    }
+
+    return step;
+  });
+
+  return {
+    ...source,
+    id: "HU_ENTITY",
+    title: "Hungary Corporate Member Registration KYC",
+    countryCode: "HU",
+    partyType: "entity",
+    steps,
+  };
+};
+
 const buildIrelandPersonConfig = (): PartyFormConfig | null => {
   const source = BASE_PARTY_KYC_REGISTRY.find(
     (cfg) => cfg.id === "UK_PERSON" && cfg.partyType === "person"
@@ -3675,6 +4213,8 @@ const buildAuEntityConfigFromUk = (): PartyFormConfig | null => {
 
 const LT_PERSON_CONFIG = buildLithuaniaPersonConfig();
 const LT_ENTITY_CONFIG = buildLtEntityConfigFromUk();
+const HU_PERSON_CONFIG = buildHungaryPersonConfig();
+const HU_ENTITY_CONFIG = buildHuEntityConfigFromUk();
 const IE_PERSON_CONFIG = buildIrelandPersonConfig();
 const IE_ENTITY_CONFIG = buildIeEntityConfigFromUk();
 const AU_PERSON_CONFIG = buildAustraliaPersonConfigFromUk();
@@ -3688,6 +4228,8 @@ export const PARTY_KYC_REGISTRY: PartyFormConfig[] = [
   EE_ENTITY_CONFIG,
   ...(LT_PERSON_CONFIG ? [LT_PERSON_CONFIG] : []),
   ...(LT_ENTITY_CONFIG ? [LT_ENTITY_CONFIG] : []),
+  ...(HU_PERSON_CONFIG ? [HU_PERSON_CONFIG] : []),
+  ...(HU_ENTITY_CONFIG ? [HU_ENTITY_CONFIG] : []),
   ...(IE_PERSON_CONFIG ? [IE_PERSON_CONFIG] : []),
   ...(IE_ENTITY_CONFIG ? [IE_ENTITY_CONFIG] : []),
   ...(AU_PERSON_CONFIG ? [AU_PERSON_CONFIG] : []),

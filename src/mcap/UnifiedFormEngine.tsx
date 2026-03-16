@@ -480,7 +480,10 @@ export const UnifiedFormEngine = ({
                 );
             }
             if (currentStep.requireDcp) {
-                const dcpParties = parties.filter((p) => (p.roles || []).includes("dcp"));
+                const dcpParties = parties.filter((p) =>
+                    Array.isArray(p?.roles)
+                    && p.roles.some((role: any) => String(role || "").trim().toLowerCase() === "dcp")
+                );
                 if (dcpParties.length === 0) {
                     missing.push(t("mcap.validation.dcpRequired", "Designated Contact Person (DCP) required"));
                 } 
@@ -517,6 +520,11 @@ export const UnifiedFormEngine = ({
                         const expected = String(requiredValue).trim().toLowerCase();
                         return !parties.some((party) => {
                             const actual = getPartyField(party, rule.key, rule.storage);
+                            if (Array.isArray(actual)) {
+                                return actual.some(
+                                    (entry: any) => String(entry ?? "").trim().toLowerCase() === expected
+                                );
+                            }
                             return String(actual ?? "").trim().toLowerCase() === expected;
                         });
                     });
@@ -1329,6 +1337,8 @@ export const UnifiedFormEngine = ({
                                         onChange={setParties}
                                         companyId={companyId}
                                         partyFields={currentStep.partyFields}
+                                        partyRoleOptions={currentStep.partyRoleOptions}
+                                        defaultPartyRoles={currentStep.defaultPartyRoles}
                                         countryCode={config.countryCode}
                                     />
                                 </div>
