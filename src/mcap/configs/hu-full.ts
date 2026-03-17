@@ -26,7 +26,6 @@ const HU_PRICING = {
   familyResidencePermitPack: 2000,
   legalOpinionWhitepaperReview: 0,
   legalOpinionDomesticExchange: 0,
-  legalOpinionOtherJurisdictions: 0,
   businessRegulatoryConsulting: 0,
 } as const;
 
@@ -166,16 +165,7 @@ export const buildHuServiceItems = (data: Record<string, any>): HuServiceItem[] 
       mandatory: false,
       kind: "other",
       info: "mcap.hu.services.items.legalOpinionDomesticExchange.info",
-    },
-    {
-      id: "hu_legal_opinion_other_jurisdictions",
-      label: "mcap.hu.services.items.legalOpinionOtherJurisdictions.label",
-      amount: HU_PRICING.legalOpinionOtherJurisdictions,
-      original: HU_PRICING.legalOpinionOtherJurisdictions,
-      mandatory: false,
-      kind: "other",
-      info: "mcap.hu.services.items.legalOpinionOtherJurisdictions.info",
-    },
+    },   
     {
       id: "hu_business_regulatory_consulting",
       label: "mcap.hu.services.items.businessRegulatoryConsulting.label",
