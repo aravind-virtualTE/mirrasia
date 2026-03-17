@@ -5294,10 +5294,6 @@
             "label": "Legal opinion for domestic exchange listing",
             "info": "Quote-only selection. Pricing is confirmed separately."
           },
-          "legalOpinionOtherJurisdictions": {
-            "label": "Legal opinion for other jurisdictions",
-            "info": "Quote-only selection. Pricing is confirmed separately."
-          },
           "businessRegulatoryConsulting": {
             "label": "Business regulatory review, feasibility analysis, document preparation, operational consulting",
             "info": "Separate quotation."

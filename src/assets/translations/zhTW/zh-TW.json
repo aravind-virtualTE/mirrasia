@@ -4945,243 +4945,239 @@
       }
     },
     "hu": {
-      "title": "Hungary Kft Incorporation",
+      "title": "匈牙利 Kft (有限公司) 註冊",
       "confirmation": {
-        "title": "Hungary Incorporation Request Submitted",
-        "message": "We have received your Hungary incorporation request. Our team will review compliance, structure, and selected services before filing.",
+        "title": "匈牙利公司註冊申請已提交",
+        "message": "我們已收到您的匈牙利公司註冊申請。我們的團隊將在正式提交前審核合規性、結構及所選服務。",
         "steps": {
           "documentReview": {
-            "title": "Document Review",
-            "description": "We verify the submitted structure, supporting documents, and service scope before filing."
+            "title": "文件審核",
+            "description": "我們會在提交前核實所選結構、佐證文件及服務範圍。"
           },
           "incorporation": {
-            "title": "Incorporation and VAT Registration",
-            "description": "Standard incorporation and VAT registration are typically completed in 5 to 10 business days after all required documents are received."
+            "title": "公司註冊及增值稅 (VAT) 登記",
+            "description": "在收到所有所需文件後，標準註冊及增值稅登記通常在 5 至 10 個工作天內完成。"
           },
           "postFiling": {
-            "title": "Post-filing Coordination",
-            "description": "We coordinate post-incorporation items such as bank account preparation and residence-permit related services where selected."
+            "title": "註冊後協調",
+            "description": "我們將協調註冊後事項，如銀行帳戶準備及（如選購）居留許可相關服務。"
           }
         }
       },
       "reviewSummary": {
-        "relationship": "Relationship"
+        "relationship": "關係"
       },
       "applicant": {
-        "description": "Applicant details, relationship to the company, and primary contact setup.",
+        "description": "申請人詳情、與公司的關係以及主要聯繫方式設定。",
         "notice": {
-          "title": "Applicant Notice",
-          "content": "Complete all details in English. Apostille, translation, embassy certification, and similar external procedures should be estimated separately from the 5 to 10 business day incorporation timeline."
+          "title": "申請人須知",
+          "content": "請以英文填寫所有詳情。海牙認證 (Apostille)、翻譯、使館認證及類似的外部程序時間應與 5 至 10 個工作天的註冊時間分開估算。"
         },
-        "changedName": "Have you ever changed your name?",
-        "previousNameEnglish": "If yes, provide your previous name in English.",
-        "changedNameOther": "Other name-change details",
-        "dateOfBirth": "Date of Birth",
-        "placeOfBirth": "Place of Birth",
-        "nationality": "Nationality",
-        "passportNumber": "Passport Number",
-        "residentialAddress": "Residential Address",
-        "mailingAddress": "Mailing Address",
-        "mailingAddressDetails": "If different from your residential address, provide your mailing address.",
+        "changedName": "您是否曾更改過姓名？",
+        "previousNameEnglish": "若是，請提供您之前的英文姓名。",
+        "changedNameOther": "其他更名詳情",
+        "dateOfBirth": "出生日期",
+        "placeOfBirth": "出生地",
+        "nationality": "國籍",
+        "passportNumber": "護照號碼",
+        "residentialAddress": "居住地址",
+        "mailingAddress": "郵寄地址",
+        "mailingAddressDetails": "若與居住地址不同，請提供您的郵寄地址。",
         "mailingOptions": {
-          "same": "Same as residential address",
-          "different": "Different mailing address"
+          "same": "與居住地址相同",
+          "different": "不同的郵寄地址"
         },
-        "relationshipToCompany": "Relationship with the Hungarian Company",
+        "relationshipToCompany": "與匈牙利公司的關係",
         "relationshipOptions": {
-          "shareholder": "Shareholder",
-          "keyController": "Ultimate Beneficial Owner / Major Controller (holding 25% or more)",
-          "director": "Director (minimum 1 required)",
-          "generalManager": "General Manager (minimum 1 required, may also be the director)",
-          "dcp": "Designated Contact Person (may also be a director)",
-          "officialPartner": "Official partner registered with Mirr Asia",
-          "other": "Other"
+          "shareholder": "股東",
+          "keyController": "最終受益人 / 主要控制人 (持股 25% 或以上)",
+          "director": "董事 (至少需 1 名)",
+          "generalManager": "總經理 (至少需 1 名，可由董事兼任)",
+          "dcp": "指定聯繫人 (可由董事兼任)",
+          "officialPartner": "Mirr Asia 註冊官方合作夥伴",
+          "other": "其他"
         },
-        "designatedContactResponsibilities": "The designated contact person will:",
+        "designatedContactResponsibilities": "指定聯繫人 (DCP) 將負責：",
         "designatedContactItems": {
-          "communication": "Communicate with the service provider regarding company matters.",
-          "inquiries": "Handle business inquiries and progress updates.",
-          "documents": "Receive official documents and correspondence.",
-          "access": "Access company information and documents."
+          "communication": "就公司事務與服務提供商溝通。",
+          "inquiries": "處理業務諮詢及進度更新。",
+          "documents": "接收官方文件及往來書信。",
+          "access": "查閱公司信息及文件。"
         }
       },
       "compliance": {
-        "description": "Business intent, sanctions screening, and ongoing obligation confirmations.",
-        "legalEthicsIssues": "Does the purpose of establishment raise legal or ethical concerns such as money laundering, gambling, tax evasion, asset concealment, or fraud?",
-        "needLegalAdvice": "Need legal advice",
-        "legalEthicsIssuesOther": "Other legal or ethical issue details",
-        "annualRenewalAgreement": "After company incorporation, annual renewal obligations and related costs will apply. Do you agree to these obligations?",
+        "description": "業務意圖、制裁篩查及持續義務確認。",
+        "legalEthicsIssues": "成立目的是否涉及法律或倫理疑慮，例如洗錢、博彩、逃稅、資產隱匿或欺詐？",
+        "needLegalAdvice": "需要法律建議",
+        "legalEthicsIssuesOther": "其他法律或倫理問題詳情",
+        "annualRenewalAgreement": "公司成立後，將產生年度續期義務及相關費用。您是否同意這些義務？",
         "annualRenewalOptions": {
-          "internalAfterIncorporation": "Can handle internally after incorporation",
-          "noIfAnnualCostsApply": "Do not wish to incorporate if annual costs apply",
-          "consultationRequired": "Consultation required"
+          "internalAfterIncorporation": "成立後可自行內部處理",
+          "noIfAnnualCostsApply": "若產生年度費用則不希望註冊",
+          "consultationRequired": "需要諮詢"
         },
         "options": {
-          "notSure": "Not sure"
+          "notSure": "不確定"
         },
-        "sanctionedCountriesBusiness": "Will the Hungarian company (or its parent, group, or related companies) conduct business with sanctioned countries such as Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, Zimbabwe, Russia, or regions of Ukraine outside government control?",
-        "sanctionedPersonsResidence": "Are any shareholders, directors, or related persons residents of sanctioned countries?",
-        "sanctionedOwnershipControl": "Will the Hungarian company be owned, controlled, or acting on behalf of any sanctioned persons, entities, organizations, or governments?",
-        "crimeaSevastopolBusiness": "Are any related persons currently conducting business in Crimea or Sevastopol?",
-        "restrictedSectors": "Are the company or related entities involved in industries such as oil, gas, energy, military, or defense?"
+        "sanctionedCountriesBusiness": "該匈牙利公司（或其母公司、集團或關聯公司）是否會與制裁國家（如伊朗、蘇丹、北韓、敘利亞、古巴、白俄羅斯、辛巴威、俄羅斯或政府控制外的烏克蘭地區）開展業務？",
+        "sanctionedPersonsResidence": "是否有任何股東、董事或關聯人士為制裁國家的居民？",
+        "sanctionedOwnershipControl": "該匈牙利公司是否由任何受制裁的人士、實體、組織或政府擁有、控制或代表其行事？",
+        "crimeaSevastopolBusiness": "是否有任何關聯人士目前在克里米亞或塞凡堡開展業務？",
+        "restrictedSectors": "公司或關聯實體是否涉及石油、天然氣、能源、軍事或國防等行業？"
       },
       "company": {
-        "description": "Business profile, registered address setup, and capital acknowledgements.",
-        "notesLabel": "Important Notes",
+        "description": "業務簡介、註冊地址設定及資本確認。",
+        "notesLabel": "重要備註",
         "notes": {
-          "vat": "Hungary is an EU country and VAT numbers are generally issued automatically upon incorporation.",
-          "bank": "A corporate bank account should be opened within 8 days after incorporation, but onboarding may take 1 to 2 months. Significant delay can trigger an approximate EUR 70 penalty.",
-          "emi": "EMI accounts may be opened remotely in some cases, but transaction fees are usually higher than traditional bank accounts.",
-          "apostille": "If shareholders are Korean corporations, apostille and Hungarian notarized translation requirements usually apply to corporate documents.",
-          "documents": "After all documents are prepared, send them to the Korean office first for verification before they are forwarded to Hungary."
+          "vat": "匈牙利是歐盟國家，增值稅 (VAT) 號碼通常在註冊時自動核發。",
+          "bank": "公司銀行帳戶應在註冊後 8 天內申請開立，但審核流程可能需要 1 至 2 個月。若嚴重延誤，可能會觸發約 70 歐元的罰款。",
+          "emi": "在某些情況下可遠端開立 EMI 帳戶，但交易手續費通常高於傳統銀行帳戶。",
+          "apostille": "若股東為韓國法人，公司文件通常需要海牙認證及匈牙利公證翻譯。",
+          "documents": "所有文件準備好後，請先寄至韓國辦公室核實，然後再轉寄至匈牙利。"
         },
-        "industrySelection": "Industry selection",
-        "industrySelectionOther": "Other industry details",
-        "productServiceDescription": "Description of product or service",
-        "businessDescription": "Describe the business in 3 to 4 sentences",
+        "industrySelection": "行業選擇",
+        "industrySelectionOther": "其他行業詳情",
+        "productServiceDescription": "產品或服務描述",
+        "businessDescription": "請用 3 至 4 句話描述業務內容",
         "industryOptions": {
-          "cryptoRelated": "Cryptocurrency-related",
-          "itBlockchainSoftware": "IT / blockchain / software development",
-          "cryptoInvestment": "Cryptocurrency investment",
-          "cryptoGames": "Cryptocurrency-based games",
-          "forexTrading": "Foreign exchange trading",
-          "financeInvestmentConsulting": "Finance / investment / consulting",
-          "trade": "Trade",
-          "wholesaleRetail": "Wholesale / retail",
-          "consulting": "Consulting",
-          "manufacturing": "Manufacturing",
-          "ecommerce": "Online services (e-commerce)",
-          "onlineDirectPurchase": "Online direct purchase / delivery / agency"
+          "cryptoRelated": "加密貨幣相關",
+          "itBlockchainSoftware": "IT / 區塊鏈 / 軟體開發",
+          "cryptoInvestment": "加密貨幣投資",
+          "cryptoGames": "加密貨幣遊戲",
+          "forexTrading": "外匯交易 (Forex)",
+          "financeInvestmentConsulting": "金融 / 投資 / 諮詢",
+          "trade": "貿易",
+          "wholesaleRetail": "批發 / 零售",
+          "consulting": "諮詢",
+          "manufacturing": "製造業",
+          "ecommerce": "線上服務 (電子商務)",
+          "onlineDirectPurchase": "線上直購 / 配送 / 代購"
         },
-        "purposeOfEstablishment": "Purpose or Expected Benefits of Establishing the Company (Multiple selection allowed)",
-        "purposeOfEstablishmentOther": "Other purpose details",
+        "purposeOfEstablishment": "成立公司的目的或預期效益（可多選）",
+        "purposeOfEstablishmentOther": "其他目的詳情",
         "purposeOptions": {
-          "businessDiversification": "Business diversification due to relaxed regulations",
-          "advisorPartnerSuggestion": "Suggested by legal advisors, investors, or business partners",
-          "internationalExpansion": "Expansion into international markets",
-          "assetManagement": "Investment in real estate or financial assets",
-          "holdingCompany": "Holding company for subsidiaries",
-          "financialPolicyAdvantage": "Competitive advantage through favorable financial policies",
-          "taxEfficiency": "Lower tax rates or absence of VAT for certain transactions"
+          "businessDiversification": "因法規放寬而產生的業務多元化",
+          "advisorPartnerSuggestion": "法律顧問、投資者或業務夥伴的建議",
+          "internationalExpansion": "擴展至國際市場",
+          "assetManagement": "投資房地產或金融資產",
+          "holdingCompany": "作為子公司的控股公司",
+          "financialPolicyAdvantage": "透過有利的金融政策獲得競爭優勢",
+          "taxEfficiency": "較低的稅率或某些交易免徵增值稅"
         },
-        "registeredCapitalHuf": "Registered capital to be paid in (HUF)",
-        "registeredAddressOption": "Registered address in Hungary",
+        "registeredCapitalHuf": "預計繳納的註冊資本 (HUF)",
+        "registeredAddressOption": "匈牙利註冊地址",
         "registeredAddressOptions": {
-          "mirr": "Use Mirr Asia registered address arrangement",
-          "client": "Use client-provided Hungarian address"
+          "mirr": "使用 Mirr Asia 的註冊地址安排",
+          "client": "使用客戶提供的匈牙利地址"
         },
-        "registeredAddressDetails": "Client-provided registered address details",
-        "capitalRequirementAcknowledged": "I understand the HUF 3,000,000 statutory capital requirement is a compliance prerequisite and is excluded from invoice totals."
+        "registeredAddressDetails": "客戶提供的註冊地址詳情",
+        "capitalRequirementAcknowledged": "我明白 3,000,000 HUF 的法定資本要求是合規前提，且不包含在發票總額中。"
       },
       "parties": {
-        "description": "Invite shareholders/directors and assign a designated contact person.",
+        "description": "邀請股東/董事並指派一名指定聯繫人。",
         "roleOptions": {
-          "shareholder": "Shareholder",
-          "keyController": "Ultimate Beneficial Owner / Major Controller (holding 25% or more)",
-          "director": "Director",
-          "generalManager": "General Manager",
-          "dcp": "Designated Contact Person",
-          "officialPartner": "Official partner registered with Mirr Asia",
-          "other": "Other"
+          "shareholder": "股東",
+          "keyController": "最終受益人 / 主要控制人 (持股 25% 或以上)",
+          "director": "董事",
+          "generalManager": "總經理",
+          "dcp": "指定聯繫人 (DCP)",
+          "officialPartner": "Mirr Asia 註冊官方合作夥伴",
+          "other": "其他"
         },
         "coverage": {
-          "generalManager": "General manager coverage",
-          "generalManagerAtLeastOne": "At least one general manager is required"
+          "generalManager": "總經理配置",
+          "generalManagerAtLeastOne": "至少需要一名總經理"
         },
         "roleTooltips": {
-          "dcp": "Designated Contact Person\n\nProvide the person responsible for communication with the service provider.\nResponsibilities include:\nHandling company-related inquiries\nMonitoring progress of procedures\nReceiving official correspondence"
+          "dcp": "指定聯繫人 (Designated Contact Person)\n\n請指派負責與服務提供商溝通的人員。\n職責包括：\n處理公司相關諮詢\n監控程序進度\n接收官方往來文件"
         }
       },
       "accounting": {
-        "description": "Bookkeeping scope, staffing profile, and VAT / tax support needs.",
-        "expectedMonthlyInvoices": "Expected monthly invoices",
+        "description": "簿記範圍、人員配置及增值稅/稅務支援需求。",
+        "expectedMonthlyInvoices": "預計每月發票數量",
         "invoiceVolume": {
-          "upTo50": "Up to 50",
-          "from51To100": "51 to 100",
-          "from101To200": "101 to 200",
-          "from201To500": "201 to 500",
-          "moreThan500": "More than 500"
+          "upTo50": "50 張以內",
+          "from51To100": "51 至 100 張",
+          "from101To200": "101 至 200 張",
+          "from201To500": "201 至 500 張",
+          "moreThan500": "超過 500 張"
         },
-        "expectedEmployees": "Expected number of employees",
+        "expectedEmployees": "預計員工人數",
         "employeeCount": {
-          "zeroToThree": "0 to 3",
-          "fourToFive": "4 to 5",
-          "sixToSeven": "6 to 7",
-          "moreThanSeven": "More than 7"
+          "zeroToThree": "0 至 3 人",
+          "fourToFive": "4 至 5 人",
+          "sixToSeven": "6 至 7 人",
+          "moreThanSeven": "超過 7 人"
         },
-        "needAdvisory": "Need advisory before deciding",
-        "notes": "Accounting and reporting notes"
+        "needAdvisory": "決定前需要諮詢",
+        "notes": "會計與報告備註"
       },
       "services": {
-        "description": "Select the services you wish to receive and review priced versus quotation-only items before payment.",
+        "description": "請選擇您希望收到的服務，並在付款前核對定價項目與僅限報價項目。",
         "notice": {
-          "title": "Select the services you wish to receive:",
-          "content": "Quote-only services stay at EUR 0 in the invoice until a separate quotation is issued. Use the family residence permit option below to enter the number of family members."
+          "title": "請選擇您希望收到的服務：",
+          "content": "僅限報價的服務在發出單獨報價單前，發票金額將保持為 0 歐元。若需家庭成員居留許可，請在下方輸入成員人數。"
         },
         "items": {
           "basePackage": {
-            "label": "Hungary LLC incorporation + notarization + first-year company maintenance",
-            "info": "Includes incorporation, notarization, and first-year company maintenance. Standard filing plus VAT registration is typically 5 to 10 business days after all required documents are received."
+            "label": "匈牙利 LLC 註冊 + 公證 + 首年公司維護",
+            "info": "包含註冊、公證及首年公司維護。在收到所有所需文件後，標準提交及增值稅登記通常需要 5 至 10 個工作天。"
           },
           "bankAccountOpening": {
-            "label": "Hungarian company bank account opening",
-            "info": "Pricing is confirmed separately after bank compliance review and onboarding route assessment."
+            "label": "匈牙利公司銀行開戶",
+            "info": "價格將在銀行合規審查及開戶路徑評估後單獨確認。"
           },
           "accounting": {
-            "label": "Hungarian accounting service (6 months)",
-            "info": "Starting price is EUR 1,000 for 6 months. Apply in advance if accounting services are required."
+            "label": "匈牙利會計服務 (6 個月)",
+            "info": "起價為 6 個月 1,000 歐元。若需要會計服務請提前申請。"
           },
           "representativeResidencePermit": {
-            "label": "Residence permit application for the company representative",
-            "info": "Apply in advance if residence permit service is required for the representative."
+            "label": "公司代表人居留許可申請",
+            "info": "若代表人需要居留許可服務，請提前申請。"
           },
           "legalOpinionWhitepaperReview": {
-            "label": "Hungarian Legal Opinion (quotation after whitepaper review)",
-            "info": "Quote-only selection. Pricing is provided after whitepaper review."
+            "label": "匈牙利法律意見書 (白皮書審核後報價)",
+            "info": "僅限報價項目。將在審核白皮書後提供定價。"
           },
           "legalOpinionDomesticExchange": {
-            "label": "Legal opinion for domestic exchange listing",
-            "info": "Quote-only selection. Pricing is confirmed separately."
-          },
-          "legalOpinionOtherJurisdictions": {
-            "label": "Legal opinion for other jurisdictions",
-            "info": "Quote-only selection. Pricing is confirmed separately."
+            "label": "國內交易所上市法律意見書",
+            "info": "僅限報價項目。價格將單獨確認。"
           },
           "businessRegulatoryConsulting": {
-            "label": "Business regulatory review, feasibility analysis, document preparation, operational consulting",
-            "info": "Separate quotation."
+            "label": "業務監管審查、可行性分析、文件準備、營運諮詢",
+            "info": "單獨報價。"
           },
           "entityShareholderKyc": {
-            "label": "Additional KYC for entity shareholder",
-            "info": "Charged at incorporation for each shareholder party that is a legal entity."
+            "label": "法人股東額外 KYC",
+            "info": "註冊時針對每個具備法人實體身份的股東方收取。"
           }
         },
         "familyResidencePermit": {
-          "label": "Residence permit application for immediate family members",
-          "info": "Charged at EUR 2,000 per 2-person pack. The total number of packs is rounded up from the person count.",
-          "selectedLabel": "Residence permit application for immediate family members",
-          "personCountLabel": "Number of family members",
-          "personCountHelpTitle": "Pricing rule",
-          "personCountHelp": "Pricing is EUR 2,000 per 2 family members. The invoice uses packs rounded up from the entered person count."
+          "label": "直系親屬居留許可申請",
+          "info": "每 2 人一組方案收費 2,000 歐元。總方案數根據人數進位計算。",
+          "selectedLabel": "直系親屬居留許可申請",
+          "personCountLabel": "家庭成員人數",
+          "personCountHelpTitle": "定價規則",
+          "personCountHelp": "每 2 名家庭成員收費 2,000 歐元。發票將根據輸入的人數進位至最接近的組數計算。"
         },
         "managed": {
-          "partyDriven": "Calculated from entity shareholder parties",
-          "familyInput": "Calculated from family member count"
+          "partyDriven": "根據法人股東方數量計算",
+          "familyInput": "根據家庭成員人數計算"
         },
         "units": {
-          "entityShareholder": "entity shareholder",
-          "twoPersonPack": "2-person pack"
+          "entityShareholder": "法人股東",
+          "twoPersonPack": "2 人方案"
         },
-        "note": "Hungary prices are authored in EUR. Quote-only service selections remain zero-valued until a separate quotation is issued. The HUF 3,000,000 minimum capital is tracked for compliance only and is excluded from billable totals."
+        "note": "匈牙利價格以歐元 (EUR) 為準。僅限報價的服務選擇將保持零值，直至發出單獨報價單。3,000,000 HUF 的最低資本僅供合規追蹤，不包含在可計費總額中。"
       },
       "invoice": {
-        "description": "Review the final fee breakdown before payment."
+        "description": "請在付款前核對最終費用明細。"
       },
       "payment": {
-        "description": "Proceed with card payment or bank transfer proof upload."
+        "description": "請進行信用卡付款或上傳銀行轉帳證明。"
       },
       "review": {
-        "capitalNonBillableAcknowledgment": "I understand the HUF 3,000,000 statutory capital is not part of the invoice total."
+        "capitalNonBillableAcknowledgment": "我明白 3,000,000 HUF 的法定資本不屬於發票總額的一部分。"
       }
     },
     "ie": {

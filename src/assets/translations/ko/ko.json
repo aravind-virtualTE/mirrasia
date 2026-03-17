@@ -4944,243 +4944,239 @@
       }
     },
     "hu": {
-      "title": "Hungary Kft Incorporation",
+      "title": "헝가리 Kft(유한회사) 설립",
       "confirmation": {
-        "title": "Hungary Incorporation Request Submitted",
-        "message": "We have received your Hungary incorporation request. Our team will review compliance, structure, and selected services before filing.",
+        "title": "헝가리 법인 설립 신청 완료",
+        "message": "헝가리 법인 설립 신청이 접수되었습니다. 당사 팀에서 서류 제출 전 컴플라이언스, 구조 및 선택하신 서비스를 검토할 예정입니다.",
         "steps": {
           "documentReview": {
-            "title": "Document Review",
-            "description": "We verify the submitted structure, supporting documents, and service scope before filing."
+            "title": "서류 검토",
+            "description": "제출 전 설립 구조, 증빙 서류 및 서비스 범위를 확인합니다."
           },
           "incorporation": {
-            "title": "Incorporation and VAT Registration",
-            "description": "Standard incorporation and VAT registration are typically completed in 5 to 10 business days after all required documents are received."
+            "title": "법인 설립 및 VAT 등록",
+            "description": "표준 법인 설립 및 VAT 등록은 모든 서류 접수 후 영업일 기준 보통 5~10일이 소요됩니다."
           },
           "postFiling": {
-            "title": "Post-filing Coordination",
-            "description": "We coordinate post-incorporation items such as bank account preparation and residence-permit related services where selected."
+            "title": "설립 후 사후 관리",
+            "description": "은행 계좌 준비 및 선택 사항에 따른 거주 증명서 관련 서비스 등 설립 후 항목들을 조율합니다."
           }
         }
       },
       "reviewSummary": {
-        "relationship": "Relationship"
+        "relationship": "관계"
       },
       "applicant": {
-        "description": "Applicant details, relationship to the company, and primary contact setup.",
+        "description": "신청자 상세 정보, 회사와의 관계 및 기본 연락처 설정입니다.",
         "notice": {
-          "title": "Applicant Notice",
-          "content": "Complete all details in English. Apostille, translation, embassy certification, and similar external procedures should be estimated separately from the 5 to 10 business day incorporation timeline."
+          "title": "신청자 유의사항",
+          "content": "모든 세부 사항은 영어로 작성해 주세요. 아포스티유, 번역, 대사관 인증 및 기타 유사한 외부 절차는 법인 설립 소요 기간(5~10일)과 별도로 예상 기간을 산정해야 합니다."
         },
-        "changedName": "Have you ever changed your name?",
-        "previousNameEnglish": "If yes, provide your previous name in English.",
-        "changedNameOther": "Other name-change details",
-        "dateOfBirth": "Date of Birth",
-        "placeOfBirth": "Place of Birth",
-        "nationality": "Nationality",
-        "passportNumber": "Passport Number",
-        "residentialAddress": "Residential Address",
-        "mailingAddress": "Mailing Address",
-        "mailingAddressDetails": "If different from your residential address, provide your mailing address.",
+        "changedName": "개명한 적이 있습니까?",
+        "previousNameEnglish": "예 선택 시, 이전 이름을 영어로 입력해 주세요.",
+        "changedNameOther": "기타 개명 관련 상세 내용",
+        "dateOfBirth": "생년월일",
+        "placeOfBirth": "출생지",
+        "nationality": "국적",
+        "passportNumber": "여권 번호",
+        "residentialAddress": "거주지 주소",
+        "mailingAddress": "우편물 수령 주소",
+        "mailingAddressDetails": "거주지 주소와 다른 경우에만 입력해 주세요.",
         "mailingOptions": {
-          "same": "Same as residential address",
-          "different": "Different mailing address"
+          "same": "거주지 주소와 동일",
+          "different": "다른 주소로 수령"
         },
-        "relationshipToCompany": "Relationship with the Hungarian Company",
+        "relationshipToCompany": "헝가리 법인과의 관계",
         "relationshipOptions": {
-          "shareholder": "Shareholder",
-          "keyController": "Ultimate Beneficial Owner / Major Controller (holding 25% or more)",
-          "director": "Director (minimum 1 required)",
-          "generalManager": "General Manager (minimum 1 required, may also be the director)",
-          "dcp": "Designated Contact Person (may also be a director)",
-          "officialPartner": "Official partner registered with Mirr Asia",
-          "other": "Other"
+          "shareholder": "주주",
+          "keyController": "최종 실소유자 / 주요 관리자 (지분 25% 이상 보유)",
+          "director": "이사 (최소 1인 필요)",
+          "generalManager": "총괄 매니저 (최소 1인 필요, 이사 겸임 가능)",
+          "dcp": "지정 연락 담당자 (이사 겸임 가능)",
+          "officialPartner": "Mirr Asia 등록 공식 파트너",
+          "other": "기타"
         },
-        "designatedContactResponsibilities": "The designated contact person will:",
+        "designatedContactResponsibilities": "지정 연락 담당자(DCP)의 역할:",
         "designatedContactItems": {
-          "communication": "Communicate with the service provider regarding company matters.",
-          "inquiries": "Handle business inquiries and progress updates.",
-          "documents": "Receive official documents and correspondence.",
-          "access": "Access company information and documents."
+          "communication": "회사 업무와 관련하여 서비스 제공업체와 소통합니다.",
+          "inquiries": "비즈니스 문의 및 진행 상황 업데이트를 관리합니다.",
+          "documents": "공식 서류 및 통지문을 수신합니다.",
+          "access": "회사 정보 및 서류에 접근 권한을 가집니다."
         }
       },
       "compliance": {
-        "description": "Business intent, sanctions screening, and ongoing obligation confirmations.",
-        "legalEthicsIssues": "Does the purpose of establishment raise legal or ethical concerns such as money laundering, gambling, tax evasion, asset concealment, or fraud?",
-        "needLegalAdvice": "Need legal advice",
-        "legalEthicsIssuesOther": "Other legal or ethical issue details",
-        "annualRenewalAgreement": "After company incorporation, annual renewal obligations and related costs will apply. Do you agree to these obligations?",
+        "description": "사업 의도, 제재 대상 스크리닝 및 지속적 의무 사항 확인입니다.",
+        "legalEthicsIssues": "설립 목적이 자금 세탁, 도박, 탈세, 자산 은닉 또는 사기와 같은 법적/윤리적 문제를 야기할 가능성이 있습니까?",
+        "needLegalAdvice": "법적 조언 필요",
+        "legalEthicsIssuesOther": "기타 법적/윤리적 이슈 상세 내용",
+        "annualRenewalAgreement": "법인 설립 후 매년 갱신 의무와 관련 비용이 발생합니다. 이에 동의하십니까?",
         "annualRenewalOptions": {
-          "internalAfterIncorporation": "Can handle internally after incorporation",
-          "noIfAnnualCostsApply": "Do not wish to incorporate if annual costs apply",
-          "consultationRequired": "Consultation required"
+          "internalAfterIncorporation": "설립 후 자체적으로 처리 가능",
+          "noIfAnnualCostsApply": "연간 비용 발생 시 설립을 원치 않음",
+          "consultationRequired": "상담 필요"
         },
         "options": {
-          "notSure": "Not sure"
+          "notSure": "잘 모르겠음"
         },
-        "sanctionedCountriesBusiness": "Will the Hungarian company (or its parent, group, or related companies) conduct business with sanctioned countries such as Iran, Sudan, South Sudan, North Korea, Syria, Cuba, Belarus, Zimbabwe, Russia, or regions of Ukraine outside government control?",
-        "sanctionedPersonsResidence": "Are any shareholders, directors, or related persons residents of sanctioned countries?",
-        "sanctionedOwnershipControl": "Will the Hungarian company be owned, controlled, or acting on behalf of any sanctioned persons, entities, organizations, or governments?",
-        "crimeaSevastopolBusiness": "Are any related persons currently conducting business in Crimea or Sevastopol?",
-        "restrictedSectors": "Are the company or related entities involved in industries such as oil, gas, energy, military, or defense?"
+        "sanctionedCountriesBusiness": "해당 헝가리 법인(또는 모회사, 그룹사, 관계사)이 이란, 수단, 북한, 시리아, 쿠바, 벨라루스, 짐바브웨, 러시아 또는 정부 통제 밖의 우크라이나 지역 등 제재 국가와 거래를 수행합니까?",
+        "sanctionedPersonsResidence": "주주, 이사 또는 관련자 중에 제재 국가 거주자가 있습니까?",
+        "sanctionedOwnershipControl": "해당 헝가리 법인이 제재 대상인 개인, 법인, 단체 또는 정부에 의해 소유되거나 통제되거나, 이들을 대신하여 활동합니까?",
+        "crimeaSevastopolBusiness": "관련자 중 현재 크림반도 또는 세바스토폴에서 사업을 수행하는 자가 있습니까?",
+        "restrictedSectors": "회사 또는 관계사가 석유, 가스, 에너지, 군사 또는 국방 관련 산업에 종사합니까?"
       },
       "company": {
-        "description": "Business profile, registered address setup, and capital acknowledgements.",
-        "notesLabel": "Important Notes",
+        "description": "비즈니스 프로필, 등록 주소지 설정 및 자본금 확인 사항입니다.",
+        "notesLabel": "중요 유의사항",
         "notes": {
-          "vat": "Hungary is an EU country and VAT numbers are generally issued automatically upon incorporation.",
-          "bank": "A corporate bank account should be opened within 8 days after incorporation, but onboarding may take 1 to 2 months. Significant delay can trigger an approximate EUR 70 penalty.",
-          "emi": "EMI accounts may be opened remotely in some cases, but transaction fees are usually higher than traditional bank accounts.",
-          "apostille": "If shareholders are Korean corporations, apostille and Hungarian notarized translation requirements usually apply to corporate documents.",
-          "documents": "After all documents are prepared, send them to the Korean office first for verification before they are forwarded to Hungary."
+          "vat": "헝가리는 EU 회원국이며 일반적으로 법인 설립 시 VAT 번호가 자동으로 발급됩니다.",
+          "bank": "법인 은행 계좌는 설립 후 8일 이내에 개설 신청을 해야 하지만, 실제 온보딩에는 1~2개월이 소요될 수 있습니다. 상당한 지연 발생 시 약 70유로의 과태료가 부과될 수 있습니다.",
+          "emi": "일부 경우 EMI(전자금융업자) 계좌를 비대면으로 개설할 수 있으나, 거래 수수료가 일반 은행보다 높을 수 있습니다.",
+          "apostille": "주주가 한국 법인인 경우, 법인 서류에 대해 아포스티유 및 헝가리 공증 번역 요건이 일반적으로 적용됩니다.",
+          "documents": "모든 서류가 준비되면 헝가리로 발송하기 전 검토를 위해 한국 사무소로 먼저 보내주시기 바랍니다."
         },
-        "industrySelection": "Industry selection",
-        "industrySelectionOther": "Other industry details",
-        "productServiceDescription": "Description of product or service",
-        "businessDescription": "Describe the business in 3 to 4 sentences",
+        "industrySelection": "업종 선택",
+        "industrySelectionOther": "기타 업종 상세 내용",
+        "productServiceDescription": "제품 또는 서비스 설명",
+        "businessDescription": "비즈니스에 대해 3~4문장으로 설명해 주세요.",
         "industryOptions": {
-          "cryptoRelated": "Cryptocurrency-related",
-          "itBlockchainSoftware": "IT / blockchain / software development",
-          "cryptoInvestment": "Cryptocurrency investment",
-          "cryptoGames": "Cryptocurrency-based games",
-          "forexTrading": "Foreign exchange trading",
-          "financeInvestmentConsulting": "Finance / investment / consulting",
-          "trade": "Trade",
-          "wholesaleRetail": "Wholesale / retail",
-          "consulting": "Consulting",
-          "manufacturing": "Manufacturing",
-          "ecommerce": "Online services (e-commerce)",
-          "onlineDirectPurchase": "Online direct purchase / delivery / agency"
+          "cryptoRelated": "가상자산 관련",
+          "itBlockchainSoftware": "IT / 블록체인 / 소프트웨어 개발",
+          "cryptoInvestment": "가상자산 투자",
+          "cryptoGames": "가상자산 기반 게임",
+          "forexTrading": "외환 거래 (Forex)",
+          "financeInvestmentConsulting": "금융 / 투자 / 컨설팅",
+          "trade": "무역",
+          "wholesaleRetail": "도소매",
+          "consulting": "컨설팅",
+          "manufacturing": "제조업",
+          "ecommerce": "온라인 서비스 (이커머스)",
+          "onlineDirectPurchase": "해외 직구 / 배송 / 구매 대행"
         },
-        "purposeOfEstablishment": "Purpose or Expected Benefits of Establishing the Company (Multiple selection allowed)",
-        "purposeOfEstablishmentOther": "Other purpose details",
+        "purposeOfEstablishment": "법인 설립 목적 및 기대 효과 (다중 선택 가능)",
+        "purposeOfEstablishmentOther": "기타 목적 상세 내용",
         "purposeOptions": {
-          "businessDiversification": "Business diversification due to relaxed regulations",
-          "advisorPartnerSuggestion": "Suggested by legal advisors, investors, or business partners",
-          "internationalExpansion": "Expansion into international markets",
-          "assetManagement": "Investment in real estate or financial assets",
-          "holdingCompany": "Holding company for subsidiaries",
-          "financialPolicyAdvantage": "Competitive advantage through favorable financial policies",
-          "taxEfficiency": "Lower tax rates or absence of VAT for certain transactions"
+          "businessDiversification": "규제 완화에 따른 사업 다각화",
+          "advisorPartnerSuggestion": "법률 자문, 투자자 또는 파트너의 권고",
+          "internationalExpansion": "해외 시장 진출 확장",
+          "assetManagement": "부동산 또는 금융 자산 투자",
+          "holdingCompany": "자회사 관리를 위한 지주 회사",
+          "financialPolicyAdvantage": "유리한 금융 정책을 통한 경쟁력 확보",
+          "taxEfficiency": "낮은 세율 또는 특정 거래에 대한 VAT 면제"
         },
-        "registeredCapitalHuf": "Registered capital to be paid in (HUF)",
-        "registeredAddressOption": "Registered address in Hungary",
+        "registeredCapitalHuf": "납입 예정 등록 자본금 (HUF)",
+        "registeredAddressOption": "헝가리 등록 주소지",
         "registeredAddressOptions": {
-          "mirr": "Use Mirr Asia registered address arrangement",
-          "client": "Use client-provided Hungarian address"
+          "mirr": "Mirr Asia 등록 주소지 서비스 이용",
+          "client": "고객 제공 헝가리 주소 사용"
         },
-        "registeredAddressDetails": "Client-provided registered address details",
-        "capitalRequirementAcknowledged": "I understand the HUF 3,000,000 statutory capital requirement is a compliance prerequisite and is excluded from invoice totals."
+        "registeredAddressDetails": "고객 제공 등록 주소 상세 정보",
+        "capitalRequirementAcknowledged": "법정 최소 자본금 3,000,000 HUF는 컴플라이언스 필수 요건이며 인보이스 총계에는 포함되지 않음을 이해합니다."
       },
       "parties": {
-        "description": "Invite shareholders/directors and assign a designated contact person.",
+        "description": "주주/이사를 초대하고 지정 연락 담당자를 지정합니다.",
         "roleOptions": {
-          "shareholder": "Shareholder",
-          "keyController": "Ultimate Beneficial Owner / Major Controller (holding 25% or more)",
-          "director": "Director",
-          "generalManager": "General Manager",
-          "dcp": "Designated Contact Person",
-          "officialPartner": "Official partner registered with Mirr Asia",
-          "other": "Other"
+          "shareholder": "주주",
+          "keyController": "최종 실소유자 / 주요 관리자 (지분 25% 이상 보유)",
+          "director": "이사",
+          "generalManager": "총괄 매니저",
+          "dcp": "지정 연락 담당자 (DCP)",
+          "officialPartner": "Mirr Asia 등록 공식 파트너",
+          "other": "기타"
         },
         "coverage": {
-          "generalManager": "General manager coverage",
-          "generalManagerAtLeastOne": "At least one general manager is required"
+          "generalManager": "총괄 매니저 배정",
+          "generalManagerAtLeastOne": "최소 1인의 총괄 매니저가 필요합니다."
         },
         "roleTooltips": {
-          "dcp": "Designated Contact Person\n\nProvide the person responsible for communication with the service provider.\nResponsibilities include:\nHandling company-related inquiries\nMonitoring progress of procedures\nReceiving official correspondence"
+          "dcp": "지정 연락 담당자 (Designated Contact Person)\n\n서비스 제공업체와의 소통을 담당할 사람을 지정합니다.\n주요 역할:\n법인 관련 문의 대응\n절차 진행 상황 모니터링\n공식 서류 및 통지문 수신"
         }
       },
       "accounting": {
-        "description": "Bookkeeping scope, staffing profile, and VAT / tax support needs.",
-        "expectedMonthlyInvoices": "Expected monthly invoices",
+        "description": "회계 장부 작성 범위, 인력 구성 및 VAT/세무 지원 필요 여부입니다.",
+        "expectedMonthlyInvoices": "월 예상 인보이스 수량",
         "invoiceVolume": {
-          "upTo50": "Up to 50",
-          "from51To100": "51 to 100",
-          "from101To200": "101 to 200",
-          "from201To500": "201 to 500",
-          "moreThan500": "More than 500"
+          "upTo50": "50건 이하",
+          "from51To100": "51~100건",
+          "from101To200": "101~200건",
+          "from201To500": "201~500건",
+          "moreThan500": "500건 초과"
         },
-        "expectedEmployees": "Expected number of employees",
+        "expectedEmployees": "예상 직원 수",
         "employeeCount": {
-          "zeroToThree": "0 to 3",
-          "fourToFive": "4 to 5",
-          "sixToSeven": "6 to 7",
-          "moreThanSeven": "More than 7"
+          "zeroToThree": "0~3명",
+          "fourToFive": "4~5명",
+          "sixToSeven": "6~7명",
+          "moreThanSeven": "7명 초과"
         },
-        "needAdvisory": "Need advisory before deciding",
-        "notes": "Accounting and reporting notes"
+        "needAdvisory": "결정 전 자문 필요",
+        "notes": "회계 및 보고 관련 참고 사항"
       },
       "services": {
-        "description": "Select the services you wish to receive and review priced versus quotation-only items before payment.",
+        "description": "받고자 하는 서비스를 선택하고, 고정 비용 항목과 견적 전용 항목을 확인해 주세요.",
         "notice": {
-          "title": "Select the services you wish to receive:",
-          "content": "Quote-only services stay at EUR 0 in the invoice until a separate quotation is issued. Use the family residence permit option below to enter the number of family members."
+          "title": "원하시는 서비스를 선택해 주세요:",
+          "content": "견적 전용 서비스는 별도 견적서가 발행될 때까지 인보이스에 0유로로 표시됩니다. 가족 거주증 옵션의 경우 아래에서 가족 구성원 수를 입력해 주세요."
         },
         "items": {
           "basePackage": {
-            "label": "Hungary LLC incorporation + notarization + first-year company maintenance",
-            "info": "Includes incorporation, notarization, and first-year company maintenance. Standard filing plus VAT registration is typically 5 to 10 business days after all required documents are received."
+            "label": "헝가리 LLC 설립 + 공증 + 1년차 법인 유지 관리",
+            "info": "법인 설립, 공증 및 1년차 유지 관리가 포함됩니다. 표준 설립 및 VAT 등록은 모든 서류 접수 후 영업일 기준 보통 5~10일이 소요됩니다."
           },
           "bankAccountOpening": {
-            "label": "Hungarian company bank account opening",
-            "info": "Pricing is confirmed separately after bank compliance review and onboarding route assessment."
+            "label": "헝가리 법인 은행 계좌 개설",
+            "info": "은행 컴플라이언스 검토 및 온보딩 경로 평가 후 비용이 별도로 확정됩니다."
           },
           "accounting": {
-            "label": "Hungarian accounting service (6 months)",
-            "info": "Starting price is EUR 1,000 for 6 months. Apply in advance if accounting services are required."
+            "label": "헝가리 회계 서비스 (6개월)",
+            "info": "시작 비용은 6개월 기준 1,000유로입니다. 회계 서비스가 필요한 경우 미리 신청하세요."
           },
           "representativeResidencePermit": {
-            "label": "Residence permit application for the company representative",
-            "info": "Apply in advance if residence permit service is required for the representative."
+            "label": "법인 대표자 거주 증명서(Residence Permit) 신청",
+            "info": "대표자 거주증 서비스가 필요한 경우 미리 신청하세요."
           },
           "legalOpinionWhitepaperReview": {
-            "label": "Hungarian Legal Opinion (quotation after whitepaper review)",
-            "info": "Quote-only selection. Pricing is provided after whitepaper review."
+            "label": "헝가리 법률 의견서 (백서 검토 후 견적 제공)",
+            "info": "견적 전용 항목입니다. 백서 검토 후 비용이 안내됩니다."
           },
           "legalOpinionDomesticExchange": {
-            "label": "Legal opinion for domestic exchange listing",
-            "info": "Quote-only selection. Pricing is confirmed separately."
-          },
-          "legalOpinionOtherJurisdictions": {
-            "label": "Legal opinion for other jurisdictions",
-            "info": "Quote-only selection. Pricing is confirmed separately."
+            "label": "국내 거래소 상장용 법률 의견서",
+            "info": "견적 전용 항목입니다. 비용은 별도로 확정됩니다."
           },
           "businessRegulatoryConsulting": {
-            "label": "Business regulatory review, feasibility analysis, document preparation, operational consulting",
-            "info": "Separate quotation."
+            "label": "비즈니스 규제 검토, 타당성 분석, 서류 준비, 운영 컨설팅",
+            "info": "별도 견적 항목입니다."
           },
           "entityShareholderKyc": {
-            "label": "Additional KYC for entity shareholder",
-            "info": "Charged at incorporation for each shareholder party that is a legal entity."
+            "label": "법인 주주 추가 KYC",
+            "info": "주주 중 법인 실체가 있는 경우 법인당 설립 시점에 청구됩니다."
           }
         },
         "familyResidencePermit": {
-          "label": "Residence permit application for immediate family members",
-          "info": "Charged at EUR 2,000 per 2-person pack. The total number of packs is rounded up from the person count.",
-          "selectedLabel": "Residence permit application for immediate family members",
-          "personCountLabel": "Number of family members",
-          "personCountHelpTitle": "Pricing rule",
-          "personCountHelp": "Pricing is EUR 2,000 per 2 family members. The invoice uses packs rounded up from the entered person count."
+          "label": "직계 가족 거주 증명서 신청",
+          "info": "2인 1팩 기준 2,000유로가 청구됩니다. 총 팩 수는 인원수에서 올림하여 계산됩니다.",
+          "selectedLabel": "직계 가족 거주 증명서 신청",
+          "personCountLabel": "가족 구성원 수",
+          "personCountHelpTitle": "비용 산정 규칙",
+          "personCountHelp": "가족 2인당 2,000유로입니다. 입력한 인원수에서 올림된 팩 단위로 인보이스에 반영됩니다."
         },
         "managed": {
-          "partyDriven": "Calculated from entity shareholder parties",
-          "familyInput": "Calculated from family member count"
+          "partyDriven": "법인 주주 수에 따라 계산됨",
+          "familyInput": "가족 구성원 수에 따라 계산됨"
         },
         "units": {
-          "entityShareholder": "entity shareholder",
-          "twoPersonPack": "2-person pack"
+          "entityShareholder": "법인 주주",
+          "twoPersonPack": "2인 팩"
         },
-        "note": "Hungary prices are authored in EUR. Quote-only service selections remain zero-valued until a separate quotation is issued. The HUF 3,000,000 minimum capital is tracked for compliance only and is excluded from billable totals."
+        "note": "헝가리 서비스 비용은 유로(EUR) 기준으로 작성되었습니다. 견적 전용 서비스는 별도 견적 전까지 0원으로 표시됩니다. 최소 자본금 3,000,000 HUF는 확인용이며 결제 총액에서 제외됩니다."
       },
       "invoice": {
-        "description": "Review the final fee breakdown before payment."
+        "description": "결제 전 최종 수수료 내역을 확인해 주세요."
       },
       "payment": {
-        "description": "Proceed with card payment or bank transfer proof upload."
+        "description": "카드 결제 또는 무통장 입금 증빙 업로드를 진행해 주세요."
       },
       "review": {
-        "capitalNonBillableAcknowledgment": "I understand the HUF 3,000,000 statutory capital is not part of the invoice total."
+        "capitalNonBillableAcknowledgment": "법정 자본금 3,000,000 HUF는 인보이스 총계에 포함되지 않음을 이해합니다."
       }
     },
     "ie": {
