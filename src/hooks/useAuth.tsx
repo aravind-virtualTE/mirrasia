@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '@/services/fetch';
 import { atom } from 'jotai';
+import { getAuthAccessSnapshot } from '@/lib/accessSnapshot';
 // Define Jotai atoms for user and authentication state
 // const isLoadingAtom = atom(true);
 // import { useNavigate } from 'react-router-dom';
@@ -56,7 +57,11 @@ export const signupWithGoogle = async (
   idToken?: string,
 ) => {
   try {
-    const response = await api.post('auth/google', { tokenId, 'inviteToken': idToken });
+    const response = await api.post('auth/google', {
+      tokenId,
+      inviteToken: idToken,
+      authIntent: 'signup',
+    });
     console.log("response-->", response)
     return response.data;
   } catch (error) {
@@ -67,13 +72,19 @@ export const signupWithGoogle = async (
 
 
 export const loginWithEmail = async (email: string, password: string,) => {
-  const response = await api.post('auth/login', { email, password });
+  const accessSnapshot = await getAuthAccessSnapshot();
+  const response = await api.post('auth/login', { email, password, accessSnapshot });
   // console.log('response->',response)
   return response.data;
 };
 
 export const loginWithGoogle = async (tokenId: string) => {
-  const response = await api.post('auth/google', { tokenId });
+  const accessSnapshot = await getAuthAccessSnapshot();
+  const response = await api.post('auth/google', {
+    tokenId,
+    authIntent: 'login',
+    accessSnapshot,
+  });
   // console.log("response-->",response)    
   return response.data;
 };
@@ -172,7 +183,12 @@ export const verify2Fa =async (userId: string, disableCode: string) => {
 }
 
 export const verify2FaLogin =async (userId: string, disableCode: string) => {
-  const response = await api.post(`/auth/verify-2fa-login`, {token: disableCode, userId});
+  const accessSnapshot = await getAuthAccessSnapshot();
+  const response = await api.post(`/auth/verify-2fa-login`, {
+    token: disableCode,
+    userId,
+    accessSnapshot,
+  });
    if(response.data.success) {
       return response.data;
    }else{
