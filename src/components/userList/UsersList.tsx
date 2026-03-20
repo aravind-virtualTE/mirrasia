@@ -31,6 +31,15 @@ export interface User {
     location?: string;
     lastLogin?: string;
     lastAccessIP?: string;
+    lastAccessGeo?: {
+        source?: string;
+        countryIsoCode?: string;
+        countryName?: string;
+        cityName?: string;
+        subdivisionName?: string;
+        timeZone?: string;
+        ispName?: string;
+    };
     twoFactorEnabled?: boolean;
     createdAt?: string;
     updatedAt?: string;
@@ -66,6 +75,19 @@ export interface User {
 }
 
 type SortKey = "fullName" | "email" | "role" | "createdAt" | "updatedAt";
+
+const formatLastAccessLocation = (user?: User | null) => {
+    const geo = user?.lastAccessGeo;
+    if (!geo) return "N/A";
+
+    const parts = [
+        geo.cityName,
+        geo.subdivisionName,
+        geo.countryName || geo.countryIsoCode,
+    ].filter((value): value is string => Boolean(value && value.trim()));
+
+    return parts.length ? parts.join(", ") : "N/A";
+};
 
 const UsersList = () => {
     const [users, setUsers] = useState<User[]>([{ _id: "", fullName: "", email: "", role: "", picture: "", createdAt: "", updatedAt: "" }])
@@ -850,7 +872,21 @@ const UsersList = () => {
                                         </div>
                                         <div>
                                             <Label className="text-sm font-medium">Last Access IP: </Label>
-                                            {/* <p className="text-sm font-mono">{userDetails.lastAccessIP}</p> */}
+                                            <span className="text-sm font-mono">
+                                                {selectedUser?.lastAccessIP || "N/A"}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <Label className="text-sm font-medium">Last Access Location: </Label>
+                                            <span className="text-sm">
+                                                {formatLastAccessLocation(selectedUser)}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <Label className="text-sm font-medium">Last Access ISP: </Label>
+                                            <span className="text-sm">
+                                                {selectedUser?.lastAccessGeo?.ispName || "N/A"}
+                                            </span>
                                         </div>
                                     </CardContent>
                                 </Card>
