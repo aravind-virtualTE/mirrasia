@@ -3356,9 +3356,9 @@
     },
     "dashboard": {
       "title": "法人設立申請",
-      "desc": "追蹤並繼續您的統一法人設立申請。",
+      "desc": "追蹤並繼續您的統一法人設立與現有公司上線申請。",
       "loading": "正在載入申請...",
-      "empty": "目前尚無設立申請。",
+      "empty": "目前尚無設立或上線申請。",
       "filters": {
         "all": "所有申請",
         "pending": "待處理申請",
@@ -3411,6 +3411,11 @@
         "draft": "草稿",
         "unpaid": "未付款"
       },
+      "launcher": {
+        "hero": {
+          "description": "請選擇要啟動統一新設公司或現有公司上線流程的司法管轄區。"
+        }
+      },
       "invitations": {
         "title": "我的邀請",
         "desc": "為邀請您的公司完成 KYC (身份認證)。",
@@ -3433,6 +3438,28 @@
           "companyFallback": "公司名",
           "pending": "待處理"
         }
+      }
+    },
+    "journey": {
+      "labels": {
+        "new_incorporation": "新設公司",
+        "existing_company_onboarding": "現有公司上線"
+      },
+      "chooser": {
+        "title": "選擇申請類型",
+        "description": "請選擇此申請是新設公司，還是現有公司上線。"
+      },
+      "banner": {
+        "title": "現有公司上線",
+        "description": "此流程適用於已在其他地方設立、現正上線至 MIRRASIA 的公司。您仍需回答相同的國家問卷，但不需要服務選擇、發票與付款。"
+      },
+      "confirmation": {
+        "title": "上線申請已提交",
+        "message": "我們已收到您的現有公司上線申請。我們的團隊將審核您提交的資料，並與您聯繫說明下一步。"
+      },
+      "pageTitle": "{{country}} 現有公司上線",
+      "actions": {
+        "submit": "提交上線申請"
       }
     },
     "au": {

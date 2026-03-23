@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { UnifiedTextField } from "./fields/TextField";
 import { UnifiedSignatureField } from "./fields/SignatureField";
@@ -21,17 +22,23 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import type { McapConfig, McapField, McapReviewSummaryRow, RepeatableSection } from "./configs/types";
+import type { McapConfig, McapField, McapJourneyType, McapReviewSummaryRow, RepeatableSection } from "./configs/types";
 import { Progress } from "@/components/ui/progress";
 import { buildDefaultsForFields, getDefaultValueForField } from "./fields/fieldDefaults";
 import { API_URL } from "@/services/fetch";
 import { getExchangeRate, getPricingBaseCurrency } from "@/services/exchangeRate";
+import { DEFAULT_MCAP_JOURNEY_TYPE } from "./configs/types";
 import {
     ADDITIONAL_EXECUTIVE_USD_TO_BASE_CURRENCY_FIELD,
     ADDITIONAL_EXECUTIVE_USD_TO_BASE_RATE_FIELD,
     applyAdditionalExecutiveFeesToFees,
     getAdditionalExecutiveUsdToBaseRate,
 } from "./additionalExecutivePricing";
+import {
+    isExistingCompanyOnboardingJourney,
+    resolveMcapConfigForJourney,
+    resolveMcapJourneyType,
+} from "./journey";
 
 // --- API Helper (Inlined for Demo) ---
 const API_BASE = API_URL.replace(/\/+$/, "");
@@ -102,6 +109,7 @@ const buildSignatureFile = (signatureDataUrl: string, fieldName: string) => {
 
 export const UnifiedFormEngine = ({
     config,
+    journeyType = DEFAULT_MCAP_JOURNEY_TYPE,
     initialData,
     initialParties,
     initialCompanyId,
@@ -109,6 +117,7 @@ export const UnifiedFormEngine = ({
     isLoading = false,
 }: {
     config: McapConfig;
+    journeyType?: McapJourneyType;
     initialData?: Record<string, any> | null;
     initialParties?: any[];
     initialCompanyId?: string | null;
@@ -131,9 +140,18 @@ export const UnifiedFormEngine = ({
     // Revert this to false after admin testing is complete.
     const ADMIN_TEST_RELAX_VALIDATION = true;
 
-    const currentStep = config.steps[currentStepIdx];
-    const isLastStep = currentStepIdx === config.steps.length - 1;
-    const entityMeta = useMemo(() => config.entityMeta || {}, [config.entityMeta]);
+    const resolvedJourneyType = useMemo(() => resolveMcapJourneyType(journeyType), [journeyType]);
+    const runtimeConfig = useMemo(
+        () => resolveMcapConfigForJourney(config, resolvedJourneyType),
+        [config, resolvedJourneyType]
+    );
+    const isExistingCompanyOnboarding = useMemo(
+        () => isExistingCompanyOnboardingJourney(resolvedJourneyType),
+        [resolvedJourneyType]
+    );
+    const currentStep = runtimeConfig.steps[currentStepIdx];
+    const isLastStep = currentStepIdx === runtimeConfig.steps.length - 1;
+    const entityMeta = useMemo(() => runtimeConfig.entityMeta || {}, [runtimeConfig.entityMeta]);
     const pricingBaseCurrency = useMemo(() => getPricingBaseCurrency(config.countryCode), [config.countryCode]);
     // Prefer fresh step-level computeFees. If converted FX metadata is missing from that output,
     // fall back to cached converted computedFees from ServiceSelectionWidget.
@@ -219,7 +237,7 @@ export const UnifiedFormEngine = ({
             });
         };
 
-        config.steps.forEach((step) => {
+        runtimeConfig.steps.forEach((step) => {
             applyFieldDefaults(step.fields);
 
             if (step.widget === "RepeatableSection" && step.widgetConfig) {
@@ -234,7 +252,7 @@ export const UnifiedFormEngine = ({
         });
 
         return initial;
-    }, [config.steps]);
+    }, [runtimeConfig.steps]);
 
     useEffect(() => {
         if (Object.keys(formData).length === 0) {
@@ -267,9 +285,9 @@ export const UnifiedFormEngine = ({
 
     useEffect(() => {
         if (typeof initialStepIdx === "number") {
-            setCurrentStepIdx(Math.max(0, Math.min(initialStepIdx, config.steps.length - 1)));
+            setCurrentStepIdx(Math.max(0, Math.min(initialStepIdx, runtimeConfig.steps.length - 1)));
         }
-    }, [initialStepIdx, config.steps.length]);
+    }, [initialStepIdx, runtimeConfig.steps.length]);
 
     useEffect(() => {
         if (!Array.isArray(parties)) return;
@@ -563,6 +581,7 @@ export const UnifiedFormEngine = ({
                 _id: currentCompanyId || undefined,
                 countryCode: config.countryCode,
                 countryName: config.countryName,
+                journeyType: resolvedJourneyType,
                 status: "Draft",
                 stepIdx: currentStepIdx,
                 data: formData,
@@ -583,7 +602,7 @@ export const UnifiedFormEngine = ({
 
         ensureDraftInFlightRef.current = request;
         return request;
-    }, [config.countryCode, config.countryName, currentStepIdx, formData, parties, userId]);
+    }, [config.countryCode, config.countryName, currentStepIdx, formData, parties, resolvedJourneyType, userId]);
 
     useEffect(() => {
         if (currentStep.widget === "PaymentWidget" && !companyIdRef.current) {
@@ -718,6 +737,7 @@ export const UnifiedFormEngine = ({
                 _id: companyIdRef.current || undefined,
                 countryCode: config.countryCode,
                 countryName: config.countryName,
+                journeyType: resolvedJourneyType,
                 status: "Submitted",
                 stepIdx: currentStepIdx,
                 data: formData, // The dynamic fields
@@ -930,7 +950,7 @@ export const UnifiedFormEngine = ({
         };
 
         const findFieldByName = (name: string) =>
-            config.steps
+            runtimeConfig.steps
                 .flatMap((step) => step.fields || [])
                 .find((field) => field.name === name);
 
@@ -1010,8 +1030,8 @@ export const UnifiedFormEngine = ({
         ]);
         const industryEntry = getValueEntry(["industry", "industries", "selectedIndustry", "businessTypes"]);
         const partiesCount = Array.isArray(parties) ? parties.length : 0;
-        const hasPartiesStep = config.steps.some((step) => step.widget === "PartiesManager");
-        const hasServicesStep = config.steps.some((step) => step.widget === "ServiceSelectionWidget");
+        const hasPartiesStep = runtimeConfig.steps.some((step) => step.widget === "PartiesManager");
+        const hasServicesStep = runtimeConfig.steps.some((step) => step.widget === "ServiceSelectionWidget");
         const renderServicesValue = () => {
             const selectedIds = Array.from(
                 new Set([
@@ -1030,7 +1050,7 @@ export const UnifiedFormEngine = ({
                 );
             });
 
-            const servicesStep = config.steps.find((step) => step.widget === "ServiceSelectionWidget");
+            const servicesStep = runtimeConfig.steps.find((step) => step.widget === "ServiceSelectionWidget");
             const serviceItemsSource = servicesStep?.serviceItems;
             const resolvedServiceItems =
                 typeof serviceItemsSource === "function"
@@ -1149,8 +1169,8 @@ export const UnifiedFormEngine = ({
                 hasServicesStep || servicesValue !== "-"
             ),
         ].filter(Boolean) as Array<{ id: string; label: string; value: string }>;
-        const summaryRows = Array.isArray(config.reviewSummary) && config.reviewSummary.length > 0
-            ? config.reviewSummary
+        const summaryRows = Array.isArray(runtimeConfig.reviewSummary) && runtimeConfig.reviewSummary.length > 0
+            ? runtimeConfig.reviewSummary
                 .map((row) => buildConfiguredRow(row))
                 .filter(Boolean) as Array<{ id: string; label: string; value: string }>
             : defaultSummaryRows;
@@ -1172,7 +1192,7 @@ export const UnifiedFormEngine = ({
         );
     };
 
-    const totalSteps = config.steps.length;
+    const totalSteps = runtimeConfig.steps.length;
     const progressPct = Math.round(((currentStepIdx + 1) / totalSteps) * 100);
 
     // TEMP (admin testing only): only admin/master can use relaxed sidebar jumping.
@@ -1201,22 +1221,43 @@ export const UnifiedFormEngine = ({
         formData.stripeAmountCents,
         formData.stripeCurrency,
     ]);
+    const pageTitle = isExistingCompanyOnboarding
+        ? t("mcap.journey.pageTitle", {
+            country: runtimeConfig.countryName,
+            defaultValue: `${runtimeConfig.countryName} Existing Company Onboarding`,
+        })
+        : (runtimeConfig.title
+            ? t(runtimeConfig.title, runtimeConfig.title)
+            : t("mcap.title", `${runtimeConfig.countryName} Incorporation`));
+    const confirmationTitle = isExistingCompanyOnboarding
+        ? t("mcap.journey.confirmation.title", "Onboarding Request Submitted")
+        : (runtimeConfig.confirmationDetails?.title
+            ? t(runtimeConfig.confirmationDetails.title, runtimeConfig.confirmationDetails.title)
+            : "Application Submitted!");
+    const confirmationMessage = isExistingCompanyOnboarding
+        ? t(
+            "mcap.journey.confirmation.message",
+            "Your existing company onboarding request has been received. Our team will review the submitted details and contact you with the next steps."
+        )
+        : (runtimeConfig.confirmationDetails?.message
+            ? t(runtimeConfig.confirmationDetails.message, runtimeConfig.confirmationDetails.message)
+            : "Your application has been successfully submitted and is now under review.");
 
     // --- Success View ---
     if (submissionResult) {
-        const details = config.confirmationDetails;
+        const details = runtimeConfig.confirmationDetails;
         return (
             <div className="flex flex-col items-center justify-center py-10 px-4 max-w-2xl mx-auto space-y-6 text-center">
                 <div className="flex flex-col items-center space-y-2">
                     <CheckCircle2 className="w-16 h-16 text-green-500" />
-                    <h2 className="text-3xl font-bold">{details?.title ? t(details.title, details.title) : "Application Submitted!"}</h2>
+                    <h2 className="text-3xl font-bold">{confirmationTitle}</h2>
                 </div>
 
                 <p className="text-muted-foreground text-lg leading-relaxed">
-                    {details?.message ? t(details.message, details.message) : "Your application has been successfully submitted and is now under review."}
+                    {confirmationMessage}
                 </p>
 
-                {details?.steps && (
+                {!isExistingCompanyOnboarding && details?.steps && (
                     <div className="w-full space-y-4 text-left border rounded-xl p-6 bg-accent/5">
                         <h3 className="font-semibold text-lg mb-2">What Happens Next?</h3>
                         <div className="space-y-4">
@@ -1271,9 +1312,23 @@ export const UnifiedFormEngine = ({
         <div className="max-width mx-auto p-3 sm:p-4 md:p-6 space-y-4">
             {/* Top Bar */}
             <div className="space-y-2">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                    {config.title ? t(config.title, config.title) : t("mcap.title", `${config.countryName} Incorporation`)}
-                </h1>
+                <div className="flex flex-wrap items-center gap-2">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                        {pageTitle}
+                    </h1>
+                    {isExistingCompanyOnboarding && (
+                        <Badge variant="secondary">
+                            {t("mcap.journey.labels.existing_company_onboarding", "Existing Company Onboarding")}
+                        </Badge>
+                    )}
+                </div>
+                {isExistingCompanyOnboarding && (
+                    <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm text-muted-foreground">
+                        <div className="font-medium text-foreground">
+                            {t("mcap.journey.banner.title", "Existing Company Onboarding")}
+                        </div>                       
+                    </div>
+                )}
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>{t("mcap.stepOf", "Step {{current}} of {{total}}", { current: currentStepIdx + 1, total: totalSteps })}</span>
                     <span>{progressPct}%</span>
@@ -1285,7 +1340,7 @@ export const UnifiedFormEngine = ({
                 {/* Sidebar */}
                 <aside className="hidden lg:block space-y-4 sticky top-0 h-[calc(100vh-2rem)] overflow-auto">
                     <div className="space-y-1">
-                        {config.steps.map((s, idx) => (
+                        {runtimeConfig.steps.map((s, idx) => (
                             <button
                                 key={s.id}
                                 onClick={() => canJumpTo(idx) && setCurrentStepIdx(idx)}
@@ -1344,7 +1399,7 @@ export const UnifiedFormEngine = ({
                             ) : currentStep.widget === "PaymentWidget" ? (
                                 <PaymentWidget
                                     fees={computedFees}
-                                    currency={config.currency}
+                                    currency={runtimeConfig.currency}
                                     supportedCurrencies={currentStep.supportedCurrencies}
                                     companyId={companyId}
                                     onPaymentComplete={handlePaymentComplete}
@@ -1360,18 +1415,18 @@ export const UnifiedFormEngine = ({
                                         </div>
                                     ) : null}
                                     <ServiceSelectionWidget
-                                        config={config}
+                                        config={runtimeConfig}
                                         data={formData}
                                         onChange={(newData) => setFormData((prev: any) => ({ ...prev, ...newData }))}
                                         items={currentStep.serviceItems}
-                                        currency={config.currency}
+                                        currency={runtimeConfig.currency}
                                         supportedCurrencies={
                                             currentStep.supportedCurrencies
-                                            || config.steps.find((step) => step.widget === "PaymentWidget")?.supportedCurrencies
+                                            || runtimeConfig.steps.find((step) => step.widget === "PaymentWidget")?.supportedCurrencies
                                         }
                                         computeFees={
                                             currentStep.computeFees
-                                            || config.steps.find((step) =>
+                                            || runtimeConfig.steps.find((step) =>
                                                 (step.id === "invoice" || step.id === "payment" || step.widget === "InvoiceWidget" || step.widget === "PaymentWidget")
                                                 && typeof step.computeFees === "function"
                                             )?.computeFees
@@ -1424,7 +1479,11 @@ export const UnifiedFormEngine = ({
                             <Button onClick={handleNext} disabled={isSubmitting || isAdvancingStep}>
                                 {(isSubmitting || isAdvancingStep) && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                                 {isLastStep
-                                    ? t("mcap.navigation.submit", "Submit Application")
+                                    ? (
+                                        isExistingCompanyOnboarding
+                                            ? t("mcap.journey.actions.submit", "Submit Onboarding Request")
+                                            : t("mcap.navigation.submit", "Submit Application")
+                                    )
                                     : t("mcap.navigation.next", "Next Step")}
                             </Button>
                         )}

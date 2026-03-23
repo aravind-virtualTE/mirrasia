@@ -3355,9 +3355,9 @@
     },
     "dashboard": {
       "title": "법인 설립 신청",
-      "desc": "통합 법인 설립 신청 현황을 추적하고 계속해서 진행하세요.",
+      "desc": "통합 법인 설립 및 온보딩 신청 현황을 추적하고 계속해서 진행하세요.",
       "loading": "신청 내역을 불러오는 중...",
-      "empty": "아직 설립 신청 내역이 없습니다.",
+      "empty": "아직 설립 또는 온보딩 신청 내역이 없습니다.",
       "filters": {
         "all": "모든 신청",
         "pending": "대기 중인 신청",
@@ -3410,6 +3410,11 @@
         "draft": "임시 저장",
         "unpaid": "미결제"
       },
+      "launcher": {
+        "hero": {
+          "description": "통합 법인 설립 또는 기존 회사 온보딩 절차를 시작할 국가를 선택하세요."
+        }
+      },
       "invitations": {
         "title": "내 초대 목록",
         "desc": "나를 초대한 회사의 KYC(본인 인증)를 완료하세요.",
@@ -3432,6 +3437,28 @@
           "companyFallback": "회사",
           "pending": "대기 중"
         }
+      }
+    },
+    "journey": {
+      "labels": {
+        "new_incorporation": "신규 법인 설립",
+        "existing_company_onboarding": "기존 회사 온보딩"
+      },
+      "chooser": {
+        "title": "신청 유형 선택",
+        "description": "신규 법인 설립인지, 기존 회사 온보딩인지 선택해 주세요."
+      },
+      "banner": {
+        "title": "기존 회사 온보딩",
+        "description": "이 절차는 이미 다른 곳에서 설립된 회사를 MIRRASIA로 온보딩하기 위한 것입니다. 국가별 질문은 동일하게 답변해야 하지만, 서비스 선택, 인보이스, 결제는 필요하지 않습니다."
+      },
+      "confirmation": {
+        "title": "온보딩 요청이 제출되었습니다",
+        "message": "기존 회사 온보딩 요청이 접수되었습니다. 저희 팀이 제출된 내용을 검토한 뒤 다음 단계에 대해 안내드리겠습니다."
+      },
+      "pageTitle": "{{country}} 기존 회사 온보딩",
+      "actions": {
+        "submit": "온보딩 요청 제출"
       }
     },
     "au": {

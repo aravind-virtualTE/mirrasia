@@ -1,14 +1,14 @@
 ﻿# MCAP Unified Form Engine: Agentic Plan
 
-Last updated: 2026-03-16
+Last updated: 2026-03-23
 
 ## 1. Purpose
-This document is the implementation-level source of truth for how MCAP incorporation flows are built, validated, priced, and debugged.
+This document is the implementation-level source of truth for how MCAP incorporation and onboarding flows are built, validated, priced, and debugged.
 
 Use this when you:
 - add or update country configs
 - change widgets (`ServiceSelectionWidget`, `InvoiceWidget`, `PaymentWidget`, `PartiesManager`, `RepeatableSection`)
-- troubleshoot step ordering, fee totals, additional executive KYC pricing, DCP gating, invite flow, or payment mismatches
+- troubleshoot step ordering, journey selection/resume, fee totals, additional executive KYC pricing, DCP gating, invite flow, or payment mismatches
 
 ## 2. Baseline Flow
 The runtime baseline is a normalized 10-stage journey:
@@ -25,6 +25,42 @@ The runtime baseline is a normalized 10-stage journey:
 
 Country configs can define fewer/more raw steps, but `registry.ts` normalizes them.
 
+### Journey policy
+MCAP now supports two global journey types across all countries:
+- `new_incorporation`
+- `existing_company_onboarding`
+
+Rules:
+- `new_incorporation` keeps the full normalized flow.
+- `existing_company_onboarding` keeps the same country questionnaire, keeps `service-agreement` and `review`, and removes pricing/payment stages globally:
+  - `ServiceSelectionWidget`
+  - `PanamaServiceSetupWidget`
+  - `InvoiceWidget`
+  - `PaymentWidget`
+  - canonical step ids `services`, `invoice`, `payment`
+- journey policy is applied after registry normalization so all current and future MCAP configs inherit it automatically when they use the shared step ids/widgets.
+
+### Journey entry and persistence
+Current runtime implementation:
+- `src/mcap/McapDashboard.tsx` is the launcher entry point.
+- Clicking `Start` opens a chooser dialog with:
+  - `New Incorporation`
+  - `Existing Company Onboarding`
+- Resume flows opened with `companyId` skip the chooser and restore the saved `journeyType` from the company record.
+- `journeyType` is stored top-level on the company document, not inside `data`.
+- Backend normalization defaults missing/legacy values to `new_incorporation`.
+- On create, backend persists the incoming normalized `journeyType`.
+- On update, backend only backfills `journeyType` if the existing record has no value; it does not switch an already-created journey.
+- `UnifiedFormEngine` always derives current step, sidebar, progress, review, and submit behavior from the journey-resolved config, not the raw country config.
+
+### Onboarding-specific runtime UX
+When `journeyType === existing_company_onboarding`:
+- `UnifiedFormEngine` renders onboarding-specific title, banner, submit CTA, and confirmation copy.
+- The success screen uses onboarding confirmation messaging and skips the standard country “What Happens Next?” step list.
+- Pricing widgets and payment/invoice calculations do not run because those steps are removed before render.
+- `McapCompanyDetail.tsx` resolves the same journey-filtered config and hides pricing/payment detail surfaces for onboarding records.
+- Backend admin notifications and status emails use onboarding wording instead of incorporation wording.
+
 ## 3. Registry Normalization Rules
 `src/mcap/configs/registry.ts` applies normalization in this order:
 1. `stripLegalTermsOutsideAgreement`
@@ -33,6 +69,9 @@ Country configs can define fewer/more raw steps, but `registry.ts` normalizes th
 4. `ensureReviewStep`
 5. `reorderSteps`
 6. `attachComplianceGuard`
+
+After normalization, frontend journey resolution applies onboarding policy filtering through:
+- `src/mcap/journey.ts`
 
 ### Standard flow countries (current)
 - `HK`, `US`, `SG`, `PA`, `PPIF`, `CR`, `UK`, `UAE`, `CH`, `CH_FOUNDATION`, `CH_LLC`, `EE`, `LT`, `IE`, `AU`, `HU`
@@ -250,6 +289,7 @@ For MCAP country configs:
 - `ko.json` and `zh-TW.json` must mirror new MCAP key paths.
 6. Before merge, run a missing-key check for `mcap` across `en` -> `ko/zh-TW`.
 7. Before merge, run a duplicate-string review to prevent avoidable translation bloat and debugging drift.
+8. Shared onboarding/incorporation journey copy lives under `mcap.journey.*` and must stay aligned across `en`, `ko`, and `zh-TW`.
 
 ## 8. Review Step Rules
 ### Signature field standard
@@ -424,6 +464,13 @@ Every core behavior update must include:
 - one extended flow config (PA/PPIF)
 
 ## 12. Changelog
+- 2026-03-23
+  - added global MCAP journey types `new_incorporation` and `existing_company_onboarding`
+  - documented post-normalization journey filtering for onboarding mode in `src/mcap/journey.ts`
+  - documented that onboarding keeps country questions, agreement, and review but removes pricing/payment steps for all countries including PA/PPIF
+  - documented launcher chooser flow, resume-by-`companyId` behavior, and top-level `journeyType` persistence/backfill rules
+  - documented onboarding-specific engine UI overrides for page title, banner, submit CTA, and confirmation behavior
+  - documented onboarding-specific admin notification/email wording and detail-page pricing suppression
 - 2026-03-10
   - documented party-driven additional executive KYC as the shared cross-country pricing layer in `src/mcap/additionalExecutivePricing.ts`
   - documented the `useAdditionalExecutiveKycService` toggle, live preview, and managed service rows `additional_executive_individuals` / `additional_executive_corporates`

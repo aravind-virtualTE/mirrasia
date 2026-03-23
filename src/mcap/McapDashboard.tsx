@@ -6,16 +6,22 @@ import jwtDecode from "jwt-decode";
 import { ArrowLeft, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import api from "@/services/fetch";
 import { UnifiedFormEngine } from "./UnifiedFormEngine";
 import { MCAP_CONFIGS, MCAP_CONFIG_MAP } from "./configs/registry";
-import type { McapConfig } from "./configs/types";
+import type { McapConfig, McapJourneyType } from "./configs/types";
+import { DEFAULT_MCAP_JOURNEY_TYPE } from "./configs/types";
+import { resolveMcapJourneyType } from "./journey";
 
 export default function McapDashboard() {
   const { t } = useTranslation();
   const [selectedConfig, setSelectedConfig] = useState<McapConfig | null>(null);
+  const [selectedJourneyType, setSelectedJourneyType] = useState<McapJourneyType>(DEFAULT_MCAP_JOURNEY_TYPE);
+  const [pendingConfig, setPendingConfig] = useState<McapConfig | null>(null);
+  const [journeyDialogOpen, setJourneyDialogOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const basePath = "/incorporation-dashboard";
@@ -102,6 +108,7 @@ export default function McapDashboard() {
 
         setHasAccessDenied(false);
         setSelectedConfig(cfg);
+        setSelectedJourneyType(resolveMcapJourneyType(payload.journeyType));
         setInitialCompanyId(payload._id);
 
         const mergedData = { ...(payload.data || {}) };
@@ -155,8 +162,29 @@ export default function McapDashboard() {
   useEffect(() => {
     if (requestedConfig) {
       setSelectedConfig(requestedConfig);
+      setSelectedJourneyType(DEFAULT_MCAP_JOURNEY_TYPE);
     }
   }, [requestedConfig]);
+
+  const handleJourneyDialogChange = (open: boolean) => {
+    setJourneyDialogOpen(open);
+    if (!open) {
+      setPendingConfig(null);
+    }
+  };
+
+  const handleStart = (config: McapConfig) => {
+    setPendingConfig(config);
+    setJourneyDialogOpen(true);
+  };
+
+  const handleSelectJourney = (journeyType: McapJourneyType) => {
+    if (!pendingConfig) return;
+    setSelectedConfig(pendingConfig);
+    setSelectedJourneyType(journeyType);
+    setPendingConfig(null);
+    setJourneyDialogOpen(false);
+  };
 
   if (selectedConfig) {
     return (
@@ -165,6 +193,7 @@ export default function McapDashboard() {
           variant="ghost"
           onClick={() => {
             setSelectedConfig(null);
+            setSelectedJourneyType(DEFAULT_MCAP_JOURNEY_TYPE);
             setInitialCompanyId(null);
             setInitialData(null);
             setInitialParties([]);
@@ -178,6 +207,7 @@ export default function McapDashboard() {
         </Button>
         <UnifiedFormEngine
           config={selectedConfig}
+          journeyType={selectedJourneyType}
           initialData={initialData}
           initialParties={initialParties}
           initialCompanyId={initialCompanyId}
@@ -316,7 +346,7 @@ export default function McapDashboard() {
                           size="sm"
                           variant="default"
                           className="h-7 px-3 text-xs"
-                          onClick={() => setSelectedConfig(config)}
+                          onClick={() => handleStart(config)}
                         >
                           {t("mcap.dashboard.launcher.actions.start", "Start")}
                         </Button>
@@ -329,6 +359,42 @@ export default function McapDashboard() {
           ))}
         </div>
       </TooltipProvider>
+      <Dialog open={journeyDialogOpen} onOpenChange={handleJourneyDialogChange}>
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-[720px] max-h-[85vh] overflow-y-auto p-6 sm:p-8">
+          <DialogHeader>
+            <DialogTitle>
+              {t("mcap.journey.chooser.title", "Choose Application Type")}
+            </DialogTitle>
+            <DialogDescription>
+              {t(
+                "mcap.journey.chooser.description",
+                "Select whether this request is for a new incorporation or an existing company onboarding."
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <Button
+              type="button"
+              className="min-h-[112px] items-start justify-start whitespace-normal px-5 py-6 text-left sm:min-h-[128px] sm:px-6"
+              onClick={() => handleSelectJourney("new_incorporation")}
+            >
+                <span className="block font-semibold">
+                  {t("mcap.journey.labels.new_incorporation", "New Incorporation")}
+                </span>             
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-[112px] items-start justify-start whitespace-normal px-5 py-6 text-left sm:min-h-[128px] sm:px-6"
+              onClick={() => handleSelectJourney("existing_company_onboarding")}
+            >
+                <span className="block font-semibold">
+                  {t("mcap.journey.labels.existing_company_onboarding", "Existing Company Onboarding")}
+                </span>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

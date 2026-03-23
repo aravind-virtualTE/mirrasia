@@ -5,7 +5,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import api from "@/services/fetch";
 import { MCAP_CONFIG_MAP } from "@/mcap/configs/registry";
-import type { McapField, McapFees } from "@/mcap/configs/types";
+import type { McapField, McapFees, McapJourneyType } from "@/mcap/configs/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +38,11 @@ import { Banknote, Building2, Mail, Phone, ReceiptText, Send, ShieldCheck } from
 import McapPartyKycModal from "@/mcap/McapPartyKycModal";
 import McapCompanyDocumentCenter from "@/mcap/documents/McapCompanyDocumentCenter";
 import { InvoiceWidget } from "@/mcap/fields/InvoiceWidget";
+import {
+  isExistingCompanyOnboardingJourney,
+  resolveMcapConfigForJourney,
+  resolveMcapJourneyType,
+} from "@/mcap/journey";
 
 type McapParty = {
   _id?: string;
@@ -62,6 +67,7 @@ type McapCompany = {
   _id: string;
   countryCode: string;
   countryName?: string;
+  journeyType?: McapJourneyType;
 
   // Elevated Core Fields
   companyName?: string;
@@ -267,7 +273,7 @@ const McapCompanyDetail: React.FC = () => {
   const [company, setCompany] = useState<McapCompany | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [emailTo, setEmailTo] = useState("");
-  const [emailSubject, setEmailSubject] = useState("MIRR ASIA - Incorporation Follow-up");
+  const [emailSubject, setEmailSubject] = useState("MIRR ASIA - Application Follow-up");
   const [emailMessage, setEmailMessage] = useState("");
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [adminAssigned, setAdminAssigned] = useState("");
@@ -429,8 +435,10 @@ const McapCompanyDetail: React.FC = () => {
 
   const config = useMemo(() => {
     if (!company?.countryCode) return null;
-    return MCAP_CONFIG_MAP[company.countryCode] || null;
-  }, [company?.countryCode]);
+    const baseConfig = MCAP_CONFIG_MAP[company.countryCode] || null;
+    if (!baseConfig) return null;
+    return resolveMcapConfigForJourney(baseConfig, company?.journeyType);
+  }, [company?.countryCode, company?.journeyType]);
 
   const invoiceFees = useMemo<McapFees | undefined>(() => {
     const dataFees = company?.data?.computedFees;
@@ -502,6 +510,8 @@ const McapCompanyDetail: React.FC = () => {
   const applicantNameKey = resolveFieldKey(data, ["applicantName", "name", "contactName", "primaryContactName"], "applicantName");
   const applicantEmailKey = resolveFieldKey(data, ["email", "applicantEmail", "applicantEmailAddress", "contactEmail"], "email");
   const applicantPhoneKey = resolveFieldKey(data, ["phone", "phoneNum", "contactPhone"], "phone");
+  const journeyType = resolveMcapJourneyType(company.journeyType);
+  const isExistingCompanyOnboarding = isExistingCompanyOnboardingJourney(journeyType);
   const stepsCount = config?.steps?.length || 1;
   const pct = Math.min(100, Math.max(0, Math.round(((company.stepIdx || 0) / (stepsCount - 1 || 1)) * 100)));
   const invoiceItemCount = Array.isArray((invoiceFees as any)?.items) ? (invoiceFees as any).items.length : 0;
@@ -612,6 +622,12 @@ const McapCompanyDetail: React.FC = () => {
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <Badge variant="secondary" className="text-muted-foreground">
                             {company.countryName || company.countryCode} {company.countryCode ? `- ${company.countryCode}` : ""}
+                          </Badge>
+                          <Badge variant={isExistingCompanyOnboarding ? "outline" : "secondary"}>
+                            {t(
+                              `mcap.journey.labels.${journeyType}`,
+                              isExistingCompanyOnboarding ? "Existing Company Onboarding" : "New Incorporation"
+                            )}
                           </Badge>
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-muted-foreground">Status</span>
@@ -882,6 +898,7 @@ const McapCompanyDetail: React.FC = () => {
           </div>
 
           <div className="grid gap-6">
+            {!isExistingCompanyOnboarding && (
             <Card>
               <CardHeader className="pb-2">
                 <div className="flex items-start gap-3">
@@ -998,6 +1015,7 @@ const McapCompanyDetail: React.FC = () => {
                 </Accordion>
               </CardContent>
             </Card>
+            )}
 
             <Card>
               <CardHeader>
@@ -1118,6 +1136,7 @@ const McapCompanyDetail: React.FC = () => {
       onSaved={fetchCompany}
       forceReadOnly={isDashboardDetailView}
     />
+    {!isExistingCompanyOnboarding && (
     <Dialog open={invoiceDialogOpen} onOpenChange={setInvoiceDialogOpen}>
       <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto p-0">
         <DialogHeader className="border-b px-6 py-4">
@@ -1141,6 +1160,7 @@ const McapCompanyDetail: React.FC = () => {
         </div>
       </DialogContent>
     </Dialog>
+    )}
     </>
   );
 };

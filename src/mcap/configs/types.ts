@@ -59,6 +59,13 @@ export type McapReviewSummaryRow = {
   showWhenEmpty?: boolean;
 };
 
+export type McapJourneyType =
+  | "new_incorporation"
+  | "existing_company_onboarding";
+
+export const DEFAULT_MCAP_JOURNEY_TYPE: McapJourneyType = "new_incorporation";
+export const EXISTING_COMPANY_ONBOARDING_JOURNEY_TYPE: McapJourneyType = "existing_company_onboarding";
+
 export type McapField = {
   type:
   | "text"

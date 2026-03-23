@@ -3455,9 +3455,9 @@
     },
     "dashboard": {
       "title": "Incorporation Applications",
-      "desc": "Track and continue your unified incorporation applications.",
+      "desc": "Track and continue your unified incorporation and onboarding applications.",
       "loading": "Loading applications...",
-      "empty": "No Incorporation applications yet.",
+      "empty": "No incorporation or onboarding applications yet.",
       "filters": {
         "all": "All Applications",
         "pending": "Pending Applications",
@@ -3514,7 +3514,7 @@
         "back": "Back to Dashboard",
         "hero": {
           "eyebrow": "Incorporation Hub",
-          "description": "Select a jurisdiction to launch the unified incorporation flow with compliance, parties, and payment steps."
+          "description": "Select a jurisdiction to launch a unified incorporation or existing company onboarding flow."
         },
         "accessRestricted": {
           "title": "Access restricted",
@@ -3970,9 +3970,30 @@
         "payment": {
           "description": "Proceed with card payment or upload bank transfer proof."
         }
-      }
-    },
-    "uae": {
+        }
+      },
+      "journey": {
+        "labels": {
+          "new_incorporation": "New Incorporation",
+          "existing_company_onboarding": "Existing Company Onboarding"
+        },
+        "chooser": {
+          "title": "Choose Application Type",
+          "description": "Select whether this request is for a new incorporation or an existing company onboarding."         
+        },
+        "banner": {
+          "title": "Existing Company Onboarding"
+        },
+        "confirmation": {
+          "title": "Onboarding Request Submitted",
+          "message": "Your existing company onboarding request has been received. Our team will review the submitted details and contact you with the next steps."
+        },
+        "pageTitle": "{{country}} Existing Company Onboarding",
+        "actions": {
+          "submit": "Submit Onboarding Request"
+        }
+      },
+      "uae": {
       "title": "Dubai IFZA Company Incorporation",
       "freezones": {
         "titles": {
