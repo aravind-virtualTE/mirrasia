@@ -70,6 +70,7 @@ export type McapField = {
   type:
   | "text"
   | "email"
+  | "date"
   | "number"
   | "textarea"
   | "signature"

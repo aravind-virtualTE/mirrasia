@@ -109,6 +109,9 @@ Runtime behavior:
   - `InvoiceWidget`
   - `PaymentWidget`
   - step ids `services`, `invoice`, `payment`
+- `existing_company_onboarding` also augments the shared `company` step with two required fields:
+  - `BRN No.`
+  - `Incorporation Date`
 - the same country questionnaire, `service-agreement`, and `review` remain in place
 - `journeyType` is persisted at the company record level and defaults legacy records to `new_incorporation`
 
@@ -139,6 +142,7 @@ When `journeyType === "existing_company_onboarding"`:
 - service selection, invoice, and payment widgets never render because the journey layer removed those steps first
 
 Related surfaces:
+- `McapCompanyDetail.tsx` surfaces onboarding `BRN No.` and `Incorporation Date` in the top company summary and suppresses duplicate rendering in the lower questionnaire cards
 - `McapCompanyDetail.tsx` resolves the same journey-filtered config so onboarding records hide pricing/payment detail cards and dialogs
 - backend admin notifications and status emails branch on `journeyType`
 

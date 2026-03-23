@@ -787,7 +787,13 @@ export const UnifiedFormEngine = ({
             onChange,
         };
 
-        if (field.type === "text" || field.type === "textarea" || field.type === "number" || field.type === "email") {
+        if (
+            field.type === "text"
+            || field.type === "textarea"
+            || field.type === "number"
+            || field.type === "email"
+            || field.type === "date"
+        ) {
             return <UnifiedTextField key={key} {...commonProps} />;
         }
         if (field.type === "signature") {
