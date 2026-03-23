@@ -31,7 +31,6 @@ import {
     ADDITIONAL_EXECUTIVE_USD_TO_BASE_RATE_FIELD,
     applyAdditionalExecutiveFeesToFees,
     getAdditionalExecutiveUsdToBaseRate,
-    isAdditionalExecutiveKycEnabled,
 } from "./additionalExecutivePricing";
 
 // --- API Helper (Inlined for Demo) ---
@@ -148,7 +147,7 @@ export const UnifiedFormEngine = ({
                 countryCode: config.countryCode,
                 parties,
                 payMethod: formData?.payMethod,
-                enabled: isAdditionalExecutiveKycEnabled(formData),
+                enabled: Array.isArray(parties) && parties.length > 0,
                 usdToBaseRate: getAdditionalExecutiveUsdToBaseRate(config.countryCode, formData),
             });
 

@@ -2460,7 +2460,7 @@
       },
       "compliance": {
         "title": "Compliance & Ethical Assessment (AML / CDD)",
-        "description": "Answer accurately based on your current knowledge. Select ˜Unsure™ if you need help.",
+        "description": "Answer accurately based on your current knowledge.",
         "options": {
           "yes": "Yes",
           "no": "No",
