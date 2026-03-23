@@ -3457,6 +3457,16 @@
         "title": "上線申請已提交",
         "message": "我們已收到您的現有公司上線申請。我們的團隊將審核您提交的資料，並與您聯繫說明下一步。"
       },
+      "onboardingFields": {
+        "brnNo": {
+          "label": "BRN 編號",
+          "placeholder": "輸入 BRN 編號"
+        },
+        "incorporationDate": {
+          "label": "成立日期",
+          "placeholder": "選擇成立日期"
+        }
+      },
       "pageTitle": "{{country}} 現有公司上線",
       "actions": {
         "submit": "提交上線申請"

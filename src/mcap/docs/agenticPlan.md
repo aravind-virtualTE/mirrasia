@@ -55,10 +55,13 @@ Current runtime implementation:
 
 ### Onboarding-specific runtime UX
 When `journeyType === existing_company_onboarding`:
+- the shared `company` step is augmented with two required onboarding-only fields for every country:
+  - `BRN No.`
+  - `Incorporation Date`
 - `UnifiedFormEngine` renders onboarding-specific title, banner, submit CTA, and confirmation copy.
 - The success screen uses onboarding confirmation messaging and skips the standard country “What Happens Next?” step list.
 - Pricing widgets and payment/invoice calculations do not run because those steps are removed before render.
-- `McapCompanyDetail.tsx` resolves the same journey-filtered config and hides pricing/payment detail surfaces for onboarding records.
+- `McapCompanyDetail.tsx` resolves the same journey-filtered config, highlights BRN/incorporation date in the top summary, and hides pricing/payment detail surfaces for onboarding records.
 - Backend admin notifications and status emails use onboarding wording instead of incorporation wording.
 
 ## 3. Registry Normalization Rules
@@ -469,8 +472,9 @@ Every core behavior update must include:
   - documented post-normalization journey filtering for onboarding mode in `src/mcap/journey.ts`
   - documented that onboarding keeps country questions, agreement, and review but removes pricing/payment steps for all countries including PA/PPIF
   - documented launcher chooser flow, resume-by-`companyId` behavior, and top-level `journeyType` persistence/backfill rules
+  - documented global onboarding augmentation of the `company` step with required `BRN No.` and `Incorporation Date` fields
   - documented onboarding-specific engine UI overrides for page title, banner, submit CTA, and confirmation behavior
-  - documented onboarding-specific admin notification/email wording and detail-page pricing suppression
+  - documented onboarding-specific admin notification/email wording, detail-page BRN/incorporation summary, and pricing suppression
 - 2026-03-10
   - documented party-driven additional executive KYC as the shared cross-country pricing layer in `src/mcap/additionalExecutivePricing.ts`
   - documented the `useAdditionalExecutiveKycService` toggle, live preview, and managed service rows `additional_executive_individuals` / `additional_executive_corporates`

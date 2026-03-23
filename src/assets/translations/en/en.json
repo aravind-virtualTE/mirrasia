@@ -3988,6 +3988,16 @@
           "title": "Onboarding Request Submitted",
           "message": "Your existing company onboarding request has been received. Our team will review the submitted details and contact you with the next steps."
         },
+        "onboardingFields": {
+          "brnNo": {
+            "label": "BRN No.",
+            "placeholder": "Enter BRN number"
+          },
+          "incorporationDate": {
+            "label": "Incorporation Date",
+            "placeholder": "Select incorporation date"
+          }
+        },
         "pageTitle": "{{country}} Existing Company Onboarding",
         "actions": {
           "submit": "Submit Onboarding Request"

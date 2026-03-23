@@ -39,6 +39,8 @@ import McapPartyKycModal from "@/mcap/McapPartyKycModal";
 import McapCompanyDocumentCenter from "@/mcap/documents/McapCompanyDocumentCenter";
 import { InvoiceWidget } from "@/mcap/fields/InvoiceWidget";
 import {
+  EXISTING_COMPANY_ONBOARDING_BRN_FIELD,
+  EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD,
   isExistingCompanyOnboardingJourney,
   resolveMcapConfigForJourney,
   resolveMcapJourneyType,
@@ -111,6 +113,17 @@ const fmtDate = (d?: string | Date) => {
   const ts = +dt;
   if (Number.isNaN(ts)) return "N/A";
   return dt.toISOString().slice(0, 10);
+};
+
+const EXISTING_COMPANY_ONBOARDING_SUMMARY_FIELDS = new Set([
+  EXISTING_COMPANY_ONBOARDING_BRN_FIELD,
+  EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD,
+]);
+
+const isExistingCompanyOnboardingSummaryField = (stepId?: string, fieldName?: string) => {
+  return String(stepId || "").trim().toLowerCase() === "company"
+    && !!fieldName
+    && EXISTING_COMPANY_ONBOARDING_SUMMARY_FIELDS.has(fieldName);
 };
 
 const getCompanyName = (company: McapCompany) => {
@@ -463,6 +476,7 @@ const McapCompanyDetail: React.FC = () => {
   const stepGroups = useMemo(() => {
     if (!config?.steps) return [];
     const data = company?.data || {};
+    const shouldLiftOnboardingSummaryFields = isExistingCompanyOnboardingJourney(company?.journeyType);
     const isPaymentStep = (step: { id?: string; widget?: string; title?: string }) =>
       step?.widget === "PaymentWidget"
       || /^payments?$/i.test(String(step?.id || ""))
@@ -473,11 +487,17 @@ const McapCompanyDetail: React.FC = () => {
       .filter((step) => !isPaymentStep(step))
       .filter((step) => step.id !== "compliance")
       .map((step) => {
-        const fields = (step.fields || []).map((field) => renderDetailField({ field, data, t })).filter(Boolean);
+        const fields = (step.fields || [])
+          .filter((field) => !(
+            shouldLiftOnboardingSummaryFields
+            && isExistingCompanyOnboardingSummaryField(step.id, field.name)
+          ))
+          .map((field) => renderDetailField({ field, data, t }))
+          .filter(Boolean);
         return { step, fields };
       })
       .filter((group) => group.fields.length > 0);
-  }, [config?.steps, company?.data, t]);
+  }, [config?.steps, company?.data, company?.journeyType, t]);
 
   const complianceGroup = useMemo(() => {
     if (!config?.steps) return null;
@@ -504,6 +524,8 @@ const McapCompanyDetail: React.FC = () => {
   const applicantName = getApplicant(company);
   const applicantEmail = getEmail(company);
   const applicantPhone = getPhone(company);
+  const onboardingBrnNo = String(data?.[EXISTING_COMPANY_ONBOARDING_BRN_FIELD] || "").trim();
+  const onboardingIncorporationDate = String(data?.[EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD] || "").trim();
   const companyNameKey = resolveFieldKey(data, ["companyName_1", "name1"], "companyName_1");
   const companyAlt1Key = resolveFieldKey(data, ["companyName_2", "name2"], "companyName_2");
   const companyAlt2Key = resolveFieldKey(data, ["companyName_3", "name3"], "companyName_3");
@@ -723,6 +745,43 @@ const McapCompanyDetail: React.FC = () => {
                       </>
                     )}
                   </div>
+                  {isExistingCompanyOnboarding && (
+                    <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
+                      <div className="grid gap-1">
+                        <div className="text-xs text-muted-foreground">
+                          {t("mcap.journey.onboardingFields.brnNo.label", "BRN No.")}
+                        </div>
+                        {isEditing && canEdit ? (
+                          <Input
+                            value={onboardingBrnNo}
+                            onChange={(e) => updateDataField(EXISTING_COMPANY_ONBOARDING_BRN_FIELD, e.target.value)}
+                            className="h-8"
+                            placeholder={t("mcap.journey.onboardingFields.brnNo.placeholder", "Enter BRN number")}
+                          />
+                        ) : (
+                          <div className="text-sm font-medium">{onboardingBrnNo || "N/A"}</div>
+                        )}
+                      </div>
+                      <div className="grid gap-1">
+                        <div className="text-xs text-muted-foreground">
+                          {t("mcap.journey.onboardingFields.incorporationDate.label", "Incorporation Date")}
+                        </div>
+                        {isEditing && canEdit ? (
+                          <Input
+                            type="date"
+                            value={onboardingIncorporationDate}
+                            onChange={(e) => updateDataField(EXISTING_COMPANY_ONBOARDING_INCORPORATION_DATE_FIELD, e.target.value)}
+                            className="h-8"
+                            placeholder={t("mcap.journey.onboardingFields.incorporationDate.placeholder", "Select incorporation date")}
+                          />
+                        ) : (
+                          <div className="text-sm font-medium">
+                            {onboardingIncorporationDate ? fmtDate(onboardingIncorporationDate) : "N/A"}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                   <div className="grid gap-1 md:col-span-2">
                     <div className="text-xs text-muted-foreground">Alternative Names</div>
                     {isEditing && canEdit ? (

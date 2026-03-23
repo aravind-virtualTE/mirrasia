@@ -3456,6 +3456,16 @@
         "title": "온보딩 요청이 제출되었습니다",
         "message": "기존 회사 온보딩 요청이 접수되었습니다. 저희 팀이 제출된 내용을 검토한 뒤 다음 단계에 대해 안내드리겠습니다."
       },
+      "onboardingFields": {
+        "brnNo": {
+          "label": "BRN 번호",
+          "placeholder": "BRN 번호를 입력하세요"
+        },
+        "incorporationDate": {
+          "label": "설립일",
+          "placeholder": "설립일을 선택하세요"
+        }
+      },
       "pageTitle": "{{country}} 기존 회사 온보딩",
       "actions": {
         "submit": "온보딩 요청 제출"
