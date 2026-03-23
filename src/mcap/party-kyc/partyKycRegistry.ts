@@ -4,7 +4,6 @@ import sgQuestions from "./questionBank/sg-questions.json";
 import paQuestions from "./questionBank/pa-questions.json";
 import {
   CORRESPONDENCE_SERVICE_FIELD,
-  isCorrespondenceServiceEligibleRoles,
 } from "../correspondenceService";
 
 type QuestionOption = {
@@ -143,9 +142,6 @@ const partyRoleOptions = [
   { value: "shareholder", label: "Shareholder" },
   { value: "dcp", label: "Designated Contact Person" },
 ];
-
-const correspondenceServiceEligible = (values: Record<string, any>) =>
-  isCorrespondenceServiceEligibleRoles(values?.roles);
 
 // --- HK options (mirrors ShrDirConstants keys for compatibility) ---
 const hkSignificantControllerOptions = [
@@ -882,7 +878,6 @@ const BASE_PARTY_KYC_REGISTRY: PartyFormConfig[] = [
             name: CORRESPONDENCE_SERVICE_FIELD,
             label: "hk_shldr.useCorrespondenceAddressService",
             type: "checkbox",
-            condition: correspondenceServiceEligible,
           },
           {
             name: "overseasResidentStatus",

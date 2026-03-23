@@ -229,13 +229,128 @@
     "registerNow": "Register now",
     "contactUs": "Contact us",
     "TransferBtn": "Transfer to Mirr Asia",
+    "nav": {
+      "incorporation": "Incorporation",
+      "accountingTaxation": "Accounting & Taxation",
+      "pricing": "Pricing",
+      "services": "Services",
+      "quotationRequest": "Quotation Request",
+      "taxFeeEstimator": "Tax-Fee Estimator",
+      "login": "Log in",
+      "getStarted": "Get started",
+      "toggleMenu": "Toggle menu"
+    },
+    "hero": {
+      "badge": "Company Incorporation Setup",
+      "imageAlt": "Business professional working on a laptop",
+      "founderReadyLabel": "Founder-ready",
+      "founderReadyText": "One team for setup, tax coordination, and ongoing company support.",
+      "decisionTitle": "Built for faster decisions",
+      "decisionText": "Clear service paths, practical pricing guidance, and support that stays easy to navigate.",
+      "existingCompaniesEyebrow": "For existing companies",
+      "exploreSupport": "Explore support",
+      "pillars": {
+        "incorporation": {
+          "title": "Incorporation",
+          "description": "Guided setup, document prep, and filing support in one workflow."
+        },
+        "accounting": {
+          "title": "Accounting",
+          "description": "Bookkeeping, tax coordination, and reporting that stay practical."
+        },
+        "compliance": {
+          "title": "Compliance",
+          "description": "Structured support for recurring obligations after launch."
+        }
+      }
+    },
+    "whyChooseUs": {
+      "eyebrow": "Why founders choose Mirr Asia",
+      "title": "A cleaner path from incorporation to day-to-day operations",
+      "description": "We bring setup, finance, and compliance together so business owners can understand the offer quickly and move to the next step with confidence.",
+      "cards": {
+        "clearProcess": {
+          "title": "Clear process from day one",
+          "description": "Founders get a simpler path through formation, filing, and post-setup next steps.",
+          "point1": "Remote-friendly onboarding",
+          "point2": "Structured document collection",
+          "point3": "Less back-and-forth across vendors"
+        },
+        "financeTax": {
+          "title": "Finance and tax that stay readable",
+          "description": "Operational support is organized around what business owners need to review and act on.",
+          "point1": "Bookkeeping and tax support",
+          "point2": "Management reporting visibility",
+          "point3": "Packages aligned to business stage"
+        },
+        "ongoingSupport": {
+          "title": "Ongoing support, not just setup",
+          "description": "Support continues after incorporation so recurring company obligations do not become a distraction.",
+          "point1": "Secretary and compliance help",
+          "point2": "Guidance for recurring deadlines",
+          "point3": "A single partner as needs change"
+        }
+      }
+    },
+    "coreServices": {
+      "eyebrow": "Core Services",
+      "title": "Support that stays useful before and after incorporation",
+      "description": "Each service overview highlights the value, deliverables, and the best next step without burying the important details.",
+      "incorporation": {
+        "badge": "Incorporation",
+        "title": "Launch with the right structure from day one",
+        "description": "We guide founders through entity setup, filings, documentation, and post-formation coordination so the business opens cleanly and moves forward faster.",
+        "point1": "Guidance on company structure, key setup decisions, and required documentation.",
+        "point2": "End-to-end filing support to reduce avoidable delays and confusion.",
+        "point3": "A smoother handoff into banking, accounting, and ongoing compliance work.",
+        "primaryCta": "Start registration",
+        "secondaryCta": "Talk to an advisor",
+        "imageAlt": "Business professional in formal attire"
+      },
+      "accounting": {
+        "badge": "Accounting & Taxation",
+        "title": "Keep reporting clean and deadlines under control",
+        "description": "Accurate books and timely tax handling should feel operational, not overwhelming. We shape the service around visibility, compliance, and practical reporting.",
+        "point1": "Bookkeeping, payroll, and tax coordination matched to your business stage.",
+        "point2": "Management reporting that helps owners see what needs attention quickly.",
+        "point3": "Support designed to reduce finance friction as transaction volume grows.",
+        "primaryCta": "Request a quotation",
+        "secondaryCta": "Speak with our team",
+        "imageAlt": "Calculator and accounting tools"
+      },
+      "pricing": {
+        "badge": "Pricing",
+        "title": "Transparent packages that scale with your business",
+        "description": "Pricing works best when visitors can understand scope quickly. We focus on clear packages, practical consultation, and fewer surprises around ongoing support.",
+        "point1": "Clearer expectations on included services and consultation-led add-ons.",
+        "point2": "Scope that can fit early-stage founders as well as operating companies.",
+        "point3": "A simpler route from initial enquiry to tailored pricing guidance.",
+        "primaryCta": "Get a tailored quote",
+        "secondaryCta": "Ask about pricing",
+        "imageAlt": "Pricing and financial planning"
+      }
+    },
+    "footer": {
+      "hkOfficeTitle": "HONG KONG OFFICE",
+      "hkLine1": "WORKSHOP UNIT B50 & B58, KWAI SHING IND. BLDG (PHASE 1),",
+      "hkLine2": "36-40 TAI LIN PAI RD, KWAI CHUNG, HK",
+      "hkPhone": "Tel: 852-2187-2428",
+      "koreaOfficeTitle": "KOREA OFFICE",
+      "koreaLine1": "UNIT 937, 9/F, GOLDEN IT TOWER,",
+      "koreaLine2": "229 YANGJI-RO, BUCHEON-SI, GYEONGGI-DO,",
+      "koreaLine3": "REPUBLIC OF KOREA",
+      "koreaPhone": "Tel: 02-543-6187 / Fax: 02-6455-6187",
+      "copyright": "\u00A9 Copyright 2024 Mirr Asia\u2122 All rights reserved.",
+      "rightsText": "All rights to this website belong to MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED and may not be used without permission.",
+      "privacyPolicy": "Privacy Policy"
+    },
     "title": "Request a Free Consultation",
-    "subtitle": "Required fields are marked with ¢. Our team will contact you shortly.",
+    "subtitle": "Required fields are marked with •. Our team will contact you shortly.",
     "honeypot": {
       "label": "Leave this field blank"
     },
     "name": {
-      "label": "Full Name ¢",
+      "label": "Full Name •",
       "error": "Please enter your name."
     },
     "phone": {
@@ -243,11 +358,11 @@
       "error": "Use only numbers, spaces, parentheses, or hyphens."
     },
     "email": {
-      "label": "Email ¢",
+      "label": "Email •",
       "error": "Please enter a valid email address."
     },
     "message": {
-      "label": "Message ¢",
+      "label": "Message •",
       "helper": "Please provide enough detail for a helpful reply.",
       "counterAria": "Character count",
       "error": "Message must be at least 10 characters."
@@ -2345,7 +2460,7 @@
       },
       "compliance": {
         "title": "Compliance & Ethical Assessment (AML / CDD)",
-        "description": "Answer accurately based on your current knowledge. Select ˜Unsure™ if you need help.",
+        "description": "Answer accurately based on your current knowledge.",
         "options": {
           "yes": "Yes",
           "no": "No",
@@ -2541,7 +2656,7 @@
         },
         "corr_addr": {
           "label": "Correspondence Address Annual Service (optional)",
-          "info": "Mail handling for directors/shareholders."
+          "info": "Mail handling for a selected party."
         },
         "dcp_headcount": {
           "label": "Additional DCP headcount (optional)",
@@ -2627,7 +2742,7 @@
         "reg_office": "Registered office address for statutory records and official correspondence.",
         "bank_arr": "Introduction and scheduling support with the selected bank/EMI.",
         "kit": "Company chop, share certificates, and related items.",
-        "corr_addr": "Mail handling for directors/shareholders.",
+        "corr_addr": "Mail handling for a selected party.",
         "dcp_headcount": "Additional annual DCP service fee charged per designated contact person."
       },
       "common": {
@@ -2805,7 +2920,8 @@
       "fields": {
         "name": {
           "label": "Full name / Entity name",
-          "example": "Examples: Jane Doe (individual) or ABC Holdings Limited (corporate shareholder)."
+          "example": "Examples: Jane Doe (individual) or ABC Holdings Limited (corporate shareholder).",
+          "note": "Name must be entered in English only."
         },
         "email": {
           "label": "Email"
@@ -3339,9 +3455,9 @@
     },
     "dashboard": {
       "title": "Incorporation Applications",
-      "desc": "Track and continue your unified incorporation applications.",
+      "desc": "Track and continue your unified incorporation and onboarding applications.",
       "loading": "Loading applications...",
-      "empty": "No Incorporation applications yet.",
+      "empty": "No incorporation or onboarding applications yet.",
       "filters": {
         "all": "All Applications",
         "pending": "Pending Applications",
@@ -3398,7 +3514,7 @@
         "back": "Back to Dashboard",
         "hero": {
           "eyebrow": "Incorporation Hub",
-          "description": "Select a jurisdiction to launch the unified incorporation flow with compliance, parties, and payment steps."
+          "description": "Select a jurisdiction to launch a unified incorporation or existing company onboarding flow."
         },
         "accessRestricted": {
           "title": "Access restricted",
@@ -3854,9 +3970,30 @@
         "payment": {
           "description": "Proceed with card payment or upload bank transfer proof."
         }
-      }
-    },
-    "uae": {
+        }
+      },
+      "journey": {
+        "labels": {
+          "new_incorporation": "New Incorporation",
+          "existing_company_onboarding": "Existing Company Onboarding"
+        },
+        "chooser": {
+          "title": "Choose Application Type",
+          "description": "Select whether this request is for a new incorporation or an existing company onboarding."         
+        },
+        "banner": {
+          "title": "Existing Company Onboarding"
+        },
+        "confirmation": {
+          "title": "Onboarding Request Submitted",
+          "message": "Your existing company onboarding request has been received. Our team will review the submitted details and contact you with the next steps."
+        },
+        "pageTitle": "{{country}} Existing Company Onboarding",
+        "actions": {
+          "submit": "Submit Onboarding Request"
+        }
+      },
+      "uae": {
       "title": "Dubai IFZA Company Incorporation",
       "freezones": {
         "titles": {

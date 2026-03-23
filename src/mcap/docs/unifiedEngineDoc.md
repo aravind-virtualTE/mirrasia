@@ -1,7 +1,7 @@
 ﻿# Unified Form Engine Documentation
 
-Version: 1.6
-Last updated: 2026-03-16
+Version: 1.7
+Last updated: 2026-03-23
 
 ## Overview
 `UnifiedFormEngine.tsx` is a config-driven workflow engine for multi-country incorporation.
@@ -10,11 +10,15 @@ Core characteristics:
 - config-first step rendering
 - widget-based composition
 - runtime step normalization through registry
+- post-normalization journey policy resolution (`new_incorporation` vs `existing_company_onboarding`)
+- journey-aware launcher, resume, and UI copy
 - per-step validation and draft autosave
 - reusable fee computation contract across service/invoice/payment
 
 ## Primary Files
 - `src/mcap/UnifiedFormEngine.tsx`
+- `src/mcap/McapDashboard.tsx`
+- `src/mcap/journey.ts`
 - `src/mcap/configs/registry.ts`
 - `src/mcap/configs/complianceGuards.ts`
 - `src/mcap/configs/types.ts`
@@ -29,6 +33,7 @@ Core characteristics:
 - `src/mcap/fields/PaymentWidget.tsx`
 - `src/mcap/fields/RepeatableSectionWidget.tsx`
 - `src/mcap/correspondenceService.ts`
+- `src/mcap/McapCompanyDetail.tsx`
 
 ## Type Model (Essentials)
 ### `McapConfig`
@@ -36,6 +41,11 @@ Core characteristics:
 - `steps: McapStep[]`
 - `reviewSummary?: McapReviewSummaryRow[]`
 - `entityMeta` (optional)
+
+### `McapJourneyType`
+- `"new_incorporation" | "existing_company_onboarding"`
+- passed into `UnifiedFormEngine` as `journeyType`
+- stored top-level on the company record and normalized on read/write
 
 ### `McapReviewSummaryRow`
 - `id`
@@ -82,6 +92,55 @@ Review-step relevant addition:
 6. attach compliance `nextGuard` by `countryCode`
 
 This keeps cross-country behavior consistent while allowing country-specific step definitions.
+
+## Journey Resolution
+After registry normalization, MCAP applies one global journey policy layer:
+- `new_incorporation`
+- `existing_company_onboarding`
+
+Current implementation lives in:
+- `src/mcap/journey.ts`
+
+Runtime behavior:
+- `new_incorporation` returns the normalized config unchanged
+- `existing_company_onboarding` removes pricing-related stages for every country by shared widget/id rules:
+  - `ServiceSelectionWidget`
+  - `PanamaServiceSetupWidget`
+  - `InvoiceWidget`
+  - `PaymentWidget`
+  - step ids `services`, `invoice`, `payment`
+- the same country questionnaire, `service-agreement`, and `review` remain in place
+- `journeyType` is persisted at the company record level and defaults legacy records to `new_incorporation`
+
+Implementation guardrail:
+- if a new pricing-related widget or canonical step id is introduced, update `src/mcap/journey.ts` or onboarding mode will not strip it automatically
+
+## Launcher and Restore Flow
+Current launcher behavior lives in:
+- `src/mcap/McapDashboard.tsx`
+
+Runtime behavior:
+- clicking `Start` opens a chooser dialog for:
+  - `New Incorporation`
+  - `Existing Company Onboarding`
+- the selected journey type is passed into `UnifiedFormEngine` as `journeyType`
+- resume flows loaded with `companyId` skip the chooser and restore the saved `journeyType`
+- backend create persists the normalized `journeyType`
+- backend update only backfills `journeyType` if the existing record is legacy and missing that field
+
+## Journey-Specific UI Behavior
+When `journeyType === "existing_company_onboarding"`:
+- `UnifiedFormEngine` switches the page title to onboarding wording
+- the top section shows an onboarding banner
+- the primary submit action uses onboarding wording
+- the success view uses onboarding confirmation title/message
+- the standard country-specific “What Happens Next?” list is skipped
+- progress, sidebar, current step, and review all derive from the already-filtered `runtimeConfig.steps`
+- service selection, invoice, and payment widgets never render because the journey layer removed those steps first
+
+Related surfaces:
+- `McapCompanyDetail.tsx` resolves the same journey-filtered config so onboarding records hide pricing/payment detail cards and dialogs
+- backend admin notifications and status emails branch on `journeyType`
 
 ## Widget Responsibilities
 ### ServiceSelectionWidget
@@ -192,7 +251,8 @@ Legacy compatibility:
 - if step `computeFees` lacks requested non-USD FX metadata, engine can fall back to cached converted `formData.computedFees`
 - HK correspondence-address pricing uses shared party-driven metadata from `src/mcap/correspondenceService.ts` and is computed inside the HK config fee flow
 - `CORRESPONDENCE_SERVICE_FIELD` is currently wired only for HK PartyWidget / Party KYC flows; other country configs do not expose or auto-inject `corr_addr`
-- `corr_addr` is the only current HK party-managed service. The old HK `dcp_headcount` and `extra_kyc` pricing paths are no longer part of the active MCAP pricing model.
+- `corr_addr` is the only current HK party-managed service. Every selected HK party contributes one `USD 65` correspondence unit regardless of role or party type. The old HK `dcp_headcount` and `extra_kyc` pricing paths are no longer part of the active MCAP pricing model.
+- The shared correspondence helper now hard-guards non-HK countries to zero price / zero count so the charge cannot leak into other country fee flows by reuse.
 - `exchangeRate.ts` remains pair-based only:
   - official Frankfurter / ECB rates are preferred for pricing
   - Gemini is fallback only
@@ -356,6 +416,11 @@ Use these rules for all new MCAP country forms:
 - inspect normalized output from `registry.ts`
 - confirm `countryCode` standard-flow membership
 
+### Onboarding still shows pricing steps
+- verify the engine is using `resolveMcapConfigForJourney(config, journeyType)`
+- verify the record or launcher is passing `journeyType: "existing_company_onboarding"`
+- verify the pricing stage uses one of the shared filtered widget names or canonical step ids from `src/mcap/journey.ts`
+
 ### Invoice and payment totals mismatch
 - inspect `computedFees` in form state
 - verify `computeFees` returns surcharge and FX metadata
@@ -404,6 +469,9 @@ Use these rules for all new MCAP country forms:
 - keep UI text translatable (`t()`), avoid new hardcoded user-facing strings
 - avoid duplicating fee logic between widgets
 - update this doc and `agenticPlan.md` on core behavior changes
+- keep shared onboarding/incorporation copy under `mcap.journey.*` in all locales
+- when adding a new MCAP country, ensure pricing-related stages still use shared step ids/widgets so onboarding mode inherits automatically
+- when adding a new pricing-stage widget or step id, update `src/mcap/journey.ts` so onboarding stripping remains global
 - when adding or updating a country review step:
   - define `reviewSummary` explicitly when field names differ from shared aliases
   - use the shared `signature` field type for `eSign`

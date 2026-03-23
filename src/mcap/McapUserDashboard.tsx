@@ -531,7 +531,7 @@ export default function McapUserDashboard() {
       <Card className="border shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle>{t("mcap.dashboard.title", "Incorporation Applications")}</CardTitle>
-          <CardDescription>{t("mcap.dashboard.desc", "Track and continue your unified incorporation applications.")}</CardDescription>
+          <CardDescription>{t("mcap.dashboard.desc", "Track and continue your unified incorporation and onboarding applications.")}</CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
           {!isLoading && totalAll > 0 && (

@@ -109,7 +109,7 @@ const computeHkFees = (data: any) => {
     ...(Array.isArray(data?.serviceItemsSelected) ? data.serviceItemsSelected.map((id: any) => String(id)) : []),
   ]);
   const parties = Array.isArray(data?.parties) ? data.parties : [];
-  const { correspondenceCount } = getCorrespondenceServiceCounts(parties);
+  const { correspondenceCount } = getCorrespondenceServiceCounts(parties, "HK");
 
   const usdItems = [
     ...HK_FEES.government

@@ -290,14 +290,130 @@
     "pafn": "巴拿馬基金會"
   },
   "landingPage": {
-    "leftHeading": "快速簡單地註冊公司並開設商業帳戶！",
+    "leftHeading": "以更聰明的方式開始您的事業",
+    "leftHDesc": "快速、簡單、線上完成公司註冊與商業帳戶開設！",
     "rightHeading": "您已經有公司了嗎？",
-    "leftText": "享受無壓力服務和專業支援，快速數位化註冊和管理您的公司！",
-    "rightSubHeading": "您專注於業務，我們負責會計和合規。",
-    "rightP": "從帳簿管理到薪資、法律事務，與專業人士一起，讓您的後勤工作更輕鬆！",
+    "leftText": "避免繁瑣文件、漫長等待與不必要的混亂。透過我們的一站式公司註冊服務，您只需幾個步驟即可完成公司設立，並在每一步獲得專業指導。",
+    "rightSubHeading": "立即開始",
+    "rightP": "幾分鐘內完成公司註冊，並取得維持合規與安心營運所需的一切支援！",
     "registerNow": "立即註冊",
     "contactUs": "聯絡我們",
     "TransferBtn": "轉移至Mirr Asia",
+    "nav": {
+      "incorporation": "公司註冊",
+      "accountingTaxation": "會計與稅務",
+      "pricing": "價格",
+      "services": "服務",
+      "quotationRequest": "報價申請",
+      "taxFeeEstimator": "稅費估算工具",
+      "login": "登入",
+      "getStarted": "開始使用",
+      "toggleMenu": "切換選單"
+    },
+    "hero": {
+      "badge": "公司註冊設立",
+      "imageAlt": "手持筆電的商務專業人士",
+      "founderReadyLabel": "創業者友善",
+      "founderReadyText": "從公司設立、稅務協調到持續營運支援，都由同一團隊處理。",
+      "decisionTitle": "讓決策更快",
+      "decisionText": "清楚的服務路徑、實用的價格說明，以及更容易理解的支援流程。",
+      "existingCompaniesEyebrow": "適用於現有公司",
+      "exploreSupport": "查看支援",
+      "pillars": {
+        "incorporation": {
+          "title": "公司註冊",
+          "description": "將設立準備、文件整理與申請支援整合為單一流程。"
+        },
+        "accounting": {
+          "title": "會計",
+          "description": "提供實用的帳務、稅務協調與報表支援。"
+        },
+        "compliance": {
+          "title": "合規",
+          "description": "有系統地支援公司設立後的持續義務。"
+        }
+      }
+    },
+    "whyChooseUs": {
+      "eyebrow": "為什麼創業者選擇 Mirr Asia",
+      "title": "從公司設立到日常營運，更清晰的流程",
+      "description": "我們將設立、財務與合規整合在一起，讓企業主能更快理解服務內容，並更有信心地進入下一步。",
+      "cards": {
+        "clearProcess": {
+          "title": "從一開始就清楚的流程",
+          "description": "創業者可以用更簡單的方式理解設立、申請，以及設立後的下一步。",
+          "point1": "遠端友善的啟動流程",
+          "point2": "更有條理的文件收集",
+          "point3": "減少與多方供應商的反覆溝通"
+        },
+        "financeTax": {
+          "title": "更容易理解的財務與稅務",
+          "description": "我們將支援內容整理成企業主真正需要查看與判斷的重點。",
+          "point1": "會計與稅務支援",
+          "point2": "更清楚的管理報表可視性",
+          "point3": "符合企業階段的服務方案"
+        },
+        "ongoingSupport": {
+          "title": "不只設立，還有持續支援",
+          "description": "公司設立完成後，持續性的公司義務也能得到支援，不再成為負擔。",
+          "point1": "公司秘書與合規支援",
+          "point2": "定期截止提醒與指引",
+          "point3": "隨企業成長一同提供支援的合作夥伴"
+        }
+      }
+    },
+    "coreServices": {
+      "eyebrow": "核心服務",
+      "title": "在設立前後都實用的支援",
+      "description": "每個服務區塊都清楚說明核心價值、交付內容與最佳下一步，避免重要資訊被冗長文字掩蓋。",
+      "incorporation": {
+        "badge": "公司註冊",
+        "title": "從第一天就以正確架構啟動",
+        "description": "我們協助創業者完成公司架構設定、申請、文件準備與設立後銜接，讓公司能更順利成立並更快進入營運階段。",
+        "point1": "提供公司架構、關鍵設立決策與所需文件的指引。",
+        "point2": "以端到端申請支援減少不必要的延誤與混亂。",
+        "point3": "更順暢地銜接銀行、會計與後續合規工作。",
+        "primaryCta": "開始註冊",
+        "secondaryCta": "聯絡顧問",
+        "imageAlt": "穿著正式服裝的商務專業人士"
+      },
+      "accounting": {
+        "badge": "會計與稅務",
+        "title": "讓報表更清晰，截止日更好管理",
+        "description": "準確的帳務與及時的稅務處理應該是營運的一部分，而不是壓力來源。我們將服務聚焦於可視性、合規性與實用報表。",
+        "point1": "依企業階段提供帳務、薪資與稅務協調支援。",
+        "point2": "協助經營者快速掌握重點的管理報表。",
+        "point3": "隨交易量成長仍可降低財務負擔的支援模式。",
+        "primaryCta": "申請報價",
+        "secondaryCta": "聯絡我們團隊",
+        "imageAlt": "計算機與會計工具"
+      },
+      "pricing": {
+        "badge": "價格",
+        "title": "可隨業務成長而擴展的透明方案",
+        "description": "當訪客能快速理解服務範圍時，價格也更容易被接受。我們重視清楚的方案、實用的諮詢，以及更可預期的持續支援。",
+        "point1": "更清楚說明包含的服務與依諮詢提供的加值項目。",
+        "point2": "服務範圍可同時適用於新創與營運中的公司。",
+        "point3": "從初次詢問到客製化報價，提供更簡潔的流程。",
+        "primaryCta": "取得客製報價",
+        "secondaryCta": "詢問價格",
+        "imageAlt": "價格與財務規劃"
+      }
+    },
+    "footer": {
+      "hkOfficeTitle": "香港辦公室",
+      "hkLine1": "WORKSHOP UNIT B50 & B58, KWAI SHING IND. BLDG (PHASE 1),",
+      "hkLine2": "36-40 TAI LIN PAI RD, KWAI CHUNG, HK",
+      "hkPhone": "電話：852-2187-2428",
+      "koreaOfficeTitle": "韓國辦公室",
+      "koreaLine1": "UNIT 937, 9/F, GOLDEN IT TOWER,",
+      "koreaLine2": "229 YANGJI-RO, BUCHEON-SI, GYEONGGI-DO,",
+      "koreaLine3": "大韓民國",
+      "koreaPhone": "電話：02-543-6187 / 傳真：02-6455-6187",
+      "copyright": "© Copyright 2024 Mirr Asia™ All rights reserved.",
+      "rightsText": "本網站的所有權利均屬於 MIRR ASIA BUSINESS ADVISORY & SECRETARIAL COMPANY LIMITED，未經許可不得使用。",
+      "privacyPolicy": "隱私權政策"
+    },
     "title": "請求免費諮詢",
     "subtitle": "必填欄位標有 •。我們的團隊將盡快與您聯繫。",
     "honeypot": {
@@ -2249,7 +2365,7 @@
       },
       "compliance": {
         "title": "合規與道德評估（反洗錢 / 客戶盡職調查）",
-        "description": "請根據您目前所知準確回答。如果需要協助，請選擇「不確定」。",
+        "description": "請根據您目前掌握的資訊準確回答。",
         "options": {
           "yes": "是",
           "no": "否",
@@ -2705,7 +2821,8 @@
       "fields": {
         "name": {
           "label": "完整姓名 / 實體名稱",
-          "example": "範例：Jane Doe（個人）或 ABC Holdings Limited（公司股東）。"
+          "example": "範例：Jane Doe（個人）或 ABC Holdings Limited（公司股東）。",
+          "note": "姓名必須僅以英文輸入。"
         },
         "email": {
           "label": "電子郵件"
@@ -3239,9 +3356,9 @@
     },
     "dashboard": {
       "title": "法人設立申請",
-      "desc": "追蹤並繼續您的統一法人設立申請。",
+      "desc": "追蹤並繼續您的統一法人設立與現有公司上線申請。",
       "loading": "正在載入申請...",
-      "empty": "目前尚無設立申請。",
+      "empty": "目前尚無設立或上線申請。",
       "filters": {
         "all": "所有申請",
         "pending": "待處理申請",
@@ -3294,6 +3411,11 @@
         "draft": "草稿",
         "unpaid": "未付款"
       },
+      "launcher": {
+        "hero": {
+          "description": "請選擇要啟動統一新設公司或現有公司上線流程的司法管轄區。"
+        }
+      },
       "invitations": {
         "title": "我的邀請",
         "desc": "為邀請您的公司完成 KYC (身份認證)。",
@@ -3316,6 +3438,28 @@
           "companyFallback": "公司名",
           "pending": "待處理"
         }
+      }
+    },
+    "journey": {
+      "labels": {
+        "new_incorporation": "新設公司",
+        "existing_company_onboarding": "現有公司上線"
+      },
+      "chooser": {
+        "title": "選擇申請類型",
+        "description": "請選擇此申請是新設公司，還是現有公司上線。"
+      },
+      "banner": {
+        "title": "現有公司上線",
+        "description": "此流程適用於已在其他地方設立、現正上線至 MIRRASIA 的公司。您仍需回答相同的國家問卷，但不需要服務選擇、發票與付款。"
+      },
+      "confirmation": {
+        "title": "上線申請已提交",
+        "message": "我們已收到您的現有公司上線申請。我們的團隊將審核您提交的資料，並與您聯繫說明下一步。"
+      },
+      "pageTitle": "{{country}} 現有公司上線",
+      "actions": {
+        "submit": "提交上線申請"
       }
     },
     "au": {
