@@ -2352,7 +2352,7 @@
           "unsure": "Unsure"
         },
         "questions": {
-          "legalAndEthicalConcern": "Is the proposed UK entity being established for, associated with, or related to any purpose involving money laundering, illegal gambling, tax evasion, asset concealment, fraud, or any other illicit activities?",
+          "legalAndEthicalConcern": "Is the proposed company being established for, associated with, or related to any purpose involving money laundering, illegal gambling, tax evasion, asset concealment, fraud, or any other illicit activities?",
           "q_country": "Does the Current company have any current or planned business activity in the following countries/regions: Iran, Sudan, North Korea, Syria, Cuba, South Sudan, Belarus, or Zimbabwe?",
           "sanctionsExposureDeclaration": "Sanctions exposure: Do the company or any connected parties have a presence in, dealings with, or ownership ties to sanctioned persons or entities under UN, EU, UK HMT, HKMA, OFAC (US) or local sanctions law?",
           "crimeaSevastapolPresence": "Any current or planned business in Crimea/Sevastopol Regions?",
